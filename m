@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A644338A02
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AAA338A0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbhCLKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:24:24 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13596 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhCLKYG (ORCPT
+        id S233502AbhCLK0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:26:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233329AbhCLK0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:24:06 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dxhh519C9z17JnC;
-        Fri, 12 Mar 2021 18:22:13 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 12 Mar 2021
- 18:23:52 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <john.garry@huawei.com>,
-        <yangxingui@huawei.com>, <luojiaxing@huawei.com>
-Subject: [PATCH v1] ata: ahci: Disable SXS for Hisilicon Kunpeng920
-Date:   Fri, 12 Mar 2021 18:24:36 +0800
-Message-ID: <1615544676-61926-1-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 12 Mar 2021 05:26:24 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4ABC061574;
+        Fri, 12 Mar 2021 02:26:23 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lKezq-00F8hH-G7; Fri, 12 Mar 2021 11:26:18 +0100
+Message-ID: <0375326f2f20dc82c056d41faee97489a1a03677.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/6] module: add support for CONFIG_MODULE_DESTRUCTORS
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Date:   Fri, 12 Mar 2021 11:26:17 +0100
+In-Reply-To: <20210312104627.8b2523b0593c.Ib0fb7906e3d7bd69ebe5eb877e2e9f33ef915d4b@changeid>
+References: <20210312095526.197739-1-johannes@sipsolutions.net>
+         <20210312104627.8b2523b0593c.Ib0fb7906e3d7bd69ebe5eb877e2e9f33ef915d4b@changeid>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xingui Yang <yangxingui@huawei.com>
+On Fri, 2021-03-12 at 10:55 +0100, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> At least in ARCH=um with CONFIG_GCOV (which writes all the
+> coverage data directly out from the userspace binary rather
+> than presenting it in debugfs) it's necessary to run all
+> the atexit handlers (dtors/fini_array) so that gcov actually
+> does write out the data.
+> 
+> Add a new config option CONFIG_MODULE_DESTRUCTORS that can
+> be selected via CONFIG_WANT_MODULE_DESTRUCTORS that the arch
+> selects (this indirection exists so the architecture doesn't
+> have to worry about whether or not CONFIG_MODULES is on).
+> Additionally, the architecture must then (when it exits and
+> no more module code can run) call run_all_module_destructors
+> to run the code for all modules that are still loaded. When
+> modules are unloaded, the handlers are called as well.
 
-On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
-SATA controller. In some scenarios, some ports are not external SATA ports,
-and it cause disks connected to these ports to be identified as removable
-disks. So disable the SXS capability on the software side to prevent users
-from mistakenly considering non-removable disks as removable disks and
-performing related operations.
+Oops, I forgot to add this bit to the patch:
 
-Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
----
- drivers/ata/ahci.c    | 5 +++++
- drivers/ata/ahci.h    | 1 +
- drivers/ata/libahci.c | 5 +++++
- 3 files changed, 11 insertions(+)
-
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 00ba8e5..33192a8 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -1772,6 +1772,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
+--- a/scripts/module.lds.S
++++ b/scripts/module.lds.S
+@@ -16,6 +16,8 @@ SECTIONS {
  
- #ifdef CONFIG_ARM64
-+	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-+	    pdev->device == 0xa235 &&
-+	    pdev->revision < 0x30)
-+		hpriv->flags |= AHCI_HFLAG_NO_SXS;
+        .init_array             0 : ALIGN(8) { *(SORT(.init_array.*)) *(.init_array) }
+ 
++       .fini_array             0 : ALIGN(8) { *(SORT(.fini_array.*)) *(.fini_array) }
 +
- 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
- 		hpriv->irq_handler = ahci_thunderx_irq_handler;
- #endif
-diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-index 98b8baa..d1f284f 100644
---- a/drivers/ata/ahci.h
-+++ b/drivers/ata/ahci.h
-@@ -242,6 +242,7 @@ enum {
- 							suspend/resume */
- 	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
- 							from phy_power_on() */
-+	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
+        __jump_table            0 : ALIGN(8) { KEEP(*(__jump_table)) }
  
- 	/* ap->flags bits */
- 
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index ea5bf5f..fec2e97 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
- 		cap |= HOST_CAP_ALPM;
- 	}
- 
-+	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
-+		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
-+		cap &= ~HOST_CAP_SXS;
-+	}
-+
- 	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
- 		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
- 			 port_map, hpriv->force_port_map);
--- 
-2.7.4
+        __patchable_function_entries : { *(__patchable_function_entries) }
+
+
+Should that be under the ifdef? .init_array isn't, even though it's only
+relevant for CONFIG_CONSTRUCTORS.
+
+johannes
 
