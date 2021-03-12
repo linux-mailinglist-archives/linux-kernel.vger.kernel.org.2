@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB8A338A61
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAB2338A9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhCLKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbhCLKjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:39:11 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A0FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:39:11 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id a11so3362260qto.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P8hB+rU3U8i3a16FibhnL4+fR0BO+F4l1PF+kFVx2sg=;
-        b=DWeWxPIXzjP6CE0lwr4Jtgy8L2p+EEJyAXBsnXEa7GHvepuYx3IzLeOE4DCWhBkDM7
-         GKbw5TcWhidwA1bPMcTP79NU0FEXwHshoXvbDLrOUAp/arl4Jc/gIwOCCPqCLMgsYScv
-         fmLHUjQUtXBTWaXenmmJtcjj6twaN/cljwm0DA+8/NoiBmLGcAHatMwzDVPjHCyaioP3
-         hBATSJ7ley0yaTBKfjCh1xoz1aCgNOd00KNGMKpUig85YgtgCkb56PEWq6OCT62H7wWq
-         9tS6R0m8EOF8sykXJ6DnT0u8+wT5pHHocgCvwVmUtQHPZMNTe5jFoOqk+X2HxF1tBAmM
-         C6zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P8hB+rU3U8i3a16FibhnL4+fR0BO+F4l1PF+kFVx2sg=;
-        b=lL+ykYoFB77lU4lF6xrAo8+PEXi7vKDP4duDPmZ1Dho3Z0JrwBYeyXOQSN0wpfkSAb
-         ms9upj4LEeN+DMnVWkby4a+gTvYa01jGEaYTIknAzziRGU3FrgNxzuQBFi95XOSbjVBZ
-         ZqN/kYDZVtYwbHxadBseLjEHiVEvI9zawxMNnzLurHJPgtf3/rHmkQRAzkfje5eftBta
-         lSbt/KGouWoBCJiZ3Pl3CGT+v1gCsWrYwc6Ss8s8b+O8fHKVAvXzxayVyrMCIg2xpqV0
-         LfxR++bbJC+aZexlxnRZ45ECAC5H0IrYSacxF7U63JpfG4lUzoootjG1TDiV4WjcOHdl
-         lznw==
-X-Gm-Message-State: AOAM531g1CMQCel/6Qc8tZhFe9M26yMtnUb3nYtDSAySEIXSoNLS3I/p
-        wbzU4s4Y3JLyLKqX9SJzxqIGxnUdJJTCZsXCvSpZWA==
-X-Google-Smtp-Source: ABdhPJwZjBClxBJU+RakNGZo7qkMpjC4fo1MzVAeR4ORlDp0sn8kkkqf28qbNAaYUoXAvoAkEDZ/HRtASeaBCyoiIgY=
-X-Received: by 2002:ac8:7318:: with SMTP id x24mr11123115qto.67.1615545549950;
- Fri, 12 Mar 2021 02:39:09 -0800 (PST)
+        id S233643AbhCLKxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:53:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233641AbhCLKxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:53:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B6D56501B;
+        Fri, 12 Mar 2021 10:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615545895;
+        bh=UfOV09KQcKMeWL12uT+LRLZWIw6CpoAZkllye4DuvZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cFRuOfo4hYjQH16EHW8ytC693/8mGqx8Eksw99CvF2BmY6ymqNr62HU+ozvYwth6v
+         FJgF2wabUH1Jxh0cOymAk70aFfT8hM3wNrqHzEOyzwRBPWHeqHpqt+7qnPzZnIcazq
+         ZqaS475OlHk6KfmkJoOnV1Kr4v6WBXb7Rdswd3ReyBRhnVx4Eyve6AzthZszMBQMgX
+         S6h7BpBUQDhtolWE6sDoHNCNCnkM0ocM684GenOxqAWa3ktEK6eikvK4FIdUp1B1W2
+         +71qIij1IjFFIbhtU2UaIAoR/QvrVjt9yuEKUHc84t5wbvjO9M19J0abZ9Ji2IDBd7
+         6P53bZiDVySWw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lKfI0-0007H0-7k; Fri, 12 Mar 2021 11:45:04 +0100
+Date:   Fri, 12 Mar 2021 11:45:04 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] usbip: fix vhci races in connection tear down
+Message-ID: <YEtGMMjOg3pHTSma@hovoldconsulting.com>
+References: <20210312022737.44122-1-skhan@linuxfoundation.org>
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
- <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
- <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
- <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
- <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
- <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com> <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 12 Mar 2021 11:38:58 +0100
-Message-ID: <CACT4Y+aTbdE1CeUOgCKLJ3XpjazN5=yTmToXN_03M9EQ_hhayg@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312022737.44122-1-skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 11:11 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Fri, Mar 12, 2021 at 9:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > On Fri, Mar 12, 2021 at 9:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > On Thu, Mar 11, 2021 at 6:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > > a) accessing a legacy ISA/LPC port should not result in an oops,
-> > > > >     but should instead return values with all bits set. There could
-> > > > >     be a ratelimited console warning about broken drivers, but we
-> > > > >     can't assume that all drivers work correctly, as some ancient
-> > > > >     PC style drivers still rely on this.
-> > > > >     John Garry has recently worked on a related bugfix, so maybe
-> > > > >     either this is the same bug he encountered (and hasn't merged
-> > > > >     yet), or if his fix got merged there is still a remaining problem.
-> > >
-> > > > > b) It should not be possible to open /dev/ttyS3 if the device is
-> > > > >     not initialized. What is the output of 'cat /proc/tty/driver/serial'
-> > > > >     on this machine? Do you see any messages from the serial
-> > > > >     driver in the boot log?
-> > > > >     Unfortunately there are so many different ways to probe devices
-> > > > >     in the 8250 driver that I don't know where this comes from.
-> > > > >     Your config file has
-> > > > >    CONFIG_SERIAL_8250_PNP=y
-> > > > >    CONFIG_SERIAL_8250_NR_UARTS=32
-> > > > >    CONFIG_SERIAL_8250_RUNTIME_UARTS=4
-> > > > >    CONFIG_SERIAL_8250_EXTENDED=y
-> > > > >    I guess it's probably the preconfigured uarts that somehow
-> > > > >    become probed without initialization, but it could also be
-> > > > >    an explicit device incorrectly described by qemu.
-> > > >
-> > > >
-> > > > Here is fool boot log, /proc/tty/driver/serial and the crash:
-> > > > https://gist.githubusercontent.com/dvyukov/084890d9b4aa7cd54f468e652a9b5881/raw/54c12248ff6a4885ba6c530d56b3adad59bc6187/gistfile1.txt
-> > >
-> > > Ok, so there are four 8250 ports, and none of them are initialized,
-> > > while the console is on /dev/ttyAMA0 using a different driver.
-> > >
-> > > I'm fairly sure this is a bug in the kernel then, not in qemu.
-> > >
-> > >
-> > > I also see that the PCI I/O space gets mapped to a physical address:
-> > > [    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
-> > > 0x003eff0000..0x003effffff -> 0x0000000000
-> > >
-> > > So it's probably qemu that triggers the 'synchronous external
-> > > abort' when accessing the PCI I/O space, which in turn hints
-> > > towards a bug in qemu. Presumably it only returns data from
-> > > I/O ports that are actually mapped to a device when real hardware
-> > > is supposed to return 0xffffffff when reading from unused I/O ports.
-> > > This would be separate from the work that John did, which only
-> > > fixed the kernel for accessing I/O port ranges that do not have
-> > > a corresponding MMU mapping to hardware ports.
-> >
-> > Will John's patch fix this crash w/o any changes in qemu? That would
-> > be good enough for syzbot. Otherwise we need to report the issue to
-> > qemu.
->
-> No, this was a third issue. As far as I remember, this would result in
-> a similar problem in the case where there is no PCI bus at all, or
-> where no PCI host has an I/O port range, so the inb() from the serial
-> driver would cause a page fault. The problem you ran into happens
-> in qemu when the PCI I/O ports are mapped to hardware registers
-> that cause an exception when accessed.
->
-> If you just want to work around the problem for now, it should
-> go away if you set CONFIG_SERIAL_8250_RUNTIME_UARTS
-> to zero.
+On Thu, Mar 11, 2021 at 07:27:37PM -0700, Shuah Khan wrote:
+> vhci_shutdown_connection() references connection state (tcp_socket,
+> tcp_rx, tcp_tx, sockfd) saved in usbpip_device without holding the
+> lock.
+> 
+> Current connection tear down sequence:
+> Step 1: shutdown the socket
+> Step 2: stop rx thread and reset tcp_rx pointer
+> Step 3: stop tx thread and reset tcp_tx pointer
+> Step 4: Reset tcp_socket and sockfd
+> 
+> There are several race windows between these steps. In addition, device
+> reset routine (vhci_device_reset) resets tcp_socket and sockfd holding
+> the lock.
+> 
+> Fix these races:
+> - Introduce in_disconnect flag to ensure vhci_shutdown_connection() runs
+>   only once.
+> - Change attach_store() to initialize in_disconnect to false while
+>   initializing connection status (tcp_socket, tcp_rx, tcp_tx, sockfd)
+> - Change vhci_shutdown_connection() to check in_disconnect and bail
+>   out if disconnect is in progress.
+> - Change vhci_shutdown_connection() to
+>   -- hold lock to save connection state pointers and unlock.
+>   -- Shutdown the socket and stop threads.
+>   -- Hold lock to clear connection status and in_disconnect flag.
+> - Change vhci_device_reset() to reset tcp_socket and sockfd.
+>   if !in_disconnect
+> 
+> Tested syzbot and the reproducer did not trigger any issue.
+> 
+> Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  drivers/usb/usbip/usbip_common.h |  1 +
+>  drivers/usb/usbip/vhci_hcd.c     | 55 +++++++++++++++++++++++---------
+>  drivers/usb/usbip/vhci_sysfs.c   |  4 +++
+>  3 files changed, 45 insertions(+), 15 deletions(-)
 
-It does not happen too often on syzbot so far, so let's try to do the
-right thing first.
-I've filed: https://bugs.launchpad.net/qemu/+bug/1918917
-with a link to this thread. To be fair, I don't fully understand what
-I am talking about, I hope I proxied your description properly.
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 3209b5ddd30c..c1917efe5737 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -1007,31 +1007,54 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+>  static void vhci_shutdown_connection(struct usbip_device *ud)
+>  {
+>  	struct vhci_device *vdev = container_of(ud, struct vhci_device, ud);
+> +	unsigned long flags;
+> +	struct socket *socket;
+> +	struct task_struct *tcp_rx = NULL;
+> +	struct task_struct *tcp_tx = NULL;
+> +	int sockfd = 0;
+> +
+> +	spin_lock_irqsave(&ud->lock, flags);
+> +	if (vdev->ud.in_disconnect) {
+> +		pr_info("%s: Disconnect in progress for sockfd %d\n",
+> +			__func__, ud->sockfd);
+
+Looks like you forgot to remove all you debug printks like this one
+before submitting.
+
+> +		spin_unlock_irqrestore(&ud->lock, flags);
+> +		return;
+> +	}
+
+Johan
