@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B90338E49
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39A338E4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhCLNFp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:05:45 -0500
-Received: from aposti.net ([89.234.176.197]:42494 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231613AbhCLNFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:05:23 -0500
-Date:   Fri, 12 Mar 2021 13:05:05 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 1/6] pinctrl: Ingenic: Add missing pins to the JZ4770
- MAC MII group.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <HOXUPQ.U0CJV6YXUOYX2@crapouillou.net>
-In-Reply-To: <1615476112-113101-2-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615476112-113101-2-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231651AbhCLNHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:07:22 -0500
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:39608 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230389AbhCLNHS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:07:18 -0500
+Received: by mail-vk1-f171.google.com with SMTP id 11so1228276vkx.6;
+        Fri, 12 Mar 2021 05:07:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gNBow7Uhd+IhwEG41bBIve3XPAEIKGyofkhSFHhyVgI=;
+        b=UmN5iY4rO+9XdumWXXp/j3oQ5rzYqwIExGM8yaEpYJTl/X3cmLwpnrKDP7Y3kGpT1t
+         rkIbvrgf3G9KEoOQLpYF1lo2hYXYKTlFXeS5vecvXU5GdzHMnk+rdSZYHSQFuKijl1Ay
+         6CQ/VvJbP1Mm0dc8r8BbLgJJpHrs8Gf+AtmGYgg91RmHKlR8pOGRn34/fjoJPbUwqTTX
+         QFFLctdZ1gNzqz8ZHlHlXex5JHQliLiIefR+6ZOR9uKDj1qLk0DMq6jBg8hKhbSNeC9f
+         OylAIJxUEnfR+eo5BQrgJrXd2jDCAeLNPj+sJbKV/zbo6MNU2xQ0NZWKzCYEfxyZHr9V
+         hI5w==
+X-Gm-Message-State: AOAM533cWYtWgwIOzUuNlXjpCS92U+xohFKpnN5gifiySYVOyE28mVcZ
+        Y/4kA1PojaJfrwA64oNSK7Vlc8VOJZAM0Byt6PY3yUXu
+X-Google-Smtp-Source: ABdhPJzFuwLORff0VLBfXmhEQ35kcGlyIlIrl3V63gkfh26IgDh6eKnqZXkXAxA9II/egxbPJYTV8XIGatOpDpgNHh8=
+X-Received: by 2002:a1f:2502:: with SMTP id l2mr7783352vkl.5.1615554437317;
+ Fri, 12 Mar 2021 05:07:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210312130242.3390038-1-geert+renesas@glider.be>
+In-Reply-To: <20210312130242.3390038-1-geert+renesas@glider.be>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Mar 2021 14:07:06 +0100
+Message-ID: <CAMuHMdWNQHANaN=KU4R_dXM6dx0FoWmamuOamx=wazf-TFaMCw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] regulator: bd9571mwv: Miscellaneous fixes and improvements
+To:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Marek, Liam, Mark,
 
-Le jeu. 11 mars 2021 à 23:21, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> The MII group of JZ4770's MAC should have 7 pins, add missing
-> pins to the MII group.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+On Fri, Mar 12, 2021 at 2:02 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> *** BLURB HERE ***
 
-No Fixes: tag?
-And if the bug wasn't introduced in 5.12-rc1 you'll need to Cc 
-linux-stable as well.
+Woops, that was a bit too early, sorry for that.
+But there was not much to say anyway, just a few miscellaneous fixes
+and improvements.
 
-> ---
-> 
-> Notes:
->     v2:
->     New patch.
-> 
->  drivers/pinctrl/pinctrl-ingenic.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index f274612..05dfa0a 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -667,7 +667,9 @@ static int jz4770_pwm_pwm7_pins[] = { 0x6b, };
->  static int jz4770_mac_rmii_pins[] = {
->  	0xa9, 0xab, 0xaa, 0xac, 0xa5, 0xa4, 0xad, 0xae, 0xa6, 0xa8,
->  };
-> -static int jz4770_mac_mii_pins[] = { 0xa7, 0xaf, };
-> +static int jz4770_mac_mii_pins[] = {
-> +	0x7b, 0x7a, 0x7d, 0x7c, 0xa7, 0x24, 0xaf,
+Thanks for your comments!
 
-Maybe list them in order?
+> Geert Uytterhoeven (3):
+>   regulator: bd9571mwv: Fix AVS and DVFS voltage range
+>   regulator: bd9571mwv: Fix regulator name printed on registration
+>     failure
+>   regulator: bd9571mwv: Convert device attribute to sysfs_emit()
+>
+>  drivers/regulator/bd9571mwv-regulator.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-And are you sure that's the whole list? The PM (section 12.2 in 
-jz4770_pm_part3.pdf) lists more pins.
+Gr{oetje,eeting}s,
 
-Cheers,
--Paul
+                        Geert
 
-> +};
-> 
->  static const struct group_desc jz4770_groups[] = {
->  	INGENIC_PIN_GROUP("uart0-data", jz4770_uart0_data, 0),
-> --
-> 2.7.4
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
