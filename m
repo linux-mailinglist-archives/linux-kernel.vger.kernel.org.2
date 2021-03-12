@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B09339083
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57B733908B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhCLO5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:57:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:55038 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231879AbhCLO4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:56:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A43D1FB;
-        Fri, 12 Mar 2021 06:56:33 -0800 (PST)
-Received: from [10.37.8.6] (unknown [10.37.8.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FDBB3F7D7;
-        Fri, 12 Mar 2021 06:56:31 -0800 (PST)
-Subject: Re: [PATCH v15 0/8] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
+        id S231749AbhCLO6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231642AbhCLO6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:58:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C87C061574;
+        Fri, 12 Mar 2021 06:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gbwXnklzt/GG9mR0QlG6dEwq91Rd29SehOBGiJv9f4I=; b=CpQ/MsjIbARHlgT6/AtQcg8Ca1
+        AlCQYEU5FW9EGK2Rh6SM3snZpU86x48JpBlCdpy5TpenJW/oXb2UTZDN1/V0FUv6ChVHZYKr3xOek
+        dAbLoi2hZdasuqQ0TQcHeJxAU6/LvEsR3Wr9F+tZDJ4S8y1sWwAW95zs9m4MAt1Lq4UMFztOHzWJt
+        Pr5Vr3ICL7BxnigC+pwYsEqwbXIYVcHlx9CHqjYYDbr7mho/t1vPUDDy9j9onA912rxluott0fDxB
+        3DX/ErLlSB6dKS7zBPlRyvG3jYtRzNXhXsphl3ghNthhllxd5SJEcymDO1Yj4K8gTgKRAjQzi1wEG
+        2n+zmszA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKjF0-00AvFJ-OO; Fri, 12 Mar 2021 14:58:16 +0000
+Date:   Fri, 12 Mar 2021 14:58:14 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210312142210.21326-1-vincenzo.frascino@arm.com>
- <CAAeHK+wFT7Z5_Jg-8afdu8=mVqTwcnZY65Cgywxbd_0ui+1BEQ@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <7e14b0ae-8aa5-549c-ef77-5f040e0d3813@arm.com>
-Date:   Fri, 12 Mar 2021 14:56:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Chuck Lever <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210312145814.GA2577561@casper.infradead.org>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310104618.22750-3-mgorman@techsingularity.net>
+ <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
+ <20210311084200.GR3697@techsingularity.net>
+ <20210312124609.33d4d4ba@carbon>
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+wFT7Z5_Jg-8afdu8=mVqTwcnZY65Cgywxbd_0ui+1BEQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312124609.33d4d4ba@carbon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/12/21 2:50 PM, Andrey Konovalov wrote:
-> On Fri, Mar 12, 2021 at 3:22 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
->>
->> This patchset implements the asynchronous mode support for ARMv8.5-A
->> Memory Tagging Extension (MTE), which is a debugging feature that allows
->> to detect with the help of the architecture the C and C++ programmatic
->> memory errors like buffer overflow, use-after-free, use-after-return, etc.
->>
->> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
->> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
->> subset of its address space that is multiple of a 16 bytes granule. MTE
->> is based on a lock-key mechanism where the lock is the tag associated to
->> the physical memory and the key is the tag associated to the virtual
->> address.
->> When MTE is enabled and tags are set for ranges of address space of a task,
->> the PE will compare the tag related to the physical memory with the tag
->> related to the virtual address (tag check operation). Access to the memory
->> is granted only if the two tags match. In case of mismatch the PE will raise
->> an exception.
->>
->> The exception can be handled synchronously or asynchronously. When the
->> asynchronous mode is enabled:
->>   - Upon fault the PE updates the TFSR_EL1 register.
->>   - The kernel detects the change during one of the following:
->>     - Context switching
->>     - Return to user/EL0
->>     - Kernel entry from EL1
->>     - Kernel exit to EL1
->>   - If the register has been updated by the PE the kernel clears it and
->>     reports the error.
->>
->> The series is based on linux-next/akpm.
->>
->> To simplify the testing a tree with the new patches on top has been made
->> available at [1].
->>
->> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v13.async.akpm
+On Fri, Mar 12, 2021 at 12:46:09PM +0100, Jesper Dangaard Brouer wrote:
+> In my page_pool patch I'm bulk allocating 64 pages. I wanted to ask if
+> this is too much? (PP_ALLOC_CACHE_REFILL=64).
 > 
-> Acked-by: Andrey Konovalov <andreyknvl@google.com>
-> Tested-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> for the series.
-> 
-> Thank you, Vincenzo!
-> 
+> The mlx5 driver have a while loop for allocation 64 pages, which it
+> used in this case, that is why 64 is chosen.  If we choose a lower
+> bulk number, then the bulk-alloc will just be called more times.
 
-Thanks to you!
+The thing about batching is that smaller batches are often better.
+Let's suppose you need to allocate 100 pages for something, and the page
+allocator takes up 90% of your latency budget.  Batching just ten pages
+at a time is going to reduce the overhead to 9%.  Going to 64 pages
+reduces the overhead from 9% to 2% -- maybe that's important, but
+possibly not.
 
--- 
-Regards,
-Vincenzo
+> The result of the API is to deliver pages as a double-linked list via
+> LRU (page->lru member).  If you are planning to use llist, then how to
+> handle this API change later?
+> 
+> Have you notice that the two users store the struct-page pointers in an
+> array?  We could have the caller provide the array to store struct-page
+> pointers, like we do with kmem_cache_alloc_bulk API.
+
+My preference would be for a pagevec.  That does limit you to 15 pages
+per call [1], but I do think that might be enough.  And the overhead of
+manipulating a linked list isn't free.
+
+[1] patches exist to increase this, because it turns out that 15 may
+not be enough for all systems!  but it would limit to 255 as an absolute
+hard cap.
