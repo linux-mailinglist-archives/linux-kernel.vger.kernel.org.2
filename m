@@ -2,176 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3463388BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2223388C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhCLJcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:32:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232976AbhCLJcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:32:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E675364F00;
-        Fri, 12 Mar 2021 09:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615541532;
-        bh=QI5dJEwGdeMnTd1iHeXVNhRkfs1oEIF4TdgD0ZnWNGg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AyDWB8WkHQay/ioJcVD8rXkR1MtA0JYVj9tt1qLNMcC9v33MM38l0Cv3ca94IRPjU
-         OZRFfn8TM727w54GEAXvJ7s+CgQ3JXpOdFShFJJx+ALsyvCtyP6oB0TiZ/QwurHTV2
-         V451b2lEf3lO9xB/K2YNPIBRpLt4yeiDRikB3tBqaYzIF/NPQ8T9DJaUfJ6FPKivYW
-         ahQkeqBEOrk8S75OfFrgEzoE3ioA74qmPVOm/W/V+KumD0IKvV3WvGh09W7WId9Ix+
-         TLOFOpnRR6WYZz+JlSletFlBRyfR4y++qiYCtMt/9yNS8W6EsPY9SMGxTHHQhtjHW8
-         KoTJLJ8hBIkZw==
-Date:   Fri, 12 Mar 2021 09:32:06 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 28/34] KVM: arm64: Use page-table to track page
- ownership
-Message-ID: <20210312093205.GB32016@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-29-qperret@google.com>
- <20210311183834.GC31378@willie-the-truck>
- <YEsIxA/fKaDlSaio@google.com>
+        id S232444AbhCLJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:34:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232686AbhCLJd6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 04:33:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615541637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rj53vgUL+fBc1sW2QW6DZG1JFSB+puhdylPCj8GuUxQ=;
+        b=JQAoSx6Z0S+f/I3XBFZHUqNNFofNkUBiWJn7NtJqIs9KzE4emX9zEX1AH1QeNswwKAEx04
+        yewuW2cwuxeylcASxWdINLerNkB3Kk5J7K8fDVOyceYweOQlzYA04I9Z/9Gvyn1FhN8pJY
+        MsWWmjUljEbmQyJLcauXuV2PZbxMIuo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-LQlaec_hOfOaql8j20nvfQ-1; Fri, 12 Mar 2021 04:33:53 -0500
+X-MC-Unique: LQlaec_hOfOaql8j20nvfQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9087C760C1;
+        Fri, 12 Mar 2021 09:33:51 +0000 (UTC)
+Received: from [10.36.114.197] (ovpn-114-197.ams2.redhat.com [10.36.114.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 595F9196E3;
+        Fri, 12 Mar 2021 09:33:49 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
+        linux-fsdevel@vger.kernel.org
+References: <20210310161429.399432-1-minchan@kernel.org>
+ <20210310161429.399432-3-minchan@kernel.org>
+ <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
+Message-ID: <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
+Date:   Fri, 12 Mar 2021 10:33:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEsIxA/fKaDlSaio@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 06:23:00AM +0000, Quentin Perret wrote:
-> On Thursday 11 Mar 2021 at 18:38:36 (+0000), Will Deacon wrote:
-> > On Wed, Mar 10, 2021 at 05:57:45PM +0000, Quentin Perret wrote:
-> > > As the host stage 2 will be identity mapped, all the .hyp memory regions
-> > > and/or memory pages donated to protected guestis will have to marked
-> > > invalid in the host stage 2 page-table. At the same time, the hypervisor
-> > > will need a way to track the ownership of each physical page to ensure
-> > > memory sharing or donation between entities (host, guests, hypervisor) is
-> > > legal.
-> > > 
-> > > In order to enable this tracking at EL2, let's use the host stage 2
-> > > page-table itself. The idea is to use the top bits of invalid mappings
-> > > to store the unique identifier of the page owner. The page-table owner
-> > > (the host) gets identifier 0 such that, at boot time, it owns the entire
-> > > IPA space as the pgd starts zeroed.
-> > > 
-> > > Provide kvm_pgtable_stage2_set_owner() which allows to modify the
-> > > ownership of pages in the host stage 2. It re-uses most of the map()
-> > > logic, but ends up creating invalid mappings instead. This impacts
-> > > how we do refcount as we now need to count invalid mappings when they
-> > > are used for ownership tracking.
-> > > 
-> > > Signed-off-by: Quentin Perret <qperret@google.com>
-> > > ---
-> > >  arch/arm64/include/asm/kvm_pgtable.h | 21 +++++++
-> > >  arch/arm64/kvm/hyp/pgtable.c         | 92 ++++++++++++++++++++++++----
-> > >  2 files changed, 101 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> > > index 4ae19247837b..b09af4612656 100644
-> > > --- a/arch/arm64/include/asm/kvm_pgtable.h
-> > > +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> > > @@ -238,6 +238,27 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
-> > >  			   u64 phys, enum kvm_pgtable_prot prot,
-> > >  			   void *mc);
-> > >  
-> > > +/**
-> > > + * kvm_pgtable_stage2_set_owner() - Annotate invalid mappings with metadata
-> > > + *				    encoding the ownership of a page in the
-> > > + *				    IPA space.
-> > > + * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init().
-> > > + * @addr:	Intermediate physical address at which to place the annotation.
-> > 
-> > This confused me a bit, as the annotation is stored in the page-table, not
-> > at the memory identified by @addr. How about:
-> > 
-> >   "Base intermediate physical address to annotate"
-> > 
-> > > + * @size:	Size of the IPA range to annotate.
-> > 
-> >   "Size of the annotated range"
-> > 
-> > > + * @mc:		Cache of pre-allocated and zeroed memory from which to allocate
-> > > + *		page-table pages.
-> > > + * @owner_id:	Unique identifier for the owner of the page.
-> > > + *
-> > > + * The page-table owner has identifier 0.
-> > 
-> > Perhaps, "By default, all page-tables are owned by identifier 0"
+On 12.03.21 10:03, David Hildenbrand wrote:
+> On 10.03.21 17:14, Minchan Kim wrote:
+>> ffer_head LRU caches will be pinned and thus cannot be migrated.
+>> This can prevent CMA allocations from succeeding, which are often used
+>> on platforms with co-processors (such as a DSP) that can only use
+>> physically contiguous memory. It can also prevent memory
+>> hot-unplugging from succeeding, which involves migrating at least
+>> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
+>> GiB based on the architecture in use.
 > 
-> Ack all of the above.
+> Actually, it's memory_block_size_bytes(), which can be even bigger
+> (IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that
+> will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
 > 
-> > > + *
-> > > + * Return: 0 on success, negative error code on failure.
-> > > + */
-> > > +int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
-> > > +				 void *mc, u32 owner_id);
-> > 
-> > Is there a need for the owner_id to be 32-bit rather than e.g. 16-bit? Just
-> > strikes me that it might be difficult to recover these bits in future if we
-> > give them out freely now.
+>>
+>> Correspondingly, invalidate the BH LRU caches before a migration
+>> starts and stop any buffer_head from being cached in the LRU caches,
+>> until migration has finished.
 > 
-> I figured we might want to use identifiers that are stable for the
-> lifetime of protected VMs. I wasn't sure using e.g. VMIDs would be a
-> better choice here as re-using them will cause a lot of pain for the
-> host stage 2 pgtable maintenance.
-
-I'm not saying to use the VMID directly, just that allocating half of the
-pte feels a bit OTT given that the state of things after this patch series
-is that we're using exactly 1 bit.
-
-> > > @@ -517,28 +543,36 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> > >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
-> > >  		return -E2BIG;
-> > >  
-> > > -	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-> > > -	if (kvm_pte_valid(old)) {
-> > > +	if (kvm_pte_valid(data->attr))
-> > 
-> > This feels like a bit of a hack to me: the 'attr' field in stage2_map_data
-> > is intended to correspond directly to the lower/upper attributes of the
-> > descriptor as per the architecture, so tagging the valid bit in there is
-> > pretty grotty. However, I can see the significant advantage in being able
-> > to re-use the stage2_map_walker functionality, so about instead of nobbling
-> > attr, you set phys to something invalid instead, e.g.:
-> > 
-> > 	#define KVM_PHYS_SET_OWNER	(-1ULL)
+> Sounds sane to me.
 > 
-> That'll confuse kvm_block_mapping_supported() and friends I think, at
-> least in their current form. If you _really_ don't like this, maybe we
-> could have an extra 'flags' field in stage2_map_data?
 
-I was pondering this last night and I thought of two ways to do it:
+Diving a bit into the code, I am wondering:
 
-1. Add a 'bool valid' and then stick the owner and the phys in a union.
-   (yes, you'll need to update the block mapping checks to look at the
-    valid flag)
 
-2. Go with my latter suggestion:
+a) Are these buffer head pages marked as movable?
 
-> > Is there ever a reason to use kvm_pgtable_stage2_set_owner() to set an
-> > owner of 0, or should you just use the map/unmap APIs for that? If so,
-> > then maybe the key is simply if owner_id is non-zero, then an invalid
-> > entry is installed?
-> 
-> I couldn't find a good reason to restrict it, as that wouldn't change
-> the implementation much anyway. Also, if we added the right CMOs, we
-> could probably remove the unmap walker and re-express it in terms of
-> set_owner(0) ... But I suppose that is for later :-)
+IOW, are they either PageLRU() or __PageMovable()?
 
-The idea being that if owner is 0, then we install a mapping for phys, but
-if owner is !0 then we set the invalid mapping.
 
-(1) is probably the less hacky option... what do you reckon?
+b) How do these pages end up on ZONE_MOVABLE or MIGRATE_CMA?
 
-Will
+I assume these pages come via
+alloc_page_buffers()->alloc_buffer_head()->kmem_cache_zalloc(GFP_NOFS | 
+__GFP_ACCOUNT)
+
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
