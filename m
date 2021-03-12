@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C33D3384AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE703384AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhCLEbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 23:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
+        id S232184AbhCLEbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 23:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhCLEbA (ORCPT
+        with ESMTP id S232154AbhCLEbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:31:00 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A6AC061761;
-        Thu, 11 Mar 2021 20:31:00 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id by2so3695545qvb.11;
-        Thu, 11 Mar 2021 20:31:00 -0800 (PST)
+        Thu, 11 Mar 2021 23:31:13 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B279C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 20:31:13 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id 16so1005363pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 20:31:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
-        b=t3OnvI3+xdtmiQNGZYbtyw43YCbTK6k3T2/7/VrtGwPTvV6NVnEG5NcbH2zMkRl5SL
-         rTpnEF0W91oi+A/6qWQjK6l4usDXIaVyR92Mo/bK+7+tAdCGg3vG1+fcMW+doVhm6/er
-         gRzOrh/T9PwfECFY+lR/2AVyEF6ljzJiWPAh5guzrSg4XBFhb5+ywGA3hVFaC9ePhrRd
-         tThT8zgVaCnOyFPSgIQQKgTn0mo7cLRrnrtmUaGY5ZdQeBOzok1dfKcnBwTQYqL4ZI9L
-         jBACFbNcRpcwLZGli3Fz3xe9D4AOLMH7A0RJYsUV4ibIVEvDmO2TVa/5FZj1pMOuUcUP
-         jRxA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=+0fxl1GUBIYvkb1H9esSXGy99Oerip7BsfpprSNg5Qo=;
+        b=MbUF26Dyag1BvcEag2jaCWzL8pKPt8ngXMDgi+IdCeASiIYHEBFT/vKySRQaO8Fyre
+         n++8NIu3n9lI3kXM2IIPJNjpt5yjH/n09JQZF1JtP7WasB179CU+twTTmQsgPQROhJu8
+         Q72d6owsPbXYyRY2NaKkw0D1szhfHYsnsoo0f0USh2X720eV9+XYP4WVFa5NMEbrv78N
+         sTqVR2ZNXr31WIY8mHnfo22+X9fhtURFeKICZHtxTOD9isFAHkOuTE8hDCTs3nTNoqXW
+         RBrQo01NogXnwz63DeLtdoecb2H1sIHsSXec4EavczroxsjR+70AlIZwfhh47CoeVH3y
+         1PIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
-        b=b5KxpfEgGTWXUA4CGOjZW3GjspV9W0PLOOzA8SgK3WQBraXlXUoTtwPsBj1vtU5uOo
-         XvzVchAdQ92CSl6KWnR/G6gsoyNX2pyC0VJ8r5eqKzeuuwwLUNnmyqByHN4u74v+saOU
-         OxahhFqgre6iwFnpb0EghxZ0zNnXvZA+eU98tWE08f3UaQLdkBiQ6jBuDGJBG1HwDvGS
-         /Ix44OR5hOjoW2/ztjdEDtmn/qHD0G9I8SnUZLZRgcAokKG19+RzA5qkeCDTpiEw2dRX
-         gfTq2AYREclOnnOAIdY4nUhMVKtYyS9+giga1hZT6wuTQLHZ1oJG2NY5PpPcJrTIleEl
-         T4vw==
-X-Gm-Message-State: AOAM533ad/ZCkvqm6jzT13WNMNEQjOxORRkWZSAddrswhDOvOPpURei2
-        MZVFwANiYpTr9he4EpljnurffO9cWR8=
-X-Google-Smtp-Source: ABdhPJwa8RuHIuqTiEI8+dfw2OazKTk2V6cz9i/XK+FP+De8yfp3HLruKdvg5xzlrBrYGYVuw2pu3A==
-X-Received: by 2002:a0c:8f1a:: with SMTP id z26mr10220826qvd.51.1615523459297;
-        Thu, 11 Mar 2021 20:30:59 -0800 (PST)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id g7sm3263894qti.20.2021.03.11.20.30.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 20:30:58 -0800 (PST)
-Date:   Thu, 11 Mar 2021 20:30:57 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+0fxl1GUBIYvkb1H9esSXGy99Oerip7BsfpprSNg5Qo=;
+        b=t5Mkf6lW6ZWcGL2ztmmyp8jfl01MVOs4o0YZTiW9sV1V9qp5Nw44tzrTWZvZHXbSOd
+         Lu9PNXMWMdKQ+hD+z1Rqm1BHg6Ynvle9DeYAyBqVpsCBZxUmQ8i+PMKtjyDDWlfcOJEh
+         hOV3kCW1qkbfcDz1BGL+4w0RMZsZqnPaVFvI4uoP2Ac0q/Wgn65GJZG38VFe/MXAKSd2
+         oKAx1qutH2PeRDM5rfNd5LLQtD0Z/34svgT39YfjgD88Vz5xEBqsH1RGKCYg9/9qZcYm
+         3jQYOu4LreKQbjKYd/6GofDGZzO524EVNSeIqSs9DzhedMKBrfngeRu1XwAA68murbNu
+         Xasw==
+X-Gm-Message-State: AOAM532v3irhK/esr+US+5UiDvgCl2FHB27Vz/9Vqqj+Y4snlqAP5lBl
+        KbV05irnWEZ7FT+b32FYp6tEpMx4HpospQ==
+X-Google-Smtp-Source: ABdhPJycj2Yx3JFFGjbXofNl4coJ6nRKpFM7PXsBffwm8Dks/f6u+dhUobPD6Ps3jWi5gcxA9WiEQQ==
+X-Received: by 2002:a63:504f:: with SMTP id q15mr10280208pgl.290.1615523472771;
+        Thu, 11 Mar 2021 20:31:12 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id w188sm3856245pfw.177.2021.03.11.20.31.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Mar 2021 20:31:12 -0800 (PST)
+Date:   Fri, 12 Mar 2021 10:01:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
-Message-ID: <20210312043057.GA137474@yury-ThinkPad>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-5-yury.norov@gmail.com>
- <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH V11 0/5] dt: Add fdtoverlay rule and statically build
+ unittest
+Message-ID: <20210312043110.hirx52ibepfrvvij@vireshk-i7>
+References: <cover.1615354376.git.viresh.kumar@linaro.org>
+ <7211f09e-092b-d928-0c69-e2dcd1fc7c1e@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
+In-Reply-To: <7211f09e-092b-d928-0c69-e2dcd1fc7c1e@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 11:51:43PM +0100, Rasmus Villemoes wrote:
-> On 18/02/2021 05.05, Yury Norov wrote:
-> > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
-> > functionality of GENMASK(). The scope of there macros is wider
-> > than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
-> > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
-> > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
-> > to avoid duplication and increase the scope of the macros.
+On 11-03-21, 17:27, Frank Rowand wrote:
+> On 3/9/21 11:35 PM, Viresh Kumar wrote:
+> > Viresh Kumar (4):
+> >   kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
+> >   kbuild: Allow .dtso format for overlay source files
+> >   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+> >   of: unittest: Statically apply overlays using fdtoverlay
+> > 
+> >  drivers/of/unittest-data/Makefile             | 48 ++++++++++
+> >  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+> >  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+> >  drivers/of/unittest-data/static_base_1.dts    |  4 +
+> >  drivers/of/unittest-data/static_base_2.dts    |  4 +
+> >  drivers/of/unittest-data/testcases.dts        | 23 ++---
+> >  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+> >  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
+> >  scripts/Makefile.lib                          | 40 ++++++--
+> >  9 files changed, 218 insertions(+), 112 deletions(-)
+> >  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+> >  create mode 100644 drivers/of/unittest-data/static_base_1.dts
+> >  create mode 100644 drivers/of/unittest-data/static_base_2.dts
+> >  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+> > 
+> > 
+> > base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
 > > 
 > 
-> Please include some info on changes in generated code, if any. When the
-> parameter to the macro is a constant I'm sure it all folds to a
-> compile-time constant either way, but when it's not, I'm not sure gcc
-> can do the same optimizations when the expressions become more complicated.
+> Does not apply to 5.12-rc2
 
-After applying all patches till "tools: introduce SMALL_CONST() macro",
-there's no visible changes in code generation:
+I was based right over the 5.12-rc2 tag.
 
-scripts/bloat-o-meter vmlinux.before vmlinux
-add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
-Function                                     old     new   delta
-ethtool_get_drvinfo                          900     908      +8
-e843419@0cf2_0001309d_7f0                      -       8      +8
-vermagic                                      48      49      +1
-e843419@0d45_000138bb_f68                      8       -      -8
-e843419@0cc9_00012bce_198c                     8       -      -8
-Total: Before=26092016, After=26092017, chg +0.00%
+> because of a dependency on a patch to
+> scripts/Makefile.lib.  That patch has been merged by Linus
+> somewhere between -rc2 and -rc3.
 
-The build is arm64, and the compilerr is:
-aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425
+git log --oneline v5.12-rc2..origin/master -- scripts/Makefile.lib
+
+gives no results to me.
+
+> I had a working version
+> between -rc2 and -rc3 at commit e6f197677b2e
+
+I have tried both Linus' tree and linux-next, and I don't see this
+commit.
+
+> that does have
+> the required patch, so that is the version I used to test
+> this series.
+> 
+> There is still confusion caused by the contortions that unittest
+> goes through to mis-use base DTBs vs overlay DTBs, so _after_
+> this series is merged by Rob, I will poke around and see if
+> I can change unittest so that it does not look like it is
+> mis-using DTBs and overlay DTBs.
+> 
+> 
+> Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+> Tested-by: Frank Rowand <frank.rowand@sony.com>
+
+Thanks.
+
+-- 
+viresh
