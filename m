@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8517D3398D7
+	by mail.lfdr.de (Postfix) with ESMTP id D12703398D8
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhCLVFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbhCLVFO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:05:14 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A16C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:05:14 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id p21so16650838pgl.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Dit5vwBS0Tl56hF0sV6VbghcZIe1S41EYMzdih+yBg=;
-        b=nEeSswegnhhkAibhJ1uTCz7k5obZ5nRpCoOdtmVAkMw2qaaCjJhhVDtmoL4tNpnCDw
-         Y5LFSWSrhdqOAuH/HVKJ4dk5mN5Mx6FvXYQxPN2A7CDRD9SK5Oc4qZ5qKjf/y10yIm+U
-         OSKK9/uMf/AV42XbKI7nsC/a4baXpBGqGB8GsManeYAWIrs59hulg3oAnNh9jUEjTB66
-         vNO8UAvI9plmjN4fIXrVe6H2bUJUzRmL67aCRXe27F25eXLrkmwsdExayHAA4a9qeQo8
-         Vtf8UudYTpY17b50gdeUC06E0XHFn37p5YCbAkpbpoA8ra/9ybWm42/JtkMCKoUrew5E
-         yXcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Dit5vwBS0Tl56hF0sV6VbghcZIe1S41EYMzdih+yBg=;
-        b=A2eDj0hHpEw8dTqqT5m1wiGwcjsGh4vbrpdSxi3H5IL1TZ4Yly2MPtdcMxnrsS2M1S
-         10j0yf7o/lBVzQwsxLl51lhlgN+CpeaF3sdMdQBFDLz1/0YwvOX695L3o8cya0iwOIF4
-         5vxIdGNjUebV0KLPezgHH/aJqV2StfTfLjhp4mJEH0RqoGSxwZa+LTGz1Kzn+51mUGZZ
-         Bnba+jWJY/tLDEhE7DNjmic1MR+RyRYZCN2BOMYpSV3yM8gnj5oMXtgjFEUfbwezg0yM
-         Vd8cnDOHioh2n7bZ9euv1d5SfV60/hW7aI6YX+WX4YnK7cxbuhbQjD7zVKJyTmdjs91n
-         s+wA==
-X-Gm-Message-State: AOAM533qv7G3Xn6lfoRzVPbd45iRZcllRNauRYalbG4Slu+ebBVQ0LPx
-        +sBglK8v+ZzNndHBq/6U8IcjGg==
-X-Google-Smtp-Source: ABdhPJzmemUX7SbHrAbNu7g0mrdTwUprvem2ml8WOxUCNjRg9YPyfEYgNbttg2HkiAkobkQsrqU4rQ==
-X-Received: by 2002:a63:f14e:: with SMTP id o14mr14118322pgk.260.1615583113422;
-        Fri, 12 Mar 2021 13:05:13 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id v18sm6632395pfn.117.2021.03.12.13.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 13:05:12 -0800 (PST)
-Date:   Fri, 12 Mar 2021 13:05:06 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v2 01/25] x86/cpufeatures: Make SGX_LC feature bit depend
- on SGX bit
-Message-ID: <YEvXgpqvwH2O/5pE@google.com>
-References: <cover.1615250634.git.kai.huang@intel.com>
- <eaf02a594f0fb27ab3f358a0effef5519f4824e8.1615250634.git.kai.huang@intel.com>
+        id S235122AbhCLVFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:05:35 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:53714 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234964AbhCLVFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:05:18 -0500
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Dxyy607lPzDs7k;
+        Fri, 12 Mar 2021 13:05:17 -0800 (PST)
+X-Riseup-User-ID: A2BFFF25D9BFEAD604F30614484E4852CBFFA42F7BAFECCE6B0CB8AA2237842D
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4Dxyy516Z8z5wGj;
+        Fri, 12 Mar 2021 13:05:17 -0800 (PST)
+Subject: Re: [PATCH v5] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+References: <20210312173855.24843-1-jnewsome@torproject.org>
+ <m1k0qcglol.fsf@fess.ebiederm.org>
+From:   Jim Newsome <jnewsome@torproject.org>
+Organization: The Tor Project
+Message-ID: <d7f5d5fa-87ed-c95a-eca2-44e750b6e78d@torproject.org>
+Date:   Fri, 12 Mar 2021 15:05:16 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eaf02a594f0fb27ab3f358a0effef5519f4824e8.1615250634.git.kai.huang@intel.com>
+In-Reply-To: <m1k0qcglol.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021, Kai Huang wrote:
-> Move SGX_LC feature bit to CPUID dependency table to make clearing all
-> SGX feature bits easier. Also remove clear_sgx_caps() since it is just
-> a wrapper of setup_clear_cpu_cap(X86_FEATURE_SGX) now.
+On 3/12/21 14:29, Eric W. Biederman wrote:
+> When I looked at this a second time it became apparent that using
+> pid_task twice should actually be faster as it removes a dependent load
+> caused by thread_group_leader, and replaces it by accessing two adjacent
+> pointers in the same cache line.
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
+> I know the algorithmic improvement is the main advantage, but removing
+> 60ns or so for a dependent load can't hurt.
+> 
+> Plus I think using the two pid types really makes it clear that one
+> is always a process and the other is always potentially a thread.
+> 
+> /*
+>  * Optimization for waiting on PIDTYPE_PID. No need to iterate through child
+>  * and tracee lists to find the target task.
+>  */
+> static int do_wait_pid(struct wait_opts *wo)
+> {
+> 	bool ptrace;
+> 	struct task_struct *target;
+> 	int retval;
+> 
+> 	ptrace = false;
+> 	target = pid_task(wo->wo_pid, PIDTYPE_TGID);
+> 	if (target && is_effectively_child(wo, ptrace, target)) {
+> 		retval = wait_consider_task(wo, ptrace, target);
+> 		if (retval)
+> 			return retval;
+> 	}
+> 
+> 	ptrace = true;
+> 	target = pid_task(wo->wo_pid, PIDTYPE_PID);
+> 	if (target && target->ptrace &&
+>             is_effectively_child(wo, ptrace, target)) {
+> 		retval = wait_consider_task(wo, ptrace, target);
+> 		if (retval)
+> 			return retval;
+> 	}
+> 
+> 	return 0;
+> }
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+I'm fine with either way.
+
+Part of what made my earlier version with the double-lookup a bit
+awkward was only doing the second lookup if the first lookup failed. I'm
+happy to take your word though that making the second lookup conditional
+is unnecessary or even detrimental :). It did cross my mind that it
+might not be a very consistent branch for a branch-predictor, but I also
+figured pid_task's synchronization might outweigh that.
