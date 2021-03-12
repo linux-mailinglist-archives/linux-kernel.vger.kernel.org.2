@@ -2,117 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AE9338859
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C8A33885A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhCLJMi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 04:12:38 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56555 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbhCLJMM (ORCPT
+        id S232720AbhCLJMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:12:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhCLJMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:12:12 -0500
-X-Originating-IP: 90.65.91.141
-Received: from localhost (lfbn-lyo-1-1912-141.w90-65.abo.wanadoo.fr [90.65.91.141])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 464286000D;
-        Fri, 12 Mar 2021 09:12:07 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andre Heider <a.heider@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: Re: [PATCH mvebu v3 00/10] Armada 37xx: Fix cpufreq changing base
- CPU speed to 800 MHz from 1000 MHz
-In-Reply-To: <20210301192024.tgvp6f5zscbknepo@pali>
-References: <20210114124032.12765-1-pali@kernel.org>
- <20210222194158.12342-1-pali@kernel.org>
- <20210301192024.tgvp6f5zscbknepo@pali>
-Date:   Fri, 12 Mar 2021 10:12:06 +0100
-Message-ID: <87a6r8ka6x.fsf@BL-laptop>
+        Fri, 12 Mar 2021 04:12:25 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B595C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:12:25 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id k16so1807646ejx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zIjnsp8rd4xdPpAuuxIncOMqaUFXDk2H646FhKXhrQI=;
+        b=FRs0DrvPBmFDVfjqtOrlSjtpxm2+npfQyr6b/8S1viwCakO54j+Ph4+I3oEQfBEcWJ
+         cn6P5amhR1QkaHIdtdPuMCPLFwn/fu8mDumYTAGGx38RFzK9OimucKszR/tSf57O42sB
+         KLtaS6uS6r9Zeg6EPSqA3X51WKoyUYNg/mMCs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zIjnsp8rd4xdPpAuuxIncOMqaUFXDk2H646FhKXhrQI=;
+        b=qNezsosZV5gwo+fEdQX24wjy4mkb/PV7ryD+628ISNvmv3eSFQIaGZLSsWRhvap88F
+         jC86lcYaY4pZd7XTRlwybNUIAfr0POOpTf9gJDWJiQHXlqgKEPWCjg+P1XuHxAVyRX2E
+         Dmw/dCVEa062iOI2NLGOST8IAH91GwphCwwKOrsmn1tyivntDyRJjOuSi0kOPPSUE1aR
+         h2kU2BtSoQ/G13swp7bRNUTCzLQoroAlQfgL05JWPz/Rkisf9WVAgdo8l0d2AYAgHfTL
+         Q47ULctj7NABDA+dt+GLLv0QK3ZrO5WdXmDiS78afsX9qJAosoj7TQSYGRpH/j02lQ+t
+         s51g==
+X-Gm-Message-State: AOAM531fWZJcvEjj67QwW24pA93WRossKzhAjHwx1KdOizsjLVd1QX44
+        AFftkCpPc6e8LUSHy5u/X8fn+Q==
+X-Google-Smtp-Source: ABdhPJzaNywOtntiAGWEgNJuka3SQSKInwwsFwvR7RB/6MD51tlrbDsdPtWseQ7eoarQLQfZKyTgWg==
+X-Received: by 2002:a17:906:f896:: with SMTP id lg22mr7223027ejb.124.1615540343895;
+        Fri, 12 Mar 2021 01:12:23 -0800 (PST)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id l18sm2429944ejk.86.2021.03.12.01.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 01:12:23 -0800 (PST)
+Subject: Re: [PATCH 06/14] bitsperlong.h: introduce SMALL_CONST() macro
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-7-yury.norov@gmail.com>
+ <55f1e25a-3211-8247-9dd3-3777e29287db@rasmusvillemoes.dk>
+ <20210312052812.GB137474@yury-ThinkPad>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <c672b661-1921-f61c-a118-d51c650e41f4@rasmusvillemoes.dk>
+Date:   Fri, 12 Mar 2021 10:12:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210312052812.GB137474@yury-ThinkPad>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pali,
+On 12/03/2021 06.28, Yury Norov wrote:
+> On Fri, Feb 19, 2021 at 12:07:27AM +0100, Rasmus Villemoes wrote:
+>> On 18/02/2021 05.05, Yury Norov wrote:
+>>> Many algorithms become simpler if they are passed with relatively small
+>>> input values. One example is bitmap operations when the whole bitmap fits
+>>> into one word. To implement such simplifications, linux/bitmap.h declares
+>>> small_const_nbits() macro.
+>>>
+>>> Other subsystems may also benefit from optimizations of this sort, like
+>>> find_bit API in the following patches. So it looks helpful to generalize
+>>> the macro and extend it's visibility.
+>>
+>> Perhaps, but SMALL_CONST is too generic a name, it needs to keep "bits"
+>> somewhere in there. So why not just keep it at small_const_nbits?
+>>
+>>> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+>>> ---
+>>>  include/asm-generic/bitsperlong.h |  2 ++
+>>>  include/linux/bitmap.h            | 33 ++++++++++++++-----------------
+>>>  2 files changed, 17 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
+>>> index 3905c1c93dc2..0eeb77544f1d 100644
+>>> --- a/include/asm-generic/bitsperlong.h
+>>> +++ b/include/asm-generic/bitsperlong.h
+>>> @@ -23,4 +23,6 @@
+>>>  #define BITS_PER_LONG_LONG 64
+>>>  #endif
+>>>  
+>>> +#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
+>>> +
+>>>  #endif /* __ASM_GENERIC_BITS_PER_LONG */
+>>> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+>>> index adf7bd9f0467..e89f1dace846 100644
+>>> --- a/include/linux/bitmap.h
+>>> +++ b/include/linux/bitmap.h
+>>> @@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
+>>>   * so make such users (should any ever turn up) call the out-of-line
+>>>   * versions.
+>>>   */
+>>> -#define small_const_nbits(nbits) \
+>>> -	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
+>>> -
+>>>  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
+>>>  {
+>>>  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+>>> @@ -278,7 +275,7 @@ extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
+>>>  static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
+>>>  			const unsigned long *src2, unsigned int nbits)
+>>>  {
+>>> -	if (small_const_nbits(nbits))
+>>> +	if (SMALL_CONST(nbits - 1))
+>>
+>> Please don't force most users to be changed to something less readable.
+>> What's wrong with just keeping small_const_nbits() the way it is,
+>> avoiding all this churn and keeping the readability?
+> 
+> The wrong thing is that it's defined in include/linux/bitmap.h, and I
+> cannot use it in include/asm-generic/bitops/find.h, so I have to either
+> move it to a separate header, or generalize and share with find.h and
+> other users this way. I prefer the latter option, thougt it's more
+> verbose.
 
-> Hello Gregory!
->
-> Patches are the for almost two months and more people have tested them.
-> They are marked with Fixed/CC-stable tags, they should go also into
-> stable trees as they are fixing CPU scaling and instability issues.
->
-> Are there any issues with these patches? If not, could you please merge
-> them for upcoming Linux version?
+The logical place would be the same place the BITS_PER_LONG macro is
+defined, no? No need to introduce a new header for that, and all current
+users of small_const_nbits() must already (very possibly indirectly)
+include asm-generic/bitsperlong.h.
 
-Actually I am not the maintainer of the clk and cpufreq subsystems, so
-the only thing I can apply is the device tree relative patch.
+I do prefer to keep both the name small_const_nbits() and its current
+semantics, which, although not currently spelled out that way anywhere,
+is "is BITMAP_SIZE(nbits) known at compile time and equal to 1", which
+is precisely what allows the static inlines to unconditionally
+dereference the pointer (that's the "exclude the 0 case") and just deal
+with that one word.
 
-Gregory
+I don't like either SMALL_CONST or small_const_size, because nothing in
+there says it has anything to do with bit ops. As I said, if you have
+some special place that for some reason cannot handle
+nbits==BITS_PER_LONG, then just add that as an additional constraint
+with a comment why.
 
->
-> On Monday 22 February 2021 20:41:48 Pali Rohár wrote:
->> Hello!
->> 
->> This is third version of patches for Armada 37xx cpufreq driver which
->> fix CPU scaling with 1 GHz base frequency.
->> 
->> The only change in this third version is modified patch 04/10 with fixes
->> for 1.2 GHz variant of Espressobin. Minimal CPU voltage in L1 load for
->> 1.2 GHz variant was increased to 1.155V.
->> 
->> Patches are now rebased on top of the kernel version 5.11 with all
->> collected Acked-by/Tested-by lines and are available also in my git
->> tree in branch a3720-cpufreq-issues:
->> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
->> 
->> If you have other Armada 3720 boards with 1.2 GHz CPU, including
->> Espressobin V7, let us know if it is working fine for you.
->> 
->> Marek & Pali
->> 
->> Marek Behún (3):
->>   arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
->>   cpufreq: armada-37xx: Fix setting TBG parent for load levels
->>   clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
->>     clock
->> 
->> Pali Rohár (7):
->>   cpufreq: armada-37xx: Fix the AVS value for load L1
->>   clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
->>     1 GHz
->>   clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
->>     to L0
->>   cpufreq: armada-37xx: Fix driver cleanup when registration failed
->>   cpufreq: armada-37xx: Fix determining base CPU frequency
->>   cpufreq: armada-37xx: Remove cur_frequency variable
->>   cpufreq: armada-37xx: Fix module unloading
->> 
->>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
->>  drivers/clk/mvebu/armada-37xx-periph.c       |  83 +++++++-------
->>  drivers/cpufreq/armada-37xx-cpufreq.c        | 111 +++++++++++++++----
->>  3 files changed, 135 insertions(+), 62 deletions(-)
->> 
->> -- 
->> 2.20.1
->> 
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Rasmus
