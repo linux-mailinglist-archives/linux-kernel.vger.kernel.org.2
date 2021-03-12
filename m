@@ -2,130 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0297B3393C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903FD3393C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhCLQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:41:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59291 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232217AbhCLQl2 (ORCPT
+        id S232973AbhCLQmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhCLQle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:41:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615567288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OeO9KUqOtDtdk47PC51v+iOlLQdCGKKGnQ1GOkBzCu0=;
-        b=PS/uJty7zmZ0kh35EMgu9soXA6zpvgRyXVbmDd4IK79J/xyNDLD3rO/I99ASS15sprCwJC
-        cyCB9W+CIjC1nbi7Lv81yPQDVs7YiFUTti7M2VTExSemTsNKI4+VVt5TBxoJYSADK9Rfrj
-        zpR5nh+jxkNigSnZM3LndJZjMHbHprw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-r3UaRUcJMIaELwkLfrdHgA-1; Fri, 12 Mar 2021 11:41:24 -0500
-X-MC-Unique: r3UaRUcJMIaELwkLfrdHgA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01E92107ACCD;
-        Fri, 12 Mar 2021 16:41:23 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.14])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 77E8E18BAC;
-        Fri, 12 Mar 2021 16:41:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 12 Mar 2021 17:41:22 +0100 (CET)
-Date:   Fri, 12 Mar 2021 17:41:20 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jim Newsome <jnewsome@torproject.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
+        Fri, 12 Mar 2021 11:41:34 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D302AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:41:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=NjO5e3NHxlfLBPFzxRL/627oFgY8z8FkhHekhopo2VY=; b=dY53Jxah5kMEb2PGNAmWb0SzKP
+        gZ0ZjGbQwOxh/bpVmAx0Vu0XmnCsOOhiybXokrnaVeDkmC1EqHpqEElhZd5QCWdSUToD8/pVJJ32T
+        SuYfuBbNMr6cD/oqhG/gjshO16+NnhL7e7+5+Yrq3BdOpfWmzslhQKR/8XMiXQOrp5ns+9uTAxjY3
+        VDUYwmLZagGQWSWBinh+x2Eg1RqPt0AUFUlDl6vW7LRwKs1kGlnuYdZ6HPLGR1SK2xmjJsA9+q6EW
+        C5m8KKIfgnFAUtPTSVjedpd6NdQWkbzhcMSD5g7FtsJUZz2dV37cHHuPv7rvhP4mtr/GSVpawhaiE
+        MqpDf43Q==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKkqv-0014IL-Um; Fri, 12 Mar 2021 16:41:30 +0000
+Subject: Re: [PATCH] powerpc: mm: book3s64: Fix a typo in the file
+ mmu_context.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        aneesh.kumar@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Message-ID: <20210312164119.GC27820@redhat.com>
-References: <20210311233823.20325-1-jnewsome@torproject.org>
+References: <20210312112537.4585-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7a2b6ee3-33cf-00a3-fb5c-f8bcf404f29c@infradead.org>
+Date:   Fri, 12 Mar 2021 08:41:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311233823.20325-1-jnewsome@torproject.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210312112537.4585-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11, Jim Newsome wrote:
->
-> +static bool is_effectively_child(struct wait_opts *wo, bool ptrace,
-> +				 struct task_struct *target)
-> +{
-> +	struct task_struct *parent =
-> +		!ptrace ? target->real_parent : target->parent;
-> +
-> +	return current == parent || (!(wo->wo_flags & __WNOTHREAD) &&
-> +				     same_thread_group(current, parent));
-> +}
-> +
-> +/*
-> + * Optimization for waiting on PIDTYPE_PID. No need to iterate through child
-> + * and tracee lists to find the target task.
-> + */
-> +static int do_wait_pid(struct wait_opts *wo)
-> +{
-> +	bool ptrace;
-> +	struct task_struct *target;
-> +	int retval;
-> +
-> +	ptrace = false;
-> +
-> +	/* A non-ptrace wait can only be performed on a thread group leader. */
-> +	target = pid_task(wo->wo_pid, PIDTYPE_TGID);
-> +
-> +	if (target && is_effectively_child(wo, ptrace, target)) {
-> +		retval = wait_consider_task(wo, ptrace, target);
-> +		if (retval)
-> +			return retval;
-> +	}
-> +
-> +	ptrace = true;
-> +
-> +	/* A ptrace wait can be done on non-thread-group-leaders. */
-> +	if (!target)
-> +		target = pid_task(wo->wo_pid, PIDTYPE_PID);
-> +
-> +	if (target && is_effectively_child(wo, ptrace, target)) {
-> +		retval = wait_consider_task(wo, ptrace, target);
+On 3/12/21 3:25 AM, Bhaskar Chowdhury wrote:
+> 
+> s/detalis/details/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-No, this is not right... You need to check target->ptrace != 0.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-I know that Eric suggests to not use thread_group_leader() and I won't argue
-even if I don't really agree.
+> ---
+>  arch/powerpc/mm/book3s64/mmu_context.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/mm/book3s64/mmu_context.c b/arch/powerpc/mm/book3s64/mmu_context.c
+> index 0c8557220ae2..c10fc8a72fb3 100644
+> --- a/arch/powerpc/mm/book3s64/mmu_context.c
+> +++ b/arch/powerpc/mm/book3s64/mmu_context.c
+> @@ -119,7 +119,7 @@ static int hash__init_new_context(struct mm_struct *mm)
+>  		/* This is fork. Copy hash_context details from current->mm */
+>  		memcpy(mm->context.hash_context, current->mm->context.hash_context, sizeof(struct hash_mm_context));
+>  #ifdef CONFIG_PPC_SUBPAGE_PROT
+> -		/* inherit subpage prot detalis if we have one. */
+> +		/* inherit subpage prot details if we have one. */
+>  		if (current->mm->context.hash_context->spt) {
+>  			mm->context.hash_context->spt = kmalloc(sizeof(struct subpage_prot_table),
+>  								GFP_KERNEL);
+> --
 
-Up to you, but to me something like
 
-	do_wait_pid()
-	{
-		target = pid_task(wo->wo_pid, PIDTYPE_PID);
-
-		if (!target)
-			return 0;
-
-		if (thread_group_leader(target) &&
-		    is_effectively_child(wo, 0, target) {
-			...			
-		}
-
-		if (target->ptrace &&
-		    is_effectively_child(wo, 1, target) {
-			...
-		}
-
-		return 0;
-
-	}
-
-looks more simple/clean.
-
-Oleg.
+-- 
+~Randy
 
