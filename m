@@ -2,56 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46721338592
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 06:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9CF338598
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 06:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhCLFyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 00:54:09 -0500
-Received: from mga07.intel.com ([134.134.136.100]:57204 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhCLFxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 00:53:53 -0500
-IronPort-SDR: eTD9ZleEw1wzcW5nhqltIE/6ZmpWpjSuGY9ZbnxuBBido8R16oELEJ8ZWhrEf02+usYNVJ5eAw
- WXeZUgnuxESg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="252804755"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="252804755"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 21:53:52 -0800
-IronPort-SDR: LPhcShtxF/YBny8tnC929I12DprUa0sQvim2bSFKI1A/mR9xIAq62mzAeg02lP6qWS5MrC9mjc
- 75+CJSHVOSAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="377606218"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Mar 2021 21:53:47 -0800
-Subject: Re: [PATCH v7] i2c: virtio: add a virtio i2c frontend driver
-To:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     mst@redhat.com, wsa@kernel.org, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, pbonzini@redhat.com
-References: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <26a1c5e4-c924-ba3f-83d8-5794641b0cbe@intel.com>
-Date:   Fri, 12 Mar 2021 13:53:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S231313AbhCLFzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 00:55:49 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:47713 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231252AbhCLFzf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 00:55:35 -0500
+X-AuditID: 0a580157-47bff70000021a79-77-604afba1e5a5
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id EF.E9.06777.1ABFA406; Fri, 12 Mar 2021 13:26:57 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 12 Mar
+ 2021 13:55:31 +0800
+Date:   Fri, 12 Mar 2021 13:55:31 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>, <sunhao2@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210312135531.72e33b35@alex-virtual-machine>
+In-Reply-To: <db80e98d2b264e988596d0d7d7c8a776@intel.com>
+References: <20210303115710.2e9f8e23@alex-virtual-machine>
+        <20210303163912.3d508e0f@alex-virtual-machine>
+        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+        <20210304101653.546a9da1@alex-virtual-machine>
+        <20210304121941.667047c3@alex-virtual-machine>
+        <20210304144524.795872d7@alex-virtual-machine>
+        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+        <20210305093016.40c87375@alex-virtual-machine>
+        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+        <20210310141042.4db9ea29@alex-virtual-machine>
+        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+        <db80e98d2b264e988596d0d7d7c8a776@intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcGooLvwt1eCwf3DyhZz1q9hs/i84R+b
+        xdf1v5gtpm0Ut7hwqoHJ4vKuOWwW99b8Z7W4dGABk8XFxgOMFmemFVls3jSV2eLNhXssFj82
+        PGZ14PX43trH4rF4z0smj02rOtk8Nn2axO7x7tw5do8TM36zeLy4upHF4/2+q2wem09Xe3ze
+        JOdxouULawB3FJdNSmpOZllqkb5dAlfGimkX2Ap+cFZMu/KFpYHxOXsXIyeHhICJxISja5i7
+        GLk4hASmM0mce/aQEcJ5xSix690DRpAqFgFViX8d05hBbDYge9e9WawgtoiAmsSlxQ/AupkF
+        NrNKXDg3nwkkISzgJfHl/lqwZl4BK4nD63eAxTkFLCUuXFvPDrHhAYvE/sZdYHfwC4hJ9F75
+        zwRxk71E25ZFUM2CEidnPmEBsZkFdCROrDrGDGHLS2x/OwfMFhJQlDi85BfUP0oSR7pnsEHY
+        sRLL5r1incAoPAvJqFlIRs1CMmoBI/MqRpbi3HTDTYyQGAzfwTiv6aPeIUYmDsZDjBIczEoi
+        vBdeeiUI8aYkVlalFuXHF5XmpBYfYpTmYFES571c4ZkgJJCeWJKanZpakFoEk2Xi4JRqYJr5
+        KySsx6PbcbHNzkXPz/9YlP96ye26T+mna/3fJW6Zv+qvtiqHcsFxufmPDra6KgVUWOZfaa5u
+        7FPSPdF0UlZbv7n+upro3hiLksdzA9+suiO0mK10mpRDiOXfxbkaUjM4BT00J2sopf3+dZ7V
+        jMXsrKvmLP3DddsCdCSXyxplrTHtY19z1OYKt+jJDReYth14zP821s9JaaGi+oamhZOuTW2L
+        SzwaXJm47IH3Tp2+JctmuwddPnPi4Q3+F397lu9gut7ytVdvYpzMW9HN99dsmPnr8baFl9i0
+        3p8sNOvQsf2+zur2PYtGNt6OBC1V50brjjPJUS86M8r7PnmUr8k99avadu6KrIkNq9ZYRSux
+        FGckGmoxFxUnAgCzo2enMAMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry , sent the wrong version. Please ignore this. I will resend.
+On Thu, 11 Mar 2021 17:05:53 +0000
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
+> > I guess that p->mce_vaddr stores the virtual address of the error here.
+> > If so, sending SIGBUS with the address looks enough as we do now, so why
+> > do you walk page table to find the error virtual address?  
+> 
+> p->mce_vaddr only has the virtual address for the COPYIN case. In that code
+> path we decode the kernel instruction that hit the fault in order to find the virtual
+> address. That's easy because:
+> 
+> 1) The kernel RIP is known to be good (can't page fault etc. on kernel address).
+> 2) There are only a half dozen instructions used by the kernel for get_user() or
+>      copy_from_user().
+> 
+> When the machine check happens during user execution accessing poison data
+> we only have the physical address (from MCi_ADDR).
+> 
+> -Tony
+
+Sorry to interrupt as I am really confused here:
+If it's a copyin case, has the page been mapped for the current process?
+will memory_failure() find it and unmap it? if succeed, then the current will be
+signaled with correct vaddr and shift?
+
+Maybe the mce_vaddr is set correctly, but we may lost the correct page shift?
+
+And for copyin case, we don't need to call set_mce_nospec()?
+
+-- 
+Thanks!
+Aili Yao
