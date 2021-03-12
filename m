@@ -2,188 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3856338C23
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BBA338B8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhCLMAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhCLL7m (ORCPT
+        id S232217AbhCLLey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:34:54 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13525 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhCLLe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:59:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB9DC061574;
-        Fri, 12 Mar 2021 03:59:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=pG0wZH/JG+VFP/9RlBW6E98RYqovEqZJud7EzDWgMuM=; b=NqWp403xVcXg7Rak1H7ABki/Do
-        Qr101uioz4P5dy1e8epxX+s73gXCUSGdPIgmc5UB+wiugcLJeNQBOV+J1CVBpkm3xfLBH/lsvKf2D
-        r+nCzsWKQzrMlEFWMWhNR6k0vXz7jaIM791zp0JQhQYfo7w2ZmgAfEhsICnoMZGKcUDSVWb7v2ukv
-        jpWpqoDegvBCvSYqWQ1W27ic9YGDefbWHR8IKpQFlCYBvs5+DCk6zOfadnOTmjjSmOfCjOerOlQD6
-        qOWDArHb8vyrxliRJYbiDF5hZ1BmHTyXpUybv9t4IhaqBaLRPXdGgpbW1j0r8sW8eBJk9hSCdAjnU
-        LnE/mtpQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKgRc-00AYD6-BW; Fri, 12 Mar 2021 11:59:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0052C300455;
-        Fri, 12 Mar 2021 12:59:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E10172D00DEDF; Fri, 12 Mar 2021 12:59:02 +0100 (CET)
-Message-ID: <20210312115749.136357911@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 12 Mar 2021 12:32:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, rostedt@goodmis.org, hpa@zytor.com,
-        torvalds@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        peterz@infradead.org, jpoimboe@redhat.com,
-        alexei.starovoitov@gmail.com, mhiramat@kernel.org
-Subject: [PATCH 2/2] objtool,x86: Use asm/nops.h
-References: <20210312113253.305040674@infradead.org>
+        Fri, 12 Mar 2021 06:34:28 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DxkDk5yxmzNlm9;
+        Fri, 12 Mar 2021 19:32:06 +0800 (CST)
+Received: from [10.174.184.135] (10.174.184.135) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 12 Mar 2021 19:34:18 +0800
+Subject: Re: [PATCH v3 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending state
+ to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210127121337.1092-1-lushenming@huawei.com>
+ <20210127121337.1092-4-lushenming@huawei.com> <87tupif3x3.wl-maz@kernel.org>
+ <0820f429-4c29-acd6-d9e0-af9f6deb68e4@huawei.com>
+ <87k0qcg2s6.wl-maz@kernel.org>
+ <aecfbf72-c653-e967-b539-89f629b52cde@huawei.com>
+ <87h7lgfwzu.wl-maz@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <df4b939d-27c1-be84-ea7e-327251958cde@huawei.com>
+Date:   Fri, 12 Mar 2021 19:34:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <87h7lgfwzu.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.135]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the kernel will rely on a single canonical set of NOPs, make
-sure objtool uses the exact same ones.
+On 2021/3/12 19:10, Marc Zyngier wrote:
+> On Fri, 12 Mar 2021 10:48:29 +0000,
+> Shenming Lu <lushenming@huawei.com> wrote:
+>>
+>> On 2021/3/12 17:05, Marc Zyngier wrote:
+>>> On Thu, 11 Mar 2021 12:32:07 +0000,
+>>> Shenming Lu <lushenming@huawei.com> wrote:
+>>>>
+>>>> On 2021/3/11 17:14, Marc Zyngier wrote:
+>>>>> On Wed, 27 Jan 2021 12:13:36 +0000,
+>>>>> Shenming Lu <lushenming@huawei.com> wrote:
+>>>>>>
+>>>>>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>>>>>
+>>>>>> When setting the forwarding path of a VLPI (switch to the HW mode),
+>>>>>> we could also transfer the pending state from irq->pending_latch to
+>>>>>> VPT (especially in migration, the pending states of VLPIs are restored
+>>>>>> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
+>>>>>> a VLPI to pending.
+>>>>>>
+>>>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>>>>> ---
+>>>>>>  arch/arm64/kvm/vgic/vgic-v4.c | 14 ++++++++++++++
+>>>>>>  1 file changed, 14 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>>> index ac029ba3d337..a3542af6f04a 100644
+>>>>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>>> @@ -449,6 +449,20 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+>>>>>>  	irq->host_irq	= virq;
+>>>>>>  	atomic_inc(&map.vpe->vlpi_count);
+>>>>>>  
+>>>>>> +	/* Transfer pending state */
+>>>>>> +	if (irq->pending_latch) {
+>>>>>> +		ret = irq_set_irqchip_state(irq->host_irq,
+>>>>>> +					    IRQCHIP_STATE_PENDING,
+>>>>>> +					    irq->pending_latch);
+>>>>>> +		WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+>>>>>> +
+>>>>>> +		/*
+>>>>>> +		 * Let it be pruned from ap_list later and don't bother
+>>>>>> +		 * the List Register.
+>>>>>> +		 */
+>>>>>> +		irq->pending_latch = false;
+>>>>>
+>>>>> NAK. If the interrupt is on the AP list, it must be pruned from it
+>>>>> *immediately*. The only case where it can be !pending and still on the
+>>>>> AP list is in interval between sync and prune. If we start messing
+>>>>> with this, we can't reason about the state of this list anymore.
+>>>>>
+>>>>> Consider calling vgic_queue_irq_unlock() here.
+>>>>
+>>>> Thanks for giving a hint, but it seems that vgic_queue_irq_unlock() only
+>>>> queues an IRQ after checking, did you mean vgic_prune_ap_list() instead?
+>>>
+>>> No, I really mean vgic_queue_irq_unlock(). It can be used to remove
+>>> the pending state from an interrupt, and drop it from the AP
+>>> list. This is exactly what happens when clearing the pending state of
+>>> a level interrupt, for example.
+>>
+>> Hi, I have gone through vgic_queue_irq_unlock more than once, but
+>> still can't find the place in it to drop an IRQ from the AP
+>> list... Did I miss something ?...  Or could you help to point it
+>> out? Thanks very much for this!
+> 
+> NO, you are right. I think this is a missing optimisation. Please call
+> the function anyway, as that's what is required to communicate a
+> change of state in general.>
+> I'll have a think about it.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/arch/x86/include/asm/nops.h |   81 ++++++++++++++++++++++++++++++++++++++
- tools/objtool/arch/x86/decode.c   |   13 +++---
- tools/objtool/sync-check.sh       |    1 
- 3 files changed, 90 insertions(+), 5 deletions(-)
+Maybe we could call vgic_prune_ap_list() if (irq->vcpu && !vgic_target_oracle(irq)) in vgic_queue_irq_unlock()...
 
---- /dev/null
-+++ b/tools/arch/x86/include/asm/nops.h
-@@ -0,0 +1,81 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_NOPS_H
-+#define _ASM_X86_NOPS_H
-+
-+/*
-+ * Define nops for use with alternative() and for tracing.
-+ */
-+
-+#ifndef CONFIG_64BIT
-+
-+/*
-+ * Generic 32bit nops from GAS:
-+ *
-+ * 1: nop
-+ * 2: movl %esi,%esi
-+ * 3: leal 0x0(%esi),%esi
-+ * 4: leal 0x0(%esi,%eiz,1),%esi
-+ * 5: leal %ds:0x0(%esi,%eiz,1),%esi
-+ * 6: leal 0x0(%esi),%esi
-+ * 7: leal 0x0(%esi,%eiz,1),%esi
-+ * 8: leal %ds:0x0(%esi,%eiz,1),%esi
-+ *
-+ * Except 5 and 8, which are DS prefixed 4 and 7 resp, where GAS would emit 2
-+ * nop instructions.
-+ */
-+#define BYTES_NOP1	0x90
-+#define BYTES_NOP2	0x89,0xf6
-+#define BYTES_NOP3	0x8d,0x76,0x00
-+#define BYTES_NOP4	0x8d,0x74,0x26,0x00
-+#define BYTES_NOP5	0x3e,BYTES_NOP4
-+#define BYTES_NOP6	0x8d,0xb6,0x00,0x00,0x00,0x00
-+#define BYTES_NOP7	0x8d,0xb4,0x26,0x00,0x00,0x00,0x00
-+#define BYTES_NOP8	0x3e,BYTES_NOP7
-+
-+#else
-+
-+/*
-+ * Generic 64bit nops from GAS:
-+ *
-+ * 1: nop
-+ * 2: osp nop
-+ * 3: nopl (%eax)
-+ * 4: nopl 0x00(%eax)
-+ * 5: nopl 0x00(%eax,%eax,1)
-+ * 6: osp nopl 0x00(%eax,%eax,1)
-+ * 7: nopl 0x00000000(%eax)
-+ * 8: nopl 0x00000000(%eax,%eax,1)
-+ */
-+#define BYTES_NOP1	0x90
-+#define BYTES_NOP2	0x66,BYTES_NOP1
-+#define BYTES_NOP3	0x0f,0x1f,0x00
-+#define BYTES_NOP4	0x0f,0x1f,0x40,0x00
-+#define BYTES_NOP5	0x0f,0x1f,0x44,0x00,0x00
-+#define BYTES_NOP6	0x66,BYTES_NOP5
-+#define BYTES_NOP7	0x0f,0x1f,0x80,0x00,0x00,0x00,0x00
-+#define BYTES_NOP8	0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00
-+
-+#endif /* CONFIG_64BIT */
-+
-+#ifdef __ASSEMBLY__
-+#define _ASM_MK_NOP(x) .byte x
-+#else
-+#define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
-+#endif
-+
-+#define ASM_NOP1 _ASM_MK_NOP(BYTES_NOP1)
-+#define ASM_NOP2 _ASM_MK_NOP(BYTES_NOP2)
-+#define ASM_NOP3 _ASM_MK_NOP(BYTES_NOP3)
-+#define ASM_NOP4 _ASM_MK_NOP(BYTES_NOP4)
-+#define ASM_NOP5 _ASM_MK_NOP(BYTES_NOP5)
-+#define ASM_NOP6 _ASM_MK_NOP(BYTES_NOP6)
-+#define ASM_NOP7 _ASM_MK_NOP(BYTES_NOP7)
-+#define ASM_NOP8 _ASM_MK_NOP(BYTES_NOP8)
-+
-+#define ASM_NOP_MAX 8
-+
-+#ifndef __ASSEMBLY__
-+extern const unsigned char * const x86_nops[];
-+#endif
-+
-+#endif /* _ASM_X86_NOPS_H */
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -11,6 +11,9 @@
- #include "../../../arch/x86/lib/inat.c"
- #include "../../../arch/x86/lib/insn.c"
- 
-+#define CONFIG_64BIT 1
-+#include <asm/nops.h>
-+
- #include <asm/orc_types.h>
- #include <objtool/check.h>
- #include <objtool/elf.h>
-@@ -640,11 +643,11 @@ void arch_initial_func_cfi_state(struct
- const char *arch_nop_insn(int len)
- {
- 	static const char nops[5][5] = {
--		/* 1 */ { 0x90 },
--		/* 2 */ { 0x66, 0x90 },
--		/* 3 */ { 0x0f, 0x1f, 0x00 },
--		/* 4 */ { 0x0f, 0x1f, 0x40, 0x00 },
--		/* 5 */ { 0x0f, 0x1f, 0x44, 0x00, 0x00 },
-+		{ BYTES_NOP1 },
-+		{ BYTES_NOP2 },
-+		{ BYTES_NOP3 },
-+		{ BYTES_NOP4 },
-+		{ BYTES_NOP5 },
- 	};
- 
- 	if (len < 1 || len > 5) {
---- a/tools/objtool/sync-check.sh
-+++ b/tools/objtool/sync-check.sh
-@@ -10,6 +10,7 @@ FILES="include/linux/objtool.h"
- 
- if [ "$SRCARCH" = "x86" ]; then
- FILES="$FILES
-+arch/x86/include/asm/nops.h
- arch/x86/include/asm/inat_types.h
- arch/x86/include/asm/orc_types.h
- arch/x86/include/asm/emulate_prefix.h
+OK, I will retest this series and send a v4 soon. :-)
 
+Thanks,
+Shenming
 
+> 
+> Thanks,
+> 
+> 	M.
+> 
