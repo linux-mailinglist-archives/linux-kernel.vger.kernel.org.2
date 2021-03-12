@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7137338835
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1AB338836
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhCLJD4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 04:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhCLJDa (ORCPT
+        id S232717AbhCLJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:03:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22116 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232693AbhCLJDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:03:30 -0500
-X-Greylist: delayed 62617 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 12 Mar 2021 01:03:30 PST
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889A6C061574;
-        Fri, 12 Mar 2021 01:03:30 -0800 (PST)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 493681408F2;
-        Fri, 12 Mar 2021 10:03:28 +0100 (CET)
-Date:   Fri, 12 Mar 2021 10:03:27 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Hermes Zhang <Hermes.Zhang@axis.com>
-Cc:     Alexander Dahl <ada@thorsis.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        kernel <kernel@axis.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
-Message-ID: <20210312100327.3c3c47ba@nic.cz>
-In-Reply-To: <e56946d1d85948c7b6ce94982a221981@XBOX03.axis.com>
-References: <20210311130408.10820-1-chenhui.zhang@axis.com>
-        <2315048.uTtSMl1LR1@ada>
-        <e56946d1d85948c7b6ce94982a221981@XBOX03.axis.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 12 Mar 2021 04:03:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615539829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=boFjDBeEGDG3Uu0PCk6VoIIpoydbqLEJ4/cTzVfITbs=;
+        b=B4cQGNKnXNi6hd2qMC6AsPzS7UaDJh3GUVG5RfTVTt6nAH+i7uH53Eu78uy8+9cQ1Dyccb
+        N95EckHsHAunffwfJYZyaBiYPlK5KmzmMaKFHnzNfrFnA5PY9HWy75ti69rjIjzRIK3TiK
+        KRXsUUDKzivKiCBO+vQVSNFcnjo1am0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2--wYBtx3iOFmEZiiKmFHQUQ-1; Fri, 12 Mar 2021 04:03:47 -0500
+X-MC-Unique: -wYBtx3iOFmEZiiKmFHQUQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEFFE760C8;
+        Fri, 12 Mar 2021 09:03:45 +0000 (UTC)
+Received: from [10.36.114.197] (ovpn-114-197.ams2.redhat.com [10.36.114.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B32B310023AB;
+        Fri, 12 Mar 2021 09:03:43 +0000 (UTC)
+Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
+        linux-fsdevel@vger.kernel.org
+References: <20210310161429.399432-1-minchan@kernel.org>
+ <20210310161429.399432-3-minchan@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
+Date:   Fri, 12 Mar 2021 10:03:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+In-Reply-To: <20210310161429.399432-3-minchan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 08:48:55 +0000
-Hermes Zhang <Hermes.Zhang@axis.com> wrote:
+On 10.03.21 17:14, Minchan Kim wrote:
+> ffer_head LRU caches will be pinned and thus cannot be migrated.
+> This can prevent CMA allocations from succeeding, which are often used
+> on platforms with co-processors (such as a DSP) that can only use
+> physically contiguous memory. It can also prevent memory
+> hot-unplugging from succeeding, which involves migrating at least
+> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
+> GiB based on the architecture in use.
 
-> Hi Alexander,
-> 
-> > Am Donnerstag, 11. März 2021, 14:04:08 CET schrieb Hermes Zhang:  
-> > > From: Hermes Zhang <chenhuiz@axis.com>
-> > >
-> > > Introduce a new Dual GPIO LED driver. These two GPIOs LED will act as
-> > > one LED as normal GPIO LED but give the possibility to change the
-> > > intensity in four levels: OFF, LOW, MIDDLE and HIGH.  
-> > 
-> > Interesting use case. Is there any real world hardware wired like that you
-> > could point to?
-> >   
-> 
-> Yes, we have the HW, it's not a chip but just some circuit to made of.
->  
-> > > +config LEDS_DUAL_GPIO
-> > > +	tristate "LED Support for Dual GPIO connected LEDs"
-> > > +	depends on LEDS_CLASS
-> > > +	depends on GPIOLIB || COMPILE_TEST
-> > > +	help
-> > > +	  This option enables support for the two LEDs connected to GPIO
-> > > +	  outputs. These two GPIO LEDs act as one LED in the sysfs and
-> > > +	  perform different intensity by enable either one of them or both.  
-> > 
-> > Well, although I never had time to implement that, I suspect that could
-> > conflict if someone will eventually write a driver for two pin dual color LEDs
-> > connected to GPIO pins.  We actually do that on our hardware and I know
-> > others do, too.
-> > 
-> > I asked about that back in 2019, see this thread:
-> > 
-> > https://www.spinics.net/lists/linux-leds/msg11665.html
-> > 
-> > At the time the multicolor framework was not yet merged, so today I would
-> > probably make something which either uses the multicolor framework or at
-> > least has a similar interface to userspace. However, it probably won't surprise
-> > you all, this is not highest priority on my ToDo list. ;-)
-> > 
-> > (What we actually do is pretend those are separate LEDs and ignore the
-> > conflicting case where both GPIOs are on and the LED is dark then.)
-> >   
-> 
-> Yes, that case seems conflict with mine, the pattern for me is like:
-> 
-> P1 | P2 | LED
-> -- + -- + -----
->  0 |  0 | off
->  0 |  1 | Any color
->  1 |  0 | Any color
->  1 |  1 | both on
-> 
-> Now I'm investigate another way from Marek's suggestion by using REGULATOR_GPIO, to see if could meet my requirement. If yes, then I do think no new  driver is needed.
+Actually, it's memory_block_size_bytes(), which can be even bigger 
+(IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that 
+will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
 
-Maybe you could even implement multicolor-gpio, now that we have
-multicolor LED class :)
+> 
+> Correspondingly, invalidate the BH LRU caches before a migration
+> starts and stop any buffer_head from being cached in the LRU caches,
+> until migration has finished.
 
-Marek
+Sounds sane to me.
+
+-- 
+Thanks,
+
+David / dhildenb
+
