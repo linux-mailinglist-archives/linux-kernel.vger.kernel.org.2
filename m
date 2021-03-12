@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A842C33969F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555323396A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhCLSc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S233624AbhCLSc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233408AbhCLScl (ORCPT
+        with ESMTP id S233418AbhCLScn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:32:41 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E1BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:41 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id p21so16412943pgl.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:41 -0800 (PST)
+        Fri, 12 Mar 2021 13:32:43 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9488EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:43 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id z5so12338723plg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z2TTCoOhZzFdstrm7VNhW1YKvUWRLgRQRz4VAEJQzBw=;
-        b=bVZnEJ6G9IW9OjusVy3YU5V0eruhaSbCs1jAhafSoyawT1TPddl5w46bZ6EDVBBqXh
-         DgpXGBbAtwbsTatuHRH4iwQgorVxKdvsbcsIXm/9qXKY2F249psn9ug2vU7Q4KyH3zgX
-         jkHO4v9KqYl52xVx8NqaK9LZB9gku9A5/79iY=
+        bh=0I3DtXSbVjxMHtTFTJIXAlEnDZYc1xykz6UdSiaQCOw=;
+        b=oNkKYyG/QsuZKArEA8O8Z5QEThmmXalEZVsYheMKKAgn1e0LJUZbEGmxIaKMfVWrVG
+         Jsu3I8hA2gZZF+ZU8RNpnfbqVDwkPYSYkIZQ9jtl7C0WnP61Cc4gA4GD11uXQliAPBNK
+         aj+yFTqPBK2q0B2y1OufV0lK7HbZGFRo7aTtM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z2TTCoOhZzFdstrm7VNhW1YKvUWRLgRQRz4VAEJQzBw=;
-        b=i3BpKqsoDRiNQn6iMVbT2ZHZYPvi4UUjfr/Tbf61Au1noX8LorGQLzQYu5zTZlt4Vw
-         6+eH368cHZ4/53X+NuEqkZ7kY87JiPpOZcsQfOvOCo8wmlsAIE+pXNT4tnFuFGq9ipPE
-         bQhl2eNwYUiS3snOb3RC4e6kfMQ3CZhOFa9HlUmuD0rCq8vREYsUFfHsbii9TVXUgEec
-         Trblhj5uxMe9pwn0wJxgyc/DyYPzvnNer7c/LP3MhUqxPKAd+ifzV8f8i4GusdtMJbWJ
-         YyUBTOZWyt2r1tDn5AvEOMV1geaApXK/N8kA2PAMfVcdx/RnlC4xnB+gKYYAYisTTXQ8
-         lalQ==
-X-Gm-Message-State: AOAM532N7dMMelinbplolmlqsAmLpF84OPSW/b/PoZkiAMtTmnUkD8k1
-        X/BVqs9g4mMejBX79MsZl7gL4BCBKnyaxQ==
-X-Google-Smtp-Source: ABdhPJw34BfMs+5BruK0ScfiRqtdfgMIFitx83z8fk/1cj2x9DkWqbJlbDJkxLPx5DInEwDsRacusw==
-X-Received: by 2002:a63:904b:: with SMTP id a72mr12812786pge.77.1615573961098;
-        Fri, 12 Mar 2021 10:32:41 -0800 (PST)
+        bh=0I3DtXSbVjxMHtTFTJIXAlEnDZYc1xykz6UdSiaQCOw=;
+        b=NZtCPsLhfhiBJYEdu6/Z7QE5hr0/rvT0hyLOSkTjzuIUk4aO1ibXnXi6rpRF5GuVtN
+         rnQA5LNxB5uZ9aUDFOalgf5HUU1rhmegPl0syNDF9qE3R4bpqwb/url4Lj5tj9IR3bmV
+         ktQ+t7IuKewIQrcrmY3D82opEijcn+dbnZAw4ivEToP3KQBZvauZiDd97MsRRpoqKW3J
+         sc89PcN1lBgo3ItDXxulNlTDDwmSc12dfTZcu5saWCdvN/pJSZ2dm4ikb53DF96Imrxz
+         Ca2dqIP3lZL5xywu36kfHJCpyU4vucuXHfm1poxcJq6dQBF3CO/SM5glOKo+pNzZOt9v
+         m17g==
+X-Gm-Message-State: AOAM533Zlka57cWDpGUqrlgCRuYJW3y24wc+zbAJzmmsLMfPdCg2l9ou
+        ivQm5Z4YOjwrYfRkRaEjnBUC8Q==
+X-Google-Smtp-Source: ABdhPJx7jw6HjWIzh3kR22Y3MbkO+ihO0jNSScjXTYDAzjkkCOL1wqPjzWoYiOJY7bLdnG+hqr+lJg==
+X-Received: by 2002:a17:90a:e50c:: with SMTP id t12mr15106321pjy.138.1615573963179;
+        Fri, 12 Mar 2021 10:32:43 -0800 (PST)
 Received: from localhost ([2620:15c:202:1:914f:6483:1dc:1bba])
-        by smtp.gmail.com with UTF8SMTPSA id b23sm5750326pfo.164.2021.03.12.10.32.40
+        by smtp.gmail.com with UTF8SMTPSA id ge16sm2851947pjb.43.2021.03.12.10.32.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 10:32:40 -0800 (PST)
+        Fri, 12 Mar 2021 10:32:42 -0800 (PST)
 From:   Matthias Kaehlcke <mka@chromium.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -53,9 +53,9 @@ Cc:     linux-arm-msm@vger.kernel.org,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v2 2/3] arm64: dts: qcom: sc7180: Add pompom rev3
-Date:   Fri, 12 Mar 2021 10:32:27 -0800
-Message-Id: <20210312103211.v2.2.I4138c3edee23d1efa637eef51e841d9d2e266659@changeid>
+Subject: [PATCH v2 3/3] arm64: dts: qcom: sc7180: Add CoachZ rev3
+Date:   Fri, 12 Mar 2021 10:32:28 -0800
+Message-Id: <20210312103211.v2.3.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210312183228.550779-1-mka@chromium.org>
 References: <20210312183228.550779-1-mka@chromium.org>
@@ -65,64 +65,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only kernel visible change with respect to rev2 is that pompom
-rev3 changed the charger thermistor from a 47k to a 100k NTC to use
-a thermistor which is supported by the PM6150 ADC driver.
+CoachZ rev3 uses a 100k NTC thermistor for the charger temperatures,
+instead of the 47k NTC that is stuffed in earlier revisions. Add .dts
+files for rev3.
 
-Disable the charger thermal zone for pompom rev1 and rev2 to avoid
-the use of bogus temperature values from the unsupported thermistor.
+The 47k NTC currently isn't supported by the PM6150 ADC driver.
+Disable the charger thermal zone for rev1 and rev2 to avoid the use
+of bogus temperature values.
 
 Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 ---
 
 Changes in v2:
-- moved keyboard definition to sc7180-trogdor-pompom.dtsi instead
-  of duplicating it, use cros-ec keyboard for rev1
-- squashed with 'arm64: dts: qcom: sc7180: pompom: Disable charger
-  thermal zone for rev1 and rev2'
+- added CoachZ rev3
+- updated subject and commit message
 
- arch/arm64/boot/dts/qcom/Makefile             |  2 +
- .../dts/qcom/sc7180-trogdor-pompom-r1.dts     | 12 ++++++
- .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
- .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 38 +++++--------------
- .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 +++++++
- .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 15 ++++++++
- .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 31 +++++++++++++++
- 7 files changed, 85 insertions(+), 31 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+ arch/arm64/boot/dts/qcom/Makefile              |  2 ++
+ .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts |  9 +++++++++
+ .../dts/qcom/sc7180-trogdor-coachz-r2-lte.dts  |  4 ++--
+ .../boot/dts/qcom/sc7180-trogdor-coachz-r2.dts | 13 +++++++++++--
+ .../dts/qcom/sc7180-trogdor-coachz-r3-lte.dts  | 18 ++++++++++++++++++
+ .../boot/dts/qcom/sc7180-trogdor-coachz-r3.dts | 15 +++++++++++++++
+ 6 files changed, 57 insertions(+), 4 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
 
 diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index a81966d59cf7..11aa83ca798f 100644
+index 11aa83ca798f..ffb6d662754a 100644
 --- a/arch/arm64/boot/dts/qcom/Makefile
 +++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -49,6 +49,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r1-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r2-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r3.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-r1-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-ganges-kirin.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-index e720e7bd0d70..7f87877408c5 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-@@ -9,11 +9,23 @@
- 
- #include "sc7180-trogdor-pompom.dtsi"
- 
-+/delete-node/ keyboard_controller;
-+#include <arm/cros-ec-keyboard.dtsi>
-+
- / {
- 	model = "Google Pompom (rev1)";
- 	compatible = "google,pompom-rev1", "qcom,sc7180";
+@@ -35,6 +35,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1-lte.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r2.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r2-lte.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3-lte.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r0.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1-kb.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+index 86619f6c1134..c6b078e70d31 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+@@ -14,6 +14,15 @@ / {
+ 	compatible = "google,coachz-rev1", "qcom,sc7180";
  };
  
 +/*
-+ * Pompom rev1 is stuffed with a 47k NTC as charger thermistor which currently
++ * CoachZ rev1 is stuffed with a 47k NTC as charger thermistor which currently
 + * is not supported by the PM6150 ADC driver. Disable the charger thermal zone
 + * to avoid using bogus temperature values.
 + */
@@ -130,154 +120,91 @@ index e720e7bd0d70..7f87877408c5 100644
 +	status = "disabled";
 +};
 +
- &pp3300_hub {
- 	/* pp3300_l7c is used to power the USB hub */
- 	/delete-property/regulator-always-on;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
-index 791d496ad046..00e187c08eb9 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
-@@ -9,6 +9,6 @@
+ &tlmm {
+ 	gpio-line-names = "HUB_RST_L",
+ 			  "AP_RAM_ID0",
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
+index 6e7745801fae..5d92309af091 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
+@@ -9,8 +9,8 @@
  #include "sc7180-trogdor-lte-sku.dtsi"
  
  / {
--	model = "Google Pompom (rev2+) with LTE";
--	compatible = "google,pompom-sku0", "qcom,sc7180";
-+	model = "Google Pompom (rev2) with LTE";
-+	compatible = "google,pompom-rev2-sku0", "qcom,sc7180";
+-	model = "Google CoachZ (rev2+) with LTE";
+-	compatible = "google,coachz-sku0", "qcom,sc7180";
++	model = "Google CoachZ (rev2) with LTE";
++	compatible = "google,coachz-rev2-sku0", "qcom,sc7180";
  };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
-index 984d7337da78..4f32e6733f4c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
-@@ -10,35 +10,15 @@
- #include "sc7180-trogdor-pompom.dtsi"
+ 
+ &cros_ec_proximity {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
+index 4f69b6ba299f..6ce2b1534a68 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
+@@ -10,6 +10,15 @@
+ #include "sc7180-trogdor-coachz.dtsi"
  
  / {
--	model = "Google Pompom (rev2+)";
--	compatible = "google,pompom", "qcom,sc7180";
-+	model = "Google Pompom (rev2)";
-+	compatible = "google,pompom-rev2", "qcom,sc7180";
- };
- 
--&keyboard_controller {
--	function-row-physmap = <
--		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
--		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
--		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
--		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
--		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
--		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
--		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
--		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
--		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
--		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
--	>;
--	linux,keymap = <
--		MATRIX_KEY(0x00, 0x02, KEY_BACK)
--		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
--		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
--		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
--		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
--		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
--		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
--		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
--		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
--		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
--
--		CROS_STD_MAIN_KEYMAP
--	>;
+-	model = "Google CoachZ (rev2+)";
+-	compatible = "google,coachz", "qcom,sc7180";
++	model = "Google CoachZ (rev2)";
++	compatible = "google,coachz-rev2", "qcom,sc7180";
++};
++
 +/*
-+ * Pompom rev2 is stuffed with a 47k NTC as charger thermistor which currently
++ * CoachZ rev2 is stuffed with a 47k NTC as charger thermistor which currently
 + * is not supported by the PM6150 ADC driver. Disable the charger thermal zone
 + * to avoid using bogus temperature values.
 + */
 +&charger_thermal {
 +	status = "disabled";
  };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
 new file mode 100644
-index 000000000000..e90b73c353bb
+index 000000000000..d23409034e8c
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
-@@ -0,0 +1,14 @@
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
+@@ -0,0 +1,18 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Google Pompom board device tree source
++ * Google CoachZ board device tree source
 + *
 + * Copyright 2021 Google LLC.
 + */
 +
-+#include "sc7180-trogdor-pompom-r3.dts"
++#include "sc7180-trogdor-coachz-r3.dts"
 +#include "sc7180-trogdor-lte-sku.dtsi"
 +
 +/ {
-+	model = "Google Pompom (rev3+) with LTE";
-+	compatible = "google,pompom-sku0", "qcom,sc7180";
++	model = "Google CoachZ (rev3+) with LTE";
++	compatible = "google,coachz-sku0", "qcom,sc7180";
 +};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
++
++&cros_ec_proximity {
++	label = "proximity-wifi-lte";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
 new file mode 100644
-index 000000000000..f8aac63a53ef
+index 000000000000..a02d2d57c78c
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
 @@ -0,0 +1,15 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Google Pompom board device tree source
++ * Google CoachZ board device tree source
 + *
 + * Copyright 2021 Google LLC.
 + */
 +
 +/dts-v1/;
 +
-+#include "sc7180-trogdor-pompom.dtsi"
++#include "sc7180-trogdor-coachz.dtsi"
 +
 +/ {
-+	model = "Google Pompom (rev3+)";
-+	compatible = "google,pompom", "qcom,sc7180";
++	model = "Google CoachZ (rev3+)";
++	compatible = "google,coachz", "qcom,sc7180";
 +};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-index d253a08f6fc8..1a51ebfe8fb4 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-@@ -107,6 +107,37 @@ ap_ts: touchscreen@10 {
- 	};
- };
- 
-+&keyboard_controller {
-+	function-row-physmap = <
-+		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-+		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-+		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-+		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-+		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-+		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-+		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-+		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-+		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-+		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-+	>;
-+	linux,keymap = <
-+		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-+		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-+		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-+		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-+		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
-+		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
-+		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
-+		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-+		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-+		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-+
-+		MATRIX_KEY(0x03, 0x09, KEY_SLEEP)	/* LOCK key */
-+
-+		CROS_STD_MAIN_KEYMAP
-+	>;
-+};
-+
- &panel {
- 	compatible = "kingdisplay,kd116n21-30nv-a010";
- };
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
