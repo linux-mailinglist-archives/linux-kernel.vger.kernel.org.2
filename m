@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D7633888C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DEE338863
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhCLJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:24:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232818AbhCLJXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:23:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B66964F09;
-        Fri, 12 Mar 2021 09:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615540446;
-        bh=AJdZGmDhGxx5TmaTmC4ylxcirQVAw3oTrq1wVYQkWIc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tIzgn2RzuDUqFs6JA8jPyB1rKqAlw0BdycnN723xfNMkojnk98D47MLvUsxzpM9FZ
-         bvXz4KAh4qTRTj7gs6mi1rTb++iAieW4yVVmrW6p8O3qSghoTf3wz2hKWLASqXee6m
-         ktqMWPjTUi1O3XLUbHBs3zyQUhqGbtOtAtNUo3cAxnS2WKFcHd/8rqF7QjQeQvJIXC
-         CywVmBYGkJV2BkmSjyom3nYbsxUNUsNE2ALKrrS1iiQdmrPoRsOxYFZqalqny0qqAY
-         4p0BP3NS3B+m89goRXqgPpfbJhr6/lqTKLRJMWm05e+kI/hCY/jGYKPk/4s8SS0th9
-         z3E+Iyp7GfIrQ==
-Date:   Fri, 12 Mar 2021 10:13:55 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     syzbot <syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in __i2c_transfer
-Message-ID: <20210312091345.GA5294@ninjato>
-References: <000000000000f564d305bd521b83@google.com>
+        id S232547AbhCLJPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhCLJPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 04:15:03 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994ABC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:02 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id i61so6912898edd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vr0Lv80xX3Xl1L8m7N3BWIS/MyIzX8iL/K8kW4thpIU=;
+        b=CqF/Vmp9d1IQSuSoyVR1p1PonzxnRC7YVWCuT73D3c7/UoVTQwfy4d3lTqaj04mPUQ
+         w6sDy8AQC/jxvaSTTu0yKndZ7nBoRAi41EFLCvhlDfC8iVzFOPC/8fvKvRQIeAiQgh5V
+         KRZ+w8tWAPqNUkdW2da/uoIpNh1yN0K7orKRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vr0Lv80xX3Xl1L8m7N3BWIS/MyIzX8iL/K8kW4thpIU=;
+        b=Iv4odufNLMLoTGFqPw/rTWkHs7xDaFjihLZJCsf8GPOhfR5mSAWd5B2RBuWWin1wtF
+         vsKsfnu3OIye8dEjN/4vf/w2udkuqTo0CahueYzsaWTP2BP8vOMB7CKAdW5JDjc6YCXp
+         Mt514DcdttoHGU/+AV63sW/znyylJT7hcj5Hk3sNxI8yTN4tFcVTnGkYY/ypyFgq3zyS
+         bahjnKMtDqU3u9sQSL5dS4FVSWnrX/48ogXRExLt6u/N/wuHyz/sccLJHKdGjreCUkyM
+         iC+MCZkP5Yqdvl+Lnks6SbMkJQPgT/YAxsRvO0/5K77fwQC/ecZSTUbyp4IoelwKkvQA
+         SUvQ==
+X-Gm-Message-State: AOAM532r23iaTc/J0CQkniDLu4KaEUCDSWOI+pNT3dHO15PmhEhHMHHf
+        NPd6YCgP9l5b7SqAjUnOibpwvw==
+X-Google-Smtp-Source: ABdhPJzojpw5MISuvwhn5uCj+GlJAixi2DNi1NCX+H/oDGcpqgnrVUfFvP7Bn2/KE8Wd2h5/no6lTw==
+X-Received: by 2002:a05:6402:57:: with SMTP id f23mr12757182edu.323.1615540501369;
+        Fri, 12 Mar 2021 01:15:01 -0800 (PST)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id rs24sm2493668ejb.75.2021.03.12.01.15.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 01:15:01 -0800 (PST)
+Subject: Re: [PATCH 14/14] MAINTAINERS: Add entry for the bitmap API
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-15-yury.norov@gmail.com>
+ <YC6HoF2lhSlrYs3j@smile.fi.intel.com> <20210218153424.GA701246@yury-ThinkPad>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <d677abac-ad3e-7483-b808-4b826d3afd66@rasmusvillemoes.dk>
+Date:   Fri, 12 Mar 2021 10:15:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
-Content-Disposition: inline
-In-Reply-To: <000000000000f564d305bd521b83@google.com>
+In-Reply-To: <20210218153424.GA701246@yury-ThinkPad>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/02/2021 16.34, Yury Norov wrote:
+> On Thu, Feb 18, 2021 at 05:28:32PM +0200, Andy Shevchenko wrote:
+>> On Wed, Feb 17, 2021 at 08:05:12PM -0800, Yury Norov wrote:
+>>> Add myself as maintainer for bitmap API.
+>>>
+>>> I'm an author of current implementation of lib/find_bit and an
+>>> active contributor to lib/bitmap. It was spotted that there's no
+>>> maintainer for bitmap API. I'm willing to maintain it.
+>>
+>> Perhaps reviewers as well, like Rasmus, if he is okay with that, of course?
+> 
+> I'll be happy if you and Rasmus join the team. :) Guys, just let me
+> know and I'll update the patch.
+>  
+>> Otherwise, why not?
+>> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure, you can add my name/email as an R: line (or whatever means
+reviewer), and consider this patch (with or without that addition) acked.
 
-On Thu, Mar 11, 2021 at 11:47:17PM -0800, syzbot wrote:
-> Hello,
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    28806e4d Merge tag 'media/v5.12-2' of git://git.kernel.or=
-g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11192342d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6bcf96204c1b8=
-e77
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dffb0b3ffa6cfbc7=
-d7b3f
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1083223ad00=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14345f0ad00000
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
->=20
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 8406 at drivers/i2c/i2c-core-base.c:2021 __i2c_trans=
-fer+0xa87/0x17d0 drivers/i2c/i2c-core-base.c:2021
-
-Yes, it can be argued that userspace should not be able to trigger a
-WARNING. For in-kernel users, the WARN is really helpful, though. I will
-add sanity checks much earlier to i2c-dev.c which will not be that
-noisy.
-
-
---b5gNqxB1S1yM7hjW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBLMNMACgkQFA3kzBSg
-KbY81RAAphTsoj9bYx4Q9CcF+BaB/bjhrPBYMe0/7FklyN2+QHzmJJw003YSMihi
-Nwv9MvnJzoCSKNkkq9gwNA7DTcyNJ3z9ahepRdrRjlzsPbSfCrlMPilL6uIV1AKJ
-NSC3r4+u+nIop+aaC8lYKydsYWrl/sjsgVRb204Ywv68BnESUGrGSYsWAsqdljpG
-B6ReFpkygBzsRu4EMGRMD5z/nwt00h1sXCmgj/lsTkVxj/u3Lr+7PlQnNPlDxJVU
-gX1n2JPKOX50ALnay1crEvCkGbe1mkXmTdGHf6Y+8+d+vhAdORNnTosKPxWQVZ+H
-pWxcajhH2z1/dr/B79pZ/hZhTiIbkM6o3pGH3X7y5rSmB3RdPWUp15hHGCllAbJ3
-cUAICT8coc8kIgQfkidbNDaDuVnaXDlkeqbH+o/7eDXrfmPJXHxiCf4H6nSDFRL4
-G+D3u8IGExEDGQ7iMJh1tHNuuwIJcKNy2I4YejnzmZLZnGsRXFJU2YDYJewfaktJ
-49HhEPYoNhUbFTkfXYbMtcP959H5nGXPsb5S5Rll6DodDabtMNbjNiV3NjAGgM5z
-cjCtYcRE3RGzoDyI23MJcintgbHTIlNWWLGT6iaRBmNJKSXYiiQBB1pr8BASIWku
-AbPJ8rCLDHPG1KqVv3BouN4k7H79Ey80XYg2tMYa4nYLVDh9wTc=
-=pZs9
------END PGP SIGNATURE-----
-
---b5gNqxB1S1yM7hjW--
+Rasmus
