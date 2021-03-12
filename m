@@ -2,98 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1393398B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A80B3398B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbhCLUvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235010AbhCLUvd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:51:33 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7499EC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:51:33 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id a8so5973945plp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:51:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vDrjln050ZWSD2n57JKYsjj24mDG3Mu6cQfXoag8kqA=;
-        b=o1+mWphvFvKetD8P/Z44PWPcjEPdOlxMP5SOQC16Tskp42s9q00lujmGOIFQWhhEaV
-         1ink7OOHVOKxPCCC+xqBCilm4hYNtfYqXA93rZbxOrH+fXw4mCuIhAwvWzxV35JiV+lI
-         F1bLUj/xMyG+8vXBR7aexe3fAaM4Tn1okrASG7GtrXc5qspcBWXZQM7rDaB+VFV0N60v
-         kqKR+njm735YkwAXVBzJHHZZE38U649WTUg1VLZeSW1oWofsuolBzXu7AdqcTUoHQVzv
-         iadBzD/YkaVT31MESOfV0PH2BVjAOVGU26qG6tzmz3UOVKovVIWHocspnwgnzALbc0so
-         pMqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vDrjln050ZWSD2n57JKYsjj24mDG3Mu6cQfXoag8kqA=;
-        b=m+SZ51A5Dg4ByzxK5w3x05VVBKOkImsvk5boCHwPm7nches8S4wltIXASsHwJVlRy8
-         uwP9vANeBXcFiBioNlFnRaYddyCK6qZt3XpVBEfk9RMxo92CWoCQC1/heCb/5ngKqrEp
-         uBg4Z15oQOKlI2sW7oYf1jTmZOUQe71//F9kiLkxJR57wYY4/NVwIOrufRqq7qDWm3sf
-         nlq4VZXd7VkUiN0AiNW7ZEhc3M95YCeGh3PLaa6GtBj5ejKCIHbgNTIrr3u6Ttbeuhdu
-         5c1ihBHF7pdEvA6mla77bbAk+tqfnxbJpt0+OB6oLoyHn8zqSB1KQZiCGgTWP1YWJ9l1
-         IzIg==
-X-Gm-Message-State: AOAM533EKEbdQ/oawMzAydeYiLyDhXLHS/WA0rEOf6Qd8oKQgnJPCAOv
-        38CAlGVbVUvSwXNo57veSWGyGA==
-X-Google-Smtp-Source: ABdhPJyOxdn4Hc2Qvr6pK+LxEXDtcg+Su4dKCMB6KabV21efjdTrwWXlyMlnQo+c+UfqNxWghTBHkQ==
-X-Received: by 2002:a17:90a:a414:: with SMTP id y20mr122695pjp.77.1615582292700;
-        Fri, 12 Mar 2021 12:51:32 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id a144sm6710227pfd.200.2021.03.12.12.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:51:32 -0800 (PST)
-Date:   Fri, 12 Mar 2021 12:51:25 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, tj@kernel.org,
-        rdunlap@infradead.org, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YEvUTatAjIoP7dPD@google.com>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <20210304231946.2766648-2-vipinsh@google.com>
- <YEpod5X29YqMhW/g@blackbook>
- <YEvFldKZ8YQM+t2q@google.com>
+        id S235082AbhCLUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:52:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235010AbhCLUv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:51:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 390AB64F80;
+        Fri, 12 Mar 2021 20:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615582316;
+        bh=n7hLKA65MLnWnyhDn1QhiMolk6b6aTzL+tooLHSLrFs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fJxryTk9stYCZcWS8oAHCEKZjJxeGQLihWJm2RGh3VtYRlf9UtRFBW/GTCF5Kl75f
+         k2Qa16Pf4Ol5Q7gMEe8U3qCFFrIaAMYDLINmREe01y7iRaNsSAl40SybnsRR3nTH96
+         82IlW358XXHj91IqoyEjFfTn+txHAlz4N88fNJJdGul7VurYfbxk21CKt8nHNucZa/
+         NHM69krP+jXcffSeJJ5rFVlZJZV6nQWjdbAdGJruXUmGh/ao7I6qoR2H+AMdBH/A+X
+         C9Wsv9qwfYeA7ORvE8kdLEVWnLJHpbil1b/4A/3DsN1DvA7VTO/fMNy6OD/qNyacdL
+         npi5s6LcJFXig==
+Date:   Fri, 12 Mar 2021 13:51:51 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fangrui Song <maskray@google.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] gcov: fix clang-11+ support
+Message-ID: <20210312205151.orzr7hxhxngnftxi@archlinux-ax161>
+References: <20210312192139.2503087-1-ndesaulniers@google.com>
+ <20210312195815.2hnhuyk3qo4p7ysr@archlinux-ax161>
+ <CAKwvOdnTVobEoOR2n41qsGMZ50ZYBa8zOvV+Lek86r84racidA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEvFldKZ8YQM+t2q@google.com>
+In-Reply-To: <CAKwvOdnTVobEoOR2n41qsGMZ50ZYBa8zOvV+Lek86r84racidA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021, Vipin Sharma wrote:
-> On Thu, Mar 11, 2021 at 07:59:03PM +0100, Michal Koutný wrote:
-> > > +#ifndef CONFIG_KVM_AMD_SEV
-> > > +/*
-> > > + * When this config is not defined, SEV feature is not supported and APIs in
-> > > + * this file are not used but this file still gets compiled into the KVM AMD
-> > > + * module.
-> > > + *
-> > > + * We will not have MISC_CG_RES_SEV and MISC_CG_RES_SEV_ES entries in the enum
-> > > + * misc_res_type {} defined in linux/misc_cgroup.h.
-> > BTW, was there any progress on conditioning sev.c build on
-> > CONFIG_KVM_AMD_SEV? (So that the defines workaround isn't needeed.)
+On Fri, Mar 12, 2021 at 12:14:42PM -0800, Nick Desaulniers wrote:
+> On Fri, Mar 12, 2021 at 11:58 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > On Fri, Mar 12, 2021 at 11:21:39AM -0800, Nick Desaulniers wrote:
+> > > LLVM changed the expected function signatures for llvm_gcda_start_file()
+> > > and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
+> > > or newer may have noticed their kernels failing to boot due to a panic
+> > > when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
+> > > the function signatures so calling these functions doesn't panic the
+> > > kernel.
+> > >
+> > > When we drop clang-10 support from the kernel, we should carefully
+> > > update the original implementations to try to preserve git blame,
+> > > deleting these implementations.
+> > >
+> > > Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
+> > > Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
+> > > Cc: Fangrui Song <maskray@google.com>
+> > > Reported-by: Prasad Sodagudi<psodagud@quicinc.com>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> > I can reproduce the panic (as a boot hang) in QEMU before this patch and
+> > it is resolved after it so:
+> >
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> > However, the duplication hurts :( would it potentially be better to just
+> > do the full update to clang-11+ and require it for CONFIG_GCOV_KERNEL?
+> >
+> >     depends on CC_IS_GCC || CLANG_VERSION >= 110000?
 > 
-> Tom, Brijesh,
-> Is this something you guys thought about or have some plans to do in the
-> future? Basically to not include sev.c in compilation if
-> CONFIG_KVM_AMD_SEV is disabled.
+> I'm not opposed, and value your input on the matter.  Either way, this
+> will need to be back ported to stable.  Should we be concerned with
+> users of stable's branches before we mandated clang-10 as the minimum
+> supported version?
+> 
+> commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
+> 
+> first landed in v5.10-rc1. Does not exist in v5.4.y.  The diff you
 
-It's crossed my mind, but the number of stubs needed made me back off.  I'm
-certainly not opposed to the idea, it's just not a trivial change.
+Hmmm fair point, I did not realize that this support had landed in 5.2
+meaning that 5.4 needs it as well at 5.10.
+
+> suggest is certainly easier to review to observe the differences, and
+> I we don't have users of the latest Android or CrOS kernels using
+> older clang, but I suspect there may be older kernel versions where if
+> they try to upgrade their version of clang, GCOV support will regress
+> for them.  Though, I guess that's fine since either approach will fix
+> this for them. I guess if they don't want to upgrade from clang-10 say
+> for example, then this approach can be backported to stable.
+
+If people are happy with this approach, it is the more "stable friendly"
+change because it fixes it for all versions of clang that should have
+been supported at their respective times. Maybe it is worthwhile to do
+both? This change gets picked up with a Cc: stable@vger.kernel.org then
+in a follow up patch, we remove the #ifdef's and gate GCOV on clang-11?
+The CLANG_VERSION string is usually what we will search for when
+removing old workarounds. Additionally, your patch could just use
+
+#if CLANG_VERSION <= 110000
+
+to more easily see this. I have no strong opinion one way or the other
+though. If people are happy with this approach, let's do it.
+
+Cheers,
+Nathan
+
+> >
+> > > ---
+> > >  kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 69 insertions(+)
+> > >
+> > > diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
+> > > index c94b820a1b62..20e6760ec05d 100644
+> > > --- a/kernel/gcov/clang.c
+> > > +++ b/kernel/gcov/clang.c
+> > > @@ -75,7 +75,9 @@ struct gcov_fn_info {
+> > >
+> > >       u32 num_counters;
+> > >       u64 *counters;
+> > > +#if __clang_major__ < 11
+> > >       const char *function_name;
+> > > +#endif
+> > >  };
+> > >
+> > >  static struct gcov_info *current_info;
+> > > @@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
+> > >  }
+> > >  EXPORT_SYMBOL(llvm_gcov_init);
+> > >
+> > > +#if __clang_major__ < 11
+> > >  void llvm_gcda_start_file(const char *orig_filename, const char version[4],
+> > >               u32 checksum)
+> > >  {
+> > > @@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
+> > >       current_info->checksum = checksum;
+> > >  }
+> > >  EXPORT_SYMBOL(llvm_gcda_start_file);
+> > > +#else
+> > > +void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
+> > > +{
+> > > +     current_info->filename = orig_filename;
+> > > +     current_info->version = version;
+> > > +     current_info->checksum = checksum;
+> > > +}
+> > > +EXPORT_SYMBOL(llvm_gcda_start_file);
+> > > +#endif
+> > >
+> > > +#if __clang_major__ < 11
+> > >  void llvm_gcda_emit_function(u32 ident, const char *function_name,
+> > >               u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
+> > >  {
+> > > @@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
+> > >       list_add_tail(&info->head, &current_info->functions);
+> > >  }
+> > >  EXPORT_SYMBOL(llvm_gcda_emit_function);
+> > > +#else
+> > > +void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
+> > > +             u8 use_extra_checksum, u32 cfg_checksum)
+> > > +{
+> > > +     struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
+> > > +
+> > > +     if (!info)
+> > > +             return;
+> > > +
+> > > +     INIT_LIST_HEAD(&info->head);
+> > > +     info->ident = ident;
+> > > +     info->checksum = func_checksum;
+> > > +     info->use_extra_checksum = use_extra_checksum;
+> > > +     info->cfg_checksum = cfg_checksum;
+> > > +     list_add_tail(&info->head, &current_info->functions);
+> > > +}
+> > > +EXPORT_SYMBOL(llvm_gcda_emit_function);
+> > > +#endif
+> > >
+> > >  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
+> > >  {
+> > > @@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
+> > >       }
+> > >  }
+> > >
+> > > +#if __clang_major__ < 11
+> > >  static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
+> > >  {
+> > >       size_t cv_size; /* counter values size */
+> > > @@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
+> > >       kfree(fn_dup);
+> > >       return NULL;
+> > >  }
+> > > +#else
+> > > +static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
+> > > +{
+> > > +     size_t cv_size; /* counter values size */
+> > > +     struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
+> > > +                     GFP_KERNEL);
+> > > +     if (!fn_dup)
+> > > +             return NULL;
+> > > +     INIT_LIST_HEAD(&fn_dup->head);
+> > > +
+> > > +     cv_size = fn->num_counters * sizeof(fn->counters[0]);
+> > > +     fn_dup->counters = vmalloc(cv_size);
+> > > +     if (!fn_dup->counters) {
+> > > +             kfree(fn_dup);
+> > > +             return NULL;
+> > > +     }
+> > > +
+> > > +     memcpy(fn_dup->counters, fn->counters, cv_size);
+> > > +
+> > > +     return fn_dup;
+> > > +}
+> > > +#endif
+> > >
+> > >  /**
+> > >   * gcov_info_dup - duplicate profiling data set
+> > > @@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
+> > >   * gcov_info_free - release memory for profiling data set duplicate
+> > >   * @info: profiling data set duplicate to free
+> > >   */
+> > > +#if __clang_major__ < 11
+> > >  void gcov_info_free(struct gcov_info *info)
+> > >  {
+> > >       struct gcov_fn_info *fn, *tmp;
+> > > @@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
+> > >       kfree(info->filename);
+> > >       kfree(info);
+> > >  }
+> > > +#else
+> > > +void gcov_info_free(struct gcov_info *info)
+> > > +{
+> > > +     struct gcov_fn_info *fn, *tmp;
+> > > +
+> > > +     list_for_each_entry_safe(fn, tmp, &info->functions, head) {
+> > > +             vfree(fn->counters);
+> > > +             list_del(&fn->head);
+> > > +             kfree(fn);
+> > > +     }
+> > > +     kfree(info->filename);
+> > > +     kfree(info);
+> > > +}
+> > > +#endif
+> > >
+> > >  #define ITER_STRIDE  PAGE_SIZE
+> > >
+> > >
+> > > base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
+> > > --
+> > > 2.31.0.rc2.261.g7f71774620-goog
+> > >
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
