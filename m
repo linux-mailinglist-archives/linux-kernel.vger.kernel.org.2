@@ -2,272 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CB433867B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FCF338681
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhCLHT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:19:29 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13595 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbhCLHTO (ORCPT
+        id S230189AbhCLHXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhCLHXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:19:14 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DxcZZ5W5Pz19G6d;
-        Fri, 12 Mar 2021 15:17:10 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 12 Mar 2021 15:18:52 +0800
-Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-References: <20210306082859.179541-1-yangjihong1@huawei.com>
- <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com>
- <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
- <02146240-e532-1c52-0589-bfff3fbe5166@huawei.com>
- <CAM9d7cjHAEhc-g4Fs3muwQrMV=Os5cn6NgOkf4vBeE+QK-Wu=w@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <cc7811c5-2d24-29ac-5a0c-71261a699a39@huawei.com>
-Date:   Fri, 12 Mar 2021 15:18:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 12 Mar 2021 02:23:14 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C8FC061574;
+        Thu, 11 Mar 2021 23:23:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=V8EvGHE3k1YiRgMTrp7qLTuS6RkrDfzz7tTWOsyRx1s=; b=IV+NIpbCNRcnzQeairHNU++m3P
+        M0+ScjK2vSAC9UaJMEB/U2JPPw89zKdm20JfMTETRTQE764i04dLcOFCWVH5hlNfKs4RF3LYInms7
+        t+F7IlBWzSzlWXDpWlPJ7KuKO2nDMTl+zwqa8XB2A2txK5hjqDWr+x5Kk/S6UDMUQhFIQVum7J5tn
+        I9Dk5LFIshWH00OtkPBE0N/mT2ZqKsCvX2qmriGgyOtz7HwvcFvXKXg8sKgu2xNkPyM/1EmwLlsmS
+        cdySHkcDopAAkNwgXujV+W/TFMh1U3tjQ0Oc1PuFoxKOaxouoqOxt5iqr+Ni/IakUhk3UhO+4cH6Q
+        hToUQCOw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKc8a-0011F1-La; Fri, 12 Mar 2021 07:23:10 +0000
+Subject: Re: [PATCH] net: ethernet: dec: tulip: Random spelling fixes
+ throughout the file pnic2.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210312070542.31309-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fe57b506-b737-e3a5-025f-a9cad45a1dca@infradead.org>
+Date:   Thu, 11 Mar 2021 23:23:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cjHAEhc-g4Fs3muwQrMV=Os5cn6NgOkf4vBeE+QK-Wu=w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210312070542.31309-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/11/21 11:05 PM, Bhaskar Chowdhury wrote:
+> 
+> Random spelling fixes throughout the file.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  drivers/net/ethernet/dec/tulip/pnic2.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/dec/tulip/pnic2.c b/drivers/net/ethernet/dec/tulip/pnic2.c
+> index 412adaa7fdf8..04daffb8db2a 100644
+> --- a/drivers/net/ethernet/dec/tulip/pnic2.c
+> +++ b/drivers/net/ethernet/dec/tulip/pnic2.c
+> @@ -107,7 +107,7 @@ void pnic2_start_nway(struct net_device *dev)
+>           */
+>  	csr14 = (ioread32(ioaddr + CSR14) & 0xfff0ee39);
+> 
+> -        /* bit 17 - advetise 100baseTx-FD */
+> +        /* bit 17 - advertise 100baseTx-FD */
 
-Hello,
-On 2021/3/12 13:49, Namhyung Kim wrote:
-> Hi,
-> 
-> On Fri, Mar 12, 2021 at 12:24 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->> Hello, Namhyung
->>
->> On 2021/3/11 22:42, Namhyung Kim wrote:
->>> Hi,
->>>
->>> On Thu, Mar 11, 2021 at 5:48 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> On 2021/3/6 16:28, Yang Jihong wrote:
->>>>> In hist__find_annotations function, since have a hist_entry per IP for the same
->>>>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
->>>>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
->>>
->>> I'm not sure it's still true that we have a hist_entry per IP.
->>> Afaik the default sort key is comm,dso,sym which means it should have a single
->>> hist_entry for each symbol.  It seems like an old comment..
->>>
->> Emm, yes, we have a hist_entry for per IP.
->> a member named "sym" in struct "hist_entry" points to symbol,
->> different IP may point to the same symbol.
-> 
-> Are you sure about this?  It seems like a bug then.
-> 
-Yes, now each IP corresponds to a hist_entry :)
+OK above. But:
+https://en.wikipedia.org/wiki/Autonegotiation
 
-Last week I found that some sample events were missing when perf 
-annotate in stdio mode, so I went through the annotate code carefully.
+>          if (tp->sym_advertise & 0x0100) csr14 |= 0x00020000;
+> 
+>          /* bit 16 - advertise 100baseTx-HD */
+> @@ -116,7 +116,7 @@ void pnic2_start_nway(struct net_device *dev)
+>          /* bit 6 - advertise 10baseT-HD */
+>          if (tp->sym_advertise & 0x0020) csr14 |= 0x00000040;
+> 
+> -        /* Now set bit 12 Link Test Enable, Bit 7 Autonegotiation Enable
+> +        /* Now set bit 12 Link Test Enable, Bit 7 Auto negotiation Enable
+>           * and bit 0 Don't PowerDown 10baseT
+>           */
+>          csr14 |= 0x00001184;
+> @@ -157,7 +157,7 @@ void pnic2_start_nway(struct net_device *dev)
+>          /* all set up so now force the negotiation to begin */
+> 
+>          /* read in current values and mask off all but the
+> -	 * Autonegotiation bits 14:12.  Writing a 001 to those bits
+> +	 * Auto negotiation bits 14:12.  Writing a 001 to those bits
+>           * should start the autonegotiation
+>           */
+>          csr12 = (ioread32(ioaddr + CSR12) & 0xffff8fff);
+> @@ -290,7 +290,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
+>  	                csr14 = (ioread32(ioaddr + CSR14) & 0xffffff7f);
+>                          iowrite32(csr14,ioaddr + CSR14);
+> 
+> -                        /* what should we do when autonegotiate fails?
+> +                        /* what should we do when auto negotiate fails?
+>                           * should we try again or default to baseline
+>                           * case.  I just don't know.
+>                           *
+> --
 
-The event handling process is as follows:
-process_sample_event
-   evsel_add_sample
-     hists__add_entry
-       __hists__add_entry
-         hists__findnew_entry
-           hist_entry__new                  -> here allock new hist_entry
 
-     hist_entry__inc_addr_samples
-       symbol__inc_addr_samples
-         symbol__hists
-           annotated_source__new            -> here alloc annotate soruce
-           annotated_source__alloc_histograms -> here alloc histograms
+-- 
+~Randy
 
-By bugs, do you mean there's something wrong?
->>
->> The hist_entry struct is as follows:
->> struct hist_entry {
->>       ...
->>       struct map_symbol ms;
->>       ...
->> };
->> struct map_symbol {
->>       struct maps *maps;
->>       struct map *map;
->>       struct symbol *sym;
->> };
->>
->>>>>
->>>>> However, there is a problem, for example, run the following command:
->>>>>
->>>>>     # perf record -e branch-misses -e branch-instructions -a sleep 1
->>>>>
->>>>> perf.data file contains different types of sample event.
->>>>>
->>>>> If the same IP sample event exists in branch-misses and branch-instructions,
->>>>> this event uses the same symbol. When annotate branch-misses events, notes->src
->>>>> corresponding to this event is set to null, as a result, when annotate
->>>>> branch-instructions events, this event is skipped and no annotate is output.
->>>>>
->>>>> Solution of this patch is to add a u8 member to struct sym_hist and use a bit to
->>>>> indicate whether the symbol has been processed.
->>>>> Because different types of event correspond to different sym_hist, no conflict
->>>>> occurs.
->>>>> ---
->>>>>     tools/perf/builtin-annotate.c | 22 ++++++++++++++--------
->>>>>     tools/perf/util/annotate.h    |  4 ++++
->>>>>     2 files changed, 18 insertions(+), 8 deletions(-)
->>>>>
->>>>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
->>>>> index a23ba6bb99b6..c8c67892ae82 100644
->>>>> --- a/tools/perf/builtin-annotate.c
->>>>> +++ b/tools/perf/builtin-annotate.c
->>>>> @@ -372,15 +372,21 @@ static void hists__find_annotations(struct hists *hists,
->>>>>                         if (next != NULL)
->>>>>                                 nd = next;
->>>>>                 } else {
->>>>> -                     hist_entry__tty_annotate(he, evsel, ann);
->>>>> +                     struct sym_hist *h = annotated_source__histogram(notes->src,
->>>>> +                                                                      evsel->idx);
->>>>> +
->>>>> +                     if (h->processed == 0) {
->>>>> +                             hist_entry__tty_annotate(he, evsel, ann);
->>>>> +
->>>>> +                             /*
->>>>> +                              * Since we have a hist_entry per IP for the same
->>>>> +                              * symbol, set processed flag of evsel in sym_hist
->>>>> +                              * to signal we already processed this symbol.
->>>>> +                              */
->>>>> +                             h->processed = 1;
->>>>> +                     }
->>>>> +
->>>>>                         nd = rb_next(nd);
->>>>> -                     /*
->>>>> -                      * Since we have a hist_entry per IP for the same
->>>>> -                      * symbol, free he->ms.sym->src to signal we already
->>>>> -                      * processed this symbol.
->>>>> -                      */
->>>>> -                     zfree(&notes->src->cycles_hist);
->>>>> -                     zfree(&notes->src);
->>>>>                 }
->>>>>         }
->>>>>     }
->>>>> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
->>>>> index 096cdaf21b01..89872bfdc958 100644
->>>>> --- a/tools/perf/util/annotate.h
->>>>> +++ b/tools/perf/util/annotate.h
->>>>> @@ -228,6 +228,10 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
->>>>>     struct sym_hist {
->>>>>         u64                   nr_samples;
->>>>>         u64                   period;
->>>>> +
->>>>> +     u8                    processed  : 1, /* whether symbol has been processed, used for annotate */
->>>>> +                           __reserved : 7;
->>>
->>> I think just a bool member is fine.
->>>
->> OK, I have submitted the v2 patch and changed to bool member, new patch
->> is as follows, look forward to your review:
->> https://lore.kernel.org/patchwork/patch/1393901/
->>
->>>>> +
->>>>>         struct sym_hist_entry addr[];
->>>>>     };
->>>>>
->>>>>
->>>> Please check whether this solution is feasible, look forward to your review.
->>>
->>> What about this?  (not tested)
->>>
->>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
->>> index a23ba6bb99b6..a91fe45bd69f 100644
->>> --- a/tools/perf/builtin-annotate.c
->>> +++ b/tools/perf/builtin-annotate.c
->>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
->>>                   } else {
->>>                           hist_entry__tty_annotate(he, evsel, ann);
->>>                           nd = rb_next(nd);
->>> -                       /*
->>> -                        * Since we have a hist_entry per IP for the same
->>> -                        * symbol, free he->ms.sym->src to signal we already
->>> -                        * processed this symbol.
->>> -                        */
->>> -                       zfree(&notes->src->cycles_hist);
->>> -                       zfree(&notes->src);
->>>                   }
->>>           }
->>>    }
->>>
->> This solution may have the following problem:
->> For example, if two sample events are in two different processes but in
->> the same symbol, repeated output may occur.
->> Therefore, a flag is required to indicate whether the symbol has been
->> processed to avoid repeated output.
-> 
-> Hmm.. ok.  Yeah we don't care about the processes here.
-> Then we should remove it from the sort key like below:
-> 
-> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
->                  if (setup_sorting(annotate.session->evlist) < 0)
->                          usage_with_options(annotate_usage, options);
->          } else {
-> +               sort_order = "dso,symbol";
->                  if (setup_sorting(NULL) < 0)
->                          usage_with_options(annotate_usage, options);
->          }
-> 
-> 
-Are you referring to this solution?
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists 
-*hists,
-                 } else {
-                         hist_entry__tty_annotate(he, evsel, ann);
-                         nd = rb_next(nd);
--                       /*
--                        * Since we have a hist_entry per IP for the same
--                        * symbol, free he->ms.sym->src to signal we already
--                        * processed this symbol.
--                        */
--                       zfree(&notes->src->cycles_hist);
--                       zfree(&notes->src);
-                 }
-         }
-  }
-@@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
-                 if (setup_sorting(annotate.session->evlist) < 0)
-                         usage_with_options(annotate_usage, options);
-         } else {
-+               sort_order = "dso,symbol";
-                 if (setup_sorting(NULL) < 0)
-                         usage_with_options(annotate_usage, options);
-         }
-It seems to be a better solution without adding new member.
-I just tested it and it works.
-
-If we decide to use this solution, I'll resubmit a v3 patch.
-> Thanks,
-> Namhyung
-> .
-> 
-Thanks,
-Yang
-.
