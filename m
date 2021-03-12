@@ -2,250 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5259F3391E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735273391A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbhCLPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232516AbhCLPoM (ORCPT
+        id S232369AbhCLPoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:44:07 -0500
+Received: from outbound-smtp54.blacknight.com ([46.22.136.238]:36319 "EHLO
+        outbound-smtp54.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231378AbhCLPnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:44:12 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47248C061763;
-        Fri, 12 Mar 2021 07:44:12 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 6AD5A1F46E70
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 321EA4800DC; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 04/38] dt-bindings: power: supply: bq25890: Convert to DT schema format
-Date:   Fri, 12 Mar 2021 16:43:23 +0100
-Message-Id: <20210312154357.1561730-5-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+        Fri, 12 Mar 2021 10:43:33 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp54.blacknight.com (Postfix) with ESMTPS id 9ED55FB0B4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:31 +0000 (GMT)
+Received: (qmail 19736 invoked from network); 12 Mar 2021 15:43:31 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:31 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/7 v4] Introduce a bulk order-0 page allocator with two in-tree users
+Date:   Fri, 12 Mar 2021 15:43:24 +0000
+Message-Id: <20210312154331.32229-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format.
+This series is based on top of Matthew Wilcox's series "Rationalise
+__alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+test and are not using Andrew's tree as a baseline, I suggest using the
+following git tree
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../bindings/power/supply/bq25890.txt         |  60 ---------
- .../bindings/power/supply/bq25890.yaml        | 125 ++++++++++++++++++
- 2 files changed, 125 insertions(+), 60 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/supply/bq25890.txt
- create mode 100644 Documentation/devicetree/bindings/power/supply/bq25890.yaml
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v4r2
 
-diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.txt b/Documentation/devicetree/bindings/power/supply/bq25890.txt
-deleted file mode 100644
-index 805040c6fff9..000000000000
---- a/Documentation/devicetree/bindings/power/supply/bq25890.txt
-+++ /dev/null
-@@ -1,60 +0,0 @@
--Binding for TI bq25890 Li-Ion Charger
--
--This driver will support the bq25892, the bq25896 and the bq25890. There are
--other ICs in the same family but those have not been tested.
--
--Required properties:
--- compatible: Should contain one of the following:
--    * "ti,bq25890"
--    * "ti,bq25892"
--    * "ti,bq25895"
--    * "ti,bq25896"
--- reg: integer, i2c address of the device.
--- interrupts: interrupt line;
--- ti,battery-regulation-voltage: integer, maximum charging voltage (in uV);
--- ti,charge-current: integer, maximum charging current (in uA);
--- ti,termination-current: integer, charge will be terminated when current in
--    constant-voltage phase drops below this value (in uA);
--- ti,precharge-current: integer, maximum charge current during precharge
--    phase (in uA);
--- ti,minimum-sys-voltage: integer, when battery is charging and it is below
--    minimum system voltage, the system will be regulated above
--    minimum-sys-voltage setting (in uV);
--- ti,boost-voltage: integer, VBUS voltage level in boost mode (in uV);
--- ti,boost-max-current: integer, maximum allowed current draw in boost mode
--    (in uA).
--
--Optional properties:
--- ti,boost-low-freq: boolean, if present boost mode frequency will be 500kHz,
--    otherwise 1.5MHz;
--- ti,use-ilim-pin: boolean, if present the ILIM resistor will be used and the
--    input current will be the lower between the resistor setting and the IINLIM
--    register setting;
--- ti,thermal-regulation-threshold: integer, temperature above which the charge
--    current is lowered, to avoid overheating (in degrees Celsius). If omitted,
--    the default setting will be used (120 degrees);
--- ti,ibatcomp-micro-ohms: integer, value of a resistor in series with
--    the battery;
--- ti,ibatcomp-clamp-microvolt: integer, maximum charging voltage adjustment due
--    to expected voltage drop on in-series resistor;
--
--Example:
--
--bq25890 {
--	compatible = "ti,bq25890";
--	reg = <0x6a>;
--
--	interrupt-parent = <&gpio1>;
--	interrupts = <16 IRQ_TYPE_EDGE_FALLING>;
--
--	ti,battery-regulation-voltage = <4200000>;
--	ti,charge-current = <1000000>;
--	ti,termination-current = <50000>;
--	ti,precharge-current = <128000>;
--	ti,minimum-sys-voltage = <3600000>;
--	ti,boost-voltage = <5000000>;
--	ti,boost-max-current = <1000000>;
--
--	ti,use-ilim-pin;
--	ti,thermal-regulation-threshold = <120>;
--};
-diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.yaml b/Documentation/devicetree/bindings/power/supply/bq25890.yaml
-new file mode 100644
-index 000000000000..de6e03ec120c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/bq25890.yaml
-@@ -0,0 +1,125 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Sebastian Reichel
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/bq25890.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Binding for bq25890, bq25892, bq25895 and bq25896 Li-Ion Charger
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+allOf:
-+  - $ref: power-supply.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,bq25890
-+      - ti,bq25892
-+      - ti,bq25895
-+      - ti,bq25896
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  ti,battery-regulation-voltage:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: maximum charging voltage (in uV)
-+
-+  ti,charge-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: maximum charging current (in uA)
-+
-+  ti,termination-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      charge will be terminated when current in constant-voltage phase
-+      drops below this value (in uA)
-+
-+  ti,precharge-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: maximum charge current during precharge phase (in uA)
-+
-+  ti,minimum-sys-voltage:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      when battery is charging and it is below minimum system voltage,
-+      the system will be regulated above minimum-sys-voltage setting (in uV)
-+
-+  ti,boost-voltage:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: VBUS voltage level in boost mode (in uV)
-+
-+  ti,boost-max-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: maximum allowed current draw in boost mode (in uA)
-+
-+  ti,boost-low-freq:
-+    description: boost mode frequency will be 500kHz, otherwise 1.5MHz
-+    type: boolean
-+
-+  ti,use-ilim-pin:
-+    description: |
-+      ILIM resistor will be used and the input current will be the lower
-+      between the resistor setting and the IINLIM register setting
-+    type: boolean
-+
-+  ti,thermal-regulation-threshold:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      temperature above which the charge current is lowered, to avoid overheating
-+      (in degrees Celsius). If omitted, the default setting will be used (120 degrees)
-+
-+  ti,ibatcomp-micro-ohms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: value of a resistor in series with the battery (in Micro Ohms)
-+
-+  ti,ibatcomp-clamp-microvolt:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: max. charging voltage adjustment due to expected voltage drop on in-series resistor
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - ti,battery-regulation-voltage
-+  - ti,charge-current
-+  - ti,termination-current
-+  - ti,precharge-current
-+  - ti,minimum-sys-voltage
-+  - ti,boost-voltage
-+  - ti,boost-max-current
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      charger@6a {
-+        compatible = "ti,bq25890";
-+        reg = <0x6a>;
-+
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <16 IRQ_TYPE_EDGE_FALLING>;
-+
-+        ti,battery-regulation-voltage = <4200000>;
-+        ti,charge-current = <1000000>;
-+        ti,termination-current = <50000>;
-+        ti,precharge-current = <128000>;
-+        ti,minimum-sys-voltage = <3600000>;
-+        ti,boost-voltage = <5000000>;
-+        ti,boost-max-current = <1000000>;
-+
-+        ti,use-ilim-pin;
-+        ti,thermal-regulation-threshold = <120>;
-+      };
-+    };
+Note to Chuck and Jesper -- as this is a cross-subsystem series, you may
+want to send the sunrpc and page_pool pre-requisites (patches 4 and 6)
+directly to the subsystem maintainers. While sunrpc is low-risk, I'm
+vaguely aware that there are other prototype series on netdev that affect
+page_pool. The conflict should be obvious in linux-next.
+
+Changelog since v3
+o Rebase on top of Matthew's series consolidating the alloc_pages API
+o Rename alloced to allocated
+o Split out preparation patch for prepare_alloc_pages
+o Defensive check for bulk allocation or <= 0 pages
+o Call single page allocation path only if no pages were allocated
+o Minor cosmetic cleanups
+o Reorder patch dependencies by subsystem. As this is a cross-subsystem
+  series, the mm patches have to be merged before the sunrpc and net
+  users.
+
+Changelog since v2
+o Prep new pages with IRQs enabled
+o Minor documentation update
+
+Changelog since v1
+o Parenthesise binary and boolean comparisons
+o Add reviewed-bys
+o Rebase to 5.12-rc2
+
+This series introduces a bulk order-0 page allocator with sunrpc and
+the network page pool being the first users. The implementation is not
+particularly efficient and the intention is to iron out what the semantics
+of the API should have for users. Once the semantics are ironed out, it
+can be made more efficient. Despite that, this is a performance-related
+for users that require multiple pages for an operation without multiple
+round-trips to the page allocator. Quoting the last patch for the
+high-speed networking use-case.
+
+    For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
+    redirecting xdp_frame packets into a veth, that does XDP_PASS to
+    create an SKB from the xdp_frame, which then cannot return the page
+    to the page_pool. In this case, we saw[1] an improvement of 18.8%
+    from using the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
+
+Both users in this series are corner cases (NFS and high-speed networks)
+so it is unlikely that most users will see any benefit in the short
+term. Potential other users are batch allocations for page cache
+readahead, fault around and SLUB allocations when high-order pages are
+unavailable. It's unknown how much benefit would be seen by converting
+multiple page allocation calls to a single batch or what difference it may
+make to headline performance. It's a chicken and egg problem given that
+the potential benefit cannot be investigated without an implementation
+to test against.
+
+Light testing passed, I'm relying on Chuck and Jesper to test the target
+users more aggressively but both report performance improvements with
+the initial RFC.
+
+Patch 1 moves GFP flag initialision to prepare_alloc_pages
+
+Patch 2 renames a variable name that is particularly unpopular
+
+Patch 3 adds a bulk page allocator
+
+Patch 4 is a sunrpc cleanup that is a pre-requisite.
+
+Patch 5 is the sunrpc user. Chuck also has a patch which further caches
+	pages but is not included in this series. It's not directly
+	related to the bulk allocator and as it caches pages, it might
+	have other concerns (e.g. does it need a shrinker?)
+
+Patch 6 is a preparation patch only for the network user
+
+Patch 7 converts the net page pool to the bulk allocator for order-0 pages.
+
+ include/linux/gfp.h   |  12 ++++
+ mm/page_alloc.c       | 149 +++++++++++++++++++++++++++++++++++++-----
+ net/core/page_pool.c  | 101 +++++++++++++++++-----------
+ net/sunrpc/svc_xprt.c |  47 +++++++++----
+ 4 files changed, 240 insertions(+), 69 deletions(-)
+
 -- 
-2.30.1
+2.26.2
 
