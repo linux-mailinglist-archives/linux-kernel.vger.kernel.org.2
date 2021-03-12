@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161D23388ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3020C3388F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhCLJsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        id S233029AbhCLJsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:48:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhCLJrv (ORCPT
+        with ESMTP id S232909AbhCLJrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:47:51 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19775C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:51 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so14781494wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:51 -0800 (PST)
+        Fri, 12 Mar 2021 04:47:52 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFA2C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:52 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id e10so4417615wro.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FaOSlT3H+eLXLTdCz81SgFAQniGwqDSS0DXaq2Iu+DQ=;
-        b=KiZ4XpaI61DeKGuGWBl7FK9Y5syYuFXSX02jgJnKdo5mMroLsTF4k0qdKK4z8qu4ZE
-         IYuzbaZXcXEehNeTOGANduXzjvCFt3O9I2VNdFxF2ubIsi216dYjkqrkYgejgQB8E7mN
-         WsN0LksSO8bu1HYw+7f+yTDrh3T3bXFh3Rqu355eNwcQXAFPfypEwZ3j8NlR3jTWs5dh
-         8R9hDO+h4ciNlJCi1SKIxZ444K1JWLqmGF51CAIWK9m2E69xOVR4pxM6utG/o8lfRdva
-         xmDhUjoVz9W66ju6i4Hym9mPMkM9FpprKMMZE0xR6LWY3PPGY6NaMRgO/qgk0zHqZJGZ
-         9AkQ==
+        bh=GvcOU9KB17xhaNjCrnAPnFFy7MF4/6/f5i41ACjeLUY=;
+        b=IBfRbWkpboIyMwMp/jPVoOSWulevaUTPPqVD+jSxC3pzYsUkhwZm+8uDnHXXA6srhg
+         Pk1j1KpiyHY4EbrBHxwnrzpNyIJQmQBeL4ouopXljRHdyBRKxr08UWUtGJ+dCYY9CCyY
+         BS+JOSNdFRrwsdTnSelJhlI7MoRFhmF2cmB3x8n2ZUdSxlH65FOlRB2SjUkJiXRq0BIm
+         H4MtC1k/sYeuZuyHBz5xWdn1Si6bMzyuO83gFui93EfCDY18C9td1I1aCzqckyUc9lbz
+         9nSm+aWvRE2s3PEZETwiFiILMSfGthwi4bVd5/Pir64o+R2219H4rJICLo9nYjvQpZYz
+         z+pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FaOSlT3H+eLXLTdCz81SgFAQniGwqDSS0DXaq2Iu+DQ=;
-        b=ug4hAjwZsBxWlSLSAjCzJbw4kfIBL0/gTXEkldTiyavETnSdWOuHAD2rzyhguCNPVy
-         EX5JGx5AnJONQc7w84dYmoawYlbcycTyQIRixDcU8s4ezSqqEJlaqR6CNX2elMzVptga
-         m2weaYNQPhSKSdCISryg9u0wsIFJbl2CK45JbsDkq9gCWUwq5xzyQKxyZQ9qstQoPfo4
-         0ZuEj0eY3beWDJ4onN2hPF4By0u8E4c1396gDKoE1imK4SS23lMEaRl6EYpGlYEt2cBf
-         03PrbLCM/Kk5EXunnvoiJJNcR9R0Qiso1D2NNIX6Wxr7Z5fRlzdN1Z+Jv4ZJhajz++pY
-         pUYA==
-X-Gm-Message-State: AOAM532O9Qw9AaAfhPoqMpxt+3yZPUa+tp5dmlYoyow3qrNrUJhceKwZ
-        bbg3/aiFKGRRS7LG40n8ZZukrBjPMQQAHg==
-X-Google-Smtp-Source: ABdhPJw+ik8nZsC9jBBcKw7vvpmX8TD2loT8Bag8vlVBF2NCbKhx4t5FH5klfoUhZ+kaY21mQLE2cg==
-X-Received: by 2002:a7b:cf18:: with SMTP id l24mr11821999wmg.182.1615542469782;
-        Fri, 12 Mar 2021 01:47:49 -0800 (PST)
+        bh=GvcOU9KB17xhaNjCrnAPnFFy7MF4/6/f5i41ACjeLUY=;
+        b=NW/rAwtDP2b7LYIojV93MO39GgWx5gzB40Pc06cRKMlF4zDkWXWL7Ce+zpY1gVuAS7
+         ZE4XSp4ZUJFnMQK50wsfCXCpdaecz6XoiQ8oQChgBMB98CduJJ6GWtTrOobEMiZQGLz1
+         W593x5qcI6MyZQ7rmYmZGUv3r78gAG95dDPonbtaXguH1DhvpVOjyXF84PqsGFU/DwK2
+         +/OoGCXFeUvXbSSUQvd7mPQaAziaTPd/vCIsY8UNuK5tyOCg5j5hVS0lSC1mra8SJWoz
+         TzNRZABDPYr1jkYkMeT/EJ9i2qMwXyreu5oBYHYeoV7Cd2/k2pFt2bad890tK3/VD1M4
+         L6Hg==
+X-Gm-Message-State: AOAM5303JbVVB5r0WHdb6WIC5RCMECUwM1M2gZBU2rBZ5BUKYvfWdTkd
+        PTCcpglBhFnhrX70oT4VbIvICw==
+X-Google-Smtp-Source: ABdhPJyle5qhx7ikejNmByrUqCTOPH+IAyRTZ31+I8JjFcNjDJysq7mnoznoPd+Eo9N/SNCpUwTUWg==
+X-Received: by 2002:adf:d851:: with SMTP id k17mr13274762wrl.254.1615542471088;
+        Fri, 12 Mar 2021 01:47:51 -0800 (PST)
 Received: from dell.default ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id f7sm1539536wmq.11.2021.03.12.01.47.48
+        by smtp.gmail.com with ESMTPSA id f7sm1539536wmq.11.2021.03.12.01.47.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:47:49 -0800 (PST)
+        Fri, 12 Mar 2021 01:47:50 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Subject: [PATCH 01/30] scsi: mpt3sas: mpt3sas_config: Fix a bunch of potential naming doc-rot
-Date:   Fri, 12 Mar 2021 09:47:09 +0000
-Message-Id: <20210312094738.2207817-2-lee.jones@linaro.org>
+        Santosh Yaraganavi <santosh.sy@samsung.com>,
+        Vinayak Holikatti <h.vinayak@samsung.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 02/30] scsi: ufs: ufshcd: Fix incorrectly named ufshcd_find_max_sup_active_icc_level()
+Date:   Fri, 12 Mar 2021 09:47:10 +0000
+Message-Id: <20210312094738.2207817-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210312094738.2207817-1-lee.jones@linaro.org>
 References: <20210312094738.2207817-1-lee.jones@linaro.org>
@@ -73,74 +72,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/mpt3sas/mpt3sas_config.c:1795: warning: expecting prototype for mpt3sas_config_set_driver_trigger_pg0(). Prototype was for _config_set_driver_trigger_pg0() instead
- drivers/scsi/mpt3sas/mpt3sas_config.c:1929: warning: expecting prototype for mpt3sas_config_set_driver_trigger_pg1(). Prototype was for _config_set_driver_trigger_pg1() instead
- drivers/scsi/mpt3sas/mpt3sas_config.c:2080: warning: expecting prototype for mpt3sas_config_set_driver_trigger_pg2(). Prototype was for _config_set_driver_trigger_pg2() instead
- drivers/scsi/mpt3sas/mpt3sas_config.c:2240: warning: expecting prototype for mpt3sas_config_set_driver_trigger_pg3(). Prototype was for _config_set_driver_trigger_pg3() instead
- drivers/scsi/mpt3sas/mpt3sas_config.c:2397: warning: expecting prototype for mpt3sas_config_set_driver_trigger_pg4(). Prototype was for _config_set_driver_trigger_pg4() instead
+ drivers/scsi/ufs/ufshcd.c:7142: warning: expecting prototype for ufshcd_calc_icc_level(). Prototype was for ufshcd_find_max_sup_active_icc_level() instead
 
-Cc: Sathya Prakash <sathya.prakash@broadcom.com>
-Cc: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Cc: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: MPT-FusionLinux.pdl@avagotech.com
-Cc: MPT-FusionLinux.pdl@broadcom.com
+Cc: Santosh Yaraganavi <santosh.sy@samsung.com>
+Cc: Vinayak Holikatti <h.vinayak@samsung.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_config.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_config.c b/drivers/scsi/mpt3sas/mpt3sas_config.c
-index 8238843523b53..55cd329089246 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_config.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_config.c
-@@ -1781,7 +1781,7 @@ mpt3sas_config_get_driver_trigger_pg0(struct MPT3SAS_ADAPTER *ioc,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b65c2899aae41..ffbea9f51dfef 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -7146,7 +7146,7 @@ static u32 ufshcd_get_max_icc_level(int sup_curr_uA, u32 start_scan, char *buff)
  }
  
  /**
-- * mpt3sas_config_set_driver_trigger_pg0 - write driver trigger page 0
-+ * _config_set_driver_trigger_pg0 - write driver trigger page 0
-  * @ioc: per adapter object
-  * @mpi_reply: reply mf payload returned from firmware
-  * @config_page: contents of the config page
-@@ -1915,7 +1915,7 @@ mpt3sas_config_get_driver_trigger_pg1(struct MPT3SAS_ADAPTER *ioc,
- }
- 
- /**
-- * mpt3sas_config_set_driver_trigger_pg1 - write driver trigger page 1
-+ * _config_set_driver_trigger_pg1 - write driver trigger page 1
-  * @ioc: per adapter object
-  * @mpi_reply: reply mf payload returned from firmware
-  * @config_page: contents of the config page
-@@ -2066,7 +2066,7 @@ mpt3sas_config_get_driver_trigger_pg2(struct MPT3SAS_ADAPTER *ioc,
- }
- 
- /**
-- * mpt3sas_config_set_driver_trigger_pg2 - write driver trigger page 2
-+ * _config_set_driver_trigger_pg2 - write driver trigger page 2
-  * @ioc: per adapter object
-  * @mpi_reply: reply mf payload returned from firmware
-  * @config_page: contents of the config page
-@@ -2226,7 +2226,7 @@ mpt3sas_config_get_driver_trigger_pg3(struct MPT3SAS_ADAPTER *ioc,
- }
- 
- /**
-- * mpt3sas_config_set_driver_trigger_pg3 - write driver trigger page 3
-+ * _config_set_driver_trigger_pg3 - write driver trigger page 3
-  * @ioc: per adapter object
-  * @mpi_reply: reply mf payload returned from firmware
-  * @config_page: contents of the config page
-@@ -2383,7 +2383,7 @@ mpt3sas_config_get_driver_trigger_pg4(struct MPT3SAS_ADAPTER *ioc,
- }
- 
- /**
-- * mpt3sas_config_set_driver_trigger_pg4 - write driver trigger page 4
-+ * _config_set_driver_trigger_pg4 - write driver trigger page 4
-  * @ioc: per adapter object
-  * @mpi_reply: reply mf payload returned from firmware
-  * @config_page: contents of the config page
+- * ufshcd_calc_icc_level - calculate the max ICC level
++ * ufshcd_find_max_sup_active_icc_level - calculate the max ICC level
+  * In case regulators are not initialized we'll return 0
+  * @hba: per-adapter instance
+  * @desc_buf: power descriptor buffer to extract ICC levels from.
 -- 
 2.27.0
 
