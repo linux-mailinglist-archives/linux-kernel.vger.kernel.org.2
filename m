@@ -2,66 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F41338AFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB04338AFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhCLLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:07:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13524 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhCLLHB (ORCPT
+        id S233700AbhCLLHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:07:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233633AbhCLLHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:07:01 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dxjd43zWqzNlqW;
-        Fri, 12 Mar 2021 19:04:40 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 12 Mar 2021
- 19:06:51 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <npiggin@gmail.com>, <dja@axtens.net>,
-        <akpm@linux-foundation.org>, <rppt@kernel.org>,
-        <aneesh.kumar@linux.ibm.com>, <clg@kaod.org>
-CC:     <johnny.chenyi@huawei.com>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] powerpc: define the variable 'uaccess_flush' as static
-Date:   Fri, 12 Mar 2021 06:06:38 -0500
-Message-ID: <20210312110638.178974-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 12 Mar 2021 06:07:20 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7F0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:07:20 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id lr13so52614662ejb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IqSN+ySm6bSg5bLee4pzIbnNLuqg3t2umE3dNOvxCoM=;
+        b=Vc8qlRY89B8MNN6WnrFZMY/pb+UhhpjSQfok6kl8IkX1Qgs9t31oJGbF/EqdMImxEf
+         l0ZCqw3HSrpiMHcjMUqmVc8EeiNEIenp1V2wI3oElxWtE+3NkRov6JDJn1mEWIW8qV04
+         fZtp6Afq7H+M170MAV26eAatpMs8dJ4zv8Qs58nTTdG4KntT3xCwmWPLh8RLJBdn9oSK
+         8airkN9yzf0KZQDdjL86cAlvHGr4xxuBHQ2SPaFjdcgrvX9xYwHSRa5kWAPW73iIAm1o
+         rcjRpIO12uVY34mpRzPqoVSJ7Vq4Gzygv67ALU3aLw8hZirkh6rLlewm1I1FO7S4YyIj
+         Ypcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IqSN+ySm6bSg5bLee4pzIbnNLuqg3t2umE3dNOvxCoM=;
+        b=ALmwZt6KhMWHEGpsI0pScR7o1mEz66Ur5+4EUXeDDe9Umt4DFFyxQ3AbiU4EbQfefR
+         5kx+vzk69ZClhY1jU090SS8R0YLi4CKz46wNwKwaZHnwTLoiYdtA+OysPU7b7JmIG8bc
+         UZISmml5M+9lkuwbozY6buwbDVpjK3wM7L90UlZRIHaLHNbOPY1NLkOXnp6lCKLvAmqr
+         6CGv0ffA5ZAFLv1cpNPBKFLGk3rKIyWEYnlNum3tLJ3T5t5rZfrR+HGaS7j6kJzKIouu
+         V0r+uePDhX100HBrH1ATSsEkwslZu5OPoMm7a2hPjKIRKIQgfvRsZ6vK+aKCIJaBY95x
+         lu5Q==
+X-Gm-Message-State: AOAM532PB8i8sL1Ph1lDolp0CsFOMv2soKj2ahuCaapKjC39XaaXI/iv
+        rEfdrVWA/7l486Ptd6x3F4u869dRQgopFK7HtnJRO1kVrpA=
+X-Google-Smtp-Source: ABdhPJxL7uSmlU56sT/eEKpgYZVBjzqTHs69+VRvPI3dX5rFqfqEr7apu5sex4H0a3q8/UWFIxeFEzbnpqoSzWeaTuE=
+X-Received: by 2002:a17:906:3105:: with SMTP id 5mr7957617ejx.168.1615547239107;
+ Fri, 12 Mar 2021 03:07:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-CFilter-Loop: Reflected
+References: <20210312065855.37072-1-ran.wang_1@nxp.com>
+In-Reply-To: <20210312065855.37072-1-ran.wang_1@nxp.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 12 Mar 2021 12:07:08 +0100
+Message-ID: <CAMpxmJUjzL_6rU+45qWLABBFjkXoS3hBz3TzoP3VJErNOTFdWQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mpc8xxx: Add ACPI support
+To:     Ran Wang <ran.wang_1@nxp.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'uaccess_fulsh' is not referenced outside the file. Perhaps we
-should define it as static to avoid the warning as follows:
+On Fri, Mar 12, 2021 at 7:51 AM Ran Wang <ran.wang_1@nxp.com> wrote:
+>
+> Current implementation only supports DT, now add ACPI support.
+>
+> Note that compared to device of 'fsl,qoriq-gpio', LS1028A and
+> LS1088A's GPIO have no extra programming, so simplify related checking.
+>
+> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+> ---
+>  drivers/gpio/gpio-mpc8xxx.c | 50 +++++++++++++++++++++++++++----------
+>  1 file changed, 37 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+> index 6dfca83bcd90..de5b7e17cde3 100644
+> --- a/drivers/gpio/gpio-mpc8xxx.c
+> +++ b/drivers/gpio/gpio-mpc8xxx.c
+> @@ -9,6 +9,7 @@
+>   * kind, whether express or implied.
+>   */
+>
+> +#include <linux/acpi.h>
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/spinlock.h>
+> @@ -292,8 +293,6 @@ static const struct of_device_id mpc8xxx_gpio_ids[] = {
+>         { .compatible = "fsl,mpc5121-gpio", .data = &mpc512x_gpio_devtype, },
+>         { .compatible = "fsl,mpc5125-gpio", .data = &mpc5125_gpio_devtype, },
+>         { .compatible = "fsl,pq3-gpio",     },
+> -       { .compatible = "fsl,ls1028a-gpio", },
+> -       { .compatible = "fsl,ls1088a-gpio", },
 
-arch/powerpc/kernel/setup_64.c:953:6: warning: symbol 'uaccess_flush'
-was not declared. Should it be static?
+Why are you removing support for those?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
----
- arch/powerpc/kernel/setup_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Bart
 
-diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
-index 560ed8b975e7..22aca271496b 100644
---- a/arch/powerpc/kernel/setup_64.c
-+++ b/arch/powerpc/kernel/setup_64.c
-@@ -950,7 +950,7 @@ static bool no_entry_flush;
- static bool no_uaccess_flush;
- bool rfi_flush;
- bool entry_flush;
--bool uaccess_flush;
-+static bool uaccess_flush;
- DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
- EXPORT_SYMBOL(uaccess_flush_key);
- 
--- 
-2.17.1
-
+>         { .compatible = "fsl,qoriq-gpio",   },
+>         {}
+>  };
+> @@ -303,10 +302,19 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>         struct device_node *np = pdev->dev.of_node;
+>         struct mpc8xxx_gpio_chip *mpc8xxx_gc;
+>         struct gpio_chip        *gc;
+> -       const struct mpc8xxx_gpio_devtype *devtype =
+> -               of_device_get_match_data(&pdev->dev);
+> +       const struct mpc8xxx_gpio_devtype *devtype;
+> +       const struct acpi_device_id *acpi_id;
+>         int ret;
+>
+> +       if (pdev->dev.of_node) {
+> +               devtype = of_device_get_match_data(&pdev->dev);
+> +       } else {
+> +               acpi_id = acpi_match_device(pdev->dev.driver->acpi_match_table,
+> +                                               &pdev->dev);
+> +               if (acpi_id)
+> +                       devtype = (struct mpc8xxx_gpio_devtype *) acpi_id->driver_data;
+> +       }
+> +
+>         mpc8xxx_gc = devm_kzalloc(&pdev->dev, sizeof(*mpc8xxx_gc), GFP_KERNEL);
+>         if (!mpc8xxx_gc)
+>                 return -ENOMEM;
+> @@ -315,14 +323,14 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>
+>         raw_spin_lock_init(&mpc8xxx_gc->lock);
+>
+> -       mpc8xxx_gc->regs = of_iomap(np, 0);
+> +       mpc8xxx_gc->regs = devm_platform_ioremap_resource(pdev, 0);
+>         if (!mpc8xxx_gc->regs)
+>                 return -ENOMEM;
+>
+>         gc = &mpc8xxx_gc->gc;
+>         gc->parent = &pdev->dev;
+>
+> -       if (of_property_read_bool(np, "little-endian")) {
+> +       if (device_property_read_bool(&pdev->dev, "little-endian")) {
+>                 ret = bgpio_init(gc, &pdev->dev, 4,
+>                                  mpc8xxx_gc->regs + GPIO_DAT,
+>                                  NULL, NULL,
+> @@ -369,10 +377,14 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>          * associated input enable must be set (GPIOxGPIE[IEn]=1) to propagate
+>          * the port value to the GPIO Data Register.
+>          */
+> -       if (of_device_is_compatible(np, "fsl,qoriq-gpio") ||
+> -           of_device_is_compatible(np, "fsl,ls1028a-gpio") ||
+> -           of_device_is_compatible(np, "fsl,ls1088a-gpio"))
+> -               gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
+> +       if (pdev->dev.of_node) {
+> +               if (of_device_is_compatible(np, "fsl,qoriq-gpio"))
+> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
+> +       } else {
+> +               if (acpi_match_device(pdev->dev.driver->acpi_match_table,
+> +                                       &pdev->dev))
+> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
+> +       }
+>
+>         ret = gpiochip_add_data(gc, mpc8xxx_gc);
+>         if (ret) {
+> @@ -381,12 +393,15 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>                 goto err;
+>         }
+>
+> -       mpc8xxx_gc->irqn = irq_of_parse_and_map(np, 0);
+> +       mpc8xxx_gc->irqn = platform_get_irq(pdev, 0);
+>         if (!mpc8xxx_gc->irqn)
+>                 return 0;
+>
+> -       mpc8xxx_gc->irq = irq_domain_add_linear(np, MPC8XXX_GPIO_PINS,
+> -                                       &mpc8xxx_gpio_irq_ops, mpc8xxx_gc);
+> +       mpc8xxx_gc->irq = irq_domain_create_linear(dev_fwnode(&pdev->dev),
+> +                                                  MPC8XXX_GPIO_PINS,
+> +                                                  &mpc8xxx_gpio_irq_ops,
+> +                                                  mpc8xxx_gc);
+> +
+>         if (!mpc8xxx_gc->irq)
+>                 return 0;
+>
+> @@ -425,12 +440,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id gpio_acpi_ids[] = {
+> +       {"NXP0031",},
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, gpio_acpi_ids);
+> +#endif
+> +
+>  static struct platform_driver mpc8xxx_plat_driver = {
+>         .probe          = mpc8xxx_probe,
+>         .remove         = mpc8xxx_remove,
+>         .driver         = {
+>                 .name = "gpio-mpc8xxx",
+>                 .of_match_table = mpc8xxx_gpio_ids,
+> +               .acpi_match_table = ACPI_PTR(gpio_acpi_ids),
+>         },
+>  };
+>
+> --
+> 2.25.1
+>
