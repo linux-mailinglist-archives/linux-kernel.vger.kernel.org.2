@@ -2,86 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAE833878B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C245C338790
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhCLIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:36:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
+        id S232435AbhCLIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:38:02 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10531 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232387AbhCLIgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:36:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4950F64FC1;
-        Fri, 12 Mar 2021 08:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615538184;
-        bh=L2hJBCU/7D+nSFex12m9kzLvCdK5v/H9qPPq41cS+5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NxfvDSM2vJI3Xgwj37HBBm8JJTjfCleuXssxVa5iEMOnpLHp1eghXbp9l0ozmWsG+
-         wtdRpsLayuKvqIn3L64qQfmcnfYLVrOwWfskVfHtRfQbYXrKzc9ugOqCTLSvGdQDSN
-         VPQfOINk6X4P5d/52aZ4ACJrNIan9xaEAQCDzNqzXNdyawaEEGsiHZVn1distYhQfA
-         29AGLXQh5JCjwcyrSlOL9ZHGUNcKfLkCoaraFegNa/ON3VcMyNEveXDmvfC5xSMEao
-         jkwYSJao9K0kqC+61sAJlA0fsPHvIiPCIuAzooasJiuD+GGYr3NcPlq5psfAiq41Zs
-         8qwQ1Zm0SCk8A==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lKdHf-00027L-Su; Fri, 12 Mar 2021 09:36:36 +0100
-Date:   Fri, 12 Mar 2021 09:36:35 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Pho Tran <Pho.Tran@silabs.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Hung Nguyen <Hung.Nguyen@silabs.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v4] USB: serial: cp210x: Make the CP210x driver work with
- GPIOs  of CP2108
-Message-ID: <YEsoE+QXSq8LagWG@hovoldconsulting.com>
-References: <8B41D8A4-2CE0-4EA9-87A9-28A62905F9B1@silabs.com>
+        id S232445AbhCLIhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:37:46 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DxfMW4G93z9v0tw;
+        Fri, 12 Mar 2021 09:37:43 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id uI4V5KlU9AEF; Fri, 12 Mar 2021 09:37:43 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DxfMW2pjFz9v0ts;
+        Fri, 12 Mar 2021 09:37:43 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82C908B810;
+        Fri, 12 Mar 2021 09:37:42 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id W804-Do1zQS1; Fri, 12 Mar 2021 09:37:42 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 151BA8B764;
+        Fri, 12 Mar 2021 09:37:41 +0100 (CET)
+Subject: Re: [PATCH v2 40/43] powerpc/64s: Make kuap_check_amr() and
+ kuap_get_and_check_amr() generic
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
+ <7167aef44fb816f6df17f65d540ac07ca98c4af9.1615291474.git.christophe.leroy@csgroup.eu>
+ <1615340152.vcj9lsklbx.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0d475fec-775e-007e-3489-514d93253abb@csgroup.eu>
+Date:   Fri, 12 Mar 2021 09:37:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <1615340152.vcj9lsklbx.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8B41D8A4-2CE0-4EA9-87A9-28A62905F9B1@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 04:27:57AM +0000, Pho Tran wrote:
-> Similar to other CP210x devices, GPIO interfaces (gpiochip) should be
-> supported for CP2108.
-> 
-> CP2108 has 4 serial interfaces but only 1 set of GPIO pins are shared
-> to all of those interfaces. So, just need to initialize GPIOs of CP2108
-> with only one interface (I use interface 0). It means just only 1 gpiochip
-> device file will be created for CP2108.
-> 
-> CP2108 has 16 GPIOs, So data types of several variables need to be is u16
-> instead of u8(in struct cp210x_serial_private). This doesn't affect other
-> CP210x devices.
-> 
-> Because CP2108 has 16 GPIO pins, the parameter passed by cp210x functions
-> will be different from other CP210x devices. So need to check part number
-> of the device to use correct data format  before sending commands to
-> devices.
-> 
-> Like CP2104, CP2108 have GPIO pins with configurable options. Therefore,
-> should be mask all pins which are not in GPIO mode in cp2108_gpio_init()
-> function.
-> 
-> Signed-off-by: Pho Tran <pho.tran@silabs.com<mailto:pho.tran@silabs.com>>
-> —
-> 03/05/2021: Patch v3 modified format and contents of changelog follow feedback
-> from Jonhan Hovold <johan@kernel.org<mailto:johan@kernel.org>>.
-> 03/04/2021: Patch v2 modified format patch as comment from
-> Johan Hovold <johan@kernel.org<mailto:johan@kernel.org>>:
-> 1. Break commit message lines at 80 cols
-> 2. Use kernel u8 and u16 types instead of the c99 ones.
-> 03/01/2021: Initialed submission of patch “Make the CP210x driver work with
-> GPIOs of CP2108.”.
 
-Why are you resending the v4 that you submitted only four days ago? 
 
-Note that this version is again white space corrupted, and something
-happened to you SOB tag above.
+Le 10/03/2021 à 02:37, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of March 9, 2021 10:10 pm:
+>> In preparation of porting powerpc32 to C syscall entry/exit,
+>> rename kuap_check_amr() and kuap_get_and_check_amr() as kuap_check()
+>> and kuap_get_and_check(), and move in the generic asm/kup.h the stub
+>> for when CONFIG_PPC_KUAP is not selected.
+> 
+> Looks pretty straightforward to me.
+> 
+> While you're renaming things, could kuap_check_amr() be changed to
+> kuap_assert_locked() or similar? Otherwise,
 
-Johan
+Ok, renamed kuap_assert_locked() and kuap_get_and_assert_locked()
+
+> 
+> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+> 
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/book3s/64/kup.h | 24 ++----------------------
+>>   arch/powerpc/include/asm/kup.h           | 10 +++++++++-
+>>   arch/powerpc/kernel/interrupt.c          | 12 ++++++------
+>>   arch/powerpc/kernel/irq.c                |  2 +-
+>>   4 files changed, 18 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/book3s/64/kup.h b/arch/powerpc/include/asm/book3s/64/kup.h
+>> index 8bd905050896..d9b07e9998be 100644
+>> --- a/arch/powerpc/include/asm/book3s/64/kup.h
+>> +++ b/arch/powerpc/include/asm/book3s/64/kup.h
+>> @@ -287,7 +287,7 @@ static inline void kuap_kernel_restore(struct pt_regs *regs,
+>>   	 */
+>>   }
+>>   
+>> -static inline unsigned long kuap_get_and_check_amr(void)
+>> +static inline unsigned long kuap_get_and_check(void)
+>>   {
+>>   	if (mmu_has_feature(MMU_FTR_BOOK3S_KUAP)) {
+>>   		unsigned long amr = mfspr(SPRN_AMR);
+>> @@ -298,27 +298,7 @@ static inline unsigned long kuap_get_and_check_amr(void)
+>>   	return 0;
+>>   }
+>>   
+>> -#else /* CONFIG_PPC_PKEY */
+>> -
+>> -static inline void kuap_user_restore(struct pt_regs *regs)
+>> -{
+>> -}
+>> -
+>> -static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr)
+>> -{
+>> -}
+>> -
+>> -static inline unsigned long kuap_get_and_check_amr(void)
+>> -{
+>> -	return 0;
+>> -}
+>> -
+>> -#endif /* CONFIG_PPC_PKEY */
+>> -
+>> -
+>> -#ifdef CONFIG_PPC_KUAP
+>> -
+>> -static inline void kuap_check_amr(void)
+>> +static inline void kuap_check(void)
+>>   {
+>>   	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && mmu_has_feature(MMU_FTR_BOOK3S_KUAP))
+>>   		WARN_ON_ONCE(mfspr(SPRN_AMR) != AMR_KUAP_BLOCKED);
+>> diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+>> index 25671f711ec2..b7efa46b3109 100644
+>> --- a/arch/powerpc/include/asm/kup.h
+>> +++ b/arch/powerpc/include/asm/kup.h
+>> @@ -74,7 +74,15 @@ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
+>>   	return false;
+>>   }
+>>   
+>> -static inline void kuap_check_amr(void) { }
+>> +static inline void kuap_check(void) { }
+>> +static inline void kuap_save_and_lock(struct pt_regs *regs) { }
+>> +static inline void kuap_user_restore(struct pt_regs *regs) { }
+>> +static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr) { }
+>> +
+>> +static inline unsigned long kuap_get_and_check(void)
+>> +{
+>> +	return 0;
+>> +}
+>>   
+>>   /*
+>>    * book3s/64/kup-radix.h defines these functions for the !KUAP case to flush
+>> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+>> index 727b7848c9cc..40ed55064e54 100644
+>> --- a/arch/powerpc/kernel/interrupt.c
+>> +++ b/arch/powerpc/kernel/interrupt.c
+>> @@ -76,7 +76,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
+>>   	} else
+>>   #endif
+>>   #ifdef CONFIG_PPC64
+>> -		kuap_check_amr();
+>> +		kuap_check();
+>>   #endif
+>>   
+>>   	booke_restore_dbcr0();
+>> @@ -254,7 +254,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+>>   	CT_WARN_ON(ct_state() == CONTEXT_USER);
+>>   
+>>   #ifdef CONFIG_PPC64
+>> -	kuap_check_amr();
+>> +	kuap_check();
+>>   #endif
+>>   
+>>   	regs->result = r3;
+>> @@ -380,7 +380,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+>>   	 * AMR can only have been unlocked if we interrupted the kernel.
+>>   	 */
+>>   #ifdef CONFIG_PPC64
+>> -	kuap_check_amr();
+>> +	kuap_check();
+>>   #endif
+>>   
+>>   	local_irq_save(flags);
+>> @@ -451,7 +451,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+>>   	unsigned long flags;
+>>   	unsigned long ret = 0;
+>>   #ifdef CONFIG_PPC64
+>> -	unsigned long amr;
+>> +	unsigned long kuap;
+>>   #endif
+>>   
+>>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
+>> @@ -467,7 +467,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+>>   		CT_WARN_ON(ct_state() == CONTEXT_USER);
+>>   
+>>   #ifdef CONFIG_PPC64
+>> -	amr = kuap_get_and_check_amr();
+>> +	kuap = kuap_get_and_check();
+>>   #endif
+>>   
+>>   	if (unlikely(current_thread_info()->flags & _TIF_EMULATE_STACK_STORE)) {
+>> @@ -511,7 +511,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+>>   	 * value from the check above.
+>>   	 */
+>>   #ifdef CONFIG_PPC64
+>> -	kuap_kernel_restore(regs, amr);
+>> +	kuap_kernel_restore(regs, kuap);
+>>   #endif
+>>   
+>>   	return ret;
+>> diff --git a/arch/powerpc/kernel/irq.c b/arch/powerpc/kernel/irq.c
+>> index d71fd10a1dd4..3b18d2b2c702 100644
+>> --- a/arch/powerpc/kernel/irq.c
+>> +++ b/arch/powerpc/kernel/irq.c
+>> @@ -282,7 +282,7 @@ static inline void replay_soft_interrupts_irqrestore(void)
+>>   	 * and re-locking AMR but we shouldn't get here in the first place,
+>>   	 * hence the warning.
+>>   	 */
+>> -	kuap_check_amr();
+>> +	kuap_check();
+>>   
+>>   	if (kuap_state != AMR_KUAP_BLOCKED)
+>>   		set_kuap(AMR_KUAP_BLOCKED);
+>> -- 
+>> 2.25.0
+>>
+>>
