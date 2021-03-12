@@ -2,147 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F7C339555
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD7033955A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhCLRqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:46:33 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232233AbhCLRqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:46:13 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12CHaB6L123980;
-        Fri, 12 Mar 2021 12:46:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8eSFR7DloFmWUq9pd7am+E6Lmq3Acogf3AiN4OfbAHs=;
- b=JcBeGhQsNZAmH8XdFEGXTQnIWNJtiGm/FtZTwz4+17VMZ2BLpucbBNVDhJoTAgSv+Y+f
- p0yvyiX75O0+vbWTaxleK7H63x+5KXsJrX4So2FYihPF3CXZNQAECKcvbaTAcwyL3fER
- oiea61y+8FnkeZ9+c8qgmJ/I+cNrZI1ZZUmzwRGSg3Ubk/IHHkfmvepmqsCvfVTRgFTr
- m7RhIM2IOlxEkFBd3I6ejSiJFw8psCQvyAFR+sbf/uoW9sLx6KzJcEcN+RFgLo+tT42+
- Rk/KMpZLljjZTJbVggQkHrb2Wa/q1WV95nMzBo1cQi/6Pi5Kg1e9U6bhH94WzCdiuKtl EQ== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3788hg91gy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Mar 2021 12:46:11 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12CHdSQl014532;
-        Fri, 12 Mar 2021 17:46:09 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 3768va1ntc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Mar 2021 17:46:09 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12CHk7En63242700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 17:46:07 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4840842047;
-        Fri, 12 Mar 2021 17:46:07 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B8B242041;
-        Fri, 12 Mar 2021 17:46:07 +0000 (GMT)
-Received: from [9.145.48.156] (unknown [9.145.48.156])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Mar 2021 17:46:07 +0000 (GMT)
-Subject: Re: [PATCH] gcov: fail build on gcov_info size mismatch
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
- <CAHk-=whmwT-_VJJ72C1Wyzbzb_rRb9c7bc5RpGhdOXsyz4FDKQ@mail.gmail.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <1c7a49e7-0e27-561b-a2f9-d42a83dc4c29@linux.ibm.com>
-Date:   Fri, 12 Mar 2021 18:46:06 +0100
+        id S232804AbhCLRrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:47:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:58176 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231557AbhCLRqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:46:44 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA4DC1FB;
+        Fri, 12 Mar 2021 09:46:43 -0800 (PST)
+Received: from [10.57.52.136] (unknown [10.57.52.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74DF03F7D7;
+        Fri, 12 Mar 2021 09:46:38 -0800 (PST)
+Subject: Re: [RFC PATCH v2 00/11] Add support to dma_map_sg for P2PDMA
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <iweiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <6b9be188-1ec7-527c-ae47-3f5b4e153758@arm.com>
+ <c66d247e-5da9-4866-8e6b-ee2ec4bc03d5@deltatee.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <90a2825c-da2f-c031-a70f-08c5efb3db56@arm.com>
+Date:   Fri, 12 Mar 2021 17:46:31 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whmwT-_VJJ72C1Wyzbzb_rRb9c7bc5RpGhdOXsyz4FDKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <c66d247e-5da9-4866-8e6b-ee2ec4bc03d5@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-12_06:2021-03-12,2021-03-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- bulkscore=0 adultscore=0 malwarescore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103120128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.03.2021 19:38, Linus Torvalds wrote:
-> On Thu, Mar 11, 2021 at 5:07 AM Peter Oberparleiter
-> <oberpar@linux.ibm.com> wrote:
->>
->> This patch adds a compile-time check to ensure that the kernel's version
->> of struct gcov_info has the same length as the one used by GCC as
->> determined by looking at GCC's assembler output.
+On 2021-03-12 16:18, Logan Gunthorpe wrote:
 > 
-> So I don't think this is a bad idea, but if you end up test-compiling
-> something, could we not verify things a bit more?
+> 
+> On 2021-03-12 8:51 a.m., Robin Murphy wrote:
+>> On 2021-03-11 23:31, Logan Gunthorpe wrote:
+>>> Hi,
+>>>
+>>> This is a rework of the first half of my RFC for doing P2PDMA in
+>>> userspace
+>>> with O_DIRECT[1].
+>>>
+>>> The largest issue with that series was the gross way of flagging P2PDMA
+>>> SGL segments. This RFC proposes a different approach, (suggested by
+>>> Dan Williams[2]) which uses the third bit in the page_link field of the
+>>> SGL.
+>>>
+>>> This approach is a lot less hacky but comes at the cost of adding a
+>>> CONFIG_64BIT dependency to CONFIG_PCI_P2PDMA and using up the last
+>>> scarce bit in the page_link. For our purposes, a 64BIT restriction is
+>>> acceptable but it's not clear if this is ok for all usecases hoping
+>>> to make use of P2PDMA.
+>>>
+>>> Matthew Wilcox has already suggested (off-list) that this is the wrong
+>>> approach, preferring a new dma mapping operation and an SGL
+>>> replacement. I
+>>> don't disagree that something along those lines would be a better long
+>>> term solution, but it involves overcoming a lot of challenges to get
+>>> there. Creating a new mapping operation still means adding support to
+>>> more
+>>> than 25 dma_map_ops implementations (many of which are on obscure
+>>> architectures) or creating a redundant path to fallback with dma_map_sg()
+>>> for every driver that uses the new operation. This RFC is an approach
+>>> that doesn't require overcoming these blocks.
+>>
+>> I don't really follow that argument - you're only adding support to two
+>> implementations with the awkward flag, so why would using a dedicated
+>> operation instead be any different? Whatever callers need to do if
+>> dma_pci_p2pdma_supported() says no, they could equally do if
+>> dma_map_p2p_sg() (or whatever) returns -ENXIO, no?
+> 
+> The thing is if the dma_map_sg doesn't support P2PDMA then P2PDMA
+> transactions cannot be done, but regular transactions can still go
+> through as they always did.
+> 
+> But replacing dma_map_sg() with dma_map_new() affects all operations,
+> P2PDMA or otherwise. If dma_map_new() isn't supported it can't simply
+> not support P2PDMA; it has to maintain a fallback path to dma_map_sg().
 
-I thought about this as well, based on the idea to not only look at the
-size, but potentially also at the assembler-level definition of GCC's
-gcov_info version, and to compare that to how the kernel's version looks
-like. But then I thought that this still doesn't catch the cases where
-the semantics of a struct member changed.
+But AFAICS the equivalent fallback path still has to exist either way. 
+My impression so far is that callers would end up looking something like 
+this:
 
-> If you actually build the object file, you should be able to then
-> check much more. You'll find the pointer to the struct gcov_info in
-> "__gcov_.fn", which is admittedly hard to then link against a test
-> program (because of that dot in the name that means that you can't
-> even use "attribute((alias..))" to generate some other name for it).
+	if (dma_pci_p2pdma_supported()) {
+		if (dma_map_sg(...) < 0)
+			//do non-p2p fallback due to p2p failure
+	} else {
+		//do non-p2p fallback due to lack of support
+	}
 
-This is an idea I hadn't considered - a user space test program that
-accesses GCC's gcov_info data using the kernel's definition would be
-able to fail a lot more gracefully than the kernel could.
+at which point, simply:
 
-Getting a pointer to the gcov_info struct in a program isn't actually
-that difficult: just provide a custom function named __gcov_init and
-don't link with libgcov. At program start constructor code will then
-call this function with the gcov_info pointer as parameter. This is
-exactly how the kernel collects all these gcov_info instances.
+	if (dma_map_sg_p2p(...) < 0)
+		//do non-p2p fallback either way
 
-> But then you could test not only the size, but you could verify that
-> the "filename" field matches, that the n_functions field should be 1
-> etc.
+seems entirely reasonable. What am I missing?
 
-Taking that idea a step further, a test program could exercise the exact
-same code that the kernel uses to generate a .gcda file from in-memory
-gcov_info data (or die/hang when there's a mismatch in the struct
-definition) and write that out. The resulting .gcda file could then be
-verified for correctness by passing it to GCC's gcov tool.
+Let's not pretend that overloading an existing API means we can start 
+feeding P2P pages into any old subsystem/driver without further changes 
+- there already *are* at least some that retry ad infinitum if DMA 
+mapping fails (the USB layer springs to mind...) and thus wouldn't 
+handle the PCI_P2PDMA_MAP_NOT_SUPPORTED case acceptably.
 
-This shouldn't be too difficult to achieve since there is already a
-kernel function that converts a gcov_info into .gcda file format
-in-memory with no actual dependency on kernel infrastructure. Of course
-this requires the gcov kernel code to be taught to live in user space
-with a healthy dose of ifdef-ing.
+> Given that the inputs and outputs for dma_map_new() will be completely
+> different data structures this will be quite a lot of similar paths
+> required in the driver. (ie mapping a bvec to the input struct and the
+> output struct to hardware requirements) If a bug crops up in the old
+> dma_map_sg(), developers might not notice it for some time seeing it
+> won't be used on the most popular architectures.
 
-Is there a convention on what is the lesser evil: adding multiple
-ifdef-endifs all over the place or moving code around for no apparent
-reason other than to gather all required parts in one place for a single
-ifdef?
+Huh? I'm specifically suggesting a new interface that takes the *same* 
+data structure (at least to begin with), but just gives us more 
+flexibility in terms of introducing p2p-aware behaviour somewhat more 
+safely. Yes, we already know that we ultimately want something better 
+than scatterlists for representing things like this and dma-buf imports, 
+but that hardly has to happen overnight.
 
-[...]
-
-> I dunno. The gcov code has obviously never actually done anything like
-> this before, so maybe I'm just taking the "we could verify
-> _something_" and my reaction is that there could be even more
-> verification if we really want to go down that rabbit hole..
-
-I'll try to come up with a new patch that introduces a test like
-described above. If that approach fails we can fall back to the original
-approach (plus the fix for the kernel test robot findings).
-
-
-Regards,
-  Peter
-
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+Robin.
