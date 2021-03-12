@@ -2,159 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EB4338EEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40168338EEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhCLNe0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:34:26 -0500
-Received: from aposti.net ([89.234.176.197]:43602 "EHLO aposti.net"
+        id S231578AbhCLNe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:34:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhCLNeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:34:02 -0500
-Date:   Fri, 12 Mar 2021 13:33:49 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 4/6] pinctrl: Ingenic: Reformat the code.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <D0ZUPQ.4DV5ZD2DP7S2@crapouillou.net>
-In-Reply-To: <1615476112-113101-5-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615476112-113101-5-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231512AbhCLNeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:34:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A21460190;
+        Fri, 12 Mar 2021 13:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615556060;
+        bh=9UTrPGnInmHkhNMOk81TEKQqO2DhO9DZdatw5H8tVY0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Tk+a6BGJqFQQhv9OY1VL/pEelzLl8rGKThSK3+gP2RM3anONJioh0OhrlvZEpuGmQ
+         m76D2ZpPUrFVnkkJy6C4eEUUvV7Yi+/Y7oTCeUQkclfZj7hTlE8fH7ATpEOGMeP/EL
+         nw2TAcsHMYmFshEBGixxEUZX9oW0Mne1pJO9XODHpBvkypIWLAuGbwkU0ukyB1+xss
+         NBx3CuAto2EHGNhYMp+nIO69uOoRXrogjFKiIYoJRdEGFsberjI377ZgQuMEE76gMt
+         gAm1dqCjeBMsfR0elUA2nnIPGw7dWUt0DDnuBOdgtLeUfuANnf6dwD/Oo1ak4WltJJ
+         akPsL9hCPpIhA==
+Date:   Fri, 12 Mar 2021 13:34:16 +0000
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel Mailing List 
+        <linux-arm-kernel@lists.infradead.org>, kernel-team@android.com
+Subject: [GIT PULL] arm64: Fixes for -rc3
+Message-ID: <20210312133415.GA359@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-
-Le jeu. 11 mars 2021 à 23:21, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> 1.Move the "INGENIC_PIN_GROUP_FUNCS" to the macro definition section.
-> 2.Add tabs before values to align the code in the macro definition 
-> section.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Please pull these arm64 fixes for -rc3. Summary in the tag, but we've
+got a smattering of changes all over the place which we've acrued since
+-rc1. To my knowledge, there aren't any pending issues at the moment,
+but there's still plenty of time for something else to crop up...
 
 Cheers,
--Paul
 
-> ---
-> 
-> Notes:
->     v2:
->     New patch.
-> 
->  drivers/pinctrl/pinctrl-ingenic.c | 71 
-> +++++++++++++++++++--------------------
->  1 file changed, 35 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 607ba0b..ac5ad8a 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -26,37 +26,48 @@
->  #include "pinconf.h"
->  #include "pinmux.h"
-> 
-> -#define GPIO_PIN	0x00
-> -#define GPIO_MSK	0x20
-> +#define GPIO_PIN					0x00
-> +#define GPIO_MSK					0x20
-> 
-> -#define JZ4740_GPIO_DATA	0x10
-> -#define JZ4740_GPIO_PULL_DIS	0x30
-> -#define JZ4740_GPIO_FUNC	0x40
-> -#define JZ4740_GPIO_SELECT	0x50
-> -#define JZ4740_GPIO_DIR		0x60
-> -#define JZ4740_GPIO_TRIG	0x70
-> -#define JZ4740_GPIO_FLAG	0x80
-> +#define JZ4740_GPIO_DATA			0x10
-> +#define JZ4740_GPIO_PULL_DIS		0x30
-> +#define JZ4740_GPIO_FUNC			0x40
-> +#define JZ4740_GPIO_SELECT			0x50
-> +#define JZ4740_GPIO_DIR				0x60
-> +#define JZ4740_GPIO_TRIG			0x70
-> +#define JZ4740_GPIO_FLAG			0x80
-> 
-> -#define JZ4770_GPIO_INT		0x10
-> -#define JZ4770_GPIO_PAT1	0x30
-> -#define JZ4770_GPIO_PAT0	0x40
-> -#define JZ4770_GPIO_FLAG	0x50
-> -#define JZ4770_GPIO_PEN		0x70
-> +#define JZ4770_GPIO_INT				0x10
-> +#define JZ4770_GPIO_PAT1			0x30
-> +#define JZ4770_GPIO_PAT0			0x40
-> +#define JZ4770_GPIO_FLAG			0x50
-> +#define JZ4770_GPIO_PEN				0x70
-> 
-> -#define X1830_GPIO_PEL			0x110
-> -#define X1830_GPIO_PEH			0x120
-> +#define X1830_GPIO_PEL				0x110
-> +#define X1830_GPIO_PEH				0x120
-> 
-> -#define REG_SET(x) ((x) + 0x4)
-> -#define REG_CLEAR(x) ((x) + 0x8)
-> +#define REG_SET(x)					((x) + 0x4)
-> +#define REG_CLEAR(x)				((x) + 0x8)
-> 
-> -#define REG_PZ_BASE(x) ((x) * 7)
-> -#define REG_PZ_GID2LD(x) ((x) * 7 + 0xf0)
-> +#define REG_PZ_BASE(x)				((x) * 7)
-> +#define REG_PZ_GID2LD(x)			((x) * 7 + 0xf0)
-> 
-> -#define GPIO_PULL_DIS	0
-> -#define GPIO_PULL_UP	1
-> -#define GPIO_PULL_DOWN	2
-> +#define GPIO_PULL_DIS				0
-> +#define GPIO_PULL_UP				1
-> +#define GPIO_PULL_DOWN				2
-> 
-> -#define PINS_PER_GPIO_CHIP 32
-> +#define PINS_PER_GPIO_CHIP			32
-> +
-> +#define INGENIC_PIN_GROUP_FUNCS(name, id, funcs)		\
-> +	{						\
-> +		name,					\
-> +		id##_pins,				\
-> +		ARRAY_SIZE(id##_pins),			\
-> +		funcs,					\
-> +	}
-> +
-> +#define INGENIC_PIN_GROUP(name, id, func)		\
-> +	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
-> 
->  enum jz_version {
->  	ID_JZ4740,
-> @@ -134,18 +145,6 @@ static int jz4740_pwm_pwm5_pins[] = { 0x7c, };
->  static int jz4740_pwm_pwm6_pins[] = { 0x7e, };
->  static int jz4740_pwm_pwm7_pins[] = { 0x7f, };
-> 
-> -
-> -#define INGENIC_PIN_GROUP_FUNCS(name, id, funcs)		\
-> -	{						\
-> -		name,					\
-> -		id##_pins,				\
-> -		ARRAY_SIZE(id##_pins),			\
-> -		funcs,					\
-> -	}
-> -
-> -#define INGENIC_PIN_GROUP(name, id, func)		\
-> -	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
-> -
->  static const struct group_desc jz4740_groups[] = {
->  	INGENIC_PIN_GROUP("mmc-1bit", jz4740_mmc_1bit, 0),
->  	INGENIC_PIN_GROUP("mmc-4bit", jz4740_mmc_4bit, 0),
-> --
-> 2.7.4
-> 
+Will
 
+--->8
 
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to c8e3866836528a4ba3b0535834f03768d74f7d8e:
+
+  perf/arm_dmc620_pmu: Fix error return code in dmc620_pmu_device_probe() (2021-03-12 11:30:31 +0000)
+
+----------------------------------------------------------------
+arm64 fixes for -rc3
+
+- Fix booting a 52-bit-VA-aware kernel on Qualcomm Amberwing
+
+- Fix pfn_valid() not to reject all ZONE_DEVICE memory
+
+- Fix memory tagging setup for hotplugged memory regions
+
+- Fix KASAN tagging in page_alloc() when DEBUG_VIRTUAL is enabled
+
+- Fix accidental truncation of CPU PMU event counters
+
+- Fix error code initialisation when failing probe of DMC620 PMU
+
+- Fix return value initialisation for sve-ptrace selftest
+
+- Drop broken support for CMDLINE_EXTEND
+
+----------------------------------------------------------------
+Andrey Konovalov (1):
+      arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
+
+Anshuman Khandual (4):
+      arm64/mm: Drop redundant ARCH_WANT_HUGE_PMD_SHARE
+      arm64/mm: Drop THP conditionality from FORCE_MAX_ZONEORDER
+      arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+      arm64/mm: Reorganize pfn_valid()
+
+Ard Biesheuvel (2):
+      arm64: mm: use a 48-bit ID map when possible on 52-bit VA builds
+      arm64: mm: remove unused __cpu_uses_extended_idmap[_level()]
+
+Catalin Marinas (1):
+      arm64: mte: Map hotplugged memory as Normal Tagged
+
+James Morse (1):
+      arm64/mm: Fix __enable_mmu() for new TGRAN range values
+
+Mark Brown (1):
+      kselftest: arm64: Fix exit code of sve-ptrace
+
+Rob Herring (1):
+      arm64: perf: Fix 64-bit event counter read truncation
+
+Wei Yongjun (1):
+      perf/arm_dmc620_pmu: Fix error return code in dmc620_pmu_device_probe()
+
+Will Deacon (2):
+      arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
+      arm64: Drop support for CMDLINE_EXTEND
+
+ arch/arm64/Kconfig                            | 12 ++------
+ arch/arm64/include/asm/memory.h               |  5 ++++
+ arch/arm64/include/asm/mmu_context.h          | 17 -----------
+ arch/arm64/include/asm/pgtable-prot.h         |  1 -
+ arch/arm64/include/asm/pgtable.h              |  3 ++
+ arch/arm64/include/asm/sysreg.h               | 20 +++++++++----
+ arch/arm64/kernel/head.S                      |  8 +++--
+ arch/arm64/kernel/idreg-override.c            | 43 ++++++++++++++-------------
+ arch/arm64/kernel/perf_event.c                |  2 +-
+ arch/arm64/kvm/reset.c                        | 10 ++++---
+ arch/arm64/mm/init.c                          | 29 ++++++++++++++++--
+ arch/arm64/mm/mmu.c                           |  5 ++--
+ drivers/firmware/efi/libstub/arm64-stub.c     |  2 +-
+ drivers/perf/arm_dmc620_pmu.c                 |  1 +
+ include/linux/pgtable.h                       |  4 +++
+ mm/memory_hotplug.c                           |  2 +-
+ tools/testing/selftests/arm64/fp/sve-ptrace.c |  2 +-
+ 17 files changed, 96 insertions(+), 70 deletions(-)
