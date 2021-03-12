@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699EE33888F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAEF338899
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhCLJZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:25:11 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:34048 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhCLJZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:25:06 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKe2a-0006Wa-95; Fri, 12 Mar 2021 09:25:04 +0000
-Subject: Re: [PATCH] pinctrl: core: Set ret to 0 when group is skipped
-To:     Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     dan.carpenter@oracle.com, linux-gpio@vger.kernel.org
-References: <e5203bae68eb94b4b8b4e67e5e7b4d86bb989724.1615534291.git.michal.simek@xilinx.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <ced576c2-11a3-3fbf-0fdf-4620a442cadf@canonical.com>
-Date:   Fri, 12 Mar 2021 09:25:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232905AbhCLJZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:25:47 -0500
+Received: from muru.com ([72.249.23.125]:42294 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232840AbhCLJZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 04:25:30 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 78BCC8057;
+        Fri, 12 Mar 2021 09:26:10 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/2] Few clean-up patches after dropping legacy data
+Date:   Fri, 12 Mar 2021 11:25:14 +0200
+Message-Id: <20210312092516.42884-1-tony@atomide.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <e5203bae68eb94b4b8b4e67e5e7b4d86bb989724.1615534291.git.michal.simek@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/2021 07:31, Michal Simek wrote:
-> Static analyzer tool found that the ret variable is not initialized but
-> code expects ret value >=0 when pinconf is skipped in the first pinmux
-> loop. The same expectation is for pinmux in a pinconf loop.
-> That's why initialize ret to 0 to avoid uninitialized ret value in first
-> loop or reusing ret value from first loop in second.
-> 
-> Addresses-Coverity: ("Uninitialized variables")
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> CC: Colin Ian King <colin.king@canonical.com>
-> CC: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> 
->  drivers/pinctrl/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index f5c32d2a3c91..136c323d855e 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1266,6 +1266,7 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
->  			break;
->  		case PIN_MAP_TYPE_CONFIGS_PIN:
->  		case PIN_MAP_TYPE_CONFIGS_GROUP:
-> +			ret = 0;
->  			break;
->  		default:
->  			ret = -EINVAL;
-> @@ -1284,6 +1285,7 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
->  	list_for_each_entry(setting, &state->settings, node) {
->  		switch (setting->type) {
->  		case PIN_MAP_TYPE_MUX_GROUP:
-> +			ret = 0;
->  			break;
->  		case PIN_MAP_TYPE_CONFIGS_PIN:
->  		case PIN_MAP_TYPE_CONFIGS_GROUP:
-> 
+Hi all,
 
-Thanks Michal,
+Here are few clean-up patches after we are dropping the legacy data for
+omap4/5 and dra7. These are against my omap-for-v5.13/genpd-drop-legacy
+branch at [0].
 
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Regards,
+
+Tony
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git/log/?h=omap-for-v5.13/genpd-drop-legacy
+
+Tony Lindgren (2):
+  ARM: OMAP2+: Stop building legacy code for dra7 and omap4/5
+  bus: ti-sysc: Warn about old dtb for dra7 and omap4/5
+
+ arch/arm/mach-omap2/Makefile       |  8 ++++----
+ arch/arm/mach-omap2/io.c           |  7 ++++++-
+ arch/arm/mach-omap2/omap_hwmod.h   | 13 +++++++++++++
+ arch/arm/mach-omap2/pdata-quirks.c |  2 +-
+ arch/arm/mach-omap2/sr_device.c    |  7 +++++++
+ drivers/bus/ti-sysc.c              |  3 +++
+ 6 files changed, 34 insertions(+), 6 deletions(-)
+
+-- 
+2.30.2
