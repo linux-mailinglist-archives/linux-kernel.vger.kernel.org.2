@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E80338B5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C471338B64
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhCLLSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233737AbhCLLSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB0864F09;
-        Fri, 12 Mar 2021 11:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615547891;
-        bh=4M8/d1QtvNV0W22nnWX2De2qfNZVr8K7C/taDssa2Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hvgY2ixxwgnMDRs6DayZDJfXR1VG+agFl/c5ryWLihtPZrXyiAITc3Z3DhwjhWKSr
-         QixZ+cIFSfVRHu4wj4bqnJGhgTgoxG5Q0jiA/zFwgGZIAd9kbttdxrXMz+h8rc8DLf
-         MDeAFCrDlcWQpHH4KXEY+shjNwnrtMK00t5f1QibG3Md/5LlHoA1oaIwqvgMnuJWJq
-         uqmgObMsd6Ue5uqdFkktT4ksgWSGaYa+dit8HiN9xOqjsbTRGwR40tCGNsgeSqNRyX
-         XKYql/ytfOCaQm3wnG3kpztMyXHP3ok0WEpLpAMsOBbBGibTvIk9DztGVRjgRRV51L
-         JBSXW6eZQ3BHg==
-Date:   Fri, 12 Mar 2021 11:18:05 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
-Subject: Re: [PATCH v4 28/34] KVM: arm64: Use page-table to track page
- ownership
-Message-ID: <20210312111804.GB32208@willie-the-truck>
-References: <20210310175751.3320106-1-qperret@google.com>
- <20210310175751.3320106-29-qperret@google.com>
- <20210311183834.GC31378@willie-the-truck>
- <YEsIxA/fKaDlSaio@google.com>
- <20210312093205.GB32016@willie-the-truck>
- <YEs+xi6IDj3gwX10@google.com>
+        id S233652AbhCLLUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:20:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25845 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233692AbhCLLTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:19:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615547976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lq8VZTvhiQyjj3632ogoEtY0kjN8T+zd6L5p5AcI2Ho=;
+        b=MGZ7hCoKJRogEzDkMnFSH972/p1W4qXONZ4dTRaklKFKg0aIzCZqhxvpET2givVQBFYJYZ
+        KVQWuaUw3Efspim82Az2EAqiKzssZk47wSCTnG4iY4KbEss/A+w2wkj4KQkcBFT+TWuVWu
+        bnSTV4Th5/yQ3/c+h4ujjUVzsXt/JPg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-J4tJfRUMN6iVAt6BEQcGXw-1; Fri, 12 Mar 2021 06:19:34 -0500
+X-MC-Unique: J4tJfRUMN6iVAt6BEQcGXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA98101F010;
+        Fri, 12 Mar 2021 11:19:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9124760D06;
+        Fri, 12 Mar 2021 11:19:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <159991.1615539999@turing-police>
+References: <159991.1615539999@turing-police> <134696.1615510534@turing-police> <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk> <1486567.1615464259@warthog.procyon.org.uk> <2026575.1615539696@warthog.procyon.org.uk>
+To:     =?us-ascii?Q?Valdis_Kl=3D=3Futf-8=3FQ=3F=3Dc4=3D93=3F=3Dtnieks?= 
+        <valdis.kletnieks@vt.edu>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] certs: Clean up signing_key.pem and x509.genkey on make mrproper
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEs+xi6IDj3gwX10@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 12 Mar 2021 11:19:31 +0000
+Message-ID: <2243141.1615547971@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 10:13:26AM +0000, Quentin Perret wrote:
-> On Friday 12 Mar 2021 at 09:32:06 (+0000), Will Deacon wrote:
-> > I'm not saying to use the VMID directly, just that allocating half of the
-> > pte feels a bit OTT given that the state of things after this patch series
-> > is that we're using exactly 1 bit.
-> 
-> Right, and that was the reason for the PROT_NONE approach in the
-> previous version, but we agreed it'd be worth generalizing to allow for
-> future use-cases :-)
+Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
 
-Yeah, just generalising to 32 bits feels like going too far! I dunno,
-make it a u8 for now, or define the hypervisor owner ID as 1 and reject
-owners greater than that? We can easily extend it later.
+> > Possibly I can add something like:
+> >
+> > 	clean-files :=3D signing_key.pem x509.genkey
+> >
+> > inside the
+> >
+> > 	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
+> > 	...
+> > 	endif
+>=20
+> Would that remove them on a 'make clean', or only a 'make mrproper'?
+> The latter sounds like the correct solution to me, as the signing key sho=
+uld
+> have (roughly) the same lifetime rules as the .config file.
 
-> > > > > @@ -517,28 +543,36 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> > > > >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
-> > > > >  		return -E2BIG;
-> > > > >  
-> > > > > -	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-> > > > > -	if (kvm_pte_valid(old)) {
-> > > > > +	if (kvm_pte_valid(data->attr))
-> > > > 
-> > > > This feels like a bit of a hack to me: the 'attr' field in stage2_map_data
-> > > > is intended to correspond directly to the lower/upper attributes of the
-> > > > descriptor as per the architecture, so tagging the valid bit in there is
-> > > > pretty grotty. However, I can see the significant advantage in being able
-> > > > to re-use the stage2_map_walker functionality, so about instead of nobbling
-> > > > attr, you set phys to something invalid instead, e.g.:
-> > > > 
-> > > > 	#define KVM_PHYS_SET_OWNER	(-1ULL)
-> > > 
-> > > That'll confuse kvm_block_mapping_supported() and friends I think, at
-> > > least in their current form. If you _really_ don't like this, maybe we
-> > > could have an extra 'flags' field in stage2_map_data?
-> > 
-> > I was pondering this last night and I thought of two ways to do it:
-> > 
-> > 1. Add a 'bool valid' and then stick the owner and the phys in a union.
-> >    (yes, you'll need to update the block mapping checks to look at the
-> >     valid flag)
-> 
-> Right, though that is also used for the hyp s1 which doesn't use any of
-> this ATM. That shouldn't be too bad to change, I'll have a look.
+It would appear that it works on neither.  Neither of them seem to have any
+CONFIG_xxx symbols set.
 
-Oh, I meant stick the bool in the stage2_map_data so that should be limited
-to the stage2 path.
+How about the attached patch?
 
-Will
+David
+---
+commit 95897dc8dc13ad13c637a477a1ead9b63ff1fafa
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Mar 12 10:48:25 2021 +0000
+
+    certs: Clean up signing_key.pem and x509.genkey on make mrproper
+=20=20=20=20
+    Autogenerated signing_key.pem and x509.genkey files aren't removed from=
+ the
+    build certs/ directory when "make mrproper" is run.  This is somewhat
+    deliberate since the "file" is specified by the CONFIG_MODULE_SIG_KEY
+    string option and may not be in the build tree - and may not even be a
+    filename, but rather a PKCS#7 URI (also the config variables doesn't se=
+em
+    to be set when cleaning).
+=20=20=20=20
+    Fix this by unconditionally listing signing_key.pem and x509.genkey for
+    removal from the build certs/ directory - which will just do nothing if
+    they're not there, and shouldn't remove signing keys that are configure=
+d to
+    be elsewhere.
+=20=20=20=20
+    Note that this will permanently erase the autogenerated private key, so
+    anyone that is relying on it still being around after doing make mrprop=
+er
+    will no longer find it.
+=20=20=20=20
+    Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
+    Reported-by: Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+    Link: https://lore.kernel.org/r/134696.1615510534@turing-police/ [1]
+
+diff --git a/certs/Makefile b/certs/Makefile
+index f4c25b67aad9..2ae1dd518bc7 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -104,3 +104,5 @@ targets +=3D signing_key.x509
+ $(obj)/signing_key.x509: scripts/extract-cert $(X509_DEP) FORCE
+ 	$(call if_changed,extract_certs,$(MODULE_SIG_KEY_SRCPREFIX)$(CONFIG_MODUL=
+E_SIG_KEY))
+ endif # CONFIG_MODULE_SIG
++
++clean-files +=3D signing_key.pem x509.genkey
+
