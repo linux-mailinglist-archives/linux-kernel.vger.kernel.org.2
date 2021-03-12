@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69780339927
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752E833992C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhCLViP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:38:15 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:40032 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234139AbhCLVhi (ORCPT
+        id S235320AbhCLViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234033AbhCLVi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:37:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=T7mzuRgHR5zyL13fGxYATb0PibzAkq1gophY5Qi93V0=; b=NljsSHJkFlQ2oulW4psgZdRBZa
-        qgoQiY/5e6LFm23c9qIwGHKx59Rdscll0uQCdBksaP8keL4Gv+qXd6SpMzWE3c2KTPN+Yt7TkjfMD
-        VKufm9iYy9S1kM3gq5EoA8X0Iwwk+BXaeKR2DtsJwSiGP5M99l11j01GzfuA1WhYodeMJwR9eULLx
-        qMCAqJ61hDuiWk9NoL/OXxGIsON+G05ZxyItH2tyiPiUwdHuiVQZbuD3Gw6w7iSs3CxWor/qKRJ+N
-        iHGSbxHK1EBS+HEejQDjnyuIn1A2bZ90d2L7GIQDkwb8bf9pWbOv+q1TJdhTOcLW3uuY5x0278s54
-        XVUZIIjg==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lKpT0-0003Fl-Vh; Fri, 12 Mar 2021 14:37:07 -0700
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210312205707.GA2288658@bjorn-Precision-5520>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <c252253e-5000-5d96-1ac8-90835c1a4eb0@deltatee.com>
-Date:   Fri, 12 Mar 2021 14:37:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 12 Mar 2021 16:38:28 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22985C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:38:28 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id mj10so56062518ejb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:38:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y3pYXASAbKQPGfOGK/rF6fxCbBJHbX2zTttQzvRaW7o=;
+        b=DxHwURVjMvIKGIzI7DuUu3AAv/d55DK5ezab/O4hToYEQ7cpwXk8ssuqLcoQkI9AlK
+         2TggVCCbPUPeW2DPbY131Ens+aO5IfmgjTWhh/EjIaJKENNteCaqV1ZF+bA88ibt3xf6
+         pMB12KW8BEuw3TlSIs1y3T2TZUY8zbxe5/FbQQr1U4xmVRlFhbgDb0B8PxTRqUxBLerq
+         IuzOao/xdpnkV5XZZxRETokrb4GprEamPlTycqOPmPo1jofkgYy2TvevqMbe2gUJxClA
+         b4V3kGF+mTbkY60cIC8E+298k3vjj9C83h56/ijFAPglOL7j8Ahvjo3RzrRJeZaC1MPd
+         7CYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y3pYXASAbKQPGfOGK/rF6fxCbBJHbX2zTttQzvRaW7o=;
+        b=CVutMEJmdWViB6jjazyAyNFrcglpXXhpuM9j5+tcnnhnESGkfc3nWI8knLStKbJY0Q
+         Qdm7rBcD0hGer0xmbe3h1TuZgzQyqZEtpzQjlE+VkM4zmNT5RFqre/c7jx7b+Znovkpg
+         upOZQMCfvpnFV6+tt6wKDO7OFRqYyUR1C/nMJ8QnuLyhi9oNTKm7abRkowET/rKDuNsX
+         8g863TVSYVZPFa//o/E/VR5b1nAg4KCOw3vnGuAu8nAo+nxSjTjfitg7ZLMNHTf+Msjg
+         qe5YZn4g6v0mVWLuVLF/ciGr9vYVtI+cVi1hZBURKwC39qNzwByZ9TC7abY3Y3VRP4uX
+         CO6A==
+X-Gm-Message-State: AOAM533VDbf23bMAnNKreNeEJL6ubrhxgzVJdBGVm22W57nbr4HyoiGD
+        ZqvqqJN7WbV6MKTCabtr/4voAatRkWjMs45vW5u7
+X-Google-Smtp-Source: ABdhPJyLP33I2LSd9dQd7uKTXF6aeDn9KsESwMZUv3BVbHWm1b4RGjFZzU86b61GmzbQBJGiq2YNM8GNMMsu4+gJaok=
+X-Received: by 2002:a17:906:3b84:: with SMTP id u4mr10606402ejf.431.1615585106342;
+ Fri, 12 Mar 2021 13:38:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312205707.GA2288658@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, helgaas@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [RFC PATCH v2 02/11] PCI/P2PDMA: Avoid pci_get_slot() which
- sleeps
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <69f51dfe3ad24840ea1ef1f38cfe033f0fc62080.1615411783.git.rgb@redhat.com>
+In-Reply-To: <69f51dfe3ad24840ea1ef1f38cfe033f0fc62080.1615411783.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 12 Mar 2021 16:38:15 -0500
+Message-ID: <CAHC9VhTdD4FVHKDygOZPjvNeHPNGjyoTQ-TzrFHP5xpd9UtSKw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update audit files
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 11:41 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> Add files maintaned by the audit subsystem.
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+>  MAINTAINERS | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6eff4f720c72..a17532559665 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3015,9 +3015,13 @@ L:       linux-audit@redhat.com (moderated for non-subscribers)
+>  S:     Supported
+>  W:     https://github.com/linux-audit
+>  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
+> +F:     arch/*/*/*audit*.[ch]
 
+That looks like it has about two too many wildcards to hold up over time :)
 
-On 2021-03-12 1:57 p.m., Bjorn Helgaas wrote:
-> On Thu, Mar 11, 2021 at 04:31:32PM -0700, Logan Gunthorpe wrote:
->> In order to use upstream_bridge_distance_warn() from a dma_map function,
->> it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
->> might sleep.
->>
->> In order to avoid this, try to get the host bridge's device from
->> bus->self, and if that is not set just get the first element in the
->> list. It should be impossible for the host bridges device to go away
->> while references are held on child devices, so the first element
->> should not change and this should be safe.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>  drivers/pci/p2pdma.c | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
->> index bd89437faf06..2135fe69bb07 100644
->> --- a/drivers/pci/p2pdma.c
->> +++ b/drivers/pci/p2pdma.c
->> @@ -311,11 +311,15 @@ static const struct pci_p2pdma_whitelist_entry {
->>  static bool __host_bridge_whitelist(struct pci_host_bridge *host,
->>  				    bool same_host_bridge)
->>  {
->> -	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
->>  	const struct pci_p2pdma_whitelist_entry *entry;
->> +	struct pci_dev *root = host->bus->self;
->>  	unsigned short vendor, device;
->>  
->>  	if (!root)
->> +		root = list_first_entry_or_null(&host->bus->devices,
->> +						struct pci_dev, bus_list);
-> 
-> Replacing one ugliness (assuming there is a pci_dev for the host
-> bridge, and that it is at 00.0) with another (still assuming a pci_dev
-> and that it is host->bus->self or the first entry).  I can't suggest
-> anything better, but maybe a little comment in the code would help
-> future readers.
+I understand what you're trying to do here, and while I don't disagree
+in principle, I worry that the arch specific paths vary enough that
+trying to handle it here is going to be a bit of a mess.
 
-Yeah, I struggled to find a solution here; this was the best I could
-come up with. I'd love it if someone had a better idea. I can add a
-comment for future iterations.
+> +F:     arch/x86/include/asm/audit.h
 
-> I wish we had a real way to discover this property without the
-> whitelist, at least for future devices.  Was there ever any interest
-> in a _DSM or similar interface for this?
+The fact that we need a special entry for the single header under x86
+tends to reinforce that.  The other additions make sense, but I think
+it may be best to leave the arch specific areas alone for now.
 
-I'd also like to get rid of the whitelist, but I have no idea how or who
-would have to lead a fight to get the hardware to self describe in way
-that we could use.
+> +F:     include/asm-generic/audit_*.h
+>  F:     include/linux/audit.h
+>  F:     include/uapi/linux/audit.h
+>  F:     kernel/audit*
+> +F:     lib/*audit.c
+>
+>  AUXILIARY DISPLAY DRIVERS
+>  M:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+> --
+> 2.27.0
 
-> I *am* very glad to remove a pci_get_slot() usage.
-> 
->> +
->> +	if (!root || root->devfn)
->>  		return false;
->>  
->>  	vendor = root->vendor;
-> 
-> Don't you need to also remove the "pci_dev_put(root)" a few lines
-> below?
-
-Yes, right. Good catch!
-
-Logan
-
+-- 
+paul moore
+www.paul-moore.com
