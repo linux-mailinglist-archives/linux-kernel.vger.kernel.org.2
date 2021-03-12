@@ -2,116 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB23338200
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21379338201
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCLAAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 19:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhCKX7q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 18:59:46 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D76DC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:59:46 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id j7so2558235qtx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 15:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9rzGlCXRuAYzD4FxF8/kX8t+sLM/xQ6RjW+kfB9MHUI=;
-        b=Sht35sRAWhjUnG/vlACxlUdN1NXxZ2hn78xSNsQrOQiOnK1nALUmlUGHUAK1T+DYhZ
-         MX3lwQI/UxwTrkQv8d3kMYROr1PLyoiqVafUPMi7P056ufFmL/tRZlvShlZxbmxqDyNW
-         NLKw5iBy24OxHbW+DCJ1DQJfzdSe8iTc3c8sHbtF9tFwbdZcos5KLgrKfPlUhIrDUvII
-         vIew7klGAO8Wn/28Da6K3YhKEWpKl3Z8yXO4c0K2hvWjTBIXhDYwZP0hefzSiur217jB
-         Lo+rOwqj5lF4a/tIzhlWfi67C2vz4vtRgSFudHgU/4CmiKi4zEw8bQzulGoxFckdnomp
-         ZbNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9rzGlCXRuAYzD4FxF8/kX8t+sLM/xQ6RjW+kfB9MHUI=;
-        b=d3khzvM+mcDLzaZofcNYA+aQFa+obfw6sEkSGVQ1nv/a8R+AckQV2x5WbhVQUvJSdZ
-         uv+2nc0aCqS9IT20DEBAvAuB2op6pMjpget9LRAFpSR61lkdVChPAqQI+rITeB4yTKTd
-         URv+/VGMoxzFPDDxHXBJP0Zgi24DieKGmNgzZcX7rDh9Sz7w3N67IiM6rXyWHGL2YU4F
-         rEStzcOrXopzOcg5vt9icAhPOK9suYssvNN9Z+pNaRwXKtsr9cPVRuoglHNFTbmG8Oej
-         zPnrhXBAOqwhRBFoXlxaiJaks9l9xpyIg7n/Y4nKZyeuZ5yeplDLweQt5qo4ke08fBg0
-         AXrg==
-X-Gm-Message-State: AOAM531vbq6l5m6oFTHKQOT/xEHCSt26JRR2I0HW3XJOR72FOHZZUfXN
-        NAmrbYBa7X+6VAGTJnm7JMoCAg==
-X-Google-Smtp-Source: ABdhPJxiCSaM0aAia7Gh2ystvnvxFkgXLtQu1szm+rOtvCsRMIOPRh5BDiwH0XxEbvHajGL8eIa3Yg==
-X-Received: by 2002:aed:20cd:: with SMTP id 71mr9996620qtb.346.1615507185328;
-        Thu, 11 Mar 2021 15:59:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id z89sm2953405qtd.5.2021.03.11.15.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 15:59:44 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lKVDT-00BbRW-RG; Thu, 11 Mar 2021 19:59:43 -0400
-Date:   Thu, 11 Mar 2021 19:59:43 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-Subject: Re: [RFC PATCH v2 11/11] nvme-pci: Convert to using dma_map_sg for
- p2pdma pages
-Message-ID: <20210311235943.GB2710221@ziepe.ca>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-12-logang@deltatee.com>
+        id S231248AbhCLAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 19:01:27 -0500
+Received: from mga01.intel.com ([192.55.52.88]:58712 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230372AbhCLABG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 19:01:06 -0500
+IronPort-SDR: mujmVT32dxpEXr6yKJnk755ujQACcVUb1Ekg8A2eQwqGwY5T8+offAyhuiUUWgDjZXSYds6Cxx
+ YWIiWkWWJnQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208588355"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="208588355"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 16:01:01 -0800
+IronPort-SDR: xJSMY90mQMvQrcPIAb1rgQ5L7D/hEi7OSWYSUb7b8Vw6TEJWDQFds2RDXJ+o6IZ6fpkqHg3uuP
+ kjnzW+f91mTQ==
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="370717624"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 16:01:00 -0800
+Date:   Thu, 11 Mar 2021 16:00:59 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Liang, Kan" <kan.liang@linux.intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "yao.jin@linux.intel.com" <yao.jin@linux.intel.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH V2 20/25] perf/x86/intel: Add Alder Lake Hybrid support
+Message-ID: <20210312000059.GM203350@tassilo.jf.intel.com>
+References: <1615394281-68214-1-git-send-email-kan.liang@linux.intel.com>
+ <1615394281-68214-21-git-send-email-kan.liang@linux.intel.com>
+ <YEpAtTttSxMVDWYp@hirez.programming.kicks-ass.net>
+ <01176076-049b-0129-4865-8c49cd002060@linux.intel.com>
+ <20210311195832.GK4746@worktop.programming.kicks-ass.net>
+ <400dbd6e-389c-899d-6d11-14b5a8f8f90e@linux.intel.com>
+ <20210311204742.GM4746@worktop.programming.kicks-ass.net>
+ <a606211b5b454ef5b658858e0cb361f0@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311233142.7900-12-logang@deltatee.com>
+In-Reply-To: <a606211b5b454ef5b658858e0cb361f0@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:31:41PM -0700, Logan Gunthorpe wrote:
-> Convert to using dma_[un]map_sg() for PCI p2pdma pages.
-> 
-> This should be equivalent, though support will be somewhat less
-> (only dma-direct and dma-iommu are currently supported).
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->  drivers/nvme/host/pci.c | 27 +++++++--------------------
->  1 file changed, 7 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-> index 7d40c6a9e58e..89ca5acf7a62 100644
-> +++ b/drivers/nvme/host/pci.c
-> @@ -577,17 +577,6 @@ static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
->  
->  }
->  
-> -static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
-> -{
-> -	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
-> -
-> -	if (is_pci_p2pdma_page(sg_page(iod->sg)))
-> -		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
-> -				    rq_dma_dir(req));
-> -	else
-> -		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
-> -}
+> If you want a uarch name, that might be the name of the core
+> (.... something-cove ... I can't keep track of the names of all the
 
-Can the two other places with this code pattern be changed too?
+GoldenCove for Sapphire Rapids/AlderLake.
 
-Jason
+But keep in mind that they're still different. Kind of like a different
+distro with different patches and configuration from the same base kernel
+release.
+
+-Andi
