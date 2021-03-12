@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCC833927B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993D5339281
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhCLPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S231331AbhCLP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbhCLPx5 (ORCPT
+        with ESMTP id S231907AbhCLP4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:53:57 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A096C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:53:57 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id y16so5093754wrw.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:53:57 -0800 (PST)
+        Fri, 12 Mar 2021 10:56:03 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B38C061574;
+        Fri, 12 Mar 2021 07:56:03 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id s17so7354945ljc.5;
+        Fri, 12 Mar 2021 07:56:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nf/x3zdOo4NltH5YdliW8QtzzVE+SJmh6Ofm5Su6NTI=;
-        b=DPoPxHIC42Nu7DXh2UsEAnJWPFfA50NY9vRtjTTu52q/y2IropDXGPAanOKL276Dux
-         /yBBODZK/+F0U2WDPTSeqONqwea06TkjA00UKGmBvd7aIMO1N3odzUpf12f0jNO4IQ70
-         NBNbtrI7KpVb1DMvauN+htMpb4eQ5TgBoY81JaKbJ+mZQ11eFi0Yxr9/Zmc8tAS9Ar7O
-         1fGOK1KCMrQ8AUsSNR/VgkUIPziYbegKu35VvAVMrjcyRSc4xI7Lgrn/9iyqltNROjOP
-         1s3UGwvKG+1cr2Dd12gq1GxOVY3tuYQiNAizic26XSjKGLZdMuXSQBr0N+fgfPMDXDHL
-         E5PA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uz8axRJtNwOGJiSaHqygjzHfEXoywnTTEXk/8QEVZWc=;
+        b=aEk/ptF91oAruIKJCh5kBzObHw8A21+pu5m9So7irpHVhCtzTskmjARilRC8bYCWzo
+         H23ZiWdsa7iQ0D9gXpJ9Zk5iO+ALMlhy5tzcBVABoNID4NDYZH6kVZ3KzScldu36d3fS
+         B49dZb5EMjoRWQvi0JnjaTeKBF8X2CyfkAbkJoqI+xnnsySjWWWt1xi308IiIU1ipgSa
+         ufExRffYHsZxXbJPLY9RrW6tQBOjPKlpwXEDdEbOpP4BpAcp0O/ZlH4/ohREQjrPIvxO
+         JUyatwzzldqu71TeBDPC9rgkpPmYhidxTqTi3uigZGGuTQiffhO83NslnKWLd4qRe8j2
+         RW9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Nf/x3zdOo4NltH5YdliW8QtzzVE+SJmh6Ofm5Su6NTI=;
-        b=mwqX4jAHaGoWyhLt3bAlvUgdzBSiFTHwUuksezepiUfxr35vxV9LC/boPS3lk8Lixj
-         GS3AMwbqSo7AJB/HcRqXhTRRkrlPdQeo3+1IjlzNUGpFj7OLqNSvz0wKd6vyZz+fVU20
-         r/7H33dMguh1yCTE+rtJg6sFG//sA1DNGM2de6OfG6Kk8hvJOjE0GZFdxASVIA8c16YD
-         mV4caOLnnkacIp2qc+UVXjSfYiN5viyOZkbWR5PfkNFaWd8wL34CdJ9rnbeotsl2IBlr
-         cJipSUGMR0bYja0ESCGVY7BH4DQHWpAbka6zb7C2UKrUdkO+QvMAalhm+lUR/7+8mNhp
-         /Q+Q==
-X-Gm-Message-State: AOAM531OIiGAL4e10T8K5IdPbqNMb2vD/Vh0RH/LHNMtu7FBt4nZ4FDf
-        skpyb9/KwN5sjY/XPhKrn57pca+5yfoXjw==
-X-Google-Smtp-Source: ABdhPJyOgIySm2XuuxssRqoflifsys8dPKXZGlhOXbB4SqKGDnrsUhWWwqynyp7g5FQ058K4gPpjoQ==
-X-Received: by 2002:a5d:4903:: with SMTP id x3mr14701303wrq.143.1615564435935;
-        Fri, 12 Mar 2021 07:53:55 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cc8a:6653:68f4:ff69? ([2a01:e34:ed2f:f020:cc8a:6653:68f4:ff69])
-        by smtp.googlemail.com with ESMTPSA id h22sm2964654wmb.36.2021.03.12.07.53.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 07:53:55 -0800 (PST)
-Subject: Re: [PATCH 2/3] thermal/drivers/devfreq_cooling: Use device name
- instead of auto-numbering
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
- <20210310114600.27178-2-daniel.lezcano@linaro.org>
- <8f17dc8b-3259-8e6a-f46b-b97495ecd550@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <345395f7-006d-c879-a777-c24d79ae9e23@linaro.org>
-Date:   Fri, 12 Mar 2021 16:53:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=uz8axRJtNwOGJiSaHqygjzHfEXoywnTTEXk/8QEVZWc=;
+        b=hQJzpMnxhjvN1sfOSY7DrGSYpYnMrVDogtRb9dJlXXTiVCv79UzF7knGQxJmfM5Z+v
+         11nQp+fnxQjF1r/cXWIA93/iKOp1F/peOzqeNakj4PA6p2D8GLzRW5iZyjGMT9eXBP0c
+         fZSirOHksfzSgmcnk8FB8t8YYKtCXdvwaa8mlAT5lH39jiGzWCCyCS2C1Bt2FnyKuFI0
+         wrbJu7ZASxTXg96ta+Orfw29HVI2bfctC3g5d64UEiO6+UOuEi5NAQizpKjzRaPuAAw0
+         6EaS8J734qlUMPa+Lnv3545Y2TvUxrgPTXM1a0iKamcCs+RUgj2+kmYf3l6dtkELTilT
+         rAzg==
+X-Gm-Message-State: AOAM5302+sVKi2fwOp7BCpqL+Olz6//33AZUfLhLdSa0+vxxkA2haaL6
+        euXMF1W4ULyCxit8MELrcLo5Nm8tBsc=
+X-Google-Smtp-Source: ABdhPJyNqC+zjAUitl09iFh8JuBYf69cws7MGpkC+ezD8XZhsmCo09/B4p/pXb7GbW7EHSEN2ok4Ng==
+X-Received: by 2002:a05:651c:384:: with SMTP id e4mr2690606ljp.500.1615564561904;
+        Fri, 12 Mar 2021 07:56:01 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id u11sm1759224lfg.275.2021.03.12.07.56.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 07:56:01 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Will Deacon <will@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] iommu/tegra-smmu: Make tegra_smmu_probe_device() to handle all IOMMU phandles
+Date:   Fri, 12 Mar 2021 18:54:39 +0300
+Message-Id: <20210312155439.18477-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <8f17dc8b-3259-8e6a-f46b-b97495ecd550@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/2021 12:15, Lukasz Luba wrote:
-> 
-> 
-> On 3/10/21 11:45 AM, Daniel Lezcano wrote:
->> Currently the naming of a cooling device is just a cooling technique
->> followed by a number. When there are multiple cooling devices using
->> the same technique, it is impossible to clearly identify the related
->> device as this one is just a number.
->>
->> For instance:
->>
->>   thermal-devfreq-0
->>   thermal-devfreq-1
->>   etc ...
->>
->> The 'thermal' prefix is redundant with the subsystem namespace. This
->> patch removes the 'thermal prefix and changes the number by the device
-> 
-> missing ' after 'thermal
-> 
->> name. So the naming above becomes:
->>
->>   devfreq-5000000.gpu
->>   devfreq-1d84000.ufshc
->>   etc ...
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
+The tegra_smmu_probe_device() handles only the first IOMMU device-tree
+phandle, skipping the rest. Devices like 3D module on Tegra30 have
+multiple IOMMU phandles, one for each h/w block, and thus, only one
+IOMMU phandle is added to fwspec for the 3D module, breaking GPU.
+Previously this problem was masked by tegra_smmu_attach_dev() which
+didn't use the fwspec, but parsed the DT by itself. The previous commit
+to tegra-smmu driver partially reverted changes that caused problems for
+T124 and now we have tegra_smmu_attach_dev() that uses the fwspec and
+the old-buggy variant of tegra_smmu_probe_device() which skips secondary
+IOMMUs.
 
-[ ... ]
+Make tegra_smmu_probe_device() not to skip the secondary IOMMUs. This
+fixes a partially attached IOMMU of the 3D module on Tegra30 and now GPU
+works properly once again.
 
-> ---------------------------------------------------------
-> 
-> We should allocate tmp buffer for it, to not loose the meaningful part
-> of that string name or end up with only the same prefix, like for the
-> first 3 from top:
-> 
-> devfreq-18321000.qco
-> 
-> or for the GPU:
-> devfreq-3d00000.qcom
-> 
-> This is tricky area and vendors might put any non-meaningful prefix.
-> 
-> The rest of the code looks OK, only this name construction part.
+Fixes: 765a9d1d02b2 ("iommu/tegra-smmu: Fix mc errors on tegra124-nyan")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/iommu/tegra-smmu.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-That requires a change in the thermal_core code to replace the strlcpy
-into the cdev->type by a kstrdup.
-
-Otherwise the name will be truncated in any case by the underlying
-thermal_cooling_device_register() function.
-
-
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 97eb62f667d2..602aab98c079 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -849,12 +849,11 @@ static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
+ 		smmu = tegra_smmu_find(args.np);
+ 		if (smmu) {
+ 			err = tegra_smmu_configure(smmu, dev, &args);
+-			of_node_put(args.np);
+ 
+-			if (err < 0)
++			if (err < 0) {
++				of_node_put(args.np);
+ 				return ERR_PTR(err);
+-
+-			break;
++			}
+ 		}
+ 
+ 		of_node_put(args.np);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.29.2
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
