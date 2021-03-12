@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDBC3398C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595D73398FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbhCLU7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:59:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52156 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235119AbhCLU6y (ORCPT
+        id S235158AbhCLVRu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 16:17:50 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:42178 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235126AbhCLVRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:58:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615582732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tqrwGSWs78kmFc+bZgFNWuIXo+lT3T9Q8DDXoclb0G4=;
-        b=iei23av0eiJLEiZYH1PNmqoVvYtHeW/YEOp8I7JgvF+ajDHd4RXQczY7CW/tAh+3BaP4kg
-        lkWrIssuzPnDzlI7N7iAYp5XKLpF3KNTN2Z1E+cWHO7YGY9OHfeerQS+zmp7NV59Y6kmqL
-        QlclJIH0WYMP1q/gcuoRDFpsVIXLwDk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-nJHOhb7fOK239aU1O3cm5A-1; Fri, 12 Mar 2021 15:58:51 -0500
-X-MC-Unique: nJHOhb7fOK239aU1O3cm5A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763838189C7;
-        Fri, 12 Mar 2021 20:58:49 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E57FF5D9CC;
-        Fri, 12 Mar 2021 20:58:44 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 13:58:44 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Subject: Re: [PATCH] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210312135844.5e97aac7@omen.home.shazbot.org>
-In-Reply-To: <20210312130938.1e535e50@omen.home.shazbot.org>
-References: <161539852724.8302.17137130175894127401.stgit@gimli.home>
-        <20210310181446.GZ2356281@nvidia.com>
-        <20210310113406.6f029fcf@omen.home.shazbot.org>
-        <20210310184011.GA2356281@nvidia.com>
-        <20210312121611.07a313e3@omen.home.shazbot.org>
-        <20210312194147.GH2356281@nvidia.com>
-        <20210312130938.1e535e50@omen.home.shazbot.org>
+        Fri, 12 Mar 2021 16:17:33 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id BB1A2407F4A;
+        Fri, 12 Mar 2021 16:48:11 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id f6REW4FLFauL; Fri, 12 Mar 2021 16:48:11 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id F2605407475;
+        Fri, 12 Mar 2021 16:36:39 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3vbErVHIdE7s; Fri, 12 Mar 2021 16:36:39 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id CE845405574;
+        Fri, 12 Mar 2021 16:07:00 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 20:07:27 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312190700.CE845405574@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 13:09:38 -0700
-Alex Williamson <alex.williamson@redhat.com> wrote:
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-> On Fri, 12 Mar 2021 15:41:47 -0400
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.12.0-rc1+ #18 Not tainted
-> ------------------------------------------------------
-> CPU 0/KVM/1406 is trying to acquire lock:
-> ffffffffa5a58d60 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0x83/0xd0
-> 
-> but task is already holding lock:
-> ffff94c0f3e8fb08 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: vfio_device_io_remap_mapping_range+0x31/0x120 [vfio]
-> 
-> which lock already depends on the new lock.
-> 
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (&mapping->i_mmap_rwsem){++++}-{3:3}:  
->        down_write+0x3d/0x70
->        dma_resv_lockdep+0x1b0/0x298
->        do_one_initcall+0x5b/0x2d0
->        kernel_init_freeable+0x251/0x298
->        kernel_init+0xa/0x111
->        ret_from_fork+0x22/0x30
-> 
-> -> #0 (fs_reclaim){+.+.}-{0:0}:  
->        __lock_acquire+0x111f/0x1e10
->        lock_acquire+0xb5/0x380
->        fs_reclaim_acquire+0xa3/0xd0
->        kmem_cache_alloc_trace+0x30/0x2c0
->        memtype_reserve+0xc3/0x280
->        reserve_pfn_range+0x86/0x160
->        track_pfn_remap+0xa6/0xe0
->        remap_pfn_range+0xa8/0x610
->        vfio_device_io_remap_mapping_range+0x93/0x120 [vfio]
->        vfio_pci_test_and_up_write_memory_lock+0x34/0x40 [vfio_pci]
->        vfio_basic_config_write+0x12d/0x230 [vfio_pci]
->        vfio_pci_config_rw+0x1b7/0x3a0 [vfio_pci]
->        vfs_write+0xea/0x390
->        __x64_sys_pwrite64+0x72/0xb0
->        do_syscall_64+0x33/0x40
->        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-..
-> > Does current_gfp_context()/memalloc_nofs_save()/etc solve it?  
+Sir/Madam,
 
-Yeah, we can indeed use memalloc_nofs_save/restore().  It seems we're
-trying to allocate something for pfnmap tracking and that enables lots
-of lockdep specific tests.  Is it valid to wrap io_remap_pfn_range()
-around clearing this flag or am I just masking a bug?  Thanks,
+CONGRATULATIONS!!!
 
-Alex
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
