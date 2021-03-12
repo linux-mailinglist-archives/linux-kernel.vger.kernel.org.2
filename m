@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFBE338280
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A572633829C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCLAh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 19:37:28 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55642 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhCLAhM (ORCPT
+        id S231532AbhCLAtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 19:49:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhCLAtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 19:37:12 -0500
-Received: by mail-io1-f72.google.com with SMTP id e15so16663659ioe.22
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 16:37:12 -0800 (PST)
+        Thu, 11 Mar 2021 19:49:21 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28D2C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 16:49:21 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 6so27799181ybq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 16:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=tdPCoglx2rEXEqBLmU0P2QxdgUDSrZlH5oMXt14Ies0=;
+        b=SAiryR+/1F4QR2Sh8/WAofpQOiQwcTfPu82zao4pCXa65lDYdqykBnXnKwFzTFtMK/
+         Q87M8HfYyHqw99Zdf118VxSCYvhYnQG+eORKppK6x+MBlf2oo3XoOt/Ohol2wSmQf/xp
+         wVB0nZ00nVc3+TPKKfTZbsjBNWzzFRvtYZXbIz4ACG5q8p5WvFqy7E2CFmi9Ajz+E04A
+         Uy8u/v8dN+bKkASP3R9AC07S2LEbbwjDZ5SaGCse/p2/gv+5lH2YYZ87b6g6SBBijhwA
+         347Gs/LWWReVAPqK6YJPcO1tmv+IQfOs/BpEy7EpcOK3zCcOayp6J+gmy+3OI53yFvzD
+         zZJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=kzzLyjEooH5a1ePxMOJOMCLElnyMMvuRoZP/W6R9Py4=;
-        b=RujiNzuf95HmtMALd4ejV0AvD6pQkP/LaUJ8/rvNp2IWtGYpUtNox1wZeTOxvOfqPy
-         PJCuvmqpFXlbYDPljcOmr5B6GzB6mb1qEOrvqL7ggYVSTAjZ4xBlMVVKJ3ZXixxfG/iQ
-         amGq50DPrXRkHQSCO0pTqHovMwK9lcy7uHDtlGPg7B2fC9BsATVuXRQnjPvA/1PvezXH
-         HXeMr3HwukJYPMxaEK+HHuf3qECnYKSpkbvg5BG2BkO05MtOeR1ANfAMKQDrXcSoExfV
-         Btubsgnvp4zpyuUI1TC9Ue+JPeHR6CN1siqTIal6SA32XEay5uqR6erkzDTzlxOmsVxX
-         uSeg==
-X-Gm-Message-State: AOAM532xS//PmZtsTLgMfiHAGijeS0s7YPWbAicObJdLIn4YUbY7nrYW
-        5pE67Ag/eDJmJdESSb6w/81snaQIPehmf6y7gF49uoK4qGnG
-X-Google-Smtp-Source: ABdhPJzrJY8+RgG1fy9BrJUCN4ZBicF49h/Ia+1gbtBU2f8M8/mlQPc44Bp9cwl2b3ADRvK/hfgQ0SZeP+HOZGfTDz+jxVtLBzgm
-MIME-Version: 1.0
-X-Received: by 2002:a92:730a:: with SMTP id o10mr900022ilc.160.1615509431996;
- Thu, 11 Mar 2021 16:37:11 -0800 (PST)
-Date:   Thu, 11 Mar 2021 16:37:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d356ca05bd4c1974@google.com>
-Subject: [syzbot] WARNING in handle_mm_fault
-From:   syzbot <syzbot+7d7013084f0a806f3786@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=tdPCoglx2rEXEqBLmU0P2QxdgUDSrZlH5oMXt14Ies0=;
+        b=NTO7iWLJQyOjDthv0EUJ2Aico//aOX7xGNz5fVqdR3WjDhCra19u0L6ZYRyDIwegHX
+         THSLa5b9EOOmgI44wbVUCHagOeYx5vZyobc9ZjKhr6JB/l9/hx+fE0MMl+ojG/rXnSkF
+         ov3jUTnh23fJIQLC2McEjVKc0DaztyAfoJAtn/Sh6isKQx8zBucOf1MVfBEHlBn60Pct
+         J8a1e8V5x0q9iQNqS7dJAFThLb3OMfDNCsJpOrIl8eIhgTM+wr0zn8SlLJEf8b41ZENO
+         amuKKxc6v+C55ph9+AKddjc4JXWHhrLAjhv0mndPLxfzan7xFJ5MWbAmr4AT9O+B0waE
+         yphw==
+X-Gm-Message-State: AOAM530hN0APaks8ks8nPrOC2A0yXzu0HqbNpp8y/e6036KafN8HJwRn
+        ZYWf59fMtdtHhug7MnSxK1oM1v0B7SeucOZ8BQs=
+X-Google-Smtp-Source: ABdhPJzShn28s+halMR+vzT0zjcZemE7Ff5yb7+xlvVhoC/UuBoxjvMG/z2t2Y6cw7vtqzmvzKenzjBEbPWRbnPwaZo=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c86b:8269:af92:55a])
+ (user=samitolvanen job=sendgmr) by 2002:a25:e785:: with SMTP id
+ e127mr15903182ybh.451.1615510160709; Thu, 11 Mar 2021 16:49:20 -0800 (PST)
+Date:   Thu, 11 Mar 2021 16:49:02 -0800
+Message-Id: <20210312004919.669614-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH 00/17] Add support for Clang CFI
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series adds support for Clang's Control-Flow Integrity (CFI)
+checking. With CFI, the compiler injects a runtime check before each
+indirect function call to ensure the target is a valid function with
+the correct static type. This restricts possible call targets and
+makes it more difficult for an attacker to exploit bugs that allow the
+modification of stored function pointers. For more details, see:
 
-syzbot found the following issue on:
+  https://clang.llvm.org/docs/ControlFlowIntegrity.html
 
-HEAD commit:    05a59d79 Merge git://git.kernel.org:/pub/scm/linux/kernel/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f493ead00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=750735fdbc630971
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d7013084f0a806f3786
+The first patch contains build system changes and error handling,
+and implements support for cross-module indirect call checking. The
+remaining patches address issues caused by the compiler
+instrumentation. These include fixing known type mismatches, as well
+as issues with address space confusion and cross-module function
+address equality.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+These patches add support only for arm64, but I'll post patches also
+for x86_64 after we address the remaining issues there, including
+objtool support.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7d7013084f0a806f3786@syzkaller.appspotmail.com
+You can also pull this series from
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 0 PID: 8412 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 0 PID: 8412 Comm: syz-fuzzer Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 11 d1 ad 04 00 74 01 c3 48 c7 c7 20 79 6b 89 c6 05 00 d1 ad 04 01 e8 75 5b be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0000:ffffc9000185fac8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff8880194268a0 RCX: 0000000000000000
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R13: ffffed1003284d14 R14: 0000000000000001 R15: ffff8880b9c36000
-FS:  000000c00002ec90(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-Call Trace:
- handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4549
-Code: 48 8d 05 97 25 3e 00 48 89 44 24 08 e8 6d 54 ea ff 90 e8 07 a1 ed ff eb a5 cc cc cc cc cc 8b 44 24 10 48 8b 4c 24 08 89 41 24 <c3> cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 48 8b
-RAX: 00000000000047f6 RBX: 00000000000047f6 RCX: 0000000000d60000
-RDX: 0000000000004c00 RSI: 0000000000d60000 RDI: 000000000181cad0
-RBP: 000000c000301890 R08: 00000000000047f5 R09: 000000000059c5a0
-R10: 000000c0004e2000 R11: 0000000000000020 R12: 00000000000000fa
-R13: 00aaaaaaaaaaaaaa R14: 000000000093f064 R15: 0000000000000038
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8412 Comm: syz-fuzzer Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- __warn.cold+0x35/0x44 kernel/panic.c:605
- report_bug+0x1bd/0x210 lib/bug.c:195
- handle_bug+0x3c/0x60 arch/x86/kernel/traps.c:239
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:259
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:575
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 11 d1 ad 04 00 74 01 c3 48 c7 c7 20 79 6b 89 c6 05 00 d1 ad 04 01 e8 75 5b be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0000:ffffc9000185fac8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff8880194268a0 RCX: 0000000000000000
-RDX: ffff88802f7b2400 RSI: ffffffff815b4435 RDI: fffff5200030bf4b
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815ad19e R11: 0000000000000000 R12: 0000000000000003
-R13: ffffed1003284d14 R14: 0000000000000001 R15: ffff8880b9c36000
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- pmd_lock include/linux/mm.h:2264 [inline]
- huge_pmd_set_accessed+0x103/0x320 mm/huge_memory.c:1265
- __handle_mm_fault+0xeeb/0x4f70 mm/memory.c:4445
- handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4549
- do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-RIP: 0033:0x59072c
-Code: 48 8d 05 97 25 3e 00 48 89 44 24 08 e8 6d 54 ea ff 90 e8 07 a1 ed ff eb a5 cc cc cc cc cc 8b 44 24 10 48 8b 4c 24 08 89 41 24 <c3> cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 48 8b
-RSP: 002b:000000c0003017b0 EFLAGS: 00010246
-RAX: 00000000000047f6 RBX: 00000000000047f6 RCX: 0000000000d60000
-RDX: 0000000000004c00 RSI: 0000000000d60000 RDI: 000000000181cad0
-RBP: 000000c000301890 R08: 00000000000047f5 R09: 000000000059c5a0
-R10: 000000c0004e2000 R11: 0000000000000020 R12: 00000000000000fa
-R13: 00aaaaaaaaaaaaaa R14: 000000000093f064 R15: 0000000000000038
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+  https://github.com/samitolvanen/linux.git cfi-v1
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Sami Tolvanen (17):
+  add support for Clang CFI
+  cfi: add __cficanonical
+  mm: add generic __va_function and __pa_function macros
+  module: cfi: ensure __cfi_check alignment
+  workqueue: cfi: disable callback pointer check with modules
+  kthread: cfi: disable callback pointer check with modules
+  kallsyms: cfi: strip hashes from static functions
+  bpf: disable CFI in dispatcher functions
+  lib/list_sort: fix function type mismatches
+  lkdtm: use __va_function
+  psci: use __pa_function for cpu_resume
+  arm64: implement __va_function
+  arm64: use __pa_function
+  arm64: add __nocfi to functions that jump to a physical address
+  arm64: add __nocfi to __apply_alternatives
+  KVM: arm64: Disable CFI for nVHE
+  arm64: allow CONFIG_CFI_CLANG to be selected
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ Makefile                                  |  17 ++
+ arch/Kconfig                              |  45 +++
+ arch/arm64/Kconfig                        |   1 +
+ arch/arm64/include/asm/memory.h           |  15 +
+ arch/arm64/include/asm/mmu_context.h      |   4 +-
+ arch/arm64/kernel/acpi_parking_protocol.c |   2 +-
+ arch/arm64/kernel/alternative.c           |   4 +-
+ arch/arm64/kernel/cpu-reset.h             |  10 +-
+ arch/arm64/kernel/cpufeature.c            |   4 +-
+ arch/arm64/kernel/psci.c                  |   3 +-
+ arch/arm64/kernel/smp_spin_table.c        |   2 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile          |   6 +-
+ drivers/firmware/psci/psci.c              |   4 +-
+ drivers/misc/lkdtm/usercopy.c             |   2 +-
+ include/asm-generic/vmlinux.lds.h         |  20 +-
+ include/linux/bpf.h                       |   4 +-
+ include/linux/cfi.h                       |  41 +++
+ include/linux/compiler-clang.h            |   3 +
+ include/linux/compiler_types.h            |   8 +
+ include/linux/init.h                      |   6 +-
+ include/linux/mm.h                        |   8 +
+ include/linux/module.h                    |  13 +-
+ include/linux/pci.h                       |   4 +-
+ init/Kconfig                              |   2 +-
+ kernel/Makefile                           |   4 +
+ kernel/cfi.c                              | 329 ++++++++++++++++++++++
+ kernel/kallsyms.c                         |  54 +++-
+ kernel/kthread.c                          |   8 +-
+ kernel/module.c                           |  43 +++
+ kernel/workqueue.c                        |   9 +-
+ lib/list_sort.c                           |   8 +-
+ scripts/Makefile.modfinal                 |   2 +-
+ scripts/module.lds.S                      |  14 +-
+ 33 files changed, 655 insertions(+), 44 deletions(-)
+ create mode 100644 include/linux/cfi.h
+ create mode 100644 kernel/cfi.c
+
+
+base-commit: 28806e4d9b97865b450d72156e9ad229f2067f0b
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
