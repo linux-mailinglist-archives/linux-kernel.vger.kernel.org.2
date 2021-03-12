@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A103338948
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28483388B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbhCLJxT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 04:53:19 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:45820 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233019AbhCLJxL (ORCPT
+        id S232919AbhCLJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:30:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232759AbhCLJah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:53:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 26FAE3A39A2;
-        Fri, 12 Mar 2021 05:47:22 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id SQSg7sH6Cz4d; Fri, 12 Mar 2021 05:47:21 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 0AB683A399E;
-        Fri, 12 Mar 2021 05:47:13 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mUwRZjOQHIOO; Fri, 12 Mar 2021 05:47:12 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 35F883A3985;
-        Fri, 12 Mar 2021 05:47:00 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 04:30:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D68C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:30:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/PY1FtmG3ac2SthA8z5yZwsXBWGLH/vri2vgNuCMVKM=; b=P5wamdz2faf+EoMA1yl/bkt1Kn
+        tBG5+2J7pgNwd9gxHE2WLsWsWJZORrx0XrqI3Ks2LnCF0E7ntIPNhbz5W5WJgsHQsLy4JATrQxGrd
+        17CxkCwVA1meyjfsDUBXTrz6ZQPmxj2W9KdmtHyWxQtG8MJtQijljhcGb/+RVHU0VHaJLo8W53Adv
+        Nui1OWTkrp0C84Z2bkKN5sWDvVDYU2HF7SNgIYJiEMCBfR13/416fteRMbXpMMbgcgM8DjkTejAwQ
+        hphyA/VW2FmrJnvc/afWDKGL8BTshsa9N/FFGXBNlaoTFV9sKFwUwd9dRMdm5F5MW3fvbwIXGv/NY
+        PltV3i3Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKe70-00A7fg-GY; Fri, 12 Mar 2021 09:29:45 +0000
+Date:   Fri, 12 Mar 2021 09:29:38 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     cl@linux.co, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] mm/slab: kmalloc with GFP_DMA32 allocate from
+ SLAB_CACHE_DMA32
+Message-ID: <20210312092938.GA2412021@infradead.org>
+References: <20210312080320.1965201-1-jay.xu@rock-chips.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 09:47:11 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312084701.35F883A3985@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312080320.1965201-1-jay.xu@rock-chips.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Fri, Mar 12, 2021 at 04:03:20PM +0800, Jianqun Xu wrote:
+> The flag GFP_DMA32 only effect in kmalloc_large currently.
+> 
+> This patch will create caches with GFP_DMA32 to support kmalloc with
+> size under KMALLOC_MAX_CACHE_SIZE.
 
-Sir/Madam,
-
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+No.  No new code should use GFP_DMA32, never mind through slab.
+Please use the proper DMA APIs for your addressing needs.
