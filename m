@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B02339993
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F5F339998
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhCLWRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
+        id S235530AbhCLWTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235531AbhCLWQt (ORCPT
+        with ESMTP id S235511AbhCLWTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:16:49 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3895CC061574;
-        Fri, 12 Mar 2021 14:16:49 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id y20so9051822iot.4;
-        Fri, 12 Mar 2021 14:16:49 -0800 (PST)
+        Fri, 12 Mar 2021 17:19:13 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DA8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:19:11 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id w8so5820872pjf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:19:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ow2p0xO1hotn6RJOItrtDiyN/JeHanAbeq4vQ3SfL3Q=;
-        b=ca8qSuxHMylJkf9hpLyRjp/Lol2CkO36rE6egf5H5JN5eI3b6iTEL/fbQnmfD7v8RO
-         yZWhE84LScpT7GbGaqCoAaP0WaoREHhGnBmlZN5HTtwRcQL5uQ4U1b86yAr7SHM7AKtl
-         ZtRUX0KButFkQukRno//Ub+D781me/+qZ7nlmeqE+By32gH/DPuRaX5hBoNJOYYGOTPf
-         AlM+aytVEXO0CdK/7+6/r4TmJj+k85QG/VGkdEdCPfxaI6y9ZkBLiO8MV3FnzitzfrZA
-         tMg6yZWfvr8ee8xR6PYOYlKUJtiPIxMMUaFdoJ4wlgDr/U+OtXRtd2Bomtnt+BwF6t0S
-         bYsA==
+        h=from:to:cc:subject:date:message-id;
+        bh=5lCTRTL0XOntWq+/Jewv+3VDq5DVbLtgsr4PgJEUSAQ=;
+        b=qsTbGYznsg4e7gIVNRJb1Wje1KmeFBB2621CW6lcd0qquAG8lwMa8ABuWdTamWZRkD
+         AMw8elFz6Wly5FxmQcHEGQ7Ht0j6Qb5ty+IXNTRqeYhKP4Qg7KZotu7Ho7Il9x+Yf7zM
+         pk+DusfI2ktr8p75HiRbXy4stwJArc79STx8fEHR7wc6MvdR7c9rlLxKF/3ZmbJOrwn4
+         KL+WHDbvE5uVQPKMvx34QdnLmZT/nRodV2lDRA6jdBtlHm0wvX6GJOzXjNL9oseexnRh
+         MJmCMoWtX1kcXW8YXEIzlblYaizhYgzZdVwqf6KKre+TZlqXbcqEgDlP8qoEwNwrGl+7
+         EkXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ow2p0xO1hotn6RJOItrtDiyN/JeHanAbeq4vQ3SfL3Q=;
-        b=E14bB5zfSUp3BnUsG7cSCl4ty9p6LVQEacHeb/HRNW1BsXWM998rCDJpvFOsYaJXGl
-         osdbD4ZnFXtv3D+a6FnbLfEAZyHFBvtJdpwQJCEWHzYSgbjG9ubHD6DNq2LxBVxEXiP1
-         zn5Y7z3BHhnWeWZLgxqw9Dz8PSrNqZsi+eIBMrKaHBsKDOGsFnDqH113zjy02gBBQivQ
-         zb3uV5sysPgBiAbozDE16oMVckEofmbOp79mea7Hd3cYgnUYB5fSqoDReTM5Dki5fNnP
-         AnZH+pECqJt9UZ3y+ooNDgqD2XBi/nHi2xfsAjlZLhxKmT5wZ5i25+SX91uvapPLE7Kg
-         sgRg==
-X-Gm-Message-State: AOAM530yhkK1cxoxAk9pNIEzy8XG+oPtEzoUimSiWGIVUCYfBv3fqtmW
-        tHTXbcnoH1ktEsnExIt/DFN0bMiSg4nogdJVoico9zN2g6E=
-X-Google-Smtp-Source: ABdhPJw4pENv2yhmlx0fcfNkJOaKYdFrSOwU7MnjJ4DmsXBoc7adHRZNZlntn33952ydymnXbYqzCKVZOzwv+b1gXE8=
-X-Received: by 2002:a02:53:: with SMTP id 80mr1335477jaa.96.1615587408621;
- Fri, 12 Mar 2021 14:16:48 -0800 (PST)
-MIME-Version: 1.0
-References: <161558613209.1366.1492710238067504151.stgit@klimt.1015granger.net>
-In-Reply-To: <161558613209.1366.1492710238067504151.stgit@klimt.1015granger.net>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 12 Mar 2021 14:16:37 -0800
-Message-ID: <CAKgT0UdzgsfhNMDMYcAt3xR4U0=LOeMWO3+3tt0_omxu1OupaA@mail.gmail.com>
-Subject: Re: [PATCH] SUNRPC: Refresh rq_pages using a bulk page allocator
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5lCTRTL0XOntWq+/Jewv+3VDq5DVbLtgsr4PgJEUSAQ=;
+        b=Cz5/N5WGV5GcmpsGcy/IqLi8l9IAKXoIixFS7DB+fc4OHIPLgE1epb5YHv78zCNpoq
+         makVwcPfgyNz9aYqfpERNqp9Jsf735/oQTOSub1ITw2KfwZZ53Ih7BDNBrPlI1r6Ykrs
+         78vpwR2ednIoPesSXTvo+MT36jBL6P9rZvqa8HscpRbNKYiquoJr8OPeim6KBivbve1y
+         aIAu/DoFZ+rrzJelrDZFbIwQB0IVseRn1m0O+rdR5C06N8ZPBor9TLRkmQZUcaMG+bHH
+         SCf2DnGv0cVPX0gbm7myFUOxwWPhZJ+gY9q4BZt1iNBo5WaJ4xQfGDViedEf7ONca93X
+         iEMg==
+X-Gm-Message-State: AOAM530DuCl82nGk7dy4YviD3Hk/NwnYSnRfO/6X2LJT1RDKxIiVdWpc
+        p5qXIg0ELJ5z2jq5LEWVUFk=
+X-Google-Smtp-Source: ABdhPJwklsbFkTp8L268idsEDENQZHXVv+PsUT6z+eiAfp5PhwrYIRisF5EVudW6Lta4saWme4DDxQ==
+X-Received: by 2002:a17:902:bc87:b029:e3:aae4:3188 with SMTP id bb7-20020a170902bc87b02900e3aae43188mr650144plb.56.1615587551227;
+        Fri, 12 Mar 2021 14:19:11 -0800 (PST)
+Received: from localhost.localdomain ([49.37.85.112])
+        by smtp.gmail.com with ESMTPSA id z68sm6487329pfz.39.2021.03.12.14.19.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Mar 2021 14:19:10 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, Hawking.Zhang@amd.com,
+        Oak.Zeng@amd.com, felix.kuehling@amd.com, kevin1.wang@amd.com,
+        le.ma@amd.com, lijo.lazar@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] drm/amdgpu: Mark mmhub_v1_7_setup_vm_pt_regs() as static
+Date:   Sat, 13 Mar 2021 03:48:57 +0530
+Message-Id: <1615587537-28989-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 1:57 PM Chuck Lever <chuck.lever@oracle.com> wrote:
->
-> Reduce the rate at which nfsd threads hammer on the page allocator.
-> This improves throughput scalability by enabling the threads to run
-> more independently of each other.
->
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
-> Hi Mel-
->
-> This patch replaces patch 5/7 in v4 of your alloc_pages_bulk()
-> series. It implements code clean-ups suggested by Alexander Duyck.
-> It builds and has seen some light testing.
->
->
->  net/sunrpc/svc_xprt.c |   39 +++++++++++++++++++++++++++------------
->  1 file changed, 27 insertions(+), 12 deletions(-)
+Kernel test robot throws below warning ->
 
-The updated patch looks good to me. I am good with having my
-Reviewed-by added for patches 1-6. I think the only one that still
-needs work is patch 7.
+drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c:56:6: warning: no previous
+prototype for 'mmhub_v1_7_setup_vm_pt_regs' [-Wmissing-prototypes]
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Mark mmhub_v1_7_setup_vm_pt_regs() as static.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c
+index 4df0b73..ae7d8a1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c
++++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_7.c
+@@ -53,7 +53,7 @@ static u64 mmhub_v1_7_get_fb_location(struct amdgpu_device *adev)
+ 	return base;
+ }
+ 
+-void mmhub_v1_7_setup_vm_pt_regs(struct amdgpu_device *adev, uint32_t vmid,
++static void mmhub_v1_7_setup_vm_pt_regs(struct amdgpu_device *adev, uint32_t vmid,
+ 				uint64_t page_table_base)
+ {
+ 	struct amdgpu_vmhub *hub = &adev->vmhub[AMDGPU_MMHUB_0];
+-- 
+1.9.1
+
