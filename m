@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1E338752
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4E733875B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhCLI2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:28:40 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:56643 "EHLO pegase1.c-s.fr"
+        id S232262AbhCLI3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:29:45 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:56198 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231466AbhCLI2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:28:20 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dxf8b39xTz9v0tW;
-        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id rGbVLOrLdM_k; Fri, 12 Mar 2021 09:28:15 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dxf8b16PLz9tyZB;
-        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 505238B80F;
-        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id q81IV4vGYKsG; Fri, 12 Mar 2021 09:28:15 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF8D18B764;
-        Fri, 12 Mar 2021 09:28:14 +0100 (CET)
-Subject: Re: [PATCH v2 25/43] powerpc/32: Replace ASM exception exit by C
- exception exit from ppc64
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
- <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
- <87tuphkdkz.fsf@mpe.ellerman.id.au>
- <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
- <87r1kljmr9.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <8b2ee16c-1661-d97c-04f0-5881e53ab835@csgroup.eu>
-Date:   Fri, 12 Mar 2021 09:28:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <87r1kljmr9.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S232274AbhCLI3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:29:41 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 39BFD20064D;
+        Fri, 12 Mar 2021 09:29:38 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A830C2008F3;
+        Fri, 12 Mar 2021 09:29:35 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 48CD84029B;
+        Fri, 12 Mar 2021 09:29:29 +0100 (CET)
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
+        Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH] optee: enable apci support
+Date:   Fri, 12 Mar 2021 16:36:53 +0800
+Message-Id: <20210312083653.38780-1-ran.wang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch add ACPI support for optee driver.
 
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+---
+ drivers/tee/optee/core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Le 12/03/2021 à 00:26, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Le 11/03/2021 à 14:46, Michael Ellerman a écrit :
->>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>>> This patch replaces the PPC32 ASM exception exit by C exception exit.
->>>>
->>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>> ---
->>>>    arch/powerpc/kernel/entry_32.S  | 481 +++++++++-----------------------
->>>>    arch/powerpc/kernel/interrupt.c |   4 +
->>>>    2 files changed, 132 insertions(+), 353 deletions(-)
->>>
->>> Bisect points to this breaking qemu mac99 for me, with pmac32_defconfig.
->>>
->>> I haven't had time to dig any deeper sorry.
->>
->> Embarrasing ...
-> 
-> Nah, these things happen.
-> 
->> I don't get this problem on the 8xx (nohash/32) or the 83xx (book3s/32).
->> I don't get this problem with qemu mac99 when using my klibc-based initramfs.
->>
->> I managed to reproduce it with the rootfs.cpio that I got some time ago from linuxppc github Wiki.
-> 
-> OK.
-> 
-> I'm using the ppc-rootfs.cpio.gz from here:
-> 
->    https://github.com/linuxppc/ci-scripts/blob/master/root-disks/Makefile
-> 
-> And the boot script is:
-> 
->    https://github.com/linuxppc/ci-scripts/blob/master/scripts/boot/qemu-mac99
-> 
-> I've been meaning to write docs on how to use those scripts, but haven't
-> got around to it.
-> 
-> There's nothing really special though it's just a wrapper around qemu -M mac99.
-> 
->> I'll investigate it tomorrow.
-> 
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index cf4718c6d35d..8fb261f4b9db 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -5,6 +5,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/acpi.h>
+ #include <linux/arm-smccc.h>
+ #include <linux/errno.h>
+ #include <linux/io.h>
+@@ -735,12 +736,21 @@ static const struct of_device_id optee_dt_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, optee_dt_match);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id optee_acpi_match[] = {
++	{ "OPTEE01",},
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
++#endif
++
+ static struct platform_driver optee_driver = {
+ 	.probe  = optee_probe,
+ 	.remove = optee_remove,
+ 	.driver = {
+ 		.name = "optee",
+ 		.of_match_table = optee_dt_match,
++		.acpi_match_table = ACPI_PTR(optee_acpi_match),
+ 	},
+ };
+ module_platform_driver(optee_driver);
+-- 
+2.25.1
 
-Problem is the fast_interrupt_return, registers are not all saved yet on ppc32 (msr, nip, xer, ctr), 
-can't restore them all as ppc64 do.
-
-The problem happens only when userspace uses floating point or altivec.
-
-For the time being, I'll keep the original fast_interrupt_return.
-
-I will likely send a new version of the series later today, taking into account Nick's comments.
-
-Christophe
