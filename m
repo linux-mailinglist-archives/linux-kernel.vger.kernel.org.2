@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99A733971E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D64F339726
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhCLTHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:07:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234158AbhCLTGs (ORCPT
+        id S234196AbhCLTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:07:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234171AbhCLTH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:06:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615576007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pWyz36koqRQcLJypWgN3Jo6QKc24/Z5WKte5SZjr3Xs=;
-        b=KADNAK9QXxQMVHsCVspxDWKrEdtR9na6Tz5vx0nyRUiLeJSILuwdqaNf0Mm8FrKprIx8ix
-        1xSH6tZMhB88XdMrJAzGsfxUJDFzGsghD7X1TL58TkTO445/86LzxhpSNb27L8zhdDmCMP
-        zn+6PrV5RJm6rWTKqRpQIVVGUYbPwHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-OmSAVjrKPZ61QqTHc0WCxA-1; Fri, 12 Mar 2021 14:06:44 -0500
-X-MC-Unique: OmSAVjrKPZ61QqTHc0WCxA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DD55101872B;
-        Fri, 12 Mar 2021 19:06:42 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 497E660C9B;
-        Fri, 12 Mar 2021 19:06:42 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 14:06:41 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        pavel.tide@veeam.com
-Subject: Re: [PATCH v7 1/3] block: add blk_mq_is_queue_frozen()
-Message-ID: <20210312190641.GA2550@redhat.com>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
- <1615563895-28565-2-git-send-email-sergei.shtepa@veeam.com>
+        Fri, 12 Mar 2021 14:07:29 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5173C061574;
+        Fri, 12 Mar 2021 11:07:28 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id w8so5600088pjf.4;
+        Fri, 12 Mar 2021 11:07:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JiFLEUi4honPFdgXnpeoFFjZ5HjkFjhcI3Iwp3vvM/U=;
+        b=FWP1+zknMpuFWB+QtPq/mPsssB4E4Bp1K4QHTJRTtmitbw3myWffnNOSTcIKrK/nBA
+         Q7nxX5+oCtUafVS4wfddox88WnWO2z5XzNma+UsFj2jKkJmyRtY1ehqtGrW4hwQ9I7qk
+         HrIkpL21QInpOIXY71G12yIRufNzGzV28q3LHIOhgvkh85D4dn1T7hfaMeaypaPygKcl
+         3cQSsjfHe5NpUSehLXEp79YeWxU1ACQlUkFVvaqSTC3MIxRy8+DwbfclowAmG5XP9yVI
+         VOmcpbb5fMRYbP8mu7SomqN4l/p8Vk+FqCEjdLAsdKZ9SloK7k82aXozcTXsQR1L8tG8
+         rqsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JiFLEUi4honPFdgXnpeoFFjZ5HjkFjhcI3Iwp3vvM/U=;
+        b=BtbOWYLXU+/0HVyxizmuY9jmE2Hfs9MXZHgPIJ8dupDbhyLHmhMKTwoNPUBDqbx+Vf
+         boaqI8nIRPkrOd4qI8WajcHwGqTPLdp6Oa24+q2Mcroxd/L5MEP/gLYGaMhya4WlRA0D
+         /3fte3+DtYlRFj5yr5hokA1duTdSNNUguLAh3SZ/GqcjpeqSNjIdiO4LeTCmjZB7rLNN
+         ps6iJ6BJ9Li/CT06c6NHSFUl6aeQ2q6eX26xaxpXhTQVGvCdplK5PAtbaKDskTictpy3
+         XaJetGX7Ff781nNwg4lkhY65GWpK2WI2XgwuXPMcBy/he8aonOf+nKH+JdlnOWKe6d0V
+         jPiA==
+X-Gm-Message-State: AOAM531AJ6TnZoNdkh/dNbewhqoL7K8MzaWoRIzLHw4JEgv8ofez42K8
+        nFluPu4X247lhVsGKM8jV1Y=
+X-Google-Smtp-Source: ABdhPJyh8Bxntb9MrWdror0mcqFF7kAuwgLUDAz2+Sv7bzU6mzBGQDNVvY443sFxmRARSuvYtsoZyg==
+X-Received: by 2002:a17:902:eb11:b029:e4:a5c3:42e8 with SMTP id l17-20020a170902eb11b02900e4a5c342e8mr516519plb.26.1615576048345;
+        Fri, 12 Mar 2021 11:07:28 -0800 (PST)
+Received: from localhost ([103.248.31.144])
+        by smtp.gmail.com with ESMTPSA id b140sm6537220pfb.98.2021.03.12.11.07.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 11:07:28 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:36:49 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        raphael.norwitz@nutanix.com
+Subject: Re: [PATCH 0/4] Expose and manage PCI device reset
+Message-ID: <20210312190649.hulyrpkdg6btn6y7@archlinux>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312112043.3f2954e3@omen.home.shazbot.org>
+ <20210312184038.to3g3px6ep4xfavn@archlinux>
+ <YEu5vq4ACcupBpRC@rocinante>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1615563895-28565-2-git-send-email-sergei.shtepa@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEu5vq4ACcupBpRC@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12 2021 at 10:44am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+On 21/03/12 07:58PM, Krzysztof Wilczyński wrote:
+> Hi Amey,
+>
+> Thank you for sending the series over!
+>
+> [...]
+> > > Reviews/Acks/Sign-off-by from others (aside from Tested/Reported-by)
+> > > really need to be explicit, IMO.  This is a common issue for new
+> > > developers, but it really needs to be more formal.  I wouldn't claim to
+> > > be able to speak for Raphael and interpret his comments so far as his
+> > > final seal of approval.
+> > >
+> > > Also in the patches, all Sign-offs/Reviews/Acks need to be above the
+> > > triple dash '---' line.  Anything between that line and the beginning
+> > > of the diff is discarded by tools.  People will often use that for
+> > > difference between version since it will be discarded on commit.
+> > > Likewise, the cover letter is not committed, so Review-by there are
+> > > generally not done.  I generally make my Sign-off last in the chain and
+> > > maintainers will generally add theirs after that.  This makes for a
+> > > chain where someone can read up from the bottom to see how this commit
+> > > entered the kernel.  Reviews, Acks, and whatnot will therefore usually
+> > > be collected above the author posting the patch.
+> > >
+> > > Since this is a v1 patch and it's likely there will be more revisions,
+> > > rather than send a v2 immediately with corrections, I'd probably just
+> > > reply to the cover letter retracting Raphael's Review-by for him to
+> > > send his own and noting that you'll fix the commit reviews formatting,
+> > > but will wait for a bit for further comments before sending a new
+> > > version.
+> > >
+> > > No big deal, nice work getting it sent out.  Thanks,
+> > >
+> > > Alex
+> > >
+> > Raphael sent me the email with
+> > Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com> that
+> > is why I included it.
+> > So basically in v2 I should reorder tags such that Sign-off will be
+> > the last. Did I get that right? Or am I missing something?
+> [...]
+>
+> I am not sure about the messages outside of the mailing list between
+> you, Alex and Raphael, as normally conversation and any reviews would
+> happen here (on the mailing list, that is), but as long as everyone
+> involved is on the same page, then every should be fine.
+>
+> In terms of how to format the patch, have a look at the following,
+> especially before you send another version, as there are some good tips
+> and recommendations there (including how to order things):
+>
+>   https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
+>
+> Krzysztof
+Basically whole thing boils down to I'm not good at handling terminal
+email clients. I'll surely keep those points mentioned by Bjorn
+in my mind.
 
-> blk_mq_is_queue_frozen() allow to assert that the queue is frozen.
-> 
-> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> ---
->  block/blk-mq.c         | 13 +++++++++++++
->  include/linux/blk-mq.h |  1 +
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index d4d7c1caa439..2f188a865024 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -161,6 +161,19 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
->  }
->  EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
->  
-> +bool blk_mq_is_queue_frozen(struct request_queue *q)
-> +{
-> +	bool frozen;
-> +
-> +	mutex_lock(&q->mq_freeze_lock);
-> +	frozen = percpu_ref_is_dying(&q->q_usage_counter) &&
-> +		 percpu_ref_is_zero(&q->q_usage_counter);
-> +	mutex_unlock(&q->mq_freeze_lock);
-> +
-> +	return frozen;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
-> +
-
-This is returning a frozen state that is immediately stale.  I don't
-think any code calling this is providing the guarantees you think it
-does due to the racey nature of this state once the mutex is dropped.
-
->  /*
->   * Guarantee no request is in use, so we can change any data structure of
->   * the queue afterward.
-> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-> index 2c473c9b8990..6f01971abf7b 100644
-> --- a/include/linux/blk-mq.h
-> +++ b/include/linux/blk-mq.h
-> @@ -533,6 +533,7 @@ void blk_freeze_queue_start(struct request_queue *q);
->  void blk_mq_freeze_queue_wait(struct request_queue *q);
->  int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
->  				     unsigned long timeout);
-> +bool blk_mq_is_queue_frozen(struct request_queue *q);
->  
->  int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
->  void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
-> -- 
-> 2.20.1
-> 
-
+Thanks,
+Amey
