@@ -2,128 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C173396B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC7B3396BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhCLSgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbhCLSfp (ORCPT
+        id S233580AbhCLShn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:37:43 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:62345 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233517AbhCLShK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:35:45 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A70C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:35:45 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id r16so1123327pfh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=edAAh8F5zzqoy3v4SwV/G5d3/7qdwdw3lH+6LgmNvvU=;
-        b=U34KQ5YnKGn0zaSU1tpcVT9OsTo4BjjeQIZWQBtpwnJdUnvVbmJyjw5dgG9xmgf93B
-         ZbJlINt5l0G2r1298M0241k7Za6h9sE2dRZxB6KTAwu3w1D8AyddHjLcBmsYp/EiepS2
-         T8MSPWEeDP5SCkwIFvEujrSr2PwhHPWGKtI1pIbwBcN7eklNvbIyYmeDGNRcdDQThO9V
-         NEo+7faY1djzA3T9+X8qUOhR+6nEbLm/jc0OhEQugPnanYGFQMicws4v57p9Yzs0elIH
-         rl8xP2ou8XM8dTtlmV6yfoZ+R2arMKSIza8JxPyg0Zfj5UtC25/1YRfrNevsb1rRlvi2
-         Z7og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=edAAh8F5zzqoy3v4SwV/G5d3/7qdwdw3lH+6LgmNvvU=;
-        b=HRxZJqgIicM7RJmFaBcWpIi3xBw4RxRcdY/6N6YVHOCAIVYfRX75EqMCdJJxILyIwM
-         fR1zzXp8wBAYzPfVGpw7QOnNxrMw65w88C3rpvjwxTgH2QrwcxN8Tkr8PuRCXccujdKg
-         ZRkm8wWjAlL5EEdRx1v7/S5QC4qRMbdn2rWDFC513qlFUoCjnPF46zEG6fSFMhSOKgQo
-         LzIqrb17ESGgtAbfw2NQCAWV8C+qakkHFISwHQhcCxMnG8AKIB9H7bRqJV+6/irDmzfk
-         kHMivVQIynxnplwxNi9lr1CIH4UVvAKdNQqS7uViXqEC2j9Xxm7wwtJhRpKgyIbwWmOk
-         XLdg==
-X-Gm-Message-State: AOAM531Y+7AHlMvbrE+RgofhN4IljtC966m3UMJ4eeWGQK3mTXfQLzAV
-        kmg70YBBbEYC7Fubj5zxbOw=
-X-Google-Smtp-Source: ABdhPJyl3PQB/5si0USgGvWCMkWEk3uE9jUnOj0DpOLkNTyf1G7+/NbXrOofo6Iso0eKXpi1WWaGSg==
-X-Received: by 2002:a65:6a0c:: with SMTP id m12mr12790546pgu.161.1615574144672;
-        Fri, 12 Mar 2021 10:35:44 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p17sm2888834pjv.49.2021.03.12.10.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 10:35:44 -0800 (PST)
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-To:     Qais Yousef <qais.yousef@arm.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
- <20210127110944.41813-3-alexander.sverdlin@nokia.com>
- <20210307172650.uztx3sk5abybbp3f@e107158-lin.cambridge.arm.com>
- <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
- <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
- <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
- <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
- <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
- <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <134e1a2c-daac-7b00-c170-bcca434d08df@gmail.com>
-Date:   Fri, 12 Mar 2021 10:35:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 12 Mar 2021 13:37:10 -0500
+Date:   Fri, 12 Mar 2021 18:36:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615574228; bh=C4flYNl55MhaTml/vQIThEyldeDzlRdNXoMAWOGH2ZU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Qz+2/NJcNf9bDM6PkSlnYsbqlAX12lI2+aZ/GiEqrund2o7VjfuoRcv6C6wXppBZ/
+         KoPhQqf2NMM85+XnHD+Sv6xkuWlX5SSbwdl6T4l4yWf4mtRCVVsO7iWk4U2aVAXp43
+         LUNM5aMMbaUXX38bZoM5qlBzvs5lq/eVz/SGkL9lHS0hEIiICmkGBLZoQ9yWrsOduv
+         0bQA82/45rbBgfWo9CvaD7ugphtytM/W6s36VLDdjddneMRTOYprNMapNNHbs6Oj3t
+         y/AM2DzN3A4JY6ZNFY5qeHHylgDPhXAdIkdQcBCqjt4eICH/IVr31XnaONkSATSWNN
+         +GbDLk+9HPuTQ==
+To:     Eric Dumazet <edumazet@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next 2/4] gro: don't dereference napi->gro_hash[x] multiple times in dev_gro_receive()
+Message-ID: <20210312183648.242117-1-alobakin@pm.me>
+In-Reply-To: <CANn89iJvmakwfLFb6QS1ettiJM-D3cJ89bFPvZ=Gk2YyGpxQuw@mail.gmail.com>
+References: <20210312162127.239795-1-alobakin@pm.me> <20210312162127.239795-3-alobakin@pm.me> <CANn89iJvmakwfLFb6QS1ettiJM-D3cJ89bFPvZ=Gk2YyGpxQuw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 9:24 AM, Qais Yousef wrote:
-> Hi Alexander
-> 
-> On 03/10/21 18:17, Alexander Sverdlin wrote:
->> Hi!
->>
->> On 10/03/2021 17:14, Florian Fainelli wrote:
->>>>>>> I tried on 5.12-rc2 and 5.11 but couldn't reproduce the problem using your
->>>>> I still can't reproduce on 5.12-rc2.
->>>>>
->>>>> I do have CONFIG_ARM_MODULE_PLTS=y. Do you need to do something else after
->>>>> loading the module? I tried starting ftrace, but maybe there's a particular
->>>>> combination required?
->>>> You need to load a BIG module, so big that it has no place in the modules area
->>>> any more and goes to vmalloc area.
->>> You absolutely need a very big module maybe more than one. When I tested
->>> this, I could use the two proprietary modules (*sigh*) that I needed to
->>> exercise against and loading one but not the other was not enough to
->>> make the second module loading spill into vmalloc space.
->>
->> Here is what I use instead of these real world "proprietary" modules (which of course
->> were the real trigger for the patch):
->>
->> https://www.spinics.net/lists/arm-kernel/msg878599.html
-> 
-> I am testing with your module. I can't reproduce the problem you describe with
-> it as I stated.
-> 
-> I will try to spend more time on it on the weekend.
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 12 Mar 2021 17:47:04 +0100
 
-Alexander, do you load one or multiple instances of that fat module?
+> On Fri, Mar 12, 2021 at 5:22 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > GRO bucket index doesn't change through the entire function.
+> > Store a pointer to the corresponding bucket on stack once and use
+> > it later instead of dereferencing again and again.
+> >
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/core/dev.c | 9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index adc42ba7ffd8..ee124aecb8a2 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -5957,6 +5957,7 @@ static void gro_flush_oldest(struct napi_struct *=
+napi, struct list_head *head)
+> >  static enum gro_result dev_gro_receive(struct napi_struct *napi, struc=
+t sk_buff *skb)
+> >  {
+> >         u32 bucket =3D skb_get_hash_raw(skb) & (GRO_HASH_BUCKETS - 1);
+> > +       struct gro_list *gro_list =3D &napi->gro_hash[bucket];
+> >         struct list_head *head =3D &offload_base;
+> >         struct packet_offload *ptype;
+> >         __be16 type =3D skb->protocol;
+> > @@ -6024,7 +6025,7 @@ static enum gro_result dev_gro_receive(struct nap=
+i_struct *napi, struct sk_buff
+> >         if (pp) {
+> >                 skb_list_del_init(pp);
+> >                 napi_gro_complete(napi, pp);
+> > -               napi->gro_hash[bucket].count--;
+> > +               gro_list->count--;
+> >         }
+> >
+> >         if (same_flow)
+> > @@ -6033,10 +6034,10 @@ static enum gro_result dev_gro_receive(struct n=
+api_struct *napi, struct sk_buff
+> >         if (NAPI_GRO_CB(skb)->flush)
+> >                 goto normal;
+> >
+> > -       if (unlikely(napi->gro_hash[bucket].count >=3D MAX_GRO_SKBS)) {
+> > +       if (unlikely(gro_list->count >=3D MAX_GRO_SKBS)) {
+> >                 gro_flush_oldest(napi, gro_head);
+> >         } else {
+> > -               napi->gro_hash[bucket].count++;
+> > +               gro_list->count++;
+> >         }
+> >         NAPI_GRO_CB(skb)->count =3D 1;
+> >         NAPI_GRO_CB(skb)->age =3D jiffies;
+> > @@ -6050,7 +6051,7 @@ static enum gro_result dev_gro_receive(struct nap=
+i_struct *napi, struct sk_buff
+> >         if (grow > 0)
+> >                 gro_pull_from_frag0(skb, grow);
+> >  ok:
+> > -       if (napi->gro_hash[bucket].count) {
+> > +       if (gro_list->count) {
+> >                 if (!test_bit(bucket, &napi->gro_bitmask))
+> >                         __set_bit(bucket, &napi->gro_bitmask);
+> >         } else if (test_bit(bucket, &napi->gro_bitmask)) {
+> > --
+> > 2.30.2
+> >
+> >
+>
+> This adds more register pressure, do you have precise measures to
+> confirm this change is a win ?
+>
+> Presumably the compiler should be able to optimize the code just fine,
+> it can see @bucket does not change.
 
-The test module does a 6 * 1024 * 1024 / 2 = 3 million repetitions of
-the "nop" instruction which should be 32-bits wide in ARM mode and
-16-bits wide in Thumb mode, right?
+This is mostly (if not purely) cosmetic, I don't think it changes
+anything at all for the most of sane compilers.
 
-In ARM mode we have a 14MB module space, so 3 * 1024 * 1024 * 4 = 12MB,
-which should still fit within if you have no module loaded, however a
-second instance of the module should make us spill into vmalloc space.
+Regarding registers, since @gro_list and @gro_head are pretty the
+same, we could drop @gro_head in favour of @gro_list and just use
+@gro_list->list instead.
 
-In Thumb mode, we have a 6MB module space, so 3 * 1024 * 1024 * 2 = 6MB
-so we may spill, but maybe not.
+Al
 
-I was not able to reproduce the warning with just one module, but with
-two (cannot have the same name BTW), it kicked in.
--- 
-Florian
