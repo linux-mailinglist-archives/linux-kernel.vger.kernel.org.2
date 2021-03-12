@@ -2,232 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E933391AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2190339205
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhCLPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:09 -0500
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:36811 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231894AbhCLPnf (ORCPT
+        id S233113AbhCLPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:45:04 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55600 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232054AbhCLPoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:43:35 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 575581C4009
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:32 +0000 (GMT)
-Received: (qmail 19821 invoked from network); 12 Mar 2021 15:43:32 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:32 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 3/7] mm/page_alloc: Add a bulk page allocator
-Date:   Fri, 12 Mar 2021 15:43:27 +0000
-Message-Id: <20210312154331.32229-4-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
+        Fri, 12 Mar 2021 10:44:13 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 840081F46E96
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 3D37C4800E0; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH 08/38] dt-bindings: power: supply: bq24735: Convert to DT schema format
+Date:   Fri, 12 Mar 2021 16:43:27 +0100
+Message-Id: <20210312154357.1561730-9-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new page allocator interface via alloc_pages_bulk,
-and __alloc_pages_bulk_nodemask. A caller requests a number of pages
-to be allocated and added to a list. They can be freed in bulk using
-free_pages_bulk().
+Convert the binding to DT schema format.
 
-The API is not guaranteed to return the requested number of pages and
-may fail if the preferred allocation zone has limited free memory, the
-cpuset changes during the allocation or page debugging decides to fail
-an allocation. It's up to the caller to request more pages in batch
-if necessary.
-
-Note that this implementation is not very efficient and could be improved
-but it would require refactoring. The intent is to make it available early
-to determine what semantics are required by different callers. Once the
-full semantics are nailed down, it can be refactored.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- include/linux/gfp.h |  12 +++++
- mm/page_alloc.c     | 116 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 128 insertions(+)
+ .../bindings/power/supply/bq24735.yaml        | 88 +++++++++++++++++++
+ .../bindings/power/supply/ti,bq24735.txt      | 39 --------
+ 2 files changed, 88 insertions(+), 39 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq24735.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 0a88f84b08f4..e2cd98dba72e 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -518,6 +518,17 @@ static inline int arch_make_page_accessible(struct page *page)
- struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 		nodemask_t *nodemask);
- 
-+int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-+				nodemask_t *nodemask, int nr_pages,
-+				struct list_head *list);
+diff --git a/Documentation/devicetree/bindings/power/supply/bq24735.yaml b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
+new file mode 100644
+index 000000000000..8a3a31ada128
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 Sebastian Reichel
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/bq24735.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+/* Bulk allocate order-0 pages */
-+static inline unsigned long
-+alloc_pages_bulk(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-+{
-+	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list);
-+}
++title: Binding for TI BQ24735 Li-Ion Battery Charger
 +
- /*
-  * Allocate pages, preferring the node given as nid. The node must be valid and
-  * online. For more general interface, see alloc_pages_node().
-@@ -581,6 +592,7 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask);
- 
- extern void __free_pages(struct page *page, unsigned int order);
- extern void free_pages(unsigned long addr, unsigned int order);
-+extern void free_pages_bulk(struct list_head *list);
- 
- struct page_frag_cache;
- extern void __page_frag_cache_drain(struct page *page, unsigned int count);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 880b1d6368bd..f48f94375b66 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4436,6 +4436,21 @@ static void wake_all_kswapds(unsigned int order, gfp_t gfp_mask,
- 	}
- }
- 
-+/* Drop reference counts and free order-0 pages from a list. */
-+void free_pages_bulk(struct list_head *list)
-+{
-+	struct page *page, *next;
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
 +
-+	list_for_each_entry_safe(page, next, list, lru) {
-+		trace_mm_page_free_batched(page);
-+		if (put_page_testzero(page)) {
-+			list_del(&page->lru);
-+			__free_pages_ok(page, 0, FPI_NONE);
-+		}
-+	}
-+}
-+EXPORT_SYMBOL_GPL(free_pages_bulk);
++allOf:
++  - $ref: power-supply.yaml#
 +
- static inline unsigned int
- gfp_to_alloc_flags(gfp_t gfp_mask)
- {
-@@ -4963,6 +4978,107 @@ static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
- 	return true;
- }
- 
-+/*
-+ * This is a batched version of the page allocator that attempts to
-+ * allocate nr_pages quickly from the preferred zone and add them to list.
-+ *
-+ * Returns the number of pages allocated.
-+ */
-+int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-+			nodemask_t *nodemask, int nr_pages,
-+			struct list_head *alloc_list)
-+{
-+	struct page *page;
-+	unsigned long flags;
-+	struct zone *zone;
-+	struct zoneref *z;
-+	struct per_cpu_pages *pcp;
-+	struct list_head *pcp_list;
-+	struct alloc_context ac;
-+	gfp_t alloc_gfp;
-+	unsigned int alloc_flags;
-+	int allocated = 0;
++properties:
++  compatible:
++    const: ti,bq24735
 +
-+	if (WARN_ON_ONCE(nr_pages <= 0))
-+		return 0;
++  reg:
++    maxItems: 1
 +
-+	if (nr_pages == 1)
-+		goto failed;
++  interrupts:
++    description: AC adapter plug event interrupt
++    maxItems: 1
 +
-+	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-+	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac,
-+	&alloc_gfp, &alloc_flags))
-+		return 0;
-+	gfp = alloc_gfp;
++  ti,ac-detect-gpios:
++    maxItems: 1
++    description: |
++      This GPIO is optionally used to read the AC adapter status. This is a Host GPIO
++      that is configured as an input and connected to the ACOK pin on the bq24735.
++      Note: for backwards compatibility reasons, the GPIO must be active on AC adapter
++      absence despite ACOK being active (high) on AC adapter presence.
 +
-+	/* Find an allowed local zone that meets the high watermark. */
-+	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
-+		unsigned long mark;
++  ti,charge-current:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Used to control and set the charging current.
++      This value must be between 128mA and 8.128A with a 64mA step resolution.
++      The POR value is 0x0000h. This number is in mA (e.g. 8192).
++      See spec for more information about the ChargeCurrent (0x14h) register.
 +
-+		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-+		    !__cpuset_zone_allowed(zone, gfp)) {
-+			continue;
-+		}
++  ti,charge-voltage:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Used to control and set the charging voltage.
++      This value must be between 1.024V and 19.2V with a 16mV step resolution.
++      The POR value is 0x0000h. This number is in mV (e.g. 19200).
++      See spec for more information about the ChargeVoltage (0x15h) register.
 +
-+		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
-+		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
-+			goto failed;
-+		}
++  ti,input-current:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Used to control and set the charger input current.
++      This value must be between 128mA and 8.064A with a 128mA step resolution.
++      The POR value is 0x1000h. This number is in mA (e.g. 8064).
++      See the spec for more information about the InputCurrent (0x3fh) register.
 +
-+		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
-+		if (zone_watermark_fast(zone, 0,  mark,
-+				zonelist_zone_idx(ac.preferred_zoneref),
-+				alloc_flags, gfp)) {
-+			break;
-+		}
-+	}
-+	if (!zone)
-+		return 0;
++  ti,external-control:
++    type: boolean
++    description: |
++      Indicates that the charger is configured externally and that the host should not
++      attempt to enable/disable charging or set the charge voltage/current.
 +
-+	/* Attempt the batch allocation */
-+	local_irq_save(flags);
-+	pcp = &this_cpu_ptr(zone->pageset)->pcp;
-+	pcp_list = &pcp->lists[ac.migratetype];
++  poll-interval:
++    description: |
++      If 'interrupts' is not specified, poll AC adapter presence with this interval (milliseconds).
 +
-+	while (allocated < nr_pages) {
-+		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-+								pcp, pcp_list);
-+		if (!page) {
-+			/* Try and get at least one page */
-+			if (!allocated)
-+				goto failed_irq;
-+			break;
-+		}
++required:
++  - compatible
++  - reg
 +
-+		list_add(&page->lru, alloc_list);
-+		allocated++;
-+	}
++additionalProperties: false
 +
-+	__count_zid_vm_events(PGALLOC, zone_idx(zone), allocated);
-+	zone_statistics(zone, zone);
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
 +
-+	local_irq_restore(flags);
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
 +
-+	/* Prep page with IRQs enabled to reduce disabled times */
-+	list_for_each_entry(page, alloc_list, lru)
-+		prep_new_page(page, 0, gfp, 0);
-+
-+	return allocated;
-+
-+failed_irq:
-+	local_irq_restore(flags);
-+
-+failed:
-+	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
-+	if (page) {
-+		list_add(&page->lru, alloc_list);
-+		allocated = 1;
-+	}
-+
-+	return allocated;
-+}
-+EXPORT_SYMBOL_GPL(__alloc_pages_bulk);
-+
- /*
-  * This is the 'heart' of the zoned buddy allocator.
-  */
++      charger@9 {
++        compatible = "ti,bq24735";
++        reg = <0x9>;
++        ti,ac-detect-gpios = <&gpio 72 0x1>;
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt b/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
+deleted file mode 100644
+index de45e1a2a4d9..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+-TI BQ24735 Charge Controller
+-~~~~~~~~~~
+-
+-Required properties :
+- - compatible : "ti,bq24735"
+-
+-Optional properties :
+- - interrupts : Specify the interrupt to be used to trigger when the AC
+-   adapter is either plugged in or removed.
+- - ti,ac-detect-gpios : This GPIO is optionally used to read the AC adapter
+-   status. This is a Host GPIO that is configured as an input and connected
+-   to the ACOK pin on the bq24735. Note: for backwards compatibility reasons,
+-   the GPIO must be active on AC adapter absence despite ACOK being active
+-   (high) on AC adapter presence.
+- - ti,charge-current : Used to control and set the charging current. This value
+-   must be between 128mA and 8.128A with a 64mA step resolution. The POR value
+-   is 0x0000h. This number is in mA (e.g. 8192), see spec for more information
+-   about the ChargeCurrent (0x14h) register.
+- - ti,charge-voltage : Used to control and set the charging voltage. This value
+-   must be between 1.024V and 19.2V with a 16mV step resolution. The POR value
+-   is 0x0000h. This number is in mV (e.g. 19200), see spec for more information
+-   about the ChargeVoltage (0x15h) register.
+- - ti,input-current : Used to control and set the charger input current. This
+-   value must be between 128mA and 8.064A with a 128mA step resolution. The
+-   POR value is 0x1000h. This number is in mA (e.g. 8064), see the spec for
+-   more information about the InputCurrent (0x3fh) register.
+- - ti,external-control : Indicates that the charger is configured externally
+-   and that the host should not attempt to enable/disable charging or set the
+-   charge voltage/current.
+- - poll-interval : In case 'interrupts' is not specified, poll AC adapter
+-   presence with this interval (milliseconds).
+-
+-Example:
+-
+-	bq24735@9 {
+-		compatible = "ti,bq24735";
+-		reg = <0x9>;
+-		ti,ac-detect-gpios = <&gpio 72 0x1>;
+-	}
 -- 
-2.26.2
+2.30.1
 
