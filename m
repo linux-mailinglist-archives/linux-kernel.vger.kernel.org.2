@@ -2,219 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2E133869B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65953386A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhCLHc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:32:58 -0500
-Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:36495 "EHLO
-        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231769AbhCLHc3 (ORCPT
+        id S231812AbhCLHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:36:10 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39844 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230117AbhCLHfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:32:29 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id DF773FA9C3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:32:27 +0000 (GMT)
-Received: (qmail 20885 invoked from network); 12 Mar 2021 07:32:27 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Mar 2021 07:32:27 -0000
-Date:   Fri, 12 Mar 2021 07:32:26 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210312073226.GT3697@techsingularity.net>
-References: <20210311114935.11379-1-mgorman@techsingularity.net>
- <20210311114935.11379-3-mgorman@techsingularity.net>
- <CAKgT0UcgiS0DpU4weOeVUN7o9dzoP=R20ytWC434sY4FxgQbtg@mail.gmail.com>
+        Fri, 12 Mar 2021 02:35:54 -0500
+X-UUID: 365b91f3a44f457182e0d69189a81cc2-20210312
+X-UUID: 365b91f3a44f457182e0d69189a81cc2-20210312
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 764490447; Fri, 12 Mar 2021 15:35:51 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Mar 2021 15:35:49 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Mar 2021 15:35:48 +0800
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>, <yong.wu@mediatek.com>
+CC:     Irui Wang <irui.wang@mediatek.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
+Subject: [v3,PATCH 1/3] dt-bindings: media: mtk-vcodec: Separating mtk vcodec encoder node
+Date:   Fri, 12 Mar 2021 15:35:38 +0800
+Message-ID: <20210312073540.4922-1-irui.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UcgiS0DpU4weOeVUN7o9dzoP=R20ytWC434sY4FxgQbtg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 08:42:16AM -0800, Alexander Duyck wrote:
-> > @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >                 struct alloc_context *ac, gfp_t *alloc_mask,
-> >                 unsigned int *alloc_flags)
-> >  {
-> > +       gfp_mask &= gfp_allowed_mask;
-> > +       *alloc_mask = gfp_mask;
-> > +
-> >         ac->highest_zoneidx = gfp_zone(gfp_mask);
-> >         ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
-> >         ac->nodemask = nodemask;
-> 
-> It might be better to pull this and the change from the bottom out
-> into a seperate patch. I was reviewing this and when I hit the bottom
-> I apparently had the same question other reviewers had wondering if it
-> was intentional. By splitting it out it would be easier to review.
-> 
+Updates binding document since the avc and vp8 hardware encoder in
+MT8173 are now separated. Separate "mediatek,mt8173-vcodec-enc" to
+"mediatek,mt8173-vcodec-enc-vp8" and "mediatek,mt8173-vcodec-enc".
 
-Done. I felt it was obvious from context that the paths were sharing code
-and splitting it out felt like patch count stuffing. Still, you're the
-second person to point it out so now it's a separate patch in v4.
+This patch separates the two devices, it's a preparing patch for adding
+device_link between the larbs and venc-device. It's mainly for fixing
+the problem:
+https://lkml.org/lkml/2019/9/3/316
 
-> > @@ -4960,6 +4978,104 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >         return true;
-> >  }
-> >
-> > +/*
-> > + * This is a batched version of the page allocator that attempts to
-> > + * allocate nr_pages quickly from the preferred zone and add them to list.
-> > + *
-> > + * Returns the number of pages allocated.
-> > + */
-> > +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
-> > +                       nodemask_t *nodemask, int nr_pages,
-> > +                       struct list_head *alloc_list)
-> > +{
-> > +       struct page *page;
-> > +       unsigned long flags;
-> > +       struct zone *zone;
-> > +       struct zoneref *z;
-> > +       struct per_cpu_pages *pcp;
-> > +       struct list_head *pcp_list;
-> > +       struct alloc_context ac;
-> > +       gfp_t alloc_mask;
-> > +       unsigned int alloc_flags;
-> > +       int alloced = 0;
-> > +
-> > +       if (nr_pages == 1)
-> > +               goto failed;
-> 
-> I might change this to "<= 1" just to cover the case where somebody
-> messed something up and passed a negative value.
-> 
+Acked-by: Tiffany Lin <tiffany.lin@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
+Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+---
+Change since v2:
+- update dt-bindings commit message
+---
 
-I put in a WARN_ON_ONCE check that returns 0 allocated pages. It should
-be the case that it only happens during the development of a new user but
-better safe than sorry. It's an open question whether the max nr_pages
-should be clamped but stupidly large values will either fail the watermark
-check or wrap and hit the <= 0 check. I guess it's still possible the zone
-would hit a dangerously low level of free pages but that is no different
-to a user calling __alloc_pages_nodemask a stupidly large number of times.
+ .../bindings/media/mediatek-vcodec.txt        | 55 ++++++++++---------
+ 1 file changed, 29 insertions(+), 26 deletions(-)
 
-> > +
-> > +       /* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-> > +       if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> > +               return 0;
-> > +       gfp_mask = alloc_mask;
-> > +
-> > +       /* Find an allowed local zone that meets the high watermark. */
-> > +       for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
-> > +               unsigned long mark;
-> > +
-> > +               if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-> > +                   !__cpuset_zone_allowed(zone, gfp_mask)) {
-> > +                       continue;
-> > +               }
-> > +
-> > +               if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
-> > +                   zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
-> > +                       goto failed;
-> > +               }
-> > +
-> > +               mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
-> > +               if (zone_watermark_fast(zone, 0,  mark,
-> > +                               zonelist_zone_idx(ac.preferred_zoneref),
-> > +                               alloc_flags, gfp_mask)) {
-> > +                       break;
-> > +               }
-> > +       }
-> > +       if (!zone)
-> > +               return 0;
-> > +
-> > +       /* Attempt the batch allocation */
-> > +       local_irq_save(flags);
-> > +       pcp = &this_cpu_ptr(zone->pageset)->pcp;
-> > +       pcp_list = &pcp->lists[ac.migratetype];
-> > +
-> > +       while (alloced < nr_pages) {
-> > +               page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-> > +                                                               pcp, pcp_list);
-> > +               if (!page)
-> > +                       break;
-> > +
-> > +               list_add(&page->lru, alloc_list);
-> > +               alloced++;
-> > +       }
-> > +
-> > +       if (!alloced)
-> > +               goto failed_irq;
-> 
-> Since we already covered the case above verifying the nr_pages is
-> greater than one it might make sense to move this check inside the
-> loop for the !page case. Then we only are checking this if we failed
-> an allocation.
-> 
-
-Yes, good idea, it moves a branch into a very unlikely path.
-
-> > +
-> > +       if (alloced) {
-> 
-> Isn't this redundant? In the previous lines you already checked
-> "alloced" was zero before jumping to the label so you shouldn't need a
-> second check as it isn't going to change after we already verified it
-> is non-zero.
-> 
-
-Yes, it is redundant and a left-over artifact during implementation.
-It's even more redundant when the !allocated case is checked in the
-while loop.
-
-> Also not a fan of the name "alloced". Maybe nr_alloc or something.
-> Trying to make that abbreviation past tense just doesn't read right.
-> 
-
-I used allocated and created a preparation patch that renames alloced in
-other parts of the per-cpu allocator so it is consistent.
-
-> > +               __count_zid_vm_events(PGALLOC, zone_idx(zone), alloced);
-> > +               zone_statistics(zone, zone);
-> > +       }
-> > +
-> > +       local_irq_restore(flags);
-> > +
-> > +       /* Prep page with IRQs enabled to reduce disabled times */
-> > +       list_for_each_entry(page, alloc_list, lru)
-> > +               prep_new_page(page, 0, gfp_mask, 0);
-> > +
-> > +       return alloced;
-> > +
-> > +failed_irq:
-> > +       local_irq_restore(flags);
-> > +
-> > +failed:
-> > +       page = __alloc_pages_nodemask(gfp_mask, 0, preferred_nid, nodemask);
-> > +       if (page) {
-> > +               alloced++;
-> 
-> You could be explicit here and just set alloced to 1 and make this a
-> write instead of bothering with the increment. Either that or just
-> simplify this and return 1 after the list_add, and return 0 in the
-> default case assuming you didn't allocate a page.
-> 
-
-The intent was to deal with the case that someone in the future used
-the failed path when a page had already been allocated. I cannot imagine
-why that would be done so I can explicitly used allocated = 1. I'm still
-letting it fall through to avoid two return paths in failed path.  I do
-not think it really matters but it feels redundant.
-
-Thanks Alexander!
-
+diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+index 8217424fd4bd..8318f0ed492d 100644
+--- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
++++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+@@ -4,7 +4,9 @@ Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
+ supports high resolution encoding and decoding functionalities.
+ 
+ Required properties:
+-- compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
++- compatible : must be one of the following string:
++  "mediatek,mt8173-vcodec-enc-vp8" for mt8173 vp8 encoder.
++  "mediatek,mt8173-vcodec-enc" for mt8173 avc encoder.
+   "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
+   "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
+ - reg : Physical base address of the video codec registers and length of
+@@ -13,10 +15,10 @@ Required properties:
+ - mediatek,larb : must contain the local arbiters in the current Socs.
+ - clocks : list of clock specifiers, corresponding to entries in
+   the clock-names property.
+-- clock-names: encoder must contain "venc_sel_src", "venc_sel",,
+-  "venc_lt_sel_src", "venc_lt_sel", decoder must contain "vcodecpll",
+-  "univpll_d2", "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll",
+-  "venc_lt_sel", "vdec_bus_clk_src".
++- clock-names: avc encoder must contain "venc_sel", vp8 encoder must
++  contain "venc_lt_sel", decoder must contain "vcodecpll", "univpll_d2",
++  "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll", "venc_lt_sel",
++  "vdec_bus_clk_src".
+ - iommus : should point to the respective IOMMU block with master port as
+   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+   for details.
+@@ -80,14 +82,10 @@ vcodec_dec: vcodec@16000000 {
+     assigned-clock-rates = <0>, <0>, <0>, <1482000000>, <800000000>;
+   };
+ 
+-  vcodec_enc: vcodec@18002000 {
++vcodec_enc_avc: vcodec@18002000 {
+     compatible = "mediatek,mt8173-vcodec-enc";
+-    reg = <0 0x18002000 0 0x1000>,    /*VENC_SYS*/
+-          <0 0x19002000 0 0x1000>;    /*VENC_LT_SYS*/
+-    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>,
+-		 <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
+-    mediatek,larb = <&larb3>,
+-		    <&larb5>;
++    reg = <0 0x18002000 0 0x1000>;
++    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>;
+     iommus = <&iommu M4U_PORT_VENC_RCPU>,
+              <&iommu M4U_PORT_VENC_REC>,
+              <&iommu M4U_PORT_VENC_BSDMA>,
+@@ -98,8 +96,20 @@ vcodec_dec: vcodec@16000000 {
+              <&iommu M4U_PORT_VENC_REF_LUMA>,
+              <&iommu M4U_PORT_VENC_REF_CHROMA>,
+              <&iommu M4U_PORT_VENC_NBM_RDMA>,
+-             <&iommu M4U_PORT_VENC_NBM_WDMA>,
+-             <&iommu M4U_PORT_VENC_RCPU_SET2>,
++             <&iommu M4U_PORT_VENC_NBM_WDMA>;
++    mediatek,larb = <&larb3>;
++    mediatek,vpu = <&vpu>;
++    clocks = <&topckgen CLK_TOP_VENC_SEL>;
++    clock-names = "venc_sel";
++    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
++    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>;
++  };
++
++vcodec_enc_vp8: vcodec@19002000 {
++    compatible = "mediatek,mt8173-vcodec-enc-vp8";
++    reg =  <0 0x19002000 0 0x1000>;	/* VENC_LT_SYS */
++    interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
++    iommus = <&iommu M4U_PORT_VENC_RCPU_SET2>,
+              <&iommu M4U_PORT_VENC_REC_FRM_SET2>,
+              <&iommu M4U_PORT_VENC_BSDMA_SET2>,
+              <&iommu M4U_PORT_VENC_SV_COMA_SET2>,
+@@ -108,17 +118,10 @@ vcodec_dec: vcodec@16000000 {
+              <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
+              <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
+              <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
++    mediatek,larb = <&larb5>;
+     mediatek,vpu = <&vpu>;
+-    clocks = <&topckgen CLK_TOP_VENCPLL_D2>,
+-             <&topckgen CLK_TOP_VENC_SEL>,
+-             <&topckgen CLK_TOP_UNIVPLL1_D2>,
+-             <&topckgen CLK_TOP_VENC_LT_SEL>;
+-    clock-names = "venc_sel_src",
+-                  "venc_sel",
+-                  "venc_lt_sel_src",
+-                  "venc_lt_sel";
+-    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
+-                      <&topckgen CLK_TOP_VENC_LT_SEL>;
+-    assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
+-                             <&topckgen CLK_TOP_UNIVPLL1_D2>;
++    clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
++    clock-names = "venc_lt_sel";
++    assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
++    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
+   };
 -- 
-Mel Gorman
-SUSE Labs
+2.18.0
+
