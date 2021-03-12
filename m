@@ -2,230 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4126833953E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0938339541
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhCLRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:41:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:58084 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232384AbhCLRlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:41:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 930CC1FB;
-        Fri, 12 Mar 2021 09:41:36 -0800 (PST)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BFA33F7D7;
-        Fri, 12 Mar 2021 09:41:34 -0800 (PST)
-From:   James Morse <james.morse@arm.com>
-Subject: Re: [PATCH 11/24] x86/resctrl: Group staged configuration into a
- separate struct
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-12-james.morse@arm.com>
- <28586ec7-608f-4857-19f9-f9a9d5c927f5@intel.com>
-Message-ID: <867f26b9-cd03-fa32-ba7a-038a7873435b@arm.com>
-Date:   Fri, 12 Mar 2021 17:41:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232233AbhCLRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232217AbhCLRmh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:42:37 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185DBC061574;
+        Fri, 12 Mar 2021 09:42:37 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id g27so26607688iox.2;
+        Fri, 12 Mar 2021 09:42:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=2BpBKC6amLfVKktHpaa9KFseSm9F+CF9ejShdCoo9Lk=;
+        b=RNVUMyfRaM22EyZhJqGc2FjFtG24jh/dlA99EZpkj2QIeuA5wmzDD7Uw3tQHvweJ0h
+         diyu8oUY5Kxnug0/6dSK/dBW9aAqoxs5T/Ri5mqc7dpcNZP07p3HVWWzVDh++7pwG2gz
+         NAnFoOmKAwCpZaplKrfWdlHenxNMulCdehrhf11wymFTYW0aRAennY2Jtyq8SZVAu8iR
+         Lj98au0NlnvFvS9i2pU2QMvpcOctjcLAzLRJD1+nzr6m/8sZTOyKcHgXvHx7n4wLS4oe
+         00ELcuZeYxwp5QIstQLMzE42/C+wL1+F2jJU8krQkEsysRceflowC+0Pbf90/f1WCL0k
+         xkaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=2BpBKC6amLfVKktHpaa9KFseSm9F+CF9ejShdCoo9Lk=;
+        b=aqFKw54p4bfXzskJ8RnLXj4Yv7V8VsFAUFakQs60+nlB5Gjnu+T2nwAPUF6CHljraN
+         8GoI5kLZrssrA5cKXTd5HKr6o+HOJQtgtYi36c+xm2xTUacEhV6wh4fawpQqPyNHrYIn
+         lI6YPL+RzeZa+0U+SP2MmYfWnnOUYpVoHWaP8XQIsbwXvW1jDB1HO+eYZH0pLsG1gED1
+         cQf20icQOsJGSPQwxGhZ/EJAmQnUROdrotPTsBLmQx0x2SK9aThkvAxWIZ2pJBmfOSnj
+         U9fvTIbuV4DfWu/xFC6QPzLcHOi5QswjSsqs09FduSxXwILbuO4+j1Gzrd8C7cEWoXQD
+         WJtQ==
+X-Gm-Message-State: AOAM533YsEleVCWPundQeMBQuGHXd3ORvO6GiIyI8i6HNB6YMZgemKQc
+        nLcWGcAOMB1fnXIurViAqBdZsO5p3qSEAW3q4hP9uTrAK8eC+g==
+X-Google-Smtp-Source: ABdhPJyZs5tkHkT6iAbmuJzaJs8b6g/jN6Hv8IE0YuC3erSgi9DEOUXbGhc7CLCi5/lXeSqaV1gM6NDU9VwmsH1le7Y=
+X-Received: by 2002:a5d:9d13:: with SMTP id j19mr302189ioj.110.1615570956506;
+ Fri, 12 Mar 2021 09:42:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <28586ec7-608f-4857-19f9-f9a9d5c927f5@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <CA+icZUXUAVAusGBKSAtUEN1kH2PLchpi0cU+w-m67QznA7+F4A@mail.gmail.com>
+ <20210305194745.GF48113@rowland.harvard.edu> <CA+icZUXEWh6G-Bm9-2F1X=S=ZYog37PiaMWHUjZWs1g-KDOqJg@mail.gmail.com>
+ <CA+icZUUBpB9UFEypCFmCYc2grUC11QESNwj0_cXfut9fx0JOQA@mail.gmail.com>
+ <20210306165808.GD74411@rowland.harvard.edu> <CA+icZUWXBtOo+7TBGHFA=aKBs5o9hy3Po6NM0EPssu6y4SOZsQ@mail.gmail.com>
+ <CA+icZUXcYY53DxpMRQmveuwUv0QVV7rtRorbxWUaVujJZuCB-A@mail.gmail.com>
+ <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
+ <20210307154645.GA103559@rowland.harvard.edu> <CA+icZUVLC7=-MsXeGQOrAe1emzGW2UwWYxh3EHGPhjR=chygoQ@mail.gmail.com>
+ <20210307170702.GB104554@rowland.harvard.edu> <CA+icZUWaGt2k4kdV0JHqKUkB8DySqdeUgVNnVT1BUo8aveGZOw@mail.gmail.com>
+ <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
+In-Reply-To: <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 12 Mar 2021 18:41:58 +0100
+Message-ID: <CA+icZUXkheVR-c9cdsJmeS9+FZj4Gswii+xBoAWK882QNdfcTg@mail.gmail.com>
+Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+OK, now for the records:
 
-On 17/11/2020 23:28, Reinette Chatre wrote:
-> On 10/30/2020 9:11 AM, James Morse wrote:
->> Arm's MPAM may have surprisingly large bitmaps for its cache
->> portions as the architecture allows up to 4K portions. The size
->> exposed via resctrl may not be the same, some scaling may
->> occur.
->>
->> The values written to hardware may be unlike the values received
->> from resctrl, e.g. MBA percentages may be backed by a bitmap,
->> or a maximum value that isn't a percentage.
->>
->> Today resctrl's ctrlval arrays are written to directly by the
+[ /etc/modprobe.d/usb-storage.conf  ]
 
-> If using a cryptic word like "ctrlval" it would be easier to understand what is meant if
-> it matches the variable in the code, "ctrl_val".
+# Add quirks for USB Mass Storage devices
+#
+# Link: https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+#
+# Option #1: Use Kernel command line parameter
+# [1] Usage: usb-storage.quirks=<VID:PID:Flags>
+# [2] VendorID (VID) and ProductID (PID):
+#     ASMedia M1042 USB-3.0 controller: VID: 174c PID: 55aa
+# [3] Flags:
+#     t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
+#     u = IGNORE_UAS (don't bind to the uas driver);
+# [4] Example: usb-storage.quirks=174c:55aa:t
+#
+# Option #2: Set quirk via sysfs
+# DEBUG: echo '174c:55aa:t' > /sys/module/usb_storage/parameters/quirks
+#
+# Option #3: Pass options via /etc/modprobe.d/usb-storage.conf (this file here)
+# XXX: Do NOT forget to run `update-initramfs` command!
+options usb-storage quirks=174c:55aa:t
+- EOF -
 
-I thought the non-underscore version was the preferred version, e.g:
-setup_default_ctrlval(), domain_setup_ctrlval() and parse_ctrlval. I'll switch to the
-underscore version for things other than functions if you think its clearer.
+With generating a new /boot/initrd.img via `update-initramfs` this
+looks good to me:
 
+root# LC_ALL=C dmesg -T | egrep -i 'quirks|reset|SCSI ioctl error'
+[Fri Mar 12 18:25:56 2021] xhci_hcd 0000:03:00.0: hcc params
+0x0200f180 hci version 0x96 quirks 0x0000000000080000
+[Fri Mar 12 18:25:57 2021] usb-storage 4-1:1.0: Quirks match for vid
+174c pid 55aa: 2400000
+[Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:01 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+number 2 using xhci_hcd
+[Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:29 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+[Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd A1, prog ata_id
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+[Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
+[Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
+[Fri Mar 12 18:28:10 2021] SCSI ioctl error, cmd 85, prog smartctl
+[Fri Mar 12 18:28:11 2021] SCSI ioctl error, cmd 85, prog smartctl
+[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
 
->> resctrl filesystem code. e.g. apply_config(). This is a problem
-> 
-> This sentence starts with "Today" implying what code does before this change but the
-> example function, apply_config() is introduced in this patch.
+Your diff now should say; s/SCSI ioctl error/SCSI ioctl info'.
 
-I don't follow the problem here, 'today' refers to what the code does before the patch is
-applied. "Before this patch" would make me unpopular, I'll try 'previously'.
+Alan, so "t" flags should be added as a quirks to linux-kernel sources...
 
+t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
 
->> if scaling or conversion is needed by the architecture.
->>
->> The arch code should own the ctrlval array (to allow scaling and
->> conversion), and should only need a single copy of the array for the
->> values currently applied in hardware.
+...for my ASMedia USB-3.0 controller?
 
-> ok, but that is the case, no?
-
-Its true for x86. But whether its true for MPAM depends on which side of the divide this
-thing lands as the value from user-space may be different to what gets written to hardware.
-If the filesystem code owned the list of values, there would need to be two copies to
-allow MPAM to restore the values in hardware when CPUs come online.
-
-(in particular, the MBA percentage control can be emulated with MPAMs bitmap or fractional
-min/max, the driver has to choose at startup).
-
-I'll try and bundle this as a clearer explanation into the commit message.
-
-
->> Move the new_ctrl bitmap value and flag into a struct for staged
->> configuration changes. This is created as an array to allow one per type
-> 
-> This is a bit cryptic as the reader may not know while reading this commit message what
-> "new_ctrl" is or where it is currently hosted.
-
-Sure, I'll add more explanation of the current code.
-
-
->> of configuration. Today there is only one element in the array, but
->> eventually resctrl will use the array slots for CODE/DATA/BOTH to detect
->> a duplicate schema being written.
-
-
->> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
->> b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
->> index 28d69c78c29e..0c95ed83eb05 100644
->> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
->> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> 
-> ...
-> 
->> @@ -240,15 +244,30 @@ static int parse_line(char *line, struct resctrl_schema *s,
->>       return -EINVAL;
->>   }
->>   +static void apply_config(struct rdt_hw_domain *hw_dom,
->> +             struct resctrl_staged_config *cfg, int closid,
->> +             cpumask_var_t cpu_mask, bool mba_sc)
->> +{
->> +    struct rdt_domain *dom = &hw_dom->resctrl;
->> +    u32 *dc = mba_sc ? hw_dom->mbps_val : hw_dom->ctrl_val;
->> +
->> +    if (cfg->new_ctrl != dc[closid]) {
->> +        cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
->> +        dc[closid] = cfg->new_ctrl;
->> +    }
->> +
->> +    cfg->have_new_ctrl = false;
-> 
-> Why is this necessary?
-
-(hmm, its ended up in the wrong patch, but:) This was to ensure that once the resources
-are merged, all the work for applying configuration changes is done by the first IPI,
-ensuring if update_domains() is called for a second schema with the same resource, it
-finds no new work to do.
-But without this, the empty_bitmap check would still catch it. I'll remove it.
-
-
->> +}
->> +
->>   int update_domains(struct rdt_resource *r, int closid)
->>   {
->> +    struct resctrl_staged_config *cfg;
->>       struct rdt_hw_domain *hw_dom;
->>       struct msr_param msr_param;
->>       cpumask_var_t cpu_mask;
->>       struct rdt_domain *d;
->>       bool mba_sc;
->> -    u32 *dc;
->> -    int cpu;
->> +    int cpu, i;
->>         if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
->>           return -ENOMEM;
->> @@ -260,10 +279,12 @@ int update_domains(struct rdt_resource *r, int closid)
->>       mba_sc = is_mba_sc(r);
->>       list_for_each_entry(d, &r->domains, list) {
->>           hw_dom = resctrl_to_arch_dom(d);
->> -        dc = !mba_sc ? hw_dom->ctrl_val : hw_dom->mbps_val;
->> -        if (d->have_new_ctrl && d->new_ctrl != dc[closid]) {
->> -            cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
->> -            dc[closid] = d->new_ctrl;
->> +        for (i = 0; i < ARRAY_SIZE(d->staged_config); i++) {
-
-> I understand it may make later patches easier but it seems too early to introduce this
-> loop because apply_config() does not seem to be ready for it yet (it would just keep
-> overwriting a closid's config).
-
-Grouping these values is needed because they become a set, one per type of configuration.
-This ended up here because its looping over the set, even its only got one entry at the
-moment.
-
-Sure, I'll move it into a later patch. Presumably you want the array indexing to move too.
-
-
->> +            cfg = &hw_dom->resctrl.staged_config[i];
->> +            if (!cfg->have_new_ctrl)
->> +                continue;
->> +
->> +            apply_config(hw_dom, cfg, closid, cpu_mask, mba_sc);
->>           }
->>       }
->>   @@ -338,7 +359,7 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
->>         list_for_each_entry(s, &resctrl_all_schema, list) {
->>           list_for_each_entry(dom, &s->res->domains, list)
->> -            dom->have_new_ctrl = false;
->> +            memset(dom->staged_config, 0, sizeof(dom->staged_config));
->>       }
->>         while ((tok = strsep(&buf, "\n")) != NULL) {
-> 
-> ...
-> 
->> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
->> index 9f71f0238239..f1164bbb66c5 100644
->> --- a/include/linux/resctrl.h
->> +++ b/include/linux/resctrl.h
->> @@ -26,13 +26,21 @@ enum resctrl_conf_type {
->>       CDP_DATA,
->>   };
->>   +/**
->> + * struct resctrl_staged_config - parsed configuration to be applied
->> + * @new_ctrl:        new ctrl value to be loaded
->> + * @have_new_ctrl:    did user provide new_ctrl for this domain
-> 
-> The "for this domain" in this description is no longer appropriate after the copy.
-
-This structure is still embedded in struct rdt_domain, but I'll rephrase it.
-
-
-Thanks,
-
-James
-
-
->> + */
->> +struct resctrl_staged_config {
->> +    u32            new_ctrl;
->> +    bool            have_new_ctrl;
->> +};
-
->> @@ -59,6 +65,7 @@ struct rdt_domain {
->>       int                cqm_work_cpu;
->>         struct pseudo_lock_region    *plr;
->> +    struct resctrl_staged_config    staged_config[1];
->>   };
+- Sedat -
