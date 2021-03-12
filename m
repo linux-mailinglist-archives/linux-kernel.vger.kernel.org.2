@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FBD338991
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCB03389CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhCLKDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:03:07 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:52480 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhCLKDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:03:05 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CA0EsK143158;
-        Fri, 12 Mar 2021 10:02:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=akbLYMZRzQqZZpbJ+DtKwfG0zRi+SfnjQjeinw9NplI=;
- b=lYovsrs/X7GBkXTV9OEcuVPPBDNJLx1JaWxYK/kSgyQMi7uRNDQl5P9N5ZxOoVhXFAQP
- KPrWsnUpXfNgTQENI349Gi0EBewCqObDWW1eteu9i1iXnbSUrvV4sQXZmk5n1EUkrHeV
- dVr0F1jIznWu5PYUxzMjCIeM3rXQSHIszFau0x/4YKuYcn274SSgPkm9bj4msNCUQwLr
- /YJ94OON4U+aWefd8yVRplPRR6dfC/Wluxg2+w81U91nLA7RgdSHDixuCC6QwqcA124F
- bPOdqtvPUF8KXWB/Gg7AyC9gwzmPFVdqD4cABezfaPJ0PNUSues5Z8SMCmDB73GuFPKg 0g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37415rhhgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 10:02:56 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CA1E9T070444;
-        Fri, 12 Mar 2021 10:02:54 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 374kgwa7ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 10:02:54 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12CA2rBe026796;
-        Fri, 12 Mar 2021 10:02:53 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Mar 2021 02:02:52 -0800
-Date:   Fri, 12 Mar 2021 13:02:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Hao Peng <penghaob@uniontech.com>
-Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        izabela.bakollari@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: add initial value
-Message-ID: <20210312100244.GN2087@kadam>
-References: <20210311063838.19756-1-penghaob@uniontech.com>
+        id S233287AbhCLKOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:14:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233241AbhCLKNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:13:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A3764FE0;
+        Fri, 12 Mar 2021 10:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615543392;
+        bh=CXYKx7axsfKXw2XBYeApFSKwoY/rOIiGq6qs42H2XdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vnnGNkrII1WysOM8poKSTCBYj60kbz3yq1rn7CYyUxeK/lkqEKf5YcdyGLwKSDp0G
+         bj05gpqdtZkRK4eOkQws3TCQHG0n7Nb8E7t0BPSaPuYwVmow7zyJNp5fu0jh13bRz/
+         d/lAqUBbjuLMFORpWAcJ4qQolA8SgR2kPSLSIVog=
+Date:   Fri, 12 Mar 2021 11:03:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] [backport for 5.10] powerpc/603: Fix protection of user
+ pages mapped with PROT_NONE
+Message-ID: <YEs8XbJwrkZzc1eJ@kroah.com>
+References: <656520fecf792b8842dc54beec2da3bc29d0133c.1615486986.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311063838.19756-1-penghaob@uniontech.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103120067
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 adultscore=0
- phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103120067
+In-Reply-To: <656520fecf792b8842dc54beec2da3bc29d0133c.1615486986.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:38:38PM +0800, Hao Peng wrote:
-> Add initial value for some uninitialized variable and array.
+On Thu, Mar 11, 2021 at 06:24:30PM +0000, Christophe Leroy wrote:
+> (cherry picked from commit c119565a15a628efdfa51352f9f6c5186e506a1c)
 > 
+> On book3s/32, page protection is defined by the PP bits in the PTE
+> which provide the following protection depending on the access
+> keys defined in the matching segment register:
+> - PP 00 means RW with key 0 and N/A with key 1.
+> - PP 01 means RW with key 0 and RO with key 1.
+> - PP 10 means RW with both key 0 and key 1.
+> - PP 11 means RO with both key 0 and key 1.
+> 
+> Since the implementation of kernel userspace access protection,
+> PP bits have been set as follows:
+> - PP00 for pages without _PAGE_USER
+> - PP01 for pages with _PAGE_USER and _PAGE_RW
+> - PP11 for pages with _PAGE_USER and without _PAGE_RW
+> 
+> For kernelspace segments, kernel accesses are performed with key 0
+> and user accesses are performed with key 1. As PP00 is used for
+> non _PAGE_USER pages, user can't access kernel pages not flagged
+> _PAGE_USER while kernel can.
+> 
+> For userspace segments, both kernel and user accesses are performed
+> with key 0, therefore pages not flagged _PAGE_USER are still
+> accessible to the user.
+> 
+> This shouldn't be an issue, because userspace is expected to be
+> accessible to the user. But unlike most other architectures, powerpc
+> implements PROT_NONE protection by removing _PAGE_USER flag instead of
+> flagging the page as not valid. This means that pages in userspace
+> that are not flagged _PAGE_USER shall remain inaccessible.
+> 
+> To get the expected behaviour, just mimic other architectures in the
+> TLB miss handler by checking _PAGE_USER permission on userspace
+> accesses as if it was the _PAGE_PRESENT bit.
+> 
+> Note that this problem only is only for 603 cores. The 604+ have
+> an hash table, and hash_page() function already implement the
+> verification of _PAGE_USER permission on userspace pages.
+> 
+> Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
+> Change-Id: I68bc5e5ff4542bdfcdcd12923fa96a5811707475
+> Cc: stable@vger.kernel.org # v5.2+
+> Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> Link: https://lore.kernel.org/r/4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu
+> ---
+>  arch/powerpc/kernel/head_book3s_32.S | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 
-None of these are ever used uninitialized.  It's weird that you would
-even think that.
+Both backports applied, thanks.
 
->  			if (pmlmeext->active_keep_alive_check) {
-> -				int stainfo_offset;
-> +				int stainfo_offset = 0;
->  
->  				stainfo_offset = rtw_stainfo_offset(pstapriv, psta);
-                                ^^^^^^^^^^^^^^^^
-This one is initialized on the very next line so all the patch does is
-introduce static checker warnings for no reason.
-
-regards,
-dan carpenter
-
+greg k-h
