@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB393393D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01903393D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhCLQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S232288AbhCLQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbhCLQnB (ORCPT
+        with ESMTP id S232253AbhCLQqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:43:01 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B1AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:43:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=DdN12y8wew+vZHpjKJtDD1enNtaDHjC1Mg2RbmuJ80M=; b=lWS3dw4aHMJnZqoZ3fkNkSwd66
-        vUX0mszaoHHZ4s+57TcHvsYFPCEXBilwlMlBoEXZ1KBFc9+Ff92W+tiHavdWcdT/b1PLN4MB4ME9F
-        YKXIkEu51hIECOiuAJY5fJzVjQC6IeAj1v35MYAk38+GYdEsAJYyjcRN1YeRhjunlCWbgK1/gU8E0
-        pC7Bsh3ddMCzrUVKg4srxF3vkOsZhrghElhGfKc4PknKYSlyVsfrLV9X+sshKehnt7XEnzLqSrpZK
-        wp6hbNqiTJvcKDUZxGHHaaUwxL2CY2mPe8d79jALo7JdS9twXiY7WI88bZEbaBBsGmm/fAQYVkkFU
-        1GUPduAg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKksM-0014Jd-5G; Fri, 12 Mar 2021 16:42:58 +0000
-Subject: Re: [PATCH] staging: wimax: i2400m: Mundane typos fix in the file
- tx.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        gregkh@linuxfoundation.org, arnd@arndb.de, lee.jones@linaro.org,
-        kuba@kernel.org, johannes@sipsolutions.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210312114207.3624-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a6d52732-917c-c679-d7be-6454b316ea40@infradead.org>
-Date:   Fri, 12 Mar 2021 08:42:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 12 Mar 2021 11:46:48 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D130C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:46:48 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so10997716pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:46:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2jLAXn4aYpz32jNMagQDm0wpaA4aWgAFhxqORZ7JmIA=;
+        b=Dv9KFMukGJ8sphdRaBO8gtHhv7TABbRb60verndQm+G/beqfhOxT9dy6dfVie6/H6m
+         NoKELrKXVDA4mn4vsnVdXaFpsqejK5CMYZgLhyVRpdkH79VNRG2aPRAvcARf0dLEcG0h
+         DC70zGJHjt/98Vc5Pe4RI7oDXam+5YTzQS/si9aV0Sw9DQCwJdz9iZsVn9mqMEZ5a+MF
+         nfd1g9/OFhh7odWZaPPRLXA9Z3uBfMxOK05ZTj0kb2X0sqjWn/IKRUWTEOWNLYG517T0
+         z0/3Dz27LoEVe3LVIkS9FUP9KnqQ8pGK8ZxnmvhmsziMWIgDET/SRvZy6syfPefdv1Ql
+         5apw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2jLAXn4aYpz32jNMagQDm0wpaA4aWgAFhxqORZ7JmIA=;
+        b=S9S+FDDLyg6Rzzi3ZzKDZeaSxHf8M++D6H7C8OYhKLeQMKDxKgHAUPe58BlYG61cjr
+         BCKvc6yZqEGmLM9YtiPDlx8W6/OfzGsck/oCFLSvq4R0cPDhPBx+zgbXmWX61H4ZwGEv
+         RVjSs3bucSZck3AC215cFI9rXCtxhrsc6P0muDMLp8uDbhphR6XK7AMsH3TCmJFBUvlT
+         QAV9j5b7jOb39UsytYn1PTQfWrtL0FUfSTIZ7PnjfK+YE0sKtt5TF/S72S7p0TtkJt36
+         GHw+F0snfHoxoaqpuNQ5/RZLYW86+VHuY6Bs46+YR3amao8ZJD5HarEZrnbd/d9g7Ot2
+         YlRg==
+X-Gm-Message-State: AOAM533isQFlN8vN1vdzkhctbhCaZ+mFrsPg3Gl1rSWmjeRxOHslwX79
+        q4k6M2Vq1QZj9Abj5hn2kg9xPVql7wkijMSRbBgNAQ==
+X-Google-Smtp-Source: ABdhPJxgQsLhKqhiH0ayfAGSlfGohtPwCqhQxOwr9KB/1M1c611iD9s+klmbs/jBtCUTyXnFLAagnt92yyhIObinBd8=
+X-Received: by 2002:a17:902:d4cb:b029:e5:f608:6d5e with SMTP id
+ o11-20020a170902d4cbb02900e5f6086d5emr14093760plg.20.1615567607771; Fri, 12
+ Mar 2021 08:46:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312114207.3624-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309100717.253-1-songmuchun@bytedance.com>
+ <20210309100717.253-4-songmuchun@bytedance.com> <YElCxDzVgBBLAQhJ@cmpxchg.org>
+ <CAMZfGtUqTBJ56eEj5CiFbHGMMaopP9k1Tq94R+M=W6P0HF83_A@mail.gmail.com> <YEuPydlPkq87TO5H@cmpxchg.org>
+In-Reply-To: <YEuPydlPkq87TO5H@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 13 Mar 2021 00:46:11 +0800
+Message-ID: <CAMZfGtWQ2HrV2Sw8K_vBJ5c9U+V2Q7AOha9aV6fR3RwrtbPZvA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 3/4] mm: memcontrol: use obj_cgroup APIs
+ to charge kmem pages
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 3:42 AM, Bhaskar Chowdhury wrote:
-> 
-> s/exahusted/exhausted/
-> s/caleed/called/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Fri, Mar 12, 2021 at 11:59 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Mar 12, 2021 at 05:22:55PM +0800, Muchun Song wrote:
+> > On Thu, Mar 11, 2021 at 6:05 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > > @@ -6828,7 +6857,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+> > > >
+> > > >  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+> > > >  {
+> > > > -     unsigned long nr_pages;
+> > > > +     unsigned long nr_pages, nr_kmem;
+> > > >       struct mem_cgroup *memcg;
+> > > >
+> > > >       VM_BUG_ON_PAGE(PageLRU(page), page);
+> > > > @@ -6836,34 +6865,44 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+> > > >       if (!page_memcg_charged(page))
+> > > >               return;
+> > > >
+> > > > +     nr_pages = compound_nr(page);
+> > > >       /*
+> > > >        * Nobody should be changing or seriously looking at
+> > > > -      * page memcg at this point, we have fully exclusive
+> > > > -      * access to the page.
+> > > > +      * page memcg or objcg at this point, we have fully
+> > > > +      * exclusive access to the page.
+> > > >        */
+> > > > -     memcg = page_memcg_check(page);
+> > > > +     if (PageMemcgKmem(page)) {
+> > > > +             struct obj_cgroup *objcg;
+> > > > +
+> > > > +             objcg = page_objcg(page);
+> > > > +             memcg = obj_cgroup_memcg_get(objcg);
+> > > > +
+> > > > +             page->memcg_data = 0;
+> > > > +             obj_cgroup_put(objcg);
+> > > > +             nr_kmem = nr_pages;
+> > > > +     } else {
+> > > > +             memcg = page_memcg(page);
+> > > > +             page->memcg_data = 0;
+> > > > +             nr_kmem = 0;
+> > > > +     }
+> > >
+> > > Why is all this moved above the uncharge_batch() call?
+> >
+> > Before calling obj_cgroup_put(), we need set page->memcg_data
+> > to zero. So I move "page->memcg_data = 0" to here.
+>
+> Yeah, it makes sense to keep those together, but we can move them both
+> down to after the uncharge, right?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Right. I am doing this.
 
-> ---
->  drivers/staging/wimax/i2400m/tx.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/wimax/i2400m/tx.c b/drivers/staging/wimax/i2400m/tx.c
-> index e9436212fe54..2d15de653951 100644
-> --- a/drivers/staging/wimax/i2400m/tx.c
-> +++ b/drivers/staging/wimax/i2400m/tx.c
-> @@ -85,7 +85,7 @@
->   *       can keep adding payloads to it.
->   *
->   *     Closed: we are not appending more payloads to this TX message
-> - *       (exahusted space in the queue, too many payloads or
-> + *       (exhausted space in the queue, too many payloads or
->   *       whichever).  We have appended padding so the whole message
->   *       length is aligned to i2400m->bus_tx_block_size (as set by the
->   *       bus/transport layer).
-> @@ -295,7 +295,7 @@ enum {
->  /*
->   * Calculate how much tail room is available
->   *
-> - * Note the trick here. This path is ONLY caleed for Case A (see
-> + * Note the trick here. This path is ONLY called for Case A (see
->   * i2400m_tx_fifo_push() below), where we have:
->   *
->   *       Case A
-> --
+>
+> > > It separates the pointer manipulations from the refcounting, which
+> > > makes the code very difficult to follow.
+> > >
+> > > > +
+> > > >       if (ug->memcg != memcg) {
+> > > >               if (ug->memcg) {
+> > > >                       uncharge_batch(ug);
+> > > >                       uncharge_gather_clear(ug);
+> > > >               }
+> > > >               ug->memcg = memcg;
+> > > > +             ug->dummy_page = page;
+> > >
+> > > Why this change?
+> >
+> > Just like ug->memcg, we do not need to set
+> > ug->dummy_page in every loop.
+>
+> Ah, okay. That's a reasonable change, it's just confusing because I
+> thought this was a requirement for the new code to work. But I didn't
+> see how it relied on that, and it made me think I'm not understanding
+> your code ;) It's better to split that into a separate patch.
 
+Sorry for confusing you. I will split that into a separate patch.
+Thanks.
 
--- 
-~Randy
-
+>
+> > I will rework the code in the next version.
+>
+> Thanks!
