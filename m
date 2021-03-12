@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2EF338AEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95424338AF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbhCLLD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233672AbhCLLCy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:02:54 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A7AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:54 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id g20so3545135wmk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dihNwmS8eg72fB7m8NAEuzih9r4cxSiPgspyafvWSkU=;
-        b=EVuw7+TenJ9xISL4BCYhMltGJemyMiBtTLqkDq7oFLcfKFjApbRCYCRS7/6ty8/TZZ
-         NA1jPbDyU16KQpW2yr7P8fP7q9sSS3aZ2dtMpEzAWOfRLPjJNnrocjA3LajtTQi4eMA0
-         QFnSH1pWZ4OPERi4W1zrtP067BygVQ30XXHR2zbuEhP2KBIz2ymp5g373bj4pnr1FCrM
-         RQbxxXAvwUpiGzK+qEG74AQOgM0w2xhkizZMj/CXis44uDexQsNBKilLcxj89MXOpfLC
-         kP57Nh11zdStlSx+P+dSPMVVTWPh0EbPzp8+qwK2ZW9OdztSOuHsRZxrR7cfgjKNxA0S
-         1n/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dihNwmS8eg72fB7m8NAEuzih9r4cxSiPgspyafvWSkU=;
-        b=NyzACnUvShkBAtDUnT7zKMG6ATugLYW4tJOME2nr/Vn3jtvog1ir9XeEQ17Y26cmzI
-         tBy7b2jXe29kSqh8cfwH1o+htynloODOokEyixOIUwFmiYChpQPR7AyqYdotlMr22JPv
-         d9J2wXURCdgSfnQuQ+jRZ89cQxAivyR8buzMdPsE3+29n8nlllIgXO8u6qBsBiRpt3IC
-         wNOJa4cvD6jFKRnW1a9Y5at0zE11WCvo9m++32vQ07LigGpf5LswZaqLgiaQp15f/CBp
-         PJlVE7trjBVn+alVFzxtLLIwMEuH+1AnZj9R0VrGC1t9JZd08ekrWrFSUgMLtQtBjqAU
-         mzJw==
-X-Gm-Message-State: AOAM532TdK8P0ER5n4+nvovnnKWkp1s4ykqTBZIkKYMAPOIi/88MA4r9
-        ul3//JXcujPbA6Hgs05plqfkdg==
-X-Google-Smtp-Source: ABdhPJzp5NiW4hK7picdw41X37Rb1IMy0ShXi7mmGt03dC34zZfOhHkBCRveJv0mWQpHlDFrnpMfdA==
-X-Received: by 2002:a1c:730f:: with SMTP id d15mr12347734wmb.135.1615546972704;
-        Fri, 12 Mar 2021 03:02:52 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
-        by smtp.gmail.com with ESMTPSA id j11sm7373970wro.55.2021.03.12.03.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 03:02:51 -0800 (PST)
-Date:   Fri, 12 Mar 2021 12:02:45 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/11] kasan: docs: update ignoring accesses section
-Message-ID: <YEtKVYVeUycUKySP@elver.google.com>
-References: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
- <c0f6a95b0fa59ce0ef502f4ea11522141e3c8faf.1615498565.git.andreyknvl@google.com>
+        id S233659AbhCLLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:04:34 -0500
+Received: from mga02.intel.com ([134.134.136.20]:5499 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233554AbhCLLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:04:00 -0500
+IronPort-SDR: Mz/uavYLg1nriw4SDf7sOW10LDGJs9/+ZuAZT6qKGKbt6WBOEuWtTXOMEAKRfqZvh92rdtbeIY
+ ZnKIoa24iBOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="175939530"
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="175939530"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:03:58 -0800
+IronPort-SDR: /6TpBsSEM7T8QD3s4i9cejjiudGvvwuwTdPHMSBWm5BAzAXBnCnAaOftdYr8trlo9hlgCVfEBG
+ uvC4xBrDbpzQ==
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="521392591"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:03:55 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lKfaB-00BpeO-JN; Fri, 12 Mar 2021 13:03:51 +0200
+Date:   Fri, 12 Mar 2021 13:03:51 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v3 08/11] gpio: sim: new testing module
+Message-ID: <YEtKlyV13h2fbwJR@smile.fi.intel.com>
+References: <20210309205921.15992-1-brgl@bgdev.pl>
+ <20210309205921.15992-9-brgl@bgdev.pl>
+ <YEi7fth6sZWgKd+q@smile.fi.intel.com>
+ <CAMRc=MfeCWNnXwqBBu3CcdHXQ5QnNPBh8EJRTCtyZau+RqE-0w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c0f6a95b0fa59ce0ef502f4ea11522141e3c8faf.1615498565.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <CAMRc=MfeCWNnXwqBBu3CcdHXQ5QnNPBh8EJRTCtyZau+RqE-0w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:37PM +0100, Andrey Konovalov wrote:
-[...]  
-> +Other parts of the kernel might access metadata for allocated objects. Normally,
-> +KASAN detects and reports such accesses, but in certain cases (e.g., in memory
-> +allocators) these accesses are valid. Disabling instrumentation for memory
-> +allocators files helps with accesses that happen directly in that code for
-> +software KASAN modes. But it does not help when the accesses happen indirectly
-> +(through generic function calls) or with the hardware tag-based mode that does
-> +not use compiler instrumentation.
-> +
-> +To disable KASAN reports in a certain part of the kernel code:
-> +
-> +- For software modes, add a
-> +  ``kasan_disable_current()``/``kasan_enable_current()`` critical section.
+On Fri, Mar 12, 2021 at 09:54:58AM +0100, Bartosz Golaszewski wrote:
+> On Wed, Mar 10, 2021 at 1:28 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
-Should we mention function attribute __no_sanitize_address (and noinstr,
-which just applies to any kind of instrumentation) here? Perhaps with
-the note that called functions may still be instrumented, and in such
-cases would require combining with kasan_{disable,enable}_current().
+...
 
-> +- For tag-based modes, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``.
+> > > +             ret = sprintf(page, "n/a\n");
+> >
+> > I dunno '/' (slash) is a good character to be handled in a shell.
+> > I would prefer 'none' or 'not available' (I think space is easier,
+> > because the rules to escape much simpler: need just to take it into
+> > quotes, while / needs to be escaped separately).
+> >
+> 
+> My test cases work fine with 'n/a' but I can change it to 'none' if
+> it's less controversial.
+
+
+% git grep -n -w '"none"' -- drivers/ arch/ | wc -l
+371
+
+% git grep -n -w '"n/a"' -- drivers/ arch/ | wc -l
+15
+
+% git grep -n -w '"not available"' -- drivers/ arch/ | wc -l
+5
+
+...
+
+> But I would be creating empty properties for nothing. Better to just
+> not have them at all.
+
+Up to you.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
