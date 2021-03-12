@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C8A338866
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC857338865
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhCLJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        id S232726AbhCLJP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbhCLJPs (ORCPT
+        with ESMTP id S232710AbhCLJPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:15:48 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA24EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:47 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id l11so4375895wrp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:47 -0800 (PST)
+        Fri, 12 Mar 2021 04:15:35 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED178C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:34 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id o26so3339166wmc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uNaymeWh6w/U88+iWiJkSx0rbMj53oFGfAfvgSr6Ycs=;
-        b=ok9MAF/IrE4WyI20/akQhJ7RgA/76AiNVkV2k2colkHyEED72TGPHB/b8HzesjIV6Q
-         nqjYcXFdWuV7C7m6o0ak0NMLTf+cetxe4kP8ICwIFE0tlRkLfD2wLUutYMC1qlA/ZZDQ
-         jmm+mZRLhmvZdjpsspxWt3zZdfhs3R4StCXatGYWolpUvQJbKZxoGeANnUue1zr4D3Cl
-         edXEofelPa//rKwxUhnUzZuPjLtenOCtCXUmcfM4ZXTtAR6pzuGqT20Jjf05gUVpeROg
-         WNkBM8rZ9HHm56/WunEVpM3+RzPsSVY7+Vd4/85S0V05TA3QZADE9e+zhs96yMpvkCQ/
-         pqaQ==
+         :content-disposition:in-reply-to;
+        bh=8hyTObTnA8b0Pah5w5x3EX45G+4aGq3Qg+uSFkSPcCo=;
+        b=jVs4+SZBOncaHTNZfrQPmfUwVYzNZgKm+iL7UkFzH2hi1esIn3UON4srQWsKqCTzIQ
+         v8JzJSmZb/Dt5o4ziJlrUAEwS2Rozm3WkV8g21rcbXUuZHVDSd9g6MygPJfvd2G8gKRX
+         3xEtqIHBTd95yzydjWyupkUBpp0DkDmseSBNQCM/Y3SQORaEXSfQuWSVT+Wi/qtY403j
+         YJ3N/tL9sTiVdHVw4vpjyxqiknFYfbN3qfQSohG7eu56ZkuMaenkzlbqQRqucppZa6wJ
+         nURlMd0nasN1vXl7gtLFx739nu6Zg3c9ItV3TJWROADQH4DX2TjRm0RCnbCQlLC6+RnZ
+         apjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uNaymeWh6w/U88+iWiJkSx0rbMj53oFGfAfvgSr6Ycs=;
-        b=acAfNdsnucC8KE+lsZu5TvI5TcmnXc7+2Mib+GgxBXpZzMAYwmHjvE3SUOk8X1T+ET
-         uGNlcjCBSQ2TBOOKb3RE9Du+T1HpGHEEK7Nd5QMLf1cYJYpi7Upwca9i85OpfaGXKF1J
-         bNVH5QPUbm40tWlmA2zGAWYe27FnAdOoGX7LSXv4DDzTsUcBQdQtsPR7tSnXmJy9CVZh
-         AfJaN9QDGuLKUoEs5c8W7Jk92ohm2e2pgSE8HaWLpR/wb+qnlbyo0+fUBCJ5m55tclWp
-         ZlN1en1r+4QqFw8aaczpubwnauLiDMw6/ERjp+TwO8b3YyO4j7K4lnhfNHkh68p2kpp8
-         c2ew==
-X-Gm-Message-State: AOAM533+kZdI8QrNIWp3bpQWIrwRq9oml6koB8wJWZSoWmY+nffg3X3r
-        3H9Uvp3JeJLRzscDX8cD0tA=
-X-Google-Smtp-Source: ABdhPJyiEaSZKYzjoIJC3mpmLfRbsGSrKD5GvQivjs6DqXZ1d/jLM8KZVuv2fuf9wuMI0IHzxrzJtg==
-X-Received: by 2002:a5d:5906:: with SMTP id v6mr12919731wrd.137.1615540546591;
-        Fri, 12 Mar 2021 01:15:46 -0800 (PST)
-Received: from agape.jhs ([5.171.81.107])
-        by smtp.gmail.com with ESMTPSA id e8sm1443257wme.14.2021.03.12.01.15.31
+         :mime-version:content-disposition:in-reply-to;
+        bh=8hyTObTnA8b0Pah5w5x3EX45G+4aGq3Qg+uSFkSPcCo=;
+        b=gst4XZmrL++LjgJVM9cyRfqqNA7OPNZ6rVenLf8KDw6mz+ZUcPpNPpEL9QrYZ551un
+         jGTtGq3UEDLtSRnP9EQPhOXs9xLvuvfIjJZIW7hPJ6qbqLsw8poP1nV4WiHMeZBj3o4J
+         l4/JaKwDEeXMbcSU7+0vMl4r/O2sZ0d39FFmkzWWSK7YHVeELTAGpx9FfKwp/z/+2ZLD
+         Qg0sl8POkSfblPJrOBSlfYS59ZJmwy3CMzSZdKXvgScUdpuuWifdIIuRMPGiQRTHGxnv
+         joleFgTo4dKw/b8JOgY4RvqtfcX5BLvODQFzqtkemOWzS5p1gU5DRutCxAnmluAd56Tg
+         QKCg==
+X-Gm-Message-State: AOAM531THs/ThkASXny+E5ahKUU8Higg16l+QqbXZDOsIH/9fQ6dLCfA
+        OIO+NpHCtm7D3i2yB+cbddmkVQ==
+X-Google-Smtp-Source: ABdhPJyo6oi+MSsftqzukHAyRgFvWhaTOLTqQm++oJ1mRSO/qD8ZSQ8ap6nF6e9hdN/8C+ctlvX1pg==
+X-Received: by 2002:a1c:8041:: with SMTP id b62mr12506853wmd.0.1615540533351;
+        Fri, 12 Mar 2021 01:15:33 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id j203sm1510033wmj.40.2021.03.12.01.15.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:15:46 -0800 (PST)
-Date:   Fri, 12 Mar 2021 10:15:29 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Eric Curtin <ericcurtin17@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: align comments
-Message-ID: <20210312091528.GA1577@agape.jhs>
-References: <20210310153717.GA5741@agape.jhs>
- <YEjrEErDZTH47gto@kroah.com>
- <20210310160946.GA6421@agape.jhs>
- <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
+        Fri, 12 Mar 2021 01:15:33 -0800 (PST)
+Date:   Fri, 12 Mar 2021 09:15:30 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 27/34] KVM: arm64: Always zero invalid PTEs
+Message-ID: <YEsxMgNncoVLdkjo@google.com>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-28-qperret@google.com>
+ <20210311173338.GB31378@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210311173338.GB31378@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:27:53PM +0000, Eric Curtin wrote:
-> Hi Fabio,
+On Thursday 11 Mar 2021 at 17:33:38 (+0000), Will Deacon wrote:
+> On Wed, Mar 10, 2021 at 05:57:44PM +0000, Quentin Perret wrote:
+> > kvm_set_invalid_pte() currently only clears bit 0 from a PTE because
+> > stage2_map_walk_table_post() needs to be able to follow the anchor. In
+> > preparation for re-using bits 63-02 from invalid PTEs, make sure to zero
 > 
-> > I am sorry, I fear I don't understand, checkpatch.sh script says the patch is ok.
-> > Where have I to add a ' ' (a blank?)?
-> >
-> > thank you,
-> >
-> > fabio
-> >
-> 
-> I'm only responding to this because this email is doing a very good job
-> of avoiding my filters somehow :) I think what Greg means is:
-> 
-> Change this:
-> 
->  /*
-> -op_mode
-> -Set to 0 (HT pure) under the following conditions
-> -       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> -       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> -Set to 1 (HT non-member protection) if there may be non-HT STAs
-> -       in both the primary and the secondary channel
-> -Set to 2 if only HT STAs are associated in BSS,
-> -       however and at least one 20 MHz HT STA is associated
-> -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> -       (currently non-GF HT station is considered as non-HT STA also)
-> -*/
-> + *op_mode
-> + *Set to 0 (HT pure) under the following conditions
-> + *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> + *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> + *Set to 1 (HT non-member protection) if there may be non-HT STAs
-> + *      in both the primary and the secondary channel
-> + *Set to 2 if only HT STAs are associated in BSS,
-> + *      however and at least one 20 MHz HT STA is associated
-> + *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> + *      (currently non-GF HT station is considered as non-HT STA also)
-> + */
-> 
-> to this:
-> 
->  /*
-> -op_mode
-> -Set to 0 (HT pure) under the following conditions
-> -       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> -       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> -Set to 1 (HT non-member protection) if there may be non-HT STAs
-> -       in both the primary and the secondary channel
-> -Set to 2 if only HT STAs are associated in BSS,
-> -       however and at least one 20 MHz HT STA is associated
-> -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> -       (currently non-GF HT station is considered as non-HT STA also)
-> -*/
-> + * op_mode
-> + * Set to 0 (HT pure) under the following conditions
-> + *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
-> + *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
-> + * Set to 1 (HT non-member protection) if there may be non-HT STAs
-> + *      in both the primary and the secondary channel
-> + * Set to 2 if only HT STAs are associated in BSS,
-> + *      however and at least one 20 MHz HT STA is associated
-> + * Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
-> + *      (currently non-GF HT station is considered as non-HT STA also)
-> + * /
-> 
-> Like Dan said, you need a space after the '*'/
-> 
-> Is mise le meas/Regards,
-> 
-> Eric Curtin
-> 
-> Check out this charity that's close to my heart:
-> 
-> https://www.idonate.ie/fundraiser/11394438_peak-for-pat.html
-> https://www.facebook.com/Peak-for-Pat-104470678280309
-> https://www.instagram.com/peakforpat/
+> Why do you exclude bit 1 from this range?
 
-Thank you Eric, community is the best resource ever :), hope to contribute
-soon
+Hmm, no good reason really. I wanted to play games with invalid table
+mappings at some point, but dropped the idea and forgot to update the
+commit message. My bad, I'll fix it up.
 
-Kind regards,
-
-Fabio
-
+Thanks,
+Quentin
