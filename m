@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAAE338AD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60600338B19
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhCLLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhCLK7n (ORCPT
+        id S233776AbhCLLIt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 06:08:49 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:57208 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234021AbhCLLI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:59:43 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3B2C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:59:43 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so15537081wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:59:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VVhsAnYTZ5uoDdHPv0Rq+cfHyo0uxX+cwVjaziX6TS0=;
-        b=qikOs3sRt3V3do4bzfm30QuBd2hEzkVlnGKj4H+OAr+JIqoS3oPynFdRtZLvfg3E2a
-         V6SpuIfIZVGZ6wxuYyMtC0XDWZz/69wjGIoKdv/JvqBD8Z4wvpnoQlwzGo9PGdYH+GAm
-         31HUCs9Bb9XeC012/uiK7qvGYkgOZzcRxCECDCrowktPUsJLBAzSLaXp4l6vKqmqenUs
-         Q/wrSricjQdRRNsOEa9o3N2Tv8C2M31WXU+h3pi9kaipFwbTELY93qfDgrAltAUsEqcP
-         YxVlzBT51Jxe4kYAdEdb0C43h7cfVGwg5sPbW6bDNfeUg8AT/k2fsjUxpQYwt+6pEnih
-         xb0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VVhsAnYTZ5uoDdHPv0Rq+cfHyo0uxX+cwVjaziX6TS0=;
-        b=HflZOIoEc42ep4uoBeSi2dliHmAAXtT0wIV4LJKAso4SWSp2A9OH+9UVEWSLcv9jMj
-         pAizLcr8QPr8r/Gafwp+ZWmo+EKa7XI3s/u43jIAb8O/3auFSZVfYmMb7lxA9I1twIRF
-         xxyXSjCzCAcvI85RYjl/grDJ5XMqMQgJ90J60kaFFJeCKFa+m/O5Rcx+oXNKNzpTLnvM
-         UvgpGh5//sT6yWMD2w5qlJwNYZHWpA/1Jg8etbm5CGdbpf6JOeudEvMYUN3z6T7Hn93u
-         sTP4SJQ3iEWMbAkePrnJtvxbrhMYTo6DXMk/8wVcxeTz0yRC7D1zSss3T/SphBOxIjuU
-         LxiQ==
-X-Gm-Message-State: AOAM532KuAKtyOW3bA4WF/fGIio9PpbgPx5/bhyQyRu/vbwgxfu6c96R
-        zQSmVvXWIUvH32eVnriBLQoCBKTuyxgItw9BB+0=
-X-Google-Smtp-Source: ABdhPJwbgKSnXfoURCE7RpTdeOI9Zab8U8DVozKfPgjtPTa6ObjVYcUsMDNe6NxvxtsA/kzr3NQt7VLBud5WR2U/dds=
-X-Received: by 2002:a1c:bc82:: with SMTP id m124mr12541876wmf.118.1615546781948;
- Fri, 12 Mar 2021 02:59:41 -0800 (PST)
+        Fri, 12 Mar 2021 06:08:29 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 26BCB3A6A23;
+        Fri, 12 Mar 2021 06:36:58 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id zzMdruVGBMzi; Fri, 12 Mar 2021 06:36:57 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id A11453A69B6;
+        Fri, 12 Mar 2021 06:36:35 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 9plARoX_zUHX; Fri, 12 Mar 2021 06:36:35 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 44BF03A6921;
+        Fri, 12 Mar 2021 06:35:54 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
- <20210309153455.GB4878@sirena.org.uk> <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
- <20210312104931.GA5348@sirena.org.uk>
-In-Reply-To: <20210312104931.GA5348@sirena.org.uk>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Fri, 12 Mar 2021 12:59:29 +0200
-Message-ID: <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 10:36:04 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312093555.44BF03A6921@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 12:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Mar 12, 2021 at 10:32:54AM +0200, Daniel Baluta wrote:
-> > On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > > +                     if (!dai_link->platforms->of_node)
-> > > > +                             dai_link->platforms->name = component->name;
->
-> > > Why would we prefer the node name over something explicitly configured?
->
-> > Not sure I follow your question. I think the difference stands in the
-> > way we treat OF vs non-OF platforms.
->
-> If an explicit name has been provided why would we override it with an
-> autogenerated one?
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Wait, are you asking why the initial code:
+Sir/Madam,
 
-  dai_link->platforms->name = component->name;
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
 
 
-is there in the initial code?
+
