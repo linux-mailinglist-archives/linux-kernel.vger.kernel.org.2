@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FBB3396A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EDF3396A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbhCLSc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:32:58 -0500
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:39791 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbhCLSck (ORCPT
+        id S232741AbhCLSd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233197AbhCLSdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:32:40 -0500
-Received: by mail-pg1-f173.google.com with SMTP id x29so16415646pgk.6;
-        Fri, 12 Mar 2021 10:32:40 -0800 (PST)
+        Fri, 12 Mar 2021 13:33:19 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A521CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:33:18 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id c76-20020a1c9a4f0000b029010c94499aedso16380489wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=KgZGZquzp5af/SHw1iWV2nRB1+CRMBJEbwCFEObh3NM=;
+        b=VDDL6Ua0hzlTTGNcpWRtmN8dLMeoEkJcWpgkRm31GRw96kaaG3d1T1dAs/OTOH66Xw
+         LuyPcyA5pF8k8lfQUDjeldNLpZCixGyu/llbp15CPxAtswQzt9WVkXEHPaXyZY2S/L6a
+         j1WwOVZaaBt8VKYHZ6tdHxZejaV7/xnI1y5zafxXCrHx7w0aTBSvxNfhsZdhgNGNMuYb
+         vGmqITWHv6WkpqKx9sen3wdzB7LlTHDYy5EVKDrSOVQNIPz3XTkHFrXWYMbCjtIH/U+p
+         Nk/ashmVmRW+2vI1ASl+ASsqc9KqqVF2rRRd1WaYsbtWsyF76yqKPcrXcNmgXoOLJX9a
+         6Sng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KrGljEZwb2bS+cueEd9y2/XUe0Gja93YKDJ2vBoyhUs=;
-        b=rFFcycGySuQs/5LeDBOJDWW0lj4YtyHA60Ug9GB5839eSKT6sR8eBWu7gnkDGVc+Hx
-         bfPolTS4I8wn/dUHSEelCKhRLQ1CY/3s7+aGV4rJvnIOwy5HSeSm+l5ysKTZp6nqxcax
-         LWS/tJmdl1S0aGRfeD0cXxrpjPOq7cXjbkg6NQLzCOb9hlZlbjda8SkRJnw6e51Mg/KX
-         T01w5fROeW2ndfPF+xIV+/gZSJjlzZP5o886PdLvx/8/R4FzG6g+bOJSmKJdzLl9DwRq
-         AavnyvNnMr4pmJC8l0unKIH+vkJIRO3JQ94uYA2/BsJjj9ODkxh1alKBnLs806999zxi
-         QDeA==
-X-Gm-Message-State: AOAM531PUdDfrCxC19add0CE3DZjsMGXQZrqSU7d3mF/OLKw6kYnYb6+
-        tjYGXbx6ujK2/SsDerx85ZCwOMsBtQgIJw==
-X-Google-Smtp-Source: ABdhPJxObxLCPgA9Ydhlid7OJOWKBz7zBPkUEn94yrezjP+V5yT3o5+c64crDbXUf7YnDUPFMNbIdQ==
-X-Received: by 2002:a63:4b04:: with SMTP id y4mr1485991pga.245.1615573960324;
-        Fri, 12 Mar 2021 10:32:40 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id d25sm6111030pfo.218.2021.03.12.10.32.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=KgZGZquzp5af/SHw1iWV2nRB1+CRMBJEbwCFEObh3NM=;
+        b=dEoODpzekOhW98z4dQcO2MEJM24+Ly2cJ6yKgYf+p5BBk0gA25bK7oW1SpSZzw6i8/
+         iDzT/F+7u44UQWWkUjsIsOlNW4jpAXfX6BDSHCZptn9Qe2NnKQuENcTRJrgMDXR1Nmag
+         1f80sygTGFm2rQPiad8c05DAv7iKSwLoY9F+XPhN5OYgaX9stR113bFniCNjFTmdr381
+         BUt7CzcQ86pVw8yJx8bilq+nNr04S/x0BFx6JJuystZgtQTs12fuVrSam/IOOV/RWD8x
+         6+a+8WGT7rj/nuFkrNEWuS/umrJLBgOICXz22+e0s+wuYMLoH8B7TTuWboD/amgM8zRA
+         ZUhg==
+X-Gm-Message-State: AOAM531PtggfIN0hkaZbPClO5oXYjWaFUn7lIM+JavaoClU1Ohx2kvKa
+        kMpt0qgjAE5R/l7VKvU5f1s=
+X-Google-Smtp-Source: ABdhPJyZ5qpiW6Y9BFniryM+5gZi/dKyEJmSWOQ4Hs/w4TJVWfbPB+O2i/a+7zMwB/rr3KQ8RQqX8g==
+X-Received: by 2002:a1c:f20f:: with SMTP id s15mr14000151wmc.35.1615573997384;
+        Fri, 12 Mar 2021 10:33:17 -0800 (PST)
+Received: from agape.jhs ([151.57.163.80])
+        by smtp.gmail.com with ESMTPSA id s18sm9821074wrr.27.2021.03.12.10.33.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 10:32:39 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 5D8614046C; Fri, 12 Mar 2021 18:32:38 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 18:32:38 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <20210312183238.GW4332@42.do-not-panic.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
- <20210310212128.GR4332@42.do-not-panic.com>
- <YErOkGrvtQODXtB0@google.com>
+        Fri, 12 Mar 2021 10:33:17 -0800 (PST)
+Date:   Fri, 12 Mar 2021 19:33:13 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] staging: rtl8723bs: remove unused code blocks
+Message-ID: <cover.1615572985.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YErOkGrvtQODXtB0@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:14:40PM -0800, Minchan Kim wrote:
-> On Wed, Mar 10, 2021 at 09:21:28PM +0000, Luis Chamberlain wrote:
-> > On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
-> > > If I understand correctly, bugs you found were related to module
-> > > unloading race while the zram are still working.
-> > 
-> > No, that is a simplifcation of the issue. The issue consists of
-> > two separate issues:
-> > 
-> >  a) race against module unloading in light of incorrect racty use of
-> >     cpu hotplug multistate support
-> 
-> 
-> Could you add some pusedo code sequence to show the race cleary?
+This patch set removes unused code blocks as required in TODO file:
 
-Let us deal with each issue one at time. First, let's address
-understanding the kernel warning can be reproduced easily by
-triggering zram02.sh from LTP twice:
+	find and remove code blocks guarded by never set CONFIG_FOO defines
 
-kernel: ------------[ cut here ]------------
-kernel: Error: Removing state 63 which has instances left.
-kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
-kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
+Changes in v2:
+	- modified sunject lines to make them unique
+	- added a patch previously excluded (removal of
+	  CONFIG_PNO_SET_DEBUG code)
 
-The first patch prevents this race. This race is possible because on
-module init we associate callbacks for CPU hotplug add / remove:
+Fabio Aiuto (4):
+  staging: rtl8723bs: remove unused code blocks conditioned by never set
+    CONFIG_PNO_SET_DEBUG
+  staging: rtl8723bs: remove unused code blocks conditioned by never set
+    CONFIG_PNO_SUPPORT
+  staging: rtl8723bs: remove unused code blocks conditioned by never set
+    CONFIG_WOWLAN
+  staging: rtl8723bs: remove unused code blocks conditioned by never set
+    CONFIG_TCP_CSUM_OFFLOAD_RX
 
-static int __init zram_init(void)                                               
-{
-	...
-	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
-	                              zcomp_cpu_up_prepare, zcomp_cpu_dead); 
-	...
-}
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |   3 -
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |  24 +-
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  61 +-
+ drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c  | 872 +-----------------
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  43 +-
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  | 253 +----
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      |   4 +-
+ drivers/staging/rtl8723bs/include/autoconf.h  |   3 -
+ drivers/staging/rtl8723bs/include/drv_types.h |   5 -
+ .../rtl8723bs/include/drv_types_sdio.h        |   2 +-
+ .../staging/rtl8723bs/include/hal_com_h2c.h   |  88 +-
+ drivers/staging/rtl8723bs/include/hal_intf.h  |   5 -
+ .../staging/rtl8723bs/include/rtl8723b_cmd.h  |   4 +-
+ .../staging/rtl8723bs/include/rtl8723b_hal.h  |  17 -
+ .../staging/rtl8723bs/include/rtl8723b_spec.h |  10 -
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |   3 -
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  62 --
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |   5 -
+ .../staging/rtl8723bs/include/rtw_security.h  |   3 -
+ drivers/staging/rtl8723bs/include/sdio_ops.h  |   8 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |   5 -
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |  56 --
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |   3 -
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c   | 238 +----
+ drivers/staging/rtl8723bs/os_dep/recv_linux.c |   8 -
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |   5 -
+ 26 files changed, 28 insertions(+), 1762 deletions(-)
 
-The zcomp_cpu_dead() accesses the zcom->comp, and if zcomp->comp is
-removed and this function is called, clearly we'll be accessing some
-random data here and can easily crash afterwards:
+-- 
+2.20.1
 
-int zcomp_cpu_dead(unsigned int cpu, struct hlist_node *node)                   
-{
-	struct zcomp *comp = hlist_entry(node, struct zcomp, node);
-	struct zcomp_strm *zstrm;
-
-	zstrm = per_cpu_ptr(comp->stream, cpu);
-	zcomp_strm_free(zstrm);
-	return 0;
-}
-
-And zram's syfs reset_store() lets userspace call zram_reset_device()
-which calls zcomp_destroy():
-
-void zcomp_destroy(struct zcomp *comp)
-{
-	cpuhp_state_remove_instance(CPUHP_ZCOMP_PREPARE, &comp->node);
-	free_percpu(comp->stream);
-	kfree(comp);
-}
-
-> It would be great if it goes in the description, too since it's
-> more clear to show the problme.
-
-Does the above do it?
-> 
-> >  b) module unload race with sysfs attribute race on *any* driver which
-> >     has sysfs attributes which also shares the same lock as used during
-> >     module unload
-> 
-> Yub, that part I missed. Maybe, we need some wrapper to zram sysfs
-> to get try_module_get in the warapper funnction and then call sub
-> rountine only if it got the refcount.
-> 
-> zram_sysfs_wrapper(func, A, B)
->     if (!try_module_get(THIS_MODULE)
->         return -ENODEV;
->     ret = func(A,B);
->     module_put(THIS_MODULE);
->     return ret;
-
-I'd much prefer this be resolved in kernfs later, if you look at the kernel
-there are already some drivers which may have realized this requirement
-the hard way. Open coding this I think makes the race / intent clearer.
-
-Right now we have no semantics possible for a generic solution, but I
-can work on one later.
-
-  Luis
