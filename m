@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B512233847B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988F933847E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhCLDu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbhCLDtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:49:51 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596BAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:49:51 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id w7so7795056pll.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:49:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iClR6zNoYi1tdWvry+Z+GUDxBYD0gbeye1VeSZY/vbw=;
-        b=nQ9nVaAjkMgb+JuywXQnMMRSNJsrArWT9wZe0Zt4UQcm027HVtc9YmUY0Tgq6pB75n
-         avK7mjuDcA6fHWOOKt16Bn6zzPsVXHfXglJLiMuchEDS6iKrGF1BJQ0dsWTentn0DKT0
-         RiexBqsQv2mJqfbO8ZCxs8a0Y7+eGkUf4f4UMuSN4XtC2kgNqdJNnnS4B0+LcRsySYrI
-         H/54aXYJ+eCSCPLQnLIWnZV6s3uVGake/hY+nXeOmSREonL8Kkaf0VNEIy7kfTaZ/pCP
-         xYZuWJSjxST95dEnRYgfh9eYdYRIxgg+QpzRz3snWYZXW3wTl1rPE5YbDXPqpkdliCyH
-         b2uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iClR6zNoYi1tdWvry+Z+GUDxBYD0gbeye1VeSZY/vbw=;
-        b=QuPDLwBuzmn1FGtkZ1gsWKayv+9pw9sl3G7qUbrdNpc/POj/iN2mvOlX9He4SFCISf
-         NF3aD12QsJ7h5vA04zSXtCspmdCoNh9wolQCE3XFDceHYLlzGlAU+1jvu7j+28aU7aLz
-         39sYr+aDVl+/lhmk9xshRO2+ajEn9UG+UQkaFhfWQ/f0w3tg6ZwT2Cb7ugUTF17b0Cwd
-         F6QIms29F3ywTFxI7Phmx9uFX40l61vyIlCpb4G+EkQKGRyuROT+Q7zxzPxplUNXvWZX
-         ErAUb0OQbzd/g4ZlqTKcBcovI0wZubySv13QqTwzW4QV9XqINTWHB5WAi0+q3VInV3dB
-         qNHQ==
-X-Gm-Message-State: AOAM533+w9SDg9tsX6OzIIiDjQ+ie7fLZN9pt51iTkmEuR5DNattFuPZ
-        8zmfOIjBibYYaBxN2PlvVn1ViA==
-X-Google-Smtp-Source: ABdhPJx1/YXBd5rjm1d6Lv3nqKUlMq082FYhUb2KfFzoFV4X/hbMyfw19avz6xZ5rBO4iKEs9shvNw==
-X-Received: by 2002:a17:90a:400f:: with SMTP id u15mr11904527pjc.80.1615520990723;
-        Thu, 11 Mar 2021 19:49:50 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id v35sm3454767pga.3.2021.03.11.19.49.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Mar 2021 19:49:49 -0800 (PST)
-Date:   Fri, 12 Mar 2021 09:19:42 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
-Message-ID: <20210312034942.jh3txxoowbo2ekyn@vireshk-i7>
-References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
- <20210305042401.gktrgach4dzxp7on@vireshk-i7>
- <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
- <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
- <20210308181446.GA26783@e120325.cambridge.arm.com>
- <20210309043121.546mlvl4jmshogor@vireshk-i7>
- <20210309121455.GA13095@e120325.cambridge.arm.com>
- <20210310084738.pe7ppyeq6hn7wbvv@vireshk-i7>
- <20210310230300.GA26976@e120325.cambridge.arm.com>
+        id S232009AbhCLDvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:51:04 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38669 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231925AbhCLDuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 22:50:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxX081kmqz9sVw;
+        Fri, 12 Mar 2021 14:50:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615521033;
+        bh=IuC+2U3aNF87JM+VQTbvV7aYqweloasr8GYE9TO6TQQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JACAYHhR9pGPgnN1ee3l5vmSbc4tMmrvcsZ5XQbrgejKyBZgCwXl1rKyILwNdo5k3
+         FDGq4DApCcU7yG5kMvoH/Q3zDxwAjbiTXMTVc9SHvvFwK5uZXgQBGNZjNtSUhC9djM
+         gmssOghsD3u/214kLVv5xpc0AX+Hg3/njaUwD9lU9NP9aZhgbDvOfFHEfKjwO5/TT4
+         1P7t3T2eTpBYz8NY1jriM42/vzm8GHIxPoUrf0sZzBO/TCZGAJ4WwihsCEIydYtiEG
+         YWHb6DTkuWKfpSb2x1byZA7NKRvXCoVtrY5vOD2tiQ6gwVERJA5f8ODEPjjRPK0ZLb
+         loixXw6B6bucg==
+Date:   Fri, 12 Mar 2021 14:50:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the hwmon-staging tree
+Message-ID: <20210312145031.5df91293@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310230300.GA26976@e120325.cambridge.arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/zivSj1oXugxEb1IXXtudw+G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-03-21, 23:03, Beata Michalska wrote:
-> > diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> > index c2689386a906..150be4c28c99 100644
-> > --- a/drivers/opp/core.c
-> > +++ b/drivers/opp/core.c
-> > @@ -1492,7 +1492,11 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
-> >  
-> >  	mutex_lock(&opp_table->lock);
-> >  	list_for_each_entry(temp, &opp_table->opp_list, node) {
-> > -		if (dynamic == temp->dynamic) {
-> > +		/*
-> > +		 * Refcount must be dropped only once for each OPP by OPP core,
-> > +		 * do that with help of "removed" flag.
-> > +		 */
-> > +		if (!temp->removed && dynamic == temp->dynamic) {
-> >  			opp = temp;
-> >  			break;
-> >  		}
-> How about tweaking the _opp_get_next to use list_for_each_entry_continue
-> instead ? It would eliminate the need of tracking the 'removed' status
-> and could save few cycles as it wouldn't have to go through the list
-> starting from it's beginning each time it is being called.
-> Happy to draft another version.
+--Sig_/zivSj1oXugxEb1IXXtudw+G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I tried that as well, but the problem is that we need to drop locks in
-between and if the next OPP somehow gets freed or another one gets
-added there, we can be in trouble. To make this work without any side
-effects, the new field was kind of required.
+Hi all,
 
--- 
-viresh
+After merging the hwmon-staging tree, today's linux-next build (htmldocs)
+produced this warning:
+
+Documentation/hwmon/ir36021.rst:34: WARNING: Malformed table.
+No bottom table border found.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+curr1_label             "iin"
+curr1_input             Measured input current
+curr1_alarm             Input fault alarm
+
+curr2_label             "iout1"
+curr2_input             Measured output current
+curr2_alarm             Output over-current alarm
+
+in1_label               "vin"
+in1_input               Measured input voltage
+in1_alarm               Input under-voltage alarm
+
+in2_label               "vout1"
+in2_input               Measured output voltage
+in2_alarm               Output over-voltage alarm
+
+power1_label            "pin"
+power1_input            Measured input power
+power1_alarm            Input under-voltage alarm
+
+power2_label            "pout1"
+power2_input            Measured output power
+
+temp1_input             Measured temperature
+temp1_alarm             Temperature alarm
+
+temp2_input             Measured other loop temperature
+temp2_alarm             Temperature alarm
+
+Caused by commit
+
+  0be9fee30ff9 ("hwmon: (pmbus) Add driver for Infineon IR36021")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zivSj1oXugxEb1IXXtudw+G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBK5QcACgkQAVBC80lX
+0GyoNwf7BRekxOYHNxZE7vy9XHNfZ0VmSCiG97OC9t5wvBjSZdmfDMYAOVRIz62X
+uyYLXjecIQwek1/M5SuBimfKIj1wx5LAxo+z8mFPzSD818vz3wZiVxdxDnPY+0si
+F11vJgQJY12m6WUJKdCft9c2ZrRgXi9Jqn1lVOptlE+2C9R/Aahxep7SWJvrZ4GI
+U8KDo/tuy3/rOCOZUEe+c4Vd9VJMP0h+KoCMt73miQDPC9uEFMC0UJ7xeO1RjVxQ
+ze/KwwZJuamrDfvemNhcBUk+APvF4raOCbQ1oQba3zL9m/DwUXP5N1lTfT6uPJnA
+XNbgcbvr8ejZ/YU88SQoSYnEEL3DvA==
+=WYzS
+-----END PGP SIGNATURE-----
+
+--Sig_/zivSj1oXugxEb1IXXtudw+G--
