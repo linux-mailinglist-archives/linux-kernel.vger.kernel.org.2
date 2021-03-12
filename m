@@ -2,127 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9B5338605
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281AA33860A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhCLGhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:37:35 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55127 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231214AbhCLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:37:09 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxbhJ1lYJz9sVw;
-        Fri, 12 Mar 2021 17:37:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615531025;
-        bh=0LpKbVOy7mvuO4yAPGPBavg4LUjXDyjfuEDP6eZxyB4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QUiaiXqGIRKZQZW0XwAgMntF4ILGU8sVOLyeijrHlKvLEWXiLwcciODG0XaDp4+W+
-         SB52dFfieqcbgCLkaiFJhXTNOybrMBxQeHIZvopvA7mDvvaFj/THHu/FmVLfFPVVFf
-         O4nwUqXscZoMEi9DYOfkU//iPEyp14aWM/3Gc9UFpwnszpDTJXwZKEClfH53Rr6L4J
-         qxMk6c/r1Q3XzFPvJ5JAmovwW9kk7x1QKn/3yY73/qwhxSeE95XWJSmbfBgqooZUj/
-         C8xZNGwcUP64e81L0k74GiXlJ0yzmETFkgpkD3oNBTAsS0NHk62nUy3d2YKxJs/6Lt
-         FoV1fOmBl3FrA==
-Date:   Fri, 12 Mar 2021 17:37:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: linux-next: manual merge of the akpm-current tree with the risc-v
- tree
-Message-ID: <20210312173702.18c4512a@canb.auug.org.au>
+        id S229518AbhCLGjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:39:46 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39696 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhCLGjQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:39:16 -0500
+Received: by mail-il1-f198.google.com with SMTP id v20so17382941ile.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:39:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=g3zjpdswFE2kA27UXZk7hLq/73z12NA10NHqfoa280k=;
+        b=LbuNuRW3DKdud1MaOqiNFbtHnxarKmSHLFwEcRRSuXPDavnFs5Sg5sAgJcXrc9VcIq
+         9O8v+sJsHXyVehO/kD9gQuNe5n21jhimO/B9osZsnIM4NONp9fsdlXq3AoyArF0ct4b8
+         T2PtmePxOfbtHfH3+4fcoZQsIyHl0kTmSSop/vlazdcNxU0MGjlihK4F/1NS+NoaPKSG
+         3TX774YbqzQh+9c6Ktf9WdCHg7wau+L94LNVJicA38UdhiTEfciEEn5tXVziI1yqqNEp
+         NCjQr/w79vd+LCGB4E9IFNV6WEaFxg3CGOWWXmD9wB4eidth4/NljNAnhOU7KI95MFaS
+         Q09w==
+X-Gm-Message-State: AOAM531MSdqCN/whaFGQOfIyjtaTH9R6uAlOsXguOi9NmKKDIcf/2h4a
+        2iVuC3ue6kVsbhzBZWbojzKH0wQu2guNNsSAZSXc2BddDO2r
+X-Google-Smtp-Source: ABdhPJymlvH42sOil6uLqdn+S94g+eap5aObLWy+OCHp8jQIADHRiWr8qS9ScR5ieVxVBAKy9cFABjLclDQ+ORH1R0vbFKrZqevb
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A5EzAg3_rT.1_6pIHy=hRwN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6638:d47:: with SMTP id d7mr7174593jak.2.1615531156128;
+ Thu, 11 Mar 2021 22:39:16 -0800 (PST)
+Date:   Thu, 11 Mar 2021 22:39:16 -0800
+In-Reply-To: <000000000000540c0405ba3e9dff@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af467105bd5128fc@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in firmware_fallback_sysfs
+From:   syzbot <syzbot+de271708674e2093097b@syzkaller.appspotmail.com>
+To:     broonie@kernel.org, catalin.marinas@arm.com,
+        gregkh@linuxfoundation.org, kristina.martsenko@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mbenes@suse.cz, mcgrof@kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A5EzAg3_rT.1_6pIHy=hRwN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+syzbot has found a reproducer for the following issue on:
 
-Hi all,
+HEAD commit:    47142ed6 net: dsa: bcm_sf2: Qualify phydev->dev_flags base..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ccd12ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eec733599e95cd87
+dashboard link: https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15437d56d00000
 
-Tomorrow's linux-next merge of the akpm-current tree will get a
-conflict in:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
 
-  Documentation/admin-guide/kernel-parameters.txt
+platform regulatory.0: Direct firmware load for regulatory.db failed with error -2
+platform regulatory.0: Falling back to sysfs fallback for: regulatory.db
+==================================================================
+BUG: KASAN: use-after-free in __list_add_valid+0x81/0xa0 lib/list_debug.c:23
+Read of size 8 at addr ffff888028830ac8 by task syz-executor.4/9852
 
-between commit:
+CPU: 0 PID: 9852 Comm: syz-executor.4 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ __list_add_valid+0x81/0xa0 lib/list_debug.c:23
+ __list_add include/linux/list.h:67 [inline]
+ list_add include/linux/list.h:86 [inline]
+ fw_load_sysfs_fallback drivers/base/firmware_loader/fallback.c:516 [inline]
+ fw_load_from_user_helper drivers/base/firmware_loader/fallback.c:581 [inline]
+ firmware_fallback_sysfs+0x455/0xe20 drivers/base/firmware_loader/fallback.c:657
+ _request_firmware+0xa80/0xe80 drivers/base/firmware_loader/main.c:831
+ request_firmware+0x32/0x50 drivers/base/firmware_loader/main.c:875
+ reg_reload_regdb+0x7a/0x240 net/wireless/reg.c:1095
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6d26af9188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffdd4adb6bf R14: 00007f6d26af9300 R15: 0000000000022000
 
-  f6e5aedf470b ("riscv: Add support for memtest")
+Allocated by task 9835:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:506 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:465 [inline]
+ __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
+ kmalloc include/linux/slab.h:554 [inline]
+ kzalloc include/linux/slab.h:684 [inline]
+ __allocate_fw_priv drivers/base/firmware_loader/main.c:186 [inline]
+ alloc_lookup_fw_priv drivers/base/firmware_loader/main.c:250 [inline]
+ _request_firmware_prepare drivers/base/firmware_loader/main.c:744 [inline]
+ _request_firmware+0x2de/0xe80 drivers/base/firmware_loader/main.c:806
+ request_firmware+0x32/0x50 drivers/base/firmware_loader/main.c:875
+ reg_reload_regdb+0x7a/0x240 net/wireless/reg.c:1095
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-from the risc-v tree and commit:
+Freed by task 9835:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4213
+ __free_fw_priv drivers/base/firmware_loader/main.c:282 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ free_fw_priv+0x2b1/0x4d0 drivers/base/firmware_loader/main.c:289
+ firmware_free_data drivers/base/firmware_loader/main.c:584 [inline]
+ release_firmware.part.0+0xc7/0xf0 drivers/base/firmware_loader/main.c:1053
+ release_firmware drivers/base/firmware_loader/main.c:840 [inline]
+ _request_firmware+0x709/0xe80 drivers/base/firmware_loader/main.c:839
+ request_firmware+0x32/0x50 drivers/base/firmware_loader/main.c:875
+ reg_reload_regdb+0x7a/0x240 net/wireless/reg.c:1095
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-  6b8f5ba8661b ("mm,memory_hotplug: add kernel boot option to enable memmap=
-_on_memory")
+The buggy address belongs to the object at ffff888028830a00
+ which belongs to the cache kmalloc-256 of size 256
+The buggy address is located 200 bytes inside of
+ 256-byte region [ffff888028830a00, ffff888028830b00)
+The buggy address belongs to the page:
+page:ffffea0000a20c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28830
+head:ffffea0000a20c00 order:1 compound_mapcount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010841b40
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-from the akpm-current tree.
+Memory state around the buggy address:
+ ffff888028830980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888028830a00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888028830a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                              ^
+ ffff888028830b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888028830b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/admin-guide/kernel-parameters.txt
-index b816481dfaef,04b4e76be65b..000000000000
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@@ -2800,23 -2802,7 +2808,23 @@@
-  			seconds.  Use this parameter to check at some
-  			other rate.  0 disables periodic checking.
- =20
- +	memory_hotplug.memmap_on_memory
- +			[KNL,X86,ARM] Boolean flag to enable this feature.
- +			Format: {on | off (default)}
- +			When enabled, memory to build the pages tables for the
- +			memmap array describing the hot-added range will be taken
- +			from the range itself, so the memmap page tables will be
- +			self-hosted.
- +			Since only single memory device ranges are supported at
- +			the moment, this option is disabled by default because
- +			it might have an impact on workloads that needs large
- +			contiguous memory chunks.
- +			The state of the flag can be read in
- +			/sys/module/memory_hotplug/parameters/memmap_on_memory.
- +			Note that even when enabled, there are a few cases where
- +			the feature is not effective.
- +
-- 	memtest=3D	[KNL,X86,ARM,PPC] Enable memtest
-+ 	memtest=3D	[KNL,X86,ARM,PPC,RISCV] Enable memtest
-  			Format: <integer>
-  			default : 0 <disable>
-  			Specifies the number of memtest passes to be
-
---Sig_/A5EzAg3_rT.1_6pIHy=hRwN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBLDA4ACgkQAVBC80lX
-0GwzwAf/WpDphZDhJw/S07ZrBWsHHtiY3eVPVecjA9P/8NvTtmL1ciRa1sBe4w38
-Gj8CEPIaqjIx7VQKdWzdZ7Hh48BQ1ur+2FcN0+09jJ7zCCj+e+NuchuqtmjxqvYr
-dVCNJ0Ds+b2jL1PSibN3HdB/MAWgitbrZpAc7YfF8WlymnOV6Am514FiIWviAxYo
-mTrDxQeySI494eudktr12GDWzcOjlExbvvt0dkH58bkzfqy3dOkaF6vutwuq5cFN
-063Mo8Z9RPqj/tgF4Lgq+TsZXimHZjWzCYVoOtERVR0HGmzaKPG2IHzQX4AjyzMq
-0HkKf+k6no82bWkS0IJPSbXC319I0Q==
-=tv7Z
------END PGP SIGNATURE-----
-
---Sig_/A5EzAg3_rT.1_6pIHy=hRwN--
