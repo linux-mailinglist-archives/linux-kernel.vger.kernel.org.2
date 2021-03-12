@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E32F338476
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5BC338478
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhCLDlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:41:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbhCLDlP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:41:15 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92462C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:41:15 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so731777ota.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:41:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MFFCpBkdUp9drXVA99cMePeD3CLCa9WqYT6b4rIx/GA=;
-        b=Y4gDstC/P8pWS5HglAA12pf8rJs8HdBrV0Cz87PPkOeq3NBr5a8hQ3K5PXE+aBgqG3
-         8aSn0emBd2roPFZnLU3sFPsH3D2+r7BvBsOdDLcLZWB0ko61P9WO6V85qcn8NuedxKjy
-         LokMenJn+0CAwq29WJ+8w8yRyT2OsFrm5hI53RtNhLG2bkdBBRIQE6tGJgAAF9isXCJW
-         haQr9HwqEJpSBW/Yhg0e5PvJGXfrJWHZNztbneNL5BTa4CA25zrwgJIt7nD05uIRUM0E
-         slrXFqXhR0CcFt/X1tA3TjKYBELgHsqnfKGxv7LWMQm1Qingk2RTG6HXWTP46kQ+PJtl
-         LXLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MFFCpBkdUp9drXVA99cMePeD3CLCa9WqYT6b4rIx/GA=;
-        b=LDQNwcDceMBslrbHoZXVbhVD39aCdQcDR9DwWSUtePxBtWAZSoOxTayR+OBuylkz0s
-         DBSmLiG0cbct1bb7H8sve5axImNqq18bxeGEjOazJqtnuoDKK12dQ1Yeu82GNfqEsin0
-         uUef2N3Iz+zSS5GfzjCocY0gE3XrONG5nFZJa7CND1N0gyApS/EFpYPasO0EShUnVFt+
-         LrKpo1zmVQoDjHTW2ti/kyJPVLszT8OGhuZVqZ9/mNBIAtU5j20XGJprodUWCOMtM1BZ
-         78NjiuPIpiZSCT4XJM8qlG3UvhHCfNf8THXLFj9n1HER9UY06a8AF9yma06V2oA4s4j5
-         7jbQ==
-X-Gm-Message-State: AOAM53216ARXWgwOXkbzyhoGQZ6fuiTWNWlogY9hCusVFUAUGLae+sfR
-        rkL/ooL4jYYVE4Icr+gzg0K0ma5/3MEjDA==
-X-Google-Smtp-Source: ABdhPJwx65Fxthu2DAxAeaBNvCg1d17/35dnAH3BVfk3I0bk4CrrA7cAOqsQ/3HWYaHciTpxcC32Ag==
-X-Received: by 2002:a05:6830:149:: with SMTP id j9mr1862619otp.66.1615520475014;
-        Thu, 11 Mar 2021 19:41:15 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 18sm376829oir.4.2021.03.11.19.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 19:41:14 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Vinod Koul <vinod.koul@linaro.org>
-Subject: [PATCH 2/2] arm64: dts: qcom: sm8350: Add wakeup-parent to tlmm
-Date:   Thu, 11 Mar 2021 19:42:18 -0800
-Message-Id: <20210312034218.3324410-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210312034218.3324410-1-bjorn.andersson@linaro.org>
-References: <20210312034218.3324410-1-bjorn.andersson@linaro.org>
+        id S231961AbhCLDq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:46:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231925AbhCLDqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 22:46:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61BE064F94
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615520815;
+        bh=4R+bUiUQrhAbhcNq5F9PTRR6LOdoOwhc+tn0NqBlX+M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WfGhsPrMk6twy/JXIkr08yNMjm7RjFp9o1vVqy0yOSkHKKMeRBj9abUiPv1TZ5Gk7
+         9tp57mMqkQ2hVyCijXDS+pAvFGxS2uvnjYo868eucIczegZPeytOUQ4qStxT9R85xK
+         /tvJ8DQ+ihzD7qGUcAknyy+cMKscnGRzBRQtfgsUpV0orgSuMUiHEJ8qOMh/KXjXt9
+         HsINldf2PpL1Cg/bj6ECAcSvRrLujK5FtX35WG+rs2d/uG29W5xjSxltuNS7GQlR4I
+         EGDWoHtnCHhPSnmq7XpFCvh71HhhWf38r0lB5ZlGDyXh6iIQX97LsmiYqbTrLyUdt1
+         apUw5wgbDyoYw==
+Received: by mail-qk1-f180.google.com with SMTP id x10so23038358qkm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:46:55 -0800 (PST)
+X-Gm-Message-State: AOAM533Wjej+bLG6uNvASDCt5R792HQ7MCgFNB0Zrs2gIKoQvhZKdSfP
+        S1ClsuL1rp3/HLe2kDn0AH0emB8AeD1q5IocnyQ=
+X-Google-Smtp-Source: ABdhPJwA2sqL31w8M4oJJ0ibkLv0U9JXpG/49rf229DGuMNa5NXksK8IS0NNxE/htGQm8fGSLb9+l2gKtcfA/vXogew=
+X-Received: by 2002:ae9:f81a:: with SMTP id x26mr10406100qkh.497.1615520814578;
+ Thu, 11 Mar 2021 19:46:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210305194206.3165917-1-elver@google.com> <20210305194206.3165917-2-elver@google.com>
+ <YEX5fyB16dF6N4Iu@alley> <CANpmjNPTXPWZyPTqYZKdnvcbHP+ZOa0ce0Md5EE6GViQMyeTOw@mail.gmail.com>
+In-Reply-To: <CANpmjNPTXPWZyPTqYZKdnvcbHP+ZOa0ce0Md5EE6GViQMyeTOw@mail.gmail.com>
+From:   Timur Tabi <timur@kernel.org>
+Date:   Thu, 11 Mar 2021 21:46:16 -0600
+X-Gmail-Original-Message-ID: <CAOZdJXUS6DJAtF2M7Rs28yzSOjRheLodL_F50wsrEFN_0upDPQ@mail.gmail.com>
+Message-ID: <CAOZdJXUS6DJAtF2M7Rs28yzSOjRheLodL_F50wsrEFN_0upDPQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers warning
+To:     Marco Elver <elver@google.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that TLMM has the wakeup table, specify the Power Domain Controller
-to be the wakeup-parent of TLMM.
+On Mon, Mar 8, 2021 at 4:51 AM Marco Elver <elver@google.com> wrote:
+> If we do __initconst change we need to manually remove the duplicate
+> lines because we're asking the compiler to create a large array (and
+> there's no more auto-dedup). If we do not remove the duplicate lines,
+> the __initconst-only approach would create a larger image and result
+> in subtly increased memory consumption during init. The additional
+> code together with manual dedup should offset that. (I can split this
+> patch as Andy suggests, but first need confirmation what people
+> actually want.)
+>
+> I have no idea what the right trade-off is, and appeal to Geert to
+> suggest what would be acceptable to him.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Maybe we can have only the message itself wrapped in an #ifdef CONFIG_
+of some kind.  For example:
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index 2c02f451379b..d6295212acf7 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -642,6 +642,7 @@ tlmm: pinctrl@f100000 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			gpio-ranges = <&tlmm 0 0 203>;
-+			wakeup-parent = <&pdc>;
- 
- 			qup_uart3_default_state: qup-uart3-default-state {
- 				rx {
--- 
-2.29.2
++#ifndef CONFIG_CC_OPTIMIZE_FOR_SIZE
+       pr_warn("**********************************************************\n");
+       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+       pr_warn("**                                                      **\n");
+       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+...
++#endif
 
+       return 0;
+}
+
+In other words, if space is really constrained, then don't include the
+message.  Or maybe just include part of the message.
