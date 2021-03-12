@@ -2,78 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AE7338BCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52493338B83
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhCLLqy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 06:46:54 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:36294 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231438AbhCLLq2 (ORCPT
+        id S232001AbhCLLb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:31:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37615 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231829AbhCLLb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:46:28 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 646453A85F9;
-        Fri, 12 Mar 2021 07:08:44 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ygDfzzDkYeCP; Fri, 12 Mar 2021 07:08:40 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id BE6AC3A858D;
-        Fri, 12 Mar 2021 07:08:23 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Rh8DX9dydyG9; Fri, 12 Mar 2021 07:08:23 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 71D853A85A9;
-        Fri, 12 Mar 2021 07:08:14 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 06:31:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615548687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jnEUCW5aueL9lmi6RpcZkUrWB8ToCz0vwpvteqJSyZU=;
+        b=UgmvjWtD8viwXE9px9Qzh8YXgjjOvsKAcliZSMglz2dBzjiVyinHvD0FRKuNYqnE4wAtyL
+        4gP6XuBLweTcsPO95X91Wg0mZrNDoD6Sx2rVkxqzvVTXdAj+ONMXDsMcw7ls/peyy88ZRQ
+        5lpLPQdBffi3qpOq0nFUu4CmxYUXjlM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-Lctk7kSHNpqHbHLGS4NcvQ-1; Fri, 12 Mar 2021 06:31:26 -0500
+X-MC-Unique: Lctk7kSHNpqHbHLGS4NcvQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEE92107ACCA;
+        Fri, 12 Mar 2021 11:31:23 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9904219C71;
+        Fri, 12 Mar 2021 11:31:15 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 12:31:12 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v4 5/9] KVM: selftests: Add a helper to get system
+ configured THP page size
+Message-ID: <20210312113112.laarzqhkslroagha@kamzik.brq.redhat.com>
+References: <20210302125751.19080-1-wangyanan55@huawei.com>
+ <20210302125751.19080-6-wangyanan55@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 11:08:27 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312100814.71D853A85A9@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302125751.19080-6-wangyanan55@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Tue, Mar 02, 2021 at 08:57:47PM +0800, Yanan Wang wrote:
+> If we want to have some tests about transparent hugepages, the system
+> configured THP hugepage size should better be known by the tests, which
+> can be used for kinds of alignment or guest memory accessing of vcpus...
+> So it makes sense to add a helper to get the transparent hugepage size.
+> 
+> With VM_MEM_SRC_ANONYMOUS_THP specified in vm_userspace_mem_region_add(),
+> we now stat /sys/kernel/mm/transparent_hugepage to check whether THP is
+> configured in the host kernel before madvise(). Based on this, we can also
+> read file /sys/kernel/mm/transparent_hugepage/hpage_pmd_size to get THP
+> hugepage size.
+> 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> Reviewed-by: Ben Gardon <bgardon@google.com>
+> ---
+>  .../testing/selftests/kvm/include/test_util.h |  2 ++
+>  tools/testing/selftests/kvm/lib/test_util.c   | 36 +++++++++++++++++++
+>  2 files changed, 38 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+> index b7f41399f22c..ef24c76ba89a 100644
+> --- a/tools/testing/selftests/kvm/include/test_util.h
+> +++ b/tools/testing/selftests/kvm/include/test_util.h
+> @@ -78,6 +78,8 @@ struct vm_mem_backing_src_alias {
+>  	enum vm_mem_backing_src_type type;
+>  };
+>  
+> +bool thp_configured(void);
+> +size_t get_trans_hugepagesz(void);
+>  void backing_src_help(void);
+>  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
+>  
+> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> index c7c0627c6842..f2d133f76c67 100644
+> --- a/tools/testing/selftests/kvm/lib/test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> @@ -10,6 +10,7 @@
+>  #include <limits.h>
+>  #include <stdlib.h>
+>  #include <time.h>
+> +#include <sys/stat.h>
+>  #include "linux/kernel.h"
+>  
+>  #include "test_util.h"
+> @@ -117,6 +118,41 @@ const struct vm_mem_backing_src_alias backing_src_aliases[] = {
+>  	{"anonymous_hugetlb", VM_MEM_SRC_ANONYMOUS_HUGETLB,},
+>  };
+>  
+> +bool thp_configured(void)
+> +{
+> +	int ret;
+> +	struct stat statbuf;
+> +
+> +	ret = stat("/sys/kernel/mm/transparent_hugepage", &statbuf);
+> +	TEST_ASSERT(ret == 0 || (ret == -1 && errno == ENOENT),
+> +		    "Error in stating /sys/kernel/mm/transparent_hugepage: %d",
+> +		    errno);
 
-Sir/Madam,
+TEST_ASSERT will already output errno's string. Is that not sufficient? If
+not, I think extending TEST_ASSERT to output errno too would be fine.
 
-CONGRATULATIONS!!!
+> +
+> +	return ret == 0;
+> +}
+> +
+> +size_t get_trans_hugepagesz(void)
+> +{
+> +	size_t size;
+> +	char buf[16];
+> +	FILE *f;
+> +
+> +	TEST_ASSERT(thp_configured(), "THP is not configured in host kernel");
+> +
+> +	f = fopen("/sys/kernel/mm/transparent_hugepage/hpage_pmd_size", "r");
+> +	TEST_ASSERT(f != NULL,
+> +		    "Error in opening transparent_hugepage/hpage_pmd_size: %d",
+> +		    errno);
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Same comment as above.
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+> +
+> +	if (fread(buf, sizeof(char), sizeof(buf), f) == 0) {
+> +		fclose(f);
+> +		TEST_FAIL("Unable to read transparent_hugepage/hpage_pmd_size");
+> +	}
+> +
+> +	size = strtoull(buf, NULL, 10);
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+fscanf with %lld?
 
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+> +	return size;
+> +}
+> +
+>  void backing_src_help(void)
+>  {
+>  	int i;
+> -- 
+> 2.23.0
+> 
 
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+Thanks,
+drew
 
