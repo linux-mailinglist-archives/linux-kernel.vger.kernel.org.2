@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A56338A0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D6F338A24
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhCLK0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:26:34 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:55626 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhCLK0S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:26:18 -0500
-Received: by mail-il1-f197.google.com with SMTP id f2so17782982ils.22
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:26:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tJa6oqa08GYKi+qhu6DZh8mHiL2tQzWmrTZOkAl7CMM=;
-        b=owdkU5+TRLtbceCMRQjYFDBvD/6oEzdzv2iD0ZRtXG41BCRhyt0W/BGJzGhYC981kV
-         UaXMT6sQ0G7ngX/qPvoRpt4aZRBV9X5yhZ2/YYQnxp3DttjLDrLDIHp0atj+oWQTuWaK
-         RoC/w1yCkEt78aE1bltExsYAJOvNouUVC37SqwG+pQLMGyAqUQq77m7c+sWB+ag9cVaO
-         a1ZissMsFqzQZFESSqVb+IqRtgqny/Lha0wQPoRhQLELow2K5hiFG/ChAgSC4vKHxKcu
-         iA121q+dz/Jdd12WqfVt/W6w9MCcEZQMflJHFGD+4w2vVE+I7p/qWJn33/9B9RB72CIg
-         SR1A==
-X-Gm-Message-State: AOAM531rJMYO3a8ytPbTqH4cqMrhwqZJ07uU0oAVNJrXbsJ8+BKlNxhv
-        uXbSCDC4Y3q9Ye4cOMKsODYr0jN7fV+Y3RoWI7YG601IHjoU
-X-Google-Smtp-Source: ABdhPJwcwmTQxDJTIFOnFrB96MvW3LdlzucStZqyl2xQP1R4+iVMpwcn5/9UsrbCcScSdGCVHhCEd+RUNRBkFH+xlk86W1Kphi2w
-MIME-Version: 1.0
-X-Received: by 2002:a02:c985:: with SMTP id b5mr7967419jap.86.1615544778019;
- Fri, 12 Mar 2021 02:26:18 -0800 (PST)
-Date:   Fri, 12 Mar 2021 02:26:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009cd8d505bd545452@google.com>
-Subject: [syzbot] upstream boot error: WARNING in vkms_vblank_simulate
-From:   syzbot <syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        hamohammed.sa@gmail.com, linux-kernel@vger.kernel.org,
-        melissa.srw@gmail.com, rodrigosiqueiramelo@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S233265AbhCLK3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:29:49 -0500
+Received: from smtp.wifcom.cz ([85.207.3.150]:47637 "EHLO smtp.wifcom.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231317AbhCLK3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:29:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=CAZkARdGjtgFZK9jQqxd+3OCAPNYjIO2gXQCQG8CyYA=;
+        b=PAscGDmVNuBfuCPQNVp3dm5eMLTo+o0zxyXL+UOkyCfibHMzuKwHL2NEiJtj5fOoyWtHCyoDZXU40A3etv/hDCgUPkLMBWxkcmAVpPCzMXU6ID78s7Op1s47pFT0Ycv0t6t6pvfvxhDuV6Jpryb9ItXLyUvXxeBvRJAGvU4MMZE=;
+From:   Martin Devera <devik@eaxlabs.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Martin Devera <devik@eaxlabs.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
+        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v6 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Date:   Fri, 12 Mar 2021 11:27:12 +0100
+Message-Id: <20210312102713.27776-1-devik@eaxlabs.cz>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <YEsjMJae3cGOdyjG@kroah.com>
+References: <YEsjMJae3cGOdyjG@kroah.com>
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+X-Wif-ss: -2.9 (--)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add new rx-tx-swap property to allow for RX & TX pin swapping.
 
-syzbot found the following issue on:
-
-HEAD commit:    f78d76e7 Merge tag 'drm-fixes-2021-03-12-1' of git://anong..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11c16ba2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc02c6afcb046874
-dashboard link: https://syzkaller.appspot.com/bug?extid=333bd014262fd5d0a418
-userspace arch: arm
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at drivers/gpu/drm/vkms/vkms_crtc.c:21 vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc2-syzkaller-00338-gf78d76e72a46 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
-pc : vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:21
-lr : hrtimer_forward_now include/linux/hrtimer.h:510 [inline]
-lr : vkms_vblank_simulate+0x90/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:19
-sp : ffff00006a693cd0
-x29: ffff00006a693cd0 x28: ffff00000c9d1e58 
-x27: dfff800000000000 x26: ffff00006a67f540 
-x25: 1fffe0000d4cfeb1 x24: 1fffe0000d4cfeaa 
-x23: ffff00000c9d0d30 x22: 0000000000fe4c00 
-x21: ffff00006a67f540 x20: ffff00000c9d0e58 
-x19: ffff00000c9d1e58 x18: ffff00006a6a1b48 
-x17: 1fffe00001952345 x16: 0000000000000000 
-x15: ffff8000197bf810 x14: 1fffe0000d4d2750 
-x13: 0000000000000001 x12: 0000000000000033 
-x11: 1ffff00002fb4936 x10: 0000000000000007 
-x9 : 1ffff00002fb4943 x8 : ffff800017d14c00 
-x7 : 00000000f1f1f1f1 x6 : dfff800000000000 
-x5 : 7fffffffffffffff x4 : 00000008e44f6b90 
-x3 : 00000008e54db790 x2 : 00000008e44f6b90 
-x1 : 00000008e54db790 x0 : 0000000000000002 
-Call trace:
- vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x590/0xe40 kernel/time/hrtimer.c:1583
- hrtimer_interrupt+0x2d4/0x810 kernel/time/hrtimer.c:1645
- timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
- arch_timer_handler_phys+0x4c/0x70 drivers/clocksource/arm_arch_timer.c:665
- handle_percpu_devid_irq+0x19c/0x330 kernel/irq/chip.c:930
- generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
- generic_handle_irq kernel/irq/irqdesc.c:652 [inline]
- __handle_domain_irq+0x11c/0x1f0 kernel/irq/irqdesc.c:689
- handle_domain_irq include/linux/irqdesc.h:176 [inline]
- gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
- el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
- arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
- queue_work_on+0x74/0x110 kernel/workqueue.c:1528
- queue_work include/linux/workqueue.h:507 [inline]
- cursor_timer_handler+0x64/0x100 drivers/video/fbdev/core/fbcon.c:397
- call_timer_fn+0x1d4/0x9c4 kernel/time/timer.c:1431
- expire_timers kernel/time/timer.c:1476 [inline]
- __run_timers.part.0+0x530/0xa00 kernel/time/timer.c:1745
- __run_timers kernel/time/timer.c:1726 [inline]
- run_timer_softirq+0xa4/0x1a0 kernel/time/timer.c:1758
- _stext+0x2b4/0x1084
- do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
- invoke_softirq kernel/softirq.c:228 [inline]
- __irq_exit_rcu+0x46c/0x510 kernel/softirq.c:422
- irq_exit+0x14/0x84 kernel/softirq.c:446
- __handle_domain_irq+0x120/0x1f0 kernel/irq/irqdesc.c:692
- handle_domain_irq include/linux/irqdesc.h:176 [inline]
- gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
- el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
- arch_local_irq_enable+0xc/0x14 arch/arm64/include/asm/irqflags.h:37
- default_idle_call+0x64/0xf4 kernel/sched/idle.c:112
- cpuidle_idle_call kernel/sched/idle.c:194 [inline]
- do_idle+0x38c/0x4ec kernel/sched/idle.c:300
- cpu_startup_entry+0x28/0x80 kernel/sched/idle.c:397
- rest_init+0x1d0/0x2cc init/main.c:721
- arch_call_rest_init+0x10/0x1c
- start_kernel+0x3b0/0x3e8 init/main.c:1064
- 0x0
-
-
+Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v6: 
+  - add version changelog
+v5: 
+  - yaml fixes based on Rob Herring comments
+    - add serial.yaml reference
+    - move compatible from 'then' to 'if'
+v3:
+  - don't allow rx-tx-swap for st,stm32-uart (suggested
+    by Fabrice Gasnier)
+v2:
+  - change st,swap to rx-tx-swap (suggested by Rob Herring)
+---
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 8631678283f9..68a0f3ce8328 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -9,9 +9,6 @@ maintainers:
+ 
+ title: STMicroelectronics STM32 USART bindings
+ 
+-allOf:
+-  - $ref: rs485.yaml
+-
+ properties:
+   compatible:
+     enum:
+@@ -40,6 +37,8 @@ properties:
+ 
+   uart-has-rtscts: true
+ 
++  rx-tx-swap: true
++
+   dmas:
+     minItems: 1
+     maxItems: 2
+@@ -66,13 +65,23 @@ properties:
+   linux,rs485-enabled-at-boot-time: true
+   rs485-rx-during-tx: true
+ 
+-if:
+-  required:
+-    - st,hw-flow-ctrl
+-then:
+-  properties:
+-    cts-gpios: false
+-    rts-gpios: false
++allOf:
++  - $ref: rs485.yaml#
++  - $ref: serial.yaml#
++  - if:
++      required:
++        - st,hw-flow-ctrl
++    then:
++      properties:
++        cts-gpios: false
++        rts-gpios: false
++  - if:
++      properties:
++        compatible:
++           const: st,stm32-uart
++    then:
++      properties:
++        rx-tx-swap: false
+ 
+ required:
+   - compatible
+-- 
+2.11.0
+
