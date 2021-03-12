@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C955633987C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8063398B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234973AbhCLUhu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 15:37:50 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:38394 "EHLO
+        id S235070AbhCLUyy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 15:54:54 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:59666 "EHLO
         mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234744AbhCLUhc (ORCPT
+        by vger.kernel.org with ESMTP id S235009AbhCLUyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:37:32 -0500
+        Fri, 12 Mar 2021 15:54:44 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id CFE4740648C;
-        Fri, 12 Mar 2021 16:20:23 -0300 (-03)
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 2D7C0406920;
+        Fri, 12 Mar 2021 16:25:06 -0300 (-03)
 Received: from mail.curtumepanorama.com.br ([127.0.0.1])
         by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WIWLvY94SEDx; Fri, 12 Mar 2021 16:20:23 -0300 (-03)
+        with ESMTP id r7NZt8NE_YKk; Fri, 12 Mar 2021 16:25:05 -0300 (-03)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id F0BBE406033;
-        Fri, 12 Mar 2021 16:16:20 -0300 (-03)
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 82406406188;
+        Fri, 12 Mar 2021 16:17:46 -0300 (-03)
 X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
 Received: from mail.curtumepanorama.com.br ([127.0.0.1])
         by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5BNEdeO-mg-y; Fri, 12 Mar 2021 16:16:20 -0300 (-03)
+        with ESMTP id sF_1xrH0koQU; Fri, 12 Mar 2021 16:17:46 -0300 (-03)
 Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 8B8F24047FE;
-        Fri, 12 Mar 2021 15:55:39 -0300 (-03)
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id CF11E405FCA;
+        Fri, 12 Mar 2021 16:16:00 -0300 (-03)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
@@ -35,9 +35,9 @@ Content-Description: Mail message body
 Subject: YOU HAVE WON
 To:     Recipients <lottonlxxx@europe.com>
 From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 19:56:05 +0100
+Date:   Fri, 12 Mar 2021 20:16:27 +0100
 Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312185539.8B8F24047FE@mail.curtumepanorama.com.br>
+Message-Id: <20210312191600.CF11E405FCA@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
