@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5706E33844F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF827338453
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhCLDVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        id S231741AbhCLDWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCLDUf (ORCPT
+        with ESMTP id S229664AbhCLDWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:20:35 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F774C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:20:35 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id l7so924570pfd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:20:35 -0800 (PST)
+        Thu, 11 Mar 2021 22:22:34 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED1DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:22:34 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id r20so4932048ljk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:22:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DjdNOMaFcU4e2foCYh5TokMVxHNn3j89oLkPqKd3dks=;
-        b=dQTkq3E2hZr897kEwjHE4FBioepjDR/GJp30imWYUpbO/d7epEPNCzEaeoPOe8Sq25
-         8Bj0sqMt1zQFkagj0thE/swgzeHtc7S6jOCgfMbd6h+F56U+6tkWJLvzcsNPst18ybR4
-         KNJKgQMA0VNzn1v6G/Q0WM+IQ0oDPpOT7imYOWkQEr0i7HJwbjjuUFD8WbExDE6eWTzr
-         z3QwYHOiEgh0UpI+xWfGoNZ5pYVbwrDrTsSn2yci7GEFAOZvHG+umNFswx+b3Y8s3d2k
-         8kYLtcf97BJaKjh1QNpA9i8UwcaTwbQuBEZNLrT60ydVVappiWLPCm4Sh+XhqSFpn01v
-         8OgQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eCIc7dqSdtfRcjLpMj51xq06Wi2OTwxYLeouzZdu4ls=;
+        b=MM4wfvArNdN73GuoyTklV4maIs6VrkD57zcs6ThfaiZRuCZTdKDAM6L/uP+vzRIoic
+         iDmPSZBen/4rN/eaM99rFXvx1b5Qzty24xAHWN4u2nIqOg/A+lmVP6jpChXsPblRClwq
+         mYXzV9aTFX6je8azdoDViZamEkhOVRtYOpTuSy4OEKfL516Wd+SJO9lgx+6otmTcyy4U
+         q56OaSRiiu4wOaSdJYCyAZ+25LdB4tmTy79q829cFqkDEqrz6cieaz/XuZ5qbM1eOliA
+         R+j/AW954iXCyz5LJ2iF2X8bSr2EBCRaUFXOSHPua0Ek6lL3vvwu2Hw6MPIjsGwSuaGz
+         AcLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DjdNOMaFcU4e2foCYh5TokMVxHNn3j89oLkPqKd3dks=;
-        b=IOM/Mg2T9lxiI2WieWcdxbnlJ9/ZmYyWl7ddGAa+KBL44mUTAwIOZHRUXC+mlPcoLT
-         s/X/meIwjYqQL+lInrYe8ZRKFumPitToOKb/sorzzJS8EQUlo+OkjY7XwK7EjhgViuMS
-         TsUzINJv01eU3gXW7peeDhxIXX3dO5mP9QGj12nIryOMcu3Q2Qb+OQL4+5X9M17Q0Gw8
-         KodfXxIbjMMe1QR5O3GJwq6JMSia7h2sTm+y3GNrsqJY+NPRllNnyzDrdb8daa3fN4wn
-         s+ooxCPhrchlkSlfAG7DiAbvcZtN36GW9zwPXIOoclIaCydv3H3K2Xud3h2lbnaHN45p
-         zc1w==
-X-Gm-Message-State: AOAM533g1uMjFy7GkAoxeZDLa1IEHz/JEKuRzTVW11zuh3ovpaat7BpR
-        BuyQ1C8vQIev9Vc4+aMJhUUuSg==
-X-Google-Smtp-Source: ABdhPJxQPggg8rqEw+UFpSTWLIJV06QXAWCnJSBaMZGDDK2QLUpzxmzKcAs5b71rutv8ot06LqOUfQ==
-X-Received: by 2002:a63:695:: with SMTP id 143mr9674961pgg.314.1615519234558;
-        Thu, 11 Mar 2021 19:20:34 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id n24sm3602575pgl.27.2021.03.11.19.20.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 19:20:33 -0800 (PST)
-Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210312141744.0022d5f5@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d5200097-771d-b565-dabf-0aad3fc2ea8d@kernel.dk>
-Date:   Thu, 11 Mar 2021 20:20:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eCIc7dqSdtfRcjLpMj51xq06Wi2OTwxYLeouzZdu4ls=;
+        b=GNI4M7OyZSQ5lBfusdpr7cmJM0KtIjf+d6qjUUn8uKMr8Kc8T+fGwbQsDUuWwWVdv5
+         OG4qrXxCmC48TzNpsloXdszGahhgo/9/MAi+dTqwjGPIkAjF7sZTckBusY7pdZ1VYYfq
+         HeBUrSwWpwHMy8WFO5j6gVFcHsdhe5Fb5qXYss/+K0iQj8kIlc8YOTBk0B6J68sk4Tab
+         DFeTB2yJsnxbjvRdkIoGHc+cOBsWhytDpkFwYC7GMyl5oC2jUWCgSMJs6zRIKqB6yHoa
+         8VQcE0zsA50WOIGbtJp/RDiXj+LfT4txOJOW1lDns9NzXR0cMzwIEEpAZoI+gUNR8BI4
+         wkZQ==
+X-Gm-Message-State: AOAM533QAqeiJrtrYm7k7UpqRX8w7q5ccXS1OqfhxPrrYtmPbk/PVD81
+        NNAQWjXZljJpSC09/0DfSLov8kmgaHr1dwLFexMyHw==
+X-Google-Smtp-Source: ABdhPJxPlRl6J49DAV+fDgYTfkYsLWkyswd8hWXDG/3S8bbBYuBPzvn3lU7qV8y3vDLNx2XfFyTI27/FLpZOE2whxSA=
+X-Received: by 2002:a2e:5c02:: with SMTP id q2mr1120647ljb.81.1615519352363;
+ Thu, 11 Mar 2021 19:22:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312141744.0022d5f5@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309100717.253-1-songmuchun@bytedance.com> <20210309100717.253-3-songmuchun@bytedance.com>
+In-Reply-To: <20210309100717.253-3-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 11 Mar 2021 19:22:20 -0800
+Message-ID: <CALvZod4vmZztdbjkWT8soRd3P=JXyNJChDTOUP1HaiSQhKoutw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] mm: memcontrol: make page_memcg{_rcu} only
+ applicable for non-kmem page
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 8:17 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the scsi-mkp tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
-> 
-> 
-> drivers/scsi/sg.c: In function 'sg_mk_kern_bio':
-> drivers/scsi/sg.c:2958:17: error: 'BIO_MAX_PAGES' undeclared (first use in this function); did you mean 'BIO_MAX_VECS'?
->  2958 |  if (bvec_cnt > BIO_MAX_PAGES)
->       |                 ^~~~~~~~~~~~~
->       |                 BIO_MAX_VECS
-> 
-> Caused by commit
-> 
->   b32ac463cb59 ("scsi: sg: NO_DXFER move to/from kernel buffers")
-> 
-> interacting with commit
-> 
->   a8affc03a9b3 ("block: rename BIO_MAX_PAGES to BIO_MAX_VECS")
-> 
-> from the block tree.
-> 
-> I have applied the following merge fix patch:
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 12 Mar 2021 14:11:16 +1100
-> Subject: [PATCH] scsi: sg: fix up for BIO_MAX_PAGES rename
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/scsi/sg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-> index 2d4bbc1a1727..6b31b2bc8f9a 100644
-> --- a/drivers/scsi/sg.c
-> +++ b/drivers/scsi/sg.c
-> @@ -2955,7 +2955,7 @@ sg_mk_kern_bio(int bvec_cnt)
->  {
->  	struct bio *biop;
->  
-> -	if (bvec_cnt > BIO_MAX_PAGES)
-> +	if (bvec_cnt > BIO_MAX_VECS)
->  		return NULL;
->  	biop = bio_alloc(GFP_ATOMIC, bvec_cnt);
->  	if (!biop)
+On Tue, Mar 9, 2021 at 2:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> We want to reuse the obj_cgroup APIs to charge the kmem pages.
+> If we do that, we should store an object cgroup pointer to
+> page->memcg_data for the kmem pages.
+>
+> Finally, page->memcg_data can have 3 different meanings.
 
-Looks good - fwiw, the block change will go into 5.12-rc3 to avoid
-having this issue over a merge window prep, so maybe SCSI can pull
-in -rc3 and get this resolved locally in that tree.
+replace 'can' with 'will'
 
-I'll rebase the block-5.12 branch off -rc1 after this merge.
-
--- 
-Jens Axboe
-
+Other than that I think Roman and Johannes have already given very
+good feedback.
