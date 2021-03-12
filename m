@@ -2,73 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CF93399CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30093399CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbhCLWnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:43:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235499AbhCLWnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:43:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E8A164F12;
-        Fri, 12 Mar 2021 22:43:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615589023;
-        bh=vRsyjYAc06/w7+bJVqYXFD1dEr+bqMQbHAgSifRcWws=;
-        h=Subject:From:To:Date:From;
-        b=gv1V2aTBK8aU5gIGB9+GXrn24qG3sNSCaCcfqSiEBGFk0yV6kypuUQ9iggROF+FNF
-         fS3wywEsap1u3bT/kghlsUM4zWfVwx1Ae9eKBkmt5X7/+c3xKj3i25QuBdA2073qCD
-         KJeT51WzxRnYJ04Af3QHtLMbo9WAYD9+TtO+X32xVv5QFtU2wTfikSf34JGYoS5rfs
-         4W0kfkLAUj1KI1Qu2XYTdsV4qGReJJbnH7P0iDVISXB8G5OAV1YWUos+UXplxRX9fY
-         8xvSRFdgQiS/XqGhXb5laiRhmGrlys2n/jLyfO4nlAlqz5zcSL9ZDRM1h/rJPOB8wn
-         5GQD5MrqOAxrA==
-Message-ID: <41dbfa16aeaf441ec49268372263183edeff2e94.camel@kernel.org>
-Subject: [ANNOUNCE] 4.19.180-rt73
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Date:   Fri, 12 Mar 2021 16:43:41 -0600
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S235655AbhCLWoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235650AbhCLWoi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 17:44:38 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CF8C061574;
+        Fri, 12 Mar 2021 14:44:38 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F3FD388F;
+        Fri, 12 Mar 2021 23:44:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615589077;
+        bh=DaBIw4UOvQzJG9yK247PTGX2rZUOmY0XtdRlQys0wb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lFeSXkZzfV00/XFvk3slEUWwpYcy4RpqEh16uOlfNjNn5pOSpqmSbIfW4493EtLpF
+         /BLYKelrb1UXuiH070HeepyJTlYV5y3gF2VlgvdUeHmPe0M136EoH1yXBDqTkH7Fe6
+         3BamM6Mu/RVBjaFD/Skh9RbnTtr3Pfou4ECzcFiE=
+Date:   Sat, 13 Mar 2021 00:44:02 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v3 6/8] media: uvcvideo: Add support for
+ V4L2_CTRL_TYPE_CTRL_CLASS
+Message-ID: <YEvuss8rlscY7KE+@pendragon.ideasonboard.com>
+References: <20210312124830.1344255-1-ribalda@chromium.org>
+ <20210312124830.1344255-7-ribalda@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210312124830.1344255-7-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+Hi Ricardo,
 
-I'm pleased to announce the 4.19.180-rt73 stable release.
+Thank you for the patch.
 
-This release is just an update to the new stable 4.19.180
-version and no RT specific changes have been made.
+On Fri, Mar 12, 2021 at 01:48:28PM +0100, Ricardo Ribalda wrote:
+> Create all the class controls for the device defined controls.
+> 
+> Fixes v4l2-compliance:
+> Control ioctls (Input 0):
+> 		fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+> 		fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-You can get this release via the git tree at:
+Still pending discussions on v2. Can't we disallow event subscription on
+classes ? It makes no sense at all for userspace.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c | 96 ++++++++++++++++++++++++++++++++
+>  drivers/media/usb/uvc/uvcvideo.h |  6 ++
+>  2 files changed, 102 insertions(+)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 90ecdc24d70a..5bb9e7696fe5 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
+>  	},
+>  };
+>  
+> +static const struct uvc_control_class uvc_control_class[] = {
+> +	{
+> +		.id		= V4L2_CID_CAMERA_CLASS,
+> +		.name		= "Camera Controls",
+> +	},
+> +	{
+> +		.id		= V4L2_CID_USER_CLASS,
+> +		.name		= "User Controls",
+> +	},
+> +};
+> +
+>  static const struct uvc_menu_info power_line_frequency_controls[] = {
+>  	{ 0, "Disabled" },
+>  	{ 1, "50 Hz" },
+> @@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
+>  	return 0;
+>  }
+>  
+> +static int __uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> +				  u32 found_id)
+> +{
+> +	bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
+> +	unsigned int i;
+> +
+> +	req_id &= V4L2_CTRL_ID_MASK;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> +		if (!(chain->ctrl_class_bitmap & BIT(i)))
+> +			continue;
+> +		if (!find_next) {
+> +			if (uvc_control_class[i].id == req_id)
+> +				return i;
+> +			continue;
+> +		}
+> +		if (uvc_control_class[i].id > req_id &&
+> +		    uvc_control_class[i].id < found_id)
+> +			return i;
+> +	}
+> +
+> +	return -ENODEV;
+> +}
+> +
+> +static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> +				u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
+> +{
+> +	int idx;
+> +
+> +	idx = __uvc_query_v4l2_class(chain, req_id, found_id);
+> +	if (idx < 0)
+> +		return -ENODEV;
+> +
+> +	memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
+> +	v4l2_ctrl->id = uvc_control_class[idx].id;
+> +	strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
+> +		sizeof(v4l2_ctrl->name));
+> +	v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
+> +	v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
+> +			   | V4L2_CTRL_FLAG_READ_ONLY;
+> +	return 0;
+> +}
+> +
+>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>  	struct uvc_control *ctrl,
+>  	struct uvc_control_mapping *mapping,
+> @@ -1127,12 +1181,31 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>  	if (ret < 0)
+>  		return -ERESTARTSYS;
+>  
+> +	/* Check if the ctrl is a know class */
+> +	if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
+> +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, 0, v4l2_ctrl);
+> +		if (!ret)
+> +			goto done;
+> +	}
+> +
+>  	ctrl = uvc_find_control(chain, v4l2_ctrl->id, &mapping);
+>  	if (ctrl == NULL) {
+>  		ret = -EINVAL;
+>  		goto done;
+>  	}
+>  
+> +	/*
+> +	 * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
+> +	 * a class should be inserted between the previous control and the one
+> +	 * we have just found.
+> +	 */
+> +	if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
+> +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, mapping->id,
+> +					   v4l2_ctrl);
+> +		if (!ret)
+> +			goto done;
+> +	}
+> +
+>  	ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
+>  done:
+>  	mutex_unlock(&chain->ctrl_mutex);
+> @@ -1426,6 +1499,11 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+>  	if (ret < 0)
+>  		return -ERESTARTSYS;
+>  
+> +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0) {
+> +		ret = 0;
+> +		goto done;
+> +	}
+> +
+>  	ctrl = uvc_find_control(handle->chain, sev->id, &mapping);
+>  	if (ctrl == NULL) {
+>  		ret = -EINVAL;
+> @@ -1459,7 +1537,10 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
+>  	struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+>  
+>  	mutex_lock(&handle->chain->ctrl_mutex);
+> +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0)
+> +		goto done;
+>  	list_del(&sev->node);
+> +done:
+>  	mutex_unlock(&handle->chain->ctrl_mutex);
+>  }
+>  
+> @@ -1577,6 +1658,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
+>  	struct uvc_control *ctrl;
+>  	struct uvc_control_mapping *mapping;
+>  
+> +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> +		return -EACCES;
+> +
+>  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+>  	if (ctrl == NULL)
+>  		return -EINVAL;
+> @@ -1596,6 +1680,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+>  	s32 max;
+>  	int ret;
+>  
+> +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> +		return -EACCES;
+> +
+>  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+>  	if (ctrl == NULL)
+>  		return -EINVAL;
+> @@ -2062,6 +2149,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+>  {
+>  	struct uvc_control_mapping *map;
+>  	unsigned int size;
+> +	unsigned int i;
+>  
+>  	/* Most mappings come from static kernel data and need to be duplicated.
+>  	 * Mappings that come from userspace will be unnecessarily duplicated,
+> @@ -2085,6 +2173,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+>  	if (map->set == NULL)
+>  		map->set = uvc_set_le_value;
+>  
+> +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> +		if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
+> +						V4L2_CTRL_ID2WHICH(map->id)) {
+> +			chain->ctrl_class_bitmap |= BIT(i);
+> +			break;
+> +		}
+> +	}
+> +
+>  	list_add_tail(&map->list, &ctrl->info.mappings);
+>  	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+>  		map->name, ctrl->info.entity, ctrl->info.selector);
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index 97df5ecd66c9..1f17e4253673 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -262,6 +262,11 @@ struct uvc_control_mapping {
+>  		    u8 *data);
+>  };
+>  
+> +struct uvc_control_class {
+> +	u32 id;
+> +	char name[32];
+> +};
+> +
+>  struct uvc_control {
+>  	struct uvc_entity *entity;
+>  	struct uvc_control_info info;
+> @@ -475,6 +480,7 @@ struct uvc_video_chain {
+>  
+>  	struct v4l2_prio_state prio;		/* V4L2 priority state */
+>  	u32 caps;				/* V4L2 chain-wide caps */
+> +	u8 ctrl_class_bitmap;			/* Bitmap of valid classes */
+>  };
+>  
+>  struct uvc_stats_frame {
 
-  branch: v4.19-rt
-  Head SHA1: fffa72a0bb5b707d7b437cfdbce1a84bae419f2e
+-- 
+Regards,
 
-Or to build 4.19.180-rt73 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.180.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.180-rt73.patch.xz
-
-Enjoy!
-
-   Tom
-
+Laurent Pinchart
