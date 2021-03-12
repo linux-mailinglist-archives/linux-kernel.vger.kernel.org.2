@@ -2,598 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92923393AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C463339386
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhCLQiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhCLQha (ORCPT
+        id S232057AbhCLQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:37:20 -0500
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:44584 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231789AbhCLQhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:37:30 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6FDC061574;
-        Fri, 12 Mar 2021 08:37:30 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id d3so46660836lfg.10;
-        Fri, 12 Mar 2021 08:37:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CKVbnX/fNN/89i7wI4AKuPxRoaTutJb/hgyiyryCCzk=;
-        b=Nd2aW32t6KkoTBNLET0YKJ829ClfSUSh5o+tqJFMKsqoNlsu3fF+G+9hAIHkB4lLjE
-         6kZBxLKMb6TbCJJA0abpVtY5wNfSr5KKjetrO+K0oh08zvpeHQPGAn2E9R63OVcOhJZj
-         jZSMGMFoIPhLvcmD0muC5pLarASac1zGhkrAWiV9unxgbc80A3MLyVuDnDoB9xV1HPHY
-         Ju3IB2XD9q2AWVLl7zMQo/O1CPtsxrWsNbdaSHaDQNZ0EA+HeUT3bTwG+mj7v8f0+uMC
-         2WAr/a/lZA5O0Yz0KF7mK0qlH3Li5NaFJO0wcxKfolk4wGYMuKqtJBVLsGdjDJaNvFWE
-         /X9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CKVbnX/fNN/89i7wI4AKuPxRoaTutJb/hgyiyryCCzk=;
-        b=dZ1uCZ+p9QSt0nRYrNBWQrrHeoo6ZQFo3ioM1W2O4Fb07EdVz2dZF30MbySPlBGf9z
-         uOt6DmxRelfVH/1F1DL23R3CM/qLTEBO2m0eslvLueJyFVLQ9Id/Zwlku2BGEb72+sc1
-         8lVCCDLk95WoG9lOqxZsJh5aweJ7rONL4BpMlrgRYCeYzyxSL4ni7XZ8r3z0oIlY3GlF
-         zryqhfgr4K+JJi7GYV6Rm72p3A4px2LhnqvhZZ5gJbz0W7sReWB50cAguzJtUapRy+kS
-         9HMM12AS/Zya7BVG4ZoKGBMMPNW7RjZ/diHrcwrIwrkHmrvU4JqsQIOv1KfCMn0qm6lc
-         jbKA==
-X-Gm-Message-State: AOAM532ZWsLwMityCO98Bh755fkAglUEC6vzcTIXF42H8P3jBjOqaRYK
-        v9l+3KK+wMAFyv0SF7plMWo=
-X-Google-Smtp-Source: ABdhPJziAS95TUKzO4HzIkKYyQCwsK9TOH6GSLhFWivUGeOu8OqGPmbMDOPM1jMY8YSDLjYFU6IDYw==
-X-Received: by 2002:a05:6512:a95:: with SMTP id m21mr60298lfu.460.1615567048499;
-        Fri, 12 Mar 2021 08:37:28 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id l21sm1771703lfg.300.2021.03.12.08.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 08:37:28 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v4 7/7] dt-bindings: clock: tegra: Convert to schema
-Date:   Fri, 12 Mar 2021 19:36:32 +0300
-Message-Id: <20210312163632.8861-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210312163632.8861-1-digetx@gmail.com>
-References: <20210312163632.8861-1-digetx@gmail.com>
+        Fri, 12 Mar 2021 11:37:01 -0500
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lKkmR-0002cL-MC; Fri, 12 Mar 2021 16:36:51 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+ <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+ <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
+ <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <4ce57c7e-6e5d-d136-0a81-395a4207ba44@codethink.co.uk>
+Date:   Fri, 12 Mar 2021 16:36:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert NVIDIA Tegra clock bindings to schema.
+On 12/03/2021 16:34, Ben Dooks wrote:
+> On 12/03/2021 16:30, Ben Dooks wrote:
+>> On 12/03/2021 15:12, Dmitry Vyukov wrote:
+>>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk> 
+>>> wrote:
+>>>>
+>>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>>>>
+>>>>>> Hello,
+>>>>>>
+>>>>>> syzbot found the following issue on:
+>>>>>>
+>>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for 
+>>>>>> arch_dup_tas..
+>>>>>> git tree: 
+>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>>>> console output: 
+>>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>>>>> kernel config: 
+>>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>>>>> dashboard link: 
+>>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>>>>> userspace arch: riscv64
+>>>>>>
+>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>
+>>>>>> IMPORTANT: if you fix the issue, please add the following tag to 
+>>>>>> the commit:
+>>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>>>>
+>>>>> +riscv maintainers
+>>>>>
+>>>>> This is riscv64-specific.
+>>>>> I've seen similar crashes in put_user in other places. It looks like
+>>>>> put_user crashes in the user address is not mapped/protected (?).
+>>>>
+>>>> I've been having a look, and this seems to be down to access of the
+>>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+>>>> bad address to clone?
+>>>>
+>>>>   From looking at the code, the put_user() code should have set the
+>>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+>>>> s2 register in the crash report) and from looking at the compiler
+>>>> output from my gcc-10, the code looks to be dong the relevant csrs
+>>>> and then csrc around the put_user
+>>>>
+>>>> So currently I do not understand how the above could have happened
+>>>> over than something re-tried the code seqeunce and ended up retrying
+>>>> the faulting instruction without the SR_SUM bit set.
+>>>
+>>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
+>>> strange that 99% of these crashes are in schedule_tail. If it would be
+>>> qemu, then they would be more evenly distributed...
+>>>
+>>> Another observation: looking at a dozen of crash logs, in none of
+>>> these cases fuzzer was actually trying to fuzz clone with some insane
+>>> arguments. So it looks like completely normal clone's (e..g coming
+>>> from pthread_create) result in this crash.
+>>>
+>>> I also wonder why there is ret_from_exception, is it normal? I see
+>>> handle_exception disables SR_SUM:
+>>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73 
+>>>
+>>
+>> So I think if SR_SUM is set, then it faults the access to user memory
+>> which the _user() routines clear to allow them access.
+>>
+>> I'm thinking there is at least one issue here:
+>>
+>> - the test in fault is the wrong way around for die kernel
+>> - the handler only catches this if the page has yet to be mapped.
+>>
+>> So I think the test should be:
+>>
+>>          if (!user_mode(regs) && addr < TASK_SIZE &&
+>>                          unlikely(regs->status & SR_SUM)
+>>
+>> This then should continue on and allow the rest of the handler to
+>> complete mapping the page if it is not there.
+>>
+>> I have been trying to create a very simple clone test, but so far it
+>> has yet to actually trigger anything.
+> 
+> I should have added there doesn't seem to be a good way to use mmap()
+> to allocate memory but not insert a vm-mapping post the mmap().
+> 
+> 
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../bindings/clock/nvidia,tegra-car.yaml      | 118 ++++++++++++++++++
- .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
- .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
- .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
- .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
- .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
- 6 files changed, 118 insertions(+), 352 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
- delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
- delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
- delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
- delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+How difficult is it to try building a branch with the above test
+modified?
 
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml
-new file mode 100644
-index 000000000000..4d8d38bb1af2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml
-@@ -0,0 +1,118 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/nvidia,tegra-car.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVIDIA Tegra Clock and Reset Controller
-+
-+maintainers:
-+  - Jon Hunter <jonathanh@nvidia.com>
-+  - Thierry Reding <thierry.reding@gmail.com>
-+
-+description: |
-+  The Clock and Reset (CAR) is the HW module responsible for muxing and gating
-+  Tegra's clocks, and setting their rates. It comprises CLKGEN and RSTGEN units.
-+
-+  CLKGEN provides the registers to program the PLLs. It controls most of
-+  the clock source programming and most of the clock dividers.
-+
-+  CLKGEN input signals include the external clock for the reference frequency
-+  (12 MHz, 26 MHz) and the external clock for the Real Time Clock (32.768 KHz).
-+
-+  Outputs from CLKGEN are inputs clock of the h/w blocks in the Tegra system.
-+
-+  RSTGEN provides the registers needed to control resetting of each block in
-+  the Tegra system.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nvidia,tegra20-car
-+      - nvidia,tegra30-car
-+      - nvidia,tegra114-car
-+      - nvidia,tegra124-car
-+      - nvidia,tegra210-car
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  "#reset-cells":
-+    const: 1
-+
-+  nvidia,external-memory-controller:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle of the external memory controller node
-+
-+patternProperties:
-+  "^emc-timings-[0-9]+$":
-+    type: object
-+    properties:
-+      nvidia,ram-code:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        description:
-+          value of the RAM_CODE field in the PMC_STRAPPING_OPT_A register that
-+          this timing set is used for
-+
-+    patternProperties:
-+      "^timing-[0-9]+$":
-+        type: object
-+        properties:
-+          clock-frequency:
-+            description:
-+              external memory clock rate in Hz
-+            minimum: 1000000
-+            maximum: 1000000000
-+
-+          nvidia,parent-clock-frequency:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description:
-+              rate of parent clock in Hz
-+            minimum: 1000000
-+            maximum: 1000000000
-+
-+          clocks:
-+            items:
-+              - description: parent clock of EMC
-+
-+          clock-names:
-+            items:
-+              - const: emc-parent
-+
-+        required:
-+          - clock-frequency
-+          - nvidia,parent-clock-frequency
-+          - clocks
-+          - clock-names
-+
-+        additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/tegra20-car.h>
-+
-+    car: clock-controller@60006000 {
-+        compatible = "nvidia,tegra20-car";
-+        reg = <0x60006000 0x1000>;
-+        #clock-cells = <1>;
-+        #reset-cells = <1>;
-+    };
-+
-+    usb-controller@c5004000 {
-+        compatible = "nvidia,tegra20-ehci", "usb-ehci";
-+        reg = <0xc5004000 0x4000>;
-+        clocks = <&car TEGRA20_CLK_USB2>;
-+        resets = <&car TEGRA20_CLK_USB2>;
-+    };
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt b/Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
-deleted file mode 100644
-index 9acea9d93160..000000000000
---- a/Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
-+++ /dev/null
-@@ -1,63 +0,0 @@
--NVIDIA Tegra114 Clock And Reset Controller
--
--This binding uses the common clock binding:
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--The CAR (Clock And Reset) Controller on Tegra is the HW module responsible
--for muxing and gating Tegra's clocks, and setting their rates.
--
--Required properties :
--- compatible : Should be "nvidia,tegra114-car"
--- reg : Should contain CAR registers location and length
--- clocks : Should contain phandle and clock specifiers for two clocks:
--  the 32 KHz "32k_in", and the board-specific oscillator "osc".
--- #clock-cells : Should be 1.
--  In clock consumers, this cell represents the clock ID exposed by the
--  CAR. The assignments may be found in header file
--  <dt-bindings/clock/tegra114-car.h>.
--- #reset-cells : Should be 1.
--  In clock consumers, this cell represents the bit number in the CAR's
--  array of CLK_RST_CONTROLLER_RST_DEVICES_* registers.
--
--Example SoC include file:
--
--/ {
--	tegra_car: clock {
--		compatible = "nvidia,tegra114-car";
--		reg = <0x60006000 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--	usb@c5004000 {
--		clocks = <&tegra_car TEGRA114_CLK_USB2>;
--	};
--};
--
--Example board file:
--
--/ {
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		osc: clock@0 {
--			compatible = "fixed-clock";
--			reg = <0>;
--			#clock-cells = <0>;
--			clock-frequency = <12000000>;
--		};
--
--		clk_32k: clock@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--		};
--	};
--
--	&tegra_car {
--		clocks = <&clk_32k> <&osc>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt b/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
-deleted file mode 100644
-index 7f02fb4ca4ad..000000000000
---- a/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
-+++ /dev/null
-@@ -1,107 +0,0 @@
--NVIDIA Tegra124 and Tegra132 Clock And Reset Controller
--
--This binding uses the common clock binding:
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--The CAR (Clock And Reset) Controller on Tegra is the HW module responsible
--for muxing and gating Tegra's clocks, and setting their rates.
--
--Required properties :
--- compatible : Should be "nvidia,tegra124-car" or "nvidia,tegra132-car"
--- reg : Should contain CAR registers location and length
--- clocks : Should contain phandle and clock specifiers for two clocks:
--  the 32 KHz "32k_in", and the board-specific oscillator "osc".
--- #clock-cells : Should be 1.
--  In clock consumers, this cell represents the clock ID exposed by the
--  CAR. The assignments may be found in the header files
--  <dt-bindings/clock/tegra124-car-common.h> (which covers IDs common
--  to Tegra124 and Tegra132) and <dt-bindings/clock/tegra124-car.h>
--  (for Tegra124-specific clocks).
--- #reset-cells : Should be 1.
--  In clock consumers, this cell represents the bit number in the CAR's
--  array of CLK_RST_CONTROLLER_RST_DEVICES_* registers.
--- nvidia,external-memory-controller : phandle of the EMC driver.
--
--The node should contain a "emc-timings" subnode for each supported RAM type (see
--field RAM_CODE in register PMC_STRAPPING_OPT_A).
--
--Required properties for "emc-timings" nodes :
--- nvidia,ram-code : Should contain the value of RAM_CODE this timing set
--  is used for.
--
--Each "emc-timings" node should contain a "timing" subnode for every supported
--EMC clock rate.
--
--Required properties for "timing" nodes :
--- clock-frequency : Should contain the memory clock rate to which this timing
--relates.
--- nvidia,parent-clock-frequency : Should contain the rate at which the current
--parent of the EMC clock should be running at this timing.
--- clocks : Must contain an entry for each entry in clock-names.
--  See ../clocks/clock-bindings.txt for details.
--- clock-names : Must include the following entries:
--  - emc-parent : the clock that should be the parent of the EMC clock at this
--timing.
--
--Example SoC include file:
--
--/ {
--	tegra_car: clock@60006000 {
--		compatible = "nvidia,tegra124-car";
--		reg = <0x60006000 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--		nvidia,external-memory-controller = <&emc>;
--	};
--
--	usb@c5004000 {
--		clocks = <&tegra_car TEGRA124_CLK_USB2>;
--	};
--};
--
--Example board file:
--
--/ {
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		osc: clock@0 {
--			compatible = "fixed-clock";
--			reg = <0>;
--			#clock-cells = <0>;
--			clock-frequency = <112400000>;
--		};
--
--		clk_32k: clock@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--		};
--	};
--
--	&tegra_car {
--		clocks = <&clk_32k> <&osc>;
--	};
--
--	clock@60006000 {
--		emc-timings-3 {
--			nvidia,ram-code = <3>;
--
--			timing-12750000 {
--				clock-frequency = <12750000>;
--				nvidia,parent-clock-frequency = <408000000>;
--				clocks = <&tegra_car TEGRA124_CLK_PLL_P>;
--				clock-names = "emc-parent";
--			};
--			timing-20400000 {
--				clock-frequency = <20400000>;
--				nvidia,parent-clock-frequency = <408000000>;
--				clocks = <&tegra_car TEGRA124_CLK_PLL_P>;
--				clock-names = "emc-parent";
--			};
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
-deleted file mode 100644
-index 6c5901b503d0..000000000000
---- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
-+++ /dev/null
-@@ -1,63 +0,0 @@
--NVIDIA Tegra20 Clock And Reset Controller
--
--This binding uses the common clock binding:
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--The CAR (Clock And Reset) Controller on Tegra is the HW module responsible
--for muxing and gating Tegra's clocks, and setting their rates.
--
--Required properties :
--- compatible : Should be "nvidia,tegra20-car"
--- reg : Should contain CAR registers location and length
--- clocks : Should contain phandle and clock specifiers for two clocks:
--  the 32 KHz "32k_in", and the board-specific oscillator "osc".
--- #clock-cells : Should be 1.
--  In clock consumers, this cell represents the clock ID exposed by the
--  CAR. The assignments may be found in header file
--  <dt-bindings/clock/tegra20-car.h>.
--- #reset-cells : Should be 1.
--  In clock consumers, this cell represents the bit number in the CAR's
--  array of CLK_RST_CONTROLLER_RST_DEVICES_* registers.
--
--Example SoC include file:
--
--/ {
--	tegra_car: clock {
--		compatible = "nvidia,tegra20-car";
--		reg = <0x60006000 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--	usb@c5004000 {
--		clocks = <&tegra_car TEGRA20_CLK_USB2>;
--	};
--};
--
--Example board file:
--
--/ {
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		osc: clock@0 {
--			compatible = "fixed-clock";
--			reg = <0>;
--			#clock-cells = <0>;
--			clock-frequency = <12000000>;
--		};
--
--		clk_32k: clock@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--		};
--	};
--
--	&tegra_car {
--		clocks = <&clk_32k> <&osc>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt b/Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
-deleted file mode 100644
-index 26f237f641b7..000000000000
---- a/Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--NVIDIA Tegra210 Clock And Reset Controller
--
--This binding uses the common clock binding:
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--The CAR (Clock And Reset) Controller on Tegra is the HW module responsible
--for muxing and gating Tegra's clocks, and setting their rates.
--
--Required properties :
--- compatible : Should be "nvidia,tegra210-car"
--- reg : Should contain CAR registers location and length
--- clocks : Should contain phandle and clock specifiers for two clocks:
--  the 32 KHz "32k_in".
--- #clock-cells : Should be 1.
--  In clock consumers, this cell represents the clock ID exposed by the
--  CAR. The assignments may be found in header file
--  <dt-bindings/clock/tegra210-car.h>.
--- #reset-cells : Should be 1.
--  In clock consumers, this cell represents the bit number in the CAR's
--  array of CLK_RST_CONTROLLER_RST_DEVICES_* registers.
--
--Example SoC include file:
--
--/ {
--	tegra_car: clock {
--		compatible = "nvidia,tegra210-car";
--		reg = <0x60006000 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--	usb@c5004000 {
--		clocks = <&tegra_car TEGRA210_CLK_USB2>;
--	};
--};
--
--Example board file:
--
--/ {
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		clk_32k: clock@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--		};
--	};
--
--	&tegra_car {
--		clocks = <&clk_32k>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt b/Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
-deleted file mode 100644
-index 63618cde12df..000000000000
---- a/Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
-+++ /dev/null
-@@ -1,63 +0,0 @@
--NVIDIA Tegra30 Clock And Reset Controller
--
--This binding uses the common clock binding:
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--The CAR (Clock And Reset) Controller on Tegra is the HW module responsible
--for muxing and gating Tegra's clocks, and setting their rates.
--
--Required properties :
--- compatible : Should be "nvidia,tegra30-car"
--- reg : Should contain CAR registers location and length
--- clocks : Should contain phandle and clock specifiers for two clocks:
--  the 32 KHz "32k_in", and the board-specific oscillator "osc".
--- #clock-cells : Should be 1.
--  In clock consumers, this cell represents the clock ID exposed by the
--  CAR. The assignments may be found in header file
--  <dt-bindings/clock/tegra30-car.h>.
--- #reset-cells : Should be 1.
--  In clock consumers, this cell represents the bit number in the CAR's
--  array of CLK_RST_CONTROLLER_RST_DEVICES_* registers.
--
--Example SoC include file:
--
--/ {
--	tegra_car: clock {
--		compatible = "nvidia,tegra30-car";
--		reg = <0x60006000 0x1000>;
--		#clock-cells = <1>;
--		#reset-cells = <1>;
--	};
--
--	usb@c5004000 {
--		clocks = <&tegra_car TEGRA30_CLK_USB2>;
--	};
--};
--
--Example board file:
--
--/ {
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		osc: clock@0 {
--			compatible = "fixed-clock";
--			reg = <0>;
--			#clock-cells = <0>;
--			clock-frequency = <12000000>;
--		};
--
--		clk_32k: clock@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--		};
--	};
--
--	&tegra_car {
--		clocks = <&clk_32k> <&osc>;
--	};
--};
 -- 
-2.29.2
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
+https://www.codethink.co.uk/privacy.html
