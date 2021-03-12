@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BFC3389C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19513389CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhCLKNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233265AbhCLKOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232506AbhCLKNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Mar 2021 05:13:34 -0500
-Received: from mail.katalix.com ([3.9.82.81]:54810 "EHLO mail.katalix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232506AbhCLKNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:13:00 -0500
-Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
-        (Authenticated sender: tom)
-        by mail.katalix.com (Postfix) with ESMTPSA id 059E4835E5;
-        Fri, 12 Mar 2021 10:12:59 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
-        t=1615543979; bh=fxXe6I1aSG6SQ/i16YVUY5JNgwXtt14li56ntHRbnoo=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Disposition:In-Reply-To:From;
-        z=Date:=20Fri,=2012=20Mar=202021=2010:12:58=20+0000|From:=20Tom=20P
-         arkin=20<tparkin@katalix.com>|To:=20lyl2019@mail.ustc.edu.cn|Cc:=2
-         0paulus@samba.org,=20davem@davemloft.net,=20linux-ppp@vger.kernel.
-         org,=0D=0A=09netdev@vger.kernel.org,=20linux-kernel@vger.kernel.or
-         g|Subject:=20Re:=20[BUG]=20net/ppp:=20A=20use=20after=20free=20in=
-         20ppp_unregister_channe|Message-ID:=20<20210312101258.GA4951@katal
-         ix.com>|References:=20<6057386d.ca12.1782148389e.Coremail.lyl2019@
-         mail.ustc.edu.cn>|MIME-Version:=201.0|Content-Disposition:=20inlin
-         e|In-Reply-To:=20<6057386d.ca12.1782148389e.Coremail.lyl2019@mail.
-         ustc.edu.cn>;
-        b=sguwCApzj0ZtEa8x8DRyYXUxnDj7Yp2FujIJ2/lG/q9FIufJheBxzq9pym/SIMlsw
-         LhoczNet61yZdohGuxCyL/+zEj0gf6L0LHLQ9/4lmwJIDz3GN6xuWSrqnhhAC35Nmw
-         OnLnLBLbHi3oveJXrMU9Uyu76xXhXAUW5b2jLY6vpo/UGkFV4s1Hfl/uJWu319EPRZ
-         MmBSgRMT14qs0eeKiBwYEN4bslKaTLsT04rhGw1LVXEVs+vjd5XR+0G/3NcfGLoXjd
-         D/mGL0PoUYN+2nwWV44crYkBVDA7KS3wGQruCHLQq0wTv6wmrKgEaKUQSO3vhpsSsl
-         RlQZzQlF5x9nA==
-Date:   Fri, 12 Mar 2021 10:12:58 +0000
-From:   Tom Parkin <tparkin@katalix.com>
-To:     lyl2019@mail.ustc.edu.cn
-Cc:     paulus@samba.org, davem@davemloft.net, linux-ppp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG] net/ppp: A use after free in ppp_unregister_channe
-Message-ID: <20210312101258.GA4951@katalix.com>
-References: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F164C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:13:34 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso14815239wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:13:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dOH5AK+PAfRAsg2dxAdQE8C774VeCltqpKz+okkVeFM=;
+        b=OQyevQU51Wt1xnh2LbX/w1hCSfiwz6KAaijoqwJz0R8Wjxrl8Uep70/qnj/OCN76EJ
+         zF1lDsjWFBn//WEW76/aHd88jg2/A3oLTLTdCoEH41VqrLnPwfka/vDfXzhgvKKz2hwh
+         Bw5aWs/xlmjzVaxZfgDMnWoYGONap/ih6d6St4+g2PG9ckB2n1Sh7VojdF0bX3prNspp
+         kOjtaPujuw5izKVEhe6VmVy5Ut/10+gwAMKKGLJsN52lPb6tkRsQFegz3mLkvdUqs7Gl
+         69DP+TmO9mqm0hSj6w62fHZEarnptc9hBY8JXn2fANa1fWzKp4/xHqI1UndehrCgdbcv
+         oJKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dOH5AK+PAfRAsg2dxAdQE8C774VeCltqpKz+okkVeFM=;
+        b=AITbX4IZUwxuRjZo9bPiatfs8i+coP17peELE/pArlC5XwBXC+9hnxscHX6MbEH5xD
+         a2orpiIhGlfUdnNWSPDwpj6cwh8NdGC3qa+bARWIObEHhN7r/pUHgwq7myJ/4eCrqk7u
+         7W6lPTsSemQRUQR23jxMmA50lRhPUkUvp6z2ImcN6GJLhd8hCnRKqeymTNZ9uOqL1qm8
+         JWZNBFzWsxQU3hEqvh1jl6SEYBRLTQWvNH+QDYKacanUOyHNU3SGWjsEdyTpz1zzzv3+
+         T/E+mTEDPcapyhBd0gWVF9q2gcyS66gVpQYOm8fzooadGe3GeHGp2LOGFWhYK2u/E4Zu
+         2KIA==
+X-Gm-Message-State: AOAM531yArb9r02fDHBNxrYUsIVE8+W9iEeVTVcSErqbR1Adbu/b67D3
+        J450MbDfudRTj7QXAVWXugY4nA==
+X-Google-Smtp-Source: ABdhPJzs2CwFIhMIFHCtWhF0Kk8Mn96x94X3sQBAAfKwNZIrb+5CYxK9LtqpnTzDcLxhgVyEpFqTlw==
+X-Received: by 2002:a05:600c:224e:: with SMTP id a14mr12231304wmm.57.1615544012774;
+        Fri, 12 Mar 2021 02:13:32 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id h25sm1933615wml.32.2021.03.12.02.13.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 02:13:32 -0800 (PST)
+Date:   Fri, 12 Mar 2021 10:13:26 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 28/34] KVM: arm64: Use page-table to track page
+ ownership
+Message-ID: <YEs+xi6IDj3gwX10@google.com>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-29-qperret@google.com>
+ <20210311183834.GC31378@willie-the-truck>
+ <YEsIxA/fKaDlSaio@google.com>
+ <20210312093205.GB32016@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210312093205.GB32016@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Friday 12 Mar 2021 at 09:32:06 (+0000), Will Deacon wrote:
+> I'm not saying to use the VMID directly, just that allocating half of the
+> pte feels a bit OTT given that the state of things after this patch series
+> is that we're using exactly 1 bit.
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, and that was the reason for the PROT_NONE approach in the
+previous version, but we agreed it'd be worth generalizing to allow for
+future use-cases :-)
 
-Thanks for the report!
+> > > > @@ -517,28 +543,36 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> > > >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+> > > >  		return -E2BIG;
+> > > >  
+> > > > -	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+> > > > -	if (kvm_pte_valid(old)) {
+> > > > +	if (kvm_pte_valid(data->attr))
+> > > 
+> > > This feels like a bit of a hack to me: the 'attr' field in stage2_map_data
+> > > is intended to correspond directly to the lower/upper attributes of the
+> > > descriptor as per the architecture, so tagging the valid bit in there is
+> > > pretty grotty. However, I can see the significant advantage in being able
+> > > to re-use the stage2_map_walker functionality, so about instead of nobbling
+> > > attr, you set phys to something invalid instead, e.g.:
+> > > 
+> > > 	#define KVM_PHYS_SET_OWNER	(-1ULL)
+> > 
+> > That'll confuse kvm_block_mapping_supported() and friends I think, at
+> > least in their current form. If you _really_ don't like this, maybe we
+> > could have an extra 'flags' field in stage2_map_data?
+> 
+> I was pondering this last night and I thought of two ways to do it:
+> 
+> 1. Add a 'bool valid' and then stick the owner and the phys in a union.
+>    (yes, you'll need to update the block mapping checks to look at the
+>     valid flag)
 
-On  Thu, Mar 11, 2021 at 20:34:44 +0800, lyl2019@mail.ustc.edu.cn wrote:
-> File: drivers/net/ppp/ppp_generic.c
->=20
-> In ppp_unregister_channel, pch could be freed in ppp_unbridge_channels()
-> but after that pch is still in use. Inside the function ppp_unbridge_chan=
-nels,
-> if "pchbb =3D=3D pch" is true and then pch will be freed.
+Right, though that is also used for the hyp s1 which doesn't use any of
+this ATM. That shouldn't be too bad to change, I'll have a look.
 
-Do you have a way to reproduce a use-after-free scenario?
+> 2. Go with my latter suggestion:
+> 
+> > > Is there ever a reason to use kvm_pgtable_stage2_set_owner() to set an
+> > > owner of 0, or should you just use the map/unmap APIs for that? If so,
+> > > then maybe the key is simply if owner_id is non-zero, then an invalid
+> > > entry is installed?
+> > 
+> > I couldn't find a good reason to restrict it, as that wouldn't change
+> > the implementation much anyway. Also, if we added the right CMOs, we
+> > could probably remove the unmap walker and re-express it in terms of
+> > set_owner(0) ... But I suppose that is for later :-)
+> 
+> The idea being that if owner is 0, then we install a mapping for phys, but
+> if owner is !0 then we set the invalid mapping.
 
-=46rom static analysis I'm not sure how pch would be freed in
-ppp_unbridge_channels when called via. ppp_unregister_channel.
+And I could even special-case set_owner(0) by calling unmap under the
+hood so the caller doesn't need to care, but it's a bit yuck.
 
-In theory (at least!) the caller of ppp_register_net_channel holds=20
-a reference on struct channel which ppp_unregister_channel drops.
+> (1) is probably the less hacky option... what do you reckon?
 
-Each channel in a bridged pair holds a reference on the other.
+Agreed, (1) is a bit nicer. I was also considering setting phys = BIT(63)
+in the set_owner() path. That makes it obvious it is an invalid PA, and
+it should retain the nice alignment properties I need. But I suppose an
+explicit flag makes it easier to reason about, so I'll have a go at it.
 
-Hence on return from ppp_unbridge_channels, the channel should not have
-been freed (in this code path) because the ppp_register_net_channel
-reference has not yet been dropped.
-
-Maybe there is an issue with the reference counting or a race of some
-sort?
-
-> I checked the commit history and found that this problem is introduced fr=
-om
-> 4cf476ced45d7 ("ppp: add PPPIOCBRIDGECHAN and PPPIOCUNBRIDGECHAN ioctls").
->=20
-> I have no idea about how to generate a suitable patch, sorry.
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmBLPqIACgkQlIwGZQq6
-i9BImgf/VhpowGVVPkfWqgkYkfOsWZfxmDueUkeoSFD2dVhLeTNU/jnOGI400Cc0
-Yk+sEFL4fqmjZPjsjIGBlhdpndQJbW+yCKh+G/xmU9ynd9xe+0KrP0WpToJ5Dd3+
-1aCU4n1y5h8MhP6i0BuFe4KQ7K0SSIoSqubAyAF56bHp15arsHGaFB5clBQwy/Nj
-LBW4St5DNAOQTc9heT+s+rhC6LSzXJgz9URaGkwbPtFuFIYmkloFvTRwqC3YJGCQ
-OKF6B3w3uow6gxIX/K3MSRsrDiktsYRNiK1jqOM7l8Jm9qP1EaarbqdCN7W5RhBk
-GecNJWitncHg1zyx+SvpFTVJbxjxYA==
-=npR2
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+Thanks,
+Quentin
