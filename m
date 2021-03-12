@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9708338E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC914338D1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhCLM7T convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 07:59:19 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:54402 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230243AbhCLM7D (ORCPT
+        id S230127AbhCLMa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:30:27 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:57033 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229568AbhCLMaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:59:03 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id EC4E13C1274;
-        Fri, 12 Mar 2021 08:11:23 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wYR9EyfzLGMR; Fri, 12 Mar 2021 08:11:23 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id D96B038A653;
-        Fri, 12 Mar 2021 08:11:01 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NZzt2JuUOwXR; Fri, 12 Mar 2021 08:11:01 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id E3B8C3C142B;
-        Fri, 12 Mar 2021 08:10:31 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 07:30:04 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 550BD22238;
+        Fri, 12 Mar 2021 13:30:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615552202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DLDt3qK5Lj/9krzodd0NKRhKwpbPQn93pLiyIHMlDW4=;
+        b=JUibZx2YXrL0+9ptaGFBZofuARSICiab+jH7Ss0cay9ZcmU0D3vh1gZdeXXD0DNc3h3g60
+        LMYwkXdk50J1K4d0J8tLLq6ujOw7IzFxnNqUyJ+Zaj8wxNqlj0qw3slHj3m1GJZl1orOYk
+        p42hD3MvuvCFZihjvNoxAoQCNJZhEPs=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 12:10:34 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312111031.E3B8C3C142B@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 12 Mar 2021 13:30:02 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+In-Reply-To: <20210312120456.GD5348@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <20210311161558.GG4962@sirena.org.uk>
+ <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+ <20210312113544.GB5348@sirena.org.uk>
+ <6ed28bb5330879b1919aced5174f319f@walle.cc>
+ <20210312120456.GD5348@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <684332700f8be9f77348a510eb6eba22@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+Am 2021-03-12 13:04, schrieb Mark Brown:
+> On Fri, Mar 12, 2021 at 01:01:41PM +0100, Michael Walle wrote:
+>> Am 2021-03-12 12:35, schrieb Mark Brown:
+> 
+>> > If the card has a clock API clock as sysclk then set_sysclk(() should
+>> > be configuring that clock.
+> 
+>> What do you mean by "the card". The simple-audio-card itself?
+> 
+>> Take a look at:
+>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts#L29
+> 
+>> Does the card has a clock? IMHO the WM8904 codec has a clock, but not
+>> the audio card.
+> 
+> The clock on the CODEC, which the card configures.  The CODEC should be
+> passing on the configuration to the clock API.
 
-Sir/Madam,
+Sorry, I don't understand.
 
-CONGRATULATIONS!!!
+The card calls set_sysclk(), which eventually ends up in the codec.
+The codec therefore, could figure out if it needs to configure the
+clock or if it can use its internal FLL.
+Is that what you mean?
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+But the set_sysclk() of the codec isn't even called, because the
+card itself already tries to call clk_set_rate() on the Codec's MCLK,
+which returns with an error [0].
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+[0] 
+https://elixir.bootlin.com/linux/v5.12-rc2/source/sound/soc/generic/simple-card-utils.c#L265
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+-michael
