@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97703385F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBD63385FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhCLGe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:34:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231806AbhCLGep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:34:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8CF64F7E;
-        Fri, 12 Mar 2021 06:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615530885;
-        bh=z9VRAvxwpItsHfsW21eQ/ghaBvAxsgifK2mUSWcSD0Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUHe3a+YuBgLRbxM15JPYTMYlv9yGORQRo9I44uunNJ9SGxm3dG37oAEuNpXJJuh9
-         /mwuVQJ0YTKKTv6fbQFD8OQdGeg1TBH6hoohrCrAaKFYK7Jfh754bVl0zh05DfcdZK
-         CUz31HstnHIxjL4GAa098YFZ1KdcEAvu+f6JzcHM=
-Date:   Fri, 12 Mar 2021 07:34:42 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v2 1/2] usb: typec: tcpci: Add tcpc chip level callbacks
-Message-ID: <YEsLgogC66Fzx7Vk@kroah.com>
-References: <20210312052443.3797674-1-badhri@google.com>
- <YEsLSevhzYja0fwk@kroah.com>
+        id S231888AbhCLGf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:35:27 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45062 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231925AbhCLGfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:35:10 -0500
+X-UUID: 7c50e6ce0ba54de4bd4d385f83d6ac61-20210312
+X-UUID: 7c50e6ce0ba54de4bd4d385f83d6ac61-20210312
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1539904409; Fri, 12 Mar 2021 14:35:06 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Mar 2021 14:35:05 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Mar 2021 14:35:04 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
+        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
+        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <sj.huang@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH 0/1] Mediatek pinctrl patch 
+Date:   Fri, 12 Mar 2021 14:35:01 +0800
+Message-ID: <20210312063502.3685-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEsLSevhzYja0fwk@kroah.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:33:45AM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Mar 11, 2021 at 09:24:42PM -0800, Badhri Jagan Sridharan wrote:
-> > This change adds chip callbacks for the following operations:
-> > 1. Notifying port role
-> > 2. Notifying orientation
-> 
-> This should be 2 different patches, one per callback, right?
-> 
-> And where is the code using these callbacks?  We can't add any hooks
-> without in-tree users, as you know.
+This series includes 1 patches:
+1.add lock in mtk_rmw function.
 
-Ah, your second patch added that, sorry, missed it.
+Zhiyong Tao (1):
+  pinctrl: add lock in mtk_rmw function.
 
-This should be a 4 patch series, remember, only do one thing per patch.
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 4 ++++
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h | 2 ++
+ drivers/pinctrl/mediatek/pinctrl-paris.c         | 2 ++
+ 3 files changed, 8 insertions(+)
 
-thanks,
+--
+2.25.1
 
-greg k-h
+
