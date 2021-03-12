@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EF33398E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1887D3398E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235170AbhCLVL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        id S235127AbhCLVOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbhCLVLO (ORCPT
+        with ESMTP id S234964AbhCLVNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:11:14 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58F0C061574;
-        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id gb6so5753304pjb.0;
-        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wz7DsDh9in1WQ8szNmEgdOyLhNi2EeCu5C/ACTNPo9U=;
-        b=qLfwf/C+s6b8IixldJWT2CBWm5O3NiwsoHnQCRPa+ctPdpl3rSv0xXRGf+w5KoVvbp
-         1BVn3YU0S1FEdpQx5BgDJItFt8iNIQ1EFfCv6vx/j1muM1eKeMeZ5jrjgGbfCuh5nbNc
-         b6yVS3dqks+Ey0/1jPtGX6jdmuogG4aQi/2gnXNDwWO2Gj4HtxNgzIqQ9bSTyR5YPAVB
-         iMiOjTF0u7Rav8MWsKpR0BZAj54z2jbgTzb38fdcGIGHV+xkAzOi4Ehpzkcq4K0smWzx
-         KU77hJnPChSxVFtwn8F61+VCpUltKWN7NyIHKT/9UsHO/4t/SF8eavVRpwSbjYQa6Fl7
-         7TEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wz7DsDh9in1WQ8szNmEgdOyLhNi2EeCu5C/ACTNPo9U=;
-        b=extL8IDXv13G64cPoGv/J7sW/de9HK7Ys4i5c6vmQD8TLV1paIGX+7n5SsqS4u/j/Q
-         BbH+dTfb1AbnGP1AOCs1nxjZ0tbyostlQxLhuuVun2BQ6pzF7ofkBmvdXGyttjDknKZP
-         KVa8tskkEXlxPkpXXbhiwW2mN+NpmAshvUAO1rPFO7zXt830Iox6X+rRc2pbA/CthNYg
-         64I6hwRJ2xvMdCKNBLfN2p+/MqfV4G3hqkuRM9fH7N2vYhPREq/C5EjOymb4i5hSxZoc
-         i2B8q4VYOSOLqMxYWrsSSeMYTHRRfGvWkoex7Fn4dMfwOk5FGDzcghG8bWog++Heub/X
-         eETw==
-X-Gm-Message-State: AOAM530AWNUvXrxLH5VpECS0ULhhhqUCoFrojKV22A4MDOFHKGTOSVUf
-        QMsIGVmAfDZBKOk1IJtHiDADW+6A1Og=
-X-Google-Smtp-Source: ABdhPJzP5j8G5Q1nTRmqPQ6pqv8fZyFzxMAaR9N48HRdcnMrQcsZx4fJ7g/xCcQrMe8c1X004LFUTw==
-X-Received: by 2002:a17:902:ab8b:b029:e5:ea3a:3d61 with SMTP id f11-20020a170902ab8bb02900e5ea3a3d61mr371524plr.71.1615583473070;
-        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o13sm6559634pgv.40.2021.03.12.13.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 13:11:12 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     zajec5@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: dsa: bcm_sf2: Fill in BCM4908 CFP entries
-Date:   Fri, 12 Mar 2021 13:11:01 -0800
-Message-Id: <20210312211102.3545866-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Mar 2021 16:13:34 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0B7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:13:34 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615583605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H8cbNOoxUdxvtKMbJI/6thmSir0x9hZ24uQjfzmb3lo=;
+        b=cmks//HZFB/wTqjuFqDoO4Ywm6CmvRO6w5WNxx2yenNiKS6IFWB0jxsP7mUZ1gZ6bg6bHV
+        19HEFjm3sRSiJo6Io0XTD93cxJQo9H8n7SSUphuNGlGd8j0+uZGH0sfACWNPi/k8fgiGVS
+        g7kil9H4BldPORoQMG48/IN/psClfcRoJplwmTu3yVqcv+xGlie6gjPN9Dm/ROc61bvMNK
+        0qBpa/b7dEJvmUGAmFmgUvsZDFcfFp7+93O8uJsErgAan1PHO9nulxTGIiw2LWLARWmug8
+        LOCLWQue1FT8N3hzzIlEQ1yL6CneCtTNi42YgAx5DKqHwrLGN13YdV2GcniDWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615583605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H8cbNOoxUdxvtKMbJI/6thmSir0x9hZ24uQjfzmb3lo=;
+        b=vJoICCtDBtMxCBdTHHO6uKddLnifTPVPkCka97dQwOIOMRD+NdZYDEcLbgbN4PumyULN9s
+        KloWEL0C5fkKMWCQ==
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
+In-Reply-To: <87blbo2my0.fsf@nanos.tec.linutronix.de>
+References: <20210311132036.228542540@linutronix.de> <20210311141704.424120350@linutronix.de> <20210312161148.GA25946@redhat.com> <87blbo2my0.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 12 Mar 2021 22:13:25 +0100
+Message-ID: <871rck2hze.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM4908 switch has 256 CFP entrie, update that setting so CFP can be
-used.
+On Fri, Mar 12 2021 at 20:26, Thomas Gleixner wrote:
+> On Fri, Mar 12 2021 at 17:11, Oleg Nesterov wrote:
+>> On 03/11, Thomas Gleixner wrote:
+>>>
+>>> @@ -456,7 +460,12 @@ static void __sigqueue_free(struct sigqu
+>>>  		return;
+>>>  	if (atomic_dec_and_test(&q->user->sigpending))
+>>>  		free_uid(q->user);
+>>> -	kmem_cache_free(sigqueue_cachep, q);
+>>> +
+>>> +	/* Cache one sigqueue per task */
+>>> +	if (!current->sigqueue_cache)
+>>> +		current->sigqueue_cache = q;
+>>> +	else
+>>> +		kmem_cache_free(sigqueue_cachep, q);
+>>>  }
+>>
+>> This doesn't look right, note that __exit_signal() does
+>> flush_sigqueue(&sig->shared_pending) at the end, after exit_task_sighand()
+>> was already called.
+>>
+>> I'd suggest to not add the new exit_task_sighand() helper and simply free
+>> current->sigqueue_cache at the end of __exit_signal().
+>
+> Ooops. Thanks for spotting this!
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/dsa/bcm_sf2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hrm.
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index f277df922fcd..60a004f8465d 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -1151,7 +1151,7 @@ static const struct bcm_sf2_of_data bcm_sf2_4908_data = {
- 	.type		= BCM4908_DEVICE_ID,
- 	.core_reg_align	= 0,
- 	.reg_offsets	= bcm_sf2_4908_reg_offsets,
--	.num_cfp_rules	= 0, /* FIXME */
-+	.num_cfp_rules	= 256,
- };
- 
- /* Register offsets for the SWITCH_REG_* block */
--- 
-2.25.1
+The task which is released is obviously not current, so even if there
+are still sigqueues in shared_pending then they wont end up in the
+released tasks sigqueue_cache. They can only ever end up in
+current->sigqueue_cache.
+
+But that brings my memory back why I had cmpxchg() in the original
+version. This code runs without current->sighand->siglock held.
+
+So we need READ/WRITE_ONCE() for that on both sides which is sufficient.
+
+Thanks,
+
+        tglx
+
 
