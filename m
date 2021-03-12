@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EFB3398BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C23A3398BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhCLUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:55:58 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:46738 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235009AbhCLUzg (ORCPT
+        id S235103AbhCLU4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235089AbhCLU4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:55:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=CGrXx6tnunS4rU4vJV260ajUW0JSem+Dld3wlshcr6w=; b=BDbN0bC7mvuP4MZ4/ukk0LJPNY
-        DPviP0ZYyTMeFAwbu8j5dMB7b2KzG2FZ7qIkKt0NUgGiAf1lt0M1PYF+gfW9IiRlBWt46STFG4T8J
-        cZYMNg2vCeXa+Q8UWw2v2fJVgGu+2rbQWfbc9Xj5/D0yUfdNA2Z63WK6JaJHzMzVN8MTGlNX/GGyd
-        Q6TBybdzp+x5Va6pP4OJcp8RqQl1vJGjI19FBAYa1GlCi7QLe7TtG8cifa5LNRoBCRtHYgdC61UIV
-        8pOHhROLuEdapKBxAr35W/geKRPGeu8OGDWP2al0JqcX1wjdqdeNjhR6T4IFhrJ7RbKjOU1kMSY/G
-        DjXl5YXA==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lKon3-0002ZN-Ku; Fri, 12 Mar 2021 13:53:46 -0700
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210312203936.GA2286981@bjorn-Precision-5520>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <b7b61f6d-3a94-3539-f7f5-425fbb1a9dfa@deltatee.com>
-Date:   Fri, 12 Mar 2021 13:53:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 12 Mar 2021 15:56:09 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFFAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:56:09 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so2663467pfj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:56:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0MZ2+8nOsi7HJhoAfY0jiveT3TjLCB961VetY/jrPME=;
+        b=hv4WP0ZL+I8JtgtyKJ7f7l9KqijZvL568YYhIiCgfdKI7r+UV7zLmMfPvTUHVRXyKx
+         o4CradS9EPYHOAmodxix7Nhkt427K+WQjUbz/aEHGlWGJrr6FqqOZqGXnyS7niQgUt+J
+         EvhCpgqbDwIhDRkgPuWskwZZtUa25kw7dfEzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0MZ2+8nOsi7HJhoAfY0jiveT3TjLCB961VetY/jrPME=;
+        b=oqDX/J9E824JGDZoC2ZczppAghdgByADWy0IVBxJ+XB0qHhd+RjJxZUd3BVFttVC7U
+         F8rMGnQjBEGdut8JOEnQVDAWCAucx1vtABFV/KP/9C3MGMC9I91KV+DJ6zgoWe/wV+Ez
+         KOC2oTthpJ+m2AqoDKc/6UTBWR6hX8gm0w+O/A8NXC++rs7qMTv21t7ThoxbmVVFK2ya
+         78JHLIP6qkvlPPMFj9Wmu3y3Partniixq/gseKKg5+fhCK6F9pnbOCfg1Rcj+miEbdDD
+         au9p9PGBfdKa3qGhM9CAbXOg1+YqKHSxDQVLc9SeyLegsOtlOq01MmMbDy7YCyx0MrAu
+         IwQg==
+X-Gm-Message-State: AOAM5316unmm8xqn1ADRrZByCnZo9CY/f41q3IqQebXXNfkNMD+xGq1c
+        +FbS8fuu+FnuXKvPHrZfFk6HMw==
+X-Google-Smtp-Source: ABdhPJzafy8BkL0OjlmboQU08y3WvQDXVi4tBbIHv5S4LxUKUq0ByUCjHSgQQd7OLwhk4XwkCkPP+g==
+X-Received: by 2002:a63:4f59:: with SMTP id p25mr13380520pgl.335.1615582569298;
+        Fri, 12 Mar 2021 12:56:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c25sm5919465pfo.101.2021.03.12.12.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 12:56:08 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] seq_file: Unconditionally use vmalloc for buffer
+Date:   Fri, 12 Mar 2021 12:55:58 -0800
+Message-Id: <20210312205558.2947488-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210312203936.GA2286981@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, helgaas@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [RFC PATCH v2 01/11] PCI/P2PDMA: Pass gfp_mask flags to
- upstream_bridge_distance_warn()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-Patch-Hashes: v=1; h=sha256; g=6e23cb09e9c77602ae36025771732e214a07d5d1; i=wnTs9CQ9b8oyAQUYWk1TWb6rr60OLTnvw/rrLAiBrmk=; m=mNgWWeM/mV0t2QLIflkURb7sIrkmH0bDqAx9/NsC4HI=; p=mfyYitSAa6+tmp4ZfMy/uMq8hKV0urLrdhp8kEobIBA=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBL1V0ACgkQiXL039xtwCa3LQ/6Amd tpDEYqTBiE/cyKH5oUqsQxoRBQ19QCQ9ALOD4dXuoBkkGN2Z8c4FJjnPlpgEDPXleFKrWyxGVvQYs gzJxQAsLJ5cG0YYTFGMHHDTrWCNNCqi9+PpSZP8vZ7+HtwsHJIVWrZEGrkYLRIVVrY8sFTWpcKghS YGBi7qPuHqBiz0axrxoqgaX8KKG6wCDpgJn2yPZkwPFvv0gAKRPNdBRbgCk29gs/nc8/1/cPcXZuN fmd1JOG+7QeCK2EZ/0c2WkcYi1/tGVtJuFOeSGqmaJ+te9giO8ttPFZKSf68zxMsffb71+beLFXbx L2mplD8GK/yZZ3rDf7fl36bcIVF1EfzishGjcJEk4qMz+7WfyHCb7cLl74fcsWiv5NVjdQD8UHgdE rvgvzwZ6vo7XEipizdLTILPj7pdW+51I2RvZOreYuQxN3PY0HW4uTVb7RX/FKm4iE/E5birDDza4m Q+HGdnqsqXnni58jFh9EUwGzVeMpksHjIkPrMsy50opl3TAp1149pFv5IbpJ98FKhHpmeD9MqPbG+ EQU+zzxfuD7Tdg0Rq/LeN7/OWQdrdFh4wtU7+O1sbW/LLVyCd0tJEVGhF0FUWKTDLr+PzMLWyA16z dggneBkRh7rz6SCkRsaIXJYYYesvxRwBGxbt1E4u4BGQkdQimA5Y8fQsXpK2tkjc=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The sysfs interface to seq_file continues to be rather fragile, as seen
+with some recent exploits[1]. Move the seq_file buffer to the vmap area
+(while retaining the accounting flag), since it has guard pages that
+will catch and stop linear overflows. This seems justified given that
+seq_file already uses kvmalloc(), that allocations are normally short
+lived, and that they are not normally performance critical.
 
+[1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
 
-On 2021-03-12 1:39 p.m., Bjorn Helgaas wrote:
-> On Thu, Mar 11, 2021 at 04:31:31PM -0700, Logan Gunthorpe wrote:
->> In order to call this function from a dma_map function, it must not sleep.
->> The only reason it does sleep so to allocate the seqbuf to print
->> which devices are within the ACS path.
-> 
-> s/this function/upstream_bridge_distance_warn()/ ?
-> s/so to/is to/
-> 
-> Maybe the subject could say something about the purpose, e.g., allow
-> calling from atomic context or something?  "Pass gfp_mask flags" sort
-> of restates what we can read from the patch, but without the
-> motivation of why this is useful.
-> 
->> Switch the kmalloc call to use a passed in gfp_mask  and don't print that
->> message if the buffer fails to be allocated.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/seq_file.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thanks! I'll apply these changes for any future postings.
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index cb11a34fb871..ad78577d4c2c 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -32,7 +32,7 @@ static void seq_set_overflow(struct seq_file *m)
+ 
+ static void *seq_buf_alloc(unsigned long size)
+ {
+-	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
++	return __vmalloc(size, GFP_KERNEL_ACCOUNT);
+ }
+ 
+ /**
+@@ -130,7 +130,7 @@ static int traverse(struct seq_file *m, loff_t offset)
+ 
+ Eoverflow:
+ 	m->op->stop(m, p);
+-	kvfree(m->buf);
++	vfree(m->buf);
+ 	m->count = 0;
+ 	m->buf = seq_buf_alloc(m->size <<= 1);
+ 	return !m->buf ? -ENOMEM : -EAGAIN;
+@@ -237,7 +237,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 			goto Fill;
+ 		// need a bigger buffer
+ 		m->op->stop(m, p);
+-		kvfree(m->buf);
++		vfree(m->buf);
+ 		m->count = 0;
+ 		m->buf = seq_buf_alloc(m->size <<= 1);
+ 		if (!m->buf)
+@@ -349,7 +349,7 @@ EXPORT_SYMBOL(seq_lseek);
+ int seq_release(struct inode *inode, struct file *file)
+ {
+ 	struct seq_file *m = file->private_data;
+-	kvfree(m->buf);
++	vfree(m->buf);
+ 	kmem_cache_free(seq_file_cache, m);
+ 	return 0;
+ }
+@@ -585,7 +585,7 @@ int single_open_size(struct file *file, int (*show)(struct seq_file *, void *),
+ 		return -ENOMEM;
+ 	ret = single_open(file, show, data);
+ 	if (ret) {
+-		kvfree(buf);
++		vfree(buf);
+ 		return ret;
+ 	}
+ 	((struct seq_file *)file->private_data)->buf = buf;
+-- 
+2.25.1
 
-Logan
