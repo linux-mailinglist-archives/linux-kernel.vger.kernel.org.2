@@ -2,396 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DAF3399D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04723399D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhCLWur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:50:47 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:48620 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235616AbhCLWub (ORCPT
+        id S235675AbhCLW4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235616AbhCLWzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:50:31 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C958C88F;
-        Fri, 12 Mar 2021 23:50:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615589430;
-        bh=8dGaAIyf/Z+hKQFuGGj2if7jgmUaYvTMS1lyhN8XqIo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hgUlapg3RkiTqbAcwhC2iA347DFAbZvksYFwu8swLgapg1aSjSSGdgYvUuXOAZ9Av
-         HYB8280nFtT2xs3oqRCMjGOV7y3nSIFrsHQ5qlVY9Z78XRXXfx7qKANcQNJkik+lDG
-         KTP+oIKe3mCp8M/hgHG9Ke/qfvcRW0rdTTvp6DMA=
-Date:   Sat, 13 Mar 2021 00:49:55 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
-Message-ID: <YEvwE1GUJDUMxrkm@pendragon.ideasonboard.com>
-References: <20210312222539.1403488-1-ribalda@chromium.org>
+        Fri, 12 Mar 2021 17:55:53 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD8DC061574;
+        Fri, 12 Mar 2021 14:55:52 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 18so2856679pfo.6;
+        Fri, 12 Mar 2021 14:55:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gVfp0GOuW021y83dSXyR6/vXbFIF0G87idBXHsJFAgk=;
+        b=HARRK5vDhE5auQNJlGhd4n08JFzTy0FyKErYWbU/FjszI0H19UWOySGoi/HvQvWYfZ
+         cID1W7mHIOnuayfagpz8xFSjP1Zun67YhNJ2nNalBeN48+N0DirXS6iKyNDSMXZejH3g
+         jFvYpwMHVIZWZkKTKIXGAi/qzgOL2FQqLqiAMJd0hIe9Bqp3yQ2i2o8tsf7frOd26UqQ
+         Jv4gN6048lqa4SxF2crVPiiuJMPAPjD3UciB0YbgvQZa+cjLWzBatdv2ofoVY9wzAluf
+         PXjJ7yq4JegOidSlX4xt8jB4b4NSGtuabyp9Us1k2656qvUYOW6Apr8wtr4uXHstJs7f
+         RUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gVfp0GOuW021y83dSXyR6/vXbFIF0G87idBXHsJFAgk=;
+        b=WV6wuvRqNN1rYVukWGv95tdbe8lIpfWDfAjaVyoYA9k/OBbK2QSrhDyXwfi4oBzPAS
+         nylAg9UxlcyTelIuJFZJ8xKcneoozgpgUOkRRWQyGimfKEbCmYwWSVZJAgA63P1x/ixH
+         imz3hbY8UW4O/3c8AZfqz8h3FoC6c/6Wvsi0paQMgE2UyOE9oWMTtt1DVIKpbXCBB8cY
+         RFfpCWKaF1oOMnV2HRrErYOxpqEi6vNRhfWnYQ6n1NZHfffPOpeV1bWWx1plQ1CugsRJ
+         NZiBbLCSxKC+BzL7F9sWEwzYsdFZEh6/bNlRs9GTg7poOO6LzSJAvivujscqiMpwTWmK
+         d0DQ==
+X-Gm-Message-State: AOAM5332Ewvm6q+4Pjf0j6RBgmn8hpUGKGo3c0zCrbAdXI5xzSkZF/Xx
+        jmdxqIqRvjoJGIJbbIrd8YyJ5+EQaYw=
+X-Google-Smtp-Source: ABdhPJwiIIcnWcUsd4BRk55SF5jIvdCcxEeCZGhzHYJ5YH/olc6LTnh5le58Qjflm1iwLLfYFfwWiw==
+X-Received: by 2002:a62:ee09:0:b029:1c0:ba8c:fcea with SMTP id e9-20020a62ee090000b02901c0ba8cfceamr385980pfi.7.1615589751600;
+        Fri, 12 Mar 2021 14:55:51 -0800 (PST)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id x11sm12515643pjh.0.2021.03.12.14.55.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 14:55:50 -0800 (PST)
+Subject: Re: [PATCH 5.4 00/24] 5.4.105-rc1 review
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210310132320.550932445@linuxfoundation.org>
+ <29dcd801-7f1e-ae09-9b88-ce17cb096f60@gmail.com> <YEoWT85kGVYbBnKY@kroah.com>
+ <61cef8f0-c40a-c4e4-5322-9939ed21bff7@gmail.com> <YEpV/FZ8mLivt0hy@kroah.com>
+ <40f06036-c6de-706b-30a0-e20de0c6ff57@gmail.com>
+Message-ID: <72fd4a3f-1548-96eb-16f6-55907019afbf@gmail.com>
+Date:   Fri, 12 Mar 2021 14:55:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <40f06036-c6de-706b-30a0-e20de0c6ff57@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210312222539.1403488-1-ribalda@chromium.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+On 3/11/21 9:41 AM, Florian Fainelli wrote:
+> On 3/11/21 9:40 AM, Greg KH wrote:
+>> On Thu, Mar 11, 2021 at 09:23:56AM -0800, Florian Fainelli wrote:
+>>> On 3/11/21 5:08 AM, Greg KH wrote:
+>>>> On Wed, Mar 10, 2021 at 08:19:45PM -0800, Florian Fainelli wrote:
+>>>>> +Alex,
+>>>>>
+>>>>> On 3/10/2021 5:24 AM, gregkh@linuxfoundation.org wrote:
+>>>>>> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>
+>>>>>> This is the start of the stable review cycle for the 5.4.105 release.
+>>>>>> There are 24 patches in this series, all will be posted as a response
+>>>>>> to this one.  If anyone has any issues with these being applied, please
+>>>>>> let me know.
+>>>>>>
+>>>>>> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+>>>>>> Anything received after that time might be too late.
+>>>>>>
+>>>>>> The whole patch series can be found in one patch at:
+>>>>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.105-rc1.gz
+>>>>>> or in the git tree and branch at:
+>>>>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+>>>>>> and the diffstat can be found below.
+>>>>>>
+>>>>>> thanks,
+>>>>>>
+>>>>>> greg k-h
+>>>>>
+>>>>> I believe you need to drop "net: dsa: add GRO support via gro_cells" as
+>>>>> it causes the following kernel panic on a DSA-enabled platform:
+>>>>>
+>>>>> Configuring rgmii_2 interface
+>>>>> [   10.170527] brcm-sf2 f0b00000.ethernet_switch rgmii_2: configuring
+>>>>> for fixed/rgmii-txid link mode
+>>>>> [   10.179597] 8021q: adding VLAN 0 to HW filter on device rgmii_2
+>>>>> [   10.185608] brcm-sf2 f0b00000.ethernet_switch rgmii_2: Link is Up -
+>>>>> 1Gbps/Full - flow control off
+>>>>> [   10.198631] IPv6: ADDRCONF(NETDEV_CHANGE): rgmii_2: link becomes ready
+>>>>> Configuring sit0 interface
+>>>>> [   10.254346] 8<--- cut here ---
+>>>>> [   10.257438] Unable to handle kernel paging request at virtual address
+>>>>> d6df6190
+>>>>> [   10.264685] pgd = (ptrval)
+>>>>> [   10.267411] [d6df6190] *pgd=80000000007003, *pmd=00000000
+>>>>> [   10.272846] Internal error: Oops: 206 [#1] SMP ARM
+>>>>> [   10.277661] Modules linked in:
+>>>>> [   10.280739] CPU: 0 PID: 1886 Comm: sed Not tainted
+>>>>> 5.4.105-1.0pre-geff642e2af2b #4
+>>>>> [   10.288337] Hardware name: Broadcom STB (Flattened Device Tree)
+>>>>> [   10.294292] PC is at gro_cells_receive+0x90/0x11c
+>>>>> [   10.299020] LR is at dsa_switch_rcv+0x120/0x1d4
+>>>>> [   10.303562] pc : [<c0a57a28>]    lr : [<c0b4a65c>]    psr: 600f0113
+>>>>> [   10.309841] sp : c1d33cd0  ip : 000003e8  fp : c1d33ce4
+>>>>> [   10.315078] r10: c8901000  r9 : c8901000  r8 : c0b4a53c
+>>>>> [   10.320314] r7 : c2208920  r6 : 00000000  r5 : 00000000  r4 : 00004000
+>>>>> [   10.326855] r3 : d6df6188  r2 : c4927000  r1 : c8adc300  r0 : c22069dc
+>>>>> [   10.333398] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM
+>>>>> Segment user
+>>>>> [   10.340547] Control: 30c5387d  Table: 04ac4c80  DAC: fffffffd
+>>>>> [   10.346307] Process sed (pid: 1886, stack limit = 0x(ptrval))
+>>>>> [   10.352066] Stack: (0xc1d33cd0 to 0xc1d34000)
+>>>>> [   10.356434] 3cc0:                                     c8adc300
+>>>>> c4927000 c1d33d04 c1d33ce8
+>>>>> [   10.364631] 3ce0: c0b4a65c c0a579a4 c1d33d24 c2208920 c1d33d24
+>>>>> 00000000 c1d33d5c c1d33d08
+>>>>> [   10.372827] 3d00: c0a0b38c c0b4a548 c021e070 c2204cc8 00000000
+>>>>> c89015c0 04b87700 c89015c0
+>>>>> [   10.381023] 3d20: c2208920 c1d33d24 c1d33d24 00976ec2 04b87700
+>>>>> c8adc300 c89015c0 00000000
+>>>>> [   10.389218] 3d40: c1d33d74 c1d32000 00000000 c230742c c1d33dac
+>>>>> c1d33d60 c0a0b5c0 c0a0b180
+>>>>> [   10.397414] 3d60: 00000000 c2204cc8 00000000 c1d33d6c c1d33d6c
+>>>>> c1d33d80 c029daf8 00976ec2
+>>>>> [   10.405610] 3d80: 00000800 c8901540 c89015c0 c8901540 00000000
+>>>>> 00000001 0000016c 00000162
+>>>>> [   10.413805] 3da0: c1d33dc4 c1d33db0 c0a0b7fc c0a0b3b8 00000000
+>>>>> c8adc300 c1d33dfc c1d33dc8
+>>>>> [   10.422001] 3dc0: c0a0c660 c0a0b7e4 c8901540 c8adc300 c1d33dfc
+>>>>> c1d33de0 c8901540 c8adc300
+>>>>> [   10.430196] 3de0: 0000015e c8901000 00000001 0000016c c1d33e74
+>>>>> c1d33e00 c083df00 c0a0c4fc
+>>>>> [   10.438391] 3e00: 0000012c c22b0f14 c1d33e4c c1d33e18 c0fbd9b8
+>>>>> c0fbd9cc c0fbd9e0 c0fbd98c
+>>>>> [   10.446586] 3e20: 00000001 00000040 c8901500 00000001 00000000
+>>>>> 00000000 00000000 00000000
+>>>>> [   10.454780] 3e40: 00000000 00000000 c02f65a0 c8901540 00000001
+>>>>> 00000040 c22b07e4 0000012c
+>>>>> [   10.462975] 3e60: d1003000 fffb942f c1d33edc c1d33e78 c0a0c94c
+>>>>> c083dafc d051ad80 c2204cc8
+>>>>> [   10.471170] 3e80: c2204cf0 c1d32000 c22b40b0 0e4a4000 c2076d80
+>>>>> c2203d00 c022bc70 c1d33e9c
+>>>>> [   10.479365] 3ea0: c1d33e9c c1d33ea4 c1d33ea4 00976ec2 c02f65a0
+>>>>> c220308c 00000003 c1d32000
+>>>>> [   10.487561] 3ec0: c22b07e4 00000100 d1003000 00000008 c1d33f44
+>>>>> c1d33ee0 c020238c c0a0c6cc
+>>>>> [   10.495755] 3ee0: c1d33f14 c1d33ef0 00000001 00400000 c2203d00
+>>>>> fffb942f c206b2e4 c2076040
+>>>>> [   10.503950] 3f00: c2076040 0000000a c2203080 c206b358 c1d33ee0
+>>>>> 00000004 c90c9500 ffffe000
+>>>>> [   10.512145] 3f20: 00000000 00000000 00000001 c9019000 d1003000
+>>>>> 00000000 c1d33f5c c1d33f48
+>>>>> [   10.520339] 3f40: c022bc70 c0202264 c2075fbc 00000000 c1d33f84
+>>>>> c1d33f60 c027feb4 c022bb88
+>>>>> [   10.528535] 3f60: c226d668 c220565c d100200c c1d33fb0 d1002000
+>>>>> d1003000 c1d33fac c1d33f88
+>>>>> [   10.536730] 3f80: c0202214 c027fe50 b6f1e0b6 000f0030 ffffffff
+>>>>> 30c5387d 30c5387d 00000000
+>>>>> [   10.544924] 3fa0: 00000000 c1d33fb0 c0201d8c c02021c4 b6ec1778
+>>>>> b6f32094 62632e73 62740000
+>>>>> [   10.553120] 3fc0: 00172e73 00001700 b6f3293c 00000001 00000001
+>>>>> 00000000 00000000 00000006
+>>>>> [   10.561316] 3fe0: ffffffff bef37ac8 b6f18151 b6f1e0b6 000f0030
+>>>>> ffffffff 00000000 00000000
+>>>>> [   10.569508] Backtrace:
+>>>>> [   10.571970] [<c0a57998>] (gro_cells_receive) from [<c0b4a65c>]
+>>>>> (dsa_switch_rcv+0x120/0x1d4)
+>>>>> [   10.580338]  r5:c4927000 r4:c8adc300
+>>>>> [   10.583929] [<c0b4a53c>] (dsa_switch_rcv) from [<c0a0b38c>]
+>>>>> (__netif_receive_skb_list_core+0x218/0x238)
+>>>>> [   10.593343]  r7:00000000 r6:c1d33d24 r5:c2208920 r4:c1d33d24
+>>>>> [   10.599017] [<c0a0b174>] (__netif_receive_skb_list_core) from
+>>>>> [<c0a0b5c0>] (netif_receive_skb_list_internal+0x214/0x2dc)
+>>>>> [   10.609909]  r10:c230742c r9:00000000 r8:c1d32000 r7:c1d33d74
+>>>>> r6:00000000 r5:c89015c0
+>>>>> [   10.617755]  r4:c8adc300
+>>>>> [   10.620300] [<c0a0b3ac>] (netif_receive_skb_list_internal) from
+>>>>> [<c0a0b7fc>] (gro_normal_list.part.42+0x24/0x38)
+>>>>> [   10.630496]  r10:00000162 r9:0000016c r8:00000001 r7:00000000
+>>>>> r6:c8901540 r5:c89015c0
+>>>>> [   10.638342]  r4:c8901540
+>>>>> [   10.640885] [<c0a0b7d8>] (gro_normal_list.part.42) from [<c0a0c660>]
+>>>>> (napi_complete_done+0x170/0x1d0)
+>>>>> [   10.650123]  r5:c8adc300 r4:00000000
+>>>>> [   10.653712] [<c0a0c4f0>] (napi_complete_done) from [<c083df00>]
+>>>>> (bcm_sysport_poll+0x410/0x4b4)
+>>>>> [   10.662343]  r9:0000016c r8:00000001 r7:c8901000 r6:0000015e
+>>>>> r5:c8adc300 r4:c8901540
+>>>>> [   10.670104] [<c083daf0>] (bcm_sysport_poll) from [<c0a0c94c>]
+>>>>> (net_rx_action+0x28c/0x44c)
+>>>>> [   10.678301]  r10:fffb942f r9:d1003000 r8:0000012c r7:c22b07e4
+>>>>> r6:00000040 r5:00000001
+>>>>> [   10.686146]  r4:c8901540
+>>>>> [   10.688693] [<c0a0c6c0>] (net_rx_action) from [<c020238c>]
+>>>>> (__do_softirq+0x134/0x414)
+>>>>> [   10.696542]  r10:00000008 r9:d1003000 r8:00000100 r7:c22b07e4
+>>>>> r6:c1d32000 r5:00000003
+>>>>> [   10.704387]  r4:c220308c
+>>>>> [   10.706931] [<c0202258>] (__do_softirq) from [<c022bc70>]
+>>>>> (irq_exit+0xf4/0x100)
+>>>>> [   10.714257]  r10:00000000 r9:d1003000 r8:c9019000 r7:00000001
+>>>>> r6:00000000 r5:00000000
+>>>>> [   10.722104]  r4:ffffe000
+>>>>> [   10.724650] [<c022bb7c>] (irq_exit) from [<c027feb4>]
+>>>>> (__handle_domain_irq+0x70/0xc4)
+>>>>> [   10.732497]  r5:00000000 r4:c2075fbc
+>>>>> [   10.736083] [<c027fe44>] (__handle_domain_irq) from [<c0202214>]
+>>>>> (gic_handle_irq+0x5c/0xa0)
+>>>>> [   10.744453]  r9:d1003000 r8:d1002000 r7:c1d33fb0 r6:d100200c
+>>>>> r5:c220565c r4:c226d668
+>>>>> [   10.752215] [<c02021b8>] (gic_handle_irq) from [<c0201d8c>]
+>>>>> (__irq_usr+0x4c/0x60)
+>>>>> [   10.759713] Exception stack(0xc1d33fb0 to 0xc1d33ff8)
+>>>>> [   10.764776] 3fa0:                                     b6ec1778
+>>>>> b6f32094 62632e73 62740000
+>>>>> [   10.772973] 3fc0: 00172e73 00001700 b6f3293c 00000001 00000001
+>>>>> 00000000 00000000 00000006
+>>>>> [   10.781167] 3fe0: ffffffff bef37ac8 b6f18151 b6f1e0b6 000f0030 ffffffff
+>>>>> [   10.787797]  r9:00000000 r8:30c5387d r7:30c5387d r6:ffffffff
+>>>>> r5:000f0030 r4:b6f1e0b6
+>>>>> [   10.795559] Code: e30609dc e34c0220 e083300c e590c000 (e5930008)
+>>>>> [   10.801670] ---[ end trace 97c3942fa73eff4c ]---
+>>>>> [   10.806300] Kernel panic - not syncing: Fatal exception in interrupt
+>>>>> [   10.812678] CPU2: stopping
+>>>>> [   10.815403] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D
+>>>>>  5.4.105-1.0pre-geff642e2af2b #4
+>>>>> [   10.824641] Hardware name: Broadcom STB (Flattened Device Tree)
+>>>>> [   10.830573] Backtrace:
+>>>>> [   10.833036] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+>>>>> (show_stack+0x20/0x24)
+>>>>> [   10.840624]  r7:c22a86d0 r6:00000000 r5:600c0193 r4:c22a86d0
+>>>>> [   10.846302] [<c020e02c>] (show_stack) from [<c0c09924>]
+>>>>> (dump_stack+0xb8/0xe4)
+>>>>> [   10.853546] [<c0c0986c>] (dump_stack) from [<c0212160>]
+>>>>> (handle_IPI+0x344/0x3cc)
+>>>>> [   10.860960]  r10:00000000 r9:c2205400 r8:00000000 r7:00000002
+>>>>> r6:c22b0744 r5:00000004
+>>>>> [   10.868807]  r4:c22ce308 r3:00976ec2
+>>>>> [   10.872395] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+>>>>> (gic_handle_irq+0x9c/0xa0)
+>>>>> [   10.879983]  r10:00000000 r9:d1003000 r8:d1002000 r7:c9131f18
+>>>>> r6:d100200c r5:c220565c
+>>>>> [   10.887829]  r4:c226d668
+>>>>> [   10.890373] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+>>>>> (__irq_svc+0x5c/0x7c)
+>>>>> [   10.897871] Exception stack(0xc9131f18 to 0xc9131f60)
+>>>>> [   10.902934] 1f00:
+>>>>>    c020a47c 00000000
+>>>>> [   10.911131] 1f20: 0e4ca000 600c0093 c9130000 c2204cf0 c2204d34
+>>>>> 00000004 00000000 c20757b0
+>>>>> [   10.919327] 1f40: 00000000 c9131f74 c9130000 c9131f68 00000000
+>>>>> c020a480 600c0013 ffffffff
+>>>>> [   10.927523]  r9:c9130000 r8:00000000 r7:c9131f4c r6:ffffffff
+>>>>> r5:600c0013 r4:c020a480
+>>>>> [   10.935291] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+>>>>> (default_idle_call+0x34/0x48)
+>>>>> [   10.943403] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+>>>>> (do_idle+0x1d4/0x2c0)
+>>>>> [   10.951164] [<c0257eec>] (do_idle) from [<c0258494>]
+>>>>> (cpu_startup_entry+0x28/0x2c)
+>>>>> [   10.958752]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+>>>>> r6:30c0387d r5:00000002
+>>>>> [   10.966598]  r4:0000008a
+>>>>> [   10.969142] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+>>>>> (secondary_start_kernel+0x17c/0x1a0)
+>>>>> [   10.978210] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+>>>>> (0x20270c)
+>>>>> [   10.985447]  r5:00000000 r4:090eaa40
+>>>>> [   10.989032] CPU3: stopping
+>>>>> [   10.991754] CPU: 3 PID: 0 Comm: swapper/3 Tainted: G      D
+>>>>>  5.4.105-1.0pre-geff642e2af2b #4
+>>>>> [   11.000992] Hardware name: Broadcom STB (Flattened Device Tree)
+>>>>> [   11.006924] Backtrace:
+>>>>> [   11.009384] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+>>>>> (show_stack+0x20/0x24)
+>>>>> [   11.016972]  r7:c22a86d0 r6:00000000 r5:600f0193 r4:c22a86d0
+>>>>> [   11.022649] [<c020e02c>] (show_stack) from [<c0c09924>]
+>>>>> (dump_stack+0xb8/0xe4)
+>>>>> [   11.029892] [<c0c0986c>] (dump_stack) from [<c0212160>]
+>>>>> (handle_IPI+0x344/0x3cc)
+>>>>> [   11.037307]  r10:00000000 r9:c2205400 r8:00000000 r7:00000003
+>>>>> r6:c22b0744 r5:00000004
+>>>>> [   11.045154]  r4:c22ce308 r3:00976ec2
+>>>>> [   11.048741] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+>>>>> (gic_handle_irq+0x9c/0xa0)
+>>>>> [   11.056329]  r10:00000000 r9:d1003000 r8:d1002000 r7:c9133f18
+>>>>> r6:d100200c r5:c220565c
+>>>>> [   11.064176]  r4:c226d668
+>>>>> [   11.066719] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+>>>>> (__irq_svc+0x5c/0x7c)
+>>>>> [   11.074216] Exception stack(0xc9133f18 to 0xc9133f60)
+>>>>> [   11.079280] 3f00:
+>>>>>    c020a47c 00000000
+>>>>> [   11.087476] 3f20: 0e4dd000 600f0093 c9132000 c2204cf0 c2204d34
+>>>>> 00000008 00000000 c20757b0
+>>>>> [   11.095671] 3f40: 00000000 c9133f74 c9132000 c9133f68 00000000
+>>>>> c020a480 600f0013 ffffffff
+>>>>> [   11.103867]  r9:c9132000 r8:00000000 r7:c9133f4c r6:ffffffff
+>>>>> r5:600f0013 r4:c020a480
+>>>>> [   11.111633] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+>>>>> (default_idle_call+0x34/0x48)
+>>>>> [   11.119744] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+>>>>> (do_idle+0x1d4/0x2c0)
+>>>>> [   11.127506] [<c0257eec>] (do_idle) from [<c0258494>]
+>>>>> (cpu_startup_entry+0x28/0x2c)
+>>>>> [   11.135093]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+>>>>> r6:30c0387d r5:00000003
+>>>>> [   11.142939]  r4:0000008a
+>>>>> [   11.145484] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+>>>>> (secondary_start_kernel+0x17c/0x1a0)
+>>>>> [   11.154550] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+>>>>> (0x20270c)
+>>>>> [   11.161788]  r5:00000000 r4:090eaa40
+>>>>> [   11.165372] CPU1: stopping
+>>>>> [   11.168094] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D
+>>>>>  5.4.105-1.0pre-geff642e2af2b #4
+>>>>> [   11.177332] Hardware name: Broadcom STB (Flattened Device Tree)
+>>>>> [   11.183264] Backtrace:
+>>>>> [   11.185723] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+>>>>> (show_stack+0x20/0x24)
+>>>>> [   11.193311]  r7:c22a86d0 r6:00000000 r5:600c0193 r4:c22a86d0
+>>>>> [   11.198988] [<c020e02c>] (show_stack) from [<c0c09924>]
+>>>>> (dump_stack+0xb8/0xe4)
+>>>>> [   11.206230] [<c0c0986c>] (dump_stack) from [<c0212160>]
+>>>>> (handle_IPI+0x344/0x3cc)
+>>>>> [   11.213644]  r10:00000000 r9:c2205400 r8:00000000 r7:00000001
+>>>>> r6:c22b0744 r5:00000004
+>>>>> [   11.221491]  r4:c22ce308 r3:00976ec2
+>>>>> [   11.225078] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+>>>>> (gic_handle_irq+0x9c/0xa0)
+>>>>> [   11.232666]  r10:00000000 r9:d1003000 r8:d1002000 r7:c912ff18
+>>>>> r6:d100200c r5:c220565c
+>>>>> [   11.240512]  r4:c226d668
+>>>>> [   11.243054] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+>>>>> (__irq_svc+0x5c/0x7c)
+>>>>> [   11.250553] Exception stack(0xc912ff18 to 0xc912ff60)
+>>>>> [   11.255617] ff00:
+>>>>>    c020a47c 00000000
+>>>>> [   11.263814] ff20: 0e4b7000 600c0093 c912e000 c2204cf0 c2204d34
+>>>>> 00000002 00000000 c20757b0
+>>>>> [   11.272010] ff40: 00000000 c912ff74 c912e000 c912ff68 00000000
+>>>>> c020a480 600c0013 ffffffff
+>>>>> [   11.280206]  r9:c912e000 r8:00000000 r7:c912ff4c r6:ffffffff
+>>>>> r5:600c0013 r4:c020a480
+>>>>> [   11.287970] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+>>>>> (default_idle_call+0x34/0x48)
+>>>>> [   11.296081] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+>>>>> (do_idle+0x1d4/0x2c0)
+>>>>> [   11.303842] [<c0257eec>] (do_idle) from [<c0258494>]
+>>>>> (cpu_startup_entry+0x28/0x2c)
+>>>>> [   11.311430]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+>>>>> r6:30c0387d r5:00000001
+>>>>> [   11.319275]  r4:0000008a
+>>>>> [   11.321819] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+>>>>> (secondary_start_kernel+0x17c/0x1a0)
+>>>>> [   11.330886] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+>>>>> (0x20270c)
+>>>>> [   11.338124]  r5:00000000 r4:090eaa40
+>>>>> [   11.341729] ---[ end Kernel panic - not syncing: Fatal exception in
+>>>>> interrupt ]---
+>>>>>
+>>>>> it is not marked as fixing anything so I wonder how it landed in stable?
+>>>>
+>>>> It was requested to be merged.
+>>>
+>>> OK.
+>>>
+>>>> Do you have the same crash on newer kernels with this commit in it (like Linus's tree?)
+>>>
+>>> There are no crashes with 5.10 or upstream otherwise it would have been
+>>> noticed earlier, I have not kept track of which additional changes/fixes
+>>> we may need but I would suggest we drop this one for now.
+>>>
+>>> Alexander, do you want me to test additional patches if your change
+>>> somehow must be included in an upcoming 5.4? I thought the platform you
+>>> are working is still not upstream, so who is going to benefit from this
+>>> performance improvement?
+>>
+>> Is 4.19 also failing for you now?
+> 
+> I cannot easily test 4.19 without applying some additional patches
+> bringing in various ARM SCMI changes, I would suspect the same to
+> happen. Give me a few hours and I will see if I can give you a better
+> answer with an actual test.
 
-Thank you for the patch.
+I have not been able to reproduce this failure since merging the
+official v5.4.105 tag (more on that below), and 4.19 did not seem to
+trigger the problem either after applying the necessary patches to bring
+up the Ethernet PHY, switch and controller's clocks.
 
-On Fri, Mar 12, 2021 at 11:25:39PM +0100, Ricardo Ribalda wrote:
-> On architectures where there is no coherent caching such as ARM use the
-> dma_alloc_noncontiguous API and handle manually the cache flushing using
-> dma_sync_sgtable().
+So maybe this was just a fluke, I know our CPU frequency scaling driver
+may be too aggressive and the boards may suffer from power distribution
+problems leading to crashes, although I have never seen anything like
+that before, and the call trace was pretty obvious as to what had
+changed compared to v5.4.104 which had no such issues.
 
-Maybe updating this based on the comment I've just sent in the v2 thread
-?
-
-> With this patch on the affected architectures we can measure up to 20x
-> performance improvement in uvc_video_copy_data_work().
-> 
-> Eg: aarch64 with an external usb camera
-> 
-> NON_CONTIGUOUS
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 67034480 : duration 33303
-> FPS: 29.99
-> URB: 523446/4993 uS/qty: 104.836 avg 132.532 std 13.230 min 831.094 max (uS)
-> header: 76564/4993 uS/qty: 15.334 avg 15.229 std 3.438 min 186.875 max (uS)
-> latency: 468945/4992 uS/qty: 93.939 avg 132.577 std 9.531 min 824.010 max (uS)
-> decode: 54161/4993 uS/qty: 10.847 avg 6.313 std 1.614 min 111.458 max (uS)
-> raw decode speed: 9.931 Gbits/s
-> raw URB handling speed: 1.025 Gbits/s
-> throughput: 16.102 Mbits/s
-> URB decode CPU usage 0.162600 %
-> 
-> COHERENT
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 54683536 : duration 33302
-> FPS: 29.99
-> URB: 1478135/4000 uS/qty: 369.533 avg 390.357 std 22.968 min 3337.865 max (uS)
-> header: 79761/4000 uS/qty: 19.940 avg 18.495 std 1.875 min 336.719 max (uS)
-> latency: 281077/4000 uS/qty: 70.269 avg 83.102 std 5.104 min 735.000 max (uS)
-> decode: 1197057/4000 uS/qty: 299.264 avg 318.080 std 1.615 min 2806.667 max (uS)
-> raw decode speed: 365.470 Mbits/s
-> raw URB handling speed: 295.986 Mbits/s
-> throughput: 13.136 Mbits/s
-> URB decode CPU usage 3.594500 %
-> 
-> In non-affected architectures we see no significant impact.
-> 
-> Eg: x86 with an external usb camera
-> 
-> NON_CONTIGUOUS
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 70179056 : duration 33301
-> FPS: 29.99
-> URB: 288901/4897 uS/qty: 58.995 avg 26.022 std 4.319 min 253.853 max (uS)
-> header: 54792/4897 uS/qty: 11.189 avg 6.218 std 0.620 min 61.750 max (uS)
-> latency: 236602/4897 uS/qty: 48.315 avg 24.244 std 1.764 min 240.924 max (uS)
-> decode: 52298/4897 uS/qty: 10.679 avg 8.299 std 1.638 min 108.861 max (uS)
-> raw decode speed: 10.796 Gbits/s
-> raw URB handling speed: 1.949 Gbits/s
-> throughput: 16.859 Mbits/s
-> URB decode CPU usage 0.157000 %
-> 
-> COHERENT
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 71818320 : duration 33301
-> FPS: 29.99
-> URB: 321021/5000 uS/qty: 64.204 avg 23.001 std 10.430 min 268.837 max (uS)
-> header: 54308/5000 uS/qty: 10.861 avg 5.104 std 0.778 min 54.736 max (uS)
-> latency: 268799/5000 uS/qty: 53.759 avg 21.827 std 6.095 min 255.153 max (uS)
-> decode: 52222/5000 uS/qty: 10.444 avg 7.137 std 1.874 min 71.103 max (uS)
-> raw decode speed: 11.048 Gbits/s
-> raw URB handling speed: 1.789 Gbits/s
-> throughput: 17.253 Mbits/s
-> URB decode CPU usage 0.156800 %
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-> 
-> Changelog from v2 (Thanks Laurent!):
-> 
-> - Replace uvc_urb_dma_sync with uvc_submit_urb
-> - Add x86 stats in commit message
-> 
->  drivers/media/usb/uvc/uvc_video.c | 92 ++++++++++++++++++++++---------
->  drivers/media/usb/uvc/uvcvideo.h  |  5 +-
->  2 files changed, 71 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index f2f565281e63..37ee39412b83 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -6,11 +6,14 @@
->   *          Laurent Pinchart (laurent.pinchart@ideasonboard.com)
->   */
->  
-> +#include <linux/dma-mapping.h>
-> +#include <linux/highmem.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/usb.h>
-> +#include <linux/usb/hcd.h>
->  #include <linux/videodev2.h>
->  #include <linux/vmalloc.h>
->  #include <linux/wait.h>
-> @@ -1096,6 +1099,28 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
->  	return data[0];
->  }
->  
-> +static inline enum dma_data_direction stream_dir(struct uvc_streaming *stream)
-
-I hadn't noticed this before, but could you name this function
-uvc_stream_dir() (and uvc_stream_to_dmadev() below) to avoid potential
-namespace clashes ?
-
-> +{
-> +	if (stream->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> +		return DMA_FROM_DEVICE;
-> +	else
-> +		return DMA_TO_DEVICE;
-> +}
-> +
-> +static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
-> +{
-> +	return bus_to_hcd(stream->dev->udev->bus)->self.sysdev;
-> +}
-> +
-> +static int uvc_submit_urb(struct uvc_urb *uvc_urb, gfp_t mem_flags)
-> +{
-> +	/* Sync DMA. */
-> +	dma_sync_sgtable_for_device(stream_to_dmadev(uvc_urb->stream),
-> +				    uvc_urb->sgt,
-> +				    stream_dir(uvc_urb->stream));
-> +	return usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
-> +}
-> +
->  /*
->   * uvc_video_decode_data_work: Asynchronous memcpy processing
->   *
-> @@ -1117,7 +1142,7 @@ static void uvc_video_copy_data_work(struct work_struct *work)
->  		uvc_queue_buffer_release(op->buf);
->  	}
->  
-> -	ret = usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
-> +	ret = uvc_submit_urb(uvc_urb, GFP_KERNEL);
->  	if (ret < 0)
->  		dev_err(&uvc_urb->stream->intf->dev,
->  			"Failed to resubmit video URB (%d).\n", ret);
-> @@ -1537,6 +1562,11 @@ static void uvc_video_complete(struct urb *urb)
->  	/* Re-initialise the URB async work. */
->  	uvc_urb->async_operations = 0;
->  
-> +	/* Sync DMA and invalidate vmap range. */
-> +	dma_sync_sgtable_for_cpu(stream_to_dmadev(uvc_urb->stream),
-> +				 uvc_urb->sgt, stream_dir(stream));
-> +	invalidate_kernel_vmap_range(uvc_urb->buffer,
-> +				     uvc_urb->stream->urb_size);
-
-And a blank line here ?
-
-Just minor comments, all the rest looks good and my Rb still applies.
-
->  	/*
->  	 * Process the URB headers, and optionally queue expensive memcpy tasks
->  	 * to be deferred to a work queue.
-> @@ -1545,7 +1575,7 @@ static void uvc_video_complete(struct urb *urb)
->  
->  	/* If no async work is needed, resubmit the URB immediately. */
->  	if (!uvc_urb->async_operations) {
-> -		ret = usb_submit_urb(uvc_urb->urb, GFP_ATOMIC);
-> +		ret = uvc_submit_urb(uvc_urb, GFP_ATOMIC);
->  		if (ret < 0)
->  			dev_err(&stream->intf->dev,
->  				"Failed to resubmit video URB (%d).\n", ret);
-> @@ -1560,24 +1590,49 @@ static void uvc_video_complete(struct urb *urb)
->   */
->  static void uvc_free_urb_buffers(struct uvc_streaming *stream)
->  {
-> +	struct device *dma_dev = stream_to_dmadev(stream);
->  	struct uvc_urb *uvc_urb;
->  
->  	for_each_uvc_urb(uvc_urb, stream) {
->  		if (!uvc_urb->buffer)
->  			continue;
->  
-> -#ifndef CONFIG_DMA_NONCOHERENT
-> -		usb_free_coherent(stream->dev->udev, stream->urb_size,
-> -				  uvc_urb->buffer, uvc_urb->dma);
-> -#else
-> -		kfree(uvc_urb->buffer);
-> -#endif
-> +		dma_vunmap_noncontiguous(dma_dev, uvc_urb->buffer);
-> +		dma_free_noncontiguous(dma_dev, stream->urb_size, uvc_urb->sgt,
-> +				       stream_dir(stream));
-> +
->  		uvc_urb->buffer = NULL;
-> +		uvc_urb->sgt = NULL;
->  	}
->  
->  	stream->urb_size = 0;
->  }
->  
-> +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> +				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> +{
-> +	struct device *dma_dev = stream_to_dmadev(stream);
-> +
-> +	uvc_urb->sgt = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> +					       stream_dir(stream),
-> +					       gfp_flags, 0);
-> +	if (!uvc_urb->sgt)
-> +		return false;
-> +	uvc_urb->dma = uvc_urb->sgt->sgl->dma_address;
-> +
-> +	uvc_urb->buffer = dma_vmap_noncontiguous(dma_dev, stream->urb_size,
-> +						 uvc_urb->sgt);
-> +	if (!uvc_urb->buffer) {
-> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> +				       uvc_urb->sgt,
-> +				       stream_dir(stream));
-> +		uvc_urb->sgt = NULL;
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->  /*
->   * Allocate transfer buffers. This function can be called with buffers
->   * already allocated when resuming from suspend, in which case it will
-> @@ -1608,19 +1663,12 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
->  
->  	/* Retry allocations until one succeed. */
->  	for (; npackets > 1; npackets /= 2) {
-> +		stream->urb_size = psize * npackets;
-> +
->  		for (i = 0; i < UVC_URBS; ++i) {
->  			struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
->  
-> -			stream->urb_size = psize * npackets;
-> -#ifndef CONFIG_DMA_NONCOHERENT
-> -			uvc_urb->buffer = usb_alloc_coherent(
-> -				stream->dev->udev, stream->urb_size,
-> -				gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
-> -#else
-> -			uvc_urb->buffer =
-> -			    kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> -#endif
-> -			if (!uvc_urb->buffer) {
-> +			if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
->  				uvc_free_urb_buffers(stream);
->  				break;
->  			}
-> @@ -1730,12 +1778,8 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
->  		urb->context = uvc_urb;
->  		urb->pipe = usb_rcvisocpipe(stream->dev->udev,
->  				ep->desc.bEndpointAddress);
-> -#ifndef CONFIG_DMA_NONCOHERENT
->  		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
->  		urb->transfer_dma = uvc_urb->dma;
-> -#else
-> -		urb->transfer_flags = URB_ISO_ASAP;
-> -#endif
->  		urb->interval = ep->desc.bInterval;
->  		urb->transfer_buffer = uvc_urb->buffer;
->  		urb->complete = uvc_video_complete;
-> @@ -1795,10 +1839,8 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
->  
->  		usb_fill_bulk_urb(urb, stream->dev->udev, pipe,	uvc_urb->buffer,
->  				  size, uvc_video_complete, uvc_urb);
-> -#ifndef CONFIG_DMA_NONCOHERENT
->  		urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
->  		urb->transfer_dma = uvc_urb->dma;
-> -#endif
->  
->  		uvc_urb->urb = urb;
->  	}
-> @@ -1895,7 +1937,7 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
->  
->  	/* Submit the URBs. */
->  	for_each_uvc_urb(uvc_urb, stream) {
-> -		ret = usb_submit_urb(uvc_urb->urb, gfp_flags);
-> +		ret = uvc_submit_urb(uvc_urb, gfp_flags);
->  		if (ret < 0) {
->  			dev_err(&stream->intf->dev,
->  				"Failed to submit URB %u (%d).\n",
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 97df5ecd66c9..cce5e38133cd 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -219,6 +219,7 @@
->   */
->  
->  struct gpio_desc;
-> +struct sg_table;
->  struct uvc_device;
->  
->  /* TODO: Put the most frequently accessed fields at the beginning of
-> @@ -545,7 +546,8 @@ struct uvc_copy_op {
->   * @urb: the URB described by this context structure
->   * @stream: UVC streaming context
->   * @buffer: memory storage for the URB
-> - * @dma: DMA coherent addressing for the urb_buffer
-> + * @dma: Allocated DMA handle
-> + * @sgt: sgt_table with the urb locations in memory
->   * @async_operations: counter to indicate the number of copy operations
->   * @copy_operations: work descriptors for asynchronous copy operations
->   * @work: work queue entry for asynchronous decode
-> @@ -556,6 +558,7 @@ struct uvc_urb {
->  
->  	char *buffer;
->  	dma_addr_t dma;
-> +	struct sg_table *sgt;
->  
->  	unsigned int async_operations;
->  	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-
+So I guess we are good, until we are not. It concerns me however that
+this (latent at the time) issue was reported at Wed, 10 Mar 2021
+20:19:48 -0800 which is well before the deadline of Fri, 12 Mar 2021
+13:23:09 +0000, and yet, the v5.4.105 was announced on Thu, 11 Mar 2021
+05:33:31 -0800 (PST) and it went through with that patch nonetheless.
 -- 
-Regards,
-
-Laurent Pinchart
+Florian
