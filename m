@@ -2,190 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235D83396D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F81D3396DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbhCLSok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233880AbhCLSoU (ORCPT
+        id S233930AbhCLSpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:45:43 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:60820 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233923AbhCLSpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:44:20 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF244C061574;
-        Fri, 12 Mar 2021 10:44:19 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id a7so26760641iok.12;
-        Fri, 12 Mar 2021 10:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KKiouv1eprFdp8cyqZbRKzdDF1BxO+8+7O6XRnUPNYY=;
-        b=apzg0DwmUzO8SKLb5mJMXEkdpERbz/o+0p4zJ/+93T75wCBwPVy7VVGAn7h3QAmD6U
-         kdEHEkuOnL5rpIacy84CgysLBndGwQgXq7K2w5oWtFZ54CHLb6nth+vIAweDJsX7b3Y7
-         7HquDgx/uM0KNxpZZkbE29i5A0Pt6fqBVLTY76caC1aSeeyojSXFyyMzL3Vo28usY8KV
-         453csxQrhI72HlQDbt8bDQFgjuLxiv3mHWXJ1w8JenSmJgBO+ud+DqNt0E6OIZOZpFrU
-         UaecoLJ8OT7o+jQ8BpGXkRZQRUZgSjCP0i8wxn3+wbyc92ZAG8O7HfpnBaC/S+cfmV8+
-         GmEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KKiouv1eprFdp8cyqZbRKzdDF1BxO+8+7O6XRnUPNYY=;
-        b=LUwFX5/cChGkUoaOO6skBckPsIpAhxCi4xqv4TCrEovlBJ5/ZnnYlt3PDZlTlmdzC1
-         YiRm9jkyYT55btRpv471b5+qR+gYRH3ZlILbar8T8v1gMbdmd/bf7ind7F9Twpr9lnOW
-         iBOLYxMuPDcF34ZCWvF1ltjJ4HOC/csSZ5fH+C4fk+zESCrHGr8oC6Te/2nMbHUu7pyo
-         e3yW/WVdqRkoYXwgGU3pRenqtzphtFVjiCtTwBG+UTCB+/7RxtktcUbIIr85ZCMj6Jlh
-         pUYv8mMa9FjP1JqB1FtWnVZP64jxTT+37CdknQIwiK4kFY4hkeZLJmu+JnMEjZ33DIMD
-         I2Ng==
-X-Gm-Message-State: AOAM530UAk12ne79+8KRF/eEx+OPiZtuaR5rCska+lqIaRQQch6EwYwP
-        awex+M8RnopdnmvbJPrFSESBs0RlTPge2dptfyI=
-X-Google-Smtp-Source: ABdhPJzzYYT+IyN0pKKJoq1taE+f0eHNQJxNOErzOxE4nio01xX99ngiJyCGxOys+4cKS/Jo0K6MDTD2lNH45Swj7/0=
-X-Received: by 2002:a5e:8e41:: with SMTP id r1mr461266ioo.5.1615574659362;
- Fri, 12 Mar 2021 10:44:19 -0800 (PST)
+        Fri, 12 Mar 2021 13:45:10 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12CIRb3a003181;
+        Fri, 12 Mar 2021 12:44:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=7hx+MtkVI3AK3n86Hd9S0sFsoKCZzlL3dcqAqyanKP0=;
+ b=LnWTVZ2WRp8SxtUady/tcNOL9axtYDOeOpLdnjnUcSM7VEzJjdofeX2SvfRkG7sjKxnl
+ odf0wCDPvnmoXOyuf2uU7rVEUnj/3VlFv7g3Jv0jkEkPQSWiXYm57WUTZlI/bcrGP7J0
+ CuPVEBMODGYxSdah7Pe/7eOH5O1GPdUgElBC9dy/yMiCkVGJLMKNvi6tP7q3b2JzJE+V
+ dDbe4fDI4voJdt6OWEiHfFGa/q7M32fLkiwABMnFW+ukdgovYD2gpo8Hhi1XceTl99nV
+ Kc8w4ixbPqh6QT1leAkSwwlX7L89pJcodFJO2QTto9kVLkE2f94w6904W7yzrLMcB1ii 3w== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 37471w0b29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 12 Mar 2021 12:44:54 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 12 Mar
+ 2021 18:44:52 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 12 Mar 2021 18:44:52 +0000
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B476911CB;
+        Fri, 12 Mar 2021 18:44:52 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/4] ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups
+Date:   Fri, 12 Mar 2021 18:44:48 +0000
+Message-ID: <20210312184452.3288-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210312154331.32229-1-mgorman@techsingularity.net> <20210312154331.32229-6-mgorman@techsingularity.net>
-In-Reply-To: <20210312154331.32229-6-mgorman@techsingularity.net>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 12 Mar 2021 10:44:08 -0800
-Message-ID: <CAKgT0Uf-4CY=wU079Y87xwzz_UDm8AqGBdt_6OuVtADR8AN0hA@mail.gmail.com>
-Subject: Re: [PATCH 5/7] SUNRPC: Refresh rq_pages using a bulk page allocator
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 adultscore=0
+ malwarescore=0 mlxlogscore=498 impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103120135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 7:43 AM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> From: Chuck Lever <chuck.lever@oracle.com>
->
-> Reduce the rate at which nfsd threads hammer on the page allocator.
-> This improves throughput scalability by enabling the threads to run
-> more independently of each other.
->
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  net/sunrpc/svc_xprt.c | 43 +++++++++++++++++++++++++++++++------------
->  1 file changed, 31 insertions(+), 12 deletions(-)
->
-> diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-> index cfa7e4776d0e..38a8d6283801 100644
-> --- a/net/sunrpc/svc_xprt.c
-> +++ b/net/sunrpc/svc_xprt.c
-> @@ -642,11 +642,12 @@ static void svc_check_conn_limits(struct svc_serv *serv)
->  static int svc_alloc_arg(struct svc_rqst *rqstp)
->  {
->         struct svc_serv *serv = rqstp->rq_server;
-> +       unsigned long needed;
->         struct xdr_buf *arg;
-> +       struct page *page;
->         int pages;
->         int i;
->
-> -       /* now allocate needed pages.  If we get a failure, sleep briefly */
->         pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
->         if (pages > RPCSVC_MAXPAGES) {
->                 pr_warn_once("svc: warning: pages=%u > RPCSVC_MAXPAGES=%lu\n",
-> @@ -654,19 +655,28 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
->                 /* use as many pages as possible */
->                 pages = RPCSVC_MAXPAGES;
->         }
-> -       for (i = 0; i < pages ; i++)
-> -               while (rqstp->rq_pages[i] == NULL) {
-> -                       struct page *p = alloc_page(GFP_KERNEL);
-> -                       if (!p) {
-> -                               set_current_state(TASK_INTERRUPTIBLE);
-> -                               if (signalled() || kthread_should_stop()) {
-> -                                       set_current_state(TASK_RUNNING);
-> -                                       return -EINTR;
-> -                               }
-> -                               schedule_timeout(msecs_to_jiffies(500));
-> +
+This series of patches will address comments by Pierre-Louis Bossart,
+cleans up patch_cirrus.c source, reducing checkpatch.pl warnings from 19 to 0,
+fixing an issue reported by Canonical: BugLink: https://bugs.launchpad.net/bugs/1918378,
+and makes the CS8409 patch more generic by using fixups.
 
-> +       for (needed = 0, i = 0; i < pages ; i++)
-> +               if (!rqstp->rq_pages[i])
-> +                       needed++;
+Stefan Binding (4):
+  ALSA: hda/cirrus: Add error handling into CS8409 I2C functions
+  ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
+  ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control name
+  ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
 
-I would use an opening and closing braces for the for loop since
-technically the if is a multiline statement. It will make this more
-readable.
+ sound/pci/hda/patch_cirrus.c | 506 ++++++++++++++++-------------------
+ 1 file changed, 228 insertions(+), 278 deletions(-)
 
-> +       if (needed) {
-> +               LIST_HEAD(list);
-> +
-> +retry:
+-- 
+2.25.1
 
-Rather than kind of open code a while loop why not just make this
-"while (needed)"? Then all you have to do is break out of the for loop
-and you will automatically return here instead of having to jump to
-two different labels.
-
-> +               alloc_pages_bulk(GFP_KERNEL, needed, &list);
-
-Rather than not using the return value would it make sense here to
-perhaps subtract it from needed? Then you would know if any of the
-allocation requests weren't fulfilled.
-
-> +               for (i = 0; i < pages; i++) {
-
-It is probably optimizing for the exception case, but I don't think
-you want the "i = 0" here. If you are having to stop because the list
-is empty it probably makes sense to resume where you left off. So you
-should probably be initializing i to 0 before we check for needed.
-
-> +                       if (!rqstp->rq_pages[i]) {
-
-It might be cleaner here to just do a "continue" if rq_pages[i] is populated.
-
-> +                               page = list_first_entry_or_null(&list,
-> +                                                               struct page,
-> +                                                               lru);
-> +                               if (unlikely(!page))
-> +                                       goto empty_list;
-
-I think I preferred the original code that wasn't jumping away from
-the loop here. With the change I suggested above that would switch the
-if(needed) to while(needed) you could have it just break out of the
-for loop to place itself back in the while loop.
-
-> +                               list_del(&page->lru);
-> +                               rqstp->rq_pages[i] = page;
-> +                               needed--;
->                         }
-> -                       rqstp->rq_pages[i] = p;
->                 }
-> +       }
->         rqstp->rq_page_end = &rqstp->rq_pages[pages];
->         rqstp->rq_pages[pages] = NULL; /* this might be seen in nfsd_splice_actor() */
->
-> @@ -681,6 +691,15 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
->         arg->len = (pages-1)*PAGE_SIZE;
->         arg->tail[0].iov_len = 0;
->         return 0;
-> +
-> +empty_list:
-> +       set_current_state(TASK_INTERRUPTIBLE);
-> +       if (signalled() || kthread_should_stop()) {
-> +               set_current_state(TASK_RUNNING);
-> +               return -EINTR;
-> +       }
-> +       schedule_timeout(msecs_to_jiffies(500));
-> +       goto retry;
->  }
->
->  static bool
-> --
-> 2.26.2
->
