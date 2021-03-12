@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760153388AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670FB3388B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhCLJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbhCLJ25 (ORCPT
+        id S232862AbhCLJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:30:09 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13883 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232860AbhCLJ3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:28:57 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C23C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:28:57 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id r17so52015958ejy.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/zobFxt/KHNmEiwBybS7/6uzHFLs2BnS4di3FIHlgrk=;
-        b=QvUZg/pvhxSNxUUfg0ARyXJPc/CZqAZa08TLxZF1pXSJnLB8BvDmFdIdLQHsAsmchO
-         N4pLJ1gb432ZT+JLlWaaa/jV8MCDBHN3dSRvrOely1u/gZ3y3XGM27pFdgxmC7rfIZz3
-         pKiHa1n8t1MCEN6OSi++/B+LgaXEfnMyDP+ddL76MAwgFcd5sHnQvQwk+5zPKkBDsE0N
-         JAk25QNflImEKdBzM9jCkP5UL+wX3HZdYkCq/+7MGxwGdpYUl8414jRUg17GF79Z3tZa
-         x0ImmdVMTEENltRgA9XKf8Uholi/ob/A6xBu1fuZ+HQ3DIbCpwiteIAb9hDCRzvyFcfk
-         Wisw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/zobFxt/KHNmEiwBybS7/6uzHFLs2BnS4di3FIHlgrk=;
-        b=I/ieHNeKJEMELrv+1Er+0UOiFMX2qNfADxVLar3lT63Qj+2QfZwLmjCzq9ENRjgu42
-         HkeCHxTa4ayaXW4HUXYlxAfNjktsYybJqtcd8RvR/zCItn1A8bFg/nz6pYQaOQROrot8
-         wydMPgGHSERgUgvCx2SkwZ+99NzwH51pBGUHKqyWFK1BfOoV6A5S/Be8x3LIhZiclyfm
-         HBrvTDTzDrPPLhp5HPyTUQSrsmS8i9I3CzPD/9FOFU0dthcHcWmaTk29Yj+6hk8ZP/Bf
-         GAc/p3A8o+cO7DzfFk0cj3Hb2RrcMTmkHI6gPCr8LK/kgVntaRoTPMnTWtV4/bvr9+29
-         HLZw==
-X-Gm-Message-State: AOAM530QGjuZtDx3CHokDOSfl5uh0CBQQWbIbT+p8dVhDpwxU/+TNzRz
-        BloGuYb1A5QpuKqIRxSwj9ssS9+FUGY=
-X-Google-Smtp-Source: ABdhPJzJB3yXVE98QRo1z2ka8YM2BoBfhjQRht5VmeYW+krv/XCRrfIkGM7HoCKrA4XcsLTsE+ducA==
-X-Received: by 2002:a17:907:7684:: with SMTP id jv4mr7712752ejc.231.1615541335863;
-        Fri, 12 Mar 2021 01:28:55 -0800 (PST)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id k26sm2510835ejk.29.2021.03.12.01.28.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:28:55 -0800 (PST)
-Date:   Fri, 12 Mar 2021 11:28:53 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Subject: Re: [PATCH 1/1] ARM: owl: Add Actions Semi Owl S500 SoC machine
-Message-ID: <20210312092853.GA931435@BV030612LT>
-References: <c560f4c188e39c4100e330ed4bc2d277c5ad6905.1615490186.git.cristian.ciocaltea@gmail.com>
- <47295735-2792-a517-b96a-a00a68496846@suse.de>
+        Fri, 12 Mar 2021 04:29:47 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DxgTR1Pjnz8x4g;
+        Fri, 12 Mar 2021 17:27:55 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 12 Mar 2021 17:29:35 +0800
+Subject: Re: [RFC PATCH] kvm: arm64: Try stage2 block mapping for host device
+ MMIO
+To:     Marc Zyngier <maz@kernel.org>
+References: <20210122083650.21812-1-zhukeqian1@huawei.com>
+ <87y2euf5d2.wl-maz@kernel.org>
+ <e2a36913-2ded-71ff-d3ed-f7f8d831447c@huawei.com>
+ <87o8fog3et.wl-maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <e0859e30-a4ca-7456-385e-c9efd914e1e4@huawei.com>
+Date:   Fri, 12 Mar 2021 17:29:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47295735-2792-a517-b96a-a00a68496846@suse.de>
+In-Reply-To: <87o8fog3et.wl-maz@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+Hi Marc,
 
-On Fri, Mar 12, 2021 at 09:39:31AM +0100, Andreas Färber wrote:
-> Hi Cristian,
+On 2021/3/12 16:52, Marc Zyngier wrote:
+> On Thu, 11 Mar 2021 14:28:17 +0000,
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>
+>> Hi Marc,
+>>
+>> On 2021/3/11 16:43, Marc Zyngier wrote:
+>>> Digging this patch back from my Inbox...
+>> Yeah, thanks ;-)
+>>
+>>>
+>>> On Fri, 22 Jan 2021 08:36:50 +0000,
+>>> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>>>
+>>>> The MMIO region of a device maybe huge (GB level), try to use block
+>>>> mapping in stage2 to speedup both map and unmap.
+[...]
+
+>>>>  			break;
+>>>>  
+>>>> -		pa += PAGE_SIZE;
+>>>> +		pa += pgsize;
+>>>>  	}
+>>>>  
+>>>>  	kvm_mmu_free_memory_cache(&cache);
+>>>
+>>> There is one issue with this patch, which is that it only does half
+>>> the job. A VM_PFNMAP VMA can definitely be faulted in dynamically, and
+>>> in that case we force this to be a page mapping. This conflicts with
+>>> what you are doing here.
+>> Oh yes, these two paths should keep a same mapping logic.
+>>
+>> I try to search the "force_pte" and find out some discussion [1]
+>> between you and Christoffer.  And I failed to get a reason about
+>> forcing pte mapping for device MMIO region (expect that we want to
+>> keep a same logic with the eager mapping path). So if you don't
+>> object to it, I will try to implement block mapping for device MMIO
+>> in user_mem_abort().
+>>
+>>>
+>>> There is also the fact that if we can map things on demand, why are we
+>>> still mapping these MMIO regions ahead of time?
+>>
+>> Indeed. Though this provides good *startup* performance for guest
+>> accessing MMIO, it's hard to keep the two paths in sync. We can keep
+>> this minor optimization or delete it to avoid hard maintenance,
+>> which one do you prefer?
 > 
-> On 11.03.21 20:19, Cristian Ciocaltea wrote:
-> > Add machine entry for the S500 variant of the Actions Semi Owl SoCs
-> > family.
-> > 
-> > For the moment the only purpose is to provide the system serial
-> > information which will be used by the Owl Ethernet MAC driver to
-> > generate a stable MAC address.
+> I think we should be able to get rid of the startup path. If we can do
+> it for memory, I see no reason not to do it for MMIO.
+OK, I will do.
+
 > 
-> Can't that be done in either a sys_soc driver or U-Boot?
+>> BTW, could you please have a look at my another patch series[2]
+>> about HW/SW combined dirty log? ;)
+> 
+> I will eventually, but while I really appreciate your contributions in
+> terms of features and bug fixes, I would really *love* it if you were
+> a bit more active on the list when it comes to reviewing other
+> people's code.
+> 
+> There is no shortage of patches that really need reviewing, and just
+> pointing me in the direction of your favourite series doesn't really
+> help. I have something like 200+ patches that need careful reviewing
+> in my inbox, and they all deserve the same level of attention.
+> 
+> To make it short, help me to help you!
+My apologies, and I can't agree more.
 
-I will look first at the sys_soc driver approach.
+I have noticed this, and have reviewed several patches of IOMMU community.
+For that some patches are with much background knowledge, so it's hard to
+review. I will dig into them in the future.
 
-I haven't started working on the U-Boot side yet, but I'm planning to do
-so as soon as possible. Last time when I checked, there was some initial
-support only for the S700 and S900 SoCs, but I will do my best to add
-also the S500 to the list.
+Thanks for your valuable advice. :)
 
 Thanks,
-Cristi
+Keqian
 
-> Regards,
-> Andreas
+
 > 
-> -- 
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> GF: Felix Imendörffer
-> HRB 36809 (AG Nürnberg)
+> Thanks,
+> 
+> 	M.
+> 
