@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832F23390DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1D53390DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhCLPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:11:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231601AbhCLPKe (ORCPT
+        id S232296AbhCLPLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232067AbhCLPKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:10:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615561833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=At+gLYpOVuwtYiPKDJPSOAsFyXGyFQ/Ei1/8xDCko3E=;
-        b=En2MHtPiD96hkZOTsX2qKCg85mhFLqzC+/13T9cXG705fR2AkWjEagBdGde9wt9sCACTPM
-        ioZWn5sB/aNju4xRjc9stXALmqiTiQiAR8FdO4pomo/Eaqta8Pldsv6rKiVi0PdEFiL+qR
-        6/jjMawkdz5OoME2VFIFVByx+vzbZkQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-dFMljhupPbWtjKCBKVMhqA-1; Fri, 12 Mar 2021 10:10:32 -0500
-X-MC-Unique: dFMljhupPbWtjKCBKVMhqA-1
-Received: by mail-wr1-f72.google.com with SMTP id h5so11248666wrr.17
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:10:32 -0800 (PST)
+        Fri, 12 Mar 2021 10:10:45 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1A0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:10:44 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so15392466wmj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2dVcHDhdrF5JaCCByrKqwImhRd8nHqVH/GMv12NMUYc=;
+        b=uEkUsdXAu+3Wx+LRPimdLz9bK3tbRru648YN/jwPSMVdxB8GoaEms5SDU8Wz9SkEBV
+         4weqGxsSfCwlq4PeJGDCPfbPApyLGJZl8PxjauX1j6nJBL/YkfTjwBJmI1ueTUM+StO/
+         cN9q0mC4icX821DCux7c+cqYJtrqbli92JoH+6HkfMZpA0Wsb+CboYn57kirYgtqAQsn
+         huQWVtqllgVNdpj/MKW3UhRJyzbgzWKJ78S9v3K8GjPdKxH80fjBDo+1IXNUvS6rcn7t
+         W4jT263n6qgBPyqgIOpDNDHB7wPx6YuoPPwzRyuZpBm94maI3HoKgfHh2iBBvfvc0fEK
+         3aTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=At+gLYpOVuwtYiPKDJPSOAsFyXGyFQ/Ei1/8xDCko3E=;
-        b=fFNlf510/h8oWU3xU8nZWdEBoTgI9BYL0AcOgfRzsNBFWBXs1E5RXsL1WiY42iTWza
-         WVB5AuXHniVfWnDTW1UzbUfvfEYfOo3q0jg/LXSkrMCuVw7D9zUfP/cSDfZyulwVh+I8
-         AdyVArqUv4MdZ/PzMw4AxyR+84iByFg9CV8xsh0w/n8w5VBPwotbDFMzffhIvaaeukRW
-         kqvSgjtg32JXa38ukMbpLt32V3oLeVlT4CofsjjcnrMoZRTSF8VqSvAnfdLeaBzHpyjn
-         kWlDFRHTE0yRDCR/u0jWbniSyobpvoeNuTulM5Y9rGmfYMwN2UE5vudDlRzYFjMscQwa
-         Xmuw==
-X-Gm-Message-State: AOAM5302iy+tF6R0TtPHAOSAZPJKQDvdRc9X4ulvC6HtMtCfdIjTQOcR
-        6XN1Ue5MNUyE4XAd/kl3087wDty+0XLErafQMzh3Xe9t9NErkiYRBk7fDpVRYAqfvtGt5ibqT0e
-        OXRTt8cuW8t1/7S/Gbc6X21q8
-X-Received: by 2002:adf:90c2:: with SMTP id i60mr14448418wri.75.1615561830791;
-        Fri, 12 Mar 2021 07:10:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwBUQ6H37FhlxEuc6bIG9e30/3DvMV1YlOPohF80Djr/3IK1mCCHCFlpAvMtmDgq0mHUGX6jQ==
-X-Received: by 2002:adf:90c2:: with SMTP id i60mr14448382wri.75.1615561830569;
-        Fri, 12 Mar 2021 07:10:30 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id t8sm8072008wrr.10.2021.03.12.07.10.29
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2dVcHDhdrF5JaCCByrKqwImhRd8nHqVH/GMv12NMUYc=;
+        b=AUyI9WL/Hm4GuNvWIbYCVPF/213anpwvanU8p7TRRCX8m/n8uH8XGU0xBtSGG2hXtU
+         1ywN1uy86CTFcqc1qE50H/4nqsd++I9woq7Zu8lRtJWU5f3BjM9llKw7sv1JRJYnEVTY
+         PE2RJ3lBC8iXzxhzM5PUQfzi38vR0sWI5Y/Oy0LHTIBGgCBWadqQHveipLdYqKBh/Sog
+         sm+7/kGgUF/4Fd+tHX9eVoO/77mXjgCer+BkXjXEnDjrEM3uBVovcQtsU7nphjZfBdKM
+         p3HMq54VjsiNkdmWV/FtVC4z4ylpvvVmgOD+EtM1LJ6BCHFcB9/GJYDjyrdOyHTiUaUg
+         dcGQ==
+X-Gm-Message-State: AOAM530VpMglWxaifkZzfonxZbfbtt/fqz/YcKilQjUHVD2XVjNzKoSt
+        coTfQugQY5AgdtLIDCHP1mVW6Q==
+X-Google-Smtp-Source: ABdhPJzz6EK+f9gBf+L2EFDROJ+8DMjsJCOvqJgP6GqIlly74JOmBbw2twO6HDCMDb8AGCH54xqM3g==
+X-Received: by 2002:a7b:c303:: with SMTP id k3mr13820769wmj.100.1615561843302;
+        Fri, 12 Mar 2021 07:10:43 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
+        by smtp.gmail.com with ESMTPSA id c131sm2481968wma.37.2021.03.12.07.10.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 07:10:30 -0800 (PST)
-Date:   Fri, 12 Mar 2021 16:10:27 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v6 06/22] af_vsock: implement send logic for SEQPACKET
-Message-ID: <20210312151027.kamodty37ftspkmc@steredhat>
-References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
- <20210307180030.3465161-1-arseny.krasnov@kaspersky.com>
+        Fri, 12 Mar 2021 07:10:42 -0800 (PST)
+Date:   Fri, 12 Mar 2021 16:10:37 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/11] kasan: docs: update ignoring accesses section
+Message-ID: <YEuEbRvzdf9x1yNI@elver.google.com>
+References: <c2bbb56eaea80ad484f0ee85bb71959a3a63f1d7.1615559068.git.andreyknvl@google.com>
+ <4531ba5f3eca61f6aade863c136778cc8c807a64.1615559068.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210307180030.3465161-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <4531ba5f3eca61f6aade863c136778cc8c807a64.1615559068.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 09:00:26PM +0300, Arseny Krasnov wrote:
->This adds some logic to current stream enqueue function for SEQPACKET
->support:
->1) Use transport's seqpacket enqueue callback.
->2) Return value from enqueue function is whole record length or error
->   for SOCK_SEQPACKET.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/net/af_vsock.h   |  2 ++
-> net/vmw_vsock/af_vsock.c | 22 ++++++++++++++++------
-> 2 files changed, 18 insertions(+), 6 deletions(-)
->
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index a8c4039e40cf..aed306292ab3 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -139,6 +139,8 @@ struct vsock_transport {
-> 	size_t (*seqpacket_seq_get_len)(struct vsock_sock *vsk);
-> 	int (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
-> 				 int flags, bool *msg_ready);
->+	int (*seqpacket_enqueue)(struct vsock_sock *vsk, struct msghdr *msg,
->+				 int flags, size_t len);
->
-> 	/* Notification. */
-> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 5bf64a3e678a..a031f165494d 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1830,9 +1830,14 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 		 * responsibility to check how many bytes we were able to send.
-> 		 */
->
->-		written = transport->stream_enqueue(
->-				vsk, msg,
->-				len - total_written);
->+		if (sk->sk_type == SOCK_SEQPACKET) {
->+			written = transport->seqpacket_enqueue(vsk,
->+						msg, msg->msg_flags,
+On Fri, Mar 12, 2021 at 03:24PM +0100, Andrey Konovalov wrote:
+> Update the "Ignoring accesses" section in KASAN documentation:
+> 
+> - Mention __no_sanitize_address/noinstr.
+> - Mention kasan_disable/enable_current().
+> - Mention kasan_reset_tag()/page_kasan_tag_reset().
+> - Readability and punctuation clean-ups.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-I think we can avoid to pass 'msg->msg_flags', since the transport can 
-access it through the 'msg' pointer, right?
+Reviewed-by: Marco Elver <elver@google.com>
 
->+						len - total_written);
->+		} else {
->+			written = transport->stream_enqueue(vsk,
->+					msg, len - total_written);
->+		}
-> 		if (written < 0) {
-> 			err = -ENOMEM;
-> 			goto out_err;
->@@ -1844,12 +1849,17 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 				vsk, written, &send_data);
-> 		if (err < 0)
-> 			goto out_err;
->-
-> 	}
->
-> out_err:
->-	if (total_written > 0)
->-		err = total_written;
->+	if (total_written > 0) {
->+		/* Return number of written bytes only if:
->+		 * 1) SOCK_STREAM socket.
->+		 * 2) SOCK_SEQPACKET socket when whole buffer is sent.
->+		 */
->+		if (sk->sk_type == SOCK_STREAM || total_written == len)
->+			err = total_written;
->+	}
-> out:
-> 	release_sock(sk);
-> 	return err;
->-- 
->2.25.1
->
-
+> ---
+> 
+> Changes in v1->v2:
+> - Mention __no_sanitize_address/noinstr.
+> - Reword the whole section to make it clear which method works for which
+>   mode.
+> ---
+>  Documentation/dev-tools/kasan.rst | 34 +++++++++++++++++++++++++++----
+>  1 file changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index d0c1796122df..5749c14b38d0 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -368,12 +368,18 @@ Ignoring accesses
+>  ~~~~~~~~~~~~~~~~~
+>  
+>  Software KASAN modes use compiler instrumentation to insert validity checks.
+> -Such instrumentation might be incompatible with some part of the kernel, and
+> -therefore needs to be disabled. To disable instrumentation for specific files
+> -or directories, add a line similar to the following to the respective kernel
+> +Such instrumentation might be incompatible with some parts of the kernel, and
+> +therefore needs to be disabled.
+> +
+> +Other parts of the kernel might access metadata for allocated objects.
+> +Normally, KASAN detects and reports such accesses, but in some cases (e.g.,
+> +in memory allocators), these accesses are valid.
+> +
+> +For software KASAN modes, to disable instrumentation for a specific file or
+> +directory, add a ``KASAN_SANITIZE`` annotation to the respective kernel
+>  Makefile:
+>  
+> -- For a single file (e.g. main.o)::
+> +- For a single file (e.g., main.o)::
+>  
+>      KASAN_SANITIZE_main.o := n
+>  
+> @@ -381,6 +387,26 @@ Makefile:
+>  
+>      KASAN_SANITIZE := n
+>  
+> +For software KASAN modes, to disable instrumentation on a per-function basis,
+> +use the KASAN-specific ``__no_sanitize_address`` function attribute or the
+> +generic ``noinstr`` one.
+> +
+> +Note that disabling compiler instrumentation (either on a per-file or a
+> +per-function basis) makes KASAN ignore the accesses that happen directly in
+> +that code for software KASAN modes. It does not help when the accesses happen
+> +indirectly (through calls to instrumented functions) or with the hardware
+> +tag-based mode that does not use compiler instrumentation.
+> +
+> +For software KASAN modes, to disable KASAN reports in a part of the kernel code
+> +for the current task, annotate this part of the code with a
+> +``kasan_disable_current()``/``kasan_enable_current()`` section. This also
+> +disables the reports for indirect accesses that happen through function calls.
+> +
+> +For tag-based KASAN modes (include the hardware one), to disable access
+> +checking, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``. Note that
+> +temporarily disabling access checking via ``page_kasan_tag_reset()`` requires
+> +saving and restoring the per-page KASAN tag via
+> +``page_kasan_tag``/``page_kasan_tag_set``.
+>  
+>  Tests
+>  ~~~~~
+> -- 
+> 2.31.0.rc2.261.g7f71774620-goog
+> 
