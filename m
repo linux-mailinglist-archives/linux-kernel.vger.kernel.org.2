@@ -2,152 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FF23399AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA3E3399B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhCLW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:28:56 -0500
-Received: from mail-dm6nam12on2086.outbound.protection.outlook.com ([40.107.243.86]:45152
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235575AbhCLW2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:28:35 -0500
+        id S235558AbhCLWdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:33:11 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:38609 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235509AbhCLWcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 17:32:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615588371; x=1647124371;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=ugAdIfK4Y8p2hT1XQ15mQOBrDRJzHYLDOJf0rTiU5r4=;
+  b=Pw2otMQb7L32yIyHtA3UPJQT+nYoM6qY/ae2F9aEgIibZrbkbPYSavAI
+   dioDl4lGiNf34ERnUwIM8qNQsVCV5M7TetmVA2UoA0tdr9rQZcD27SE1Y
+   4BvHeNyf3qK5c6Zg+e8ZEYGrAqOm6LzOUZBWiISUrLplYgbvnFJDMSjwc
+   1yPqRV+FYV4H29ONZi89BrigUDyVFo8krm5wDkdqq8oNb+r7L5tJbsUq2
+   FQxKiAfiRiCXyUKkc0TvCRhAerztmYLpsEXZbk3iGDfefBTT9lS7aLZx0
+   BnftY+efa1BO76AXsUztx8YucZqCuFHH0x7dU/EM05Z9ZPVrnFf6bvlu2
+   w==;
+IronPort-SDR: 5UbE3DjmiAvdCTUSeO4HpV+gaSjGJLXE2ZY/LPPcDdFh3YGaHXA+ltdBXZlLufZ34+pwhPIu8M
+ EghqQNUDYYR88TRqzuMoycSxCHiFGwJhKPHhqcU7ss6EOxLh3Pby0M9eSqF/dUQuFwMTA7NXMk
+ AdCpnATNVjF7FoRo0+2uNTgoUWWB4DYtG6dXs3GDxaUHNaSpeBw97SwaDK6AcJ7chHEAcUtsEB
+ 7sG9hAAgwXoM6sBrbkNJzl7JgDBBKV/kDeB/uccRlFtDYLP/5rDzcGlUOzkGp56a8A1BqmmIk/
+ EXE=
+X-IronPort-AV: E=Sophos;i="5.81,244,1610380800"; 
+   d="scan'208";a="166534027"
+Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Mar 2021 06:32:51 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n4G8b9TnOCK+BLbkc/AkcKBfQr5ck7FDgNHqm6W8VHCN9Ci9FI0Vg3FgAcodjRy4e5Ho1JjOWBPs0T7xOMISZ/cbA3RpDL49OlDeNmwiEcfIvpS/AWCDWJWJIBlgNzqEIOyLp5d/EIA2jcDNM/aYr4kE4cQfEqyI4TQMxp/Hd8ak4HbXTQ72DYgcghB8YR/bK5TN2RyWypAFpnqDK+QCu1Rq8C+Y/yfgbgx6clHvjkKYZleqAZ4rc1th6KpITRldPL8t5lWgohsEwKR43qlZ6AR4lBeGdWrFV+YP9pvlf7IZvCutjk5l/0Au3dK1lr9dX4RfVAJmI9zyqZloAFVRiQ==
+ b=Am4bvOt/le+xCRBEAOuH/andcpyXrBrSze8+NKJDOyFlLxnYRVFugiHC3KHq1essSR/WpXBXXzEQ/Jebx2X97V68smN+GUjpeIlwDoYu2E72hxiRa3k4EFQbQeqd02UVB+nYKZuF0vaCcSelxJKH3QvfMeC9dOETTtg6q185s4XNMQadyY4EzsCpPp+Ak2Gh+P1jFBAT/j65QYj/wRONx+4ayhTmBrmLcw4D002n1C1fw5BYBCi5M3P60wsfEU7vQLnrqh4iUMSN+pBox/z8H8gCKBIjQXqjaLENdj4sLoAiXczNEmpxZ6NbXUlzGELtfrYjvTMrPxujsZNaJzvcJQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lXykoo9ptugOnTaP5mdMN5PmPIG4iT2Od7rwg7Onfcw=;
- b=dy0Ps8jgVD4OAasecZK35qbO5uaXmZBKi8f0LZ9OxO6E09fZcl1zsYySdsO6q1RDm2Jwur0oHX/jpRilVNRSO5bvKwq00AW8Xy4P/ofVyvGyZHUg7p3YGtf1/8qQ23PqlrEyMGIzFy4vfT+xgzmQsr2E2u/kqucc7les55hVSEav3XJXFL4NhM50xwtMEwO3jCVOs3oH7tjtjRms1lDpYZbzRFR1qg1tE7VKvIeCGYUYlkyQNJobPchPzhLjgP5C+1snI3YUmo0kkb4EzEUQ4EbE4NKXPXhsOIug3Bz0GQGhQGJLMAbKbF0dCul/SzJAX/eBv1ejs8Wxdtyvk/G/MQ==
+ bh=qVe4sQlWCDbVy1T4k5KqJFIziiaQOyL7sLFAYu0UCmQ=;
+ b=LYDlH3VPctls2ObBEm0OiIZOTXx+Xe7/YXdDcX/2EUy7i8NYJ4KofxK8CUcyyxnhHLHHidEASduVmWQmVmzEqikVCK4Lmb5jIPxi/FIrrcVtbFTcUOmnRtkZwDSXMDXCyaAVzbRGr0jBUIR6m8jIT3XtYfVUj3+CiHRZNTmOCopHbmOuVlQ2BO2yYjdoPbDape/dCaRT7YJfQANgHOKIodrvguVYrjqrT1F8iDj+v+WG31m7gr+RMOOTD4Vj7zmjy5UZ4kYDCC/8S1xyX+CXxbnEgG/y48wkuCXnUxvyc4PiB5AdecaISv9mt+a3iOrcUEGsF+2QwBxCqd8ovV9uIA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lXykoo9ptugOnTaP5mdMN5PmPIG4iT2Od7rwg7Onfcw=;
- b=KLYs60lLxeOZvCUyNUDjd9di66VSLF+rsiP2J8aczbm4Q/A3gv1g+s1qxKuufmN1W3Ylt847SJGZOJjwwrBiS6inCXcHPOtTDbEhkc9jD00/kIa6SE/mFTwvlUgGE0a8+CiMdnr2OcQnjkz7rqlh7WXZ+LstDCUyMOomvw5GyNU=
-Received: from DM6PR12MB4732.namprd12.prod.outlook.com (2603:10b6:5:32::25) by
- DM6PR12MB3705.namprd12.prod.outlook.com (2603:10b6:5:14a::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.31; Fri, 12 Mar 2021 22:28:33 +0000
-Received: from DM6PR12MB4732.namprd12.prod.outlook.com
- ([fe80::45a1:94ba:f88c:92e2]) by DM6PR12MB4732.namprd12.prod.outlook.com
- ([fe80::45a1:94ba:f88c:92e2%5]) with mapi id 15.20.3890.041; Fri, 12 Mar 2021
- 22:28:33 +0000
-From:   "Zeng, Oak" <Oak.Zeng@amd.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "Zhang, Hawking" <Hawking.Zhang@amd.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>,
-        "Ma, Le" <Le.Ma@amd.com>, "Lazar, Lijo" <Lijo.Lazar@amd.com>
-CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ bh=qVe4sQlWCDbVy1T4k5KqJFIziiaQOyL7sLFAYu0UCmQ=;
+ b=EW4ZmQGBYnVEZ8kP4H8fZtJksm5LAj03JvIxa1B0923Zy6dYxnLW7m+1AdhzjNXrh2EbH3Fuv+b++hUF8s2CH+TrO7H05RKiUpmGOHwIijZs2NNeviyWqqwyTc1nxQkgNL7WlRNM8cNSS/Z/gzMUAZlyX2u56gu1mXPoyHDkQwI=
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
+ by BL0PR04MB4980.namprd04.prod.outlook.com (2603:10b6:208:53::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18; Fri, 12 Mar
+ 2021 22:32:49 +0000
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::e9c5:588:89e:6887]) by BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::e9c5:588:89e:6887%3]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
+ 22:32:49 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        "yanfei.xu@windriver.com" <yanfei.xu@windriver.com>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/amdgpu: Mark mmhub_v1_7_setup_vm_pt_regs() as static
-Thread-Topic: [PATCH] drm/amdgpu: Mark mmhub_v1_7_setup_vm_pt_regs() as static
-Thread-Index: AQHXF428baRlH6LzBEySkvDjMDhRD6qAmyMA
-Date:   Fri, 12 Mar 2021 22:28:33 +0000
-Message-ID: <ACD7D8F0-345B-4A4B-8F39-64CA119B5501@amd.com>
-References: <1615587537-28989-1-git-send-email-jrdr.linux@gmail.com>
-In-Reply-To: <1615587537-28989-1-git-send-email-jrdr.linux@gmail.com>
+Subject: Re: [PATCH] block: fix possible bd_size_lock deadlock
+Thread-Topic: [PATCH] block: fix possible bd_size_lock deadlock
+Thread-Index: AQHXFm/BBdsOQMCsFUCpesdiLb6LDg==
+Date:   Fri, 12 Mar 2021 22:32:48 +0000
+Message-ID: <BL0PR04MB651467F82F7B303829D2BB26E76F9@BL0PR04MB6514.namprd04.prod.outlook.com>
+References: <20210311121139.205222-1-yanfei.xu@windriver.com>
+ <af8f7d00-d612-c0d2-e254-ff3c967fb94c@kernel.dk>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Name=Internal
- Distribution
- Only;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ActionId=b92d0369-a5e2-4c5f-8f3a-cbf1eee11f50;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Standard;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2021-03-12T22:27:47Z;
-user-agent: Microsoft-MacOutlook/16.46.21021202
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [165.204.54.211]
+authentication-results: kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:bccc:6f52:efed:4bfb]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2bc64137-0e43-41a6-2093-08d8e5a62bdb
-x-ms-traffictypediagnostic: DM6PR12MB3705:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB3705713DD9A2472E3BF0D980806F9@DM6PR12MB3705.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-office365-filtering-correlation-id: 6bf3a731-b373-4281-5a5e-08d8e5a6c41a
+x-ms-traffictypediagnostic: BL0PR04MB4980:
+x-microsoft-antispam-prvs: <BL0PR04MB49803F00F106C0C07642FD3EE76F9@BL0PR04MB4980.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bkrlkLC5gjQ0oQND5VAi9jh6HBgRdL/0rfLg54wHJu16egP/Pk2Pd5LyDTRYyFeks5iAOoSBu+M7qf4zFBAjW+b9vWE3X/MWrRWGy1SieUwW6sbo8MqzGfL0n5DcPLgCxtObvo7KICyo7aMFx2Y12fRYXT9tbzjGCdUDDA/T1jQ+AaDRgiwI5SgkJxPjD4IG90pP0H15o3CqQXqg5GhXmJSgQAK7b+tnUgXBQwbMyjwVgOO2r4a8dWuGXP0LqtluRUjb20+bpL51BCnf/9cQWZawQV1oIxqCyoyA+GuudE78ezAO96lWNKhOKL9GBi7yWPqpvvAeJaCLvmD/Fg/s9r1Nba38agwRKKybNTKDLGIZtLcWd26CSOiJHg4+4YckoR5Ru/b3u9YU876rI8i8GX9t638oyXGPTjR6A5NNL0F68prhwo1v/sAZrpeIJJ1w8WGsoTeqdSmMGSN756ZE4J8xwE6q168TIJJOFhTMe/1qQFjsZUjrAEDAFGN3cpMX+7v/QNPzueFeUIXxRCTK4pSIBeXPDv1iWYKDpMoJs0xRTxgeVH2Ae29pPKpc3e1XQj1bdbuhF6rhJzjVU1il2a/FTTZd5st8QXMlBDEPxy1hBQCursGcTQYPtUQR3afUhXGmfTnTFQYAakwKrlJQNQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(39860400002)(136003)(36756003)(71200400001)(2616005)(66946007)(83380400001)(64756008)(76116006)(66446008)(4326008)(2906002)(8676002)(478600001)(6636002)(33656002)(186003)(66476007)(8936002)(26005)(54906003)(921005)(110136005)(6486002)(6512007)(316002)(5660300002)(86362001)(6506007)(66556008)(91956017)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ck94TDNzQS9PZFREUVQwWG8zaE9LbmFMOEE1a1IweFMwVzdiYnpWTVdWaERW?=
- =?utf-8?B?K0dkUFFYc3JkbDBrYnhpQkdkMHhHOGorcmdZYllDOEZObFp0aEMvSnFFa04y?=
- =?utf-8?B?Y1Jnd0FjMFpkSDM3UDJvOGNkZ0ZtVEdrYkRvWExDS0xsMVZTZHVaL25uTVdy?=
- =?utf-8?B?RlgwSDFkYUVnT2xnc0xmR2IzUXFKMzNXZTVDZFF4L1ZqSnYyK1FzRGNpd0ln?=
- =?utf-8?B?N29MR1pxQjB4V1hYYWIwYzY5ZlJjTVpPV0FxaGJwTWJvVXJIR0JhRGRCUVIv?=
- =?utf-8?B?R1EzNzI5NkZBSDJPTjdOdTgydW12YVhTcWt3MmtBNDhwUE9wUFVJeEIrbmR2?=
- =?utf-8?B?UzJSaU50a0V6MC93dXQzLzRiVTNOd0RrRlQ0dWZnQktXTWhWMVNxVnRQRUlX?=
- =?utf-8?B?eFZuaGJ3dll5bU1paFlEWjdXUlRpWTFTN1lvQlhQYldPK2psaU9qbTNYUk9B?=
- =?utf-8?B?T2ZZaWZqMG9nQVNsTHplNU5CY2kvdHZud01KODhkOWI0TW5WSGxlbkFGNnFH?=
- =?utf-8?B?eStZU21lWHBIaXZDdGZHaEpiOURsSkc2eVZFSzFyS0RRSGVrTjlaa3NQeXBl?=
- =?utf-8?B?UStJeE1CRHdyYlBrQ2htb0pVWHlWK2V5SFIrOTJ2YkJZSC94VnF2a01INjN1?=
- =?utf-8?B?eUxIMUZUMjhMTnN2ZXdRUUlTNVFUcTVHL2QyK3pFNjlJRUVDbnlxWGNtbWcw?=
- =?utf-8?B?TnZ1Y1NmTmUzY25JSjRYbWR6djArV0h3V3J1SUZUbzNpQ1EwMjhDZ2IrMFE4?=
- =?utf-8?B?aW1LZm9GMjI2Y0hRQXBGNEUrZDh2V0RQM2RvZStsaGJOSWlUd29sZXN6bm1L?=
- =?utf-8?B?eVlpTklWdG16QVMxUGRJOVpFWjVEdXRFKytIQWo5TTdWZXozT29TcldUMTBx?=
- =?utf-8?B?cXJHVkJSTjQ5bk9Vd05oUWNFQ2x4RWpMa0NEUVBLSExBNnh2UENDa2Y3bC9G?=
- =?utf-8?B?U0dFN2c5TGw2ZmR0bHlFaU1wWW14MjJ0SElKTVorVHBpeDV2c3JNcFJMT285?=
- =?utf-8?B?Rjk4Z0o3ZWxoZGVGOVJrdzhJUHhWNjN5aGpKREZSeFJEclQ0bk1zbHdwSGVG?=
- =?utf-8?B?emdCTStPTlN3aEVKT2JZYVJnZGhpbkU0ek53M2ZWTE1VR20wYjRoaENyczdI?=
- =?utf-8?B?dFZHYXN2N3JyNnNVNlByMi9nMCtKVnorWTlyMmluRnVSbzZiVWRQTng3d2pH?=
- =?utf-8?B?QVlFaUlQUlBXL1lCRFBwRktSTTZqeVJBYjd6Z0Q1Ulg4T2VWSG82Sy9YZ2dZ?=
- =?utf-8?B?Q3ZhbGNuNWNLNU56T0ZYNlEwT1NqbDl5enhjQWhFNWQ1cjluaXM1TUlsYUIz?=
- =?utf-8?B?TUNWSGtaZXAwVStmNHlmWXRQdmEvdjhmUEZBZm9PV3Mrb2tXeDBYa25PQ0t4?=
- =?utf-8?B?ZStRSmtpQXA3Tyt3Z2FsMWJ6OFp6RkRQMkpoNFdXc05FUmhNSFFMdHBQeG13?=
- =?utf-8?B?a24vZStKQ1pPREVCU0psTHR2Vjc2UHRhSyswVXhoMmc0V2pjcVZPUC9NSUtv?=
- =?utf-8?B?Y1paZW1lUjllWVRmOC9jMUN2VFJJa283N2FBQWNDYmplM3o4UlJaLzlYMW81?=
- =?utf-8?B?amN0REZLa3VHdytzQW13MjhaVjNuL2ZmclR6NUhucUx1WFFUTHhrVGlpazRZ?=
- =?utf-8?B?NXVrMmJwK20rcGl0aFNpTjQycTVWUW9hN0dGc3VmNzBpRVNDOC9YMW5WTU9h?=
- =?utf-8?B?Y3hRN2FIS2pBRVhnVU1nd3FqSUFBU29rcHFicis4bi9XZ3BmVjRQenh4emhT?=
- =?utf-8?B?b0dJS0c0TjBNN2trNVA1M2ptZDQyUlFTQjZ0U1E3MTNqNWdQY3ZFWmZYaXQ0?=
- =?utf-8?B?RGRhNnpDVlBhUEhGc1A1QT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B81E5E02441FDF49BF24BE4FCACF8F36@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: ix1rv4yjzxrsF/gHg7Wc1E/nja/aaDIRmBLl9A7fA5f0XlD2/x3VsDfrKpGnrbN5aneywG6T4kRJkK5hQiW+VKuFgCTO6JysPinXIkiM03qlkEyFrbUwh+DildFqKeOolly4S60xkXqEqOZXWvaxakHZ3jkAFuT5dnVuoLo2DbtKbdbCwhTZ3s7pQvk3SneXxdMfz0bXDLrE7uLWWZfY3yeBsfrx7nvc1NnRWcee39EpFEU43IHj2PhqHzapY7vOmG3u+bnQ8hznCt496aqssbSnpS8gOs24rimwlSCa+dz/SaI/XFzyaE7PmYLI+ctqQG9vfLrLY+hvYwAhTJYZ3Oz22beaGRn2sJS0F2mGUdEHZJJ2sUnEoCOeZSAGnEeQ+DKQJ4LkIHmYdpoAbBLjlPmFAbF32StYs15w8akQjUKZIWd1YkuxsdL+vSxZjG2LW5DbFJSxL1pEZqQ2Ek04KlBgAs6E0Jt6zlnBXDsOZxuRhG4+aTOrDzt3a25QcBB2SIT+x+FWATkvaZc+urleniCBiy4y0aiFH0zQyiRrpbrMJMTDIn2cyCfK02W4X4yRpTTSVvcJa7coakIW4T7gGc3BAalkoSQItmIVPWM9uFw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(366004)(39860400002)(346002)(4326008)(6506007)(55016002)(66476007)(66946007)(76116006)(33656002)(91956017)(2906002)(83380400001)(186003)(7696005)(9686003)(66556008)(110136005)(45080400002)(71200400001)(86362001)(8676002)(8936002)(54906003)(52536014)(66446008)(316002)(5660300002)(966005)(64756008)(478600001)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yVCJpoItzRpj8s/r0I75G0MnZOSDwToUrCthSfcKg25ufZzlIScLHQs98l+5?=
+ =?us-ascii?Q?XbF5+6ah3i8EWVQl9JDpJuCXJ/6WwOpALxLIhkCybrefJa7/Mn+Oozy4/OjR?=
+ =?us-ascii?Q?J0TG1jOaSUa2p3F3rsuZnowTgX7WM7wikOo3/EL6SAM1TMPlGWgIkHiMdM5E?=
+ =?us-ascii?Q?orFiDiQaL/eaGgx4LaaAODDYjXTmE0gxGzNjagUEsvwl25n0LTgtV/KgaUHo?=
+ =?us-ascii?Q?JeTkKdlvYfZONxWTWNRdaUmOERB8LNOMd5Ao6t2MGbE75kNXL8mj9vMZZDRa?=
+ =?us-ascii?Q?O9ZRJ1qhR4wo1f347xY+7XN57rVEPzbUJJxmBr7F05sKQkyF7vDij9bV4+1Y?=
+ =?us-ascii?Q?sNzRgHCTm6Vno36NV7l1TEtap1sbxy/JSOAtFXq0HGbkZC2VGBpam3y3STXg?=
+ =?us-ascii?Q?wjSVZgq3Usdx1U+aZ5WVwik51licWW+4yz0HWQn90JwNGsnrJkRSrzZUe27q?=
+ =?us-ascii?Q?hx9pKQRqbMb6ngyzRUGzAh4ZNMNQmjR3Wt9GJI04i9nMZWTsKdhcCib2p1sH?=
+ =?us-ascii?Q?/QkvM7dCnkCy/PleG2nXpzMwCpq8sEwUXo5f1dMYy2mvz1FmEhVO5yjCEJCx?=
+ =?us-ascii?Q?I00arNUI8LryQRZr4/8obSg/zIu4OjbwbWLX7PLq5Cl3cWEMpY9n0FP+JuFB?=
+ =?us-ascii?Q?91yVBuQR+TQjPyXxMM0XGGSzbBfQiK0BCNLIGmwOWerhAuQ0NXGLEEtwD/yb?=
+ =?us-ascii?Q?x8KmZw4rEmqeuG8mVHj+PAMDLh32fYQpZeo+5wRo4HCGmTtklvo2Pkais2au?=
+ =?us-ascii?Q?LFpm4ng0JnbFuQHP4sHX2ojBOIJ2U4mVIvfFVtP2ybsUwUbK89SiinCdb4E3?=
+ =?us-ascii?Q?gyB3IomN+ENpUSdUfuFdkn7aUQdfOzXeTKt+Vg+u2E7WqDrbOTXLjVm5/g3b?=
+ =?us-ascii?Q?fNkHJCYUTby+q4OkTZezdjCgmpBf5MSk7R3jDmzUbU6JhDnHLxk3JhQorG91?=
+ =?us-ascii?Q?BuJChFxHOhQdz9W/kyjvnulwYAbJJOMNR+oVF6dnEPGhev4Ipjseu2Nigfhd?=
+ =?us-ascii?Q?NgmUcsduwDYMsoeDKcnoxLbLdFHJTWvqISfTU1u3K2gZQVboYpBNAze/OhHJ?=
+ =?us-ascii?Q?BCxiadvRENWVHIu1CJ+q/RAYnSVb+6hS0hiweRHsqU6nTOqrvorcox1XFYii?=
+ =?us-ascii?Q?lVfF1ziqOcg+2ox6FZ5uuVDXEyole14ZdeegmpQvs02bOd3gJw03XyWZgeY9?=
+ =?us-ascii?Q?Q95QzSDJjhoA3IlPHud2hYWQZKwAuu4/xUf3vmChNQk1hEtBCE6LRSJUzRWV?=
+ =?us-ascii?Q?H2MuNz0O8whuXj2mmVIgl0T1tsWA53RYXM6LmtE3m7/ZNemp1O/XqNjr1nCX?=
+ =?us-ascii?Q?mfCmCuv4QazA4N7y5lbfig1rrpQduqDZuHqc6mv/q5XY/35gspN5GQv54UoU?=
+ =?us-ascii?Q?aks8Kv3OGTsKCWroSLzl0mF8V4MSG/mAuh2LTlo/IFtUkHpSZg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bc64137-0e43-41a6-2093-08d8e5a62bdb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 22:28:33.4978
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bf3a731-b373-4281-5a5e-08d8e5a6c41a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 22:32:48.9611
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nPLu0mxKys5EITK0qJEWw/W+tSRwnBj8P1HA8eZvgs/vLgcILOeOVllwYbWUHaPH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3705
+X-MS-Exchange-CrossTenant-userprincipalname: d80c+rilVmacZ9ngOXME85050qepviRrA/j7jy7weOHaEEUEeOLNsJwZmGCSPJ8xwiYhfI25OCnX/UDKZiSEdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB4980
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEludGVybmFsIERpc3RyaWJ1dGlvbiBPbmx5XQ0KDQpU
-aGFuayB5b3UgSm9hcmRlciBmb3IgdGhlIGZpeC4gQnV0IHRoaXMgaGFzIGFscmVhZHkgYmVlbiBm
-aXhlZCBpbiBvdXIgQWxleCdzIGRybS1uZXh0IGJyYW5jaC4NCg0KUmVnYXJkcywNCk9haw0KDQoN
-Cg0K77u/T24gMjAyMS0wMy0xMiwgNToxOSBQTSwgIlNvdXB0aWNrIEpvYXJkZXIiIDxqcmRyLmxp
-bnV4QGdtYWlsLmNvbT4gd3JvdGU6DQoNCiAgICBLZXJuZWwgdGVzdCByb2JvdCB0aHJvd3MgYmVs
-b3cgd2FybmluZyAtPg0KDQogICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvbW1odWJfdjFf
-Ny5jOjU2OjY6IHdhcm5pbmc6IG5vIHByZXZpb3VzDQogICAgcHJvdG90eXBlIGZvciAnbW1odWJf
-djFfN19zZXR1cF92bV9wdF9yZWdzJyBbLVdtaXNzaW5nLXByb3RvdHlwZXNdDQoNCiAgICBNYXJr
-IG1taHViX3YxXzdfc2V0dXBfdm1fcHRfcmVncygpIGFzIHN0YXRpYy4NCg0KICAgIFJlcG9ydGVk
-LWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCiAgICBTaWduZWQtb2ZmLWJ5
-OiBTb3VwdGljayBKb2FyZGVyIDxqcmRyLmxpbnV4QGdtYWlsLmNvbT4NCiAgICAtLS0NCiAgICAg
-ZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvbW1odWJfdjFfNy5jIHwgMiArLQ0KICAgICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KICAgIGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9tbWh1Yl92MV83LmMgYi9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGdwdS9tbWh1Yl92MV83LmMNCiAgICBpbmRleCA0ZGYwYjczLi5hZTdkOGEx
-IDEwMDY0NA0KICAgIC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L21taHViX3YxXzcu
-Yw0KICAgICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L21taHViX3YxXzcuYw0KICAg
-IEBAIC01Myw3ICs1Myw3IEBAIHN0YXRpYyB1NjQgbW1odWJfdjFfN19nZXRfZmJfbG9jYXRpb24o
-c3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpDQogICAgIHJldHVybiBiYXNlOw0KICAgICB9DQoN
-CiAgICAtdm9pZCBtbWh1Yl92MV83X3NldHVwX3ZtX3B0X3JlZ3Moc3RydWN0IGFtZGdwdV9kZXZp
-Y2UgKmFkZXYsIHVpbnQzMl90IHZtaWQsDQogICAgK3N0YXRpYyB2b2lkIG1taHViX3YxXzdfc2V0
-dXBfdm1fcHRfcmVncyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldiwgdWludDMyX3Qgdm1pZCwN
-CiAgICAgdWludDY0X3QgcGFnZV90YWJsZV9iYXNlKQ0KICAgICB7DQogICAgIHN0cnVjdCBhbWRn
-cHVfdm1odWIgKmh1YiA9ICZhZGV2LT52bWh1YltBTURHUFVfTU1IVUJfMF07DQogICAgLS0NCiAg
-ICAxLjkuMQ0KDQoNCg==
+On 2021/03/13 4:37, Jens Axboe wrote:=0A=
+> On 3/11/21 5:11 AM, yanfei.xu@windriver.com wrote:=0A=
+>> From: Yanfei Xu <yanfei.xu@windriver.com>=0A=
+>>=0A=
+>> bd_size_lock spinlock could be taken in block softirq, thus we should=0A=
+>> disable the softirq before taking the lock.=0A=
+>>=0A=
+>> WARNING: inconsistent lock state=0A=
+>> 5.12.0-rc2-syzkaller #0 Not tainted=0A=
+>> --------------------------------=0A=
+>> inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-R} usage.=0A=
+>> kworker/u4:0/7 [HC0[0]:SC1[1]:HE0:SE0] takes:=0A=
+>> 8f87826c (&inode->i_size_seqcount){+.+-}-{0:0}, at:=0A=
+>> end_bio_bh_io_sync+0x38/0x54 fs/buffer.c:3006=0A=
+>> {SOFTIRQ-ON-W} state was registered at:=0A=
+>>   lock_acquire.part.0+0xf0/0x41c kernel/locking/lockdep.c:5510=0A=
+>>   lock_acquire+0x6c/0x74 kernel/locking/lockdep.c:5483=0A=
+>>   do_write_seqcount_begin_nested include/linux/seqlock.h:520 [inline]=0A=
+>>   do_write_seqcount_begin include/linux/seqlock.h:545 [inline]=0A=
+>>   i_size_write include/linux/fs.h:863 [inline]=0A=
+>>   set_capacity+0x13c/0x1f8 block/genhd.c:50=0A=
+>>   brd_alloc+0x130/0x180 drivers/block/brd.c:401=0A=
+>>   brd_init+0xcc/0x1e0 drivers/block/brd.c:500=0A=
+>>   do_one_initcall+0x8c/0x59c init/main.c:1226=0A=
+>>   do_initcall_level init/main.c:1299 [inline]=0A=
+>>   do_initcalls init/main.c:1315 [inline]=0A=
+>>   do_basic_setup init/main.c:1335 [inline]=0A=
+>>   kernel_init_freeable+0x2cc/0x330 init/main.c:1537=0A=
+>>   kernel_init+0x10/0x120 init/main.c:1424=0A=
+>>   ret_from_fork+0x14/0x20 arch/arm/kernel/entry-common.S:158=0A=
+>>   0x0=0A=
+>> irq event stamp: 2783413=0A=
+>> hardirqs last  enabled at (2783412): [<802011ec>]=0A=
+>> __do_softirq+0xf4/0x7ac kernel/softirq.c:329=0A=
+>> hardirqs last disabled at (2783413): [<8277d260>]=0A=
+>> __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:157 [inline]=0A=
+>> hardirqs last disabled at (2783413): [<8277d260>]=0A=
+>> _raw_read_lock_irqsave+0x84/0x88 kernel/locking/spinlock.c:231=0A=
+>> softirqs last  enabled at (2783410): [<826b5050>] spin_unlock_bh=0A=
+>> include/linux/spinlock.h:399 [inline]=0A=
+>> softirqs last  enabled at (2783410): [<826b5050>]=0A=
+>> batadv_nc_purge_paths+0x10c/0x148 net/batman-adv/network-coding.c:467=0A=
+>> softirqs last disabled at (2783411): [<8024ddfc>] do_softirq_own_stack=
+=0A=
+>> include/asm-generic/softirq_stack.h:10 [inline]=0A=
+>> softirqs last disabled at (2783411): [<8024ddfc>] do_softirq=0A=
+>> kernel/softirq.c:248 [inline]=0A=
+>> softirqs last disabled at (2783411): [<8024ddfc>] do_softirq+0xd8/0xe4=
+=0A=
+>> kernel/softirq.c:235=0A=
+>>=0A=
+>> other info that might help us debug this:=0A=
+>>  Possible unsafe locking scenario:=0A=
+>>=0A=
+>>        CPU0=0A=
+>>        ----=0A=
+>>   lock(&inode->i_size_seqcount);=0A=
+>>   <Interrupt>=0A=
+>>     lock(&inode->i_size_seqcount);=0A=
+>>=0A=
+>>  *** DEADLOCK ***=0A=
+>>=0A=
+>> 3 locks held by kworker/u4:0/7:=0A=
+>>  #0: 88c622a8 ((wq_completion)bat_events){+.+.}-{0:0}, at: set_work_data=
+=0A=
+>> kernel/workqueue.c:615 [inline]=0A=
+>>  #0: 88c622a8 ((wq_completion)bat_events){+.+.}-{0:0}, at:=0A=
+>> set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]=0A=
+>>  #0: 88c622a8 ((wq_completion)bat_events){+.+.}-{0:0}, at:=0A=
+>> process_one_work+0x214/0x998 kernel/workqueue.c:2246=0A=
+>>  #1: 85147ef8=0A=
+>> ((work_completion)(&(&bat_priv->nc.work)->work)){+.+.}-{0:0}, at:=0A=
+>> set_work_data kernel/workqueue.c:615 [inline]=0A=
+>>  #1: 85147ef8=0A=
+>> ((work_completion)(&(&bat_priv->nc.work)->work)){+.+.}-{0:0}, at:=0A=
+>> set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]=0A=
+>>  #1: 85147ef8=0A=
+>> ((work_completion)(&(&bat_priv->nc.work)->work)){+.+.}-{0:0}, at:=0A=
+>> process_one_work+0x214/0x998 kernel/workqueue.c:2246=0A=
+>>  #2: 8f878010 (&ni->size_lock){...-}-{2:2}, at:=0A=
+>> ntfs_end_buffer_async_read+0x6c/0x558 fs/ntfs/aops.c:66=0A=
+> =0A=
+> Damien? We have that revert queued up for this for 5.12, but looking=0A=
+> at that, the state before that was kind of messy too.=0A=
+=0A=
+Indeed... I was thinking about this and I think I am with Christoph on this=
+:=0A=
+drivers should not call set_capacity() from command completion context. I t=
+hink=0A=
+the best thing to do would be to fix drivers that do that but that may not =
+be RC=0A=
+material ?=0A=
+=0A=
+Looking into more details of this case, it is slightly different though.=0A=
+set_capacity() is here not called from soft IRQ context. It looks like a re=
+gular=0A=
+initialization, but one that seems way too early in the boot process when a=
+=0A=
+secondary core is being initialized with IRQ not yet enabled... I think. An=
+d the=0A=
+warnings come from i_size_write() calling preempt_disable() rather than=0A=
+set_capacity() use of spin_lock(&bdev->bd_size_lock).=0A=
+=0A=
+I wonder how it is possible to have brd being initialized so early.=0A=
+I am not sure how to fix that. It looks like arm arch code territory.=0A=
+=0A=
+For now, we could revert the revert as I do not think that Yanfei patch is=
+=0A=
+enough since completions may be from hard IRQ context too, which is not cov=
+ered=0A=
+with the spin_lock_bh() variants (c.f. a similar problem we are facing with=
+ that=0A=
+in scsi completion [1])=0A=
+I do not have any good idea how to proceed though.=0A=
+=0A=
+[1]=0A=
+https://lore.kernel.org/linux-scsi/PH0PR04MB7416C8330459E92D8AA21A889B6F9@P=
+H0PR04MB7416.namprd04.prod.outlook.com/T/#t=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
