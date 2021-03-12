@@ -2,145 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4633844E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5706E33844F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhCLDS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        id S231700AbhCLDVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhCLDSH (ORCPT
+        with ESMTP id S229664AbhCLDUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:18:07 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C34C061574;
-        Thu, 11 Mar 2021 19:18:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id f12so2830661qtq.4;
-        Thu, 11 Mar 2021 19:18:07 -0800 (PST)
+        Thu, 11 Mar 2021 22:20:35 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F774C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:20:35 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id l7so924570pfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:20:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6s7aZDqIh5c7QwDOhan9TstA2/Xr1K2QMo7FCDdlyBo=;
-        b=T4OQFB66k30ubxSV9gRAG0sZGTambgWeuupbvEr22jNOK7+vK13ZnJzFS338VUwl0g
-         JXdWe+1L9IdmWhMSBCzKF5V114ma5sIszr/weI1wT6nmOwDlkYuc+hMD+vw2zGTISm91
-         lscDoakYPZJVOVVZdNzQzUaRjBP6lUjLgiPla8k7blFhU1exhOBfn5TRSDrvyzZnVjid
-         TNIrPy9RIGI0ASk1rFeMOM8J1Tg0BMVNyZQxvFU11mBGVx6jbw9NH+h4GRHD9Tw0BP/v
-         V2Hp4gjijvgcsftsYupz1Drf7gpqHyQAe/lL8e3PX+T6CYnafbTGbMcbmMpyhMM9t/Zp
-         X6fw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DjdNOMaFcU4e2foCYh5TokMVxHNn3j89oLkPqKd3dks=;
+        b=dQTkq3E2hZr897kEwjHE4FBioepjDR/GJp30imWYUpbO/d7epEPNCzEaeoPOe8Sq25
+         8Bj0sqMt1zQFkagj0thE/swgzeHtc7S6jOCgfMbd6h+F56U+6tkWJLvzcsNPst18ybR4
+         KNJKgQMA0VNzn1v6G/Q0WM+IQ0oDPpOT7imYOWkQEr0i7HJwbjjuUFD8WbExDE6eWTzr
+         z3QwYHOiEgh0UpI+xWfGoNZ5pYVbwrDrTsSn2yci7GEFAOZvHG+umNFswx+b3Y8s3d2k
+         8kYLtcf97BJaKjh1QNpA9i8UwcaTwbQuBEZNLrT60ydVVappiWLPCm4Sh+XhqSFpn01v
+         8OgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=6s7aZDqIh5c7QwDOhan9TstA2/Xr1K2QMo7FCDdlyBo=;
-        b=Y+66Y16Olf+R7VDAorcK36bej73y2k+gqg8MQ1dAMV/R6peySKbVCtEZIsrxaQA0+5
-         BokcNYQYTznpiK2h79l219ZWCySfShC0ppJoyNlTu8ERM+FUiWeqpzNjNaxRNjzF/jIt
-         b0u/A1KNtRfUC31xToKymSKEVkVp0M1s8Yku062N3IwD03UjToQANQ6kiRh4LF/AeyWf
-         HoYkVG4sWNlXTz+MOxGyBtzyiPW8a/BQ6LK1L/eOkmcUi9YIuu1m0lHbDwz88WCttXJr
-         Imw/6P4rgTD3Q2m5GA0DFSCJKvoOWE/vaRwwGVF34Qpw9I2iNSGGiVykR1bCtm4UYusa
-         L4bA==
-X-Gm-Message-State: AOAM533t0s/s0JzUwJCfjHUg6wFs7i0EZr/dLiQ9P9ZEzaq4EqjhQ6tt
-        RENZ3E9mG162KfqcbuqEOlhHxMYea5g2VyT4
-X-Google-Smtp-Source: ABdhPJzRY92UlNkLxUZSslSacXp9ZxxY+woT8JqRC+Bpt6L8dZuV8xz7IXOkkAx5vIAcLDqtBaCpDA==
-X-Received: by 2002:ac8:b49:: with SMTP id m9mr10303587qti.182.1615519086608;
-        Thu, 11 Mar 2021 19:18:06 -0800 (PST)
-Received: from Gentoo ([143.244.44.200])
-        by smtp.gmail.com with ESMTPSA id 85sm3696440qkf.58.2021.03.11.19.18.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 19:18:05 -0800 (PST)
-Date:   Fri, 12 Mar 2021 08:47:58 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org
-Subject: Re: Why is the bit size different between a syscall and its wrapper?
-Message-ID: <YErdZh4QCaRiSV1l@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DjdNOMaFcU4e2foCYh5TokMVxHNn3j89oLkPqKd3dks=;
+        b=IOM/Mg2T9lxiI2WieWcdxbnlJ9/ZmYyWl7ddGAa+KBL44mUTAwIOZHRUXC+mlPcoLT
+         s/X/meIwjYqQL+lInrYe8ZRKFumPitToOKb/sorzzJS8EQUlo+OkjY7XwK7EjhgViuMS
+         TsUzINJv01eU3gXW7peeDhxIXX3dO5mP9QGj12nIryOMcu3Q2Qb+OQL4+5X9M17Q0Gw8
+         KodfXxIbjMMe1QR5O3GJwq6JMSia7h2sTm+y3GNrsqJY+NPRllNnyzDrdb8daa3fN4wn
+         s+ooxCPhrchlkSlfAG7DiAbvcZtN36GW9zwPXIOoclIaCydv3H3K2Xud3h2lbnaHN45p
+         zc1w==
+X-Gm-Message-State: AOAM533g1uMjFy7GkAoxeZDLa1IEHz/JEKuRzTVW11zuh3ovpaat7BpR
+        BuyQ1C8vQIev9Vc4+aMJhUUuSg==
+X-Google-Smtp-Source: ABdhPJxQPggg8rqEw+UFpSTWLIJV06QXAWCnJSBaMZGDDK2QLUpzxmzKcAs5b71rutv8ot06LqOUfQ==
+X-Received: by 2002:a63:695:: with SMTP id 143mr9674961pgg.314.1615519234558;
+        Thu, 11 Mar 2021 19:20:34 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id n24sm3602575pgl.27.2021.03.11.19.20.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 19:20:33 -0800 (PST)
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Douglas Gilbert <dgilbert@interlog.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org
-References: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210312141744.0022d5f5@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d5200097-771d-b565-dabf-0aad3fc2ea8d@kernel.dk>
+Date:   Thu, 11 Mar 2021 20:20:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Tq7vG0cIx+jTMAax"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
+In-Reply-To: <20210312141744.0022d5f5@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/11/21 8:17 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the scsi-mkp tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+> 
+> 
+> drivers/scsi/sg.c: In function 'sg_mk_kern_bio':
+> drivers/scsi/sg.c:2958:17: error: 'BIO_MAX_PAGES' undeclared (first use in this function); did you mean 'BIO_MAX_VECS'?
+>  2958 |  if (bvec_cnt > BIO_MAX_PAGES)
+>       |                 ^~~~~~~~~~~~~
+>       |                 BIO_MAX_VECS
+> 
+> Caused by commit
+> 
+>   b32ac463cb59 ("scsi: sg: NO_DXFER move to/from kernel buffers")
+> 
+> interacting with commit
+> 
+>   a8affc03a9b3 ("block: rename BIO_MAX_PAGES to BIO_MAX_VECS")
+> 
+> from the block tree.
+> 
+> I have applied the following merge fix patch:
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Fri, 12 Mar 2021 14:11:16 +1100
+> Subject: [PATCH] scsi: sg: fix up for BIO_MAX_PAGES rename
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/scsi/sg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+> index 2d4bbc1a1727..6b31b2bc8f9a 100644
+> --- a/drivers/scsi/sg.c
+> +++ b/drivers/scsi/sg.c
+> @@ -2955,7 +2955,7 @@ sg_mk_kern_bio(int bvec_cnt)
+>  {
+>  	struct bio *biop;
+>  
+> -	if (bvec_cnt > BIO_MAX_PAGES)
+> +	if (bvec_cnt > BIO_MAX_VECS)
+>  		return NULL;
+>  	biop = bio_alloc(GFP_ATOMIC, bvec_cnt);
+>  	if (!biop)
 
---Tq7vG0cIx+jTMAax
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Looks good - fwiw, the block change will go into 5.12-rc3 to avoid
+having this issue over a merge window prep, so maybe SCSI can pull
+in -rc3 and get this resolved locally in that tree.
 
-On 11:48 Fri 12 Mar 2021, Masahiro Yamada wrote:
->Hi.
->
->I think I am missing something, but
->is there any particular reason to
->use a different bit size between
->a syscall and its userspace wrapper?
->
->
->
->For example, for the unshare syscall,
->
->unshare(2) says the parameter is int.
->
->
->SYNOPSIS
->       #define _GNU_SOURCE
->       #include <sched.h>
->
->       int unshare(int flags);
->
->
->
->
->In the kernel, it is unsigned long.
->
->
->SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
->{
->        return ksys_unshare(unshare_flags);
->}
->
->
->
->
->I guess the upper 32-bit will be
->zeroed out in the c library when
->sizeof(int) != sizeof(unsigned long)
->(i.e. 64-bit system), but I'd like to know
->why we do it this way.
->
->
-Small nit! never mind ...but eye catching, Masahiro :) ...are you typing this
-on narrowed device, which allow only this much line length?? It's bloody
-narrow...don't you think so?
+I'll rebase the block-5.12 branch off -rc1 after this merge.
 
-Sorry, for the deviation.
+-- 
+Jens Axboe
 
-~Bhaskar
->--
->Best Regards
->Masahiro Yamada
-
---Tq7vG0cIx+jTMAax
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBK3WMACgkQsjqdtxFL
-KRU3nwf/ZL/k1UIFts05kpo+C0zQCoovf4iCPT+Xdx43C6W4t8uk+cYNudnTcs9c
-Cfd5MmuZ9smrdglDnx7tFBZ4vuB5jZoze4g3zrz3qcFCJu9IZj3Y0V+ACJ1QpK9l
-4qZoRLUoP2LhLxbCQtUuxPy4XTq85VhhDJhqVG3ArizebKjmjOHHWsp8hnrogSOq
-mwjdypgrolCMEs45umeA/gPVNchoY4a4k05A/Publz0s++KZtDRGc4SEGYP20HJq
-+eLeNg7t1a9uujIKkbf+ESoFIeJgJu15KxBmAmWF8oclpKo7wxvLprgabkq5s3J9
-sJEnPseSffefo9qgr3yxIATPzw3etg==
-=tJ53
------END PGP SIGNATURE-----
-
---Tq7vG0cIx+jTMAax--
