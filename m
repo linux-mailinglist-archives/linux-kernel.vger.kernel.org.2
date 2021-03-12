@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9FB338840
+	by mail.lfdr.de (Postfix) with ESMTP id 8D72F338842
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhCLJHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S232518AbhCLJHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbhCLJGm (ORCPT
+        with ESMTP id S232432AbhCLJHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:06:42 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C78FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:06:42 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id n79so23546995qke.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:06:42 -0800 (PST)
+        Fri, 12 Mar 2021 04:07:05 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEDBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:07:04 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id p8so51897363ejb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:07:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=CxDOIVo4z2AkWvsyRoRANvheNaYKezgIDa3komDdiYY=;
-        b=RAYjdzpiqXK9db1JiUmMRpyUzhDEypIA5sepbSjsh8bQc0KOcUwYvgj6DbfuRNYSaW
-         5Gz75RrKHhH1QBwiKnOFvamAG0uV792Vl8AgEs7TUqI1YGXvnp87iPMiX7RnDF5Qfz3j
-         27hVc9twPtHt/et23KFAQe/r3OZfevpqPI6a/uIY3lxNtT2g4ioBsXjohr7WXrLLFf90
-         Vu9ki4/EmqR3yBYL4v9NrRlAVEvWM+xWTGX1Wa5yJLGhbDAJ6zHjFAgwbQeZBFtbn784
-         56GRPg/xERUs2Vz0WHYYvNTabSyiGCgjXVpzMYeIdojdL1b35OfWpB+vtR8nMiRXPO9V
-         Nhqw==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=WibsGuYCmR5ROef6TpFFTAegptjciVV1wiVGexu3I74=;
+        b=ki51h7NpduIxACvNA+ICT9fNV8vDZhLnaO3OuGC4Nowva0kyumANtnOGr9bDTvn+PO
+         fYiX+6lwo+UHHDF32GWhjxU9gi8iDa/CCbYgY3tZD3mmVZWb9Jrzq+TI6wf9B6X+10lk
+         OinLaQlsQR1ue29EiZNy4Cl3ArHEPJJDZqzcyzgjty8DQWvaKl4tS3MMCUJJySLGM/ci
+         xhCih+Tnb5wjOqndToaN954fj1vyOG2q5K1tRAkuMRmPNYtiUa9TtEFDejZKmZCy77rK
+         eN3XRz2N8amai18J9XavmHGS+zhbjr07W3j4Yea8TzZ/ljYAIG5gNY02H7uUL/iAArTI
+         HMjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=CxDOIVo4z2AkWvsyRoRANvheNaYKezgIDa3komDdiYY=;
-        b=IdsYfc8IzlzhRMUgJYP3K6EBnWbbCtv9Ev8ajTw0ldatNAKyyRqfbqZUNvkmaAJL+O
-         AiWca3gPgoIQqzBHrCAzl9AO0Be484hcVQblXOscVCfN+ZpqTyQS9hCF4BWVRW5e/ykq
-         fGJGH3o+y6vW2gN9mWBqK4XyhT+/AaoGFpmS+j/28zDXwT9Uo415GKMxmJGKY3Ob8CHX
-         jiyHazNUAPH1nH3MVxwzdaLw9emv95b1Cd+EDMcPQA4gZp9Xd1pX7mmeC1YXjndPVrQx
-         Ag8radJE14Vzf2egTvc3giAdTJb1JqEHgTtGzzTAPx2DkFjQmEQnwfGy2VXFQR2UqaAp
-         jGCA==
-X-Gm-Message-State: AOAM530tH1dDCUA92zpSJwD9cEJnBBlw9WCWj1iNRDLKEnEnW+f0IjIK
-        SBZGb6CwoApvUfDDD5COI7t1qw==
-X-Google-Smtp-Source: ABdhPJyGxnM7RYEuymWsOxQS55gLx3MlIZC7VQpeiFmtgLZynXM9K3GFCA800QAwIm1tCCnaHTmCBA==
-X-Received: by 2002:a37:a2c2:: with SMTP id l185mr11372653qke.178.1615540001657;
-        Fri, 12 Mar 2021 01:06:41 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id 6sm3585347qth.82.2021.03.12.01.06.40
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=WibsGuYCmR5ROef6TpFFTAegptjciVV1wiVGexu3I74=;
+        b=Bzu29Ql7FirSDVhGXznIhQbeQ3y21ok674YzZ/gjGdf1s/idH9bVrb+j/gQ9moSO6s
+         7Xxl1uQO8EENkAFqkQRLVGwT05m9AK/fVKJvyrk4KNuL239tpc0chUJYyA8n2YKyks9p
+         JlEFVZ+3YEfWraZiSZF/caq8PcM2SsV4EaA4cCj2bFOuR5jGHedyYFB6oKwSWYbt0ReA
+         EjnGbyr0exkCexoAKMKFHslVTfnQY7HKVPMaV3yoGqU+kLiOwMH7ZnFQMIg7JzEXR7uz
+         Xu4qNjsYOCGTSxqWdYVPoZLbzJo67IIkHvvVhpdRHJ96pHsPXYA1kGteYCI3bWYRwT7L
+         ivqA==
+X-Gm-Message-State: AOAM532ay83iDEMAbCotsAB0DeWp8mvsT/XGYq6IcIwfTnA5Xf8H7xA3
+        uzEVMHYv+CxWqjoLe/vXyhMS2BNYQwOWZult
+X-Google-Smtp-Source: ABdhPJz8psTrnSROjRDRj7LHbJmAL5rDTeycCFTfqXEsECDj4WxQKj5Fx7GhgAS6PKAmj//D5tB+gA==
+X-Received: by 2002:a17:906:bccc:: with SMTP id lw12mr7367704ejb.268.1615540023299;
+        Fri, 12 Mar 2021 01:07:03 -0800 (PST)
+Received: from TRWS9215 ([88.245.22.54])
+        by smtp.gmail.com with ESMTPSA id b12sm2465598eds.94.2021.03.12.01.07.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:06:41 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: 'make O=' indigestion with module signing
-In-Reply-To: <2026575.1615539696@warthog.procyon.org.uk>
-References: <134696.1615510534@turing-police> <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk> <1486567.1615464259@warthog.procyon.org.uk>
- <2026575.1615539696@warthog.procyon.org.uk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1615539999_20296P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
+        Fri, 12 Mar 2021 01:07:02 -0800 (PST)
+Message-ID: <14878df31817f11528c9326f2855819bcf782721.camel@gmail.com>
+Subject: Re: [PATCH] drivers: tty: vt: vt.c: fix NULL dereference crash
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Hassan Shahbazi <h.shahbazi.git@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Fri, 12 Mar 2021 12:07:01 +0300
+In-Reply-To: <YEsnYVwzRoEsbkie@kroah.com>
+References: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
+         <YEsnYVwzRoEsbkie@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 12 Mar 2021 04:06:39 -0500
-Message-ID: <159991.1615539999@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1615539999_20296P
-Content-Type: text/plain; charset=us-ascii
+On Fri, 2021-03-12 at 09:33 +0100, Greg KH wrote:
+> On Sun, Mar 07, 2021 at 12:56:43PM +0200, Hassan Shahbazi wrote:
+> > Fix a NULL deference crash on hiding the cursor.
+> > 
+> > Reported by: syzbot
+> > https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+> > 
+> > Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+> > ---
+> >  drivers/tty/vt/vt.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> > index 284b07224c55..8c3e83c81341 100644
+> > --- a/drivers/tty/vt/vt.c
+> > +++ b/drivers/tty/vt/vt.c
+> > @@ -904,7 +904,9 @@ static void hide_cursor(struct vc_data *vc)
+> >  	if (vc_is_sel(vc))
+> >  		clear_selection();
+> >  
+> > -	vc->vc_sw->con_cursor(vc, CM_ERASE);
+> > +	if (vc->vc_sw)
+> > +		vc->vc_sw->con_cursor(vc, CM_ERASE);
+> > +
+> >  	hide_softcursor(vc);
+> >  }
+> >  
+> > -- 
+> > 2.26.2
+> > 
+> 
+> Are you sure this actually fixes the problem?  How did you test
+> it?  Did
+> syzbot test this?
+> 
+> I had a few reports of this patch _not_ solving the problem, so
+> getting
+> confirmation of this would be good.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Fri, 12 Mar 2021 09:01:36 +0000, David Howells said:
+Hi,
 
-> Possibly I can add something like:
->
-> 	clean-files := signing_key.pem x509.genkey
->
-> inside the
->
-> 	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-> 	...
-> 	endif
+I've tested the patch on upstream using the .config and the C
+reproducer reported by syzbot. It seems that the patch doesn't fix the
+issue.
 
-Would that remove them on a 'make clean', or only a 'make mrproper'?
-The latter sounds like the correct solution to me, as the signing key should
-have (roughly) the same lifetime rules as the .config file.
+Maybe you can send a patch test request to syzbot to validate the
+patch.
 
---==_Exmh_1615539999_20296P
-Content-Type: application/pgp-signature
+Thanks,
+Fatih
 
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
 
-iQIVAwUBYEsvHwdmEQWDXROgAQLT1hAAqElogf+x4dL5wZjQA17rrOdWngKF26C3
-pYRmHsxNpnpauM4kfE8T8I7okmdV8Lmdunmo6bsrvlw/ppHxT0NBoq/UEgi9nAgE
-rChAawMwfmrXZkNS+P2DN0mkvSyyBpDAmNrz3tp7RXYgkEaQJF9pXrvQjewQ0P93
-6Vut217HV7bWptLkAVclx/oC26bBOKRgGRDgcJ0aaFNZPrbctzqlkC+QKvf0u9g0
-eXFHaPbwnoVWj//O6TdY6zFkbmWjXyNqtTVAIdL4SqOf34I6vjaOQFhO2inuclxD
-gqDHFPWEa2gezxSVPYFCznRAB5CQg0dALiMTkULKrM+ro7nLqHG8q/3rmpPSpNIU
-UXt9RiAoL9ZmZtPVNzwlbYmWItMlT8mrI2gBk4eIdnisSYp7k/wZkYNVv01wlOLY
-JLkSTqz/SJkNPu5RJvihiS/X1atsGzbFik3Ca5W/kB4ssms3XA0JtZ9n1Nava6mh
-jqTc7tGAJNQqYo0BcTN73B7V1qxcrtSsRtH4+THaYKyOweaEsSd6SpCpN/nU8582
-rgz5YeXX4je3/XHzMloGvMiJRECY87FaPwAMib638zLRYCpVm912N12p3DzW1/pp
-SJacb1z8K13S1yDFSRbYJaKCqxGMEsMwM6S5piHxWn42T8CEkvA9Bm/OPEZh1BpJ
-5zAlYF3r8ao=
-=80QW
------END PGP SIGNATURE-----
-
---==_Exmh_1615539999_20296P--
