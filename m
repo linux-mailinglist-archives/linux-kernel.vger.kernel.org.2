@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B72A338F9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D164338FAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhCLOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:16:16 -0500
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:37343 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229959AbhCLOPv (ORCPT
+        id S231557AbhCLOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhCLOTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:15:51 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id C67BACCAEC
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:15:45 +0000 (GMT)
-Received: (qmail 20309 invoked from network); 12 Mar 2021 14:15:45 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Mar 2021 14:15:45 -0000
-Date:   Fri, 12 Mar 2021 14:15:44 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210312141544.GV3697@techsingularity.net>
-References: <20210310104618.22750-1-mgorman@techsingularity.net>
- <20210310104618.22750-3-mgorman@techsingularity.net>
- <20210312124331.GY3479805@casper.infradead.org>
+        Fri, 12 Mar 2021 09:19:22 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D305EC061574;
+        Fri, 12 Mar 2021 06:19:21 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id z190so24324269qka.9;
+        Fri, 12 Mar 2021 06:19:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2lLjuJgP8lOK4MI5nLO2L65shA5V/1M4EFdiOtepY2U=;
+        b=dbboIclKftDQQTUV64Ype0fTVNQSoWsc2CCCIKnGeVz4hX5Po5hJS9Lf7OLndh9OdP
+         aX1y2+yc8bJOb5xd6DC13Q97qo2G9AkikrN6RjWJABDIf5FZpGDuaHVsinsT/kZvejbU
+         2P84h4E9ZpT4ARDcucD86gCfsS4QPazUzJIEnVvl4LZSnh8L98JOIHgkVwJ/kL5TG2oO
+         PAsySDCxfU4xTxIKQ1gAgVk2rKB30hQdoi8e2zRPs08uEAOkmmDYJMS0oBpJCSp0AV1M
+         9IBMer8HeofzreJlBaf+2NF4ZJ+m2l0V4Zh2UJ3HPAAPxnYWWG4htVZnUA3mrdK39rag
+         qLWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2lLjuJgP8lOK4MI5nLO2L65shA5V/1M4EFdiOtepY2U=;
+        b=SgjEjrYcWcdjQ6H2dhmWEwhlPXiHkRPW65cc10EquPqtCecN+myKOt7HtdS+rmp5YN
+         gWyBgxnf/4tLyw757CZYTutbHVqmEVCH9V8fhY1/bKHGW9SHnCYNpGn/ibJoaG+uJXpw
+         0FdC7b0hrm7A5UAe0mLj+9W0GRB4G1cJuGJfUJR8XyYDQmIbzqjKUyQC9ppF/FeuqOtY
+         an7bbMBm16mTPpPz9LcDajhCOapbQBFB3TxychDlEGUGypuQwOql9YkdWhyAiUQhSD7d
+         PTuWLyzzZlC/p1zXhazUw+ourS6WKrBWUsrSbk1nq+gaATRoumcArjJ0fT2MJlwXZePN
+         RC3g==
+X-Gm-Message-State: AOAM531NAUZEsYt6gdcH+aozrhoBOVbDHhaZo7VlrPHd9jA9ksJECRQa
+        4wwDMmefJtHgPup9aJTXu8w2T2mkkEaUUA==
+X-Google-Smtp-Source: ABdhPJz62sN32HWPH2JjMurHUzuRlequ2y8GjBVkqx6qESWAGt+TmqEKFDKa2zez84rrsvxfQakQ3Q==
+X-Received: by 2002:a05:620a:108f:: with SMTP id g15mr13001896qkk.298.1615558761015;
+        Fri, 12 Mar 2021 06:19:21 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:b9e0:c84:da81:d749])
+        by smtp.googlemail.com with ESMTPSA id v2sm3979478qti.94.2021.03.12.06.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 06:19:20 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        qat-linux@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 0/2] crypto: qat: fix couple crashes duing error handling
+Date:   Fri, 12 Mar 2021 09:19:06 -0500
+Message-Id: <20210312141908.2388121-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210312124331.GY3479805@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 12:43:31PM +0000, Matthew Wilcox wrote:
-> On Wed, Mar 10, 2021 at 10:46:15AM +0000, Mel Gorman wrote:
-> > +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
-> > +				nodemask_t *nodemask, int nr_pages,
-> > +				struct list_head *list);
-> 
-> For the next revision, can you ditch the '_nodemask' part of the name?
-> Andrew just took this patch from me:
-> 
+There are a couple of issues in qat error handling. Those drivers tries to
+release resources that is not initialized. This patch series tries to fix
+crashes caused by incorrect error handling.
 
-Ok, the first three patches are needed from that series. For convenience,
-I'm going to post the same series with the rest of the patches as a
-pre-requisite to avoid people having to take patches out of mmotm to test.
-For review purposes, they can be ignored.
+v2: removed excessive dump in commit log
 
-> > <SNIP>
-> >
-> > @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >  		struct alloc_context *ac, gfp_t *alloc_mask,
-> >  		unsigned int *alloc_flags)
-> >  {
-> > +	gfp_mask &= gfp_allowed_mask;
-> > +	*alloc_mask = gfp_mask;
-> 
-> Also I renamed alloc_mask to alloc_gfp.
-> 
+Tong Zhang (2):
+  crypto: qat - dont release uninitialized resources
+  crypto: qat: ADF_STATUS_PF_RUNNING should be set after adf_dev_init
 
-It then becomes obvious that prepare_alloc_pages does not share the same
-naming convention as __alloc_pages(). In an effort to keep the naming
-convention consistent, I updated the patch to also rename gfp_mask to
-gfp in prepare_alloc_pages.
-
-As a complete aside, I don't actually like the gfp name and would have
-preferred gfp_flags because GFP is just an acronym and the context of the
-variable is that it's a set of GFP Flags. The mask naming was wrong I admit
-because it's not a mask but I'm not interested in naming the bike shed :)
-
-Thanks for pointing this out early because it would have been a merge
-headache!
+ drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    |  4 ++--
+ drivers/crypto/qat/qat_c62xvf/adf_drv.c     |  4 ++--
+ drivers/crypto/qat/qat_common/adf_vf_isr.c  | 17 +++++++++++++----
+ drivers/crypto/qat/qat_dh895xccvf/adf_drv.c |  4 ++--
+ 4 files changed, 19 insertions(+), 10 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.25.1
+
