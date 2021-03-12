@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C884338B45
+	by mail.lfdr.de (Postfix) with ESMTP id D87FB338B46
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbhCLLJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        id S234261AbhCLLJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:09:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234133AbhCLLJP (ORCPT
+        with ESMTP id S234135AbhCLLJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:09:15 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF62C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:15 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id v11so1540785wro.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:15 -0800 (PST)
+        Fri, 12 Mar 2021 06:09:16 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7552EC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:16 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id x16so1546386wrn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KXQyr4IBlf8BJXFjheDlLrWyrqRa2WbuLrndUKgj2RE=;
-        b=c4Js0gyWEoLDKpmd1C7WpG0VFopaDp1dQm2+VZf0oryUz1eScc7ZxDbqb+LyE87I5F
-         ePVh3XrvR5lX4IELD37RfRM7gJwEC/tMnPK8m9tRdac5lSxZImh3Le4HEntJ0AQRJYuW
-         uJ3Bnp7fjJr+6WYfuUkTAs4LMiiLOLCLKVtXEqGsc88TZgFFa4Vqy8o6jhI6epPJA89d
-         7p4FLUSIEm9tQdL2Yf2XMdYQiKEK8b2H/1zq9Po+je7ZIsue6FooKvz+5oheoS1dQiNO
-         +82mmwN6XRHI0a4fFBoAjow4p9XtzjUkzKq+p6RfaipS6RgUon1w75j7slPCa5RCoNv+
-         y+7A==
+        bh=D6lQXV61iewTKIv5i4KOkr8EKJzCNFbTLpbymYvdwHU=;
+        b=RwobTaYwbQS+lj0odiENE5fNvUZZOxmZSzfVlIdeLeYumq932qYV8X2CWN5yUkPA9E
+         /9Ywyr4RCRrFPvVvaSuWPWpWZyBCBxbTRIVqlsSmoCzDw0+wFRgCDdHsCEpatHBmJdqr
+         GuNt7JsXwfSrhQKJr/ecX8iAGyk8r12DJqNST43JBtVAzA0Ek3mxsrZVq+GVBgpPI63L
+         LGH4E1jAJofw96hVrhN4jdDaY9CCopN//3b4KRFTiw6athMIU8lwoKtx6iYJMR2Wvfsx
+         j/2WvUXwTcr0YFr3vCFOVyjInwkZs2ZiRYFV6lGlc6eEKgXuvWxA2nFx9Nx8pkI7rJkO
+         swkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KXQyr4IBlf8BJXFjheDlLrWyrqRa2WbuLrndUKgj2RE=;
-        b=gZfP/gyP4/yS5jgjX8eFQo0SdgS9nnkqSE+TemvaIfdlctVma8plCNDxhOzSCskGtb
-         NaDko/OHUw2XsvMkTyvaUd9K8D6VyY+dd3oL5JKQc/ht9cXmiulSm+5fbSwqxmh6JdZA
-         guJQClc4NpfpBjoODn+csLRHkOU1XACqWHkuDbEihlcgTtp0Wq9FBrxRxj7hWHlu3fFk
-         uMj8nWoo/hKRC8yVkjeOW/x07ikYeYnbQOVc+AWcfFn37kQPnwyRkdNt907aiJBKjAJR
-         mA42fov7CtRITiKkZHZXud6HGnA+vWBH8wKDl/PS798j59WaMs+KyIWZm/H1Z3TICDR0
-         yiGg==
-X-Gm-Message-State: AOAM530WoMiI4s7+BFkF0ybyRaWHC1nbjuyt2qYd6G1q7CkHekqx7grh
-        cHsgVGOQA7Ton4Uhw56jMLK7dLbZowpXjQ==
-X-Google-Smtp-Source: ABdhPJxk0DwjcM/U/+T+uTxhmPkRR+tX9XIpFD8h/LWICV/2kERf8CJbZMSjxrmB5XjT2NMLQPXlMA==
-X-Received: by 2002:a5d:550b:: with SMTP id b11mr13671486wrv.313.1615547354239;
-        Fri, 12 Mar 2021 03:09:14 -0800 (PST)
+        bh=D6lQXV61iewTKIv5i4KOkr8EKJzCNFbTLpbymYvdwHU=;
+        b=kmbYK/7ubKYyXdPLRVR/uevc3ZuefI21EFD3WCapAdmc4RiEUF/xxgcEx2jhABm/Yd
+         sG3UYhhHpSy75iemdjIAHuXfoZSd0XTa6u2M7TbDx2nNw6VrnvX1gepfHgoi/jy1hMWe
+         GUTnl/DNoH79/neK5kjdpX/LEofDgGVVUESt4ABX6g8EU804WHXKr9m0Lvqqz2cT6rXE
+         Nyry7/A5ZxoYJf4SVf/IGwcw0umdQn5/8Ab519cH95UFRoMW+vHBl3g8vGUGZAI/eenB
+         YVPWzfJz0lILls0mnakB0v/HSnVKKqWx8MVWr4iv6mldg8qaADpPAK6Fu2Wh+NH2YJnQ
+         UcEQ==
+X-Gm-Message-State: AOAM5338CNdlVvqbQXVBhrO3cWjX2xFxWRPnZ/dxK/pDszkcxFuKaFRa
+        vCVGf9W/eXuleSxRPY+yc8QPOQ==
+X-Google-Smtp-Source: ABdhPJwasaqKf97Mz2slYVBHqf9MlRKv71YKNgaCQBZJ8yUWUOzKYm82Yh5qDUGeMUpLrNePoCa74w==
+X-Received: by 2002:adf:97d5:: with SMTP id t21mr13311278wrb.139.1615547355144;
+        Fri, 12 Mar 2021 03:09:15 -0800 (PST)
 Received: from dell.default ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id b65sm1833255wmh.4.2021.03.12.03.09.13
+        by smtp.gmail.com with ESMTPSA id b65sm1833255wmh.4.2021.03.12.03.09.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 03:09:13 -0800 (PST)
+        Fri, 12 Mar 2021 03:09:14 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Flavio Suligoi <f.suligoi@asem.it>, netdev@vger.kernel.org
-Subject: [PATCH 1/4] ptp_pch: Remove unused function 'pch_ch_control_read()'
-Date:   Fri, 12 Mar 2021 11:09:07 +0000
-Message-Id: <20210312110910.2221265-2-lee.jones@linaro.org>
+Subject: [PATCH 2/4] ptp_pch: Move 'pch_*()' prototypes to shared header
+Date:   Fri, 12 Mar 2021 11:09:08 +0000
+Message-Id: <20210312110910.2221265-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210312110910.2221265-1-lee.jones@linaro.org>
 References: <20210312110910.2221265-1-lee.jones@linaro.org>
@@ -70,7 +70,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ptp/ptp_pch.c:182:5: warning: no previous prototype for ‘pch_ch_control_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:193:6: warning: no previous prototype for ‘pch_ch_control_write’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:201:5: warning: no previous prototype for ‘pch_ch_event_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:212:6: warning: no previous prototype for ‘pch_ch_event_write’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:220:5: warning: no previous prototype for ‘pch_src_uuid_lo_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:231:5: warning: no previous prototype for ‘pch_src_uuid_hi_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:242:5: warning: no previous prototype for ‘pch_rx_snap_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:259:5: warning: no previous prototype for ‘pch_tx_snap_read’ [-Wmissing-prototypes]
+ drivers/ptp/ptp_pch.c:300:5: warning: no previous prototype for ‘pch_set_station_address’ [-Wmissing-prototypes]
 
 Cc: Richard Cochran <richardcochran@gmail.com> (maintainer:PTP HARDWARE CLOCK SUPPORT)
 Cc: "David S. Miller" <davem@davemloft.net>
@@ -79,44 +86,84 @@ Cc: Flavio Suligoi <f.suligoi@asem.it>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h |  1 -
- drivers/ptp/ptp_pch.c                           | 11 -----------
- 2 files changed, 12 deletions(-)
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe.h   |  8 -------
+ .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  |  1 +
+ drivers/ptp/ptp_pch.c                         |  1 +
+ include/linux/ptp_pch.h                       | 22 +++++++++++++++++++
+ 4 files changed, 24 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/ptp_pch.h
 
 diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
-index 55cef5b16aa5f..3ce4899a0417a 100644
+index 3ce4899a0417a..a6823c4d355d5 100644
 --- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
 +++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
-@@ -612,7 +612,6 @@ void pch_gbe_free_tx_resources(struct pch_gbe_adapter *adapter,
+@@ -612,14 +612,6 @@ void pch_gbe_free_tx_resources(struct pch_gbe_adapter *adapter,
  void pch_gbe_free_rx_resources(struct pch_gbe_adapter *adapter,
  			       struct pch_gbe_rx_ring *rx_ring);
  void pch_gbe_update_stats(struct pch_gbe_adapter *adapter);
--u32 pch_ch_control_read(struct pci_dev *pdev);
- void pch_ch_control_write(struct pci_dev *pdev, u32 val);
- u32 pch_ch_event_read(struct pci_dev *pdev);
- void pch_ch_event_write(struct pci_dev *pdev, u32 val);
+-void pch_ch_control_write(struct pci_dev *pdev, u32 val);
+-u32 pch_ch_event_read(struct pci_dev *pdev);
+-void pch_ch_event_write(struct pci_dev *pdev, u32 val);
+-u32 pch_src_uuid_lo_read(struct pci_dev *pdev);
+-u32 pch_src_uuid_hi_read(struct pci_dev *pdev);
+-u64 pch_rx_snap_read(struct pci_dev *pdev);
+-u64 pch_tx_snap_read(struct pci_dev *pdev);
+-int pch_set_station_address(u8 *addr, struct pci_dev *pdev);
+ 
+ /* pch_gbe_param.c */
+ void pch_gbe_check_options(struct pch_gbe_adapter *adapter);
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+index 140cee7c459d0..334af49e5add1 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/ptp_classify.h>
++#include <linux/ptp_pch.h>
+ #include <linux/gpio.h>
+ 
+ #define DRV_VERSION     "1.01"
 diff --git a/drivers/ptp/ptp_pch.c b/drivers/ptp/ptp_pch.c
-index ce10ecd41ba0f..f7ff7230623e0 100644
+index f7ff7230623e0..fa4417ad02e0c 100644
 --- a/drivers/ptp/ptp_pch.c
 +++ b/drivers/ptp/ptp_pch.c
-@@ -179,17 +179,6 @@ static inline void pch_block_reset(struct pch_dev *chip)
- 	iowrite32(val, (&chip->regs->control));
- }
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/ptp_clock_kernel.h>
++#include <linux/ptp_pch.h>
+ #include <linux/slab.h>
  
--u32 pch_ch_control_read(struct pci_dev *pdev)
--{
--	struct pch_dev *chip = pci_get_drvdata(pdev);
--	u32 val;
--
--	val = ioread32(&chip->regs->ch_control);
--
--	return val;
--}
--EXPORT_SYMBOL(pch_ch_control_read);
--
- void pch_ch_control_write(struct pci_dev *pdev, u32 val)
- {
- 	struct pch_dev *chip = pci_get_drvdata(pdev);
+ #define STATION_ADDR_LEN	20
+diff --git a/include/linux/ptp_pch.h b/include/linux/ptp_pch.h
+new file mode 100644
+index 0000000000000..51818198c2921
+--- /dev/null
++++ b/include/linux/ptp_pch.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * PTP PCH
++ *
++ * Copyright 2019 Linaro Ltd.
++ *
++ * Author Lee Jones <lee.jones@linaro.org>
++ */
++
++#ifndef _PTP_PCH_H_
++#define _PTP_PCH_H_
++
++void pch_ch_control_write(struct pci_dev *pdev, u32 val);
++u32  pch_ch_event_read(struct pci_dev *pdev);
++void pch_ch_event_write(struct pci_dev *pdev, u32 val);
++u32  pch_src_uuid_lo_read(struct pci_dev *pdev);
++u32  pch_src_uuid_hi_read(struct pci_dev *pdev);
++u64  pch_rx_snap_read(struct pci_dev *pdev);
++u64  pch_tx_snap_read(struct pci_dev *pdev);
++int  pch_set_station_address(u8 *addr, struct pci_dev *pdev);
++
++#endif /* _PTP_PCH_H_ */
 -- 
 2.27.0
 
