@@ -2,241 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3448A3395F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383103395FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhCLSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:15:11 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52914 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbhCLSPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:15:07 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CIEpcE097406;
-        Fri, 12 Mar 2021 12:14:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615572891;
-        bh=9FvlDY8auLWx4dzfrr5UK6RaRkjcfk9u4rYCLK0axw8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=uijRvY6JeN+lTs1NI5B5KngDr6+ksoV3MPGQEmY5ax5gQZHRf0KUc2JxyGdauH6+0
-         vRetIid/1Ggm9ARcDy/fboSkHZbttsFJylV5eG274+UCdjR87zy0HzvWgJhAF4yKOn
-         89KRtXBPrr1/cOqsTRsSPLt7uup345oEEdsxq5bU=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CIEpoY060898
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Mar 2021 12:14:51 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 12:14:51 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 12:14:51 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CIEoWn094955;
-        Fri, 12 Mar 2021 12:14:51 -0600
-Date:   Fri, 12 Mar 2021 23:44:49 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312181447.dlecnw2oed7jtxe7@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
- <20210312101036.jfz2733ssv4nhfey@ti.com>
- <25a72752-097e-5669-7087-1cf6da38b3ba@microchip.com>
+        id S232686AbhCLSPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:15:44 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:33814 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232550AbhCLSPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:15:18 -0500
+Received: from zn.tnic (p200300ec2f09530069bf3b114cad3bdc.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5300:69bf:3b11:4cad:3bdc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C773E1EC046C;
+        Fri, 12 Mar 2021 19:15:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615572917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:references;
+        bh=zflyW2GJx/cENPulFP6ejSvIfmiiLb/RbQhvT0Vbg20=;
+        b=O83rnlMhdMNRS6bdpUjcWyrxY7IY/9Swvjg3xYPZ1fUe8ICyYE1gGYsOMOdDHXRhwtL/sP
+        9e0PugLYH8mQr32KWf1ocNGeSbO8eKvqi7+TuGKKRuFURasfz+OfPjsI9Smg1Ui2GMQgyr
+        cyxsKj5GPqyFoYVSsxPDEd7WC/rgUuA=
+Date:   Fri, 12 Mar 2021 19:15:11 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     amd-gfx@lists.freedesktop.org
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alexa Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>, x86-ml <x86@kernel.org>
+Subject: amdgpu, WARNING: CPU: 12 PID: 389 at arch/x86/kernel/fpu/core.c:129
+ kernel_fpu_begin_mask+0xd5/0x100
+Message-ID: <20210312181511.GC22098@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <25a72752-097e-5669-7087-1cf6da38b3ba@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 11:23AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/12/21 12:10 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 12/03/21 09:09AM, Tudor.Ambarus@microchip.com wrote:
-> >> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>>
-> >>> Hi,
-> >>>
-> >>> This series adds support for OSPI PHY calibration on the Cadence OSPI
-> >>> controller. This calibration procedure is needed to allow high clock
-> >>> speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
-> >>> data from the flash and runs a sequence of test reads to find out the
-> >>> optimal delays for high speed transfer. More details on the calibration
-> >>> procedure in patch 5/6.
-> >>
-> >> Can the calibration sequence be avoided if the controller is informed
-> >> about the frequency on which the flash operates?
-> 
-> s/frequency/maximum supported frequency by the flash
+Hi folks,
 
-Again, the max frequency does not matter. If it is fast enough PHY 
-calibration is needed to make sure lines are sampled at the correct 
-time.
+I get the below on -rc2+tip/master. I added printks to your FPU macros:
 
-> 
-> > 
-> > Maybe I don't understand this correctly, but there should not be any
-> > frequency on which the flash operates. The controller drives the SPI
-> > clock so the frequency is decided by the controller. Sure, there is a
-> > max supported frequency for the flash but the controller can run it
-> > slower than that if it wishes. The flash has no say in that.
-> > 
-> > Anyway, the exact frequency at which the flash is running is not it is
-> > looking for. More details below.
-> 
-> I thought about choosing at the controller side:
-> min(max_frequency_controller, max_frequency_flash)
-> 
-> And there is also the need of changing the frequency on which an op
-> runs, like the READ SFDP cmd, for which it is recommended to be run at
-> 50 MHz, but maybe this is another topic, let's see.
+---
+diff --git a/drivers/gpu/drm/amd/display/dc/os_types.h b/drivers/gpu/drm/amd/display/dc/os_types.h
+index 126c2f3a4dd3..49629dc03f99 100644
+--- a/drivers/gpu/drm/amd/display/dc/os_types.h
++++ b/drivers/gpu/drm/amd/display/dc/os_types.h
+@@ -53,8 +53,18 @@
+ #if defined(CONFIG_DRM_AMD_DC_DCN)
+ #if defined(CONFIG_X86)
+ #include <asm/fpu/api.h>
+-#define DC_FP_START() kernel_fpu_begin()
+-#define DC_FP_END() kernel_fpu_end()
++#define DC_FP_START()					\
++({							\
++	pr_emerg("%s: DC_FP_START\n", __func__);	\
++	kernel_fpu_begin();				\
++})
++
++#define DC_FP_END()					\
++({							\
++ 	pr_emerg("%s: DC_FP_END\n", __func__);		\
++	kernel_fpu_end();				\
++})
++
+ #elif defined(CONFIG_PPC64)
+ #include <asm/switch_to.h>
+ #include <asm/cputable.h>
 
-Right. This is not directly related to the need for having the 
-calibration.
+and I get wrong nesting of FPU usage with amdgpu:
 
-Right now calibration is run only after the flash is fully initialized, 
-so there should not be any SFDP commands from that point on. But if we 
-do want to be conservative about it, a field can be added in spi_mem_op 
-that mentions the maximum speed for the op so the controller can decide 
-accordingly.
+...
+[    2.480080] [drm] reserve 0x400000 from 0xf41f800000 for PSP TMR
+[    2.577011] amdgpu 0000:06:00.0: amdgpu: RAS: optional ras ta ucode is not available
+[    2.585556] amdgpu 0000:06:00.0: amdgpu: RAP: optional rap ta ucode is not available
+[    2.585567] amdgpu 0000:06:00.0: amdgpu: SECUREDISPLAY: securedisplay ta ucode is not available
+[    2.586024] amdgpu 0000:06:00.0: amdgpu: SMU is initialized successfully!
+[    2.587396] [drm] kiq ring mec 2 pipe 1 q 0
+[    2.588930] [drm] Display Core initialized with v3.2.122!
+[    2.601665] [drm] DMUB hardware initialized: version=0x01000000
+[    2.620813] snd_hda_intel 0000:06:00.1: bound 0000:06:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu])
+[    2.698383] input: TPPS/2 Elan TrackPoint as /devices/platform/i8042/serio1/serio2/input/input15
+[    2.713147] [drm] VCN decode and encode initialized successfully(under DPG Mode).
+[    2.713180] [drm] JPEG decode initialized successfully.
+[    2.715003] kfd kfd: Allocated 3969056 bytes on gart
+[    2.715251] Virtual CRAT table created for GPU
+[    2.715412] amdgpu: Topology: Add dGPU node [0x1636:0x1002]
+[    2.715421] kfd kfd: added device 1002:1636
+[    2.715428] amdgpu 0000:06:00.0: amdgpu: SE 1, SH per SE 2, CU per SH 18, active_cu_number 27
+[    2.716496] [drm] fb mappable at 0x410CE0000
+[    2.716510] [drm] vram apper at 0x410000000
+[    2.716515] [drm] size 8294400
+[    2.716518] [drm] fb depth is 24
+[    2.716522] [drm]    pitch is 7680
+[    2.716710] fbcon: amdgpudrmfb (fb0) is primary device
+[    2.716922] dcn21_validate_bandwidth: DC_FP_START
+[    2.716969] patch_bounding_box: DC_FP_START
 
-> 
-> > 
-> >>
-> >> Can you add more details about the optimal delays? Are we talking about
-> >> flash's AC characteristics? Is the calibration still needed if the upper
-> >> layer informs the QSPI controller about the needed delays?
-> > 
-> > There is usually a delay from when the flash drives the data line (IOW,
-> > puts a data bit on it) and when the signal reaches the controller. This
-> > delay can vary by the flash, board, silicon characteristics,
-> > temperature, etc.
-> 
-> I wonder whether the delay advertised by the flash matters the most, while
-> all the other are negligible.
+This should not happen. You need DC_FP_END before the next DC_FP_START
+because FPU usage cannot nest.
 
-The delay advertised by the flash does matter. Specifically, the clock 
-to data output delay. But the IO delay in the host (the delay from the 
-pin to the internal FIFO) matters equally as much. Both are accounted 
-for by the tuning.
+But who knows, maybe this is fixed already...
 
-> When I talk about delay, I'm thinking for example at the delay required
-> between two consecutive transfers without removing the chip select, or about
-> the minimum delay needed between the activation or the deactivation of the
-> chip select. These are all described by the flash. Does your controller have
-> such fields in its registers, to set such delays? If yes, is the calibration 
-> sequence still needed if all the delays are set correctly?
-
-The CS related delays are indeed accounted for by a register in the 
-controller. But this is not the delay the calibration is concerned with. 
-The delays the calibration is concerned with are the clock edge to data 
-transition delay (TX delay), and the DS edge to data transition delay 
-(RX delay). The two are totally unrelated.
-
-> 
-> When I hear about "board delays", I think about the impedance of the lines,
-> which should correspond to the impedance of the Flash's IOs (which depends on
-> the frequency on which the flash runs). A mechanism to choose the best
-> frequency and impedance level can be added.
-
-Board delays in this case are caused by the length of the wires/lines. 
-Even if the lines are perfectly impedance matched to the flash's IOs, 
-there will be a small time delay from when the data signal is launched 
-by the flash and when it is received by the device. This causes a small 
-but noticeable difference in the timing and consequently the final 
-calibration values. For example, this is observed when comparing J721E 
-EVM (evaluation module) and SVB (silicon validation board) platforms.
-
-> 
-> Flashes have an interval of temperature on which they are guaranteed to
-> work (I would expect in the same conditions). Information about temperature
-> ranges and associated delays (if measured?) can be passed too.
-
-This would not be sufficient for placing TX and RX delays unless we have 
-a perfect model for both the flash and the host device IO delays. Such a 
-model would have to account for variations in timing caused by 
-variations in the manufacturing process, voltage, and temperature. This 
-is not practically feasible.
-
-> 
-> Cheers,
-> ta
-> > 
-> > At lower speeds (25 MHz for example) this delay is not a problem because
-> > the clock period is longer so there is much more time to sample the data
-> > line. It is very likely the controller will sample at a time when the
-> > data line is valid. At high speeds (166 MHz for example), especially in
-> > DDR mode, this delay starts to play a larger role because the time to
-> > sample the data line is much smaller. Now unless the delay is accounted
-> > for, it is possible that the controller samples the data line too late
-> > or too early and sees invalid data.
-> > 
-> > These delays depend on physical characteristics so it is not possible
-> > for any upper layer to inform the controller about it. How will they
-> > even know what the required delay is?
-> > 
-> > In summary, no, there is no way an upper layer can inform the controller
-> > about this delay.
-> > 
-> >>
-> >> Cheers,
-> >> ta
-> >>
-> >>>
-> >>> The main problem here is telling the controller where to find the
-> >>> pattern and how to read it. This RFC uses nvmem cells which point to a
-> >>> fixed partition containing the data to do the reads. It depends on [0]
-> >>> and [1].
-> >>>
-> >>> The obvious problem with this is it won't work when the partitions are
-> >>> defined via command line. I don't see any good way to add nvmem cells to
-> >>> command line partitions. I would like some help or ideas here. We don't
-> >>> necessarily have to use nvmem either. Any way that can cleanly and
-> >>> consistently let the controller find out where the pattern is stored is
-> >>> good.
-> >>>
-> >>> The dts patch depends on [2].
-> >>>
-> >>> Tested on TI's J721E EVM.
-> >>>
-> >>> [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
-> >>> [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
-> >>> [2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
-> >>>
-> >>> Pratyush Yadav (6):
-> >>>   spi: spi-mem: Tell controller when device is ready for calibration
-> >>>   mtd: spi-nor: core: consolidate read op creation
-> >>>   mtd: spi-nor: core: run calibration when initialization is done
-> >>>   spi: cadence-qspi: Use PHY for DAC reads if possible
-> >>>   spi: cadence-qspi: Tune PHY to allow running at higher frequencies
-> >>>   arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
-> >>>
-> >>>  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
-> >>>  drivers/mtd/spi-nor/core.c                  |  74 +-
-> >>>  drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
-> >>>  drivers/spi/spi-mem.c                       |  12 +
-> >>>  include/linux/spi/spi-mem.h                 |   8 +
-> >>>  5 files changed, 916 insertions(+), 53 deletions(-)
-> >>>
+[    2.716973] ------------[ cut here ]------------
+[    2.716974] WARNING: CPU: 12 PID: 389 at arch/x86/kernel/fpu/core.c:129 kernel_fpu_begin_mask+0xd5/0x100
+[    2.716986] Modules linked in: joydev edac_mce_amd edac_core iwlmvm kvm_amd mac80211 libarc4 kvm irqbypass crct10dif_pclmul crc32_pclmul iwlwifi crc32c_intel snd_hda_codec_realtek snd_hda_codec_generic amdgpu(+) ghash_clmulni_intel snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec rtsx_pci_sdmmc snd_hwdep mmc_core snd_hda_core aesni_intel libaes crypto_simd wmi_bmof thinkpad_acpi sp5100_tco snd_pcm cryptd nvram ucsi_acpi(+) ledtrig_audio watchdog rapl rtsx_pci platform_profile snd_timer pcspkr cfg80211 efi_pstore typec_ucsi k10temp ccp i2c_piix4 gpu_sched mfd_core r8169 roles snd typec wmi soundcore ac battery video i2c_scmi acpi_cpufreq button psmouse serio_raw nvme nvme_core
+[    2.717057] CPU: 12 PID: 389 Comm: systemd-udevd Not tainted 5.12.0-rc2+ #1
+[    2.717062] Hardware name: LENOVO 20Y2MMMMCC/20Y2MMMMCC, BIOS R1BET58W(1.27 ) 10/20/2020
+[    2.717065] RIP: 0010:kernel_fpu_begin_mask+0xd5/0x100
+[    2.717070] Code: 40 75 af f0 80 4f 01 40 48 81 c7 c0 0b 00 00 e8 d1 fb ff ff eb 9c db e3 eb c7 0f 0b 66 0f 1f 84 00 00 00 00 00 e9 62 ff ff ff <0f> 0b 66 0f 1f 84 00 00 00 00 00 e9 61 ff ff ff 66 66 2e 0f 1f 84
+[    2.717073] RSP: 0018:ffffc90001427528 EFLAGS: 00010202
+[    2.717076] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 0000000000000000
+[    2.717078] RDX: 0000000000000000 RSI: 0000000000000082 RDI: 0000000000000001
+[    2.717080] RBP: ffff8881301e0000 R08: ffffffff82a246a0 R09: 5f4344203a786f62
+[    2.717082] R10: 625f676e69646e75 R11: 6f625f6863746170 R12: ffff888181783000
+[    2.717083] R13: 0000000000000000 R14: ffffc900014275cc R15: ffffffffa10c87c0
+[    2.717085] FS:  00007f53f5f1a8c0(0000) GS:ffff8883fb100000(0000) knlGS:0000000000000000
+[    2.717088] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.717091] CR2: 00005572e3f6fc90 CR3: 00000001026ce000 CR4: 0000000000350ee0
+[    2.717093] Call Trace:
+[    2.717100]  dcn21_calculate_wm.cold+0x27/0x3a8 [amdgpu]
+[    2.717560]  dcn21_validate_bandwidth_fp+0x4f8/0x5d3 [amdgpu]
+[    2.717995]  dcn21_validate_bandwidth+0x3e/0x63 [amdgpu]
+[    2.718412]  dc_validate_global_state+0x2db/0x370 [amdgpu]
+[    2.718858]  amdgpu_dm_atomic_check+0xbc9/0xce0 [amdgpu]
+[    2.719317]  drm_atomic_check_only+0x5bb/0x8d0
+[    2.719324]  ? _raw_spin_unlock_irqrestore+0x1b/0x40
+[    2.719331]  ? drm_connector_list_iter_next+0x85/0xb0
+[    2.719335]  ? drm_atomic_add_affected_connectors+0xfa/0x110
+[    2.719340]  drm_atomic_commit+0x1e/0x70
+[    2.719343]  drm_client_modeset_commit_atomic+0x1e4/0x220
+[    2.719350]  drm_client_modeset_commit_locked+0x56/0x160
+[    2.719354]  drm_client_modeset_commit+0x31/0x60
+[    2.719358]  drm_fb_helper_set_par+0xc7/0xf0
+[    2.719364]  fbcon_init+0x270/0x510
+[    2.719369]  visual_init+0xcb/0x130
+[    2.719374]  do_bind_con_driver.isra.0+0x202/0x320
+[    2.719380]  do_take_over_console+0x116/0x190
+[    2.719385]  do_fbcon_takeover+0x5b/0xc0
+[    2.719388]  fbcon_fb_registered+0x72/0xe0
+[    2.719392]  register_framebuffer+0x1e2/0x300
+[    2.719398]  __drm_fb_helper_initial_config_and_unlock+0x319/0x490
+[    2.719404]  amdgpu_fbdev_init+0xd0/0x110 [amdgpu]
+[    2.719753]  amdgpu_device_init.cold+0x164f/0x1afb [amdgpu]
+[    2.720186]  ? pci_bus_read_config_word+0x4d/0x80
+[    2.720193]  amdgpu_driver_load_kms+0x64/0x270 [amdgpu]
+[    2.720563]  amdgpu_pci_probe+0x151/0x1d0 [amdgpu]
+[    2.720896]  local_pci_probe+0x50/0xa0
+[    2.720903]  ? pci_match_device+0xd7/0x100
+[    2.720906]  pci_device_probe+0x108/0x1c0
+[    2.720911]  really_probe+0x109/0x470
+[    2.720916]  driver_probe_device+0xe1/0x150
+[    2.720919]  device_driver_attach+0xbd/0xd0
+[    2.720923]  __driver_attach+0x9e/0x150
+[    2.720926]  ? device_driver_attach+0xd0/0xd0
+[    2.720928]  ? device_driver_attach+0xd0/0xd0
+[    2.720931]  bus_for_each_dev+0x7a/0xc0
+[    2.720936]  ? klist_add_tail+0x4f/0x90
+[    2.720940]  bus_add_driver+0x14d/0x210
+[    2.720945]  driver_register+0x8b/0xe0
+[    2.720949]  ? 0xffffffffa11b6000
+[    2.720951]  do_one_initcall+0x44/0x200
+[    2.720956]  ? kmem_cache_alloc_trace+0x18c/0x210
+[    2.720961]  do_init_module+0x5c/0x260
+[    2.720966]  __do_sys_finit_module+0xca/0x140
+[    2.720972]  do_syscall_64+0x33/0x80
+[    2.720978]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[    2.720983] RIP: 0033:0x7f53f63c4959
+[    2.720987] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 55 0c 00 f7 d8 64 89 01 48
+[    2.720990] RSP: 002b:00007ffc27e37318 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[    2.720995] RAX: ffffffffffffffda RBX: 00005572e3f50f20 RCX: 00007f53f63c4959
+[    2.720997] RDX: 0000000000000000 RSI: 00007f53f6550e4d RDI: 000000000000000c
+[    2.720999] RBP: 0000000000020000 R08: 0000000000000000 R09: 00005572e3f50d68
+[    2.721000] R10: 000000000000000c R11: 0000000000000246 R12: 00007f53f6550e4d
+[    2.721002] R13: 0000000000000000 R14: 00005572e3f4f650 R15: 00005572e3f50f20
+[    2.721006] ---[ end trace 1304f710de137125 ]---
+[    2.721010] patch_bounding_box: DC_FP_END
+[    2.721565] dcn21_validate_bandwidth: DC_FP_END
+[    2.721568] ------------[ cut here ]------------
+[    2.721569] WARNING: CPU: 12 PID: 389 at arch/x86/kernel/fpu/core.c:155 kernel_fpu_end+0x35/0x50
+[    2.721576] Modules linked in: joydev edac_mce_amd edac_core iwlmvm kvm_amd mac80211 libarc4 kvm irqbypass crct10dif_pclmul crc32_pclmul iwlwifi crc32c_intel snd_hda_codec_realtek snd_hda_codec_generic amdgpu(+) ghash_clmulni_intel snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec rtsx_pci_sdmmc snd_hwdep mmc_core snd_hda_core aesni_intel libaes crypto_simd wmi_bmof thinkpad_acpi sp5100_tco snd_pcm cryptd nvram ucsi_acpi(+) ledtrig_audio watchdog rapl rtsx_pci platform_profile snd_timer pcspkr cfg80211 efi_pstore typec_ucsi k10temp ccp i2c_piix4 gpu_sched mfd_core r8169 roles snd typec wmi soundcore ac battery video i2c_scmi acpi_cpufreq button psmouse serio_raw nvme nvme_core
+[    2.721633] CPU: 12 PID: 389 Comm: systemd-udevd Tainted: G        W         5.12.0-rc2+ #1
+[    2.721637] Hardware name: LENOVO 20Y2MMMMCC/20Y2MMMMCC, BIOS R1BET58W(1.27 ) 10/20/2020
+[    2.721638] RIP: 0010:kernel_fpu_end+0x35/0x50
+[    2.721642] Code: 7e 84 c0 74 25 65 c6 05 a0 22 ff 7e 00 bf 01 00 00 00 e8 1e 0a 08 00 65 8b 05 d7 22 ff 7e 85 c0 74 02 f3 c3 e8 d3 d1 fd ff c3 <0f> 0b 66 0f 1f 84 00 00 00 00 00 eb ce 66 66 2e 0f 1f 84 00 00 00
+[    2.721645] RSP: 0018:ffffc90001427638 EFLAGS: 00010246
+[    2.721647] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[    2.721649] RDX: 0000000000000000 RSI: 0000000000000086 RDI: 00000000ffffffff
+[    2.721651] RBP: ffff88810aa80000 R08: ffffffff82a246a0 R09: 6874646977646e61
+[    2.721653] R10: 625f65746164444e R11: 61765f31326e4e45 R12: 0000000000000001
+[    2.721654] R13: ffff888102e11800 R14: ffff88810aa81548 R15: ffff88810aa80000
+[    2.721656] FS:  00007f53f5f1a8c0(0000) GS:ffff8883fb100000(0000) knlGS:0000000000000000
+[    2.721659] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.721661] CR2: 00005572e3f6fc90 CR3: 00000001026ce000 CR4: 0000000000350ee0
+[    2.721664] Call Trace:
+[    2.721666]  dcn21_validate_bandwidth+0x5b/0x63 [amdgpu]
+[    2.722107]  dc_validate_global_state+0x2db/0x370 [amdgpu]
+[    2.722548]  amdgpu_dm_atomic_check+0xbc9/0xce0 [amdgpu]
+[    2.723001]  drm_atomic_check_only+0x5bb/0x8d0
+[    2.723007]  ? _raw_spin_unlock_irqrestore+0x1b/0x40
+[    2.723012]  ? drm_connector_list_iter_next+0x85/0xb0
+[    2.723017]  ? drm_atomic_add_affected_connectors+0xfa/0x110
+[    2.723021]  drm_atomic_commit+0x1e/0x70
+[    2.723024]  drm_client_modeset_commit_atomic+0x1e4/0x220
+[    2.723030]  drm_client_modeset_commit_locked+0x56/0x160
+[    2.723035]  drm_client_modeset_commit+0x31/0x60
+[    2.723039]  drm_fb_helper_set_par+0xc7/0xf0
+[    2.723045]  fbcon_init+0x270/0x510
+[    2.723050]  visual_init+0xcb/0x130
+[    2.723055]  do_bind_con_driver.isra.0+0x202/0x320
+[    2.723060]  do_take_over_console+0x116/0x190
+[    2.723065]  do_fbcon_takeover+0x5b/0xc0
+[    2.723068]  fbcon_fb_registered+0x72/0xe0
+[    2.723072]  register_framebuffer+0x1e2/0x300
+[    2.723077]  __drm_fb_helper_initial_config_and_unlock+0x319/0x490
+[    2.723083]  amdgpu_fbdev_init+0xd0/0x110 [amdgpu]
+[    2.723429]  amdgpu_device_init.cold+0x164f/0x1afb [amdgpu]
+[    2.723870]  ? pci_bus_read_config_word+0x4d/0x80
+[    2.723878]  amdgpu_driver_load_kms+0x64/0x270 [amdgpu]
+[    2.724216]  amdgpu_pci_probe+0x151/0x1d0 [amdgpu]
+[    2.724560]  local_pci_probe+0x50/0xa0
+[    2.724566]  ? pci_match_device+0xd7/0x100
+[    2.724569]  pci_device_probe+0x108/0x1c0
+[    2.724574]  really_probe+0x109/0x470
+[    2.724578]  driver_probe_device+0xe1/0x150
+[    2.724582]  device_driver_attach+0xbd/0xd0
+[    2.724585]  __driver_attach+0x9e/0x150
+[    2.724588]  ? device_driver_attach+0xd0/0xd0
+[    2.724590]  ? device_driver_attach+0xd0/0xd0
+[    2.724593]  bus_for_each_dev+0x7a/0xc0
+[    2.724598]  ? klist_add_tail+0x4f/0x90
+[    2.724601]  bus_add_driver+0x14d/0x210
+[    2.724606]  driver_register+0x8b/0xe0
+[    2.724610]  ? 0xffffffffa11b6000
+[    2.724612]  do_one_initcall+0x44/0x200
+[    2.724617]  ? kmem_cache_alloc_trace+0x18c/0x210
+[    2.724621]  do_init_module+0x5c/0x260
+[    2.724626]  __do_sys_finit_module+0xca/0x140
+[    2.724632]  do_syscall_64+0x33/0x80
+[    2.724637]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[    2.724642] RIP: 0033:0x7f53f63c4959
+[    2.724645] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 55 0c 00 f7 d8 64 89 01 48
+[    2.724648] RSP: 002b:00007ffc27e37318 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[    2.724652] RAX: ffffffffffffffda RBX: 00005572e3f50f20 RCX: 00007f53f63c4959
+[    2.724654] RDX: 0000000000000000 RSI: 00007f53f6550e4d RDI: 000000000000000c
+[    2.724656] RBP: 0000000000020000 R08: 0000000000000000 R09: 00005572e3f50d68
+[    2.724658] R10: 000000000000000c R11: 0000000000000246 R12: 00007f53f6550e4d
+[    2.724660] R13: 0000000000000000 R14: 00005572e3f4f650 R15: 00005572e3f50f20
+[    2.724663] ---[ end trace 1304f710de137126 ]---
+[    2.729729] ucsi_acpi: probe of USBC000:00 failed with error -5
+[    2.787392] dcn21_validate_bandwidth: DC_FP_START
+[    2.787443] patch_bounding_box: DC_FP_START
+[    2.787447] patch_bounding_box: DC_FP_END
+[    2.787985] dcn21_validate_bandwidth: DC_FP_END
+[    2.788210] Console: switching to colour frame buffer device 240x67
+[    2.788311] dcn21_validate_bandwidth: DC_FP_START
+[    2.788357] patch_bounding_box: DC_FP_START
+[    2.788359] patch_bounding_box: DC_FP_END
+[    2.788888] dcn21_validate_bandwidth: DC_FP_END
+[    2.788971] dcn21_validate_bandwidth: DC_FP_START
+[    2.789004] patch_bounding_box: DC_FP_START
+[    2.789005] patch_bounding_box: DC_FP_END
+[    2.789529] dcn21_validate_bandwidth: DC_FP_END
+[    3.072980] amdgpu 0000:06:00.0: [drm] fb0: amdgpudrmfb frame buffer device
+[    3.074708] amdgpu 0000:06:00.0: amdgpu: ring gfx uses VM inv eng 0 on hub 0
+[    3.076259] amdgpu 0000:06:00.0: amdgpu: ring comp_1.0.0 uses VM inv eng 1 on hub 0
+[    3.077811] amdgpu 0000:06:00.0: amdgpu: ring comp_1.1.0 uses VM inv eng 4 on hub 0
+[    3.079332] amdgpu 0000:06:00.0: amdgpu: ring comp_1.2.0 uses VM inv eng 5 on hub 0
+[    3.080846] amdgpu 0000:06:00.0: amdgpu: ring comp_1.3.0 uses VM inv eng 6 on hub 0
+[    3.082330] amdgpu 0000:06:00.0: amdgpu: ring comp_1.0.1 uses VM inv eng 7 on hub 0
+[    3.083798] amdgpu 0000:06:00.0: amdgpu: ring comp_1.1.1 uses VM inv eng 8 on hub 0
+[    3.085270] amdgpu 0000:06:00.0: amdgpu: ring comp_1.2.1 uses VM inv eng 9 on hub 0
+[    3.086791] amdgpu 0000:06:00.0: amdgpu: ring comp_1.3.1 uses VM inv eng 10 on hub 0
+[    3.088254] amdgpu 0000:06:00.0: amdgpu: ring kiq_2.1.0 uses VM inv eng 11 on hub 0
+[    3.089734] amdgpu 0000:06:00.0: amdgpu: ring sdma0 uses VM inv eng 0 on hub 1
+[    3.091224] amdgpu 0000:06:00.0: amdgpu: ring vcn_dec uses VM inv eng 1 on hub 1
+[    3.092700] amdgpu 0000:06:00.0: amdgpu: ring vcn_enc0 uses VM inv eng 4 on hub 1
+[    3.094157] amdgpu 0000:06:00.0: amdgpu: ring vcn_enc1 uses VM inv eng 5 on hub 1
+[    3.095602] amdgpu 0000:06:00.0: amdgpu: ring jpeg_dec uses VM inv eng 6 on hub 1
+[    3.119749] [drm] Initialized amdgpu 3.40.0 20150101 for 0000:06:00.0 on minor 2
+[    3.372594] Adding 999420k swap on /dev/nvme0n1p3.  Priority:-2 extents:1 across:999420k SS
+[    3.391787] EXT4-fs (nvme0n1p2): re-mounted. Opts: errors=remount-ro. Quota mode: disabled.
+[    3.884636] Generic FE-GE Realtek PHY r8169-500:00: attached PHY driver (mii_bus:phy_addr=r8169-500:00, irq=MAC)
+[    4.092855] r8169 0000:05:00.0 eth1: Link is Down
+[    5.648793] r8169 0000:05:00.0 eth1: Link is Up - 100Mbps/Full - flow control rx/tx
+[    5.650564] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+[    6.443233] dcn21_validate_bandwidth: DC_FP_START
+[    6.443288] patch_bounding_box: DC_FP_START
+[    6.443292] patch_bounding_box: DC_FP_END
+[    6.443833] dcn21_validate_bandwidth: DC_FP_END
+[    6.450332] dcn21_validate_bandwidth: DC_FP_START
+[    6.450380] patch_bounding_box: DC_FP_START
+[    6.453685] patch_bounding_box: DC_FP_END
+[    6.454228] dcn21_validate_bandwidth: DC_FP_END
+[    6.491039] dcn21_validate_bandwidth: DC_FP_START
+[    6.492849] patch_bounding_box: DC_FP_START
+[    6.494494] patch_bounding_box: DC_FP_END
+[    6.496756] dcn21_validate_bandwidth: DC_FP_END
+[    6.496840] dcn21_validate_bandwidth: DC_FP_START
+[    6.500038] patch_bounding_box: DC_FP_START
+[    6.500041] patch_bounding_box: DC_FP_END
+[    6.500657] dcn21_validate_bandwidth: DC_FP_END
+[    6.553312] dcn21_validate_bandwidth: DC_FP_START
+[    6.555085] patch_bounding_box: DC_FP_START
+[    6.556904] patch_bounding_box: DC_FP_END
+[    6.559140] dcn21_validate_bandwidth: DC_FP_END
+[    6.560938] dcn21_validate_bandwidth: DC_FP_START
+[    6.562655] patch_bounding_box: DC_FP_START
+[    6.562657] patch_bounding_box: DC_FP_END
+[    6.563182] dcn21_validate_bandwidth: DC_FP_END
+[    6.570850] dcn21_validate_bandwidth: DC_FP_START
+[    6.570903] patch_bounding_box: DC_FP_START
+[    6.570907] patch_bounding_box: DC_FP_END
+[    6.571447] dcn21_validate_bandwidth: DC_FP_END
+[    6.571507] dcn21_validate_bandwidth: DC_FP_START
+[    6.571542] patch_bounding_box: DC_FP_START
+[    6.571543] patch_bounding_box: DC_FP_END
+[    6.572067] dcn21_validate_bandwidth: DC_FP_END
+[    6.794475] dcn21_validate_bandwidth: DC_FP_START
+[    6.794535] patch_bounding_box: DC_FP_START
+[    6.794540] patch_bounding_box: DC_FP_END
+[    6.795081] dcn21_validate_bandwidth: DC_FP_END
+[    6.795136] dcn21_validate_bandwidth: DC_FP_START
+[    6.795171] patch_bounding_box: DC_FP_START
+[    6.795174] patch_bounding_box: DC_FP_END
+[    6.795699] dcn21_validate_bandwidth: DC_FP_END
+[    6.894809] dcn21_validate_bandwidth: DC_FP_START
+[    6.894870] patch_bounding_box: DC_FP_START
+[    6.894875] patch_bounding_box: DC_FP_END
+[    6.895419] dcn21_validate_bandwidth: DC_FP_END
+[    6.895480] dcn21_validate_bandwidth: DC_FP_START
+[    6.895516] patch_bounding_box: DC_FP_START
+[    6.895518] patch_bounding_box: DC_FP_END
+[    6.896044] dcn21_validate_bandwidth: DC_FP_END
+[    6.979250] dcn21_validate_bandwidth: DC_FP_START
+[    6.979311] patch_bounding_box: DC_FP_START
+[    6.979317] patch_bounding_box: DC_FP_END
+[    6.979858] dcn21_validate_bandwidth: DC_FP_END
+[    6.980820] dcn21_validate_bandwidth: DC_FP_START
+[    6.980880] patch_bounding_box: DC_FP_START
+[    6.980886] patch_bounding_box: DC_FP_END
+[    6.981426] dcn21_validate_bandwidth: DC_FP_END
+[   15.859486] dcn21_validate_bandwidth: DC_FP_START
+[   15.859547] patch_bounding_box: DC_FP_START
+[   15.859552] patch_bounding_box: DC_FP_END
+[   15.860095] dcn21_validate_bandwidth: DC_FP_END
+[   15.861096] dcn21_validate_bandwidth: DC_FP_START
+[   15.861167] patch_bounding_box: DC_FP_START
+[   15.861173] patch_bounding_box: DC_FP_END
+[   15.861894] dcn21_validate_bandwidth: DC_FP_END
+[   15.866043] dcn21_validate_bandwidth: DC_FP_START
+[   15.866098] patch_bounding_box: DC_FP_START
+[   15.866102] patch_bounding_box: DC_FP_END
+[   15.866645] dcn21_validate_bandwidth: DC_FP_END
+[   15.866704] dcn21_validate_bandwidth: DC_FP_START
+[   15.866739] patch_bounding_box: DC_FP_START
+[   15.866741] patch_bounding_box: DC_FP_END
+[   15.867267] dcn21_validate_bandwidth: DC_FP_END
+[   15.882518] dcn21_validate_bandwidth: DC_FP_START
+[   15.882573] patch_bounding_box: DC_FP_START
+[   15.882577] patch_bounding_box: DC_FP_END
+[   15.883116] dcn21_validate_bandwidth: DC_FP_END
+[   15.883175] dcn21_validate_bandwidth: DC_FP_START
+[   15.883209] patch_bounding_box: DC_FP_START
+[   15.883211] patch_bounding_box: DC_FP_END
+[   15.883734] dcn21_validate_bandwidth: DC_FP_END
+[   15.899206] dcn21_validate_bandwidth: DC_FP_START
+[   15.899260] patch_bounding_box: DC_FP_START
+[   15.899264] patch_bounding_box: DC_FP_END
+[   15.899804] dcn21_validate_bandwidth: DC_FP_END
+[   15.899864] dcn21_validate_bandwidth: DC_FP_START
+[   15.899898] patch_bounding_box: DC_FP_START
+[   15.899900] patch_bounding_box: DC_FP_END
+[   15.900450] dcn21_validate_bandwidth: DC_FP_END
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
