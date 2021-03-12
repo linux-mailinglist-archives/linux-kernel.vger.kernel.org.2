@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC7B3396BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B113396BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233580AbhCLShn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:37:43 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:62345 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhCLShK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:37:10 -0500
-Date:   Fri, 12 Mar 2021 18:36:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615574228; bh=C4flYNl55MhaTml/vQIThEyldeDzlRdNXoMAWOGH2ZU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Qz+2/NJcNf9bDM6PkSlnYsbqlAX12lI2+aZ/GiEqrund2o7VjfuoRcv6C6wXppBZ/
-         KoPhQqf2NMM85+XnHD+Sv6xkuWlX5SSbwdl6T4l4yWf4mtRCVVsO7iWk4U2aVAXp43
-         LUNM5aMMbaUXX38bZoM5qlBzvs5lq/eVz/SGkL9lHS0hEIiICmkGBLZoQ9yWrsOduv
-         0bQA82/45rbBgfWo9CvaD7ugphtytM/W6s36VLDdjddneMRTOYprNMapNNHbs6Oj3t
-         y/AM2DzN3A4JY6ZNFY5qeHHylgDPhXAdIkdQcBCqjt4eICH/IVr31XnaONkSATSWNN
-         +GbDLk+9HPuTQ==
-To:     Eric Dumazet <edumazet@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next 2/4] gro: don't dereference napi->gro_hash[x] multiple times in dev_gro_receive()
-Message-ID: <20210312183648.242117-1-alobakin@pm.me>
-In-Reply-To: <CANn89iJvmakwfLFb6QS1ettiJM-D3cJ89bFPvZ=Gk2YyGpxQuw@mail.gmail.com>
-References: <20210312162127.239795-1-alobakin@pm.me> <20210312162127.239795-3-alobakin@pm.me> <CANn89iJvmakwfLFb6QS1ettiJM-D3cJ89bFPvZ=Gk2YyGpxQuw@mail.gmail.com>
+        id S233449AbhCLSjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:39:19 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:60448 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233517AbhCLSjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:39:14 -0500
+Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4DxvjY6hMPzDv4G;
+        Fri, 12 Mar 2021 10:39:13 -0800 (PST)
+X-Riseup-User-ID: 9761080F93156BC9C7A6806C2C7650E20C7CBBA6EC4AF15504943B3896730E07
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews2.riseup.net (Postfix) with ESMTPSA id 4DxvjY1LbKz1y6h;
+        Fri, 12 Mar 2021 10:39:13 -0800 (PST)
+Subject: Re: [PATCH v5] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+References: <20210312173855.24843-1-jnewsome@torproject.org>
+ <20210312102207.a347e38db375226a78cc37bf@linux-foundation.org>
+From:   Jim Newsome <jnewsome@torproject.org>
+Organization: The Tor Project
+Message-ID: <ccfef0d5-c419-0a8d-cf75-9642e9d11f94@torproject.org>
+Date:   Fri, 12 Mar 2021 12:39:12 -0600
 MIME-Version: 1.0
+In-Reply-To: <20210312102207.a347e38db375226a78cc37bf@linux-foundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 12 Mar 2021 17:47:04 +0100
+On 3/12/21 12:22, Andrew Morton wrote:
+> 
+> Could we please see some performance testing results to permit us to
+> evaluate the value of this change?
 
-> On Fri, Mar 12, 2021 at 5:22 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> >
-> > GRO bucket index doesn't change through the entire function.
-> > Store a pointer to the corresponding bucket on stack once and use
-> > it later instead of dereferencing again and again.
-> >
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> >  net/core/dev.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index adc42ba7ffd8..ee124aecb8a2 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -5957,6 +5957,7 @@ static void gro_flush_oldest(struct napi_struct *=
-napi, struct list_head *head)
-> >  static enum gro_result dev_gro_receive(struct napi_struct *napi, struc=
-t sk_buff *skb)
-> >  {
-> >         u32 bucket =3D skb_get_hash_raw(skb) & (GRO_HASH_BUCKETS - 1);
-> > +       struct gro_list *gro_list =3D &napi->gro_hash[bucket];
-> >         struct list_head *head =3D &offload_base;
-> >         struct packet_offload *ptype;
-> >         __be16 type =3D skb->protocol;
-> > @@ -6024,7 +6025,7 @@ static enum gro_result dev_gro_receive(struct nap=
-i_struct *napi, struct sk_buff
-> >         if (pp) {
-> >                 skb_list_del_init(pp);
-> >                 napi_gro_complete(napi, pp);
-> > -               napi->gro_hash[bucket].count--;
-> > +               gro_list->count--;
-> >         }
-> >
-> >         if (same_flow)
-> > @@ -6033,10 +6034,10 @@ static enum gro_result dev_gro_receive(struct n=
-api_struct *napi, struct sk_buff
-> >         if (NAPI_GRO_CB(skb)->flush)
-> >                 goto normal;
-> >
-> > -       if (unlikely(napi->gro_hash[bucket].count >=3D MAX_GRO_SKBS)) {
-> > +       if (unlikely(gro_list->count >=3D MAX_GRO_SKBS)) {
-> >                 gro_flush_oldest(napi, gro_head);
-> >         } else {
-> > -               napi->gro_hash[bucket].count++;
-> > +               gro_list->count++;
-> >         }
-> >         NAPI_GRO_CB(skb)->count =3D 1;
-> >         NAPI_GRO_CB(skb)->age =3D jiffies;
-> > @@ -6050,7 +6051,7 @@ static enum gro_result dev_gro_receive(struct nap=
-i_struct *napi, struct sk_buff
-> >         if (grow > 0)
-> >                 gro_pull_from_frag0(skb, grow);
-> >  ok:
-> > -       if (napi->gro_hash[bucket].count) {
-> > +       if (gro_list->count) {
-> >                 if (!test_bit(bucket, &napi->gro_bitmask))
-> >                         __set_bit(bucket, &napi->gro_bitmask);
-> >         } else if (test_bit(bucket, &napi->gro_bitmask)) {
-> > --
-> > 2.30.2
-> >
-> >
->
-> This adds more register pressure, do you have precise measures to
-> confirm this change is a win ?
->
-> Presumably the compiler should be able to optimize the code just fine,
-> it can see @bucket does not change.
+Sure. I've been doing some ad-hoc measurements with the code below. It
+forks 8k children and then waits for them in reverse order (forcing a
+full list traversal each time). I'll need to reboot a couple times to
+get apples-to-apples measurements on bare metal, though. I'll plan to
+run with NUMCHILDREN = 0 -> 8000, by 100.
 
-This is mostly (if not purely) cosmetic, I don't think it changes
-anything at all for the most of sane compilers.
+Does this look like it'd be sufficient, or is there more you'd like to
+see? The current form doesn't use ptrace, but I expect the results to be
+similar; (maybe more pronounced when tracing threaded children, since
+every thread is in the tracee list instead of just the group leaders).
 
-Regarding registers, since @gro_list and @gro_head are pretty the
-same, we could drop @gro_head in favour of @gro_list and just use
-@gro_list->list instead.
+#define NUMCHILDREN 8000
 
-Al
-
+void fork_and_wait() {
+    pid_t children[NUMCHILDREN];
+    for (int i = 0; i < NUMCHILDREN; ++i) {
+        pid_t forkrv = fork();
+        if (forkrv < 0) {
+            perror("fork");
+            exit(1);
+        }
+        if (forkrv == 0) {
+            // child
+            exit(0);
+        }
+        // parent
+        children[i] = forkrv;
+    }
+    for (int i = 0; i < NUMCHILDREN; ++i) {
+        int wstatus;
+        if (waitpid(children[NUMCHILDREN - i - 1], &wstatus, 0) < 0) {
+            perror("waitpid");
+            exit(1);
+        }
+    }
+}
