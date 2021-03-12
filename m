@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95424338AF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F41338AFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233659AbhCLLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:04:34 -0500
-Received: from mga02.intel.com ([134.134.136.20]:5499 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233554AbhCLLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:04:00 -0500
-IronPort-SDR: Mz/uavYLg1nriw4SDf7sOW10LDGJs9/+ZuAZT6qKGKbt6WBOEuWtTXOMEAKRfqZvh92rdtbeIY
- ZnKIoa24iBOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="175939530"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="175939530"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:03:58 -0800
-IronPort-SDR: /6TpBsSEM7T8QD3s4i9cejjiudGvvwuwTdPHMSBWm5BAzAXBnCnAaOftdYr8trlo9hlgCVfEBG
- uvC4xBrDbpzQ==
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="521392591"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:03:55 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lKfaB-00BpeO-JN; Fri, 12 Mar 2021 13:03:51 +0200
-Date:   Fri, 12 Mar 2021 13:03:51 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v3 08/11] gpio: sim: new testing module
-Message-ID: <YEtKlyV13h2fbwJR@smile.fi.intel.com>
-References: <20210309205921.15992-1-brgl@bgdev.pl>
- <20210309205921.15992-9-brgl@bgdev.pl>
- <YEi7fth6sZWgKd+q@smile.fi.intel.com>
- <CAMRc=MfeCWNnXwqBBu3CcdHXQ5QnNPBh8EJRTCtyZau+RqE-0w@mail.gmail.com>
+        id S233554AbhCLLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:07:11 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13524 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232920AbhCLLHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:07:01 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dxjd43zWqzNlqW;
+        Fri, 12 Mar 2021 19:04:40 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 12 Mar 2021
+ 19:06:51 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <npiggin@gmail.com>, <dja@axtens.net>,
+        <akpm@linux-foundation.org>, <rppt@kernel.org>,
+        <aneesh.kumar@linux.ibm.com>, <clg@kaod.org>
+CC:     <johnny.chenyi@huawei.com>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] powerpc: define the variable 'uaccess_flush' as static
+Date:   Fri, 12 Mar 2021 06:06:38 -0500
+Message-ID: <20210312110638.178974-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MfeCWNnXwqBBu3CcdHXQ5QnNPBh8EJRTCtyZau+RqE-0w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 09:54:58AM +0100, Bartosz Golaszewski wrote:
-> On Wed, Mar 10, 2021 at 1:28 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+The variable 'uaccess_fulsh' is not referenced outside the file. Perhaps we
+should define it as static to avoid the warning as follows:
 
-...
+arch/powerpc/kernel/setup_64.c:953:6: warning: symbol 'uaccess_flush'
+was not declared. Should it be static?
 
-> > > +             ret = sprintf(page, "n/a\n");
-> >
-> > I dunno '/' (slash) is a good character to be handled in a shell.
-> > I would prefer 'none' or 'not available' (I think space is easier,
-> > because the rules to escape much simpler: need just to take it into
-> > quotes, while / needs to be escaped separately).
-> >
-> 
-> My test cases work fine with 'n/a' but I can change it to 'none' if
-> it's less controversial.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+---
+ arch/powerpc/kernel/setup_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-% git grep -n -w '"none"' -- drivers/ arch/ | wc -l
-371
-
-% git grep -n -w '"n/a"' -- drivers/ arch/ | wc -l
-15
-
-% git grep -n -w '"not available"' -- drivers/ arch/ | wc -l
-5
-
-...
-
-> But I would be creating empty properties for nothing. Better to just
-> not have them at all.
-
-Up to you.
-
+diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+index 560ed8b975e7..22aca271496b 100644
+--- a/arch/powerpc/kernel/setup_64.c
++++ b/arch/powerpc/kernel/setup_64.c
+@@ -950,7 +950,7 @@ static bool no_entry_flush;
+ static bool no_uaccess_flush;
+ bool rfi_flush;
+ bool entry_flush;
+-bool uaccess_flush;
++static bool uaccess_flush;
+ DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
+ EXPORT_SYMBOL(uaccess_flush_key);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
