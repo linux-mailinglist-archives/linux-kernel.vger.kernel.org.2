@@ -2,303 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08698338699
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2233333868D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhCLHc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        id S231551AbhCLHau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhCLHb7 (ORCPT
+        with ESMTP id S230257AbhCLHaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:31:59 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BABFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:31:59 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id t5so3836636qvs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:31:59 -0800 (PST)
+        Fri, 12 Mar 2021 02:30:15 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD92C061574;
+        Thu, 11 Mar 2021 23:30:15 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so10658132pjb.2;
+        Thu, 11 Mar 2021 23:30:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZEtUz4cca1c3Fl5qiQDKoYLrz6ESJJtyWLesvPnKSDE=;
-        b=iT8PQhvRWLgLdesAqQvoHlBII0zpfG7wK5D8JyGWBsR97w6xqBm/UAzMn5xG1iMjI/
-         5Vu4/MYUXNSWwAkdMg/Q/z7QQab5OA9O9muH+h0chtyy50D7of89f6HQWIw8gWuRDeT6
-         QTn4AAmHC4QRptq0vBm3Bu75CKASbkVd2AOq/Of0r9pSh1K8B2Gldie69c7Ytg3ZY7Ga
-         xeAbWwdv5fomFwldof6Wkkws9QFF55xIc3kRAZtuImbRSY926SqbCQUm5joE4sAO4M6G
-         6HIBiYDMToAf8cfn1bd+frD5JPPlGz53RMlS1wz6izNkergvG0xOtdCckZYMOyQvXlRY
-         wJlA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=BkvWwioQy+TovUxuGJjJj/30Ns2zPuJ42mVidHoKW+4=;
+        b=FhBGKOdrSIAd8JlwNDJx6tstPAmhfMWuV3Vvn8nP0J4Rpp/TNrZi6hBQrtiVHqP1sn
+         m05RqzpH99ETgqmCiI6p/rTAs6fGccepDgNq4rq3z1iAIe8JV9ilfRrVUD4Jrkl5jRjf
+         UT0Ohi3hF+mLq2jazvClOBe8mEokX8EWcW2u5z9veTvdR+X/erkrm//MNJ/mLmhTRWO2
+         tKk560Zvc9Zeuem/ZbBuV/PoMH7K+1M3VaPDIh+F+tcQym5aXQI+z2VeGwOz+7qC+7mk
+         GCoodOfj7fBzXnzlAiyfH3o7stPa1EPYbthU68/ol2sMeNN1F+CXxfO0ZScaOlhiHecC
+         ciCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZEtUz4cca1c3Fl5qiQDKoYLrz6ESJJtyWLesvPnKSDE=;
-        b=XE+M+YEfr4pE1Aywyy2kPslSPAnY7oGiow+ySP1lmLhP70tyZewhdxeMKOf3qik9kn
-         ymSRBHmWNnGXPFcHU+CLQ6yCL8ZBV0N9leJZ5pDER3GYDavo6Z23a/QEKJovFu43Lomk
-         ad0VJ0aV3DxDWBCdzzdwS2rZrAYa1bITO3or9U9YtYKtyi1WmnxLVZRQFNBMukPyMJRY
-         pGXPUPOUIMnFErPNgW3c/i7XltCK3fc3AGUkd5Xsay7Rq7qofZbUt40ytZ2ekQLK57ue
-         1zrK2oK0pg7XrxXe3/dHaZJVjOkiplJSplACMgddLaoMSS/ypqFczTiWOCz+WTTnGnaz
-         elVA==
-X-Gm-Message-State: AOAM533g949CSCWL5JAR37kcyqXVuazEx9MFxSMwm1JFs3RLNKT//Bwv
-        L57r7F4nTFePDp17HuY9Z48=
-X-Google-Smtp-Source: ABdhPJwOJIMYFb2EtlgeCslrjHbdt3ioBTdrKL23cPfV68Ct+F6Lsz0Fql+YfcBk8Z7oPBByHoO9aQ==
-X-Received: by 2002:a0c:9cc2:: with SMTP id j2mr7724455qvf.2.1615534318818;
-        Thu, 11 Mar 2021 23:31:58 -0800 (PST)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com (177-131-89-8.dynamic.desktop.com.br. [177.131.89.8])
-        by smtp.gmail.com with ESMTPSA id t6sm3434026qti.2.2021.03.11.23.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 23:31:58 -0800 (PST)
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        David Gibson <david@gibson.dropbear.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] powerpc/mm/hash: Avoid multiple HPT resize-downs on memory hotunplug
-Date:   Fri, 12 Mar 2021 04:29:41 -0300
-Message-Id: <20210312072940.598696-4-leobras.c@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210312072940.598696-1-leobras.c@gmail.com>
-References: <20210312072940.598696-1-leobras.c@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=BkvWwioQy+TovUxuGJjJj/30Ns2zPuJ42mVidHoKW+4=;
+        b=Pkhfdzy8eZZduMZWwYIEvw3nTHOKSSSC/57TJ9guU8vB/QXs4O5o6Vpk7ta4rcasgB
+         7WmTZz/0HckrdrFlKVD3bVxqGMwEAbbF4RSkJ4/BE7+uOscUL0szTEcoI5ks3J4rj2u5
+         tlkskM/1WHCzWuJrD1Eh9lyNp2FmivIAtE0fAZ3qcEZm4TMcK86eJ2OyG69nKd5hfjjx
+         y4x1R4N+DbN6E75rcMABBb7Hy0Nr9iLVkf8RykpO80kfPFvLxqcPWiTe3gSa45ESyweo
+         T6IceSNuXIgGBKXPTjugJebb7kT9txFRYibEXIyS4C3tfYF3+csGaf4ijw3xOx/tWrdJ
+         5EcQ==
+X-Gm-Message-State: AOAM532rpmgb1jKiVNDsi/6ORA5OCboTAxr8RorF6A/p5sgb18ajKq0E
+        PKZAlMVI9mxoBGwIvq7Qv+4=
+X-Google-Smtp-Source: ABdhPJwWcOWLLBfo3PlVs6ZAljqAGC+z8o42hnXpJKxIUSTF7URabYkK89jwbNG37Kvv3szuCp0OnQ==
+X-Received: by 2002:a17:90b:17d1:: with SMTP id me17mr12758971pjb.106.1615534215197;
+        Thu, 11 Mar 2021 23:30:15 -0800 (PST)
+Received: from localhost ([106.206.64.11])
+        by smtp.gmail.com with ESMTPSA id w84sm4436351pfc.142.2021.03.11.23.30.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Mar 2021 23:30:14 -0800 (PST)
+Date:   Fri, 12 Mar 2021 13:00:05 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: [PATCH] net: ipv4: route.c: Fix indentation of multi line comment.
+Message-ID: <20210312073005.l7s25qeui5lh5zsd@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During memory hotunplug, after each LMB is removed, the HPT may be
-resized-down if it would map a max of 4 times the current amount of memory.
-(2 shifts, due to introduced histeresis)
+All comment lines inside the comment block have been aligned.
+Every line of comment starts with a * (uniformity in code).
 
-It usually is not an issue, but it can take a lot of time if HPT
-resizing-down fails. This happens  because resize-down failures
-usually repeat at each LMB removal, until there are no more bolted entries
-conflict, which can take a while to happen.
-
-This can be solved by doing a single HPT resize at the end of memory
-hotunplug, after all requested entries are removed.
-
-To make this happen, it's necessary to temporarily disable all HPT
-resize-downs before hotunplug, re-enable them after hotunplug ends,
-and then resize-down HPT to the current memory size.
-
-As an example, hotunplugging 256GB from a 385GB guest took 621s without
-this patch, and 100s after applied.
-
-Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
 ---
- arch/powerpc/include/asm/book3s/64/hash.h     |  2 ++
- arch/powerpc/include/asm/sparsemem.h          |  2 ++
- arch/powerpc/mm/book3s64/hash_utils.c         | 28 +++++++++++++++++++
- arch/powerpc/mm/book3s64/pgtable.c            | 12 ++++++++
- .../platforms/pseries/hotplug-memory.c        | 16 +++++++++++
- 5 files changed, 60 insertions(+)
+ net/ipv4/route.c | 97 ++++++++++++++++++++++++------------------------
+ 1 file changed, 49 insertions(+), 48 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
-index 843b0a178590..f92697c107f7 100644
---- a/arch/powerpc/include/asm/book3s/64/hash.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash.h
-@@ -256,6 +256,8 @@ int hash__create_section_mapping(unsigned long start, unsigned long end,
- int hash__remove_section_mapping(unsigned long start, unsigned long end);
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 02d81d79deeb..b930f5976961 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -722,6 +722,7 @@ static void update_or_create_fnhe(struct fib_nh_common *nhc, __be32 daddr,
  
- void hash_memory_batch_expand_prepare(unsigned long newsize);
-+void hash_memory_batch_shrink_begin(void);
-+void hash_memory_batch_shrink_end(void);
- 
- #endif /* !__ASSEMBLY__ */
- #endif /* __KERNEL__ */
-diff --git a/arch/powerpc/include/asm/sparsemem.h b/arch/powerpc/include/asm/sparsemem.h
-index 16b5f5300c84..a7a8a0d070fc 100644
---- a/arch/powerpc/include/asm/sparsemem.h
-+++ b/arch/powerpc/include/asm/sparsemem.h
-@@ -18,6 +18,8 @@ extern int memory_add_physaddr_to_nid(u64 start);
- #define memory_add_physaddr_to_nid memory_add_physaddr_to_nid
- 
- void memory_batch_expand_prepare(unsigned long newsize);
-+void memory_batch_shrink_begin(void);
-+void memory_batch_shrink_end(void);
- 
- #ifdef CONFIG_NUMA
- extern int hot_add_scn_to_nid(unsigned long scn_addr);
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 1f6aa0bf27e7..e16f207de8e4 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -794,6 +794,9 @@ static unsigned long __init htab_get_table_size(void)
+ 		for_each_possible_cpu(i) {
+ 			struct rtable __rcu **prt;
++
+ 			prt = per_cpu_ptr(nhc->nhc_pcpu_rth_output, i);
+ 			rt = rcu_dereference(*prt);
+ 			if (rt)
+@@ -1258,12 +1259,12 @@ static int ip_rt_bug(struct net *net, struct sock *sk, struct sk_buff *skb)
  }
  
- #ifdef CONFIG_MEMORY_HOTPLUG
-+
-+atomic_t hpt_resize_disable = ATOMIC_INIT(0);
-+
- static int resize_hpt_for_hotplug(unsigned long new_mem_size, bool shrinking)
+ /*
+-   We do not cache source address of outgoing interface,
+-   because it is used only by IP RR, TS and SRR options,
+-   so that it out of fast path.
+-
+-   BTW remember: "addr" is allowed to be not aligned
+-   in IP options!
++ * We do not cache source address of outgoing interface,
++ * because it is used only by IP RR, TS and SRR options,
++ * so that it out of fast path.
++ *
++ * BTW remember: "addr" is allowed to be not aligned
++ * in IP options!
+  */
+ 
+ void ip_rt_get_source(u8 *addr, struct sk_buff *skb, struct rtable *rt)
+@@ -2108,7 +2109,7 @@ static int ip_route_input_slow(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 		goto out;
+ 
+ 	/* Check for the most weird martians, which can be not detected
+-	   by fib_lookup.
++	 * by fib_lookup.
+ 	 */
+ 
+ 	tun_info = skb_tunnel_info(skb);
+@@ -2317,15 +2318,15 @@ int ip_route_input_rcu(struct sk_buff *skb, __be32 daddr, __be32 saddr,
+ 		       u8 tos, struct net_device *dev, struct fib_result *res)
  {
- 	unsigned target_hpt_shift;
-@@ -805,6 +808,10 @@ static int resize_hpt_for_hotplug(unsigned long new_mem_size, bool shrinking)
+ 	/* Multicast recognition logic is moved from route cache to here.
+-	   The problem was that too many Ethernet cards have broken/missing
+-	   hardware multicast filters :-( As result the host on multicasting
+-	   network acquires a lot of useless route cache entries, sort of
+-	   SDR messages from all the world. Now we try to get rid of them.
+-	   Really, provided software IP multicast filter is organized
+-	   reasonably (at least, hashed), it does not result in a slowdown
+-	   comparing with route cache reject entries.
+-	   Note, that multicast routers are not affected, because
+-	   route cache entry is created eventually.
++	 * The problem was that too many Ethernet cards have broken/missing
++	 * hardware multicast filters :-( As result the host on multicasting
++	 * network acquires a lot of useless route cache entries, sort of
++	 * SDR messages from all the world. Now we try to get rid of them.
++	 * Really, provided software IP multicast filter is organized
++	 * reasonably (at least, hashed), it does not result in a slowdown
++	 * comparing with route cache reject entries.
++	 * Note, that multicast routers are not affected, because
++	 * route cache entry is created eventually.
+ 	 */
+ 	if (ipv4_is_multicast(daddr)) {
+ 		struct in_device *in_dev = __in_dev_get_rcu(dev);
+@@ -2537,11 +2538,11 @@ struct rtable *ip_route_output_key_hash_rcu(struct net *net, struct flowi4 *fl4,
+ 		rth = ERR_PTR(-ENETUNREACH);
  
- 	if (shrinking) {
+ 		/* I removed check for oif == dev_out->oif here.
+-		   It was wrong for two reasons:
+-		   1. ip_dev_find(net, saddr) can return wrong iface, if saddr
+-		      is assigned to multiple interfaces.
+-		   2. Moreover, we are allowed to send packets with saddr
+-		      of another iface. --ANK
++		 * It was wrong for two reasons:
++		 * 1. ip_dev_find(net, saddr) can return wrong iface, if saddr
++		 *    is assigned to multiple interfaces.
++		 * 2. Moreover, we are allowed to send packets with saddr
++		 *    of another iface. --ANK
+ 		 */
  
-+		/* When batch removing entries, only resizes HPT at the end. */
-+		if (atomic_read_acquire(&hpt_resize_disable))
-+			return 0;
-+
- 		/*
- 		 * To avoid lots of HPT resizes if memory size is fluctuating
- 		 * across a boundary, we deliberately have some hysterisis
-@@ -872,6 +879,27 @@ void hash_memory_batch_expand_prepare(unsigned long newsize)
- 		pr_warn("Hash collision while resizing HPT\n");
- 	}
- }
-+
-+void hash_memory_batch_shrink_begin(void)
-+{
-+	/* Disable HPT resize-down during hot-unplug */
-+	atomic_set_release(&hpt_resize_disable, 1);
-+}
-+
-+void hash_memory_batch_shrink_end(void)
-+{
-+	unsigned long newsize;
-+
-+	/* Re-enables HPT resize-down after hot-unplug */
-+	atomic_set_release(&hpt_resize_disable, 0);
-+
-+	newsize = memblock_phys_mem_size();
-+	/* Resize to smallest SHIFT possible */
-+	while (resize_hpt_for_hotplug(newsize, true) == -ENOSPC) {
-+		newsize *= 2;
-+		pr_warn("Hash collision while resizing HPT\n");
-+	}
-+}
- #endif /* CONFIG_MEMORY_HOTPLUG */
+ 		if (fl4->flowi4_oif == 0 &&
+@@ -2553,18 +2554,18 @@ struct rtable *ip_route_output_key_hash_rcu(struct net *net, struct flowi4 *fl4,
+ 				goto out;
  
- static void __init hash_init_partition_table(phys_addr_t hash_table,
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index f1cd8af0f67f..e01681e22e00 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -199,6 +199,18 @@ void memory_batch_expand_prepare(unsigned long newsize)
- 	if (!radix_enabled())
- 		hash_memory_batch_expand_prepare(newsize);
- }
-+
-+void memory_batch_shrink_begin(void)
-+{
-+	if (!radix_enabled())
-+		hash_memory_batch_shrink_begin();
-+}
-+
-+void memory_batch_shrink_end(void)
-+{
-+	if (!radix_enabled())
-+		hash_memory_batch_shrink_end();
-+}
- #endif /* CONFIG_MEMORY_HOTPLUG */
+ 			/* Special hack: user can direct multicasts
+-			   and limited broadcast via necessary interface
+-			   without fiddling with IP_MULTICAST_IF or IP_PKTINFO.
+-			   This hack is not just for fun, it allows
+-			   vic,vat and friends to work.
+-			   They bind socket to loopback, set ttl to zero
+-			   and expect that it will work.
+-			   From the viewpoint of routing cache they are broken,
+-			   because we are not allowed to build multicast path
+-			   with loopback source addr (look, routing cache
+-			   cannot know, that ttl is zero, so that packet
+-			   will not leave this host and route is valid).
+-			   Luckily, this hack is good workaround.
++			 * and limited broadcast via necessary interface
++			 * without fiddling with IP_MULTICAST_IF or IP_PKTINFO.
++			 * This hack is not just for fun, it allows
++			 * vic,vat and friends to work.
++			 * They bind socket to loopback, set ttl to zero
++			 * and expect that it will work.
++			 * From the viewpoint of routing cache they are broken,
++			 * because we are not allowed to build multicast path
++			 * with loopback source addr (look, routing cache
++			 * cannot know, that ttl is zero, so that packet
++			 * will not leave this host and route is valid).
++			 * Luckily, this hack is good workaround.
+ 			 */
  
- void __init mmu_partition_table_init(void)
-diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
-index 353c71249214..9182fb5b5c01 100644
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -425,6 +425,8 @@ static int dlpar_memory_remove_by_count(u32 lmbs_to_remove)
- 		return -EINVAL;
- 	}
+ 			fl4->flowi4_oif = dev_out->ifindex;
+@@ -2627,21 +2628,21 @@ struct rtable *ip_route_output_key_hash_rcu(struct net *net, struct flowi4 *fl4,
+ 		    (ipv4_is_multicast(fl4->daddr) ||
+ 		    !netif_index_is_l3_master(net, fl4->flowi4_oif))) {
+ 			/* Apparently, routing tables are wrong. Assume,
+-			   that the destination is on link.
+-
+-			   WHY? DW.
+-			   Because we are allowed to send to iface
+-			   even if it has NO routes and NO assigned
+-			   addresses. When oif is specified, routing
+-			   tables are looked up with only one purpose:
+-			   to catch if destination is gatewayed, rather than
+-			   direct. Moreover, if MSG_DONTROUTE is set,
+-			   we send packet, ignoring both routing tables
+-			   and ifaddr state. --ANK
+-
+-
+-			   We could make it even if oif is unknown,
+-			   likely IPv6, but we do not.
++			 * that the destination is on link.
++			 *
++			 * WHY? DW.
++			 * Because we are allowed to send to iface
++			 * even if it has NO routes and NO assigned
++			 * addresses. When oif is specified, routing
++			 * tables are looked up with only one purpose:
++			 * to catch if destination is gatewayed, rather than
++			 * direct. Moreover, if MSG_DONTROUTE is set,
++			 * we send packet, ignoring both routing tables
++			 * and ifaddr state. --ANK
++			 *
++			 *
++			 * We could make it even if oif is unknown,
++			 * likely IPv6, but we do not.
+ 			 */
  
-+	memory_batch_shrink_begin();
-+
- 	for_each_drmem_lmb(lmb) {
- 		rc = dlpar_remove_lmb(lmb);
- 		if (rc)
-@@ -470,6 +472,8 @@ static int dlpar_memory_remove_by_count(u32 lmbs_to_remove)
- 		rc = 0;
- 	}
- 
-+	memory_batch_shrink_end();
-+
- 	return rc;
- }
- 
-@@ -481,6 +485,8 @@ static int dlpar_memory_remove_by_index(u32 drc_index)
- 
- 	pr_debug("Attempting to hot-remove LMB, drc index %x\n", drc_index);
- 
-+	memory_batch_shrink_begin();
-+
- 	lmb_found = 0;
- 	for_each_drmem_lmb(lmb) {
- 		if (lmb->drc_index == drc_index) {
-@@ -502,6 +508,8 @@ static int dlpar_memory_remove_by_index(u32 drc_index)
- 	else
- 		pr_debug("Memory at %llx was hot-removed\n", lmb->base_addr);
- 
-+	memory_batch_shrink_end();
-+
- 	return rc;
- }
- 
-@@ -532,6 +540,8 @@ static int dlpar_memory_remove_by_ic(u32 lmbs_to_remove, u32 drc_index)
- 	if (lmbs_available < lmbs_to_remove)
- 		return -EINVAL;
- 
-+	memory_batch_shrink_begin();
-+
- 	for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
- 		if (!(lmb->flags & DRCONF_MEM_ASSIGNED))
- 			continue;
-@@ -572,6 +582,8 @@ static int dlpar_memory_remove_by_ic(u32 lmbs_to_remove, u32 drc_index)
- 		}
- 	}
- 
-+	memory_batch_shrink_end();
-+
- 	return rc;
- }
- 
-@@ -700,6 +712,7 @@ static int dlpar_memory_add_by_count(u32 lmbs_to_add)
- 	if (lmbs_added != lmbs_to_add) {
- 		pr_err("Memory hot-add failed, removing any added LMBs\n");
- 
-+		memory_batch_shrink_begin();
- 		for_each_drmem_lmb(lmb) {
- 			if (!drmem_lmb_reserved(lmb))
- 				continue;
-@@ -713,6 +726,7 @@ static int dlpar_memory_add_by_count(u32 lmbs_to_add)
- 
- 			drmem_remove_lmb_reservation(lmb);
- 		}
-+		memory_batch_shrink_end();
- 		rc = -EINVAL;
- 	} else {
- 		for_each_drmem_lmb(lmb) {
-@@ -814,6 +828,7 @@ static int dlpar_memory_add_by_ic(u32 lmbs_to_add, u32 drc_index)
- 	if (rc) {
- 		pr_err("Memory indexed-count-add failed, removing any added LMBs\n");
- 
-+		memory_batch_shrink_begin();
- 		for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
- 			if (!drmem_lmb_reserved(lmb))
- 				continue;
-@@ -827,6 +842,7 @@ static int dlpar_memory_add_by_ic(u32 lmbs_to_add, u32 drc_index)
- 
- 			drmem_remove_lmb_reservation(lmb);
- 		}
-+		memory_batch_shrink_end();
- 		rc = -EINVAL;
- 	} else {
- 		for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
+ 			if (fl4->saddr == 0)
 -- 
-2.29.2
+2.17.1
 
