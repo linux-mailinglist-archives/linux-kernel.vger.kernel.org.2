@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA1933835F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DE9338379
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhCLB5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 20:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhCLB5h (ORCPT
+        id S231458AbhCLCTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:19:00 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:49156 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229569AbhCLCSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 20:57:37 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 314B1C061574;
-        Thu, 11 Mar 2021 17:57:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=mu5caJTVFIl7UEHXdabLTzS0G5R3LPGJH9xr
-        lBMv9Zw=; b=UntVm0WU75vzpUbE66exJ0URf5jgV8WCYC616kqK//xfXxJfBAeU
-        b0VuYuPWd7HrPhGeW9l2r8iXqk02pCzACnJRV2K8ut9acAjvuiW0jIwzGAUnJY6k
-        rpP/jtss5B4tqWzsDcKoR4VoZvYfot0+QMy+HpoF7RKfYLcbhJjiYVc=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Fri, 12 Mar
- 2021 09:57:12 +0800 (GMT+08:00)
-X-Originating-IP: [211.86.152.244]
-Date:   Fri, 12 Mar 2021 09:57:12 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "Jason Gunthorpe" <jgg@nvidia.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: RE: [PATCH] infiniband/i40iw: Fix a use after free in
- i40iw_cm_event_handler
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <1fc386d78c044d3da723fe38446edb75@intel.com>
-References: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
- <20210311182114.GA2733907@nvidia.com>
- <1fc386d78c044d3da723fe38446edb75@intel.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 11 Mar 2021 21:18:31 -0500
+X-Greylist: delayed 2466 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Mar 2021 21:18:30 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=TthgKQQeKaY8Nk8kByxBsMn1+rajpO9j2vCO0oMycYg=; b=k5/TOv/t9MI8U4lhl5xd0eVHRI
+        DEKyTXEcuq5sX7Xy2TXIwqOAOZ73ZqhrLuTntYIMTvCOCq8PRu9o7rWRFdwy4LEmwJcHwyWL9BvxE
+        E3psi+/9MRziL+BVzgCEmcxCM77bWwNBiF0H8QBoLUfFeTtCEH58WSnu/bBSwfWEc0X1HLYx+UY6W
+        Ig6tahtLX1Cp8ddWB4Vw3kJiR4S7bXzhUgT4PrlGFGZiBmn37haj35vV85OvDcD2h9GakgTEPhmP8
+        5ULZeqF8e05hdIS9qe+Vati5jKVwahKR4z2FkN46o43eFB9sPRT5TVTR6byB7fKBkdA6vj9c1GMvK
+        qXUpe9FA==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lKWjj-0005aG-5w; Thu, 11 Mar 2021 18:37:08 -0700
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-12-logang@deltatee.com>
+ <20210311235943.GB2710221@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <c6cc9e07-b7cf-6d3d-b0bf-25428b197731@deltatee.com>
+Date:   Thu, 11 Mar 2021 18:37:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <43271428.d966.1782426e7a3.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygDn7T14ykpgnE0QAA--.3W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoSBlQhn5BFyAAAso
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <20210311235943.GB2710221@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH v2 11/11] nvme-pci: Convert to using dma_map_sg for
+ p2pdma pages
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIlNhbGVlbSwgU2hp
-cmF6IiA8c2hpcmF6LnNhbGVlbUBpbnRlbC5jb20+DQo+IOWPkemAgeaXtumXtDogMjAyMS0wMy0x
-MiAwOToxMzozOSAo5pif5pyf5LqUKQ0KPiDmlLbku7bkuro6ICJKYXNvbiBHdW50aG9ycGUiIDxq
-Z2dAbnZpZGlhLmNvbT4sICJMdiBZdW5sb25nIiA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuPg0K
-PiDmioTpgIE6ICJMYXRpZiwgRmFpc2FsIiA8ZmFpc2FsLmxhdGlmQGludGVsLmNvbT4sICJkbGVk
-Zm9yZEByZWRoYXQuY29tIiA8ZGxlZGZvcmRAcmVkaGF0LmNvbT4sICJsaW51eC1yZG1hQHZnZXIu
-a2VybmVsLm9yZyIgPGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnPiwgImxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmciIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KPiDkuLvpopg6
-IFJFOiBbUEFUQ0hdIGluZmluaWJhbmQvaTQwaXc6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIGk0
-MGl3X2NtX2V2ZW50X2hhbmRsZXINCj4gDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSF0gaW5maW5p
-YmFuZC9pNDBpdzogRml4IGEgdXNlIGFmdGVyIGZyZWUgaW4NCj4gPiBpNDBpd19jbV9ldmVudF9o
-YW5kbGVyDQo+ID4gDQo+ID4gT24gV2VkLCBNYXIgMTAsIDIwMjEgYXQgMDc6MTQ6MTRQTSAtMDgw
-MCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiA+IEluIHRoZSBjYXNlIG9mIEk0MElXX0NNX0VWRU5U
-X0FCT1JURUQsIGk0MGl3X2V2ZW50X2Nvbm5lY3RfZXJyb3IoKQ0KPiA+ID4gY291bGQgYmUgY2Fs
-bGVkIHRvIGZyZWUgdGhlIGV2ZW50LT5jbV9ub2RlLiBIb3dldmVyLCBldmVudC0+Y21fbm9kZQ0K
-PiA+ID4gd2lsbCBiZSB1c2VkIGFmdGVyIGFuZCBjYXVzZSB1c2UgYWZ0ZXIgZnJlZS4gSXQgbmVl
-ZHMgdG8gYWRkIGZsYWdzIHRvDQo+ID4gPiBpbmZvcm0gdGhhdCBldmVudC0+Y21fbm9kZSBoYXMg
-YmVlbiBmcmVlZC4NCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwy
-MDE5QG1haWwudXN0Yy5lZHUuY24+DQo+ID4gPiAtLS0NCj4gPiA+ICBkcml2ZXJzL2luZmluaWJh
-bmQvaHcvaTQwaXcvaTQwaXdfY20uYyB8IDUgKysrKy0NCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-NCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+ID4gVGhpcyBtaWdodCBiZSBP
-SyAodGhvdWdoIEkgZG9uJ3QgbGlrZSB0aGUgZnJlZSB2YXJpYWJsZSksIFNoaXJhej8/DQo+ID4g
-DQo+IA0KPiBIb3cgd2FzIHRoaXMgcmVwcm9kdWNlZD8gRG8geW91IGhhdmUgc29tZSBjYWxsIHRy
-YWNlIGxlYWRpbmcgdXAgdG8gdXNlIGFmdGVyIGZyZWU/DQo+IA0KPiBUaGUgY21fbm9kZSByZWZj
-bnQgaXMgYnVtcGVkIGF0IGNyZWF0aW9uIHRpbWUgYW5kIG9uY2UgaW4gaTQwaXdfcmVjZWl2ZV9p
-bHEgYmVmb3JlIHBhY2tldCBpcyBwcm9jZXNzZWQuDQo+IFRoYXQgc2hvdWxkIHByb3RlY3QgdGhl
-IGNtX25vZGUgZnJvbSBkaXNhcHBlYXJpbmcgaW4gdGhlIGV2ZW50IGhhbmRsZXIgaW4gdGhlIGFi
-b3J0IGV2ZW50IGNhc2UuDQo+IFRoZSBkZWMgYXQgZW5kIG9mIGk0MGl3X3JlY2VpdmUgaWxxIHNo
-b3VsZCBiZSBwb2ludCB3aGVyZSB0aGUgY21fbm9kZSBpcyBmcmVlZCBzcGVjaWZpY2FsbHkgaW4g
-dGhlIGFib3J0IGNhc2UuDQo+IA0KPiBTaGlyYXoNCj4gDQoNClRoaXMgcHJvYmxlbSB3YXMgcmVw
-b3J0ZWQgYnkgYSBwYXRoLXNlbnNpdGl2ZSBhbmFseXplciBkZXZlbG9wZWQgYnkgb3VyIFNlY3Vy
-aXR5IExhYihMb2NjcykuDQpUaGUgYW5hbHl6ZXIgcmVwb3J0ZWQgdGhhdCB0aGVyZSBpcyBhIGZl
-YXNpYmxlIHBhdGggdG8gZnJlZSBldmVudC0+Y21fbm9kZSBhbmQgdXNlIGl0IGFmdGVyLA0KYW5k
-IHRoYXQgaXMgd2hhdCBpIGRlc2NyaWJlZCBpbiB0aGUgZmlyc3QgY29tbWl0Lg0KDQpUaGFua3Mu
-DQo=
+
+
+On 2021-03-11 4:59 p.m., Jason Gunthorpe wrote:
+> On Thu, Mar 11, 2021 at 04:31:41PM -0700, Logan Gunthorpe wrote:
+>> Convert to using dma_[un]map_sg() for PCI p2pdma pages.
+>>
+>> This should be equivalent, though support will be somewhat less
+>> (only dma-direct and dma-iommu are currently supported).
+>>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>>  drivers/nvme/host/pci.c | 27 +++++++--------------------
+>>  1 file changed, 7 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+>> index 7d40c6a9e58e..89ca5acf7a62 100644
+>> +++ b/drivers/nvme/host/pci.c
+>> @@ -577,17 +577,6 @@ static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
+>>  
+>>  }
+>>  
+>> -static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
+>> -{
+>> -	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+>> -
+>> -	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>> -		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
+>> -				    rq_dma_dir(req));
+>> -	else
+>> -		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
+>> -}
+> 
+> Can the two other places with this code pattern be changed too?
+
+Yes, if this goes forward, I imagine completely dropping
+pci_p2pdma_unmap_sg().
+
+Logan
