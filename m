@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D6A339591
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2489A339504
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhCLRxC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 12:53:02 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:45570 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231331AbhCLRw5 (ORCPT
+        id S232105AbhCLRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:32:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49412 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231557AbhCLRcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:52:57 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 8D1723E3D60;
-        Fri, 12 Mar 2021 13:31:14 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id fHu5t9ghMcxJ; Fri, 12 Mar 2021 13:31:11 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 00CF83E35EB;
-        Fri, 12 Mar 2021 13:26:03 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tylj8z6fqzAi; Fri, 12 Mar 2021 13:26:02 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id C6F883E135F;
-        Fri, 12 Mar 2021 13:03:16 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 12:32:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615570338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xhSFUQdlA2GO6iSQiZu6P1gE7L7SnxGWpmNseOtj/Ow=;
+        b=JPnwpiXnSIMjIKGfj6BihXg8W36ZlxfFUjHxGOG59/ZhfJX9n1/AhCTOrrdJkY9QpiXfiB
+        Wa+3Ieu0pbUqtYvnk7yQzuEo2naHtJywdm6HtywoWEDMyUTAqNt+6UajHAbm/0ZiTIhWk8
+        hPXYD2sPKpwPD9OSmWI4KyQ3DOJc2SA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-bNhvwPppMU-fq2HEo5pAkw-1; Fri, 12 Mar 2021 12:32:15 -0500
+X-MC-Unique: bNhvwPppMU-fq2HEo5pAkw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FA65192D786;
+        Fri, 12 Mar 2021 17:32:13 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-112-254.ams2.redhat.com [10.36.112.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60CC410023AB;
+        Fri, 12 Mar 2021 17:32:04 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com,
+        alexandru.elisei@arm.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+Subject: [PATCH v3 0/8] KVM/ARM: Some vgic fixes and init sequence KVM selftests
+Date:   Fri, 12 Mar 2021 18:31:54 +0100
+Message-Id: <20210312173202.89576-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 17:03:43 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312160316.C6F883E135F@mail.curtumepanorama.com.br>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+While writting vgic v3 init sequence KVM selftests I noticed some
+relatively minor issues. This was also the opportunity to try to
+fix the issue laterly reported by Zenghui, related to the RDIST_TYPER
+last bit emulation. The final patch is a first batch of VGIC init
+sequence selftests. Of course they can be augmented with a lot more
+register access tests, but let's try to move forward incrementally ...
 
-Sir/Madam,
+Best Regards
 
-CONGRATULATIONS!!!
+Eric
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+This series can be found at:
+https://github.com/eauger/linux/tree/vgic_kvmselftests_v3
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+History:
+v2 ->v3:
+- reworked last bit read accessor to handle contiguous redist
+  regions and rdist not registered in ascending order
+- removed [PATCH 5/9] KVM: arm: move has_run_once after the
+  map_resources
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+v1 -> v2:
+- Took into account all comments from Marc and Alexandru's except
+  the has_run_once still after the map_resources (this would oblige
+  me to revisit in depth the selftests)
 
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+Eric Auger (8):
+  KVM: arm64: vgic-v3: Fix some error codes when setting RDIST base
+  KVM: arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION read
+  KVM: arm64: vgic-v3: Fix error handling in vgic_v3_set_redist_base()
+  KVM: arm/arm64: vgic: Reset base address on kvm_vgic_dist_destroy()
+  docs: kvm: devices/arm-vgic-v3: enhance KVM_DEV_ARM_VGIC_CTRL_INIT doc
+  KVM: arm64: Simplify argument passing to vgic_uaccess_[read|write]
+  KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for userspace
+  KVM: selftests: aarch64/vgic-v3 init sequence tests
 
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+ .../virt/kvm/devices/arm-vgic-v3.rst          |   2 +-
+ arch/arm64/kvm/vgic/vgic-init.c               |  13 +-
+ arch/arm64/kvm/vgic/vgic-kvm-device.c         |   3 +
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c            | 116 ++-
+ arch/arm64/kvm/vgic/vgic-mmio.c               |  10 +-
+ arch/arm64/kvm/vgic/vgic.h                    |   1 +
+ include/kvm/arm_vgic.h                        |   3 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/aarch64/vgic_init.c | 672 ++++++++++++++++++
+ .../testing/selftests/kvm/include/kvm_util.h  |   5 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  51 ++
+ 11 files changed, 827 insertions(+), 50 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vgic_init.c
 
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+-- 
+2.26.2
 
