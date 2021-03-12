@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9A0338B43
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E1E338B44
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhCLLJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        id S234242AbhCLLJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbhCLLJP (ORCPT
+        with ESMTP id S234129AbhCLLJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Mar 2021 06:09:15 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B44C061574;
-        Fri, 12 Mar 2021 03:09:15 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o38so15626994pgm.9;
-        Fri, 12 Mar 2021 03:09:15 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CBDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:14 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id l11so4569753wrp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:09:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=ZEYL/pbFIoRQQHylJZyb6mvpBG/vJ0CzVs8U+fDkQms=;
-        b=fDVgcd6CradPpZOVQhUMVl1zY6XDbhFqMkk4LY+ex6E56v/JqmtuN+XcpqYkN0QxU8
-         eOv3acgR/VQTPgS+YCZlSYLiwXSLKMSCBcguGL40LJ6EOBXrvWHegtWndkARFq8ZVQ1Q
-         rcJ99csDt8f0DX2tAYsw0iJ4T2CAGL66fx6rvQx6PEz0Nkzo/KfWE0Gam//0TeEtYzZQ
-         xvyYfViiR6iAuln08vPKuT+id9NBl+Zwu2JJxZEkOEZ8/RXIKj9UtpWHvAv0zuLkfupT
-         Elq1xJxBCFfVQidEQUGLC1gcHQbQXy/EIcmK0WTWhplSm0Ak+/hgpJf3MjptOgn7T/fg
-         O07Q==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hvwdVooEhL1UHLjF9fJJHmRKq3X0NEaOuxkxsIXRcL0=;
+        b=ZU/RXORBTEmPN+MuEjxLxYId14OaO3lgdjNHiyjDVQsdw/lmsZ94Yok4/MH5Unh2L8
+         5L7KZxhMxSqYANxvLALuwxLhj/vtMRM4xONYfIhoJLSg3Yz2Vo/7NcvnRgeI8GfNG9Kx
+         c99h7KkdqflEg7LKwi9rBHTfTaSA14BNAJkE7BxgPYT9asP54im4qJPT8G6X2LYsUZKO
+         gxMeet3YcSS4O8AlDkuWyFmwSg4uHjlgw1OSbS5UW7GdCTe5IUw20xQYnY7so2I40Sss
+         b71tYF0jJwLJcJMG1PQ7UAR2UvHbO+ppxSLhl3qJAzRDzF5VPI12/LC+owgNIp59Cdr/
+         nBNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=ZEYL/pbFIoRQQHylJZyb6mvpBG/vJ0CzVs8U+fDkQms=;
-        b=r8dwvgH859MKwKA+yF3D25/3QMLoE5SujAqE8T3I05iJgZ0bwh800j9aTfzp+aAQVP
-         r5vrCuUu0GrcEakO/7YxMKqeGAKbLXxIXpiP9b37FoazsJVqu1B/Rpi1GolX7GlOxgHm
-         Tb1+B2I0b5IBMy6uleq2N+hGr1w+JdePQ//wIVn612XjbcVEiutmQ6luL3KjqRQQxJJc
-         DvFd5Um7grbDZFctHjczssSeZx1DQDk6MOGTvic2ttA7oyeTHK6HCbpG/YVpKgs72bH8
-         rW8IPpkK4hyv7rgzasucGVonkO/Ie9ixtpMa20spxQ5V5EBHpfA3qT0WQJMRXjtJrTom
-         7thg==
-X-Gm-Message-State: AOAM532g7GNAtEv7UYh+uyrc2VOzVLZ0BuI5vBDuR4Yg6B3I2js63pem
-        2hwG3Y1apcdzcl/AROr0roP9TEiz5pMwfw==
-X-Google-Smtp-Source: ABdhPJw+YrsbC3H4O1aCuj7GJv0goHt0TbNgi6zhIsUyNlKRzie8i1hXPGLPWMgqibDXPP5xGFEvbw==
-X-Received: by 2002:a63:b1c:: with SMTP id 28mr11292784pgl.165.1615547354950;
-        Fri, 12 Mar 2021 03:09:14 -0800 (PST)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id t5sm4942181pgl.89.2021.03.12.03.09.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hvwdVooEhL1UHLjF9fJJHmRKq3X0NEaOuxkxsIXRcL0=;
+        b=mW/C93PhKfwEZ1oxypQXCIPm5ShuWv2bZRr5y7uWP2eGUXFRntUKan8A5vjdV/9NU+
+         MuFbzwAIY9S7Yvq8/lkC0V9gWtdCmnZ/rjPp7MuIonx/aUPdxhTMJ/uQ6FOdkxDS59ln
+         pSlqvHV9wAV3+Kxw4bMxsntUdAJS9nG8klX7HLh5FQUcc78PWo2LXeYZR2/ZvOfSaSb/
+         2wtpTfZZa8aXGLmtd4kPxkV5zlqr9pzIsdNjrPu0CPrZNASih/ktjMunVNIdjxDpgxQi
+         cTkWJqC5FUXgz0alAUCdLpTEIIp1Za0J413qM0I4lQe2tLs6rs5Pe35SVlvIbmQZwbQ0
+         BYIA==
+X-Gm-Message-State: AOAM5304cJVxfvD7UNZdMHD5w+1hsoYZ/2KXWqfvIaqHQ06U1NNWgLXn
+        IHpfjUG5+fTNx0bTZwlETNVtZg==
+X-Google-Smtp-Source: ABdhPJwbDaKFp5e5X0V/bXRF8AiYHu0FEYzo16BK/BKoEPMy/ZL6g02phJIi2GgcTBu0ot/o633wpA==
+X-Received: by 2002:adf:cf11:: with SMTP id o17mr13441880wrj.391.1615547353347;
         Fri, 12 Mar 2021 03:09:13 -0800 (PST)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 11/11] bfq: optimize the calculation of bfq_weight_to_ioprio()
-Date:   Fri, 12 Mar 2021 19:08:45 +0800
-Message-Id: <29efad299fd111b38ad215dcbc6eb506290e7937.1615527324.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1615517202.git.brookxu@tencent.com>
-References: <cover.1615517202.git.brookxu@tencent.com>
-In-Reply-To: <cover.1615527324.git.brookxu@tencent.com>
-References: <cover.1615527324.git.brookxu@tencent.com>
+Received: from dell.default ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id b65sm1833255wmh.4.2021.03.12.03.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 03:09:12 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        IDT-support-1588@lm.renesas.com, Jakub Kicinski <kuba@kernel.org>,
+        LAPIS SEMICONDUCTOR <tshimizu818@gmail.com>,
+        netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>
+Subject: [PATCH 0/4] Rid W=1 warnings from PTP
+Date:   Fri, 12 Mar 2021 11:09:06 +0000
+Message-Id: <20210312110910.2221265-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-The value range of ioprio is [0, 7], but the result of
-bfq_weight_to_ioprio() may exceed this range, so simple
-optimization is required.
+Lee Jones (4):
+  ptp_pch: Remove unused function 'pch_ch_control_read()'
+  ptp_pch: Move 'pch_*()' prototypes to shared header
+  ptp: ptp_clockmatrix: Demote non-kernel-doc header to standard comment
+  ptp: ptp_p: Demote non-conformant kernel-doc headers and supply a
+    param description
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- block/bfq-wf2q.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe.h   |  9 --------
+ .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  |  1 +
+ drivers/ptp/ptp_clockmatrix.c                 |  4 ++--
+ drivers/ptp/ptp_pch.c                         | 21 ++++++------------
+ include/linux/ptp_pch.h                       | 22 +++++++++++++++++++
+ 5 files changed, 32 insertions(+), 25 deletions(-)
+ create mode 100644 include/linux/ptp_pch.h
 
-diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-index f6c67a80e454..86558a8fede1 100644
---- a/block/bfq-wf2q.c
-+++ b/block/bfq-wf2q.c
-@@ -536,8 +536,9 @@ unsigned short bfq_ioprio_to_weight(int ioprio)
-  */
- static unsigned short bfq_weight_to_ioprio(int weight)
- {
--	return max_t(int, 0,
--		     IOPRIO_BE_NR * BFQ_WEIGHT_CONVERSION_COEFF - weight);
-+	int ioprio = IOPRIO_BE_NR  - weight / BFQ_WEIGHT_CONVERSION_COEFF;
-+
-+	return ioprio < 0 ? 0 : min_t(int, ioprio, IOPRIO_BE_NR - 1);
- }
- 
- static void bfq_get_entity(struct bfq_entity *entity)
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Flavio Suligoi <f.suligoi@asem.it>
+Cc: IDT-support-1588@lm.renesas.com
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: LAPIS SEMICONDUCTOR <tshimizu818@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: Richard Cochran <richardcochran@gmail.com>
+Cc: Richard Cochran <richardcochran@gmail.com> (maintainer:PTP HARDWARE CLOCK SUPPORT)
 -- 
-2.30.0
+2.27.0
 
