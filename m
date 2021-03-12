@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CB2339321
+	by mail.lfdr.de (Postfix) with ESMTP id 84C3F339322
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhCLQX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhCLQXu (ORCPT
+        id S232626AbhCLQX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:23:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42532 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232233AbhCLQXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:23:50 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBD9C061574;
-        Fri, 12 Mar 2021 08:23:50 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id f10so3083426ilq.5;
-        Fri, 12 Mar 2021 08:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DYesqiGyIIUD4KBvaBrEhPp/WOGV8hwVbX1ai7P5t1g=;
-        b=XmGzqR2/jPy2ePXHl4//PXvAWK9Abct0MC6ys/pInnn4ds7vivKQFYjR3+wlCrwQ1I
-         zNL1EnKuCHpNlkM0r916ZsdW2N8rUaDzC2ZFZuygw+wzFdEhLNBBTqogqF9EhFfcqXdS
-         uPpCJlD0aZoX++PiDZTMJwKxxfUzsKXCxmQxJmeMrvxM8r731HGZcY1hyy4jc4hGbXIl
-         Zm4RgjuRmxVnNiDu4AZ7sQBLgx/x1wqa+b8Ahy34BEwhfUEMYnKRQwFL1eZzkVjIqwgz
-         S3Hi3jRBIm1+jykXfVfsRm7ypv6FCmsQLQ/aB2qTOCE8MKOLEexuLRvziVlca1SITSIv
-         gytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DYesqiGyIIUD4KBvaBrEhPp/WOGV8hwVbX1ai7P5t1g=;
-        b=K49IdHVGbE75dMSmBGW6iSTVZFZ7MPeYKhwJsG4k6oxrhfd7tiCyI+EwDbrfBdOJaw
-         7kTIc5vZOS7uPZOjy1quUef4ssJymoeLk8lMVEQxXMnYFys1jgtItXoI+qId2CxjJ0h4
-         LXMXggrlCsPsBvUICiDIk9tyNp4edqDjA3TKg/AQzoyTOzHbTwWX5vUXDagh2IKCXAiF
-         9tig0FM7VKYP4xDws2sjEdrALrbgc0L5sF+JmG+FWgOV2VvZ4Sf0m2lf4EGUwNEie8VF
-         DDPT+8GB0hkJg5rGaJiHHKUqBIzLmayCZykruJcY+QDBzpyNSLumFfoh/uTKXyMzmgK+
-         rUIQ==
-X-Gm-Message-State: AOAM532BH5USERbYq6RiPOqR85QDfCttCx5ukeTsrFkhBN++pOUKU+DS
-        h7MNhzqyYrTiRUhaTxKqzoABw9Yue/KcjtiX3LWLaAJLhvk=
-X-Google-Smtp-Source: ABdhPJzXqnn7wdnfY/jsvg3pLLVdp7eYeMQqWf6v4R7q36bMh/68kTfo3KCfidu6OziGbyqhUGwFTX6gkXGO2t/brpI=
-X-Received: by 2002:a92:740c:: with SMTP id p12mr3491479ilc.9.1615566229640;
- Fri, 12 Mar 2021 08:23:49 -0800 (PST)
+        Fri, 12 Mar 2021 11:23:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615566235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xSYDoiB+Sm1xN1cnL2N1sIO4P5NjsZSPzQuHmVBThEs=;
+        b=JybJNWnhvs8DFqhjd8ff1x4oNU3yNB8yCfOlfPTt61edc8TnIxYaEhP5kgJSzEpe3gY05k
+        m4SZ6eDj4W6EvV4WFDR67TA7aW6PxL1Lh8psWVvxWctBlzrtf2n5EPkGNVO5yZkzMsLPAq
+        pzvr/zQ3sVXeTxlGg1bRUpRB7bUl1+Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-hXuGadYlOKGq8yyDOb8syA-1; Fri, 12 Mar 2021 11:23:51 -0500
+X-MC-Unique: hXuGadYlOKGq8yyDOb8syA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31488A40C0;
+        Fri, 12 Mar 2021 16:23:49 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B02085D9CC;
+        Fri, 12 Mar 2021 16:23:46 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 12 Mar 2021 17:23:48 +0100 (CET)
+Date:   Fri, 12 Mar 2021 17:23:45 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Qianli Zhao <zhaoqianligood@gmail.com>
+Cc:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
+        tglx@linutronix.de, pcc@google.com, linux-kernel@vger.kernel.org,
+        zhaoqianli@xiaomi.com
+Subject: Re: [PATCH V2] exit: trigger panic when global init has exited
+Message-ID: <20210312162344.GB27820@redhat.com>
+References: <1615519478-178620-1-git-send-email-zhaoqianligood@gmail.com>
 MIME-Version: 1.0
-References: <20210312141908.2388121-1-ztong0001@gmail.com> <20210312141908.2388121-3-ztong0001@gmail.com>
- <CAHp75VduTXkNgpmuQj_feQbHMAfWi7iGLtYxEJ6ugojmL1Da9Q@mail.gmail.com>
- <CAA5qM4CM4noDtaedPpd0yh8R2f+jDV2DnCERKi_ycD5Lq-vKDw@mail.gmail.com>
- <CAHp75VcFDXTXcaFqOyRCdArx1bGED_jsEeK1yRQhxUvHp0goTg@mail.gmail.com>
- <CAA5qM4DPqtPWMydx41Ovx6DCQoEESewkZbQrbhdwfVhkcy0nCA@mail.gmail.com> <CAHp75Ven=Sfmy0YE_Q60fiF-pyXg2tO8iq7_vN+aUzaxYTtZmA@mail.gmail.com>
-In-Reply-To: <CAHp75Ven=Sfmy0YE_Q60fiF-pyXg2tO8iq7_vN+aUzaxYTtZmA@mail.gmail.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Fri, 12 Mar 2021 11:23:38 -0500
-Message-ID: <CAA5qM4B_xhSanwEMjAcCHVAaVkSK-rVv+Km79WbQGauWXSs6oA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set
- after adf_dev_init
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        qat-linux@intel.com, linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615519478-178620-1-git-send-email-zhaoqianligood@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Andy,
-I have sent v3 with the suggested tag fix.
-- Tong
+On 03/12, Qianli Zhao wrote:
+>
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -767,6 +767,17 @@ void __noreturn do_exit(long code)
+>  	validate_creds_for_do_exit(tsk);
+>  
+>  	/*
+> +	 * If global init has exited,
+> +	 * panic immediately to get a useable coredump.
+> +	 */
+> +	if (unlikely(is_global_init(tsk) &&
+> +	    (thread_group_empty(tsk) ||
+> +	    (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
+> +			panic("Attempted to kill init! exitcode=0x%08x\n",
+> +				tsk->signal->group_exit_code ?: (int)code);
+
+See our discussion with Eric, this is not right.
+https://lore.kernel.org/lkml/20210310173236.GB8973@redhat.com/
+
+Oleg.
+
