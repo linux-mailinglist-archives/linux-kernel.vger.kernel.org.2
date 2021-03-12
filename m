@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DF93385DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E59A3385E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhCLG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhCLG0O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:26:14 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877A4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:26:14 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id g9so1639148ilc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:26:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X0qqxn9d92aoqYJoz6Fe423j5eYy1VZ6WOqrH+BLQFc=;
-        b=WTH1Ss5QdJSCirAjYWLMEp+yc+UiudzJNNNJD/XYVANXtdKSg1/KqijdnMRh1EW4CQ
-         NM7zlpykBtbl8Unb5uM/h+iwpngfHHuYgLsBUSZFcuuF2kVLotiQO4U0vuqpQIuiLW2h
-         NwTtuJlREvXUAmcLfl1ODO905+dKyAZsRrlIC9bLpmZLndIpPjDURSZAD/GGvLwRi/2Q
-         iejTVZwUDgGOBe7Ris9P2gWZWR/8ToDIM+y63XAFivjW/HHMeZFdF1zO6SIvT6yF+MXt
-         dVzzfQQGWQSKCzmPInyxo/9fSLA6P+Ck3neNwEE0fXQFWMMIYfFDykthUcFWq4DqZpZN
-         s9Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X0qqxn9d92aoqYJoz6Fe423j5eYy1VZ6WOqrH+BLQFc=;
-        b=DjBpIIHCzny+EQUMxu3Cy8xkk5Mb8Lgdq6vaW/ipzc3n/5NbzWrVA8crClaWD0mYgG
-         Kr3MuOHat32/pQMeHknyKaoesxTvIfEVrJvE+iqsjsdCivSLsTsMCDyusjZ8KVrqfi95
-         E5EBTyvvDZSy+4ehlQlDx6NPj72mpbijhT9jU0FMDSgE1IICrZMJ+85DnzLQ2ttOsWjr
-         B0+ObpBrJcqkm/6wDBQai4AnRIklaZpaGGcn/V8gkoSL5fdyAHd527FYinqnZsbzUM68
-         OvCPJMsrZAehfwB7pdKb5sLHNN0mo54pK6jcBAZHoZWAFrH44Ye2yDW1LBcagVYOvSU7
-         hsFQ==
-X-Gm-Message-State: AOAM533Vn/XT31/5nilD5JHujNlU8s4rWqTbm5RLIHrYHTNmK+QbPpZu
-        WroJBN6Pr8Pbide+PlJXFY8KzAP6XgJG9vhLgXiFRg==
-X-Google-Smtp-Source: ABdhPJxWWvl7xTn8efGrKNtuVUB+C0Qr7JY3SOIoAeN+1JAFAU2kz3GFa1WzrBg/QduyjnBbZKNnqP7vmPwjrcBMyvc=
-X-Received: by 2002:a92:6511:: with SMTP id z17mr1715365ilb.232.1615530374036;
- Thu, 11 Mar 2021 22:26:14 -0800 (PST)
+        id S231613AbhCLGaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:30:55 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45510 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231544AbhCLGai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:30:38 -0500
+IronPort-SDR: ZMpMqxuXhYPozrrWPTuLRmpSG2sSNpUrEHSanUIPw3t4Sk0eGjx8O8Q/c7YjAgXHy39pu/2Jdw
+ 6/sC21qterLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="176381654"
+X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
+   d="scan'208";a="176381654"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:30:37 -0800
+IronPort-SDR: Co3t1pgsRLHMkBiBltp/iyMwsnvZq+XrKmqVVH6NmbGcSkmcNfcKn1KISXa8+2D8dUMfYMWCRp
+ yfFFdTIv10Jw==
+X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
+   d="scan'208";a="410904374"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:30:34 -0800
+Date:   Fri, 12 Mar 2021 14:27:55 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [mm/highmem] 61b205f579:
+ WARNING:at_mm/highmem.c:#__kmap_local_sched_out
+Message-ID: <20210312062755.GA5022@xsang-OptiPlex-9020>
+References: <20210304083825.GB17830@xsang-OptiPlex-9020>
+ <BYAPR04MB496507720FEEF2B77FB639E186929@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <20210311160220.GS3014244@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-References: <20210116170725.5245-1-dsmythies@telus.net> <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
-In-Reply-To: <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Thu, 11 Mar 2021 22:26:02 -0800
-Message-ID: <CAAYoRsVYejQRByDz78jbv5cMfd+ctT8N3YxfOBndW8FJiuk9MA@mail.gmail.com>
-Subject: Re: [PATCH] tools/power/x86/turbostat: Fix TCC offset bit mask
-To:     Len Brown <lenb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311160220.GS3014244@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Len,
+Hi Ira,
 
+On Thu, Mar 11, 2021 at 08:02:20AM -0800, Ira Weiny wrote:
+> On Tue, Mar 09, 2021 at 08:53:04PM +0000, Chaitanya Kulkarni wrote:
+> > Ira,
+> > 
+> > On 3/4/21 00:23, kernel test robot wrote:
+> > > Greeting,
+> > >
+> > > FYI, we noticed the following commit (built with gcc-9):
+> > >
+> > > commit: 61b205f579911a11f0b576f73275eca2aed0d108 ("mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > >
+> > >
+> > > in testcase: trinity
+> > > version: trinity-static-i386-x86_64-f93256fb_2019-08-28
+> > > with following parameters:
+> > >
+> > > 	runtime: 300s
+> > >
+> > > test-description: Trinity is a linux system call fuzz tester.
+> > > test-url: http://codemonkey.org.uk/projects/trinity/
+> > >
+> > >
+> > > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> > >
+> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > Is the fix for this been posted yet ?
+> 
+> No.  I've been unable to reproduce it yet.
 
-thank you for your reply.
+just FYI
+the issue does not always happen but the rate on 61b205f579 is not low,
+while we didn't observe it happen on parent commit.
 
-On Thu, Mar 11, 2021 at 3:19 PM Len Brown <lenb@kernel.org> wrote:
->
-> Thanks for the close read, Doug.
->
-> This field size actually varies from system to system,
-> but the reality is that the offset is never that big, and so the
-> smaller mask is sufficient.
+bb90d4bc7b6a536b 61b205f579911a11f0b576f7327
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+           :38          16%           6:38    dmesg.EIP:__kmap_local_sched_in
+           :38          16%           6:38    dmesg.EIP:__kmap_local_sched_out
+           :38          16%           6:38    dmesg.WARNING:at_mm/highmem.c:#__kmap_local_sched_in
+           :38          16%           6:38    dmesg.WARNING:at_mm/highmem.c:#__kmap_local_sched_out
 
-Disagree.
+also please permit me to quote our internal analysis by Zhengjun (cced)
+(Thanks a lot, Zhengjun)
 
-I want to use an offset of 26.
+"the commit has the potential to cause the issue.
+It replaces " kmap_atomic" to " kmap_local_page".
 
-> Finally, this may all be moot, because there is discussion that using
-> the offset this way is simply erroneous.
+Most of the two API is the same, except for " kmap_atomic" disable preemption and cannot sleep.
+I check the issue happened when there is a preemption,  in FBC " kmap_local_page",
+the  preemption is enabled,  the issue may happen."
+"
 
-Disagree.
-It works great.
-As far as I know/recall I was the only person that responded to Rui's thread
-"thermal/intel: introduce tcc cooling driver" [1]
-And, I spent quite a bit of time doing so.
-However, I agree the response seems different between the two systems
-under test, Rui's and mine.
-
-[1] https://marc.info/?l=linux-pm&m=161070345329806&w=2
-
->  stay tuned.
-
-O.K.
-
-... Doug
->
-> -Len
->
->
-> On Sat, Jan 16, 2021 at 12:07 PM Doug Smythies <doug.smythies@gmail.com> wrote:
-> >
-> > The TCC offset mask is incorrect, resulting in
-> > incorrect target temperature calculations, if
-> > the offset is big enough to exceed the mask size.
-> >
-> > Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> > ---
-> >  tools/power/x86/turbostat/turbostat.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-> > index 389ea5209a83..d7acdd4d16c4 100644
-> > --- a/tools/power/x86/turbostat/turbostat.c
-> > +++ b/tools/power/x86/turbostat/turbostat.c
-> > @@ -4823,7 +4823,7 @@ int read_tcc_activation_temp()
-> >
-> >         target_c = (msr >> 16) & 0xFF;
-> >
-> > -       offset_c = (msr >> 24) & 0xF;
-> > +       offset_c = (msr >> 24) & 0x3F;
-> >
-> >         tcc = target_c - offset_c;
-> >
-> > --
-> > 2.25.1
-> >
->
->
-> --
-> Len Brown, Intel Open Source Technology Center
+> 
+> Ira
+> 
+> > 
+> > (asking since I didn't see the fix and my mailer is dropping emails from
+> >  lkml).
