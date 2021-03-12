@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51455338AFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D0C338B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhCLLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:07:46 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60036 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233641AbhCLLHW (ORCPT
+        id S233742AbhCLLIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233751AbhCLLID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:07:22 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CB7BTr067919;
-        Fri, 12 Mar 2021 05:07:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615547231;
-        bh=ppnSwE3fKaBg0neIztuqXvH2QrPjE/AfI+3qNHSV6wo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=REHTjEo5aenRX8Q/huU1uf1giLvZ2+sOJw6Sjd86J71wAnWEOLQjIIQ1hugv6hUTH
-         A6vfQFIbG/Qf0QDysyt9s9uFku4WCBXc5gghZ0NdFjmKyuMfKhAAK1LvRyFo63fV9H
-         8CE3A9RPz45iOuBmEJ8o0lK6flj9ZwI/qilojN7E=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CB7BKD116117
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Mar 2021 05:07:11 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 05:07:10 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 05:07:10 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CB7Apw023321;
-        Fri, 12 Mar 2021 05:07:10 -0600
-Date:   Fri, 12 Mar 2021 16:37:09 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <Tudor.Ambarus@microchip.com>, <nm@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312110707.lrabch4ketqyyepn@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
- <20210312101036.jfz2733ssv4nhfey@ti.com>
- <676386736df5e5b22e34b0b5af91c894@walle.cc>
+        Fri, 12 Mar 2021 06:08:03 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21198C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:03 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id z2so1542846wrl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ekg9MII0TI+MyhMFP0/nYouVodRISvmcgxRIutfa8gw=;
+        b=S26w6Y4XpmuO40c4iok/jm2VChmskuFX3ft8KufVzSVv10/YjjF320m1BW8GcV8+5s
+         HbcLf88pC7E9X8msvz4FLiEhP94H51DlJEufiR+xcyEU/qCitfHPGZ9tz0uYSL6SWg04
+         mI+ftjS6jzy+Q2OZNt0EVe+b+9zNapbkQ+lDOk3rUBANGv10JPKmpio0bl8HtzpVqaCV
+         gWn6ja3/fItJTrpZiQKr/zbJj6rwmxGtXw4EEt+Bp3vCrI4yZOrWyhgx8rWMGo3K3/He
+         DwZ8Ffezw3xexsrKz+3oSuLj1+TMR+shiUTx6OSuAmCxPGjV7t7YxrsRtxwr+GCiQGNx
+         VqNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ekg9MII0TI+MyhMFP0/nYouVodRISvmcgxRIutfa8gw=;
+        b=Mtuk2BV7T/edrhPJXSoYloPcjDLTe5UTwYffBJ0QB0z1hMk8HJglQ3VPXu+pYhJ/l5
+         D+DfUkEold8b/NZqxLwyL93sCtY75TuyxRWjMUKzNu/tJwquJgDbSjCrJXt7MdKDufut
+         jpr97LDRLHF34gwtSjx6B4tFrLqyMMXLShPdPTseroRsCo51HoCGzRvwkk6G8emoP9xG
+         404hJM16YBDnMkdPxQLBnhFR9LJi7tVXkRMqqJWDnxL4RSL12TWztIRjXmcY4y/sknPO
+         AVme3XcS24hxpZ5CnMIcaeQwR72LphTKNs6l+HakVV/GYIMnibE+PP5YKkEH5A0ZYG8K
+         Du2A==
+X-Gm-Message-State: AOAM5338+3ZKHidlvQQ26Zz/5f1EEi30PxMAPSctscuttrTkVJlKHJQE
+        VDXKLt4B8rvaCxvlLbOmVnFTxg==
+X-Google-Smtp-Source: ABdhPJwO81VJNHlk5GNRAl6TkevpvhpdmshUt1Yx3S23LsdLEGUh7fucIUOJyYvtle51OUjy5HDxYw==
+X-Received: by 2002:adf:8562:: with SMTP id 89mr13493979wrh.101.1615547281770;
+        Fri, 12 Mar 2021 03:08:01 -0800 (PST)
+Received: from dell.default ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id f126sm1813003wmf.17.2021.03.12.03.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 03:08:01 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Anton Vorontsov <anton@enomsg.org>, benh@kernel.crashing.org,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Josh Cartwright <joshc@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        netdev@vger.kernel.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 00/10] Rid W=1 warnings from OF
+Date:   Fri, 12 Mar 2021 11:07:48 +0000
+Message-Id: <20210312110758.2220959-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <676386736df5e5b22e34b0b5af91c894@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 11:20AM, Michael Walle wrote:
-> Am 2021-03-12 11:10, schrieb Pratyush Yadav:
-> > There is usually a delay from when the flash drives the data line (IOW,
-> > puts a data bit on it) and when the signal reaches the controller. This
-> > delay can vary by the flash, board, silicon characteristics,
-> > temperature, etc.
-> 
-> Temperature might change over time, but the calibration is only done
-> once. I don't know how much influence the temperature actually has, but
-> our boards are usually operating from -40°C to +85°C. So there might be
-> a possible temperature difference of 125K between actual calibration and
-> when the flash is accessed.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-The algorithm supports a temperature range of -45 C to +130 C. The 
-temperature is checked at calibration time and adjustments are made to 
-make sure the reads work over the entire temperature range [0].
+Lee Jones (10):
+  of: device: Fix function name in header and demote kernel-doc abuse
+  of: dynamic: Fix incorrect parameter name and demote kernel-doc abuse
+  of: platform: Demote kernel-doc abuse
+  of: base: Fix some formatting issues and demote non-conformant
+    kernel-doc headers
+  of: property: Provide missing member description and remove excess
+    param
+  of: address: Demote non-conformant kernel-doc header
+  of: fdt: Demote kernel-doc abuses
+  of: of_net: Demote non-conforming kernel-doc header
+  of: overlay: Fix function name disparity
+  of: of_reserved_mem: Demote kernel-doc abuses
 
-[0] The current implementation does not have a way to query the 
-temperature from the sensor (see cqspi_get_temp()), so it always assumes 
-the temperature at calibration time is 45 C. But that can be added later 
-once the temperature sensor driver is implemented.
+ drivers/of/address.c         |  2 +-
+ drivers/of/base.c            | 16 ++++++++--------
+ drivers/of/device.c          |  6 +++---
+ drivers/of/dynamic.c         |  6 +++---
+ drivers/of/fdt.c             | 19 ++++++++++---------
+ drivers/of/of_net.c          |  2 +-
+ drivers/of/of_reserved_mem.c |  6 +++---
+ drivers/of/overlay.c         |  2 +-
+ drivers/of/platform.c        |  2 +-
+ drivers/of/property.c        |  2 +-
+ 10 files changed, 32 insertions(+), 31 deletions(-)
 
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Anton Vorontsov <anton@enomsg.org>
+Cc: benh@kernel.crashing.org
+Cc: Colin Cross <ccross@android.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: devicetree@vger.kernel.org
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Josh Cartwright <joshc@codeaurora.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: netdev@vger.kernel.org
+Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Tony Luck <tony.luck@intel.com>
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.27.0
+
