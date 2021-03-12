@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83C338DC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50342338D2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCLMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:52:50 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:54876 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232762AbhCLMwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:52:25 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12CCqMpT020506
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 13:52:22 +0100
-Received: from [167.87.253.211] ([167.87.253.211])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12CCbL5i009474;
-        Fri, 12 Mar 2021 13:37:22 +0100
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: "cache_from_obj: Wrong slab cache." on failing ACPI init
-Message-ID: <a1461e21-c744-767d-6dfc-6641fd3e3ce2@siemens.com>
-Date:   Fri, 12 Mar 2021 13:37:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229740AbhCLMhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhCLMhn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:37:43 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736E4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:37:43 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id f12so4710272wrx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:37:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q8qLwX4mEs2ipnlk7bkb5HbH/jXQ15M3RcYXRP29Zjs=;
+        b=pFeKserxEawFZxws0IHjjZKJKbc83tP0Ux+w6btpkyZh6j8dUT6aGXuQ5uWmTOxrne
+         UQB8FhShG9HRW00oUM/MAsg2t29uM5STQZKWAt/gIvoZDHSPi1f2iiVrZ57kQqmR55/J
+         ArEB8A3Z+SssqmwhZxi/AulTruNK5ra/n93RvuZhq1OWPYf1FipOI8SjNkQ/rLT96H3X
+         kgaeY4gkZZ7rwCGraSMpAT+GZ/07GdsvV4S8w/C6hLP0rRqHppofSqGwr8oispm6+Cnh
+         NZCVxXyP3vKgp5/Zh8b4iLe46dKGryOBDOKnmrO60jfPoW808W3vXG+jp8tntXVrfaj8
+         VwMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q8qLwX4mEs2ipnlk7bkb5HbH/jXQ15M3RcYXRP29Zjs=;
+        b=tNtoCSTT58rqLLiaDZkr0O+TXDzEXvZCELA0c7vwzvB+8zeaW/osIQOkncQ2U7hOj2
+         +myXZ2lbHIZllYY/aAXLxlLFGvmcx1b4GvOLHDijoUvnIIzTCK9V0Qtw5307ZfHS1nJN
+         G4AcTElj5w6vordBiXeP3x9+h0rsFkNPuP+fyOCbq9LkGmxh3C/DC/0GAiIWFXjXXiTz
+         2r3DDPOgGUSUVVf29yDb5MeZxy51O6AnwGIF2rbQxg5j+agbw2Slp0vpIiodEIpFttoU
+         IXU2gVxXdndJSJ7AK/myjX6ULQq9R9Uk9lyE8lImGHxE5nNMLo3L/1WbH60NtB1UxObI
+         HVQg==
+X-Gm-Message-State: AOAM532+a8UsjWlAxjAtlNOII75L/VTgQ8BHPTlBWUqFP2mfRTcuFwp+
+        slch/Ai1Mit+YRQQh5fX9CNAkfy1OHdtqgsq+3o=
+X-Google-Smtp-Source: ABdhPJzvdxXqdrG0wvuThxwWaZnmsvjpNQrP4+l6gk5gejzEATYvFCNwsS3inTaU1HHaDShxDqhyBCE7U1t7XSv6XYM=
+X-Received: by 2002:adf:e64d:: with SMTP id b13mr14067492wrn.204.1615552662199;
+ Fri, 12 Mar 2021 04:37:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
+ <20210309153455.GB4878@sirena.org.uk> <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+ <20210312104931.GA5348@sirena.org.uk> <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
+ <20210312115748.GC5348@sirena.org.uk>
+In-Reply-To: <20210312115748.GC5348@sirena.org.uk>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 12 Mar 2021 14:37:30 +0200
+Message-ID: <CAEnQRZAAU34YS778WJVD6uubSwQxjA-5LTG9g0CvSdSZOuO+tQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Mar 12, 2021 at 1:59 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Mar 12, 2021 at 12:59:29PM +0200, Daniel Baluta wrote:
+> > On Fri, Mar 12, 2021 at 12:50 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > If an explicit name has been provided why would we override it with a=
+n
+> > > autogenerated one?
+>
+> > Wait, are you asking why the initial code:
+>
+> >   dai_link->platforms->name =3D component->name;
+>
+> > is there in the initial code?
+>
+> No, just the opposite!  If there's an explict name configured why do you
+> want to ignore it?
 
-a wrong config surfaced a potential issue in the cleanup path of ACPI, 
-at least according to my current understanding. Use x86_64_defconfig, 
-add CONFIG_SLAB_FREELIST_HARDENED=y and disable CONFIG_PCI, then boot in 
-QEMU (likely also real HW) to get this:
+Because the initial assignment:
 
-...
-[    0.041398] ACPI: Added _OSI(Module Device)
-[    0.041978] ACPI: Added _OSI(Processor Device)
-[    0.042342] ACPI: Added _OSI(3.0 _SCP Extensions)
-[    0.043060] ACPI: Added _OSI(Processor Aggregator Device)
-[    0.043337] ACPI: Added _OSI(Linux-Dell-Video)
-[    0.044095] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
-[    0.044341] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
-[    0.045020] ACPI Error: AE_BAD_PARAMETER, During Region initialization (20210105/tbxfload-53)
-[    0.045340] ACPI: Unable to load the System Description Tables
-[    0.046076] ACPI Error: Could not remove SCI handler (20210105/evmisc-251)
-[    0.046367] ------------[ cut here ]------------
-[    0.047004] cache_from_obj: Wrong slab cache. ftrace_event_field but object is from kmalloc-64
-[    0.047340] WARNING: CPU: 0 PID: 1 at ../mm/slab.h:456 kmem_cache_free+0x1c8/0x280
-[    0.048319] Modules linked in:
-[    0.048335] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #7
-[    0.049174] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[    0.049336] RIP: 0010:kmem_cache_free+0x1c8/0x280
-[    0.050041] Code: 28 48 01 d8 48 85 db 0f 85 2d ff ff ff 0f 0b 48 8b 57 60 48 8b 4d 60 48 c7 c6 f0 5b c1 af 48 c7 c7 50 5c da af e8 c8 36 e8 ff <0f> 0b 48 89 de 48 89 ef e8 8b be ff ff 48 8b 0d 7c 9e e4 00 e9 a6
-[    0.050336] RSP: 0000:ffffb12e80017d90 EFLAGS: 00010282
-[    0.051135] RAX: 0000000000000000 RBX: ffff89570104f340 RCX: 00000000ffffdfff
-[    0.051335] RDX: ffffb12e80017bb0 RSI: 00000000ffffdfff RDI: 0000000000000003
-[    0.052304] RBP: ffff895701042500 R08: 0000000000000000 R09: 0000000000000001
-[    0.052335] R10: 0000000000000001 R11: ffffb12e80017ba8 R12: ffffffffafdcb739
-[    0.053201] R13: ffff89570104f380 R14: ffff89578104f340 R15: 0000000000000000
-[    0.053335] FS:  0000000000000000(0000) GS:ffff89573ec00000(0000) knlGS:0000000000000000
-[    0.054337] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.055342] CR2: 0000000000000000 CR3: 000000001780c001 CR4: 0000000000370ef0
-[    0.056345] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    0.057291] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    0.057337] Call Trace:
-[    0.057743]  ? rdinit_setup+0x26/0x26
-[    0.058268]  acpi_os_release_object+0x5/0x10
-[    0.058335]  acpi_ns_delete_children+0x4b/0x60
-[    0.059168]  acpi_ns_delete_namespace_subtree+0x5c/0x79
-[    0.059336]  ? acpi_sleep_proc_init+0x1f/0x1f
-[    0.059987]  acpi_ns_terminate+0xc/0x31
-[    0.060335]  acpi_ut_subsystem_shutdown+0x45/0xa1
-[    0.061060]  ? acpi_sleep_proc_init+0x1f/0x1f
-[    0.061335]  acpi_terminate+0x5/0xf
-[    0.062160]  acpi_init+0x3f7/0x482
-[    0.062337]  ? video_setup+0x79/0x79
-[    0.062958]  ? acpi_sleep_proc_init+0x1f/0x1f
-[    0.063335]  do_one_initcall+0x3f/0x1c0
-[    0.063876]  kernel_init_freeable+0x1bb/0x1f9
-[    0.064335]  ? rest_init+0xb0/0xb0
-[    0.064833]  kernel_init+0x5/0x110
-[    0.065329]  ret_from_fork+0x22/0x30
-[    0.065338] ---[ end trace 8bfe26bf6796f23c ]---
-[    0.066028] ------------[ cut here ]------------
+dai_link->platforms->name =3D component->name;
 
-and many more of those. This was with current Linus head and also 
-v5.10.23.
+doesn't take into consideration that dai_link->platform->of_node is
+also explicitly configured.
 
-Jan
+So, my change only configures the name  (dai_link->platform->name)
+if the dai->platform->of_node wasn't previously explicitly configured.
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Otherwise, we end up with both dai_link->platforms->name and
+dai->link->platforms->of_node
+configured and we hit this error:
+
+soc_dai_link_sanity_check:
+/*
+ * Platform may be specified by either name or OF node, but it
+ * can be left unspecified, then no components will be inserted
+ * in the rtdcom list
+ */
+if (!!platform->name =3D=3D !!platform->of_node) {
+    dev_err(card->dev,
+    "ASoC: Neither/both platform name/of_node are set for %s\n", link->name=
+);
+    return -EINVAL;
+}
+
+I start with a simple-audio-card node:
+
+
+sof-sound-wm8960 {
+    compatible =3D "simple-audio-card";
+
+    simple-audio-card,dai-link {
+       format =3D "i2s";
+       cpu {
+            sound-dai =3D <&dsp 1>;
+       };
+       sndcodec: codec {
+            sound-dai =3D <&wm8960>;
+       };
+}
+
+Notice that doesn't have any platform field.
+
+But then in sound/soc/generic/simple-card-utils.c:asoc_simple_canonicalize_=
+platform
+explicitly sets dai_link->platforms->of_node like this:
+
+=C2=BB       if (!dai_link->platforms->of_node)
+=C2=BB       =C2=BB       dai_link->platforms->of_node =3D dai_link->cpus->=
+of_node;
+
+I hope this is more clear.
