@@ -2,201 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB04338AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51455338AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhCLLHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhCLLHU (ORCPT
+        id S233373AbhCLLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:07:46 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60036 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233641AbhCLLHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:07:20 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7F0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:07:20 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id lr13so52614662ejb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IqSN+ySm6bSg5bLee4pzIbnNLuqg3t2umE3dNOvxCoM=;
-        b=Vc8qlRY89B8MNN6WnrFZMY/pb+UhhpjSQfok6kl8IkX1Qgs9t31oJGbF/EqdMImxEf
-         l0ZCqw3HSrpiMHcjMUqmVc8EeiNEIenp1V2wI3oElxWtE+3NkRov6JDJn1mEWIW8qV04
-         fZtp6Afq7H+M170MAV26eAatpMs8dJ4zv8Qs58nTTdG4KntT3xCwmWPLh8RLJBdn9oSK
-         8airkN9yzf0KZQDdjL86cAlvHGr4xxuBHQ2SPaFjdcgrvX9xYwHSRa5kWAPW73iIAm1o
-         rcjRpIO12uVY34mpRzPqoVSJ7Vq4Gzygv67ALU3aLw8hZirkh6rLlewm1I1FO7S4YyIj
-         Ypcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IqSN+ySm6bSg5bLee4pzIbnNLuqg3t2umE3dNOvxCoM=;
-        b=ALmwZt6KhMWHEGpsI0pScR7o1mEz66Ur5+4EUXeDDe9Umt4DFFyxQ3AbiU4EbQfefR
-         5kx+vzk69ZClhY1jU090SS8R0YLi4CKz46wNwKwaZHnwTLoiYdtA+OysPU7b7JmIG8bc
-         UZISmml5M+9lkuwbozY6buwbDVpjK3wM7L90UlZRIHaLHNbOPY1NLkOXnp6lCKLvAmqr
-         6CGv0ffA5ZAFLv1cpNPBKFLGk3rKIyWEYnlNum3tLJ3T5t5rZfrR+HGaS7j6kJzKIouu
-         V0r+uePDhX100HBrH1ATSsEkwslZu5OPoMm7a2hPjKIRKIQgfvRsZ6vK+aKCIJaBY95x
-         lu5Q==
-X-Gm-Message-State: AOAM532PB8i8sL1Ph1lDolp0CsFOMv2soKj2ahuCaapKjC39XaaXI/iv
-        rEfdrVWA/7l486Ptd6x3F4u869dRQgopFK7HtnJRO1kVrpA=
-X-Google-Smtp-Source: ABdhPJxL7uSmlU56sT/eEKpgYZVBjzqTHs69+VRvPI3dX5rFqfqEr7apu5sex4H0a3q8/UWFIxeFEzbnpqoSzWeaTuE=
-X-Received: by 2002:a17:906:3105:: with SMTP id 5mr7957617ejx.168.1615547239107;
- Fri, 12 Mar 2021 03:07:19 -0800 (PST)
+        Fri, 12 Mar 2021 06:07:22 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CB7BTr067919;
+        Fri, 12 Mar 2021 05:07:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615547231;
+        bh=ppnSwE3fKaBg0neIztuqXvH2QrPjE/AfI+3qNHSV6wo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=REHTjEo5aenRX8Q/huU1uf1giLvZ2+sOJw6Sjd86J71wAnWEOLQjIIQ1hugv6hUTH
+         A6vfQFIbG/Qf0QDysyt9s9uFku4WCBXc5gghZ0NdFjmKyuMfKhAAK1LvRyFo63fV9H
+         8CE3A9RPz45iOuBmEJ8o0lK6flj9ZwI/qilojN7E=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CB7BKD116117
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Mar 2021 05:07:11 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
+ Mar 2021 05:07:10 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 12 Mar 2021 05:07:10 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CB7Apw023321;
+        Fri, 12 Mar 2021 05:07:10 -0600
+Date:   Fri, 12 Mar 2021 16:37:09 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     <Tudor.Ambarus@microchip.com>, <nm@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+        <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
+ spi-cadence-quadspi
+Message-ID: <20210312110707.lrabch4ketqyyepn@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+ <20210312101036.jfz2733ssv4nhfey@ti.com>
+ <676386736df5e5b22e34b0b5af91c894@walle.cc>
 MIME-Version: 1.0
-References: <20210312065855.37072-1-ran.wang_1@nxp.com>
-In-Reply-To: <20210312065855.37072-1-ran.wang_1@nxp.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 12 Mar 2021 12:07:08 +0100
-Message-ID: <CAMpxmJUjzL_6rU+45qWLABBFjkXoS3hBz3TzoP3VJErNOTFdWQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: mpc8xxx: Add ACPI support
-To:     Ran Wang <ran.wang_1@nxp.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <676386736df5e5b22e34b0b5af91c894@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 7:51 AM Ran Wang <ran.wang_1@nxp.com> wrote:
->
-> Current implementation only supports DT, now add ACPI support.
->
-> Note that compared to device of 'fsl,qoriq-gpio', LS1028A and
-> LS1088A's GPIO have no extra programming, so simplify related checking.
->
-> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> ---
->  drivers/gpio/gpio-mpc8xxx.c | 50 +++++++++++++++++++++++++++----------
->  1 file changed, 37 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-> index 6dfca83bcd90..de5b7e17cde3 100644
-> --- a/drivers/gpio/gpio-mpc8xxx.c
-> +++ b/drivers/gpio/gpio-mpc8xxx.c
-> @@ -9,6 +9,7 @@
->   * kind, whether express or implied.
->   */
->
-> +#include <linux/acpi.h>
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/spinlock.h>
-> @@ -292,8 +293,6 @@ static const struct of_device_id mpc8xxx_gpio_ids[] = {
->         { .compatible = "fsl,mpc5121-gpio", .data = &mpc512x_gpio_devtype, },
->         { .compatible = "fsl,mpc5125-gpio", .data = &mpc5125_gpio_devtype, },
->         { .compatible = "fsl,pq3-gpio",     },
-> -       { .compatible = "fsl,ls1028a-gpio", },
-> -       { .compatible = "fsl,ls1088a-gpio", },
+On 12/03/21 11:20AM, Michael Walle wrote:
+> Am 2021-03-12 11:10, schrieb Pratyush Yadav:
+> > There is usually a delay from when the flash drives the data line (IOW,
+> > puts a data bit on it) and when the signal reaches the controller. This
+> > delay can vary by the flash, board, silicon characteristics,
+> > temperature, etc.
+> 
+> Temperature might change over time, but the calibration is only done
+> once. I don't know how much influence the temperature actually has, but
+> our boards are usually operating from -40°C to +85°C. So there might be
+> a possible temperature difference of 125K between actual calibration and
+> when the flash is accessed.
 
-Why are you removing support for those?
+The algorithm supports a temperature range of -45 C to +130 C. The 
+temperature is checked at calibration time and adjustments are made to 
+make sure the reads work over the entire temperature range [0].
 
-Bart
+[0] The current implementation does not have a way to query the 
+temperature from the sensor (see cqspi_get_temp()), so it always assumes 
+the temperature at calibration time is 45 C. But that can be added later 
+once the temperature sensor driver is implemented.
 
->         { .compatible = "fsl,qoriq-gpio",   },
->         {}
->  };
-> @@ -303,10 +302,19 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->         struct device_node *np = pdev->dev.of_node;
->         struct mpc8xxx_gpio_chip *mpc8xxx_gc;
->         struct gpio_chip        *gc;
-> -       const struct mpc8xxx_gpio_devtype *devtype =
-> -               of_device_get_match_data(&pdev->dev);
-> +       const struct mpc8xxx_gpio_devtype *devtype;
-> +       const struct acpi_device_id *acpi_id;
->         int ret;
->
-> +       if (pdev->dev.of_node) {
-> +               devtype = of_device_get_match_data(&pdev->dev);
-> +       } else {
-> +               acpi_id = acpi_match_device(pdev->dev.driver->acpi_match_table,
-> +                                               &pdev->dev);
-> +               if (acpi_id)
-> +                       devtype = (struct mpc8xxx_gpio_devtype *) acpi_id->driver_data;
-> +       }
-> +
->         mpc8xxx_gc = devm_kzalloc(&pdev->dev, sizeof(*mpc8xxx_gc), GFP_KERNEL);
->         if (!mpc8xxx_gc)
->                 return -ENOMEM;
-> @@ -315,14 +323,14 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->
->         raw_spin_lock_init(&mpc8xxx_gc->lock);
->
-> -       mpc8xxx_gc->regs = of_iomap(np, 0);
-> +       mpc8xxx_gc->regs = devm_platform_ioremap_resource(pdev, 0);
->         if (!mpc8xxx_gc->regs)
->                 return -ENOMEM;
->
->         gc = &mpc8xxx_gc->gc;
->         gc->parent = &pdev->dev;
->
-> -       if (of_property_read_bool(np, "little-endian")) {
-> +       if (device_property_read_bool(&pdev->dev, "little-endian")) {
->                 ret = bgpio_init(gc, &pdev->dev, 4,
->                                  mpc8xxx_gc->regs + GPIO_DAT,
->                                  NULL, NULL,
-> @@ -369,10 +377,14 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->          * associated input enable must be set (GPIOxGPIE[IEn]=1) to propagate
->          * the port value to the GPIO Data Register.
->          */
-> -       if (of_device_is_compatible(np, "fsl,qoriq-gpio") ||
-> -           of_device_is_compatible(np, "fsl,ls1028a-gpio") ||
-> -           of_device_is_compatible(np, "fsl,ls1088a-gpio"))
-> -               gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
-> +       if (pdev->dev.of_node) {
-> +               if (of_device_is_compatible(np, "fsl,qoriq-gpio"))
-> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
-> +       } else {
-> +               if (acpi_match_device(pdev->dev.driver->acpi_match_table,
-> +                                       &pdev->dev))
-> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
-> +       }
->
->         ret = gpiochip_add_data(gc, mpc8xxx_gc);
->         if (ret) {
-> @@ -381,12 +393,15 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->                 goto err;
->         }
->
-> -       mpc8xxx_gc->irqn = irq_of_parse_and_map(np, 0);
-> +       mpc8xxx_gc->irqn = platform_get_irq(pdev, 0);
->         if (!mpc8xxx_gc->irqn)
->                 return 0;
->
-> -       mpc8xxx_gc->irq = irq_domain_add_linear(np, MPC8XXX_GPIO_PINS,
-> -                                       &mpc8xxx_gpio_irq_ops, mpc8xxx_gc);
-> +       mpc8xxx_gc->irq = irq_domain_create_linear(dev_fwnode(&pdev->dev),
-> +                                                  MPC8XXX_GPIO_PINS,
-> +                                                  &mpc8xxx_gpio_irq_ops,
-> +                                                  mpc8xxx_gc);
-> +
->         if (!mpc8xxx_gc->irq)
->                 return 0;
->
-> @@ -425,12 +440,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id gpio_acpi_ids[] = {
-> +       {"NXP0031",},
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, gpio_acpi_ids);
-> +#endif
-> +
->  static struct platform_driver mpc8xxx_plat_driver = {
->         .probe          = mpc8xxx_probe,
->         .remove         = mpc8xxx_remove,
->         .driver         = {
->                 .name = "gpio-mpc8xxx",
->                 .of_match_table = mpc8xxx_gpio_ids,
-> +               .acpi_match_table = ACPI_PTR(gpio_acpi_ids),
->         },
->  };
->
-> --
-> 2.25.1
->
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
