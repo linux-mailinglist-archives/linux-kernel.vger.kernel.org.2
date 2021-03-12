@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2063384A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C33D3384AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhCLEWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 23:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        id S232172AbhCLEbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 23:31:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbhCLEV2 (ORCPT
+        with ESMTP id S232146AbhCLEbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:21:28 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AC6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 20:21:28 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id x4so36856644lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 20:21:28 -0800 (PST)
+        Thu, 11 Mar 2021 23:31:00 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A6AC061761;
+        Thu, 11 Mar 2021 20:31:00 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id by2so3695545qvb.11;
+        Thu, 11 Mar 2021 20:31:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2UujaTrfRHurTxUIOvZX13ebBTXXB4ge6ZkHfxLOJc=;
-        b=jRRWw3s+gDc/TM2KGngoCnT4EjieGWpZy4OsQuPBtoG18gNVuRVl4PTaoCZ3Al7gAc
-         2BA9iFvVVYkQzCYibz4t50KOVphhUtnrLKVDI6Kl4U1Ka4CefhSyt/C1X5E0b9WRHq71
-         n0/51GvL/E8k2pOFzsn4LStIJusD/pGkfjoOF/MxwhTyffrmjqE56xv0z+XkkXmUFfi0
-         5UImo4mvljVZ79utr2/uY/cpw2LVPbxsnP1ldcc4qs8dHRABFJgNL7AcQnZBuw9gKPJP
-         CGn25eBHcs48/nG8aQFF/+J4/cSzwtxvmZ3RIJkZesN7EmawZ4lSu7tYtX7d9DWnKJLC
-         BFKg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
+        b=t3OnvI3+xdtmiQNGZYbtyw43YCbTK6k3T2/7/VrtGwPTvV6NVnEG5NcbH2zMkRl5SL
+         rTpnEF0W91oi+A/6qWQjK6l4usDXIaVyR92Mo/bK+7+tAdCGg3vG1+fcMW+doVhm6/er
+         gRzOrh/T9PwfECFY+lR/2AVyEF6ljzJiWPAh5guzrSg4XBFhb5+ywGA3hVFaC9ePhrRd
+         tThT8zgVaCnOyFPSgIQQKgTn0mo7cLRrnrtmUaGY5ZdQeBOzok1dfKcnBwTQYqL4ZI9L
+         jBACFbNcRpcwLZGli3Fz3xe9D4AOLMH7A0RJYsUV4ibIVEvDmO2TVa/5FZj1pMOuUcUP
+         jRxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2UujaTrfRHurTxUIOvZX13ebBTXXB4ge6ZkHfxLOJc=;
-        b=IUxhbpnneRxrCPhHLU001uL+YHVKzcbWET+BDurzW+icf488KF/+ai2bdcsTJB2Eab
-         SUGIaTKqxnrmhiUjqOKpmkfQS58ADpM+35amrxjlE9JBfrEIBuIHQjPZeJLj/uZwHVtl
-         o6Xn0T7LV5qG4MpqTbbsEQhXbRp2otWT8fYXXrkv7JWLu6hxS5qIxf4wkJu3aS8oPmY6
-         bG8KBs/rEeKg07LUELc18Yt1k9WdYVIJC3r6Dc8km4pmGKpBs/7/jvjrofbWZyqF5czz
-         t0/1WNaM/pD5rSqTCJTvbt+6+usxNoBs4Z9wZXJkz+ipISkGPmzmMnw6C+VTbkPokyKj
-         r51Q==
-X-Gm-Message-State: AOAM531ctXHY7B/7yG2m8UZgFCtU2ECtmgSLSnCTeFvxNbO2/BiIqrg0
-        gvrG2tc++JmlUbDVbxdoM1T0di0HHUQX3n4xpoYXlg==
-X-Google-Smtp-Source: ABdhPJxEsTRa+p/GJ5b3jEaXi5W4gqiB8heDCJwqpk7DymhAA2BQLF3qfqtOWc53h8RKOPnbJzg2ZPABM9Qw9s00Dxo=
-X-Received: by 2002:a19:6b10:: with SMTP id d16mr4104042lfa.540.1615522886724;
- Thu, 11 Mar 2021 20:21:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
+        b=b5KxpfEgGTWXUA4CGOjZW3GjspV9W0PLOOzA8SgK3WQBraXlXUoTtwPsBj1vtU5uOo
+         XvzVchAdQ92CSl6KWnR/G6gsoyNX2pyC0VJ8r5eqKzeuuwwLUNnmyqByHN4u74v+saOU
+         OxahhFqgre6iwFnpb0EghxZ0zNnXvZA+eU98tWE08f3UaQLdkBiQ6jBuDGJBG1HwDvGS
+         /Ix44OR5hOjoW2/ztjdEDtmn/qHD0G9I8SnUZLZRgcAokKG19+RzA5qkeCDTpiEw2dRX
+         gfTq2AYREclOnnOAIdY4nUhMVKtYyS9+giga1hZT6wuTQLHZ1oJG2NY5PpPcJrTIleEl
+         T4vw==
+X-Gm-Message-State: AOAM533ad/ZCkvqm6jzT13WNMNEQjOxORRkWZSAddrswhDOvOPpURei2
+        MZVFwANiYpTr9he4EpljnurffO9cWR8=
+X-Google-Smtp-Source: ABdhPJwa8RuHIuqTiEI8+dfw2OazKTk2V6cz9i/XK+FP+De8yfp3HLruKdvg5xzlrBrYGYVuw2pu3A==
+X-Received: by 2002:a0c:8f1a:: with SMTP id z26mr10220826qvd.51.1615523459297;
+        Thu, 11 Mar 2021 20:30:59 -0800 (PST)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id g7sm3263894qti.20.2021.03.11.20.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 20:30:58 -0800 (PST)
+Date:   Thu, 11 Mar 2021 20:30:57 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <20210312043057.GA137474@yury-ThinkPad>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-5-yury.norov@gmail.com>
+ <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
 MIME-Version: 1.0
-References: <20200420131947.41991-1-pankaj.gupta.linux@gmail.com> <7e55abc4-5c91-efb8-1b32-87570dde62cc@redhat.com>
-In-Reply-To: <7e55abc4-5c91-efb8-1b32-87570dde62cc@redhat.com>
-From:   Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Date:   Fri, 12 Mar 2021 05:21:14 +0100
-Message-ID: <CALzYo33i5nBuPj4c3cJCZB9qEwfjypDqXf9vtn2wJdTYCFxg8g@mail.gmail.com>
-Subject: Re: [RFC 0/2] virtio-pmem: Asynchronous flush
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, mst@redhat.com, jmoyer@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Thu, Feb 18, 2021 at 11:51:43PM +0100, Rasmus Villemoes wrote:
+> On 18/02/2021 05.05, Yury Norov wrote:
+> > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> > functionality of GENMASK(). The scope of there macros is wider
+> > than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
+> > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> > to avoid duplication and increase the scope of the macros.
+> > 
+> 
+> Please include some info on changes in generated code, if any. When the
+> parameter to the macro is a constant I'm sure it all folds to a
+> compile-time constant either way, but when it's not, I'm not sure gcc
+> can do the same optimizations when the expressions become more complicated.
 
-> >   Jeff reported preflush order issue with the existing implementation
-> >   of virtio pmem preflush. Dan suggested[1] to implement asynchronous flush
-> >   for virtio pmem using work queue as done in md/RAID. This patch series
-> >   intends to solve the preflush ordering issue and also makes the flush
-> >   asynchronous from the submitting thread POV.
-> >
-> >   Submitting this patch series for feeback and is in WIP. I have
-> >   done basic testing and currently doing more testing.
-> >
-> > Pankaj Gupta (2):
-> >    pmem: make nvdimm_flush asynchronous
-> >    virtio_pmem: Async virtio-pmem flush
-> >
-> >   drivers/nvdimm/nd_virtio.c   | 66 ++++++++++++++++++++++++++----------
-> >   drivers/nvdimm/pmem.c        | 15 ++++----
-> >   drivers/nvdimm/region_devs.c |  3 +-
-> >   drivers/nvdimm/virtio_pmem.c |  9 +++++
-> >   drivers/nvdimm/virtio_pmem.h | 12 +++++++
-> >   5 files changed, 78 insertions(+), 27 deletions(-)
-> >
-> > [1] https://marc.info/?l=linux-kernel&m=157446316409937&w=2
-> >
->
-> Just wondering, was there any follow up of this or are we still waiting
-> for feedback? :)
+After applying all patches till "tools: introduce SMALL_CONST() macro",
+there's no visible changes in code generation:
 
-Thank you for bringing this up.
+scripts/bloat-o-meter vmlinux.before vmlinux
+add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
+Function                                     old     new   delta
+ethtool_get_drvinfo                          900     908      +8
+e843419@0cf2_0001309d_7f0                      -       8      +8
+vermagic                                      48      49      +1
+e843419@0d45_000138bb_f68                      8       -      -8
+e843419@0cc9_00012bce_198c                     8       -      -8
+Total: Before=26092016, After=26092017, chg +0.00%
 
-My apologies I could not followup on this. I have another version in my local
-tree but could not post it as I was not sure if I solved the problem
-correctly. I will
-clean it up and post for feedback as soon as I can.
-
-P.S: Due to serious personal/family health issues I am not able to
-devote much time
-on this with other professional commitments. I feel bad that I have
-this unfinished task.
-Just in last one year things have not been stable for me & my family
-and still not getting :(
-
-Best regards,
-Pankaj
+The build is arm64, and the compilerr is:
+aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425
