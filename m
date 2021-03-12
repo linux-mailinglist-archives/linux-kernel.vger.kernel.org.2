@@ -2,260 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0C233868B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B23338692
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhCLHas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:30:48 -0500
-Received: from mga14.intel.com ([192.55.52.115]:37272 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhCLHaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:30:13 -0500
-IronPort-SDR: FBItP4Yp5a8FZob2yOA8t8c0dKyYu/9FA0vWZAfhxF58WfsmB2TOKDCIeGlq1fKyVPa0dn0zNE
- l2iGKEDAmxdQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188162241"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="188162241"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 23:29:08 -0800
-IronPort-SDR: NmqGPToJuAE6n1ljyOgsMA7z8J6irwxwQWZAtoeBI+/li62H1O/i56aKObL4JVa3X70ILwrn6m
- h41umfnroX3A==
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="409771672"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 23:29:06 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id AED25203A9;
-        Fri, 12 Mar 2021 09:29:04 +0200 (EET)
-Date:   Fri, 12 Mar 2021 09:29:04 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: media: Convert video-mux to DT schema
-Message-ID: <20210312072904.GA3@paasikivi.fi.intel.com>
-References: <20210311234042.1588310-1-robh@kernel.org>
- <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
+        id S231620AbhCLHby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231636AbhCLHbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 02:31:44 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058ACC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:31:44 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id f12so3114266qtq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wTTL3epqLr8n/6ho+8HvrvB50DNSmJF+IOAwdRQ37Jw=;
+        b=U1Aax+GxxM2k71AkvU4mXJXmXQk/7ENUFn9AAmEijKBQ1GuuDiSmPOAjF2KqEdZTTP
+         ivX3CWgyOEzMYN0Vo3SVkfvwhhfgVRonJWO2FLLBQFldQBCSEtWbufV5nFeCMhlbh+u3
+         yq5f/5KAjtchym0M0Z9H8bwXFhBI4C0QbRYY9lxC2g1vaemG2av+dBiM+cNw9NX8kIR9
+         e6UhwhPasOK/N3Nhs/vvE4rN8XKVBUrGiZmZ9vgkwgYzSkeYSB2T35oWNoqWk2CETPef
+         4Kd/YlbXEM744cv8GSEyknAd6BEFZJacr6NK0TwLntGLGLTguy5fqJvkHxpvazVoZ8hO
+         7OEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wTTL3epqLr8n/6ho+8HvrvB50DNSmJF+IOAwdRQ37Jw=;
+        b=CrvwrGLYykkgP9VdqHanFE8ddIM//sfC4C84WWTwUZC2xAjvjwDuS8CNVEJ+vYwfDV
+         Clj246RGqtmsh3O6NlcuF0UPPCuLhETWyS7UhvDx4MnhuGpGV0RHxMp+TK/rpNp1ZTn+
+         l9DW0m/YKQIQA1vwSlo4XWR2xRuNZgzvPRdxtGxnMmUpJeLnQnyCJ+c4gu509zNb/qqb
+         wH9zoz5IPh4KAP7t43+YlmimV3WJ+k7EQU5LCgmdDJV9w+JPlzvg0CMKC1pjRwRT2HoW
+         Pxe+SxephIEdHDW2/VCC/C2GhguusqwEn8MUJ6PvbGqB57kSv3ruMIAJGeYuysYVDWUd
+         10CA==
+X-Gm-Message-State: AOAM530/wAx0xx/S9jgP4ewozu7VOf5Vzgx2VM7gACvLSXh9jMd9EeBV
+        NnAhBxFvuUxT8jPJk+ix2jI=
+X-Google-Smtp-Source: ABdhPJxJe0h1hfDAK/LtqJvlL29vIrVqqNPbLGXTE5YMdHJa0P/iNR0RKkEaRP7MQm78oCW/YEhzPw==
+X-Received: by 2002:ac8:4543:: with SMTP id z3mr10845208qtn.286.1615534303274;
+        Thu, 11 Mar 2021 23:31:43 -0800 (PST)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com (177-131-89-8.dynamic.desktop.com.br. [177.131.89.8])
+        by smtp.gmail.com with ESMTPSA id t6sm3434026qti.2.2021.03.11.23.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 23:31:42 -0800 (PST)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] powerpc/mm/hash: Time improvements for memory hot(un)plug
+Date:   Fri, 12 Mar 2021 04:29:38 -0300
+Message-Id: <20210312072940.598696-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+This patchset intends to reduce time needed for processing memory
+hotplug/hotunplug in hash guests.
 
-On Fri, Mar 12, 2021 at 03:25:11AM +0200, Laurent Pinchart wrote:
-> Hi Rob,
-> 
-> Thank you for the patch.
-> 
-> On Thu, Mar 11, 2021 at 04:40:42PM -0700, Rob Herring wrote:
-> > Now that we have the graph schema, convert the video-mux binding to DT
-> > schema.
-> > 
-> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > Cc: linux-media@vger.kernel.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../devicetree/bindings/media/video-mux.txt   | 60 ------------
-> >  .../devicetree/bindings/media/video-mux.yaml  | 93 +++++++++++++++++++
-> >  2 files changed, 93 insertions(+), 60 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/media/video-mux.txt
-> >  create mode 100644 Documentation/devicetree/bindings/media/video-mux.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/video-mux.txt b/Documentation/devicetree/bindings/media/video-mux.txt
-> > deleted file mode 100644
-> > index 63b9dc913e45..000000000000
-> > --- a/Documentation/devicetree/bindings/media/video-mux.txt
-> > +++ /dev/null
-> > @@ -1,60 +0,0 @@
-> > -Video Multiplexer
-> > -=================
-> > -
-> > -Video multiplexers allow to select between multiple input ports. Video received
-> > -on the active input port is passed through to the output port. Muxes described
-> > -by this binding are controlled by a multiplexer controller that is described by
-> > -the bindings in Documentation/devicetree/bindings/mux/mux-controller.txt
-> > -
-> > -Required properties:
-> > -- compatible : should be "video-mux"
-> > -- mux-controls : mux controller node to use for operating the mux
-> > -- #address-cells: should be <1>
-> > -- #size-cells: should be <0>
-> > -- port@*: at least three port nodes containing endpoints connecting to the
-> > -  source and sink devices according to of_graph bindings. The last port is
-> > -  the output port, all others are inputs.
-> > -
-> > -Optionally, #address-cells, #size-cells, and port nodes can be grouped under a
-> > -ports node as described in Documentation/devicetree/bindings/graph.txt.
-> > -
-> > -Example:
-> > -
-> > -	mux: mux-controller {
-> > -		compatible = "gpio-mux";
-> > -		#mux-control-cells = <0>;
-> > -
-> > -		mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-> > -	};
-> > -
-> > -	video-mux {
-> > -		compatible = "video-mux";
-> > -		mux-controls = <&mux>;
-> > -		#address-cells = <1>;
-> > -		#size-cells = <0>;
-> > -
-> > -		port@0 {
-> > -			reg = <0>;
-> > -
-> > -			mux_in0: endpoint {
-> > -				remote-endpoint = <&video_source0_out>;
-> > -			};
-> > -		};
-> > -
-> > -		port@1 {
-> > -			reg = <1>;
-> > -
-> > -			mux_in1: endpoint {
-> > -				remote-endpoint = <&video_source1_out>;
-> > -			};
-> > -		};
-> > -
-> > -		port@2 {
-> > -			reg = <2>;
-> > -
-> > -			mux_out: endpoint {
-> > -				remote-endpoint = <&capture_interface_in>;
-> > -			};
-> > -		};
-> > -	};
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/media/video-mux.yaml b/Documentation/devicetree/bindings/media/video-mux.yaml
-> > new file mode 100644
-> > index 000000000000..780fbbd46a38
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/video-mux.yaml
-> > @@ -0,0 +1,93 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/video-mux.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Video Multiplexer
-> > +
-> > +maintainers:
-> > +  - Sakari Ailus <sakari.ailus@linux.intel.com>
-> > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > +
-> > +description:
-> > +  Video multiplexers allow to select between multiple input ports. Video
-> > +  received on the active input port is passed through to the output port. Muxes
-> > +  described by this binding are controlled by a multiplexer controller.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: video-mux
-> > +
-> > +  mux-controls:
-> > +    maxItems: 1
-> > +
-> > +  '#address-cells':
-> > +    const: 1
-> > +
-> > +  '#size-cells':
-> > +    const: 0
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    patternProperties:
-> > +      '^port@':
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> 
-> Should we require at least port@0, port@1 and port@2 ?
-> 
-> > +
-> > +patternProperties:
-> > +  '^port@':
-> > +    $ref: /schemas/graph.yaml#/properties/port
-> > +    description:
-> > +      At least three port nodes containing endpoints connecting to the source
-> > +      and sink devices according to of_graph bindings. The last port is the
-> > +      output port, all others are inputs.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - mux-controls
-> 
-> Should a constraint be added to ensure that either a ports node or
-> port@0, port@1 and port@2 nodes exists ?
+The first one, makes sure guests with pagesize over 4k don't need to
+go through HPT resize-downs after memory hotplug.
 
-It's not meaningful to have this device without such nodes. But a mux with
-more ports could be connected in a way that leaves one or both of ports 1
-and 2 unconnected. It's still not a likely configuration but a possible
-one.
+The second and third patches make hotplug / hotunplug perform a single
+HPT resize per operation, instead of one for each shift change, or one
+for each LMB in case of resize-down error.
 
-Either way,
+Why haven't the same mechanism used for both memory hotplug and hotunplug?
+They both have different requirements:
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Memory hotplug causes (usually) HPT resize-ups, which are fine happening
+at the start of hotplug, but resize-ups should not ever be disabled, as
+other mechanisms may try to increase memory, hitting issues with a HPT
+that is too small.
 
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    mux: mux-controller {
-> > +        compatible = "gpio-mux";
-> > +        #mux-control-cells = <0>;
-> > +
-> > +        mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-> > +    };
-> > +
-> > +    video-mux {
-> > +        compatible = "video-mux";
-> > +        mux-controls = <&mux>;
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        port@0 {
-> > +            reg = <0>;
-> > +
-> > +            mux_in0: endpoint {
-> > +                remote-endpoint = <&video_source0_out>;
-> > +            };
-> > +        };
-> > +
-> > +        port@1 {
-> > +            reg = <1>;
-> > +
-> > +            mux_in1: endpoint {
-> > +                remote-endpoint = <&video_source1_out>;
-> > +            };
-> > +        };
-> > +
-> > +        port@2 {
-> > +            reg = <2>;
-> > +
-> > +            mux_out: endpoint {
-> > +                remote-endpoint = <&capture_interface_in>;
-> > +            };
-> > +        };
-> > +    };
-> > +...
+Memory hotunplug causes HPT resize-downs, which can be disabled (HPT will
+just remain larger for a while), but need to happen at the end of an
+hotunplug operation. If we want to batch it, we need to disable
+resize-downs and perform it only at the end.
+
+Tests done with this patchset in the same machine / guest config:
+Starting memory: 129GB, DIMM: 256GB
+Before patchset: hotplug = 710s, hotunplug = 621s.
+After patchset: hotplug  = 21s, hotunplug = 100s.
+
+Any feedback will be appreciated!
+I believe the code may not be very well placed in available files,
+so please give some feedback on that.
+
+Best regards,
+
+Leonardo Bras (3):
+  powerpc/mm/hash: Avoid resizing-down HPT on first memory hotplug
+  powerpc/mm/hash: Avoid multiple HPT resize-ups on memory hotplug
+  powerpc/mm/hash: Avoid multiple HPT resize-downs on memory hotunplug
+
+ arch/powerpc/include/asm/book3s/64/hash.h     |  4 +
+ arch/powerpc/include/asm/sparsemem.h          |  4 +
+ arch/powerpc/mm/book3s64/hash_utils.c         | 78 +++++++++++++++----
+ arch/powerpc/mm/book3s64/pgtable.c            | 18 +++++
+ .../platforms/pseries/hotplug-memory.c        | 22 ++++++
+ 5 files changed, 111 insertions(+), 15 deletions(-)
 
 -- 
-Kind regards,
+2.29.2
 
-Sakari Ailus
