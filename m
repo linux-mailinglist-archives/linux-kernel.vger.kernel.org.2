@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE63339975
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF0D339978
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhCLWJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:09:41 -0500
-Received: from mga02.intel.com ([134.134.136.20]:1029 "EHLO mga02.intel.com"
+        id S235461AbhCLWLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:11:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235308AbhCLWJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:09:22 -0500
-IronPort-SDR: eHGodOyMK3GZhXWVaz7k6iTuYTkzv1hYayqI1tPZZ6GOG8/GCvDsxk84R4SEHfb4M/OBtV7/zl
- Zg8JgwtvDLSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="176023026"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="176023026"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:09:17 -0800
-IronPort-SDR: eRra4IuVxIDZ5yWYYZKPaGF/3+AzVch2zRTcTIEXCTCFKlK+QQjJ537AMySI8vDd0118ghpIPx
- L0k0iQsEdG4w==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="510463891"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:09:15 -0800
-Date:   Fri, 12 Mar 2021 22:09:08 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 08/21] selftests/resctrl: Call kselftest APIs to log
- test results
-Message-ID: <YEvmhPIQjt7Wd6N9@otcwcpicx3.sc.intel.com>
-References: <20210307145502.2916364-1-fenghua.yu@intel.com>
- <20210307145502.2916364-9-fenghua.yu@intel.com>
- <d902468d-644f-65e4-1043-81c90fdf4da8@amd.com>
+        id S235453AbhCLWK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 17:10:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D36E64F29;
+        Fri, 12 Mar 2021 22:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615587059;
+        bh=Dg8NPNpeo0c/PJaNRifXNhuOnGGTiIPNjQZGvYR1Vew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dZCT2wzmnDJAtkMaxZBnneaQc19JiYKbpxW8vDZJJsML4NAUYGjrj5oY/Vp8gY6w4
+         6u9NzvcraAaS1vOyrtsM6+COMuwJl5QXxL/PZxRK59ZPDoVoyA6c0c9FBof2R04SMu
+         7sl2kAcudQcH/BsyXxsRqYY+N6EEgdQroTYN8fi30P5BaHUZx6krfWeNsoztVPLNUn
+         dEyDu+IPgTUfNlegtqvPw6DBjN032VdPdNIi949i6+dHWqgXmQl+cD+yAaPAqZDgZ9
+         hNagU9Ct4F4wDuk39cBMfcXht9o04H118FB1rfkzwDs8GZaLZrQW74j0VVlcnJ7Z5V
+         45s26xdyifr8A==
+Date:   Fri, 12 Mar 2021 17:10:58 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH AUTOSEL 5.11 31/52] x86, build: use objtool mcount
+Message-ID: <YEvm8ggvHis0tkFp@sashalap>
+References: <20210302115534.61800-1-sashal@kernel.org>
+ <20210302115534.61800-31-sashal@kernel.org>
+ <202103021042.CBF1600@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <d902468d-644f-65e4-1043-81c90fdf4da8@amd.com>
+In-Reply-To: <202103021042.CBF1600@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Babu,
+On Tue, Mar 02, 2021 at 10:42:57AM -0800, Kees Cook wrote:
+>On Tue, Mar 02, 2021 at 06:55:12AM -0500, Sasha Levin wrote:
+>> From: Sami Tolvanen <samitolvanen@google.com>
+>>
+>> [ Upstream commit 6dafca97803309c3cb5148d449bfa711e41ddef2 ]
+>>
+>> Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
+>> objtool to generate __mcount_loc sections for dynamic ftrace with
+>> Clang and gcc <5 (later versions of gcc use -mrecord-mcount).
+>>
+>> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>This one doesn't make sense without all the other objtool changes for
+>it. Please drop this from autosel.
 
-On Fri, Mar 12, 2021 at 01:12:35PM -0600, Babu Moger wrote:
-> > -			printf("# dmesg: %s", line);
-> > +			ksft_print_msg("dmesg: %s", line);
-> >  		if (strstr(line, "resctrl:"))
-> > -			printf("# dmesg: %s", line);
-> > +			ksft_print_msg("dmesg: %s", line);
-> 
-> In general, this patch has some minor nits. When displaying the messages,
->  normally the first character should be capitalized.
-> ksft_print_msg("checking for pass/fail\n");
-> should be
->  ksft_print_msg("Checking for pass/fail\n");
-> 
-> And
-> ksft_print_msg("Please Enter value in range 1 to %d\n",count_of_bits);
-> Should be
-> 
-> ksft_print_msg("Please enter value in range 1 to %d\n", count_of_bits);
-> 
-> I am not too concerned about this. You can improve it if you like it.
-> 
-Ok. Will fix them.
+Dropped, thanks!
 
-Thanks.
-
--Fenghua
+-- 
+Thanks,
+Sasha
