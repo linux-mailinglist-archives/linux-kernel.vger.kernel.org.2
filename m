@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDED13383DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FD03383E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhCLCqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
+        id S231837AbhCLCqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhCLCpp (ORCPT
+        with ESMTP id S231720AbhCLCqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:45:45 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615EFC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:45:45 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id n9so13955751pgi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:45:45 -0800 (PST)
+        Thu, 11 Mar 2021 21:46:03 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9402C061574;
+        Thu, 11 Mar 2021 18:46:02 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 18so867950pfo.6;
+        Thu, 11 Mar 2021 18:46:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QU0VzfL9/lfvk4BOo6El/Igfm4hUidBDqCnte6ObskA=;
-        b=dCt656rf528kGz65pkdCCRwvvb6LHMDAt1mGWptf+qA1H+D1fqonFC8NIlOt/4mplW
-         SfLgdS9gaLGlL2B9nrZb48Pz4kn/Ry2TH/6Oafm8iapyD2b38tCNNwVi2kChy9sqiaHI
-         yYrFQdLV5XU/tYDIPz05PWQzC2cCC0g7WMHLs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=d9YsZjl8KPcCfohTLaB3vMCTcxLud525kwliSzoLjSM=;
+        b=PsXU7Bu7iJYGWMkIU7bQZJG8iQo65W9qCJRD/PlehbjzcXSjFIKvERxI5eoVvfN8iA
+         UyByTpcv7sPtQOz7myde90AQcpD+gyt+35aN5lTZFjjcATXdx4zr9b/AHKZQK/FRjLQe
+         ckOON81qhUkKVvHbfjzNq+XcZD9cm6ZHWXuJvZqbeQmwnfo1PohATwr4XXtGjHE/DcVe
+         rLoW2wgMKzFiGmfO4izQty2BnCRtJgr6aWRmprh11dTA/4Bvvvy2DEEM3PUwxD1xO669
+         Xllr7o1C3I8bBHBRADfjnBGKHiljHC7NGTpJ1kW7CkiW/8DR3ymAT0w3AwM9T3Gko8jk
+         lgBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QU0VzfL9/lfvk4BOo6El/Igfm4hUidBDqCnte6ObskA=;
-        b=c4eM5oVP2E3O0QTkVEDHe8S3jHJiGh+8zAY6No54YRo4KGzbBykHSPlC8EY0WV2lEr
-         gCTDfhMF/wWhO3T4ArJrlOHrSZtA44DC8KKC9WICgYpZBA6DhsbcQHqPXNacOVA+YexK
-         TpvUzfOLC/JlQDLbYzcjaLjEhdY73I5K1F2g0cr2rrTRrSDb5WOVs2x0IBhThMi+O17J
-         xjK4y/AOkWDSRXctvz1c2hpoFfKFm96k+OeuhVghYO7W+xBnpSzfM/DKpLxHBeoB7AaK
-         29+TXEZowU26ww2FqRW6FuU2f+yRculHtbTYSC7sy4lrx3SOL5y6f+2GmzdMwXvIafpP
-         C+Ng==
-X-Gm-Message-State: AOAM5305y+h8clbzI5pgqc3pZzdkU4F4V4HU/4Pr0FqwDv/SnAUVpzqs
-        xZGLcVGhXjsUqu/Dq3mwoukQjg==
-X-Google-Smtp-Source: ABdhPJyZjX0dDYfZgQFE6j3eol5QYVolHh+A3d7V2uX9uhucCEXJOChGVC9n8UJhMoVf/kiUBIdI6A==
-X-Received: by 2002:a05:6a00:22c6:b029:201:1166:fdad with SMTP id f6-20020a056a0022c6b02902011166fdadmr2389793pfj.58.1615517145009;
-        Thu, 11 Mar 2021 18:45:45 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i7sm2934089pgq.16.2021.03.11.18.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 18:45:44 -0800 (PST)
-Date:   Thu, 11 Mar 2021 18:45:43 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/17] lkdtm: use __va_function
-Message-ID: <202103111845.1D52CBC1@keescook>
-References: <20210312004919.669614-1-samitolvanen@google.com>
- <20210312004919.669614-11-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312004919.669614-11-samitolvanen@google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=d9YsZjl8KPcCfohTLaB3vMCTcxLud525kwliSzoLjSM=;
+        b=qFTGZm9fz1satnak4oe50sMbfUlv73nNRYBLKKtD+7tygRGyZ7Vpqpb9Cnxw+wkewM
+         VWvEx2Z2nLkDFjuvHNV+zRSWDIUtEhmxOmCUgtDKjD0x9SztlFRyOVBhh32h6pWs139W
+         4Y+Nmxs+tYzvyhP6CU0aBQ9pdZWa0EvVgFEIaPmfQCl9mRDMP7knpjdTxEGZcM8kjYjN
+         cnsIgbxt1vzS3VEkUxmx9mSGFqGtXajUUmJrH6/Vu0j8DDABB9ucpKIs91UQHfind5l7
+         JSGviQ0Ie0yn0mSHux0XHlNasz5wMJuGicQ0wzROp8NKAPIUGP/wgGli+X5CJK3QWLWR
+         i4VQ==
+X-Gm-Message-State: AOAM533XJ0rI/OxP4lqbfid6rQixDoBL6nLcC3upJr+Txb3mO5j1De6r
+        qFGF/g8oQQpkgz0ZMRBlZ+xkC2BUCgE=
+X-Google-Smtp-Source: ABdhPJz7xn4dMO2nJjEuZRgkchyM6In2oxsC1ik61xXs99EpuD2rJGq8V6jjGLXAlGM+kunJkU61AA==
+X-Received: by 2002:a63:5645:: with SMTP id g5mr9386911pgm.387.1615517162247;
+        Thu, 11 Mar 2021 18:46:02 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id e20sm3476846pgm.1.2021.03.11.18.45.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Mar 2021 18:46:01 -0800 (PST)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Nadav Amit <namit@vmware.com>
+Subject: [PATCH] KVM: X86: Fix missing local pCPU when executing wbinvd on all dirty pCPUs
+Date:   Fri, 12 Mar 2021 10:45:51 +0800
+Message-Id: <1615517151-7465-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:49:12PM -0800, Sami Tolvanen wrote:
-> To ensure we take the actual address of a function in kernel text, use
-> __va_function. Otherwise, with CONFIG_CFI_CLANG, the compiler replaces
-> the address with a pointer to the CFI jump table, which is actually in
-> the module when compiled with CONFIG_LKDTM=m.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Acked-by: Kees Cook <keescook@chromium.org>
+We should execute wbinvd on all dirty pCPUs when guest wbinvd exits 
+to maintain datat consistency in order to deal with noncoherent DMA.
+smp_call_function_many() does not execute the provided function on 
+the local core, this patch replaces it by on_each_cpu_mask().
 
+Reported-by: Nadav Amit <namit@vmware.com>
+Cc: Nadav Amit <namit@vmware.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/x86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 012d5df..aa6d667 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6638,7 +6638,7 @@ static int kvm_emulate_wbinvd_noskip(struct kvm_vcpu *vcpu)
+ 		int cpu = get_cpu();
+ 
+ 		cpumask_set_cpu(cpu, vcpu->arch.wbinvd_dirty_mask);
+-		smp_call_function_many(vcpu->arch.wbinvd_dirty_mask,
++		on_each_cpu_mask(vcpu->arch.wbinvd_dirty_mask,
+ 				wbinvd_ipi, NULL, 1);
+ 		put_cpu();
+ 		cpumask_clear(vcpu->arch.wbinvd_dirty_mask);
 -- 
-Kees Cook
+2.7.4
+
