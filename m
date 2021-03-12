@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A59339366
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E7E339380
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhCLQ3t convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 11:29:49 -0500
-Received: from mga11.intel.com ([192.55.52.93]:59180 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232005AbhCLQ3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:29:47 -0500
-IronPort-SDR: HbCqPIK8EYH03sr8G7Tq7VHevrTUnXZNLYXcmb2GfGwisTAB4fUL2+DZha0hH0yGprrGoHIJEj
- DAjXCdoClRQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185497514"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="185497514"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:29:39 -0800
-IronPort-SDR: xfqavqvf/Q0gVTpWY4GxfHOXj9kaFU8+WFvbVgS8pgLZG1ix1w4s9a3BS98RLT7M+ItzKo7tSo
- qEGAsaM36rYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="387388874"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga002.jf.intel.com with ESMTP; 12 Mar 2021 08:29:39 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 08:29:38 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 08:29:38 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Fri, 12 Mar 2021 08:29:38 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
-Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwIAHwDQAgAHAYACAAADA4IABX0yAgAAnh8A=
-Date:   Fri, 12 Mar 2021 16:29:37 +0000
-Message-ID: <3900f518d1324c388be52cf81f5220e4@intel.com>
-References: <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-        <20210304121941.667047c3@alex-virtual-machine>
-        <20210304144524.795872d7@alex-virtual-machine>
-        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
-        <20210305093016.40c87375@alex-virtual-machine>
-        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
-        <20210310141042.4db9ea29@alex-virtual-machine>
-        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
-        <db80e98d2b264e988596d0d7d7c8a776@intel.com>
- <20210312135531.72e33b35@alex-virtual-machine>
-In-Reply-To: <20210312135531.72e33b35@alex-virtual-machine>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        id S232363AbhCLQfL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 11:35:11 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:49154 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232342AbhCLQe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:34:59 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 7949938BB77;
+        Fri, 12 Mar 2021 12:23:11 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id MG0aCzbKpCj4; Fri, 12 Mar 2021 12:23:11 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 317273CA610;
+        Fri, 12 Mar 2021 11:27:19 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FHduPTB9nIps; Fri, 12 Mar 2021 11:27:19 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id A5D243CA032;
+        Fri, 12 Mar 2021 11:21:22 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 15:21:35 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312142122.A5D243CA032@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sorry to interrupt as I am really confused here:
-> If it's a copyin case, has the page been mapped for the current process?
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Yes. The kernel has the current process mapped to the low address range
-and code like get_user(), put_user() "simply" reaches down to those addresses
-(maybe not so simply, as the access needs to be within a STAC/CLAC section
-of code on modern CPUs, and the access instruction needs an entry in EXTABLE
-so that the page fault handler can fix it if there isn't a page mapped at the user
-address).
+Sir/Madam,
 
-> will memory_failure() find it and unmap it? if succeed, then the current will be
-> signaled with correct vaddr and shift?
+CONGRATULATIONS!!!
 
-That's a very good question.  I didn't see a SIGBUS when I first wrote this code,
-hence all the p->mce_vaddr.  But now I'm
-a) not sure why there wasn't a signal
-b) if we are to fix the problems noted by AndyL, need to make sure that there isn't a SIGBUS
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-> Maybe the mce_vaddr is set correctly, but we may lost the correct page shift?
-Yes. There is a hard-coded PAGE_SHIFT for this case - which may not match the actual page size.
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-> And for copyin case, we don't need to call set_mce_nospec()?
-Yes. We should.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-Thanks for your good questions.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
--Tony
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
