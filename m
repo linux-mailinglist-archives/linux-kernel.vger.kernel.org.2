@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B80339030
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5370339037
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhCLOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:41:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229728AbhCLOkx (ORCPT
+        id S231512AbhCLOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhCLOmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:40:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615560052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UHFz+ZfMKEJbP5t9K2bCk5hCYslzNNC+cpLu7ln61Mg=;
-        b=e/LLKnXCTPu71GWT3YBPiLzffzy7ojHs83LivvDizEg5K5EdgcJtHaSr6sSOHIcL7ncKaX
-        Pv8TKdmYgptST9XMXtkXAURpjMbeTjZl3gAQUICSbLQeqC+APh0nxtzkQN0o3Fd03LFYQb
-        AJV5xZJeiJrRkYZ1qESQDHX4sqqRiJo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-a7ch9hM_MS27RGpXEMXyXw-1; Fri, 12 Mar 2021 09:40:50 -0500
-X-MC-Unique: a7ch9hM_MS27RGpXEMXyXw-1
-Received: by mail-wr1-f72.google.com with SMTP id h30so11270152wrh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:40:50 -0800 (PST)
+        Fri, 12 Mar 2021 09:42:17 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3F3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:42:17 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id r20so7042202ljk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:42:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/ZgtvRUCOeB2tes232V28vaR4drPg6AkuyiMBwt7N/Q=;
+        b=TT4sNAbE++eXFwV/kLG3OLxZb9hyTRXOGfbo6NPgoa2hdLLMENGShbvPYOMDArP8C5
+         RKlPk5VVpXNLF5blZeOdwAjGPqVXpFNPgjYYrVb6O7GTSkRB+Fyx4O0pa1l1kOsnNznE
+         xFQvIUZJl9uQGXJCjQKizXLGUUTlD0HXVt/Jj+aRfi07o21cJzRKvEb8KZXWulKHg8zG
+         cYjle+Zze0D4cKdNB230Q6aco2pQXDIaERXcL6iiXjVMaecRViWLROHlXHGW5L3Y96Iw
+         lxE1WH3xyR63B64hekFbsHI2M4laMPJAcwNUXM8c15Kdw4Xwvmqb+4R3WaP2XCRHxlrc
+         GyKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UHFz+ZfMKEJbP5t9K2bCk5hCYslzNNC+cpLu7ln61Mg=;
-        b=FWpB8uqpT5Rpt0AY/Glu4mTGau/1CqYwiavocvbj0qthmAjDutY4sqhy1LklHpcmgE
-         DhVbx24HD1oaJQphQoaRtF5vwNxsVTfQ4arlTrcbWhFgXWEqdu7jaC3Ijac34PVooJcY
-         yZD0bdEI7W6klNcEQaPM9bBJrNXB7j1c/IZd9kJxcMspuznH0X8diV05A+JDLDuuJSP9
-         pXUidtJbl0aK7Rhs2o/gbZCByATRV2K+YL6wnIXJsDB865aubc+EtoV9xPd8RnYh7Vsu
-         4Re9LntHZtFJl19n5VXO5+Y5m/pssQl8Jg7yiq38SYVfFYYXZXBc5E1DwV1SPw1Hh75I
-         ClZA==
-X-Gm-Message-State: AOAM532uNLCAcbNseGSGTok3M6w72P8ZufIe3hCfok3byyKtNC76nzmu
-        RfksNwN+GW62MD9NjOv1ldfGmHzrswoboxiU+68OsPM3eBMejxD3tvGT31+2sHw2WhdEqxQkRAR
-        cwc0du2guenlUzfQ96Upd6QPu
-X-Received: by 2002:adf:f841:: with SMTP id d1mr14157284wrq.36.1615560049592;
-        Fri, 12 Mar 2021 06:40:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzgzENVDWH77SrdxqPP5xavvsUwfa0+M+2ZdEnSJauzOQ012YEkvpkDBfuH0dxQ2NcCuQ1oKw==
-X-Received: by 2002:adf:f841:: with SMTP id d1mr14157254wrq.36.1615560049394;
-        Fri, 12 Mar 2021 06:40:49 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id q17sm3268632wrv.25.2021.03.12.06.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 06:40:49 -0800 (PST)
-Date:   Fri, 12 Mar 2021 15:40:46 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v6 02/22] af_vsock: separate wait data loop
-Message-ID: <20210312144046.dnthewowhmkvfotd@steredhat>
-References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
- <20210307175905.3464610-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/ZgtvRUCOeB2tes232V28vaR4drPg6AkuyiMBwt7N/Q=;
+        b=A/MVtu5Y6AjybuqoEEkt+x8JMFy7HACRyAZDJ2j60go3Ud9gNJ9l2sgDg52hjVjvDP
+         jfjXDqyga67WqsqkMgVJaSubQHGNsx9gGfuSbOpUp48gp9/s6nY94oqLbQaM8cNvIbNU
+         IFw8gqMFzGjWec73UEYXdyoBBy4WWSNCvN28lcq7a6grZRUNgV/s4Tqsar8w4a55MpEU
+         HK+wFd8y4KnhMl8yxZI1VkVO/MCbAlI6k+Lg7NwG9XBLyNO8ceDVEY0TaRYpFiYkMbaD
+         wiEk9ZaYjmglbIjimP00Y2xr2/hYGdLarkWdvi/9A79RWSFyAG6MSSSBFiJxAH7gbIuY
+         EMFQ==
+X-Gm-Message-State: AOAM532QSXx/94Z9re2AIIi7gIhTWjvXWGiLQQlcWIn3RhVmXVxFTa8+
+        Ml8OCazPvrMx/wPSgw8LhxU+JYB0rL/YuIwTbF4=
+X-Google-Smtp-Source: ABdhPJyYrWIGZUKMt0BSk3MntCjtvxsWjGr/pshTWbxymBr5n5Yeb0oG2eoConQ8JmoQLge5D2qeM72hwKUHisAYu+8=
+X-Received: by 2002:a2e:b606:: with SMTP id r6mr2573928ljn.327.1615560135802;
+ Fri, 12 Mar 2021 06:42:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210307175905.3464610-1-arseny.krasnov@kaspersky.com>
+References: <20210312122531.2717093-1-daeho43@gmail.com> <YEtg8U7whCVV2tQt@kroah.com>
+ <CACOAw_zhZ0OgT-KCBmD_H6_U=CZCNY44D-ojH2AZah2cbAvdAQ@mail.gmail.com>
+ <YEt00vJ6oVfoRjSJ@kroah.com> <CACOAw_yjyy+58B=RawAaQO98NQB43roZOv4sq5313sFHN1myXQ@mail.gmail.com>
+In-Reply-To: <CACOAw_yjyy+58B=RawAaQO98NQB43roZOv4sq5313sFHN1myXQ@mail.gmail.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 12 Mar 2021 23:42:04 +0900
+Message-ID: <CACOAw_wipL_SHyKp+56SOx99LnBZsrWq2eRmLm7Bz16jEYM8zg@mail.gmail.com>
+Subject: Re: [PATCH v4] f2fs: add sysfs nodes to get runtime compression stat
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 08:59:01PM +0300, Arseny Krasnov wrote:
->This moves wait loop for data to dedicated function, because later it
->will be used by SEQPACKET data receive loop. While moving the code
->around, let's update an old comment.
+So, do you want we protect the values here with spin_lock and just
+read without spin_lock in sysfs read part?
+
+2021=EB=85=84 3=EC=9B=94 12=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 11:37, =
+Daeho Jeong <daeho43@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 156 +++++++++++++++++++++------------------
-> 1 file changed, 84 insertions(+), 72 deletions(-)
-
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
+> As you can see, if we're doing like the below.
+>
+> sbi->compr_written_block +=3D blocks;
+>
+> Let's assume the initial value as 0.
+>
+> <thread A>                                             <thread B>
+> sbi->compr_written_block =3D 0;
+>
+> sbi->compr_written_block =3D 0;
+> +blocks(3);
+>                                                                + blocks(2=
+);
+> sbi->compr_written_block =3D 3;
+>
+> sbi->compr_written_block =3D 2;
+>
+> Finally, we end up with 2, not 5.
+>
+> As more threads are participating it, we might miss more counting.
+>
+> 2021=EB=85=84 3=EC=9B=94 12=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 11:04=
+, Greg KH <gregkh@linuxfoundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1=
+:
+> >
+> > On Fri, Mar 12, 2021 at 10:56:13PM +0900, Daeho Jeong wrote:
+> > > Thanks for suggesting me sysfs_emit().
+> > >
+> > > For atomic values, actually, those are needed for writer part, not re=
+ader.
+> > >
+> > > +#define add_compr_block_stat(inode, blocks)                         =
+   \
+> > > +       do {                                                         =
+   \
+> > > +               struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);       =
+     \
+> > > +               int diff =3D F2FS_I(inode)->i_cluster_size - blocks; =
+     \
+> > > +               atomic64_add(blocks, &sbi->compr_written_block);     =
+   \
+> > > +               atomic64_add(diff, &sbi->compr_saved_block);         =
+   \
+> > > +       } while (0)
+> > >
+> > > I needed a protection here, because they might be updated in the race=
+ condition.
+> >
+> > Why?  What are you trying to protect from "racing" here?
+> >
+> > thanks,
+> >
+> > greg k-h
