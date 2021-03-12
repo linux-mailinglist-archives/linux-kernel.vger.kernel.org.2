@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF07D3394F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACBC33955E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhCLRa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:30:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:48400 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbhCLR35 (ORCPT
+        id S232871AbhCLRrL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 12:47:11 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:55336 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhCLRqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:29:57 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lKlbi-0001et-6K; Fri, 12 Mar 2021 17:29:50 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mt76: mt7921: remove redundant check on type
-Date:   Fri, 12 Mar 2021 17:29:49 +0000
-Message-Id: <20210312172949.153418-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        Fri, 12 Mar 2021 12:46:53 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 6B1173E0AB9;
+        Fri, 12 Mar 2021 12:57:58 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id sZjITytfjhAD; Fri, 12 Mar 2021 12:57:58 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id A2FAE38AE4A;
+        Fri, 12 Mar 2021 12:34:34 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id wS4Wsl7Umhga; Fri, 12 Mar 2021 12:34:34 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 77FCB3CB008;
+        Fri, 12 Mar 2021 11:43:41 -0300 (-03)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 15:43:53 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312144342.77FCB3CB008@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Currently in the switch statement case where type is
-NL80211_IFTYPE_STATION there is a check to see if type
-is not NL80211_IFTYPE_STATION.  This check is always false
-and is redundant dead code that can be removed.
+Sir/Madam,
 
-Addresses-Coverity: ("Logically dead code")
-Fixes: e0f9fdda81bd ("mt76: mt7921: add ieee80211_ops")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/mediatek/mt76/mt7921/main.c | 3 ---
- 1 file changed, 3 deletions(-)
+CONGRATULATIONS!!!
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-index 729f6c42cdde..c8975f372cf2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-@@ -224,9 +224,6 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
- 		if (i)
- 			return i - 1;
- 
--		if (type != NL80211_IFTYPE_STATION)
--			break;
--
- 		/* next, try to find a free repeater entry for the sta */
- 		i = get_free_idx(mask >> REPEATER_BSSID_START, 0,
- 				 REPEATER_BSSID_MAX - REPEATER_BSSID_START);
--- 
-2.30.2
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
