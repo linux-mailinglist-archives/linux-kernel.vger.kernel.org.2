@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07A8338794
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C55338774
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhCLIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:38:34 -0500
-Received: from mail.thorsis.com ([92.198.35.195]:55028 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232443AbhCLIiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:38:05 -0500
-X-Greylist: delayed 357 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 03:38:04 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id EF9C33356;
-        Fri, 12 Mar 2021 09:32:06 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JI1aur4oo8wz; Fri, 12 Mar 2021 09:32:06 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id C62C235C5; Fri, 12 Mar 2021 09:32:04 +0100 (CET)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-From:   Alexander Dahl <ada@thorsis.com>
-To:     linux-leds@vger.kernel.org
-Cc:     Hermes Zhang <chenhui.zhang@axis.com>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, kernel@axis.com,
-        Hermes Zhang <chenhuiz@axis.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
-Date:   Fri, 12 Mar 2021 09:31:58 +0100
-Message-ID: <2315048.uTtSMl1LR1@ada>
-In-Reply-To: <20210311130408.10820-1-chenhui.zhang@axis.com>
-References: <20210311130408.10820-1-chenhui.zhang@axis.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+        id S231823AbhCLIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232294AbhCLIdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:33:08 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7275FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:33:08 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso15262231wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vAtjNiJI1qKKGx5S42wVjbuS4/WPVdr+MZcPW8+RobY=;
+        b=Yb2CA3Uvk4FTp1X0XSzcIlRiSLJrML0hKWk9vYGVtCigmOAot2S16a+V+92DSIDFFp
+         XcRdIPhrmvpNIp/pgahzoTyhzqa4hNimV8VcSwDqJkU1Od+yqFHOO+Gi21w9n8heloqW
+         7EcgmLxQW8uPWfRWR2NxqagdA8jYYJBPh/pWt7iiRX7MkBski7DnArKy9oLWC4xq/DAl
+         Z7eBgydDG9gy2be5Wa1PpV1aZdQcahl80HXuEQ1gB8IQ5EjeM76e4VrboFMJ5P9PuRS4
+         4HzGd/87j29OB9po8J/EKfcScdXcOPD59K6oNBWA2qiXgNo1l9sKLzEyR+9MwK+B4xih
+         3+2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vAtjNiJI1qKKGx5S42wVjbuS4/WPVdr+MZcPW8+RobY=;
+        b=td0LjDJAAs1RNglzpUpLz9xabn0EOLyKu8MPkeSqdPnpSXACRjZJMuYqHrKntO7f06
+         0+ZGe+tAcldLTf399VFQwK2qIvkqKCUy8MjXmsBNN7b5iRuuKCR88iwHBRCOZ5qLx/b0
+         2WWO/08axkwdFlhq3ttCGZS5DZdvdtbcq8MW5kQyhc8oe7C/kCGQpJD0Nh3dy1aopysF
+         tOxRDwWwKFyUJrNF1Y9NIoA6CvUsKEnmz5GCg4KVTsqcsjz1SQsfrngH3IEQWqRGcAiw
+         KV604pi68apXU9d5YSVmKB1VxkYZCHF9phaIRo9dPeeOj09jw+awqjTslqZdDtSJBRLP
+         7nDg==
+X-Gm-Message-State: AOAM531pqx7sjF0NyPpYWezNOhkdsxsQnhdwMfBfjym6strba/1XGVVd
+        5PjQEqW0l2mW0nudF35wk64JuRh8Y1pIQqYbgTA=
+X-Google-Smtp-Source: ABdhPJyKZ0nMvRCdLUBbGOrKqHKyK3qzoA5pK9cwadvVMavLaFfap4/egdikXhfiZirr/3x+J4LMJaZTm4o697jfWd4=
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr11906684wml.44.1615537987205;
+ Fri, 12 Mar 2021 00:33:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com> <20210309153455.GB4878@sirena.org.uk>
+In-Reply-To: <20210309153455.GB4878@sirena.org.uk>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 12 Mar 2021 10:32:54 +0200
+Message-ID: <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo Hermes,
+On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Mar 09, 2021 at 10:23:28AM +0200, Daniel Baluta wrote:
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+> >
+> > Platform may be specified by either name or OF node but not
+> > both.
+> >
+> > For OF node platforms (e.g i.MX) we end up with both platform name
+> > and of_node set and sound card registration will fail with the error:
+> >
+> >   asoc-simple-card sof-sound-wm8960: ASoC: Neither/both
+> >   platform name/of_node are set for sai1-wm8960-hifi
+>
+> This doesn't actually say what the change does.
 
-thanks for your effort.
+Will send v2 with a better explanation.
 
-Am Donnerstag, 11. M=E4rz 2021, 14:04:08 CET schrieb Hermes Zhang:
-> From: Hermes Zhang <chenhuiz@axis.com>
->=20
-> Introduce a new Dual GPIO LED driver. These two GPIOs LED will act as
-> one LED as normal GPIO LED but give the possibility to change the
-> intensity in four levels: OFF, LOW, MIDDLE and HIGH.
+>
+> > -                     dai_link->platforms->name = component->name;
+> > +
+> > +                     if (!dai_link->platforms->of_node)
+> > +                             dai_link->platforms->name = component->name;
+>
+> Why would we prefer the node name over something explicitly configured?
 
-Interesting use case. Is there any real world hardware wired like that you=
-=20
-could point to?
+Not sure I follow your question. I think the difference stands in the
+way we treat OF vs non-OF platforms.
 
-> +config LEDS_DUAL_GPIO
-> +	tristate "LED Support for Dual GPIO connected LEDs"
-> +	depends on LEDS_CLASS
-> +	depends on GPIOLIB || COMPILE_TEST
-> +	help
-> +	  This option enables support for the two LEDs connected to GPIO
-> +	  outputs. These two GPIO LEDs act as one LED in the sysfs and
-> +	  perform different intensity by enable either one of them or both.
+With OF-platforms, dai_link->platforms->of_node is always set! So we
+no longer need
+to set dai->platforms->name.
 
-Well, although I never had time to implement that, I suspect that could=20
-conflict if someone will eventually write a driver for two pin dual color L=
-EDs=20
-connected to GPIO pins.  We actually do that on our hardware and I know oth=
-ers=20
-do, too.
-
-I asked about that back in 2019, see this thread:
-
-https://www.spinics.net/lists/linux-leds/msg11665.html
-
-At the time the multicolor framework was not yet merged, so today I would=20
-probably make something which either uses the multicolor framework or at le=
-ast=20
-has a similar interface to userspace. However, it probably won't surprise y=
-ou=20
-all, this is not highest priority on my ToDo list. ;-)
-
-(What we actually do is pretend those are separate LEDs and ignore the=20
-conflicting case where both GPIOs are on and the LED is dark then.)
-
-Greets
-Alex
-
-
-
+Actually setting both of_node and name will make sound card
+registration fail! In this is the case I'm trying
+to fix here.
