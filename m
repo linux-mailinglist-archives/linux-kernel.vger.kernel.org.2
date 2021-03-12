@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496223398C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027293398C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhCLU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:57:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        id S235112AbhCLU4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:56:34 -0500
+Received: from mga17.intel.com ([192.55.52.151]:49632 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235131AbhCLU5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:57:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C09564F87;
-        Fri, 12 Mar 2021 20:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615582629;
-        bh=mkL75zFRcvY7SDVV8rIsNBThP6Ch2Zj5Sc2UsAwvmCY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=kKZvn2V5xv7vpfX93Th5HlKcyhtTFfyTOdhE+m5fKiVxM27wSYf500/9OadIahsw+
-         oEGYQIHa1AwIK5CClP76fHluAH6DgvHGmwD1Kea5H0lGK94aaa2xCgbL6GQHBkCRBy
-         fVCGSAVP/trm3ZEI5cH7YCoGdMP86GqMr+tM1r6Q+i+i6nEhMLbeEbyGFsvblGKgXb
-         xQ672JWkV5EhfxHIkbYo60ElXUtpihbb1u6Rtm7tTANTg6lC/odVOR3a1b0iFOziBY
-         eq9ls4SRmtP/ZzQ/Cqg3h/hLa//KTnib5Y9jqx7r0b4zd9zW8JIrje6QXqM4nEM/hW
-         3rwqhKzBPmI7A==
-Date:   Fri, 12 Mar 2021 14:57:07 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-Subject: Re: [RFC PATCH v2 02/11] PCI/P2PDMA: Avoid pci_get_slot() which
- sleeps
-Message-ID: <20210312205707.GA2288658@bjorn-Precision-5520>
+        id S235011AbhCLU4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:56:25 -0500
+IronPort-SDR: GZt40eTfKr0URQLU/Tc+BtdeyHeiOGDa29QSlS0yaqhhfkZjQelBAtgLDp4ucYl09L2EAWt93p
+ oExztKn7WgQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168804613"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="168804613"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 12:56:02 -0800
+IronPort-SDR: +yAZQZlRFxNXGrsWBVBqLoh/L0S7tpb3FBFzxMaALzYg4kQ7i99mlKqSU50VYpRr6f29lPQa1b
+ oHgYgPF50/xw==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="409967645"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 12:56:02 -0800
+Date:   Fri, 12 Mar 2021 12:58:21 -0800
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
+        rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, jacob.jun.pan@intel.com,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
+Message-ID: <20210312125821.22d9bfca@jacob-builder>
+In-Reply-To: <YECfhCJtHUL9cB2L@slm.duckdns.org>
+References: <20210302081705.1990283-1-vipinsh@google.com>
+        <20210302081705.1990283-3-vipinsh@google.com>
+        <20210303185513.27e18fce@jacob-builder>
+        <YEB8i6Chq4K/GGF6@google.com>
+        <YECfhCJtHUL9cB2L@slm.duckdns.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311233142.7900-3-logang@deltatee.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:31:32PM -0700, Logan Gunthorpe wrote:
-> In order to use upstream_bridge_distance_warn() from a dma_map function,
-> it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
-> might sleep.
+Hi Vipin & Tejun,
+
+Sorry for the late reply, I sent from a different email address than I
+intended. Please see my comments inline.
+
+
+On Thu, 4 Mar 2021 03:51:16 -0500, Tejun Heo <tj@kernel.org> wrote:
+
+> Hello,
 > 
-> In order to avoid this, try to get the host bridge's device from
-> bus->self, and if that is not set just get the first element in the
-> list. It should be impossible for the host bridges device to go away
-> while references are held on child devices, so the first element
-> should not change and this should be safe.
+> On Wed, Mar 03, 2021 at 10:22:03PM -0800, Vipin Sharma wrote:
+> > > I am trying to see if IOASIDs cgroup can also fit in this misc
+> > > controller as yet another resource type.
+> > > https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
+> > > However, unlike sev IOASIDs need to be migrated if the process is
+> > > moved to another cgroup. i.e. charge the destination and uncharge the
+> > > source.
+> > > 
+> > > Do you think this behavior can be achieved by differentiating resource
+> > > types? i.e. add attach callbacks for certain types. Having a single
+> > > misc interface seems cleaner than creating another controller.  
+> > 
+> > I think it makes sense to add support for migration for the resources
+> > which need it. Resources like SEV, SEV-ES will not participate in
+> > migration and won't stop can_attach() to succeed, other resources which
+> > need migration will allow or stop based on their limits and capacity in
+> > the destination.  
 > 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> ---
->  drivers/pci/p2pdma.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+Sounds good. Perhaps some capability/feature flags for each resource such
+that different behavior can be accommodated?
+Could you please include me in your future posting? I will rebase on yours.
+
+> Please note that cgroup2 by and large don't really like or support charge
+> migration or even migrations themselves. We tried that w/ memcg on cgroup1
+> and it turned out horrible. The expected usage model as decribed in the
+> doc is using migration to seed a cgroup (or even better, use the new
+> clone call to start in the target cgroup) and then stay there until exit.
+> All existing controllers assume this usage model and I'm likely to nack
+> deviation unless there are some super strong justifications.
 > 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index bd89437faf06..2135fe69bb07 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -311,11 +311,15 @@ static const struct pci_p2pdma_whitelist_entry {
->  static bool __host_bridge_whitelist(struct pci_host_bridge *host,
->  				    bool same_host_bridge)
->  {
-> -	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
->  	const struct pci_p2pdma_whitelist_entry *entry;
-> +	struct pci_dev *root = host->bus->self;
->  	unsigned short vendor, device;
->  
->  	if (!root)
-> +		root = list_first_entry_or_null(&host->bus->devices,
-> +						struct pci_dev, bus_list);
+Thank you so much for the pointers. Just to be clear, you meant
+1. Use clone3 CLONE_INTO_CGROUP to put the child into a different cgroup.
+2. Do not support migration of the parent (existing proc)
 
-Replacing one ugliness (assuming there is a pci_dev for the host
-bridge, and that it is at 00.0) with another (still assuming a pci_dev
-and that it is host->bus->self or the first entry).  I can't suggest
-anything better, but maybe a little comment in the code would help
-future readers.
+Thanks,
 
-I wish we had a real way to discover this property without the
-whitelist, at least for future devices.  Was there ever any interest
-in a _DSM or similar interface for this?
-
-I *am* very glad to remove a pci_get_slot() usage.
-
-> +
-> +	if (!root || root->devfn)
->  		return false;
->  
->  	vendor = root->vendor;
-
-Don't you need to also remove the "pci_dev_put(root)" a few lines
-below?
+Jacob
