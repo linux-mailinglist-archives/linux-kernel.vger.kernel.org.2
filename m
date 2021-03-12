@@ -2,192 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA59B3387CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EEE3387CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhCLIks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:40:48 -0500
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:44024 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbhCLIkP (ORCPT
+        id S232605AbhCLIkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232338AbhCLIkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:40:15 -0500
-Received: by mail-lj1-f176.google.com with SMTP id y1so5715376ljm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:40:09 -0800 (PST)
+        Fri, 12 Mar 2021 03:40:36 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F166C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:40:35 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id v9so44473403lfa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zd/n8ZjoI52cW2RYj7i2eUpePlcI6znelKNfg1+/N6g=;
+        b=o1nZH2ZQ0X9VrXrbqEGFgEhNlN3QHg85Kk3IILWmL2ENheieF9vVLkN5fJt17kg3U5
+         FvgjB1qbromZUMkt9zI6zOdss0FIje9puol31R/yXM+1rtLSk7FzhW8FSmloGOINUzAb
+         OOEd8aEnqm+hyqnyl8d3C5sb1bGiWkf+N7iO66TyOvtPM9sI3Ps8kuwqm9vGUcuq87A8
+         GiaDX4uOCCemdq8R7tZvrXiPFuwreIqRT6OlikLjxl/anV2q6b/TuJrH3yrBgVAJ87Nr
+         nJ4m/y5Yye87cZvqse9uO2f8TErSc3CV+vh9yUFLx/1xqh6zkgCsNqyfEIPSD426uw5D
+         LErw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=crFGONXFw/Qn1xKM35gHQA0cNmNMftLxdN/rOgTM3zw=;
-        b=qEV4YDD/0/JFdIV85QJu9JjbG6/HmTePXDWjRTADpo0vOMzQc5BtYcpmRrDPLge+nD
-         hk6NJ8rA8M+G+ddi+TuInI7tVQzj38nmQAQXykiWDiR02QOMPKoywv6vuBxv8kENHgI5
-         9l5ElEkzomVz8XixlFOCE08JWtlSgxZtaHq8VdAcGr/HAeQVw5QDuCzp2035yHmzM0AW
-         A0FRmn05Zr2OkJEfs6qRR2cHGYnObHB+z0i6UBDxSOY38uoFt3lvt+ByHWlfdzhrnSHD
-         5O4loJpyeKdbOgD4ycYfllP0FVPnH8QyH5k+jQ94SBwPHtCiCZ6TG5hfxFjbErbduqD2
-         A/hg==
-X-Gm-Message-State: AOAM531rDcwALuz2pRU6knHkjKzMgAJPPuNiUkj6ktXtrdNjewoMmHE+
-        OwwWv4b6YtcA20rJb2xgVgbEx+/hkvSpF1pxbWY=
-X-Google-Smtp-Source: ABdhPJxebvn7Fh8L2R45MGOxv+mpeqD86TEiF97Y4PmA10pJVlV0EqkCodNGkiBN9OJ9HAvHVIrAPO4bDMgUSL+Pl3s=
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr1632684ljk.233.1615538408685;
- Fri, 12 Mar 2021 00:40:08 -0800 (PST)
+        bh=zd/n8ZjoI52cW2RYj7i2eUpePlcI6znelKNfg1+/N6g=;
+        b=OpL0sVA6hnVqVAeXrnxkVgz4XmzJaByvBwroW8aoGIn0KeVQim8DbUWFcTp9Q3MmzI
+         HurFBJ0OboRpZH7nOsXBq7Yk3fqBHqL2Wru87G5zfHEhuDMkuSFyETdH6yJyFfapFNyO
+         EuBR2JHA/PlQqpc34IjFKD7MMW5aY6YSjMXcjNjWSJeunjD4n4aQa5yFFoiZ2LY0C1XV
+         Gf/Fj75kSEs94T6L1hDWbOer6DFsNkPWg1vIJnSgvL/yLENBy03ZbyCXC29jEAEanFau
+         jRazZHtLq3vLP/r5cXXBI62HTyhsIOciCM0jaedJmL8xgdNBGMkD9QSAdXDm4EhzqjZd
+         43Fg==
+X-Gm-Message-State: AOAM530ctIZmsVQDFHQCQPktoZUI4BGsBvcNMapP0D4HRCbBC8DSqcKJ
+        UGVjWTkTTEgctSR2fi2tOjcS7NZNyQzzRAcg8hJJmw==
+X-Google-Smtp-Source: ABdhPJyemyZC2ugXlOB2/+8Bbu5VIHXDl/v5G/z59y/hua8qqd9ZcFkO7qbCqiZ4L3RX5HZb+5pdHg2Je6jQM+soCbE=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr4985373lfe.29.1615538433856;
+ Fri, 12 Mar 2021 00:40:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210306082859.179541-1-yangjihong1@huawei.com>
- <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com> <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
- <02146240-e532-1c52-0589-bfff3fbe5166@huawei.com> <CAM9d7cjHAEhc-g4Fs3muwQrMV=Os5cn6NgOkf4vBeE+QK-Wu=w@mail.gmail.com>
- <cc7811c5-2d24-29ac-5a0c-71261a699a39@huawei.com>
-In-Reply-To: <cc7811c5-2d24-29ac-5a0c-71261a699a39@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 12 Mar 2021 17:39:57 +0900
-Message-ID: <CAM9d7ciM6bZmYepRCe_YY7mYZGbvrpwF7A_oCngM9GMoxPXS6A@mail.gmail.com>
-Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Yao Jin <yao.jin@linux.intel.com>, gustavoars@kernel.org,
-        mliska@suse.cz, linux-kernel <linux-kernel@vger.kernel.org>,
-        zhangjinhao2@huawei.com
+References: <20210312083604.3708890-1-linus.walleij@linaro.org>
+In-Reply-To: <20210312083604.3708890-1-linus.walleij@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 12 Mar 2021 09:40:22 +0100
+Message-ID: <CACRpkdaHOf-WQVueBhiH20D8YvcoXe1Yjri5Vsp9sw_V4p3Cuw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] mfd/power: Push data into power supply
+To:     Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 4:19 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->
->
-> Hello,
-> On 2021/3/12 13:49, Namhyung Kim wrote:
-> > Hi,
-> >
-> > On Fri, Mar 12, 2021 at 12:24 PM Yang Jihong <yangjihong1@huawei.com> wrote:
-> >>
-> >> Hello, Namhyung
-> >>
-> >> On 2021/3/11 22:42, Namhyung Kim wrote:
-> >>> Hi,
-> >>>
-> >>> On Thu, Mar 11, 2021 at 5:48 PM Yang Jihong <yangjihong1@huawei.com> wrote:
-> >>>>
-> >>>> Hello,
-> >>>>
-> >>>> On 2021/3/6 16:28, Yang Jihong wrote:
-> >>>>> In hist__find_annotations function, since have a hist_entry per IP for the same
-> >>>>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
-> >>>>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
-> >>>
-> >>> I'm not sure it's still true that we have a hist_entry per IP.
-> >>> Afaik the default sort key is comm,dso,sym which means it should have a single
-> >>> hist_entry for each symbol.  It seems like an old comment..
-> >>>
-> >> Emm, yes, we have a hist_entry for per IP.
-> >> a member named "sym" in struct "hist_entry" points to symbol,
-> >> different IP may point to the same symbol.
-> >
-> > Are you sure about this?  It seems like a bug then.
-> >
-> Yes, now each IP corresponds to a hist_entry :)
->
-> Last week I found that some sample events were missing when perf
-> annotate in stdio mode, so I went through the annotate code carefully.
->
-> The event handling process is as follows:
-> process_sample_event
->    evsel_add_sample
->      hists__add_entry
->        __hists__add_entry
->          hists__findnew_entry
->            hist_entry__new                  -> here allock new hist_entry
+On Fri, Mar 12, 2021 at 9:36 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Yeah, so this is for a symbol.
+> - The power maintainer (Sebastian) provide an ACK
 
->
->      hist_entry__inc_addr_samples
->        symbol__inc_addr_samples
->          symbol__hists
->            annotated_source__new            -> here alloc annotate soruce
->            annotated_source__alloc_histograms -> here alloc histograms
+Ooops I noticed actuall Sebastian already gave an ACK for these
+patches:
+https://lore.kernel.org/linux-pm/20210128001700.pkuyfpq6uzcjb5ud@earth.universe/
 
-This should be for each IP (ideally it should be per instruction).
+Sorry for keeping bad track.
 
->
-> By bugs, do you mean there's something wrong?
+This means Lee can add Sebastians ACK and
+merge these patches at will. (I can also resend
+with the ACKs if need be.)
 
-No. I think we were saying about different things.  :)
-
-
-> >>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> >>> index a23ba6bb99b6..a91fe45bd69f 100644
-> >>> --- a/tools/perf/builtin-annotate.c
-> >>> +++ b/tools/perf/builtin-annotate.c
-> >>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
-> >>>                   } else {
-> >>>                           hist_entry__tty_annotate(he, evsel, ann);
-> >>>                           nd = rb_next(nd);
-> >>> -                       /*
-> >>> -                        * Since we have a hist_entry per IP for the same
-> >>> -                        * symbol, free he->ms.sym->src to signal we already
-> >>> -                        * processed this symbol.
-> >>> -                        */
-> >>> -                       zfree(&notes->src->cycles_hist);
-> >>> -                       zfree(&notes->src);
-> >>>                   }
-> >>>           }
-> >>>    }
-> >>>
-> >> This solution may have the following problem:
-> >> For example, if two sample events are in two different processes but in
-> >> the same symbol, repeated output may occur.
-> >> Therefore, a flag is required to indicate whether the symbol has been
-> >> processed to avoid repeated output.
-> >
-> > Hmm.. ok.  Yeah we don't care about the processes here.
-> > Then we should remove it from the sort key like below:
-> >
-> > @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
-> >                  if (setup_sorting(annotate.session->evlist) < 0)
-> >                          usage_with_options(annotate_usage, options);
-> >          } else {
-> > +               sort_order = "dso,symbol";
-> >                  if (setup_sorting(NULL) < 0)
-> >                          usage_with_options(annotate_usage, options);
-> >          }
-> >
-> >
-> Are you referring to this solution?
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists
-> *hists,
->                  } else {
->                          hist_entry__tty_annotate(he, evsel, ann);
->                          nd = rb_next(nd);
-> -                       /*
-> -                        * Since we have a hist_entry per IP for the same
-> -                        * symbol, free he->ms.sym->src to signal we already
-> -                        * processed this symbol.
-> -                        */
-> -                       zfree(&notes->src->cycles_hist);
-> -                       zfree(&notes->src);
->                  }
->          }
->   }
-> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
->                  if (setup_sorting(annotate.session->evlist) < 0)
->                          usage_with_options(annotate_usage, options);
->          } else {
-> +               sort_order = "dso,symbol";
->                  if (setup_sorting(NULL) < 0)
->                          usage_with_options(annotate_usage, options);
->          }
-> It seems to be a better solution without adding new member.
-> I just tested it and it works.
->
-> If we decide to use this solution, I'll resubmit a v3 patch.
-
-I prefer changing the sort order (and removing the zfree and comments).
-
-Thanks,
-Namhyung
+Yours,
+Linus Walleij
