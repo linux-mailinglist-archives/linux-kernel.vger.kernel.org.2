@@ -2,106 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752E833992C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F98B33992E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235320AbhCLViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+        id S235310AbhCLVjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbhCLVi2 (ORCPT
+        with ESMTP id S235328AbhCLVjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:38:28 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22985C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:38:28 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id mj10so56062518ejb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:38:28 -0800 (PST)
+        Fri, 12 Mar 2021 16:39:05 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E61C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:39:04 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 184so9105829ljf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y3pYXASAbKQPGfOGK/rF6fxCbBJHbX2zTttQzvRaW7o=;
-        b=DxHwURVjMvIKGIzI7DuUu3AAv/d55DK5ezab/O4hToYEQ7cpwXk8ssuqLcoQkI9AlK
-         2TggVCCbPUPeW2DPbY131Ens+aO5IfmgjTWhh/EjIaJKENNteCaqV1ZF+bA88ibt3xf6
-         pMB12KW8BEuw3TlSIs1y3T2TZUY8zbxe5/FbQQr1U4xmVRlFhbgDb0B8PxTRqUxBLerq
-         IuzOao/xdpnkV5XZZxRETokrb4GprEamPlTycqOPmPo1jofkgYy2TvevqMbe2gUJxClA
-         b4V3kGF+mTbkY60cIC8E+298k3vjj9C83h56/ijFAPglOL7j8Ahvjo3RzrRJeZaC1MPd
-         7CYg==
+        bh=WV6iTMu03uChDms5bBNns9hCvCHH9+fuZrgLAjE0Aog=;
+        b=OaWBFeMkfvWj37dbbxmna/HRQ67mBfE0iAhHeu5Jv//n958y/Az3eA6pRlD603C4EN
+         FP/qjW1k/HKTKh8dT+jsPmRUtQYuA6Tq2Cns+zusqmJGg4z41SotayBz1FIi4AShT1cP
+         V22LMsEOdRLrHT5LsjXKJ0nTOcrX3pOL9aE+iFw/0ZerNDdjEYxZDA7E87PcQ1iO7Omx
+         2gRPFQTKwa8CBKJjnFELi6+qlZXGWhSucyQBVGN6Vn4kp4VssSqgYnDzdIbLmUGYc2Mh
+         zEt2CsWA7HMYko2Rrsm5finRtMfcVkGG78AcyPtsed9n9PGWbkgXztBFYASL4GV6c1rp
+         P1Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y3pYXASAbKQPGfOGK/rF6fxCbBJHbX2zTttQzvRaW7o=;
-        b=CVutMEJmdWViB6jjazyAyNFrcglpXXhpuM9j5+tcnnhnESGkfc3nWI8knLStKbJY0Q
-         Qdm7rBcD0hGer0xmbe3h1TuZgzQyqZEtpzQjlE+VkM4zmNT5RFqre/c7jx7b+Znovkpg
-         upOZQMCfvpnFV6+tt6wKDO7OFRqYyUR1C/nMJ8QnuLyhi9oNTKm7abRkowET/rKDuNsX
-         8g863TVSYVZPFa//o/E/VR5b1nAg4KCOw3vnGuAu8nAo+nxSjTjfitg7ZLMNHTf+Msjg
-         qe5YZn4g6v0mVWLuVLF/ciGr9vYVtI+cVi1hZBURKwC39qNzwByZ9TC7abY3Y3VRP4uX
-         CO6A==
-X-Gm-Message-State: AOAM533VDbf23bMAnNKreNeEJL6ubrhxgzVJdBGVm22W57nbr4HyoiGD
-        ZqvqqJN7WbV6MKTCabtr/4voAatRkWjMs45vW5u7
-X-Google-Smtp-Source: ABdhPJyLP33I2LSd9dQd7uKTXF6aeDn9KsESwMZUv3BVbHWm1b4RGjFZzU86b61GmzbQBJGiq2YNM8GNMMsu4+gJaok=
-X-Received: by 2002:a17:906:3b84:: with SMTP id u4mr10606402ejf.431.1615585106342;
- Fri, 12 Mar 2021 13:38:26 -0800 (PST)
+        bh=WV6iTMu03uChDms5bBNns9hCvCHH9+fuZrgLAjE0Aog=;
+        b=jFTsh5vyhRdcOdRSBksOv7y94p5fzMn9iXjjiEOPxt3TzIoV8VB1mGZNMxLSWx/dKl
+         f5p0/wiqol0t+BtoNtRz4nuZGIOrltKBrwrEiW5QBKYK6aQNk4mDjhShymE8Dc7YJd7S
+         ZnBzM88ALmL71pLf93YBX/ktCsrBNsnnXbvwwE7v1R8OtwVPCaw7obbdBbK25qvO4ymU
+         pyhMy4wYcswGZppEAPP68wTwV0HdqqroVPR/Z1xz0HShrpn0m5RebusfSrXsLGDrH2/0
+         EYaKt7vKRM27Tdzkj647kDF6c2kx5hbUpRwrMJG2xm3dDcJhMG5Cghmoh0H7ZP+nUJiN
+         QZeA==
+X-Gm-Message-State: AOAM5300VoDEJlgE7IMUfQkRTJZ8/HDM7YswaLEJhvZ9XnzAxS2DKQO7
+        JUq8V7UWH7tV91K9F9VFJU5QVU8OXNQfjJYGfc2Ihg==
+X-Google-Smtp-Source: ABdhPJx5JJ4dw8VojLBuciUzedeSi3mLUgjg97F+b1rG9zBUK/x3eIXk0j2lYcXtz6plc0vz/GdPy1dzhfEoXQTRo7A=
+X-Received: by 2002:a2e:7d03:: with SMTP id y3mr3598813ljc.0.1615585142886;
+ Fri, 12 Mar 2021 13:39:02 -0800 (PST)
 MIME-Version: 1.0
-References: <69f51dfe3ad24840ea1ef1f38cfe033f0fc62080.1615411783.git.rgb@redhat.com>
-In-Reply-To: <69f51dfe3ad24840ea1ef1f38cfe033f0fc62080.1615411783.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 12 Mar 2021 16:38:15 -0500
-Message-ID: <CAHC9VhTdD4FVHKDygOZPjvNeHPNGjyoTQ-TzrFHP5xpd9UtSKw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: update audit files
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+References: <20210312010942.1546679-1-ndesaulniers@google.com> <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
+In-Reply-To: <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 12 Mar 2021 13:38:51 -0800
+Message-ID: <CAKwvOdkNoo+7pDiiNdnciRhHB8LpVTOr7ROpDxfEnLS-Qn9dJA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: LTO: have linker check -Wframe-larger-than
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Candle Sun <candlesea@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 11:41 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+On Fri, Mar 12, 2021 at 9:55 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> Add files maintaned by the audit subsystem.
+> On Thu, Mar 11, 2021 at 5:09 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > -Wframe-larger-than= requires stack frame information, which the
+> > frontend cannot provide. This diagnostic is emitted late during
+> > compilation once stack frame size is available.
+> >
+> > When building with LTO, the frontend simply lowers C to LLVM IR and does
+> > not have stack frame information, so it cannot emit this diagnostic.
+> > When the linker drives LTO, it restarts optimizations and lowers LLVM IR
+> > to object code. At that point, it has stack frame information but
+> > doesn't know to check for a specific max stack frame size.
+> >
+> > I consider this a bug in LLVM that we need to fix. There are some
+> > details we're working out related to LTO such as which value to use when
+> > there are multiple different values specified per TU, or how to
+> > propagate these to compiler synthesized routines properly, if at all.
+> >
+> > Until it's fixed, ensure we don't miss these. At that point we can wrap
+> > this in a compiler version guard or revert this based on the minimum
+> > support version of Clang.
+> >
+> > The error message is not generated during link:
+> >   LTO     vmlinux.o
+> > ld.lld: warning: stack size limit exceeded (8224) in foobarbaz
+> >
+> > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > Reported-by: Candle Sun <candlesea@gmail.com>
+> > Suggested-by: Fangrui Song <maskray@google.com>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> > LTO users might want to `make clean` or `rm -rf .thinlto-cache` to test
+> > this.
+> >
+> >  Makefile | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index f9b54da2fca0..74566b1417b8 100644
+> > --- a/Makefile
+> > +++ b/Makefile
 >
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
->  MAINTAINERS | 4 ++++
->  1 file changed, 4 insertions(+)
+> Candle sent me a private message that we probably also want coverage
+> for kernel modules. Let me revise this and test/send a v2.
+
+False alarm, seems specific to Android's LTO support pre-5.11. I will
+fix that in Android trees.  This patch is still relevant going
+forward.
+
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6eff4f720c72..a17532559665 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3015,9 +3015,13 @@ L:       linux-audit@redhat.com (moderated for non-subscribers)
->  S:     Supported
->  W:     https://github.com/linux-audit
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
-> +F:     arch/*/*/*audit*.[ch]
-
-That looks like it has about two too many wildcards to hold up over time :)
-
-I understand what you're trying to do here, and while I don't disagree
-in principle, I worry that the arch specific paths vary enough that
-trying to handle it here is going to be a bit of a mess.
-
-> +F:     arch/x86/include/asm/audit.h
-
-The fact that we need a special entry for the single header under x86
-tends to reinforce that.  The other additions make sense, but I think
-it may be best to leave the arch specific areas alone for now.
-
-> +F:     include/asm-generic/audit_*.h
->  F:     include/linux/audit.h
->  F:     include/uapi/linux/audit.h
->  F:     kernel/audit*
-> +F:     lib/*audit.c
+> > @@ -910,6 +910,11 @@ CC_FLAGS_LTO       += -fvisibility=hidden
+> >
+> >  # Limit inlining across translation units to reduce binary size
+> >  KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
+> > +
+> > +# Check for frame size exceeding threshold during prolog/epilog insertion.
+> > +ifneq ($(CONFIG_FRAME_WARN),0)
+> > +KBUILD_LDFLAGS += -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
+> > +endif
+> >  endif
+> >
+> >  ifdef CONFIG_LTO
+> > --
+> > 2.31.0.rc2.261.g7f71774620-goog
+> >
 >
->  AUXILIARY DISPLAY DRIVERS
->  M:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+>
 > --
-> 2.27.0
+> Thanks,
+> ~Nick Desaulniers
+
+
 
 -- 
-paul moore
-www.paul-moore.com
+Thanks,
+~Nick Desaulniers
