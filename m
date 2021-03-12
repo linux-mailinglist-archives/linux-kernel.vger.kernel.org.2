@@ -2,216 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017293386BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E92A3386C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhCLHpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhCLHoo (ORCPT
+        id S231910AbhCLHsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:48:12 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:51822 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231423AbhCLHrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:44:44 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7441C061574;
-        Thu, 11 Mar 2021 23:44:43 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 130so23372867qkh.11;
-        Thu, 11 Mar 2021 23:44:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Kr4CYNHeBiIO6JjyD8Dwtnrqzp1nKiCdSv3py8VGpvY=;
-        b=iFKdVYQFRru7X3rVzmRCE9fiTZfrvsPFEL2CyhlKzR7cjFCOPtw9w4T44nhZWiZLXX
-         5vux15sm4Su+lYNiIFZ2WIlF98NUq5WKAdvoiD+XZeiJQlThDzKVrucTkZ0Nw/JoJBVQ
-         Sj3QxdeZDRunJTjAuZgoT9R5GQwQAw+VQBGWnNtyKfc2Un/J5i6Bn1ZJiE+iRpW+Tnym
-         W94a9Jore+/e5jKFs2QWeWc2pf5T+3Yw/ruT7PmNWLRmwDz2HYpec4kA0TAi3cu3EKqd
-         qQUI8u8q5yeb/0H9Fr7OCe5vqaOZUrnZLRcokpgzffw74hLpV+kgVhqm0vp4l5/GYx8D
-         ulKA==
+        Fri, 12 Mar 2021 02:47:41 -0500
+Received: by mail-il1-f198.google.com with SMTP id y11so17531891ilc.18
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:47:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kr4CYNHeBiIO6JjyD8Dwtnrqzp1nKiCdSv3py8VGpvY=;
-        b=i2ACZwBNmYjuNj75LEv6JQ1nJWFuevWNbsFuHN7uj5goEDZpA1zHyPUmSpU9TjYTUv
-         woOzP2KruVhnUtORnwQ1bGxzG7RMofpbk//Y1LpiTjAlM6ZH1zjGfvecDZb6Lbiy3Gu0
-         Xt1L+b1uygcFtPIffWWU1ulcCsR5TB2XU8CxkWwQ1ozv/o/EpIrX9tbmRjaSCQHDnj9K
-         3//m75cxtYOiUvzgx9ZTKZh1cmVvMsEReY1YQOg+AjsOwqyQPxNB+LrRKVKXMYnGrL6C
-         0pRwIYxB3jOK6tPqGK22LN8JKgBG//bU6FxL4y0QzGZ+OJAGi0BpAtm4gSmIqGAcljaj
-         IIwQ==
-X-Gm-Message-State: AOAM530fxbFKJD1ZmG8WrRhJ+mS407E69WMep5w3zeiFuvU6OK1kXV5H
-        bPzUkftSOg/2whPTIRbc45s=
-X-Google-Smtp-Source: ABdhPJwEEFFg5RGVWP9bxdbzlw7zvj4zj/xTARCOe4ucF4sWGanech5kA+igzLysnqFMs5/Ah6r9nQ==
-X-Received: by 2002:a05:620a:1669:: with SMTP id d9mr11397112qko.3.1615535082892;
-        Thu, 11 Mar 2021 23:44:42 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:b9e0:c84:da81:d749])
-        by smtp.googlemail.com with ESMTPSA id e2sm3434089qto.50.2021.03.11.23.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 23:44:42 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Tong Zhang <ztong0001@gmail.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set after adf_dev_init
-Date:   Fri, 12 Mar 2021 02:43:58 -0500
-Message-Id: <20210312074357.2384087-3-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210312074357.2384087-1-ztong0001@gmail.com>
-References: <20210312074357.2384087-1-ztong0001@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qYwl3F5+cPc1gs3aNSG/oRy7U9IR/KOLouhDtAnEUOE=;
+        b=mhx6Bz1HzOqxdzScBpsMsCijArdv9v8JOR2NJo2ExeubDBO1V1oe1wuxvk295Btaie
+         s79P6Qfn0zLWs19rc0fcupql+1Gf/YJwrbUHTi1H6lUJlkl2XN8NlhGnFkCZFOCXrt4+
+         v4mmXG9scz6/pGQYfq5sJHgzGRfeYrzn+7LbItIrgBmAmlwGvcW3cJ5xnUzmTgnSbnOx
+         LcAVtlHX6PdtW0VqhzV78OFhfxrHuqt8ZX2TbylDWnIaxcKR92/erSc+jMqKV0ch8QU6
+         L2Ujd5cDD+D3nk2N558wXbHPPkQdHtvW07OhPETceccIeVc3yGAfbir920F3F4is+gjB
+         sXhQ==
+X-Gm-Message-State: AOAM530PgOLmyx5osFuFqH56f7agmDKcT4DClHV9fgi4LpFdkeytI62C
+        tI1C3pWJPFFH0Y3iYjMdg0axExZHaJUXMiHN4ytwIKmB+ZyT
+X-Google-Smtp-Source: ABdhPJwSADwPwXX6uc2BMJJ/p7Of7hPx+vkQSLIy3Qs+1mYmmArsDe8xpn/qTGob6R4oAQTj4P7H9QEJDKbtl4KLqF0/Xxdv4tIW
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:b447:: with SMTP id d68mr8972981iof.87.1615535237586;
+ Thu, 11 Mar 2021 23:47:17 -0800 (PST)
+Date:   Thu, 11 Mar 2021 23:47:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f564d305bd521b83@google.com>
+Subject: [syzbot] WARNING in __i2c_transfer
+From:   syzbot <syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com>
+To:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, wsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADF_STATUS_PF_RUNNING is (only) used and checked  by adf_vf2pf_shutdown()
-before calling adf_iov_putmsg()->mutex_lock(vf2pf_lock), however the
-vf2pf_lock is initialized in adf_dev_init(), which can fail and when it
-fail, the vf2pf_lock is either not initialized or destroyed, a subsequent
-use of vf2pf_lock will cause issue.
-To fix this issue, only set this flag if adf_dev_init() returns 0.
+Hello,
 
-[    7.178008] ==================================================================
-[    7.178404] BUG: KASAN: user-memory-access in __mutex_lock.isra.0+0x1ac/0x7c0
-[    7.178800] Read of size 4 at addr 000000000000f434 by task modprobe/96
-[    7.179169]
-[    7.179257] CPU: 0 PID: 96 Comm: modprobe Not tainted 5.12.0-rc2-00338-gf78d76e72a46-dirty #86
-[    7.179730] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-4
-[    7.180345] Call Trace:
-[    7.180485]  dump_stack+0x8a/0xb5
-[    7.180676]  kasan_report.cold+0x10f/0x111
-[    7.180907]  ? __mutex_lock.isra.0+0x1ac/0x7c0
-[    7.181156]  __mutex_lock.isra.0+0x1ac/0x7c0
-[    7.181394]  ? finish_task_switch+0x12f/0x360
-[    7.181640]  ? __switch_to+0x339/0x6b0
-[    7.181852]  ? ww_mutex_lock_interruptible+0x150/0x150
-[    7.182138]  ? __sched_text_start+0x8/0x8
-[    7.182363]  ? vprintk_emit+0x91/0x170
-[    7.182576]  mutex_lock+0xc9/0xd0
-[    7.182765]  ? __mutex_lock_slowpath+0x10/0x10
-[    7.183016]  ? swsusp_write.cold+0x208/0x208
-[    7.183257]  adf_iov_putmsg+0x118/0x1a0 [intel_qat]
-[    7.183541]  adf_vf2pf_shutdown+0x4d/0x7b [intel_qat]
-[    7.183834]  adf_dev_shutdown+0x172/0x2b0 [intel_qat]
-[    7.184127]  adf_probe+0x5e9/0x600 [qat_dh895xccvf]
-[    7.184403]  ? adf_remove+0x70/0x70 [qat_dh895xccvf]
-[    7.184681]  ? _raw_spin_lock_irqsave+0x7b/0xd0
-[    7.184936]  ? _raw_spin_unlock_irqrestore+0xd/0x20
-[    7.185209]  ? adf_remove+0x70/0x70 [qat_dh895xccvf]
-[    7.185489]  local_pci_probe+0x6f/0xb0
-[    7.185702]  pci_device_probe+0x1e9/0x2f0
-[    7.185928]  ? pci_device_remove+0xf0/0xf0
-[    7.186159]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
-[    7.186458]  really_probe+0x161/0x420
-[    7.186665]  driver_probe_device+0x6d/0xd0
-[    7.186894]  device_driver_attach+0x82/0x90
-[    7.187131]  ? device_driver_attach+0x90/0x90
-[    7.187375]  __driver_attach+0x60/0x100
-[    7.187591]  ? device_driver_attach+0x90/0x90
-[    7.187835]  bus_for_each_dev+0xe1/0x140
-[    7.188057]  ? subsys_dev_iter_exit+0x10/0x10
-[    7.188302]  ? klist_node_init+0x61/0x80
-[    7.188524]  bus_add_driver+0x254/0x2a0
-[    7.188740]  driver_register+0xd3/0x150
-[    7.188956]  ? 0xffffffffc0050000
-[    7.189143]  adfdrv_init+0x2b/0x1000 [qat_dh895xccvf]
-[    7.189427]  do_one_initcall+0x84/0x250
-[    7.189644]  ? trace_event_raw_event_initcall_finish+0x150/0x150
-[    7.189977]  ? _raw_spin_unlock_irqrestore+0xd/0x20
-[    7.190250]  ? create_object+0x395/0x510
-[    7.190472]  ? kasan_unpoison+0x21/0x50
-[    7.190689]  do_init_module+0xf8/0x350
-[    7.190901]  load_module+0x40c5/0x4410
-[    7.191121]  ? module_frob_arch_sections+0x20/0x20
-[    7.191390]  ? kernel_read_file+0x1cd/0x3e0
-[    7.191626]  ? __do_sys_finit_module+0x108/0x170
-[    7.191885]  __do_sys_finit_module+0x108/0x170
-[    7.192134]  ? __ia32_sys_init_module+0x40/0x40
-[    7.192389]  ? file_open_root+0x200/0x200
-[    7.192615]  ? do_sys_open+0x85/0xe0
-[    7.192817]  ? filp_open+0x50/0x50
-[    7.193010]  ? exit_to_user_mode_prepare+0xfc/0x130
-[    7.193283]  do_syscall_64+0x33/0x40
-[    7.193486]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[    7.193770] RIP: 0033:0x7f6ad21b4cf7
-[    7.193971] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 41
-[    7.194991] RSP: 002b:00007ffe2a5d9028 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[    7.195408] RAX: ffffffffffffffda RBX: 0000000000882a70 RCX: 00007f6ad21b4cf7
-[    7.195801] RDX: 0000000000000000 RSI: 00000000008819e0 RDI: 0000000000000003
-[    7.196193] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
-[    7.196588] R10: 00007f6ad2218300 R11: 0000000000000246 R12: 00000000008819e0
-[    7.196979] R13: 0000000000000000 R14: 0000000000881dd0 R15: 0000000000000001
-[    7.197372] ==================================================================
+syzbot found the following issue on:
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+HEAD commit:    28806e4d Merge tag 'media/v5.12-2' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11192342d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6bcf96204c1b8e77
+dashboard link: https://syzkaller.appspot.com/bug?extid=ffb0b3ffa6cfbc7d7b3f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1083223ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14345f0ad00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ffb0b3ffa6cfbc7d7b3f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8406 at drivers/i2c/i2c-core-base.c:2021 __i2c_transfer+0xa87/0x17d0 drivers/i2c/i2c-core-base.c:2021
+Modules linked in:
+CPU: 0 PID: 8406 Comm: syz-executor613 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__i2c_transfer+0xa87/0x17d0 drivers/i2c/i2c-core-base.c:2021
+Code: 0f 94 c7 31 ff 44 89 fe e8 96 ba c2 fb 45 84 ff 0f 84 b3 fc ff ff e8 d8 b3 c2 fb e8 b2 5a 4f fb e9 a4 fc ff ff e8 c9 b3 c2 fb <0f> 0b 41 bc ea ff ff ff e9 2b fd ff ff e8 b7 b3 c2 fb 44 89 ee bf
+RSP: 0018:ffffc900018cfd48 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000010 RCX: 0000000000000000
+RDX: ffff88801e4e5340 RSI: ffffffff85b0ea97 RDI: 0000000000000003
+RBP: ffff888020870b58 R08: 0000000000000000 R09: ffffffff8faa792f
+R10: ffffffff85b0e048 R11: 1ffffffff1ed6964 R12: 0000000000000010
+R13: 0000000000000000 R14: ffff888020870b78 R15: 0000000000000000
+FS:  000000000226f300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcccc5096c0 CR3: 0000000012e13000 CR4: 0000000000350ef0
+Call Trace:
+ i2c_transfer+0x1e6/0x3e0 drivers/i2c/i2c-core-base.c:2112
+ i2cdev_ioctl_rdwr+0x583/0x6a0 drivers/i2c/i2c-dev.c:297
+ i2cdev_ioctl+0x46c/0x780 drivers/i2c/i2c-dev.c:453
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x443469
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffb0c53048 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000443469
+RDX: 0000000020004480 RSI: 0000000000000707 RDI: 0000000000000003
+RBP: 0000000000403010 R08: 00232d6332692f76 R09: 00000000004004a0
+R10: 000000000000001f R11: 0000000000000246 R12: 00000000004030a0
+R13: 0000000000000000 R14: 00000000004b1018 R15: 00000000004004a0
+
+
 ---
- drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    | 4 ++--
- drivers/crypto/qat/qat_c62xvf/adf_drv.c     | 4 ++--
- drivers/crypto/qat/qat_dh895xccvf/adf_drv.c | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-index 1d1532e8fb6d..067ca5e17d38 100644
---- a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
--
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
-diff --git a/drivers/crypto/qat/qat_c62xvf/adf_drv.c b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-index 04742a6d91ca..51ea88c0b17d 100644
---- a/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
--
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
-diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-index c972554a755e..29999da716cc 100644
---- a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
--
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
