@@ -2,124 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C471338B64
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF2B338B71
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhCLLUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:20:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233692AbhCLLTh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:19:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615547976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lq8VZTvhiQyjj3632ogoEtY0kjN8T+zd6L5p5AcI2Ho=;
-        b=MGZ7hCoKJRogEzDkMnFSH972/p1W4qXONZ4dTRaklKFKg0aIzCZqhxvpET2givVQBFYJYZ
-        KVQWuaUw3Efspim82Az2EAqiKzssZk47wSCTnG4iY4KbEss/A+w2wkj4KQkcBFT+TWuVWu
-        bnSTV4Th5/yQ3/c+h4ujjUVzsXt/JPg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-J4tJfRUMN6iVAt6BEQcGXw-1; Fri, 12 Mar 2021 06:19:34 -0500
-X-MC-Unique: J4tJfRUMN6iVAt6BEQcGXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA98101F010;
-        Fri, 12 Mar 2021 11:19:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9124760D06;
-        Fri, 12 Mar 2021 11:19:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <159991.1615539999@turing-police>
-References: <159991.1615539999@turing-police> <134696.1615510534@turing-police> <109018.1615463088@turing-police> <91190.1615444370@turing-police> <972381.1615459754@warthog.procyon.org.uk> <1486567.1615464259@warthog.procyon.org.uk> <2026575.1615539696@warthog.procyon.org.uk>
-To:     =?us-ascii?Q?Valdis_Kl=3D=3Futf-8=3FQ=3F=3Dc4=3D93=3F=3Dtnieks?= 
-        <valdis.kletnieks@vt.edu>
-Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] certs: Clean up signing_key.pem and x509.genkey on make mrproper
+        id S233712AbhCLLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:25:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44122 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233730AbhCLLZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:25:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03CE7B03C;
+        Fri, 12 Mar 2021 11:25:27 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 388D2DA81D; Fri, 12 Mar 2021 12:23:27 +0100 (CET)
+Date:   Fri, 12 Mar 2021 12:23:27 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: Use memzero_page() instead of open coded kmap
+ pattern
+Message-ID: <20210312112327.GP7604@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210309212137.2610186-1-ira.weiny@intel.com>
+ <20210309212137.2610186-4-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 12 Mar 2021 11:19:31 +0000
-Message-ID: <2243141.1615547971@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309212137.2610186-4-ira.weiny@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu> wrote:
+On Tue, Mar 09, 2021 at 01:21:37PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> There are many places where kmap/memset/kunmap patterns occur.
+> 
+> Use the newly lifted memzero_page() to eliminate direct uses of kmap and
+> leverage the new core functions use of kmap_local_page().
+> 
+> The development of this patch was aided by the following coccinelle
+> script:
+> 
+> // <smpl>
+> // SPDX-License-Identifier: GPL-2.0-only
+> // Find kmap/memset/kunmap pattern and replace with memset*page calls
+> //
+> // NOTE: Offsets and other expressions may be more complex than what the script
+> // will automatically generate.  Therefore a catchall rule is provided to find
+> // the pattern which then must be evaluated by hand.
+> //
+> // Confidence: Low
+> // Copyright: (C) 2021 Intel Corporation
+> // URL: http://coccinelle.lip6.fr/
+> // Comments:
+> // Options:
+> 
+> //
+> // Then the memset pattern
+> //
+> @ memset_rule1 @
+> expression page, V, L, Off;
+> identifier ptr;
+> type VP;
+> @@
+> 
+> (
+> -VP ptr = kmap(page);
+> |
+> -ptr = kmap(page);
+> |
+> -VP ptr = kmap_atomic(page);
+> |
+> -ptr = kmap_atomic(page);
+> )
+> <+...
+> (
+> -memset(ptr, 0, L);
+> +memzero_page(page, 0, L);
+> |
+> -memset(ptr + Off, 0, L);
+> +memzero_page(page, Off, L);
+> |
+> -memset(ptr, V, L);
+> +memset_page(page, V, 0, L);
+> |
+> -memset(ptr + Off, V, L);
+> +memset_page(page, V, Off, L);
+> )
+> ...+>
+> (
+> -kunmap(page);
+> |
+> -kunmap_atomic(ptr);
+> )
+> 
+> // Remove any pointers left unused
+> @
+> depends on memset_rule1
+> @
+> identifier memset_rule1.ptr;
+> type VP, VP1;
+> @@
+> 
+> -VP ptr;
+> 	... when != ptr;
+> ? VP1 ptr;
+> 
+> //
+> // Catch all
+> //
+> @ memset_rule2 @
+> expression page;
+> identifier ptr;
+> expression GenTo, GenSize, GenValue;
+> type VP;
+> @@
+> 
+> (
+> -VP ptr = kmap(page);
+> |
+> -ptr = kmap(page);
+> |
+> -VP ptr = kmap_atomic(page);
+> |
+> -ptr = kmap_atomic(page);
+> )
+> <+...
+> (
+> //
+> // Some call sites have complex expressions within the memset/memcpy
+> // The follow are catch alls which need to be evaluated by hand.
+> //
+> -memset(GenTo, 0, GenSize);
+> +memzero_pageExtra(page, GenTo, GenSize);
+> |
+> -memset(GenTo, GenValue, GenSize);
+> +memset_pageExtra(page, GenValue, GenTo, GenSize);
+> )
+> ...+>
+> (
+> -kunmap(page);
+> |
+> -kunmap_atomic(ptr);
+> )
+> 
+> // Remove any pointers left unused
+> @
+> depends on memset_rule2
+> @
+> identifier memset_rule2.ptr;
+> type VP, VP1;
+> @@
+> 
+> -VP ptr;
+> 	... when != ptr;
+> ? VP1 ptr;
+> 
+> // </smpl>
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-> > Possibly I can add something like:
-> >
-> > 	clean-files :=3D signing_key.pem x509.genkey
-> >
-> > inside the
-> >
-> > 	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-> > 	...
-> > 	endif
->=20
-> Would that remove them on a 'make clean', or only a 'make mrproper'?
-> The latter sounds like the correct solution to me, as the signing key sho=
-uld
-> have (roughly) the same lifetime rules as the .config file.
-
-It would appear that it works on neither.  Neither of them seem to have any
-CONFIG_xxx symbols set.
-
-How about the attached patch?
-
-David
----
-commit 95897dc8dc13ad13c637a477a1ead9b63ff1fafa
-Author: David Howells <dhowells@redhat.com>
-Date:   Fri Mar 12 10:48:25 2021 +0000
-
-    certs: Clean up signing_key.pem and x509.genkey on make mrproper
-=20=20=20=20
-    Autogenerated signing_key.pem and x509.genkey files aren't removed from=
- the
-    build certs/ directory when "make mrproper" is run.  This is somewhat
-    deliberate since the "file" is specified by the CONFIG_MODULE_SIG_KEY
-    string option and may not be in the build tree - and may not even be a
-    filename, but rather a PKCS#7 URI (also the config variables doesn't se=
-em
-    to be set when cleaning).
-=20=20=20=20
-    Fix this by unconditionally listing signing_key.pem and x509.genkey for
-    removal from the build certs/ directory - which will just do nothing if
-    they're not there, and shouldn't remove signing keys that are configure=
-d to
-    be elsewhere.
-=20=20=20=20
-    Note that this will permanently erase the autogenerated private key, so
-    anyone that is relying on it still being around after doing make mrprop=
-er
-    will no longer find it.
-=20=20=20=20
-    Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
-    Reported-by: Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu>
-    Signed-off-by: David Howells <dhowells@redhat.com>
-    Link: https://lore.kernel.org/r/134696.1615510534@turing-police/ [1]
-
-diff --git a/certs/Makefile b/certs/Makefile
-index f4c25b67aad9..2ae1dd518bc7 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -104,3 +104,5 @@ targets +=3D signing_key.x509
- $(obj)/signing_key.x509: scripts/extract-cert $(X509_DEP) FORCE
- 	$(call if_changed,extract_certs,$(MODULE_SIG_KEY_SRCPREFIX)$(CONFIG_MODUL=
-E_SIG_KEY))
- endif # CONFIG_MODULE_SIG
-+
-+clean-files +=3D signing_key.pem x509.genkey
-
+Reviewed-by: David Sterba <dsterba@suse.com>
