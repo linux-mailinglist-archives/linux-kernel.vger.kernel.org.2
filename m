@@ -2,372 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966A4338ACE
+	by mail.lfdr.de (Postfix) with ESMTP id 49D31338ACC
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbhCLK5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S233903AbhCLK5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233946AbhCLK52 (ORCPT
+        with ESMTP id S233938AbhCLK5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:57:28 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E441C061574;
-        Fri, 12 Mar 2021 02:57:28 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 302148F9;
-        Fri, 12 Mar 2021 11:57:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615546645;
-        bh=pMFbFlzPtajjNOMl0XILTPI3+jFreqhFTNAEJ8F4VLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pVpQCum/7k0zRR8e0YLl2NuH5WGhNoEY8TLiz7DhFnL8jMGHqXsW/EprDjpLHW6qu
-         BETommksJDwlnavXx9FB4envQ51W+pRMTwGkYH+tCsEIOofvKPXCbBubuHCoXLgRVy
-         ZCWcaFZp/fE2PJc4DM+nOPlMqpKWqGp43ebSbO5A=
-Date:   Fri, 12 Mar 2021 12:56:50 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v2 5/6] media: uvcvideo: Add support for
- V4L2_CTRL_TYPE_CTRL_CLASS
-Message-ID: <YEtI8gvuNqxL3RT5@pendragon.ideasonboard.com>
-References: <20210311221946.1319924-1-ribalda@chromium.org>
- <20210311221946.1319924-6-ribalda@chromium.org>
- <YErCElYk7YhB7dvp@pendragon.ideasonboard.com>
- <CAPybu_2tu_=1HtC1Cfr86uP1A367hnfvO0KXmCbGaYUJ1A2X2Q@mail.gmail.com>
- <YEs+3fh2zUAeeBQy@pendragon.ideasonboard.com>
- <3e03ae6c-b586-c314-b015-9b3b5de8fd04@xs4all.nl>
+        Fri, 12 Mar 2021 05:57:19 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F5AC061574;
+        Fri, 12 Mar 2021 02:57:19 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id o22so16677709oic.3;
+        Fri, 12 Mar 2021 02:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Re/sVsmBKkgQS7T3jsEZ8uLYcWyloCgtQxS6quxCRa8=;
+        b=WzR2cLUCq9W7AQs5i7c8ZW+dkW/V88JPEHTSLN+9/h1pReLWpshsk7raOvQ5KuQz0F
+         rRcVEjIheaW8BVO5jffqGJs8vpPXJUGW2ZEayRd0UM8y/U3w6YlMIQRVHCOZt5z+7mHj
+         SyENCSE0p+2Ku0PbJUNZGDSiDU8KFodVzEofoo3La0j4UarcrXiUbbwJAr1smp2vQRGM
+         WPy7i8WaoPNLG+XXIcb1MKzjTmEqBKEmf6JZamBizEsiRKzlHScAwEJC1umHrbKwyHKq
+         LkiDVUi9+qFssrZJeSfiBZt6lQCNlBKVRQxhOnJ5Y1CFxJcP+aUOjLmHk7qGEueGr6sI
+         BIdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Re/sVsmBKkgQS7T3jsEZ8uLYcWyloCgtQxS6quxCRa8=;
+        b=O3Fmb3kWnw4me7dW2FtdWNw8raI8Yi3XTM0rDO0YFMmhtauJG1IioDJ2Z/s9JJeFjy
+         HRR7G7YKXDbC1dDNO1ibSD6YarZt4Dnt360EvjFL+wDo1XmckAus7PcO4lTa8e0HBodD
+         K/DbWZzP0NlUmsSZpMbhwx7M3ttjjPSN9odZZnQ+/5omIs8N/aYIianuQ8NZwqsjNWiz
+         XhmVTNd6zz/PnDYStJS3yNgToBOtw7ps/7Az32Mn/lCzJ3xkB3UTOm76HmqQrCLbTFI4
+         PbkN8NAdkmDA4U+Dh3omTqcLyryi5tbLNkcvv8UmdKWgLOvFDGaTSN3KKa0gYyJP/S9x
+         T/8w==
+X-Gm-Message-State: AOAM531Yy4Y01NO66KNutUgfGcjHlCApglMtfSm0kt6A4bNnCBKZnz2i
+        O4ywT91/BfFqrejrsTmDfvyLC0I2sM5WDt3cMMM=
+X-Google-Smtp-Source: ABdhPJz5Ixj8gOwOqP8ZLI2mb/Jxa1pBK/7L/I1Crrz11Uqdate3gpI/2mWpDU7wlr7hRKBzXZpN11joAEEKXrte6nU=
+X-Received: by 2002:aca:ab86:: with SMTP id u128mr9636637oie.47.1615546638373;
+ Fri, 12 Mar 2021 02:57:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3e03ae6c-b586-c314-b015-9b3b5de8fd04@xs4all.nl>
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-8-git-send-email-aisheng.dong@nxp.com> <de25cd22-7f17-5902-21d3-881e3128dd31@gmail.com>
+ <a546248b-3946-c781-94a9-30f0c92f88d2@gmail.com> <CGME20210310025703epcas1p10fdb324cc7ce1accfdc8f66315e8a93e@epcas1p1.samsung.com>
+ <CAA+hA=QZbxE-aFh2UnH6wHBUStj8SAtW8C4SEZtGcxQwsOO=Aw@mail.gmail.com>
+ <31be2267-8988-f162-f5a6-6e6389bbf1fb@samsung.com> <CAA+hA=S76yHTeL_yCDkv55iKpBLbtZc_cV8sjORheLxbSuenzA@mail.gmail.com>
+ <b5a3ee55-0c71-a0ca-b03f-3b6790f3d2f4@samsung.com>
+In-Reply-To: <b5a3ee55-0c71-a0ca-b03f-3b6790f3d2f4@samsung.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Fri, 12 Mar 2021 18:57:14 +0800
+Message-ID: <CAA+hA=Q0M0bTf0VLjNmf23HqFn4Unk0h4BN-mEQXb1LkZLV=NQ@mail.gmail.com>
+Subject: Re: [PATCH 07/11] PM / devfreq: check get_dev_status before start monitor
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Chanwoo Choi <cwchoi00@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        Abel Vesa <abel.vesa@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Thu, Mar 11, 2021 at 2:54 PM Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>
+> On 3/10/21 1:56 PM, Dong Aisheng wrote:
+> > On Wed, Mar 10, 2021 at 11:08 AM Chanwoo Choi <cw00.choi@samsung.com> w=
+rote:
+> >>
+> >> On 3/10/21 11:56 AM, Dong Aisheng wrote:
+> >>> On Wed, Mar 10, 2021 at 12:12 AM Chanwoo Choi <cwchoi00@gmail.com> wr=
+ote:
+> >>>>
+> >>>> On 21. 3. 10. =EC=98=A4=EC=A0=84 12:58, Chanwoo Choi wrote:
+> >>>>> On 21. 3. 9. =EC=98=A4=ED=9B=84 9:58, Dong Aisheng wrote:
+> >>>>>> The devfreq monitor depends on the device to provide load informat=
+ion
+> >>>>>> by .get_dev_status() to calculate the next target freq.
+> >>>>>>
+> >>>>>> And this will cause changing governor to simple ondemand fail
+> >>>>>> if device can't support.
+> >>>>>>
+> >>>>>> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> >>>>>> ---
+> >>>>>>   drivers/devfreq/devfreq.c                 | 10 +++++++---
+> >>>>>>   drivers/devfreq/governor.h                |  2 +-
+> >>>>>>   drivers/devfreq/governor_simpleondemand.c |  3 +--
+> >>>>>>   3 files changed, 9 insertions(+), 6 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> >>>>>> index 7231fe6862a2..d1787b6c7d7c 100644
+> >>>>>> --- a/drivers/devfreq/devfreq.c
+> >>>>>> +++ b/drivers/devfreq/devfreq.c
+> >>>>>> @@ -482,10 +482,13 @@ static void devfreq_monitor(struct work_stru=
+ct
+> >>>>>> *work)
+> >>>>>>    * to be called from governor in response to DEVFREQ_GOV_START
+> >>>>>>    * event when device is added to devfreq framework.
+> >>>>>>    */
+> >>>>>> -void devfreq_monitor_start(struct devfreq *devfreq)
+> >>>>>> +int devfreq_monitor_start(struct devfreq *devfreq)
+> >>>>>>   {
+> >>>>>>       if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+> >>>>>> -        return;
+> >>>>>> +        return 0;
+> >>>>>> +
+> >>>>>> +    if (!devfreq->profile->get_dev_status)
+> >>>>>> +        return -EINVAL;
+> >>>>
+> >>>> Again, I think that get_dev_status is not used for all governors.
+> >>>> So that it cause the governor start fail. Don't check whether
+> >>>> .get_dev_status is NULL or not.
+> >>>>
+> >>>
+> >>> I'm not quite understand your point.
+> >>> it is used by governor_simpleondemand.c and tegra_devfreq_governor.
+> >>> get_target_freq -> devfreq_update_stats -> get_dev_status
+> >>
+> >> The devfreq can add the new governor by anyone.
+> >> So these functions like devfreq_monitor_* have to support
+> >> the governors and also must support the governor to be added
+> >> in the future.
+> >
+> > Yes, but devfreq_monitor_* is only used by polling mode, right?
+> > The governor using it has to implement get_dev_status unless
+> > there's an exception in the future.
+> >
+> > Currently this patch wants to address the issue that user can switch
+> > to ondemand governor (polling mode) by sysfs even devices does
+> > not support it (no get_dev_status implemented).
+>
+> As I commented, I'll fix this issue. If devfreq driver doesn't implement
+> the .get_dev_status, don't show it via available_governors. I think that
+> it is fundamental solution to fix this issue.
 
-On Fri, Mar 12, 2021 at 11:22:07AM +0100, Hans Verkuil wrote:
-> On 12/03/2021 11:13, Laurent Pinchart wrote:
-> > On Fri, Mar 12, 2021 at 10:57:33AM +0100, Ricardo Ribalda Delgado wrote:
-> >> On Fri, Mar 12, 2021 at 2:25 AM Laurent Pinchart wrote:
-> >>> On Thu, Mar 11, 2021 at 11:19:45PM +0100, Ricardo Ribalda wrote:
-> >>>> Create all the class controls for the device defined controls.
-> >>>>
-> >>>> Fixes v4l2-compliance:
-> >>>> Control ioctls (Input 0):
-> >>>>               fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
-> >>>>               fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
-> >>>>       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
-> >>>>
-> >>>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >>>> ---
-> >>>>  drivers/media/usb/uvc/uvc_ctrl.c | 90 ++++++++++++++++++++++++++++++++
-> >>>>  drivers/media/usb/uvc/uvcvideo.h |  7 +++
-> >>>>  2 files changed, 97 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>> index b3dde98499f4..4e0ed2595ae9 100644
-> >>>> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>> @@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
-> >>>>       },
-> >>>>  };
-> >>>>
-> >>>> +static const struct uvc_control_class uvc_control_class[] = {
-> >>>> +     {
-> >>>> +             .id             = V4L2_CID_CAMERA_CLASS,
-> >>>> +             .name           = "Camera Controls",
-> >>>> +     },
-> >>>> +     {
-> >>>> +             .id             = V4L2_CID_USER_CLASS,
-> >>>> +             .name           = "User Controls",
-> >>>> +     },
-> >>>> +};
-> >>>> +
-> >>>>  static const struct uvc_menu_info power_line_frequency_controls[] = {
-> >>>>       { 0, "Disabled" },
-> >>>>       { 1, "50 Hz" },
-> >>>> @@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
-> >>>>       return 0;
-> >>>>  }
-> >>>>
-> >>>> +static int __uvc_query_v4l2_class(struct uvc_device *dev, u32 req_id,
-> >>>> +                               u32 found_id)
-> >>>> +{
-> >>>> +     bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
-> >>>> +     int i;
-> >>>
-> >>> unsigned int as i will never be negative.
-> >>
-> >> Sometimes you are a bit negative with my patches... :)
-> >>
-> >> (sorry, it is Friday)
-> >>
-> >>>> +
-> >>>> +     req_id &= V4L2_CTRL_ID_MASK;
-> >>>> +
-> >>>> +     for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
-> >>>> +             if (!(dev->ctrl_class_bitmap & BIT(i)))
-> >>>> +                     continue;
-> >>>> +             if (!find_next) {
-> >>>> +                     if (uvc_control_class[i].id == req_id)
-> >>>> +                             return i;
-> >>>> +                     continue;
-> >>>> +             }
-> >>>> +             if ((uvc_control_class[i].id > req_id) &&
-> >>>> +                 (uvc_control_class[i].id < found_id))
-> >>>
-> >>> No need for the inner parentheses.
-> >>>
-> >>>> +                     return i;
-> >>>> +     }
-> >>>> +
-> >>>> +     return -ENODEV;
-> >>>> +}
-> >>>> +
-> >>>> +static int uvc_query_v4l2_class(struct uvc_device *dev, u32 req_id,
-> >>>> +                             u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
-> >>>> +{
-> >>>> +     int idx;
-> >>>> +
-> >>>> +     idx = __uvc_query_v4l2_class(dev, req_id, found_id);
-> >>>> +     if (idx < 0)
-> >>>> +             return -ENODEV;
-> >>>> +
-> >>>> +     memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
-> >>>> +     v4l2_ctrl->id = uvc_control_class[idx].id;
-> >>>> +     strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
-> >>>> +             sizeof(v4l2_ctrl->name));
-> >>>> +     v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
-> >>>> +     v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY |
-> >>>> +                                     V4L2_CTRL_FLAG_READ_ONLY;
-> >>>
-> >>>         v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
-> >>>                          | V4L2_CTRL_FLAG_READ_ONLY;
-> >>>
-> >>>> +     return 0;
-> >>>> +}
-> >>>
-> >>> If you agree with the comments below, you could inline
-> >>> __uvc_query_v4l2_class() in uvc_query_v4l2_class() as it won't be called
-> >>> separately.
-> >>>
-> >>>> +
-> >>>>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>>>       struct uvc_control *ctrl,
-> >>>>       struct uvc_control_mapping *mapping,
-> >>>> @@ -1123,6 +1177,14 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>>>       struct uvc_control_mapping *mapping;
-> >>>>       int ret;
-> >>>>
-> >>>> +     /* Check if the ctrl is a know class */
-> >>>> +     if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
-> >>>> +             ret = uvc_query_v4l2_class(chain->dev, v4l2_ctrl->id,
-> >>>> +                                        v4l2_ctrl->id, v4l2_ctrl);
-> >>>
-> >>> You could pass 0 for found_id here.
-> >>>
-> >>>> +             if (!ret)
-> >>>> +                     return 0;
-> >>>> +     }
-> >>>> +
-> >>>
-> >>> Should this be done with the chain->ctrl_mutex locked, as
-> >>> __uvc_query_v4l2_class() accesses dev->ctrl_class_bitmap that could be
-> >>> modified concurrently ?
-> >>>
-> >>>>       ret = mutex_lock_interruptible(&chain->ctrl_mutex);
-> >>>>       if (ret < 0)
-> >>>>               return -ERESTARTSYS;
-> >>>> @@ -1133,6 +1195,13 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>>>               goto done;
-> >>>>       }
-> >>>>
-> >>>
-> >>> A comment here along the lines of
-> >>>
-> >>>         /*
-> >>>          * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
-> >>>          * a class should be inserted between the previous control and the one
-> >>>          * we have just found.
-> >>>          */
-> >>>
-> >>> could be useful, as it's not trivial.
-> >>
-> >> yes, it looks better thanks!
-> >>
-> >>>> +     if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
-> >>>> +             ret = uvc_query_v4l2_class(chain->dev, v4l2_ctrl->id,
-> >>>> +                                        mapping->id, v4l2_ctrl);
-> >>>> +             if (!ret)
-> >>>> +                     goto done;
-> >>>> +     }
-> >>>> +
-> >>>>       ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
-> >>>>  done:
-> >>>>       mutex_unlock(&chain->ctrl_mutex);
-> >>>> @@ -1422,6 +1491,9 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
-> >>>>       struct uvc_control *ctrl;
-> >>>>       int ret;
-> >>>>
-> >>>> +     if (__uvc_query_v4l2_class(handle->chain->dev, sev->id, 0) >= 0)
-> >>>> +             return 0;
-> >>>
-> >>> Do we really need to succeed ? What's the point in subscribing for
-> >>> control change events on a class ? Can't we just check if sev->id is a
-> >>> class, and return -EINVAL in that case ?
-> >>
-> >> Unfortunately it is expected that you can subscribe to all the events,
-> >> even the ctrl_classes
-> >>         test VIDIOC_G/S/TRY_EXT_CTRLS: OK
-> >>                 fail: v4l2-test-controls.cpp(835): subscribe event for
-> >> control 'User Controls' failed
-> >>         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: FAIL
-> > 
-> > Looks like something that should be dropped from v4l2-compliance,
-> > there's no use case for subscribing to a class.
-> 
-> It's allowed in the API. You never get an event, since it doesn't change, but
-> you can subscribe to it. I chose to allow it to avoid exceptions. Basically if
-> a control never changes, you just never get an event. Whether it is a control
-> class or a read-only control or a control with just a fixed value, it doesn't
-> matter for the event control API.
+Sounds good
 
-Why do we inflict such pain upon ourselves, designing APIs that force us
-to support features that we know from the start are useless and will
-never be used ? :-(
+> So on this version,
+> don't add the this conditional statement on this function
+>
 
-> >>>> +
-> >>>>       ret = mutex_lock_interruptible(&handle->chain->ctrl_mutex);
-> >>>>       if (ret < 0)
-> >>>>               return -ERESTARTSYS;
-> >>>> @@ -1458,6 +1530,9 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
-> >>>>  {
-> >>>>       struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
-> >>>>
-> >>>> +     if (__uvc_query_v4l2_class(handle->chain->dev, sev->id, 0) >= 0)
-> >>>> +             return;
-> >>>
-> >>> And this could then be dropped, as this function won't be called if the
-> >>> subscription failed.
-> >>>
-> >>>> +
-> >>>>       mutex_lock(&handle->chain->ctrl_mutex);
-> >>>>       list_del(&sev->node);
-> >>>>       mutex_unlock(&handle->chain->ctrl_mutex);
-> >>>> @@ -1577,6 +1652,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
-> >>>>       struct uvc_control *ctrl;
-> >>>>       struct uvc_control_mapping *mapping;
-> >>>>
-> >>>> +     if (__uvc_query_v4l2_class(chain->dev, xctrl->id, 0) >= 0)
-> >>>> +             return -EACCES;
-> >>>> +
-> >>>>       ctrl = uvc_find_control(chain, xctrl->id, &mapping);
-> >>>>       if (ctrl == NULL)
-> >>>>               return -EINVAL;
-> >>>> @@ -1596,6 +1674,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
-> >>>>       s32 max;
-> >>>>       int ret;
-> >>>>
-> >>>> +     if (__uvc_query_v4l2_class(chain->dev, xctrl->id, 0) >= 0)
-> >>>> +             return -EACCES;
-> >>>> +
-> >>>
-> >>> Similarly as in patch 1/6, should these two checks be moved to
-> >>> v4l_s_ctrl() and v4l_s_ext_ctrls(), as it's never valid to get/set a
-> >>> class ?
-> >>
-> >> I do not think that it is possible, you need to return -EACCESS if the
-> >> control exists and -EINVAL if it does not exist.
-> >> v4l_s_ext_ctrls does not know if the ctrl exists.
-> > 
-> > *sigh* I'm sad that we need this kind of complexity in drivers because
-> > the API requires us to implement a behaviour that nobody actually cares
-> > about :-( The way classes are implemented is really a big hack.
-> > 
-> >>>>       ctrl = uvc_find_control(chain, xctrl->id, &mapping);
-> >>>>       if (ctrl == NULL)
-> >>>>               return -EINVAL;
-> >>>> @@ -2062,6 +2143,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
-> >>>>  {
-> >>>>       struct uvc_control_mapping *map;
-> >>>>       unsigned int size;
-> >>>> +     int i;
-> >>>
-> >>> This can be unsigned as i never takes negative values.
-> >> I cannot repeat the same joke... even if it is a bad joke
-> >>>
-> >>>>
-> >>>>       /* Most mappings come from static kernel data and need to be duplicated.
-> >>>>        * Mappings that come from userspace will be unnecessarily duplicated,
-> >>>> @@ -2085,6 +2167,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
-> >>>>       if (map->set == NULL)
-> >>>>               map->set = uvc_set_le_value;
-> >>>>
-> >>>> +     for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
-> >>>> +             if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
-> >>>> +                                             V4L2_CTRL_ID2WHICH(map->id)) {
-> >>>
-> >>> You can write this
-> >>>
-> >>>                 if (uvc_control_class[i].id == V4L2_CTRL_ID2WHICH(map->id)) {
-> >>>
-> >>> as the uvc_control_class array contains control classes only.
-> >>
-> >> Are you sure?
-> >> #define V4L2_CID_CAMERA_CLASS                (V4L2_CTRL_CLASS_CAMERA | 1)
-> >>
-> >> we are sasing the cid, not the class.
-> > 
-> > Indeed, my bad.
-> > 
-> >>>> +                     dev->ctrl_class_bitmap |= BIT(i);
-> >>>> +                     break;
-> >>>> +             }
-> >>>> +     }
-> >>>> +
-> >>>>       list_add_tail(&map->list, &ctrl->info.mappings);
-> >>>>       uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
-> >>>>               map->name, ctrl->info.entity, ctrl->info.selector);
-> >>>> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> >>>> index 97df5ecd66c9..63b5d697a438 100644
-> >>>> --- a/drivers/media/usb/uvc/uvcvideo.h
-> >>>> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> >>>> @@ -262,6 +262,11 @@ struct uvc_control_mapping {
-> >>>>                   u8 *data);
-> >>>>  };
-> >>>>
-> >>>> +struct uvc_control_class {
-> >>>> +     u32 id;
-> >>>> +     char name[32];
-> >>>> +};
-> >>>> +
-> >>>>  struct uvc_control {
-> >>>>       struct uvc_entity *entity;
-> >>>>       struct uvc_control_info info;
-> >>>> @@ -707,6 +712,8 @@ struct uvc_device {
-> >>>>       } async_ctrl;
-> >>>>
-> >>>>       struct uvc_entity *gpio_unit;
-> >>>> +
-> >>>> +     u8 ctrl_class_bitmap;
-> >>>
-> >>> Should this be stored in the chain, as different chains can have
-> >>> different controls ?
-> >>>
-> >>>>  };
-> >>>>
-> >>>>  enum uvc_handle_state {
+Almost all this patch did is adding a checking for get_dev_status.
+So do you mean drop this patch?
+I wonder it's still a necessary checking to explicitly tell devfreq monitor
+users that get_dev_status is needed during governor startup.
 
--- 
-Regards,
+> And on next version, please use the capital letter for first character
+> on patch title as following:
+>
+> - PM / devfreq: Check get_dev_status before start monitor
+>
 
-Laurent Pinchart
+Okay to me.
+Thanks for the suggestion.
+
+Regards
+Aisheng
+
+> >
+> > Regards
+> > Aisheng
+> >
+> >>
+> >>>
+> >>> Without checking, device can switch to ondemand governor if it does n=
+ot support.
+> >>>
+> >>> Am i missed something?
+> >>>
+> >>> Regards
+> >>> Aisheng
+> >>>
+> >>>>>>       switch (devfreq->profile->timer) {
+> >>>>>>       case DEVFREQ_TIMER_DEFERRABLE:
+> >>>>>> @@ -495,12 +498,13 @@ void devfreq_monitor_start(struct devfreq *d=
+evfreq)
+> >>>>>>           INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+> >>>>>>           break;
+> >>>>>>       default:
+> >>>>>> -        return;
+> >>>>>> +        return -EINVAL;
+> >>>>>>       }
+> >>>>>>       if (devfreq->profile->polling_ms)
+> >>>>>>           queue_delayed_work(devfreq_wq, &devfreq->work,
+> >>>>>>               msecs_to_jiffies(devfreq->profile->polling_ms));
+> >>>>>> +    return 0;
+> >>>>>>   }
+> >>>>>>   EXPORT_SYMBOL(devfreq_monitor_start);
+> >>>>>> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor=
+.h
+> >>>>>> index 5cee3f64fe2b..31af6d072a10 100644
+> >>>>>> --- a/drivers/devfreq/governor.h
+> >>>>>> +++ b/drivers/devfreq/governor.h
+> >>>>>> @@ -75,7 +75,7 @@ struct devfreq_governor {
+> >>>>>>                   unsigned int event, void *data);
+> >>>>>>   };
+> >>>>>> -void devfreq_monitor_start(struct devfreq *devfreq);
+> >>>>>> +int devfreq_monitor_start(struct devfreq *devfreq);
+> >>>>>>   void devfreq_monitor_stop(struct devfreq *devfreq);
+> >>>>>>   void devfreq_monitor_suspend(struct devfreq *devfreq);
+> >>>>>>   void devfreq_monitor_resume(struct devfreq *devfreq);
+> >>>>>> diff --git a/drivers/devfreq/governor_simpleondemand.c
+> >>>>>> b/drivers/devfreq/governor_simpleondemand.c
+> >>>>>> index d57b82a2b570..ea287b57cbf3 100644
+> >>>>>> --- a/drivers/devfreq/governor_simpleondemand.c
+> >>>>>> +++ b/drivers/devfreq/governor_simpleondemand.c
+> >>>>>> @@ -89,8 +89,7 @@ static int devfreq_simple_ondemand_handler(struc=
+t
+> >>>>>> devfreq *devfreq,
+> >>>>>>   {
+> >>>>>>       switch (event) {
+> >>>>>>       case DEVFREQ_GOV_START:
+> >>>>>> -        devfreq_monitor_start(devfreq);
+> >>>>>> -        break;
+> >>>>>> +        return devfreq_monitor_start(devfreq);
+> >>>>>>       case DEVFREQ_GOV_STOP:
+> >>>>>>           devfreq_monitor_stop(devfreq);
+> >>>>>>
+> >>>>>
+> >>>>> Need to handle the all points of devfreq_monitor_start() usage.
+> >>>>> please check the tegra30-devfreq.c for this update.
+> >>>>>
+> >>>>> $ grep -rn "devfreq_monitor_start" drivers/
+> >>>>> drivers/devfreq/governor_simpleondemand.c:92:
+> >>>>> devfreq_monitor_start(devfreq);
+> >>>>> drivers/devfreq/tegra30-devfreq.c:744:
+> >>>>> devfreq_monitor_start(devfreq);
+> >>>>> ......
+> >>>>>
+> >>>>
+> >>>>
+> >>>> --
+> >>>> Best Regards,
+> >>>> Samsung Electronics
+> >>>> Chanwoo Choi
+> >>>
+> >>>
+> >>
+> >>
+> >> --
+> >> Best Regards,
+> >> Chanwoo Choi
+> >> Samsung Electronics
+> >
+> >
+>
+>
+> --
+> Best Regards,
+> Chanwoo Choi
+> Samsung Electronics
