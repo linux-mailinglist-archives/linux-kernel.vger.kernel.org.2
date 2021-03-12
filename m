@@ -2,352 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6A9339227
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469BA339225
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhCLPp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:45:58 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:50058 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhCLPp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:45:27 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id F1A3B88818;
-        Fri, 12 Mar 2021 18:45:21 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1615563922; bh=JVhti3gwjryftiNb90ufxdKmut15OEOP1ZGRIcCJTRo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=VLUrxYkmxG7VbZ/0/GA+kzVESCHEKJAIJK5/FTv/1cFvCYGiubE303by1mEgfDbiY
-         UOix5UAbirdDNNhYM2tJ590nVgLJXwSWLnia77a1oInYTUp7VvcEwfvDkWuHvw/2po
-         dlDq97Q25J8MusOvS1zE4naStzU90MLPIP3XBm3c=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Fri, 12 Mar 2021 16:45:19 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavel.tide@veeam.com>
-Subject: [PATCH v7 3/3] dm: add DM_INTERPOSED_FLAG
-Date:   Fri, 12 Mar 2021 18:44:55 +0300
-Message-ID: <1615563895-28565-4-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
+        id S233354AbhCLPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:45:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46342 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232896AbhCLPpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:45:23 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 12CFaS3T030479;
+        Fri, 12 Mar 2021 07:45:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=SoAd13xKzk+dfYFHB2vZuiZiMTDl3K4oU+sIOUzES24=;
+ b=aXktjx7e1m4jxmsrBFX6oPugrRNYN6DkBniI95IBgppHr0j2zl8db3FKwXDiPWRhDsNW
+ fRze9IwWF03GWi10rNwkbBS7tfaOBf+Ev4IE3Guuzng3rQ5IyLfXXu9W7lO+Uw+znbIr
+ 7t20rpKD6ftHwknQIMVg6v8HbssuP19kzPg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 37852dhpfj-16
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 12 Mar 2021 07:45:19 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 12 Mar 2021 07:45:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N0p343iBRhoATBzBVeaKy4OBLVtoPILS4nGMbprFPBlM4K40mw7oK0Sv3LE7HUEjwC+7+pfBclzGFg+UWdRKGQlbB1IsBDEGiSuahYsSWiXHXA4jTNRt7XjaNdw4u3D9GUIADO50KeiSCOcth3RPFY0BpVmd8TcxOhrovPvVY0SulDuVNKUwnbW7ivvW0cufkpSvjL9YPcLghluLStsgCYLUzR7jIJsi+OYSKRwVzkv9d+5LwMOswb4xCG8TlP6pH/sl6VjQ/MX3rwbyzOjjUybGDbUVjUFI5mduLLNjA1tzuNaXARQJ3Pr1YHTafRgY9fkGGtUeMRLzItrSjgTB7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SoAd13xKzk+dfYFHB2vZuiZiMTDl3K4oU+sIOUzES24=;
+ b=j0gzZ51g09c4hxp7JY1WFMmSOPNUrr/KUQgFUlfaUyL0PPQxHgeHc5iG974FJSyfaNi+MvFA4VKpRhe7PeDJm9oQhjSNDSYPPRduWzlw+2C7xCQPosJ4RFsfICQLrv2VUirqkHhuU6K3oxz1CQbHgezwNrsx1h3rHPg8KQIsTufKcUyaQVlMLP72dnYkQa3v07DnIvM6Pu6raagYnWfhJe5No2EsJeBP9nj3CA9xsqimBc21mCrm0S6uqMWMcitPvDaelqr5B4NKmTjsOZYhBhX1f7rlK6DNhUlwYDjlYrxzWTFh/IScfydGlAKoEmCMOUB6uBAPnhhl3Gj2mpx9cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB4117.namprd15.prod.outlook.com (2603:10b6:a02:c1::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18; Fri, 12 Mar
+ 2021 15:45:14 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
+ 15:45:14 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "acme@redhat.com" <acme@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
+Thread-Topic: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
+Thread-Index: AQHXFuPifzAWbJ/c0EGfxtA8c/wTpKqAREAAgAA7WYA=
+Date:   Fri, 12 Mar 2021 15:45:13 +0000
+Message-ID: <45BCAC33-1626-42D1-A170-92DC8D7BAAF8@fb.com>
+References: <20210312020257.197137-1-songliubraving@fb.com>
+ <YEtawFnompBDKpK0@krava>
+In-Reply-To: <YEtawFnompBDKpK0@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:17f0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1c605ef4-8561-456a-7e13-08d8e56dd3c7
+x-ms-traffictypediagnostic: BYAPR15MB4117:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB4117120955A4DBBAEDFC5E66B36F9@BYAPR15MB4117.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HK4dPMTzOIufm4uzPKR33Ng1Gfl3tlMYX2UTMpCbXOShtW1iPB3yUDvER9qbk0Qqix60yvGi5XEtz0vk5PNXwIW4SjKZyqXL9hKJqo1KhX+HJkgI9g6PK4wGw6E25Y4a47qnswYvK9ovvPzSIG7q0tuau5+Owpspb5xh1xmKsqXa7Ete4ACUgmLcinAEFrxZNcu3oNKSP2xF8ka7zWn7JUDhHOYrUNLBJis8gt/oxK1LGgjfX6gLxGFgnGjZo4n5ptjCr/v/YcVFc12LWggEyb7JwHmycU2al4IDZCrnrfQQ1+WNhREaS9nL4JTquBJFLpHQDQth5e7ICQqSJG9HNx/mOv9PezZ+oLPrCCces0MpQ65HWBsyejWtRiDnwt+Cj60i5faZaBCLFrlqKDcYHM4IawlPJT9Cx0jVpMvpsNQ1yUOmL/Jv0ubyY7S0hacqW0GeqdB9mKNQeDAWWKxHacq+8i0Qv2FpSeQVrBMalEsm7fYIs4BfhetThTUeC/3hKEEoknsMwlVpFPrHlR2YDR30zH0SHNLXllEBilpNr25Hj52iBEr1iq/h/XBHTEd0DRGwu1fEoCdwuJ1aMdxGFQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(39860400002)(376002)(346002)(8936002)(6486002)(86362001)(4326008)(54906003)(36756003)(6506007)(66476007)(83380400001)(6916009)(186003)(316002)(6512007)(53546011)(76116006)(5660300002)(8676002)(478600001)(2906002)(71200400001)(64756008)(66556008)(91956017)(66446008)(66946007)(2616005)(33656002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?bsKorJ2WlF30p2bMXWVR0gUnAKID1/VVSytUDW2kmLGpR2zeRiNIPCtBthwf?=
+ =?us-ascii?Q?vyQ1y9/dZJyy7sywPDa720he+6DPz8qpOdZpvTmtG7wni2fwqh1XITtNPxaq?=
+ =?us-ascii?Q?4B1W6j4AH+Y16eyrzDF0TaLvu9x6owuadti48khvT8ALl+UQYwuN4oEhd9LV?=
+ =?us-ascii?Q?7byYXbdnXQtPm+E7G69uwbkvMctyRXRzX7vyo14zvSjXB3rmSMZ/mpL/VMvb?=
+ =?us-ascii?Q?Q2pcIUboPeBTqC8a55d9SaEd6Gt/8wTUVYIXnCiS5/CSvaBPYls8Vd0DDe27?=
+ =?us-ascii?Q?r8Zyemr+j9J3f1AAw/YC+2BAqr9HmzzkAql2K/ynCSx4ketCkpQt1LHpR1cf?=
+ =?us-ascii?Q?UTcISREfKGy0PEeK2El/4W+wPKrSWLzpsQ5UhZkfhoq62Y33sSidlx6SO3r9?=
+ =?us-ascii?Q?oDhrNbu5pOyXZTmD/HRO1cNkpm4hMb3crRmH3PFy6E9wNZ27+2dgMeT2nEox?=
+ =?us-ascii?Q?2R10YmAUvsCOXQdtF4PArQwm60TxOXfhsQgaf2o3G6VevLGJUrNAQ2uJPNSO?=
+ =?us-ascii?Q?fOQ1FAuj7d+dZ6WTXoo6WbxHBrKtShDqtvS7QrHJ0HpM79N2g2ICJMM8lofB?=
+ =?us-ascii?Q?bcPk8LgsFlBb3ZuuMpdMsK+7u/VZtStgUr17I2HM0f9vXm4tIPpibyR2SfpG?=
+ =?us-ascii?Q?/n1BcjGCdTDQ6UmWmcarqxFh9R96AoZZtALAOQikHvSOJUKOY6nkTyESTGlH?=
+ =?us-ascii?Q?ZGPbMkOKMtWqXbzZD6QjFdznYGbGPPuxPJqY5Z1FQ4wS/HTDcpaLnyshUXHU?=
+ =?us-ascii?Q?ccEmvxcLhhK8Lkpb7Z89kNNtuWc0jO8EayfOeNEpU0apo1f8ZFlHqjBCCslL?=
+ =?us-ascii?Q?jtAhFZQ6VEMqEMLaK/UZZJEun1vcF5j9Y9KjrUt3B2h2JcQOzZc9/QECGCv8?=
+ =?us-ascii?Q?8AfKsvU8SXDAzZ4s7VwDY5uaOd0kqDvThmMgQ7MoNu1ly0GmqixqElM+xpqj?=
+ =?us-ascii?Q?+gLWk+i5b2gMmzxUEpT9RqG3qjyzq46/cWtm41+qkEuGk/0UHBTVDSFO1X6R?=
+ =?us-ascii?Q?zYW5vEUJ/baut28cxOZvTscJTPK7VoqZwRqvZcG+GQxvH6zofT1WWC3FyqKy?=
+ =?us-ascii?Q?d6hXex72PRwe11z+gqmyeqj7W6C3ZfoMN5LL1wInR7tH32FvOOzD1sMi3Tws?=
+ =?us-ascii?Q?/BW5vUnC8Bnz1aCjPHTqmxorwgOFBIG1ODHPnP06jQLP6LEZDaW9C+N5b9ne?=
+ =?us-ascii?Q?HqRr8K9U7QKkNbmjJaEAoSm5ucOehUfFZSQJcukw8wdta6pNK2xDFvdvsRMU?=
+ =?us-ascii?Q?H7Fahp/irxZFDX+YXfdmSE3Ug+w7uGcM/KpSOKgtnCSJ9Z9flJqJqmLDVqT+?=
+ =?us-ascii?Q?z1tnsGqAS+tZUfL88S/m3w4+ewxw5EDLE61PLyIZaM4Zmv6gRwOBQPGD3P0a?=
+ =?us-ascii?Q?GNllhKE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CC9E0A1210AD954288217F54F0A04B5B@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29D2A50B58627366
-X-Veeam-MMEX: True
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c605ef4-8561-456a-7e13-08d8e56dd3c7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 15:45:13.8848
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +twGgcAfJ1SUua69+NLqpwtx2wKlcrO9eQ6KrodixDOSYG14SylqgAMP97L+o769gGvBfcGYTGJDTyARiqQGLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4117
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-12_03:2021-03-10,2021-03-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 spamscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103120112
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DM_INTERPOSED_FLAG allow to create DM targets on "the fly".
-Underlying block device opens without a flag FMODE_EXCL.
-DM target receives bio from the original device via
-bdev_interposer.
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- drivers/md/dm-core.h          |  3 ++
- drivers/md/dm-ioctl.c         | 13 ++++++++
- drivers/md/dm-table.c         | 61 +++++++++++++++++++++++++++++------
- drivers/md/dm.c               | 38 +++++++++++++++-------
- include/linux/device-mapper.h |  1 +
- include/uapi/linux/dm-ioctl.h |  6 ++++
- 6 files changed, 101 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-index 5953ff2bd260..9eae419c7b18 100644
---- a/drivers/md/dm-core.h
-+++ b/drivers/md/dm-core.h
-@@ -114,6 +114,9 @@ struct mapped_device {
- 	bool init_tio_pdu:1;
- 
- 	struct srcu_struct io_barrier;
-+
-+	/* attach target via block-layer interposer */
-+	bool is_interposed;
- };
- 
- void disable_discard(struct mapped_device *md);
-diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-index 5e306bba4375..2b4c9557c283 100644
---- a/drivers/md/dm-ioctl.c
-+++ b/drivers/md/dm-ioctl.c
-@@ -1267,6 +1267,11 @@ static inline fmode_t get_mode(struct dm_ioctl *param)
- 	return mode;
- }
- 
-+static inline bool get_interposer_flag(struct dm_ioctl *param)
-+{
-+	return (param->flags & DM_INTERPOSED_FLAG);
-+}
-+
- static int next_target(struct dm_target_spec *last, uint32_t next, void *end,
- 		       struct dm_target_spec **spec, char **target_params)
- {
-@@ -1293,6 +1298,10 @@ static int populate_table(struct dm_table *table,
- 		DMWARN("populate_table: no targets specified");
- 		return -EINVAL;
- 	}
-+	if (table->md->is_interposed && (param->target_count != 1)) {
-+		DMWARN("%s: with interposer should be specified only one target", __func__);
-+		return -EINVAL;
-+	}
- 
- 	for (i = 0; i < param->target_count; i++) {
- 
-@@ -1338,6 +1347,8 @@ static int table_load(struct file *filp, struct dm_ioctl *param, size_t param_si
- 	if (!md)
- 		return -ENXIO;
- 
-+	md->is_interposed = get_interposer_flag(param);
-+
- 	r = dm_table_create(&t, get_mode(param), param->target_count, md);
- 	if (r)
- 		goto err;
-@@ -2098,6 +2109,8 @@ int __init dm_early_create(struct dm_ioctl *dmi,
- 	if (r)
- 		goto err_hash_remove;
- 
-+	md->is_interposed = get_interposer_flag(dmi);
-+
- 	/* add targets */
- 	for (i = 0; i < dmi->target_count; i++) {
- 		r = dm_table_add_target(t, spec_array[i]->target_type,
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 95391f78b8d5..f6e2eb3f8949 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -225,12 +225,13 @@ void dm_table_destroy(struct dm_table *t)
- /*
-  * See if we've already got a device in the list.
-  */
--static struct dm_dev_internal *find_device(struct list_head *l, dev_t dev)
-+static struct dm_dev_internal *find_device(struct list_head *l, dev_t dev, bool is_interposed)
- {
- 	struct dm_dev_internal *dd;
- 
- 	list_for_each_entry (dd, l, list)
--		if (dd->dm_dev->bdev->bd_dev == dev)
-+		if ((dd->dm_dev->bdev->bd_dev == dev) &&
-+		    (dd->dm_dev->is_interposed == is_interposed))
- 			return dd;
- 
- 	return NULL;
-@@ -358,6 +359,18 @@ dev_t dm_get_dev_t(const char *path)
- }
- EXPORT_SYMBOL_GPL(dm_get_dev_t);
- 
-+static inline void dm_disk_freeze(struct gendisk *disk)
-+{
-+	blk_mq_freeze_queue(disk->queue);
-+	blk_mq_quiesce_queue(disk->queue);
-+}
-+
-+static inline void dm_disk_unfreeze(struct gendisk *disk)
-+{
-+	blk_mq_unquiesce_queue(disk->queue);
-+	blk_mq_unfreeze_queue(disk->queue);
-+}
-+
- /*
-  * Add a device to the list, or just increment the usage count if
-  * it's already present.
-@@ -385,7 +398,7 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 			return -ENODEV;
- 	}
- 
--	dd = find_device(&t->devices, dev);
-+	dd = find_device(&t->devices, dev, t->md->is_interposed);
- 	if (!dd) {
- 		dd = kmalloc(sizeof(*dd), GFP_KERNEL);
- 		if (!dd)
-@@ -398,15 +411,38 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 
- 		refcount_set(&dd->count, 1);
- 		list_add(&dd->list, &t->devices);
--		goto out;
--
- 	} else if (dd->dm_dev->mode != (mode | dd->dm_dev->mode)) {
- 		r = upgrade_mode(dd, mode, t->md);
- 		if (r)
- 			return r;
-+		refcount_inc(&dd->count);
- 	}
--	refcount_inc(&dd->count);
--out:
-+
-+	if (t->md->is_interposed) {
-+		struct block_device *original = dd->dm_dev->bdev;
-+		struct block_device *interposer = t->md->disk->part0;
-+
-+		if ((ti->begin != 0) || (ti->len < bdev_nr_sectors(original))) {
-+			dm_put_device(ti, dd->dm_dev);
-+			DMERR("The interposer device should not be less than the original.");
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * Attach mapped interposer device to original.
-+		 * It is quite convenient that device mapper creates
-+		 * one disk for one block device.
-+		 */
-+		dm_disk_freeze(original->bd_disk);
-+		r = bdev_interposer_attach(original, interposer);
-+		dm_disk_unfreeze(original->bd_disk);
-+		if (r) {
-+			dm_put_device(ti, dd->dm_dev);
-+			DMERR("Failed to attach dm interposer.");
-+			return r;
-+		}
-+	}
-+
- 	*result = dd->dm_dev;
- 	return 0;
- }
-@@ -446,6 +482,7 @@ void dm_put_device(struct dm_target *ti, struct dm_dev *d)
- {
- 	int found = 0;
- 	struct list_head *devices = &ti->table->devices;
-+	struct mapped_device *md = ti->table->md;
- 	struct dm_dev_internal *dd;
- 
- 	list_for_each_entry(dd, devices, list) {
-@@ -456,11 +493,17 @@ void dm_put_device(struct dm_target *ti, struct dm_dev *d)
- 	}
- 	if (!found) {
- 		DMWARN("%s: device %s not in table devices list",
--		       dm_device_name(ti->table->md), d->name);
-+		       dm_device_name(md), d->name);
- 		return;
- 	}
-+	if (md->is_interposed) {
-+		dm_disk_freeze(d->bdev->bd_disk);
-+		bdev_interposer_detach(d->bdev);
-+		dm_disk_unfreeze(d->bdev->bd_disk);
-+	}
-+
- 	if (refcount_dec_and_test(&dd->count)) {
--		dm_put_table_device(ti->table->md, d);
-+		dm_put_table_device(md, d);
- 		list_del(&dd->list);
- 		kfree(dd);
- 	}
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 50b693d776d6..466bf70a66b0 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -762,16 +762,24 @@ static int open_table_device(struct table_device *td, dev_t dev,
- 
- 	BUG_ON(td->dm_dev.bdev);
- 
--	bdev = blkdev_get_by_dev(dev, td->dm_dev.mode | FMODE_EXCL, _dm_claim_ptr);
--	if (IS_ERR(bdev))
--		return PTR_ERR(bdev);
-+	if (md->is_interposed) {
- 
--	r = bd_link_disk_holder(bdev, dm_disk(md));
--	if (r) {
--		blkdev_put(bdev, td->dm_dev.mode | FMODE_EXCL);
--		return r;
-+		bdev = blkdev_get_by_dev(dev, td->dm_dev.mode, NULL);
-+		if (IS_ERR(bdev))
-+			return PTR_ERR(bdev);
-+	} else {
-+		bdev = blkdev_get_by_dev(dev, td->dm_dev.mode | FMODE_EXCL, _dm_claim_ptr);
-+		if (IS_ERR(bdev))
-+			return PTR_ERR(bdev);
-+
-+		r = bd_link_disk_holder(bdev, dm_disk(md));
-+		if (r) {
-+			blkdev_put(bdev, td->dm_dev.mode | FMODE_EXCL);
-+			return r;
-+		}
- 	}
- 
-+	td->dm_dev.is_interposed = md->is_interposed;
- 	td->dm_dev.bdev = bdev;
- 	td->dm_dev.dax_dev = dax_get_by_host(bdev->bd_disk->disk_name);
- 	return 0;
-@@ -785,20 +793,26 @@ static void close_table_device(struct table_device *td, struct mapped_device *md
- 	if (!td->dm_dev.bdev)
- 		return;
- 
--	bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
--	blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
-+	if (td->dm_dev.is_interposed)
-+		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode);
-+	else {
-+		bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
-+		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
-+	}
- 	put_dax(td->dm_dev.dax_dev);
- 	td->dm_dev.bdev = NULL;
- 	td->dm_dev.dax_dev = NULL;
- }
- 
- static struct table_device *find_table_device(struct list_head *l, dev_t dev,
--					      fmode_t mode)
-+					      fmode_t mode, bool is_interposed)
- {
- 	struct table_device *td;
- 
- 	list_for_each_entry(td, l, list)
--		if (td->dm_dev.bdev->bd_dev == dev && td->dm_dev.mode == mode)
-+		if (td->dm_dev.bdev->bd_dev == dev &&
-+		    td->dm_dev.mode == mode &&
-+		    td->dm_dev.is_interposed == is_interposed)
- 			return td;
- 
- 	return NULL;
-@@ -811,7 +825,7 @@ int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode,
- 	struct table_device *td;
- 
- 	mutex_lock(&md->table_devices_lock);
--	td = find_table_device(&md->table_devices, dev, mode);
-+	td = find_table_device(&md->table_devices, dev, mode, md->is_interposed);
- 	if (!td) {
- 		td = kmalloc_node(sizeof(*td), GFP_KERNEL, md->numa_node_id);
- 		if (!td) {
-diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-index 7f4ac87c0b32..76a6dfb1cb29 100644
---- a/include/linux/device-mapper.h
-+++ b/include/linux/device-mapper.h
-@@ -159,6 +159,7 @@ struct dm_dev {
- 	struct block_device *bdev;
- 	struct dax_device *dax_dev;
- 	fmode_t mode;
-+	bool is_interposed;
- 	char name[16];
- };
- 
-diff --git a/include/uapi/linux/dm-ioctl.h b/include/uapi/linux/dm-ioctl.h
-index fcff6669137b..fc4d06bb3dbb 100644
---- a/include/uapi/linux/dm-ioctl.h
-+++ b/include/uapi/linux/dm-ioctl.h
-@@ -362,4 +362,10 @@ enum {
-  */
- #define DM_INTERNAL_SUSPEND_FLAG	(1 << 18) /* Out */
- 
-+/*
-+ * If set, the underlying device should open without FMODE_EXCL
-+ * and attach mapped device via bdev_interposer.
-+ */
-+#define DM_INTERPOSED_FLAG		(1 << 19) /* In */
-+
- #endif				/* _LINUX_DM_IOCTL_H */
--- 
-2.20.1
+> On Mar 12, 2021, at 4:12 AM, Jiri Olsa <jolsa@redhat.com> wrote:
+>=20
+> On Thu, Mar 11, 2021 at 06:02:57PM -0800, Song Liu wrote:
+>> perf uses performance monitoring counters (PMCs) to monitor system
+>> performance. The PMCs are limited hardware resources. For example,
+>> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
+>>=20
+>> Modern data center systems use these PMCs in many different ways:
+>> system level monitoring, (maybe nested) container level monitoring, per
+>> process monitoring, profiling (in sample mode), etc. In some cases,
+>> there are more active perf_events than available hardware PMCs. To allow
+>> all perf_events to have a chance to run, it is necessary to do expensive
+>> time multiplexing of events.
+>>=20
+>> On the other hand, many monitoring tools count the common metrics (cycle=
+s,
+>> instructions). It is a waste to have multiple tools create multiple
+>> perf_events of "cycles" and occupy multiple PMCs.
+>>=20
+>> bperf tries to reduce such wastes by allowing multiple perf_events of
+>> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
+>> of having each perf-stat session to read its own perf_events, bperf uses
+>> BPF programs to read the perf_events and aggregate readings to BPF maps.
+>> Then, the perf-stat session(s) reads the values from these BPF maps.
+>>=20
+>> Please refer to the comment before the definition of bperf_ops for the
+>> description of bperf architecture.
+>>=20
+>> bperf is off by default. To enable it, pass --use-bpf option to perf-sta=
+t.
+>> bperf uses a BPF hashmap to share information about BPF programs and map=
+s
+>> used by bperf. This map is pinned to bpffs. The default address is
+>> /sys/fs/bpf/bperf_attr_map. The user could change the address with optio=
+n
+>> --attr-map.
+>=20
+> nice, I recall the presentation about that and was wondering
+> when this will come up ;-)
+
+The progress is slower than I expected. But I finished some dependencies of=
+=20
+this in the last year:=20
+
+  1. BPF_PROG_TEST_RUN for raw_tp event;
+  2. perf-stat -b, which introduced skeleton and bpf_counter;
+  3. BPF task local storage, I didn't use it in this version, but it could,
+     help optimize bperf in the future.=20
+
+>=20
+>>=20
+>> ---
+>> Known limitations:
+>> 1. Do not support per cgroup events;
+>> 2. Do not support monitoring of BPF program (perf-stat -b);
+>> 3. Do not support event groups.
+>>=20
+>> The following commands have been tested:
+>>=20
+>>   perf stat --use-bpf -e cycles -a
+>>   perf stat --use-bpf -e cycles -C 1,3,4
+>>   perf stat --use-bpf -e cycles -p 123
+>>   perf stat --use-bpf -e cycles -t 100,101
+>=20
+> I assume the output is same as standard perf?
+
+Yes, the output is identical to that without --use-bpf option.=20
+
+Thanks,
+Song
 
