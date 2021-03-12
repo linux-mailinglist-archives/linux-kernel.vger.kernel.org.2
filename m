@@ -2,206 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F335833892F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D08E338932
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhCLJta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        id S233545AbhCLJuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhCLJsw (ORCPT
+        with ESMTP id S233543AbhCLJtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:48:52 -0500
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA51C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:52 -0800 (PST)
-Received: by mail-vk1-xa31.google.com with SMTP id b10so1105772vkl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:52 -0800 (PST)
+        Fri, 12 Mar 2021 04:49:31 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35DBC061574;
+        Fri, 12 Mar 2021 01:49:30 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id ci14so52021032ejc.7;
+        Fri, 12 Mar 2021 01:49:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Op4aLOwVkmUYOQGECqQb7yWvOLD8mCrlIC68jUd+E+Q=;
-        b=RX9nfSoAMjg4s8sLth6UavMguLSk4OewVwd4bygyJyvM/XVdiJQLmJe3KFsjHeQE+b
-         /x2z0yDpkFrHXAzrDNwymQTseYW3falSjxeO5kyPMZmuC9EJJY9fZ/2xpYEBMUMOExsq
-         vDUZOo/Snv2BiZhPlm2nIMRbwDDTe+TSPGAtM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X/budyxfXl4/blczsR4CErrFNRt8Mt+0vRDmJ7OsswU=;
+        b=DTUXasxiiyPWzO5i/r6wl92RXC3cTnOTVkZkkdKXtGLftgRNtLHi0p4MPibHqv6NGM
+         IGRvo8X2vWTsdeBfmR1+bI6KziuRPMj59VyMFBjZVlAWcp315BBK/65H7ydyLAqbr/WN
+         INpGUl1YVoSgVwxRdS6WgorR7uS5y+g52KSiJ1dbYls0gNI0eBq4hzecFBgr6TX8nxgt
+         YYC1ETFJCxBOp0FhhzXqpZfaS7NPIovPzlOAvrDJ18zO+2dwG2jhEexAb/v510kj97rH
+         CppvADkeuKdmb8GqWYQnc5IveZYXN2aOByfwoIGRsqlIQdEjKZows4r++zZYYeyMBKSG
+         UR2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Op4aLOwVkmUYOQGECqQb7yWvOLD8mCrlIC68jUd+E+Q=;
-        b=Zh5mzWUHdPr5azlB0Ap/mT/0T/tEHYuVqk33ztj+Hk19sbrrmP1DXNUAWLCtxUBi83
-         ete/3bh7EedWB4CbPMsvUnnInBFQwow0LhHAa3ud7Apz40eyDNSDf9Zlk77N32VNXCzj
-         gFGuquPkwZLH2GuWdl1QzZfM5cH0vP+53qb5B1O87l07AEwtaXPYFCQOLgTiVvGfrO+D
-         srAYgZ3foz7eytkDa7LILonVJ1U06r441/joGgZwt68seyLfz/4tjV8qYZSOiF6CclA4
-         omXAPQSuZK7a1URCxL2XQvta7KCyJ6je0wNg3Jej2ZA68ehn5TDFthbiDYsY9I126GbT
-         TJMw==
-X-Gm-Message-State: AOAM532bFcaUFFjNrXEvwGlOSBr1NUjKOzXdxLWAvFTWk9f9CtrGzcvD
-        uBnGaZNAh94uHBA+NCbRGadEbpbwCdjj/GETlYGWqQ==
-X-Google-Smtp-Source: ABdhPJwPYkJt/f9giqohQNKE031iQ6ZOLHDbkiJRmKkC92+LFsQww+w4YT/abqMaBheonI13AasfTX37DEkRt2LG6UA=
-X-Received: by 2002:a1f:99c2:: with SMTP id b185mr7199848vke.3.1615542531553;
- Fri, 12 Mar 2021 01:48:51 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X/budyxfXl4/blczsR4CErrFNRt8Mt+0vRDmJ7OsswU=;
+        b=mFg+0CLnpk6FV/getAaYXweKNFzIyKoPr7onlDcnVIL3klhTLuMKUWYuN/piuVnHj1
+         1/3Qs61uJTtKf0n7GYKS2fayYQLgEQKBdDMFfSjBVlF7CIqmzUpFRxTCZkMF1PSbMOCX
+         1GjVxyezqorMjjF71prJNQDeQL+x1l28ILPOHRKsEWe1hWF/aBwMijx0OeJpMr4lG1KC
+         Ay0nMbTPAsu0APUVeOkOW1aInpCTPc1i19YDGmiFVpaJh7Tkq2b/y7z4eLJjHe7DCERA
+         9ur8etyjHf8ZihgtihTIVvDwlfPpCNBPTfjaId33X34Zj2nmtWPB2qDfPcbapQEiQgHY
+         oZQw==
+X-Gm-Message-State: AOAM533jHrTBwjosNxWv2+QxAYtoYzEdKvaE9FClqptVF87Vswp1cBnf
+        6U0JmwILcs23etBSifdV/6LjYYlR3NI=
+X-Google-Smtp-Source: ABdhPJwBCHXd+irZVwU78OBq1f2fMt8lJDb1A+a9jnR0h/nRr3R5KWj+8a6U+daEedXCDbpJM98l5g==
+X-Received: by 2002:a17:907:76ed:: with SMTP id kg13mr7161715ejc.99.1615542569454;
+        Fri, 12 Mar 2021 01:49:29 -0800 (PST)
+Received: from localhost.localdomain ([188.24.140.160])
+        by smtp.gmail.com with ESMTPSA id b22sm2610455edv.96.2021.03.12.01.49.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 01:49:28 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] arm: dts: owl-s500-roseapplepi: Add ATC2603C PMIC
+Date:   Fri, 12 Mar 2021 11:49:27 +0200
+Message-Id: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <YEsryBEFq4HuLKBs@suse.de>
-In-Reply-To: <YEsryBEFq4HuLKBs@suse.de>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 12 Mar 2021 10:48:40 +0100
-Message-ID: <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
-Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 9:51 AM Luis Henriques <lhenriques@suse.de> wrote:
->
-> Hi Miklos,
->
-> I've seen a bug report (5.10.16 kernel splat below) that seems to be
-> reproducible in kernels as early as 5.4.
->
-> The commit that caught my attention when looking at what was merged in 5.=
-4
-> was e4648309b85a ("fuse: truncate pending writes on O_TRUNC") but I didn'=
-t
-> went too deeper on that -- I was wondering if you have seen something
-> similar before.
+Add device tree node for ATC2603C PMIC and remove the 'fixed-3.1V'
+dummy regulator used for the uSD supply.
 
-Don't remember seeing this.
+Additionally, add 'SYSPWR' fixed regulator and provide cpu0 supply.
 
-Excerpt from invalidate_inode_pages2_range():
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+Please note the patch depends on the ATC260x PMIC support which is queued
+for merging in v5.13:
 
-        lock_page(page);
-        [...]
-        if (page_mapped(page)) {
-             [...]
-                        unmap_mapping_pages(mapping, index,
-                                                1, false);
-                }
-        }
-        BUG_ON(page_mapped(page));
+https://lore.kernel.org/lkml/cover.1611653995.git.cristian.ciocaltea@gmail.com/
+https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next&qt=range&q=a38fd8748464831584a19438cbb3082b5a2dab15..eac013a0b7041f5cfc8feedf429a767675350102
 
-Page fault locks the page before installing a new pte, at least
-AFAICS, so the BUG looks impossible.  The referenced commits only
-touch very high level control of writeback, so they may well increase
-the chance of a bug triggering, but very unlikely to be the actual
-cause of the bug.   I'm guessing this to be an MM issue.
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 132 ++++++++++++++++++++-
+ 1 file changed, 126 insertions(+), 6 deletions(-)
 
-Is this reproducible on vanilla, or just openSUSE kernels?
+diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+index ff91561ca99c..b8c5db2344aa 100644
+--- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
++++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+@@ -2,7 +2,7 @@
+ /*
+  * Roseapple Pi
+  *
+- * Copyright (C) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
++ * Copyright (C) 2020-2021 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+  */
+ 
+ /dts-v1/;
+@@ -27,20 +27,140 @@ memory@0 {
+ 		reg = <0x0 0x80000000>; /* 2GB */
+ 	};
+ 
+-	/* Fixed regulator used in the absence of PMIC */
+-	sd_vcc: sd-vcc {
++	syspwr: regulator-5v0 {
+ 		compatible = "regulator-fixed";
+-		regulator-name = "fixed-3.1V";
+-		regulator-min-microvolt = <3100000>;
+-		regulator-max-microvolt = <3100000>;
++		regulator-name = "SYSPWR";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
+ 		regulator-always-on;
+ 	};
+ };
+ 
++&cpu0 {
++	cpu0-supply = <&vdd_cpu>;
++};
++
+ &i2c0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c0_pins>;
++
++	atc260x: pmic@65 {
++		compatible = "actions,atc2603c";
++		reg = <0x65>;
++		interrupt-parent = <&sirq>;
++		interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
++
++		reset-time-sec = <6>;
++
++		regulators {
++			compatible = "actions,atc2603c-regulator";
++
++			dcdc1-supply = <&syspwr>;
++			dcdc2-supply = <&syspwr>;
++			dcdc3-supply = <&syspwr>;
++			ldo1-supply = <&syspwr>;
++			ldo2-supply = <&syspwr>;
++			ldo3-supply = <&syspwr>;
++			ldo5-supply = <&syspwr>;
++			ldo6-supply = <&syspwr>;
++			ldo7-supply = <&syspwr>;
++			ldo8-supply = <&syspwr>;
++			ldo11-supply = <&syspwr>;
++			ldo12-supply = <&syspwr>;
++			switchldo1-supply = <&vcc>;
++
++			vdd_cpu: dcdc1 {
++				regulator-name = "VDD_CPU";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1400000>;
++				regulator-always-on;
++			};
++
++			vddq: dcdc2 {
++				regulator-name = "VDDQ";
++				regulator-min-microvolt = <1300000>;
++				regulator-max-microvolt = <2150000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			vcc: dcdc3 {
++				regulator-name = "VCC";
++				regulator-min-microvolt = <2600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			vcc_3v3: ldo1 {
++				regulator-name = "VCC_3V3";
++				regulator-min-microvolt = <2600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			avcc: ldo2 {
++				regulator-name = "AVCC";
++				regulator-min-microvolt = <2600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			vdd_1v8: ldo3 {
++				regulator-name = "VDD_1V8";
++				regulator-min-microvolt = <1500000>;
++				regulator-max-microvolt = <2000000>;
++				regulator-always-on;
++			};
++
++			vcc_3v1: ldo5 {
++				regulator-name = "VCC_3V1";
++				regulator-min-microvolt = <2600000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			avdd: ldo6 {
++				regulator-name = "AVDD";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1400000>;
++				regulator-always-on;
++			};
++
++			sens_1v8: ldo7 {
++				regulator-name = "SENS_1V8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++			};
++
++			ldo8: ldo8 {
++				regulator-name = "LDO8";
++				regulator-min-microvolt = <2300000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			svcc: ldo11 {
++				regulator-name = "SVCC";
++				regulator-min-microvolt = <2600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			rtc_vdd: ldo12 {
++				regulator-name = "RTC_VDD";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++			};
++
++			sd_vcc: switchldo1 {
++				regulator-name = "SD_VCC";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++		};
++	};
+ };
+ 
+ &i2c1 {
+-- 
+2.30.2
 
-Thanks,
-Miklos
-
-
-
->
->
-> There's another splat in the bug report[1] for a 5.4.14 kernel (which may
-> be for a different bug, but the traces don't look as reliable as the one
-> bellow).
->
-> [1] https://bugzilla.opensuse.org/show_bug.cgi?id=3D1182929
->
-> [97604.721590] kernel BUG at mm/truncate.c:763!
-> [97604.721601] invalid opcode: 0000 [#1] SMP PTI
-> [97604.721613] CPU: 18 PID: 1584438 Comm: g++ Tainted: P           O
->  5.10.16-1-default #1 openSUSE Tumbleweed
-> [97604.721618] Hardware name: Supermicro X11DPi-N(T)/X11DPi-N, BIOS 3.1a
-> 10/16/2019
-> [97604.721631] RIP: 0010:invalidate_inode_pages2_range+0x366/0x4e0
-> [97604.721637] Code: 0f 48 f0 e9 19 ff ff ff 31 c9 4c 89 e7 ba 01 00 00 0=
-0
-> 48 89 ee e8 1a c5 02 00 4c 89 ff e8 02 1b 01 00 84 c0 0f 84 ca fe ff ff <=
-0f>
-> 0b 49 8b 57 18 49 39 d4 0f 85 e2 fe ff ff 49 f7 07 00 60 00 00
-> [97604.721645] RSP: 0018:ffffa613aa54ba40 EFLAGS: 00010202
-> [97604.721651] RAX: 0000000000000001 RBX: 000000000000000a RCX:
-> 0000000000000200
-> [97604.721656] RDX: 0000000000000090 RSI: 00affff800010037 RDI:
-> ffffd880718e0000
-> [97604.721660] RBP: 0000000000001400 R08: 0000000000001400 R09:
-> 0000000000001a73
-> [97604.721664] R10: 0000000000000000 R11: 0000000004a684da R12:
-> ffff8a28d4549d78
-> [97604.721669] R13: ffffffffffffffff R14: 0000000000000000 R15:
-> ffffd880718e0000
-> [97604.721674] FS:  00007f9cdd7fb740(0000) GS:ffff8a5c7f980000(0000)
-> knlGS:0000000000000000
-> [97604.721679] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [97604.721683] CR2: 00007f89d3d78d80 CR3: 0000004d8a14e005 CR4:
-> 00000000007706e0
-> [97604.721688] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [97604.721692] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> 97604.721696] PKRU: 55555554
-> [97604.721699] Call Trace:
-> [97604.721719]  ? request_wait_answer+0x11a/0x210 [fuse]
-> [97604.721729]  ? fuse_dentry_delete+0xb/0x20 [fuse]
-> [97604.721740]  fuse_finish_open+0x85/0x150 [fuse]
-> [97604.721750]  fuse_open_common+0x1a8/0x1b0 [fuse]
-> [97604.721759]  ? fuse_open_common+0x1b0/0x1b0 [fuse]
-> [97604.721766]  do_dentry_open+0x14e/0x380
-> [97604.721775]  path_openat+0x600/0x10d0
-> [97604.721782]  ? handle_mm_fault+0x103c/0x1a00
-> [97604.721791]  ? follow_page_pte+0x314/0x5f0
-> [97604.721795]  do_filp_open+0x88/0x130
-> [97604.721803]  ? security_prepare_creds+0x6d/0x90
-> [97604.721808]  ? __kmalloc+0x11d/0x2a0
-> [97604.721814]  do_open_execat+0x6d/0x1a0
-> [97604.721819]  bprm_execve+0x190/0x6b0
-> [97604.721825]  do_execveat_common+0x192/0x1c0
-> [97604.721830]  __x64_sys_execve+0x39/0x50
-> [97604.721836]  do_syscall_64+0x33/0x80
-> [97604.721843]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [97604.721848] RIP: 0033:0x7f9cdcfe2c37
-> [97604.721853] Code: ff ff 76 df 89 c6 f7 de 64 41 89 32 eb d5 89 c6 f7 d=
-e
-> 64 41 89 32 eb db 66 2e 0f 1f 84 00 00 00 00 00 90 b8 3b 00 00 00 0f 05 <=
-48>
-> 3d 00 f0 ff ff 77 02 f3 c3 48 8b 15 08 12 30 00 f7 d8 64 89 02
-> [97604.721862] RSP: 002b:00007ffe444f5758 EFLAGS: 00000202 ORIG_RAX:
-> 000000000000003b
-> [97604.721867] RAX: ffffffffffffffda RBX: 00007f9cdd7fb6a0 RCX:
-> 00007f9cdcfe2c37
-> [97604.721872] RDX: 00000000020f5300 RSI: 00000000020f3bf8 RDI:
-> 00000000020f36a0
-> [97604.721876] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000000000000
-> [97604.721880] R10: 00007ffe444f4b60 R11: 0000000000000202 R12:
-> 0000000000000000
-> [97604.721884] R13: 0000000000000001 R14: 00000000020f36a0 R15:
-> 0000000000000000
-> [97604.721890] Modules linked in: overlay rpcsec_gss_krb5 nfsv4 dns_resol=
-ver
-> nfsv3 nfs fscache libafs(PO) iscsi_ibft iscsi_boot_sysfs rfkill
-> vboxnetadp(O) vboxnetflt(O) vboxdrv(O) dmi_sysfs intel_rapl_msr
-> intel_rapl_common isst_if_common joydev ipmi_ssif i40iw ib_uverbs iTCO_wd=
-t
-> intel_pmc_bxt ib_core hid_generic iTCO_vendor_support skx_edac nfit
-> libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel acpi_i=
-pmi
-> usbhid kvm i40e ipmi_si ioatdma mei_me i2c_i801 irqbypass ipmi_devintf me=
-i
-> i2c_smbus lpc_ich dca efi_pstore pcspkr ipmi_msghandler tiny_power_button
-> acpi_pad button nls_iso8859_1 nls_cp437 vfat fat nfsd nfs_acl lockd
-> auth_rpcgss grace sunrpc fuse configfs nfs_ssc ast i2c_algo_bit
-> drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_f=
-ops
-> cec rc_core drm_ttm_helper xhci_pci ttm xhci_pci_renesas xhci_hcd
-> crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_inte=
-l
-> drm glue_helper crypto_simd cryptd usbcore wmi sg br_netfilter bridge stp
-> llc
-> [97604.721991]  dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua
-> msr efivarfs
-> [97604.722031] ---[ end trace edcabaccd35272e2 ]---
-> [97604.727773] RIP: 0010:invalidate_inode_pages2_range+0x366/0x4e0
->
-> Cheers,
-> --
-> Lu=C3=ADs
->
