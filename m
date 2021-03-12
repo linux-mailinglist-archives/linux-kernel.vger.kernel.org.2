@@ -2,331 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB03339A25
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9FB339A27
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235891AbhCLXrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
+        id S235906AbhCLXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhCLXrl (ORCPT
+        with ESMTP id S235615AbhCLXsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:47:41 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15642C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:47:41 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id t26so16861190pgv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:47:41 -0800 (PST)
+        Fri, 12 Mar 2021 18:48:03 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67F1C061574;
+        Fri, 12 Mar 2021 15:48:02 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 18so47927757lff.6;
+        Fri, 12 Mar 2021 15:48:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bjFvm7GKsUKfRs9e/UxDco4aKi8EfcNZsKLV6pl4eOs=;
-        b=DJ7sCUKjOc5WbvYqhvNsNgc2FV/Cksy6090XmuWgRU3SVAWAux8J2qQhk8DkhTd6gW
-         0Bm75UMGlzQ9ITZJHOvUeH39Py+FHn6B0ZubvFeKCwrcSw8K7OUw7SyvEugtxpDXJRKn
-         g52E5mfgsz2Nea7VPWnLbo3Y0QUzkaCFbmnaJ/MYUR3VDPyQV+/uUkEhuhqOq7u0A0FB
-         4HD80ckZLBRY/CD1d5/zZ2IazLbxnlnIBNv3cdRWvGsY7WqEoXDrWLcolabRuEhP/t4j
-         6UoPS+Up41yjOHthZtBfbHSWOA5+w60XpojbYYj84sDWe0O8eQtymO/zaVEmPH0xvcKh
-         7gwA==
+        bh=CxYlLIhvnZZV2Iu1AEjJAC1SlL/gqQ02y8v2I3Ugc4k=;
+        b=TlVHi36K+JNFFiMTpvhpv8o8/mb7jwmmlCD5xEmCnMAzLTCnocw8lcgIE12cKusrA9
+         HzDcKxdF+FNlEJlNUMz4daSE8GdAW/7DErOg09et9/Dq97hvmaJpcHGXtEqHjOlsI/Yh
+         pPfhpex4ZpjoK5h4jn5oIrD5AkuvqNz7GXoyfqwDl79nAP72aBhlAeedP5FdgNEaYZeE
+         G1aSCURMwAZIJyjEoPtR6UbEJnpeWaUs3voTHnN7TQqtNrjs+P9D6zPz53pz1p6x4rLI
+         lnC57BlPodv6kWivzKt7663McEOOzKPtbacMY0qI8gzgzlw2AmAoueGZaumqZmxuwq/j
+         C+CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bjFvm7GKsUKfRs9e/UxDco4aKi8EfcNZsKLV6pl4eOs=;
-        b=jyO8FOgVssicORTXkVqe3VnQpzn1yA1K9qI7sR/IpKEpkKGrCih3KQ8o9OUrRXBvsf
-         kK7vRv5yO0I5m9ETjDNgbcP+8nZzUOzIdPCl++mi0b36ShPW/4gB8ocPEvdwuFYJydiU
-         ysyFSfw6kTm87K94HHS8nO6Ed31jfovvSA/+vWmwanSLpSJwTBNYJ1YNQh21y6hzUdw+
-         33uREBWnltM8ZCtwl+OYnHZ3aK65jbVIJlnl2MeqNTAhTGqT6a1pqNzzI4b/sfEQhONT
-         uN8PE7X4QzXowmwsr+IpnWRDzprsePBSKdBxW9yAki+G4ThNpWN6V4e/blwsOD3ZZxiu
-         Nj5w==
-X-Gm-Message-State: AOAM531DPp63bcbTO3BzcE+zQX78x/bTFsRHK7Dz97N74lU+pAIN+AQH
-        vJXRcqz9Wr1rXjIvjz4gOflBre9QVQylxGKY3EBvag==
-X-Google-Smtp-Source: ABdhPJxmSHVpfjKKFW1s79hB4r3Xbg6oEeDtCAUIL2ZzgTxPwiAGzsVT8Q4fE5cKPJwf86hKukVUbajt0VmZmcs31js=
-X-Received: by 2002:a62:ea09:0:b029:1ee:3bac:8012 with SMTP id
- t9-20020a62ea090000b02901ee3bac8012mr551470pfh.35.1615592859872; Fri, 12 Mar
- 2021 15:47:39 -0800 (PST)
+        bh=CxYlLIhvnZZV2Iu1AEjJAC1SlL/gqQ02y8v2I3Ugc4k=;
+        b=XQ7PLPIDi/E7EmJqDLiIsca4nhYg8agGVOM3c6HNsztz8OsJSupLtgw2M3YW5TmEYJ
+         aWg7XmARty+B8qP465f9RHhU0EOVLfHYjhk0lzxaM7zYNnrEkupYQ3pwnSnnInc8A65b
+         gyWkAbpvjPGIfh1YMkVmvOqg9J2y/82VMnpB7jpIH4YuPXZSP1h6NJ9DkqJoCWRvZz4o
+         DMuEPq5egS8Lxd4rHiIaLu5OuWs2AmP2J9Mm9Rwn+VDd2yHzPJXc009qPABkc3RSHqeX
+         s2jefb4nEe9Q42K9sPJvtqfgoH9N0vwh7BYz8G9mwzhYAmTP/KCjoq8rYJ9xHc9S/R/L
+         WeOQ==
+X-Gm-Message-State: AOAM533+pgnkuLDRPQnJUSZyU02fwQUDZMF3nq944HFh3KGydWmshAXO
+        3XnSY/uMuXETVVNYqXqtj9O1CLGXmB0/1EWG6do=
+X-Google-Smtp-Source: ABdhPJzrRhK0PUulW1EhqzvR5UPEeSEhLfbLCmaGacDcWgYMHxCvdXyJu0IesPhg/nwKAWzRsiXZy4goPJDLnRiuZYk=
+X-Received: by 2002:a05:6512:2212:: with SMTP id h18mr972854lfu.330.1615592881143;
+ Fri, 12 Mar 2021 15:48:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20210224085915.28751-1-natet@google.com> <YDaOw48Ug7Tgr+M6@google.com>
-In-Reply-To: <YDaOw48Ug7Tgr+M6@google.com>
-From:   Nathan Tempelman <natet@google.com>
-Date:   Fri, 12 Mar 2021 15:47:28 -0800
-Message-ID: <CAKiEG5qtTbm8dtE3pZDy_rfSfTfvhCYhDCh2DD-uh2w6xZnvcQ@mail.gmail.com>
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steve Rutherford <srutherford@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>
+References: <20210312124830.1344255-1-ribalda@chromium.org>
+ <20210312124830.1344255-8-ribalda@chromium.org> <YEvq6TlGCL3NSqJ9@pendragon.ideasonboard.com>
+ <CAPybu_16KTsEF+BGoG6ea6hf4d-J+uwimXbUT0Bv9HO8HLhJ-Q@mail.gmail.com> <YEv5N1k6CAFX9/L8@pendragon.ideasonboard.com>
+In-Reply-To: <YEv5N1k6CAFX9/L8@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Sat, 13 Mar 2021 00:47:45 +0100
+Message-ID: <CAPybu_1kksxsnciSv38OBh_QR875X4gDSvV7Hj=dE+ocRrGQUA@mail.gmail.com>
+Subject: Re: [PATCH v3 7/8] media: uvcvideo: Set a different name for the
+ metadata entity
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 9:37 AM Sean Christopherson <seanjc@google.com> wrote:
+Hi Laurent
+
+Thanks!
+On Sat, Mar 13, 2021 at 12:29 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> On Wed, Feb 24, 2021, Nathan Tempelman wrote:
-> >  static bool __sev_recycle_asids(int min_asid, int max_asid)
-> >  {
-> > @@ -1124,6 +1129,10 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
-> >       if (copy_from_user(&sev_cmd, argp, sizeof(struct kvm_sev_cmd)))
-> >               return -EFAULT;
+> Hi Ricardo,
+>
+> On Sat, Mar 13, 2021 at 12:17:50AM +0100, Ricardo Ribalda Delgado wrote:
+> > On Fri, Mar 12, 2021 at 11:30 PM Laurent Pinchart wrote:
+> > > On Fri, Mar 12, 2021 at 01:48:29PM +0100, Ricardo Ribalda wrote:
+> > > > All the entities must have a unique name. And now that we are at it, we
+> > > > append the entity->id to the name to avoid collisions on multi-chain
+> > > > devices.
+> > > >
+> > > > Fixes v4l2-compliance:
+> > > > Media Controller ioctls:
+> > > >                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
+> > > >         test MEDIA_IOC_G_TOPOLOGY: FAIL
+> > > >                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
+> > > >       test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+> > > >
+> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > ---
+> > > >  drivers/media/usb/uvc/uvc_driver.c | 21 ++++++++++++++++++++-
+> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > > index 35873cf2773d..6c928e708615 100644
+> > > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > > @@ -2154,6 +2154,18 @@ static void uvc_unregister_video(struct uvc_device *dev)
+> > > >  #endif
+> > > >  }
+> > > >
+> > > > +static int uvc_oterm_id(struct uvc_video_chain *chain)
+> > > > +{
+> > > > +     struct uvc_entity *entity;
+> > > > +
+> > > > +     list_for_each_entry(entity, &chain->entities, chain) {
+> > > > +             if (UVC_ENTITY_IS_OTERM(entity))
+> > > > +                     return entity->id;
+> > >
+> > > It can also be an ITERM for output devices. You can drop this function
+> > > and use stream>header.bTerminalLink below (see uvc_stream_by_id() and
+> > > its usage in uvc_register_terms()).
+> > >
+> > > > +     }
+> > > > +
+> > > > +     return -1;
+> > > > +}
+> > > > +
+> > > >  int uvc_register_video_device(struct uvc_device *dev,
+> > > >                             struct uvc_streaming *stream,
+> > > >                             struct video_device *vdev,
+> > > > @@ -2162,6 +2174,8 @@ int uvc_register_video_device(struct uvc_device *dev,
+> > > >                             const struct v4l2_file_operations *fops,
+> > > >                             const struct v4l2_ioctl_ops *ioctl_ops)
+> > > >  {
+> > > > +     char prefix[sizeof(vdev->name) - 9];
+> > > > +     const char *suffix;
+> > > >       int ret;
+> > > >
+> > > >       /* Initialize the video buffers queue. */
+> > > > @@ -2190,16 +2204,21 @@ int uvc_register_video_device(struct uvc_device *dev,
+> > > >       case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+> > > >       default:
+> > > >               vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
+> > > > +             suffix = "video";
+> > > >               break;
+> > > >       case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> > > >               vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
+> > > > +             suffix = "out";
+> > >
+> > > I wonder if these two should be video-cap and video-out (or vid-cap and
+> > > vid-out if you want to shorten them) ?
+> > >
+> > > >               break;
+> > > >       case V4L2_BUF_TYPE_META_CAPTURE:
+> > > >               vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
+> > > > +             suffix = "meta";
+> > > >               break;
+> > > >       }
+> > > >
+> > > > -     strscpy(vdev->name, dev->name, sizeof(vdev->name));
+> > > > +     strscpy(prefix, dev->name, sizeof(prefix));
+> > > > +     snprintf(vdev->name, sizeof(vdev->name), "%s-%d %s", prefix,
+> > >
+> > > The unit ID is never negative, so %u ?
+> > >
+> > > > +              uvc_oterm_id(stream->chain), suffix);
+> > >
+> > > Truncating the device name at the beginning of the video node name isn't
+> > > very nice :-S How about the following ?
+> > >
+> > >         snprintf(vdev->name, sizeof(vdev->name), "%s-%u (%s)", type_name,
+> > >                  uvc_oterm_id(stream->chain), dev->name);
+> > >
+> > > with the suffix variable renamed to type_name ?
+> > >
+> > > Thinking some more about it, vdev->name serves two purposes in the
+> > > driver: creating the entity name, and reporting the card name in
+> > > querycap. The former is done in the V4L2 core, which uses vdev->name
+> > > as-is. In this context, we con't need to add dev->name, it would be
+> > > redundant as the media controller device already reports it. The latter
+> > > is done in uvc_ioctl_querycap(). How about dropping dev->name from
+> > > vdev->name, and modifying uvc_ioctl_querycap() to use dev->name instead
+> > > of cap->card ?
+> > >
 > >
-> > +     /* enc_context_owner handles all memory enc operations */
-> > +     if (is_mirroring_enc_context(kvm))
-> > +             return -ENOTTY;
+> > Something like ?
+> > https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/commit/?h=uvc-compliance-v4&id=d4f7363455837116268152c96bf4b78d9761ad1e
 >
-> Is this strictly necessary?  Honest question, as I don't know the hardware/PSP
-> flows well enough to understand how asids are tied to the state managed by the
-> PSP.
+> I would have moved the sprintf() after the switch/case, but otherwise
+> it's the idea.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/commit/?h=uvc-compliance-v4&id=fe287f9d764457f5bcd48780b99e54df161f33f6
+
+Yep, it looks better
+
 >
-> > +
-> >       mutex_lock(&kvm->lock);
+> > https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/commit/?h=uvc-compliance-v4&id=ee3916f12b30f56c03d5622ba8a599b9c610a055
+>
+> Looks good.
+>
+> > I need to work on the V4L2_CTRL_FLAG_GRABBED issue and then I will
+> > send the whole v4 series that can pass all the v4l2-compliance test :)
 > >
-> >       switch (sev_cmd.id) {
-> > @@ -1186,6 +1195,10 @@ int svm_register_enc_region(struct kvm *kvm,
-> >       if (!sev_guest(kvm))
-> >               return -ENOTTY;
-> >
-> > +     /* If kvm is mirroring encryption context it isn't responsible for it */
-> > +     if (is_mirroring_enc_context(kvm))
+> > > >
+> > > >       /*
+> > > >        * Set the driver data before calling video_register_device, otherwise
 >
-> Hmm, preventing the mirror from pinning memory only works if the two VMs are in
-> the same address space (process), which isn't guaranteed/enforced by the ioctl().
-> Obviously we could check and enforce that, but do we really need to?
+> --
+> Regards,
 >
-> Part of me thinks it would be better to treat the new ioctl() as a variant of
-> sev_guest_init(), i.e. purely make this a way to share asids.
->
-> > +             return -ENOTTY;
-> > +
-> >       if (range->addr > ULONG_MAX || range->size > ULONG_MAX)
-> >               return -EINVAL;
-> >
-> > @@ -1252,6 +1265,10 @@ int svm_unregister_enc_region(struct kvm *kvm,
-> >       struct enc_region *region;
-> >       int ret;
-> >
-> > +     /* If kvm is mirroring encryption context it isn't responsible for it */
-> > +     if (is_mirroring_enc_context(kvm))
-> > +             return -ENOTTY;
-> > +
-> >       mutex_lock(&kvm->lock);
-> >
-> >       if (!sev_guest(kvm)) {
-> > @@ -1282,6 +1299,65 @@ int svm_unregister_enc_region(struct kvm *kvm,
-> >       return ret;
-> >  }
-> >
-> > +int svm_vm_copy_asid_to(struct kvm *kvm, unsigned int mirror_kvm_fd)
-> > +{
-> > +     struct file *mirror_kvm_file;
-> > +     struct kvm *mirror_kvm;
-> > +     struct kvm_sev_info *mirror_kvm_sev;
->
-> What about using src and dst, e.g. src_kvm, dest_kvm_fd, dest_kvm, etc...?  For
-> my brain, the mirror terminology adds an extra layer of translation.
-
-I like source, but I think I'll keep mirror. I think it captures the
-current state
-of it better--this isn't it's own full featured sev vm, in a sense
-it's a reflection of
-the source.
-
-Unless everyone found this confusing?
-
->
-> > +     unsigned int asid;
-> > +     int ret;
-> > +
-> > +     if (!sev_guest(kvm))
-> > +             return -ENOTTY;
-> > +
-> > +     mutex_lock(&kvm->lock);
-> > +
-> > +     /* Mirrors of mirrors should work, but let's not get silly */
->
-> Do we really care?
->
-> > +     if (is_mirroring_enc_context(kvm)) {
-> > +             ret = -ENOTTY;
-> > +             goto failed;
-> > +     }
-> > +
-> > +     mirror_kvm_file = fget(mirror_kvm_fd);
-> > +     if (!kvm_is_kvm(mirror_kvm_file)) {
-> > +             ret = -EBADF;
-> > +             goto failed;
-> > +     }
-> > +
-> > +     mirror_kvm = mirror_kvm_file->private_data;
-> > +
-> > +     if (mirror_kvm == kvm || is_mirroring_enc_context(mirror_kvm)) {
->
-> This is_mirroring_enc_context() check needs to be after mirror_kvm->lock is
-> acquired, else there's a TOCTOU race.
-
-Nice. Yeah, I've flipped it around as per Paolo's point and this problem goes
-away.
-
->
-> I also suspect there needs to be more checks on the destination.  E.g. what
-> happens if the destination already has vCPUs that are currently running?  Though
-> on that front, sev_guest_init() also doesn't guard against this.  Feels like
-> that flow and this one should check kvm->created_vcpus.
->
-> > +             ret = -ENOTTY;
-> > +             fput(mirror_kvm_file);
->
-> Nit, probably worth adding a second error label to handle this fput(), e.g. in
-> case additional checks are needed in the future.  Actually, I suspect that's
-> already needed to fix the TOCTOU bug.
->
-> > +             goto failed;
-> > +     }
-> > +
-> > +     asid = *&to_kvm_svm(kvm)->sev_info.asid;
->
-> Don't think "*&" is necessary. :-)
-
-:')
-
->
-> > +
-> > +     /*
-> > +      * The mirror_kvm holds an enc_context_owner ref so its asid can't
-> > +      * disappear until we're done with it
-> > +      */
-> > +     kvm_get_kvm(kvm);
->
-> Do we really need/want to take a reference to the source 'struct kvm'?  IMO,
-> the so called mirror should never be doing operations with its source context,
-> i.e. should not have easy access to 'struct kvm'.  We already have a reference
-> to the fd, any reason not to use that to ensure liveliness of the source?
-
-I agree the mirror should never be running operations on the source. I
-don't know
-that holding the fd instead of the kvm makes that much better though, are there
-advantages to that I'm not seeing?
-
->
-> > +
-> > +     mutex_unlock(&kvm->lock);
-> > +     mutex_lock(&mirror_kvm->lock);
-> > +
-> > +     /* Set enc_context_owner and copy its encryption context over */
-> > +     mirror_kvm_sev = &to_kvm_svm(mirror_kvm)->sev_info;
-> > +     mirror_kvm_sev->enc_context_owner = kvm;
-> > +     mirror_kvm_sev->asid = asid;
-> > +     mirror_kvm_sev->active = true;
->
-> I would prefer a prep patch to move "INIT_LIST_HEAD(&sev->regions_list);" from
-> sev_guest_init() to when the VM is instantiated.  Shaving a few cycles in that
-> flow is meaningless, and not initializing the list of regions is odd, and will
-> cause problems if mirrors are allowed to pin memory (or do PSP commands).
-
-It seems like we can keep this a lot simpler and easier to reason about by not
-allowing mirrors to pin memory or do psp commands. That was the intent. We
-don't gain anything but complexity by allowing this to be a fully featured SEV
-VM. Unless anyone can think of a good reason we'd want to have a mirror
-vm be able to do more than this?
-
-> > @@ -5321,6 +5321,11 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
-> >                       kvm->arch.bus_lock_detection_enabled = true;
-> >               r = 0;
-> >               break;
-> > +     case KVM_CAP_VM_COPY_ENC_CONTEXT_TO:
-> > +             r = -ENOTTY;
-> > +             if (kvm_x86_ops.vm_copy_enc_context_to)
-> > +                     r = kvm_x86_ops.vm_copy_enc_context_to(kvm, cap->args[0]);
->
-> This can be a static call.
->
-> On a related topic, does this really need to be a separate ioctl()?  TDX can't
-> share encryption contexts, everything that KVM can do for a TDX guest requires
-> the per-VM context.  Unless there is a known non-x86 use case, it might be
-> better to make this a mem_enc_op, and then it can be named SEV_SHARE_ASID or
-> something.
-
-I'd prefer to leave this as a capability in the same way the
-register_enc_region calls
-work. Moving it into mem_enc_ops means we'll have to do some messy locking
-to avoid race conditions with the second vm since kvm gets locked in enc_ops.
-Also seems wierd to me having this hack grouped in with all the PSP commands.
-If i'm the only one that thinks this is cleaner, I'll move it though.
-
-Interesting about the platform, too. If you're sure we'll never need
-to build this for
-any other platform I'll at least rename it to be amd specific. There's
-no non-sev
-scenario anyone can think of that might want to do this?
+> Laurent Pinchart
 
 
->
-> > +             return r;
-> >       default:
-> >               r = -EINVAL;
-> >               break;
-> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > index e126ebda36d0..18491638f070 100644
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -637,6 +637,7 @@ void kvm_exit(void);
-> >
-> >  void kvm_get_kvm(struct kvm *kvm);
-> >  void kvm_put_kvm(struct kvm *kvm);
-> > +bool kvm_is_kvm(struct file *file);
-> >  void kvm_put_kvm_no_destroy(struct kvm *kvm);
-> >
-> >  static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
-> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> > index 63f8f6e95648..5b6296772db9 100644
-> > --- a/include/uapi/linux/kvm.h
-> > +++ b/include/uapi/linux/kvm.h
-> > @@ -1077,6 +1077,7 @@ struct kvm_ppc_resize_hpt {
-> >  #define KVM_CAP_SYS_HYPERV_CPUID 191
-> >  #define KVM_CAP_DIRTY_LOG_RING 192
-> >  #define KVM_CAP_X86_BUS_LOCK_EXIT 193
-> > +#define KVM_CAP_VM_COPY_ENC_CONTEXT_TO 194
-> >
-> >  #ifdef KVM_CAP_IRQ_ROUTING
-> >
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index 001b9de4e727..5f31fcda4777 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -739,6 +739,8 @@ void __weak kvm_arch_pre_destroy_vm(struct kvm *kvm)
-> >  {
-> >  }
-> >
-> > +static struct file_operations kvm_vm_fops;
->
-> I'd probably prefer to put the helper just below kvm_vm_fops instead of adding
-> a forward declaration.  IMO it's not all that important to add the helper close
-> to kvm_get/put_kvm().
->
-> > +
-> >  static struct kvm *kvm_create_vm(unsigned long type)
-> >  {
-> >       struct kvm *kvm = kvm_arch_alloc_vm();
-> > @@ -903,6 +905,12 @@ void kvm_put_kvm(struct kvm *kvm)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvm_put_kvm);
-> >
-> > +bool kvm_is_kvm(struct file *file)
->
-> Heh, maybe kvm_file_is_kvm()?  or just file_is_kvm()?
->
-> > +{
-> > +     return file && file->f_op == &kvm_vm_fops;
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvm_is_kvm);
-> > +
-> >  /*
-> >   * Used to put a reference that was taken on behalf of an object associated
-> >   * with a user-visible file descriptor, e.g. a vcpu or device, if installation
-> > --
-> > 2.30.0.617.g56c4b15f3c-goog
-> >
+
+-- 
+Ricardo Ribalda
