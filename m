@@ -2,199 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6A2338F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73574338F42
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbhCLN4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        id S231294AbhCLN60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhCLN40 (ORCPT
+        with ESMTP id S230386AbhCLN5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:56:26 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E296EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:56:25 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 16so6843768ljc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:56:25 -0800 (PST)
+        Fri, 12 Mar 2021 08:57:51 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE381C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:57:51 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso1421530ott.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:57:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0+cQI6IBGeUFnwRLsME/R/tm5JUnpBXS5OxVlu71yp4=;
-        b=mMF2TVCLPhwVCGaTyiVuCUd6NCDmmTEA7yh9NysOLee4jMJQ7JOY9v36HlbqsabBba
-         /FGf3Y7rJJjMyz+xTy0hwTnDzi3Y3cGhrd6FMj5fgVDOHJGtX8BaeLHdY5/jZCPttwRg
-         0Zzpc9bV6D+KgPBRRJpQ0+V+Z8Jnv2dHnoJgzgFMV6zz9UplBDRyBuoa2iz/Bwbw0vlO
-         eByN3mWN9gvWj1C06T4Fhwb7nRgNYlfQVjJBEt7gtE7okN84k0Viqos1wFh46bkKTMUP
-         TJgfhWXfX3+rnruqoByrVH46QnKqiXeJvT0TeafZdZIUtcXp3UwqujUo7O65z+LEiVcj
-         i11Q==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AHfuJMq3vwyoBDCpgJM3KmGD2Pa3M60SW2r9HL22pz8=;
+        b=Rjf8XQ0Dw01CTibeSyc80hYATpX7r/YNusQ346y14D4fdgTJC8oFBVn9kCP034LhJo
+         f36wpX4iy0hMWhL57+nqiQHcQxLUk+QOEodFQYGUHEL6+iMGbkBoULTT3mKsP+RdIiRc
+         QiL9dT41GQDoiH2C+qtvWAZwJa0k6KHd7cHSbm88XuhNcOJK7OGQ1nOq1VdGNYure3B6
+         Wd/jiAiCQgitZ7ZoCWGOzKVWSsaUy1ZXUt2Fpo6kS+E5aOiRSehst66RTZ4qTsRu42Vr
+         XxmTLXldUnvLErfmdIRBgE+Xieppn4ETd2LkR8/D1TQ+6X9bZ0vVvm5W02mDkYQ/S6VM
+         hO8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0+cQI6IBGeUFnwRLsME/R/tm5JUnpBXS5OxVlu71yp4=;
-        b=gSJ4kPyY4+lFDf91Yib5vnPPT3irXHktg+u/Vck6F2Z7pV7/sziKICJbVLE1NZ5i5W
-         E1U8RscqVuXU2SQpIps98JrtKGc1Xvsnm6HU5thpiOg5JoB7H0U/TupOEEQTdBKel5Bc
-         oCGoBNieKcELJHd4w2Ejjg8L3ci8eg+Ms01mTkEIwATHEtbapDVrWi0Eehw9iqLN8dSm
-         m0Owh2gIFEXpIQyXgVWkVsjtaChT8al3ktsMhQeV7X8wH4EzIOpc0tudmBj73qz8JWgS
-         lDCieV8dPO7Dcdkal2kvVYruTifmJibpK0exJ1ZuSUdiIQaMPuBJ7fFd48QsmWKROdik
-         QQhQ==
-X-Gm-Message-State: AOAM531ksPvSNe7gKWyeLc1V7qoaQDfSAgRI/Mn3ruHUBJrIPeJElddQ
-        fA8OGhnIqAgd7WmwcXMWv4w7Lr4qnX7CJx2Fp6s=
-X-Google-Smtp-Source: ABdhPJwffCGWRkIYD6jWDrR+Q0unl67vgMn+0dEdUWWEKjlYNiJpUUJIFaz6I1IKyXmNSfuo/Jf8Ma79sirQ5eT8Hic=
-X-Received: by 2002:a2e:a58f:: with SMTP id m15mr2385147ljp.400.1615557384397;
- Fri, 12 Mar 2021 05:56:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AHfuJMq3vwyoBDCpgJM3KmGD2Pa3M60SW2r9HL22pz8=;
+        b=uOKzG0CIT/wpoBr9vPt7nA8pCQ43ocD8WB40IhfXnljZXK2g+1F2ms6a5up1d0Uj8t
+         RtaFNG5h07jE5JXzwp0TH1b0py+IiIgE4uThgT3LqdcCOAKVdJLbGmeyhKRFwBvcIwv0
+         gxcNtYPz93Xe8WeVnp69Xo92sWNyK62sbbUPne8S8BQqAdCiiVWnoJCEl4I6h1L8++7A
+         hGXJG5KnSoj5yQzCDRtBZ98wIZFNu9KCi+dy3k8nIk9TH1lzCJNgNvbC3cHk0epxFio7
+         vqFQa2UZqDPtRy3RsY2kgnyKr7BJJM82J8Ih3PqstGWuz1pFlKkHdrtcKqEDGdftpwCI
+         oJpw==
+X-Gm-Message-State: AOAM533EXwlAF/sYJ7Z7dTOLvQFJBz7nYGhLfmfd0+uug/zTVCPO/S2c
+        O4b221U9IRACJ2KBj3cYh0Hy3A==
+X-Google-Smtp-Source: ABdhPJxzya4dmltdm8KZIA1P9WELxRn5aNvoLOU3kE652omBKYVRZ+tQwb7uwYc4D6SBSSF8XWLRog==
+X-Received: by 2002:a9d:3a4b:: with SMTP id j69mr3414145otc.47.1615557471058;
+        Fri, 12 Mar 2021 05:57:51 -0800 (PST)
+Received: from winterfell.papolivre.org (winterfell.papolivre.org. [198.58.116.17])
+        by smtp.gmail.com with ESMTPSA id z14sm1341908otk.30.2021.03.12.05.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 05:57:50 -0800 (PST)
+Received: from localhost (unknown [IPv6:2001:1284:f016:8458:4b63:e980:6768:80b4])
+        by winterfell.papolivre.org (Postfix) with ESMTPSA id 53F811C2F43;
+        Fri, 12 Mar 2021 10:57:49 -0300 (-03)
+From:   Antonio Terceiro <antonio.terceiro@linaro.org>
+To:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] tools/power/x86/intel-speed-select: drop __DATE__ and __TIME__ macros
+Date:   Fri, 12 Mar 2021 10:57:46 -0300
+Message-Id: <20210312135746.1695294-1-antonio.terceiro@linaro.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210312122531.2717093-1-daeho43@gmail.com> <YEtg8U7whCVV2tQt@kroah.com>
-In-Reply-To: <YEtg8U7whCVV2tQt@kroah.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 12 Mar 2021 22:56:13 +0900
-Message-ID: <CACOAw_zhZ0OgT-KCBmD_H6_U=CZCNY44D-ojH2AZah2cbAvdAQ@mail.gmail.com>
-Subject: Re: [PATCH v4] f2fs: add sysfs nodes to get runtime compression stat
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for suggesting me sysfs_emit().
+These macros introduce nondeterminism in builds, and break reproducible
+builds.
 
-For atomic values, actually, those are needed for writer part, not reader.
+Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ tools/power/x86/intel-speed-select/isst-config.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-+#define add_compr_block_stat(inode, blocks)                            \
-+       do {                                                            \
-+               struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);            \
-+               int diff =3D F2FS_I(inode)->i_cluster_size - blocks;      \
-+               atomic64_add(blocks, &sbi->compr_written_block);        \
-+               atomic64_add(diff, &sbi->compr_saved_block);            \
-+       } while (0)
+diff --git a/tools/power/x86/intel-speed-select/isst-config.c b/tools/power/x86/intel-speed-select/isst-config.c
+index 582feb88eca3..c50c754a656e 100644
+--- a/tools/power/x86/intel-speed-select/isst-config.c
++++ b/tools/power/x86/intel-speed-select/isst-config.c
+@@ -2791,7 +2791,6 @@ static void usage(void)
+ static void print_version(void)
+ {
+ 	fprintf(outf, "Version %s\n", version_str);
+-	fprintf(outf, "Build date %s time %s\n", __DATE__, __TIME__);
+ 	exit(0);
+ }
+ 
+-- 
+2.30.1
 
-I needed a protection here, because they might be updated in the race condi=
-tion.
-
-2021=EB=85=84 3=EC=9B=94 12=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 9:39, G=
-reg KH <gregkh@linuxfoundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Fri, Mar 12, 2021 at 09:25:31PM +0900, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > I've added new sysfs nodes to show runtime compression stat since mount=
-.
-> > compr_written_block - show the block count written after compression
-> > compr_saved_block - show the saved block count with compression
-> > compr_new_inode - show the count of inode newly enabled for compression
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> > v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
-> >     related to kernel config
-> > v3: changed sysfs nodes' names and made them runtime stat, not
-> >     persistent on disk
-> > v4: changed sysfs nodes' desctiption
-> > ---
-> >  Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++
-> >  fs/f2fs/compress.c                      |  1 +
-> >  fs/f2fs/f2fs.h                          | 19 ++++++++
-> >  fs/f2fs/super.c                         |  7 +++
-> >  fs/f2fs/sysfs.c                         | 58 +++++++++++++++++++++++++
-> >  5 files changed, 109 insertions(+)
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/AB=
-I/testing/sysfs-fs-f2fs
-> > index cbeac1bebe2f..ddd4bd6116fc 100644
-> > --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> > +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> > @@ -409,3 +409,27 @@ Description:     Give a way to change checkpoint m=
-erge daemon's io priority.
-> >               I/O priority "3". We can select the class between "rt" an=
-d "be",
-> >               and set the I/O priority within valid range of it. "," de=
-limiter
-> >               is necessary in between I/O class and priority number.
-> > +
-> > +What:                /sys/fs/f2fs/<disk>/compr_written_block
-> > +Date:                March 2021
-> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
-> > +Description: Show the block count written after compression since moun=
-t. Note
-> > +             that when the compressed blocks are deleted, this count d=
-oesn't
-> > +             decrease. If you write "0" here, you can initialize
-> > +             compr_written_block and compr_saved_block to "0".
-> > +
-> > +What:                /sys/fs/f2fs/<disk>/compr_saved_block
-> > +Date:                March 2021
-> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
-> > +Description: Show the saved block count with compression since mount. =
-Note
-> > +             that when the compressed blocks are deleted, this count d=
-oesn't
-> > +             decrease. If you write "0" here, you can initialize
-> > +             compr_written_block and compr_saved_block to "0".
-> > +
-> > +What:                /sys/fs/f2fs/<disk>/compr_new_inode
-> > +Date:                March 2021
-> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
-> > +Description: Show the count of inode newly enabled for compression sin=
-ce mount.
-> > +             Note that when the compression is disabled for the files,=
- this count
-> > +             doesn't decrease. If you write "0" here, you can initiali=
-ze
-> > +             compr_new_inode to "0".
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index 77fa342de38f..3c9d797dbdd6 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct com=
-press_ctx *cc,
-> >       if (fio.compr_blocks)
-> >               f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, f=
-alse);
-> >       f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
-> > +     add_compr_block_stat(inode, cc->nr_cpages);
-> >
-> >       set_inode_flag(cc->inode, FI_APPEND_WRITE);
-> >       if (cc->cluster_idx =3D=3D 0)
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index e2d302ae3a46..2c989f8caf05 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
-> >  #ifdef CONFIG_F2FS_FS_COMPRESSION
-> >       struct kmem_cache *page_array_slab;     /* page array entry */
-> >       unsigned int page_array_slab_size;      /* default page array sla=
-b size */
-> > +
-> > +     /* For runtime compression statistics */
-> > +     atomic64_t compr_written_block;
-> > +     atomic64_t compr_saved_block;
-> > +     atomic_t compr_new_inode;
->
-> Why do you need these to be atomic?  What requires this?
->
-> > +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> > +     if (!strcmp(a->attr.name, "compr_written_block")) {
-> > +             u64 bcount;
-> > +             int len;
-> > +
-> > +             bcount =3D atomic64_read(&sbi->compr_written_block);
-> > +
-> > +             len =3D scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
->
-> Please use sysfs_emit() for new sysfs entries like these.  Makes it much
-> simpler.
->
-> And look, you really do not need an atomic value as this is just a
-> random number you are sending to userspace that could be stale the
-> minute you read from it.
->
-> Please just use a normal u64 and save the cpu sync for stuff like this.
->
-> thanks,
->
-> greg k-h
