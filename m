@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F355B33844C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D4633844E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhCLDRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:17:55 -0500
-Received: from ozlabs.org ([203.11.71.1]:36771 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231643AbhCLDRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:17:50 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxWGL4R9Nz9sRR;
-        Fri, 12 Mar 2021 14:17:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615519068;
-        bh=r+w0f+rCOG7p9lEWxedgjApaW7EtjtBd4UVm/Y/TN8o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tIokTXFYuXpF7wHyZzKL2w9V+m3oeDyqQKWiIWVqNdctptvlcZ7BLEyBRrRxa1PKK
-         E57MInQPOBf4LfJe0hSWTGb2JDCiGWNetbDLS26puCTSqdpzcL2RKear31LXvoXrn0
-         ekFOP+BelXC0/Wae+GmCzawD+B1lu+VoEKPB7IIJgM7esqNwlZA9YgnknU18e2UcnI
-         TajQ9kHjxmmK7tlkqixd8u27PsaKZGTTR58+etS0a4w4n4GfmPkwTHhplYqJBkLCYQ
-         IMwhrtj/WneKSYYBxFdYtf4uZFGnAQJOQGj1ueuqbceuUn3euvKC/FxHOhPLFibO+L
-         vqnn/CQ3zO1BA==
-Date:   Fri, 12 Mar 2021 14:17:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Douglas Gilbert <dgilbert@interlog.com>,
+        id S231703AbhCLDS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231664AbhCLDSH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 22:18:07 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C34C061574;
+        Thu, 11 Mar 2021 19:18:07 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id f12so2830661qtq.4;
+        Thu, 11 Mar 2021 19:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6s7aZDqIh5c7QwDOhan9TstA2/Xr1K2QMo7FCDdlyBo=;
+        b=T4OQFB66k30ubxSV9gRAG0sZGTambgWeuupbvEr22jNOK7+vK13ZnJzFS338VUwl0g
+         JXdWe+1L9IdmWhMSBCzKF5V114ma5sIszr/weI1wT6nmOwDlkYuc+hMD+vw2zGTISm91
+         lscDoakYPZJVOVVZdNzQzUaRjBP6lUjLgiPla8k7blFhU1exhOBfn5TRSDrvyzZnVjid
+         TNIrPy9RIGI0ASk1rFeMOM8J1Tg0BMVNyZQxvFU11mBGVx6jbw9NH+h4GRHD9Tw0BP/v
+         V2Hp4gjijvgcsftsYupz1Drf7gpqHyQAe/lL8e3PX+T6CYnafbTGbMcbmMpyhMM9t/Zp
+         X6fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=6s7aZDqIh5c7QwDOhan9TstA2/Xr1K2QMo7FCDdlyBo=;
+        b=Y+66Y16Olf+R7VDAorcK36bej73y2k+gqg8MQ1dAMV/R6peySKbVCtEZIsrxaQA0+5
+         BokcNYQYTznpiK2h79l219ZWCySfShC0ppJoyNlTu8ERM+FUiWeqpzNjNaxRNjzF/jIt
+         b0u/A1KNtRfUC31xToKymSKEVkVp0M1s8Yku062N3IwD03UjToQANQ6kiRh4LF/AeyWf
+         HoYkVG4sWNlXTz+MOxGyBtzyiPW8a/BQ6LK1L/eOkmcUi9YIuu1m0lHbDwz88WCttXJr
+         Imw/6P4rgTD3Q2m5GA0DFSCJKvoOWE/vaRwwGVF34Qpw9I2iNSGGiVykR1bCtm4UYusa
+         L4bA==
+X-Gm-Message-State: AOAM533t0s/s0JzUwJCfjHUg6wFs7i0EZr/dLiQ9P9ZEzaq4EqjhQ6tt
+        RENZ3E9mG162KfqcbuqEOlhHxMYea5g2VyT4
+X-Google-Smtp-Source: ABdhPJzRY92UlNkLxUZSslSacXp9ZxxY+woT8JqRC+Bpt6L8dZuV8xz7IXOkkAx5vIAcLDqtBaCpDA==
+X-Received: by 2002:ac8:b49:: with SMTP id m9mr10303587qti.182.1615519086608;
+        Thu, 11 Mar 2021 19:18:06 -0800 (PST)
+Received: from Gentoo ([143.244.44.200])
+        by smtp.gmail.com with ESMTPSA id 85sm3696440qkf.58.2021.03.11.19.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 19:18:05 -0800 (PST)
+Date:   Fri, 12 Mar 2021 08:47:58 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org
+Subject: Re: Why is the bit size different between a syscall and its wrapper?
+Message-ID: <YErdZh4QCaRiSV1l@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scsi-mkp tree
-Message-ID: <20210312141744.0022d5f5@canb.auug.org.au>
+        linux-api@vger.kernel.org
+References: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gIuhuxoqy6sEVhOKYQ21qqG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Tq7vG0cIx+jTMAax"
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gIuhuxoqy6sEVhOKYQ21qqG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--Tq7vG0cIx+jTMAax
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-After merging the scsi-mkp tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+On 11:48 Fri 12 Mar 2021, Masahiro Yamada wrote:
+>Hi.
+>
+>I think I am missing something, but
+>is there any particular reason to
+>use a different bit size between
+>a syscall and its userspace wrapper?
+>
+>
+>
+>For example, for the unshare syscall,
+>
+>unshare(2) says the parameter is int.
+>
+>
+>SYNOPSIS
+>       #define _GNU_SOURCE
+>       #include <sched.h>
+>
+>       int unshare(int flags);
+>
+>
+>
+>
+>In the kernel, it is unsigned long.
+>
+>
+>SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
+>{
+>        return ksys_unshare(unshare_flags);
+>}
+>
+>
+>
+>
+>I guess the upper 32-bit will be
+>zeroed out in the c library when
+>sizeof(int) != sizeof(unsigned long)
+>(i.e. 64-bit system), but I'd like to know
+>why we do it this way.
+>
+>
+Small nit! never mind ...but eye catching, Masahiro :) ...are you typing this
+on narrowed device, which allow only this much line length?? It's bloody
+narrow...don't you think so?
 
+Sorry, for the deviation.
 
-drivers/scsi/sg.c: In function 'sg_mk_kern_bio':
-drivers/scsi/sg.c:2958:17: error: 'BIO_MAX_PAGES' undeclared (first use in =
-this function); did you mean 'BIO_MAX_VECS'?
- 2958 |  if (bvec_cnt > BIO_MAX_PAGES)
-      |                 ^~~~~~~~~~~~~
-      |                 BIO_MAX_VECS
+~Bhaskar
+>--
+>Best Regards
+>Masahiro Yamada
 
-Caused by commit
-
-  b32ac463cb59 ("scsi: sg: NO_DXFER move to/from kernel buffers")
-
-interacting with commit
-
-  a8affc03a9b3 ("block: rename BIO_MAX_PAGES to BIO_MAX_VECS")
-
-from the block tree.
-
-I have applied the following merge fix patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 12 Mar 2021 14:11:16 +1100
-Subject: [PATCH] scsi: sg: fix up for BIO_MAX_PAGES rename
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/scsi/sg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 2d4bbc1a1727..6b31b2bc8f9a 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -2955,7 +2955,7 @@ sg_mk_kern_bio(int bvec_cnt)
- {
- 	struct bio *biop;
-=20
--	if (bvec_cnt > BIO_MAX_PAGES)
-+	if (bvec_cnt > BIO_MAX_VECS)
- 		return NULL;
- 	biop =3D bio_alloc(GFP_ATOMIC, bvec_cnt);
- 	if (!biop)
---=20
-2.30.0
-
-Jens, maybe you could create a topic branch with that block tree change
-in it (and any other necessary ones) for Martin to merge into his tree.
-Of course, you should do that be rebasing it onto v5.12-rc2 first to
-get rid of the swapfile booby trap.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gIuhuxoqy6sEVhOKYQ21qqG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--Tq7vG0cIx+jTMAax
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBK3VgACgkQAVBC80lX
-0GzrfQf8CRynrTvBPJvFuKFqeQNW3z/KBqggWO9QqbW0fcUYMqxzxNfhUV1PA3uz
-ZOpFju4XuzY+HIep3naNWhaXWUgawJqvEt5cLyqMrdyPUZ5WCISL9fXdP8MeEaJ9
-iSL74CCoLpV5NHnjNgrI3AezJJQ3YyPBQhnqsiG1v9wXWL4hwPruitUaQ9QP0CvT
-E+SVkmIRBt800/LEP3H3e4DzR5xXUIJhYhzB4qNQen4M29CGKB3wSWttoBgWBCbl
-0IcyfKTGd7/8g5gY/LKksg5UtemIY1055yqx3GvGI8eUKVm7vR+L6rwa4EzZzymG
-FJFohxiYDsp6ffmumiSkrYLWpm9MxA==
-=WHh1
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBK3WMACgkQsjqdtxFL
+KRU3nwf/ZL/k1UIFts05kpo+C0zQCoovf4iCPT+Xdx43C6W4t8uk+cYNudnTcs9c
+Cfd5MmuZ9smrdglDnx7tFBZ4vuB5jZoze4g3zrz3qcFCJu9IZj3Y0V+ACJ1QpK9l
+4qZoRLUoP2LhLxbCQtUuxPy4XTq85VhhDJhqVG3ArizebKjmjOHHWsp8hnrogSOq
+mwjdypgrolCMEs45umeA/gPVNchoY4a4k05A/Publz0s++KZtDRGc4SEGYP20HJq
++eLeNg7t1a9uujIKkbf+ESoFIeJgJu15KxBmAmWF8oclpKo7wxvLprgabkq5s3J9
+sJEnPseSffefo9qgr3yxIATPzw3etg==
+=tJ53
 -----END PGP SIGNATURE-----
 
---Sig_/gIuhuxoqy6sEVhOKYQ21qqG--
+--Tq7vG0cIx+jTMAax--
