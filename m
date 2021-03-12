@@ -2,156 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6B13395B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E7533962D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbhCLSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:00:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:58516 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232398AbhCLSAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:00:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 528BC101E;
-        Fri, 12 Mar 2021 10:00:00 -0800 (PST)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85CFE3F7D7;
-        Fri, 12 Mar 2021 09:59:58 -0800 (PST)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: [PATCH v2 08/24] x86/resctrl: Add resctrl_arch_get_num_closid()
-Date:   Fri, 12 Mar 2021 17:58:33 +0000
-Message-Id: <20210312175849.8327-9-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210312175849.8327-1-james.morse@arm.com>
-References: <20210312175849.8327-1-james.morse@arm.com>
+        id S232996AbhCLSUg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 13:20:36 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:59944 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233053AbhCLSUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:20:24 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 2A9BB3E3B18;
+        Fri, 12 Mar 2021 13:29:25 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Nmd36HLJRi3k; Fri, 12 Mar 2021 13:29:24 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 22F8438AE92;
+        Fri, 12 Mar 2021 12:55:35 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Z1UioLxKVOGq; Fri, 12 Mar 2021 12:55:35 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id AFF2538C213;
+        Fri, 12 Mar 2021 12:37:54 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 16:38:14 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312153754.AFF2538C213@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl chooses whether to enable CDP, once it does, half the number
-of closid are available. MPAM doesn't behave like this, an in-kernel user
-of MPAM could be 'using CDP' while resctrl is not. (e.g. a KVM guest)
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-To move the 'half the closids' behaviour to be part of the filesystem code,
-each schema would have a num_closids. This may be different from the
-single resources num_closid if CDP is in use. An abstraction between the
-hardware property, and the way resctrl is using it is needed.
+Sir/Madam,
 
-Add a helper to read the resource's num_closid from the arch code. This
-should return the number of closid that the resource supports, regardless
-of whether CDP is in use.
+CONGRATULATIONS!!!
 
-This helper is used in the one remaining path that is specific to the
-filesystem: schemata_list_create().
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-In contrast reset_all_ctrls() sets up a structure for modifying the
-hardware, it is part of the architecture code, the maximum closid should
-be the maximum value the hardware has, regardless of the way resctrl is
-using it. All the uses in core.c are naturally part of the architecture
-specific code.
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-For now return the hw_res->num_closid, which is already adjusted for CDP.
-Once the CODE/DATA/BOTH resources are merged, resctrl can make the
-adjustment when copying the value to the schema's num_closid.
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-Using a type with an obvious size for the architecture specific helper
-means changing the type of num_closid to u32, which matches the type
-already used by struct rdtgroup.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-Signed-off-by: James Morse <james.morse@arm.com>
----
-Changes since v1:
- * Rewrote commit message
- * Whitespace fixes
- * num_closid becomes u32 in all occurences to reduce surprises
----
- arch/x86/kernel/cpu/resctrl/core.c     | 5 +++++
- arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 4 ++--
- include/linux/resctrl.h                | 6 +++++-
- 4 files changed, 13 insertions(+), 4 deletions(-)
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 048c82e3baca..078822bc58ae 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -450,6 +450,11 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
- 	return NULL;
- }
- 
-+u32 resctrl_arch_get_num_closid(struct rdt_resource *r)
-+{
-+	return resctrl_to_arch_res(r)->num_closid;
-+}
-+
- void rdt_ctrl_update(void *arg)
- {
- 	struct msr_param *m = arg;
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 57484d2f6214..51a6e5f2f035 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -370,7 +370,7 @@ struct rdt_parse_data {
- struct rdt_hw_resource {
- 	enum resctrl_conf_type	conf_type;
- 	struct rdt_resource	resctrl;
--	int			num_closid;
-+	u32			num_closid;
- 	unsigned int		msr_base;
- 	void (*msr_update)	(struct rdt_domain *d, struct msr_param *m,
- 				 struct rdt_resource *r);
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 1ff883f68ee1..a8d8499e6919 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -104,7 +104,7 @@ int closids_supported(void)
- static void closid_init(void)
- {
- 	struct resctrl_schema *s;
--	int rdt_min_closid = 32;
-+	u32 rdt_min_closid = 32;
- 
- 	/* Compute rdt_min_closid across all resources */
- 	list_for_each_entry(s, &resctrl_schema_all, list)
-@@ -2134,7 +2134,7 @@ static int schemata_list_create(void)
- 
- 		s->res = r;
- 		s->conf_type = resctrl_to_arch_res(r)->conf_type;
--		s->num_closid = resctrl_to_arch_res(r)->num_closid;
-+		s->num_closid = resctrl_arch_get_num_closid(r);
- 
- 		INIT_LIST_HEAD(&s->list);
- 		list_add(&s->list, &resctrl_schema_all);
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 0ff10468940b..5bd48c1ed497 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -171,6 +171,10 @@ struct resctrl_schema {
- 	struct list_head		list;
- 	enum resctrl_conf_type		conf_type;
- 	struct rdt_resource		*res;
--	int				num_closid;
-+	u32				num_closid;
- };
-+
-+/* The number of closid supported by this resource regardless of CDP */
-+u32 resctrl_arch_get_num_closid(struct rdt_resource *r);
-+
- #endif /* _RESCTRL_H */
--- 
-2.30.0
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
