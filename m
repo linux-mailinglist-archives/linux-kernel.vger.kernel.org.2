@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7623390EB
+	by mail.lfdr.de (Postfix) with ESMTP id EA4F73390EC
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhCLPNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:13:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232002AbhCLPMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:12:55 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ACCC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:12:55 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id f20so26019101ioo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:12:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1eAf7XHun/r1nyfyWnh0YUK8Tw5feFEiDHVXlmI2i/4=;
-        b=L9J5XOFM+tUsF0a+JOdmeFuicTc8KdqOsosjj2zQuZOGGzQ18Ly2OAHISm3GKXXdS0
-         hSkFKT6Q+UXEeip8HbrPWIQ+fTXrsBwfbDOwns9lOM6f7vccjT8/wb0EY+I81m226sFQ
-         4l0BadeWEdCN1hav3kkEZml2smyxNIkh/qRFVp5vfZODCJ1gEZVI0dcOBPIgFixZcEEP
-         HANmVovS++S2/W1qB2A/NO+OA8pSuFCiO0v8eP08aeMPEhqMBB+XqS3AvOnWyluwiWuH
-         4INnylJ9BkaOFJZl4G0j6Tk5jtInT81hv/kEswdr9QB0OUb78ctfs34qOJUAdhEe32Xe
-         DCtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1eAf7XHun/r1nyfyWnh0YUK8Tw5feFEiDHVXlmI2i/4=;
-        b=M43en00X1OGOK54e55ecQExPkrzxe08B9a+CQuQF70StlIE1RdGkYbVWwsLvyRgInf
-         PvOI8DemkWEK+bu8gZEZLdRo0tml/hq070xpuCjZ057hixcNSsrn93FMEVIJYwiUabey
-         +RXHAJAMPu9/QprNGGF9at31efUrJNAG22XFkLOdkDdf6Agv/j/HM67ZWtyLsKuz4+eg
-         mRvqoZJWvTdemNfzi0k+TaK29XLgBxHOvfd8CEZDcHcK6NwpXMCGUvAilEEsYk5ydw2a
-         5Rmw1sJPxA/dr0icHSJA1S8B9b8RKCR37+68Rcqs3JP79OKjbiC5z/yn8bvQfJhhape1
-         V6kA==
-X-Gm-Message-State: AOAM533u1Xuf63S+O2mb1P59IiTdv1eOoWDiSa3jWPsb1H/uivHHz10K
-        04NRyQTwm31LyGDEgFktSkF+4g==
-X-Google-Smtp-Source: ABdhPJxjMDzchE+ZmuHLfDbQNeOf5+Je4pdz+mYURBsR0RkgWEpKRsqKaDMq2dWnqBTt/ZhKCvpyPQ==
-X-Received: by 2002:a6b:6e06:: with SMTP id d6mr10291475ioh.116.1615561974993;
-        Fri, 12 Mar 2021 07:12:54 -0800 (PST)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u15sm3046764iln.84.2021.03.12.07.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 07:12:54 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     sujitka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: ipa: terminate message handler arrays
-Date:   Fri, 12 Mar 2021 09:12:48 -0600
-Message-Id: <20210312151249.481395-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        id S232229AbhCLPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:13:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232032AbhCLPNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:13:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C7964FD9;
+        Fri, 12 Mar 2021 15:13:02 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 15:13:00 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH v15 5/8] arm64: mte: Enable TCO in functions that can
+ read beyond buffer limits
+Message-ID: <20210312151259.GB24210@arm.com>
+References: <20210312142210.21326-1-vincenzo.frascino@arm.com>
+ <20210312142210.21326-6-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312142210.21326-6-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a QMI handle is initialized, an array of message handler
-structures is provided, defining how any received message should
-be handled based on its type and message ID.  The QMI core code
-traverses this array when a message arrives and calls the function
-associated with the (type, msg_id) found in the array.
+On Fri, Mar 12, 2021 at 02:22:07PM +0000, Vincenzo Frascino wrote:
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 9b557a457f24..8603c6636a7d 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -90,5 +90,20 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>  
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +/* Whether the MTE asynchronous mode is enabled. */
+> +DECLARE_STATIC_KEY_FALSE(mte_async_mode);
+> +
+> +static inline bool system_uses_mte_async_mode(void)
+> +{
+> +	return static_branch_unlikely(&mte_async_mode);
+> +}
+> +#else
+> +static inline bool system_uses_mte_async_mode(void)
+> +{
+> +	return false;
+> +}
+> +#endif /* CONFIG_KASAN_HW_TAGS */
 
-The array is supposed to be terminated with an empty (all zero)
-entry though.  Without it, an unsupported message will cause
-the QMI core code to go past the end of the array.
+You can write this with fewer lines:
 
-Fix this bug, by properly terminating the message handler arrays
-provided when QMI handles are set up by the IPA driver.
+DECLARE_STATIC_KEY_FALSE(mte_async_mode);
 
-Fixes: 530f9216a9537 ("soc: qcom: ipa: AP/modem communications")
-Reported-by: Sujit Kautkar <sujitka@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_qmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+static inline bool system_uses_mte_async_mode(void)
+{
+	return IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&
+		static_branch_unlikely(&mte_async_mode);
+}
 
-diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
-index 2fc64483f2753..e594bf3b600f0 100644
---- a/drivers/net/ipa/ipa_qmi.c
-+++ b/drivers/net/ipa/ipa_qmi.c
-@@ -249,6 +249,7 @@ static const struct qmi_msg_handler ipa_server_msg_handlers[] = {
- 		.decoded_size	= IPA_QMI_DRIVER_INIT_COMPLETE_REQ_SZ,
- 		.fn		= ipa_server_driver_init_complete,
- 	},
-+	{ },
- };
- 
- /* Handle an INIT_DRIVER response message from the modem. */
-@@ -269,6 +270,7 @@ static const struct qmi_msg_handler ipa_client_msg_handlers[] = {
- 		.decoded_size	= IPA_QMI_INIT_DRIVER_RSP_SZ,
- 		.fn		= ipa_client_init_driver,
- 	},
-+	{ },
- };
- 
- /* Return a pointer to an init modem driver request structure, which contains
--- 
-2.27.0
+The compiler will ensure that mte_async_mode is not referred when
+!CONFIG_KASAN_HW_TAGS and therefore doesn't need to be defined.
 
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index fa755cf94e01..9362928ba0d5 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -26,6 +26,10 @@ u64 gcr_kernel_excl __ro_after_init;
+>  
+>  static bool report_fault_once = true;
+>  
+> +/* Whether the MTE asynchronous mode is enabled. */
+> +DEFINE_STATIC_KEY_FALSE(mte_async_mode);
+> +EXPORT_SYMBOL_GPL(mte_async_mode);
+
+Maybe keep these bracketed by #ifdef CONFIG_KASAN_HW_TAGS. I think the
+mte_enable_kernel_*() aren't needed either if KASAN_HW is disabled (you
+can do it with an additional patch).
+
+With these, you can add:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
