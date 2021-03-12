@@ -2,194 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A701033892E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277BA338967
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhCLJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S233115AbhCLJ5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbhCLJsn (ORCPT
+        with ESMTP id S233329AbhCLJ5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:48:43 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2030C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:30 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so10499432pjq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:48:30 -0800 (PST)
+        Fri, 12 Mar 2021 04:57:23 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB12C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:57:23 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id x16so1421784wrn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:57:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tSU5JZNqo+LpLrL2J51K9EjU+XyoQGqUAnrQL7MEH1A=;
-        b=BSO27GPbEPW3Y0DxHwpWJXPbfk/efqUoz0Ts35dPQpg3azwscSr3PyX6Yvg1k5/Vvu
-         rrrKcjRhyk3g9vbulgwJ+N5Snq3ZMDz+Yfzm5q4as7sqj2xhSh3jRLERoymuwTZaHmGQ
-         O470J/wbp0z+szFwzPzJruJlo2PA7kZ75ZS7szfch+9Y127uDd1aSJvvqElBJWFCIf30
-         EOqG672RXJKBBrRSlnLfGzZhidgoyLob8Y+/2ZFdABSbWS75rLEc6WL8M+p+wEcL7kNe
-         nH26iT8xLXYiPICHd41uyOYR4e4BMA/QWgP3JsWJoQUlEebA0qx3xde1XG0p/VsH0nx/
-         Pybw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WAqRUJu51Gp9BeqHZSYfHrvFuJJMZGv7F0J9AovonwA=;
+        b=Tb/itneJZ2Zw4vCIexG4RE6G1nRCRmm+R1/Ft5uoQvrfJel+jGcpplnzBfb3NB2agH
+         TGSciiYgk3MII3jSahUGF5Y19WsdWoD5nKgzaSYnMpAsr4UsT1Eqj9oPTVDtXSJ052Uk
+         LgLnQGQFGK4CsRmmamjatoub/+yokuAWR13flLIA8hWs6YNjGUrMQIraAKCiFHISoeno
+         OlhT5pG1YZGtj+43sGWoW95Dw6QkIfcac1u6iLNQblsvbLTfgKZnBokmRkQpbJpvkKzi
+         ++yNfiHE3aL5rlvcnxY5G9xdLTBhxCUIGnl3MfryI70P1Z3ZhKAjiu70GcvQjzRzEmUb
+         5Omg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tSU5JZNqo+LpLrL2J51K9EjU+XyoQGqUAnrQL7MEH1A=;
-        b=D/nOFmRXDtW2c7qbPOM6IpA+fqK/Qo2AJv19pj6twQnBZtbT2Nl48w0k0rg/LbIK4M
-         W/T5gLFlOgMQk3YAuTfgdBYAji2fhMj9hal1dYzkLh2iOubY0GGJdWpjZiNiJM+Fra9S
-         mUIBO1B2zPNlKjXSUcMXTzoB8PJYyaXQLgK4K298BwBSS7CwDEkeVfAZgqU5oGC3yCBP
-         wS0KoCfwrnDPSuj06DJAxUsB9IWUkeGPYo/dngwYllcj3hgcuGlugF6QdZMAvvL8Jehy
-         sqnjkvNzuRvzxtIFZdlwqztx3RY+5YhdXA8NUNbOQoea2tZKWxRLrT3UnzOmKm3c4eaX
-         yfaw==
-X-Gm-Message-State: AOAM532Hi0K73v7OHhgRVJYF9MjHgbxHRw0ZyEB+rb8hwOLa2lXizcn+
-        fZsAC2sg/dKt+H505Shfnd4w9e0qohOBiB0Q2Hs9Hg==
-X-Google-Smtp-Source: ABdhPJw36o2X0nO0HlNpiC9Gns3o1MZJQZ1G66o2rNmvzS6qI9yLSWVNqK2hTXy0D/2zAf4BkSxNTx323LRQ7k7BbX8=
-X-Received: by 2002:a17:90a:1463:: with SMTP id j90mr13526493pja.205.1615542510061;
- Fri, 12 Mar 2021 01:48:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WAqRUJu51Gp9BeqHZSYfHrvFuJJMZGv7F0J9AovonwA=;
+        b=Id2TB/5NSwV0gFa6ILqDcIrPvrTfo7sUTOx6+YsdNqfjyixctLDU8rPQPr7y9VtqEN
+         2bRUt5/RbsQe0NRiLGdGcduJOfFtFDoP36OT/LiKAg7H51jpEXP4U6NBlbk0+Jy0D1BP
+         j7WW5EXh+rMGaRvombCfQgQ8QX6casH6BvFAcz2Fom7gDfCBA/ux6AwNaKnT/h70+DAR
+         x6+xYY8UVCxcGfFOSA1famcgcTMpLEnwHw44hM3rWae///hD2vmidlmoBCnLWQ5sgSex
+         snSwMW95vfi+d12nsKvrXDz7SovdvDiQt6b0BOyZhdQ9jkot95rZCvUAGq5hM5ys/rMF
+         WAeg==
+X-Gm-Message-State: AOAM531TgTZNf6V42BVuErVy6ngdbhsnJ3y8b5fgrIaNIJGjQlxKymVR
+        Zzbh2cHGWZNSLLd13ksdNFuWUA==
+X-Google-Smtp-Source: ABdhPJxsLIVJwwSOzU+y7fa6VTaC/JIbem9eAhX1gzxT9DVwUQWghIUTXGhNvTO5IhGpC27ednkCdw==
+X-Received: by 2002:a05:6000:1788:: with SMTP id e8mr13300335wrg.171.1615543041835;
+        Fri, 12 Mar 2021 01:57:21 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id x13sm7031630wrt.75.2021.03.12.01.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 01:57:21 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v4 00/11] gpio: implement the configfs testing module
+Date:   Fri, 12 Mar 2021 10:56:49 +0100
+Message-Id: <20210312095700.16277-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <1615495264-6816-1-git-send-email-loic.poulain@linaro.org>
- <1615495264-6816-2-git-send-email-loic.poulain@linaro.org> <YEsjbnOPihKPJYpx@kroah.com>
-In-Reply-To: <YEsjbnOPihKPJYpx@kroah.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Fri, 12 Mar 2021 10:56:30 +0100
-Message-ID: <CAMZdPi83Bzo=ucLr_PFshRJqAeUqcnTwR-eJ3f1WAOaA1ZoDQw@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 2/2] net: Add Qcom WWAN control driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        open list <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>, rdunlap@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-On Fri, 12 Mar 2021 at 09:16, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Mar 11, 2021 at 09:41:04PM +0100, Loic Poulain wrote:
-> > The MHI WWWAN control driver allows MHI QCOM-based modems to expose
-> > different modem control protocols/ports to userspace, so that userspace
-> > modem tools or daemon (e.g. ModemManager) can control WWAN config
-> > and state (APN config, SMS, provider selection...). A QCOM-based
-> > modem can expose one or several of the following protocols:
-> > - AT: Well known AT commands interactive protocol (microcom, minicom...)
-> > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
-> > - QMI: QCOM MSM/Modem Interface (libqmi, qmicli)
-> > - QCDM: QCOM Modem diagnostic interface (libqcdm)
-> > - FIREHOSE: XML-based protocol for Modem firmware management
-> >         (qmi-firmware-update)
-> >
-> > The different interfaces are exposed as character devices through the
-> > WWAN subsystem, in the same way as for USB modem variants.
-> >
-> > Note that this patch is mostly a rework of the earlier MHI UCI
-> > tentative that was a generic interface for accessing MHI bus from
-> > userspace. As suggested, this new version is WWAN specific and is
-> > dedicated to only expose channels used for controlling a modem, and
-> > for which related opensource user support exist. Other MHI channels
-> > not fitting the requirements will request either to be plugged to
-> > the right Linux subsystem (when available) or to be discussed as a
-> > new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
-> >
-> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > ---
-> >  v2: update copyright (2021)
-> >  v3: Move driver to dedicated drivers/net/wwan directory
-> >  v4: Rework to use wwan framework instead of self cdev management
-> >  v5: Fix errors/typos in Kconfig
-> >
-> >  drivers/net/wwan/Kconfig         |  14 ++
-> >  drivers/net/wwan/Makefile        |   1 +
-> >  drivers/net/wwan/mhi_wwan_ctrl.c | 497 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 512 insertions(+)
-> >  create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
-> >
-> > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
-> > index 545fe54..ce0bbfb 100644
-> > --- a/drivers/net/wwan/Kconfig
-> > +++ b/drivers/net/wwan/Kconfig
-> > @@ -19,4 +19,18 @@ config WWAN_CORE
-> >         To compile this driver as a module, choose M here: the module will be
-> >         called wwan.
-> >
-> > +config MHI_WWAN_CTRL
-> > +     tristate "MHI WWAN control driver for QCOM-based PCIe modems"
-> > +     select WWAN_CORE
-> > +     depends on MHI_BUS
-> > +     help
-> > +       MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
-> > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
-> > +       and FIREHOSE. These protocols can be accessed directly from userspace
-> > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
-> > +       libqcdm...).
-> > +
-> > +       To compile this driver as a module, choose M here: the module will be
-> > +       called mhi_wwan_ctrl
-> > +
-> >  endif # WWAN
-> > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
-> > index ca8bb5a..e18ecda 100644
-> > --- a/drivers/net/wwan/Makefile
-> > +++ b/drivers/net/wwan/Makefile
-> > @@ -6,3 +6,4 @@
-> >  obj-$(CONFIG_WWAN_CORE) += wwan.o
-> >  wwan-objs += wwan_core.o wwan_port.o
-> >
-> > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
-> > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > new file mode 100644
-> > index 0000000..abda4b0
-> > --- /dev/null
-> > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-> > @@ -0,0 +1,497 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/mhi.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/poll.h>
-> > +
-> > +#include "wwan_core.h"
-> > +
-> > +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
-> > +#define MHI_WWAN_CTRL_MAX_MINORS 128
-> > +#define MHI_WWAN_MAX_MTU 0x8000
-> > +
-> > +/* MHI wwan device flags */
-> > +#define MHI_WWAN_DL_CAP              BIT(0)
-> > +#define MHI_WWAN_UL_CAP              BIT(1)
-> > +#define MHI_WWAN_CONNECTED   BIT(2)
-> > +
-> > +struct mhi_wwan_buf {
-> > +     struct list_head node;
-> > +     void *data;
-> > +     size_t len;
-> > +     size_t consumed;
-> > +};
-> > +
-> > +struct mhi_wwan_dev {
-> > +     unsigned int minor;
->
-> You never use this, why is it here?
->
-> {sigh}
->
-> Who reviewed this series before sending it out?
+This series adds a new GPIO testing module based on configfs committable items
+and sysfs. The goal is to provide a testing driver that will be configurable
+at runtime (won't need module reload) and easily extensible. The control over
+the attributes is also much more fine-grained than in gpio-mockup.
 
-I clearly moved too fast on the wwan/mhi split and overlooked
-the refactoring, I'll ensure to get a proper internal review before
-resubmitting a new version.
+This series also contains a respin of the patches I sent separately to the
+configfs maintainers - these patches implement the concept of committable
+items that was well defined for a long time but never actually completed.
 
-Thanks,
-Loic
+Apart from the new driver itself, its selftests and the configfs patches, this
+series contains some changes to the bitmap API - most importantly: it adds
+devres managed variants of bitmap_alloc() and bitmap_zalloc().
 
->
-> greg k-h
+v1 -> v2:
+- add selftests for gpio-sim
+- add helper programs for selftests
+- update the configfs rename callback to work with the new API introduced in
+  v5.11
+- fix a missing quote in the documentation
+- use !! whenever using bits operation that are required to return 0 or 1
+- use provided bitmap API instead of reimplementing copy or fill operations
+- fix a deadlock in gpio_sim_direction_output()
+- add new read-only configfs attributes for mapping of configfs items to GPIO
+  device names
+- and address other minor issues pointed out in reviews of v1
+
+v2 -> v3:
+- use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+  the bitmap with 1s
+- drop the patch exporting device_is_bound()
+- don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+  a string indicating that the device is not available yet ('n/a')
+- fix indentation where it makes sense
+- don't protect IDA functions which use their own locking and where it's not
+  needed
+- use kmemdup() instead of kzalloc() + memcpy()
+- collected review tags
+- minor coding style fixes
+
+v3 -> v4:
+- return 'none' instead of 'n/a' from dev_name and chip_name before the device
+  is registered
+- use sysfs_emit() instead of s*printf()
+- drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
+  fine to hardcode the value
+
+Bartosz Golaszewski (11):
+  configfs: increase the item name length
+  configfs: use (1UL << bit) for internal flags
+  configfs: implement committable items
+  samples: configfs: add a committable group
+  lib: bitmap: remove the 'extern' keyword from function declarations
+  lib: bitmap: order includes alphabetically
+  lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
+  gpio: sim: new testing module
+  selftests: gpio: provide a helper for reading chip info
+  selftests: gpio: add a helper for reading GPIO line names
+  selftests: gpio: add test cases for gpio-sim
+
+ Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+ Documentation/filesystems/configfs.rst        |   6 +-
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sim.c                       | 874 ++++++++++++++++++
+ fs/configfs/configfs_internal.h               |  22 +-
+ fs/configfs/dir.c                             | 245 ++++-
+ include/linux/bitmap.h                        | 127 +--
+ include/linux/configfs.h                      |   3 +-
+ lib/bitmap.c                                  |  42 +-
+ samples/configfs/configfs_sample.c            | 153 +++
+ tools/testing/selftests/gpio/.gitignore       |   2 +
+ tools/testing/selftests/gpio/Makefile         |   4 +-
+ tools/testing/selftests/gpio/config           |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+ 17 files changed, 1815 insertions(+), 86 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+
+-- 
+2.30.1
+
