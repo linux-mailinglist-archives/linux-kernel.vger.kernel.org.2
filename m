@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351D83390CA
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAC33390CB
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhCLPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        id S232093AbhCLPIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhCLPHw (ORCPT
+        with ESMTP id S229748AbhCLPIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:07:52 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39342C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:07:52 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso15991254wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:07:52 -0800 (PST)
+        Fri, 12 Mar 2021 10:08:12 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAC9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:08:12 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so15394923wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:08:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=fwNR/esNVxm8bvX0S5OWeZlTokgAgw+YxcDuubZWv9Y=;
-        b=PVXNJnwSGwoevssUnEh1inCzRSXjHaDhS0l9Lxkb6lXzwyiMvsKzhOdQ1oktcEVyl0
-         HyN/+lCS9c98sOlX263sV7lUUA/1p7VXOZMd0kwZOwKO6yA1qwJaWGjOkWtC3zeRQPGr
-         uPO6pDotO3NhEjO0FS2rxtztT9GZ7LdqlHWCd432Mnj1MCUYYblWDWwNhHGHV0fYHipP
-         8DA87GJH0O9rFV6lsfyJdgcZYLda9E2jvYecRbiIFOMSqH41rF77dpj7o4t4dVpg5jUX
-         XasF4PC1gALbaTVx41DjHjgd+28cmG6iVRXzhQmkwyd4uC/I7biUEEmiovtvd161vEXy
-         lPcg==
+        bh=11LkVFc2ai96+FS3xzLxLBdovdC4Bzzrs8ahU7qpmeI=;
+        b=lUp7M+IiivkbRqlrmnLkQeZkCcfqBJxzLShB6QIW1KqBf1fb0GVlVGCijS5s31b96N
+         lARfpP7EUB8sKtlYdlbHiAio0Y+Us6d6ZZERyoLmxXKMQS6qJ1yS7w4lzgujFBBFIaGp
+         lvG5zEeHeoE58lBSZNVXTJYzxVlH86jwQ9nDxKWibmozu+8Ck/UwbJ1NpJC07KbexKR3
+         aJ0QGmrmdKWcl77uJE8gPJtCQHycRWIjnR8TE0RamD0Py5WYFtPvi05XYIJLOHjEfYUb
+         jscaR2ipeCPeefxKgQlqWDTbuAD6W+NjAqGyiPYcGDPrT0wOGCol3lF3ikm5J/ac5n0f
+         zNcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fwNR/esNVxm8bvX0S5OWeZlTokgAgw+YxcDuubZWv9Y=;
-        b=spVtpFrsU6dX9I0wpYa0rQb1hCDFMy09egyHaw6UYp4e5mz1oC2lDXHu9PfsfEbWnq
-         79DNYthhH+KB/CJwxR70D+x/X0a6v+pWK2CxXGvsmNdOfEsgn1R+6LqZ/FjRfE9s545p
-         vROAhB7X+4h0tzhQ42FIMou+ZP8dY560q4sTwKW/H7nkp/IGle3AK3m/h1hCxWSsYAB6
-         J6PdNirr2fH7+eYR1EqGjIs28ngtXR1LkPRluYuVdywz0LX5M8UsU34+jxNN++qw5GpS
-         5cG+458PRpmn5dbbvEc7YnYKSO2NdQscfHFrMdZ/XVMrHpS89tq965Zzow7dsXnwCamT
-         RRig==
-X-Gm-Message-State: AOAM532GldMqGJNIJvuQqDGz6bQmbUfyTG1s2KayYlfOZuh8e+W3lrM8
-        s7ZV7qwFcbfSDfxfokPelEJwJg==
-X-Google-Smtp-Source: ABdhPJxnpebHGFV0Q4Eu8cs3Jth8EBcbH5bjBDK71GUH5UHkJB1w1j2kgjPd33zgfnq0afxfAxD5uQ==
-X-Received: by 2002:a7b:c931:: with SMTP id h17mr13781890wml.4.1615561670668;
-        Fri, 12 Mar 2021 07:07:50 -0800 (PST)
+        bh=11LkVFc2ai96+FS3xzLxLBdovdC4Bzzrs8ahU7qpmeI=;
+        b=cDEVsY2P06pFCLlmkijkb/uUeFqUGt+FyzvGImLKW9hdsETDIn6bms7txgR2+Y4GLB
+         Xo74XbPWfUdVE80GRfDIr2RfcB5YHBft/VhDwbxLg6uhhvjZ8MK7M2qKY1K4ETzX1DRQ
+         lxxrhUFfyChTU6Qhs39LIVt6yfw7mDpx2G7MiBs78Q/U9HzEPadLNOOoy9tnsyT994mf
+         g+UzVs5dnRZVZ3soC7I2o71yBGBs4STPojKXSQFHwLdMK6dSur3FbW8uEHh8+fWUjNm0
+         Bgtb5hMZkPIoclrlEWUKwiPHhZOe+yfhkvQsmSr0iLa6Vxb5RYf0jKF7tJupkFxI9gCy
+         i+dQ==
+X-Gm-Message-State: AOAM531hhUZt4D9sMt5wqFKtxELmvK+67xg+PRZ3HF3hMyMo8iWv52iF
+        JcWqKXnM6tERw8fFTP0jGdIfqA==
+X-Google-Smtp-Source: ABdhPJxMj+nON4YnTgXAyWfAAEBbOaJIKzefApKvXJINUWhVIyEe28Hvb/8UyqT2wS9MzYtINtwgrg==
+X-Received: by 2002:a05:600c:289:: with SMTP id 9mr13639929wmk.135.1615561690926;
+        Fri, 12 Mar 2021 07:08:10 -0800 (PST)
 Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
-        by smtp.gmail.com with ESMTPSA id h10sm8125546wrp.22.2021.03.12.07.07.49
+        by smtp.gmail.com with ESMTPSA id w131sm2400544wmb.8.2021.03.12.07.08.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 07:07:49 -0800 (PST)
-Date:   Fri, 12 Mar 2021 16:07:44 +0100
+        Fri, 12 Mar 2021 07:08:10 -0800 (PST)
+Date:   Fri, 12 Mar 2021 16:08:04 +0100
 From:   Marco Elver <elver@google.com>
 To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -56,72 +56,118 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/11] kasan: docs: update usage section
-Message-ID: <YEuDwG6NqbNlCXL/@elver.google.com>
+Subject: Re: [PATCH v2 04/11] kasan: docs: update error reports section
+Message-ID: <YEuD1Ghn+5bf0TJO@elver.google.com>
 References: <c2bbb56eaea80ad484f0ee85bb71959a3a63f1d7.1615559068.git.andreyknvl@google.com>
- <48427809cd4b8b5d6bc00926cbe87e2b5081df17.1615559068.git.andreyknvl@google.com>
+ <3531e8fe6972cf39d1954e3643237b19eb21227e.1615559068.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48427809cd4b8b5d6bc00926cbe87e2b5081df17.1615559068.git.andreyknvl@google.com>
+In-Reply-To: <3531e8fe6972cf39d1954e3643237b19eb21227e.1615559068.git.andreyknvl@google.com>
 User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Mar 12, 2021 at 03:24PM +0100, Andrey Konovalov wrote:
-> Update the "Usage" section in KASAN documentation:
+> Update the "Error reports" section in KASAN documentation:
 > 
-> - Add inline code snippet markers.
-> - Reword the part about stack traces for clarity.
-> - Other minor clean-ups.
+> - Mention that bug titles are best-effort.
+> - Move and reword the part about auxiliary stacks from
+>   "Implementation details".
+> - Punctuation, readability, and other minor clean-ups.
 > 
 > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 Reviewed-by: Marco Elver <elver@google.com>
 
 > ---
->  Documentation/dev-tools/kasan.rst | 23 +++++++++++------------
->  1 file changed, 11 insertions(+), 12 deletions(-)
+>  Documentation/dev-tools/kasan.rst | 46 +++++++++++++++++--------------
+>  1 file changed, 26 insertions(+), 20 deletions(-)
 > 
 > diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index 2f2697b290d5..46f4e9680805 100644
+> index 46f4e9680805..cd12c890b888 100644
 > --- a/Documentation/dev-tools/kasan.rst
 > +++ b/Documentation/dev-tools/kasan.rst
-> @@ -41,22 +41,21 @@ and riscv architectures, and tag-based KASAN modes are supported only for arm64.
->  Usage
->  -----
->  
-> -To enable KASAN configure kernel with::
-> +To enable KASAN, configure the kernel with::
->  
-> -	  CONFIG_KASAN = y
-> +	  CONFIG_KASAN=y
->  
-> -and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN),
-> -CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN), and
-> -CONFIG_KASAN_HW_TAGS (to enable hardware tag-based KASAN).
-> +and choose between ``CONFIG_KASAN_GENERIC`` (to enable generic KASAN),
-> +``CONFIG_KASAN_SW_TAGS`` (to enable software tag-based KASAN), and
-> +``CONFIG_KASAN_HW_TAGS`` (to enable hardware tag-based KASAN).
->  
-> -For software modes, you also need to choose between CONFIG_KASAN_OUTLINE and
-> -CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
-> -The former produces smaller binary while the latter is 1.1 - 2 times faster.
-> +For software modes, also choose between ``CONFIG_KASAN_OUTLINE`` and
-> +``CONFIG_KASAN_INLINE``. Outline and inline are compiler instrumentation types.
-> +The former produces a smaller binary while the latter is 1.1-2 times faster.
->  
-> -For better error reports that include stack traces, enable CONFIG_STACKTRACE.
-> -
-> -To augment reports with last allocation and freeing stack of the physical page,
-> -it is recommended to enable also CONFIG_PAGE_OWNER and boot with page_owner=on.
-> +To include alloc and free stack traces of affected slab objects into reports,
-> +enable ``CONFIG_STACKTRACE``. To include alloc and free stack traces of affected
-> +physical pages, enable ``CONFIG_PAGE_OWNER`` and boot with ``page_owner=on``.
->  
+> @@ -60,7 +60,7 @@ physical pages, enable ``CONFIG_PAGE_OWNER`` and boot with ``page_owner=on``.
 >  Error reports
 >  ~~~~~~~~~~~~~
+>  
+> -A typical out-of-bounds access generic KASAN report looks like this::
+> +A typical KASAN report looks like this::
+>  
+>      ==================================================================
+>      BUG: KASAN: slab-out-of-bounds in kmalloc_oob_right+0xa8/0xbc [test_kasan]
+> @@ -133,33 +133,43 @@ A typical out-of-bounds access generic KASAN report looks like this::
+>       ffff8801f44ec400: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>      ==================================================================
+>  
+> -The header of the report provides a short summary of what kind of bug happened
+> -and what kind of access caused it. It's followed by a stack trace of the bad
+> -access, a stack trace of where the accessed memory was allocated (in case bad
+> -access happens on a slab object), and a stack trace of where the object was
+> -freed (in case of a use-after-free bug report). Next comes a description of
+> -the accessed slab object and information about the accessed memory page.
+> +The report header summarizes what kind of bug happened and what kind of access
+> +caused it. It is followed by a stack trace of the bad access, a stack trace of
+> +where the accessed memory was allocated (in case a slab object was accessed),
+> +and a stack trace of where the object was freed (in case of a use-after-free
+> +bug report). Next comes a description of the accessed slab object and the
+> +information about the accessed memory page.
+>  
+> -In the last section the report shows memory state around the accessed address.
+> -Internally KASAN tracks memory state separately for each memory granule, which
+> +In the end, the report shows the memory state around the accessed address.
+> +Internally, KASAN tracks memory state separately for each memory granule, which
+>  is either 8 or 16 aligned bytes depending on KASAN mode. Each number in the
+>  memory state section of the report shows the state of one of the memory
+>  granules that surround the accessed address.
+>  
+> -For generic KASAN the size of each memory granule is 8. The state of each
+> +For generic KASAN, the size of each memory granule is 8. The state of each
+>  granule is encoded in one shadow byte. Those 8 bytes can be accessible,
+> -partially accessible, freed or be a part of a redzone. KASAN uses the following
+> -encoding for each shadow byte: 0 means that all 8 bytes of the corresponding
+> +partially accessible, freed, or be a part of a redzone. KASAN uses the following
+> +encoding for each shadow byte: 00 means that all 8 bytes of the corresponding
+>  memory region are accessible; number N (1 <= N <= 7) means that the first N
+>  bytes are accessible, and other (8 - N) bytes are not; any negative value
+>  indicates that the entire 8-byte word is inaccessible. KASAN uses different
+>  negative values to distinguish between different kinds of inaccessible memory
+>  like redzones or freed memory (see mm/kasan/kasan.h).
+>  
+> -In the report above the arrows point to the shadow byte 03, which means that
+> -the accessed address is partially accessible. For tag-based KASAN modes this
+> -last report section shows the memory tags around the accessed address
+> -(see the `Implementation details`_ section).
+> +In the report above, the arrow points to the shadow byte ``03``, which means
+> +that the accessed address is partially accessible.
+> +
+> +For tag-based KASAN modes, this last report section shows the memory tags around
+> +the accessed address (see the `Implementation details`_ section).
+> +
+> +Note that KASAN bug titles (like ``slab-out-of-bounds`` or ``use-after-free``)
+> +are best-effort: KASAN prints the most probable bug type based on the limited
+> +information it has. The actual type of the bug might be different.
+> +
+> +Generic KASAN also reports up to two auxiliary call stack traces. These stack
+> +traces point to places in code that interacted with the object but that are not
+> +directly present in the bad access stack trace. Currently, this includes
+> +call_rcu() and workqueue queuing.
+>  
+>  Boot parameters
+>  ~~~~~~~~~~~~~~~
+> @@ -214,10 +224,6 @@ function calls GCC directly inserts the code to check the shadow memory.
+>  This option significantly enlarges kernel but it gives x1.1-x2 performance
+>  boost over outline instrumented kernel.
+>  
+> -Generic KASAN also reports the last 2 call stacks to creation of work that
+> -potentially has access to an object. Call stacks for the following are shown:
+> -call_rcu() and workqueue queuing.
+> -
+>  Generic KASAN is the only mode that delays the reuse of freed object via
+>  quarantine (see mm/kasan/quarantine.c for implementation).
+>  
 > -- 
 > 2.31.0.rc2.261.g7f71774620-goog
 > 
