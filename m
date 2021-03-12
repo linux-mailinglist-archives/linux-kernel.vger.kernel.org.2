@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19068338B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA10C338B93
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhCLLez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:34:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:52346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhCLLek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:34:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35680ED1;
-        Fri, 12 Mar 2021 03:34:40 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 553FC3F793;
-        Fri, 12 Mar 2021 03:34:38 -0800 (PST)
-Subject: Re: [PATCH 3/3] thermal/drivers/cpuidle_cooling: Use device name
- instead of auto-numbering
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
- <20210310114600.27178-3-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <71131ec0-a35e-168d-9dcc-19f279758a7f@arm.com>
-Date:   Fri, 12 Mar 2021 11:34:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233659AbhCLLgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233863AbhCLLfp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:35:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDC9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:35:45 -0800 (PST)
+Date:   Fri, 12 Mar 2021 12:35:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615548941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xX8P03TtZH6T55/VsCQ3I0wyuiyg/KtGk1p9na+SNbk=;
+        b=NYW+VO82yU9feDyxopQCxlsQEHNmXhDD00v654OZiabfMmJ5Hygu8U+S8IY2+VoKz6WhtG
+        g5NBYK0fgQqHkcxSkXkbBg4Lddb35t5kAECDPF5jZ9T0Rmrp4UorZ8kjPsPchJa+FoIfGM
+        nTcP1s7ArBlkgypSeI+O61yiEp1NunvbuaLMUkEMtW2Lh+IdtaKCK6GLQI91DZpdHNoet2
+        smZphlBJmjXKJ0pSkQEN83P7/z+sozLqW3mlscbpUYojBD4XlY+QI2RMD35xMwGZ5RtWA5
+        oSE7vhJFMN7zJw9H0UFvXPaYlddE3TsMuVonZqJSDhngmkatdvZbJZEZ8NuTOQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615548941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xX8P03TtZH6T55/VsCQ3I0wyuiyg/KtGk1p9na+SNbk=;
+        b=CQBPDuSb1N40OO5Vz6zLx0+IxkEq4F4W7U3ClmPG67XUdFatyWsIxPvofHW1MtrTv/w6Cy
+        UjHbillW6Z7YtaAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
+Message-ID: <20210312113540.7byffvc46cgj75ah@linutronix.de>
+References: <20210311132036.228542540@linutronix.de>
+ <20210311141704.424120350@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210310114600.27178-3-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210311141704.424120350@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-11 14:20:39 [+0100], Thomas Gleixner wrote:
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -433,7 +433,11 @@ static struct sigqueue *
+>  	rcu_read_unlock();
+>  
+>  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+> -		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+> +		/* Preallocation does not hold sighand::siglock */
+> +		if (sigqueue_flags || !t->sigqueue_cache)
+> +			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+> +		else
+> +			q = xchg(&t->sigqueue_cache, NULL);
 
+Could it happen that two tasks saw t->sigqueue_cache != NULL, the first
+one got the pointer via xchg() and the second got NULL via xchg()?
 
-On 3/10/21 11:46 AM, Daniel Lezcano wrote:
-> Currently the naming of a cooling device is just a cooling technique
-> followed by a number. When there are multiple cooling devices using
-> the same technique, it is impossible to clearly identify the related
-> device as this one is just a number.
-> 
-> For instance:
-> 
->   thermal-idle-0
->   thermal-idle-1
->   thermal-idle-2
->   thermal-idle-3
->   etc ...
-> 
-> The 'thermal' prefix is redundant with the subsystem namespace. This
-> patch removes the 'thermal prefix and changes the number by the device
+>  	} else {
+>  		print_dropped_signal(sig);
+>  	}
+> @@ -472,12 +481,19 @@ void flush_sigqueue(struct sigpending *q
+>  }
+>  
+>  /*
+> - * Called from __exit_signal. Flush tsk->pending and clear tsk->sighand.
+> + * Called from __exit_signal. Flush tsk->pending, clear tsk->sighand and
+> + * free tsk->sigqueue_cache.
+>   */
+>  void exit_task_sighand(struct task_struct *tsk)
+>  {
+> +	struct sigqueue *q;
+> +
+>  	flush_sigqueue(&tsk->pending);
+>  	tsk->sighand = NULL;
+> +
+> +	q = xchg(&tsk->sigqueue_cache, NULL);
+> +	if (q)
+> +		kmem_cache_free(sigqueue_cachep, q);
 
-missing ' after 'thermal
+Do we need this xchg() here? Only the task itself adds something here
+and the task is on its way out so it should not add an entry to the
+cache.
 
-> name. So the naming above becomes:
-> 
->   idle-cpu0
->   idle-cpu1
->   idle-cpu2
->   idle-cpu3
->   etc ...
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/thermal/cpuidle_cooling.c | 26 ++++++++++----------------
->   1 file changed, 10 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-> index 7ecab4b16b29..8bc0a9b46358 100644
-> --- a/drivers/thermal/cpuidle_cooling.c
-> +++ b/drivers/thermal/cpuidle_cooling.c
-> @@ -9,6 +9,7 @@
->   
->   #include <linux/cpu_cooling.h>
->   #include <linux/cpuidle.h>
-> +#include <linux/device.h>
->   #include <linux/err.h>
->   #include <linux/idle_inject.h>
->   #include <linux/idr.h>
+>  }
+>  
+>  /*
 
-idr.h not needed any more
-
-
-other than that LGTM
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
+Sebastian
