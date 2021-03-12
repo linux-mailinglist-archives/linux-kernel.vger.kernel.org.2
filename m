@@ -2,230 +2,975 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF73339A16
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3875339A1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235693AbhCLXk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:40:26 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44392 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235906AbhCLXjz (ORCPT
+        id S235841AbhCLXmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:42:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235698AbhCLXmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:39:55 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CNUJgc159815;
-        Fri, 12 Mar 2021 23:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=jzjXHNMyGk+z3372AJ8At/wuLp2b4vLa5t6Y/HYYm1c=;
- b=pvaBGzatWkLxWF8UMRTssjxFvGbgj6cBNCv2cTY6LdLFYWZGtPheOw6BCxpzA4tC5fbS
- MhWaYApC8qa2W1/CGlSNMUEWMzDxTP5zIOVBDq8MBm0LQQWcW82KHIz6ztUkbSZVQZqK
- GymxIGNtrZqUsk35/p8LM/CiHxnmYf1JUVqagvmIxVwg332AdFK6dsW4raKpwecORrk4
- gikh065qrzQbN1Q0ywFZRM/MeaJSYwRcMKKgXz8ViGWV/qtgZsQv68x280QkdUU2vtUv
- IvXNYZK7E3Guw6htf/0wv/Mg34gqgHZONa74EA3qFUNHNpgeJap51aTn1g/M0s3OjRIS 6g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 37415rkjba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 23:38:07 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CNZaG1179205;
-        Fri, 12 Mar 2021 23:38:07 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-        by userp3030.oracle.com with ESMTP id 378f535cxj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 23:38:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eT6NCKUS30UCABzxfGzkV86FRE0nO3McqOMU70sjM0ij3fzM3RQKV/kAWAJPPQ0jzwBrHIi3CHIUmlsdspvA+LlJSXtUQJItwNgvriXYCutKhbJIeeA0uEi0eocyGv9nDaD60Jk5d93GKt07w4WgvNxiMgNLZzBY1YVCxPq091BirP9OWaSpcIUDf9N6NUdKWFirnnlie/YQSIb0k3mnTzB2Oy6KcOpgqGaKu1csbeyHYnscga5xWkRY7jqpJNumrFlIgIXWJDvdn2G522w1lPy54F9/rLPdA519I+YPisv8VeSeeMgi0fr1yppFPlAg1zbuB6DDU+wIZoA9wUeYBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jzjXHNMyGk+z3372AJ8At/wuLp2b4vLa5t6Y/HYYm1c=;
- b=Z5udzEmsruGjh5+aInQ/Bz6YDZJuVv3WZaUmuEpm09jZXaU/u2EhLAp8E3y47dfeWLAkVYF5BbYiG5mN0HXfphMumWLEajFJdX5cAWEs1yyFynCJlw7kueTc/iMMPgoispVGkrsazfT3JldiD9w2jcCwpk3DMgbL7GdcG+83taNt8+8dsL0suj0sddYAq4euwHFREHLYl2m/ojQJkBQ/zq+cbOZE6agmnllQJLa9wR0QewKb+fcRzNM3YXJhdwVPSR+5TKwJQMv5xu/53kdAuowtihZDZf+E9HW83hrIyQeATtUGDeejIX0UUWvDsi6/azvcl4dHbROEgzMH+HVp4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 12 Mar 2021 18:42:09 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B125AC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:42:08 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so2255870ote.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:42:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jzjXHNMyGk+z3372AJ8At/wuLp2b4vLa5t6Y/HYYm1c=;
- b=LNgoFjj3QsAyMDRTEf9XSm/5TUAPaVuUNgIhLeSSfMwahDmwiNU8ev0mTL0FWVA4DTZYYmddNZCTeJY/fhiRvcf491SCzyX9rX9OWgTFRqusCNAKRPo1XFZ5870y+dg9QDWZPmNx7Y36csO7oj/OmZNEbUu/nybau3AKl8ULxog=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB3794.namprd10.prod.outlook.com (2603:10b6:a03:1b2::30)
- by BYAPR10MB2981.namprd10.prod.outlook.com (2603:10b6:a03:8d::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Fri, 12 Mar
- 2021 23:38:05 +0000
-Received: from BY5PR10MB3794.namprd10.prod.outlook.com
- ([fe80::21a6:5c60:cd6e:1902]) by BY5PR10MB3794.namprd10.prod.outlook.com
- ([fe80::21a6:5c60:cd6e:1902%7]) with mapi id 15.20.3912.031; Fri, 12 Mar 2021
- 23:38:05 +0000
-Date:   Fri, 12 Mar 2021 16:38:02 -0700
-From:   Tom Saeger <tom.saeger@oracle.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] cpufreq: Rudimentary typos fix in the file
- s5pv210-cpufreq.c
-Message-ID: <20210312233802.bzriltvej5gccsdp@brm-x62-17.us.oracle.com>
-References: <20210312120817.12604-1-unixbhaskar@gmail.com>
- <4c0c0738-72c3-7704-500a-28cb1a068aa1@kernel.org>
- <YEv2RDAdeJEU75ib@Gentoo>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEv2RDAdeJEU75ib@Gentoo>
-X-Originating-IP: [129.157.69.41]
-X-ClientProxiedBy: SJ0PR03CA0136.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::21) To BY5PR10MB3794.namprd10.prod.outlook.com
- (2603:10b6:a03:1b2::30)
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqpxRWJFpDU0sUzfZTaZ5cZl2CpmGz/AemarD3kzQVw=;
+        b=ksLBzqJd564S6c8bix3dA1zgGAaL3Ivs5O8Kkrzpa2juc5ZS+Q95N+IZ70QdCfT/hI
+         hzMr4COLL7o41Ext6UcBnjztgKZMf+s6xgczPnoUDCVil8HikIfBWSSzfdHGA1Z/98Dh
+         3wfN5C00q4OwboG9bO1GLEgyQWQFMUhVnPl3jxHIdXQ9YRqIUS0fcT4xaoLpLnIV6046
+         E5p8tN2cKP8fZxgYOy8qNsIXjGlIlJk7cZ1tWCPoEhE/e8i2m8gvc/OGsG0SyFATNys5
+         EPCdRGrmn0AKwroiDzlfNWEPMK8s3clhciVJh8lGdgWxjnAU9upYGRiCfgoehLfhywyx
+         rCzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqpxRWJFpDU0sUzfZTaZ5cZl2CpmGz/AemarD3kzQVw=;
+        b=LO3NzMxrkhI3Eat4kkBXnS5ec81IT5hliY40JjmpCkAKczz0sbCXoYxIY5Qg/hMrUq
+         CMhWZKQMSOcIMkWKcPVwTuA1O2GuJ15K6LSSmLP5r4QHoK7LBCicbZrDcJc56fSui1Ua
+         S1lXlPuCcadINvYKTW/Bb7wZpoiEXta7NTLVr8Ab1QCOXA0au9sq10J0ndrCIeulmrbm
+         0I5brBcQ26ZmqMazJJXhjHOMaOW5SJsjX3JGonrqEhImYS3+Wmnuj3rkI68qmihZ3Va0
+         r23Zz48YHdOxei/M2w3NNheT1VDNVSPVncUQK7k5hlaO3iHspW3JvzG3r8xhSPpx6sQx
+         ZcHg==
+X-Gm-Message-State: AOAM530nTxIhAJw0Bx+LLFxyp7bpLTVNmoxHuXJUK66CjW7aN7uRE+Ct
+        bTmNkV4qeD9T5u27wMuWUgadiQ==
+X-Google-Smtp-Source: ABdhPJwzPZHO4hNu8aOOeZ2hu8up5RiVmdvnm5ihTbyYZCIGV6+yEkyMKMlymSSZDkbuP01rSn8qkw==
+X-Received: by 2002:a9d:6b13:: with SMTP id g19mr5459344otp.240.1615592527643;
+        Fri, 12 Mar 2021 15:42:07 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p20sm2030554oot.30.2021.03.12.15.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 15:42:07 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>
+Subject: [PATCH v2 1/2] arm64: dts: qcom: sdm845: Move reserved-memory to devices
+Date:   Fri, 12 Mar 2021 15:43:09 -0800
+Message-Id: <20210312234310.3490809-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from brm-x62-17.us.oracle.com (129.157.69.41) by SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 23:38:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2ff7474b-9273-4254-31d4-08d8e5afe251
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2981:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB29811BFD573DBC287331519CFC6F9@BYAPR10MB2981.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:972;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q6eze9GdiKpS0bZV75zgUWjL2CjAhpDKTXCpE/CRYUlk9rzQ1mKUsX17pzReev2O05eU9UTNznhPhMNKd8f4wCrrm+e1XQ13OTRYDIEzt5JJ7kzhDcReZiekAHiG9EhnyGD61CfNxbJHKPxVm67nxsFv9OZSgkZnAxJH1cZpoeeeNC7jz8Z3Yso7PL4dSiRrEIFwfZo1EDxrSv00CIQfxGTl28dgGQPUeef1XwANEtkbmzvX85ac8K2KBZiXWYGwC1phtMz8aNAhEnNyx3wR+qxgCVU0Z5rVNDyFTpZSBNxOcB8oXe0q58XEl+WFLAyZmJGqh3XnpY4l532Z2tdt+RsJorCCWVwtbGs3mztfXZABcZLrTsRdnDB6FcHFYpUWGCXVz/afQN1GmDHFBbG7+tRZp3Y/+5iasiZQXP1NVfGYaG33Mb3/9Vy/jR9vgFpZYhC4TdJhM8auEqgZ/PerFzOqZLahW5RxeDGFgJuoqG+kDjvuDyQ/UwSH9yBOFP+loqww/WvJhASnsDxE+tW/iw2BQkJaTqNmH8AmsOLHI2eA3NENhRKjrUlSTriysVuN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB3794.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(136003)(346002)(39860400002)(478600001)(66946007)(86362001)(66476007)(66556008)(7696005)(44832011)(53546011)(83380400001)(5660300002)(110136005)(316002)(1076003)(8936002)(26005)(8676002)(52116002)(956004)(55016002)(2906002)(16526019)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PCTeXwYu5JV9wBf/+r6CLu15K8GvRhjGTcT03Ub/zKGFT6pu870RRGO/pkRV?=
- =?us-ascii?Q?HuM0zUAG6PIYmJhO5tponuAsdDnhLCw5yBMzj4ZyJJX9uglY6nBtwBE6DKpg?=
- =?us-ascii?Q?ZmVTk6z3XtTazXDtEiwWEcmGhP41/og3DGw9END9j5pSWk65yAF/kb+7+9vk?=
- =?us-ascii?Q?j7NyaabVA1mTOkJpBHs72CvmVp/SmJBuPcvPWk9IBsQCoEz7DRlTdDs+w90v?=
- =?us-ascii?Q?rybSqqygyVpDD8NjZdZ1PfqRJ+Iz5XTkl6hty+7+kB8jnaw4r0VDUmUDboTn?=
- =?us-ascii?Q?KjeJwB0NGktG5t/ZxcfpsFqCXR0EaZYeIV9Y/XhLs+KcJUZLT+CrLdchnavf?=
- =?us-ascii?Q?Lm0PbxeWg3KKYdI6OKA1bG6lnbVlHUslNmCd7FIG2OHeCGHm5zBiS4Lmt/xP?=
- =?us-ascii?Q?tpFBI21e4gYxTP3GIxa1etezoc6SQ/V3ds2pqiid8odhZqISU0T/xlCha5+a?=
- =?us-ascii?Q?072e2bMKF2feGkc+UQrqyplWkiW1cshnLoQZQBcdRR1T5pKjkO4ctq/HkkD8?=
- =?us-ascii?Q?x+Fz2o2EmCSNt3e4SOV98GO3lb0awMLHOTKMymNPGcZlM0NvfJ1frRlp1yjt?=
- =?us-ascii?Q?xnoK7hvNHg6c3esBO5uyLBpK3SUaYEAaVeCIkT5jmkR+Wsm5XWkRP3c8M3FC?=
- =?us-ascii?Q?2hqGupb7nNmtEXXXCot8WVwOiOA99W65REix/vRdsFpRuhHaK79HRgz6G9gp?=
- =?us-ascii?Q?pXPq8iWnAFOf+ubEWmFlT5jbGhataUzoYmxc4HLneLni8jxaARKIGZmFhsy8?=
- =?us-ascii?Q?SagG9gB539Fn2BXSZG5+9/DAq3VSzhxSmS1LEk0lN9fMTaCjo7s8KFRxmTrN?=
- =?us-ascii?Q?OtkY7NoQTNHtVY59ctKUqkEWinPOk1r0OUJTHjUvCBL9A8IbfOGgYaVMjsiA?=
- =?us-ascii?Q?tFFCUs7d7po1D+9Ox7AB+gmNTiZOE1YQR+CcLQMokQgaDunWxDLzGJZuKFLT?=
- =?us-ascii?Q?zjDpbNSut/+V6rXzfctGyPgH53Q9u69pi9Y8hEJ4VG0WPcaY3kaEEvGrT+7S?=
- =?us-ascii?Q?bMHEjJcL/YtXS0Y6jcOBKtnMeESNvGwWl0xiBU811oaaMLZWGSTO1fXsI4bg?=
- =?us-ascii?Q?dNR6Az7EYmVWu2aGUNu1XkEJV78zGiDINWDobMC0dyhKY6FZi59ZsHzj3azD?=
- =?us-ascii?Q?hwE0pkiWJf/RnfF+NrjNrSQY3pnX1Kq9Tjgcinl+yE4SIF20ZLtgAgP3wmv4?=
- =?us-ascii?Q?UKH1BN/DwPYsxqhx+O9Y/G9RE/Su/GkSdetoNMGNmBdGseLfrhQX0IpZ577+?=
- =?us-ascii?Q?EOyysxQD/E+P6bVVEwP+Nbk9wElgsB6nU+BDccP0OZ6WNXEnopX+vnMvQW6R?=
- =?us-ascii?Q?8qCdewj0TpLbNoCFXHkFf4QB?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ff7474b-9273-4254-31d4-08d8e5afe251
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB3794.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 23:38:05.4643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vE1y+iE8kixJnOPgO3rdCp5hC+wbja53XykZciTb5nTi+FRcCdjQbVpw87bJ9zXUz3EtaUZRWlEKvG1SwzHXrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2981
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9921 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103120173
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9921 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 adultscore=0
- phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103120172
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 04:46:20AM +0530, Bhaskar Chowdhury wrote:
-> On 15:01 Fri 12 Mar 2021, Krzysztof Kozlowski wrote:
-> > On 12/03/2021 13:08, Bhaskar Chowdhury wrote:
-> > > 
-> > > s/untile/until/
-> > > s/souce/source/
-> > > s/divier/divider/
-> > > 
-> > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> > > ---
-> > >  drivers/cpufreq/s5pv210-cpufreq.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
-> > > index bed496cf8d24..1cfea5339beb 100644
-> > > --- a/drivers/cpufreq/s5pv210-cpufreq.c
-> > > +++ b/drivers/cpufreq/s5pv210-cpufreq.c
-> > > @@ -378,7 +378,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
-> > >  		/*
-> > >  		 * 6. Turn on APLL
-> > >  		 * 6-1. Set PMS values
-> > > -		 * 6-2. Wait untile the PLL is locked
-> > > +		 * 6-2. Wait until the PLL is locked
-> > >  		 */
-> > >  		if (index == L0)
-> > >  			writel_relaxed(APLL_VAL_1000, S5P_APLL_CON);
-> > > @@ -390,7 +390,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
-> > >  		} while (!(reg & (0x1 << 29)));
-> > > 
-> > >  		/*
-> > > -		 * 7. Change souce clock from SCLKMPLL(667Mhz)
-> > > +		 * 7. Change source clock from SCLKMPLL(667Mhz)
-> > >  		 * to SCLKA2M(200Mhz) in MFC_MUX and G3D MUX
-> > >  		 * (667/4=166)->(200/4=50)Mhz
-> > >  		 */
-> > > @@ -439,7 +439,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
-> > >  	}
-> > > 
-> > >  	/*
-> > > -	 * L4 level need to change memory bus speed, hence onedram clock divier
-> > > +	 * L4 level need to change memory bus speed, hence onedram clock divider
-> > 
-> > Also grammar fix: need/needs.
-> > 
-> Hmmm ...good catch...V2 on the way...
-> 
-> > Best regards,
-> > Krzysztof
+The reserved-memory regions used for carrying firmware to be run on the
+various cores and co-processors in a Qualcomm platform differs in size,
+placement and presence based on each device's feature set and security
+configuration.
 
-May as well roll in few more?
+Rather than providing some basic set that works on the MTP and then
+piecemeal patch this up on the various devices, push the configuration
+of these regions out to the individual device dts files.
 
-Regards,
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
---Tom
+Changes since v1:
+- Added lost memory-region to the db845c wlan node, as spotted by Doug.
 
-diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
-index a186c0d8a290..6ecef301bd40 100644
---- a/drivers/cpufreq/s5pv210-cpufreq.c
-+++ b/drivers/cpufreq/s5pv210-cpufreq.c
-@@ -91,7 +91,7 @@ static DEFINE_MUTEX(set_freq_lock);
- /* Use 800MHz when entering sleep mode */
- #define SLEEP_FREQ     (800 * 1000)
+ arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi    | 90 +++++++++++++------
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts    | 87 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts       | 87 ++++++++++++++++++
+ .../boot/dts/qcom/sdm845-oneplus-common.dtsi  | 78 +++++++++++++++-
+ .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 45 ++++++----
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 83 -----------------
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 86 ++++++++++++++++++
+ 7 files changed, 431 insertions(+), 125 deletions(-)
 
--/* Tracks if cpu freqency can be updated anymore */
-+/* Tracks if cpu frequency can be updated anymore */
- static bool no_cpufreq_access;
-
- /*
-@@ -190,7 +190,7 @@ static u32 clkdiv_val[5][11] = {
-
- /*
-  * This function set DRAM refresh counter
-- * accoriding to operating frequency of DRAM
-+ * according to operating frequency of DRAM
-  * ch: DMC port number 0 or 1
-  * freq: Operating frequency of DRAM(KHz)
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
+index 216a74f0057c..71ef92fd8909 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
+@@ -153,36 +153,66 @@ panel_in_edp: endpoint {
+  * all modifications to the memory map (from sdm845.dtsi) in one place.
   */
-@@ -320,7 +320,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+ 
+-/*
+- * Our mpss_region is 8MB bigger than the default one and that conflicts
+- * with venus_mem and cdsp_mem.
+- *
+- * For venus_mem we'll delete and re-create at a different address.
+- *
+- * cdsp_mem isn't used on cheza right now so we won't bother re-creating it; but
+- * that also means we need to delete cdsp_pas.
+- */
+-/delete-node/ &venus_mem;
+-/delete-node/ &cdsp_mem;
+-/delete-node/ &cdsp_pas;
+-/delete-node/ &gpu_mem;
+-
+-/* Increase the size from 120 MB to 128 MB */
+-&mpss_region {
+-	reg = <0 0x8e000000 0 0x8000000>;
+-};
+-
+-/* Increase the size from 2MB to 8MB */
+-&rmtfs_mem {
+-	reg = <0 0x88f00000 0 0x800000>;
+-};
+-
+ / {
+ 	reserved-memory {
++		tz_mem: memory@86200000 {
++			reg = <0 0x86200000 0 0x2d00000>;
++			no-map;
++		};
++
++		rmtfs_mem: memory@88f00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0 0x88f00000 0 0x800000>;
++			no-map;
++
++			qcom,client-id = <1>;
++			qcom,vmid = <15>;
++		};
++
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
++			no-map;
++		};
++
++		mpss_region: memory@8e000000 {
++			reg = <0 0x8e000000 0 0x8000000>;
++			no-map;
++		};
++
+ 		venus_mem: memory@96000000 {
+ 			reg = <0 0x96000000 0 0x500000>;
+ 			no-map;
+ 		};
++
++		mba_region: memory@96500000 {
++			reg = <0 0x96500000 0 0x200000>;
++			no-map;
++		};
++
++		slpi_mem: memory@96700000 {
++			reg = <0 0x96700000 0 0x1400000>;
++			no-map;
++		};
++
++		spss_mem: memory@97b00000 {
++			reg = <0 0x97b00000 0 0x100000>;
++			no-map;
++		};
+ 	};
+ };
+ 
+@@ -206,7 +236,6 @@ flash@0 {
+ 	};
+ };
+ 
+-
+ &apps_rsc {
+ 	pm8998-rpmh-regulators {
+ 		compatible = "qcom,pm8998-rpmh-regulators";
+@@ -645,6 +674,14 @@ &adreno_smmu {
+ &mss_pil {
+ 	iommus = <&apps_smmu 0x781 0x0>,
+ 		 <&apps_smmu 0x724 0x3>;
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &pm8998_pwrkey {
+@@ -850,6 +887,7 @@ &usb_2_qmpphy {
+ 
+ &wifi {
+ 	status = "okay";
++	memory-region = <&wlan_msa_mem>;
+ 
+ 	vdd-0.8-cx-mx-supply = <&src_pp800_l5a >;
+ 	vdd-1.8-xo-supply = <&pp1800_l7a_wcn3990>;
+@@ -1321,6 +1359,8 @@ config {
+ };
+ 
+ &venus {
++	memory-region = <&venus_mem>;
++
+ 	video-firmware {
+ 		iommus = <&apps_smmu 0x10b2 0x0>;
+ 	};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index c4ac6f5dc008..6fbf4d4deabb 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -157,6 +157,77 @@ cam3_avdd_2v8: reg_cam3_avdd_2v8 {
+ 		vin-supply = <&vbat>;
+ 	};
+ 
++	reserved-memory {
++		tz_mem: memory@86200000 {
++			reg = <0 0x86200000 0 0x2d00000>;
++			no-map;
++		};
++
++		rmtfs_mem: memory@88f00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0 0x88f00000 0 0x200000>;
++			no-map;
++
++			qcom,client-id = <1>;
++			qcom,vmid = <15>;
++		};
++
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
++			no-map;
++		};
++
++		mpss_region: memory@8e000000 {
++			reg = <0 0x8e000000 0 0x7800000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		venus_mem: memory@95800000 {
++			reg = <0 0x95800000 0 0x500000>;
++			no-map;
++		};
++
++		cdsp_mem: memory@95d00000 {
++			reg = <0 0x95d00000 0 0x800000>;
++			no-map;
++		};
++
++		mba_region: memory@96500000 {
++			reg = <0 0x96500000 0 0x200000>;
++			no-map;
++		};
++
++		slpi_mem: memory@96700000 {
++			reg = <0 0x96700000 0 0x1400000>;
++			no-map;
++		};
++
++		spss_mem: memory@97b00000 {
++			reg = <0 0x97b00000 0 0x100000>;
++			no-map;
++		};
++	};
++
+ 	pcie0_3p3v_dual: vldo-3v3-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "VLDO_3V3";
+@@ -244,6 +315,7 @@ vph_pwr: vph-pwr-regulator {
+ &adsp_pas {
+ 	status = "okay";
+ 
++	memory-region = <&adsp_mem>;
+ 	firmware-name = "qcom/sdm845/adsp.mdt";
+ };
+ 
+@@ -390,6 +462,7 @@ vreg_bob: bob {
+ 
+ &cdsp_pas {
+ 	status = "okay";
++	memory-region = <&cdsp_mem>;
+ 	firmware-name = "qcom/sdm845/cdsp.mdt";
+ };
+ 
+@@ -492,6 +565,14 @@ &mdss_mdp {
+ &mss_pil {
+ 	status = "okay";
+ 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &pcie0 {
+@@ -999,6 +1080,10 @@ &ufs_mem_phy {
+ 	vdda-pll-supply = <&vreg_l26a_1p2>;
+ };
+ 
++&venus {
++	memory-region = <&venus_mem>;
++};
++
+ &wcd9340{
+ 	pinctrl-0 = <&wcd_intr_default>;
+ 	pinctrl-names = "default";
+@@ -1035,6 +1120,8 @@ right_spkr: wsa8810-right{
+ &wifi {
+ 	status = "okay";
+ 
++	memory-region = <&wlan_msa_mem>;
++
+ 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+index 1372fe8601f5..aab598011c04 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+@@ -23,6 +23,77 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	reserved-memory {
++		tz_mem: memory@86200000 {
++			reg = <0 0x86200000 0 0x2d00000>;
++			no-map;
++		};
++
++		rmtfs_mem: memory@88f00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0 0x88f00000 0 0x200000>;
++			no-map;
++
++			qcom,client-id = <1>;
++			qcom,vmid = <15>;
++		};
++
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
++			no-map;
++		};
++
++		mpss_region: memory@8e000000 {
++			reg = <0 0x8e000000 0 0x7800000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		venus_mem: memory@95800000 {
++			reg = <0 0x95800000 0 0x500000>;
++			no-map;
++		};
++
++		cdsp_mem: memory@95d00000 {
++			reg = <0 0x95d00000 0 0x800000>;
++			no-map;
++		};
++
++		mba_region: memory@96500000 {
++			reg = <0 0x96500000 0 0x200000>;
++			no-map;
++		};
++
++		slpi_mem: memory@96700000 {
++			reg = <0 0x96700000 0 0x1400000>;
++			no-map;
++		};
++
++		spss_mem: memory@97b00000 {
++			reg = <0 0x97b00000 0 0x100000>;
++			no-map;
++		};
++	};
++
+ 	vph_pwr: vph-pwr-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vph_pwr";
+@@ -50,6 +121,7 @@ vreg_s4a_1p8: pm8998-smps4 {
+ 
+ &adsp_pas {
+ 	status = "okay";
++	memory-region = <&adsp_mem>;
+ 	firmware-name = "qcom/sdm845/adsp.mdt";
+ };
+ 
+@@ -351,6 +423,7 @@ vreg_s3c_0p6: smps3 {
+ 
+ &cdsp_pas {
+ 	status = "okay";
++	memory-region = <&cdsp_mem>;
+ 	firmware-name = "qcom/sdm845/cdsp.mdt";
+ };
+ 
+@@ -459,6 +532,14 @@ &mdss_mdp {
+ &mss_pil {
+ 	status = "okay";
+ 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &qupv3_id_1 {
+@@ -558,8 +639,14 @@ &usb_2_qmpphy {
+ 	vdda-pll-supply = <&vdda_usb2_ss_core>;
+ };
+ 
++&venus {
++	memory-region = <&venus_mem>;
++};
++
+ &wifi {
+ 	status = "okay";
++	memory-region = <&wlan_msa_mem>;
++
+ 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+index 8f617f7b6d34..721d34ce1e39 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+@@ -15,8 +15,6 @@
+ #include "pm8998.dtsi"
+ #include "pmi8998.dtsi"
+ 
+-/delete-node/ &rmtfs_mem;
+-
+ / {
+ 	aliases {
+ 		hsuart0 = &uart6;
+@@ -46,6 +44,66 @@ vol-up {
+ 	};
+ 
+ 	reserved-memory {
++		tz_mem: memory@86200000 {
++			reg = <0 0x86200000 0 0x2d00000>;
++			no-map;
++		};
++
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
++			no-map;
++		};
++
++		mpss_region: memory@8e000000 {
++			reg = <0 0x8e000000 0 0x7800000>;
++			no-map;
++		};
++
++		venus_mem: memory@95800000 {
++			reg = <0 0x95800000 0 0x500000>;
++			no-map;
++		};
++
++		cdsp_mem: memory@95d00000 {
++			reg = <0 0x95d00000 0 0x800000>;
++			no-map;
++		};
++
++		mba_region: memory@96500000 {
++			reg = <0 0x96500000 0 0x200000>;
++			no-map;
++		};
++
++		slpi_mem: memory@96700000 {
++			reg = <0 0x96700000 0 0x1400000>;
++			no-map;
++		};
++
++		spss_mem: memory@97b00000 {
++			reg = <0 0x97b00000 0 0x100000>;
++			no-map;
++		};
++
+ 		/*
+ 		 * The rmtfs memory region in downstream is 'dynamically allocated'
+ 		 * but given the same address every time. Hard code it as this address is
+@@ -125,6 +183,7 @@ ts_1p8_supply: ts-1p8-regulator {
+ 
+ &adsp_pas {
+ 	status = "okay";
++	memory-region = <&adsp_mem>;
+ 	firmware-name = "qcom/sdm845/oneplus6/adsp.mbn";
+ };
+ 
+@@ -291,6 +350,7 @@ vreg_s3c_0p6: smps3 {
+ 
+ &cdsp_pas {
+ 	status = "okay";
++	memory-region = <&cdsp_mem>;
+ 	firmware-name = "qcom/sdm845/oneplus6/cdsp.mbn";
+ };
+ 
+@@ -399,6 +459,14 @@ &mdss_mdp {
+ &mss_pil {
+ 	status = "okay";
+ 	firmware-name = "qcom/sdm845/oneplus6/mba.mbn", "qcom/sdm845/oneplus6/modem.mbn";
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &pm8998_gpio {
+@@ -612,8 +680,14 @@ mux {
+ 	};
+ };
+ 
++&venus {
++	memory-region = <&venus_mem>;
++};
++
+ &wifi {
+ 	status = "okay";
++	memory-region = <&wlan_msa_mem>;
++
+ 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
+index 86cbae63eaf7..a9a54273c1b4 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
+@@ -9,21 +9,6 @@
+ #include "pm8998.dtsi"
+ #include "pmi8998.dtsi"
+ 
+-/*
+- * Delete following upstream (sdm845.dtsi) reserved
+- * memory mappings which are different in this device.
+- */
+-/delete-node/ &tz_mem;
+-/delete-node/ &adsp_mem;
+-/delete-node/ &wlan_msa_mem;
+-/delete-node/ &mpss_region;
+-/delete-node/ &venus_mem;
+-/delete-node/ &cdsp_mem;
+-/delete-node/ &mba_region;
+-/delete-node/ &slpi_mem;
+-/delete-node/ &spss_mem;
+-/delete-node/ &rmtfs_mem;
+-
+ / {
+ 	model = "Xiaomi Pocophone F1";
+ 	compatible = "xiaomi,beryllium", "qcom,sdm845";
+@@ -57,6 +42,21 @@ tz_mem: memory@86200000 {
+ 			no-map;
+ 		};
+ 
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
++			no-map;
++		};
++
+ 		adsp_mem: memory@8c500000 {
+ 			reg = <0 0x8c500000 0 0x1e00000>;
+ 			no-map;
+@@ -119,6 +119,7 @@ vreg_s4a_1p8: vreg-s4a-1p8 {
+ 
+ &adsp_pas {
+ 	status = "okay";
++	memory-region = <&adsp_mem>;
+ 	firmware-name = "qcom/sdm845/adsp.mdt";
+ };
+ 
+@@ -197,6 +198,7 @@ vreg_l26a_1p2: ldo26 {
+ 
+ &cdsp_pas {
+ 	status = "okay";
++	memory-region = <&cdsp_mem>;
+ 	firmware-name = "qcom/sdm845/cdsp.mdt";
+ };
+ 
+@@ -218,6 +220,14 @@ zap-shader {
+ &mss_pil {
+ 	status = "okay";
+ 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mdt";
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &pm8998_gpio {
+@@ -345,8 +355,13 @@ &usb_1_qmpphy {
+ 	vdda-pll-supply = <&vreg_l1a_0p875>;
+ };
+ 
++&venus {
++	memory-region = <&venus_mem>;
++};
++
+ &wifi {
+ 	status = "okay";
++	memory-region = <&wlan_msa_mem>;
+ 
+ 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 874990522b42..98d3b4511248 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -104,20 +104,6 @@ smem_mem: memory@86000000 {
+ 			no-map;
+ 		};
+ 
+-		tz_mem: memory@86200000 {
+-			reg = <0 0x86200000 0 0x2d00000>;
+-			no-map;
+-		};
+-
+-		rmtfs_mem: memory@88f00000 {
+-			compatible = "qcom,rmtfs-mem";
+-			reg = <0 0x88f00000 0 0x200000>;
+-			no-map;
+-
+-			qcom,client-id = <1>;
+-			qcom,vmid = <15>;
+-		};
+-
+ 		qseecom_mem: memory@8ab00000 {
+ 			reg = <0 0x8ab00000 0 0x1400000>;
+ 			no-map;
+@@ -127,61 +113,6 @@ camera_mem: memory@8bf00000 {
+ 			reg = <0 0x8bf00000 0 0x500000>;
+ 			no-map;
+ 		};
+-
+-		ipa_fw_mem: memory@8c400000 {
+-			reg = <0 0x8c400000 0 0x10000>;
+-			no-map;
+-		};
+-
+-		ipa_gsi_mem: memory@8c410000 {
+-			reg = <0 0x8c410000 0 0x5000>;
+-			no-map;
+-		};
+-
+-		gpu_mem: memory@8c415000 {
+-			reg = <0 0x8c415000 0 0x2000>;
+-			no-map;
+-		};
+-
+-		adsp_mem: memory@8c500000 {
+-			reg = <0 0x8c500000 0 0x1a00000>;
+-			no-map;
+-		};
+-
+-		wlan_msa_mem: memory@8df00000 {
+-			reg = <0 0x8df00000 0 0x100000>;
+-			no-map;
+-		};
+-
+-		mpss_region: memory@8e000000 {
+-			reg = <0 0x8e000000 0 0x7800000>;
+-			no-map;
+-		};
+-
+-		venus_mem: memory@95800000 {
+-			reg = <0 0x95800000 0 0x500000>;
+-			no-map;
+-		};
+-
+-		cdsp_mem: memory@95d00000 {
+-			reg = <0 0x95d00000 0 0x800000>;
+-			no-map;
+-		};
+-
+-		mba_region: memory@96500000 {
+-			reg = <0 0x96500000 0 0x200000>;
+-			no-map;
+-		};
+-
+-		slpi_mem: memory@96700000 {
+-			reg = <0 0x96700000 0 0x1400000>;
+-			no-map;
+-		};
+-
+-		spss_mem: memory@97b00000 {
+-			reg = <0 0x97b00000 0 0x100000>;
+-			no-map;
+-		};
+ 	};
+ 
+ 	cpus {
+@@ -766,8 +697,6 @@ adsp_pas: remoteproc-adsp {
+ 		clocks = <&rpmhcc RPMH_CXO_CLK>;
+ 		clock-names = "xo";
+ 
+-		memory-region = <&adsp_mem>;
+-
+ 		qcom,smem-states = <&adsp_smp2p_out 0>;
+ 		qcom,smem-state-names = "stop";
+ 
+@@ -865,8 +794,6 @@ cdsp_pas: remoteproc-cdsp {
+ 		clocks = <&rpmhcc RPMH_CXO_CLK>;
+ 		clock-names = "xo";
+ 
+-		memory-region = <&cdsp_mem>;
+-
+ 		qcom,smem-states = <&cdsp_smp2p_out 0>;
+ 		qcom,smem-state-names = "stop";
+ 
+@@ -2987,14 +2914,6 @@ mss_pil: remoteproc@4080000 {
+ 					<&rpmhpd SDM845_MSS>;
+ 			power-domain-names = "load_state", "cx", "mx", "mss";
+ 
+-			mba {
+-				memory-region = <&mba_region>;
+-			};
+-
+-			mpss {
+-				memory-region = <&mpss_region>;
+-			};
+-
+ 			glink-edge {
+ 				interrupts = <GIC_SPI 449 IRQ_TYPE_EDGE_RISING>;
+ 				label = "modem";
+@@ -3851,7 +3770,6 @@ venus: video-codec@aa00000 {
+ 				      "vcodec1_core", "vcodec1_bus";
+ 			iommus = <&apps_smmu 0x10a0 0x8>,
+ 				 <&apps_smmu 0x10b0 0x0>;
+-			memory-region = <&venus_mem>;
+ 			interconnects = <&mmss_noc MASTER_VIDEO_P0 0 &mem_noc SLAVE_EBI1 0>,
+ 					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>;
+ 			interconnect-names = "video-mem", "cpu-cfg";
+@@ -4775,7 +4693,6 @@ wifi: wifi@18800000 {
+ 			status = "disabled";
+ 			reg = <0 0x18800000 0 0x800000>;
+ 			reg-names = "membase";
+-			memory-region = <&wlan_msa_mem>;
+ 			clock-names = "cxo_ref_clk_pin";
+ 			clocks = <&rpmhcc RPMH_RF_CLK2>;
+ 			interrupts =
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 140db2d5ba31..7d84f8a2db4d 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -58,6 +58,77 @@ panel_in_edp: endpoint {
+ 		};
+ 	};
+ 
++	reserved-memory {
++		tz_mem: memory@86200000 {
++			reg = <0 0x86200000 0 0x2d00000>;
++			no-map;
++		};
++
++		rmtfs_mem: memory@88f00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0 0x88f00000 0 0x200000>;
++			no-map;
++
++			qcom,client-id = <1>;
++			qcom,vmid = <15>;
++		};
++
++		ipa_fw_mem: memory@8c400000 {
++			reg = <0 0x8c400000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@8c410000 {
++			reg = <0 0x8c410000 0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@8c415000 {
++			reg = <0 0x8c415000 0 0x2000>;
++			no-map;
++		};
++
++		adsp_mem: memory@8c500000 {
++			reg = <0 0x8c500000 0 0x1a00000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@8df00000 {
++			reg = <0 0x8df00000 0 0x100000>;
++			no-map;
++		};
++
++		mpss_region: memory@8e000000 {
++			reg = <0 0x8e000000 0 0x7800000>;
++			no-map;
++		};
++
++		venus_mem: memory@95800000 {
++			reg = <0 0x95800000 0 0x500000>;
++			no-map;
++		};
++
++		cdsp_mem: memory@95d00000 {
++			reg = <0 0x95d00000 0 0x800000>;
++			no-map;
++		};
++
++		mba_region: memory@96500000 {
++			reg = <0 0x96500000 0 0x200000>;
++			no-map;
++		};
++
++		slpi_mem: memory@96700000 {
++			reg = <0 0x96700000 0 0x1400000>;
++			no-map;
++		};
++
++		spss_mem: memory@97b00000 {
++			reg = <0 0x97b00000 0 0x100000>;
++			no-map;
++		};
++	};
++
+ 	sn65dsi86_refclk: sn65dsi86-refclk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -68,6 +139,7 @@ sn65dsi86_refclk: sn65dsi86-refclk {
+ 
+ &adsp_pas {
+ 	firmware-name = "qcom/LENOVO/81JL/qcadsp850.mbn";
++	memory-region = <&adsp_mem>;
+ 	status = "okay";
+ };
+ 
+@@ -277,6 +349,7 @@ vreg_lvs2a_1p8: lvs2 {
+ 
+ &cdsp_pas {
+ 	firmware-name = "qcom/LENOVO/81JL/qccdsp850.mbn";
++	memory-region = <&cdsp_mem>;
+ 	status = "okay";
+ };
+ 
+@@ -423,6 +496,14 @@ &mdss_mdp {
+ 
+ &mss_pil {
+ 	firmware-name = "qcom/LENOVO/81JL/qcdsp1v2850.mbn", "qcom/LENOVO/81JL/qcdsp2850.mbn";
++
++	mba {
++		memory-region = <&mba_region>;
++	};
++
++	mpss {
++		memory-region = <&mpss_region>;
++	};
+ };
+ 
+ &qup_i2c10_default {
+@@ -682,6 +763,10 @@ &usb_2_qmpphy {
+ 	vdda-pll-supply = <&vdda_usb2_ss_core>;
+ };
+ 
++&venus {
++	memory-region = <&venus_mem>;
++};
++
+ &wcd9340{
+ 	pinctrl-0 = <&wcd_intr_default>;
+ 	pinctrl-names = "default";
+@@ -717,6 +802,7 @@ right_spkr: wsa8810-right{
+ 
+ &wifi {
+ 	status = "okay";
++	memory-region = <&wlan_msa_mem>;
+ 
+ 	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+-- 
+2.29.2
 
-                /*
-                 * 3. DMC1 refresh count for 133Mhz if (index == L4) is
--                * true refresh counter is already programed in upper
-+                * true refresh counter is already programmed in upper
-                 * code. 0x287@83Mhz
-                 */
-                if (!bus_speed_changing)
