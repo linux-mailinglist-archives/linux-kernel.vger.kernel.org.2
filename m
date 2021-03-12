@@ -2,327 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32418338D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772F7338D03
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhCLMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:25:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57346 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231466AbhCLMZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:25:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D563B0E5;
-        Fri, 12 Mar 2021 12:25:27 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     u.kleine-koenig@pengutronix.de
-Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v8 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
-Date:   Fri, 12 Mar 2021 13:24:54 +0100
-Message-Id: <20210312122454.24480-12-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312122454.24480-1-nsaenzjulienne@suse.de>
-References: <20210312122454.24480-1-nsaenzjulienne@suse.de>
+        id S231346AbhCLM0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231578AbhCLMZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:25:39 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7742C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:25:38 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso8426376pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:25:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heFiHRJ+yDXxsvP4FofmW3y6eiqEITqgGlgBBBwjlWI=;
+        b=rc85kEb472JL3UTVxb/VSg9CshQzVlWaps9ym3rGDLm9Kev+oXifXhdSNATALoko3r
+         T/EPPKN33y8081b0eCP/BJJ0FdwQI1Q+En1+BKnnzH1Qcd3saEaQiEtmSzO74NIffsYk
+         CRw/rN+q/3p7OFTnPletzuXHCNFIE6UMvuNSEqARRu8mf7g+ZrCzDfJBV+RyAAViSmHw
+         4GIx+mopjgpqdJ+uALQcKr7eU5sNaI/6Q05JMw7b0TJyYwA8PfigWJPDzwq8YLRU1qYC
+         bxgE3wdxwiwt8bfzTfnpuUljLtcP5bqEbRAdRFxmbpPz1/QnqV8CHlWTFKXKdwIgpag2
+         16yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heFiHRJ+yDXxsvP4FofmW3y6eiqEITqgGlgBBBwjlWI=;
+        b=Ah3zj07sPEcXr9VhqTu8lI4RwEpaVw0Kre8CNF3szkFgyZ23X3PBKSIxYrJkJGoA0v
+         XjZzV8cHenKxOHe0j+44TfKmAkGyhafyuHpq4Sqwuf76QLnkJCvkLljS0eC8eFlTT2A+
+         hLl8knHqFlYNwfQ/X8vE4CTBQenzfN4dF37n38CgnLEEatUfIdCcsLrfGq1lWVGBQQ7U
+         ilySJa1DBy7I1SfeivTzUAG7RAjLkIt+t1XN7tBCFlLtq3FTWQeXXvXxWH2Q3Uj2BwyT
+         1NqFLclYBiUE4U7zDeDgYW0BXWxMcAKcmiretzzFi+IhXMDsqkWS7ATaJGxDE0eYTxBo
+         hL6A==
+X-Gm-Message-State: AOAM5310IO8lIlRE1tK09+wdYbzG7FiRJhg4bhBgAfJ+6otqJo2ZFEM6
+        snighFZVhQxxuBAAt3Ty9b+bU9Hv8XQ=
+X-Google-Smtp-Source: ABdhPJw49vEPwgasfueeMIIdV9hd8xf4AElMcbJp+JvjHlOxYZneNew9PD1sNKND+95PUq5jk5+aWw==
+X-Received: by 2002:a17:90a:bd97:: with SMTP id z23mr14381546pjr.189.1615551938111;
+        Fri, 12 Mar 2021 04:25:38 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:addc:c0e1:9aed:6202])
+        by smtp.gmail.com with ESMTPSA id iq6sm2208956pjb.31.2021.03.12.04.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 04:25:37 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v4] f2fs: add sysfs nodes to get runtime compression stat
+Date:   Fri, 12 Mar 2021 21:25:31 +0900
+Message-Id: <20210312122531.2717093-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support to control the PWM bus available in official Raspberry Pi
-PoE HAT. Only RPi's co-processor has access to it, so commands have to
-be sent through RPi's firmware mailbox interface.
+From: Daeho Jeong <daehojeong@google.com>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+I've added new sysfs nodes to show runtime compression stat since mount.
+compr_written_block - show the block count written after compression
+compr_saved_block - show the saved block count with compression
+compr_new_inode - show the count of inode newly enabled for compression
 
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
+v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
+    related to kernel config
+v3: changed sysfs nodes' names and made them runtime stat, not
+    persistent on disk
+v4: changed sysfs nodes' desctiption
+---
+ Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++
+ fs/f2fs/compress.c                      |  1 +
+ fs/f2fs/f2fs.h                          | 19 ++++++++
+ fs/f2fs/super.c                         |  7 +++
+ fs/f2fs/sysfs.c                         | 58 +++++++++++++++++++++++++
+ 5 files changed, 109 insertions(+)
 
-Changes since v7:
- - Remove unwarranted RPI_PWM_DEF_DUTY_REG usage
-
- Changes since v6:
-- Use %pe
-- Round divisions properly
-- Use dev_err_probe()
-- Pass check_patch
-
-Changes since v3:
- - Rename compatible string to be more explicit WRT to bus's limitations
-
-Changes since v2:
- - Use devm_rpi_firmware_get()
- - Rename driver
- - Small cleanups
-
-Changes since v1:
- - Use default pwm bindings and get rid of xlate() function
- - Correct spelling errors
- - Correct apply() function
- - Round values
- - Fix divisions in arm32 mode
- - Small cleanups
-
- drivers/pwm/Kconfig               |   9 ++
- drivers/pwm/Makefile              |   1 +
- drivers/pwm/pwm-raspberrypi-poe.c | 206 ++++++++++++++++++++++++++++++
- 3 files changed, 216 insertions(+)
- create mode 100644 drivers/pwm/pwm-raspberrypi-poe.c
-
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index a7a7a9f26aef..d3371ac7b871 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -431,6 +431,15 @@ config PWM_PXA
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-pxa.
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index cbeac1bebe2f..ddd4bd6116fc 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -409,3 +409,27 @@ Description:	Give a way to change checkpoint merge daemon's io priority.
+ 		I/O priority "3". We can select the class between "rt" and "be",
+ 		and set the I/O priority within valid range of it. "," delimiter
+ 		is necessary in between I/O class and priority number.
++
++What:		/sys/fs/f2fs/<disk>/compr_written_block
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the block count written after compression since mount. Note
++		that when the compressed blocks are deleted, this count doesn't
++		decrease. If you write "0" here, you can initialize
++		compr_written_block and compr_saved_block to "0".
++
++What:		/sys/fs/f2fs/<disk>/compr_saved_block
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the saved block count with compression since mount. Note
++		that when the compressed blocks are deleted, this count doesn't
++		decrease. If you write "0" here, you can initialize
++		compr_written_block and compr_saved_block to "0".
++
++What:		/sys/fs/f2fs/<disk>/compr_new_inode
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the count of inode newly enabled for compression since mount.
++		Note that when the compression is disabled for the files, this count
++		doesn't decrease. If you write "0" here, you can initialize
++		compr_new_inode to "0".
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 77fa342de38f..3c9d797dbdd6 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	if (fio.compr_blocks)
+ 		f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, false);
+ 	f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
++	add_compr_block_stat(inode, cc->nr_cpages);
  
-+config PWM_RASPBERRYPI_POE
-+	tristate "Raspberry Pi Firwmware PoE Hat PWM support"
-+	# Make sure not 'y' when RASPBERRYPI_FIRMWARE is 'm'. This can only
-+	# happen when COMPILE_TEST=y, hence the added !RASPBERRYPI_FIRMWARE.
-+	depends on RASPBERRYPI_FIRMWARE || (COMPILE_TEST && !RASPBERRYPI_FIRMWARE)
-+	help
-+	  Enable Raspberry Pi firmware controller PWM bus used to control the
-+	  official RPI PoE hat
+ 	set_inode_flag(cc->inode, FI_APPEND_WRITE);
+ 	if (cc->cluster_idx == 0)
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index e2d302ae3a46..2c989f8caf05 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	struct kmem_cache *page_array_slab;	/* page array entry */
+ 	unsigned int page_array_slab_size;	/* default page array slab size */
 +
- config PWM_RCAR
- 	tristate "Renesas R-Car PWM support"
- 	depends on ARCH_RENESAS || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 4e35a55fa7b6..d3879619bd76 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_PWM_NTXEC)		+= pwm-ntxec.o
- obj-$(CONFIG_PWM_OMAP_DMTIMER)	+= pwm-omap-dmtimer.o
- obj-$(CONFIG_PWM_PCA9685)	+= pwm-pca9685.o
- obj-$(CONFIG_PWM_PXA)		+= pwm-pxa.o
-+obj-$(CONFIG_PWM_RASPBERRYPI_POE)	+= pwm-raspberrypi-poe.o
- obj-$(CONFIG_PWM_RCAR)		+= pwm-rcar.o
- obj-$(CONFIG_PWM_RENESAS_TPU)	+= pwm-renesas-tpu.o
- obj-$(CONFIG_PWM_ROCKCHIP)	+= pwm-rockchip.o
-diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberrypi-poe.c
-new file mode 100644
-index 000000000000..71ade5e55069
---- /dev/null
-+++ b/drivers/pwm/pwm-raspberrypi-poe.c
-@@ -0,0 +1,206 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-+ * For more information on Raspberry Pi's PoE hat see:
-+ * https://www.raspberrypi.org/products/poe-hat/
-+ *
-+ * Limitations:
-+ *  - No disable bit, so a disabled PWM is simulated by duty_cycle 0
-+ *  - Only normal polarity
-+ *  - Fixed 12.5 kHz period
-+ *
-+ * The current period is completed when HW is reconfigured.
-+ */
++	/* For runtime compression statistics */
++	atomic64_t compr_written_block;
++	atomic64_t compr_saved_block;
++	atomic_t compr_new_inode;
+ #endif
+ };
+ 
+@@ -3955,6 +3960,18 @@ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+ int __init f2fs_init_compress_cache(void);
+ void f2fs_destroy_compress_cache(void);
++#define inc_compr_inode_stat(inode)					\
++	do {								\
++		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
++		atomic_inc(&sbi->compr_new_inode);			\
++	} while (0)
++#define add_compr_block_stat(inode, blocks)				\
++	do {								\
++		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
++		int diff = F2FS_I(inode)->i_cluster_size - blocks;	\
++		atomic64_add(blocks, &sbi->compr_written_block);	\
++		atomic64_add(diff, &sbi->compr_saved_block);		\
++	} while (0)
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -3983,6 +4000,7 @@ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return
+ static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+ static inline int __init f2fs_init_compress_cache(void) { return 0; }
+ static inline void f2fs_destroy_compress_cache(void) { }
++#define inc_compr_inode_stat(inode)		do { } while (0)
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+@@ -4006,6 +4024,7 @@ static inline void set_compress_context(struct inode *inode)
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+ 	set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 	stat_inc_compr_inode(inode);
++	inc_compr_inode_stat(inode);
+ 	f2fs_mark_inode_dirty_sync(inode, true);
+ }
+ 
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 7069793752f1..88d9ecdee8d3 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3260,6 +3260,13 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 
+ 	init_rwsem(&sbi->sb_lock);
+ 	init_rwsem(&sbi->pin_sem);
 +
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	/* For runtime compression statistics */
++	atomic64_set(&sbi->compr_written_block, 0);
++	atomic64_set(&sbi->compr_saved_block, 0);
++	atomic_set(&sbi->compr_new_inode, 0);
++#endif
+ }
+ 
+ static int init_percpu_info(struct f2fs_sb_info *sbi)
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index e38a7f6921dd..2b6e5e6e1286 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -282,6 +282,38 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+ 		return len;
+ 	}
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (!strcmp(a->attr.name, "compr_written_block")) {
++		u64 bcount;
++		int len;
 +
-+#include <soc/bcm2835/raspberrypi-firmware.h>
-+#include <dt-bindings/pwm/raspberrypi,firmware-poe-pwm.h>
++		bcount = atomic64_read(&sbi->compr_written_block);
 +
-+#define RPI_PWM_MAX_DUTY		255
-+#define RPI_PWM_PERIOD_NS		80000 /* 12.5 kHz */
-+
-+#define RPI_PWM_CUR_DUTY_REG		0x0
-+
-+struct raspberrypi_pwm {
-+	struct rpi_firmware *firmware;
-+	struct pwm_chip chip;
-+	unsigned int duty_cycle;
-+};
-+
-+struct raspberrypi_pwm_prop {
-+	__le32 reg;
-+	__le32 val;
-+	__le32 ret;
-+} __packed;
-+
-+static inline
-+struct raspberrypi_pwm *raspberrypi_pwm_from_chip(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct raspberrypi_pwm, chip);
-+}
-+
-+static int raspberrypi_pwm_set_property(struct rpi_firmware *firmware,
-+					u32 reg, u32 val)
-+{
-+	struct raspberrypi_pwm_prop msg = {
-+		.reg = cpu_to_le32(reg),
-+		.val = cpu_to_le32(val),
-+	};
-+	int ret;
-+
-+	ret = rpi_firmware_property(firmware, RPI_FIRMWARE_SET_POE_HAT_VAL,
-+				    &msg, sizeof(msg));
-+	if (ret)
-+		return ret;
-+	if (msg.ret)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int raspberrypi_pwm_get_property(struct rpi_firmware *firmware,
-+					u32 reg, u32 *val)
-+{
-+	struct raspberrypi_pwm_prop msg = {
-+		.reg = reg
-+	};
-+	int ret;
-+
-+	ret = rpi_firmware_property(firmware, RPI_FIRMWARE_GET_POE_HAT_VAL,
-+				    &msg, sizeof(msg));
-+	if (ret)
-+		return ret;
-+	if (msg.ret)
-+		return -EIO;
-+
-+	*val = le32_to_cpu(msg.val);
-+
-+	return 0;
-+}
-+
-+static void raspberrypi_pwm_get_state(struct pwm_chip *chip,
-+				      struct pwm_device *pwm,
-+				      struct pwm_state *state)
-+{
-+	struct raspberrypi_pwm *rpipwm = raspberrypi_pwm_from_chip(chip);
-+
-+	state->period = RPI_PWM_PERIOD_NS;
-+	state->duty_cycle = DIV_ROUND_UP(rpipwm->duty_cycle * RPI_PWM_PERIOD_NS,
-+					 RPI_PWM_MAX_DUTY);
-+	state->enabled = !!(rpipwm->duty_cycle);
-+	state->polarity = PWM_POLARITY_NORMAL;
-+}
-+
-+static int raspberrypi_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+				 const struct pwm_state *state)
-+{
-+	struct raspberrypi_pwm *rpipwm = raspberrypi_pwm_from_chip(chip);
-+	unsigned int duty_cycle;
-+	int ret;
-+
-+	if (state->period < RPI_PWM_PERIOD_NS ||
-+	    state->polarity != PWM_POLARITY_NORMAL)
-+		return -EINVAL;
-+
-+	if (!state->enabled)
-+		duty_cycle = 0;
-+	else if (state->duty_cycle < RPI_PWM_PERIOD_NS)
-+		duty_cycle = DIV_ROUND_DOWN_ULL(state->duty_cycle * RPI_PWM_MAX_DUTY,
-+						RPI_PWM_PERIOD_NS);
-+	else
-+		duty_cycle = RPI_PWM_MAX_DUTY;
-+
-+	if (duty_cycle == rpipwm->duty_cycle)
-+		return 0;
-+
-+	ret = raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_CUR_DUTY_REG,
-+					   duty_cycle);
-+	if (ret) {
-+		dev_err(chip->dev, "Failed to set duty cycle: %pe\n",
-+			ERR_PTR(ret));
-+		return ret;
++		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
++		return len;
 +	}
 +
-+	rpipwm->duty_cycle = duty_cycle;
++	if (!strcmp(a->attr.name, "compr_saved_block")) {
++		u64 bcount;
++		int len;
 +
-+	return 0;
-+}
++		bcount = atomic64_read(&sbi->compr_saved_block);
 +
-+static const struct pwm_ops raspberrypi_pwm_ops = {
-+	.get_state = raspberrypi_pwm_get_state,
-+	.apply = raspberrypi_pwm_apply,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int raspberrypi_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device_node *firmware_node;
-+	struct device *dev = &pdev->dev;
-+	struct rpi_firmware *firmware;
-+	struct raspberrypi_pwm *rpipwm;
-+	int ret;
-+
-+	firmware_node = of_get_parent(dev->of_node);
-+	if (!firmware_node) {
-+		dev_err(dev, "Missing firmware node\n");
-+		return -ENOENT;
++		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
++		return len;
 +	}
 +
-+	firmware = devm_rpi_firmware_get(&pdev->dev, firmware_node);
-+	of_node_put(firmware_node);
-+	if (!firmware)
-+		return dev_err_probe(dev, -EPROBE_DEFER,
-+				     "Failed to get firmware handle\n");
++	if (!strcmp(a->attr.name, "compr_new_inode")) {
++		u32 icount;
++		int len;
 +
-+	rpipwm = devm_kzalloc(&pdev->dev, sizeof(*rpipwm), GFP_KERNEL);
-+	if (!rpipwm)
-+		return -ENOMEM;
++		icount = atomic_read(&sbi->compr_new_inode);
 +
-+	rpipwm->firmware = firmware;
-+	rpipwm->chip.dev = dev;
-+	rpipwm->chip.ops = &raspberrypi_pwm_ops;
-+	rpipwm->chip.base = -1;
-+	rpipwm->chip.npwm = RASPBERRYPI_FIRMWARE_PWM_NUM;
++		len = scnprintf(buf, PAGE_SIZE, "%u\n", icount);
++		return len;
++	}
++#endif
 +
-+	platform_set_drvdata(pdev, rpipwm);
-+
-+	ret = raspberrypi_pwm_get_property(rpipwm->firmware, RPI_PWM_CUR_DUTY_REG,
-+					   &rpipwm->duty_cycle);
-+	if (ret) {
-+		dev_err(dev, "Failed to get duty cycle: %pe\n", ERR_PTR(ret));
-+		return ret;
+ 	ui = (unsigned int *)(ptr + a->offset);
+ 
+ 	return sprintf(buf, "%u\n", *ui);
+@@ -458,6 +490,24 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return count;
+ 	}
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (!strcmp(a->attr.name, "compr_written_block") ||
++		!strcmp(a->attr.name, "compr_saved_block")) {
++		if (t != 0)
++			return -EINVAL;
++		atomic64_set(&sbi->compr_written_block, 0);
++		atomic64_set(&sbi->compr_saved_block, 0);
++		return count;
 +	}
 +
-+	return pwmchip_add(&rpipwm->chip);
-+}
++	if (!strcmp(a->attr.name, "compr_new_inode")) {
++		if (t != 0)
++			return -EINVAL;
++		atomic_set(&sbi->compr_new_inode, 0);
++		return count;
++	}
++#endif
 +
-+static int raspberrypi_pwm_remove(struct platform_device *pdev)
-+{
-+	struct raspberrypi_pwm *rpipwm = platform_get_drvdata(pdev);
-+
-+	return pwmchip_remove(&rpipwm->chip);
-+}
-+
-+static const struct of_device_id raspberrypi_pwm_of_match[] = {
-+	{ .compatible = "raspberrypi,firmware-poe-pwm", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, raspberrypi_pwm_of_match);
-+
-+static struct platform_driver raspberrypi_pwm_driver = {
-+	.driver = {
-+		.name = "raspberrypi-poe-pwm",
-+		.of_match_table = raspberrypi_pwm_of_match,
-+	},
-+	.probe = raspberrypi_pwm_probe,
-+	.remove = raspberrypi_pwm_remove,
-+};
-+module_platform_driver(raspberrypi_pwm_driver);
-+
-+MODULE_AUTHOR("Nicolas Saenz Julienne <nsaenzjulienne@suse.de>");
-+MODULE_DESCRIPTION("Raspberry Pi Firmware Based PWM Bus Driver");
-+MODULE_LICENSE("GPL v2");
+ 	*ui = (unsigned int)t;
+ 
+ 	return count;
+@@ -668,6 +718,9 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+ F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+ #endif
+ 
+ #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+@@ -730,6 +783,11 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(moved_blocks_foreground),
+ 	ATTR_LIST(moved_blocks_background),
+ 	ATTR_LIST(avg_vblocks),
++#endif
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	ATTR_LIST(compr_written_block),
++	ATTR_LIST(compr_saved_block),
++	ATTR_LIST(compr_new_inode),
+ #endif
+ 	NULL,
+ };
 -- 
-2.30.1
+2.31.0.rc2.261.g7f71774620-goog
 
