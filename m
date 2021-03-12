@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982B033879E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07A8338794
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhCLIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:39:07 -0500
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:48872 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhCLIjF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:39:05 -0500
-X-Greylist: delayed 590 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 03:39:04 EST
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id A6B01E03A8;
-        Fri, 12 Mar 2021 16:29:11 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, kael_w@yeah.net
-Subject: [PATCH] arm: plat-pxa: delete redundant printing of the error
-Date:   Fri, 12 Mar 2021 16:28:40 +0800
-Message-Id: <20210312082841.37779-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHU4dGEhMHx1NHR0YVkpNSk5OSExMTkpCSUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKSkNITFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORg6Nxw4KD8NAwESFSoMGg4j
-        TykaCzlVSlVKTUpOTkhMTE5JSkNCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTkJJNwY+
-X-HM-Tid: 0a78258dc7262c17kusna6b01e03a8
+        id S232298AbhCLIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:38:34 -0500
+Received: from mail.thorsis.com ([92.198.35.195]:55028 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232443AbhCLIiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:38:05 -0500
+X-Greylist: delayed 357 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 03:38:04 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id EF9C33356;
+        Fri, 12 Mar 2021 09:32:06 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JI1aur4oo8wz; Fri, 12 Mar 2021 09:32:06 +0100 (CET)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id C62C235C5; Fri, 12 Mar 2021 09:32:04 +0100 (CET)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+From:   Alexander Dahl <ada@thorsis.com>
+To:     linux-leds@vger.kernel.org
+Cc:     Hermes Zhang <chenhui.zhang@axis.com>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, kernel@axis.com,
+        Hermes Zhang <chenhuiz@axis.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
+Date:   Fri, 12 Mar 2021 09:31:58 +0100
+Message-ID: <2315048.uTtSMl1LR1@ada>
+In-Reply-To: <20210311130408.10820-1-chenhui.zhang@axis.com>
+References: <20210311130408.10820-1-chenhui.zhang@axis.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_irq() has already checked and printed the error,
-the printing here is not necessary at all.
+Hallo Hermes,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/arm/plat-pxa/ssp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+thanks for your effort.
 
-diff --git a/arch/arm/plat-pxa/ssp.c b/arch/arm/plat-pxa/ssp.c
-index 563440315acd..9e77b3392c1e 100644
---- a/arch/arm/plat-pxa/ssp.c
-+++ b/arch/arm/plat-pxa/ssp.c
-@@ -146,10 +146,8 @@ static int pxa_ssp_probe(struct platform_device *pdev)
- 	}
- 
- 	ssp->irq = platform_get_irq(pdev, 0);
--	if (ssp->irq < 0) {
--		dev_err(dev, "no IRQ resource defined\n");
-+	if (ssp->irq < 0)
- 		return -ENODEV;
--	}
- 
- 	if (dev->of_node) {
- 		const struct of_device_id *id =
--- 
-2.25.1
+Am Donnerstag, 11. M=E4rz 2021, 14:04:08 CET schrieb Hermes Zhang:
+> From: Hermes Zhang <chenhuiz@axis.com>
+>=20
+> Introduce a new Dual GPIO LED driver. These two GPIOs LED will act as
+> one LED as normal GPIO LED but give the possibility to change the
+> intensity in four levels: OFF, LOW, MIDDLE and HIGH.
+
+Interesting use case. Is there any real world hardware wired like that you=
+=20
+could point to?
+
+> +config LEDS_DUAL_GPIO
+> +	tristate "LED Support for Dual GPIO connected LEDs"
+> +	depends on LEDS_CLASS
+> +	depends on GPIOLIB || COMPILE_TEST
+> +	help
+> +	  This option enables support for the two LEDs connected to GPIO
+> +	  outputs. These two GPIO LEDs act as one LED in the sysfs and
+> +	  perform different intensity by enable either one of them or both.
+
+Well, although I never had time to implement that, I suspect that could=20
+conflict if someone will eventually write a driver for two pin dual color L=
+EDs=20
+connected to GPIO pins.  We actually do that on our hardware and I know oth=
+ers=20
+do, too.
+
+I asked about that back in 2019, see this thread:
+
+https://www.spinics.net/lists/linux-leds/msg11665.html
+
+At the time the multicolor framework was not yet merged, so today I would=20
+probably make something which either uses the multicolor framework or at le=
+ast=20
+has a similar interface to userspace. However, it probably won't surprise y=
+ou=20
+all, this is not highest priority on my ToDo list. ;-)
+
+(What we actually do is pretend those are separate LEDs and ignore the=20
+conflicting case where both GPIOs are on and the LED is dark then.)
+
+Greets
+Alex
+
+
 
