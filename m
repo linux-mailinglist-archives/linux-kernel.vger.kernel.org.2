@@ -2,126 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3A133887C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF85338881
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhCLJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S232809AbhCLJXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232556AbhCLJVx (ORCPT
+        with ESMTP id S232825AbhCLJWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:21:53 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81285C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:21:53 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id l15so3932490qvl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:21:53 -0800 (PST)
+        Fri, 12 Mar 2021 04:22:37 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6771AC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:22:37 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id u4so44665389lfs.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:22:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iWKvAGiRnhLquHQ+RPB+OyLtA9yjx7WsA3FQ83tQqko=;
-        b=i9hsJeYi3+tzFRPk4krMWWUhY1HpCXJ0D/YqqWplkPZ2mshdNt/WIXmi+BMURFm1ek
-         92NGQ+s4yWP7DFNJuyl+jZigA/1AeNotVlYOoDPTR+9LnmYcb4Wfdb3R1Dv4qmtOn6l6
-         rsMUj6tLWLT3jlu0Bbry0rsNqjVBfsfOeMnlFzqNfPykfZLdducmdgds4R4FIOHxFNIp
-         0USmI4pKBnBB48q7R3HDmZ1fH2ceUFf+HheRR6sJOAdz4i+WcDG4eqXD499MjW2HcGwE
-         qVi4+JyE5GA8XY2z+4XxoPVVCxWzYP0FWzxXJspDQwQW5TjXSf8q0rPrroG/FC5lc5PM
-         jtqQ==
+        bh=oc5bTi7/1MBiAyWrb/BCqxKaS2n3HhEl1VJrsEcMc6k=;
+        b=KDFdseRP1eAOQEMh2Ks3MiJXJtEoNybe7gdJzx1f/I/PLG7U3A/Moiz1/CxbjuJp72
+         fpQqvBBkdC/hcLc3wA5TCEOTBLQ2aFBVwqDB97xSBmttxHg/ydqlbdZzR84D1tQsdnS/
+         76mH37N6q/1iS6dVN96PQqaGQEN2ckQV9xhaYowqgSr3ZxIvxDJz8j8WiV8HgEyWOqUH
+         RVq1S9eXjzn4oixocusNCm6/y08R7v8wf3TE8TRbjFbF6Ph0n578RuEXpmi1m1rvxszD
+         4WYDpUzpSr4gMYS0qyXesNgBNsnLP3EK6sYBecZmnUrFJwYRLvnAdQKzJfJDs2R7APZw
+         aFdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iWKvAGiRnhLquHQ+RPB+OyLtA9yjx7WsA3FQ83tQqko=;
-        b=EcdV4GBUmNazwW4X9vIw9GtD0eON0useqlDIY5lK5DTuJPIsWXiyaS2INZdhb7CN9C
-         ym3OffS6xGLZgheIFFSqvrbwDuczf9tPkml8mYdcUd2B4XElay5MSgE/Fqlb7ZZvpGOU
-         D4/2dNsKD9YlGe+HnVWaZaHjWB5Whb1kCh5SkXgZaWExPKpNfSn0vtL/JWBlTPU4B/8p
-         qRl6UgeTV2SL4SWroeTRKbMZ1RQy2t3dsSyWQ2ROomQzaf4OK3yg30ulvafaSv0LZodq
-         a9wS0/UeGEgOs6ttmYxV9eec6tsOHlgj2oqi61XJ3JHnV6+yrFrWZQVNaSQmv322TrO9
-         ZwKg==
-X-Gm-Message-State: AOAM533szvGjYP1eKyiXo4tp7Xyqjy+eQ0lHSo9hdkqGDo+KIm2AyZP9
-        hga9e1RmvhXvjFlIJ7FsjiJgjgEXyHLZ2mmIKH1/kQ==
-X-Google-Smtp-Source: ABdhPJxYPfouFkVCOeRhsDnMKiSIax5m+QDb5njgcWNdWGbe/nsCXQ+TT3awq0ZqdrH2MV6P+r1/AJrBYuGu9XRuY4w=
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr11587575qva.18.1615540912497;
- Fri, 12 Mar 2021 01:21:52 -0800 (PST)
+        bh=oc5bTi7/1MBiAyWrb/BCqxKaS2n3HhEl1VJrsEcMc6k=;
+        b=bKCy+KKL/qwAd9eMzvF/waKjhL0+/ZVduGa1XbKuZnZ9tZIKMFao0pzHpvbK2wUQ41
+         BL7ZkN+Dg919HJV/Vf/JA8tSaU/beqcYAxChpkoXaPERIxrPn4JsyDZMEds3i1dxrAq0
+         +sqlp6yIu8UHEBFHsiefqKBKst3iWcz0zRASw8y8yQIg3ae8cCA19rgfuR+vsfHoWZpJ
+         jPTwVVnAJwbYgJenvThu4p71IpXBGw0qZWZPQeVQDsXM8uiy7UQp50jlM/nBoFWF+MrZ
+         FHc5iFYN8JxtFoLfTWKbIyfogzgYHL+Rpc+Pequ2tRTK28NeOcUyaGzuNvUuI+XzmSdo
+         JgNw==
+X-Gm-Message-State: AOAM530DVTvGQCVp7SfyxmcuwU33bYxZYbU+mpzy4dhjRUG3mR1b6pPt
+        1ymQZxhr9hz8E2ujCx/bQpdoJBI/qqO7ROsJvQaloA==
+X-Google-Smtp-Source: ABdhPJwi966hWS07LJwz9bEWS3611t5gBvrGW9dceY/bml/CRf47iE8bUw+ljH42WS1Quj2YyGgFvZuR2EaxJaPOnZE=
+X-Received: by 2002:a05:6512:243:: with SMTP id b3mr4968951lfo.529.1615540955761;
+ Fri, 12 Mar 2021 01:22:35 -0800 (PST)
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
- <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
- <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
- <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com> <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
-In-Reply-To: <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 12 Mar 2021 10:21:41 +0100
-Message-ID: <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+ <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+ <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+ <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
+ <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st> <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
+ <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st> <CACRpkda9f-BNmu-CaNsghnDoOcSXvvvji=tag2Xos+tg_nNZ0w@mail.gmail.com>
+ <32bdceb1-e70d-7481-96e3-a064a7108eb9@marcan.st> <CACRpkdZ_-rqGBUOxUcBPeqVkLzX=Q9pjO9M+zY20-S9tNXAE0Q@mail.gmail.com>
+ <d7f8a732-7a44-f609-52dc-3ba824a3d192@marcan.st>
+In-Reply-To: <d7f8a732-7a44-f609-52dc-3ba824a3d192@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 12 Mar 2021 10:22:24 +0100
+Message-ID: <CACRpkdZmXMgAWkPDoi=_tDHuC4W2_PMa892XLLHJz27ChDLD2Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     Hector Martin <marcan@marcan.st>
+Cc:     David Howells <dhowells@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 10:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, Mar 12, 2021 at 9:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Fri, Mar 12, 2021 at 9:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Thu, Mar 11, 2021 at 6:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > a) accessing a legacy ISA/LPC port should not result in an oops,
-> > >     but should instead return values with all bits set. There could
-> > >     be a ratelimited console warning about broken drivers, but we
-> > >     can't assume that all drivers work correctly, as some ancient
-> > >     PC style drivers still rely on this.
-> > >     John Garry has recently worked on a related bugfix, so maybe
-> > >     either this is the same bug he encountered (and hasn't merged
-> > >     yet), or if his fix got merged there is still a remaining problem.
->
-> > > b) It should not be possible to open /dev/ttyS3 if the device is
-> > >     not initialized. What is the output of 'cat /proc/tty/driver/serial'
-> > >     on this machine? Do you see any messages from the serial
-> > >     driver in the boot log?
-> > >     Unfortunately there are so many different ways to probe devices
-> > >     in the 8250 driver that I don't know where this comes from.
-> > >     Your config file has
-> > >    CONFIG_SERIAL_8250_PNP=y
-> > >    CONFIG_SERIAL_8250_NR_UARTS=32
-> > >    CONFIG_SERIAL_8250_RUNTIME_UARTS=4
-> > >    CONFIG_SERIAL_8250_EXTENDED=y
-> > >    I guess it's probably the preconfigured uarts that somehow
-> > >    become probed without initialization, but it could also be
-> > >    an explicit device incorrectly described by qemu.
-> >
-> >
-> > Here is fool boot log, /proc/tty/driver/serial and the crash:
-> > https://gist.githubusercontent.com/dvyukov/084890d9b4aa7cd54f468e652a9b5881/raw/54c12248ff6a4885ba6c530d56b3adad59bc6187/gistfile1.txt
->
-> Ok, so there are four 8250 ports, and none of them are initialized,
-> while the console is on /dev/ttyAMA0 using a different driver.
->
-> I'm fairly sure this is a bug in the kernel then, not in qemu.
->
->
-> I also see that the PCI I/O space gets mapped to a physical address:
-> [    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
-> 0x003eff0000..0x003effffff -> 0x0000000000
->
-> So it's probably qemu that triggers the 'synchronous external
-> abort' when accessing the PCI I/O space, which in turn hints
-> towards a bug in qemu. Presumably it only returns data from
-> I/O ports that are actually mapped to a device when real hardware
-> is supposed to return 0xffffffff when reading from unused I/O ports.
-> This would be separate from the work that John did, which only
-> fixed the kernel for accessing I/O port ranges that do not have
-> a corresponding MMU mapping to hardware ports.
+Hi Hector,
 
-Will John's patch fix this crash w/o any changes in qemu? That would
-be good enough for syzbot. Otherwise we need to report the issue to
-qemu.
+thanks for the long and detailed answer! I learn new things
+all the time. (Maybe one day I add something too, who knows.)
+
+I hope I'm not taking too much of your time, we're having fun :)
+
+On Thu, Mar 11, 2021 at 9:02 PM Hector Martin <marcan@marcan.st> wrote:
+> On 11/03/2021 23.06, Linus Walleij wrote:
+> > Yes. And this is what mobile phone vendors typically did.
+> >
+> > But the nature of different electrical attacks made them worried
+> > about different schemes involving cutting power and disturbing
+> > signals with different probes, so they wanted this counter
+> > implemented in hardware and that is why RPMB exists at all
+> > (IIUC).
+>
+> No, prior to RPMB there was no such secure counter at all. The problem
+> is that non-volatile erasable storage (i.e. EEPROM/Flash) is
+> incompatible with modern SoC manufacturing processes, so there is no way
+> to embed a secure counter into the main SoC. And once your counter needs
+> to be external, there needs to be a secure communications protocol to
+> access it. This is what RPMB implements.
+>
+> For preventing software downgrades, especially of bootloader code, this
+> can be implemented with one-time fuses embedded in the SoC, but there is
+> a limited supply of those. So this doesn't work for things like PIN
+> attempt counters. For that you need a secure external counter.
+
+Actually what we did (I was there, kind of) was to go to the flash vendors
+(IIRC first Intel) and require what is today called "fuses" in the flash
+memory.
+
+Originally this was for things like unique serial numbers set in
+production. But they could easily add some more of it for other
+use cases.
+
+This became what is known as OTP (one time programmable flash).
+The OTP was all set to 1:s when the flash was new, then what we
+did for anti-rollback was to designate some bits for software versions.
+
+To make sure the OTP readout wasn't tampered with, some additional
+hashes of the OTP was stored in the flash and MAC signed. This was
+recalculated when we changed a bit from 1->0 in the OTP to indicate
+a new firmware version.
+
+Clever, isn't it? :)
+
+I think the scheme in RPMB was based in part on the needs
+solved by that crude mechanism.
+
+(Linux MTD did actually even gain some support for OTP recently,
+it is used only from userspace AFIAK.)
+
+> RPMB isn't pointless; what I am saying is that
+> if you strip away everything but the counter functionality, you can
+> still build equivalent security guarantees. You still need the counter.
+> There is no way to get that counter without RPMB or something like it
+> (another option is e.g. to use a smartcard IC as a secure element; AIUI
+> modern Apple devices do this). Software alone doesn't work. This is why
+> I wrote that article about how the FBI cracks iPhones; that works
+> because they weren't using a secure rollback-protected storage/counter
+> chip of any kind.
+
+Yeah. Hm, actually if they had flash memory they should have
+used the OTP... But I suppose they were all on eMMC.
+
+> it helps if you forget about the read/write commands and treat
+> it as a simple counter.
+
+Yep you're right.
+
+> Once you do that, you'll realize that e.g. putting keys in RPMB doesn't
+> really make sense as a kernel primitive. The usefulness of RPMB is
+> purely in the integration of that counter (which is equivalent to
+> rollback-protected storage) with a policy system. Everything else is
+> icing on the cake; it doesn't create new use cases.
+
+OK I understand. So what you're saying is we can't develop
+anything without also developing a full policy system.
+
+> Consider this:
+(...)
+> You have now built a secure, rollback-protected Git repository, with
+> similar security properties to RPMB storage, without using RPMB storage;
+> just a counter.
+
+This example of using the RPMB to protect rollback of a git
+was really nice! I think I understood as much before but
+maybe I don't explain that well enough :/
+
+> Thus, we can conclude that the storage features of RPMB do not provide
+> additional security properties that cannot be derived from a simple counter.
+
+I agree.
+
+> * Disclaimer: please don't actually deploy this; I'm trying to make a
+> point here, it's 5AM and I'm not claiming this is a perfectly secure
+> design and I haven't missed anything. Please don't design
+> rollback-protected Git repositories without expert review. I am assuming
+> filesystem mutations only happen between operations and handwaving away
+> active attacks, which I doubt Git is designed to be robust against. A
+> scheme like this can be implemented securely with care, but not naively.
+
+It's an example all kernel developers can relate to, so the
+educational value is high!
+
+> Well, that's what I'm saying, you do need secureboot for this to make
+> sense :-)
+>
+> RPMB isn't useless and some systems should implement it; but there's no
+> real way for the kernel to transparently use it to improve security in
+> general (for anyone) without the user being aware. Since any security
+> benefit from RPMB must come from integration with user policy, it
+> doesn't make sense to "well, just do something else with RPMB because
+> it's better than nothing"; just doing "something" doesn't make systems
+> more secure. There needs to be a specific, practical use case that we'd
+> be trying to solve with RPMB here.
+
+As of now there are no other real world examples than TEE
+for this user policy. TPM and secure enclave exist, but they both
+have their own counters and does not need this.
+
+Can one realistically imagine another secure environment
+needing a RPMB counter? If not, then TEE (tee-supplicant is
+the name of the software daemon in userspace for OP-TEE,
+then some vendors have their own version of TEE)
+will ever be the only user, and then we only need to design
+for that.
+
+Yours,
+Linus Walleij
