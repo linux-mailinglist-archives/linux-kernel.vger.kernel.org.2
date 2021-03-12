@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C964338C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C08D338C92
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhCLMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:20:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57104 "EHLO mail.kernel.org"
+        id S230520AbhCLMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:21:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhCLMUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0C9C64FDC;
-        Fri, 12 Mar 2021 12:20:29 +0000 (UTC)
+        id S230127AbhCLMVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 043B864FE0;
+        Fri, 12 Mar 2021 12:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615551630;
-        bh=ZVgs1kmNVjnQsqEDVCuzfF7dYpaysi5rGISlw4yyvbo=;
+        s=k20201202; t=1615551704;
+        bh=EtZwk9sCzvWQTPoveCLQpt9Cf8m8GAQV77KFCohEb4g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GstXbHtnkALqftowLoX9rsUeLfuhMMuJgJ1THSWVR3zUDNziK3b+QFcdqMw9olhlW
-         LDakxbc/RVg1jzA7/4X2WHRtnx+nLZnPnFezfiF80iVJWm63uP5xQbJg8scLAjgT5i
-         YzTyZm8KbHCcIm6JImUjEPgBbkLeOadvI19Ko3FBFVGTxX5l/5GU1ylJ+R59vhjL4B
-         zCifhQUF1ludl7k8tBAddcAwNHJOrIn5za4wFIIHB1b/1JUalNEHXSwHAnIvavlK5u
-         2TNdfA4sQXa1e1wU8K0z6bn1ksq/oGL3W/lkDf4t8IuEYh5rdI2IiylLVBBlu9SCzu
-         DkCcvxk5h0mFg==
-Date:   Fri, 12 Mar 2021 12:19:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joe Perches <joe@perches.com>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/3] regmap-irq: Add support for POLARITY_HI and
- POLARITY_LO config regs
-Message-ID: <20210312121916.GE5348@sirena.org.uk>
-References: <cover.1615423027.git.gurus@codeaurora.org>
- <4b77a308ccdabbe96ed68623bd6eead9510e1fc9.1615423027.git.gurus@codeaurora.org>
+        b=J2e3ILe91/LWHXMepsrh2p1QL+TATAabouzwsWJBrRwJ5ekHpA+APqjscI6ng1pZo
+         bGwrzfRCSVuparip8ONlTEHuUnNTvWWtA6OKjyhMAMk+Zo71EjmmkNfvVDNfKWy5h+
+         4995apP9sccb8cjJSsqgF8BCKO+SHabPyDQeioI5/Y3khh9/pw1w+qUUhZgPB+Sna3
+         lBUX+26UeHxmIZFQSVMhWU3ERQkmqOQs5x347s9KIDLl86C2C4pjm94O3CDirIf5Wf
+         zV1Dop5mu0BoVu/GOgS82CcC7ukGJjTr/q5PxQ4JETRmh5QpbNsR6Bry2GPHnn6K91
+         n69aVxeGXcdAA==
+Date:   Fri, 12 Mar 2021 13:21:42 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210312122142.GB3646@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FEz7ebHBGB6b2e8X"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4b77a308ccdabbe96ed68623bd6eead9510e1fc9.1615423027.git.gurus@codeaurora.org>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210304002632.23870-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a non-blocking polling interface for RCU grace
+> periods, so this commit supplies start_poll_synchronize_rcu() and
+> poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> get_state_synchronize_rcu() may be used if future grace periods are
+> inevitable (perhaps due to a later call_rcu() invocation).  The new
+> start_poll_synchronize_rcu() is to be used if future grace periods
+> might not otherwise happen.
 
---FEz7ebHBGB6b2e8X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+By future grace period, you mean if a grace period has been started right
+_before_ we start polling, right?
 
-On Wed, Mar 10, 2021 at 04:39:53PM -0800, Guru Das Srinagesh wrote:
-> If an interrupt is already configured as either edge- or
-> level-triggered, setting the corresponding bit for it in the POLARITY_HI
-> register further configures it as rising-edge or level-high triggered
-> (as the case may be), while setting the same bit in POLARITY_LO further
-> configures it as falling-edge or level-low triggered.
 
-I think you probably need to bring these three fields together into a
-single virtual field and then map the values within that field using
-the existing type stuff.
+> Finally, poll_state_synchronize_rcu()
+> provides a lockless check for a grace period having elapsed since
+> the corresponding call to either of the get_state_synchronize_rcu()
+> or start_poll_synchronize_rcu().
+> 
+> As with get_state_synchronize_rcu(), the return value from either
+> get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> to a later call to either poll_state_synchronize_rcu() or the existing
+> (might_sleep) cond_synchronize_rcu().
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+[...]
+>  /**
+> + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> + *
+> + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
+> + * or poll_state_synchronize_rcu() to determine whether or not a full
+> + * grace period has elapsed in the meantime.  If the needed grace period
+> + * is not already slated to start, notifies RCU core of the need for that
+> + * grace period.
+> + *
+> + * Interrupts must be enabled for the case where it is necessary to awaken
+> + * the grace-period kthread.
+> + */
+> +unsigned long start_poll_synchronize_rcu(void)
+> +{
+> +	unsigned long flags;
+> +	unsigned long gp_seq = get_state_synchronize_rcu();
+> +	bool needwake;
+> +	struct rcu_data *rdp;
+> +	struct rcu_node *rnp;
+> +
+> +	lockdep_assert_irqs_enabled();
+> +	local_irq_save(flags);
+> +	rdp = this_cpu_ptr(&rcu_data);
+> +	rnp = rdp->mynode;
+> +	raw_spin_lock_rcu_node(rnp); // irqs already disabled.
+> +	needwake = rcu_start_this_gp(rnp, rdp, gp_seq);
 
---FEz7ebHBGB6b2e8X
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm a bit surprised we don't start a new grace period instead of snapshotting
+the current one.
 
------BEGIN PGP SIGNATURE-----
+So if we do this:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLXEMACgkQJNaLcl1U
-h9ArdAf/e8Qn2NUnswULmvDI6nNSEiPGDSCVIUYCGoEEmFNDAisrrF2kQt2dKYi/
-VqSE8DbFkQSzpokfLGMlrTXld2oH/866ZwoeuWu/tlepL6XqSVG/ca/WjyHOjhcu
-RwE4NT1+PuWJ0+dkEHc7hDJS9QltabZmZ8HyTEGrCPhWY4YrA7/neEi3cBNQcQFZ
-rWi5ZNk6WMNH1VmUT/pWYQV75q8pRmlzptZnvnffdIlBnOW5gzULCAsBOb3yPAb5
-J0JCG9gAGhxN3B1LBoC+HrrhM6qlbT0zM0FmWuM3eHFnUgRobP8I/fVx85Dokkp4
-Wtrugocig62XoEm1LJxkp52OLwYwSA==
-=qEWY
------END PGP SIGNATURE-----
+   //start grace period gp_num=5
 
---FEz7ebHBGB6b2e8X--
+   old = p;
+   rcu_assign_pointer(p, new);
+
+   num = start_poll_synchronize_rcu(); // num = 5
+
+   //grace period ends, start new gp_num=6
+
+   poll_state_synchronize_rcu(num); // rcu seq is done
+
+   kfree(old);
+
+Isn't there a risk that other CPUs still see the old pointer?
+
+Of course I know I'm missing something obvious :-)
+
+Thanks.
