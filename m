@@ -2,153 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F4A33931A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF4D339313
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhCLQW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhCLQWb (ORCPT
+        id S232538AbhCLQWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:22:24 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:55404 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhCLQWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:22:31 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D147C061574;
-        Fri, 12 Mar 2021 08:22:31 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id g24so4135815qts.6;
-        Fri, 12 Mar 2021 08:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=UdlJ/0FmcyetgWOgiJ9n2FEJ4JnK1uArLI5wZiWImF4=;
-        b=cWSA9k4bWa/h+kmv8D1w5ts2/3ae/D+6M8h3StbyONRH1F40R0fpOZvMeqIQtsK8sO
-         WugwHKq2bvaQlgDsCGpufeHlKJtHzmcqlD9gLYWhFfa8SEtQ6ygjXztZblJ0H3rVMKF9
-         Jy3Lw7ZaG9jl4a8kt4EOhuUW2tk7JtDL1mIAeNSMwUhdODyzag5bQZypfC9FR+eQEvmv
-         Lmo+CT1mAaQh9kxNv0prbQs7o/M07ZrTXOiBYwtDEEBLGujqydhYCCIxP5/z4d0JXntR
-         7D7PaPUBvcy8g9QLF8rgAEyQJ0XMmHxsdqcepwGWwtzETSvuxo0Qcm+/RHLoGAZbEq61
-         Vy+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UdlJ/0FmcyetgWOgiJ9n2FEJ4JnK1uArLI5wZiWImF4=;
-        b=nneTP8zRDX17OnmsbCIPuYPDJMRsYLijQTS9peJm4+PFx1JHZQO1Od3kQ09Ijj9eAw
-         5TIm6WxRRCQ7htroLrHQjBaPHwZ3yAbnzBSGcT/Jxb7oHRvxZBQQULTl/8dOEgM6hCXx
-         IAPAlIQ7H7USEBXp1hy6fQX1r9VXtsEQ63f8yjh32dsF7czisnLrZ93DSvHA8QyOTivy
-         RPf/ggLCDeRPCUUDp4GEYl5FqU+Y9aCLC7XtfSIHBmFOa10QD9o7PKMwCY1jYMEAuZfw
-         84NoSEUK3JH9H5HPzjOwheQi+7Prif+C9tdxi5XynX+nLo1PXzufCTizSOp3lXZQLxCE
-         xWCA==
-X-Gm-Message-State: AOAM532pFTRrmRKkHCR8D6qZqYrm+JD1X0UeNEgGdbQsAEzBFk17L2V7
-        1507rXpzUFksB1YsNbnYh/C/s5JfUgk+5w==
-X-Google-Smtp-Source: ABdhPJxr4IKUFGdc3A1HKdPAqR1KpIP4qoPrsZLDO3UulbcaaA2/fVt/eZYuljfLg54M1ZhBWvuyOw==
-X-Received: by 2002:aed:20b0:: with SMTP id 45mr11559377qtb.84.1615566150888;
-        Fri, 12 Mar 2021 08:22:30 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:b9e0:c84:da81:d749])
-        by smtp.googlemail.com with ESMTPSA id e15sm4178623qti.79.2021.03.12.08.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 08:22:30 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Tong Zhang <ztong0001@gmail.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set after adf_dev_init
-Date:   Fri, 12 Mar 2021 11:22:03 -0500
-Message-Id: <20210312162203.2416149-3-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210312162203.2416149-1-ztong0001@gmail.com>
-References: <20210312162203.2416149-1-ztong0001@gmail.com>
+        Fri, 12 Mar 2021 11:22:11 -0500
+Date:   Fri, 12 Mar 2021 16:22:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615566129; bh=kBDDl8otlT8o/LM6cr4LLdHLvlyC4ODcgI6jQUcxeAo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=TPHwMLPFx8yRTAB179mgR4wMVehNyO1TW5OYr/dIAAqdgMy2JYicEKDCcO+VFjYyJ
+         IKN4UB/I6vvxrSSOr6OlqtnK8/u+OW0HBgr7gKyN/K89KXe4axUMhWhSM+UzeSzEHU
+         MwUckvm5CtZq5Yi52sx3dAKqidGMlCcb7nGVJJ+3llgTos3O7SXTnhuAZjSrRlGeeQ
+         yJpiCrDpScE8Msn0QCnkgllWL7aDgXJjBCDkTjMaX1vwKpcJVB4OX+RWD9Lwh36tZY
+         KsOUt9bwav3507PGqtPRUdUZ7/dikwJNHeqqHbSElUICxbx7+dzXQ5HP2mPX5GwKUv
+         U7DaUwhm5Wo3Q==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next 3/4] gro: simplify gro_list_prepare()
+Message-ID: <20210312162127.239795-4-alobakin@pm.me>
+In-Reply-To: <20210312162127.239795-1-alobakin@pm.me>
+References: <20210312162127.239795-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADF_STATUS_PF_RUNNING is (only) used and checked  by adf_vf2pf_shutdown()
-before calling adf_iov_putmsg()->mutex_lock(vf2pf_lock), however the
-vf2pf_lock is initialized in adf_dev_init(), which can fail and when it
-fail, the vf2pf_lock is either not initialized or destroyed, a subsequent
-use of vf2pf_lock will cause issue.
-To fix this issue, only set this flag if adf_dev_init() returns 0.
+gro_list_prepare() always returns &napi->gro_hash[bucket].list,
+without any variations. Moreover, it uses 'napi' argument only to
+have access to this list, and calculates the bucket index for the
+second time (firstly it happens at the beginning of
+dev_gro_receive()) to do that.
+Given that dev_gro_receive() already has a pointer to the needed
+list, just pass it as the first argument to eliminate redundant
+calculations, and make gro_list_prepare() return void.
+Also, both arguments of gro_list_prepare() can be constified since
+this function can only modify the skbs from the bucket list.
 
-[    7.178404] BUG: KASAN: user-memory-access in __mutex_lock.isra.0+0x1ac/0x7c0
-[    7.180345] Call Trace:
-[    7.182576]  mutex_lock+0xc9/0xd0
-[    7.183257]  adf_iov_putmsg+0x118/0x1a0 [intel_qat]
-[    7.183541]  adf_vf2pf_shutdown+0x4d/0x7b [intel_qat]
-[    7.183834]  adf_dev_shutdown+0x172/0x2b0 [intel_qat]
-[    7.184127]  adf_probe+0x5e9/0x600 [qat_dh895xccvf]
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    | 4 ++--
- drivers/crypto/qat/qat_c62xvf/adf_drv.c     | 4 ++--
- drivers/crypto/qat/qat_dh895xccvf/adf_drv.c | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ net/core/dev.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-index 1d1532e8fb6d..067ca5e17d38 100644
---- a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index ee124aecb8a2..65d9e7d9d1e8 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5858,15 +5858,13 @@ void napi_gro_flush(struct napi_struct *napi, bool =
+flush_old)
+ }
+ EXPORT_SYMBOL(napi_gro_flush);
+
+-static struct list_head *gro_list_prepare(struct napi_struct *napi,
+-=09=09=09=09=09  struct sk_buff *skb)
++static void gro_list_prepare(const struct list_head *head,
++=09=09=09     const struct sk_buff *skb)
+ {
+ =09unsigned int maclen =3D skb->dev->hard_header_len;
+ =09u32 hash =3D skb_get_hash_raw(skb);
+-=09struct list_head *head;
+ =09struct sk_buff *p;
+
+-=09head =3D &napi->gro_hash[hash & (GRO_HASH_BUCKETS - 1)].list;
+ =09list_for_each_entry(p, head, list) {
+ =09=09unsigned long diffs;
+
+@@ -5892,8 +5890,6 @@ static struct list_head *gro_list_prepare(struct napi=
+_struct *napi,
+ =09=09=09=09       maclen);
+ =09=09NAPI_GRO_CB(p)->same_flow =3D !diffs;
+ =09}
 -
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
-diff --git a/drivers/crypto/qat/qat_c62xvf/adf_drv.c b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-index 04742a6d91ca..51ea88c0b17d 100644
---- a/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
--
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
-diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-index c972554a755e..29999da716cc 100644
---- a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-+++ b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-@@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (ret)
- 		goto out_err_free_reg;
- 
--	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
--
- 	ret = adf_dev_init(accel_dev);
- 	if (ret)
- 		goto out_err_dev_shutdown;
- 
-+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-+
- 	ret = adf_dev_start(accel_dev);
- 	if (ret)
- 		goto out_err_dev_stop;
--- 
-2.25.1
+-=09return head;
+ }
+
+ static void skb_gro_reset_offset(struct sk_buff *skb)
+@@ -5958,10 +5954,10 @@ static enum gro_result dev_gro_receive(struct napi_=
+struct *napi, struct sk_buff
+ {
+ =09u32 bucket =3D skb_get_hash_raw(skb) & (GRO_HASH_BUCKETS - 1);
+ =09struct gro_list *gro_list =3D &napi->gro_hash[bucket];
++=09struct list_head *gro_head =3D &gro_list->list;
+ =09struct list_head *head =3D &offload_base;
+ =09struct packet_offload *ptype;
+ =09__be16 type =3D skb->protocol;
+-=09struct list_head *gro_head;
+ =09struct sk_buff *pp =3D NULL;
+ =09enum gro_result ret;
+ =09int same_flow;
+@@ -5970,7 +5966,7 @@ static enum gro_result dev_gro_receive(struct napi_st=
+ruct *napi, struct sk_buff
+ =09if (netif_elide_gro(skb->dev))
+ =09=09goto normal;
+
+-=09gro_head =3D gro_list_prepare(napi, skb);
++=09gro_list_prepare(gro_head, skb);
+
+ =09rcu_read_lock();
+ =09list_for_each_entry_rcu(ptype, head, list) {
+--
+2.30.2
+
 
