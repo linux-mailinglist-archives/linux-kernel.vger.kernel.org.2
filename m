@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7413393A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55416339394
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhCLQh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        id S232613AbhCLQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232238AbhCLQh0 (ORCPT
+        with ESMTP id S231925AbhCLQhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:37:26 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69E1C061761;
-        Fri, 12 Mar 2021 08:37:25 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id f16so7538110ljm.1;
-        Fri, 12 Mar 2021 08:37:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S2GajrmIPPhVShSD9htWQH0c4G3php+jiJW9ohFhNDc=;
-        b=IXAFoe9qJOZf09R+33WykfjUj7hrr+b7T6WyaOGr8CKv/1bnEJLhDG1Eq8TqRbHZJK
-         wbiZsfiYv0BthuOr7dDf372H/2r9KMPAeIOzkqPeJTyMsTGjCUw5w+qmFU6Qcug/kh/s
-         XIKqitODnLHdOvOZTrTYO+3f4sinXbrDnHBqg+WoRQaToM1xW7coiH8tuKATRId5SB32
-         V7JybL+cVv4wkmd4v3obF+xpNM5VQdTW4eKZRX/sqKrUX0WUSjTkAECfoEcRu6MCy3wH
-         Belq7M3LXn4EWKzrmjtjCGU0U9SczsMJmt8CFI7vlE4MMsBnY9LJDHy+fwJtm4Ao5Ww2
-         dbsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S2GajrmIPPhVShSD9htWQH0c4G3php+jiJW9ohFhNDc=;
-        b=Uc10ZkMhILo8ts8K87l2HBSG9vTruWuAs1bzqd04jnlPiGiTrEZ9U0Cny0g/683asa
-         MBQ1uGURmO3NmXFqRq2e0Oa8deGDJ3EI/wLQMG8vVTgJIupLRl1OSVG9uX40fy6bN1cA
-         2V3kW/pJDIb9+GP1L4lmtrrINurvj+Rs2EVv7gFDH6C6/h0D4jKyb0Sj68N/62vbbAhv
-         yX5NFl5XxMBrSBQmeZgxwdLddvPtok3hTO0G0ekDu3LeRR7GUeC2aMmT4/ZuyxSpyfPh
-         LcYkT6Iqyr/CjqwAfbaS0MXmBxndZA6qCI1PujCqteb3RUz9u07p6p9vRq3CHONBproP
-         txRg==
-X-Gm-Message-State: AOAM533zU3q9bVwCUc1GXiut3GpLsm1A70x+Jy1GwFp4lPxH4Q3KfL2w
-        Kk0JBzsmzNOKBO8htZ8xfok=
-X-Google-Smtp-Source: ABdhPJy3LtEFobnw0T7U6F8+uACrP4tLqXfdwb6Q4vt5z/zvXKiP6WbJfnWXvfYLU2Afz/i6W9ZmsQ==
-X-Received: by 2002:a2e:9d4:: with SMTP id 203mr2896456ljj.211.1615567043277;
-        Fri, 12 Mar 2021 08:37:23 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id l21sm1771703lfg.300.2021.03.12.08.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 08:37:22 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v4 1/7] clk: tegra30: Use 300MHz for video decoder by default
-Date:   Fri, 12 Mar 2021 19:36:26 +0300
-Message-Id: <20210312163632.8861-2-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210312163632.8861-1-digetx@gmail.com>
-References: <20210312163632.8861-1-digetx@gmail.com>
+        Fri, 12 Mar 2021 11:37:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B274C061574;
+        Fri, 12 Mar 2021 08:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8+yBt1tlguv6Ba21H17woo0c/ker/pZc6AgxTt64QlQ=; b=WKf4DfEgucV/RLoMHAkGK7aHie
+        YUp9SDuPPEytESE+4FGx9e6ap27KibBmpCZEAdV88sGr0hYIXoYaFPtC96mRIVrlHaIwq8DP5tslh
+        5gm92eGlY4HQLhqLKlpPhy4th/5CiqFLP+47QTqBGec+KUGYhmQ7oTXanTBSMIcDFwytbowD4V3Or
+        3CYchrA//fXZsL6sOmyW81tHk3hX0i26fdLUTXzq0LMHxuy8LBKrsj3ae4PHeWccDXe/MuOwEjkHG
+        /0eq4riyfv/s+Z1PL84AzDja2E1/SD18EchgTO/ibRmwG7tZnzSPfwx6/gmP9Gm/cDYIqmlvKNqs8
+        ayheNZag==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKkm2-00B91g-JK; Fri, 12 Mar 2021 16:36:29 +0000
+Date:   Fri, 12 Mar 2021 16:36:26 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] drm: Add and export function
+ drm_gem_cma_mmap_noncoherent
+Message-ID: <20210312163626.GA2655841@infradead.org>
+References: <20210307202835.253907-1-paul@crapouillou.net>
+ <20210307202835.253907-4-paul@crapouillou.net>
+ <20210311122642.GB1739082@infradead.org>
+ <3I1TPQ.E55GRWWDYVRG@crapouillou.net>
+ <20210311123642.GA1741910@infradead.org>
+ <JPBTPQ.TL10VUKPUBL23@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <JPBTPQ.TL10VUKPUBL23@crapouillou.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 600MHz is a too high clock rate for some SoC versions for the video
-decoder hardware and this may cause stability issues. Use 300MHz for the
-video decoder by default, which is supported by all hardware versions.
+On Thu, Mar 11, 2021 at 04:12:55PM +0000, Paul Cercueil wrote:
+> ret = dma_mmap_pages(cma_obj->base.dev->dev,
+>                     vma, vma->vm_end - vma->vm_start,
+>                     virt_to_page(cma_obj->vaddr));
+> 
+> It works fine.
+> 
+> I think I can use remap_pfn_range() for now, and switch to your new API once
+> it's available in drm-misc-next.
 
-Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation")
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/clk/tegra/clk-tegra30.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/tegra/clk-tegra30.c b/drivers/clk/tegra/clk-tegra30.c
-index 16dbf83d2f62..a33688b2359e 100644
---- a/drivers/clk/tegra/clk-tegra30.c
-+++ b/drivers/clk/tegra/clk-tegra30.c
-@@ -1245,7 +1245,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
- 	{ TEGRA30_CLK_GR3D, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_GR3D2, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_PLL_U, TEGRA30_CLK_CLK_MAX, 480000000, 0 },
--	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 600000000, 0 },
-+	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_SPDIF_IN_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_I2S0_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_I2S1_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
--- 
-2.29.2
-
+No, drivers must not use dma_to_phys, and they also must not include
+dma-direct.h.
