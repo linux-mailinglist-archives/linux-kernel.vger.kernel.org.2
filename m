@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C55338774
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA682338778
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhCLIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhCLIdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:33:08 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7275FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:33:08 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso15262231wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:33:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vAtjNiJI1qKKGx5S42wVjbuS4/WPVdr+MZcPW8+RobY=;
-        b=Yb2CA3Uvk4FTp1X0XSzcIlRiSLJrML0hKWk9vYGVtCigmOAot2S16a+V+92DSIDFFp
-         XcRdIPhrmvpNIp/pgahzoTyhzqa4hNimV8VcSwDqJkU1Od+yqFHOO+Gi21w9n8heloqW
-         7EcgmLxQW8uPWfRWR2NxqagdA8jYYJBPh/pWt7iiRX7MkBski7DnArKy9oLWC4xq/DAl
-         Z7eBgydDG9gy2be5Wa1PpV1aZdQcahl80HXuEQ1gB8IQ5EjeM76e4VrboFMJ5P9PuRS4
-         4HzGd/87j29OB9po8J/EKfcScdXcOPD59K6oNBWA2qiXgNo1l9sKLzEyR+9MwK+B4xih
-         3+2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vAtjNiJI1qKKGx5S42wVjbuS4/WPVdr+MZcPW8+RobY=;
-        b=td0LjDJAAs1RNglzpUpLz9xabn0EOLyKu8MPkeSqdPnpSXACRjZJMuYqHrKntO7f06
-         0+ZGe+tAcldLTf399VFQwK2qIvkqKCUy8MjXmsBNN7b5iRuuKCR88iwHBRCOZ5qLx/b0
-         2WWO/08axkwdFlhq3ttCGZS5DZdvdtbcq8MW5kQyhc8oe7C/kCGQpJD0Nh3dy1aopysF
-         tOxRDwWwKFyUJrNF1Y9NIoA6CvUsKEnmz5GCg4KVTsqcsjz1SQsfrngH3IEQWqRGcAiw
-         KV604pi68apXU9d5YSVmKB1VxkYZCHF9phaIRo9dPeeOj09jw+awqjTslqZdDtSJBRLP
-         7nDg==
-X-Gm-Message-State: AOAM531pqx7sjF0NyPpYWezNOhkdsxsQnhdwMfBfjym6strba/1XGVVd
-        5PjQEqW0l2mW0nudF35wk64JuRh8Y1pIQqYbgTA=
-X-Google-Smtp-Source: ABdhPJyKZ0nMvRCdLUBbGOrKqHKyK3qzoA5pK9cwadvVMavLaFfap4/egdikXhfiZirr/3x+J4LMJaZTm4o697jfWd4=
-X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr11906684wml.44.1615537987205;
- Fri, 12 Mar 2021 00:33:07 -0800 (PST)
+        id S232335AbhCLIeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:34:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232237AbhCLIdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:33:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF64E64F6D;
+        Fri, 12 Mar 2021 08:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615538020;
+        bh=2QmrWLt/8fKtwKSmY7oZM80CYQiHKdcJGLksaKtWM9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=acZw/M1wQvuLRBy6HgW7nmBDG56NR2+itE8bh9qxCpjUZgsHA1++xm8jpYbBWtkQA
+         mNPHBwv8snQgLX0icCNWqmAzhgXua00fv4bqHtP1Vy1UpsOhT9e9t7U0GSrW5M5LDI
+         4+oDZ96turxEfMsZtMdHmOSGDEfLmlZDj2Gt5qio=
+Date:   Fri, 12 Mar 2021 09:33:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hassan Shahbazi <h.shahbazi.git@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: tty: vt: vt.c: fix NULL dereference crash
+Message-ID: <YEsnYVwzRoEsbkie@kroah.com>
+References: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
 MIME-Version: 1.0
-References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com> <20210309153455.GB4878@sirena.org.uk>
-In-Reply-To: <20210309153455.GB4878@sirena.org.uk>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Fri, 12 Mar 2021 10:32:54 +0200
-Message-ID: <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Mar 09, 2021 at 10:23:28AM +0200, Daniel Baluta wrote:
-> > From: Daniel Baluta <daniel.baluta@nxp.com>
-> >
-> > Platform may be specified by either name or OF node but not
-> > both.
-> >
-> > For OF node platforms (e.g i.MX) we end up with both platform name
-> > and of_node set and sound card registration will fail with the error:
-> >
-> >   asoc-simple-card sof-sound-wm8960: ASoC: Neither/both
-> >   platform name/of_node are set for sai1-wm8960-hifi
->
-> This doesn't actually say what the change does.
+On Sun, Mar 07, 2021 at 12:56:43PM +0200, Hassan Shahbazi wrote:
+> Fix a NULL deference crash on hiding the cursor.
+> 
+> Reported by: syzbot
+> https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+> 
+> Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+> ---
+>  drivers/tty/vt/vt.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> index 284b07224c55..8c3e83c81341 100644
+> --- a/drivers/tty/vt/vt.c
+> +++ b/drivers/tty/vt/vt.c
+> @@ -904,7 +904,9 @@ static void hide_cursor(struct vc_data *vc)
+>  	if (vc_is_sel(vc))
+>  		clear_selection();
+>  
+> -	vc->vc_sw->con_cursor(vc, CM_ERASE);
+> +	if (vc->vc_sw)
+> +		vc->vc_sw->con_cursor(vc, CM_ERASE);
+> +
+>  	hide_softcursor(vc);
+>  }
+>  
+> -- 
+> 2.26.2
+> 
 
-Will send v2 with a better explanation.
+Are you sure this actually fixes the problem?  How did you test it?  Did
+syzbot test this?
 
->
-> > -                     dai_link->platforms->name = component->name;
-> > +
-> > +                     if (!dai_link->platforms->of_node)
-> > +                             dai_link->platforms->name = component->name;
->
-> Why would we prefer the node name over something explicitly configured?
+I had a few reports of this patch _not_ solving the problem, so getting
+confirmation of this would be good.
 
-Not sure I follow your question. I think the difference stands in the
-way we treat OF vs non-OF platforms.
+thanks,
 
-With OF-platforms, dai_link->platforms->of_node is always set! So we
-no longer need
-to set dai->platforms->name.
-
-Actually setting both of_node and name will make sound card
-registration fail! In this is the case I'm trying
-to fix here.
+greg k-h
