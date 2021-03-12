@@ -2,151 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9ED338DFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289FB338DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhCLM5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:57:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32942 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231441AbhCLM5N (ORCPT
+        id S229677AbhCLM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhCLM5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:57:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615553832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eMDB4smPKXpj13VyYw6JScKxmvyMa7ikPfuNl9CjCjM=;
-        b=OmQDPNOLMLWHzeWUlIV6WvWOOd5CByo4V0V4HAqOsCJyBk+bOVUvfcMCgdP9BHs611hvkM
-        wt5AMYwXFZxV8w2QlUwvCnZZNuWL38rNHgEyQtFzluB7F3iTsmugcYtv78AOcYLAlEbU/o
-        LNBkcaS/6tZpsbRFMxN5b/Dfjpp17D8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-CYeILR2XPRaZIlLezxAVSA-1; Fri, 12 Mar 2021 07:57:08 -0500
-X-MC-Unique: CYeILR2XPRaZIlLezxAVSA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1223E108BD06;
-        Fri, 12 Mar 2021 12:57:07 +0000 (UTC)
-Received: from krava (unknown [10.40.192.54])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5A26410016FB;
-        Fri, 12 Mar 2021 12:57:04 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 13:57:03 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
-        acme@kernel.org, jolsa@kernel.org, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, peterz@infradead.org
-Subject: Re: [PATCH 2/4] tools/perf: Add dynamic headers for perf report
- columns
-Message-ID: <YEtlHzsJ4z19pB/M@krava>
-References: <1615298640-1529-1-git-send-email-atrajeev@linux.vnet.ibm.com>
- <1615298640-1529-3-git-send-email-atrajeev@linux.vnet.ibm.com>
+        Fri, 12 Mar 2021 07:57:18 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA010C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:57:17 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id bm21so53162662ejb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:57:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yiwv8WNEW7aHclTouK3WQPtt4wKGEcN0iK77qOa5K7c=;
+        b=gX25FwvDzIGc80ynmI0sHXJeCMm5ecDyFYpi1ycf07mbTK0McyA33kTynIueywXLS0
+         tVRfWHIYgJgbWQtlCFsF9/umlwtkqBkLem8yPA+VAd3oTYN7PjCLJf7UOacSw+tLZomN
+         5DBZWS6n9Q2ZZd36YlOqWJHK0UwmEfAZYiYsM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yiwv8WNEW7aHclTouK3WQPtt4wKGEcN0iK77qOa5K7c=;
+        b=ZG1cVoOLJFGjQHGOJl0yBKoEF3k+dPOZZjzkcqXvaakHOIIrFLBjqdObWKreSuxYuk
+         mLomH10BWHfO7NJyMfHkb3SlW19PHAwvp3tkJfQ0PqKQeW0ng2lfzJI9qg3e7qYSAPuh
+         nKVHnLav2/UpR/GtjBBrnaKvfa/gsB/ivMiP73tod147xTr9IUst7XXM4LwjfmIG4U4U
+         P/aq0nBTq6QevofQ/8kvUd2FHl8tbwcwXIsai5+J+ZVGAfJxeG/enGhDdqEcIOVVl+6o
+         1c+046k/7I1rrtMSXCM5a4HnZS4Izx5iy3CPhwC9XxcCga0vxp5GU2Ts/MwNbJKB8Ke/
+         AYKA==
+X-Gm-Message-State: AOAM532iBRaPIhVNpc1JWak6js3AEKYHDLVZlfanpyFzaEN6rElcAE9U
+        WqeIh+tdFZz8JuhSWKideCRHSw==
+X-Google-Smtp-Source: ABdhPJxE94wC7/2OPbX4NFpr3qVgjSEwLXqWkrYReAVPCcB5IW2n0uQI+d5aA04l8yBGrEiVmehVww==
+X-Received: by 2002:a17:907:2093:: with SMTP id pv19mr8439806ejb.134.1615553836383;
+        Fri, 12 Mar 2021 04:57:16 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id u13sm2729712ejy.31.2021.03.12.04.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 04:57:15 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v2 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
+Date:   Fri, 12 Mar 2021 13:57:09 +0100
+Message-Id: <20210312125709.1347177-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615298640-1529-3-git-send-email-atrajeev@linux.vnet.ibm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:03:58AM -0500, Athira Rajeev wrote:
-> Currently the header string for different columns in perf report
-> is fixed. Some fields of perf sample could have different meaning
-> for different architectures than the meaning conveyed by the header
-> string. An example is the new field 'var2_w' of perf_sample_weight
-> structure. This is presently captured as 'Local INSTR Latency' in
-> perf mem report. But this could be used to denote a different latency
-> cycle in another architecture.
-> 
-> Introduce a weak function arch_perf_header_entry__add() to set
-> the arch specific header string for the fields which can contain dynamic
-> header. If the architecture do not have this function, fall back to the
-> default header string value.
-> 
-> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-> ---
->  tools/perf/util/event.h |  1 +
->  tools/perf/util/sort.c  | 19 ++++++++++++++++++-
->  2 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-> index f603edbbbc6f..89b149e2e70a 100644
-> --- a/tools/perf/util/event.h
-> +++ b/tools/perf/util/event.h
-> @@ -427,5 +427,6 @@ void  cpu_map_data__synthesize(struct perf_record_cpu_map_data *data, struct per
->  
->  void arch_perf_parse_sample_weight(struct perf_sample *data, const __u64 *array, u64 type);
->  void arch_perf_synthesize_sample_weight(const struct perf_sample *data, __u64 *array, u64 type);
-> +const char *arch_perf_header_entry__add(const char *se_header);
->  
->  #endif /* __PERF_RECORD_H */
-> diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-> index 0d5ad42812b9..741a6df29fa0 100644
-> --- a/tools/perf/util/sort.c
-> +++ b/tools/perf/util/sort.c
-> @@ -25,6 +25,7 @@
->  #include <traceevent/event-parse.h>
->  #include "mem-events.h"
->  #include "annotate.h"
-> +#include "event.h"
->  #include "time-utils.h"
->  #include "cgroup.h"
->  #include "machine.h"
-> @@ -45,6 +46,7 @@
->  regex_t		ignore_callees_regex;
->  int		have_ignore_callees = 0;
->  enum sort_mode	sort__mode = SORT_MODE__NORMAL;
-> +const char	*dynamic_headers[] = {"local_ins_lat"};
->  
->  /*
->   * Replaces all occurrences of a char used with the:
-> @@ -1816,6 +1818,16 @@ struct sort_dimension {
->  	int			taken;
->  };
->  
-> +const char * __weak arch_perf_header_entry__add(const char *se_header)
+On architectures where there is no coherent caching such as ARM use the
+dma_alloc_noncontiguous API and handle manually the cache flushing using
+dma_sync_sgtable().
 
-no need for the __add suffix in here
+With this patch on the affected architectures we can measure up to 20x
+performance improvement in uvc_video_copy_data_work().
 
-jirka
+Eg: aarch64 with an external usb camera
 
-> +{
-> +	return se_header;
-> +}
-> +
-> +static void sort_dimension_add_dynamic_header(struct sort_dimension *sd)
-> +{
-> +	sd->entry->se_header = arch_perf_header_entry__add(sd->entry->se_header);
-> +}
-> +
->  #define DIM(d, n, func) [d] = { .name = n, .entry = &(func) }
->  
->  static struct sort_dimension common_sort_dimensions[] = {
-> @@ -2739,11 +2751,16 @@ int sort_dimension__add(struct perf_hpp_list *list, const char *tok,
->  			struct evlist *evlist,
->  			int level)
->  {
-> -	unsigned int i;
-> +	unsigned int i, j;
->  
->  	for (i = 0; i < ARRAY_SIZE(common_sort_dimensions); i++) {
->  		struct sort_dimension *sd = &common_sort_dimensions[i];
->  
-> +		for (j = 0; j < ARRAY_SIZE(dynamic_headers); j++) {
-> +			if (!strcmp(dynamic_headers[j], sd->name))
-> +				sort_dimension_add_dynamic_header(sd);
-> +		}
-> +
->  		if (strncasecmp(tok, sd->name, strlen(tok)))
->  			continue;
->  
-> -- 
-> 1.8.3.1
-> 
+NON_CONTIGUOUS
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 67034480 : duration 33303
+FPS: 29.99
+URB: 523446/4993 uS/qty: 104.836 avg 132.532 std 13.230 min 831.094 max (uS)
+header: 76564/4993 uS/qty: 15.334 avg 15.229 std 3.438 min 186.875 max (uS)
+latency: 468945/4992 uS/qty: 93.939 avg 132.577 std 9.531 min 824.010 max (uS)
+decode: 54161/4993 uS/qty: 10.847 avg 6.313 std 1.614 min 111.458 max (uS)
+raw decode speed: 9.931 Gbits/s
+raw URB handling speed: 1.025 Gbits/s
+throughput: 16.102 Mbits/s
+URB decode CPU usage 0.162600 %
+
+COHERENT
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 54683536 : duration 33302
+FPS: 29.99
+URB: 1478135/4000 uS/qty: 369.533 avg 390.357 std 22.968 min 3337.865 max (uS)
+header: 79761/4000 uS/qty: 19.940 avg 18.495 std 1.875 min 336.719 max (uS)
+latency: 281077/4000 uS/qty: 70.269 avg 83.102 std 5.104 min 735.000 max (uS)
+decode: 1197057/4000 uS/qty: 299.264 avg 318.080 std 1.615 min 2806.667 max (uS)
+raw decode speed: 365.470 Mbits/s
+raw URB handling speed: 295.986 Mbits/s
+throughput: 13.136 Mbits/s
+URB decode CPU usage 3.594500 %
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+
+Changelog from v2: (Thanks Laurent)
+
+- Fix typos
+- Use the right dma direction if not capturing
+- Clear sgt during free
+
+ drivers/media/usb/uvc/uvc_video.c | 92 +++++++++++++++++++++++--------
+ drivers/media/usb/uvc/uvcvideo.h  |  5 +-
+ 2 files changed, 74 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index f2f565281e63..8e60f81e2257 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -6,11 +6,14 @@
+  *          Laurent Pinchart (laurent.pinchart@ideasonboard.com)
+  */
+ 
++#include <linux/dma-mapping.h>
++#include <linux/highmem.h>
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/usb.h>
++#include <linux/usb/hcd.h>
+ #include <linux/videodev2.h>
+ #include <linux/vmalloc.h>
+ #include <linux/wait.h>
+@@ -1096,6 +1099,34 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+ 	return data[0];
+ }
+ 
++static inline enum dma_data_direction stream_dir(struct uvc_streaming *stream)
++{
++	if (stream->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return DMA_FROM_DEVICE;
++	else
++		return DMA_TO_DEVICE;
++}
++
++static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
++{
++	return bus_to_hcd(stream->dev->udev->bus)->self.sysdev;
++}
++
++static void uvc_urb_dma_sync(struct uvc_urb *uvc_urb, bool for_device)
++{
++	struct device *dma_dev = stream_to_dmadev(uvc_urb->stream);
++
++	if (for_device) {
++		dma_sync_sgtable_for_device(dma_dev, uvc_urb->sgt,
++					    stream_dir(uvc_urb->stream));
++	} else {
++		dma_sync_sgtable_for_cpu(dma_dev, uvc_urb->sgt,
++					 stream_dir(uvc_urb->stream));
++		invalidate_kernel_vmap_range(uvc_urb->buffer,
++					     uvc_urb->stream->urb_size);
++	}
++}
++
+ /*
+  * uvc_video_decode_data_work: Asynchronous memcpy processing
+  *
+@@ -1117,6 +1148,8 @@ static void uvc_video_copy_data_work(struct work_struct *work)
+ 		uvc_queue_buffer_release(op->buf);
+ 	}
+ 
++	uvc_urb_dma_sync(uvc_urb, true);
++
+ 	ret = usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
+ 	if (ret < 0)
+ 		dev_err(&uvc_urb->stream->intf->dev,
+@@ -1541,10 +1574,12 @@ static void uvc_video_complete(struct urb *urb)
+ 	 * Process the URB headers, and optionally queue expensive memcpy tasks
+ 	 * to be deferred to a work queue.
+ 	 */
++	uvc_urb_dma_sync(uvc_urb, false);
+ 	stream->decode(uvc_urb, buf, buf_meta);
+ 
+ 	/* If no async work is needed, resubmit the URB immediately. */
+ 	if (!uvc_urb->async_operations) {
++		uvc_urb_dma_sync(uvc_urb, true);
+ 		ret = usb_submit_urb(uvc_urb->urb, GFP_ATOMIC);
+ 		if (ret < 0)
+ 			dev_err(&stream->intf->dev,
+@@ -1560,24 +1595,49 @@ static void uvc_video_complete(struct urb *urb)
+  */
+ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
+ {
++	struct device *dma_dev = stream_to_dmadev(stream);
+ 	struct uvc_urb *uvc_urb;
+ 
+ 	for_each_uvc_urb(uvc_urb, stream) {
+ 		if (!uvc_urb->buffer)
+ 			continue;
+ 
+-#ifndef CONFIG_DMA_NONCOHERENT
+-		usb_free_coherent(stream->dev->udev, stream->urb_size,
+-				  uvc_urb->buffer, uvc_urb->dma);
+-#else
+-		kfree(uvc_urb->buffer);
+-#endif
++		dma_vunmap_noncontiguous(dma_dev, uvc_urb->buffer);
++		dma_free_noncontiguous(dma_dev, stream->urb_size, uvc_urb->sgt,
++				       stream_dir(stream));
++
+ 		uvc_urb->buffer = NULL;
++		uvc_urb->sgt = NULL;
+ 	}
+ 
+ 	stream->urb_size = 0;
+ }
+ 
++static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
++				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
++{
++	struct device *dma_dev = stream_to_dmadev(stream);
++
++	uvc_urb->sgt = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
++					       stream_dir(stream),
++					       gfp_flags, 0);
++	if (!uvc_urb->sgt)
++		return false;
++	uvc_urb->dma = uvc_urb->sgt->sgl->dma_address;
++
++	uvc_urb->buffer = dma_vmap_noncontiguous(dma_dev, stream->urb_size,
++						 uvc_urb->sgt);
++	if (!uvc_urb->buffer) {
++		dma_free_noncontiguous(dma_dev, stream->urb_size,
++				       uvc_urb->sgt,
++				       stream_dir(stream));
++		uvc_urb->sgt = NULL;
++		return false;
++	}
++
++	return true;
++}
++
+ /*
+  * Allocate transfer buffers. This function can be called with buffers
+  * already allocated when resuming from suspend, in which case it will
+@@ -1608,19 +1668,12 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
+ 
+ 	/* Retry allocations until one succeed. */
+ 	for (; npackets > 1; npackets /= 2) {
++		stream->urb_size = psize * npackets;
++
+ 		for (i = 0; i < UVC_URBS; ++i) {
+ 			struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
+ 
+-			stream->urb_size = psize * npackets;
+-#ifndef CONFIG_DMA_NONCOHERENT
+-			uvc_urb->buffer = usb_alloc_coherent(
+-				stream->dev->udev, stream->urb_size,
+-				gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
+-#else
+-			uvc_urb->buffer =
+-			    kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
+-#endif
+-			if (!uvc_urb->buffer) {
++			if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
+ 				uvc_free_urb_buffers(stream);
+ 				break;
+ 			}
+@@ -1730,12 +1783,8 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
+ 		urb->context = uvc_urb;
+ 		urb->pipe = usb_rcvisocpipe(stream->dev->udev,
+ 				ep->desc.bEndpointAddress);
+-#ifndef CONFIG_DMA_NONCOHERENT
+ 		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+ 		urb->transfer_dma = uvc_urb->dma;
+-#else
+-		urb->transfer_flags = URB_ISO_ASAP;
+-#endif
+ 		urb->interval = ep->desc.bInterval;
+ 		urb->transfer_buffer = uvc_urb->buffer;
+ 		urb->complete = uvc_video_complete;
+@@ -1795,10 +1844,8 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
+ 
+ 		usb_fill_bulk_urb(urb, stream->dev->udev, pipe,	uvc_urb->buffer,
+ 				  size, uvc_video_complete, uvc_urb);
+-#ifndef CONFIG_DMA_NONCOHERENT
+ 		urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+ 		urb->transfer_dma = uvc_urb->dma;
+-#endif
+ 
+ 		uvc_urb->urb = urb;
+ 	}
+@@ -1895,6 +1942,7 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
+ 
+ 	/* Submit the URBs. */
+ 	for_each_uvc_urb(uvc_urb, stream) {
++		uvc_urb_dma_sync(uvc_urb, true);
+ 		ret = usb_submit_urb(uvc_urb->urb, gfp_flags);
+ 		if (ret < 0) {
+ 			dev_err(&stream->intf->dev,
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 97df5ecd66c9..cce5e38133cd 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -219,6 +219,7 @@
+  */
+ 
+ struct gpio_desc;
++struct sg_table;
+ struct uvc_device;
+ 
+ /* TODO: Put the most frequently accessed fields at the beginning of
+@@ -545,7 +546,8 @@ struct uvc_copy_op {
+  * @urb: the URB described by this context structure
+  * @stream: UVC streaming context
+  * @buffer: memory storage for the URB
+- * @dma: DMA coherent addressing for the urb_buffer
++ * @dma: Allocated DMA handle
++ * @sgt: sgt_table with the urb locations in memory
+  * @async_operations: counter to indicate the number of copy operations
+  * @copy_operations: work descriptors for asynchronous copy operations
+  * @work: work queue entry for asynchronous decode
+@@ -556,6 +558,7 @@ struct uvc_urb {
+ 
+ 	char *buffer;
+ 	dma_addr_t dma;
++	struct sg_table *sgt;
+ 
+ 	unsigned int async_operations;
+ 	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
