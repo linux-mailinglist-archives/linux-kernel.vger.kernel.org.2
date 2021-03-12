@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCD4339203
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F17D3391AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhCLPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:45:00 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55618 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbhCLPoO (ORCPT
+        id S232538AbhCLPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:44:13 -0500
+Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:39697 "EHLO
+        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232067AbhCLPnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:44:14 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 8FC201F46E98
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 428CE4800E2; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 10/38] dt-bindings: power: supply: sbs-charger: Convert to DT schema format
-Date:   Fri, 12 Mar 2021 16:43:29 +0100
-Message-Id: <20210312154357.1561730-11-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+        Fri, 12 Mar 2021 10:43:37 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id D3DA31C4013
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:33 +0000 (GMT)
+Received: (qmail 19893 invoked from network); 12 Mar 2021 15:43:32 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:32 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 6/7] net: page_pool: refactor dma_map into own function page_pool_dma_map
+Date:   Fri, 12 Mar 2021 15:43:30 +0000
+Message-Id: <20210312154331.32229-7-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format.
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+In preparation for next patch, move the dma mapping into its own
+function, as this will make it easier to follow the changes.
+
+V2: make page_pool_dma_map return boolean (Ilias)
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 ---
- .../power/supply/sbs,sbs-charger.yaml         | 55 +++++++++++++++++++
- .../bindings/power/supply/sbs_sbs-charger.txt | 21 -------
- 2 files changed, 55 insertions(+), 21 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
- delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
+ net/core/page_pool.c | 45 +++++++++++++++++++++++++-------------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
-new file mode 100644
-index 000000000000..cb73ffa4778e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/supply/sbs,sbs-charger.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ad8b0707af04..40e1b2beaa6c 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -180,14 +180,37 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
+ 					 pool->p.dma_dir);
+ }
+ 
++static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
++{
++	dma_addr_t dma;
 +
-+title: SBS compliant charger
++	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
++	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
++	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
++	 * This mapping is kept for lifetime of page, until leaving pool.
++	 */
++	dma = dma_map_page_attrs(pool->p.dev, page, 0,
++				 (PAGE_SIZE << pool->p.order),
++				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
++	if (dma_mapping_error(pool->p.dev, dma))
++		return false;
 +
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
++	page->dma_addr = dma;
 +
-+description: |
-+  Charger compatible with the smart battery system specifications
++	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
++		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
 +
-+allOf:
-+  - $ref: power-supply.yaml#
++	return true;
++}
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - lltc,ltc4100
-+          - enum:
-+              - sbs,sbs-charger
-+      - items:
-+          - const: sbs,sbs-charger
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        charger@9 {
-+            compatible = "lltc,ltc4100", "sbs,sbs-charger";
-+            reg = <0x9>;
-+            interrupt-parent = <&gpio6>;
-+            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+       };
-+    };
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt b/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
-deleted file mode 100644
-index 84e74151eef2..000000000000
---- a/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--SBS sbs-charger
--~~~~~~~~~~
+ /* slow path */
+ noinline
+ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 						 gfp_t _gfp)
+ {
++	unsigned int pp_flags = pool->p.flags;
+ 	struct page *page;
+ 	gfp_t gfp = _gfp;
+-	dma_addr_t dma;
+ 
+ 	/* We could always set __GFP_COMP, and avoid this branch, as
+ 	 * prep_new_page() can handle order-0 with __GFP_COMP.
+@@ -211,30 +234,14 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 	if (!page)
+ 		return NULL;
+ 
+-	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+-		goto skip_dma_map;
 -
--Required properties:
-- - compatible: "<vendor>,<part-number>", "sbs,sbs-charger" as fallback. The part
--     number compatible string might be used in order to take care of vendor
--     specific registers.
+-	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
+-	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
+-	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
+-	 * This mapping is kept for lifetime of page, until leaving pool.
+-	 */
+-	dma = dma_map_page_attrs(pool->p.dev, page, 0,
+-				 (PAGE_SIZE << pool->p.order),
+-				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
+-	if (dma_mapping_error(pool->p.dev, dma)) {
++	if ((pp_flags & PP_FLAG_DMA_MAP) &&
++	    unlikely(!page_pool_dma_map(pool, page))) {
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
+ 
+-	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+-		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
 -
--Optional properties:
--- interrupts: Interrupt mapping for GPIO IRQ. Use in conjunction with
--    "interrupt-parent". If an interrupt is not provided the driver will switch
--    automatically to polling.
+-skip_dma_map:
+ 	/* Track how many pages are held 'in-flight' */
+ 	pool->pages_state_hold_cnt++;
 -
--Example:
--
--	ltc4100@9 {
--		compatible = "lltc,ltc4100", "sbs,sbs-charger";
--		reg = <0x9>;
--		interrupt-parent = <&gpio6>;
--		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
--	};
+ 	trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
+ 
+ 	/* When page just alloc'ed is should/must have refcnt 1. */
 -- 
-2.30.1
+2.26.2
 
