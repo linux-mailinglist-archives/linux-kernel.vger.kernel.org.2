@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24515338C02
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E23338C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhCLLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        id S231725AbhCLLyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhCLLyk (ORCPT
+        with ESMTP id S231416AbhCLLyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:54:40 -0500
+        Fri, 12 Mar 2021 06:54:41 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61747C061761;
-        Fri, 12 Mar 2021 03:54:40 -0800 (PST)
-Date:   Fri, 12 Mar 2021 11:54:38 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FB3C061762;
+        Fri, 12 Mar 2021 03:54:41 -0800 (PST)
+Date:   Fri, 12 Mar 2021 11:54:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615550078;
+        s=2020; t=1615550079;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q9X2FOuKyUihhiuC4ef89V1sRcyxlLUHmnq2cOh1Qzk=;
-        b=l8MJ9u/i90UbIHmlNWGZKLL+2ERWRQGfh1vYTOxl6CKa7iBEMD37Eh+e+mrSjOJ8zlBaTP
-        OhjZa7WZpjoD61eZwsRTvp1NOUX3Hx8bio+hlxQdnmYpZzZnZ34I1+MbRyX2EFTyAZqbPz
-        f6Kwl3SCeei4JoDDKM/jQ5b6LB1u/4eciLbHgZLEdnKAm2Mof/rU6tRWYRS/kgDxfr0Q9r
-        lMScCh32vGQ1Aw5dhfkJmyJbOd/NqLQxO/O2VIVaFLCWNaOl8SXOUA+hsEI0g3TSSd22ee
-        HddKeJMlSmBAy1I7stS52FgPgs8rnbXn2TytVxYA3J3RX4ebmY/wvCHNVrJkwg==
+        bh=FrRxxGEr2IwbiLvkYzcKQy3rEQT3i3ZY+LoQayv3sIw=;
+        b=giYL9+18aBq3RcssxCLWHwQMpYcsN9oqrZMu5Kgaqht1BhuUvh+vLkDZmoqAyfjHHaxIXu
+        tGAg9yM/oM6A96cuxzvxiCK6DKvDWK37VG2weESE9KFKEN/gVse/4TYng7qS2YvUI1FF55
+        Ha3XtvhasEcuLvtKobMBU35bq08m+joPBatDF054p+sZPAUX0QjYHVncxpyeVI1a/arjQT
+        biggOv5LlztqsjRn7yGsTFLM4BY1dIEsWnUxNY5U+sCB+VZPQmmSlzT9Z5m5OR+r2vmvFH
+        lYm/376chdAthd/A1C3aAfrknmiYuYj6mc8Tr5rfvzj96RPrUrdLWmJhrCHrDA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615550078;
+        s=2020e; t=1615550079;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q9X2FOuKyUihhiuC4ef89V1sRcyxlLUHmnq2cOh1Qzk=;
-        b=z8qZ5pOJoc8Ixw7d7MjIZbqKhCMlr/YmrcbAwyBRBVSBFZCzv2BzXL47a59+v8dmFpv+mF
-        g8pnSiexjvdHDFCw==
+        bh=FrRxxGEr2IwbiLvkYzcKQy3rEQT3i3ZY+LoQayv3sIw=;
+        b=EPOCKKBB1NuI9pNEJrMWZZABIG26SIgNcr2i0jf/SDrwDokNhqnLS8IZIKm+fYRCN696Z/
+        yn2yWC4VsNxDUzAg==
 From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/alternatives] x86/paravirt: Simplify paravirt macros
+Subject: [tip: x86/alternatives] x86/alternative: Use ALTERNATIVE_TERNARY() in
+ _static_cpu_has()
 Cc:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210311142319.4723-11-jgross@suse.com>
-References: <20210311142319.4723-11-jgross@suse.com>
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210311142319.4723-8-jgross@suse.com>
+References: <20210311142319.4723-8-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <161555007832.398.17902896531188575492.tip-bot2@tip-bot2>
+Message-ID: <161555007927.398.12038914943768459171.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,134 +61,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/alternatives branch of tip:
 
-Commit-ID:     0b8d366a942fd48a83dfa728e9f8a8d8b20e735f
-Gitweb:        https://git.kernel.org/tip/0b8d366a942fd48a83dfa728e9f8a8d8b20e735f
+Commit-ID:     2fe2a2c7a97c9bc32acc79154b75e754280f7867
+Gitweb:        https://git.kernel.org/tip/2fe2a2c7a97c9bc32acc79154b75e754280f7867
 Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Thu, 11 Mar 2021 15:23:15 +01:00
+AuthorDate:    Thu, 11 Mar 2021 15:23:12 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 11 Mar 2021 19:52:52 +01:00
+CommitterDate: Thu, 11 Mar 2021 19:33:43 +01:00
 
-x86/paravirt: Simplify paravirt macros
+x86/alternative: Use ALTERNATIVE_TERNARY() in _static_cpu_has()
 
-The central pvops call macros ____PVOP_CALL() and ____PVOP_VCALL() are
-looking very similar now.
-
-The main differences are using PVOP_VCALL_ARGS or PVOP_CALL_ARGS, which
-are identical, and the return value handling.
-
-So drop PVOP_VCALL_ARGS and instead of ____PVOP_VCALL() just use
-(void)____PVOP_CALL(long, ...).
-
-Note that it isn't easily possible to just redefine ____PVOP_VCALL()
-to use ____PVOP_CALL() instead, as this would require further hiding of
-commas in macro parameters.
+_static_cpu_has() contains a completely open coded version of
+ALTERNATIVE_TERNARY(). Replace that with the macro instead.
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210311142319.4723-11-jgross@suse.com
+Link: https://lkml.kernel.org/r/20210311142319.4723-8-jgross@suse.com
 ---
- arch/x86/include/asm/paravirt_types.h | 41 +++++++-------------------
- 1 file changed, 12 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/cpufeature.h | 41 ++++++------------------------
+ 1 file changed, 9 insertions(+), 32 deletions(-)
 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 42f9eef..45bd216 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -408,11 +408,9 @@ int paravirt_disable_iospace(void);
-  * makes sure the incoming and outgoing types are always correct.
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 1728d4c..16a51e7 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -8,6 +8,7 @@
+ 
+ #include <asm/asm.h>
+ #include <linux/bitops.h>
++#include <asm/alternative.h>
+ 
+ enum cpuid_leafs
+ {
+@@ -175,39 +176,15 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
   */
- #ifdef CONFIG_X86_32
--#define PVOP_VCALL_ARGS							\
-+#define PVOP_CALL_ARGS							\
- 	unsigned long __eax = __eax, __edx = __edx, __ecx = __ecx;
- 
--#define PVOP_CALL_ARGS			PVOP_VCALL_ARGS
--
- #define PVOP_CALL_ARG1(x)		"a" ((unsigned long)(x))
- #define PVOP_CALL_ARG2(x)		"d" ((unsigned long)(x))
- #define PVOP_CALL_ARG3(x)		"c" ((unsigned long)(x))
-@@ -428,12 +426,10 @@ int paravirt_disable_iospace(void);
- #define VEXTRA_CLOBBERS
- #else  /* CONFIG_X86_64 */
- /* [re]ax isn't an arg, but the return val */
--#define PVOP_VCALL_ARGS						\
-+#define PVOP_CALL_ARGS						\
- 	unsigned long __edi = __edi, __esi = __esi,		\
- 		__edx = __edx, __ecx = __ecx, __eax = __eax;
- 
--#define PVOP_CALL_ARGS		PVOP_VCALL_ARGS
--
- #define PVOP_CALL_ARG1(x)		"D" ((unsigned long)(x))
- #define PVOP_CALL_ARG2(x)		"S" ((unsigned long)(x))
- #define PVOP_CALL_ARG3(x)		"d" ((unsigned long)(x))
-@@ -458,59 +454,46 @@ int paravirt_disable_iospace(void);
- #define PVOP_TEST_NULL(op)	((void)pv_ops.op)
- #endif
- 
--#define PVOP_RETMASK(rettype)						\
-+#define PVOP_RETVAL(rettype)						\
- 	({	unsigned long __mask = ~0UL;				\
-+		BUILD_BUG_ON(sizeof(rettype) > sizeof(unsigned long));	\
- 		switch (sizeof(rettype)) {				\
- 		case 1: __mask =       0xffUL; break;			\
- 		case 2: __mask =     0xffffUL; break;			\
- 		case 4: __mask = 0xffffffffUL; break;			\
- 		default: break;						\
- 		}							\
--		__mask;							\
-+		__mask & __eax;						\
- 	})
- 
- 
--#define ____PVOP_CALL(rettype, op, clbr, call_clbr, extra_clbr, ...)	\
-+#define ____PVOP_CALL(ret, op, clbr, call_clbr, extra_clbr, ...)	\
- 	({								\
- 		PVOP_CALL_ARGS;						\
- 		PVOP_TEST_NULL(op);					\
--		BUILD_BUG_ON(sizeof(rettype) > sizeof(unsigned long));	\
- 		asm volatile(paravirt_alt(PARAVIRT_CALL)		\
- 			     : call_clbr, ASM_CALL_CONSTRAINT		\
- 			     : paravirt_type(op),			\
- 			       paravirt_clobber(clbr),			\
- 			       ##__VA_ARGS__				\
- 			     : "memory", "cc" extra_clbr);		\
--		(rettype)(__eax & PVOP_RETMASK(rettype));		\
-+		ret;							\
- 	})
- 
- #define __PVOP_CALL(rettype, op, ...)					\
--	____PVOP_CALL(rettype, op, CLBR_ANY, PVOP_CALL_CLOBBERS,	\
--		      EXTRA_CLOBBERS, ##__VA_ARGS__)
-+	____PVOP_CALL(PVOP_RETVAL(rettype), op, CLBR_ANY,		\
-+		      PVOP_CALL_CLOBBERS, EXTRA_CLOBBERS, ##__VA_ARGS__)
- 
- #define __PVOP_CALLEESAVE(rettype, op, ...)				\
--	____PVOP_CALL(rettype, op.func, CLBR_RET_REG,			\
-+	____PVOP_CALL(PVOP_RETVAL(rettype), op.func, CLBR_RET_REG,	\
- 		      PVOP_CALLEE_CLOBBERS, , ##__VA_ARGS__)
- 
--
--#define ____PVOP_VCALL(op, clbr, call_clbr, extra_clbr, ...)		\
--	({								\
--		PVOP_VCALL_ARGS;					\
--		PVOP_TEST_NULL(op);					\
--		asm volatile(paravirt_alt(PARAVIRT_CALL)		\
--			     : call_clbr, ASM_CALL_CONSTRAINT		\
--			     : paravirt_type(op),			\
--			       paravirt_clobber(clbr),			\
--			       ##__VA_ARGS__				\
--			     : "memory", "cc" extra_clbr);		\
--	})
--
- #define __PVOP_VCALL(op, ...)						\
--	____PVOP_VCALL(op, CLBR_ANY, PVOP_VCALL_CLOBBERS,		\
-+	(void)____PVOP_CALL(, op, CLBR_ANY, PVOP_VCALL_CLOBBERS,	\
- 		       VEXTRA_CLOBBERS, ##__VA_ARGS__)
- 
- #define __PVOP_VCALLEESAVE(op, ...)					\
--	____PVOP_VCALL(op.func, CLBR_RET_REG,				\
-+	(void)____PVOP_CALL(, op.func, CLBR_RET_REG,			\
- 		      PVOP_VCALLEE_CLOBBERS, , ##__VA_ARGS__)
- 
- 
+ static __always_inline bool _static_cpu_has(u16 bit)
+ {
+-	asm_volatile_goto("1: jmp 6f\n"
+-		 "2:\n"
+-		 ".skip -(((5f-4f) - (2b-1b)) > 0) * "
+-			 "((5f-4f) - (2b-1b)),0x90\n"
+-		 "3:\n"
+-		 ".section .altinstructions,\"a\"\n"
+-		 " .long 1b - .\n"		/* src offset */
+-		 " .long 4f - .\n"		/* repl offset */
+-		 " .word %P[always]\n"		/* always replace */
+-		 " .byte 3b - 1b\n"		/* src len */
+-		 " .byte 5f - 4f\n"		/* repl len */
+-		 " .byte 3b - 2b\n"		/* pad len */
+-		 ".previous\n"
+-		 ".section .altinstr_replacement,\"ax\"\n"
+-		 "4: jmp %l[t_no]\n"
+-		 "5:\n"
+-		 ".previous\n"
+-		 ".section .altinstructions,\"a\"\n"
+-		 " .long 1b - .\n"		/* src offset */
+-		 " .long 0\n"			/* no replacement */
+-		 " .word %P[feature]\n"		/* feature bit */
+-		 " .byte 3b - 1b\n"		/* src len */
+-		 " .byte 0\n"			/* repl len */
+-		 " .byte 0\n"			/* pad len */
+-		 ".previous\n"
+-		 ".section .altinstr_aux,\"ax\"\n"
+-		 "6:\n"
+-		 " testb %[bitnum],%[cap_byte]\n"
+-		 " jnz %l[t_yes]\n"
+-		 " jmp %l[t_no]\n"
+-		 ".previous\n"
++	asm_volatile_goto(
++		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
++		".section .altinstr_aux,\"ax\"\n"
++		"6:\n"
++		" testb %[bitnum],%[cap_byte]\n"
++		" jnz %l[t_yes]\n"
++		" jmp %l[t_no]\n"
++		".previous\n"
+ 		 : : [feature]  "i" (bit),
+-		     [always]   "i" (X86_FEATURE_ALWAYS),
+ 		     [bitnum]   "i" (1 << (bit & 7)),
+ 		     [cap_byte] "m" (((const char *)boot_cpu_data.x86_capability)[bit >> 3])
+ 		 : : t_yes, t_no);
