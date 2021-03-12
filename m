@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4873383FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4347E3383FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhCLCtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:49:49 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:18671 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhCLCtZ (ORCPT
+        id S231653AbhCLCtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhCLCtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:49:25 -0500
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 12C2mmv5009162;
-        Fri, 12 Mar 2021 11:48:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12C2mmv5009162
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615517329;
-        bh=wMjay7gGWuK+Px6K/J9CW6U4nl+A8g80EMfuMm2LMxE=;
-        h=From:Date:Subject:To:From;
-        b=sqzW9PmgFRjPwWbHkojHQEIAU4jlh4SmziwkUJWMRVQe1Ytv6GTwCuY0PsIVyjOFs
-         IwLCBIoBWTu5i2AlKWEwS1YkENfBFVypwaa6JRQd5Lw4mN7oXO8ByLMbLbT8m529zv
-         wQda2MaJgTmrc4WpSrmAiJzDEw2BHGTCPHYKk8pZV8tIr2xZOlpF1N+MZ5PoD5n3N6
-         x1NDLsYbNE3E+NuLvMw6rbNXHXz9xWZ+wuf6IcZChUH4/o8HvdPQFsdCi8twXId+G7
-         NDW1joKweIFI5210ewCQI//32xkvS9BVJ9KhLQD6PZ0C8sk2A9a6ziMhbYWTUOnFQl
-         f64EZIwYcTZZw==
-X-Nifty-SrcIP: [209.85.214.179]
-Received: by mail-pl1-f179.google.com with SMTP id a8so4709952plp.13;
-        Thu, 11 Mar 2021 18:48:48 -0800 (PST)
-X-Gm-Message-State: AOAM530Tyi5M3pnIluWN7jOG/0jzDKE53fEPLjaxiuMApFKvpaIrcWJT
-        +56qVfdI5F+ZMRIm+YL5F6a5Nc99k2sAvy3msEU=
-X-Google-Smtp-Source: ABdhPJw1mBizxB+9VF3KwFNYc0n0Vomc2EfwSnBUJvdOXP49AwVjQva3yAW6HDyZBgDTHPEyOunHOR2XKSYGEMfQvAc=
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr12121760pjc.198.1615517328278;
- Thu, 11 Mar 2021 18:48:48 -0800 (PST)
+        Thu, 11 Mar 2021 21:49:32 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D38C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:49:32 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so1198966ooa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 18:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EYVqRVBPVhizjxhXnWF45Gz26g8vdQA3COQqWInRBeA=;
+        b=gL3L51OcWU67DmzWlOUOVcXvpiTxuMJpwzzNInvbPku7ZfttNYAc+vJTXP2pwN456X
+         ezPUT2byJNG2YyVG7IIik1mPkyz9NjBjzxuYKRiFRa7CvXGRDLVP6zPuKYJCaNJJjd5U
+         3unxTI+29QH0F6WNzop7rJz1boWKj7QEAc6b4HaV/Dd7NYx0zPkBHjDvCzFqqPTmfAor
+         xsUpYumiFVqeXRvL/F8ckV7rZLXqwWxm0vhgvdOjmOyyi7ZS+QxKPzvGzNyWFjcBgjaf
+         0NzS7W+VWwMhsuyYdahNOi3RQC01deewwBLdRixfZDlVZgTn0PPo1t553Ck7RAGtOJPE
+         quSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EYVqRVBPVhizjxhXnWF45Gz26g8vdQA3COQqWInRBeA=;
+        b=dzz7teExIwN8kuJAY/i+RaSqY7xSzUWVq7nHisXcNHEyrGiDi3qwdGzgGp3q5lVc8C
+         5F6NvsI9/C2DcezVCI0pr8ZboEVz51CWrmT0JpXPCLdmy5Bp4JwuMGPtuoQKKLKslh88
+         k2E0AKiXRVW80sF35J3vrpsTtsam7vRWq48K1c90YLEpNVDmN5f2E4jwnoHrYe1a0Di3
+         PNiaLxFw+sBBdZrPGwj5MsTmvrKiY/OAi5y6+xKhZrN8ziNVS56eoZFxyQ/8qnCpyA33
+         mCaFSMg6lVr7a+LPsCsvX7GIZkfWd6buiJbq/uL5kRChuU4y4xEiJTEoJiKvPykUeJvw
+         OQ6g==
+X-Gm-Message-State: AOAM533ersicckZsfWlRQeuuD7Cl0qXLPnRdt4/pSG0b2ed/pR8DsXKq
+        +Me7gXJ5rafw9KKQf7gpQ8Z+7g==
+X-Google-Smtp-Source: ABdhPJy05T1NPkkQXB9EoKTWk0BgQA2YbcX/Rl20SMQs0NEdv0PPCLfiCzrohW58ne4IcabfxTDOIA==
+X-Received: by 2002:a4a:420d:: with SMTP id h13mr1638857ooj.24.1615517371923;
+        Thu, 11 Mar 2021 18:49:31 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 64sm1102682otu.80.2021.03.11.18.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 18:49:31 -0800 (PST)
+Date:   Thu, 11 Mar 2021 20:49:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm/bridge: ti-sn65dsi86: Simplify refclk handling
+Message-ID: <YErWuSV02RI4Ci1Y@builder.lan>
+References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Mar 2021 11:48:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
-Message-ID: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
-Subject: Why is the bit size different between a syscall and its wrapper?
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On Thu 04 Mar 17:51 CST 2021, Douglas Anderson wrote:
 
-I think I am missing something, but
-is there any particular reason to
-use a different bit size between
-a syscall and its userspace wrapper?
+> The clock framework makes it simple to deal with an optional clock.
+> You can call clk_get_optional() and if the clock isn't specified it'll
+> just return NULL without complaint. It's valid to pass NULL to
+> enable/disable/prepare/unprepare. Let's make use of this to simplify
+> things a tiny bit.
+> 
+> NOTE: this makes things look a tad bit asymmetric now since we check
+> for NULL before clk_prepare_enable() but not for
+> clk_disable_unprepare(). This seemed OK to me. We already have to
+> check for NULL in the enable case anyway so why not avoid the extra
+> call?
+> 
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-
-For example, for the unshare syscall,
-
-unshare(2) says the parameter is int.
-
-
-SYNOPSIS
-       #define _GNU_SOURCE
-       #include <sched.h>
-
-       int unshare(int flags);
-
-
-
-
-In the kernel, it is unsigned long.
-
-
-SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
-{
-        return ksys_unshare(unshare_flags);
-}
-
-
-
-
-I guess the upper 32-bit will be
-zeroed out in the c library when
-sizeof(int) != sizeof(unsigned long)
-(i.e. 64-bit system), but I'd like to know
-why we do it this way.
-
-
--- 
-Best Regards
-Masahiro Yamada
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index f27306c51e4d..942019842ff4 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1261,14 +1261,9 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> -	pdata->refclk = devm_clk_get(pdata->dev, "refclk");
+> -	if (IS_ERR(pdata->refclk)) {
+> -		ret = PTR_ERR(pdata->refclk);
+> -		if (ret == -EPROBE_DEFER)
+> -			return ret;
+> -		DRM_DEBUG_KMS("refclk not found\n");
+> -		pdata->refclk = NULL;
+> -	}
+> +	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
+> +	if (IS_ERR(pdata->refclk))
+> +		return PTR_ERR(pdata->refclk);
+>  
+>  	ret = ti_sn_bridge_parse_dsi_host(pdata);
+>  	if (ret)
+> -- 
+> 2.30.1.766.gb4fecdf3b7-goog
+> 
