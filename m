@@ -2,219 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BF0338F91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B72A338F9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhCLONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhCLOMc (ORCPT
+        id S229748AbhCLOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:16:16 -0500
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:37343 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229959AbhCLOPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:12:32 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91C3C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:12:31 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso15889276wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 06:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FS8E3QfSbLNuEUx0oGFG0GGmNvYIycOcmcrDH3zq20s=;
-        b=EpXn29ELHwyLOmSmA0dpAkvkzt6uQd+2W1sVUIUHPfGbws8JaoUARChu8bwZ+ySzEi
-         nCr0fmdzZQeLZKtpf+sy93qveuEeBtDIH1nlt0EaWvvaxRUMiX+UBQeY9QSHzzh7fC1w
-         qkTT5+yV7aj5TuQgL7jb9WbbOMqqtVTntSsrE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=FS8E3QfSbLNuEUx0oGFG0GGmNvYIycOcmcrDH3zq20s=;
-        b=AIguQnMOlP0uIjRQCGdkn236qpBIkgqcsG9jOgKHPlpWAy7fzeBAjrw71AcLFwfxw4
-         9Lkqs2ppOs/vfKwaJntLqpIdgrs0Ax+tGzuBPPfwgpedPsR+4SvQT64EGSZ/7IQMHpCZ
-         vlMNH5rA6Ab+P2WYt6d9WUbyLrgyiYxboLk6uSYhimG9Px6e+6Zydv45DFR/SeOd5tGK
-         CWps7P0KGZqFlnPPvcDeyvCDNon4eXUiitQzb0uHQjkgtjcjjeAdsm8LWXO9kGy187Uk
-         iPKHjJgO0DEi1Z5BtQ83ikf8b1zrEFshIT+gRu77G/tUCsbY1ka39x+ygbmwIqQxR+R/
-         mGyg==
-X-Gm-Message-State: AOAM5320EAh9kesKEM2jAvWXvSrTSHbY8yRZPaSPp80BjbHg4AEGzgMy
-        M9z7SNFSACj4wdQtag76MCJFCg==
-X-Google-Smtp-Source: ABdhPJx9JKGvYeYalS8uchoaPC4Epklh6gjPywXF2S3wgfsIQjVglkf/531Kk5D6ZMHgJxr/FEKZgg==
-X-Received: by 2002:a1c:1bc7:: with SMTP id b190mr13478032wmb.115.1615558350171;
-        Fri, 12 Mar 2021 06:12:30 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id k4sm10360878wrd.9.2021.03.12.06.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 06:12:29 -0800 (PST)
-Date:   Fri, 12 Mar 2021 15:12:27 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ian Campbell <ijc@hellion.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Jaya Kumar <jayakumar.lkml@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] fb_defio: Remove custom address_space_operations
-Message-ID: <YEt2y4QqnanHHviZ@phenom.ffwll.local>
-Mail-Followup-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@intel.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Ian Campbell <ijc@hellion.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Jaya Kumar <jayakumar.lkml@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210310185530.1053320-1-willy@infradead.org>
+        Fri, 12 Mar 2021 09:15:51 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id C67BACCAEC
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:15:45 +0000 (GMT)
+Received: (qmail 20309 invoked from network); 12 Mar 2021 14:15:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Mar 2021 14:15:45 -0000
+Date:   Fri, 12 Mar 2021 14:15:44 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210312141544.GV3697@techsingularity.net>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310104618.22750-3-mgorman@techsingularity.net>
+ <20210312124331.GY3479805@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210310185530.1053320-1-willy@infradead.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210312124331.GY3479805@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:55:30PM +0000, Matthew Wilcox (Oracle) wrote:
-> There's no need to give the page an address_space.  Leaving the
-> page->mapping as NULL will cause the VM to handle set_page_dirty()
-> the same way that it's handled now, and that was the only reason to
-> set the address_space in the first place.
+On Fri, Mar 12, 2021 at 12:43:31PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 10, 2021 at 10:46:15AM +0000, Mel Gorman wrote:
+> > +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
+> > +				nodemask_t *nodemask, int nr_pages,
+> > +				struct list_head *list);
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-
-Thanks for your patch, merged to drm-misc-next for 5.13.
-
-While I have an expert here, does this mean that for a VM_PFNMAP we could
-pull of the same trick without any struct page backing, assuming we pulle
-the per-page dirty state into some tracking of our own?
-
-I'm asking since for DRM drivers we currently have a fairly awkward
-situation with a bounce buffer in system memory going on that we copy out
-of, because we can't directly use the gpu buffers. If we can track
-directly in the gpu buffers, maybe even as some kind of overlay over the
-vma, we could avoid that copy.
-
-Otoh no one cares about fbcon performance, so *shrug*.
-
-Cheers, Daniel
-
-> ---
-> v2: Delete local variable definitions
->  drivers/video/fbdev/core/fb_defio.c | 35 -----------------------------
->  drivers/video/fbdev/core/fbmem.c    |  4 ----
->  include/linux/fb.h                  |  3 ---
->  3 files changed, 42 deletions(-)
+> For the next revision, can you ditch the '_nodemask' part of the name?
+> Andrew just took this patch from me:
 > 
-> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
-> index a591d291b231..b292887a2481 100644
-> --- a/drivers/video/fbdev/core/fb_defio.c
-> +++ b/drivers/video/fbdev/core/fb_defio.c
-> @@ -52,13 +52,6 @@ static vm_fault_t fb_deferred_io_fault(struct vm_fault *vmf)
->  		return VM_FAULT_SIGBUS;
->  
->  	get_page(page);
-> -
-> -	if (vmf->vma->vm_file)
-> -		page->mapping = vmf->vma->vm_file->f_mapping;
-> -	else
-> -		printk(KERN_ERR "no mapping available\n");
-> -
-> -	BUG_ON(!page->mapping);
->  	page->index = vmf->pgoff;
->  
->  	vmf->page = page;
-> @@ -151,17 +144,6 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
->  	.page_mkwrite	= fb_deferred_io_mkwrite,
->  };
->  
-> -static int fb_deferred_io_set_page_dirty(struct page *page)
-> -{
-> -	if (!PageDirty(page))
-> -		SetPageDirty(page);
-> -	return 0;
-> -}
-> -
-> -static const struct address_space_operations fb_deferred_io_aops = {
-> -	.set_page_dirty = fb_deferred_io_set_page_dirty,
-> -};
-> -
->  int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
->  {
->  	vma->vm_ops = &fb_deferred_io_vm_ops;
-> @@ -212,29 +194,12 @@ void fb_deferred_io_init(struct fb_info *info)
->  }
->  EXPORT_SYMBOL_GPL(fb_deferred_io_init);
->  
-> -void fb_deferred_io_open(struct fb_info *info,
-> -			 struct inode *inode,
-> -			 struct file *file)
-> -{
-> -	file->f_mapping->a_ops = &fb_deferred_io_aops;
-> -}
-> -EXPORT_SYMBOL_GPL(fb_deferred_io_open);
-> -
->  void fb_deferred_io_cleanup(struct fb_info *info)
->  {
->  	struct fb_deferred_io *fbdefio = info->fbdefio;
-> -	struct page *page;
-> -	int i;
->  
->  	BUG_ON(!fbdefio);
->  	cancel_delayed_work_sync(&info->deferred_work);
-> -
-> -	/* clear out the mapping that we setup */
-> -	for (i = 0 ; i < info->fix.smem_len; i += PAGE_SIZE) {
-> -		page = fb_deferred_io_page(info, i);
-> -		page->mapping = NULL;
-> -	}
-> -
->  	mutex_destroy(&fbdefio->lock);
->  }
->  EXPORT_SYMBOL_GPL(fb_deferred_io_cleanup);
-> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-> index 06f5805de2de..372b52a2befa 100644
-> --- a/drivers/video/fbdev/core/fbmem.c
-> +++ b/drivers/video/fbdev/core/fbmem.c
-> @@ -1415,10 +1415,6 @@ __releases(&info->lock)
->  		if (res)
->  			module_put(info->fbops->owner);
->  	}
-> -#ifdef CONFIG_FB_DEFERRED_IO
-> -	if (info->fbdefio)
-> -		fb_deferred_io_open(info, inode, file);
-> -#endif
->  out:
->  	unlock_fb_info(info);
->  	if (res)
-> diff --git a/include/linux/fb.h b/include/linux/fb.h
-> index ecfbcc0553a5..a8dccd23c249 100644
-> --- a/include/linux/fb.h
-> +++ b/include/linux/fb.h
-> @@ -659,9 +659,6 @@ static inline void __fb_pad_aligned_buffer(u8 *dst, u32 d_pitch,
->  /* drivers/video/fb_defio.c */
->  int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma);
->  extern void fb_deferred_io_init(struct fb_info *info);
-> -extern void fb_deferred_io_open(struct fb_info *info,
-> -				struct inode *inode,
-> -				struct file *file);
->  extern void fb_deferred_io_cleanup(struct fb_info *info);
->  extern int fb_deferred_io_fsync(struct file *file, loff_t start,
->  				loff_t end, int datasync);
-> -- 
-> 2.30.0
+
+Ok, the first three patches are needed from that series. For convenience,
+I'm going to post the same series with the rest of the patches as a
+pre-requisite to avoid people having to take patches out of mmotm to test.
+For review purposes, they can be ignored.
+
+> > <SNIP>
+> >
+> > @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+> >  		struct alloc_context *ac, gfp_t *alloc_mask,
+> >  		unsigned int *alloc_flags)
+> >  {
+> > +	gfp_mask &= gfp_allowed_mask;
+> > +	*alloc_mask = gfp_mask;
 > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Also I renamed alloc_mask to alloc_gfp.
+> 
+
+It then becomes obvious that prepare_alloc_pages does not share the same
+naming convention as __alloc_pages(). In an effort to keep the naming
+convention consistent, I updated the patch to also rename gfp_mask to
+gfp in prepare_alloc_pages.
+
+As a complete aside, I don't actually like the gfp name and would have
+preferred gfp_flags because GFP is just an acronym and the context of the
+variable is that it's a set of GFP Flags. The mask naming was wrong I admit
+because it's not a mask but I'm not interested in naming the bike shed :)
+
+Thanks for pointing this out early because it would have been a merge
+headache!
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Mel Gorman
+SUSE Labs
