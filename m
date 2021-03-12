@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDBD33975C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB3933975F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbhCLTYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhCLTYe (ORCPT
+        id S233733AbhCLTZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:25:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49390 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233727AbhCLTZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:24:34 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E233C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:24:32 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id f12so4678213qtq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pEeTkEyXCfwqMVGSwUe44009Y4fam47Rux0tIaathAw=;
-        b=o+0Wr4xkcRXdqUXtgfCtTFILjSgiNCLOf8HVzZyATUpxMeDMS4pbm5pWF9BZSPUcNg
-         RvjmjZ1+lbmuZA+hyUxHfwM+r+p6EpC9eXskkmQt/2MfyJ4ogrxpOp6uLaYUn4xLuy27
-         cEdDXBY0aRy0wDONyH/LTL2Xzc3gQQvG2fb6vc/7PBkbzH0nkit8+EW+8n98PLzySgo3
-         rcmEBLO+Za3DH4J5ruW3yl+uRWnrpPD9F00QWK7sk9vpulDHAOXWy4jhO6DtqaZtlsAA
-         O5qI6TKdS4KhZXdBjd9Wgh0LQKBZQQ4G5nGMqYIO8j51x5qMHv2F0tCTm4D+Yz5xvaHk
-         WjXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pEeTkEyXCfwqMVGSwUe44009Y4fam47Rux0tIaathAw=;
-        b=Tto36VGtV5xNPs1enlXBcOvBiNBLsZ/G9GqM2X2ACylmoMlkzdiZbhGGybOiO6SgQj
-         zQt0zu9iMhbVd+Do3+D/+dI+ZeE06bqjWQkfrpKnE5AVLcTCEfQbUTMAeVizW4RTthxx
-         FYqNuOyE7WCqlMRO1bjFwrMe54oaTfasX+7OP3PON0uZQkJWRD5FdQGZ/EQiVhzIWErc
-         Jw8m2i0quO14xlhlSWfQ6NZgpK+odov6WrqggJ1lbYuQe1h133LTMj7od/w33snmrHb6
-         UXRPX4/cdY3ff5uoonEPXgEOE7KNf/bpCdSvwRTIoHbTSQEk5KtPx1RQRnkqCFKVq7US
-         gxWw==
-X-Gm-Message-State: AOAM530+K9Cwq+AG6zotZEqB57R5tzHFvEm4nKUKk/oUDaHHJRXfwZM6
-        5XjehUrdy4XMCPqxnkEvwjZrgg==
-X-Google-Smtp-Source: ABdhPJyHpoXz+krFmX117IHeSWej/wRy9Y0LADvEsDmUM3LlxQIqK9L/gvpZAJGEpCNki6o+kZu1Ug==
-X-Received: by 2002:a05:622a:14f:: with SMTP id v15mr13552545qtw.212.1615577071277;
-        Fri, 12 Mar 2021 11:24:31 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id j6sm5191840qkm.81.2021.03.12.11.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 11:24:30 -0800 (PST)
-Date:   Fri, 12 Mar 2021 14:24:30 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com
-Subject: Re: [PATCH v3 4/4] mm: memcontrol: move PageMemcgKmem to the scope
- of CONFIG_MEMCG_KMEM
-Message-ID: <YEu/7vqMnwfWmiB7@cmpxchg.org>
-References: <20210309100717.253-1-songmuchun@bytedance.com>
- <20210309100717.253-5-songmuchun@bytedance.com>
+        Fri, 12 Mar 2021 14:25:18 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615577116;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5zLfYrI1ktdYvU0WYUSOt8cuz631ADpBZR0ROWuzBbA=;
+        b=fC6Qbeg592YV/SLHSVFbZQR8KJBndBfVtlqO0loaiN8u6znqmN3K3Fet8cQzLFT7JkfYl3
+        5ROMJqYfzuSFVfDc4Gd01p+lWycGZjcv/xpAQXGQ+aYxNzhBJtB3EGPu2bFNmTclj7kwe/
+        oDv+aUb96fpVhebOVXM/ulXJJC+DmJIFTqOV1i+Npb/S5rIYex0ALXy5YBO/Cg9AOq/sU7
+        lVA44ylYCmPKj6rd6hW9sOh7EenSTgB8qMdlQNtVDvlg3o8ojfGEV7Vzb+GxgmAgGt4VBQ
+        PgA79PJf1Jpb0Q3ZeKOsaXAw23dIfpG2BRn44cwfvmnOqpoHe26RViFq1KZQ8w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615577116;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5zLfYrI1ktdYvU0WYUSOt8cuz631ADpBZR0ROWuzBbA=;
+        b=nS7IeHhuyXuf91cSN15FRXxDK/WPRkgLYCYWv9/0VxLU1hbe10Dcb4P9nCb5CahYzxCSyZ
+        TBzC3MER9npvDQBQ==
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
+In-Reply-To: <20210312161830.GA27820@redhat.com>
+References: <20210311132036.228542540@linutronix.de> <20210311141704.424120350@linutronix.de> <20210312113540.7byffvc46cgj75ah@linutronix.de> <20210312161830.GA27820@redhat.com>
+Date:   Fri, 12 Mar 2021 20:25:16 +0100
+Message-ID: <87eegk2mzn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309100717.253-5-songmuchun@bytedance.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 06:07:17PM +0800, Muchun Song wrote:
-> The page only can be marked as kmem when CONFIG_MEMCG_KMEM is enabled.
-> So move PageMemcgKmem() to the scope of the CONFIG_MEMCG_KMEM.
-> 
-> As a bonus, on !CONFIG_MEMCG_KMEM build some code can be compiled out.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On Fri, Mar 12 2021 at 17:18, Oleg Nesterov wrote:
+> On 03/12, Sebastian Andrzej Siewior wrote:
+>>
+>> On 2021-03-11 14:20:39 [+0100], Thomas Gleixner wrote:
+>> > --- a/kernel/signal.c
+>> > +++ b/kernel/signal.c
+>> > @@ -433,7 +433,11 @@ static struct sigqueue *
+>> >  	rcu_read_unlock();
+>> >
+>> >  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+>> > -		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+>> > +		/* Preallocation does not hold sighand::siglock */
+>> > +		if (sigqueue_flags || !t->sigqueue_cache)
+>> > +			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+>> > +		else
+>> > +			q = xchg(&t->sigqueue_cache, NULL);
+>>
+>> Could it happen that two tasks saw t->sigqueue_cache != NULL, the first
+>> one got the pointer via xchg() and the second got NULL via xchg()?
+>
+> It is called with sighand::siglock held, we don't even need xchg().
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Yes, it was me being lazy. Lemme open code it as it's actually resulting
+in a locked instruction.
+
+Thanks,
+
+        tglx
