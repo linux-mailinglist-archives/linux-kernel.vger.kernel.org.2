@@ -2,349 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED01338981
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AA7338983
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhCLJ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:58:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        id S233604AbhCLJ6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233553AbhCLJ5f (ORCPT
+        with ESMTP id S233580AbhCLJ5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:57:35 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D011BC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:57:34 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id k8so1416064wrc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:57:34 -0800 (PST)
+        Fri, 12 Mar 2021 04:57:51 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F74DC061574;
+        Fri, 12 Mar 2021 01:57:51 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 18so44747377lff.6;
+        Fri, 12 Mar 2021 01:57:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w8ZvtWniN1Nax9s0y7bdXk3w3tCDYUtn2uEyXco2kqg=;
-        b=SZH8M5e6SXdYyyqxc9p4J0ayUKrveztf0uydAsqUZY1taypoM0tqIWZMQKkW/tjB6e
-         ob4gTzbqPuKdT0D2X55y4/HtUdvPJNeKZm6WF4qH+1BIzPsQ1cyDIJARvd/HFE4a/e5l
-         +R/YhcC0baWqVZ2P8MpFn9ieEkbepY163HXsVsiJWgn9KSBpGPOwAR6KBsSIHv8HRIqz
-         whQPCunmTaI33OZ0uDUMO0PO4ra+LrOO2iumnx6Q7hVTPx4MLf/Q4w3EFfgSfaiUskXs
-         cPHlu5I76iQLg6/k4qGoUVal20aD3pjk02RiQ+lqgDlDLDip8C3vlb5Fl8rlb3yzveUn
-         GDdw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=00S1JU7YAqqBV2gdCNzTkh5RGUnkBg1+oY4/PpGyGyA=;
+        b=cQeLzwh1TRggokiaHJymoTlGcDLdVkP6yEksle080C7WQJ7p45eI9Aogxy66iWCCK+
+         EcF775BqBq132FP7JvO2ygS+sip3JZCApRLTCP6uhztSnEHh+W7WT4byU/lxdIL9yCXi
+         OxhPTWK1/4zjGHvfVYPMzUv2uhEBP9mSsCvySS7wi53y8rtDvshPq0vEuz11X8vT3t/d
+         pObBAGicLnbIF6Z1Cod2AmP/l4tElVQhKnLAsJosbYsEnXVA1yV1HVQMljv1tNNRjvgr
+         pUGsbtosViPJqG4qtAm2ZnoDH2oDTMivhFAr3YIxLqdyakH4pETWiYbg6EvX/8hFomAL
+         qC/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w8ZvtWniN1Nax9s0y7bdXk3w3tCDYUtn2uEyXco2kqg=;
-        b=BYfg8oErFEfqbtz+zXyyOlnS/qhYBNklIwOd3snBn6rXNkCuZOOgPce0GrquetaCe3
-         63YyXQLLaRiShIVogm5xjLZqRzv12J3//lYz30tIZDWVgODnxQoIN5f8+FtBWEhwHAZU
-         EuGxWbp6kgSZHcPrRDwqboE/oTw9jc5NjpaHZ18AB7ND/YgukL20cgrZaQFltgLeRfGv
-         TpXihG2eKYnMBstb4RjRyeFAQnVWmwScZamAwuSk/eSUPyv3aIBxGF+Hk9VWuGj5B2Ke
-         dvZcZx9PeIuwdMwr9Onwy1ayxD5pYnSL4jMVBlUJjZtITs9sh0G2zXQvErx4235QUhY/
-         kg0g==
-X-Gm-Message-State: AOAM531jkiMqWK5CAucEUAV8a8WAH/gMrJBJQNNsRHBpvn31BqUHjmEZ
-        ZGLhLakrZfEEwQUhoKs4Hz5rrg==
-X-Google-Smtp-Source: ABdhPJyyv2INX2DarS3jsmEYtGRwN57uMrCzvJW3bZPuZO05mSRjGsqa1iZDPJJYMarRhpyX5Ll0vg==
-X-Received: by 2002:adf:dcd2:: with SMTP id x18mr13491450wrm.361.1615543053546;
-        Fri, 12 Mar 2021 01:57:33 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id x13sm7031630wrt.75.2021.03.12.01.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:57:33 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 11/11] selftests: gpio: add test cases for gpio-sim
-Date:   Fri, 12 Mar 2021 10:57:00 +0100
-Message-Id: <20210312095700.16277-12-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312095700.16277-1-brgl@bgdev.pl>
-References: <20210312095700.16277-1-brgl@bgdev.pl>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=00S1JU7YAqqBV2gdCNzTkh5RGUnkBg1+oY4/PpGyGyA=;
+        b=n7w/KQmq8excEIfhwv8QYwSJHe/rE4V6y7EdkB09CSPlQYo0p+3Qpahxk3rapbc9H0
+         ohwCB8sgLq/yfEaSs3wHjF65/QYqRMjuCTu1L3pV/LUrgx6FlJC8eaRG260UQo4/xefk
+         /NQILhzjV1QMOkI/p3YDAvSpVPpyz8AxnYDvh9BdTsyN5h8C2gMl0msc9C/o9t18HsNj
+         DA+YehBY/SflwglQvjWaXwgZPqk7aDKynd9JdhE4XA2rvskyudPL1ITETgyX+9hO7TOa
+         KtcjrrAtci5LfZllfnMWLBHTjxpQCc0JasDnnqfrVV/OiJIhl5700wKPyLV4kiTZISc3
+         Mu2w==
+X-Gm-Message-State: AOAM530dJDbbCx7qKV2E0uAKw32uHzJcAb17zrtS9jzyeI2h//+kB0Sw
+        ZMiU7nNcChvmQY/PqY/CBl24alem8qM7I+Tg+dI=
+X-Google-Smtp-Source: ABdhPJyVsMvxAPowfypIgMCmRCjZm+LFqfzUp4VUlkPH9KwQ9mf7RVe4edyS9W0dyg77fXtUS2mmbghXEwj1RDh466I=
+X-Received: by 2002:a19:380a:: with SMTP id f10mr4785834lfa.294.1615543069805;
+ Fri, 12 Mar 2021 01:57:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-6-ribalda@chromium.org> <YErCElYk7YhB7dvp@pendragon.ideasonboard.com>
+In-Reply-To: <YErCElYk7YhB7dvp@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Fri, 12 Mar 2021 10:57:33 +0100
+Message-ID: <CAPybu_2tu_=1HtC1Cfr86uP1A367hnfvO0KXmCbGaYUJ1A2X2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+HI Laurent
 
-Add a set of tests for the new gpio-sim module. This is a pure shell
-test-suite and uses the helper programs available in the gpio selftests
-directory. These test-cases only test the functionalities exposed by the
-gpio-sim driver, not those handled by core gpiolib code.
+Thanks for the prompt reply :)
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- tools/testing/selftests/gpio/Makefile    |   2 +-
- tools/testing/selftests/gpio/config      |   1 +
- tools/testing/selftests/gpio/gpio-sim.sh | 229 +++++++++++++++++++++++
- 3 files changed, 231 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+On Fri, Mar 12, 2021 at 2:25 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Thu, Mar 11, 2021 at 11:19:45PM +0100, Ricardo Ribalda wrote:
+> > Create all the class controls for the device defined controls.
+> >
+> > Fixes v4l2-compliance:
+> > Control ioctls (Input 0):
+> >               fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+> >               fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
+> >       test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_ctrl.c | 90 ++++++++++++++++++++++++++++++++
+> >  drivers/media/usb/uvc/uvcvideo.h |  7 +++
+> >  2 files changed, 97 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > index b3dde98499f4..4e0ed2595ae9 100644
+> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > @@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
+> >       },
+> >  };
+> >
+> > +static const struct uvc_control_class uvc_control_class[] = {
+> > +     {
+> > +             .id             = V4L2_CID_CAMERA_CLASS,
+> > +             .name           = "Camera Controls",
+> > +     },
+> > +     {
+> > +             .id             = V4L2_CID_USER_CLASS,
+> > +             .name           = "User Controls",
+> > +     },
+> > +};
+> > +
+> >  static const struct uvc_menu_info power_line_frequency_controls[] = {
+> >       { 0, "Disabled" },
+> >       { 1, "50 Hz" },
+> > @@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
+> >       return 0;
+> >  }
+> >
+> > +static int __uvc_query_v4l2_class(struct uvc_device *dev, u32 req_id,
+> > +                               u32 found_id)
+> > +{
+> > +     bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
+> > +     int i;
+>
+> unsigned int as i will never be negative.
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index d7d8f1985d99..4c6df61c76a8 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--TEST_PROGS := gpio-mockup.sh
-+TEST_PROGS := gpio-mockup.sh gpio-sim.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev gpio-chip-info gpio-line-name
- 
-diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-index ce100342c20b..409a8532facc 100644
---- a/tools/testing/selftests/gpio/config
-+++ b/tools/testing/selftests/gpio/config
-@@ -1,3 +1,4 @@
- CONFIG_GPIOLIB=y
- CONFIG_GPIO_CDEV=y
- CONFIG_GPIO_MOCKUP=m
-+CONFIG_GPIO_SIM=m
-diff --git a/tools/testing/selftests/gpio/gpio-sim.sh b/tools/testing/selftests/gpio/gpio-sim.sh
-new file mode 100755
-index 000000000000..fcca6ec611f8
---- /dev/null
-+++ b/tools/testing/selftests/gpio/gpio-sim.sh
-@@ -0,0 +1,229 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Bartosz Golaszewski <bgolaszewski@baylibre.com>
-+
-+BASE_DIR=`dirname $0`
-+CONFIGFS_DIR="/sys/kernel/config/gpio-sim"
-+PENDING_DIR=$CONFIGFS_DIR/pending
-+LIVE_DIR=$CONFIGFS_DIR/live
-+MODULE="gpio-sim"
-+
-+fail() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test FAIL"
-+	exit 1
-+}
-+
-+skip() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test SKIP"
-+	exit 4
-+}
-+
-+configfs_cleanup() {
-+	for DIR in `ls $LIVE_DIR`; do
-+		mv $LIVE_DIR/$DIR $PENDING_DIR
-+	done
-+
-+	for DIR in `ls $PENDING_DIR`; do
-+		rmdir $PENDING_DIR/$DIR
-+	done
-+}
-+
-+create_pending_chip() {
-+	local NAME="$1"
-+	local LABEL="$2"
-+	local NUM_LINES="$3"
-+	local LINE_NAMES="$4"
-+	local CHIP_DIR="$PENDING_DIR/$NAME"
-+
-+	mkdir $CHIP_DIR
-+	test -n "$LABEL" && echo $LABEL > $CHIP_DIR/label
-+	test -n "$NUM_LINES" && echo $NUM_LINES > $CHIP_DIR/num_lines
-+	if [ -n "$LINE_NAMES" ]; then
-+		echo $LINE_NAMES 2> /dev/null > $CHIP_DIR/line_names
-+		# This one can fail
-+		if [ "$?" -ne "0" ]; then
-+			return 1
-+		fi
-+	fi
-+}
-+
-+create_live_chip() {
-+	local CHIP_DIR="$PENDING_DIR/$1"
-+
-+	create_pending_chip "$@" || fail "unable to create the chip configfs item"
-+	mv $CHIP_DIR $LIVE_DIR || fail "unable to commit the chip configfs item"
-+}
-+
-+remove_pending_chip() {
-+	local NAME="$1"
-+
-+	rmdir $PENDING_DIR/$NAME || fail "unable to remove the chip configfs item"
-+}
-+
-+remove_live_chip() {
-+	local NAME="$1"
-+
-+	mv $LIVE_DIR/$NAME $PENDING_DIR || fail "unable to uncommit the chip configfs item"
-+	remove_pending_chip "$@"
-+}
-+
-+configfs_chip_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/chip_name 2> /dev/null || return 1
-+}
-+
-+configfs_dev_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/dev_name 2> /dev/null || return 1
-+}
-+
-+get_chip_num_lines() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` num-lines
-+}
-+
-+get_chip_label() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` label
-+}
-+
-+get_line_name() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+
-+	$BASE_DIR/gpio-line-name /dev/`configfs_chip_name $CHIP` $OFFSET
-+}
-+
-+sysfs_set_pull() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+	local PULL="$3"
-+	local SYSFSPATH="/sys/devices/platform/`configfs_dev_name $CHIP`/line-ctrl/gpio$OFFSET"
-+
-+	echo $PULL > $SYSFSPATH
-+}
-+
-+# Load the gpio-sim module. This will pull in configfs if needed too.
-+modprobe gpio-sim || skip "unable to load the gpio-sim module"
-+# Make sure configfs is mounted at /sys/kernel/config. Wait a bit if needed.
-+for IDX in `seq 5`; do
-+	if [ "$IDX" -eq "5" ]; then
-+		skip "configfs not mounted at /sys/kernel/config"
-+	fi
-+
-+	mountpoint -q /sys/kernel/config && break
-+	sleep 0.1
-+done
-+# If the module was already loaded: remove all previous chips
-+configfs_cleanup
-+
-+trap "exit 1" SIGTERM SIGINT
-+trap configfs_cleanup EXIT
-+
-+echo "1. chip_name and dev_name attributes"
-+
-+echo "1.1. Chip name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/chip_name` || fail "chip_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.2. chip_name returns 'none' if the chip is still pending"
-+create_pending_chip chip
-+test "`cat $PENDING_DIR/chip/chip_name`" = "none" || fail "chip_name doesn't return 'none' for a pending chip"
-+remove_pending_chip chip
-+
-+echo "1.3. Device name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/dev_name` || fail "dev_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.4. dev_name returns 'none' if chip is still pending"
-+create_pending_chip chip
-+test "`cat $PENDING_DIR/chip/dev_name`" = "none" || fail "dev_name doesn't return 'none' for a pending chip"
-+remove_pending_chip chip
-+
-+echo "2. Creating simulated chips"
-+
-+echo "2.1. Default number of lines is 1"
-+create_live_chip chip
-+test "`get_chip_num_lines chip`" = "1" || fail "default number of lines is not 1"
-+remove_live_chip chip
-+
-+echo "2.2. Number of lines can be specified"
-+create_live_chip chip test-label 16
-+test "`get_chip_num_lines chip`" = "16" || fail "number of lines is not 16"
-+remove_live_chip chip
-+
-+echo "2.3. Label can be set"
-+create_live_chip chip foobar
-+test "`get_chip_label chip`" = "foobar" || fail "label is incorrect"
-+remove_live_chip chip
-+
-+echo "2.4. Label can be left empty"
-+create_live_chip chip
-+test -z "`cat $LIVE_DIR/chip/label`" || fail "label is not empty"
-+remove_live_chip chip
-+
-+echo "2.5. Line names can be configured"
-+create_live_chip chip test-label 16 '"foo", "", "bar"'
-+test "`get_line_name chip 0`" = "foo" || fail "line name is incorrect"
-+test "`get_line_name chip 2`" = "bar" || fail "line name is incorrect"
-+remove_live_chip chip
-+
-+echo "2.6. Errors in line names are detected"
-+create_pending_chip chip test-label 8 '"foo", bar' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+create_pending_chip chip test-label 8 '"foo" "bar"' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+
-+echo "2.7. Multiple chips can be created"
-+create_live_chip chip0
-+create_live_chip chip1
-+create_live_chip chip2
-+remove_live_chip chip0
-+remove_live_chip chip1
-+remove_live_chip chip2
-+
-+echo "3. Controlling simulated chips"
-+
-+echo "3.3. Pull can be set over sysfs"
-+create_live_chip chip test-label 8
-+sysfs_set_pull chip 0 1
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 0
-+test "$?" = "1" || fail "pull set incorrectly"
-+sysfs_set_pull chip 0 0
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 1
-+test "$?" = "0" || fail "pull set incorrectly"
-+remove_live_chip chip
-+
-+echo "3.4. Incorrect input in sysfs is rejected"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+echo 2 > $SYSFS_PATH 2> /dev/null && fail "invalid input not detectec"
-+remove_live_chip chip
-+
-+echo "4. Simulated GPIO chips are functional"
-+
-+echo "4.1. Values can be read from sysfs"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+test `cat $SYSFS_PATH` = "0" || fail "incorrect value read from sysfs"
-+$BASE_DIR/gpio-mockup-cdev -s 1 /dev/`configfs_chip_name chip` 0 &
-+sleep 0.1 # FIXME Any better way?
-+test `cat $SYSFS_PATH` = "1" || fail "incorrect value read from sysfs"
-+kill $!
-+remove_live_chip chip
-+
-+echo "4.2. Bias settings work correctly"
-+create_live_chip chip test-label 8
-+$BASE_DIR/gpio-mockup-cdev -b pull-up /dev/`configfs_chip_name chip` 0
-+test `cat $SYSFS_PATH` = "1" || fail "bias setting does not work"
-+remove_live_chip chip
-+
-+echo "GPIO $MODULE test PASS"
--- 
-2.30.1
+Sometimes you are a bit negative with my patches... :)
 
+(sorry, it is Friday)
+>
+> > +
+> > +     req_id &= V4L2_CTRL_ID_MASK;
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > +             if (!(dev->ctrl_class_bitmap & BIT(i)))
+> > +                     continue;
+> > +             if (!find_next) {
+> > +                     if (uvc_control_class[i].id == req_id)
+> > +                             return i;
+> > +                     continue;
+> > +             }
+> > +             if ((uvc_control_class[i].id > req_id) &&
+> > +                 (uvc_control_class[i].id < found_id))
+>
+> No need for the inner parentheses.
+>
+> > +                     return i;
+> > +     }
+> > +
+> > +     return -ENODEV;
+> > +}
+> > +
+> > +static int uvc_query_v4l2_class(struct uvc_device *dev, u32 req_id,
+> > +                             u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
+> > +{
+> > +     int idx;
+> > +
+> > +     idx = __uvc_query_v4l2_class(dev, req_id, found_id);
+> > +     if (idx < 0)
+> > +             return -ENODEV;
+> > +
+> > +     memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
+> > +     v4l2_ctrl->id = uvc_control_class[idx].id;
+> > +     strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
+> > +             sizeof(v4l2_ctrl->name));
+> > +     v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
+> > +     v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY |
+> > +                                     V4L2_CTRL_FLAG_READ_ONLY;
+>
+>         v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
+>                          | V4L2_CTRL_FLAG_READ_ONLY;
+>
+> > +     return 0;
+> > +}
+>
+> If you agree with the comments below, you could inline
+> __uvc_query_v4l2_class() in uvc_query_v4l2_class() as it won't be called
+> separately.
+>
+> > +
+> >  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >       struct uvc_control *ctrl,
+> >       struct uvc_control_mapping *mapping,
+> > @@ -1123,6 +1177,14 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >       struct uvc_control_mapping *mapping;
+> >       int ret;
+> >
+> > +     /* Check if the ctrl is a know class */
+> > +     if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
+> > +             ret = uvc_query_v4l2_class(chain->dev, v4l2_ctrl->id,
+> > +                                        v4l2_ctrl->id, v4l2_ctrl);
+>
+> You could pass 0 for found_id here.
+>
+> > +             if (!ret)
+> > +                     return 0;
+> > +     }
+> > +
+>
+> Should this be done with the chain->ctrl_mutex locked, as
+> __uvc_query_v4l2_class() accesses dev->ctrl_class_bitmap that could be
+> modified concurrently ?
+>
+> >       ret = mutex_lock_interruptible(&chain->ctrl_mutex);
+> >       if (ret < 0)
+> >               return -ERESTARTSYS;
+> > @@ -1133,6 +1195,13 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >               goto done;
+> >       }
+> >
+>
+> A comment here along the lines of
+>
+>         /*
+>          * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
+>          * a class should be inserted between the previous control and the one
+>          * we have just found.
+>          */
+>
+> could be useful, as it's not trivial.
+
+yes, it looks better thanks!
+
+>
+> > +     if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
+> > +             ret = uvc_query_v4l2_class(chain->dev, v4l2_ctrl->id,
+> > +                                        mapping->id, v4l2_ctrl);
+> > +             if (!ret)
+> > +                     goto done;
+> > +     }
+> > +
+> >       ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
+> >  done:
+> >       mutex_unlock(&chain->ctrl_mutex);
+> > @@ -1422,6 +1491,9 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+> >       struct uvc_control *ctrl;
+> >       int ret;
+> >
+> > +     if (__uvc_query_v4l2_class(handle->chain->dev, sev->id, 0) >= 0)
+> > +             return 0;
+>
+> Do we really need to succeed ? What's the point in subscribing for
+> control change events on a class ? Can't we just check if sev->id is a
+> class, and return -EINVAL in that case ?
+
+Unfortunately it is expected that you can subscribe to all the events,
+even the ctrl_classes
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+                fail: v4l2-test-controls.cpp(835): subscribe event for
+control 'User Controls' failed
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: FAIL
+
+
+>
+> > +
+> >       ret = mutex_lock_interruptible(&handle->chain->ctrl_mutex);
+> >       if (ret < 0)
+> >               return -ERESTARTSYS;
+> > @@ -1458,6 +1530,9 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
+> >  {
+> >       struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+> >
+> > +     if (__uvc_query_v4l2_class(handle->chain->dev, sev->id, 0) >= 0)
+> > +             return;
+>
+> And this could then be dropped, as this function won't be called if the
+> subscription failed.
+>
+> > +
+> >       mutex_lock(&handle->chain->ctrl_mutex);
+> >       list_del(&sev->node);
+> >       mutex_unlock(&handle->chain->ctrl_mutex);
+> > @@ -1577,6 +1652,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
+> >       struct uvc_control *ctrl;
+> >       struct uvc_control_mapping *mapping;
+> >
+> > +     if (__uvc_query_v4l2_class(chain->dev, xctrl->id, 0) >= 0)
+> > +             return -EACCES;
+> > +
+> >       ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> >       if (ctrl == NULL)
+> >               return -EINVAL;
+> > @@ -1596,6 +1674,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+> >       s32 max;
+> >       int ret;
+> >
+> > +     if (__uvc_query_v4l2_class(chain->dev, xctrl->id, 0) >= 0)
+> > +             return -EACCES;
+> > +
+>
+> Similarly as in patch 1/6, should these two checks be moved to
+> v4l_s_ctrl() and v4l_s_ext_ctrls(), as it's never valid to get/set a
+> class ?
+
+I do not think that it is possible, you need to return -EACCESS if the
+control exists and -EINVAL if it does not exist.
+v4l_s_ext_ctrls does not know if the ctrl exists.
+>
+> >       ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> >       if (ctrl == NULL)
+> >               return -EINVAL;
+> > @@ -2062,6 +2143,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+> >  {
+> >       struct uvc_control_mapping *map;
+> >       unsigned int size;
+> > +     int i;
+>
+> This can be unsigned as i never takes negative values.
+I cannot repeat the same joke... even if it is a bad joke
+>
+> >
+> >       /* Most mappings come from static kernel data and need to be duplicated.
+> >        * Mappings that come from userspace will be unnecessarily duplicated,
+> > @@ -2085,6 +2167,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+> >       if (map->set == NULL)
+> >               map->set = uvc_set_le_value;
+> >
+> > +     for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > +             if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
+> > +                                             V4L2_CTRL_ID2WHICH(map->id)) {
+>
+> You can write this
+>
+>                 if (uvc_control_class[i].id == V4L2_CTRL_ID2WHICH(map->id)) {
+>
+> as the uvc_control_class array contains control classes only.
+
+Are you sure?
+#define V4L2_CID_CAMERA_CLASS                (V4L2_CTRL_CLASS_CAMERA | 1)
+
+we are sasing the cid, not the class.
+
+
+>
+> > +                     dev->ctrl_class_bitmap |= BIT(i);
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> >       list_add_tail(&map->list, &ctrl->info.mappings);
+> >       uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+> >               map->name, ctrl->info.entity, ctrl->info.selector);
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 97df5ecd66c9..63b5d697a438 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -262,6 +262,11 @@ struct uvc_control_mapping {
+> >                   u8 *data);
+> >  };
+> >
+> > +struct uvc_control_class {
+> > +     u32 id;
+> > +     char name[32];
+> > +};
+> > +
+> >  struct uvc_control {
+> >       struct uvc_entity *entity;
+> >       struct uvc_control_info info;
+> > @@ -707,6 +712,8 @@ struct uvc_device {
+> >       } async_ctrl;
+> >
+> >       struct uvc_entity *gpio_unit;
+> > +
+> > +     u8 ctrl_class_bitmap;
+>
+> Should this be stored in the chain, as different chains can have
+> different controls ?
+>
+> >  };
+> >
+> >  enum uvc_handle_state {
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+--
+Ricardo Ribalda
