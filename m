@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9D6338F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CD6338F43
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhCLN61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:58:27 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:53617 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhCLN6P (ORCPT
+        id S231466AbhCLN60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhCLN6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:58:15 -0500
-Received: from [192.168.1.155] ([95.118.12.1]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MMoXC-1l49Lt0w5c-00IiLB; Fri, 12 Mar 2021 14:57:57 +0100
-Subject: Re: [PATCH v9 2/4] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20210302053059.1049035-1-drew@beagleboard.org>
- <20210302053059.1049035-3-drew@beagleboard.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <349b09f8-fe99-d0d4-dd11-c288bf66cb4d@metux.net>
-Date:   Fri, 12 Mar 2021 14:57:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 12 Mar 2021 08:58:08 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835E6C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:58:08 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id g27so25812824iox.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:58:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NfGNxFGx/GSqQ8J+prbrVB3YoseYYdcfdmqBB1ZWsf4=;
+        b=KCVpgGaszvjmh10So7k3QGeTRqp7SjFil5pxA1T6Y6eWZaIKdoJYOOBL+T4IbWbkjo
+         UCD6o0LrAm5I5CJE9wjyA1ccZrqCeRnIopcWV31HmV1bSv+vGjsEDQU1qeASKHWc7ZbD
+         OMrENlRbdkMujDZ7uOHyjS/fAXQ/LbjN+Xt48kFu9tCuQunKi4OvE/2iFi4ft+TlDvRq
+         YGhb6hFJ8Gymj8rPMAr+qCERnnOckCHtgJiU3h/F//8LymiX+vKW0OU6fFfolII5h8/s
+         27yvKbWve/Ad7raTIzRyyY+k91G2HJolY4So7He/zevu5vm3N/HsLbiLvQyGBlGY0HsW
+         p2Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NfGNxFGx/GSqQ8J+prbrVB3YoseYYdcfdmqBB1ZWsf4=;
+        b=fhxyn48H0Pk0vCB6RmP3gnI+ex8ITZlgUEnmr1UAZTySq0azgbfmRmy77hXnAPe2d9
+         1Oc7GyMy5AJZDb3qzqztVdfMDnegzf6DOMQyGg3XCyjiZjlNh5NI1A4O81niLLqQ0afd
+         yzPZxb0Nl+z0C52BEolji5p7lPgl0o7i9/9MyxTQtt+PZC+GV2DPPN93xE3iTerKt9cR
+         OJgGAopdig6UnE+dokRJcyFznELVOiTX6YhJiw43O7e7uQB6MCE/u1TbyK9aJiGTWt/q
+         RU6s+iTQTmfHI4MMlMQYwBeA+/uHqFzerrVg+50ASINH8bb94dQfNKmCrigbdk4BWCMD
+         0o8Q==
+X-Gm-Message-State: AOAM530neoV0/fYjUXrvKjRg/bUCijrnAtV1fFagzmyk18aJqN7Swv3L
+        rFFNhMO8lQAeMN0qCbD7uT9YdX/LJI65IDPwzhQUHA==
+X-Google-Smtp-Source: ABdhPJwKSJnXvI9/NG4m48LW0+vy+lK8zsv8TIliueMw8ZAxuGgekU1/vc+Rj3Qh3ZoQ7xO+ZF+8KpfOFY+a0mjoEwA=
+X-Received: by 2002:a6b:ea04:: with SMTP id m4mr9913728ioc.160.1615557487699;
+ Fri, 12 Mar 2021 05:58:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302053059.1049035-3-drew@beagleboard.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:8ouLmTGxmNJb/9DZK0LMfylhb+4A+kAAhh6ENb1fZ6+C7/h4IKF
- E6DCKPOlrNN+AA/IbOYmLBqlTV/+ZfDiziYPN5p6JZ/qlDYs7sxuFWRI37Wp2N8HVXAuSJT
- ++P6d4gSA6QE/vIqpWMoX3Vk0PZN0yPZCxbkHzGNGq04vbMUcfElGpWZF9EtA1VI5FZeiyO
- 9B3UhYTRBK7ZYuJqgpK9w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ze2qBLvxJDM=:bAJuMgYNRkoGgA6RxQFVfP
- WbWPWpetI34/SJxX11w/t3KfCfUBQ1Z92b9qqVHfPzYpP6lERTAE8T9n/zERHjvYKQOYigBju
- RT8LW03A4RlYJc16WYmNNJCkAy+2wMhYJ5V1GKdtOQIN1slsWpVkD0sVoNjYzSgilA/zXVJl6
- JcONcJHviSC+MIJL50BQPC5lgmfC9LYgAOR0KlVtzmcybVq+qpgXc6Wp2dsQhLUkPcPXn1dy4
- r86VPKXRSJCpqsIt+cmaH5tAM2Qjw+uCrQ/COLDFdrcCMidAuy1aXnJMonv75la3/K0b57+Xj
- /aJ4KhKCrPIrW1pT4Dbw/dsd9O5JF/NV7V0JEYuok2sNGDb+Tvwhi5jr0Ozsx4k2yYOnj6wPh
- j8DihRZSk2lQeCaaJqCz4vOxrCMsjlJxJxeC/I5VyyDESQlPnsqhdrZ7oPVvk
+References: <20210308133146.3168995-1-raychi@google.com> <20210309185807.ka4iljasq5cmpmil@earth.universe>
+In-Reply-To: <20210309185807.ka4iljasq5cmpmil@earth.universe>
+From:   Ray Chi <raychi@google.com>
+Date:   Fri, 12 Mar 2021 21:57:56 +0800
+Message-ID: <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not enabled
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, naresh.kamboju@linaro.org,
+        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.03.21 06:30, Drew Fustini wrote:
+Hi Sebastian,
 
-Hi folks,
+Sorry for the late reply.
 
-> Add "pinmux-select" to debugfs which will activate a pin function for a
-> given pin group:
-> 
->    echo "<group-name function-name>" > pinmux-select
-> 
-> The write operation pinmux_select() handles this by checking that the
-> names map to valid selectors and then calling ops->set_mux().
+On Wed, Mar 10, 2021 at 2:58 AM Sebastian Reichel <sre@kernel.org> wrote:
+>
+> Hi,
+>
+> On Mon, Mar 08, 2021 at 09:31:46PM +0800, Ray Chi wrote:
+> > Fix build error when CONFIG_POWER_SUPPLY is not enabled.
+> >
+> > The build error occurs in mips (cavium_octeon_defconfig).
+> >
+> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
+> > drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
+> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
+> > drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
+> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
+> > drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
+> >
+> > Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Signed-off-by: Ray Chi <raychi@google.com>
+> > ---
+>
+> While I'm fine with merging this after fixing up the subject, the
+> original patch for dwc3 [0] looks completly incorrect to me.
+>
+> First of all it uses wrong scale (power-supply uses uA, not mA),
+> so you are charging 1000x slower than expected. Then the patchset
+> introduces a new DT property to get the power-supply device, but
+> does not update the DT binding documentation and does not Cc the
+> DT binding maintainer.
 
-I've already been playing with similar idea, but for external muxes.
-For example, some boards have multiple SIM slots that can be switched
-via some gpio pin.
+Yes, it should use uA and send this information, and I will update a
+patch to fix it and add the DT binding documentation.
 
-Not sure whether traditional pinmux would be a good match for that.
+> Next the property itself looks not very
+> smart to me. Usually one would use a device reference, not the
+> Linux device name.
+>
+> Finally all existing devices solve this by registering a usb
+> notifier from the charger, so why are you going the other way
+> around? This is going to break once you want to use one of the
+> existing chargers with dwc3.
 
+Only the USB controller will know USB state/speed so that I think it is
+better to send this information from the USB side.
+For example:
+For USB high speed, charging current should be limited to 500 mA in
+configured state.
+For USB super speed, charging current should be limited to 900 mA in
+configured state.
 
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+>
+> I suggest to drop/revert the whole patchset.
+>
+> [0] https://lore.kernel.org/linux-usb/20210222115149.3606776-1-raychi@google.com/
+>
+> -- Sebastian
+>
+> >  include/linux/power_supply.h | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+> > index 81a55e974feb..6e776be5bfa0 100644
+> > --- a/include/linux/power_supply.h
+> > +++ b/include/linux/power_supply.h
+> > @@ -381,8 +381,14 @@ struct power_supply_battery_info {
+> >  extern struct atomic_notifier_head power_supply_notifier;
+> >  extern int power_supply_reg_notifier(struct notifier_block *nb);
+> >  extern void power_supply_unreg_notifier(struct notifier_block *nb);
+> > +#if IS_ENABLED(CONFIG_POWER_SUPPLY)
+> >  extern struct power_supply *power_supply_get_by_name(const char *name);
+> >  extern void power_supply_put(struct power_supply *psy);
+> > +#else
+> > +static inline void power_supply_put(struct power_supply *psy) {}
+> > +static inline struct power_supply *power_supply_get_by_name(const char *name)
+> > +{ return NULL; }
+> > +#endif
+> >  #ifdef CONFIG_OF
+> >  extern struct power_supply *power_supply_get_by_phandle(struct device_node *np,
+> >                                                       const char *property);
+> > --
+> > 2.30.1.766.gb4fecdf3b7-goog
+> >
