@@ -2,106 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACD93396FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE79339709
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbhCLS6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:58:33 -0500
-Received: from mail-qt1-f176.google.com ([209.85.160.176]:35568 "EHLO
-        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhCLS6K (ORCPT
+        id S234076AbhCLTBp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 14:01:45 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:55854 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234075AbhCLTB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:58:10 -0500
-Received: by mail-qt1-f176.google.com with SMTP id a11so4600385qto.2;
-        Fri, 12 Mar 2021 10:58:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+adyhmn/QdTDG7E3DjMxdyy1U3vHIp1uzLz5u790+TM=;
-        b=U/aUdmeiePAQMd58C1rW+yoYrwo4cGVgP/F+YsPwloUKn3lrF0A931vu/TyD+u9n2x
-         0gEEfi5LHlr21fGblvCRmkB9c8mEyVbfnzSKN/0acK2LiFmu7ocvCpgx+mVO7Rbu0jyH
-         AiKCgbPdMX3VbP3Q9LpsbHQmvpUiL9mJpXxvG5nKjtI7OHg2GAgDGUZOPSJbsf/c7l3g
-         v+oKHq/YNR5Ie5LV3jquRk9ZeBDermkzxJcQ5N6jZH8CgtjzcoVatfmrlM3JDvvqGri1
-         I23LI872z4lTegJELMnsMYLhPwGIsyfgYSmpQzXp4bANZO8e9lRsEFXGfVyUU8+yQzLD
-         /xyQ==
-X-Gm-Message-State: AOAM533tIqozvpqw9k/6OTU+AHjXw6OAgAh+YK+XpFB36PlomTv3yyhG
-        TJ06AYWU5y3thfaM0DoHSmE=
-X-Google-Smtp-Source: ABdhPJxAlVg0CUhAO5wpdykoPW2HYAEOqhQzeg1AaJpztGa/COvTeOu2OmdeaeGfXhyrbV5qlIpCdw==
-X-Received: by 2002:a05:622a:486:: with SMTP id p6mr13115325qtx.81.1615575490216;
-        Fri, 12 Mar 2021 10:58:10 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id v2sm4735733qkp.119.2021.03.12.10.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 10:58:09 -0800 (PST)
-Date:   Fri, 12 Mar 2021 19:58:06 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        raphael.norwitz@nutanix.com
-Subject: Re: [PATCH 0/4] Expose and manage PCI device reset
-Message-ID: <YEu5vq4ACcupBpRC@rocinante>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
- <20210312112043.3f2954e3@omen.home.shazbot.org>
- <20210312184038.to3g3px6ep4xfavn@archlinux>
+        Fri, 12 Mar 2021 14:01:29 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 8543E3E7AB7;
+        Fri, 12 Mar 2021 14:27:49 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id XiXir9j3ITJT; Fri, 12 Mar 2021 14:27:49 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id D28813E85CA;
+        Fri, 12 Mar 2021 14:21:20 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MarXhi8_orsc; Fri, 12 Mar 2021 14:21:20 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 84EDA3E5C2D;
+        Fri, 12 Mar 2021 13:51:41 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210312184038.to3g3px6ep4xfavn@archlinux>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 17:52:06 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312165142.84EDA3E5C2D@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amey,
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Thank you for sending the series over!
+Sir/Madam,
 
-[...]
-> > Reviews/Acks/Sign-off-by from others (aside from Tested/Reported-by)
-> > really need to be explicit, IMO.  This is a common issue for new
-> > developers, but it really needs to be more formal.  I wouldn't claim to
-> > be able to speak for Raphael and interpret his comments so far as his
-> > final seal of approval.
-> >
-> > Also in the patches, all Sign-offs/Reviews/Acks need to be above the
-> > triple dash '---' line.  Anything between that line and the beginning
-> > of the diff is discarded by tools.  People will often use that for
-> > difference between version since it will be discarded on commit.
-> > Likewise, the cover letter is not committed, so Review-by there are
-> > generally not done.  I generally make my Sign-off last in the chain and
-> > maintainers will generally add theirs after that.  This makes for a
-> > chain where someone can read up from the bottom to see how this commit
-> > entered the kernel.  Reviews, Acks, and whatnot will therefore usually
-> > be collected above the author posting the patch.
-> >
-> > Since this is a v1 patch and it's likely there will be more revisions,
-> > rather than send a v2 immediately with corrections, I'd probably just
-> > reply to the cover letter retracting Raphael's Review-by for him to
-> > send his own and noting that you'll fix the commit reviews formatting,
-> > but will wait for a bit for further comments before sending a new
-> > version.
-> >
-> > No big deal, nice work getting it sent out.  Thanks,
-> >
-> > Alex
-> >
-> Raphael sent me the email with
-> Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com> that
-> is why I included it.
-> So basically in v2 I should reorder tags such that Sign-off will be
-> the last. Did I get that right? Or am I missing something?
-[...]
+CONGRATULATIONS!!!
 
-I am not sure about the messages outside of the mailing list between
-you, Alex and Raphael, as normally conversation and any reviews would
-happen here (on the mailing list, that is), but as long as everyone
-involved is on the same page, then every should be fine.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-In terms of how to format the patch, have a look at the following,
-especially before you send another version, as there are some good tips
-and recommendations there (including how to order things):
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-  https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-Krzysztof
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
