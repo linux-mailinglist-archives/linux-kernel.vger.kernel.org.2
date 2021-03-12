@@ -2,118 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68EF33836F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D5B338373
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhCLCPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCLCOo (ORCPT
+        id S229470AbhCLCS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:18:27 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:40230 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhCLCSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:14:44 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74892C061574;
-        Thu, 11 Mar 2021 18:14:44 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id a188so834368pfb.4;
-        Thu, 11 Mar 2021 18:14:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DLypqHmd9Wl8adDWo2RyhZBE8XSLiDUVzOC9qvznIU8=;
-        b=B3oWOI+K2T5zV/Md7TadfLAmGLPu+uD1roU9mISoVp8QM6Lton5aFPivU8QWfVxj4j
-         5zfvtkNN2yjCDsDAt27yTASwV8QOfEq5cT58TNhxWU0dL/g/6DYGP47z6dSqzhPsI2I+
-         BDc9thgGofUPaS4GbYAqm6nR0VgRjU7LiWtACxjR0TddbJFDRvZXvIVbt1JCUrcL0bhe
-         8F1E+XSbMT5jQZ1E331ImgIUYr7nQe4+a78GtAqAUe8O9PKjDC/eOiAIhkd0btitmR98
-         BQmrgY3a74lrgjv3kSNGf+FLhv9Sl7ncAUKrwi2BgvO8kuspQm3smpflI/pZ6a2MHJ+9
-         xj9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=DLypqHmd9Wl8adDWo2RyhZBE8XSLiDUVzOC9qvznIU8=;
-        b=YKapaVX+tC4G7bELxBX9uIeYbJAwfaMB+0DA1Vh+PqDPEch0roKT18qX5uiAlFptwN
-         7kKqNqxOO+WiI1pnhy/zAS2yO0UgSzI97fj29CXG4rOb+jD/UVqnvkAEE8YgBHdAxL+S
-         j8D9TXj7LYCZizYjIUgFMKuvHe3IZPUnhnskn/Ii4vSlTDWO9blZYIj0xtZyBsmCQ26o
-         RwzM7l2VX5Y4uIleCQgZoNZR9ibBZW+E1FIg72/eVI/v5nOnA1e+HALo9UXTpQcI4lyb
-         7LLckPfATZK1aHm8P1H0GrBU6Qqd3KgfKSKY97tATlqi9zPji5z4HPsSBpudGzbc9dd/
-         8hCw==
-X-Gm-Message-State: AOAM531YAWFWKtyhptMqqHC/UQC+l66bSvl42C6MTQhQAdehqe/+IfyO
-        dJxGJ0jf2nWYzxsAmdam8uU=
-X-Google-Smtp-Source: ABdhPJz33tsfuzaXaKHm7Wr7SIqzZWngowKHicIKhIrkJ5ud501aWmDCFj1D/XjPCwgckpPdOhrnMQ==
-X-Received: by 2002:a63:fb18:: with SMTP id o24mr9404191pgh.55.1615515283833;
-        Thu, 11 Mar 2021 18:14:43 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:64cb:74c7:f2c:e5e0])
-        by smtp.gmail.com with ESMTPSA id l22sm371771pjl.14.2021.03.11.18.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 18:14:42 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 11 Mar 2021 18:14:40 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>, gregkh@linuxfoundation.org
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, mbenes@suse.com, linux-block@vger.kernel.org,
+        Thu, 11 Mar 2021 21:18:16 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id C46FC4001AF;
+        Fri, 12 Mar 2021 10:18:09 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YErOkGrvtQODXtB0@google.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
- <20210310212128.GR4332@42.do-not-panic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310212128.GR4332@42.do-not-panic.com>
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] message: fusion: delete the useless casting value returned
+Date:   Fri, 12 Mar 2021 10:18:03 +0800
+Message-Id: <1615515483-777-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTkodGRhJTEhNQkMZVkpNSk5OSk5PQktKS0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NE06Pjo5LD8VOQIMHzESHA0h
+        Ly0KCyNVSlVKTUpOTkpOT0JLQkhCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJTUhONwY+
+X-HM-Tid: 0a78243a16f4d991kuwsc46fc4001af
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:21:28PM +0000, Luis Chamberlain wrote:
-> On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
-> > If I understand correctly, bugs you found were related to module
-> > unloading race while the zram are still working.
-> 
-> No, that is a simplifcation of the issue. The issue consists of
-> two separate issues:
-> 
->  a) race against module unloading in light of incorrect racty use of
->     cpu hotplug multistate support
+Fix the following coccicheck warning:
+WARNING: casting value returned by memory allocation function is useless.
 
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/message/fusion/mptbase.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Could you add some pusedo code sequence to show the race cleary?
-It would be great if it goes in the description, too since it's
-more clear to show the problme.
+diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
+index 549797d..fa9b122
+--- a/drivers/message/fusion/mptbase.c
++++ b/drivers/message/fusion/mptbase.c
+@@ -4974,7 +4974,7 @@ GetLanConfigPages(MPT_ADAPTER *ioc)
+ 
+ 	if (hdr.PageLength > 0) {
+ 		data_sz = hdr.PageLength * 4;
+-		ppage0_alloc = (LANPage0_t *) pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
++		ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
+ 		rc = -ENOMEM;
+ 		if (ppage0_alloc) {
+ 			memset((u8 *)ppage0_alloc, 0, data_sz);
+@@ -5020,7 +5020,7 @@ GetLanConfigPages(MPT_ADAPTER *ioc)
+ 
+ 	data_sz = hdr.PageLength * 4;
+ 	rc = -ENOMEM;
+-	ppage1_alloc = (LANPage1_t *) pci_alloc_consistent(ioc->pcidev, data_sz, &page1_dma);
++	ppage1_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page1_dma);
+ 	if (ppage1_alloc) {
+ 		memset((u8 *)ppage1_alloc, 0, data_sz);
+ 		cfg.physAddr = page1_dma;
+@@ -5321,7 +5321,7 @@ GetIoUnitPage2(MPT_ADAPTER *ioc)
+ 	/* Read the config page */
+ 	data_sz = hdr.PageLength * 4;
+ 	rc = -ENOMEM;
+-	ppage_alloc = (IOUnitPage2_t *) pci_alloc_consistent(ioc->pcidev, data_sz, &page_dma);
++	ppage_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page_dma);
+ 	if (ppage_alloc) {
+ 		memset((u8 *)ppage_alloc, 0, data_sz);
+ 		cfg.physAddr = page_dma;
+-- 
+2.7.4
 
->  b) module unload race with sysfs attribute race on *any* driver which
->     has sysfs attributes which also shares the same lock as used during
->     module unload
-
-Yub, that part I missed. Maybe, we need some wrapper to zram sysfs
-to get try_module_get in the warapper funnction and then call sub
-rountine only if it got the refcount.
-
-zram_sysfs_wrapper(func, A, B)
-    if (!try_module_get(THIS_MODULE)
-        return -ENODEV;
-    ret = func(A,B);
-    module_put(THIS_MODULE);
-    return ret;
-
-> 
-> It is important to realize that issue b) is actually a generic kernel
-> issue, it would be present on *any* driver which shares a lock used on
-> a sysfs attribute and module unload. I looked to implement a generic
-> solution on kernfs, however we don't yet have semantics to enable this
-> generically, and so for now each driver needs to deal with those races
-> on their own. That sysfs race is dealt with in the second patch.
-
-It's unforunate. Let me Cc Greg who might have some ideas or
-find zram mess on zram sysfs implementation.
-
-> 
-> The first patch only deals with the cpu hotplug races exposed at module
-> unloading.
-
-True. Thanks for the clarification.
