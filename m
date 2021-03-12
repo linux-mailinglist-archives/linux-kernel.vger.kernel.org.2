@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D45B338FDC
+	by mail.lfdr.de (Postfix) with ESMTP id 89354338FDD
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhCLOXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:23:54 -0500
-Received: from mail-il1-f177.google.com ([209.85.166.177]:38919 "EHLO
-        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232182AbhCLOXe (ORCPT
+        id S232148AbhCLOXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:23:55 -0500
+Received: from mail-io1-f47.google.com ([209.85.166.47]:42167 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhCLOXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:23:34 -0500
-Received: by mail-il1-f177.google.com with SMTP id d5so2709781iln.6;
-        Fri, 12 Mar 2021 06:23:34 -0800 (PST)
+        Fri, 12 Mar 2021 09:23:38 -0500
+Received: by mail-io1-f47.google.com with SMTP id u20so25872097iot.9;
+        Fri, 12 Mar 2021 06:23:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=XxHhsjwJy7g25WZK0LUSCqs3RaOKr506xmdEiRVWi2k=;
-        b=qOsJ5EcJkWeZs/Yxxh+gFrzJ36XPfB/zJefPVOW7TQBDOYW0XvBD62YJz4FcMXaup7
-         wjKIwOBPWHDzcBKyiDWvzL7LbqWMPNLKwmkCCByncjFp6RNqT/pgJGXP3APGexf/UmwK
-         jeBLrZJ8y7qtMdvU1YhISrwtITLgiV2M3ym6NdB8VYVMTeGwf2LO+7ANVK4z17xGmEE5
-         rPOFgAaO9jV6e+ki4yXALvrlbYWC9nnxo8cPUomVw2pzYz7wVVZVafV9/P8NAUEBOiI0
-         R3VEM0fHElNltwsZOq/SwOXSD3DowMmd6mTPeVjnt2SXbwcRclZHkDjESQyPumuHukBj
-         igNQ==
-X-Gm-Message-State: AOAM531X4htN1b2DBFwQPpnMVTaBBO6EUvBGcBwaasXzCsJhYRi2Eze1
-        ygB2zeuYKzKR7yx4UQ3I1NRie/B6UQ==
-X-Google-Smtp-Source: ABdhPJxJpjz2GBDwmGLUkq6ApU5syUA42rdXTaVJFTACslbCnbG7UUeYEm+3qBCpJUXwA+woWTYoXw==
-X-Received: by 2002:a92:194b:: with SMTP id e11mr2925546ilm.184.1615559013695;
-        Fri, 12 Mar 2021 06:23:33 -0800 (PST)
+        bh=ZmH44YRtFRRzhiVu0fvhNooqcCOgV0svXvgD6Zd8yJQ=;
+        b=Jt0XwX5GiCKf9mqov1EVjxLMgpsiogwseSq8DxFS6B8LU/bI1/4tBGq7v98D5/vwNR
+         sdD+ArcM6tmIis4qfYnlHDrcWAnwta2iJkNR9KW8P6EZ2l5wbIppzRwhpGRjcnS+KT30
+         w23C7CvSq2Bh/f/sbYOfSUQ6/cdhzGf9baMuLG2uhOX9sTelgUYUCn+I0j1/Oz2PwyAv
+         Q9KyBHAP2gEmpc0tCAsmKvau2jFJZ+bZUY/KycOtphIFqyAYmSHdjkg1SQSFa61Kda4M
+         +Wp/gGVIiUQ+ZISKXSep3HZlq5x/W5QYg0qHWKYuOyNxF2GpmXh8oP2Um7d5CyR2PYHb
+         l13g==
+X-Gm-Message-State: AOAM5325akPwvVoEk51F59hDO+/SvFWDk/ZLeiT+5k5WYmQ7GWRqQRuu
+        kztdVkHqIkMqEsx7d48FJQ==
+X-Google-Smtp-Source: ABdhPJxRPIqMZxLRKnf4tIhDsaPK5p8Vi8pbfKdHHTZJ/vkkYGFNLMknnLWvg6u3ZnTdR5rwFwJHHg==
+X-Received: by 2002:a5d:8050:: with SMTP id b16mr10004247ior.201.1615559018073;
+        Fri, 12 Mar 2021 06:23:38 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 23sm3162088iog.45.2021.03.12.06.23.30
+        by smtp.gmail.com with ESMTPSA id w13sm2973938ilg.48.2021.03.12.06.23.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 06:23:32 -0800 (PST)
-Received: (nullmailer pid 2976050 invoked by uid 1000);
+        Fri, 12 Mar 2021 06:23:37 -0800 (PST)
+Received: (nullmailer pid 2976053 invoked by uid 1000);
         Fri, 12 Mar 2021 14:23:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+To:     Martin Devera <devik@eaxlabs.cz>
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>, linux-tegra@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?b?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20210311231208.18180-4-digetx@gmail.com>
-References: <20210311231208.18180-1-digetx@gmail.com> <20210311231208.18180-4-digetx@gmail.com>
-Subject: Re: [PATCH v3 3/6] dt-bindings: power: tegra: Add binding for core power domain
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Le Ray <erwan.leray@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        fabrice.gasnier@foss.st.com, linux-arm-kernel@lists.infradead.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org
+In-Reply-To: <20210312102713.27776-1-devik@eaxlabs.cz>
+References: <YEsjMJae3cGOdyjG@kroah.com> <20210312102713.27776-1-devik@eaxlabs.cz>
+Subject: Re: [PATCH v6 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
 Date:   Fri, 12 Mar 2021 07:23:29 -0700
-Message-Id: <1615559009.777144.2976049.nullmailer@robh.at.kernel.org>
+Message-Id: <1615559009.788146.2976052.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 02:12:05 +0300, Dmitry Osipenko wrote:
-> All NVIDIA Tegra SoCs have a core power domain where majority of hardware
-> blocks reside. Add binding for the core power domain.
+On Fri, 12 Mar 2021 11:27:12 +0100, Martin Devera wrote:
+> Add new rx-tx-swap property to allow for RX & TX pin swapping.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 > ---
->  .../power/nvidia,tegra20-core-domain.yaml     | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
+> v6:
+>   - add version changelog
+> v5:
+>   - yaml fixes based on Rob Herring comments
+>     - add serial.yaml reference
+>     - move compatible from 'then' to 'if'
+> v3:
+>   - don't allow rx-tx-swap for st,stm32-uart (suggested
+>     by Fabrice Gasnier)
+> v2:
+>   - change st,swap to rx-tx-swap (suggested by Rob Herring)
+> ---
+>  .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/serial/st,stm32-uart.yaml:81:12: [warning] wrong indentation: expected 10 but found 11 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml: properties:power-supply: '$ref' is not one of ['description', 'deprecated']
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml: ignoring, error in schema: properties: power-supply
-warning: no schema found in file: ./Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
 
-See https://patchwork.ozlabs.org/patch/1451596
+See https://patchwork.ozlabs.org/patch/1451861
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
