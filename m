@@ -2,78 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F92C33931B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E082F3392A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhCLQXA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 11:23:00 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:43448 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232262AbhCLQWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:22:45 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 7D4E53CA486;
-        Fri, 12 Mar 2021 11:24:43 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Q2UMy-c3MAZ4; Fri, 12 Mar 2021 11:24:43 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id BD7F43C9644;
-        Fri, 12 Mar 2021 11:13:57 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 8LC7oApaAMSX; Fri, 12 Mar 2021 11:13:57 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 2802A3C9CD9;
-        Fri, 12 Mar 2021 11:10:04 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        id S231679AbhCLQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:01:44 -0500
+Received: from mga12.intel.com ([192.55.52.136]:16773 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232009AbhCLQBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:01:30 -0500
+IronPort-SDR: LeW9whgosBf0qQFByb5/5WDhptHrUuHON8Ux4WjU3dbHLq3ZS4sHRGPJh3NXjx1hk3emkrP6YT
+ 0S8vwucqNftQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168122734"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="168122734"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:01:30 -0800
+IronPort-SDR: +tYUtikwOqGLdg82cqaEX8bTBOwucBY2wIOKMx+sFsGc6zzPprZtjk32u/r1xQ4Fypfvi8Nmfs
+ M9LOCJS+5ARA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="603969354"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Mar 2021 08:01:28 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id CBAF92AF; Fri, 12 Mar 2021 18:01:40 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ACPI: scan: Use unique number for instance_no
+Date:   Fri, 12 Mar 2021 18:01:37 +0200
+Message-Id: <20210312160137.19463-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 15:10:16 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312141005.2802A3C9CD9@mail.curtumepanorama.com.br>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+Current mechanism of incrementing and decrementing plain integer
+to get a next free instance_no when creating an ACPI device is fragile.
 
-Sir/Madam,
+In case of hot plug event or namespace removal of the device instances
+with the low numbers the plain integer counter can't cover the gaps
+and become desynchronized with real state of affairs. If during next
+hot plug event or namespace injection the new instances of
+the devices need to be instantiated, the counter may mistakenly point
+to the existing instance_no and kernel will complain:
+"sysfs: cannot create duplicate filename '/bus/acpi/devices/XXXX1234:02'"
 
-CONGRATULATIONS!!!
+Replace plain integer approach by using IDA framework.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
+Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/internal.h |  4 ++-
+ drivers/acpi/scan.c     | 55 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 53 insertions(+), 6 deletions(-)
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index e6a5d997241c..6fee4f71ba1c 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -9,6 +9,8 @@
+ #ifndef _ACPI_INTERNAL_H_
+ #define _ACPI_INTERNAL_H_
+ 
++#include <linux/idr.h>
++
+ #define PREFIX "ACPI: "
+ 
+ int early_acpi_osi_init(void);
+@@ -98,7 +100,7 @@ extern struct list_head acpi_bus_id_list;
+ 
+ struct acpi_device_bus_id {
+ 	const char *bus_id;
+-	unsigned int instance_no;
++	struct ida no;
+ 	struct list_head node;
+ };
+ 
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index a184529d8fa4..a118a58f7dad 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -468,9 +468,27 @@ static void acpi_device_release(struct device *dev)
+ 	kfree(acpi_dev);
+ }
+ 
++static int acpi_device_get_instance_no(struct acpi_device *device)
++{
++	const char *p;
++	int result;
++	int error;
++
++	p = strrchr(dev_name(&device->dev), ':');
++	if (!p)
++		return -ENODATA;
++
++	error = kstrtoint(p + 1, 16, &result);
++	if (error)
++		return error;
++
++	return result;
++}
++
+ static void acpi_device_del(struct acpi_device *device)
+ {
+ 	struct acpi_device_bus_id *acpi_device_bus_id;
++	int result;
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 	if (device->parent)
+@@ -479,9 +497,13 @@ static void acpi_device_del(struct acpi_device *device)
+ 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
+ 		if (!strcmp(acpi_device_bus_id->bus_id,
+ 			    acpi_device_hid(device))) {
+-			if (acpi_device_bus_id->instance_no > 0)
+-				acpi_device_bus_id->instance_no--;
+-			else {
++			result = acpi_device_get_instance_no(device);
++			if (result < 0)
++				dev_warn(&device->dev, "Can't get instance no\n");
++			else
++				ida_simple_remove(&acpi_device_bus_id->no, result);
++
++			if (ida_is_empty(&acpi_device_bus_id->no)) {
+ 				list_del(&acpi_device_bus_id->node);
+ 				kfree_const(acpi_device_bus_id->bus_id);
+ 				kfree(acpi_device_bus_id);
+@@ -631,6 +653,19 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+ 	return NULL;
+ }
+ 
++static int acpi_device_set_name(struct acpi_device *device,
++				struct acpi_device_bus_id *acpi_device_bus_id)
++{
++	int result;
++
++	result = ida_simple_get(&acpi_device_bus_id->no, 0, 255, GFP_KERNEL);
++	if (result < 0)
++		return result;
++
++	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
++	return 0;
++}
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
+@@ -665,7 +700,9 @@ int acpi_device_add(struct acpi_device *device,
+ 
+ 	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+ 	if (acpi_device_bus_id) {
+-		acpi_device_bus_id->instance_no++;
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result < 0)
++			goto err_unlock;
+ 	} else {
+ 		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+ 					     GFP_KERNEL);
+@@ -681,9 +718,17 @@ int acpi_device_add(struct acpi_device *device,
+ 			goto err_unlock;
+ 		}
+ 
++		ida_init(&acpi_device_bus_id->no);
++
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result < 0) {
++			ida_destroy(&acpi_device_bus_id->no);
++			kfree(acpi_device_bus_id);
++			goto err_unlock;
++		}
++
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+-	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+ 
+ 	if (device->parent)
+ 		list_add_tail(&device->node, &device->parent->children);
+-- 
+2.30.1
 
