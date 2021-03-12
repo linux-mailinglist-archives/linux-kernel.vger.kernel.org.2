@@ -2,195 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79137339439
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15B933943E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhCLRDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        id S232840AbhCLRDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbhCLRDa (ORCPT
+        with ESMTP id S232702AbhCLRDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:03:30 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11194C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:03:30 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id o26so4215707wmc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:03:29 -0800 (PST)
+        Fri, 12 Mar 2021 12:03:32 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C335C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:03:31 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso15570566wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:03:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=UmJ+dlfL89soFWN/JEBNsBQA5pPbGuDlfbh0AQQPANw=;
-        b=ph3La2lxZ9YM8An2w7eE8l8N8kYroB/fRE4bTPlrQIMleBr2beFZDadzryFA1IDg/v
-         z0WScO60gsTlYnRWXVLxOHNiOFgsGNZfRWz5Tw+wmlsRB10Pfnt+BNeWmV61aNB62Ysl
-         AYrLDMueNXjOIWECzDe0X0T+pZ3Vv1BZ313OKdWfmfWcPjjYdsUuEciIUBFXuEw4qLXP
-         rSlT/VMGGtD+kkIo8r2RDc34ZmdZo/riGawaiHIIfNzTIPInkQOp9ffCTTuP5k3rPbC6
-         /tb/ZZBzjzM+9/V03jr/zHtlpmcQamo83QpQQxtw8v2HG8ziutZWro8nch7EVjvkYQWE
-         3enw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=s7fCt8jAahXLsklhkFc/v9K2fCeNdzwdfE44cqbig58=;
+        b=X0lBMvAlM/aI9s6P8gpDF/A2H6hRtLmQX0fu6RSroOLDo+GfgC5JMl46hETKXvJ+9E
+         JfSuZ+xVrLucKcrdR6RseL/Hpv7SMTiseGuTidEInW56e1miGmBEWBWLRtQ/1DL07r7w
+         MFWp1EtKUFh+jWd6/bg3j2hUlW1PZipr6ikhhpomDNbI5+mr84zY5Hb8J8Li4bMNYqxx
+         i3dYvIQeXJrm20peNAiseQaBbaeTdEcR4NrqMLbKx+KETP7W1u7zxwnZ67IcWEIzy2aD
+         5Sr3+pBRXt5BtK8VoumFQi2vULgDs0C8pSrEXAi7b9Z1paRxQo9g3ym9bY89DcUWxgMe
+         HYqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UmJ+dlfL89soFWN/JEBNsBQA5pPbGuDlfbh0AQQPANw=;
-        b=pUfNVfX95/ecZA/Q91U6sRgntiL67KlhTK5uFon3+40+cwfFp6rxwCi85jsg3FBp/p
-         O3nETVaaDKBO3z3udNJ12xyy7n8hYbX/xHCXixTR/UG6x5rAfOG6mfMuV7PRquqslxya
-         JtDBAdWRLxf6fo7g941FgVj0PWA6XSdxLqNunbVQP7WmtwPX5KRs/xl9B0V7vPhYvRvL
-         Z6JFMcuQrQf4/fQnIi5OpfOp6AVOdq0rGQAnLDDDMCHpHJqJQOm5En0nXEHBK+J8uLj3
-         oz8yWnJqLieF20WHgK7Yzuhk7a79ypW0TewMbHhoCavB/5CoF3OpHCuN9utIA3t6kcdp
-         tGhg==
-X-Gm-Message-State: AOAM530KsfLVkFo+QCi8cA/RS3hM7OJny4nPfdb/84VZ8R9Ftb2vvZn8
-        wjq0BePuJVezuMdEKlc9PvIBFOvjuIz4cA==
-X-Google-Smtp-Source: ABdhPJwv1TR/8z0e66rTrLmmdJhM8/AjWL+UVlEpJ0rrlNrvy7bgYmfjofMpdkr0powCNcQXk6GBKw==
-X-Received: by 2002:a7b:ce06:: with SMTP id m6mr13681917wmc.38.1615568608698;
-        Fri, 12 Mar 2021 09:03:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=s7fCt8jAahXLsklhkFc/v9K2fCeNdzwdfE44cqbig58=;
+        b=t/fxjXS0a8h4lWXHke4HAF5reCm967mViRz9VfK1kb/JpRWCbTjd3x6D77z0rfg5VT
+         HZLSHLEZPPorM8gwwTKGtgOSJJaBwtwxK9YkRbJgRi9+2Naoazo5vV//JRD4HGOP+J5k
+         J5AgaanbV6BgNUNet1aCsWsGTVk7M6j1onRgbTUWlMrmRnk9AugTiIuwUBmZjQfYC0L+
+         3M1iWKvOdKByCIEJinKhDCa4YcAADMwDWMdD5fQFNq2Vb6HyY560dvNMwR6CspqyF0ym
+         arjz7ZWHO4J6cGFiqddExS76O+HCEP9xKVbKwaYgHE8a3f2b3nKI9BZFBgyM8KZJY1pp
+         L6dg==
+X-Gm-Message-State: AOAM533/J7QsY4ZvwHRMiZNGOr3iShCtBTFjbrdpU9gZ0Cf4EUntK0DP
+        hlvghXGhfexl/KBno14RtCJRfw==
+X-Google-Smtp-Source: ABdhPJypFvYqCkonVq+396IfmkPJ+afGI1syn30KATEJwBQ++/NZnoeLMzqs2Lwy5fh32LRMs4BarQ==
+X-Received: by 2002:a1c:1fc6:: with SMTP id f189mr14152756wmf.68.1615568610171;
+        Fri, 12 Mar 2021 09:03:30 -0800 (PST)
 Received: from localhost.localdomain ([82.142.0.212])
-        by smtp.gmail.com with ESMTPSA id 1sm2854681wmj.2.2021.03.12.09.03.27
+        by smtp.gmail.com with ESMTPSA id 1sm2854681wmj.2.2021.03.12.09.03.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 09:03:28 -0800 (PST)
+        Fri, 12 Mar 2021 09:03:29 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     daniel.lezcano@linaro.org
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, Jiri Pirko <jiri@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        lukasz.luba@arm.com, Viresh Kumar <viresh.kumar@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
         Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        netdev@vger.kernel.org (open list:MELLANOX ETHERNET SWITCH DRIVERS)
-Subject: [PATCH v2 1/5] thermal/drivers/core: Use a char pointer for the cooling device name
-Date:   Fri, 12 Mar 2021 18:03:12 +0100
-Message-Id: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+        Amit Kucheria <amitk@kernel.org>
+Subject: [PATCH v2 2/5] thermal/drivers/cpufreq_cooling: Use device name instead of auto-numbering
+Date:   Fri, 12 Mar 2021 18:03:13 +0100
+Message-Id: <20210312170316.3138-2-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to have any kind of name for the cooling devices as we do no
-longer want to rely on auto-numbering. Let's replace the cooling
-device's fixed array by a char pointer to be allocated dynamically
-when registering the cooling device, so we don't limit the length of
-the name.
+Currently the naming of a cooling device is just a cooling technique
+followed by a number. When there are multiple cooling devices using
+the same technique, it is impossible to clearly identify the related
+device as this one is just a number.
 
-Rework the error path at the same time as we have to rollback the
-allocations in case of error.
+For instance:
 
-Tested with a dummy device having the name:
- "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch"
+ thermal-cpufreq-0
+ thermal-cpufreq-1
+ etc ...
 
-A village on the island of Anglesey (Wales), known to have the longest
-name in Europe.
+The 'thermal' prefix is redundant with the subsystem namespace. This
+patch removes the 'thermal' prefix and changes the number by the device
+name. So the naming above becomes:
+
+ cpufreq-cpu0
+ cpufreq-cpu4
+ etc ...
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- .../ethernet/mellanox/mlxsw/core_thermal.c    |  2 +-
- drivers/thermal/thermal_core.c                | 38 +++++++++++--------
- include/linux/thermal.h                       |  2 +-
- 3 files changed, 24 insertions(+), 18 deletions(-)
+V2:
+  - Use kasprintf() instead of fixed array length on the stack
+  - Fixed typo in the log
+  - Removed idr.h inclusion
+---
+ drivers/thermal/cpufreq_cooling.c | 34 +++++++++++--------------------
+ 1 file changed, 12 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-index bf85ce9835d7..7447c2a73cbd 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-@@ -141,7 +141,7 @@ static int mlxsw_get_cooling_device_idx(struct mlxsw_thermal *thermal,
- 	/* Allow mlxsw thermal zone binding to an external cooling device */
- 	for (i = 0; i < ARRAY_SIZE(mlxsw_thermal_external_allowed_cdev); i++) {
- 		if (strnstr(cdev->type, mlxsw_thermal_external_allowed_cdev[i],
--			    sizeof(cdev->type)))
-+			    strlen(cdev->type)))
- 			return 0;
- 	}
- 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 996c038f83a4..9ef8090eb645 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -960,10 +960,7 @@ __thermal_cooling_device_register(struct device_node *np,
- {
- 	struct thermal_cooling_device *cdev;
- 	struct thermal_zone_device *pos = NULL;
--	int result;
--
--	if (type && strlen(type) >= THERMAL_NAME_LENGTH)
--		return ERR_PTR(-EINVAL);
-+	int ret;
- 
- 	if (!ops || !ops->get_max_state || !ops->get_cur_state ||
- 	    !ops->set_cur_state)
-@@ -973,14 +970,17 @@ __thermal_cooling_device_register(struct device_node *np,
- 	if (!cdev)
- 		return ERR_PTR(-ENOMEM);
- 
--	result = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
--	if (result < 0) {
--		kfree(cdev);
--		return ERR_PTR(result);
-+	ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
-+	if (ret < 0)
-+		goto out_kfree_cdev;
-+	cdev->id = ret;
-+
-+	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
-+	if (!cdev->type) {
-+		ret = -ENOMEM;
-+		goto out_ida_remove;
- 	}
- 
--	cdev->id = result;
--	strlcpy(cdev->type, type ? : "", sizeof(cdev->type));
- 	mutex_init(&cdev->lock);
- 	INIT_LIST_HEAD(&cdev->thermal_instances);
- 	cdev->np = np;
-@@ -990,12 +990,9 @@ __thermal_cooling_device_register(struct device_node *np,
- 	cdev->devdata = devdata;
- 	thermal_cooling_device_setup_sysfs(cdev);
- 	dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
--	result = device_register(&cdev->device);
--	if (result) {
--		ida_simple_remove(&thermal_cdev_ida, cdev->id);
--		put_device(&cdev->device);
--		return ERR_PTR(result);
--	}
-+	ret = device_register(&cdev->device);
-+	if (ret)
-+		goto out_kfree_type;
- 
- 	/* Add 'this' new cdev to the global cdev list */
- 	mutex_lock(&thermal_list_lock);
-@@ -1013,6 +1010,14 @@ __thermal_cooling_device_register(struct device_node *np,
- 	mutex_unlock(&thermal_list_lock);
- 
- 	return cdev;
-+
-+out_kfree_type:
-+	kfree(cdev->type);
-+	put_device(&cdev->device);
-+out_ida_remove:
-+	ida_simple_remove(&thermal_cdev_ida, cdev->id);
-+out_kfree_cdev:
-+	return ERR_PTR(ret);
- }
+diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+index 10af3341e5ea..3f5f1dce1320 100644
+--- a/drivers/thermal/cpufreq_cooling.c
++++ b/drivers/thermal/cpufreq_cooling.c
+@@ -13,10 +13,10 @@
+ #include <linux/cpu.h>
+ #include <linux/cpufreq.h>
+ #include <linux/cpu_cooling.h>
++#include <linux/device.h>
+ #include <linux/energy_model.h>
+ #include <linux/err.h>
+ #include <linux/export.h>
+-#include <linux/idr.h>
+ #include <linux/pm_opp.h>
+ #include <linux/pm_qos.h>
+ #include <linux/slab.h>
+@@ -50,8 +50,6 @@ struct time_in_idle {
  
  /**
-@@ -1172,6 +1177,7 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
- 	device_del(&cdev->device);
- 	thermal_cooling_device_destroy_sysfs(cdev);
- 	put_device(&cdev->device);
-+	kfree(cdev->type);
+  * struct cpufreq_cooling_device - data for cooling device with cpufreq
+- * @id: unique integer value corresponding to each cpufreq_cooling_device
+- *	registered.
+  * @last_load: load measured by the latest call to cpufreq_get_requested_power()
+  * @cpufreq_state: integer value representing the current state of cpufreq
+  *	cooling	devices.
+@@ -69,7 +67,6 @@ struct time_in_idle {
+  * cpufreq_cooling_device.
+  */
+ struct cpufreq_cooling_device {
+-	int id;
+ 	u32 last_load;
+ 	unsigned int cpufreq_state;
+ 	unsigned int max_level;
+@@ -82,7 +79,6 @@ struct cpufreq_cooling_device {
+ 	struct freq_qos_request qos_req;
+ };
+ 
+-static DEFINE_IDA(cpufreq_ida);
+ static DEFINE_MUTEX(cooling_list_lock);
+ static LIST_HEAD(cpufreq_cdev_list);
+ 
+@@ -528,11 +524,11 @@ __cpufreq_cooling_register(struct device_node *np,
+ {
+ 	struct thermal_cooling_device *cdev;
+ 	struct cpufreq_cooling_device *cpufreq_cdev;
+-	char dev_name[THERMAL_NAME_LENGTH];
+ 	unsigned int i;
+ 	struct device *dev;
+ 	int ret;
+ 	struct thermal_cooling_device_ops *cooling_ops;
++	char *name;
+ 
+ 	dev = get_cpu_device(policy->cpu);
+ 	if (unlikely(!dev)) {
+@@ -567,16 +563,6 @@ __cpufreq_cooling_register(struct device_node *np,
+ 	/* max_level is an index, not a counter */
+ 	cpufreq_cdev->max_level = i - 1;
+ 
+-	ret = ida_simple_get(&cpufreq_ida, 0, 0, GFP_KERNEL);
+-	if (ret < 0) {
+-		cdev = ERR_PTR(ret);
+-		goto free_idle_time;
+-	}
+-	cpufreq_cdev->id = ret;
+-
+-	snprintf(dev_name, sizeof(dev_name), "thermal-cpufreq-%d",
+-		 cpufreq_cdev->id);
+-
+ 	cooling_ops = &cpufreq_cooling_ops;
+ 
+ #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
+@@ -591,7 +577,7 @@ __cpufreq_cooling_register(struct device_node *np,
+ 		pr_err("%s: unsorted frequency tables are not supported\n",
+ 		       __func__);
+ 		cdev = ERR_PTR(-EINVAL);
+-		goto remove_ida;
++		goto free_idle_time;
+ 	}
+ 
+ 	ret = freq_qos_add_request(&policy->constraints,
+@@ -601,11 +587,18 @@ __cpufreq_cooling_register(struct device_node *np,
+ 		pr_err("%s: Failed to add freq constraint (%d)\n", __func__,
+ 		       ret);
+ 		cdev = ERR_PTR(ret);
+-		goto remove_ida;
++		goto free_idle_time;
+ 	}
+ 
+-	cdev = thermal_of_cooling_device_register(np, dev_name, cpufreq_cdev,
++	cdev = ERR_PTR(-ENOMEM);
++	name = kasprintf(GFP_KERNEL, "cpufreq-%s", dev_name(dev));
++	if (!name)
++		goto remove_qos_req;
++
++	cdev = thermal_of_cooling_device_register(np, name, cpufreq_cdev,
+ 						  cooling_ops);
++	kfree(name);
++
+ 	if (IS_ERR(cdev))
+ 		goto remove_qos_req;
+ 
+@@ -617,8 +610,6 @@ __cpufreq_cooling_register(struct device_node *np,
+ 
+ remove_qos_req:
+ 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
+-remove_ida:
+-	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
+ free_idle_time:
+ 	free_idle_time(cpufreq_cdev);
+ free_cdev:
+@@ -712,7 +703,6 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
+ 
+ 	thermal_cooling_device_unregister(cdev);
+ 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
+-	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
+ 	free_idle_time(cpufreq_cdev);
+ 	kfree(cpufreq_cdev);
  }
- EXPORT_SYMBOL_GPL(thermal_cooling_device_unregister);
- 
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 6ac7bb1d2b1f..169502164364 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -91,7 +91,7 @@ struct thermal_cooling_device_ops {
- 
- struct thermal_cooling_device {
- 	int id;
--	char type[THERMAL_NAME_LENGTH];
-+	char *type;
- 	struct device device;
- 	struct device_node *np;
- 	void *devdata;
 -- 
 2.17.1
 
