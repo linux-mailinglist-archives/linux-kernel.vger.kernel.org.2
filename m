@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0344F33898B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FBD338991
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhCLKA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbhCLKAi (ORCPT
+        id S232822AbhCLKDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:03:07 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:52480 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232861AbhCLKDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:00:38 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50507C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:00:38 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id v2so31764158lft.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:00:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x7b0YhLiDRYT0yOrjk/x/Y6N+KIRlemcKfsY/iEVybQ=;
-        b=F52JBUW2RVO02xz7XfNFfnrhSZLb7p6RwfOQXW0+QwKiTpTiaiE/kwYwO+y5kvwTTb
-         xZxDlKTU0zC8iGi9s3eB3O1qh9vAuqnCzdm0FQbgsL4bLr3Ruqn3fhleGWalnmxC38rB
-         FgK2CVQxAaWOiBRWXiXhaAdbIjpvXMgUpIWczpQhvC4dfF3O6uaqfZeXxiEEoU7pYdoh
-         v0OxguUFdiCEoCC7zzxnbDnPPd+iR1h3DsnWmx5o1uALjWmEGFn0rxgH7VcoOP1somqS
-         7HT5R8y07TA7h0PvmtdQ9IxgC4c4DqqDp/Sprqpgk7IqJYUO5UnI+msLE1D5pICduzc5
-         BEYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x7b0YhLiDRYT0yOrjk/x/Y6N+KIRlemcKfsY/iEVybQ=;
-        b=Mt7oelSL59EWfd9qwmDnnISCbeWckSNUxZHmTc916qbA4mGGvb1cEE46xvWS5b8eHn
-         kY2yyH64QV1071wIa0mE8/KqORdce9U+qBZNilGngfYQJcMOmTa6ConrZU9G8nDP8iVn
-         RMb9PRQytWwBpwalZ83K2ywUWH/GpU8S6KwhFKBdIZbhJiEQp2TJDkYTmuQAbrqeYwrc
-         8n+GXOec6/G4ietYmXeEe1v/nKAQ0IVZLQVja4qbcn9HtFBzp366uRLVolpQwaTeHNim
-         vrH33FNQnHS/yTnYtHAdgsYdm8CF0zNPlb6g50hbVq5ebX4U6fsE5coHMTOjVkA8tz2V
-         UDog==
-X-Gm-Message-State: AOAM530VBBZLpEFANXidYWVBYFX0/SOznTtnOoPFUtEFp7NL2OdYNtir
-        NQVMYxRWqpk0iuI50XZsJT9WcnZBJAT7VV+Jry8M6g==
-X-Google-Smtp-Source: ABdhPJzDpESWQoECqt1prXQcSIVot287iP/QjDAbfHp3ibm4TSWaAfKPuHPAW9M9l7h49Y9aMEgq9QJPlARRE4cVnxQ=
-X-Received: by 2002:ac2:4d95:: with SMTP id g21mr5165763lfe.29.1615543236661;
- Fri, 12 Mar 2021 02:00:36 -0800 (PST)
+        Fri, 12 Mar 2021 05:03:05 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CA0EsK143158;
+        Fri, 12 Mar 2021 10:02:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=akbLYMZRzQqZZpbJ+DtKwfG0zRi+SfnjQjeinw9NplI=;
+ b=lYovsrs/X7GBkXTV9OEcuVPPBDNJLx1JaWxYK/kSgyQMi7uRNDQl5P9N5ZxOoVhXFAQP
+ KPrWsnUpXfNgTQENI349Gi0EBewCqObDWW1eteu9i1iXnbSUrvV4sQXZmk5n1EUkrHeV
+ dVr0F1jIznWu5PYUxzMjCIeM3rXQSHIszFau0x/4YKuYcn274SSgPkm9bj4msNCUQwLr
+ /YJ94OON4U+aWefd8yVRplPRR6dfC/Wluxg2+w81U91nLA7RgdSHDixuCC6QwqcA124F
+ bPOdqtvPUF8KXWB/Gg7AyC9gwzmPFVdqD4cABezfaPJ0PNUSues5Z8SMCmDB73GuFPKg 0g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 37415rhhgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Mar 2021 10:02:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CA1E9T070444;
+        Fri, 12 Mar 2021 10:02:54 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 374kgwa7ax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Mar 2021 10:02:54 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12CA2rBe026796;
+        Fri, 12 Mar 2021 10:02:53 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 12 Mar 2021 02:02:52 -0800
+Date:   Fri, 12 Mar 2021 13:02:44 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hao Peng <penghaob@uniontech.com>
+Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        izabela.bakollari@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: add initial value
+Message-ID: <20210312100244.GN2087@kadam>
+References: <20210311063838.19756-1-penghaob@uniontech.com>
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st> <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
- <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
- <e5d3f4b5-748e-0700-b897-393187b2bb1a@marcan.st> <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
- <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st> <87k0qd7615.fsf@linaro.org>
-In-Reply-To: <87k0qd7615.fsf@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 12 Mar 2021 11:00:24 +0100
-Message-ID: <CACRpkdYNdoK9T503en6dPfz5sSc0eDGLzhnUBqRUbZR3j43byA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311063838.19756-1-penghaob@uniontech.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103120067
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9920 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 adultscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103120067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:08 PM Alex Benn=C3=A9e <alex.bennee@linaro.org> =
-wrote:
+On Thu, Mar 11, 2021 at 02:38:38PM +0800, Hao Peng wrote:
+> Add initial value for some uninitialized variable and array.
+> 
 
-> I guess what we are saying is that real secure monitors should come up
-> with their own common API for interfacing with RPMB devices without
-> looking to the Linux kernel for inspiration?
+None of these are ever used uninitialized.  It's weird that you would
+even think that.
 
-The problem is that eMMC at least (I don't know about NVME etc)
-has serialized commands, meaning you execute one command at
-a time (some augmentation exist nowadays to speed up things).
+>  			if (pmlmeext->active_keep_alive_check) {
+> -				int stainfo_offset;
+> +				int stainfo_offset = 0;
+>  
+>  				stainfo_offset = rtw_stainfo_offset(pstapriv, psta);
+                                ^^^^^^^^^^^^^^^^
+This one is initialized on the very next line so all the patch does is
+introduce static checker warnings for no reason.
 
-When it comes to RPMB, the eMMC device must stop all other
-activity (such as reading/writing any blocks to the eMMC) send a
-special command to switch to the RPMB  partition, then execute
-the RPMB command(s) then send a special command to switch
-back to ordinary storage.
+regards,
+dan carpenter
 
-Someone has to be in control of the eMMC arbitration. Right now
-Linux MMC/SD storage stack does this.
-
-If the secure world want to use RPMB independently of the Linux
-kernel there are two solutions:
-
-- Mount a second eMMC just for the secure world - looks expensive
-  so some other secure counter storage would likely be cheaper
-  and it inevitably increases the BOM which is sensitive to
-  manufacturers (this option is unrealistic)
-
-- Let the secure world arbitrate all access to the eMMC - looks
-  inefficient and also dangerous since the secure world now has to
-  implement everything in drivers/mmc/core which is a few 100
-  KB of really complex code that need to be maintained perpetually.
-  (IMO this option is also unrealistic for performance and
-  maintenance reasons, but who knows what secure world
-  imperialists are out there).
-
-This leaves Linux in control of the eMMC RPMB under all
-circumstances as far as I can see.
-
-Yours,
-Linus Walleij
