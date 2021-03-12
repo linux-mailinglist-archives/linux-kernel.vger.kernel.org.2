@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D813396EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC893396EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbhCLSt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:49:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:59532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233668AbhCLStr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:49:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 494C2ED1;
-        Fri, 12 Mar 2021 10:49:47 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C5D73F793;
-        Fri, 12 Mar 2021 10:49:45 -0800 (PST)
-Subject: Re: [PATCH v2 1/5] thermal/drivers/core: Use a char pointer for the
- cooling device name
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:MELLANOX ETHERNET SWITCH DRIVERS" <netdev@vger.kernel.org>
-References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <18fdc11b-abda-25d9-582f-de2f9dfa2feb@arm.com>
-Date:   Fri, 12 Mar 2021 18:49:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233892AbhCLSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:51:03 -0500
+Received: from www381.your-server.de ([78.46.137.84]:50988 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233668AbhCLSuu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:50:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=TdTtswT/PYcJEl/JzQ4ecMAuE2v89YlefBd6JtAA4+I=; b=KxVppLCrBWFGZEKJ5YFPr920pD
+        05fVY7ucuEkqXCeKYR9rKIolOweN4OXJ0yPbxVdsOIAvC/zGrHzeLtKqUlWhwoX1SjzBHVi55aHfY
+        lIRkePTw/HOQV3iy97ony7U7HJrYKu4gP+T7mFc771XTfL54S5q6tFmcX2sd6TpbZNDM8Zo5IA2I2
+        45fmUdkxsHHmxOxeITCQ2dFH7PzuKkNYLTQ21+i+zk7mbBY9wm4yk7MchTWSlbsosDmattRckJV+2
+        zn8L+qRSHPzwPk0pUt/fkCQHUACTdguvRQQ6FaTO5U0CI/7zdGHLhndkJXVTonsFxMTDTvtX2g2vB
+        Pa6bkGmg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lKmrz-0001kK-OJ; Fri, 12 Mar 2021 19:50:43 +0100
+Received: from [2001:a61:2aea:a901:9e5c:8eff:fe01:8578]
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lKmrz-000Phz-Hd; Fri, 12 Mar 2021 19:50:43 +0100
+Subject: Re: [PATCH 02/23] ASoC: ad1836: remove useless return
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
+ <20210312182246.5153-3-pierre-louis.bossart@linux.intel.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <477d649a-81bd-a858-a6be-0cabdb88163e@metafoo.de>
+Date:   Fri, 12 Mar 2021 19:50:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20210312182246.5153-3-pierre-louis.bossart@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26106/Fri Mar 12 13:03:16 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/12/21 5:03 PM, Daniel Lezcano wrote:
-> We want to have any kind of name for the cooling devices as we do no
-> longer want to rely on auto-numbering. Let's replace the cooling
-> device's fixed array by a char pointer to be allocated dynamically
-> when registering the cooling device, so we don't limit the length of
-> the name.
-> 
-> Rework the error path at the same time as we have to rollback the
-> allocations in case of error.
-> 
-> Tested with a dummy device having the name:
->   "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch"
-> 
-> A village on the island of Anglesey (Wales), known to have the longest
-> name in Europe.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On 3/12/21 7:22 PM, Pierre-Louis Bossart wrote:
+> Cppcheck warning:
+>
+> sound/soc/codecs/ad1836.c:311:9: warning: Identical condition and return expression 'ret', return value is always 0 [identicalConditionAfterEarlyExit]
+>   return ret;
+>          ^
+> sound/soc/codecs/ad1836.c:308:6: note: If condition 'ret' is true, the function will return/exit
+>   if (ret)
+>       ^
+> sound/soc/codecs/ad1836.c:311:9: note: Returning identical expression 'ret'
+>   return ret;
+>          ^
+>
+> Likely copy/paste between adc and dac cases.
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->   .../ethernet/mellanox/mlxsw/core_thermal.c    |  2 +-
->   drivers/thermal/thermal_core.c                | 38 +++++++++++--------
->   include/linux/thermal.h                       |  2 +-
->   3 files changed, 24 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-> index bf85ce9835d7..7447c2a73cbd 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-> @@ -141,7 +141,7 @@ static int mlxsw_get_cooling_device_idx(struct mlxsw_thermal *thermal,
->   	/* Allow mlxsw thermal zone binding to an external cooling device */
->   	for (i = 0; i < ARRAY_SIZE(mlxsw_thermal_external_allowed_cdev); i++) {
->   		if (strnstr(cdev->type, mlxsw_thermal_external_allowed_cdev[i],
-> -			    sizeof(cdev->type)))
-> +			    strlen(cdev->type)))
->   			return 0;
->   	}
+>   sound/soc/codecs/ad1836.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
+> index a46152560294..08a5651bed9f 100644
+> --- a/sound/soc/codecs/ad1836.c
+> +++ b/sound/soc/codecs/ad1836.c
+> @@ -305,8 +305,6 @@ static int ad1836_probe(struct snd_soc_component *component)
+>   		return ret;
 >   
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 996c038f83a4..9ef8090eb645 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -960,10 +960,7 @@ __thermal_cooling_device_register(struct device_node *np,
->   {
->   	struct thermal_cooling_device *cdev;
->   	struct thermal_zone_device *pos = NULL;
-> -	int result;
-> -
-> -	if (type && strlen(type) >= THERMAL_NAME_LENGTH)
-> -		return ERR_PTR(-EINVAL);
-> +	int ret;
+>   	ret = snd_soc_dapm_add_routes(dapm, ad183x_adc_routes, num_adcs);
+> -	if (ret)
+> -		return ret;
 >   
->   	if (!ops || !ops->get_max_state || !ops->get_cur_state ||
->   	    !ops->set_cur_state)
-> @@ -973,14 +970,17 @@ __thermal_cooling_device_register(struct device_node *np,
->   	if (!cdev)
->   		return ERR_PTR(-ENOMEM);
->   
-> -	result = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
-> -	if (result < 0) {
-> -		kfree(cdev);
-> -		return ERR_PTR(result);
-> +	ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
-> +	if (ret < 0)
-> +		goto out_kfree_cdev;
-> +	cdev->id = ret;
-> +
-> +	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
-> +	if (!cdev->type) {
-> +		ret = -ENOMEM;
+>   	return ret;
+>   }
 
-Since we haven't called the device_register() yet, I would call here:
-kfree(cdev);
-and then jump
+We could even go one step further and do
 
-> +		goto out_ida_remove;
->   	}
->   
+return snd_soc_dapm_add_routes(dapm, ad183x_adc_routes, num_adcs);
 
-Other than that, LGTM
+But either is fine. Thanks for cleaning this up
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
