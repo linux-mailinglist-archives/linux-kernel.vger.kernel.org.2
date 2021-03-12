@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7329A338A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40A5338A98
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhCLKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:51:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233620AbhCLKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:50:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F174B65021;
-        Fri, 12 Mar 2021 10:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615546244;
-        bh=fgKpPGWl7vdkjYlq9KFgP4TmOGenokxAgG3aU4o71JY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EGkoAHZ79zm0HpbPJC1fOXOeeVwESsGko2HmFJdypim7agTxOBhI1QIl8NgHn4jnH
-         u1lKjyKNHRY3jwRJnAwgFSfErfSW0fHdFR6Bk4BGeOczdoGAKSyOi/PDMVsedTUcZV
-         rppAP5450ZSZ5geAA3vLXaZ0eoMnCWYxD8alfsUsNGMCd8v22EEYtlyxCFmcskiK4y
-         0E5YAPYum2/u5+gjOAOizGwbK5UALblRhWac40JBSs5fZDkdMRvvcTsktyBo/DiIAM
-         PqAAV0xM5DD8d04jkpkKLMTvaSzBtrJ/G04MY5mAbdMDc+sp2JdixHQIGb3WNBN94t
-         W5Napa7mNglcA==
-Date:   Fri, 12 Mar 2021 10:49:31 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Baluta <daniel.baluta@gmail.com>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
-Message-ID: <20210312104931.GA5348@sirena.org.uk>
-References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
- <20210309153455.GB4878@sirena.org.uk>
- <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+        id S233555AbhCLKwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233610AbhCLKvl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:51:41 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57925C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:51:41 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so4331256wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=1xqbdJpzo9WZ92Ur0/uK5J2PqPmNSDd9F341QSbm7Dc=;
+        b=Uednlt9G1tV+9cEcaaO0SYY595OIOPWY2an+lijefiDCw63Slkl4s3uLeIjeZ+kcJs
+         UMXDatma8bhnWRY3BDLMJCDcKKHqlhwVRytm6MhgpuAIJ7sDfma/3l/FqsXkOIi8z7Tk
+         0PVT9AGsMg2MAHfkoPgRZ0eTF89vf0Pr3A9s8wbsBCHChJ7Sdo5H3RdvbguBliYy3Rjz
+         b/TnzvPVRuq4ZZC7l6NkWgQsc4wG44EM2jjt4sqSTXE6P3b7M8/1DXuxInh32oDpek+p
+         Pgyb1GSjO/lZjWpFRBgd8DUy9GpscmKKoXfwIK7jrUCdNrJYnY+oXVhHQnIJ71dgrB46
+         j8UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=1xqbdJpzo9WZ92Ur0/uK5J2PqPmNSDd9F341QSbm7Dc=;
+        b=km7GkIAO81gBQr7kf0sB2VKDIcvFfKm0mJZdHO7HcORtpGiUL/Qb6Ho7kZA8C9QeX8
+         tF212aCt/eRnHKnC+aCgg20J2+douMr20L0wo+lkaajkxIE92xFpv3ngPsCeWdJvNE99
+         zxGH0lhZi8+dn/PCYSc620Rh137G7cAzifBCXvR33fFAud+bDG3ODmk1K9p1nLWKgqUu
+         xPkhZSNF+sGreQbDbFbwvSTSVQmLIqnf2BDwt+wfd9t88S59IYxWlWt/STGj1EER2A93
+         VoFcm7ftlHRIHcRPZc5NA9Mxea7YVas/8o/PUQz3/Alys7Rwz+xcf/sHJyzzaz8cKUML
+         ZMBw==
+X-Gm-Message-State: AOAM533HBsg1cv4SjSKTj5lz6z1Ru6XsmCj6SK8BWkpXCX52//r+RGlU
+        LSeJ0RMHXFnny84o4L3/62Bpt0Iyyyg=
+X-Google-Smtp-Source: ABdhPJz8WmWHma02Qb3eE+57SlmK2DG0BHdrPgW/wZYw4VMHeb/PSXzvltZe0dT2YwqDuAhm+KdUUA==
+X-Received: by 2002:a1c:7519:: with SMTP id o25mr12440710wmc.103.1615546300066;
+        Fri, 12 Mar 2021 02:51:40 -0800 (PST)
+Received: from agape.jhs ([5.171.81.107])
+        by smtp.gmail.com with ESMTPSA id n6sm8481257wrw.63.2021.03.12.02.51.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 02:51:39 -0800 (PST)
+Date:   Fri, 12 Mar 2021 11:51:37 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: put quoted string in a single line
+Message-ID: <20210312105134.GA6079@agape.jhs>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
-X-Cookie: Lake Erie died for your sins.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fix the following checkpatch issues:
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+WARNING: quoted string split across lines
++		DBG_871X("HT: STA %pM HT Capabilities "
++			   "Info: 0x%04x\n", MAC_ARG(psta->hwaddr), ht_capab);
 
-On Fri, Mar 12, 2021 at 10:32:54AM +0200, Daniel Baluta wrote:
-> On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
+WARNING: quoted string split across lines
++			DBG_871X("%s STA %pM - no "
++				   "greenfield, num of non-gf stations %d\n",
 
-> > > +                     if (!dai_link->platforms->of_node)
-> > > +                             dai_link->platforms->name = component->name;
+WARNING: quoted string split across lines
++			DBG_871X("%s STA %pM - 20 MHz HT, "
++				   "num of 20MHz HT STAs %d\n",
 
-> > Why would we prefer the node name over something explicitly configured?
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_ap.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-> Not sure I follow your question. I think the difference stands in the
-> way we treat OF vs non-OF platforms.
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
+index b6f944b37b08..b8706e1eb8ca 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ap.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
+@@ -2009,8 +2009,8 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
+ 	if (psta->flags & WLAN_STA_HT) {
+ 		u16 ht_capab = le16_to_cpu(psta->htpriv.ht_cap.cap_info);
+ 
+-		DBG_871X("HT: STA %pM HT Capabilities "
+-			   "Info: 0x%04x\n", MAC_ARG(psta->hwaddr), ht_capab);
++		DBG_871X("HT: STA %pM HT Capabilities Info: 0x%04x\n",
++			 MAC_ARG(psta->hwaddr), ht_capab);
+ 
+ 		if (psta->no_ht_set) {
+ 			psta->no_ht_set = 0;
+@@ -2022,10 +2022,9 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
+ 				psta->no_ht_gf_set = 1;
+ 				pmlmepriv->num_sta_ht_no_gf++;
+ 			}
+-			DBG_871X("%s STA %pM - no "
+-				   "greenfield, num of non-gf stations %d\n",
+-				   __func__, MAC_ARG(psta->hwaddr),
+-				   pmlmepriv->num_sta_ht_no_gf);
++			DBG_871X("%s STA %pM - no greenfield, num of non-gf stations %d\n",
++				 __func__, MAC_ARG(psta->hwaddr),
++				 pmlmepriv->num_sta_ht_no_gf);
+ 		}
+ 
+ 		if ((ht_capab & IEEE80211_HT_CAP_SUP_WIDTH) == 0) {
+@@ -2033,10 +2032,9 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
+ 				psta->ht_20mhz_set = 1;
+ 				pmlmepriv->num_sta_ht_20mhz++;
+ 			}
+-			DBG_871X("%s STA %pM - 20 MHz HT, "
+-				   "num of 20MHz HT STAs %d\n",
+-				   __func__, MAC_ARG(psta->hwaddr),
+-				   pmlmepriv->num_sta_ht_20mhz);
++			DBG_871X("%s STA %pM - 20 MHz HT, num of 20MHz HT STAs %d\n",
++				 __func__, MAC_ARG(psta->hwaddr),
++				 pmlmepriv->num_sta_ht_20mhz);
+ 		}
+ 
+ 	} else {
+-- 
+2.20.1
 
-If an explicit name has been provided why would we override it with an
-autogenerated one?
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLRzoACgkQJNaLcl1U
-h9DHLgf/dCrl7QiN+jfF0cGbC1JdfYVq4HAVtswUrQEnPISDtyOBMpD2WjMCmM8j
-mAv2nD3wC8p0mFgDWKn/KEcmsj7KXiFO3sD63kQsiolJrk5rTX5NAtvHeVuXxZ8+
-yQVlP6G8CVpAcjk6CcKpEtWp+cT1H2uDXq4XyGzILCfzlPNqfRRLU9wZesvB3mtS
-mpd1v/6aN6iXcbKYQWzD4jR70WsTAJw3IFcUtJCGejos6hHYSsrdhD8rPuT59WY7
-T/lXXFVZM7+nwbd5AeL/CqlldmKcS40nfRevG9GbIkpm37kFdWvk0g1shf83owPB
-6HOiE4Gctdl3DTxDYJgLfMNNXrZF/w==
-=pOj0
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
