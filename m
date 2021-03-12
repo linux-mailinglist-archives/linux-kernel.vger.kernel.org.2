@@ -2,196 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F8133927D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCC833927B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbhCLPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:54:44 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:48705 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232509AbhCLPyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:54:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615564453; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=SR9ztMG5APmU84GNnULI+R1jSiJa1lfXUSNJ0K8XiEc=; b=ly7xUyTGxZVFwRZaUuaKnI4xqIisdsWOJ5lLW6gzQ8ig7m/P+dxkyMdt8Zp4Hl1Q4JkLLKeH
- /ZZjbSMkIjOLxpxJyXcNrlm+QbNYFEd48UoQlS1Sy2K7b0HYrRm/16Zd6QkBuP6lNPw3KL/k
- t0qoIL8lLMctWTJ8AO/IvWevLLc=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 604b8e926dc1045b7d16b25b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Mar 2021 15:53:54
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DCC36C4346B; Fri, 12 Mar 2021 15:53:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.156.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CC35C4346B;
-        Fri, 12 Mar 2021 15:53:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0CC35C4346B
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v4 2/2] arm64: dts: qcom: Add sound node for
- sc7180-trogdor-coachz
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     gross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>
-References: <20210311164815.14113-1-srivasam@codeaurora.org>
- <20210311164815.14113-3-srivasam@codeaurora.org>
- <CAD=FV=VZrfgZHXBFKD2f8uygQC32mPt1CQqMpUzio+yq_Era0A@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <ac6695e0-0628-4b05-bb55-db5abb577158@codeaurora.org>
-Date:   Fri, 12 Mar 2021 21:23:45 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232301AbhCLPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232229AbhCLPx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:53:57 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A096C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:53:57 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id y16so5093754wrw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:53:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Nf/x3zdOo4NltH5YdliW8QtzzVE+SJmh6Ofm5Su6NTI=;
+        b=DPoPxHIC42Nu7DXh2UsEAnJWPFfA50NY9vRtjTTu52q/y2IropDXGPAanOKL276Dux
+         /yBBODZK/+F0U2WDPTSeqONqwea06TkjA00UKGmBvd7aIMO1N3odzUpf12f0jNO4IQ70
+         NBNbtrI7KpVb1DMvauN+htMpb4eQ5TgBoY81JaKbJ+mZQ11eFi0Yxr9/Zmc8tAS9Ar7O
+         1fGOK1KCMrQ8AUsSNR/VgkUIPziYbegKu35VvAVMrjcyRSc4xI7Lgrn/9iyqltNROjOP
+         1s3UGwvKG+1cr2Dd12gq1GxOVY3tuYQiNAizic26XSjKGLZdMuXSQBr0N+fgfPMDXDHL
+         E5PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Nf/x3zdOo4NltH5YdliW8QtzzVE+SJmh6Ofm5Su6NTI=;
+        b=mwqX4jAHaGoWyhLt3bAlvUgdzBSiFTHwUuksezepiUfxr35vxV9LC/boPS3lk8Lixj
+         GS3AMwbqSo7AJB/HcRqXhTRRkrlPdQeo3+1IjlzNUGpFj7OLqNSvz0wKd6vyZz+fVU20
+         r/7H33dMguh1yCTE+rtJg6sFG//sA1DNGM2de6OfG6Kk8hvJOjE0GZFdxASVIA8c16YD
+         mV4caOLnnkacIp2qc+UVXjSfYiN5viyOZkbWR5PfkNFaWd8wL34CdJ9rnbeotsl2IBlr
+         cJipSUGMR0bYja0ESCGVY7BH4DQHWpAbka6zb7C2UKrUdkO+QvMAalhm+lUR/7+8mNhp
+         /Q+Q==
+X-Gm-Message-State: AOAM531OIiGAL4e10T8K5IdPbqNMb2vD/Vh0RH/LHNMtu7FBt4nZ4FDf
+        skpyb9/KwN5sjY/XPhKrn57pca+5yfoXjw==
+X-Google-Smtp-Source: ABdhPJyOgIySm2XuuxssRqoflifsys8dPKXZGlhOXbB4SqKGDnrsUhWWwqynyp7g5FQ058K4gPpjoQ==
+X-Received: by 2002:a5d:4903:: with SMTP id x3mr14701303wrq.143.1615564435935;
+        Fri, 12 Mar 2021 07:53:55 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cc8a:6653:68f4:ff69? ([2a01:e34:ed2f:f020:cc8a:6653:68f4:ff69])
+        by smtp.googlemail.com with ESMTPSA id h22sm2964654wmb.36.2021.03.12.07.53.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 07:53:55 -0800 (PST)
+Subject: Re: [PATCH 2/3] thermal/drivers/devfreq_cooling: Use device name
+ instead of auto-numbering
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
+ <20210310114600.27178-2-daniel.lezcano@linaro.org>
+ <8f17dc8b-3259-8e6a-f46b-b97495ecd550@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <345395f7-006d-c879-a777-c24d79ae9e23@linaro.org>
+Date:   Fri, 12 Mar 2021 16:53:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=VZrfgZHXBFKD2f8uygQC32mPt1CQqMpUzio+yq_Era0A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8f17dc8b-3259-8e6a-f46b-b97495ecd550@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-Thanks for time and valuable inputs!!!
-
-On 3/12/2021 1:24 AM, Doug Anderson wrote:
-> Hi,
->
-> On Thu, Mar 11, 2021 at 8:48 AM Srinivasa Rao Mandadapu
-> <srivasam@codeaurora.org> wrote:
->> This is a trgodor variant, required to have sound node variable
->> for coachz specific platform.
+On 12/03/2021 12:15, Lukasz Luba wrote:
+> 
+> 
+> On 3/10/21 11:45 AM, Daniel Lezcano wrote:
+>> Currently the naming of a cooling device is just a cooling technique
+>> followed by a number. When there are multiple cooling devices using
+>> the same technique, it is impossible to clearly identify the related
+>> device as this one is just a number.
 >>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> For instance:
+>>
+>>   thermal-devfreq-0
+>>   thermal-devfreq-1
+>>   etc ...
+>>
+>> The 'thermal' prefix is redundant with the subsystem namespace. This
+>> patch removes the 'thermal prefix and changes the number by the device
+> 
+> missing ' after 'thermal
+> 
+>> name. So the naming above becomes:
+>>
+>>   devfreq-5000000.gpu
+>>   devfreq-1d84000.ufshc
+>>   etc ...
+>>
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 >> ---
->>   .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi   | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> index 4ad520f00485..7623a30a64c7 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> @@ -238,3 +238,21 @@ &tlmm {
->>                            "DP_HOT_PLUG_DET",
->>                            "EC_IN_RW_ODL";
->>   };
->> +
->> +&sound {
->> +       compatible = "google,sc7180-coachz";
-> You're placing this in the wrong place. Pay attention to the section
-> headings. Your patch is putting this in the section "PINCTRL -
-> board-specific pinctrl". That's not right.
->
->
->> +       model = "sc7180-adau7002-max98357a";
->> +       audio-routing = "PDM_DAT", "DMIC";
->> +
->> +       dai-link@0 {
->> +               link-name = "MultiMedia0";
->> +               reg = <0>;
->> +               cpu {
->> +                       sound-dai = <&lpass_cpu 0>;
-> Shouldn't the 0 above be "MI2S_PRIMARY" ?  ...and the "reg" as well?
-Yes, It's required. Will change, and re-post.
->
->
->> +               };
->> +
->> +               codec {
->> +                       sound-dai = <&adau7002>;
->> +               };
->> +       };
-> Some overall notes, though:
->
-> 1. You don't actually need to duplicate everything that you have
-> above. Whether you realize it or not the way devicetree works is that
-> it _merges_ the node in the "coachz" devicetree with the one from the
-> trogdor one (it doesn't replace it). So in trogdor you have:
->
-> dai-link@0 {
->    link-name = "MultiMedia0";
->    reg = <MI2S_PRIMARY>;
->    cpu {
->      sound-dai = <&lpass_cpu MI2S_PRIMARY>;
->    };
->
->    codec {
->      sound-dai = <&alc5682 MI2S_PRIMARY>;
->    };
-> };
->
-> ...and in coachz you have:
->
-> dai-link@0 {
->    link-name = "MultiMedia0";
->    reg = <MI2S_PRIMARY>;
->    cpu {
->      sound-dai = <&lpass_cpu MI2S_PRIMARY>;
->    };
->
->    codec {
->      sound-dai = <&adau7002>;
->    };
-> };
->
-> Almost all of that is duplication. It's best not to duplicate. Thus,
-> one step better than what you have would be to just have this in
-> coachz to override what you need:
->
-> dai-link@0 {
->    codec {
->      sound-dai = <&adau7002>;
->    };
-> };
->
->
-> 2. In general it's discouraged (and error prone) to try to replicate
-> hierarchies from your parent. So the best would be to change trogdor's
-> device tree to something like this:
->
-> dai-link@0 {
->    link-name = "MultiMedia0";
->    reg = <MI2S_PRIMARY>;
->    cpu {
->      sound-dai = <&lpass_cpu MI2S_PRIMARY>;
->    };
->
->    multimedia0_codec: codec {
->      sound-dai = <&alc5682 MI2S_PRIMARY>;
->    };
-> };
->
-> ...and then in coachz you override like:
->
-> &multimedia0_codec {
->     sound-dai = <&alc5682 MI2S_PRIMARY>;
-> };
-Okay. Will change accordingly and re-post.
+
+[ ... ]
+
+> ---------------------------------------------------------
+> 
+> We should allocate tmp buffer for it, to not loose the meaningful part
+> of that string name or end up with only the same prefix, like for the
+> first 3 from top:
+> 
+> devfreq-18321000.qco
+> 
+> or for the GPU:
+> devfreq-3d00000.qcom
+> 
+> This is tricky area and vendors might put any non-meaningful prefix.
+> 
+> The rest of the code looks OK, only this name construction part.
+
+That requires a change in the thermal_core code to replace the strlcpy
+into the cdev->type by a kstrdup.
+
+Otherwise the name will be truncated in any case by the underlying
+thermal_cooling_device_register() function.
+
 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
