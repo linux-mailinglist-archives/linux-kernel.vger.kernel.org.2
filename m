@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855B633994F
+	by mail.lfdr.de (Postfix) with ESMTP id D174D339950
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235377AbhCLVwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:52:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
+        id S235384AbhCLVwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:52:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235347AbhCLVwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:52:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 084CE64F73;
-        Fri, 12 Mar 2021 21:52:30 +0000 (UTC)
+        id S235357AbhCLVwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:52:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3444864F4C;
+        Fri, 12 Mar 2021 21:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615585950;
-        bh=DmeIx9BwxAyci4fTOWp6uYyGctOd9rLpAOz0oaNZw6w=;
+        s=k20201202; t=1615585953;
+        bh=Z95UERGTRC6EFJo/x/dyX8g2BVVA9c599UJcbt4g4yQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KLaCaGEuq2tvxoh4HCcQ/5MePyD8bfro3HVs0guIkI+6UXSI4OwxjSpDVmPwVHein
-         uJiZFWNfK2sWGg4Eapruu1Q+J7v8TrBYe3y/Q2Q1RQAdQ/hi3M6u/Uit3ILEouofKp
-         HX9LqXtFgsj3/RNnIegw7isg6KVbQ6OSxst/1rGPiTxfeuR2EIHBjfirybHz4gFAJe
-         TfaF63bA99m0gpZdLZCQM4SbeTOqphls58RJzvyownKyn8KMgjqM/jinnnjWEnph6Z
-         PJXS89Yge8ihPUjF0uc5xxCO42q2lLaOTQQYG9alzEFNBdlVSEVC1kw9i/2y5zTrUp
-         iqpubiKb1VO3A==
+        b=rMI/9iHuEsGUAo2r2WDHN2BnXNt/Ef9hFr8kFD2kL8Xteva+mRrxfE4Xfz/ScVXhH
+         z20syaFthRNXIA+nzodaYbo5hvnsdL6XnuxXJQkStxE1y4PmOi3mjQiQ5Mbr47Rn5a
+         YSwh/igT4kyWgPZf5ExtcylzYEPhtMqP/+8I5ZHuRb/EJ4nTn21wzmznH8Q8vAJMrp
+         EhNhRAvyHyPyZX2De+UrjryUM50bKyU8y2MI12UbysH2hkaa5UjxM/olzEDMAFBmnA
+         fJeOLNF58SCpr1t3oBfwFQ/l9EnouRYJwTNYdpaDG5Sl9h/7PPolJZITz3RizEUaDC
+         FRWue06qXRkLg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E2BC660A2D;
-        Fri, 12 Mar 2021 21:52:29 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.12-rc2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2D160609CC;
+        Fri, 12 Mar 2021 21:52:33 +0000 (UTC)
+Subject: Re: [GIT PULL] Power management fixes for v5.12-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
-References: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 1112963427d6d186f8729cf36fefb70d5ca5a84a
+In-Reply-To: <CAJZ5v0jzkMkavZVnwQzjRmu9gg-ReicViPG4QU+Lh4Yp0sVohg@mail.gmail.com>
+References: <CAJZ5v0jzkMkavZVnwQzjRmu9gg-ReicViPG4QU+Lh4Yp0sVohg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0jzkMkavZVnwQzjRmu9gg-ReicViPG4QU+Lh4Yp0sVohg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.12-rc3
+X-PR-Tracked-Commit-Id: 7180323227702b46677e51d0da71f452615efd8c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9afc1163794707a304f107bf21b8b37e5c6c34f4
-Message-Id: <161558594987.23578.431083380474158862.pr-tracker-bot@kernel.org>
-Date:   Fri, 12 Mar 2021 21:52:29 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 3077f0279effe1422410dafdf3c14d5756f1239a
+Message-Id: <161558595317.23578.2101843489991148688.pr-tracker-bot@kernel.org>
+Date:   Fri, 12 Mar 2021 21:52:33 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Mar 2021 11:05:45 -0800:
+The pull request you sent on Fri, 12 Mar 2021 19:20:35 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.12-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9afc1163794707a304f107bf21b8b37e5c6c34f4
+https://git.kernel.org/torvalds/c/3077f0279effe1422410dafdf3c14d5756f1239a
 
 Thank you!
 
