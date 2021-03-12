@@ -2,218 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BE6339757
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EC233975B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhCLTWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        id S233374AbhCLTXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbhCLTVu (ORCPT
+        with ESMTP id S233262AbhCLTXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:21:50 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C55CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:21:50 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id i1so18178803qvu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:21:50 -0800 (PST)
+        Fri, 12 Mar 2021 14:23:22 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BCBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:23:20 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id g24so4676407qts.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 11:23:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=fdqfNR+CjGGNSuJTg55c2hFzZvvxvJUGhqyHXXg4ybs=;
-        b=nC4vXrBzqSl9AZnmLt2eJCNznY8YnPHT7ChQO1OQd2g0NDDmbq8/8MFMZXhP+9PR8A
-         Dt6g78XS5HYJ29GGGz+4czTRfRrJfxcEVhdCG8xGzBUjxQw+Dug6g7mZkRC31hI0E+bh
-         oal3xbIbIUFTqo/8N2L/xttfhxCurqIK5F9SqzGQ3YnTBf6uOI9JC7nuVgojaNGvpAmy
-         Bs+CWgBLoblETKphLohfWM0x+cj0JGfjledhTg6RFLpXSiXLaqRNHa+b2hcWEq4to2Wj
-         U8Y9eghudwUDAdHsZNQ+AWh5PdNm5AmYvCQJlHyMCl9SiMwec6jxnI3Ek3wElJbsI/R3
-         o12w==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LxcK0eZg763Uv1zd+J5lylhCKFwZmqtvyHdZWDEW0d8=;
+        b=ljHVoGPVLNn789IjAbykCgOWdKQ/N9sJ5GU7awZHd5nVj/n4kfruTCAuf96n2b0Awu
+         EVrmc+ZyQnHN8ShqPijwi8sxpJOtfbptOyCNnCGL+G7FGqFVvCI+I5P7QQNjJHcWR8G8
+         r9tjpkktkjKGx05pwTrqMaqadnucvibNYg6QXXv86lleG5JLN5k6XBainK2S/jqZHGJi
+         ZhPKZ/QSJ1h3LOaKxPOvpw1//Wu+hRMpw+RZ5rvi4dzS5a67HYc6TiOst4CWxvIELdGI
+         zAeSbpUERGJJODlQqZ2pAfVQ7Fl7oTtiB/7fgy+nivp2oQjgdOmg71Lx0TYbwXyfj9IJ
+         VKGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=fdqfNR+CjGGNSuJTg55c2hFzZvvxvJUGhqyHXXg4ybs=;
-        b=uoM+GJwtJbWuQqIkCuZP2WRgVWRJ8grwr81dEPf0Dqh9+qf4u5ir/0+ssbyIbB+k77
-         XwgbyoHWcxldSecWVld0cYSIGyaferfQp57ocplVQ7f2rV370jcnsUnZTmz0pyoZv2JV
-         ZBvw9Jq5JUxZwz5ZCIqTtBXNVJfebGTDszgKFgqqgOR6SbYRJE05Og+jyyhMSjuDnN7O
-         2BjXGCUap40K6Nyh2z9iFRa4mRxkiNxFzzSkxe9XprPE7muHuVomYBpTeO37SQXBfzPc
-         5UbmeHLDI6+C2Uj54QAQV2qeoQfSvWz07B76TAKxMdqvyjoOisZf2Fwr2GPiHa/f6qeK
-         ovag==
-X-Gm-Message-State: AOAM532Q5BkEaed2Xsc2ftkqQSBdqfuRWV8wwne6pgFYZpZZF2hf+Qrp
-        9573rVlBJ/H4AutA/Cs8FBlW88NPDArWctrSoHk=
-X-Google-Smtp-Source: ABdhPJz1W7I3Gcpoo/shePfLsf4g40kt3kjDxlfyBrCXW2fkkyPRa+kL8DMZW9K4YmYWjGinZxNxzMS7NbBIfnmjO1k=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f1f4:3252:5898:ad84])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:425:: with SMTP id
- a5mr8339289qvy.55.1615576909351; Fri, 12 Mar 2021 11:21:49 -0800 (PST)
-Date:   Fri, 12 Mar 2021 11:21:39 -0800
-Message-Id: <20210312192139.2503087-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] gcov: fix clang-11+ support
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LxcK0eZg763Uv1zd+J5lylhCKFwZmqtvyHdZWDEW0d8=;
+        b=DRgW2sN0R4HMTDMXM5TSdVSLXufhyLQxRbj/zsZ+V/ygRXWl2MwsZjKeGgSlBidRSb
+         jD22sDnV+cNLdg2jk6ClrRnpC9tX5c4X//5K9lRJCF3tTbqH9pJu/y+XKIdx0Ks79lmD
+         d4ptE2ugi+RL43H9T+NJLKFfD+1RuR9/5ISpkuSND6Oq9xXbj2FP8ANRRUATiQaoIHIp
+         8h0QBBif4xgt7OqN08x3qITT2F98zLdthnf96WN/s5ccxs6ObmZTceVc9EgaQhpK3WR3
+         UVXTq4olgU1ebeEtkGRiEgtPsCvmg/uCLw6v8qmpmFxT2RZ2t/RRZm5beJSCFdY/AGWS
+         Ev4Q==
+X-Gm-Message-State: AOAM5303gN3Koex94OcH68Aib1AU9NPc/iaxT9n+W8CJg2DOEX2vdTXp
+        qV+kupbR+LMeNHWlaqVpbPkSTw==
+X-Google-Smtp-Source: ABdhPJy3iIoF9uJA3Ih8w5f7fKAqR36OCqq2XVQodovjVw2GFZip1y0c9eIaDp97366EE9OE2/8LuQ==
+X-Received: by 2002:ac8:53c1:: with SMTP id c1mr13150059qtq.100.1615576999581;
+        Fri, 12 Mar 2021 11:23:19 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id s19sm4982668qks.130.2021.03.12.11.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 11:23:19 -0800 (PST)
+Date:   Fri, 12 Mar 2021 14:23:18 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Subject: Re: [External] Re: [PATCH v3 2/4] mm: memcontrol: make
+ page_memcg{_rcu} only applicable for non-kmem page
+Message-ID: <YEu/pnK0n8nI2OBy@cmpxchg.org>
+References: <20210309100717.253-1-songmuchun@bytedance.com>
+ <20210309100717.253-3-songmuchun@bytedance.com>
+ <YEoXLX37sVgULO4A@cmpxchg.org>
+ <CAMZfGtXZqe7g6e4wf=tUZqxBs-F1QkS2=01Td4Rv3_qTuF0bPA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtXZqe7g6e4wf=tUZqxBs-F1QkS2=01Td4Rv3_qTuF0bPA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM changed the expected function signatures for llvm_gcda_start_file()
-and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
-or newer may have noticed their kernels failing to boot due to a panic
-when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
-the function signatures so calling these functions doesn't panic the
-kernel.
+Hello Muchun,
 
-When we drop clang-10 support from the kernel, we should carefully
-update the original implementations to try to preserve git blame,
-deleting these implementations.
+On Fri, Mar 12, 2021 at 03:14:07PM +0800, Muchun Song wrote:
+> On Thu, Mar 11, 2021 at 9:12 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > @@ -358,14 +358,26 @@ enum page_memcg_data_flags {
+> > >
+> > >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
+> > >
+> > > +/* Return true for charged page, otherwise false. */
+> > > +static inline bool page_memcg_charged(struct page *page)
+> > > +{
+> > > +     unsigned long memcg_data = page->memcg_data;
+> > > +
+> > > +     VM_BUG_ON_PAGE(PageSlab(page), page);
+> > > +     VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
+> > > +
+> > > +     return !!memcg_data;
+> > > +}
+> >
+> > This is mosntly used right before a page_memcg_check(), which makes it
+> > somewhat redundant except for the VM_BUG_ON_PAGE() for slab pages.
+> 
+> Should I rename page_memcg_charged to page_memcg_raw?
+> And use page_memcg_raw to check whether the page is charged.
+> 
+> static inline bool page_memcg_charged(struct page *page)
+> {
+>         return page->memcg_data;
+> }
 
-Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-Cc: Fangrui Song <maskray@google.com>
-Reported-by: Prasad Sodagudi<psodagud@quicinc.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+You can just directly access page->memcg_data in places where you'd
+use this helper. I think it's only the two places in mm/page_alloc.c,
+and they already have CONFIG_MEMCG in place, so raw access works.
 
-diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-index c94b820a1b62..20e6760ec05d 100644
---- a/kernel/gcov/clang.c
-+++ b/kernel/gcov/clang.c
-@@ -75,7 +75,9 @@ struct gcov_fn_info {
- 
- 	u32 num_counters;
- 	u64 *counters;
-+#if __clang_major__ < 11
- 	const char *function_name;
-+#endif
- };
- 
- static struct gcov_info *current_info;
-@@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
- }
- EXPORT_SYMBOL(llvm_gcov_init);
- 
-+#if __clang_major__ < 11
- void llvm_gcda_start_file(const char *orig_filename, const char version[4],
- 		u32 checksum)
- {
-@@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
- 	current_info->checksum = checksum;
- }
- EXPORT_SYMBOL(llvm_gcda_start_file);
-+#else
-+void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
-+{
-+	current_info->filename = orig_filename;
-+	current_info->version = version;
-+	current_info->checksum = checksum;
-+}
-+EXPORT_SYMBOL(llvm_gcda_start_file);
-+#endif
- 
-+#if __clang_major__ < 11
- void llvm_gcda_emit_function(u32 ident, const char *function_name,
- 		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
- {
-@@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
- 	list_add_tail(&info->head, &current_info->functions);
- }
- EXPORT_SYMBOL(llvm_gcda_emit_function);
-+#else
-+void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
-+		u8 use_extra_checksum, u32 cfg_checksum)
-+{
-+	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-+
-+	if (!info)
-+		return;
-+
-+	INIT_LIST_HEAD(&info->head);
-+	info->ident = ident;
-+	info->checksum = func_checksum;
-+	info->use_extra_checksum = use_extra_checksum;
-+	info->cfg_checksum = cfg_checksum;
-+	list_add_tail(&info->head, &current_info->functions);
-+}
-+EXPORT_SYMBOL(llvm_gcda_emit_function);
-+#endif
- 
- void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
- {
-@@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
- 	}
- }
- 
-+#if __clang_major__ < 11
- static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
- {
- 	size_t cv_size; /* counter values size */
-@@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
- 	kfree(fn_dup);
- 	return NULL;
- }
-+#else
-+static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-+{
-+	size_t cv_size; /* counter values size */
-+	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
-+			GFP_KERNEL);
-+	if (!fn_dup)
-+		return NULL;
-+	INIT_LIST_HEAD(&fn_dup->head);
-+
-+	cv_size = fn->num_counters * sizeof(fn->counters[0]);
-+	fn_dup->counters = vmalloc(cv_size);
-+	if (!fn_dup->counters) {
-+		kfree(fn_dup);
-+		return NULL;
-+	}
-+
-+	memcpy(fn_dup->counters, fn->counters, cv_size);
-+
-+	return fn_dup;
-+}
-+#endif
- 
- /**
-  * gcov_info_dup - duplicate profiling data set
-@@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
-  * gcov_info_free - release memory for profiling data set duplicate
-  * @info: profiling data set duplicate to free
-  */
-+#if __clang_major__ < 11
- void gcov_info_free(struct gcov_info *info)
- {
- 	struct gcov_fn_info *fn, *tmp;
-@@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
- 	kfree(info->filename);
- 	kfree(info);
- }
-+#else
-+void gcov_info_free(struct gcov_info *info)
-+{
-+	struct gcov_fn_info *fn, *tmp;
-+
-+	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
-+		vfree(fn->counters);
-+		list_del(&fn->head);
-+		kfree(fn);
-+	}
-+	kfree(info->filename);
-+	kfree(info);
-+}
-+#endif
- 
- #define ITER_STRIDE	PAGE_SIZE
- 
+> > But it's also a bit of a confusing name: slab pages are charged too,
+> > but this function would crash if you called it on one.
+> >
+> > In light of this, and in light of what I wrote above about hopefully
+> > converting more and more allocations from raw memcg pins to
+> > reparentable objcg, it would be bettor to have
+> >
+> >         page_memcg() for 1:1 page-memcg mappings, i.e. LRU & kmem
+> 
+> Sorry. I do not get the point. Because in the next patch, the kmem
+> page will use objcg to charge memory. So the page_memcg()
+> should not be suitable for the kmem pages. So I add a VM_BUG_ON
+> in the page_memcg() to catch invalid usage.
+> 
+> So I changed some page_memcg() calling to page_memcg_check()
+> in this patch, but you suggest using page_memcg().
 
-base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
--- 
-2.31.0.rc2.261.g7f71774620-goog
+It would be better if page_memcg() worked on LRU and kmem pages. I'm
+proposing to change its implementation.
 
+The reason is that page_memcg_check() allows everything and does no
+sanity checking. You need page_memcg_charged() for the sanity checks
+that it's LRU or kmem, but that's a bit difficult to understand, and
+it's possible people will add more callsites to page_memcg_check()
+without the page_memcg_charged() checks. It makes the code less safe.
+
+We should discourage page_memcg_check() and make page_memcg() more
+useful instead.
+
+> I am very confused. Are you worried about the extra overhead brought
+> by calling page_memcg_rcu()? In the next patch, I will remove
+> page_memcg_check() calling and use objcg APIs.
+
+I'm just worried about the usability of the interface. It should be
+easy to use, and make it obvious if there is a user bug.
+
+For example, in your next patch, mod_lruvec_page_state does this:
+
+       if (PageMemcgKmem(head)) {
+	       rcu_read_lock();
+	       memcg = obj_cgroup_memcg(page_objcg(page));
+       } else {
+	       memcg = page_memcg(head);
+	       /*
+		* Untracked pages have no memcg, no lruvec. Update only the
+		* node.
+		*/
+	       if (!memcg) {
+		       __mod_node_page_state(pgdat, idx, val);
+		       return;
+	       }
+	}
+
+	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+	__mod_lruvec_state(lruvec, idx, val);
+
+       if (PageMemcgKmem(head))
+	       rcu_read_unlock();
+
+I'm proposing to implement page_memcg() in a way where you can do this:
+
+	rcu_read_lock();
+	memcg = page_memcg(page);
+	if (!memcg) {
+		rcu_read_unlock();
+		__mod_node_page_state();
+		return;
+	}
+	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+	__mod_lruvec_state(lruvec, idx, val);
+	rcu_read_unlock();
+
+[ page_memcg() is:
+
+	if (PageMemcgKmem(page))
+		return obj_cgroup_memcg(__page_objcg(page));
+	else
+		return __page_memcg(page);
+
+  and __page_objcg() and __page_memcg() do the raw page->memcg_data
+  translation and the VM_BUG_ON_PAGE() checks for MEMCG_DATA_* ]
+
+This is a lot simpler and less error prone.
+
+It does take rcu_read_lock() for LRU pages too, which strictly it
+doesn't need to right now. But it's cheap enough (and actually saves a
+branch).
+
+Longer term we most likely need it there anyway. The issue you are
+describing in the cover letter - allocations pinning memcgs for a long
+time - it exists at a larger scale and is causing recurring problems
+in the real world: page cache doesn't get reclaimed for a long time,
+or is used by the second, third, fourth, ... instance of the same job
+that was restarted into a new cgroup every time. Unreclaimable dying
+cgroups pile up, waste memory, and make page reclaim very inefficient.
+
+We likely have to convert LRU pages and most other raw memcg pins to
+the objcg direction to fix this problem, and then the page->memcg
+lookup will always require the rcu read lock anyway.
+
+Finally, a universal page_memcg() should also make uncharge_page()
+simpler. Instead of obj_cgroup_memcg_get(), you could use the new
+page_memcg() to implement a universal get_mem_cgroup_from_page():
+
+	rcu_read_lock();
+retry:
+	memcg = page_memcg(page);
+	if (unlikely(!css_tryget(&memcg->css)))
+		goto retry;
+	rcu_read_unlock();
+	return memcg;
+
+and then uncharge_page() becomes something like this:
+
+	/* Look up page's memcg & prepare the batch */
+	memcg = get_mem_cgroup_from_page(page);
+	if (!memcg)
+		return;
+	if (ug->memcg != memcg) {
+		...
+		css_get(&memcg->css); /* batch ref, put in uncharge_batch() */
+	}
+	mem_cgroup_put(memcg);
+
+	/* Add page to batch */
+	nr_pages = compound_nr(page);
+	...
+
+	/* Clear the page->memcg link */
+	if (PageMemcgKmem(page))
+		obj_cgroup_put(__page_objcg(page));
+	else
+		css_put(__page_memcg(&memcg->css));
+	page->memcg_data = 0;
+
+Does that sound reasonable?
+
+PS: We have several page_memcg() callsites that could use the raw
+__page_memcg() directly for now. Is it worth switching them and saving
+the branch? I think probably not, because these paths aren't hot, and
+as per above, we should switch them to objcg sooner or later anyway.
