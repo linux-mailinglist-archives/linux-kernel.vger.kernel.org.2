@@ -2,192 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4BA33976B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C9B339789
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhCLT25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbhCLT2Z (ORCPT
+        id S234373AbhCLTjF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 14:39:05 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:45658 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234375AbhCLTiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:28:25 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27046C061574;
-        Fri, 12 Mar 2021 11:28:25 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id z5so12408686plg.3;
-        Fri, 12 Mar 2021 11:28:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xsXCUAe7GzyEFcIbzRGPi+QWjqVbRvQwSdbS7Lm1E4M=;
-        b=myFMEhn81hANx0heDy1GieIbR1tsA44TdlU0yulRozgxvyj5qQ7FTmE1fCBxSfcWE7
-         cthXXk+g9MsuaAlmFNRgv6U5/VYUVPrmCIDlaKiMBbxvP5YsmpSABPa/W5wsDpF9Al1A
-         NIUyOkqi3aP5gX7p3HcPsV1rvdcOw3ffJHZ9lHAvHil1Y+wUklRd5/6lFTorMIxR4IkC
-         jn9qXU1yP2Rh4trZX5VPSPXXcFSt44P+Rk58R/k3exJsMf6P7TX9L4sZn/QskmENj/7j
-         A4pImP9Z6TQajenglJM/VSAWR+mGoM446jHKvevW1INOeokZsIpFgTYGaUQfhnkuyySz
-         KpvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=xsXCUAe7GzyEFcIbzRGPi+QWjqVbRvQwSdbS7Lm1E4M=;
-        b=lGVUpbv+v1uqOnVQBq0Am/yDtDa7kKytlbj7XcqyChFBc1EyCIXIwdbfhvJFQtLm4A
-         DlcCCr5+dtPSWELwgxBvMw9Q1QUK38Ht8II2cAObUj3V/qJrDOewFCUDqctvqG5/z25J
-         BMBPu0VO1DTn1FLLHqwkpgnd8TJyOG7jp+EJ8aggnkoCJ7LBOedS3l1FiaAdSFrQvYEf
-         lu0rAaKjpiTfQGWRNnucQv9zGQOLcPZyv13O0HJbLSA0pmoY0ujI1Pg8Nkz83QUg8lqd
-         Y8J3+wBFTr7eK88ptrZwIKm1Nv0N8TdqldiXFfIfq5LsX3hoISyZ75xi4AKq8zSXMqg6
-         hF8w==
-X-Gm-Message-State: AOAM532XzSceOY7Cso2rYXrQ5TgrOdwpFzsSwSmlcRl/HgcFnZXbsM5Y
-        U7rl/7JPP+kTzmU9FfNXnKfGPacgPWY=
-X-Google-Smtp-Source: ABdhPJwiqRNbh75mJffl6hk0vK3fzTsi3TZRyV8aavY5U5bATh+Y6qeE+rzd9REB9mvVMlSfghGUtw==
-X-Received: by 2002:a17:902:6a87:b029:e6:6a3d:29e8 with SMTP id n7-20020a1709026a87b02900e66a3d29e8mr83679plk.10.1615577304498;
-        Fri, 12 Mar 2021 11:28:24 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:8d76:9272:43a9:a6d0])
-        by smtp.gmail.com with ESMTPSA id b9sm6020236pgn.42.2021.03.12.11.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 11:28:23 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 12 Mar 2021 11:28:21 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YEvA1dzDsFOuKdZ/@google.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
- <20210310212128.GR4332@42.do-not-panic.com>
- <YErOkGrvtQODXtB0@google.com>
- <20210312183238.GW4332@42.do-not-panic.com>
+        Fri, 12 Mar 2021 14:38:54 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 0BDA23E9914;
+        Fri, 12 Mar 2021 14:36:08 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id VKZZPTsQk86H; Fri, 12 Mar 2021 14:36:06 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id E9F1F3E1E5F;
+        Fri, 12 Mar 2021 13:44:04 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Yb_CrbuOxdqK; Fri, 12 Mar 2021 13:44:04 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id B062D3E2BF7;
+        Fri, 12 Mar 2021 13:20:55 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312183238.GW4332@42.do-not-panic.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 17:21:20 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312162056.B062D3E2BF7@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 06:32:38PM +0000, Luis Chamberlain wrote:
-> On Thu, Mar 11, 2021 at 06:14:40PM -0800, Minchan Kim wrote:
-> > On Wed, Mar 10, 2021 at 09:21:28PM +0000, Luis Chamberlain wrote:
-> > > On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
-> > > > If I understand correctly, bugs you found were related to module
-> > > > unloading race while the zram are still working.
-> > > 
-> > > No, that is a simplifcation of the issue. The issue consists of
-> > > two separate issues:
-> > > 
-> > >  a) race against module unloading in light of incorrect racty use of
-> > >     cpu hotplug multistate support
-> > 
-> > 
-> > Could you add some pusedo code sequence to show the race cleary?
-> 
-> Let us deal with each issue one at time. First, let's address
-> understanding the kernel warning can be reproduced easily by
-> triggering zram02.sh from LTP twice:
-> 
-> kernel: ------------[ cut here ]------------
-> kernel: Error: Removing state 63 which has instances left.
-> kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
-> kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
-> 
-> The first patch prevents this race. This race is possible because on
-> module init we associate callbacks for CPU hotplug add / remove:
-> 
-> static int __init zram_init(void)                                               
-> {
-> 	...
-> 	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
-> 	                              zcomp_cpu_up_prepare, zcomp_cpu_dead); 
-> 	...
-> }
-> 
-> The zcomp_cpu_dead() accesses the zcom->comp, and if zcomp->comp is
-> removed and this function is called, clearly we'll be accessing some
-> random data here and can easily crash afterwards:
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-I am trying to understand this crash. You mentioned the warning
-above but here mention crash(I understand sysfs race but this is
-different topic). What's the relation with above warning and
-crash here? You are talking the warning could change to the
-crash sometimes? 
+Sir/Madam,
 
-> 
-> int zcomp_cpu_dead(unsigned int cpu, struct hlist_node *node)                   
-> {
-> 	struct zcomp *comp = hlist_entry(node, struct zcomp, node);
-> 	struct zcomp_strm *zstrm;
-> 
-> 	zstrm = per_cpu_ptr(comp->stream, cpu);
-> 	zcomp_strm_free(zstrm);
-> 	return 0;
-> }
-> 
-> And zram's syfs reset_store() lets userspace call zram_reset_device()
-> which calls zcomp_destroy():
-> 
-> void zcomp_destroy(struct zcomp *comp)
-> {
-> 	cpuhp_state_remove_instance(CPUHP_ZCOMP_PREPARE, &comp->node);
-> 	free_percpu(comp->stream);
-> 	kfree(comp);
-> }
+CONGRATULATIONS!!!
 
-Do you mean the race between module unloading and zram_reset_device?
-If I understood correctly, the approach I put in the first reply would
-prevent this problem.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-> 
-> > It would be great if it goes in the description, too since it's
-> > more clear to show the problme.
-> 
-> Does the above do it?
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-Rather than that, let's have this kinds of explanation, which is
-more clear(it's a just example, not describing exact race you saw.
-You could be better to descibe it).
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
 
-CPU A                       CPU B
-moudle_unload
-destroy_devices           
-zram_remove_cb
-                            reset_store
-zcomp_cpu_dead
-                            zram_reset_device
-                            zcomp_destroy
-                            cpuhp_state_remove_instance
-zcomp_strm_free
-    
-> > 
-> > >  b) module unload race with sysfs attribute race on *any* driver which
-> > >     has sysfs attributes which also shares the same lock as used during
-> > >     module unload
-> > 
-> > Yub, that part I missed. Maybe, we need some wrapper to zram sysfs
-> > to get try_module_get in the warapper funnction and then call sub
-> > rountine only if it got the refcount.
-> > 
-> > zram_sysfs_wrapper(func, A, B)
-> >     if (!try_module_get(THIS_MODULE)
-> >         return -ENODEV;
-> >     ret = func(A,B);
-> >     module_put(THIS_MODULE);
-> >     return ret;
-> 
-> I'd much prefer this be resolved in kernfs later, if you look at the kernel
-> there are already some drivers which may have realized this requirement
-> the hard way. Open coding this I think makes the race / intent clearer.
-> 
-> Right now we have no semantics possible for a generic solution, but I
-> can work on one later.
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
 
-Yub, no problem. My point is let's have some zram sysfs wrapper to manage
-module_get/put automatically as I mentioned above so no need to deal with
-module refcount in worker functions.
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
