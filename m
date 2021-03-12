@@ -2,124 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7683391B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B4F339207
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhCLPoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:05 -0500
-Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:37005 "EHLO
-        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231745AbhCLPnd (ORCPT
+        id S233121AbhCLPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:45:06 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55612 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhCLPoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:43:33 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id DC7A01C3FF9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:31 +0000 (GMT)
-Received: (qmail 19760 invoked from network); 12 Mar 2021 15:43:31 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:31 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 1/7] mm/page_alloc: Move gfp_allowed_mask enforcement to prepare_alloc_pages
-Date:   Fri, 12 Mar 2021 15:43:25 +0000
-Message-Id: <20210312154331.32229-2-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
+        Fri, 12 Mar 2021 10:44:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 82F2D1F46E86
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 37A764800DE; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH 06/38] dt-bindings: power: supply: bq24190: Convert to DT schema format
+Date:   Fri, 12 Mar 2021 16:43:25 +0100
+Message-Id: <20210312154357.1561730-7-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__alloc_pages updates GFP flags to enforce what flags are allowed
-during a global context such as booting or suspend. This patch moves the
-enforcement from __alloc_pages to prepare_alloc_pages so the code can be
-shared between the single page allocator and a new bulk page allocator.
+Convert the binding to DT schema format.
 
-When moving, it is obvious that __alloc_pages() and __alloc_pages
-use different names for the same variable. This is an unnecessary
-complication so rename gfp_mask to gfp in prepare_alloc_pages() so the
-name is consistent.
-
-No functional change.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- mm/page_alloc.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ .../bindings/power/supply/bq24190.txt         | 61 ------------
+ .../bindings/power/supply/bq24190.yaml        | 92 +++++++++++++++++++
+ 2 files changed, 92 insertions(+), 61 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq24190.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq24190.yaml
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 00b67c47ad87..f0c1d74ead6f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4914,15 +4914,18 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	return page;
- }
- 
--static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-+static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
- 		int preferred_nid, nodemask_t *nodemask,
- 		struct alloc_context *ac, gfp_t *alloc_gfp,
- 		unsigned int *alloc_flags)
- {
--	ac->highest_zoneidx = gfp_zone(gfp_mask);
--	ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
-+	gfp &= gfp_allowed_mask;
-+	*alloc_gfp = gfp;
+diff --git a/Documentation/devicetree/bindings/power/supply/bq24190.txt b/Documentation/devicetree/bindings/power/supply/bq24190.txt
+deleted file mode 100644
+index ffe2be408bb6..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/bq24190.txt
++++ /dev/null
+@@ -1,61 +0,0 @@
+-TI BQ24190 Li-Ion Battery Charger
+-
+-Required properties:
+-- compatible: contains one of the following:
+-    * "ti,bq24190"
+-    * "ti,bq24192"
+-    * "ti,bq24192i"
+-    * "ti,bq24196"
+-- reg: integer, I2C address of the charger.
+-- interrupts[-extended]: configuration for charger INT pin.
+-
+-Optional properties:
+-- monitored-battery: phandle of battery characteristics devicetree node
+-  The charger uses the following battery properties:
+-    + precharge-current-microamp: maximum charge current during precharge
+-      phase (typically 20% of battery capacity).
+-    + charge-term-current-microamp: a charge cycle terminates when the
+-      battery voltage is above recharge threshold, and the current is below
+-      this setting (typically 10% of battery capacity).
+-  See also Documentation/devicetree/bindings/power/supply/battery.txt
+-- ti,system-minimum-microvolt: when power is connected and the battery is below
+-  minimum system voltage, the system will be regulated above this setting.
+-
+-child nodes:
+-- usb-otg-vbus:
+-  Usage: optional
+-  Description: Regulator that is used to control the VBUS voltage direction for
+-               either USB host mode or for charging on the OTG port.
+-
+-Notes:
+-- Some circuit boards wire the chip's "OTG" pin high (enabling 500mA default
+-  charge current on USB SDP ports, among other features). To simulate this on
+-  boards that wire the pin to a GPIO, set a gpio-hog.
+-
+-Example:
+-
+-	bat: battery {
+-		compatible = "simple-battery";
+-		precharge-current-microamp = <256000>;
+-		charge-term-current-microamp = <128000>;
+-		// etc.
+-	};
+-
+-	bq24190: charger@6a {
+-		compatible = "ti,bq24190";
+-		reg = <0x6a>;
+-		interrupts-extended = <&gpiochip 10 IRQ_TYPE_EDGE_FALLING>;
+-		monitored-battery = <&bat>;
+-		ti,system-minimum-microvolt = <3200000>;
+-
+-		usb_otg_vbus: usb-otg-vbus { };
+-	};
+-
+-	&twl_gpio {
+-		otg {
+-			gpio-hog;
+-			gpios = <6 0>;
+-			output-high;
+-			line-name = "otg-gpio";
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/power/supply/bq24190.yaml b/Documentation/devicetree/bindings/power/supply/bq24190.yaml
+new file mode 100644
+index 000000000000..0d7cbbdf808b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/bq24190.yaml
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 Sebastian Reichel
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/bq24190.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	ac->highest_zoneidx = gfp_zone(gfp);
-+	ac->zonelist = node_zonelist(preferred_nid, gfp);
- 	ac->nodemask = nodemask;
--	ac->migratetype = gfp_migratetype(gfp_mask);
-+	ac->migratetype = gfp_migratetype(gfp);
- 
- 	if (cpusets_enabled()) {
- 		*alloc_gfp |= __GFP_HARDWALL;
-@@ -4936,18 +4939,18 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- 			*alloc_flags |= ALLOC_CPUSET;
- 	}
- 
--	fs_reclaim_acquire(gfp_mask);
--	fs_reclaim_release(gfp_mask);
-+	fs_reclaim_acquire(gfp);
-+	fs_reclaim_release(gfp);
- 
--	might_sleep_if(gfp_mask & __GFP_DIRECT_RECLAIM);
-+	might_sleep_if(gfp & __GFP_DIRECT_RECLAIM);
- 
--	if (should_fail_alloc_page(gfp_mask, order))
-+	if (should_fail_alloc_page(gfp, order))
- 		return false;
- 
--	*alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
-+	*alloc_flags = current_alloc_flags(gfp, *alloc_flags);
- 
- 	/* Dirty zone balancing only done in the fast path */
--	ac->spread_dirty_pages = (gfp_mask & __GFP_WRITE);
-+	ac->spread_dirty_pages = (gfp & __GFP_WRITE);
- 
- 	/*
- 	 * The preferred zone is used for statistics but crucially it is
-@@ -4980,8 +4983,6 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 		return NULL;
- 	}
- 
--	gfp &= gfp_allowed_mask;
--	alloc_gfp = gfp;
- 	if (!prepare_alloc_pages(gfp, order, preferred_nid, nodemask, &ac,
- 			&alloc_gfp, &alloc_flags))
- 		return NULL;
++title: Binding for TI BQ2419x Li-Ion Battery Charger
++
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
++
++allOf:
++  - $ref: power-supply.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ti,bq24190
++      - ti,bq24192
++      - ti,bq24192i
++      - ti,bq24196
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  usb-otg-vbus:
++    type: object
++    description: |
++      Regulator that is used to control the VBUS voltage direction for
++      either USB host mode or for charging on the OTG port
++
++  ti,system-minimum-microvolt:
++    description: |
++      when power is connected and the battery is below minimum system voltage,
++      the system will be regulated above this setting.
++
++  omit-battery-class:
++    type: boolean
++    description: |
++      If this property is set, the operating system does not try to create a
++      battery device.
++
++  monitored-battery:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: |
++      phandle to a "simple-battery" compatible node.
++
++      This property must be a phandle to a node using the format described
++      in battery.yaml, with the following properties being required:
++      - precharge-current-microamp: maximum charge current during precharge phase
++                                    (typically 20% of battery capacity).
++      - charge-term-current-microamp: a charge cycle terminates when the battery voltage is
++                                      above recharge threshold, and the current is below this
++                                      setting (typically 10% of battery capacity).
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    bat: battery {
++      compatible = "simple-battery";
++      precharge-current-microamp = <256000>;
++      charge-term-current-microamp = <128000>;
++    };
++
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      charger@6a {
++        compatible = "ti,bq24190";
++        reg = <0x6a>;
++        interrupt-parent = <&gpiochip>;
++        interrupts = <10 IRQ_TYPE_EDGE_FALLING>;
++        monitored-battery = <&bat>;
++        ti,system-minimum-microvolt = <3200000>;
++
++        usb_otg_vbus: usb-otg-vbus { };
++      };
++    };
 -- 
-2.26.2
+2.30.1
 
