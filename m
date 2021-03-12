@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCF338681
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB3B338684
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCLHXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:23:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhCLHXO (ORCPT
+        id S231485AbhCLHY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:24:27 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:54683 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhCLHYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:23:14 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C8FC061574;
-        Thu, 11 Mar 2021 23:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=V8EvGHE3k1YiRgMTrp7qLTuS6RkrDfzz7tTWOsyRx1s=; b=IV+NIpbCNRcnzQeairHNU++m3P
-        M0+ScjK2vSAC9UaJMEB/U2JPPw89zKdm20JfMTETRTQE764i04dLcOFCWVH5hlNfKs4RF3LYInms7
-        t+F7IlBWzSzlWXDpWlPJ7KuKO2nDMTl+zwqa8XB2A2txK5hjqDWr+x5Kk/S6UDMUQhFIQVum7J5tn
-        I9Dk5LFIshWH00OtkPBE0N/mT2ZqKsCvX2qmriGgyOtz7HwvcFvXKXg8sKgu2xNkPyM/1EmwLlsmS
-        cdySHkcDopAAkNwgXujV+W/TFMh1U3tjQ0Oc1PuFoxKOaxouoqOxt5iqr+Ni/IakUhk3UhO+4cH6Q
-        hToUQCOw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKc8a-0011F1-La; Fri, 12 Mar 2021 07:23:10 +0000
-Subject: Re: [PATCH] net: ethernet: dec: tulip: Random spelling fixes
- throughout the file pnic2.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210312070542.31309-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fe57b506-b737-e3a5-025f-a9cad45a1dca@infradead.org>
-Date:   Thu, 11 Mar 2021 23:23:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 12 Mar 2021 02:24:19 -0500
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id D9B9A200002;
+        Fri, 12 Mar 2021 07:24:12 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 08:24:11 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Conor Culhane <conor.culhane@silvaco.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-i3c@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: i3c: Fix silvaco,i3c-master-v1 compatible
+ string
+Message-ID: <20210312082411.1435f9aa@xps13>
+In-Reply-To: <20210311234056.1588751-1-robh@kernel.org>
+References: <20210311234056.1588751-1-robh@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210312070542.31309-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 11:05 PM, Bhaskar Chowdhury wrote:
+
+Rob Herring <robh@kernel.org> wrote on Thu, 11 Mar 2021 16:40:56 -0700:
+
+> The example for the Silvaco I3C master doesn't match the schema's
+> compatible string. Fix it.
 > 
-> Random spelling fixes throughout the file.
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Conor Culhane <conor.culhane@silvaco.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: linux-i3c@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/net/ethernet/dec/tulip/pnic2.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/dec/tulip/pnic2.c b/drivers/net/ethernet/dec/tulip/pnic2.c
-> index 412adaa7fdf8..04daffb8db2a 100644
-> --- a/drivers/net/ethernet/dec/tulip/pnic2.c
-> +++ b/drivers/net/ethernet/dec/tulip/pnic2.c
-> @@ -107,7 +107,7 @@ void pnic2_start_nway(struct net_device *dev)
->           */
->  	csr14 = (ioread32(ioaddr + CSR14) & 0xfff0ee39);
-> 
-> -        /* bit 17 - advetise 100baseTx-FD */
-> +        /* bit 17 - advertise 100baseTx-FD */
+> diff --git a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> index adb5165505aa..62f3ca66274f 100644
+> --- a/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> +++ b/Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+> @@ -49,7 +49,7 @@ additionalProperties: true
+>  examples:
+>    - |
+>      i3c-master@a0000000 {
+> -        compatible = "silvaco,i3c-master";
+> +        compatible = "silvaco,i3c-master-v1";
+>          clocks = <&zynqmp_clk 71>, <&fclk>, <&sclk>;
+>          clock-names = "pclk", "fast_clk", "slow_clk";
+>          interrupt-parent = <&gic>;
 
-OK above. But:
-https://en.wikipedia.org/wiki/Autonegotiation
-
->          if (tp->sym_advertise & 0x0100) csr14 |= 0x00020000;
-> 
->          /* bit 16 - advertise 100baseTx-HD */
-> @@ -116,7 +116,7 @@ void pnic2_start_nway(struct net_device *dev)
->          /* bit 6 - advertise 10baseT-HD */
->          if (tp->sym_advertise & 0x0020) csr14 |= 0x00000040;
-> 
-> -        /* Now set bit 12 Link Test Enable, Bit 7 Autonegotiation Enable
-> +        /* Now set bit 12 Link Test Enable, Bit 7 Auto negotiation Enable
->           * and bit 0 Don't PowerDown 10baseT
->           */
->          csr14 |= 0x00001184;
-> @@ -157,7 +157,7 @@ void pnic2_start_nway(struct net_device *dev)
->          /* all set up so now force the negotiation to begin */
-> 
->          /* read in current values and mask off all but the
-> -	 * Autonegotiation bits 14:12.  Writing a 001 to those bits
-> +	 * Auto negotiation bits 14:12.  Writing a 001 to those bits
->           * should start the autonegotiation
->           */
->          csr12 = (ioread32(ioaddr + CSR12) & 0xffff8fff);
-> @@ -290,7 +290,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
->  	                csr14 = (ioread32(ioaddr + CSR14) & 0xffffff7f);
->                          iowrite32(csr14,ioaddr + CSR14);
-> 
-> -                        /* what should we do when autonegotiate fails?
-> +                        /* what should we do when auto negotiate fails?
->                           * should we try again or default to baseline
->                           * case.  I just don't know.
->                           *
-> --
-
-
--- 
-~Randy
-
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
