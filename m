@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A1E338817
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86A63387EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhCLI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:58:30 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:54957 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhCLI62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:58:28 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MJV9S-1l0tqr2mls-00JnZX; Fri, 12 Mar 2021 09:58:25 +0100
-Received: by mail-ot1-f41.google.com with SMTP id n23so3197499otq.1;
-        Fri, 12 Mar 2021 00:58:25 -0800 (PST)
-X-Gm-Message-State: AOAM530PkZzpcsEQPnFctjd5G+eWcxsgDN+vpL2QvHTHgB2paMF/mS+7
-        umn13OL9KD1HWeLrOdmFpd9wEziBbEaAFp3i4iw=
-X-Google-Smtp-Source: ABdhPJwYs59n0VylMOhIElZBVkf0QrYdjO1x9NuhV8bORxTjcrcJXdCea/1IKmHztL8VndEu2T79aN56RsYQecgZr2I=
-X-Received: by 2002:a9d:6341:: with SMTP id y1mr2560459otk.210.1615539504308;
- Fri, 12 Mar 2021 00:58:24 -0800 (PST)
-MIME-Version: 1.0
-References: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
-In-Reply-To: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 12 Mar 2021 09:58:08 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
-Message-ID: <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
-Subject: Re: [PATCH v7] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:RFyjTb3yaqun4nVUoXXV5W+LErsIErLmJYY3Y7kXrAWUlL86sq8
- NS8jaexwP6V/Q6iMD9AKDLCo5I+GYzLvfxDwYOflhdX55/syaQJioKnrKZ+l0USpDlzja/d
- PMhvIGNv0u5uWX92eucVtqnZoZTfkcPwIUnPCZlq934QYg8G1dG2YdYKJaLVTeCfQduOg7s
- ucfXQGKnJEf/mlGa02XSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xskgHq0dlKc=:SZWjWYx31qMPnqLDOIhkVe
- pl0TJSlk7dsk/psFwYStbxnYRLuW7P2nKOQvkhacj3ZYXoW3k994KhZtSSGA38B1JP0mmnM5E
- pFO6P5tthpX4PGSnrON242AW9HOvxQwzH9zjRaKOz4TUeWXWcnCpW1FdsWtiCYsimNu6vEUIu
- ROkL5CW6lqtHW3pF2WKgwMWwpEhwsjTYiSZkwR9g6/rDGFYc68PU04LSWFN6M7H03gzlbHFTV
- KhzmcDh0kd50/EbnGkTLycdeUm0OBJsOskraZTi6/n8fAdenTx8axvv2+QGymZXr7OHeJ7csg
- pBkSdD8+yVhFs7ktCHcHSiqnlQyyJqhZs0Zz9h7R5dqtOEaw/TQ520hIK3gz4JMdu28tmIcti
- 7wm2E++H6zallzdwWsyvMMuGp5hi3yVm4pTakm2GOLTv/9iE73fkGfhjoXunh/D8/3nCtvEX2
- Z/m2pO930gPVlM9+Aa017gXLz6P7L1ugj3ApfynDPieg3m6xviJ8v4bnZV9hB/te3FD3SpF8f
- iLwhkuKUomywP35hLPE5dGWLJpofIzn5H32U5+L18zMmRI5mUYuxt3e6PJFlniauA==
+        id S232617AbhCLIvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:51:38 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:35172 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232618AbhCLIvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:51:23 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D004B20092F;
+        Fri, 12 Mar 2021 09:51:22 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E49532008D1;
+        Fri, 12 Mar 2021 09:51:18 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5B49A402D0;
+        Fri, 12 Mar 2021 09:51:11 +0100 (CET)
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Li Yang <leoyang.li@nxp.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Ma <peng.ma@nxp.com>, Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH v6] soc: fsl: enable acpi support in RCPM driver
+Date:   Fri, 12 Mar 2021 16:58:22 +0800
+Message-Id: <20210312085822.12136-1-ran.wang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 2:33 PM Jie Deng <jie.deng@intel.com> wrote:
+From: Peng Ma <peng.ma@nxp.com>
 
-> +
-> +/**
-> + * struct virtio_i2c_req - the virtio I2C request structure
-> + * @out_hdr: the OUT header of the virtio I2C message
-> + * @buf: the buffer into which data is read, or from which it's written
-> + * @in_hdr: the IN header of the virtio I2C message
-> + */
-> +struct virtio_i2c_req {
-> +       struct virtio_i2c_out_hdr out_hdr;
-> +       uint8_t *buf;
-> +       struct virtio_i2c_in_hdr in_hdr;
-> +};
+This patch enables ACPI support in RCPM driver.
 
-The simpler request structure clearly looks better than the previous version,
-but I think I found another problem here, at least a theoretical one:
+Signed-off-by: Peng Ma <peng.ma@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+---
+Change in v6:
+ - Remove copyright udpate to rebase on latest mainline
 
-When you map the headers into the DMA address space, they should
-be in separate cache lines, to allow the DMA mapping interfaces to
-perform cache management on each one without accidentally clobbering
-another member.
+Change in v5:
+ - Fix panic when dev->of_node is null
 
-So far I think there is an assumption that virtio buffers are always
-on cache-coherent devices, but if you ever have a virtio-i2c device
-backend on a physical interconnect that is not cache coherent (e.g. a
-microcontroller that shares the memory bus), this breaks down.
+Change in v4:
+ - Make commit subject more accurate
+ - Remove unrelated new blank line
 
-You could avoid this by either allocating arrays of each type separately,
-or by marking each member that you pass to the device as
-____cacheline_aligned.
+Change in v3:
+ - Add #ifdef CONFIG_ACPI for acpi_device_id
+ - Rename rcpm_acpi_imx_ids to rcpm_acpi_ids
 
-      Arnd
+Change in v2:
+ - Update acpi_device_id to fix conflict with other driver
+
+ drivers/soc/fsl/rcpm.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
+index 4ace28cab314..7aa997b932d1 100644
+--- a/drivers/soc/fsl/rcpm.c
++++ b/drivers/soc/fsl/rcpm.c
+@@ -13,6 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/suspend.h>
+ #include <linux/kernel.h>
++#include <linux/acpi.h>
+ 
+ #define RCPM_WAKEUP_CELL_MAX_SIZE	7
+ 
+@@ -78,10 +79,14 @@ static int rcpm_pm_prepare(struct device *dev)
+ 				"fsl,rcpm-wakeup", value,
+ 				rcpm->wakeup_cells + 1);
+ 
+-		/*  Wakeup source should refer to current rcpm device */
+-		if (ret || (np->phandle != value[0]))
++		if (ret)
+ 			continue;
+ 
++		if (is_of_node(dev->fwnode))
++			/*  Should refer to current rcpm device */
++			if (np->phandle != value[0])
++				continue;
++
+ 		/* Property "#fsl,rcpm-wakeup-cells" of rcpm node defines the
+ 		 * number of IPPDEXPCR register cells, and "fsl,rcpm-wakeup"
+ 		 * of wakeup source IP contains an integer array: <phandle to
+@@ -172,10 +177,19 @@ static const struct of_device_id rcpm_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, rcpm_of_match);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id rcpm_acpi_ids[] = {
++	{"NXP0015",},
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, rcpm_acpi_ids);
++#endif
++
+ static struct platform_driver rcpm_driver = {
+ 	.driver = {
+ 		.name = "rcpm",
+ 		.of_match_table = rcpm_of_match,
++		.acpi_match_table = ACPI_PTR(rcpm_acpi_ids),
+ 		.pm	= &rcpm_pm_ops,
+ 	},
+ 	.probe = rcpm_probe,
+-- 
+2.25.1
+
