@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DF8339403
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8CE33937D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhCLQ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:56:41 -0500
-Received: from mga05.intel.com ([192.55.52.43]:41916 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232238AbhCLQ4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:56:34 -0500
-IronPort-SDR: kEmlWVVO53mUnbq2jyYItsuZTSabuZ+diJnR3GMhmARBQnjzk+jttV+CVGaMFhF5+IME/QhAR7
- RSX/z5+1Thfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="273900510"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="273900510"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:56:34 -0800
-IronPort-SDR: m7PV7WkfAc93lqSIuY6CTzzWASguNbQtVIwM4ROE95HmqWyBGDjCzP7tQWliwQi4pEojYFkEZk
- gIQ0aA0uy8ag==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="411064612"
-Received: from akharche-mobl2.ccr.corp.intel.com (HELO [10.212.135.254]) ([10.212.135.254])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:56:33 -0800
-Subject: Re: [PATCH v4 0/9] soundwire: qcom: various improvements
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210312120009.22386-1-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5afd877e-2213-85f5-cd3c-eca8d060d75c@linux.intel.com>
-Date:   Fri, 12 Mar 2021 10:33:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229959AbhCLQeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhCLQeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:34:06 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41885C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:34:06 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id l8so25949780ybe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:34:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xd1OpSyULBAJCoaVVVrUuAIYtmhkhP65BjNqmabUSts=;
+        b=tbXRuUKTAJ5OAzLt4K/pJhrwxAyj+0prXM6A/hLCmCMfOhznh8CB2cMbHU4IgyVxW5
+         Im21oExo+0EMEbC1VIEOvaPHRbzZFruXZG8nlj4Tt0atYQ+i6rCMf8Sc1UetIG0kNtca
+         sA6HIkx89UhP/NR7A8HDOO9I2rtiH5F5Ej+PRtgcL/gyhMeWSEYGjDsbV9Rf1ttIMRgt
+         2nYv+umR2yKe+MvCQOWDNXYAuQm1O4y61WtiTBvisiV+ldsE+sA1dzI9Ck7X7JKed6ei
+         x/HX5w7QqT+ZhF3g13nEw7CMcayY8A1UDh2YtoTSl+3Sj+MEAiprFeCVGeD0XhqbPnxB
+         +ISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xd1OpSyULBAJCoaVVVrUuAIYtmhkhP65BjNqmabUSts=;
+        b=qwQwojqZMAO5fCZ3Mwt2+5dRglV5ZOZAPMsL/MCkCoTJWUPkhvmY/EnxsmY3uxOYOb
+         2OtC3jSnUBT/5HM7nSBCpBxjVd2rgnsupg3K7cnZAoYJIj+Fmql+grTOWZRZuv4M8LNO
+         8aNoJDTfnzlshkQeCOKgGaY5oliGyne1lgTZjRq8qIFuXcudqJtvq7AKfbshA8p0ynNY
+         Ss0q6CJchPtMJxvlbRdA1S70cqmnnkB0nRwEtXWtxl7n0dibdWa/G2akUtru2qAdLyvU
+         nGEJA6gjr5DGacbmWI5oa+VjeQKOdowiO0JZEukx9+9FkAl7/HAb99zJhONw3ls6pF5d
+         mpZw==
+X-Gm-Message-State: AOAM533B5BmOYV+grLTxOmA62dFOPlvPL1UEt4wSmRwH2idjrO/4ZDug
+        Zlj4fY27q6Rd1SLdmYHLbVbmwGZB55fzTvM0VYcUFA==
+X-Google-Smtp-Source: ABdhPJxTNip7fRhXXacvymw5GDHidct5oiKxuvIuYl2k74buQ2MPzFqhAIv6SB81Zi9YTWU8TyTZ7l+/yTWNknU9dnM=
+X-Received: by 2002:a5b:78f:: with SMTP id b15mr20254754ybq.234.1615566845126;
+ Fri, 12 Mar 2021 08:34:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312120009.22386-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210312162127.239795-1-alobakin@pm.me> <20210312162127.239795-5-alobakin@pm.me>
+In-Reply-To: <20210312162127.239795-5-alobakin@pm.me>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 12 Mar 2021 17:33:53 +0100
+Message-ID: <CANn89i+T-r=i3GBv-9EWBjpR_NhgZ=vP08BwTGXc8Kw3nO+OEQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 4/4] gro: improve flow distribution across GRO
+ buckets in dev_gro_receive()
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 5:22 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> Most of the functions that "convert" hash value into an index
+> (when RPS is configured / XPS is not configured / etc.) set
+> reciprocal_scale() on it. Its logics is simple, but fair enough and
+> accounts the entire input value.
+> On the opposite side, 'hash & (GRO_HASH_BUCKETS - 1)' expression uses
+> only 3 least significant bits of the value, which is far from
+> optimal (especially for XOR RSS hashers, where the hashes of two
+> different flows may differ only by 1 bit somewhere in the middle).
+>
+> Use reciprocal_scale() here too to take the entire hash value into
+> account and improve flow dispersion between GRO hash buckets.
+>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  net/core/dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 65d9e7d9d1e8..bd7c9ba54623 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -5952,7 +5952,7 @@ static void gro_flush_oldest(struct napi_struct *napi, struct list_head *head)
+>
+>  static enum gro_result dev_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
+>  {
+> -       u32 bucket = skb_get_hash_raw(skb) & (GRO_HASH_BUCKETS - 1);
+> +       u32 bucket = reciprocal_scale(skb_get_hash_raw(skb), GRO_HASH_BUCKETS);
 
+This is going to use 3 high order bits instead of 3 low-order bits.
+Now, had you use hash_32(skb_get_hash_raw(skb), 3), you could have
+claimed to use "more bits"
 
-On 3/12/21 6:00 AM, Srinivas Kandagatla wrote:
-> Thanks for reviewing v3 of this patchset!
-> 
-> During testing SoundWire controller on SM8250 MTP, we found
-> few issues like all the interrupts are not handled,
-> all transport parameters are not read from device tree.
-> Patch to add Auto Enumeration supported by the controller
-> is also part of this series.
-> 
-> Other major issue was register read/writes which was interrupt based
-> was an overhead and puts lot of limitation on context it can be used from.
-> 
-> With previous approach number of interrupts generated
-> after enumeration are around 130:
-> $ cat /proc/interrupts  | grep soundwire
-> 21: 130 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
->      
-> after this patch they are just 3 interrupts
-> $ cat /proc/interrupts  | grep soundwire
-> 21: 3 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
-> 
-> So this patchset add various improvements to the existing driver
-> to address above issues.
-> 
-> Tested it on SM8250 MTP with 2x WSA881x speakers, HeadPhones on
-> WCD938x via lpass-rx-macro and Analog MICs via lpass-tx-macro.
-> Also tested on DragonBoard DB845c with 2xWSA881x speakers.
+Toeplitz already shuffles stuff.
 
-LGTM, for the series
+Adding a multiply here seems not needed.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> 
-> Changes since v3:
-> 	- Fixed setting assigned bit during autoenumeration
-> 
-> Srinivas Kandagatla (9):
->    dt-bindings: soundwire: qcom: clarify data port bus parameters
->    soundwire: qcom: add support to missing transport params
->    soundwire: qcom: set continue execution flag for ignored commands
->    soundwire: qcom: start the clock during initialization
->    soundwire: qcom: update register read/write routine
->    soundwire: qcom: add support to new interrupts
->    soundwire: export sdw_compare_devid() and sdw_extract_slave_id()
->    soundwire: qcom: add auto enumeration support
->    soundwire: qcom: wait for enumeration to be complete in probe
-> 
->   .../bindings/soundwire/qcom,sdw.txt           |  20 +
->   drivers/soundwire/bus.c                       |   4 +-
->   drivers/soundwire/qcom.c                      | 529 ++++++++++++++----
->   include/linux/soundwire/sdw.h                 |   2 +
->   4 files changed, 442 insertions(+), 113 deletions(-)
-> 
+Please provide experimental results, because this looks unnecessary to me.
