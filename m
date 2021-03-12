@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081F533951C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82DA339516
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhCLRgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhCLRgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:36:22 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCCBC061574;
-        Fri, 12 Mar 2021 09:36:22 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id e7so3280144ile.7;
-        Fri, 12 Mar 2021 09:36:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=dN5wWCL4386GqSoA/EHOirCNKD6L6wdiesXxnENmxI4=;
-        b=uwmdaRLNlcTGrBoHcZg9vpO17c4wP0MIYDnS+c6SUFnK19aH1uc8zwC13NkqAhVN9J
-         lr4JIaMa/r9t8/EnXQ01FAm91BrrxU55AyshFsirtI42pCVGPFf+NPbCWbS1oVHyQPav
-         88P0GeJGfKWqgbEgNJtETZHBBvQrQfdb5sxGvkUdsWBd5vmGXblcEgI60IxeXBxBSy29
-         9Dy0GZsOYeZvUEV1Jk72JFljzqE9aPzKYrc/ApY7AxWFyHNt3ZBIuKTNnkaWNPmoRQWO
-         TEA5KJC1nMatvl++btw4dkfb45vH4fGzaGBy8PqlDP1LdgHrDekHCjLyQ+62s01h1xr9
-         E1rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=dN5wWCL4386GqSoA/EHOirCNKD6L6wdiesXxnENmxI4=;
-        b=IWaf0TbNbKsQGrWeNgt1iIlkfIoxmI75y+UwIEDiBfRqkuKKV60MYHDHGrwYKvI2zd
-         tT3Omh6L2rRzVD8vFymkmcLLGZ/kJ/U0fHSs2j3jg+UryknF1rAOYElsId40bWl+Nlai
-         jNTFK5lmRIZF8jxAKaKfywo/yqAQu1UDIe0rlHNTHZniRAgAAoE4xfODMfKKZJFVVtNl
-         YbvGcYo/B+36Z2HoRCG4X0zVgGuressZ/YXoSxP/gm6VsOizcbtfcEa5avYP29VCmBTk
-         pQ4+AGITFyJHI0PNKJ8zgdetpvV9JqebFIHWoe5WpfB5dz9wey6sAdnLTAnGkmNLKnwH
-         WjCw==
-X-Gm-Message-State: AOAM533OYoeOSMKnvWGQxiYMDaHbQnzqmibkHdpv4zEfg2JsnX5BjkqT
-        ShdRuNPKyDv43rnWIK8fsEWnRIsmEqUxtEPJ+9M=
-X-Google-Smtp-Source: ABdhPJwS/i2cdWbmHCySXYUOm3H63v3joSX1rd/sI2Q5oPC4Rhia8d49/en/fQwRV7y/dZ2La6gGcG1FBfZVsE0dH7U=
-X-Received: by 2002:a92:c7c2:: with SMTP id g2mr3638312ilk.209.1615570581648;
- Fri, 12 Mar 2021 09:36:21 -0800 (PST)
+        id S232233AbhCLRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:36:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:57940 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232501AbhCLRgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:36:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E7B51FB;
+        Fri, 12 Mar 2021 09:36:14 -0800 (PST)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEFEB3F7D7;
+        Fri, 12 Mar 2021 09:36:12 -0800 (PST)
+From:   James Morse <james.morse@arm.com>
+Subject: Re: [PATCH 07/24] x86/resctrl: Label the resources with their
+ configuration type
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20201030161120.227225-1-james.morse@arm.com>
+ <20201030161120.227225-8-james.morse@arm.com>
+ <2de84538-9741-c902-9be0-5b279bbe162f@intel.com>
+Message-ID: <bb37577e-ffec-590b-74b8-7865776aa609@arm.com>
+Date:   Fri, 12 Mar 2021 17:36:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210312113253.305040674@infradead.org> <CA+icZUVa7c4aZ=Tq-Axfqu9hT2QR-iNbAMGHE6u1ps-6Vw35=A@mail.gmail.com>
- <20210312144726.GA22098@zn.tnic> <20210312122622.603bd82c@gandalf.local.home>
-In-Reply-To: <20210312122622.603bd82c@gandalf.local.home>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 12 Mar 2021 18:35:45 +0100
-Message-ID: <CA+icZUUpQWtLcqjK+07ktO5PCoJ+2HEHzyp4tRRqHZpAOatq5g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2de84538-9741-c902-9be0-5b279bbe162f@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:26 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 12 Mar 2021 15:47:26 +0100
-> Borislav Petkov <bp@alien8.de> wrote:
->
-> > On Fri, Mar 12, 2021 at 03:29:48PM +0100, Sedat Dilek wrote:
-> > > What does this change exactly mean to/for me?
-> >
-> > Probably nothing.
-> >
-> > I would be very surprised if it would be at all noticeable for you -
-> > it's not like the kernel is executing long streams of NOPs in fast
-> > paths.
-> >
->
-> With ftrace enabled, every function starts with a NOP. But that said, the
-> simple answer is for Sedat to apply the patches on his box and do some
-> performance testing. It doesn't matter if you are white, black, male,
-> female, or anything in between. As my daughter's swim coach said; it's the
-> numbers that matter here. Run a bunch of benchmarks on your box on the
-> latest kernel, apply Peter's patches, and then run the benchmarks again on
-> the latest kernel with Peter's patches and then report the difference. If
-> it's negligible then there's nothing to worry about.
->
+Hi Reinette,
 
-Hey Steve, you degraded me to a number :-).
+On 17/11/2020 22:30, Reinette Chatre wrote:
+> On 10/30/2020 9:11 AM, James Morse wrote:
+>> Before the name for the schema can be generated, the type of the
+>> configuration being applied to the resource needs to be known. Label
+>> all the entries in rdt_resources_all[], and copy that value in to struct
+> 
+> s/in to/into/ or s/in to/to/ ?
+> 
+>> resctrl_schema.
+>>
+> 
+> This commit message does not explain why it is needed to copy this value.
+> 
+>> Subsequent patches will generate the schema names in what will become
+>> the fs code. Eventually the fs code will generate pairs of CODE/DATA if
+>> the platform supports CDP for this resource.
+> 
+> Explaining how the copy is a step towards accomplishing this goal would be very helpful.
 
-I dunno which Git tree this patchset applies to, but I check if I can
-apply the patchset to my current local Git.
-Then build a kernel in the same build-environment.
-Lemme see.
+(I've added text about what this is used for, and why it can't assign the values it wants
+at this point in the series)
 
-To say with Linus's words:
-"Numbers talk - bullshit walks."
 
-- Sedat -
+>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> index 1bd785b1920c..628e5eb4d7a9 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> @@ -2141,6 +2141,7 @@ static int create_schemata_list(void)
+>>             s->res = r;
+>>           s->num_closid = resctrl_arch_get_num_closid(r);
+> 
+> Above seems to be last user of this helper remaining ... why is helper needed instead of
+> something similar to below?
+
+Great question, resctrl_to_arch_res(r)->num_closid? That won't work for MPAM, or would at
+least force all architectures to copy x86's arch-specific structure.
+
+schemata_list_create() needs to be part of the filesystem code after the split, but it
+can't touch the hw structure like the conf_type is doing here.
+
+This is mentioned in the commit message of the first two patches:
+| resctrl code paths touching a 'hw' struct indicates where an abstraction is needed.
+
+I evidently need to make that clearer.
+
+
+>> +        s->conf_type = resctrl_to_arch_res(r)->conf_type;
+
+I'll to do this temporarily, as by then end of the series schemata_list_create() chooses
+the value, so this disappears.
+
+
+Thanks,
+
+James
