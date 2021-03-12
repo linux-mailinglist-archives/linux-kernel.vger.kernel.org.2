@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710643384C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640063384CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhCLEs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 23:48:58 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:6934 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhCLEsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:48:54 -0500
+        id S231948AbhCLEwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 23:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231912AbhCLEwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 23:52:30 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E637DC061574;
+        Thu, 11 Mar 2021 20:52:29 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id q204so1016901pfq.10;
+        Thu, 11 Mar 2021 20:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1615524534;
-  x=1647060534;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=rF0+CeiqNT/JL8EaOzph1Uz1foa3kNRnCcYH1amvbB8=;
-  b=JAmXyeQQk1/4h0tHzAMP4b53IcIudRNHw5VZTiDPEeBGlC69YOtOzgdf
-   9ZEMQsYtkIra6XlKCRS8OTSZ9ySKWs/UpiXPjRzVyXiOi1fcQGA+9QtVQ
-   3LlleO4Avzcs6USpWniEv4xQiFQAILgdlxSb1u9lgpdMSgkuiaAIXY2PN
-   utSuoa6Kr0cf5M4XVo/iVoreEbbyJDbCfsINYKP3p2GjPgSAvdxrqcFsC
-   JhpyMn9kN49Dl+IVKBL/+w4FzfDiT4WzntkwSYBoE0TDPQDWj1rOBofLE
-   dPGUusZr5KUO7FNe9A2hXju0Is1UcRg6OsCkyBCS7OkplJnW7+fI5ie7g
-   g==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Marek Behun <marek.behun@nic.cz>
-CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        kernel <kernel@axis.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
-Subject: RE: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
-Thread-Topic: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
-Thread-Index: AQHXFnc53ECqmB4gek68ETSLZV586Kp+22cAgAAAc4CAANwtQA==
-Date:   Fri, 12 Mar 2021 04:48:52 +0000
-Message-ID: <161920e0746e4c0daff7f83163b71677@XBOX03.axis.com>
-References: <20210311130408.10820-1-chenhui.zhang@axis.com>
-        <20210311163814.74c1885f@nic.cz> <20210311163951.0046fb5c@nic.cz>
-In-Reply-To: <20210311163951.0046fb5c@nic.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZyZIkybO9SxVwDwL8RwkKTDFi+dXqtciO35Y0No2LCo=;
+        b=cz8rzGqvx+1E0Z4Oyw5vbTDSn5NWLKSP+l0BQtXFVCguq7eBSdfmiLNKAwGILEFBK/
+         OkFR4dYE5ZrGCAJfWDm/8iVNwgSfzJfhxZDqz4f5vPWMQTKJi19d3/iSLIaBE6tGHAcU
+         9cM4Y1WWOs0AjQNdiQdZZSfdbXQ9Jg/lkNX/aNbwNiItGGe+LbF4qkT0/3EVRxytcNH8
+         GyE4VnQQ2Q0ePbjCDHdxJ3vxNe6QGu0Zb76KxjKNW3LMaTtZ+UX/AP2GmVGvuttLNLz4
+         UA0PbEGSAb11uhC8XOzbVN59Me6hyL9b4j/PY/VjqbRncLm5+ZsnQQpV57Zq3RgtAhuT
+         mLIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZyZIkybO9SxVwDwL8RwkKTDFi+dXqtciO35Y0No2LCo=;
+        b=AWhfj/yGfp6fMvLiWto/VDtqbVAtoRonn2fBmYY1bUjCwppnrsw0aenG/SlEDMuWXI
+         u9d0H+D4AJ9As9gZl01cCajKKnDQ3zM30hSuWtZQVzptKSDZoCBL1rYKblfDZ4RXckpv
+         D0y/oIUunRAQjYKrU/qiuM+noFi6XvtNYqtT0c1HAmi2pNJuoUHzNWAVRnS0vMUtMDo7
+         eUZIZ6FDirr/EAs5kIZhqa63DvPqPyH+WRu5IazGxaaH3t09+N68NqkeeGaGfsVZheX+
+         zuM9CFdusmTCMFmHHgYm7aEYjds7d96HuFj2OgXXeg5IZCritNmzGjr1LLt5JwfjDLBW
+         qgmw==
+X-Gm-Message-State: AOAM532Vq14R3/4ciukXyu2uH09hntPHEXi9jDHdo0Dwkhj+vADzFhch
+        GHBmhpnbX1aAR+bkiSal9GtCTlINkM4=
+X-Google-Smtp-Source: ABdhPJyWHWMWF5PyeVDaqgyY9OiUQgsUChZnVS0fX54wJz6JswyP0/mFO6uDEV9J7IZ7xCXOCOODqg==
+X-Received: by 2002:a63:2214:: with SMTP id i20mr9846875pgi.189.1615524743541;
+        Thu, 11 Mar 2021 20:52:23 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g5sm4367970pfb.77.2021.03.11.20.52.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 20:52:23 -0800 (PST)
+Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Stephan Mueller <smueller@chronox.de>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stijn Tintel <stijn@linux-ipv6.be>, ynezz@true.cz
+References: <20210220174741.23665-1-noltari@gmail.com>
+ <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+ <20210303092019.GB8134@gondor.apana.org.au>
+ <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
+ <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
+ <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
+ <6D1459DF-A7E1-422C-AA05-655156AEBA23@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c8d9602f-682d-a82f-abb4-3f3f37ec9f02@gmail.com>
+Date:   Thu, 11 Mar 2021 20:52:20 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <6D1459DF-A7E1-422C-AA05-655156AEBA23@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Sorry, leds-regulator has only a binary state LED.
->=20
-> Maybe you could extend leds-regulator to be able to use all regulator sta=
-tes?
->=20
-> Or you can extend leds-gpio driver to support N states via log N gpios,
-> instead of adding new driver.
 
-It seems a good idea to extend leds-gpio, so in my case, I should have such=
- dts:
 
- 63         leds {
- 64                 compatible =3D "gpio-leds";
- 65=20
- 66                 recording_front {
- 67                         label =3D "recording_front:red";
- 68                         gpios =3D <&gpio 130 GPIO_ACTIVE_HIGH>, <&gpio =
-129 GPIO_ACTIVE_HIGH>;
- 69                         default-state =3D "off";
- 70                 };
- 71         };
+On 3/4/2021 10:26 PM, Álvaro Fernández Rojas wrote:
+> Hi Florian,
+> 
+>> El 4 mar 2021, a las 23:28, Florian Fainelli <f.fainelli@gmail.com> escribió:
+>>
+>> On 3/4/21 7:11 AM, Nicolas Saenz Julienne wrote:
+>>> On Wed, 2021-03-03 at 10:29 +0100, Álvaro Fernández Rojas wrote:
+>>>> Hi Herbert,
+>>>>
+>>>>> El 3 mar 2021, a las 10:20, Herbert Xu <herbert@gondor.apana.org.au> escribió:
+>>>>>
+>>>>> On Sat, Feb 20, 2021 at 08:12:45PM +0100, Álvaro Fernández Rojas wrote:
+>>>>>>
+>>>>>> I ran rngtest and this is what I got:
+>>>>>
+>>>>> This is meaningless except for sources that have not been whitened.
+>>>>>
+>>>>> Your justification needs to be based on what the hardware does or
+>>>>> is documented to do.
+>>>>
+>>>> Ok, so I guess that we’re never setting that value to anything since there’s
+>>>> no public documentation about that ¯\_(ツ)_/¯.
+>>>
+>>> @Florian, is there a way you might be able to get the official value?
+>>
+>> I will be looking into the documentation this weekend and let you know
+>> whether we can change the driver's quality accordingly.
+> 
+> Could you do that for iproc-rng200.c too?
 
-For my case, two leds is enough, but it sill easy to extend the support num=
-ber bigger than two. And the length of gpios array is not fixed, so it coul=
-d compatible with exist "gpio-leds" dts, right?=20
+From looking at some documentation and the design of the 6368 RNG which
+is supposedly the same as the Raspberry Pi 1/2/3 RNG, this appears to be
+a random number generator that does not go through any post-processing
+and just collects random bits into a FIFO.
 
-If this idea work, should I create a new commit or still in this track (V2)=
-?
+The rbg200 is also similar except that it is integrated into a wrapper
+called the rng200 which supposedly only accepts data that has passed
+"NIST industry standard random data quality algorithm" without being
+specific. So it seems to me you may be able to set the quality field for
+bcm2835-rng, but not for iproc-rng200.
 
-Best Regards,
-Hermes=20
-
->=20
-> Marek
+Stephan does that sound right?
+-- 
+Florian
