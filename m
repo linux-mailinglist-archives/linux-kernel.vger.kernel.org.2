@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9A93393FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD84E339401
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhCLQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:55:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
+        id S232487AbhCLQ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:56:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231557AbhCLQzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:55:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A116501A;
-        Fri, 12 Mar 2021 16:55:12 +0000 (UTC)
+        id S232501AbhCLQ4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:56:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BAC46501D;
+        Fri, 12 Mar 2021 16:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615568113;
-        bh=ZeBBYJbX5TTtyT0dZTCaJBzVFjARmrNBeHuAj2mMTns=;
+        s=k20201202; t=1615568179;
+        bh=sUw5X72tXoX09gxNNea9KLqurXYlY189vCRL3W4qdik=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AcZh0lzVxiLPLlBBURb6qvCfpeP9eyPFOsPlcWipO6nb5Qc+yVdvr0yl29U64zMhQ
-         qLbG16YdWhTCDT2YvGmLphB8Hw63BSizTq52kgqa8s8zAYKlVUKC+sMQ4Ky8P9v90n
-         qNtvsW4jZ9t3NtxAitq+RYk+Sg5ecwsXZGvbWfsaR3PdSeAiDVCV1rPYt/boKD1z2U
-         GSpUDj2bQNWqhIE4cqXf091y0K25C9m9sVfj0W9OTr4ygGAlWVhh4ugJDRmF21T59N
-         OmWgwTU1cV4S4QECc0C3kV2TwmHZkJDdOv+i4COA2SVYztl6PoiPxe/TnQir1XXbiE
-         PM1BwL0LLDiVg==
-Date:   Fri, 12 Mar 2021 18:54:48 +0200
+        b=G0oi+GyBCIDqsQHVnRhKDpq2WFc+tn4nKcydUWwiiUMAAd5j4YURLpF/QO1JgLRir
+         SvUrEfEL2d9giqM6IwvBQ7/dDcdnZEC4LC/CPwz/RJuIWTSOsYOTXKXVq88RKlVXH5
+         Gb3gTDMG2Xq3eIbJz2XbKgM8DB/tG3QN5V6WORRVTDIBHFeS9UMCL7DZyzXLvnWQcM
+         QcU2tGem2rA38vh7k2HQVrAjr0Ds2MUPbHGdMDDmPKn0d6AwGLsJiAJFrtZRsjBek/
+         AURbVhmz3efN/JgVM0lcUWNvS9uuqv6JFgSP+GptQtJvxMuU+dnVSKLISHD/R2GJW7
+         088JTb7Yx3ZwA==
+Date:   Fri, 12 Mar 2021 18:55:54 +0200
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mjg59@google.com
-Subject: Re: [PATCH v2 1/3] tpm: efi: Use local variable for calculating
- final log size
-Message-ID: <YEuc2JV2YBzlQtB5@kernel.org>
-References: <20210310221916.356716-1-stefanb@linux.ibm.com>
- <20210310221916.356716-2-stefanb@linux.ibm.com>
- <YElUiIFkyf6txZoV@kernel.org>
- <YElVN0kwMIyeF9gQ@kernel.org>
- <39ea4fef-0a21-ad06-118f-dbdf01cd5c61@linux.ibm.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
+Message-ID: <YEudGizbVrQaRoPq@kernel.org>
+References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+ <20210310220519.16811-9-yu-cheng.yu@intel.com>
+ <YElKjT2v628tidE/@kernel.org>
+ <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+ <c2bfe707-2ef6-213a-f02c-4689726a473a@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <39ea4fef-0a21-ad06-118f-dbdf01cd5c61@linux.ibm.com>
+In-Reply-To: <c2bfe707-2ef6-213a-f02c-4689726a473a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 09:02:38AM -0500, Stefan Berger wrote:
-> 
-> On 3/10/21 6:24 PM, Jarkko Sakkinen wrote:
-> > On Thu, Mar 11, 2021 at 01:21:47AM +0200, Jarkko Sakkinen wrote:
-> > > On Wed, Mar 10, 2021 at 05:19:14PM -0500, Stefan Berger wrote:
-> > > > When tpm_read_log_efi is called multiple times, which happens when
-> > > > one loads and unloads a TPM2 driver multiple times, then the global
-> > > > variable efi_tpm_final_log_size will at some point become a negative
-> > > > number due to the subtraction of final_events_preboot_size occurring
-> > > > each time. Use a local variable to avoid this integer underflow.
-> > > > 
-> > > > The following issue is now resolved:
-> > > > 
-> > > > Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> > > > Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
-> > > > Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
-> > > > Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
-> > > > Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
-> > > > Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
-> > > > Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
-> > > > Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
-> > > > Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
-> > > > Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
-> > > > Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
-> > > > Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
-> > > > Mar  8 15:35:12 hibinst kernel: Call Trace:
-> > > > Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
-> > > > Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
-> > > > Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
-> > > > Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
-> > > > Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
-> > > > Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
-> > > > Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
-> > > > 
-> > > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > Fixes tag for this one?
-> > Or just sanity check, I think it is:
+On Wed, Mar 10, 2021 at 03:20:20PM -0800, Dave Hansen wrote:
+> On 3/10/21 2:55 PM, Yu, Yu-cheng wrote:
+> > On 3/10/2021 2:39 PM, Jarkko Sakkinen wrote:
+> >> On Wed, Mar 10, 2021 at 02:05:19PM -0800, Yu-cheng Yu wrote:
+> >>> When CET is enabled, __vdso_sgx_enter_enclave() needs an endbr64
+> >>> in the beginning of the function.
+> >>
+> >> OK.
+> >>
+> >> What you should do is to explain what it does and why it's needed.
+> >>
 > > 
-> > Fixes: 166a2809d65b ("tpm: Don't duplicate events from the final event log in the TCG2 log")
-> Looks good.
-> > 
-> > Also, I guess all of the patches ought to have stable cc, right?
+> > The endbr marks a branch target.  Without the "no-track" prefix, if an
+> > indirect call/jmp reaches a non-endbr opcode, a control-protection fault
+> > is raised.  Usually endbr's are inserted by the compiler.  For assembly,
+> > these have to be put in manually.  I will add this in the commit log if
+> > there is another revision.  Thanks!
 > 
-> Yes, please. I think the maintainer has to add this 'at some point'.
+> This is close, but it's missing a detail or two that I think is
+> important for someone like Jarkko trying to figure out what it means for
+> his subsystem or driver.
 > 
-> Since you queued them already I won't send a v3.
+> I'd probably say:
 > 
+> ENDBR is a special new instruction for the Indirect Branch Tracking
+> (IBR) component of CET.  IBT prevents attacks by ensuring that (most)
+> indirect branches and function calls may only land at ENDBR
+> instructions.  Branches that don't follow the rules will result in
+> control flow (#CF) exceptions.
 > 
-> Thanks!
-> 
->    Stefan
+> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+> instructions are inserted automatically by the compiler, but branch
+> targets written in assembly must have ENDBR added manually, like this one.
 
-OK, I'll add cc's before I send the PR, thanks.
+Thank you, this clears the whole thing a lot.
+
+Doesn't this mean that it could be there just as well unconditionally?
 
 /Jarkko
