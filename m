@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121C1338E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8290338E6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhCLNMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:12:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S231377AbhCLNMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:12:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhCLNLx (ORCPT
+        with ESMTP id S231674AbhCLNLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:11:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3703C061761;
-        Fri, 12 Mar 2021 05:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tvpjCoady7IGByyxkS97aMgJJirlM2J40DzsaJU72mI=; b=q/da4l3LIDjHrcbEUEmKLQwVSh
-        KlSt4MSWxdLroPNerkJi+pOKPjh71eRW0Z3Lkr9JLhV89hTfarZRqDT+GPjnp+dQH94Lk1xUaN5B9
-        AdVWvbix78dRGQoMEJBhJiddIMDiGII81pmR782yZ7upSp4/BfevFNv1fTOoubqfek5e269323OKR
-        x7z6lyP88+nK5pEDw1nM6WPlpCMsIGMJPgYrVBtejRD9dW/KBbLAlb0b7XXY6NqJB5zZOEHjtnecY
-        ytmZdXoKy4ZSBBHgoqsAvWLB1qJbAO7IEWWUjXnelGzAIbdsgCl0ZQUXi9ppDu9Z7c0fUd/IgBaPz
-        Ag7HnDpQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKhZb-00AiRn-V7; Fri, 12 Mar 2021 13:11:28 +0000
-Date:   Fri, 12 Mar 2021 13:11:23 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
-Message-ID: <20210312131123.GZ3479805@casper.infradead.org>
-References: <YEsryBEFq4HuLKBs@suse.de>
- <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
- <YEtc54pWLLjb6SgL@suse.de>
+        Fri, 12 Mar 2021 08:11:47 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8F2C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:11:47 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id s7so24119000qkg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:11:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iwzo0YXF8Wjs0+r/brLS8Xn8OgIC+M4fxdQ/Xk6iPEU=;
+        b=FZsvLdjzemdcwcZPfArdW10+rJ5e2aOF12GMadhw8QFJs1uJkhnz9FLeShIwtbAHwM
+         AAMN6ucUProggtC+ogS6rVyM7cQNMqxUArMneZht5XG8z5HqCJPPuKcl8yWNFQinMfJw
+         ndk67LbolPFr0XZ7MDEuEWTHZ18qjkuDWTFGh9RzhjmRzqvOQ2vTK2qGp+Jq0O7ix88t
+         z4d4YFo5VkczT1qsvTwfw53N8cSef1EYiK8W3IxU5ImKVGYT30NBIyqkaoqj4AiVLwBK
+         ZtOGIg5Qcc889XwFDiVXq7IYPBtgaDRTftlJMg9YuzmwdpQxWh53RSlVm4QOdh0K7RMq
+         OD+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iwzo0YXF8Wjs0+r/brLS8Xn8OgIC+M4fxdQ/Xk6iPEU=;
+        b=dwlKTZPJZs8yZfU/P4zth7kQX6c5oxhVJHAbFlOCg4ITrDZzQWsBJejVGa0kp1CpRM
+         xiUoBJNfAzJ2Pt9t0AozOxqUQ8dJbIhMTjTx5QtjlaKQTW+c2oLETJwHPkVV6MkP02Y+
+         ZFIh9fayaA0LHnlHUiupn6cpQzc2Pyu/3GrpWBvDdd7x1tiM8dZvjPpaLu/N1UJYuF3T
+         z/4Nd+7XzGGfRbPgVMGQMxfM/5qkvM+SdlMhgAfN/dFf7gacoCc37XTzuKZV6i3Lcsis
+         aYsLgTORT8R2uwnKzJ3e2FXfwn3/UvIWqazb5tQoAdpLfKL1Rcpqiyysj1HDuyY51XVQ
+         TNuw==
+X-Gm-Message-State: AOAM532C6YVXlVH9d4wg1AAZd04aAbMhg/y+19gMj3ulKDleGmtXa2TE
+        o3CKCc9r/s6pDTOmcZu42iB5gEzRX/ywbIS0PJjYFQ==
+X-Google-Smtp-Source: ABdhPJxMgU8ym1jkJpj9aNV6ccFWydjqSmzRVp46ZJeTCQx1z6xaBIlXvRGmRrwpixVsTi1I2BPp5x++YD0sjVdf3qw=
+X-Received: by 2002:a37:630a:: with SMTP id x10mr12286451qkb.326.1615554706426;
+ Fri, 12 Mar 2021 05:11:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEtc54pWLLjb6SgL@suse.de>
+References: <20210312121653.348518-1-elver@google.com>
+In-Reply-To: <20210312121653.348518-1-elver@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 12 Mar 2021 14:11:35 +0100
+Message-ID: <CAG_fn=WdpzPxbvzqkpVXjyrUu=GprA2xMBiJdhJqM8cNhABWmw@mail.gmail.com>
+Subject: Re: [PATCH mm] kfence: zero guard page after out-of-bounds access
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Jann Horn <jannh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 12:21:59PM +0000, Luis Henriques wrote:
-> > > I've seen a bug report (5.10.16 kernel splat below) that seems to be
-> > > reproducible in kernels as early as 5.4.
+On Fri, Mar 12, 2021 at 1:16 PM Marco Elver <elver@google.com> wrote:
+>
+> After an out-of-bounds accesses, zero the guard page before
+> re-protecting in kfence_guarded_free(). On one hand this helps make the
+> failure mode of subsequent out-of-bounds accesses more deterministic,
+> but could also prevent certain information leaks.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+Acked-by: Alexander Potapenko <glider@google.com>
 
-If this is reproducible, can you turn this BUG_ON into a VM_BUG_ON_PAGE()
-so we know what kind of problem we're dealing with?  Assuming the SUSE
-tumbleweed kernels enable CONFIG_DEBUG_VM, which I'm sure they do.
+> ---
+>  mm/kfence/core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 3b8ec938470a..f7106f28443d 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -371,6 +371,7 @@ static void kfence_guarded_free(void *addr, struct kf=
+ence_metadata *meta, bool z
+>
+>         /* Restore page protection if there was an OOB access. */
+>         if (meta->unprotected_page) {
+> +               memzero_explicit((void *)ALIGN_DOWN(meta->unprotected_pag=
+e, PAGE_SIZE), PAGE_SIZE);
+>                 kfence_protect(meta->unprotected_page);
+>                 meta->unprotected_page =3D 0;
+>         }
+> --
+> 2.31.0.rc2.261.g7f71774620-goog
+>
 
-> > Page fault locks the page before installing a new pte, at least
-> > AFAICS, so the BUG looks impossible.  The referenced commits only
-> > touch very high level control of writeback, so they may well increase
-> > the chance of a bug triggering, but very unlikely to be the actual
-> > cause of the bug.   I'm guessing this to be an MM issue.
-> 
-> Ok, thank you for having a look at it.
-> 
-> Interestingly, there's a single commit to mm/truncate.c in 5.4:
-> ef18a1ca847b ("mm/thp: allow dropping THP from page cache").  I'm Cc'ing
-> Andrew and Kirill, maybe they have some ideas.
 
-That's probably not it; unless FUSE has developed the ability to insert
-compound pages into the page cache without me noticing.
+--=20
+Alexander Potapenko
+Software Engineer
 
-(if it had, that would absolutely explain it -- i have a fix in my thp
-tree for this case, but it doesn't affect any existing filesystem
-because only shmem uses compound pages and it doesn't call
-invalidate_inode_pages2_range)
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
