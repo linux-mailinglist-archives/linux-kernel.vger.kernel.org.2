@@ -2,196 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF443388B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BADC3388D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbhCLJaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:30:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhCLJaF (ORCPT
+        id S232952AbhCLJlL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 04:41:11 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:37228 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232397AbhCLJki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:30:05 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C299C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:30:05 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id f26so5883601ljp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:30:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=APw/AIDrKzT7XeF6qSF0iCc81Xp0GnB50nk1NJmAvMg=;
-        b=NUB5R87GpT8Ge/ghJ+rP04eFDkdXOCvq3mi2FFPyt38CsXBxeV4K+Kj+/I0Dx1+Jup
-         +XTn/203TIDdlXcw3i4h40Ihd+HlZXd0LNoZFIZgf0FTtB/wkUJhirgHJ8XjUodDPOPD
-         K15egk95mnKobCl3hQDc9uJ08N0R7FleEXCoo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=APw/AIDrKzT7XeF6qSF0iCc81Xp0GnB50nk1NJmAvMg=;
-        b=c1Rn6nOxep7VpxFQdYYgaMomgaTn0JqHHmB3PstopNL687wn4YemH3dD923Lqo6RYi
-         GPlM8ZXJsGxvuO83pICTCmKjRkKdQv3Tcrd34Hq87QL58EzM2/I3lrK4Imu4xcatzMnK
-         838IwV208y4ja8kQ1lbGQMycEDlhRw3suXyqxa5ZD96dKP+1Z1WY6Y88dDXOjMtks+Oy
-         UyryfkOGulw+zE3HISPTts/7L6zyHoWQXwwTxjnJ0U2PWV5FkKtPbN+Z7G+oIxq6Df+t
-         SUuFBuonwou67qoAI2XhjcPoKbV9U6URkCRypsqTZQ0ZHD7dLnx/mScop9BngkXwH4G7
-         Qs9Q==
-X-Gm-Message-State: AOAM533VHQyhpWFfnoUNwTvXcAbS0Kwlr+/P9Up06xxJgwmm72Ryyx0E
-        Rm9KuJ/sI39lrdV7hpVzKzHHNcgBLu8y5UY0nSdCBA==
-X-Google-Smtp-Source: ABdhPJw+FfQpJ2epQaMocbx6qJdbkvwffgldWe582oJu0q3ueBSobLefQNgI5yjmaBdqCvs551gqPwD8X6mat4WEOMg=
-X-Received: by 2002:a2e:a17c:: with SMTP id u28mr1784677ljl.22.1615541403440;
- Fri, 12 Mar 2021 01:30:03 -0800 (PST)
+        Fri, 12 Mar 2021 04:40:38 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id C72113A31E6;
+        Fri, 12 Mar 2021 05:38:19 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TBia8g5ZWVK6; Fri, 12 Mar 2021 05:38:19 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 23EF13A31F4;
+        Fri, 12 Mar 2021 05:38:09 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id pjXq_3kOcqTv; Fri, 12 Mar 2021 05:38:09 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 0BEAC3A3148;
+        Fri, 12 Mar 2021 05:37:54 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <c8106dbe6d8390b290cd1d7f873a2942e805349e.1615452048.git.tommyhebb@gmail.com>
-In-Reply-To: <c8106dbe6d8390b290cd1d7f873a2942e805349e.1615452048.git.tommyhebb@gmail.com>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Fri, 12 Mar 2021 10:29:52 +0100
-Message-ID: <CAM4kBBJw=55KWvL-ccdeLSahaMKA8eiors49PrJQgjy=ksY6Rg@mail.gmail.com>
-Subject: Re: [PATCH] z3fold: prevent reclaim/free race for headless pages
-To:     Thomas Hebb <tommyhebb@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 09:38:04 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312083755.0BEAC3A3148@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 9:40 AM Thomas Hebb <tommyhebb@gmail.com> wrote:
->
-> commit ca0246bb97c2 ("z3fold: fix possible reclaim races") introduced
-> the PAGE_CLAIMED flag "to avoid racing on a z3fold 'headless' page
-> release." By atomically testing and setting the bit in each of
-> z3fold_free() and z3fold_reclaim_page(), a double-free was avoided.
->
-> However, commit dcf5aedb24f8 ("z3fold: stricter locking and more careful
-> reclaim") appears to have unintentionally broken this behavior by moving
-> the PAGE_CLAIMED check in z3fold_reclaim_page() to after the page lock
-> gets taken, which only happens for non-headless pages. For headless
-> pages, the check is now skipped entirely and races can occur again.
->
-> I have observed such a race on my system:
->
->     page:00000000ffbd76b7 refcount:0 mapcount:0 mapping:0000000000000000 =
-index:0x0 pfn:0x165316
->     flags: 0x2ffff0000000000()
->     raw: 02ffff0000000000 ffffea0004535f48 ffff8881d553a170 0000000000000=
-000
->     raw: 0000000000000000 0000000000000011 00000000ffffffff 0000000000000=
-000
->     page dumped because: VM_BUG_ON_PAGE(page_ref_count(page) =3D=3D 0)
->     ------------[ cut here ]------------
->     kernel BUG at include/linux/mm.h:707!
->     invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
->     CPU: 2 PID: 291928 Comm: kworker/2:0 Tainted: G    B             5.10=
-.7-arch1-1-kasan #1
->     Hardware name: Gigabyte Technology Co., Ltd. H97N-WIFI/H97N-WIFI, BIO=
-S F9b 03/03/2016
->     Workqueue: zswap-shrink shrink_worker
->     RIP: 0010:__free_pages+0x10a/0x130
->     Code: c1 e7 06 48 01 ef 45 85 e4 74 d1 44 89 e6 31 d2 41 83 ec 01 e8 =
-e7 b0 ff ff eb da 48 c7 c6 e0 32 91 88 48 89 ef e8 a6 89 f8 ff <0f> 0b 4c 8=
-9 e7 e8 fc 79 07 00 e9 33 ff ff ff 48 89 ef e8 ff 79 07
->     RSP: 0000:ffff88819a2ffb98 EFLAGS: 00010296
->     RAX: 0000000000000000 RBX: ffffea000594c5a8 RCX: 0000000000000000
->     RDX: 1ffffd4000b298b7 RSI: 0000000000000000 RDI: ffffea000594c5b8
->     RBP: ffffea000594c580 R08: 000000000000003e R09: ffff8881d5520bbb
->     R10: ffffed103aaa4177 R11: 0000000000000001 R12: ffffea000594c5b4
->     R13: 0000000000000000 R14: ffff888165316000 R15: ffffea000594c588
->     FS:  0000000000000000(0000) GS:ffff8881d5500000(0000) knlGS:000000000=
-0000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: 00007f7c8c3654d8 CR3: 0000000103f42004 CR4: 00000000001706e0
->     Call Trace:
->      z3fold_zpool_shrink+0x9b6/0x1240
->      ? sugov_update_single+0x357/0x990
->      ? sched_clock+0x5/0x10
->      ? sched_clock_cpu+0x18/0x180
->      ? z3fold_zpool_map+0x490/0x490
->      ? _raw_spin_lock_irq+0x88/0xe0
->      shrink_worker+0x35/0x90
->      process_one_work+0x70c/0x1210
->      ? pwq_dec_nr_in_flight+0x15b/0x2a0
->      worker_thread+0x539/0x1200
->      ? __kthread_parkme+0x73/0x120
->      ? rescuer_thread+0x1000/0x1000
->      kthread+0x330/0x400
->      ? __kthread_bind_mask+0x90/0x90
->      ret_from_fork+0x22/0x30
->     Modules linked in: rfcomm ebtable_filter ebtables ip6table_filter ip6=
-_tables iptable_filter ccm algif_aead des_generic libdes ecb algif_skcipher=
- cmac bnep md4 algif_hash af_alg vfat fat intel_rapl_msr intel_rapl_common =
-x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iwlmvm hid_logitec=
-h_hidpp kvm at24 mac80211 snd_hda_codec_realtek iTCO_wdt snd_hda_codec_gene=
-ric intel_pmc_bxt snd_hda_codec_hdmi ledtrig_audio iTCO_vendor_support mei_=
-wdt mei_hdcp snd_hda_intel snd_intel_dspcfg libarc4 soundwire_intel irqbypa=
-ss iwlwifi soundwire_generic_allocation rapl soundwire_cadence intel_cstate=
- snd_hda_codec intel_uncore btusb joydev mousedev snd_usb_audio pcspkr btrt=
-l uvcvideo nouveau btbcm i2c_i801 btintel snd_hda_core videobuf2_vmalloc i2=
-c_smbus snd_usbmidi_lib videobuf2_memops bluetooth snd_hwdep soundwire_bus =
-snd_soc_rt5640 videobuf2_v4l2 cfg80211 snd_soc_rl6231 videobuf2_common snd_=
-rawmidi lpc_ich alx videodev mdio snd_seq_device snd_soc_core mc ecdh_gener=
-ic mxm_wmi mei_me
->      hid_logitech_dj wmi snd_compress e1000e ac97_bus mei ttm rfkill snd_=
-pcm_dmaengine ecc snd_pcm snd_timer snd soundcore mac_hid acpi_pad pkcs8_ke=
-y_parser it87 hwmon_vid crypto_user fuse ip_tables x_tables ext4 crc32c_gen=
-eric crc16 mbcache jbd2 dm_crypt cbc encrypted_keys trusted tpm rng_core us=
-bhid dm_mod crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel =
-aesni_intel crypto_simd cryptd glue_helper xhci_pci xhci_pci_renesas i915 v=
-ideo intel_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgbl=
-t fb_sys_fops cec drm agpgart
->     ---[ end trace 126d646fc3dc0ad8 ]---
->
-> To fix the issue, re-add the earlier test and set in the case where we
-> have a headless page.
->
-> Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> ---
->
->  mm/z3fold.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/z3fold.c b/mm/z3fold.c
-> index 0152ad9931a8..8ae944eeb8e2 100644
-> --- a/mm/z3fold.c
-> +++ b/mm/z3fold.c
-> @@ -1350,8 +1350,22 @@ static int z3fold_reclaim_page(struct z3fold_pool =
-*pool, unsigned int retries)
->                         page =3D list_entry(pos, struct page, lru);
->
->                         zhdr =3D page_address(page);
-> -                       if (test_bit(PAGE_HEADLESS, &page->private))
-> +                       if (test_bit(PAGE_HEADLESS, &page->private)) {
-> +                               /*
-> +                                * For non-headless pages, we wait to do =
-this
-> +                                * until we have the page lock to avoid r=
-acing
-> +                                * with __z3fold_alloc(). Headless pages =
-don't
-> +                                * have a lock (and __z3fold_alloc() will=
- never
-> +                                * see them), but we still need to test a=
-nd set
-> +                                * PAGE_CLAIMED to avoid racing with
-> +                                * z3fold_free(), so just do it now befor=
-e
-> +                                * leaving the loop.
-> +                                */
-> +                               if (test_and_set_bit(PAGE_CLAIMED, &page-=
->private))
-> +                                       continue;
-> +
->                                 break;
-> +                       }
->
->                         if (kref_get_unless_zero(&zhdr->refcount) =3D=3D =
-0) {
->                                 zhdr =3D NULL;
-> --
-> 2.30.0
->
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
+
+Sir/Madam,
+
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
