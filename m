@@ -2,259 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BCB338ED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B03F338ED6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhCLNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:31:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49342 "EHLO mail.kernel.org"
+        id S231480AbhCLNcU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:32:20 -0500
+Received: from aposti.net ([89.234.176.197]:43472 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhCLNbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:31:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF97664FCE;
-        Fri, 12 Mar 2021 13:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615555871;
-        bh=YJPe9rbt0mvDeRd0XrcSFj6z7tbaKTnk1AxRPbEaQyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6AoBTZSYobzDNB0z4t8/4eXJ0LRRr2hZ/Jej2kbnTU2VhZRPOLwtANFv6aH8Y1fi
-         +GJCAnyNE57TO1fHaf+vmEO1xjl4hp0HmlB4k8KGLD+td08NHuvZgLKs4OtrwvlDEW
-         VIDV0Z9BbSwr2HnFviy2VeX54jhBbLHBthmjJK1g=
-Date:   Fri, 12 Mar 2021 14:31:08 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eric Valette <eric.valette@free.fr>
-Cc:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: systematic crash in amdgpu init since 5.10.20. Not fixed with
- 5.10.21
-Message-ID: <YEttHAkUP15y2pek@kroah.com>
-References: <c288c34d-9989-c45d-4ea7-03c9b11c48ff@free.fr>
- <e426efc9-cc4b-8663-ec92-0c4a4cabcb96@applied-asynchrony.com>
- <cbc839ba-f5db-4971-ad83-ddd3154840ea@free.fr>
+        id S231201AbhCLNcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:32:01 -0500
+Date:   Fri, 12 Mar 2021 13:31:45 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 2/6] pinctrl: Ingenic: Add support for read the pin
+ configuration of X1830.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
+Message-Id: <XWYUPQ.9202CFTWWMJ6@crapouillou.net>
+In-Reply-To: <1615476112-113101-3-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1615476112-113101-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cbc839ba-f5db-4971-ad83-ddd3154840ea@free.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:12:43PM +0100, Eric Valette wrote:
-> On 09/03/2021 18:27, Holger Hoffst‰tte wrote:
-> > On 2021-03-07 17:18, Eric Valette wrote:
-> > > I have the following systematic crash at boot since 5.10.20 (.19 was ok)
-> > > 
-> > > This laptop has two graphic cards:
-> > > 
-> > > 03:00.0 Display controller: Advanced Micro Devices, Inc. [AMD/ATI]
-> > > Navi 14 [Radeon RX 5500/5500M / Pro 5500M] (rev c1)
-> > > 07:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-> > > [AMD/ATI] Renoir (rev c6)
-> > > 
-> > > NB: cc me I'm not subscribed
-> > > 
-> > > CPU: 13 PID: 721 Comm: systemd-udevd Not tainted 5.10.21 #2
-> > > [††† 4.446170] Hardware name: Micro-Star International Co., Ltd.
-> > > Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
-> > > [††† 4.446175] RIP: 0010:kernel_fpu_begin_mask+0xc5/0xe0
-> > > [††† 4.446179] Code: 65 8a 05 86 32 9f 52 84 c0 74 9a 0f 0b eb 96 48
-> > > 8b 07 f6 c4 40 75 b0 f0 80 4f 01 40 48 81 c7 00 0c 00 00 e8 cd fb ff
-> > > ff eb 9d <0f> 0b eb 82 db e3 eb b8 e8 3e 63 e0 00 66 66 2e 0f 1f 84
-> > > 00 00 00
-> > > [††† 4.446182] RSP: 0018:ffffbc70012ef5e8 EFLAGS: 00010202
-> > > [††† 4.446185] RAX: 0000000080000001 RBX: 0000000000000003 RCX:
-> > > ffffbc70012ef65c
-> > > [††† 4.446186] RDX: ffff9bd4415b4000 RSI: ffff9bd4525c0000 RDI:
-> > > 0000000000000003
-> > > [††† 4.446188] RBP: ffff9bd433e20000 R08: ffffbc70012ef660 R09:
-> > > 0000000000000000
-> > > [††† 4.446190] R10: ffff9bd415ba4000 R11: ffff9bd4525c10f0 R12:
-> > > ffffffffc0c46560
-> > > [††† 4.446191] R13: 0000000000000000 R14: ffff9bd4415b4000 R15:
-> > > 0000000000000001
-> > > [††† 4.446194] FS:† 00007f00024218c0(0000) GS:ffff9bd71f940000(0000)
-> > > knlGS:0000000000000000
-> > > [††† 4.446196] CS:† 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [††† 4.446199] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4:
-> > > 0000000000350ee0
-> > > [††† 4.446200] Call Trace:
-> > > [††† 4.446532]† dcn21_calculate_wm+0x49/0x410 [amdgpu]
-> > > [††† 4.446848]† dcn21_validate_bandwidth_fp+0x174/0x280 [amdgpu]
-> > > [††† 4.447162]† dcn21_validate_bandwidth+0x29/0x40 [amdgpu]
-> > > [††† 4.447415]† dc_validate_global_state+0x2f2/0x390 [amdgpu]
-> > > [††† 4.447667]† amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
-> > > [††† 4.447704]† drm_atomic_check_only+0x55a/0x7d0 [drm]
-> > > [††† 4.447735]† drm_atomic_commit+0x13/0x50 [drm]
-> > > [††† 4.447765]† drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
-> > > [††† 4.447795]† drm_client_modeset_commit_locked+0x56/0x150 [drm]
-> > > [††† 4.447822]† drm_client_modeset_commit+0x24/0x40 [drm]
-> > > [††† 4.447840]† drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
-> > > [††† 4.447846]† fbcon_init+0x2b3/0x570
-> > > [††† 4.447850]† visual_init+0xce/0x130
-> > > [††† 4.447853]† do_bind_con_driver.isra.0+0x1db/0x2e0
-> > > [††† 4.447857]† do_take_over_console+0x116/0x180
-> > > [††† 4.447861]† do_fbcon_takeover+0x5c/0xc0
-> > > [††† 4.447864]† register_framebuffer+0x1e4/0x300
-> > > [††† 4.447881]†
-> > > __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0
-> > > [drm_kms_helper]
-> > > [††† 4.448081]† amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
-> > > [††† 4.448326]† amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
-> > > [††† 4.448334]† ? pci_bus_read_config_word+0x49/0x70
-> > > [††† 4.448527]† amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
-> > > [††† 4.448718]† amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
-> > > [††† 4.448761]† local_pci_probe+0x42/0x80
-> > > [††† 4.448770]† ? _cond_resched+0x16/0x40
-> > > [††† 4.448774]† pci_device_probe+0xfa/0x1b0
-> > > [††† 4.448781]† really_probe+0xf2/0x440
-> > > [††† 4.448786]† driver_probe_device+0xe1/0x150
-> > > [††† 4.448789]† device_driver_attach+0xa1/0xb0
-> > > [††† 4.448792]† __driver_attach+0x8a/0x150
-> > > [††† 4.448794]† ? device_driver_attach+0xb0/0xb0
-> > > [††† 4.448797]† ? device_driver_attach+0xb0/0xb0
-> > > [††† 4.448800]† bus_for_each_dev+0x78/0xc0
-> > > [††† 4.448805]† bus_add_driver+0x12b/0x1e0
-> > > [††† 4.448808]† driver_register+0x8b/0xe0
-> > > [††† 4.448812]† ? 0xffffffffc134a000
-> > > [††† 4.448817]† do_one_initcall+0x44/0x1d0
-> > > [††† 4.448822]† ? do_init_module+0x23/0x260
-> > > [††† 4.448828]† ? kmem_cache_alloc_trace+0xf5/0x200
-> > > [††† 4.448831]† do_init_module+0x5c/0x260
-> > > [††† 4.448834]† __do_sys_finit_module+0xb1/0x110
-> > > [††† 4.448840]† do_syscall_64+0x33/0x80
-> > > [††† 4.448844]† entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > [††† 4.448848] RIP: 0033:0x7f00028da9b9
-> > > [††† 4.448853] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00
-> > > 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
-> > > 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64
-> > > 89 01 48
-> > > [††† 4.448855] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX:
-> > > 0000000000000139
-> > > [††† 4.448860] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX:
-> > > 00007f00028da9b9
-> > > [††† 4.448862] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI:
-> > > 0000000000000017
-> > > [††† 4.448864] RBP: 0000000000020000 R08: 0000000000000000 R09:
-> > > 000056314a243020
-> > > [††† 4.448866] R10: 0000000000000017 R11: 0000000000000246 R12:
-> > > 00007f0002a65e2d
-> > > [††† 4.448868] R13: 0000000000000000 R14: 000056314a24a2d0 R15:
-> > > 000056314a23dff0
-> > > [††† 4.448873] ---[ end trace 72b8a47f60a3c4b2 ]---
-> > > [††† 4.449556] ------------[ cut here ]------------
-> > > [††† 4.449562] WARNING: CPU: 13 PID: 721 at
-> > > arch/x86/kernel/fpu/core.c:155 kernel_fpu_end+0x19/0x20
-> > > [††† 4.449563] Modules linked in: uinput binfmt_misc amdgpu(+)
-> > > uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videodev
-> > > iwlmvm videobuf2_common gpu_sched ttm msi_wmi drm_kms_helper pcspkr
-> > > serio_raw sparse_keymap sp5100_tco cec watchdog btusb i2c_algo_bit
-> > > fb_sys_fops syscopyarea iwlwifi sysfillrect sysimgblt tpm_crb
-> > > tpm_tis tpm_tis_core tpm drm configfs ip_tables x_tables autofs4
-> > > i2c_hid
-> > > [††† 4.449590] CPU: 13 PID: 721 Comm: systemd-udevd Tainted: G
-> > > W †††††† 5.10.21 #2
-> > > [††† 4.449592] Hardware name: Micro-Star International Co., Ltd.
-> > > Bravo 17 A4DDR/MS-17FK, BIOS E17FKAMS.117 10/29/2020
-> > > [††† 4.449595] RIP: 0010:kernel_fpu_end+0x19/0x20
-> > > [††† 4.449599] Code: ae 47 40 b8 01 00 00 00 c3 0f 0b eb d7 0f 0b eb
-> > > c9 0f 1f 44 00 00 65 8a 05 2c 36 9f 52 84 c0 74 09 65 c6 05 20 36 9f
-> > > 52 00 c3 <0f> 0b eb f3 0f 1f 00 0f 1f 44 00 00 8b 15 a5 b6 59 02 31
-> > > f6 e8 fe
-> > > [††† 4.449600] RSP: 0018:ffffbc70012ef6b0 EFLAGS: 00010246
-> > > [††† 4.449602] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-> > > 00000000000007a4
-> > > [††† 4.449604] RDX: 00000000000007a3 RSI: cade29b7434a9329 RDI:
-> > > 000000000002d740
-> > > [††† 4.449605] RBP: ffff9bd4525c0000 R08: 0000000000000000 R09:
-> > > 0000000000000040
-> > > [††† 4.449606] R10: 00000000c4444440 R11: 0000000000000003 R12:
-> > > 0000000000000001
-> > > [††† 4.449607] R13: ffff9bd415ba4000 R14: ffff9bd4525c1518 R15:
-> > > ffff9bd4525c0000
-> > > [††† 4.449610] FS:† 00007f00024218c0(0000) GS:ffff9bd71f940000(0000)
-> > > knlGS:0000000000000000
-> > > [††† 4.449611] CS:† 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [††† 4.449612] CR2: 00005575ca8bb8e8 CR3: 00000001117e8000 CR4:
-> > > 0000000000350ee0
-> > > [††† 4.449613] Call Trace:
-> > > [††† 4.449861]† dcn21_validate_bandwidth+0x31/0x40 [amdgpu]
-> > > [††† 4.450104]† dc_validate_global_state+0x2f2/0x390 [amdgpu]
-> > > [††† 4.450355]† amdgpu_dm_atomic_check+0xb0d/0xc00 [amdgpu]
-> > > [††† 4.450393]† drm_atomic_check_only+0x55a/0x7d0 [drm]
-> > > [††† 4.450424]† drm_atomic_commit+0x13/0x50 [drm]
-> > > [††† 4.450454]† drm_client_modeset_commit_atomic+0x1e4/0x220 [drm]
-> > > [††† 4.450483]† drm_client_modeset_commit_locked+0x56/0x150 [drm]
-> > > [††† 4.450511]† drm_client_modeset_commit+0x24/0x40 [drm]
-> > > [††† 4.450528]† drm_fb_helper_set_par+0xa5/0xd0 [drm_kms_helper]
-> > > [††† 4.450534]† fbcon_init+0x2b3/0x570
-> > > [††† 4.450538]† visual_init+0xce/0x130
-> > > [††† 4.450543]† do_bind_con_driver.isra.0+0x1db/0x2e0
-> > > [††† 4.450547]† do_take_over_console+0x116/0x180
-> > > [††† 4.450551]† do_fbcon_takeover+0x5c/0xc0
-> > > [††† 4.450554]† register_framebuffer+0x1e4/0x300
-> > > [††† 4.450571]†
-> > > __drm_fb_helper_initial_config_and_unlock+0x321/0x4a0
-> > > [drm_kms_helper]
-> > > [††† 4.450769]† amdgpu_fbdev_init+0xb9/0xf0 [amdgpu]
-> > > [††† 4.451011]† amdgpu_device_init.cold+0x166b/0x1a4d [amdgpu]
-> > > [††† 4.451018]† ? pci_bus_read_config_word+0x49/0x70
-> > > [††† 4.451211]† amdgpu_driver_load_kms+0x2b/0x1f0 [amdgpu]
-> > > [††† 4.451401]† amdgpu_pci_probe+0x114/0x1a0 [amdgpu]
-> > > [††† 4.451405]† local_pci_probe+0x42/0x80
-> > > [††† 4.451409]† ? _cond_resched+0x16/0x40
-> > > [††† 4.451412]† pci_device_probe+0xfa/0x1b0
-> > > [††† 4.451417]† really_probe+0xf2/0x440
-> > > [††† 4.451420]† driver_probe_device+0xe1/0x150
-> > > [††† 4.451422]† device_driver_attach+0xa1/0xb0
-> > > [††† 4.451424]† __driver_attach+0x8a/0x150
-> > > [††† 4.451426]† ? device_driver_attach+0xb0/0xb0
-> > > [††† 4.451427]† ? device_driver_attach+0xb0/0xb0
-> > > [††† 4.451430]† bus_for_each_dev+0x78/0xc0
-> > > [††† 4.451434]† bus_add_driver+0x12b/0x1e0
-> > > [††† 4.451436]† driver_register+0x8b/0xe0
-> > > [††† 4.451438]† ? 0xffffffffc134a000
-> > > [††† 4.451441]† do_one_initcall+0x44/0x1d0
-> > > [††† 4.451444]† ? do_init_module+0x23/0x260
-> > > [††† 4.451448]† ? kmem_cache_alloc_trace+0xf5/0x200
-> > > [††† 4.451451]† do_init_module+0x5c/0x260
-> > > [††† 4.451453]† __do_sys_finit_module+0xb1/0x110
-> > > [††† 4.451458]† do_syscall_64+0x33/0x80
-> > > [††† 4.451461]† entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > [††† 4.451464] RIP: 0033:0x7f00028da9b9
-> > > [††† 4.451467] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00
-> > > 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
-> > > 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a7 54 0c 00 f7 d8 64
-> > > 89 01 48
-> > > [††† 4.451469] RSP: 002b:00007ffcab625508 EFLAGS: 00000246 ORIG_RAX:
-> > > 0000000000000139
-> > > [††† 4.451473] RAX: ffffffffffffffda RBX: 000056314a23dff0 RCX:
-> > > 00007f00028da9b9
-> > > [††† 4.451474] RDX: 0000000000000000 RSI: 00007f0002a65e2d RDI:
-> > > 0000000000000017
-> > > [††† 4.451475] RBP: 0000000000020000 R08: 0000000000000000 R09:
-> > > 000056314a243020
-> > > [††† 4.451476] R10: 0000000000000017 R11: 0000000000000246 R12:
-> > > 00007f0002a65e2d
-> > > [††† 4.451478] R13: 0000000000000000 R14: 000056314a24a2d0 R15:
-> > > 000056314a23dff0
-> > > [††† 4.451481] ---[ end trace 72b8a47f60a3c4b3 ]---
-> > > [††† 4.476162] Console: switching to colour frame buffer device 240x67
-> > > 
-> > 
-> > I had the same problem and got annoyed enough to do something about it.
-> > Try these
-> > two fixes on top of .22:
-> > 
-> > https://gitlab.freedesktop.org/agd5f/linux/-/commit/b42c68fac891d8c23c81cdfd66f82864c2353d7b
-> > 
-> > https://gitlab.freedesktop.org/agd5f/linux/-/commit/37ba52c6bd13a31fa35008dc0b5790a1b57de7eb
-> 
-> 
-> I confirm it also fixes the problem for me. Thnaks a lot. You saved me from
-> a bisect on a slow connection.
+Hi Zhou,
 
-Both will show up in the next 5.10.y and 5.11.y releases, thanks.
+Le jeu. 11 mars 2021 √† 23:21, Âë®Áê∞Êù∞ (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a √©crit :
+> Add X1830 support in "ingenic_pinconf_get()", so that it can read the
+> configuration of X1830 SoC correctly.
+> 
+> Signed-off-by: Âë®Áê∞Êù∞ (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-greg k-h
+This is a fix, so it needs a Fixes: tag, and you need to Cc 
+linux-stable.
+
+> ---
+> 
+> Notes:
+>     v2:
+>     New patch.
+> 
+>  drivers/pinctrl/pinctrl-ingenic.c | 76 
+> +++++++++++++++++++++++++++++----------
+>  1 file changed, 57 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+> b/drivers/pinctrl/pinctrl-ingenic.c
+> index 05dfa0a..0a88aab 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -2109,31 +2109,69 @@ static int ingenic_pinconf_get(struct 
+> pinctrl_dev *pctldev,
+>  	enum pin_config_param param = pinconf_to_config_param(*config);
+>  	unsigned int idx = pin % PINS_PER_GPIO_CHIP;
+>  	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
+> +	unsigned int bias;
+>  	bool pull;
+> 
+> -	if (jzpc->info->version >= ID_JZ4770)
+> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
+> -	else
+> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
+> +	if (jzpc->info->version >= ID_X1830) {
+> +		unsigned int half = PINS_PER_GPIO_CHIP / 2;
+> +		unsigned int idxh = pin % half * 2;
+> 
+> -	switch (param) {
+> -	case PIN_CONFIG_BIAS_DISABLE:
+> -		if (pull)
+> -			return -EINVAL;
+> -		break;
+> +		if (idx < half)
+> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
+> +					X1830_GPIO_PEL, &bias);
+> +		else
+> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
+> +					X1830_GPIO_PEH, &bias);
+> 
+> -	case PIN_CONFIG_BIAS_PULL_UP:
+> -		if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
+> -			return -EINVAL;
+> -		break;
+> +		bias = (bias >> idxh) & 3;
+
+You can do:
+
+u32 mask = GENMASK(idxh + 1, idxh);
+
+bias = FIELD_GET(mask, bias);
+
+(macros in <linux/bitfield.h>)
+
+> 
+> -	case PIN_CONFIG_BIAS_PULL_DOWN:
+> -		if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
+> -			return -EINVAL;
+> -		break;
+> +		switch (param) {
+> +		case PIN_CONFIG_BIAS_DISABLE:
+> +			if (bias)
+> +				return -EINVAL;
+> +			break;
+> 
+> -	default:
+> -		return -ENOTSUPP;
+> +		case PIN_CONFIG_BIAS_PULL_UP:
+> +			if ((bias != PIN_CONFIG_BIAS_PULL_UP) ||
+> +					!(jzpc->info->pull_ups[offt] & BIT(idx)))
+
+"bias" is a 2-bit value (because of the & 3 mask), and 
+PIN_CONFIG_BIAS_PULL_UP == 5.
+
+So this clearly won't work. You are comparing hardware values with 
+public API enums.
+
+> +				return -EINVAL;
+> +			break;
+> +
+> +		case PIN_CONFIG_BIAS_PULL_DOWN:
+> +			if ((bias != PIN_CONFIG_BIAS_PULL_DOWN) ||
+> +					!(jzpc->info->pull_downs[offt] & BIT(idx)))
+> +				return -EINVAL;
+> +			break;
+> +
+> +		default:
+> +			return -ENOTSUPP;
+> +		}
+> +
+> +	} else {
+> +		if (jzpc->info->version >= ID_JZ4770)
+> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
+> +		else
+> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
+
+I think you can keep the switch outside the if/else block, if you use 
+pullup/pulldown variables.
+
+These can be initialized (in the non-X1830 case) to:
+
+pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
+pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
+
+In the X1830 case you'd initialize these variables from 'bias'.
+
+> +
+> +		switch (param) {
+> +		case PIN_CONFIG_BIAS_DISABLE:
+> +			if (pull)
+
+Here would change to if (pullup || pulldown)
+
+> +				return -EINVAL;
+> +			break;
+> +
+> +		case PIN_CONFIG_BIAS_PULL_UP:
+> +			if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
+
+if (!pullup)
+
+> +				return -EINVAL;
+> +			break;
+> +
+> +		case PIN_CONFIG_BIAS_PULL_DOWN:
+> +			if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
+
+if (!pulldown)
+
+Cheers,
+-Paul
+
+> +				return -EINVAL;
+> +			break;
+> +
+> +		default:
+> +			return -ENOTSUPP;
+> +		}
+>  	}
+> 
+>  	*config = pinconf_to_config_packed(param, 1);
+> --
+> 2.7.4
+> 
+
+
