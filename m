@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFF63396B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D48339696
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbhCLSfe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 13:35:34 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:46684 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233815AbhCLSfY (ORCPT
+        id S233409AbhCLScz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233155AbhCLSch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:35:24 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 5412C3E7D1D;
-        Fri, 12 Mar 2021 14:16:37 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kB2hQdkrXBbO; Fri, 12 Mar 2021 14:16:36 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id C524F3E7171;
-        Fri, 12 Mar 2021 14:06:57 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Y3_FgwIYqx7h; Fri, 12 Mar 2021 14:06:57 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id C779C3E21F0;
-        Fri, 12 Mar 2021 14:03:45 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 13:32:37 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68387C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:37 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id z5so12338586plg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:32:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lLcxMgLQzpOPuMsy/zbtgLb8CJfZoKn9DHLH6v0dwq8=;
+        b=JFRJiIKPCLBe+gRs8/quunIzOR3HfENktTlkCaXVWFEdYnTSV2OQ5chktHryBEAtgY
+         nCh5JNlcLBMzv/4xTuM+mN1ZkVcTlwni3Iz+p2esee/9QX+d3A957u/fP+NvpZS7DlzD
+         rbSDpy9TNDjaxu5VZ8wLLVBDzbB1tY7MpWkCA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lLcxMgLQzpOPuMsy/zbtgLb8CJfZoKn9DHLH6v0dwq8=;
+        b=LFvjuJ0ymmCO8RtSgtg6q63e59gyhqE2AY16S9ZRQEKfm2ewe8TtpPDDCR5nUDPOKY
+         1M3rmvsRGSQfW92MNQ6qUIK867BYSNr+DIXhUVyVwgawoeM6mE0lYyJteHmcW1+hpZ1g
+         Ip9WTD+lQhwcaFKb3rsLRN29Wos8nTCmn5tu/kcuRbOaRl9aCqrHG6UBSjd1nPxY02bD
+         Z4XBL8H1UTNRabF4VgHa6ZVIG6w9Okp1bjrGpWwObBf0v3/Z/WXTqQhGVSKyg9A2aGA8
+         LVnn0WLFLHayFVAve3RSOVG1RIN1D8WYcTbMNxAZNTHIVcpZzdM+MiUZkSunFYk4+zMX
+         77Ng==
+X-Gm-Message-State: AOAM532rNGLoMscmpiP5OhXLoZSgz6Zd/fedkZwi/B9Sbnl9GkaKJv3j
+        Q8AlQ9a9ynIEIUn14Qm2ZgejJA==
+X-Google-Smtp-Source: ABdhPJwhW/lrm9bAmgB0dDVBUtRv9pmo/DJiPA0Olw4Z/dkGiQeQZ0jxmX41v7/rF4wmeR5QqJ+FTg==
+X-Received: by 2002:a17:902:ea0e:b029:e4:81d4:ddae with SMTP id s14-20020a170902ea0eb02900e481d4ddaemr413248plg.12.1615573956800;
+        Fri, 12 Mar 2021 10:32:36 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:914f:6483:1dc:1bba])
+        by smtp.gmail.com with UTF8SMTPSA id e65sm6382428pfe.9.2021.03.12.10.32.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 10:32:36 -0800 (PST)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH v2 0/3] arm64: dts: qcom: sc7180: Disable the charger thermal zone on more trogdor boards
+Date:   Fri, 12 Mar 2021 10:32:25 -0800
+Message-Id: <20210312183228.550779-1-mka@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 18:04:09 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312170345.C779C3E21F0@mail.curtumepanorama.com.br>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+We already disabled the charger thermal zone for lazor to avoid
+bogus temperature readings from an unsupported thermistor. Some
+revisions of other trogdor boards that are added by Doug's
+'arm64: dts: qcom: Update sc7180-trogdor variants from downstream'
+series have the same problem. Disable the charger thermal zone for
+them too.
 
-Sir/Madam,
+This series is based on v2 of the 'arm64: dts: qcom: Update
+sc7180-trogdor variants from downstream' series
+(https://patchwork.kernel.org/project/linux-arm-msm/list/?series=440315)
 
-CONGRATULATIONS!!!
+(no changes since v1)
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Matthias Kaehlcke (3):
+  arm64: dts: qcom: sc7180: lazor: Simplify disabling of charger thermal
+    zone
+  arm64: dts: qcom: sc7180: Add pompom rev3
+  arm64: dts: qcom: sc7180: Add CoachZ rev3
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+ arch/arm64/boot/dts/qcom/Makefile             |  4 ++
+ .../dts/qcom/sc7180-trogdor-coachz-r1.dts     |  9 +++++
+ .../dts/qcom/sc7180-trogdor-coachz-r2-lte.dts |  4 +-
+ .../dts/qcom/sc7180-trogdor-coachz-r2.dts     | 13 ++++++-
+ .../dts/qcom/sc7180-trogdor-coachz-r3-lte.dts | 18 +++++++++
+ .../dts/qcom/sc7180-trogdor-coachz-r3.dts     | 15 ++++++++
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r3.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  9 +++++
+ .../dts/qcom/sc7180-trogdor-pompom-r1.dts     | 12 ++++++
+ .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
+ .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 38 +++++--------------
+ .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 +++++++
+ .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 15 ++++++++
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 31 +++++++++++++++
+ 16 files changed, 151 insertions(+), 62 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
