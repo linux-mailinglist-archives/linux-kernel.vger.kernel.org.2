@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8449F3398E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EF33398E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhCLVKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S235170AbhCLVL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbhCLVKU (ORCPT
+        with ESMTP id S234964AbhCLVLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:10:20 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF36C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:10:19 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id t29so2691064pfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:10:19 -0800 (PST)
+        Fri, 12 Mar 2021 16:11:14 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58F0C061574;
+        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id gb6so5753304pjb.0;
+        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pAFjvyG2BbuTR3wtn+p9SqjjHJsHfZYBaKEIukNmkVY=;
-        b=vc6FxzbYVVZjdJEOtsXsduPQatLfiaVPUx7lsOMuWZRohiMgayTvLyeV0MwzdexptK
-         Bm7Vc9Au744meaK5aoM+NFWSf8U+JGpmsaD445FNT5K1mQiBDhIeJgdCw5AL+rShRVPy
-         752uzcppiFQZa6/ExdAzCZp8TnMbPQAH6uXQyeZlZKEVfzTp7Lg0iqLaqSzDJy0v5KzE
-         OkPackqgyz9EWoFSsQFavX3gYpLEv4l/p0vqPrC4Si/JVzFXxtE3HBhtHu8wUUxlKVlU
-         PZX92mQZuR9qYIdAFlwntQDcqmYC4GAiPD+zK/xpmWPeCm62eZg2gx0iZ2pFPtOeqP7Q
-         rgWA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wz7DsDh9in1WQ8szNmEgdOyLhNi2EeCu5C/ACTNPo9U=;
+        b=qLfwf/C+s6b8IixldJWT2CBWm5O3NiwsoHnQCRPa+ctPdpl3rSv0xXRGf+w5KoVvbp
+         1BVn3YU0S1FEdpQx5BgDJItFt8iNIQ1EFfCv6vx/j1muM1eKeMeZ5jrjgGbfCuh5nbNc
+         b6yVS3dqks+Ey0/1jPtGX6jdmuogG4aQi/2gnXNDwWO2Gj4HtxNgzIqQ9bSTyR5YPAVB
+         iMiOjTF0u7Rav8MWsKpR0BZAj54z2jbgTzb38fdcGIGHV+xkAzOi4Ehpzkcq4K0smWzx
+         KU77hJnPChSxVFtwn8F61+VCpUltKWN7NyIHKT/9UsHO/4t/SF8eavVRpwSbjYQa6Fl7
+         7TEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pAFjvyG2BbuTR3wtn+p9SqjjHJsHfZYBaKEIukNmkVY=;
-        b=QJy1HafUxhR7MvBsW7C3MIiQoKrJAYPJqNBWZ9IEdJV0X7RtHb85jF8y6oA4Skzm74
-         PsoSLEtLgIzsg2Z1InFEru8cZiGvy32Wl0fulCDauhbPr9UjaxL0nQszkzO6pU27E5bT
-         lL5924enAO3AuEfyGV0oc8tTpnoW40gqT+lN3ES2sRBSDXSZu5uUufl3Bm7RJrPAAsH1
-         tLIdLiwBplMvsh7oMmTqTWFW5P86PWwBwdxGaCsFpmb9SpmT43iBHkj57MyHtn7tH6q8
-         rAjsYb///gJ3CusuhK8mquoXIQ+gMgYcvrHYlt/vEoqd20u5GmhaR7lxZ/PpN6L8Ywg5
-         EeUg==
-X-Gm-Message-State: AOAM530q8z4EbaWuTBN2itLwq5wtCpJ1LIWirDgFRnbjroKA/X5PcLTK
-        J80u2KZFqBTob8bYV4D6b2OXBw==
-X-Google-Smtp-Source: ABdhPJzZqo8fypR7EoA+WAQj0FiBpOz4ZTPpaT51JQKOswutZAbZB0I1mU0vdImvhQDzgMdCafHRuA==
-X-Received: by 2002:a63:cd08:: with SMTP id i8mr13355788pgg.49.1615583418687;
-        Fri, 12 Mar 2021 13:10:18 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id q95sm2911339pjq.20.2021.03.12.13.10.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wz7DsDh9in1WQ8szNmEgdOyLhNi2EeCu5C/ACTNPo9U=;
+        b=extL8IDXv13G64cPoGv/J7sW/de9HK7Ys4i5c6vmQD8TLV1paIGX+7n5SsqS4u/j/Q
+         BbH+dTfb1AbnGP1AOCs1nxjZ0tbyostlQxLhuuVun2BQ6pzF7ofkBmvdXGyttjDknKZP
+         KVa8tskkEXlxPkpXXbhiwW2mN+NpmAshvUAO1rPFO7zXt830Iox6X+rRc2pbA/CthNYg
+         64I6hwRJ2xvMdCKNBLfN2p+/MqfV4G3hqkuRM9fH7N2vYhPREq/C5EjOymb4i5hSxZoc
+         i2B8q4VYOSOLqMxYWrsSSeMYTHRRfGvWkoex7Fn4dMfwOk5FGDzcghG8bWog++Heub/X
+         eETw==
+X-Gm-Message-State: AOAM530AWNUvXrxLH5VpECS0ULhhhqUCoFrojKV22A4MDOFHKGTOSVUf
+        QMsIGVmAfDZBKOk1IJtHiDADW+6A1Og=
+X-Google-Smtp-Source: ABdhPJzP5j8G5Q1nTRmqPQ6pqv8fZyFzxMAaR9N48HRdcnMrQcsZx4fJ7g/xCcQrMe8c1X004LFUTw==
+X-Received: by 2002:a17:902:ab8b:b029:e5:ea3a:3d61 with SMTP id f11-20020a170902ab8bb02900e5ea3a3d61mr371524plr.71.1615583473070;
+        Fri, 12 Mar 2021 13:11:13 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o13sm6559634pgv.40.2021.03.12.13.11.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 13:10:18 -0800 (PST)
-Date:   Fri, 12 Mar 2021 13:10:11 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v2 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
-Message-ID: <YEvYsx+jUfALD8Py@google.com>
-References: <cover.1615250634.git.kai.huang@intel.com>
- <164745a2de1b9c5bede8c08a3a57566b75a61ae1.1615250634.git.kai.huang@intel.com>
+        Fri, 12 Mar 2021 13:11:12 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     zajec5@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: bcm_sf2: Fill in BCM4908 CFP entries
+Date:   Fri, 12 Mar 2021 13:11:01 -0800
+Message-Id: <20210312211102.3545866-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <164745a2de1b9c5bede8c08a3a57566b75a61ae1.1615250634.git.kai.huang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021, Kai Huang wrote:
-> @@ -290,6 +290,8 @@
->  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
->  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
->  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
-> +#define X86_FEATURE_SGX1		(11*32+ 8) /* "" Basic SGX */
-> +#define X86_FEATURE_SGX2        	(11*32+ 9) /* "" SGX Enclave Dynamic Memory Management (EDMM) */
+The BCM4908 switch has 256 CFP entrie, update that setting so CFP can be
+used.
 
-There are spaces immediately after _SGX2 that can be replace by a tab.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/dsa/bcm_sf2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index f277df922fcd..60a004f8465d 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -1151,7 +1151,7 @@ static const struct bcm_sf2_of_data bcm_sf2_4908_data = {
+ 	.type		= BCM4908_DEVICE_ID,
+ 	.core_reg_align	= 0,
+ 	.reg_offsets	= bcm_sf2_4908_reg_offsets,
+-	.num_cfp_rules	= 0, /* FIXME */
++	.num_cfp_rules	= 256,
+ };
+ 
+ /* Register offsets for the SWITCH_REG_* block */
+-- 
+2.25.1
+
