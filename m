@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3269733998E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B02339993
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbhCLWQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:16:05 -0500
-Received: from mail-ej1-f44.google.com ([209.85.218.44]:35733 "EHLO
-        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhCLWQE (ORCPT
+        id S235547AbhCLWRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235531AbhCLWQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:16:04 -0500
-Received: by mail-ej1-f44.google.com with SMTP id dx17so56249121ejb.2;
-        Fri, 12 Mar 2021 14:16:03 -0800 (PST)
+        Fri, 12 Mar 2021 17:16:49 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3895CC061574;
+        Fri, 12 Mar 2021 14:16:49 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id y20so9051822iot.4;
+        Fri, 12 Mar 2021 14:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ow2p0xO1hotn6RJOItrtDiyN/JeHanAbeq4vQ3SfL3Q=;
+        b=ca8qSuxHMylJkf9hpLyRjp/Lol2CkO36rE6egf5H5JN5eI3b6iTEL/fbQnmfD7v8RO
+         yZWhE84LScpT7GbGaqCoAaP0WaoREHhGnBmlZN5HTtwRcQL5uQ4U1b86yAr7SHM7AKtl
+         ZtRUX0KButFkQukRno//Ub+D781me/+qZ7nlmeqE+By32gH/DPuRaX5hBoNJOYYGOTPf
+         AlM+aytVEXO0CdK/7+6/r4TmJj+k85QG/VGkdEdCPfxaI6y9ZkBLiO8MV3FnzitzfrZA
+         tMg6yZWfvr8ee8xR6PYOYlKUJtiPIxMMUaFdoJ4wlgDr/U+OtXRtd2Bomtnt+BwF6t0S
+         bYsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VTnFgkRrNhyDIIDutUBQeuTI7eGNqYLKDjmPe9hscB4=;
-        b=afi3LvS5P0oewgeHnQlxDaHZ2MtN20ewA24iWcZ21u97aNUDq4c8mhjiJNSo3V/hxt
-         l3pbmEK+DMRA/GVKbZyGKVJSfaKT9myE8GejkIhDBer3N235pxUDmce/bFHAXjRX/6uT
-         0fw7KGHUpJuLyYnB++BEXUG4zF1flyYW8fmH6rQVwDny5m+0a8lQwgVUCNysjbn0wnkN
-         0ZP+G6Z1iUCHnvhHlrxlvd4+XcLKrITEDwywA02d/1EOJv9+XF5h/E7OE0W0LnDrYyF0
-         iBm5+z8W7YubYc6SBCpx2b41LM4EIzixvxC+Zp4fJPbyb4qb/t/rpcVjXE8OYNXceXFL
-         SLhg==
-X-Gm-Message-State: AOAM533k+U3N4gR9yoii60R+li9U/cIQ9decevfA48EuZPPcWNua1Q3M
-        U0W9b9Vo6g67dVUlvS5jplZaA2941ikbGVORmXP8xKdj
-X-Google-Smtp-Source: ABdhPJyNEKfdBHy42Gk4bEjnDsPbgnxPd4Zn2UlYyF1aOI9e4CuYM1k71uyT5juAEwcP01ExzsQh24FGb7b74P3fEGA=
-X-Received: by 2002:a17:906:dfcc:: with SMTP id jt12mr11132874ejc.31.1615587362840;
- Fri, 12 Mar 2021 14:16:02 -0800 (PST)
+        bh=Ow2p0xO1hotn6RJOItrtDiyN/JeHanAbeq4vQ3SfL3Q=;
+        b=E14bB5zfSUp3BnUsG7cSCl4ty9p6LVQEacHeb/HRNW1BsXWM998rCDJpvFOsYaJXGl
+         osdbD4ZnFXtv3D+a6FnbLfEAZyHFBvtJdpwQJCEWHzYSgbjG9ubHD6DNq2LxBVxEXiP1
+         zn5Y7z3BHhnWeWZLgxqw9Dz8PSrNqZsi+eIBMrKaHBsKDOGsFnDqH113zjy02gBBQivQ
+         zb3uV5sysPgBiAbozDE16oMVckEofmbOp79mea7Hd3cYgnUYB5fSqoDReTM5Dki5fNnP
+         AnZH+pECqJt9UZ3y+ooNDgqD2XBi/nHi2xfsAjlZLhxKmT5wZ5i25+SX91uvapPLE7Kg
+         sgRg==
+X-Gm-Message-State: AOAM530yhkK1cxoxAk9pNIEzy8XG+oPtEzoUimSiWGIVUCYfBv3fqtmW
+        tHTXbcnoH1ktEsnExIt/DFN0bMiSg4nogdJVoico9zN2g6E=
+X-Google-Smtp-Source: ABdhPJw4pENv2yhmlx0fcfNkJOaKYdFrSOwU7MnjJ4DmsXBoc7adHRZNZlntn33952ydymnXbYqzCKVZOzwv+b1gXE8=
+X-Received: by 2002:a02:53:: with SMTP id 80mr1335477jaa.96.1615587408621;
+ Fri, 12 Mar 2021 14:16:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116170725.5245-1-dsmythies@telus.net> <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
- <CAAYoRsVYejQRByDz78jbv5cMfd+ctT8N3YxfOBndW8FJiuk9MA@mail.gmail.com>
-In-Reply-To: <CAAYoRsVYejQRByDz78jbv5cMfd+ctT8N3YxfOBndW8FJiuk9MA@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 12 Mar 2021 17:15:51 -0500
-Message-ID: <CAJvTdKkpbFqDRL9BP3Ri0Yeb0VMXv79dr+C=ym2+GWMRZEEYpw@mail.gmail.com>
-Subject: Re: [PATCH] tools/power/x86/turbostat: Fix TCC offset bit mask
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
+References: <161558613209.1366.1492710238067504151.stgit@klimt.1015granger.net>
+In-Reply-To: <161558613209.1366.1492710238067504151.stgit@klimt.1015granger.net>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 12 Mar 2021 14:16:37 -0800
+Message-ID: <CAKgT0UdzgsfhNMDMYcAt3xR4U0=LOeMWO3+3tt0_omxu1OupaA@mail.gmail.com>
+Subject: Re: [PATCH] SUNRPC: Refresh rq_pages using a bulk page allocator
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doug,
-The offset works for control.
+On Fri, Mar 12, 2021 at 1:57 PM Chuck Lever <chuck.lever@oracle.com> wrote:
+>
+> Reduce the rate at which nfsd threads hammer on the page allocator.
+> This improves throughput scalability by enabling the threads to run
+> more independently of each other.
+>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+> Hi Mel-
+>
+> This patch replaces patch 5/7 in v4 of your alloc_pages_bulk()
+> series. It implements code clean-ups suggested by Alexander Duyck.
+> It builds and has seen some light testing.
+>
+>
+>  net/sunrpc/svc_xprt.c |   39 +++++++++++++++++++++++++++------------
+>  1 file changed, 27 insertions(+), 12 deletions(-)
 
-However, it is erroneous to use it for reporting of the actual
-temperature, like I did in turbostat.
-Thus, I'm going to revert the patch that added it's use in turbostat
-for the Temperature column.
+The updated patch looks good to me. I am good with having my
+Reviewed-by added for patches 1-6. I think the only one that still
+needs work is patch 7.
 
-thanks,
--Len
-
-On Fri, Mar 12, 2021 at 1:26 AM Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi Len,
->
->
-> thank you for your reply.
->
-> On Thu, Mar 11, 2021 at 3:19 PM Len Brown <lenb@kernel.org> wrote:
-> >
-> > Thanks for the close read, Doug.
-> >
-> > This field size actually varies from system to system,
-> > but the reality is that the offset is never that big, and so the
-> > smaller mask is sufficient.
->
-> Disagree.
->
-> I want to use an offset of 26.
->
-> > Finally, this may all be moot, because there is discussion that using
-> > the offset this way is simply erroneous.
->
-> Disagree.
-> It works great.
-> As far as I know/recall I was the only person that responded to Rui's thread
-> "thermal/intel: introduce tcc cooling driver" [1]
-> And, I spent quite a bit of time doing so.
-> However, I agree the response seems different between the two systems
-> under test, Rui's and mine.
->
-> [1] https://marc.info/?l=linux-pm&m=161070345329806&w=2
->
-> >  stay tuned.
->
-> O.K.
->
-> ... Doug
-> >
-> > -Len
-> >
-> >
-> > On Sat, Jan 16, 2021 at 12:07 PM Doug Smythies <doug.smythies@gmail.com> wrote:
-> > >
-> > > The TCC offset mask is incorrect, resulting in
-> > > incorrect target temperature calculations, if
-> > > the offset is big enough to exceed the mask size.
-> > >
-> > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> > > ---
-> > >  tools/power/x86/turbostat/turbostat.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-> > > index 389ea5209a83..d7acdd4d16c4 100644
-> > > --- a/tools/power/x86/turbostat/turbostat.c
-> > > +++ b/tools/power/x86/turbostat/turbostat.c
-> > > @@ -4823,7 +4823,7 @@ int read_tcc_activation_temp()
-> > >
-> > >         target_c = (msr >> 16) & 0xFF;
-> > >
-> > > -       offset_c = (msr >> 24) & 0xF;
-> > > +       offset_c = (msr >> 24) & 0x3F;
-> > >
-> > >         tcc = target_c - offset_c;
-> > >
-> > > --
-> > > 2.25.1
-> > >
-> >
-> >
-> > --
-> > Len Brown, Intel Open Source Technology Center
-
-
-
--- 
-Len Brown, Intel Open Source Technology Center
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
