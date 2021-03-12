@@ -2,112 +2,621 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76BB3393B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B39F3393B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhCLQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:40:31 -0500
+        id S232550AbhCLQkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:40:32 -0500
 Received: from mga14.intel.com ([192.55.52.115]:14817 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232043AbhCLQkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:40:25 -0500
-IronPort-SDR: hLPwO+WyT9dPZunXJxx46l2r+E3uKuoF7s6S27yDlv6fcK+A4YmAhHqJ45KyaUcizUeKDdGZPw
- xS55DTvT75zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188219717"
+        id S231928AbhCLQk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:40:26 -0500
+IronPort-SDR: pkuBDwxpHIYKDtwmgVJMnZPLEORJRrLJfz1+DNNSfRPqkQT5JVE2dNm1pU/dC0aUvEbFvw8c1Q
+ pNgzKxpL+urA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188219725"
 X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="188219717"
+   d="scan'208";a="188219725"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:40:24 -0800
-IronPort-SDR: VT2d3zzvVAoBu5mGLfAXjm8P/vTYcWyX9TV7cfdDTVhlPQ9xTYD+7PDSm8LGrSc8OPc6qDRGvA
- HZEQfUwSdH7Q==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:40:26 -0800
+IronPort-SDR: ftF6+BtnGotdw5r6VVJ4qdh8pQybOHmUhT464ZWrIJaPhBkALQcFzCqZuaIvPYNoahiuS3H6Lf
+ gOtHejVSLCtA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="404469053"
+   d="scan'208";a="404469059"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Mar 2021 08:40:23 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 12 Mar 2021 08:40:25 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org, acme@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     alexander.shishkin@linux.intel.com, jolsa@redhat.com,
         eranian@google.com, namhyung@kernel.org, ak@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 0/5] Uncore PMON discovery mechanism support
-Date:   Fri, 12 Mar 2021 08:34:33 -0800
-Message-Id: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 1/5] perf/x86/intel/uncore: Parse uncore discovery tables
+Date:   Fri, 12 Mar 2021 08:34:34 -0800
+Message-Id: <1615566878-70244-2-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
+References: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-A mechanism of self-describing HW for the uncore PMOM has been
+A self-describing mechanism for the uncore PerfMon hardware has been
 introduced with the latest Intel platforms. By reading through an MMIO
-page worth of information, SW can ‘discover’ all the standard uncore
-PMON registers.
+page worth of information, perf can 'discover' all the standard uncore
+PerfMon registers in a machine.
 
-With the discovery mechanism, Perf can
-- Retrieve the generic uncore unit information of all standard uncore
-  blocks, e.g., the address of counters, the address of the counter
-  control, the counter width, the access type, etc.
-  Perf can provide basic uncore support based on this information.
-  For a new platform, perf users will get basic uncore support even if
-  the platform-specific enabling code is not ready yet.
-- Retrieve accurate uncore unit information, e.g., the number of uncore
-  boxes. The number of uncore boxes may be different among machines.
-  Current perf hard code the max number of the uncore blocks. On some
-  machines, perf may create a PMU for an unavailable uncore block.
-  Although there is no harm (always return 0 for the unavailable uncore
-  block), it may confuse the users. The discovery mechanism can provide
-  the accurate number of available uncore boxes on a machine.
+The discovery mechanism relies on BIOS's support. With a proper BIOS,
+a PCI device with the unique capability ID 0x23 can be found on each
+die. Perf can retrieve the information of all available uncore PerfMons
+from the device via MMIO. The information is composed of one global
+discovery table and several unit discovery tables.
+- The global discovery table includes global uncore information of the
+  die, e.g., the address of the global control register, the offset of
+  the global status register, the number of uncore units, the offset of
+  unit discovery tables, etc.
+- The unit discovery table includes generic uncore unit information,
+  e.g., the access type, the counter width, the address of counters,
+  the address of the counter control, the unit ID, the unit type, etc.
+  The unit is also called "box" in the code.
+Perf can provide basic uncore support based on this information
+with the following patches.
 
-But, the discovery mechanism has some limits,
-- Rely on BIOS's support. If a BIOS doesn't support the discovery
-  mechanism, the uncore driver will exit with -ENODEV. There is nothing
-  changed.
-- Only provide the generic uncore unit information. The information for
-  the advanced features, such as fixed counters, filters, and
-  constraints, cannot be retrieved.
-- Only support the standard PMON blocks. Non-standard PMON blocks, e.g.,
-  free-running counters, are not supported.
-- Only provide an ID for an uncore block. No meaningful name is
-  provided. The uncore_type_&typeID_&boxID will be used as the name.
-- Enabling the PCI and MMIO type of uncore blocks rely on the NUMA support.
-  These uncore blocks require the mapping information from a BUS to a
-  die. The current discovery table doesn't provide the mapping
-  information. The pcibus_to_node() from NUMA is used to retrieve the
-  information. If NUMA is not supported, some uncore blocks maybe
-  unavailable.
+To locate the PCI device with the discovery tables, check the generic
+PCI ID first. If it doesn't match, go through the entire PCI device tree
+and locate the device with the unique capability ID.
 
-To locate the MMIO page, SW has to find a PCI device with the unique
-capability ID 0x23 and retrieve its BAR address.
+The uncore information is similar among dies. To save parsing time and
+space, only completely parse and store the discovery tables on the first
+die and the first box of each die. The parsed information is stored in an
+RB tree structure, intel_uncore_discovery_type. The size of the stored
+discovery tables varies among platforms. It's around 4KB for a Sapphire
+Rapids server.
 
-The spec can be found at Snow Ridge or Ice Lake server's uncore document.
-https://cdrdv2.intel.com/v1/dl/getContent/611319
+If a BIOS doesn't support the 'discovery' mechanism, there is nothing
+changed.
 
-Kan Liang (5):
-  perf/x86/intel/uncore: Parse uncore discovery tables
-  perf/x86/intel/uncore: Generic support for the MSR type of uncore
-    blocks
-  perf/x86/intel/uncore: Rename uncore_notifier to
-    uncore_pci_sub_notifier
-  perf/x86/intel/uncore: Generic support for the PCI type of uncore
-    blocks
-  perf/x86/intel/uncore: Generic support for the MMIO type of uncore
-    blocks
-
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
  arch/x86/events/intel/Makefile           |   2 +-
- arch/x86/events/intel/uncore.c           | 184 +++++++--
- arch/x86/events/intel/uncore.h           |  10 +-
- arch/x86/events/intel/uncore_discovery.c | 626 +++++++++++++++++++++++++++++++
- arch/x86/events/intel/uncore_discovery.h | 131 +++++++
- 5 files changed, 922 insertions(+), 31 deletions(-)
+ arch/x86/events/intel/uncore.c           |  27 ++-
+ arch/x86/events/intel/uncore_discovery.c | 322 +++++++++++++++++++++++++++++++
+ arch/x86/events/intel/uncore_discovery.h | 105 ++++++++++
+ 4 files changed, 448 insertions(+), 8 deletions(-)
  create mode 100644 arch/x86/events/intel/uncore_discovery.c
  create mode 100644 arch/x86/events/intel/uncore_discovery.h
 
+diff --git a/arch/x86/events/intel/Makefile b/arch/x86/events/intel/Makefile
+index e67a588..10bde6c 100644
+--- a/arch/x86/events/intel/Makefile
++++ b/arch/x86/events/intel/Makefile
+@@ -3,6 +3,6 @@ obj-$(CONFIG_CPU_SUP_INTEL)		+= core.o bts.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= ds.o knc.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= lbr.o p4.o p6.o pt.o
+ obj-$(CONFIG_PERF_EVENTS_INTEL_UNCORE)	+= intel-uncore.o
+-intel-uncore-objs			:= uncore.o uncore_nhmex.o uncore_snb.o uncore_snbep.o
++intel-uncore-objs			:= uncore.o uncore_nhmex.o uncore_snb.o uncore_snbep.o uncore_discovery.o
+ obj-$(CONFIG_PERF_EVENTS_INTEL_CSTATE)	+= intel-cstate.o
+ intel-cstate-objs			:= cstate.o
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 33c8180..f5b5b8b 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -4,6 +4,7 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include "uncore.h"
++#include "uncore_discovery.h"
+ 
+ static struct intel_uncore_type *empty_uncore[] = { NULL, };
+ struct intel_uncore_type **uncore_msr_uncores = empty_uncore;
+@@ -1637,6 +1638,9 @@ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
+ 	.mmio_init = snr_uncore_mmio_init,
+ };
+ 
++static const struct intel_uncore_init_fun generic_uncore_init __initconst = {
++};
++
+ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EP,		&nhm_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM,		&nhm_uncore_init),
+@@ -1684,17 +1688,21 @@ static int __init intel_uncore_init(void)
+ 	struct intel_uncore_init_fun *uncore_init;
+ 	int pret = 0, cret = 0, mret = 0, ret;
+ 
+-	id = x86_match_cpu(intel_uncore_match);
+-	if (!id)
+-		return -ENODEV;
+-
+ 	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+ 		return -ENODEV;
+ 
+ 	__uncore_max_dies =
+ 		topology_max_packages() * topology_max_die_per_package();
+ 
+-	uncore_init = (struct intel_uncore_init_fun *)id->driver_data;
++	id = x86_match_cpu(intel_uncore_match);
++	if (!id) {
++		if (intel_uncore_has_discovery_tables())
++			uncore_init = (struct intel_uncore_init_fun *)&generic_uncore_init;
++		else
++			return -ENODEV;
++	} else
++		uncore_init = (struct intel_uncore_init_fun *)id->driver_data;
++
+ 	if (uncore_init->pci_init) {
+ 		pret = uncore_init->pci_init();
+ 		if (!pret)
+@@ -1711,8 +1719,10 @@ static int __init intel_uncore_init(void)
+ 		mret = uncore_mmio_init();
+ 	}
+ 
+-	if (cret && pret && mret)
+-		return -ENODEV;
++	if (cret && pret && mret) {
++		ret = -ENODEV;
++		goto free_discovery;
++	}
+ 
+ 	/* Install hotplug callbacks to setup the targets for each package */
+ 	ret = cpuhp_setup_state(CPUHP_AP_PERF_X86_UNCORE_ONLINE,
+@@ -1727,6 +1737,8 @@ static int __init intel_uncore_init(void)
+ 	uncore_types_exit(uncore_msr_uncores);
+ 	uncore_types_exit(uncore_mmio_uncores);
+ 	uncore_pci_exit();
++free_discovery:
++	intel_uncore_clear_discovery_tables();
+ 	return ret;
+ }
+ module_init(intel_uncore_init);
+@@ -1737,5 +1749,6 @@ static void __exit intel_uncore_exit(void)
+ 	uncore_types_exit(uncore_msr_uncores);
+ 	uncore_types_exit(uncore_mmio_uncores);
+ 	uncore_pci_exit();
++	intel_uncore_clear_discovery_tables();
+ }
+ module_exit(intel_uncore_exit);
+diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
+new file mode 100644
+index 0000000..3e1645c
+--- /dev/null
++++ b/arch/x86/events/intel/uncore_discovery.c
+@@ -0,0 +1,322 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Support Intel uncore PerfMon discovery mechanism.
++ * Copyright(c) 2021 Intel Corporation.
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include "uncore.h"
++#include "uncore_discovery.h"
++
++static struct rb_root discovery_tables = RB_ROOT;
++static int num_discovered_types[UNCORE_ACCESS_MAX];
++
++static bool has_generic_discovery_table(void)
++{
++	struct pci_dev *dev;
++	int dvsec;
++
++	dev = pci_get_device(PCI_VENDOR_ID_INTEL, UNCORE_DISCOVERY_TABLE_DEVICE, NULL);
++	if (!dev)
++		return false;
++
++	/* A discovery table device has the unique capability ID. */
++	dvsec = pci_find_next_ext_capability(dev, 0, UNCORE_EXT_CAP_ID_DISCOVERY);
++	pci_dev_put(dev);
++	if (dvsec)
++		return true;
++
++	return false;
++}
++
++static int logical_die_id;
++
++static int get_device_die_id(struct pci_dev *dev)
++{
++	int cpu, node = pcibus_to_node(dev->bus);
++
++	/*
++	 * If the NUMA info is not available, assume that the logical die id is
++	 * continuous in the order in which the discovery table devices are
++	 * detected.
++	 */
++	if (node < 0)
++		return logical_die_id++;
++
++	for_each_cpu(cpu, cpumask_of_node(node)) {
++		struct cpuinfo_x86 *c = &cpu_data(cpu);
++
++		if (c->initialized && cpu_to_node(cpu) == node)
++			return c->logical_die_id;
++	}
++
++	/*
++	 * All CPUs of a node may be offlined. For this case,
++	 * the PCI and MMIO type of uncore blocks which are
++	 * enumerated by the device will be unavailable.
++	 */
++	return -1;
++}
++
++static struct intel_uncore_discovery_type *
++search_uncore_discovery_type(u16 type_id)
++{
++	struct rb_node *node = discovery_tables.rb_node;
++	struct intel_uncore_discovery_type *type;
++
++	while (node) {
++		type = rb_entry(node, struct intel_uncore_discovery_type, node);
++
++		if (type->type > type_id)
++			node = node->rb_left;
++		else if (type->type < type_id)
++			node = node->rb_right;
++		else
++			return type;
++	}
++
++	return NULL;
++}
++
++static struct intel_uncore_discovery_type *
++add_uncore_discovery_type(struct uncore_unit_discovery *unit)
++{
++	struct intel_uncore_discovery_type *type, *cur;
++	struct rb_node **node = &discovery_tables.rb_node;
++	struct rb_node *parent = *node;
++
++	if (unit->access_type >= UNCORE_ACCESS_MAX) {
++		pr_warn("Unsupported access type %d\n", unit->access_type);
++		return NULL;
++	}
++
++	type = kzalloc(sizeof(struct intel_uncore_discovery_type), GFP_KERNEL);
++	if (!type)
++		return NULL;
++
++	type->box_ctrl_die = kcalloc(__uncore_max_dies, sizeof(u64), GFP_KERNEL);
++	if (!type->box_ctrl_die)
++		goto free_type;
++
++	type->access_type = unit->access_type;
++	num_discovered_types[type->access_type]++;
++	type->type = unit->box_type;
++
++	while (*node) {
++		parent = *node;
++		cur = rb_entry(parent, struct intel_uncore_discovery_type, node);
++
++		if (cur->type > type->type)
++			node = &parent->rb_left;
++		else
++			node = &parent->rb_right;
++	}
++
++	rb_link_node(&type->node, parent, node);
++	rb_insert_color(&type->node, &discovery_tables);
++
++	return type;
++
++free_type:
++	kfree(type);
++
++	return NULL;
++
++}
++
++static struct intel_uncore_discovery_type *
++get_uncore_discovery_type(struct uncore_unit_discovery *unit)
++{
++	struct intel_uncore_discovery_type *type;
++
++	type = search_uncore_discovery_type(unit->box_type);
++	if (type)
++		return type;
++
++	return add_uncore_discovery_type(unit);
++}
++
++static void
++uncore_insert_box_info(struct uncore_unit_discovery *unit,
++		       int die, bool parsed)
++{
++	struct intel_uncore_discovery_type *type;
++	unsigned int *box_offset, *ids;
++	int i;
++
++	if (WARN_ON_ONCE(!unit->ctl || !unit->ctl_offset || !unit->ctr_offset))
++		return;
++
++	if (parsed) {
++		type = search_uncore_discovery_type(unit->box_type);
++		if (WARN_ON(!type))
++			return;
++		/* Store the first box of each die */
++		if (!type->box_ctrl_die[die])
++			type->box_ctrl_die[die] = unit->ctl;
++		return;
++	}
++
++	type = get_uncore_discovery_type(unit);
++	if (!type)
++		return;
++
++	box_offset = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
++	if (!box_offset)
++		return;
++
++	ids = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
++	if (!ids)
++		goto free_box_offset;
++
++	/* Store generic information for the first box */
++	if (!type->num_boxes) {
++		type->box_ctrl = unit->ctl;
++		type->box_ctrl_die[die] = unit->ctl;
++		type->num_counters = unit->num_regs;
++		type->counter_width = unit->bit_width;
++		type->ctl_offset = unit->ctl_offset;
++		type->ctr_offset = unit->ctr_offset;
++		*ids = unit->box_id;
++		goto end;
++	}
++
++	for (i = 0; i < type->num_boxes; i++) {
++		ids[i] = type->ids[i];
++		box_offset[i] = type->box_offset[i];
++
++		if (WARN_ON_ONCE(unit->box_id == ids[i]))
++			goto free_ids;
++	}
++	ids[i] = unit->box_id;
++	box_offset[i] = unit->ctl - type->box_ctrl;
++	kfree(type->ids);
++	kfree(type->box_offset);
++end:
++	type->ids = ids;
++	type->box_offset = box_offset;
++	type->num_boxes++;
++	return;
++
++free_ids:
++	kfree(ids);
++
++free_box_offset:
++	kfree(box_offset);
++
++}
++
++static int parse_discovery_table(struct pci_dev *dev, int die,
++				 u32 bar_offset, bool *parsed)
++{
++	struct uncore_global_discovery global;
++	struct uncore_unit_discovery unit;
++	void __iomem *io_addr;
++	resource_size_t addr;
++	unsigned long size;
++	u32 val;
++	int i;
++
++	pci_read_config_dword(dev, bar_offset, &val);
++
++	if (val & UNCORE_DISCOVERY_MASK)
++		return -EINVAL;
++
++	addr = (resource_size_t)(val & ~UNCORE_DISCOVERY_MASK);
++	size = UNCORE_DISCOVERY_GLOBAL_MAP_SIZE;
++	io_addr = ioremap(addr, size);
++	if (!io_addr)
++		return -ENOMEM;
++
++	/* Read Global Discovery State */
++	memcpy_fromio(&global, io_addr, sizeof(struct uncore_global_discovery));
++	if (uncore_discovery_invalid_unit(global)) {
++		pr_info("Invalid Global Discovery State: 0x%llx 0x%llx 0x%llx\n",
++			global.table1, global.ctl, global.table3);
++		iounmap(io_addr);
++		return -EINVAL;
++	}
++	iounmap(io_addr);
++
++	size = (1 + global.max_units) * global.stride * 8;
++	io_addr = ioremap(addr, size);
++	if (!io_addr)
++		return -ENOMEM;
++
++	/* Parsing Unit Discovery State */
++	for (i = 0; i < global.max_units; i++) {
++		memcpy_fromio(&unit, io_addr + (i + 1) * (global.stride * 8),
++			      sizeof(struct uncore_unit_discovery));
++
++		if (uncore_discovery_invalid_unit(unit))
++			continue;
++
++		if (unit.access_type >= UNCORE_ACCESS_MAX)
++			continue;
++
++		uncore_insert_box_info(&unit, die, *parsed);
++	}
++
++	*parsed = true;
++	iounmap(io_addr);
++	return 0;
++}
++
++bool intel_uncore_has_discovery_tables(void)
++{
++	u32 device, val, entry_id, bar_offset;
++	int die, dvsec = 0, ret = true;
++	struct pci_dev *dev = NULL;
++	bool parsed = false;
++
++	if (has_generic_discovery_table())
++		device = UNCORE_DISCOVERY_TABLE_DEVICE;
++	else
++		device = PCI_ANY_ID;
++
++	/*
++	 * Start a new search and iterates through the list of
++	 * the discovery table devices.
++	 */
++	while ((dev = pci_get_device(PCI_VENDOR_ID_INTEL, device, dev)) != NULL) {
++		while ((dvsec = pci_find_next_ext_capability(dev, dvsec, UNCORE_EXT_CAP_ID_DISCOVERY))) {
++			pci_read_config_dword(dev, dvsec + UNCORE_DISCOVERY_DVSEC_OFFSET, &val);
++			entry_id = val & UNCORE_DISCOVERY_DVSEC_ID_MASK;
++			if (entry_id != UNCORE_DISCOVERY_DVSEC_ID_PMON)
++				continue;
++
++			pci_read_config_dword(dev, dvsec + UNCORE_DISCOVERY_DVSEC2_OFFSET, &val);
++
++			if (val & ~UNCORE_DISCOVERY_DVSEC2_BIR_MASK) {
++				ret = false;
++				goto err;
++			}
++			bar_offset = UNCORE_DISCOVERY_BIR_BASE +
++				     (val & UNCORE_DISCOVERY_DVSEC2_BIR_MASK) * UNCORE_DISCOVERY_BIR_STEP;
++
++			die = get_device_die_id(dev);
++			if (die < 0)
++				continue;
++
++			parse_discovery_table(dev, die, bar_offset, &parsed);
++		}
++	}
++
++	/* None of the discovery tables are available */
++	if (!parsed)
++		ret = false;
++err:
++	pci_dev_put(dev);
++
++	return ret;
++}
++
++void intel_uncore_clear_discovery_tables(void)
++{
++	struct intel_uncore_discovery_type *type, *next;
++
++	rbtree_postorder_for_each_entry_safe(type, next, &discovery_tables, node) {
++		kfree(type->box_ctrl_die);
++		kfree(type);
++	}
++}
+diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
+new file mode 100644
+index 0000000..dd61e06
+--- /dev/null
++++ b/arch/x86/events/intel/uncore_discovery.h
+@@ -0,0 +1,105 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++/* Generic device ID of a discovery table device */
++#define UNCORE_DISCOVERY_TABLE_DEVICE		0x09a7
++/* Capability ID for a discovery table device */
++#define UNCORE_EXT_CAP_ID_DISCOVERY		0x23
++/* First DVSEC offset */
++#define UNCORE_DISCOVERY_DVSEC_OFFSET		0x8
++/* Mask of the supported discovery entry type */
++#define UNCORE_DISCOVERY_DVSEC_ID_MASK		0xffff
++/* PMON discovery entry type ID */
++#define UNCORE_DISCOVERY_DVSEC_ID_PMON		0x1
++/* Second DVSEC offset */
++#define UNCORE_DISCOVERY_DVSEC2_OFFSET		0xc
++/* Mask of the discovery table BAR offset */
++#define UNCORE_DISCOVERY_DVSEC2_BIR_MASK	0x7
++/* Discovery table BAR base offset */
++#define UNCORE_DISCOVERY_BIR_BASE		0x10
++/* Discovery table BAR step */
++#define UNCORE_DISCOVERY_BIR_STEP		0x4
++/* Mask of the discovery table offset */
++#define UNCORE_DISCOVERY_MASK			0xf
++/* Global discovery table size */
++#define UNCORE_DISCOVERY_GLOBAL_MAP_SIZE	0x20
++
++#define uncore_discovery_invalid_unit(unit)			\
++	(!unit.table1 || !unit.ctl || !unit.table3 ||	\
++	 unit.table1 == -1ULL || unit.ctl == -1ULL ||	\
++	 unit.table3 == -1ULL)
++
++enum uncore_access_type {
++	UNCORE_ACCESS_MSR	= 0,
++	UNCORE_ACCESS_MMIO,
++	UNCORE_ACCESS_PCI,
++
++	UNCORE_ACCESS_MAX,
++};
++
++struct uncore_global_discovery {
++	union {
++		u64	table1;
++		struct {
++			u64	type : 8,
++				stride : 8,
++				max_units : 10,
++				__reserved_1 : 36,
++				access_type : 2;
++		};
++	};
++
++	u64	ctl;		/* Global Control Address */
++
++	union {
++		u64	table3;
++		struct {
++			u64	status_offset : 8,
++				num_status : 16,
++				__reserved_2 : 40;
++		};
++	};
++};
++
++struct uncore_unit_discovery {
++	union {
++		u64	table1;
++		struct {
++			u64	num_regs : 8,
++				ctl_offset : 8,
++				bit_width : 8,
++				ctr_offset : 8,
++				status_offset : 8,
++				__reserved_1 : 22,
++				access_type : 2;
++			};
++		};
++
++	u64	ctl;		/* Unit Control Address */
++
++	union {
++		u64	table3;
++		struct {
++			u64	box_type : 16,
++				box_id : 16,
++				__reserved_2 : 32;
++		};
++	};
++};
++
++struct intel_uncore_discovery_type {
++	struct rb_node	node;
++	enum uncore_access_type	access_type;
++	u64		box_ctrl;	/* Unit ctrl addr of the first box */
++	u64		*box_ctrl_die;	/* Unit ctrl addr of the first box of each die */
++	u16		type;		/* Type ID of the uncore block */
++	u8		num_counters;
++	u8		counter_width;
++	u8		ctl_offset;	/* Counter Control 0 offset */
++	u8		ctr_offset;	/* Counter 0 offset */
++	u16		num_boxes;	/* number of boxes for the uncore block */
++	unsigned int	*ids;		/* Box IDs */
++	unsigned int	*box_offset;	/* Box offset */
++};
++
++bool intel_uncore_has_discovery_tables(void);
++void intel_uncore_clear_discovery_tables(void);
 -- 
 2.7.4
 
