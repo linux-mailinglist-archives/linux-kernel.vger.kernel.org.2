@@ -2,103 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82DA339516
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAEA339521
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhCLRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:36:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:57940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232501AbhCLRgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:36:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E7B51FB;
-        Fri, 12 Mar 2021 09:36:14 -0800 (PST)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEFEB3F7D7;
-        Fri, 12 Mar 2021 09:36:12 -0800 (PST)
-From:   James Morse <james.morse@arm.com>
-Subject: Re: [PATCH 07/24] x86/resctrl: Label the resources with their
- configuration type
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-8-james.morse@arm.com>
- <2de84538-9741-c902-9be0-5b279bbe162f@intel.com>
-Message-ID: <bb37577e-ffec-590b-74b8-7865776aa609@arm.com>
-Date:   Fri, 12 Mar 2021 17:36:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232731AbhCLRg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhCLRgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:36:48 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2FCC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:36:48 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id u198so22658914oia.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:36:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PlLmskPyjy9P85aN3TChCWZ2X95aJr2nN4YxhPO7zSY=;
+        b=N+yTbPDdF2d7xD3C5ns6YPZ9aN8B6x0KUBg0e7dg9kgsbg8CYSYmojVLLqqprM6WXg
+         Kd4E3NGHewuM1fXhGPlkQcynPn7KsHoA4SJekIuSMsu/shUU1qTSKYDtuEoZg8Oi2Etv
+         iJ4fqCJFBulshemAmIA0rZkgzSbsLrwz24sES5R9aiWuWgYJVq7w9E3xn3z4AkU3t+Uc
+         88LSJ3YWwDGVf5kggDlH7jTffgsykN5ygudDLLMhk6n7K4VEu01dr+CQSyTJaQ/pKw3A
+         mkdcXlGYcQ8rVb4gzo4EyiuPD1kM3tIVVTOlSAsS2BTAoBNwjrLA2L71k9JtXEfmU+iS
+         VbcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PlLmskPyjy9P85aN3TChCWZ2X95aJr2nN4YxhPO7zSY=;
+        b=aday+qsIcPd/clm5mGa8yu68FguoqBvgDjM+Nupb9zCOcLr3nKJvKq/Rrd7Av/Wrmc
+         4f9ydS857TjifaSMwFaEeMShpS21F9XyyyVWbl+xCldbCnfqG8bectH22NXNCCAS8nQi
+         O8pEahKDRmgG6aJVHw6rG22gF/v526ZRAB6P14N01bHovDTB7+0xt3WPNnVxxujHoASw
+         uN74rAy4f+OxxDydgXi86r4fqGHZszLqmWYUx/oW8y2hlex6DqkgPR6LSJ7QfkrZkC+s
+         aqcGqXJ193+C48afGxaSjr59tiLE1KRaTGh00nTmz8M9fOPZTximibL6hSyxveGhXzwa
+         bJ9Q==
+X-Gm-Message-State: AOAM5326u24Z+lPTpQupzL2Of3hpixKQ8dfB0DoVq/Qh6T7RgLEdnivy
+        0Fsg2lknvadzv6LEexpPtjA64g==
+X-Google-Smtp-Source: ABdhPJwmX6nL4RGdrLNt/XYs8+aKXuTCyAZQdiJgTljGF8P6R1B1SYAT1dd/vS8qCPToUKYTwE8ghg==
+X-Received: by 2002:aca:1c14:: with SMTP id c20mr6108079oic.146.1615570607262;
+        Fri, 12 Mar 2021 09:36:47 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 7sm1564385otd.46.2021.03.12.09.36.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 09:36:46 -0800 (PST)
+Date:   Fri, 12 Mar 2021 11:36:45 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add PMIC peripherals for SC7280
+Message-ID: <YEumre0+KKxZ0p6Z@builder.lan>
+References: <1615459229-27573-1-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <2de84538-9741-c902-9be0-5b279bbe162f@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615459229-27573-1-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+On Thu 11 Mar 04:40 CST 2021, satya priya wrote:
 
-On 17/11/2020 22:30, Reinette Chatre wrote:
-> On 10/30/2020 9:11 AM, James Morse wrote:
->> Before the name for the schema can be generated, the type of the
->> configuration being applied to the resource needs to be known. Label
->> all the entries in rdt_resources_all[], and copy that value in to struct
+> Add PM7325/PM8350C/PMK8350/PMR735A peripherals such as PON,
+> GPIOs, RTC and other PMIC infra modules for SC7280.
 > 
-> s/in to/into/ or s/in to/to/ ?
+
+Overall this looks good, just two small things below.
+
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> This patch depends on base DT and board files for SC7280 to merge first
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
 > 
->> resctrl_schema.
->>
+>  arch/arm64/boot/dts/qcom/pm7325.dtsi  |  60 ++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/pm8350c.dtsi |  60 ++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 104 ++++++++++++++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/pmr735a.dtsi |  60 ++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi  |   8 +++
+>  5 files changed, 292 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+>  create mode 100644 arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>  create mode 100644 arch/arm64/boot/dts/qcom/pmr735a.dtsi
 > 
-> This commit message does not explain why it is needed to copy this value.
-> 
->> Subsequent patches will generate the schema names in what will become
->> the fs code. Eventually the fs code will generate pairs of CODE/DATA if
->> the platform supports CDP for this resource.
-> 
-> Explaining how the copy is a step towards accomplishing this goal would be very helpful.
+> diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+> new file mode 100644
+> index 0000000..393b256
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> +
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> +&spmi_bus {
+> +	pm7325: pmic@1 {
+> +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
+> +		reg = <0x1 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		pm7325_tz: temp-alarm@a00 {
+> +			compatible = "qcom,spmi-temp-alarm";
+> +			reg = <0xa00>;
+> +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
+> +			#thermal-sensor-cells = <0>;
+> +		};
+> +
+> +		pm7325_gpios: gpios@8800 {
+> +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
+> +			reg = <0x8800>;
+> +			gpio-controller;
+> +			gpio-ranges = <&pm7325_gpios 0 0 10>;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +	};
+> +};
+> +
+> +&thermal_zones {
+> +	pm7325_temp_alarm: pm7325_tz {
 
-(I've added text about what this is used for, and why it can't assign the values it wants
-at this point in the series)
+'_' is not allowed to be used in node names, there's a few of these
+sprinkled through the patch. Please replace them with '-'.
 
+> +		polling-delay-passive = <100>;
+> +		polling-delay = <0>;
+> +		thermal-governor = "step_wise";
+> +		thermal-sensors = <&pm7325_tz>;
+> +
+> +		trips {
+> +			pm7325_trip0: trip0 {
+> +				temperature = <95000>;
+> +				hysteresis = <0>;
+> +				type = "passive";
+> +			};
+> +
+> +			pm7325_trip1: trip1 {
+> +				temperature = <115000>;
+> +				hysteresis = <0>;
+> +				type = "critical";
+> +			};
+> +
+> +			pm7325_trip2: trip2 {
+> +				temperature = <145000>;
+> +				hysteresis = <0>;
+> +				type = "critical";
+> +			};
+> +		};
+> +	};
+> +};
+[..]
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 8af6d77..25402d4 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -606,4 +606,12 @@
+>  			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+>  			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+>  	};
+> +
+> +	thermal_zones: thermal-zones {
+> +	};
+>  };
+> +
+> +#include "pm7325.dtsi"
+> +#include "pm8350c.dtsi"
+> +#include "pmk8350.dtsi"
+> +#include "pmr735a.dtsi"
 
->> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> index 1bd785b1920c..628e5eb4d7a9 100644
->> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
->> @@ -2141,6 +2141,7 @@ static int create_schemata_list(void)
->>             s->res = r;
->>           s->num_closid = resctrl_arch_get_num_closid(r);
-> 
-> Above seems to be last user of this helper remaining ... why is helper needed instead of
-> something similar to below?
+Is there any particular reason for you including these at the end of
+sc7270.dtsi, rather than the top like we do in other platforms?
 
-Great question, resctrl_to_arch_res(r)->num_closid? That won't work for MPAM, or would at
-least force all architectures to copy x86's arch-specific structure.
+Also, are all SC7280 devices always coming with this quartet? We've seen
+variations of this in the past and therefor typically include them from
+the board dts instead.
 
-schemata_list_create() needs to be part of the filesystem code after the split, but it
-can't touch the hw structure like the conf_type is doing here.
-
-This is mentioned in the commit message of the first two patches:
-| resctrl code paths touching a 'hw' struct indicates where an abstraction is needed.
-
-I evidently need to make that clearer.
-
-
->> +        s->conf_type = resctrl_to_arch_res(r)->conf_type;
-
-I'll to do this temporarily, as by then end of the series schemata_list_create() chooses
-the value, so this disappears.
-
-
-Thanks,
-
-James
+Regards,
+Bjorn
