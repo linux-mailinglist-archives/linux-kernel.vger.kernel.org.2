@@ -2,248 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDD633864C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3305133864F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhCLHA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:00:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230317AbhCLHAt (ORCPT
+        id S231492AbhCLHA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231130AbhCLHAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:00:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615532449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qCdk7eKRFtGhjDrxRS4Y4PRonFfh7hwbPN1mR7JuohY=;
-        b=f5fiAP+s0+HIQWM1BRGpcgHklk/uOlRa3QmyII8fnj4tx2OUEpBWZQP5xl/DjMJ2dbsr5n
-        XoUF9D4g40VAlncsYl7MEMdDA+BUXKigxIuzMWOjpl0Ldf4VXoYRQDcYnbS/+3tCTGN/dP
-        Hywn0NJ0gn0fCtichSXMGrAHc2fCwZg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-9UeYFPVSPFa4GjiAiw-7sA-1; Fri, 12 Mar 2021 02:00:45 -0500
-X-MC-Unique: 9UeYFPVSPFa4GjiAiw-7sA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7B921084D76;
-        Fri, 12 Mar 2021 07:00:43 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-168.pek2.redhat.com [10.72.13.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4ECFC1F05E;
-        Fri, 12 Mar 2021 07:00:37 +0000 (UTC)
-Subject: Re: [PATCH V3 6/6] vDPA/ifcvf: verify mandatory feature bits for vDPA
-To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>,
-        Zhu Lingshan <lingshan.zhu@linux.intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-References: <20210310090052.4762-1-lingshan.zhu@intel.com>
- <20210310090052.4762-7-lingshan.zhu@intel.com>
- <3e53a5c9-c531-48ee-c9a7-907dfdacc9d1@redhat.com>
- <9c2fb3d0-2d69-20b9-589d-cc5ffc830f38@linux.intel.com>
- <4f3ef2bb-d823-d53d-3bb0-0152a3f6c9f1@redhat.com>
- <a1f346cc-c9fd-6d16-39d7-b59965a18b0a@intel.com>
- <67be60b6-bf30-de85-ed42-d9fad974f42b@redhat.com>
- <2a6e31d3-ea31-9b64-0749-1f149b656623@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <2111b14b-4857-34c8-82c4-72d182ca50c5@redhat.com>
-Date:   Fri, 12 Mar 2021 15:00:35 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Fri, 12 Mar 2021 02:00:52 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C967C061574;
+        Thu, 11 Mar 2021 23:00:52 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id c10so1664300ilo.8;
+        Thu, 11 Mar 2021 23:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8E99Zfd2Mf/hwCot5q1fILbMB3CtDrbC/Ip5gYh/Z/0=;
+        b=TGKYTHizKqsGrQpO/TU9IX/03j7/ZLBzRS1n5Lh2M0F0Yb0Pu8IrWr28jlPSnFzqNb
+         BitZowvws3i6Vcq7GaLHVAKv8FiKEsDrmdQkQrL+8kbxqz4QKmhfPbfinF5TOb1ns3bH
+         imvDx+8nqOyvLou9YSPCGFm+gyjUXNNB7udxWwNYhNDmxXMWLE/pxvsrPZQBz8g9SZg/
+         csMH09562v+RRpvrj9PCYHddVzl2nZzscQbYTz7lRAA7WeB5xbFmMIiLJ0wlxVQLdyxS
+         p1KB+c7XfAq/HvWm3nj6R4hdCUgQGCHlM+u5N8BCYe0FHsui56fbPaivnio/dQI/L0M9
+         +xew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8E99Zfd2Mf/hwCot5q1fILbMB3CtDrbC/Ip5gYh/Z/0=;
+        b=eIliDvpd8oLzAACbS5D+sybqZVs9n73O30civzuvwOGdBIJ7XjVE3TjJJg2ZtkWLBZ
+         Hh/mtpuXvfgGsrcQm06NK8Plucz8hS/zVWx59Z6Q8PvuTWARTaLZy/NUF5SsXuNEcjKN
+         wQG/g5TMvRG8z2MXzLfRy40Ot+iXmQY21NqhFKR2bzZISGGZIsrWgKzzhbx0Ag4x2Baj
+         xcYSJGBeqJmmJYoX5c0wNkoVD7dC80lbXyU+ztgCPGRj56g/ZHWATESXI26IEPfP4S1V
+         UBBYBhUQT5ek1fQu3ywl8T3bDfleSe9MEyKqI0RunHEIizi5M7SEnAlVMHs26dF36YmU
+         nxBg==
+X-Gm-Message-State: AOAM532CgnzI8XACRawk2xAkfykdDbe3OpJ+FDOF881OTg0lprHyYFHZ
+        OpKQ/51uA8yulVj1Qrt8e8/hrXPpKhMKtG6hZxUVcq3CZHE=
+X-Google-Smtp-Source: ABdhPJwLExrMo8wDJt1HPXiyvI5heC6Dp8wP9tSCOIe+64pzlnT1e3vU7Ga8S/OE3Y+PxWhoWtJ1dTkJAa1XZnR+wH0=
+X-Received: by 2002:a05:6e02:1049:: with SMTP id p9mr1772509ilj.125.1615532451415;
+ Thu, 11 Mar 2021 23:00:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2a6e31d3-ea31-9b64-0749-1f149b656623@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210309125324.4456-1-yashsri421@gmail.com> <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com> <CAKXUXMwg7Vs5hm_X3ZHJj9309w5VYbnNeqXaajHBHS1oAKQydw@mail.gmail.com>
+ <838a823b-f3fd-ed1b-70d1-82611f9f4ada@gmail.com>
+In-Reply-To: <838a823b-f3fd-ed1b-70d1-82611f9f4ada@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 12 Mar 2021 08:00:40 +0100
+Message-ID: <CAKXUXMyJKU2ayx6KPFU50JA+t+X6-hhQwo0woNC18T6FTK60rw@mail.gmail.com>
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+To:     Aditya <yashsri421@gmail.com>
+Cc:     Markus Heiser <markus.heiser@darmarit.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/3/12 2:40 下午, Zhu, Lingshan wrote:
+On Thu, Mar 11, 2021 at 10:04 PM Aditya <yashsri421@gmail.com> wrote:
 >
+> On 10/3/21 11:49 am, Lukas Bulwahn wrote:
+> > On Tue, Mar 9, 2021 at 10:24 PM Aditya <yashsri421@gmail.com> wrote:
+> >>
+> >> On 9/3/21 7:00 pm, Markus Heiser wrote:
+> >>>
+> >>> Am 09.03.21 um 13:53 schrieb Aditya Srivastava:
+> >>>> Starting commented lines in a file mostly contains comments describing
+> >>>> license, copyright or general information about the file.
+> >>>>
+> >>>> E.g., in sound/pci/ctxfi/ctresource.c, initial comment lines describe
+> >>>> its copyright and other related file informations.
+> >>>
+> >>> The opening comment mark /** is used for kernel-doc comments [1]
+> >>>
+> >>> [1]
+> >>> https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#how-to-format-kernel-doc-comments
+> >>>
+> >>
+> >> Hi Markus!
+> >> That's true. But the content inside the comment does not follow
+> >> kernel-doc format.
+> >> For e.g., try running kernel-doc -none/man/rst on the above file in
+> >> the example("sound/pci/ctxfi/ctresource.c").
+> >> The starting 2-3 lines in files generally do not contain any
+> >> struct/enum/function, etc. declaration.
+> >>
+> >
+> > Aditya, can you provide a diff of the warnings over the whole kernel tree?
+> >
+> > At the moment, your patch just implements ignoring the initial
+> > comment, which probably is good for experimentation.
+> >
+> > Alternatively, we could simply have a dedicated warning and then
+> > ignore it or even warn and then parse it as-if.
+> >
+> > In the "long run", we would probably want to fix all current files in
+> > the repository by just replacing '/**' by '/*' and have kernel-doc
+> > warn about this suspicious pattern, when new files appear (maybe even
+> > configurable, but that is another feature to enable or disable certain
+> > kernel-doc checks and warnings). I would certainly assist and
+> > contribute to such a clean-up task.
+> >
+> > I think the first step is to look at the diff, and see how many cases
+> > really appear in the tree... then check how many patches throughout
+> > the whole tree are required and if they are generally accepted.
+> >
 >
-> On 3/12/2021 1:52 PM, Jason Wang wrote:
->>
->> On 2021/3/11 3:19 下午, Zhu, Lingshan wrote:
->>>
->>>
->>> On 3/11/2021 2:20 PM, Jason Wang wrote:
->>>>
->>>> On 2021/3/11 12:16 下午, Zhu Lingshan wrote:
->>>>>
->>>>>
->>>>> On 3/11/2021 11:20 AM, Jason Wang wrote:
->>>>>>
->>>>>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
->>>>>>> vDPA requres VIRTIO_F_ACCESS_PLATFORM as a must, this commit
->>>>>>> examines this when set features.
->>>>>>>
->>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>>>>> ---
->>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.c | 8 ++++++++
->>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
->>>>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
->>>>>>>   3 files changed, 14 insertions(+)
->>>>>>>
->>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c 
->>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>> index ea6a78791c9b..58f47fdce385 100644
->>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>> @@ -224,6 +224,14 @@ u64 ifcvf_get_features(struct ifcvf_hw *hw)
->>>>>>>       return hw->hw_features;
->>>>>>>   }
->>>>>>>   +int ifcvf_verify_min_features(struct ifcvf_hw *hw)
->>>>>>> +{
->>>>>>> +    if (!(hw->hw_features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
->>>>>>> +        return -EINVAL;
->>>>>>> +
->>>>>>> +    return 0;
->>>>>>> +}
->>>>>>> +
->>>>>>>   void ifcvf_read_net_config(struct ifcvf_hw *hw, u64 offset,
->>>>>>>                  void *dst, int length)
->>>>>>>   {
->>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>> index dbb8c10aa3b1..91c5735d4dc9 100644
->>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>> @@ -123,6 +123,7 @@ void io_write64_twopart(u64 val, u32 *lo, 
->>>>>>> u32 *hi);
->>>>>>>   void ifcvf_reset(struct ifcvf_hw *hw);
->>>>>>>   u64 ifcvf_get_features(struct ifcvf_hw *hw);
->>>>>>>   u64 ifcvf_get_hw_features(struct ifcvf_hw *hw);
->>>>>>> +int ifcvf_verify_min_features(struct ifcvf_hw *hw);
->>>>>>>   u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
->>>>>>>   int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num);
->>>>>>>   struct ifcvf_adapter *vf_to_adapter(struct ifcvf_hw *hw);
->>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>> index 25fb9dfe23f0..f624f202447d 100644
->>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>> @@ -179,6 +179,11 @@ static u64 ifcvf_vdpa_get_features(struct 
->>>>>>> vdpa_device *vdpa_dev)
->>>>>>>   static int ifcvf_vdpa_set_features(struct vdpa_device 
->>>>>>> *vdpa_dev, u64 features)
->>>>>>>   {
->>>>>>>       struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>>>>> +    int ret;
->>>>>>> +
->>>>>>> +    ret = ifcvf_verify_min_features(vf);
->>>>>>
->>>>>>
->>>>>> So this validate device features instead of driver which is the 
->>>>>> one we really want to check?
->>>>>>
->>>>>> Thanks
->>>>>
->>>>> Hi Jason,
->>>>>
->>>>> Here we check device feature bits to make sure the device support 
->>>>> ACCESS_PLATFORM. 
->>>>
->>>>
->>>> If you want to check device features, you need to do that during 
->>>> probe() and fail the probing if without the feature. But I think 
->>>> you won't ship cards without ACCESS_PLATFORM.
->>> Yes, there are no reasons ship a card without ACCESS_PLATFORM
->>>>
->>>>
->>>>> In get_features(),
->>>>> it will return a intersection of device features bit and driver 
->>>>> supported features bits(which includes ACCESS_PLATFORM).
->>>>> Other components like QEMU should not set features bits more than 
->>>>> this intersection of bits. so we can make sure if this
->>>>> ifcvf_verify_min_features() passed, both device and driver support 
->>>>> ACCESS_PLATFORM.
->>>>>
->>>>> Are you suggesting check driver feature bits in 
->>>>> ifcvf_verify_min_features() in the meantime as well?
->>>>
->>>>
->>>> So it really depends on your hardware. If you hardware can always 
->>>> offer ACCESS_PLATFORM, you just need to check driver features. This 
->>>> is how vdpa_sim and mlx5_vdpa work.
->>> Yes, we always support ACCESS_PLATFORM, so it is hard coded in the 
->>> macro IFCVF_SUPPORTED_FEATURES.
->>
->>
->> That's not what I read from the code:
->>
->>         features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
-> ifcvf_get_features() reads device feature bits(which should always has 
-> ACCSSS_PLATFORM) and IFCVF_SUPPORTED_FEATURES is the driver supported 
-> feature bits 
-
-
-For "driver" you probably mean IFCVF. So there's some misunderstanding 
-before, what I meant for "driver" is virtio driver that do feature 
-negotaitation with the device.
-
-I wonder what features are supported by the device but not the IFCVF driver?
-
-Thanks
-
-
-> which hard coded ACCESS_PLATFORM, so the intersection should include 
-> ACCESS_PLATFORM.
-> the intersection "features" is returned in get_features(), qemu should 
-> set features according to it.
->>
->>
->>> Now we check whether device support this feature bit as a double 
->>> conformation, are you suggesting we should check whether 
->>> ACCESS_PLATFORM & IFCVF_SUPPORTED_FEATURES
->>> in set_features() as well?
->>
->>
->> If we know device will always offer ACCESS_PLATFORM, there's no need 
->> to check it again. What we should check if whether driver set that, 
->> and if it doesn't we need to fail set_features(). I think there's 
->> little chance that IFCVF can work when IOMMU_PLATFORM is not negotiated.
-> Agree, will check the features bit to set instead of device feature 
-> bits. Thanks!
->>
->>
->>
->>> I prefer check both device and IFCVF_SUPPORTED_FEATURES both, more 
->>> reliable.
->>
->>
->> So again, if you want to check device features, set_features() is not 
->> the proper place. We need to fail the probe in this case.
->>
->> Thanks
->>
->>
->>>
->>> Thanks!
->>>>
->>>> Thanks
->>>>
->>>>
->>>>>
->>>>> Thanks！
->>>>>>
->>>>>>
->>>>>>> +    if (ret)
->>>>>>> +        return ret;
->>>>>>>         vf->req_features = features;
->>>>>>
->>>>>> _______________________________________________
->>>>>> Virtualization mailing list
->>>>>> Virtualization@lists.linux-foundation.org
->>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
->>>>>
->>>>
->>>
->>
+> Hi Lukas!
+> This is the diff of the warnings over kernel tree before and after
+> applying these changes.
+> There are 2 sections in this report:
+> 1) for the warnings present before, but not after, and;
+> 2) after but not before
+>
+> The part (2) contains, for some cases, where the warning for "warning:
+> Incorrect use of kernel-doc format:" type has changed to "warning:
+> wrong kernel-doc identifier on line:" type.
+>
+> The diff file can be found at:
+> https://github.com/AdityaSrivast/kernel-tasks/blob/master/random/kernel-doc/avoid_init_line_diff.txt
 >
 
+Thanks, let us check if we can use this diff to create a patch set
+that cleans up those header comments for those files.
+
+Lukas
