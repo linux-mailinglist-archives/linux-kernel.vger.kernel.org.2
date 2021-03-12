@@ -2,214 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F9A3398CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E59B3398C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhCLVAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:00:14 -0500
-Received: from mxchg03.rrz.uni-hamburg.de ([134.100.38.113]:40761 "EHLO
-        mxchg03.rrz.uni-hamburg.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235115AbhCLVAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:00:08 -0500
-X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 16:00:07 EST
-X-Virus-Scanned: by University of Hamburg ( RRZ / mgw05.rrz.uni-hamburg.de )
-Received: from mailhost.uni-hamburg.de (mailhost.uni-hamburg.de [134.100.38.99])
-        by mxchg03.rrz.uni-hamburg.de (Postfix) with ESMTPS;
-        Fri, 12 Mar 2021 21:52:04 +0100 (CET)
-X-Virus-Scanned: by University of Hamburg ( RRZ / mh06.rrz.uni-hamburg.de )
-Received: from [192.168.178.93] (dynamic-077-003-126-133.77.3.pool.telefonica.de [77.3.126.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S235118AbhCLU7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:59:42 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:59334 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235077AbhCLU7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:59:13 -0500
+Received: from zn.tnic (p200300ec2f0953007a8976408030422b.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5300:7a89:7640:8030:422b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: fmsv030@uni-hamburg.de)
-        by mailhost.uni-hamburg.de (Postfix) with ESMTPSA id 3FBDBBE2F3;
-        Fri, 12 Mar 2021 21:52:04 +0100 (CET)
-To:     David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <161550398415.1983424.4857046033308089813.stgit@warthog.procyon.org.uk>
- <161550399833.1983424.16644306048746346626.stgit@warthog.procyon.org.uk>
-From:   Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Subject: Re: [PATCH v2 2/2] afs: Stop listxattr() from listing "afs.*"
- attributes
-Message-ID: <f58e6dbf-cc0b-8847-e66d-8d747d87531a@math.uni-hamburg.de>
-Date:   Fri, 12 Mar 2021 21:52:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A8AC21EC02FE;
+        Fri, 12 Mar 2021 21:59:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615582751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DZaT+F7TXKdXQFYhA98s3hBMwbiR8xjEaN4FAAts3ic=;
+        b=NPHfWuNiwUI2EQnN6eBiRCzz4FWCOzwWnMwTUdB51DaJJSD3RccrRgaoWZPgnUfppQq8ui
+        PGyazh9IYz596Meedyuaa+1De7QlfyFEgE+YQQ1cNxzpmg7Z7xaWUWTAVQrGgfNH+aeMcX
+        uv/NwsxS/saCwyNA2v1AtxlO98azd8c=
+Date:   Fri, 12 Mar 2021 21:59:14 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, rostedt@goodmis.org, hpa@zytor.com,
+        torvalds@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, jpoimboe@redhat.com,
+        alexei.starovoitov@gmail.com, mhiramat@kernel.org
+Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
+Message-ID: <20210312205914.GG22098@zn.tnic>
+References: <20210312113253.305040674@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <161550399833.1983424.16644306048746346626.stgit@warthog.procyon.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-AT-frami
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20210312113253.305040674@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.03.21 um 00:06 schrieb David Howells:
-> afs_listxattr() lists all the available special afs xattrs (i.e. those in
-> the "afs.*" space), no matter what type of server we're dealing with.  But
-> OpenAFS servers, for example, cannot deal with some of the extra-capable
-> attributes that AuriStor (YFS) servers provide.  Unfortunately, the
-> presence of the afs.yfs.* attributes causes errors[1] for anything that
-> tries to read them if the server is of the wrong type.
-> 
-> Fix the problem by removing afs_listxattr() so that none of the special
-> xattrs are listed (AFS doesn't support xattrs).  It does mean, however,
-> that getfattr won't list them, though they can still be accessed with
-> getxattr() and setxattr().
-> 
-> This can be tested with something like:
-> 
-> 	getfattr -d -m ".*" /afs/example.com/path/to/file
-> 
-> With this change, none of the afs.* attributes should be visible.
-> 
-> Changes:
-> ver #2:
->  - Hide all of the afs.* xattrs, not just the ACL ones.
-> 
-> Fixes: ae46578b963f ("afs: Get YFS ACLs and information through xattrs")
-> Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: linux-afs@lists.infradead.org
-> Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003502.html [1]
-> Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003567.html # v1
-> ---
-> 
->  fs/afs/dir.c      |    1 -
->  fs/afs/file.c     |    1 -
->  fs/afs/inode.c    |    1 -
->  fs/afs/internal.h |    1 -
->  fs/afs/mntpt.c    |    1 -
->  fs/afs/xattr.c    |   23 -----------------------
->  6 files changed, 28 deletions(-)
-> 
-> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-> index 714fcca9af99..17548c1faf02 100644
-> --- a/fs/afs/dir.c
-> +++ b/fs/afs/dir.c
-> @@ -70,7 +70,6 @@ const struct inode_operations afs_dir_inode_operations = {
->  	.permission	= afs_permission,
->  	.getattr	= afs_getattr,
->  	.setattr	= afs_setattr,
-> -	.listxattr	= afs_listxattr,
->  };
->  
->  const struct address_space_operations afs_dir_aops = {
-> diff --git a/fs/afs/file.c b/fs/afs/file.c
-> index 85f5adf21aa0..960b64268623 100644
-> --- a/fs/afs/file.c
-> +++ b/fs/afs/file.c
-> @@ -43,7 +43,6 @@ const struct inode_operations afs_file_inode_operations = {
->  	.getattr	= afs_getattr,
->  	.setattr	= afs_setattr,
->  	.permission	= afs_permission,
-> -	.listxattr	= afs_listxattr,
->  };
->  
->  const struct address_space_operations afs_fs_aops = {
-> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-> index 1156b2df28d3..12be88716e4c 100644
-> --- a/fs/afs/inode.c
-> +++ b/fs/afs/inode.c
-> @@ -27,7 +27,6 @@
->  
->  static const struct inode_operations afs_symlink_inode_operations = {
->  	.get_link	= page_get_link,
-> -	.listxattr	= afs_listxattr,
->  };
->  
->  static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *parent_vnode)
-> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-> index b626e38e9ab5..1627b1872812 100644
-> --- a/fs/afs/internal.h
-> +++ b/fs/afs/internal.h
-> @@ -1509,7 +1509,6 @@ extern int afs_launder_page(struct page *);
->   * xattr.c
->   */
->  extern const struct xattr_handler *afs_xattr_handlers[];
-> -extern ssize_t afs_listxattr(struct dentry *, char *, size_t);
->  
->  /*
->   * yfsclient.c
-> diff --git a/fs/afs/mntpt.c b/fs/afs/mntpt.c
-> index 052dab2f5c03..bbb2c210d139 100644
-> --- a/fs/afs/mntpt.c
-> +++ b/fs/afs/mntpt.c
-> @@ -32,7 +32,6 @@ const struct inode_operations afs_mntpt_inode_operations = {
->  	.lookup		= afs_mntpt_lookup,
->  	.readlink	= page_readlink,
->  	.getattr	= afs_getattr,
-> -	.listxattr	= afs_listxattr,
->  };
->  
->  const struct inode_operations afs_autocell_inode_operations = {
-> diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
-> index 4934e325a14a..7751b0b3f81d 100644
-> --- a/fs/afs/xattr.c
-> +++ b/fs/afs/xattr.c
-> @@ -11,29 +11,6 @@
->  #include <linux/xattr.h>
->  #include "internal.h"
->  
-> -static const char afs_xattr_list[] =
-> -	"afs.acl\0"
-> -	"afs.cell\0"
-> -	"afs.fid\0"
-> -	"afs.volume\0"
-> -	"afs.yfs.acl\0"
-> -	"afs.yfs.acl_inherited\0"
-> -	"afs.yfs.acl_num_cleaned\0"
-> -	"afs.yfs.vol_acl";
-> -
-> -/*
-> - * Retrieve a list of the supported xattrs.
-> - */
-> -ssize_t afs_listxattr(struct dentry *dentry, char *buffer, size_t size)
-> -{
-> -	if (size == 0)
-> -		return sizeof(afs_xattr_list);
-> -	if (size < sizeof(afs_xattr_list))
-> -		return -ERANGE;
-> -	memcpy(buffer, afs_xattr_list, sizeof(afs_xattr_list));
-> -	return sizeof(afs_xattr_list);
-> -}
-> -
->  /*
->   * Deal with the result of a successful fetch ACL operation.
->   */
+On Fri, Mar 12, 2021 at 12:32:53PM +0100, Peter Zijlstra wrote:
+> Since ultimate performance of a 10 year old chip (Intel Sandy Bridge, 2011) is
+> simply irrelevant today, remove variable NOPs and use NOPL.
 
-Tested-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
+Just ran them on my SNB box:
 
-Works for me:
-$ getfattr -d -m - /afs/openafs.org/
-$ getfattr -d -m - /afs/your-file-system.com/
-these two show nothing as expected
+cpu family      : 6
+model           : 45
+model name      : Intel(R) Xeon(R) CPU E5-1620 0 @ 3.60GHz
+stepping        : 7
 
-$ getfattr -n afs.acl /afs/openafs.org/
-$ getfattr -n afs.acl /afs/your-file-system.com/
-these two show the ACL as expected
+with the usual perf stat kernel build workload with
+CONFIG_DYNAMIC_FTRACE and CONFIG_FUNCTION_TRACER where each function has
+a NOP at its beginning when ftrace is disabled (thx Steve).
 
-$ getfattr -n afs.yfs.acl /afs/openafs.org/
-$ getfattr -n afs.yfs.acl /afs/your-file-system.com/
-the latter shows as expected the YFS-ACL,
-the former as expected the simple message "No such attribute".
+./tools/perf/perf stat --repeat 5 --sync --pre=/root/bin/pre-build-kernel.sh -- make -s -j9 bzImage
+
+before: tip-master
+
+ Performance counter stats for 'make -s -j9 bzImage' (5 runs):
+
+      3,213,728.10 msec task-clock                #    7.307 CPUs utilized            ( +-  0.01% )
+           339,270      context-switches          #    0.106 K/sec                    ( +-  0.09% )
+            31,472      cpu-migrations            #    0.010 K/sec                    ( +-  0.64% )
+        62,070,684      page-faults               #    0.019 M/sec                    ( +-  0.01% )
+11,498,198,009,323      cycles                    #    3.578 GHz                      ( +-  0.01% )  (83.33%)
+ 8,235,957,366,696      stalled-cycles-frontend   #   71.63% frontend cycles idle     ( +-  0.01% )  (83.33%)
+ 5,976,456,688,814      stalled-cycles-backend    #   51.98% backend cycles idle      ( +-  0.02% )  (66.67%)
+ 7,553,156,344,376      instructions              #    0.66  insn per cycle         
+                                                  #    1.09  stalled cycles per insn  ( +-  0.00% )  (83.33%)
+ 1,635,468,917,524      branches                  #  508.901 M/sec                    ( +-  0.00% )  (83.34%)
+    51,888,292,932      branch-misses             #    3.17% of all branches          ( +-  0.02% )  (83.33%)
+
+           439.809 +- 0.156 seconds time elapsed  ( +-  0.04% )
 
 
-Only as a "BTW", the primary Patch-Description has a minor mistake: In
-the email titled "[PATCH v2 0/2] AFS metadata xattr fixes", you write:
+after: tip-master-nops
 
-> Fix an oops in AFS that can be triggered by accessing one of the
->      afs.yfs.* xattrs against a yfs server[1][2]
+ Performance counter stats for 'make -s -j9 bzImage' (5 runs):
 
-That should of course be "against an OpenAFS server".
+      3,217,113.67 msec task-clock                #    7.307 CPUs utilized            ( +-  0.03% )
+           339,425      context-switches          #    0.106 K/sec                    ( +-  0.20% )
+            31,724      cpu-migrations            #    0.010 K/sec                    ( +-  0.54% )
+        62,027,130      page-faults               #    0.019 M/sec                    ( +-  0.01% )
+11,508,779,965,901      cycles                    #    3.577 GHz                      ( +-  0.03% )  (83.34%)
+ 8,241,212,210,440      stalled-cycles-frontend   #   71.61% frontend cycles idle     ( +-  0.04% )  (83.33%)
+ 5,982,615,533,177      stalled-cycles-backend    #   51.98% backend cycles idle      ( +-  0.06% )  (66.66%)
+ 7,546,407,430,314      instructions              #    0.66  insn per cycle         
+                                                  #    1.09  stalled cycles per insn  ( +-  0.00% )  (83.33%)
+ 1,634,187,006,479      branches                  #  507.967 M/sec                    ( +-  0.00% )  (83.33%)
+    51,941,580,371      branch-misses             #    3.18% of all branches          ( +-  0.01% )  (83.33%)
 
-Greetings,
-Gaja Peters
+           440.266 +- 0.195 seconds time elapsed  ( +-  0.04% )
+
+
+So here's numbers talk, bullshit walks. And with those numbers no
+bullshit can remain lingering around anyway.
+
+Cheers!
 
 -- 
-+----------
-| IT-Gruppe, Systemadministration
-| Universität Hamburg, Fachbereich Mathematik
-| Bundesstr. 55 (Geomatikum)
-| Raum 212; Tel. 42838-5175
-+----------
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
