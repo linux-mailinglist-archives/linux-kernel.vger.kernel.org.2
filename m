@@ -2,243 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECF9339188
+	by mail.lfdr.de (Postfix) with ESMTP id BE85E339189
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhCLPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:39:13 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8512 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232037AbhCLPit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:38:49 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12CFVtZM007379;
-        Fri, 12 Mar 2021 07:38:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=n2Z8A6oML3M4G40SWYUCXX49nccUyLFiV5qxABM9PYM=;
- b=aGOQ+zq/O20KYZ8o4e+ePgvBvrl2RgUzjHpZZKlPsjsK2MSPQlHvWAqL4o3Fak3jdiR2
- xzv+QHMi6+k7IvUDcOMx9q0eS+IHjthe/zUSDjEen88GLyBgrKYiFJBZwFbQaBp1EMCf
- HrSYe2Toa/AUYIiMRXQl2vXuRaNXQteiSPs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 377uht442h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 12 Mar 2021 07:38:47 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 12 Mar 2021 07:38:46 -0800
+        id S232138AbhCLPjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:39:15 -0500
+Received: from mail-mw2nam12on2050.outbound.protection.outlook.com ([40.107.244.50]:32352
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230136AbhCLPjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:39:10 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WZuW+tuhBO0mhkqMdiQx7Vxh+VH7QCEZ4LUF2EWiwod6xi99dT+J03lGBQfrKQleBUN2aasP0zn3XpwO/K47i62kvnf47w+ygxBTHr0fvJvlrVFD4JkDeC3gNVzeTn4JWHnbqrzi2k9FdMm/uCeBW2WnIBsndVDlt4/8juRTuujRvYjT+fWJevm/0/1S31naqbmkrN1K3q929G6tGl/bEdU3nTQnU4hFiXT3QCfXskNQ4Kwq9332RTJH/j9XXHG5Y8mFKjVxDEDJWXAo4LQvgCZM4f21RHS6Ga/dfTntEvPBbTJXTGwlLchg0VQ8PlnV/MgqO444Y7Pbh58NsXDNbQ==
+ b=WCDoaDp9RxbTGHqoBZvEo8l2H2mcQTAQp6ODAR7lL6ATTl7pD5RYXPQiW9uPtzkEPwUWEaO3bmwaQx536I6AUm78cSPNnSxdmzFDdihCmVSadlSLaDHtavHE1bHe8sTVxXhNkBjTHcoTIbe+1QUyG3BUqIN32HyTE9vUfuQj5czJu7f0pnYrvUz5RYhEq6aZlZAAueU3aVzUPTgIKXZmHkRmsvZ0FhYh3BNSbzA957xo+1pPEYXc24xerMAnoIGBIyn8v/xYyz5MDcXID1xd5ctDTcTKmuTEJwnAfETAvFCwK+bRydC1WCv5n+QTzlEyihGEUQXkL9aO1qFYFYSJXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n2Z8A6oML3M4G40SWYUCXX49nccUyLFiV5qxABM9PYM=;
- b=AXhEjgR2G9TPpxGlpGe+L+QdbdYav5jFeTgCCKgtBMV9KPNiV5A0xPkSBV/iyYMIeN4efIOiuxbruPU9fcOmgbTNi7reztM643D/po0QL2gLHGML924FYiy5d6QxP4VQQUHT/fbJBZ0GWab1Ds1Yg6Jv/oa7nksee7Men3MYrxMp/TXx/uqYNVqdosyI3+SPSt9NOUEkRwdRYT4iKDqtJqX/9QQUIzceV0YlVI1x9ph3aU4WnXMEpP7gk+jhUrqRnSKWALD73MZabtANq7Ykl4AvMNu7dNZ3JgU6F0/8aS4WkWL+A53qJ7d9dIRG+65ph55vInVaEAYMm5IfXO2rCw==
+ bh=UTU+kKDfKBfPC2b2+JAvObgWjoVg/ZCo/MdM460pfpg=;
+ b=DDPeK+ariKc36JFpZRLwAAfe6EnONfbYCjyh19VDuzLMZhdZMidGIktqYAkqWfe7fI57ls65fM/SXVjyitcbF4bsk2Nls8gBfUiWRk7WTidQppJxGmZ/5ZvaZ6ns66KJY+gcRhBX3XNjbxqyfod6CzRgJYnEo1VX/e0EEWhTxqN91kOSSohHcZ7uwyT/I1MitgAMKRkqrcSanw4/YaiItyxnW6buTIKRtg/yxZnwqQj/nSsyLUfFAOgx02KwFIl0/sTGpowHYnl6BIrzvpZrgHQ9tRRNMzPM8JY7M+xWJUi4eNe971dWU9ohoMBk9OpPt/agvmQNO3jfPwraYJZ+ew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BY5PR15MB3716.namprd15.prod.outlook.com (2603:10b6:a03:1b4::22) with
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UTU+kKDfKBfPC2b2+JAvObgWjoVg/ZCo/MdM460pfpg=;
+ b=wYVjfoU9aUT6ZZ5qO224I2CqyZvXmxuJmX2r38FaNXp3ozyDhVE16KDUK1FfZGXUhqkuXlkG+mDGczf/GWZnqvNmq1jUq1JYp4n4oOKBoM5ntTDKCB/i73LagPuB+U80WowpuEhD8SyqcWszXN8nkrm8R16AGXum1Enfp7wVhq0=
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
+ by BL0PR12MB2369.namprd12.prod.outlook.com (2603:10b6:207:40::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.29; Fri, 12 Mar
- 2021 15:38:44 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
- 15:38:44 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
-Thread-Topic: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
-Thread-Index: AQHXFuPifzAWbJ/c0EGfxtA8c/wTpKqAB7cAgAB2EYA=
-Date:   Fri, 12 Mar 2021 15:38:43 +0000
-Message-ID: <4B3CF1B3-5EED-4882-BC99-AD676D4E3429@fb.com>
-References: <20210312020257.197137-1-songliubraving@fb.com>
- <CAM9d7che4Ott6F6SNj8aaXea+wgzDE8pVntkpGr1TCbnfWNXkw@mail.gmail.com>
-In-Reply-To: <CAM9d7che4Ott6F6SNj8aaXea+wgzDE8pVntkpGr1TCbnfWNXkw@mail.gmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 12 Mar
+ 2021 15:39:08 +0000
+Received: from MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::5deb:dba7:1bd4:f39c]) by MN2PR12MB4488.namprd12.prod.outlook.com
+ ([fe80::5deb:dba7:1bd4:f39c%5]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
+ 15:39:08 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     David Hildenbrand <david@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Liang, Liang (Leo)" <Liang.Liang@amd.com>
+CC:     "Huang, Ray" <Ray.Huang@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>
+Subject: RE: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()")
+Thread-Topic: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()")
+Thread-Index: AdcWgujrowoM8ON/Tmy0Tmhi9senVQABLLQAADBH9CAAADxQgAACUAfQ
+Date:   Fri, 12 Mar 2021 15:39:08 +0000
+Message-ID: <MN2PR12MB44884289499B6B16A0E9017DF76F9@MN2PR12MB4488.namprd12.prod.outlook.com>
+References: <MN2PR12MB448872F0BE8F49C78AF908F3F7909@MN2PR12MB4488.namprd12.prod.outlook.com>
+ <2f7c20ea-888f-65b6-6607-c86aab65acce@redhat.com>
+ <MN2PR12MB44886034D18F900F4FE45D8DF76F9@MN2PR12MB4488.namprd12.prod.outlook.com>
+ <15faeb97-d031-f70a-adab-f2966e0b1221@redhat.com>
+In-Reply-To: <15faeb97-d031-f70a-adab-f2966e0b1221@redhat.com>
 Accept-Language: en-US
 Content-Language: en-US
+X-Mentions: Liang.Liang@amd.com
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.60.0.2.21)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:17f0]
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-03-12T15:39:04Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=5da179a6-0073-4910-bc84-9f00ac7b1c29;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [192.161.79.247]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b1fb98fe-2fda-4371-7916-08d8e56ceb51
-x-ms-traffictypediagnostic: BY5PR15MB3716:
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3cedc9b4-0f00-4902-f564-08d8e56cf9e9
+x-ms-traffictypediagnostic: BL0PR12MB2369:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR15MB37160B7355CC8BF3AC762F0DB36F9@BY5PR15MB3716.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam-prvs: <BL0PR12MB2369F2ECCCB43717A1D39B2AF76F9@BL0PR12MB2369.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 48HG8nZ8VkJM3cJqC1DnlNYbBGctacAs6m2T7M1Ql6XqEoMmBcukFU41oaqM1FYg63I+Ygo37iNxYbGLC3luZpnukfbu9Env+Q1D3XjnLJ8440trK+gj6xpX0QXL5dpDahYekzWklcUwGc3O430VyQNEWy1V26uxhngGdLwyHxQ17Qwmzh0Oz/M/dXkIgbhbnL/Ixyl5DVhPr41k/l6XTecSGL+qyITm8kbqvYOHpdHiYSMgje4oUVjzfm7Qgo0YyPBu/uzOFkGyAy4H09qMYDPkm7ucq14yOU11Yv68oSuHkwwKrhi9EIG2naFTBUuDZdQVKaa6pLySUI4N9CK083ijfZTGbxWZityRILlTU8PVUWYmqUsOMPn1Drrv4asct7feDsLIDY/u/tijAytMVXZ8RKmOFTFTrqr8v9hktcZ3XFZi1lsnPEZWvqx7CSoRUMlLgCjTchdirKUbL+/ptHUBQJTrrMj5Ar9qt62fE8sXHtLT5BwDTcz17BkWt05SUgp+vWj4C4P0nvNTAtACNvlOZvxiQNTX+GXe4x9Dwnt06MbYE37OxW6i6Nul55f4L7LQeCHIK6spwFFl2iNVoA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(346002)(396003)(39860400002)(64756008)(478600001)(5660300002)(316002)(4326008)(66476007)(2906002)(186003)(66446008)(6512007)(36756003)(8936002)(66946007)(33656002)(76116006)(6506007)(71200400001)(66556008)(86362001)(8676002)(83380400001)(6486002)(53546011)(6916009)(54906003)(2616005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0NyeW1dPl4Cq7Z5/Y2EsDx9uIVqCFit47TiPTsnF2VMAwpb3QbK2JKEzsv2C?=
- =?us-ascii?Q?1jYuQp8TmcFo5wXbM1y4s/515PUndBWXKpHrSDeaqMWVEyeUZ+nLkuVtcbMc?=
- =?us-ascii?Q?PYI+eyhhIF6CD5psGL4dEtcBNHFhFSL71UACzW4neEHhLEc8i7MEzJd7V9CT?=
- =?us-ascii?Q?740qmkgo2Nx23OjC/h/7iRtQqX1nctekpbx0P3gkPyD2LTWuV05/xxeFU0wt?=
- =?us-ascii?Q?f1pXZHJAwIunC88W5NOVkoaK3ocTqV+yWdx3szl6Za0LKl8zHwmNMeDUmdS3?=
- =?us-ascii?Q?nMGm9Wr2DhyEC7QtF3/p4I6FsmznRvfVXJ0MWFPybBS5bMNlziDGbBT8dtaW?=
- =?us-ascii?Q?XcmN1lrciINVgvsaZEFn8sIBHeIeUl0/AeohyDqpYrivvddzFk8xsW24QTyA?=
- =?us-ascii?Q?QTjf0bXUbrNZAb3LFH59D/+Y/MFq7bgJHu+QRKZO2Pl7xhl7WS71ARJYZNpD?=
- =?us-ascii?Q?hkRCpYFgNFbZoUndDbuH6lfztFsZVoNsqdDT0KycVpJdHhokZEvmeqb+xwWv?=
- =?us-ascii?Q?xciIUuQeyLfqoqAiNZ87+h6NiuaM5nyCM2HWRsGYYqnqQuV7osOu2TWl6G1y?=
- =?us-ascii?Q?qGmZDVzf/hDG1HJUlQ8UOHflGHn7pTxYrimZGl577Dmnpoi+RIWg8LukRRwj?=
- =?us-ascii?Q?Z7Nnt20O2tiFKYbY9bcmwVQhNUvRaGnsRShEKln1Py5ll/2HWS+1eXy6Si3x?=
- =?us-ascii?Q?5/xTY4LS/8wQGWYfU3+zMm8PgLJLuayv+a+UUfHiStcRQH/4pkD0ChCEdai3?=
- =?us-ascii?Q?9kj2Rt/Xuk4Z17CI5TRknYQzi+GW3W8azfP5ae26mT4YVUqNWAo/aqefDbOx?=
- =?us-ascii?Q?Wuwf2QDljReuPib/AJDhAUJhpJ/PGmXIrPZko/09MMVUbRsqVCDyQY4/69mj?=
- =?us-ascii?Q?6WydnglKiG7UzkdxhEKlfJCIiCT9i6xOl9dDMTdepMNlill1xT37Rrls6KP/?=
- =?us-ascii?Q?gG7UCXvOIPvADmmAEKHtL2olQQYdUcbbAKePQmNMWzd4QIdr4E7CQFJTZ3Nt?=
- =?us-ascii?Q?PmubXafGiBFsEVRHFju88vmZSTch4ZLhN64ZPfm7jrWHXUxnHkUYwqAfekf8?=
- =?us-ascii?Q?Mi6OPXYAYH3u7ZaLkumOYqWDjtMP4JHdZ1PzqnGSwpPlEPQYO3I2cFZToQWr?=
- =?us-ascii?Q?SoglNl4yDx32j5Ix9qVoQt/PlGh+mv1/W2t1AFp5LZlcBJwOoPOU+Y5uzgER?=
- =?us-ascii?Q?xT/HRchxs6VW+KsxJY4wtAh1YnCsi+ql4HBvjICVrjrrLdNKarpMEaeOsOyR?=
- =?us-ascii?Q?XqEQSf+/ace6YFrZ9CGST2PKE4I/O31xZ3InseB9oTOOwtFBcpGHJQYKZmoI?=
- =?us-ascii?Q?gf5cYZGspUe4o/RdlDUpANmsS2yBOiOsfFwj13dQ9EancOYlVbxbokeuXFjR?=
- =?us-ascii?Q?LZvU+ks=3D?=
+x-microsoft-antispam-message-info: +GupKLnWTYP1Kxn7/oVWaEBHy7I+/EIld03rLncxYnMjsRwN8pD0runf0cP/0yvDULmaXpDqGhMZPj1RxqJRYiZfKHUQTLUUWvLO/9bexuc4Oeywcv0dF+OYi9GtReVB6OAY6BspJehlto+AXoKT3ES94tCH5Ln8uKBsfZ3nB38jUebWHLY/JNLP4FCfPnrmyYFt8+ZFj1n+j5XK/PwvsW75IEyFmKaTeB1M4FVHE/tRic+iR2VJsVZShdpcSLjsbXW0g9gvayHAhcfC7D6N/ZwCJGl0eR/MeY/IJBq/SWK7UrGj7LKtVZtf5m5DcjNBj3qpYMxCMMw4haDJkvkWwDqa1yqhtZvKfvxiWrPESgrxS1r4c3zu5xic0S80IXwVHFkZRrMZJtyHUk9euZSuk/MitF7nJ/m3dVwIYoc9UKJp3SU9eSONgwxVeODcTHOelEzqyCsgNYsr9xctgwEFaEOlicG7HEnQzZM6yzgJovqUQLr1Ofeljq3NLNBtPtM+Dxx8KCGyORQd329sARDhCseTKnX87Tjm7noVCtUz4UloFbxEkjiUS3CyoLZ/pnlRISro6W2CCAuNPpMlOWZP1KtxhoF3QqKXp/z1cpOkHqY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(9686003)(6636002)(66946007)(66446008)(110136005)(52536014)(64756008)(6506007)(83380400001)(7696005)(186003)(8936002)(33656002)(71200400001)(86362001)(66556008)(478600001)(54906003)(66476007)(26005)(53546011)(45080400002)(5660300002)(8676002)(316002)(966005)(4326008)(76116006)(55016002)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BZi8IFVa06d4HodnXw5KhBNNHyReoOhWhN1G+kudH5G1EhIzD6WYV9JXd/sl?=
+ =?us-ascii?Q?171xEvbyW3ZlqNFw0aam9RaseapKgCptRr85NEKpwOdW9VUSnE0efPhpI5/F?=
+ =?us-ascii?Q?KRV/yI5JBsIVqO2DzRNr7uWftsis9EFunz5xTz0BL4lC5FybI8yuQv6NDxdc?=
+ =?us-ascii?Q?ygI7Gl7unFWTZgTYg2oeifmG+5kHsjiQai1x4fMPSWzOOAGXxrW5VIFZCqGC?=
+ =?us-ascii?Q?P/DtcQoDyT0p4JRKwNKYwQY21JP4Ix09Oqv3l5RMhlPaSW8bJPejGyiKUe9E?=
+ =?us-ascii?Q?PR1ww2yc+TFIYPHhezGCCJbzktvOHym2eMaeUTHUeiS2nTm6oB82DrtfSRcQ?=
+ =?us-ascii?Q?AqUc7cYolB9RXOyOi2bkSmFu8iz+VabcWMIvWmY7l9sD6Lhp3DoWORaDMlRO?=
+ =?us-ascii?Q?kEk5tJdD1+/OGpsaEMW0oUXxfpIerD7+aXqgclUa86YuBCTOP5UM3ylobPxX?=
+ =?us-ascii?Q?26lXqdXTKBSsJ76+ebWhBilgwaFNTVLp6iBzpZivmWomicjbVPk3lARrPqH0?=
+ =?us-ascii?Q?41lLKGxR5JkZsqJNq+7Fuya1vGdV+p3p/co+KYNyH4yHItUf5PT5T5IbcaAM?=
+ =?us-ascii?Q?plJBibqcfOLhjZ7CX6J8SQx9d4oQoQM7kgwQ/Cn7ysK8oPmg94P63vXa8LPt?=
+ =?us-ascii?Q?2vHUZCS5rPlVRS71eCVb8WB22eM3wN8YcOCm1icCkanJfWZS/6kdjY4EkeNY?=
+ =?us-ascii?Q?s8diimQP3CVmSqT5xzGn38ZdTrg5EOfsGijjqpUhzs9gBbBDExP4nlnRmMjv?=
+ =?us-ascii?Q?dDVWMfFfqPJfJU755OEspZ+Td7OOgjzdo3ybNBK3oQnIGBhp6L16+yGDkGCV?=
+ =?us-ascii?Q?RB7o4IqtZsoQsvGW4/m0rXe8c6x9rdzRzmCX9U/E71y8yF6+p2la9iIm21J6?=
+ =?us-ascii?Q?GtfiyXbqZcWzzQw5MU/qWJype02QrFQ5PIkEUmS9s6t8Axu2MrBEDdACmBsj?=
+ =?us-ascii?Q?duNLvChrxS9XZnr+h/D/55PKZwploCLF1UCRddVNPryk9/vlk/ODtLkV6+rp?=
+ =?us-ascii?Q?TaBhwBL46NO2NVxVaPc4jw87U+m73cyWfrvHUZfoQSHzS0yZqKT6J8nYJVj1?=
+ =?us-ascii?Q?20In5mTrUxEySQrYYJ/gBNqKKQkoTmZ6uVnG0UeUcArOPAJmIV5lnKx3LhhH?=
+ =?us-ascii?Q?08InjOgvSoZVp6/Mujes0CTB8eySnIawLzRKc0MG7cgN04Fq8bz1Ll2uz8Nu?=
+ =?us-ascii?Q?wmQ12S9snwQxlPIXFLLHOvO6xY8Get2H8LJaJkENXK3UWcYwk/i0yB2VeJ3k?=
+ =?us-ascii?Q?RchztPPLDBZb4xhTmQJvrcjpaigRQ2fs4y06lN4kO26gXsPl6J8/Vu23GxYv?=
+ =?us-ascii?Q?dBhAe72+VaQ9e/rKOdTM3ows?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <89370B765D468F4883E89DF1704CDCCA@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1fb98fe-2fda-4371-7916-08d8e56ceb51
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 15:38:43.9299
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cedc9b4-0f00-4902-f564-08d8e56cf9e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 15:39:08.3539
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GRKrfmqT1Ec8ptsLGXg1y5Mw9tNoaiUGDhDlHvW41mKToYJYr/iyY1Hb5OiIf4IpoPKdDuUaNd8ulI++uJV+4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3716
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-12_06:2021-03-10,2021-03-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 impostorscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103120112
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-userprincipalname: G5NNp6c3D4AjQ6zRQcDXSFuFhUaNLNW5fduYOicQRby7VpxWT8GFtgjrPhCnYLVy7LUKuQ9DQrqoLcOB6FC52Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2369
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[AMD Public Use]
 
-
-> On Mar 12, 2021, at 12:36 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> -----Original Message-----
+> From: David Hildenbrand <david@redhat.com>
+> Sent: Friday, March 12, 2021 9:12 AM
+> To: Deucher, Alexander <Alexander.Deucher@amd.com>; linux-
+> kernel@vger.kernel.org; amd-gfx list <amd-gfx@lists.freedesktop.org>;
+> Andrew Morton <akpm@linux-foundation.org>
+> Cc: Huang, Ray <Ray.Huang@amd.com>; Koenig, Christian
+> <Christian.Koenig@amd.com>; Liang, Liang (Leo) <Liang.Liang@amd.com>;
+> Mike Rapoport <rppt@linux.ibm.com>; Rafael J. Wysocki
+> <rafael@kernel.org>; George Kennedy <george.kennedy@oracle.com>
+> Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to
+> tail in __free_pages_core()")
 >=20
-> Hi,
+> On 12.03.21 15:06, Deucher, Alexander wrote:
+> > [AMD Public Use]
+> >
+> >> -----Original Message-----
+> >> From: David Hildenbrand <david@redhat.com>
+> >> Sent: Thursday, March 11, 2021 10:03 AM
+> >> To: Deucher, Alexander <Alexander.Deucher@amd.com>; linux-
+> >> kernel@vger.kernel.org; amd-gfx list <amd-gfx@lists.freedesktop.org>;
+> >> Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Huang, Ray <Ray.Huang@amd.com>; Koenig, Christian
+> >> <Christian.Koenig@amd.com>; Liang, Liang (Leo)
+> <Liang.Liang@amd.com>;
+> >> Mike Rapoport <rppt@linux.ibm.com>; Rafael J. Wysocki
+> >> <rafael@kernel.org>; George Kennedy <george.kennedy@oracle.com>
+> >> Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages
+> >> to tail in __free_pages_core()")
+> >>
+> >> On 11.03.21 15:41, Deucher, Alexander wrote:
+> >>> [AMD Public Use]
+> >>>
+> >>> Booting kernels on certain AMD platforms takes 2-3 minutes with the
+> >>> patch
+> >> in the subject.  Reverting it restores quick boot times (few
+> >> seconds).  Any ideas?
+> >>>
+> >>
+> >> Hi,
+> >>
+> >> We just discovered latent BUGs in ACPI code whereby ACPI tables are
+> >> exposed to the page allocator as ordinary, free system RAM. With the
+> >> patch you mention, the order in which pages get allocated from the
+> >> page allocator are changed - which makes the BUG trigger more easily.
+> >>
+> >> I could imagine that someone allocates and uses that memory on your
+> >> platform, and I could imagine that such accesses are very slow.
+> >>
+> >> I cannot tell if that is the root cause, but at least it would make se=
+nse.
+> >>
+> >> See
+> >>
+> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
+> >>
+> kernel.org%2Fpatchwork%2Fpatch%2F1389314%2F&amp;data=3D04%7C01%7C
+> >>
+> alexander.deucher%40amd.com%7Cd1533aaddccd464c59f308d8e49ec563%7
+> >>
+> C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637510717893096801%
+> >>
+> 7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLC
+> >>
+> JBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3Dxpty77D54Z5S%2FKK
+> >> JO5SsVQaNsHoojWMR73whpu8VT%2B4%3D&amp;reserved=3D0
+> >>
+> >> You might want to give that patch a try (not sure if it's the latest
+> >> version). CCing George
+> >
+> > Thanks for the patch.  Unfortunately it didn't help.  Any other ideas? =
+ Is
+> there a newer version of that patch?
+> >
 >=20
-> On Fri, Mar 12, 2021 at 11:03 AM Song Liu <songliubraving@fb.com> wrote:
->>=20
->> perf uses performance monitoring counters (PMCs) to monitor system
->> performance. The PMCs are limited hardware resources. For example,
->> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
->>=20
->> Modern data center systems use these PMCs in many different ways:
->> system level monitoring, (maybe nested) container level monitoring, per
->> process monitoring, profiling (in sample mode), etc. In some cases,
->> there are more active perf_events than available hardware PMCs. To allow
->> all perf_events to have a chance to run, it is necessary to do expensive
->> time multiplexing of events.
->>=20
->> On the other hand, many monitoring tools count the common metrics (cycle=
-s,
->> instructions). It is a waste to have multiple tools create multiple
->> perf_events of "cycles" and occupy multiple PMCs.
->>=20
->> bperf tries to reduce such wastes by allowing multiple perf_events of
->> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
->> of having each perf-stat session to read its own perf_events, bperf uses
->> BPF programs to read the perf_events and aggregate readings to BPF maps.
->> Then, the perf-stat session(s) reads the values from these BPF maps.
->>=20
->> Please refer to the comment before the definition of bperf_ops for the
->> description of bperf architecture.
+> @George?
 >=20
-> Interesting!  Actually I thought about something similar before,
-> but my BPF knowledge is outdated.  So I need to catch up but
-> failed to have some time for it so far. ;-)
->=20
->>=20
->> bperf is off by default. To enable it, pass --use-bpf option to perf-sta=
-t.
->> bperf uses a BPF hashmap to share information about BPF programs and map=
-s
->> used by bperf. This map is pinned to bpffs. The default address is
->> /sys/fs/bpf/bperf_attr_map. The user could change the address with optio=
-n
->> --attr-map.
->>=20
->> ---
->> Known limitations:
->> 1. Do not support per cgroup events;
->> 2. Do not support monitoring of BPF program (perf-stat -b);
->> 3. Do not support event groups.
->=20
-> In my case, per cgroup event counting is very important.
-> And I'd like to do that with lots of cpus and cgroups.
+> It's interesting that this only applies to these special AMD systems so f=
+ar. Is
+> there anything particular about these systems? How much memory do these
+> systems have?
 
-We can easily extend this approach to support cgroups events. I didn't=20
-implement it to keep the first version simple.=20
+8G (with some carve out for the integrated GPU).
+[    0.044181] Memory: 6858688K/7200304K available (14345K kernel code, 965=
+9K rwdata, 4980K rodata, 2484K init, 12292K bss, 341360K reserved, 0K cma-r=
+eserved)
 
-> So I'm working on an in-kernel solution (without BPF),
-> I hope to share it soon.
-
-This is interesting! I cannot wait to see how it looks like. I spent
-quite some time try to enable in kernel sharing (not just cgroup
-events), but finally decided to try BPF approach.=20
+Nothing particularly special about these systems that I am aware of.  I'll =
+see if we can repro this issue on any other platforms, but so far, not one =
+has noticed any problems.
 
 >=20
-> And for event groups, it seems the current implementation
-> cannot handle more than one event (not even in a group).
-> That could be a serious limitation..
+> Increasing the boot time from a few seconds to 2-3 minutes does not smell
+> like some corner case cache effects we might be hitting in this particula=
+r
+> instance - there have been minor reports that it either slightly increase=
+d or
+> slightly decreases initial system performance, but that was about it.
+>=20
+> Either, yet another latent BUG (but why? why should memory access
+> suddenly be that slow? I could only guess that we are now making sooner
+> use of very slow memory), or there is really something else weird going o=
+n.
 
-It supports multiple events. Multiple events are independent, i.e.,
-"cycles" and "instructions" would use two independent leader programs.
+Looks like pretty much everything is slower based on the timestamps in the =
+dmesg output.  There is a big jump here:
+
+> [    3.758596] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
+> [    3.759372] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
+> [   16.177983] ACPI: 13 ACPI AML tables successfully acquired and loaded
+> [   17.099316] ACPI: [Firmware Bug]: BIOS _OSI(Linux) query ignored
+> [   18.969959] ACPI: EC: EC started
+
+And here:
+
+> [   36.566608] PCI: CLS 64 bytes, default 64
+> [   36.575383] Trying to unpack rootfs image as initramfs...
+> [   44.594348] Initramfs unpacking failed: Decoding failed
+> [   44.765141] Freeing initrd memory: 46348K
+
+Also seeing soft lockups:
+> [  124.588634] watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [swapper=
+/1:0]
+
+@Liang, Liang (Leo) can you attach the dmesg outputs with 7fef431be9c9 reve=
+rted and without?
+
+Alex
 
 >=20
->>=20
->> The following commands have been tested:
->>=20
->>   perf stat --use-bpf -e cycles -a
->>   perf stat --use-bpf -e cycles -C 1,3,4
->>   perf stat --use-bpf -e cycles -p 123
->>   perf stat --use-bpf -e cycles -t 100,101
+> Cheers!
 >=20
-> Hmm... so it loads both leader and follower programs if needed, right?
-> Does it support multiple followers with different targets at the same tim=
-e?
-
-Yes, the whole idea is to have one leader program and multiple follower
-programs. If we only run one of these commands at a time, it will load=20
-one leader and one follower. If we run multiple of them in parallel,=20
-they will share the same leader program and load multiple follower=20
-programs.=20
-
-I actually tested more than the commands above. The list actually means
-we support -a, -C -p, and -t.=20
-
-Currently, this works for multiple events, and different parallel=20
-perf-stat. The two commands below will work well in parallel:
- =20
-  perf stat --use-bpf -e ref-cycles,instructions -a
-  perf stat --use-bpf -e ref-cycles,cycles -C 1,3,5
-
-Note the use of ref-cycles, which can only use one counter on Intel CPUs.
-With this approach, the above two commands will not do time multiplexing
-on ref-cycles.=20
-
-Thanks,
-Song
+> > Alex
+>=20
+>=20
+> --
+> Thanks,
+>=20
+> David / dhildenb
