@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA10C338B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B58338B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233659AbhCLLgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233863AbhCLLfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:35:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDC9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:35:45 -0800 (PST)
-Date:   Fri, 12 Mar 2021 12:35:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615548941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xX8P03TtZH6T55/VsCQ3I0wyuiyg/KtGk1p9na+SNbk=;
-        b=NYW+VO82yU9feDyxopQCxlsQEHNmXhDD00v654OZiabfMmJ5Hygu8U+S8IY2+VoKz6WhtG
-        g5NBYK0fgQqHkcxSkXkbBg4Lddb35t5kAECDPF5jZ9T0Rmrp4UorZ8kjPsPchJa+FoIfGM
-        nTcP1s7ArBlkgypSeI+O61yiEp1NunvbuaLMUkEMtW2Lh+IdtaKCK6GLQI91DZpdHNoet2
-        smZphlBJmjXKJ0pSkQEN83P7/z+sozLqW3mlscbpUYojBD4XlY+QI2RMD35xMwGZ5RtWA5
-        oSE7vhJFMN7zJw9H0UFvXPaYlddE3TsMuVonZqJSDhngmkatdvZbJZEZ8NuTOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615548941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xX8P03TtZH6T55/VsCQ3I0wyuiyg/KtGk1p9na+SNbk=;
-        b=CQBPDuSb1N40OO5Vz6zLx0+IxkEq4F4W7U3ClmPG67XUdFatyWsIxPvofHW1MtrTv/w6Cy
-        UjHbillW6Z7YtaAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
-Message-ID: <20210312113540.7byffvc46cgj75ah@linutronix.de>
-References: <20210311132036.228542540@linutronix.de>
- <20210311141704.424120350@linutronix.de>
+        id S231726AbhCLLhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:37:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231474AbhCLLg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:36:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6223F64F6F;
+        Fri, 12 Mar 2021 11:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615549018;
+        bh=Y3U0bmKJUb+3XHj6p4SPQWcNUnYsIrcL8PrFDSr94oo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d1fhTAliRK4bwizKdTteFC6Hd7b76kVDBu6CuADnw71jrWGxEGBQxnzUqPp5JYiZx
+         u2QQZ6YetXpIxxMinOxrnFsYy/ZCEHoMsjhUlpV9CA4UdzaOTquwk6zp98Tto0Dn0c
+         NMJ1nRdp2wy/MiyVhNee2Yt812Wfow54HMAA+YtLYhUj71aVqiIbt71FzH/PiVNbMr
+         fdXgstxUouTUJV1DIdJKlQDZcof6aH05FhtVjDWhg7xywIO+9qGvVYoCc5hHY/Y1cV
+         rVQiw4tpiywZL0Nds+MW6CcX6c7xYjTfO4DAPY4S6mP0UM3mgE5vCwuJi4pPqMv4gk
+         gdb22glb6W4rw==
+Date:   Fri, 12 Mar 2021 11:35:44 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+Message-ID: <20210312113544.GB5348@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <20210311161558.GG4962@sirena.org.uk>
+ <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
 Content-Disposition: inline
-In-Reply-To: <20210311141704.424120350@linutronix.de>
+In-Reply-To: <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 14:20:39 [+0100], Thomas Gleixner wrote:
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -433,7 +433,11 @@ static struct sigqueue *
->  	rcu_read_unlock();
->  
->  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
-> -		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-> +		/* Preallocation does not hold sighand::siglock */
-> +		if (sigqueue_flags || !t->sigqueue_cache)
-> +			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-> +		else
-> +			q = xchg(&t->sigqueue_cache, NULL);
 
-Could it happen that two tasks saw t->sigqueue_cache != NULL, the first
-one got the pointer via xchg() and the second got NULL via xchg()?
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  	} else {
->  		print_dropped_signal(sig);
->  	}
-> @@ -472,12 +481,19 @@ void flush_sigqueue(struct sigpending *q
->  }
->  
->  /*
-> - * Called from __exit_signal. Flush tsk->pending and clear tsk->sighand.
-> + * Called from __exit_signal. Flush tsk->pending, clear tsk->sighand and
-> + * free tsk->sigqueue_cache.
->   */
->  void exit_task_sighand(struct task_struct *tsk)
->  {
-> +	struct sigqueue *q;
-> +
->  	flush_sigqueue(&tsk->pending);
->  	tsk->sighand = NULL;
-> +
-> +	q = xchg(&tsk->sigqueue_cache, NULL);
-> +	if (q)
-> +		kmem_cache_free(sigqueue_cachep, q);
+On Thu, Mar 11, 2021 at 11:11:15PM +0100, Michael Walle wrote:
+> Am 2021-03-11 17:15, schrieb Mark Brown:
 
-Do we need this xchg() here? Only the task itself adds something here
-and the task is on its way out so it should not add an entry to the
-cache.
+> > The trick is figuring out if it's best to vary the input clock
+> > or to use the FLL to adapt a fixed input clock,
 
->  }
->  
->  /*
+> For simple-audio-card you can set the "clock" property if you want
+> that clock to be changed/enabled/disabled. But that doesn't seem to
+> be the way to go, at least it was NAKed by Rob for the audio-graph-card.
+> I don't see a way to figure out if MCLK should be controlled by
+> simple-*-card without adding further properties to the device tree.
 
-Sebastian
+If the card has a clock API clock as sysclk then set_sysclk(() should
+be configuring that clock.
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLUg8ACgkQJNaLcl1U
+h9CSGwgAhrOIMEFqoBHhAxZirq3hXq7cqfPrHmJx8Y03rBpjXiY5Syx8tbIGHLHL
+THMEzZwO2/QPnVG39A/KCu2fv4Pjd5EHzlV1ZurXSWFEFtXzzW06Kyx5TYq/wQch
+UlYziTkkW97LkhsBGYTGLQT9lHbdkiQi2CZzv+DrfWA1ZEql2IThGI8/tHwvOiDQ
+nl8Lm1QgjJ2jwiKZc2fWDoNnC6++ggNAQaCEwYyxpMSNgo55smZMTCJc7xHpU/Xp
+1u1jYSrWDZwj3GwgbJKzZjFEQ1bWsWBwapjxOz1A30qo0SfCKk9N1OK3fi3DRB6m
+FuL4a2mG40TQ+qsz3mx6MKAfagTMMQ==
+=nIRs
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
