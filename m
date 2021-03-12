@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14270338C9D
+	by mail.lfdr.de (Postfix) with ESMTP id AD81D338C9F
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCLMXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S231380AbhCLMXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhCLMXB (ORCPT
+        with ESMTP id S231294AbhCLMXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:23:01 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA9FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:23:01 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id v11so1663572wro.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:23:01 -0800 (PST)
+        Fri, 12 Mar 2021 07:23:02 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605CDC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:23:02 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id 7so4709505wrz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:23:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZdZJGNP62lIlEnEmG/cCC95BLhByXorN62IvToLdpl4=;
-        b=ylWoX9xUNZ8xM+1HGI2ImLh8mOmk1MiOPYZg1P7v+ETDVLVHX9F80XJcdSoCzTBImJ
-         tCl38ELjaOK5iwx6nSQQPT7VslSzPgOOrQFPioqLi3t0PxDz7up1bLTv8Q7cVjv8rx+d
-         JQ9DXuka8FoHix/r977MhlIq90uFd70y1D5s3DPL2mw3VpHaN5NuI62SauLnwGXb9u8h
-         h/JyFg6TGGNyNLMXhkBHKISbJ2s6Hgy9YXEpeqXjFqZep2C8mb4H+IiC+GjWptsjhf0i
-         qEHU6URAL24+N9BqJbAOt+9m7QBP7hgOZUvQKGJ1+cTHPsYZkT2Wo+nLouh0OufzcAKw
-         CvEA==
+        bh=6S4oc3H/pGD3ohc32wC+7IuRuvb/2oR7Yf16M/iJXA4=;
+        b=YRawz45LNtttk3HenoCONJFDTNNca+FzdessU2tg+yt1grzPilMT9kL/9Wh3yC/Ofe
+         wpOC52qJcJSsHIbRBC4+CK/MUpraS78G8Ow2jtKaV6LjUWo7gzq535HIjhIhACv0A1z0
+         U1VOs3A7KyrcGJdKpckT/As/AEtmgme9cg3AZ0NP6p2RJyjfT8YhtxLLne7UPuHC0cpC
+         4MTVhMV+u6t7vPSVkCsHnjmVnsLMrgJIZUwsC5lXoVBQ0o/vjJu8dH3AGjtq2b0f9acM
+         OiB4MkB2fPA6b/pl8NlLc2CNvMqZ/Cwi+ObLOWxvt3zwPL0+CWqRUCzBkDLYtqqQxXz7
+         uyHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZdZJGNP62lIlEnEmG/cCC95BLhByXorN62IvToLdpl4=;
-        b=iNjeObzIFMgzSGcxndJNxaTu9uHKU5UXcVnZk+guSmR/gB7t2hHBp/30RGcVDHE0hP
-         TJp5fvi4A7P2Go8k1GAxWIPAQAhn1Y8MhKjRq4fjdPwbivP5yk95ONSp3plVwFbZx/8h
-         4refFHR7nG+78gqnj2A0w9XgggXm7/rHqKoddmCgRwJwylbgicFdeJo4C8xK4s/hjgW6
-         vANo2z0F9zpyPAax57oIgBdWS9b9NA0t6FTG5Nnt6AuAqqkVHjifmi9TYY4wzUSJztcz
-         tGtaUbXpsfvEMS6E7sX4dsVS0M/9RH96xwydAsAxbTPDBbSNVHdqyFlPBkXavdBOWN88
-         bYlQ==
-X-Gm-Message-State: AOAM530c5+I8xjrRbXfQ4gabSStQEuN4Shk9eGJjFCjv9lMCroJ2JX14
-        8/iE3cS8h2cIIAasXBRScIoraQ==
-X-Google-Smtp-Source: ABdhPJzq5ypNFpODDNGdzsu4umFpPzVXaC7hruw4FFz9uUJRLwBTkvMcogwpaVsOC6QKmGEhCz87Jg==
-X-Received: by 2002:adf:e603:: with SMTP id p3mr13900719wrm.360.1615551780146;
-        Fri, 12 Mar 2021 04:23:00 -0800 (PST)
+        bh=6S4oc3H/pGD3ohc32wC+7IuRuvb/2oR7Yf16M/iJXA4=;
+        b=T5u9t+VD604zqfCOuy1Kk019GsPJPeqJKZlyH0ZTA/BbOAslRK0oldDg31QIcFGS6I
+         Hzn8ZKSP/jTit2SqjY+BL6AJ9waD10PVJ09U2fe6MeY2xbBJgJbhG8MxAGMnT7GR+S4T
+         7Af7kEffnSPIp5pSOLz9WJ6HWfivrsq2UDr5wzqNGAh0DwSYscsdvp4QrCyRlt25iPrl
+         kiTZwc5UmOewzB2pjpoTJF+tlUF0QiatEKPavYeG38Mc5+M/SCEoOmPnb941KCx5Bn95
+         NRQp2N5XpIKqEuocYOj+6qwAd3d1SObcbuqZAJFQTJxlaZKgcbV/VW3J02dRaFqZ2nM9
+         ZfXw==
+X-Gm-Message-State: AOAM5332cY9gvqctPtNaA3NK1YzMdehd29PUVK5u+EuS5IrNp5uTFr2/
+        /4E56r49RMzdAW4F0HGq0Zk+HA==
+X-Google-Smtp-Source: ABdhPJyECcjI4bJaeKB5525lkzQWeGSZ7fhUMb/PSBwvy9RH+lOuu9IO1s7CygCdkUXDA58e6AU/kw==
+X-Received: by 2002:a05:6000:2aa:: with SMTP id l10mr13737171wry.368.1615551781175;
+        Fri, 12 Mar 2021 04:23:01 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id 3sm8804329wry.72.2021.03.12.04.22.59
+        by smtp.gmail.com with ESMTPSA id 3sm8804329wry.72.2021.03.12.04.23.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 04:22:59 -0800 (PST)
+        Fri, 12 Mar 2021 04:23:00 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org, vkoul@kernel.org
 Cc:     robh@kernel.org, devicetree@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     robh@kernel.org, devicetree@vger.kernel.org,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RESEND PATCH v3 2/5] soundwire: qcom: update port map allocation bit mask
-Date:   Fri, 12 Mar 2021 12:22:52 +0000
-Message-Id: <20210312122255.3143-3-srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH v3 3/5] soundwire: qcom: add static port map support
+Date:   Fri, 12 Mar 2021 12:22:53 +0000
+Message-Id: <20210312122255.3143-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
 References: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
@@ -67,64 +67,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently the internal bitmask used for allocating ports starts with offset 0.
-This is bit confusing as data port numbers on Qualcomm controller are valid
-from 1 to 14. So adjust this bit mask accordingly, this will also help while
-adding static port map support.
+SoundWire device ports are statically mapped to Controller ports during
+design. Add support to read these from SoundWire devices.
+This controller uses static port map info to setup bandwidth
+parameters for those ports.
+
+A generic port allocation is not possible in this cases!
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/soundwire/qcom.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 6d22df01f354..9e70c53e2c7b 100644
+index 9e70c53e2c7b..39222b04a2e0 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -519,7 +519,7 @@ static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
- 			port_mask = &ctrl->din_port_mask;
+@@ -460,6 +460,8 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
+ 	struct sdw_slave_runtime *s_rt;
+ 	struct sdw_port_runtime *p_rt;
+ 	struct qcom_swrm_port_config *pcfg;
++	struct sdw_slave *slave;
++	unsigned int m_port;
+ 	int i = 0;
  
- 		list_for_each_entry(p_rt, &m_rt->port_list, port_node)
--			clear_bit(p_rt->num - 1, port_mask);
-+			clear_bit(p_rt->num, port_mask);
- 	}
+ 	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
+@@ -473,8 +475,14 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
+ 		}
  
- 	mutex_unlock(&ctrl->port_lock);
-@@ -552,13 +552,13 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
++			slave = s_rt->slave;
  			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+-				pcfg = &ctrl->pconfig[i];
++				m_port = slave->m_port_map[p_rt->num];
++				/* port config starts at offset 0 so -1 from actual port number */
++				if (m_port)
++					pcfg = &ctrl->pconfig[m_port - 1];
++				else
++					pcfg = &ctrl->pconfig[i];
+ 				p_rt->transport_params.port_num = p_rt->num;
+ 				p_rt->transport_params.sample_interval =
+ 					pcfg->si + 1;
+@@ -535,8 +543,10 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 	struct sdw_master_runtime *m_rt;
+ 	struct sdw_slave_runtime *s_rt;
+ 	struct sdw_port_runtime *p_rt;
++	struct sdw_slave *slave;
+ 	unsigned long *port_mask;
+ 	int i, maxport, pn, nports = 0, ret = 0;
++	unsigned int m_port;
+ 
+ 	mutex_lock(&ctrl->port_lock);
+ 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+@@ -549,9 +559,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 		}
+ 
+ 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
++			slave = s_rt->slave;
+ 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
++				m_port = slave->m_port_map[p_rt->num];
  				/* Port numbers start from 1 - 14*/
- 				pn = find_first_zero_bit(port_mask, maxport);
--				if (pn > (maxport - 1)) {
-+				if (pn > maxport) {
+-				pn = find_first_zero_bit(port_mask, maxport);
++				if (m_port)
++					pn = m_port;
++				else
++					pn = find_first_zero_bit(port_mask, maxport);
++
+ 				if (pn > maxport) {
  					dev_err(ctrl->dev, "All ports busy\n");
  					ret = -EBUSY;
- 					goto err;
- 				}
- 				set_bit(pn, port_mask);
--				pconfig[nports].num = pn + 1;
-+				pconfig[nports].num = pn;
- 				pconfig[nports].ch_mask = p_rt->ch_mask;
- 				nports++;
- 			}
-@@ -580,7 +580,7 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
- err:
- 	if (ret) {
- 		for (i = 0; i < nports; i++)
--			clear_bit(pconfig[i].num - 1, port_mask);
-+			clear_bit(pconfig[i].num, port_mask);
- 	}
- 
- 	mutex_unlock(&ctrl->port_lock);
-@@ -754,6 +754,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
- 	ctrl->num_dout_ports = val;
- 
- 	nports = ctrl->num_dout_ports + ctrl->num_din_ports;
-+	/* Valid port numbers are from 1-14, so mask out port 0 explicitly */
-+	set_bit(0, &ctrl->dout_port_mask);
-+	set_bit(0, &ctrl->din_port_mask);
- 
- 	ret = of_property_read_u8_array(np, "qcom,ports-offset1",
- 					off1, nports);
 -- 
 2.21.0
 
