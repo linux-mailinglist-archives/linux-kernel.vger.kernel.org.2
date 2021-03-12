@@ -2,243 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5492F339531
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA63339535
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhCLRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S232740AbhCLRkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:40:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbhCLRjK (ORCPT
+        with ESMTP id S232507AbhCLRkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:39:10 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11277C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:39:09 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id 6so4347890qty.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:39:09 -0800 (PST)
+        Fri, 12 Mar 2021 12:40:00 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAF7C061574;
+        Fri, 12 Mar 2021 09:40:00 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so11398168pjg.5;
+        Fri, 12 Mar 2021 09:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUsuqONJ3tLWg4HG8dBP3aoESycl/MjRDR9WhFydjCU=;
-        b=s+4H5EkRJWTHhHou67iB/FJQCS5V6gf5A0f3iS6lNfbnCCI4T9qAs5PZG+QTe2pv2y
-         DlsuUto9fIaMlwZWS3SNOj/6anv3/19RDA05tnI/YB7pV7/B4T0If8KFs5h8XUG8KZNi
-         ohw+n3WHmGltLC9bBlwbOFnHk8uEzTr/Df27P8S0XteU/nRikoLjmP8qgaGoJmtf17es
-         GQLcMbrOw7yOl5TK2Q1PkxnH538XMZ9E7ksssfrQMKl+tYb+5aSxtEbUOMrZPrh5Bb3C
-         MhHnQIgYXRj7IyFtgr7RqA79aKgP2mHaZg8Uf89XYmUKE1VGwNnt+W2gtlOwJIOPfTzv
-         GOvw==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jF8mBIpe3t0bmWBsiEvUHTeBeX7mPeL5p74zwuxcf3k=;
+        b=J2brkoMtL++eHoP33bjjSwU9jl8TxgwQLfwP1JFP5dLtuq6iUaqbwJtkfPlt0jODOT
+         hg0hgAuaqQ9hYcYCOsMqDKLVLhqAU4E0ge6hFznAMxR6Rrt9IZoGvtVuY47ouks5uHKd
+         Of1BeIpg4KO7go3P6aw+4e3hPpHHnYwc/NkoryWorBPAUiIOENmMOqpMQUwJJ43S8xxX
+         F/gd5ULgA8XNTZhNb9yUvUhSbOHGHzgmBeeIPrQ24Fx2E6lX4V/Nf+xB0cseOiWEUggj
+         XATslKZBRWnwZUSzuNfQHEM0HyTaIh5XZ1RQX9CWBHo7v3ySSFZCfnvM/L8P0UISCwIa
+         0TUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUsuqONJ3tLWg4HG8dBP3aoESycl/MjRDR9WhFydjCU=;
-        b=btwCmdoYoqyT5Jzgtfx4YdnpfmrD2HnzoJeQRYEqpHiRYJ5ZYMyu7a1SPe2f5li2Jv
-         oLT/UZrP0zItiVj+doK3Hi5YKVg+5wQq+y1C1vO0n0gyeJ8ILKUbY4D5wuXXYJHGVkDc
-         ThRNK8zMBOf0uj+E98GjRi+nUxrCmmo65FrnHHsXYinhrY9oraX0mVIVsaKizyHIfbVV
-         Sf+cYX9+ANlhS+VA+lyww4vol6EKq07XmX8tLWfH3rvHHE44Pqcp1DPZfeDDmCIUhhkc
-         24lSsM2TZ0NJRTh182D5qSq02+ksbjdR9kPmb4qXnIX4hrpXure5W0Q4oEIi+Mj+2kjA
-         4M3Q==
-X-Gm-Message-State: AOAM531axKfGV0CqxiQL5CEFbk+NS3qIkMilKz8z85mQ7JZPaGcb6Pf/
-        f0+wFeejhKutuhCKjYDIzz1B5tGlnHGYLpyt5au34Q==
-X-Google-Smtp-Source: ABdhPJz0alui0e3XXFrVHWFx86Ct0Zfpkd462YRnLViSiIBj0G5cEkLzjOnCxtN9DZZ5quHt+2Zvsjlt1Lpa/w5NqE8=
-X-Received: by 2002:ac8:5212:: with SMTP id r18mr12569666qtn.290.1615570748783;
- Fri, 12 Mar 2021 09:39:08 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=jF8mBIpe3t0bmWBsiEvUHTeBeX7mPeL5p74zwuxcf3k=;
+        b=LdSPN83vprMQZBXDLwev/vVPXJUajSD5FAZ5zRdGwRkxL0uNdiWjoaF0hUTSUCes5A
+         VWWr8EHwO42eWIF9Q5hYM/MwHNvxIeTYWkc89tzWrwb6Cpg2XJKkshxHblm0K1lSBy8I
+         9qgMnn63XLAMLYqpGxtoDFuMDGHGjLdTkWE0HmCOSHBDJfJwdSfxwaCPYmD2ozLZwqmE
+         510yOj9hIzo7psRCCGoGndTPDACbbFWimaeoXPrazgkclAyHfPzhmAjswgeXWvEZu6pC
+         BTfsrlbADAS6eqmVYKtlEBOsrimLdCeYdTV7bWMwr45blw6ZVp42c6YDt6YktnGTVTnY
+         QiOw==
+X-Gm-Message-State: AOAM532GNYAMRJ+/YDrOHE+XinFB/JFF9uQj+9Zjwj6aJr1ZQxbK1x6a
+        IqsCYBA2kdm1ji6TzwlYr92fzE4S6O0=
+X-Google-Smtp-Source: ABdhPJz7DuHu7lS1atq20fvfOwIMRFEDU14H5wnmffCLvPBtRGFd7tmYPVhISCqoSbAkNk4COiMmEw==
+X-Received: by 2002:a17:90a:bf0a:: with SMTP id c10mr14846966pjs.195.1615570799523;
+        Fri, 12 Mar 2021 09:39:59 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:8d76:9272:43a9:a6d0])
+        by smtp.gmail.com with ESMTPSA id g21sm2694958pjl.28.2021.03.12.09.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 09:39:58 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     joaodias@google.com, LKML <linux-kernel@vger.kernel.org>,
+        Amos Bianchi <amosbianchi@google.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH 1/2] zram: fix return value on writeback_store
+Date:   Fri, 12 Mar 2021 09:39:48 -0800
+Message-Id: <20210312173949.2197662-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-References: <000000000000b74f1b05bd316729@google.com> <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk> <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
- <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk> <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
- <4ce57c7e-6e5d-d136-0a81-395a4207ba44@codethink.co.uk> <CACT4Y+ZJwJ9vcgCyabDUny0CnYmbHLRqU6m_KccdObS+7bBoGw@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZJwJ9vcgCyabDUny0CnYmbHLRqU6m_KccdObS+7bBoGw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 12 Mar 2021 18:38:57 +0100
-Message-ID: <CACT4Y+ay21Cw8TtUdyDAzXAJaqpDPyCKNW6XF1GKsHoNeL=qKw@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in schedule_tail
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:34 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Mar 12, 2021 at 5:36 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
-> >
-> > On 12/03/2021 16:34, Ben Dooks wrote:
-> > > On 12/03/2021 16:30, Ben Dooks wrote:
-> > >> On 12/03/2021 15:12, Dmitry Vyukov wrote:
-> > >>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk>
-> > >>> wrote:
-> > >>>>
-> > >>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
-> > >>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
-> > >>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
-> > >>>>>>
-> > >>>>>> Hello,
-> > >>>>>>
-> > >>>>>> syzbot found the following issue on:
-> > >>>>>>
-> > >>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
-> > >>>>>> arch_dup_tas..
-> > >>>>>> git tree:
-> > >>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> > >>>>>> console output:
-> > >>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
-> > >>>>>> kernel config:
-> > >>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
-> > >>>>>> dashboard link:
-> > >>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
-> > >>>>>> userspace arch: riscv64
-> > >>>>>>
-> > >>>>>> Unfortunately, I don't have any reproducer for this issue yet.
-> > >>>>>>
-> > >>>>>> IMPORTANT: if you fix the issue, please add the following tag to
-> > >>>>>> the commit:
-> > >>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
-> > >>>>>
-> > >>>>> +riscv maintainers
-> > >>>>>
-> > >>>>> This is riscv64-specific.
-> > >>>>> I've seen similar crashes in put_user in other places. It looks like
-> > >>>>> put_user crashes in the user address is not mapped/protected (?).
-> > >>>>
-> > >>>> I've been having a look, and this seems to be down to access of the
-> > >>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
-> > >>>> bad address to clone?
-> > >>>>
-> > >>>>   From looking at the code, the put_user() code should have set the
-> > >>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
-> > >>>> s2 register in the crash report) and from looking at the compiler
-> > >>>> output from my gcc-10, the code looks to be dong the relevant csrs
-> > >>>> and then csrc around the put_user
-> > >>>>
-> > >>>> So currently I do not understand how the above could have happened
-> > >>>> over than something re-tried the code seqeunce and ended up retrying
-> > >>>> the faulting instruction without the SR_SUM bit set.
-> > >>>
-> > >>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
-> > >>> strange that 99% of these crashes are in schedule_tail. If it would be
-> > >>> qemu, then they would be more evenly distributed...
-> > >>>
-> > >>> Another observation: looking at a dozen of crash logs, in none of
-> > >>> these cases fuzzer was actually trying to fuzz clone with some insane
-> > >>> arguments. So it looks like completely normal clone's (e..g coming
-> > >>> from pthread_create) result in this crash.
-> > >>>
-> > >>> I also wonder why there is ret_from_exception, is it normal? I see
-> > >>> handle_exception disables SR_SUM:
-> > >>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73
-> > >>>
-> > >>
-> > >> So I think if SR_SUM is set, then it faults the access to user memory
-> > >> which the _user() routines clear to allow them access.
-> > >>
-> > >> I'm thinking there is at least one issue here:
-> > >>
-> > >> - the test in fault is the wrong way around for die kernel
-> > >> - the handler only catches this if the page has yet to be mapped.
-> > >>
-> > >> So I think the test should be:
-> > >>
-> > >>          if (!user_mode(regs) && addr < TASK_SIZE &&
-> > >>                          unlikely(regs->status & SR_SUM)
-> > >>
-> > >> This then should continue on and allow the rest of the handler to
-> > >> complete mapping the page if it is not there.
-> > >>
-> > >> I have been trying to create a very simple clone test, but so far it
-> > >> has yet to actually trigger anything.
-> > >
-> > > I should have added there doesn't seem to be a good way to use mmap()
-> > > to allocate memory but not insert a vm-mapping post the mmap().
-> > >
-> > How difficult is it to try building a branch with the above test
-> > modified?
->
-> I don't have access to hardware, I don't have other qemu versions ready to use.
-> But I can teach you how to run syzkaller locally :)
-> I am not sure anybody run it on real riscv hardware at all. When
-> Tobias ported syzkaller, Tobias also used qemu I think.
->
-> I am now building with an inverted check to test locally.
->
-> I don't fully understand but this code, but does handle_exception
-> reset SR_SUM around do_page_fault? If so, then looking at SR_SUM in
-> do_page_fault won't work with positive nor negative check.
+writeback_store's return value is overwritten by submit_bio_wait's
+return value. Thus, writeback_store will return zero since there
+was no IO error. In the end, write syscall from userspace will
+see the zero as return value, which could make the process stall
+to keep trying the write until it will succeed.
 
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Colin Ian King <colin.king@canonical.com>
+Cc: stable@vger.kernel.org
+Fixes: 3b82a051c101("drivers/block/zram/zram_drv.c: fix error return codes not being returned in writeback_store")
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ drivers/block/zram/zram_drv.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-The inverted check crashes during boot:
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index a711a2e2a794..63bbefdffc81 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -627,7 +627,7 @@ static ssize_t writeback_store(struct device *dev,
+ 	struct bio_vec bio_vec;
+ 	struct page *page;
+ 	ssize_t ret = len;
+-	int mode;
++	int mode, err;
+ 	unsigned long blk_idx = 0;
+ 
+ 	if (sysfs_streq(buf, "idle"))
+@@ -728,12 +728,17 @@ static ssize_t writeback_store(struct device *dev,
+ 		 * XXX: A single page IO would be inefficient for write
+ 		 * but it would be not bad as starter.
+ 		 */
+-		ret = submit_bio_wait(&bio);
+-		if (ret) {
++		err = submit_bio_wait(&bio);
++		if (err) {
+ 			zram_slot_lock(zram, index);
+ 			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
+ 			zram_clear_flag(zram, index, ZRAM_IDLE);
+ 			zram_slot_unlock(zram, index);
++			/*
++			 * Return last IO error unless every IO were
++			 * not suceeded.
++			 */
++			ret = err;
+ 			continue;
+ 		}
+ 
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
---- a/arch/riscv/mm/fault.c
-+++ b/arch/riscv/mm/fault.c
-@@ -249,7 +249,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
-                flags |= FAULT_FLAG_USER;
-
-        if (!user_mode(regs) && addr < TASK_SIZE &&
--                       unlikely(!(regs->status & SR_SUM)))
-+                       unlikely(regs->status & SR_SUM))
-                die_kernel_fault("access to user memory without
-uaccess routines",
-                                addr, regs);
-
-
-[   77.349329][    T1] Run /sbin/init as init process
-[   77.868371][    T1] Unable to handle kernel access to user memory
-without uaccess routines at virtual address 00000000000e8e39
-[   77.870355][    T1] Oops [#1]
-[   77.870766][    T1] Modules linked in:
-[   77.871326][    T1] CPU: 0 PID: 1 Comm: init Not tainted
-5.12.0-rc2-00010-g0d7588ab9ef9-dirty #42
-[   77.872057][    T1] Hardware name: riscv-virtio,qemu (DT)
-[   77.872620][    T1] epc : __clear_user+0x36/0x4e
-[   77.873285][    T1]  ra : padzero+0x9c/0xb0
-[   77.873849][    T1] epc : ffffffe000bb7136 ra : ffffffe0004f42a0 sp
-: ffffffe006f8fbc0
-[   77.874438][    T1]  gp : ffffffe005d25718 tp : ffffffe006f98000 t0
-: 00000000000e8e40
-[   77.875031][    T1]  t1 : 00000000000e9000 t2 : 000000000001c49c s0
-: ffffffe006f8fbf0
-[   77.875618][    T1]  s1 : 00000000000001c7 a0 : 00000000000e8e39 a1
-: 00000000000001c7
-[   77.876204][    T1]  a2 : 0000000000000002 a3 : 00000000000e9000 a4
-: ffffffe006f99000
-[   77.876787][    T1]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
-: ffffffe00031c088
-[   77.877367][    T1]  s2 : 00000000000e8e39 s3 : 0000000000001000 s4
-: 0000003ffffffe39
-[   77.877952][    T1]  s5 : 00000000000e8e39 s6 : 00000000000e9570 s7
-: 00000000000e8e39
-[   77.878535][    T1]  s8 : 0000000000000001 s9 : 00000000000e8e39
-s10: ffffffe00c65f608
-[   77.879126][    T1]  s11: ffffffe00816e8d8 t3 : ea3af0fa372b8300 t4
-: 0000000000000003
-[   77.879711][    T1]  t5 : ffffffc401dc45d8 t6 : 0000000000040000
-[   77.880209][    T1] status: 0000000000040120 badaddr:
-00000000000e8e39 cause: 000000000000000f
-[   77.880846][    T1] Call Trace:
-[   77.881213][    T1] [<ffffffe000bb7136>] __clear_user+0x36/0x4e
-[   77.881912][    T1] [<ffffffe0004f523e>] load_elf_binary+0xf8a/0x2400
-[   77.882562][    T1] [<ffffffe0003e1802>] bprm_execve+0x5b0/0x1080
-[   77.883145][    T1] [<ffffffe0003e38bc>] kernel_execve+0x204/0x288
-[   77.883727][    T1] [<ffffffe003b70e94>] run_init_process+0x1fe/0x212
-[   77.884337][    T1] [<ffffffe003b70ec6>] try_to_run_init_process+0x1e/0x66
-[   77.884956][    T1] [<ffffffe003bc0864>] kernel_init+0x14a/0x200
-[   77.885541][    T1] [<ffffffe000005570>] ret_from_exception+0x0/0x14
-[   77.886955][    T1] ---[ end trace 1e934d07b8a4bed8 ]---
-[   77.887705][    T1] Kernel panic - not syncing: Fatal exception
-[   77.888333][    T1] SMP: stopping secondary CPUs
-[   77.889357][    T1] Rebooting in 86400 seconds..
