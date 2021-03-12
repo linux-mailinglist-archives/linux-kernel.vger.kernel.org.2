@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7883389FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A644338A02
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhCLKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:22:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:50900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233314AbhCLKWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:22:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08C391FB;
-        Fri, 12 Mar 2021 02:22:33 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 177C23F70D;
-        Fri, 12 Mar 2021 02:22:31 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] powercap/drivers/dtpm: Encapsulate even more the
- code
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210310110212.26512-1-daniel.lezcano@linaro.org>
- <d8d3c50c-fee6-6f31-c085-d1ebce5297da@arm.com>
- <aa1ecdaa-3f91-c886-ce1e-45557d01991a@linaro.org>
- <c35d7d49-3772-a231-1690-bbea2af3f4f4@arm.com>
-Message-ID: <2f149f7f-5a69-2f0a-07f7-f01644e09c53@arm.com>
-Date:   Fri, 12 Mar 2021 10:22:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233337AbhCLKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:24:24 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13596 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233093AbhCLKYG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:24:06 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dxhh519C9z17JnC;
+        Fri, 12 Mar 2021 18:22:13 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 12 Mar 2021
+ 18:23:52 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <john.garry@huawei.com>,
+        <yangxingui@huawei.com>, <luojiaxing@huawei.com>
+Subject: [PATCH v1] ata: ahci: Disable SXS for Hisilicon Kunpeng920
+Date:   Fri, 12 Mar 2021 18:24:36 +0800
+Message-ID: <1615544676-61926-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <c35d7d49-3772-a231-1690-bbea2af3f4f4@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Xingui Yang <yangxingui@huawei.com>
 
+On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
+SATA controller. In some scenarios, some ports are not external SATA ports,
+and it cause disks connected to these ports to be identified as removable
+disks. So disable the SXS capability on the software side to prevent users
+from mistakenly considering non-removable disks as removable disks and
+performing related operations.
 
-On 3/12/21 10:11 AM, Lukasz Luba wrote:
-> 
-> 
-> On 3/11/21 10:57 AM, Daniel Lezcano wrote:
->> On 11/03/2021 11:15, Lukasz Luba wrote:
->>> Hi Daniel,
->>>
->>> On 3/10/21 11:02 AM, Daniel Lezcano wrote:
->>>> In order to increase the self-encapsulation of the dtpm generic code,
->>>> the following changes are adding a power update ops to the dtpm
->>>> ops. That allows the generic code to call directly the dtpm backend
->>>> function to update the power values.
->>>>
->>>> The power update function does compute the power characteristics when
->>>> the function is invoked. In the case of the CPUs, the power
->>>> consumption depends on the number of online CPUs. The online CPUs mask
->>>> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
->>>> callback. That is the reason why the online / offline are at separate
->>>> state. As there is already an existing state for DTPM, this one is
->>>> only moved to the DEAD state, so there is no addition of new state
->>>> with these changes. The dtpm node is not removed when the cpu is
->>>> unplugged.
->>>>
->>>> That simplifies the code for the next changes and results in a more
->>>> self-encapsulated code.
->>>>
->>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>>> ---
->>>> V2:
->>>>    - Updated the changelog with the CPU node not being removed
->>>>    - Commented the cpu hotplug callbacks to explain why there are two
->>>> callbacks
->>>>    - Changed 'upt_power_uw' to 'update_power_uw'
->>>>    - Removed unused cpumask variable
->>>> ---
->>>>    drivers/powercap/dtpm.c     |  54 ++++++-------
->>>>    drivers/powercap/dtpm_cpu.c | 148 
->>>> ++++++++++++++++--------------------
->>>>    include/linux/cpuhotplug.h  |   2 +-
->>>>    include/linux/dtpm.h        |   3 +-
->>>>    4 files changed, 97 insertions(+), 110 deletions(-)
->>>>
->>>
->>> [snip]
->>>
->>>> @@ -210,27 +175,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int 
->>>> cpu)
->>>>        for_each_cpu(cpu, policy->related_cpus)
->>>>            per_cpu(dtpm_per_cpu, cpu) = dtpm;
->>>>    -    sprintf(name, "cpu%d", dtpm_cpu->cpu);
->>>> +    sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
->>>
->>> We should be safe in normal platforms, since there is less than
->>> < 300 cores. although, I would use 2x CPUFREQ_NAME_LEN array.
->>
->> I'm counting 9999 cores.
->>
->> We have:
->> #define CPUFREQ_NAME_LEN 16
->>
->> "cpu-cpufreq\0" counts 12 characters.
->>
->> There are 4 characters left, 9999 max then, no ?
-> 
-> Yes, my '< 300' was referring to some server platforms,
-> which IIRC had 2 sockets, each with 128 cores. I don't
-> know about future, though.
-> 
->>
->> The code is designed for cpufreq with the energy model which targets
->> ARM64 architecture and AFAICT we are far away of having so many cores on
->> our phones.
-> 
-> True, otherwise with such big number of cores in mobile, we would face
-> probably more hard to investigate issues, than this simple one ;)
-> 
->>
->> Except I'm wrong, I would prefer to keep the current CPUFREQ_NAME_LEN to
->> not introduce subtle bugs (like stack overflow) if the length is
->> increased in cpufreq.h.
->>
->> What do you think ?
-> 
-> Agree, please skip my former comment and just take the reviewed tag.
+Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+---
+ drivers/ata/ahci.c    | 5 +++++
+ drivers/ata/ahci.h    | 1 +
+ drivers/ata/libahci.c | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-What you could do, though, is to use:
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 00ba8e5..33192a8 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -1772,6 +1772,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
+ 
+ #ifdef CONFIG_ARM64
++	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
++	    pdev->device == 0xa235 &&
++	    pdev->revision < 0x30)
++		hpriv->flags |= AHCI_HFLAG_NO_SXS;
++
+ 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
+ 		hpriv->irq_handler = ahci_thunderx_irq_handler;
+ #endif
+diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
+index 98b8baa..d1f284f 100644
+--- a/drivers/ata/ahci.h
++++ b/drivers/ata/ahci.h
+@@ -242,6 +242,7 @@ enum {
+ 							suspend/resume */
+ 	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
+ 							from phy_power_on() */
++	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
+ 
+ 	/* ap->flags bits */
+ 
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index ea5bf5f..fec2e97 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
+ 		cap |= HOST_CAP_ALPM;
+ 	}
+ 
++	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
++		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
++		cap &= ~HOST_CAP_SXS;
++	}
++
+ 	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
+ 		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
+ 			 port_map, hpriv->force_port_map);
+-- 
+2.7.4
 
-snprintf(name, sizeof(name), "cpu%d-cpufreq", dtpm_cpu->cpu);
-
-just to play safe.
