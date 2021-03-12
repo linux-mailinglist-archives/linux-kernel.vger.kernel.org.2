@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B217338AC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AE0338A41
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhCLK4b convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 05:56:31 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:50184 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233745AbhCLK4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:56:04 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id EB0B63A636E;
-        Fri, 12 Mar 2021 06:29:45 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id O7_mUSP2KS6s; Fri, 12 Mar 2021 06:29:45 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 66B6C3A6382;
-        Fri, 12 Mar 2021 06:29:38 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id hWF2sSZ2CYaq; Fri, 12 Mar 2021 06:29:38 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 266B53A6358;
-        Fri, 12 Mar 2021 06:29:24 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        id S233522AbhCLKes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:34:48 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52576 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231317AbhCLKem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:34:42 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lKf7u-0007WV-02; Fri, 12 Mar 2021 11:34:38 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 081E0C1E4A; Fri, 12 Mar 2021 11:27:31 +0100 (CET)
+Date:   Fri, 12 Mar 2021 11:27:30 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: pci-mt7620: fix PLL lock check
+Message-ID: <20210312102730.GC7027@alpha.franken.de>
+References: <20210307041724.3185139-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 10:29:35 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312092925.266B53A6358@mail.curtumepanorama.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307041724.3185139-1-ilya.lipnitskiy@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Sat, Mar 06, 2021 at 08:17:24PM -0800, Ilya Lipnitskiy wrote:
+> Upstream a long-standing OpenWrt patch [0] that fixes MT7620 PCIe PLL
+> lock check. The existing code checks the wrong register bit: PPLL_SW_SET
+> is not defined in PPLL_CFG1 and bit 31 of PPLL_CFG1 is marked as reserved
+> in the MT7620 Programming Guide. The correct bit to check for PLL lock
+> is PPLL_LD (bit 23).
+> 
+> Also reword the error message for clarity.
+> 
+> Without this change it is unlikely that this driver ever worked with
+> mainline kernel.
+> 
+> [0]: https://lists.infradead.org/pipermail/lede-commits/2017-July/004441.html
+> 
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> Cc: John Crispin <john@phrozen.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/mips/pci/pci-mt7620.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-Sir/Madam,
+applied to mips-next.
 
-CONGRATULATIONS!!!
+Thomas.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
