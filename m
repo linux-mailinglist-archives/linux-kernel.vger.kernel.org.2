@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A94B33845F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDA0338464
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 04:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbhCLDdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 22:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhCLDdY (ORCPT
+        id S231847AbhCLDk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 22:40:26 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:46629 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231816AbhCLDkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 22:33:24 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDF0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:33:24 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id a24so11256694plm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 19:33:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=SWLHXds1dLAx2i1imCEpLjsUbhFpiJzp1IHLGVU6xwk=;
-        b=VlvZju8Tel87GPmOQZK545polSPqf57VZO7KeaQHsbdwsVZekaSqkcaNAOLuuuY75g
-         g5joIl2yfxSpxcVpAKmErAYmbR78wM3X8byizKpae53Avwf88xYfuQ42LSg90jynE68m
-         gw6dmJ4OnZau9/CKUqQBvwBkLUrSuqaKLmp7BWBRl+Xo4JnjCJZfFNEFWgzJALyd8iEb
-         Bycr8HxN3cZGZ7WZa14WbB7yOurdtXTyPbI5lCBZOtKh7uWt8oIgL9317SWDcv8Uqll+
-         Unn7U7wWHzmReTOVBwfZkOpW9aiNotQD8iAaPJwGWHRymIrT8G3R0sfMQhwP4PoleLxL
-         Ucaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SWLHXds1dLAx2i1imCEpLjsUbhFpiJzp1IHLGVU6xwk=;
-        b=snY88DCHd2lNBDNaN6flF133bDaNmDCsUfO5XetHueg9nJ70UYk/BdNHaEarLPxRL9
-         anZCOCSmCv/yexhCHrVRAmbFo1GkmeF3v7qsy6tE9TaPvfvS5P4f2oiWawEqJTxtVi/g
-         yYYdm3Wmw1rensB046C6L1yF5FkNEtvAYihZjlXa8NJ7IDLYPpFhGiK+OqmI5o/7t0WC
-         w1e0jWSr0vDYuRz2AMCueQNJ+TRrCrs6lJpLlPuQZkxE91EIaRVs3HMujt50emMxVtlB
-         k5K+uHSbCjI2y5col9Wjl/h2I16pKhwdCL2QIUtsRIV+rrHlng3iF5SQonl0c3AUs4KF
-         4U6Q==
-X-Gm-Message-State: AOAM532o6ctzHNPByJp84z7UiPJyM5tEI1PExnxsrszT1VnGZmYdIYFz
-        OWHje7rmnBhYS08rwycm3Vc=
-X-Google-Smtp-Source: ABdhPJxKkcy4Rnfxunlz8rthJrSalIUwDv9YgIUEvdvD/eqCUIR8iuYxt6anVRKcXhwGP43dyc7wGQ==
-X-Received: by 2002:a17:90b:17d1:: with SMTP id me17mr11915663pjb.106.1615520004174;
-        Thu, 11 Mar 2021 19:33:24 -0800 (PST)
-Received: from localhost.localdomain ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id r184sm3640901pfc.107.2021.03.11.19.33.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Mar 2021 19:33:23 -0800 (PST)
-From:   Qianli Zhao <zhaoqianligood@gmail.com>
-To:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
-        oleg@redhat.com, tglx@linutronix.de, pcc@google.com
-Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-Subject: [PATCH V2] exit: trigger panic when global init has exited
-Date:   Fri, 12 Mar 2021 11:24:38 +0800
-Message-Id: <1615519478-178620-1-git-send-email-zhaoqianligood@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 11 Mar 2021 22:40:25 -0500
+X-UUID: 8f6dea06bdc145759f0b089a88e1d1bc-20210312
+X-UUID: 8f6dea06bdc145759f0b089a88e1d1bc-20210312
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1749655158; Fri, 12 Mar 2021 11:40:19 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Mar 2021 11:40:18 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Mar 2021 11:40:17 +0800
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     <michael.kao@mediatek.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [v3,0/3] thermal: mediatek: Add LVTS architecture thermal controller
+Date:   Fri, 12 Mar 2021 11:40:15 +0800
+Message-ID: <20210312034018.17437-1-michael.kao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qianli Zhao <zhaoqianli@xiaomi.com>
+This patch move thermal files related to Mediatek to the mediatek folder.
+And introduce the new architecture LVTS (low pressure thermal sensor) driver to report
+the highest temperature in the SoC and record the highest temperature sensor,
+each sensor as a hot zone.
+The LVTS body is divided into two parts, the LVTS controller and the LVTS device.
+The LVTS controller can connect up to 4 LVTS devices, and each LVTS device
+can connect up to 7 TSMCUs.
 
-When init sub-threads running on different CPUs exit at the same time,
-zap_pid_ns_processe()->BUG() may be happened.
-And every thread status is abnormal after exit(PF_EXITING set,task->mm=NULL etc),
-which makes it difficult to parse coredump from fulldump normally.
-In order to fix the above problem, when any one init has been set to SIGNAL_GROUP_EXIT,
-trigger panic immediately, and prevent other init threads from continuing to exit.
+The architecture will be the first to be used on mt6873 and mt8192.
 
-[   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
-[   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
-[   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
+Change in v3:
+        - [2/3]
+          - change the expression in the lvts_temp_to_raw to dev_s64.
 
-PID: 552   CPU: 4   COMMAND: "init"
-PID: 1     CPU: 7   COMMAND: "init"
-core4                           core7
-...                             sys_exit_group()
-                                do_group_exit()
-                                   - sig->flags = SIGNAL_GROUP_EXIT
-                                   - zap_other_threads()
-                                do_exit() //PF_EXITING is set
-ret_to_user()
-do_notify_resume()
-get_signal()
-    - signal_group_exit
-    - goto fatal;
-do_group_exit()
-do_exit() //PF_EXITING is set
-    - panic("Attempted to kill init! exitcode=0x%08x\n")
-                                exit_notify()
-                                find_alive_thread() //no alive sub-threads
-                                zap_pid_ns_processes()//CONFIG_PID_NS is not set
-                                BUG()
+Change in v2:
+	- Rebase to kernel-5.11-rc1.
+	- [2/3]
+	  - sort headers
+	  - remove initial value 0 of msr_raw in the lvts_temp_to_raw.
+	  - disconstruct the api of lvts_read_tc_msr_raw.
+	  - add the initial value max_temp = 0 and compare e.q.
+	    in the lvts_read_all_tc_temperature.
+	  - add the return with invalid number in the lvts_init.
 
-Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
----
-V2:
-- Changelog update
-- Remove wrong useage of SIGNAL_UNKILLABLE. 
-- Add thread_group_empty() test to handle single init thread exit
+This patch depends on [1].
 
----
- kernel/exit.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+[1]https://patchwork.kernel.org/project/linux-mediatek/cover/1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com/
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e3..9d2716b 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -767,6 +767,17 @@ void __noreturn do_exit(long code)
- 	validate_creds_for_do_exit(tsk);
- 
- 	/*
-+	 * If global init has exited,
-+	 * panic immediately to get a useable coredump.
-+	 */
-+	if (unlikely(is_global_init(tsk) &&
-+	    (thread_group_empty(tsk) ||
-+	    (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
-+			panic("Attempted to kill init! exitcode=0x%08x\n",
-+				tsk->signal->group_exit_code ?: (int)code);
-+	}
-+
-+	/*
- 	 * We're taking recursive faults here in do_exit. Safest is to just
- 	 * leave this task alone and wait for reboot.
- 	 */
-@@ -786,14 +797,6 @@ void __noreturn do_exit(long code)
- 	acct_update_integrals(tsk);
- 	group_dead = atomic_dec_and_test(&tsk->signal->live);
- 	if (group_dead) {
--		/*
--		 * If the last thread of global init has exited, panic
--		 * immediately to get a useable coredump.
--		 */
--		if (unlikely(is_global_init(tsk)))
--			panic("Attempted to kill init! exitcode=0x%08x\n",
--				tsk->signal->group_exit_code ?: (int)code);
--
- #ifdef CONFIG_POSIX_TIMERS
- 		hrtimer_cancel(&tsk->signal->real_timer);
- 		exit_itimers(tsk->signal);
+Michael Kao (3):
+  thermal: mediatek: Relocate driver to mediatek folder
+  thermal: mediatek: Add LVTS drivers for SoC theraml zones
+  dt-bindings: thermal: Add binding document for mt6873 thermal
+    controller
+
+ .../thermal/mediatek-thermal-lvts.yaml        |   81 ++
+ drivers/thermal/Kconfig                       |   14 +-
+ drivers/thermal/Makefile                      |    2 +-
+ drivers/thermal/mediatek/Kconfig              |   33 +
+ drivers/thermal/mediatek/Makefile             |    2 +
+ .../{mtk_thermal.c => mediatek/soc_temp.c}    |    0
+ drivers/thermal/mediatek/soc_temp_lvts.c      | 1287 +++++++++++++++++
+ drivers/thermal/mediatek/soc_temp_lvts.h      |  312 ++++
+ 8 files changed, 1720 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
+ create mode 100644 drivers/thermal/mediatek/Kconfig
+ create mode 100644 drivers/thermal/mediatek/Makefile
+ rename drivers/thermal/{mtk_thermal.c => mediatek/soc_temp.c} (100%)
+ create mode 100644 drivers/thermal/mediatek/soc_temp_lvts.c
+ create mode 100644 drivers/thermal/mediatek/soc_temp_lvts.h
+
 -- 
-1.9.1
-
+2.18.0
