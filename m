@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996CD3382FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB6C338300
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhCLBAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 20:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S231330AbhCLBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 20:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCLBAW (ORCPT
+        with ESMTP id S229756AbhCLBFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 20:00:22 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92B3C061574;
-        Thu, 11 Mar 2021 17:00:21 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DxSCh5CFBz9sS8;
-        Fri, 12 Mar 2021 12:00:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615510818;
-        bh=K1mjmvJnS0hdZYQYBLWAyCAHxLXVq2cl3kLuR2P/fHE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=D9tyytCzbB72I+MrDKkJVPCxJS3YA4GRg5oY6AYCpNJeA6W0bJ0w5+YAuTQW5dwMH
-         1k3KoYxKweh2HOvyH2/3eBh9ujDV/1/+JLkqLgHOpNqnLcd1nwbj3pl3RnRX8yqB2s
-         n0vZAxymBBK+w1U2yGONB02viRFiPvN54f4xS+8iRn3zOKi9/68B9rkHsX/Ivk4kyO
-         06pwB2HGlCUODtYSX3i3g60l1pkRzZC+CEPnQBEW2dC8MIRRRSqOG3zlVoDXZpKOJP
-         wbTcNKY8F8ofe3a70nT0zjmEm4gVQC23QpgtVB3JE0q5x68drFhQ41EvC2nty6zNjl
-         qGrce/aZYl3rA==
-Date:   Fri, 12 Mar 2021 12:00:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20210312120014.62ced6dd@canb.auug.org.au>
-In-Reply-To: <bad04c3d-c80e-16c1-0f5a-4d4556555a81@intel.com>
-References: <20210311114723.352e12f8@canb.auug.org.au>
-        <bad04c3d-c80e-16c1-0f5a-4d4556555a81@intel.com>
+        Thu, 11 Mar 2021 20:05:46 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60300C061574;
+        Thu, 11 Mar 2021 17:05:46 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id j8so2795342otc.0;
+        Thu, 11 Mar 2021 17:05:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5SYaXQLIqyaer8EuCYNbusIcFmIirlDAWN03ePWYWs4=;
+        b=gd8o4OdXvOAJi0Q38livS2n+f8PTgyQOTxb26aXG4P4ZSp6l/4ugq2RHlT0Jiqk4IR
+         RBaDqN/+EUS3N18fibeHsIqlLfC1btUqSmk5NgpNaNcE2Z2FAIv8drmd60vgXPurw5QL
+         bmma55CdX+vSocYRtus0QWtlDw5PZYwgk/E4LzMQCLh3340heiahMz3o2ZBkxQ6/iT3z
+         vJ98X596chB+TI12I0iaXM40oTD7/fo79Mln5ddp7wQ4xB858tM3cH8hkpeknZAnyjbz
+         r0AAkFWB6lDliLFbPT9F/lheMgIdfi1b1Aah5Fj52ncDpgxvCzIo1DjkAAidX3qch5AD
+         2qJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5SYaXQLIqyaer8EuCYNbusIcFmIirlDAWN03ePWYWs4=;
+        b=bfBOkriIr3OVq83wUrajUhfuWgBxqu6mr8tDAhNW1f9TF3pM5uGZPo80YWID9mXF3X
+         q67rOZ+ZRqaD6R7GRqBrMpVFkuqYVa71HUoetllHbncz+zvAtzaAxBfQof/adH2MnPy6
+         a1iNQJPTRqbfx70MXTotonqUMKxUey4Uiz123HC1/XXt/C9n/U70EiByNhWK3UkT0PBW
+         GFlYRD4lBcKGDob8+6zvQHKote0oUBJ5eNR8r1Og2PaBwkJNTp3YW11BzoIppvxt1Jc2
+         QTTuv00abG2It1bIwTyRtN8A28UNH0VV5OxesOpzz+Z49btWP5GpdBGvaqMo+qyFbzb6
+         YuJw==
+X-Gm-Message-State: AOAM5311bgc6pbrYZcOEwc5uPCmvjf92LRcEjJpNEPEIyTowTDEJdOTf
+        LMW0t8whdBsUtGxvJ7jjFELoBbqjtzO9Nh3pzjw9n9q0
+X-Google-Smtp-Source: ABdhPJzv0EYzeejEWqZ5U/HN8P+FSZpUcUwXbbEQcMUYfXBXJous1D2wMLOOgw5yQhJ3T7psZjOAoPVcm9SVaYFfink=
+X-Received: by 2002:a05:6830:22c3:: with SMTP id q3mr1419618otc.56.1615511145713;
+ Thu, 11 Mar 2021 17:05:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t=a52UBf41bT3PeQ019YY2H";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210305021808.3769732-1-seanjc@google.com>
+In-Reply-To: <20210305021808.3769732-1-seanjc@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 12 Mar 2021 09:05:34 +0800
+Message-ID: <CANRm+CwNL8Ng_apOXZj1kKo=vqZJ243dzOmpU==J-dyz3V5oPg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Ensure deadline timer has truly expired before
+ posting its IRQ
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t=a52UBf41bT3PeQ019YY2H
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi Bj=C3=B6rn,
-
-[Cc'ing a few (maybe) interested parties]
-
-On Thu, 11 Mar 2021 07:47:03 +0100 Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel=
-.com> wrote:
+On Fri, 5 Mar 2021 at 10:19, Sean Christopherson <seanjc@google.com> wrote:
 >
-> On 2021-03-11 01:47, Stephen Rothwell wrote:
-> >=20
-> > After merging the bpf-next tree, today's linux-next build (perf) failed
-> > like this:
-> >=20
-> > make[3]: *** No rule to make target 'libbpf_util.h', needed by '/home/s=
-fr/next/perf/staticobjs/xsk.o'.  Stop.
->=20
-> It's an incremental build issue, as pointed out here [1], that is
-> resolved by cleaning the build.
+> When posting a deadline timer interrupt, open code the checks guarding
+> __kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
+> check in kvm_wait_lapic_expire().  The injection check will always fail
+> since the interrupt has not yet be injected.  Moving the call after
+> injection would also be wrong as that wouldn't actually delay delivery
+> of the IRQ if it is indeed sent via posted interrupt.
+>
+> Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/lapic.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 45d40bfacb7c..cb8ebfaccfb6 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1642,7 +1642,16 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
+>         }
+>
+>         if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
+> -               kvm_wait_lapic_expire(vcpu);
+> +               /*
+> +                * Ensure the guest's timer has truly expired before posting an
+> +                * interrupt.  Open code the relevant checks to avoid querying
+> +                * lapic_timer_int_injected(), which will be false since the
+> +                * interrupt isn't yet injected.  Waiting until after injecting
+> +                * is not an option since that won't help a posted interrupt.
+> +                */
+> +               if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
+> +                   vcpu->arch.apic->lapic_timer.timer_advance_ns)
+> +                       __kvm_wait_lapic_expire(vcpu);
 
-Does this mean there is a deficiency in the dependencies in our build syste=
-m?
+Thanks for the fixing.
 
-> [1] https://lore.kernel.org/bpf/CAEf4BzYPDF87At4=3D_gsndxof84OiqyJxgAHL7_=
-jvpuntovUQ8w@mail.gmail.com/
->=20
-> > Caused by commit
-> >=20
-> >    7e8bbe24cb8b ("libbpf: xsk: Move barriers from libbpf_util.h to xsk.=
-h")
-> >=20
-> > I have used the bpf tree from next-20210310 for today.
-
-I have set my system to remove the object directory before building
-after merging the bpf-next tree for now.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/t=a52UBf41bT3PeQ019YY2H
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBKvR4ACgkQAVBC80lX
-0Gw3IggApbt1eN7iGnvSh74cALvXoRNEnZoycNxv73WF4O98GYRQlQsi73lCmdx8
-xwEkwWXEqDAs/eYyVOdP47m7rnVT0uS+pcYn9fypHZyJ9XS62ohBOLwCQqIhfQH7
-oOlP7IOSL9ZdVCBSLW1ppNQV0QLek+LleIVDzLQn9733VYU2cC4eTBD53Nsiefz4
-e1A6txZ0MfKitgdNg1UUFhlN1m9RnVRHPONdl3zjPq+XMq0BgBeM5xe+pMXhKAMA
-TNOxm2BaEHPhVwv/DC3DqcRxncHUAJS4CsxUDSaEe0pJ33kAH0/jDFrt/qXOTw/X
-84AOrV6lkIvgLf3PLs+eIBkBEc3OFw==
-=P8+W
------END PGP SIGNATURE-----
-
---Sig_/t=a52UBf41bT3PeQ019YY2H--
+    Wanpeng
