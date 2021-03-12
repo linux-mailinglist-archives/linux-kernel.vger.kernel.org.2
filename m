@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1321733995B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DC433995F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhCLV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:56:54 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:40369 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S235369AbhCLV4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:56:43 -0500
-Received: (qmail 314502 invoked by uid 1000); 12 Mar 2021 16:56:42 -0500
-Date:   Fri, 12 Mar 2021 16:56:42 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using
- xhci_hcd
-Message-ID: <20210312215642.GA314300@rowland.harvard.edu>
-References: <CA+icZUXcYY53DxpMRQmveuwUv0QVV7rtRorbxWUaVujJZuCB-A@mail.gmail.com>
- <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
- <20210307154645.GA103559@rowland.harvard.edu>
- <CA+icZUVLC7=-MsXeGQOrAe1emzGW2UwWYxh3EHGPhjR=chygoQ@mail.gmail.com>
- <20210307170702.GB104554@rowland.harvard.edu>
- <CA+icZUWaGt2k4kdV0JHqKUkB8DySqdeUgVNnVT1BUo8aveGZOw@mail.gmail.com>
- <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
- <CA+icZUXkheVR-c9cdsJmeS9+FZj4Gswii+xBoAWK882QNdfcTg@mail.gmail.com>
- <20210312180523.GB302347@rowland.harvard.edu>
- <CA+icZUUysAE0fwDL2iDKsCgY=AfckOtAEi+86kkVEs0Lqc-Jkg@mail.gmail.com>
+        id S235379AbhCLV5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:57:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235424AbhCLV5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:57:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 906DF64DAF;
+        Fri, 12 Mar 2021 21:57:12 +0000 (UTC)
+Subject: [PATCH] SUNRPC: Refresh rq_pages using a bulk page allocator
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     mgorman@techsingularity.net
+Cc:     akpm@linux-foundation.org, brouer@redhat.com, hch@infradead.org,
+        alexander.duyck@gmail.com, willy@infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Date:   Fri, 12 Mar 2021 16:57:11 -0500
+Message-ID: <161558613209.1366.1492710238067504151.stgit@klimt.1015granger.net>
+User-Agent: StGit/1.0-5-g755c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUUysAE0fwDL2iDKsCgY=AfckOtAEi+86kkVEs0Lqc-Jkg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:26:31PM +0100, Sedat Dilek wrote:
-> On Fri, Mar 12, 2021 at 7:05 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+Reduce the rate at which nfsd threads hammer on the page allocator.
+This improves throughput scalability by enabling the threads to run
+more independently of each other.
 
-> > Although it's not conclusive, this log seems to indicate that ata_id
-> > is the only program causing resets.  Have you tried preventing the
-> > ata_id program from running (for example, by renaming it)?
-> >
-> 
-> This is /lib/udev/ata_id from Debian's udev package.
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+Hi Mel-
 
-That does not answer my question.
+This patch replaces patch 5/7 in v4 of your alloc_pages_bulk()
+series. It implements code clean-ups suggested by Alexander Duyck.
+It builds and has seen some light testing.
 
-> > > Your diff now should say; s/SCSI ioctl error/SCSI ioctl info'.
-> >
-> > No, it shouldn't.  The log message itself is an info, but the event it
-> > reports is an error.
-> >
-> 
-> OK.
-> Some of these SCSI ioctl errors are not causing a xhci-reset.
 
-Yes, I noticed that.  In fact, the commands that cause a reset are all 
-A1 (and not all of them), never 85.
+ net/sunrpc/svc_xprt.c |   39 +++++++++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 12 deletions(-)
 
-> > > Alan, so "t" flags should be added as a quirks to linux-kernel sources...
-> > >
-> > > t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
-> > >
-> > > ...for my ASMedia USB-3.0 controller?
-> >
-> > That's not at all clear.  This is a very common and popular device,
-> > and nobody else has reported these problems.  It could be that
-> > something is odd about your particular drive or computer, not these
-> > drives in general.
-> >
-> 
-> So, the external USB-3.0 HDD is now in "UAS only" mode/status.
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index 4d58424db009..791ea24159b1 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -661,11 +661,13 @@ static void svc_check_conn_limits(struct svc_serv *serv)
+ static int svc_alloc_arg(struct svc_rqst *rqstp)
+ {
+ 	struct svc_serv *serv = rqstp->rq_server;
++	unsigned long needed;
+ 	struct xdr_buf *arg;
++	struct page *page;
++	LIST_HEAD(list);
+ 	int pages;
+ 	int i;
+ 
+-	/* now allocate needed pages.  If we get a failure, sleep briefly */
+ 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
+ 	if (pages > RPCSVC_MAXPAGES) {
+ 		pr_warn_once("svc: warning: pages=%u > RPCSVC_MAXPAGES=%lu\n",
+@@ -673,19 +675,32 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
+ 		/* use as many pages as possible */
+ 		pages = RPCSVC_MAXPAGES;
+ 	}
+-	for (i = 0; i < pages ; i++)
+-		while (rqstp->rq_pages[i] == NULL) {
+-			struct page *p = alloc_page(GFP_KERNEL);
+-			if (!p) {
+-				set_current_state(TASK_INTERRUPTIBLE);
+-				if (signalled() || kthread_should_stop()) {
+-					set_current_state(TASK_RUNNING);
+-					return -EINTR;
+-				}
+-				schedule_timeout(msecs_to_jiffies(500));
++
++	for (needed = 0, i = 0; i < pages ; i++) {
++		if (!rqstp->rq_pages[i])
++			needed++;
++	}
++	i = 0;
++	while (needed) {
++		needed -= alloc_pages_bulk(GFP_KERNEL, 0, needed, &list);
++		for (; i < pages; i++) {
++			if (rqstp->rq_pages[i])
++				continue;
++			page = list_first_entry_or_null(&list, struct page, lru);
++			if (likely(page)) {
++				list_del(&page->lru);
++				rqstp->rq_pages[i] = page;
++				continue;
+ 			}
+-			rqstp->rq_pages[i] = p;
++			set_current_state(TASK_INTERRUPTIBLE);
++			if (signalled() || kthread_should_stop()) {
++				set_current_state(TASK_RUNNING);
++				return -EINTR;
++			}
++			schedule_timeout(msecs_to_jiffies(500));
++			break;
+ 		}
++	}
+ 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
+ 	rqstp->rq_pages[pages] = NULL; /* this might be seen in nfsd_splice_actor() */
+ 
 
-Why?  Did you change something?
 
-Alan Stern
-
-> Cannot judge if things got better or not.
-> 
-> - Sedat -
