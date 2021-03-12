@@ -2,145 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50342338D2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168E0338D3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhCLMhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        id S230447AbhCLMi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:38:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhCLMhn (ORCPT
+        with ESMTP id S229913AbhCLMie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:37:43 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736E4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:37:43 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id f12so4710272wrx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=q8qLwX4mEs2ipnlk7bkb5HbH/jXQ15M3RcYXRP29Zjs=;
-        b=pFeKserxEawFZxws0IHjjZKJKbc83tP0Ux+w6btpkyZh6j8dUT6aGXuQ5uWmTOxrne
-         UQB8FhShG9HRW00oUM/MAsg2t29uM5STQZKWAt/gIvoZDHSPi1f2iiVrZ57kQqmR55/J
-         ArEB8A3Z+SssqmwhZxi/AulTruNK5ra/n93RvuZhq1OWPYf1FipOI8SjNkQ/rLT96H3X
-         kgaeY4gkZZ7rwCGraSMpAT+GZ/07GdsvV4S8w/C6hLP0rRqHppofSqGwr8oispm6+Cnh
-         NZCVxXyP3vKgp5/Zh8b4iLe46dKGryOBDOKnmrO60jfPoW808W3vXG+jp8tntXVrfaj8
-         VwMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q8qLwX4mEs2ipnlk7bkb5HbH/jXQ15M3RcYXRP29Zjs=;
-        b=tNtoCSTT58rqLLiaDZkr0O+TXDzEXvZCELA0c7vwzvB+8zeaW/osIQOkncQ2U7hOj2
-         +myXZ2lbHIZllYY/aAXLxlLFGvmcx1b4GvOLHDijoUvnIIzTCK9V0Qtw5307ZfHS1nJN
-         G4AcTElj5w6vordBiXeP3x9+h0rsFkNPuP+fyOCbq9LkGmxh3C/DC/0GAiIWFXjXXiTz
-         2r3DDPOgGUSUVVf29yDb5MeZxy51O6AnwGIF2rbQxg5j+agbw2Slp0vpIiodEIpFttoU
-         IXU2gVxXdndJSJ7AK/myjX6ULQq9R9Uk9lyE8lImGHxE5nNMLo3L/1WbH60NtB1UxObI
-         HVQg==
-X-Gm-Message-State: AOAM532+a8UsjWlAxjAtlNOII75L/VTgQ8BHPTlBWUqFP2mfRTcuFwp+
-        slch/Ai1Mit+YRQQh5fX9CNAkfy1OHdtqgsq+3o=
-X-Google-Smtp-Source: ABdhPJzvdxXqdrG0wvuThxwWaZnmsvjpNQrP4+l6gk5gejzEATYvFCNwsS3inTaU1HHaDShxDqhyBCE7U1t7XSv6XYM=
-X-Received: by 2002:adf:e64d:: with SMTP id b13mr14067492wrn.204.1615552662199;
- Fri, 12 Mar 2021 04:37:42 -0800 (PST)
+        Fri, 12 Mar 2021 07:38:34 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545BEC061574;
+        Fri, 12 Mar 2021 04:38:34 -0800 (PST)
+Received: from cap.home.8bytes.org (p549adcf6.dip0.t-ipconnect.de [84.154.220.246])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 724822A6;
+        Fri, 12 Mar 2021 13:38:30 +0100 (CET)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v3 0/8] x86/seves: Support 32-bit boot path and other updates
+Date:   Fri, 12 Mar 2021 13:38:16 +0100
+Message-Id: <20210312123824.306-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
- <20210309153455.GB4878@sirena.org.uk> <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
- <20210312104931.GA5348@sirena.org.uk> <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
- <20210312115748.GC5348@sirena.org.uk>
-In-Reply-To: <20210312115748.GC5348@sirena.org.uk>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Fri, 12 Mar 2021 14:37:30 +0200
-Message-ID: <CAEnQRZAAU34YS778WJVD6uubSwQxjA-5LTG9g0CvSdSZOuO+tQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 1:59 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Mar 12, 2021 at 12:59:29PM +0200, Daniel Baluta wrote:
-> > On Fri, Mar 12, 2021 at 12:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > If an explicit name has been provided why would we override it with a=
-n
-> > > autogenerated one?
->
-> > Wait, are you asking why the initial code:
->
-> >   dai_link->platforms->name =3D component->name;
->
-> > is there in the initial code?
->
-> No, just the opposite!  If there's an explict name configured why do you
-> want to ignore it?
+From: Joerg Roedel <jroedel@suse.de>
 
-Because the initial assignment:
+Hi,
 
-dai_link->platforms->name =3D component->name;
+these patches add support for the 32-bit boot in the decompressor
+code. This is needed to boot an SEV-ES guest on some firmware and grub
+versions. The patches also add the necessary CPUID sanity checks and a
+32-bit version of the C-bit check.
 
-doesn't take into consideration that dai_link->platform->of_node is
-also explicitly configured.
+Other updates included here:
 
-So, my change only configures the name  (dai_link->platform->name)
-if the dai->platform->of_node wasn't previously explicitly configured.
+        1. Add code to shut down exception handling in the
+           decompressor code before jumping to the real kernel.
+           Once in the real kernel it is not safe anymore to jump
+           back to the decompressor code via exceptions.
 
-Otherwise, we end up with both dai_link->platforms->name and
-dai->link->platforms->of_node
-configured and we hit this error:
+        2. Replace open-coded hlt loops with proper calls to
+           sev_es_terminate().
 
-soc_dai_link_sanity_check:
-/*
- * Platform may be specified by either name or OF node, but it
- * can be left unspecified, then no components will be inserted
- * in the rtdcom list
- */
-if (!!platform->name =3D=3D !!platform->of_node) {
-    dev_err(card->dev,
-    "ASoC: Neither/both platform name/of_node are set for %s\n", link->name=
-);
-    return -EINVAL;
-}
+Please review.
 
-I start with a simple-audio-card node:
+Thanks,
 
+	Joerg
 
-sof-sound-wm8960 {
-    compatible =3D "simple-audio-card";
+Changes v2->v3:
 
-    simple-audio-card,dai-link {
-       format =3D "i2s";
-       cpu {
-            sound-dai =3D <&dsp 1>;
-       };
-       sndcodec: codec {
-            sound-dai =3D <&wm8960>;
-       };
-}
+	- Added a patch to remove the check for the Hypervisor CPUID
+	  bit for detecting SEV
 
-Notice that doesn't have any platform field.
+Changes v1->v2:
 
-But then in sound/soc/generic/simple-card-utils.c:asoc_simple_canonicalize_=
-platform
-explicitly sets dai_link->platforms->of_node like this:
+	- Addressed Boris' review comments.
+	- Fixed a bug which caused the cbit-check to never be
+	  executed even in an SEV guest.
 
-=C2=BB       if (!dai_link->platforms->of_node)
-=C2=BB       =C2=BB       dai_link->platforms->of_node =3D dai_link->cpus->=
-of_node;
+Joerg Roedel (8):
+  x86/boot/compressed/64: Cleanup exception handling before booting
+    kernel
+  x86/sev: Do not require Hypervisor CPUID bit for SEV guests
+  x86/boot/compressed/64: Reload CS in startup_32
+  x86/boot/compressed/64: Setup IDT in startup_32 boot path
+  x86/boot/compressed/64: Add 32-bit boot #VC handler
+  x86/boot/compressed/64: Add CPUID sanity check to 32-bit boot-path
+  x86/boot/compressed/64: Check SEV encryption in 32-bit boot-path
+  x86/sev-es: Replace open-coded hlt-loops with sev_es_terminate()
 
-I hope this is more clear.
+ arch/x86/boot/compressed/head_64.S     | 170 ++++++++++++++++++++++++-
+ arch/x86/boot/compressed/idt_64.c      |  14 ++
+ arch/x86/boot/compressed/mem_encrypt.S | 130 ++++++++++++++++++-
+ arch/x86/boot/compressed/misc.c        |   7 +-
+ arch/x86/boot/compressed/misc.h        |   6 +
+ arch/x86/boot/compressed/sev-es.c      |  12 +-
+ arch/x86/kernel/sev-es-shared.c        |  16 +--
+ arch/x86/mm/mem_encrypt_identity.c     |  35 ++---
+ 8 files changed, 340 insertions(+), 50 deletions(-)
+
+-- 
+2.30.1
+
