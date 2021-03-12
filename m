@@ -2,110 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070B9338539
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 06:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C1E338546
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 06:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhCLF1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 00:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S231441AbhCLF2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 00:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhCLF1C (ORCPT
+        with ESMTP id S230205AbhCLF1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 00:27:02 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9515DC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 21:27:02 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 16so1079841pfn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 21:27:02 -0800 (PST)
+        Fri, 12 Mar 2021 00:27:40 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA49C061574;
+        Thu, 11 Mar 2021 21:27:39 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id b5so1493165ilq.10;
+        Thu, 11 Mar 2021 21:27:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=J5fqwubZg87avI0rRtQwN+SXtjOKj2+8RaJp62TnkpA=;
-        b=mf2lohOPVRGidobqklbZjn3Xnmn4GilOSAPz/Es4rZMVhvRFW16qKSvJwGxacizmDM
-         tT+ibJwyDMj0dZ0QwtMsGsshtI9JpOBj3AoJvLaAxuhaZ4HL6tkdafRXi5HPx8aFNxZ7
-         4/jSQSqTdf3ieXs01o99B+bOnXCH2Vj1q5a3kEifOFtvDASGY1G+OFDLlWG+R79T9q7h
-         sdjbwjQxL/4vjj48pT1ohmJzSy1nFnAXg+AW9fFrnh+JpHsKDI6C6jrmli1PwCO/6P9O
-         ggAmfg1YDpRtAAdzDL+kVupEn08FqGF4jO3q4TaMYNg5dJBZY8ewfS1R7G6SA7fUhvy0
-         ssOg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cedzXH2mwsyrkSO9r0tC4BCdclkRwN6ijBwzgFvGgU0=;
+        b=TBJd7C/NApDyC+0/5wKLyKr+fzrC1bBtWFxlApGpVyZYTAMf7pMBGY8VGT5i+/J/0F
+         UMCA16UtCB0WQK3L/IsMP0EAFn6zxNPGkQnIYDCljBIdnLgPbUSHRJhI9vt3NXmpbbc3
+         V4pQiFiINrAbHbvATj2zBbezRRPDl/+kJOglBy4/cSNRnIqv64w2zVclA5keFs/39eLG
+         zKRl7UdUJ+fTHc8bFAHhjTJswQxlhYD6giVjVgDBs9dluN0WOLhScK/ewf009dIZUPEE
+         Bg9fEPPZo/KAOiCkcDJx21B5dM1wF3CqnWo/FhMB6fbqa3gJ4Dtr5737Z9xjEd/32mkY
+         dR9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=J5fqwubZg87avI0rRtQwN+SXtjOKj2+8RaJp62TnkpA=;
-        b=kqv7EPSDkfsadLnccwQ10MQkC9Lu9o/2FOa1VnVzW6drcPI1n5Je09zn3FNR/zOUZj
-         sfccDSo27QOlMfm1aBvq55t/7q6W8x+hR3OonZsSzP0n7Q0xpyXq7KX25cV4HED6e55/
-         WVBMY+poNb+VIwnTWx1zq38qjWL5yDkVXu2F2mGiDwYM7UxRw6tA9SNEfWWuFV0IHRjH
-         SlJ/tk/wF0GEFEyqefHOdg7X0Cl/77NzlN1dmV7sh+O0hV/NVHO+sVYlVYBaz46BqF1c
-         EADqwcfpW94U1Nv9AWlTcug0emq+NYK501gZriuBwFD6pFbYxfTkaUPTjo31vxbgt0Cg
-         Shig==
-X-Gm-Message-State: AOAM533jjtu/oQZu4Yo+5RVeYE/VEYNmBD533AuNhSjXaMYvcs89f6s+
-        ttRWcCnWz/5HotW15g5qg4VsfQ==
-X-Google-Smtp-Source: ABdhPJxSydG1zZQdQJipt4kFNAl189iLlI7sOzPMgqns7aTDEbaSzTwo9QPnHQ8GgoEZNmcDOq5YJA==
-X-Received: by 2002:a62:84c3:0:b029:1f5:8dbf:4e89 with SMTP id k186-20020a6284c30000b02901f58dbf4e89mr10615120pfd.49.1615526821953;
-        Thu, 11 Mar 2021 21:27:01 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id a144sm4185197pfd.200.2021.03.11.21.27.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Mar 2021 21:27:01 -0800 (PST)
-Date:   Fri, 12 Mar 2021 10:56:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Qiang Yu <yuq825@gmail.com>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 05/14] opp: Add devres wrapper for
- dev_pm_opp_register_notifier
-Message-ID: <20210312052659.uih7ikjdnkc5kl4j@vireshk-i7>
-References: <20210311192105.14998-1-digetx@gmail.com>
- <20210311192105.14998-6-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cedzXH2mwsyrkSO9r0tC4BCdclkRwN6ijBwzgFvGgU0=;
+        b=NTLaEi3ZBJSvUW2zstccAQd0wCc0umCs7G9++9L6IW7LKhaZMrupxvzHaa0zJOkvQz
+         6MtfHWQTADEnFCIInGnNeZP+C+77snxsCjz6TqwbdbtZBHywDy9yaX6S3iYsy2KrqO5H
+         vcvYAooaUoNjv/86/AVm2X7xN/DqtcrP9OrG8lHHQfni/n0u0xb/N9vwpGHRqfCfe6tD
+         GZz4eUjm4EQt/tlqfsi14cSN+bGIitg4BfOknEzsuuACJHmkAypKV9kl9DMTeIB8e8X/
+         DColPBb0cerVtEa2nRO5ufJ/lyySzEqaU9uNxfhNNZaQScP0eLWbxq7Uh/HoNSB2bS8Y
+         qCjw==
+X-Gm-Message-State: AOAM5313WMxvCQTwbJFQIB7ODnLtHcrXRJQjL3Xep3V3mN+XHwBrBdTo
+        XFjDEhlUnFEUcWf1D+OPAKcztirUYDRiYDmxazw=
+X-Google-Smtp-Source: ABdhPJxvReihQMelM2NYf37nhXSdBLG+zRTVh/SPSvsdhuYaeeoY+unUsG3pMcj+CVJC87cQ/uE4oYbyqA3v1Ouzibc=
+X-Received: by 2002:a92:3652:: with SMTP id d18mr1627864ilf.100.1615526859345;
+ Thu, 11 Mar 2021 21:27:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311192105.14998-6-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210311091042.22417-1-aardelean@deviqon.com>
+In-Reply-To: <20210311091042.22417-1-aardelean@deviqon.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 12 Mar 2021 07:27:28 +0200
+Message-ID: <CA+U=DsqL3BS0QFsV01caxFjsUmeSsfrbuo1ezKtfBhAncCBoMA@mail.gmail.com>
+Subject: Re: [PATCH] iio: kfifo: add devm_iio_triggered_buffer_setup_ext variant
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux@deviqon.com,
+        Jonathan Cameron <jic23@kernel.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-03-21, 22:20, Dmitry Osipenko wrote:
-> From: Yangtao Li <tiny.windzz@gmail.com>
-> 
-> Add devres wrapper for dev_pm_opp_register_notifier() to simplify driver
-> code.
-> 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Thu, Mar 11, 2021 at 11:14 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> This is similar to the {devm_}iio_triggered_buffer_setup_ext variants added
+> via commit 5164c7889857 ("iio: triggered-buffer: add
+> {devm_}iio_triggered_buffer_setup_ext variants").
+>
+> These can be used to pass extra buffer attributes to the buffer object.
+> This is a bit of temporary mechanism (hopefully) so that drivers that want
+> to allocate a kfifo buffer with extra buffer attributes, don't need to
+> include 'buffer_impl.h' directly. This can also become an API function (in
+> it's own right, unfortunately), but it may be a little less bad vs drivers
+> having to include 'buffer_impl.h'.
+>
+> So, far the drivers that want to pass buffer attributes, all have to do
+> with some HW FIFO attributes, so there may be a chance of unifying them
+> into IIO core somehow (as some standard API). But, until that happens, we
+> just need to let them register their HW FIFO attributes directly (without
+> having to let them include 'buffer_impl.h' directly).
+>
+
+This isn't required anymore.
+Please disregard.
+Apologies for the noise
+
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  drivers/opp/core.c     | 38 ++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  6 ++++++
->  2 files changed, 44 insertions(+)
-
-As I said in the previous version, I am not sure if we need this patch
-at all. This has only one user.
-
--- 
-viresh
+>
+> Related to the discussion here:
+>   https://lore.kernel.org/linux-iio/CA+U=Dspk3cWjiiRmDrgfHAY6houjr-KtSD3u4BssUcb=c2ujpQ@mail.gmail.com/T/#mcfda9d6cb6426caefa4a5db6d634640bfdbe328e
+>
+>  drivers/iio/buffer/kfifo_buf.c | 16 ++++++++++------
+>  include/linux/iio/kfifo_buf.h  | 12 ++++++++----
+>  2 files changed, 18 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/iio/buffer/kfifo_buf.c b/drivers/iio/buffer/kfifo_buf.c
+> index 4ecfa0ec3016..13eea2e11cbc 100644
+> --- a/drivers/iio/buffer/kfifo_buf.c
+> +++ b/drivers/iio/buffer/kfifo_buf.c
+> @@ -206,22 +206,24 @@ static struct iio_buffer *devm_iio_kfifo_allocate(struct device *dev)
+>  }
+>
+>  /**
+> - * devm_iio_kfifo_buffer_setup - Allocate a kfifo buffer & attach it to an IIO device
+> + * devm_iio_kfifo_buffer_setup_ext - Allocate a kfifo buffer & attach it to an IIO device
+>   * @dev: Device object to which to attach the life-time of this kfifo buffer
+>   * @indio_dev: The device the buffer should be attached to
+>   * @mode_flags: The mode flags for this buffer (INDIO_BUFFER_SOFTWARE and/or
+>   *             INDIO_BUFFER_TRIGGERED).
+>   * @setup_ops: The setup_ops required to configure the HW part of the buffer (optional)
+> + * @buffer_attrs: Extra sysfs buffer attributes for this IIO buffer
+>   *
+>   * This function allocates a kfifo buffer via devm_iio_kfifo_allocate() and
+>   * attaches it to the IIO device via iio_device_attach_buffer().
+>   * This is meant to be a bit of a short-hand/helper function as there are a few
+>   * drivers that seem to do this.
+>   */
+> -int devm_iio_kfifo_buffer_setup(struct device *dev,
+> -                               struct iio_dev *indio_dev,
+> -                               int mode_flags,
+> -                               const struct iio_buffer_setup_ops *setup_ops)
+> +int devm_iio_kfifo_buffer_setup_ext(struct device *dev,
+> +                                   struct iio_dev *indio_dev,
+> +                                   int mode_flags,
+> +                                   const struct iio_buffer_setup_ops *setup_ops,
+> +                                   const struct attribute **buffer_attrs)
+>  {
+>         struct iio_buffer *buffer;
+>
+> @@ -237,8 +239,10 @@ int devm_iio_kfifo_buffer_setup(struct device *dev,
+>         indio_dev->modes |= mode_flags;
+>         indio_dev->setup_ops = setup_ops;
+>
+> +       buffer->attrs = buffer_attrs;
+> +
+>         return iio_device_attach_buffer(indio_dev, buffer);
+>  }
+> -EXPORT_SYMBOL_GPL(devm_iio_kfifo_buffer_setup);
+> +EXPORT_SYMBOL_GPL(devm_iio_kfifo_buffer_setup_ext);
+>
+>  MODULE_LICENSE("GPL");
+> diff --git a/include/linux/iio/kfifo_buf.h b/include/linux/iio/kfifo_buf.h
+> index 1522896e1daf..ccd2ceae7b25 100644
+> --- a/include/linux/iio/kfifo_buf.h
+> +++ b/include/linux/iio/kfifo_buf.h
+> @@ -10,9 +10,13 @@ struct device;
+>  struct iio_buffer *iio_kfifo_allocate(void);
+>  void iio_kfifo_free(struct iio_buffer *r);
+>
+> -int devm_iio_kfifo_buffer_setup(struct device *dev,
+> -                               struct iio_dev *indio_dev,
+> -                               int mode_flags,
+> -                               const struct iio_buffer_setup_ops *setup_ops);
+> +int devm_iio_kfifo_buffer_setup_ext(struct device *dev,
+> +                                   struct iio_dev *indio_dev,
+> +                                   int mode_flags,
+> +                                   const struct iio_buffer_setup_ops *setup_ops,
+> +                                   const struct attribute **buffer_attrs);
+> +
+> +#define devm_iio_kfifo_buffer_setup(dev, indio_dev, mode_flags, setup_ops)     \
+> +       devm_iio_kfifo_buffer_setup_ext((dev), (indio_dev), (mode_flags), (setup_ops), NULL)
+>
+>  #endif
+> --
+> 2.29.2
+>
