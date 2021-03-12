@@ -2,56 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B69133917E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F8F339191
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhCLPhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:37:05 -0500
-Received: from mga05.intel.com ([192.55.52.43]:35462 "EHLO mga05.intel.com"
+        id S232283AbhCLPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:39:48 -0500
+Received: from smtp.wifcom.cz ([85.207.3.150]:47635 "EHLO smtp.wifcom.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231331AbhCLPgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:36:47 -0500
-IronPort-SDR: glKYYngS4gBMZB3UT+dLcIaXda0XGE+bbXwfPd9cBXZ7b+jdmwGvPnK5NtrkkQ2DSe6hC3+Wcz
- sM6EKWU9ZYHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="273889718"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="273889718"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 07:36:47 -0800
-IronPort-SDR: 7JEfHbJjz8l1Prs3sKYe2V/Wc9/rtE0D5/VqJqvsvM7T71U9JDnnqyZuOtN0i3hIBOGCoV49lg
- Tj9eFz/xJ1zw==
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="411038510"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 07:36:46 -0800
-Date:   Fri, 12 Mar 2021 07:36:46 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: kmap_local semantics
-Message-ID: <20210312153646.GE3014244@iweiny-DESK2.sc.intel.com>
-References: <20210312065413.GA29805@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312065413.GA29805@lst.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S232165AbhCLPjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:39:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=LxZqyySCpkVm6WBH2H3h8XdkfiFZZjSDTwsoFd8R1oE=;
+        b=wuw60i32/m0uJ59OMHIiIK0yeo1QlIW0EsYrNmfLQz0QLCM6uuRufD8O/e/HZMFeJ1nissFR6vBgmqdAjpBoNk6Gyu0YfcuixFagXUfCrOwXVhPjjo5sX4zTtbakx5vtmYv6w3cCEaDVr2Z8mmoVKY3NrOnBMmiRwf7uFbIG23E=;
+From:   Martin Devera <devik@eaxlabs.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Martin Devera <devik@eaxlabs.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
+        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v7 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Date:   Fri, 12 Mar 2021 16:37:01 +0100
+Message-Id: <20210312153702.12349-1-devik@eaxlabs.cz>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <1615559009.788146.2976052.nullmailer@robh.at.kernel.org>
+References: <1615559009.788146.2976052.nullmailer@robh.at.kernel.org>
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+X-Wif-ss: -2.9 (--)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:54:13AM +0100, Christoph Hellwig wrote:
-> So with the new kmap_local interface is it possible / advisable to
-> use local kmaps over code that might schedule(), e.g. to wait for I/O?
+Add new rx-tx-swap property to allow for RX & TX pin swapping.
 
-It is possible yes.  "Advisable" I think so.  Thomas knows better than I what
-performance would be.
+Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+v7:
+  - fix yaml linter warning
+v6: 
+  - add version changelog
+v5: 
+  - yaml fixes based on Rob Herring comments
+    - add serial.yaml reference
+    - move compatible from 'then' to 'if'
+v3:
+  - don't allow rx-tx-swap for st,stm32-uart (suggested
+    by Fabrice Gasnier)
+v2:
+  - change st,swap to rx-tx-swap (suggested by Rob Herring)
+---
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-FWIW I have been working on converting kmaps to kmap_local.  Most of the
-instances don't schedule AFAICT.
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 8631678283f9..68a0f3ce8328 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -9,9 +9,6 @@ maintainers:
+ 
+ title: STMicroelectronics STM32 USART bindings
+ 
+-allOf:
+-  - $ref: rs485.yaml
+-
+ properties:
+   compatible:
+     enum:
+@@ -40,6 +37,8 @@ properties:
+ 
+   uart-has-rtscts: true
+ 
++  rx-tx-swap: true
++
+   dmas:
+     minItems: 1
+     maxItems: 2
+@@ -66,13 +65,23 @@ properties:
+   linux,rs485-enabled-at-boot-time: true
+   rs485-rx-during-tx: true
+ 
+-if:
+-  required:
+-    - st,hw-flow-ctrl
+-then:
+-  properties:
+-    cts-gpios: false
+-    rts-gpios: false
++allOf:
++  - $ref: rs485.yaml#
++  - $ref: serial.yaml#
++  - if:
++      required:
++        - st,hw-flow-ctrl
++    then:
++      properties:
++        cts-gpios: false
++        rts-gpios: false
++  - if:
++      properties:
++        compatible:
++          const: st,stm32-uart
++    then:
++      properties:
++        rx-tx-swap: false
+ 
+ required:
+   - compatible
+-- 
+2.11.0
 
-What I really don't want to see is any kmap'ings handed to another thread.  I
-am working hard to eliminate the use of kmap for that use.  Is that going to be
-a problem?
-
-Ira
