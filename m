@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C617333934E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BB3339350
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhCLQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhCLQZP (ORCPT
+        id S232489AbhCLQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:26:37 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:48009 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232238AbhCLQ0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:25:15 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596CCC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:25:15 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id w8so5383858pjf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:25:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iXhTHlq228l+0iB04Y1r45kd4DhCxMw3571PP4zILAA=;
-        b=VEmmh5X9fa7g3DiKuaT8KWl1POaMjOAm+T7VEA/s9HtE3LAT5keAH5jFQKyhSL/xMS
-         9uJBXewfM5+b2Q2pTgzWrVmV+u5Zklkra+XF6ZoMjwzwl3nDrYS25Sca4ZwK34BjwuaT
-         fKdOhGmGki2L5vZnbr5jVEN6XKD47xT2oYXdqvo0L1b8XCgR1uYJZdPlUcn/aXTAgURg
-         I89r80V6WlTTOdGZi7HbkMFBU4jDHk1ojvazPOfgEmHUj9IT73xhKzFO6Wf7Ptw2JyoU
-         U0VILhPzwdvcAg87OIl0CFSYeewaobSPcU6c2uZ3UFeD0/cPDtw51Z4qZKVRZebEgqPA
-         pFWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iXhTHlq228l+0iB04Y1r45kd4DhCxMw3571PP4zILAA=;
-        b=IwB2+E1a3wrBY3zKDfmBPWtK3ryedi2R7L/zbjaw4I7K8lVAi8XI2CCDhUn8DCQEaS
-         hPZ2jEuFdDXq80bGhwJTgHKcjJ94ud+/Kv9mqxo0ekgYvMdnP7/5pL1ZOzgYlz8sR6cq
-         4fsvnaINjWW+Hr3acvA5U5vpYQ+huOEVFA//dWdywaqZlnwvlC3e7jxzi6cKIFCqPvQD
-         pXtVicHYwj2X+CtUVOiLGowdjBD5w24FArGviEEPuoPI6n6C/L7hsqRbMUanMwUN1I+A
-         HKCm6UfNKInyNbs6OhAhK7fupkwAirxuV1e3vL/ZbbccHTOQOrnaYmoPagy5aE/a7fJ7
-         LyCw==
-X-Gm-Message-State: AOAM532gXO8dzd+dBo++DYaI507CVOqPJr+tL4nhTqGfHZ6rswmbLdfB
-        8DFjVoJPwMlgeuz4707erlQtlA==
-X-Google-Smtp-Source: ABdhPJy+d0zi50bylh7i8kcjhGz8ezrVQ0JqGrqHc3fNPEHAakRBEC7HmvAmHSP7MeuNaCrxFhnHAg==
-X-Received: by 2002:a17:90a:a618:: with SMTP id c24mr15091131pjq.108.1615566314572;
-        Fri, 12 Mar 2021 08:25:14 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e8sm5899599pgb.35.2021.03.12.08.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 08:25:14 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     bjorn.andersson@linaro.org, ohad@wizery.com
-Cc:     arnaud.pouliquen@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v8 17/17] remoteproc: Refactor function rproc_cdev_release()
-Date:   Fri, 12 Mar 2021 09:24:53 -0700
-Message-Id: <20210312162453.1234145-18-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210312162453.1234145-1-mathieu.poirier@linaro.org>
-References: <20210312162453.1234145-1-mathieu.poirier@linaro.org>
+        Fri, 12 Mar 2021 11:26:08 -0500
+X-Originating-IP: 81.185.170.228
+Received: from [192.168.43.237] (228.170.185.81.rev.sfr.net [81.185.170.228])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 43254E0003;
+        Fri, 12 Mar 2021 16:25:57 +0000 (UTC)
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+ <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <795597a1-ec87-e09e-d073-3daf10422abb@ghiti.fr>
+Date:   Fri, 12 Mar 2021 11:25:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor function rproc_cdev_release() to take into account the
-current state of the remote processor when choosing the state to
-transition to.
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/remoteproc/remoteproc_cdev.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-index 2db494816d5f..0b8a84c04f76 100644
---- a/drivers/remoteproc/remoteproc_cdev.c
-+++ b/drivers/remoteproc/remoteproc_cdev.c
-@@ -86,11 +86,17 @@ static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned l
- static int rproc_cdev_release(struct inode *inode, struct file *filp)
- {
- 	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
-+	int ret = 0;
-+
-+	if (!rproc->cdev_put_on_release)
-+		return 0;
- 
--	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
-+	if (rproc->state == RPROC_RUNNING)
- 		rproc_shutdown(rproc);
-+	else if (rproc->state == RPROC_ATTACHED)
-+		ret = rproc_detach(rproc);
- 
--	return 0;
-+	return ret;
- }
- 
- static const struct file_operations rproc_fops = {
--- 
-2.25.1
+Le 3/12/21 à 10:12 AM, Dmitry Vyukov a écrit :
+> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>>
+>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>>
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+>>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>>> userspace arch: riscv64
+>>>>
+>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>>
+>>> +riscv maintainers
+>>>
+>>> This is riscv64-specific.
+>>> I've seen similar crashes in put_user in other places. It looks like
+>>> put_user crashes in the user address is not mapped/protected (?).
+>>
+>> I've been having a look, and this seems to be down to access of the
+>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+>> bad address to clone?
+>>
+>>   From looking at the code, the put_user() code should have set the
+>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+>> s2 register in the crash report) and from looking at the compiler
+>> output from my gcc-10, the code looks to be dong the relevant csrs
+>> and then csrc around the put_user
+>>
+>> So currently I do not understand how the above could have happened
+>> over than something re-tried the code seqeunce and ended up retrying
+>> the faulting instruction without the SR_SUM bit set.
+> 
+> I would maybe blame qemu for randomly resetting SR_SUM, but it's
+> strange that 99% of these crashes are in schedule_tail. If it would be
+> qemu, then they would be more evenly distributed...
+> 
+> Another observation: looking at a dozen of crash logs, in none of
+> these cases fuzzer was actually trying to fuzz clone with some insane
+> arguments. So it looks like completely normal clone's (e..g coming
+> from pthread_create) result in this crash.
+> 
+> I also wonder why there is ret_from_exception, is it normal? I see
+> handle_exception disables SR_SUM:
 
+csrrc does the right thing: it cleans SR_SUM bit in status but saves the 
+previous value that will get correctly restored.
+
+("The CSRRC (Atomic Read and Clear Bits in CSR) instruction reads the 
+value of the CSR, zero-extends the value to XLEN bits, and writes it to 
+integer registerrd.  The initial value in integerregisterrs1is treated 
+as a bit mask that specifies bit positions to be cleared in the CSR. Any 
+bitthat is high inrs1will cause the corresponding bit to be cleared in 
+the CSR, if that CSR bit iswritable.  Other bits in the CSR are 
+unaffected.")
+
+> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73
+
+Still no luck for the moment, can't reproduce it locally, my test is 
+maybe not that good (I created threads all day long in order to trigger 
+the put_user of schedule_tail).
+
+Given that the path you mention works most of the time, and that the 
+status register in the stack trace shows the SUM bit is not set whereas 
+it is set in put_user, I'm leaning toward some race condition (maybe an 
+interrupt that arrives at the "wrong" time) or a qemu issue as you 
+mentioned.
+
+To eliminate qemu issues, do you have access to some HW ? Or to 
+different qemu versions ?
+
+
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
