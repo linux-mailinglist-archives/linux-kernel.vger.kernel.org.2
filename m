@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CA4339236
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D675C33924B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhCLPsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhCLPso (ORCPT
+        id S231216AbhCLPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:51:00 -0500
+Received: from mail-vk1-f181.google.com ([209.85.221.181]:33783 "EHLO
+        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231679AbhCLPu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:48:44 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9F5C061574;
-        Fri, 12 Mar 2021 07:48:43 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id o9so26204840iow.6;
-        Fri, 12 Mar 2021 07:48:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q//CU7rVliQSa4hRUYMM1ojKvL6g3kz3LyCTmAbjul4=;
-        b=CF+zfLHL+gdPNtXtaqKugTM/zx32sFiIanYLcRVURma6rUagpmPisONYLoi9uoxTbn
-         LU3lF83se/kuuw3vvxZQ/2asQtSkPLMwkHrBRh39BNrUun16J8zPDr5cqVzW/wduLVaN
-         F565OuOSb3nDUqaYV31mXozPbAp8SBjjZGT2Nwa/uOA0s3kCa9DIboM7Rn0vTgFd5y6y
-         eaqlbR7/yMw7byQBVNeAhuySfTpJ8VuU3SIfF7BsYQAU2rkvT5VzuV1yIkZh+3Q5HvKl
-         JcI/VH3UEwHK1BNszbNGafal1V1h+an7tQKWK4XH4/UVkyFPLQ2NDTsbhhgDs7i6lvOV
-         wAEQ==
+        Fri, 12 Mar 2021 10:50:28 -0500
+Received: by mail-vk1-f181.google.com with SMTP id b10so1331909vkl.0;
+        Fri, 12 Mar 2021 07:50:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=q//CU7rVliQSa4hRUYMM1ojKvL6g3kz3LyCTmAbjul4=;
-        b=rOR+/xX2I4jLJpOXhtZL3e2b+FIPzAe0/rYeiKCV7Cp84Xt9GMNwuwGhOt30F089Z2
-         1osTUrIHJu3WhpFtgCT0S+z6lgwJ4uLv9f98JaVn9lRS5MHETipAd3/XCWyLJgLOvON7
-         Rdn1lIG7O92ON+0pWnxlJe3Vb9t1Zto6Qa1llsUzXvELt8BOFYJwXLkkFyrywYBhHQeK
-         OFG0pfjwYg06G4QsxHuBC+Iyg20d7yifHxo5Zg9AOoyA8fm5+esPcSGiJfyJ8wAeDB76
-         HbJ2faO0B6PiENO/qRUPtI3WUPzwCjHVC8GiTztWdTZnVzwMuemsp2Wo9CsOkrI3WOMG
-         Nt1A==
-X-Gm-Message-State: AOAM530cLRO5U9G9n2h+PALbTioBS5YX9AycyEsvzjiJ7K3urGhfbwZ0
-        QCTAgX+UIaZQW9dvsMZ0b2UhHvje5piHZVN2Lgg=
-X-Google-Smtp-Source: ABdhPJzIb79Ce3Dtp9rTOtwGMw3rRrzfWZZTCoGMhL6v0eEyFl52NkyvYKVemVgLu6obdIq1sZd4iqE9LZK/0v+S1oc=
-X-Received: by 2002:a02:ba13:: with SMTP id z19mr8968948jan.131.1615564123262;
- Fri, 12 Mar 2021 07:48:43 -0800 (PST)
+        bh=jCfkIhb98hO8prK8G14q0f8cJZYCOLvGnWWBybf+4M4=;
+        b=qDjjPnm4GsWqw9arX7YS4JbnoF/uimOrXYR+F2Md6rJtXsHumdkyauGoG9vFN34U3a
+         jfjNNFWGgrBZFvvO8hB1QbFxAwsa7QG3Fglp5mXM5cGgFlz4+P6zlCl+rGDh+IGTNTBv
+         0rQOPY5hJ8cMF1rxuiWjHEzHC4QrjVujR75wNKu36h4n3bZt2Ra9MvJ8mWV02H5zp80R
+         zuvanIPriaGdTMFbabBKgdvQ7Wfi9z3iJrSHnrGA1126A0H8yaBBE0EI5o584EHdf1TW
+         T+KqbTO8bL7AzzOJqiWQ8PBVDg8WaoRh1PVo0LfkFbdWI89yf77yNtTruhx6phmYxdW7
+         jtwA==
+X-Gm-Message-State: AOAM531lwpnEFOcLsY2YI8zRB7ofbrlZhLTkSCFNb8OeKjdmR9UnxFWQ
+        JcR+XWfElrg0ODvyFYg38dJ52UFvErn81ejHLAw=
+X-Google-Smtp-Source: ABdhPJwsMcqnQfXHsxIHY91a/cjGAOuKpduZxiaHjuntYgfG+B2bSXLd5roumZI4ThaBStcLstXBt5hqmJwMf4W7HfQ=
+X-Received: by 2002:a1f:e543:: with SMTP id c64mr4486729vkh.2.1615564227436;
+ Fri, 12 Mar 2021 07:50:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210312141908.2388121-1-ztong0001@gmail.com> <20210312141908.2388121-3-ztong0001@gmail.com>
- <CAHp75VduTXkNgpmuQj_feQbHMAfWi7iGLtYxEJ6ugojmL1Da9Q@mail.gmail.com>
-In-Reply-To: <CAHp75VduTXkNgpmuQj_feQbHMAfWi7iGLtYxEJ6ugojmL1Da9Q@mail.gmail.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Fri, 12 Mar 2021 10:48:32 -0500
-Message-ID: <CAA5qM4CM4noDtaedPpd0yh8R2f+jDV2DnCERKi_ycD5Lq-vKDw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set
- after adf_dev_init
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        qat-linux@intel.com, linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20201119003829.1282810-1-atish.patra@wdc.com> <20201119003829.1282810-4-atish.patra@wdc.com>
+ <CAMuHMdUjh9znKTLZ+bST6aDUFdZzvmv2SGVy=sRQ6+D=pYM9cg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUjh9znKTLZ+bST6aDUFdZzvmv2SGVy=sRQ6+D=pYM9cg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 12 Mar 2021 16:50:16 +0100
+Message-ID: <CAMuHMdUfQCSyuHxf+TjuOGDtLMAv30x2LazvO8BQwE1=B1kzVg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] riscv: Separate memory init from paging init
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-Complete newbie here, could you please remind me of the tag you are
-referring to?
-I am not really familiar with the process.
-Thanks,
-- Tong
+Hi Atish,
 
+On Wed, Mar 10, 2021 at 5:41 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Nov 19, 2020 at 1:40 AM Atish Patra <atish.patra@wdc.com> wrote:
+> > Currently, we perform some memory init functions in paging init. But,
+> > that will be an issue for NUMA support where DT needs to be flattened
+> > before numa initialization and memblock_present can only be called
+> > after numa initialization.
+> >
+> > Move memory initialization related functions to a separate function.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
+> > Reviewed-by: Anup Patel <anup@brainfault.org>
+> > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> This is now commit cbd34f4bb37d62d8 in v5.12-rc1, breaking the boot on
+> Vexriscv:
+>
+> [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+> [    0.000000] printk: bootconsole [sbi0] enabled
+> [    0.000000] printk: debug: ignoring loglevel setting.
+> [    0.000000] Initial ramdisk at: 0x(ptrval) (8388608 bytes)
+> [    0.000000] Unable to handle kernel paging request at virtual
+> address c8000008
 
-On Fri, Mar 12, 2021 at 10:35 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+> Note that I have "[PATCH v2 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32"[1]
+> applied, to avoid another crash (7c4fc8e3e982 = v5.11 + [1] +
+> cherry-picked commits from the riscv-for-linus-5.12-mw0 pull request).
 >
-> On Fri, Mar 12, 2021 at 4:21 PM Tong Zhang <ztong0001@gmail.com> wrote:
-> >
-> > ADF_STATUS_PF_RUNNING is (only) used and checked  by adf_vf2pf_shutdown()
-> > before calling adf_iov_putmsg()->mutex_lock(vf2pf_lock), however the
-> > vf2pf_lock is initialized in adf_dev_init(), which can fail and when it
-> > fail, the vf2pf_lock is either not initialized or destroyed, a subsequent
-> > use of vf2pf_lock will cause issue.
-> > To fix this issue, only set this flag if adf_dev_init() returns 0.
-> >
-> > [    7.178404] BUG: KASAN: user-memory-access in __mutex_lock.isra.0+0x1ac/0x7c0
-> > [    7.180345] Call Trace:
-> > [    7.182576]  mutex_lock+0xc9/0xd0
-> > [    7.183257]  adf_iov_putmsg+0x118/0x1a0 [intel_qat]
-> > [    7.183541]  adf_vf2pf_shutdown+0x4d/0x7b [intel_qat]
-> > [    7.183834]  adf_dev_shutdown+0x172/0x2b0 [intel_qat]
-> > [    7.184127]  adf_probe+0x5e9/0x600 [qat_dh895xccvf]
+> If I revert the L1_CACHE_BYTES change, the boot continues, but I'm back
+> to the old issue fixed by [1]:
 >
-> Don't you miss the tag I gave?
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+> [   22.126687] Freeing initrd memory: 8192K
+> [   22.321811] workingset: timestamp_bits=30 max_order=15 bucket_order=0
+> [   29.001509] Block layer SCSI generic (bsg) driver version 0.4
+> loaded (major 253)
+> [   29.021555] io scheduler mq-deadline registered
+> [   29.033692] io scheduler kyber registered
+> [   29.141294] Unable to handle kernel paging request at virtual
+> address 69726573
+
+> Will have a deeper look later...
+
+I found the core issue, and sent a fix: "[PATCH] RISC-V: Fix
+out-of-bounds accesses in init_resources()"
+https://lore.kernel.org/linux-riscv/20210312154634.3541844-1-geert@linux-m68k.org/
+
+It works now with either value of L1_CACHE_SHIFT, so patch "[PATCH v2
+3/4] RISC-V: Fix L1_CACHE_BYTES for RV32" is no longer needed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
