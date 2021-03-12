@@ -2,211 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A123397D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42DE3397D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhCLT6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:58:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59574 "EHLO mail.kernel.org"
+        id S234563AbhCLT75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:59:57 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:54722 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232439AbhCLT6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 208BC64F83;
-        Fri, 12 Mar 2021 19:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615579099;
-        bh=abbuICQ6vvYm6Em1eciR2crTv1YpzhEKMalP26l2qe0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HPAy7gy6iVv3+7gN0HPYidOlLWRsNL2o+QknK83mwuF8f/GxUttXTnBG4IMNINfgL
-         KLxnv4bLEvLUqmOS+/pFujS+dizhrw7CsePBv567CoymKPvnAjkHh7TjoUHUjrVD3h
-         lVUT8uANG7BVJR4x/b5k7wkUmoOoUCR8svDezIvhorVQf5WtzRKXJeBBGz7mgEWEfy
-         ZUZafL9Z04h/h9D7w6SJsqek8O3IsFTVOQhpqSqL/11w6qhWRZ+Nk6kJFA79JHx0ib
-         RUcUn1qCgvJ1KyKEP6N5+TGznTWMAbdkSzYTVGx5Br5OMD0tDaut82N6XdEE33P2nV
-         lxo8jzcsCJZsg==
-Date:   Fri, 12 Mar 2021 12:58:15 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] gcov: fix clang-11+ support
-Message-ID: <20210312195815.2hnhuyk3qo4p7ysr@archlinux-ax161>
-References: <20210312192139.2503087-1-ndesaulniers@google.com>
+        id S234524AbhCLT7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 14:59:53 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lKnwj-00Aa3i-DN; Fri, 12 Mar 2021 20:59:41 +0100
+Date:   Fri, 12 Mar 2021 20:59:41 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     'Jakub Kicinski' <kuba@kernel.org>, arndb@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YEvILa9FK8qQs5QK@lunn.ch>
+References: <20210215193821.3345-1-don@thebollingers.org>
+ <YDl3f8MNWdZWeOBh@lunn.ch>
+ <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
+ <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>
+ <YD1ScQ+w8+1H//Y+@lunn.ch>
+ <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
+ <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>
+ <YEL3ksdKIW7cVRh5@lunn.ch>
+ <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312192139.2503087-1-ndesaulniers@google.com>
+In-Reply-To: <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 11:21:39AM -0800, Nick Desaulniers wrote:
-> LLVM changed the expected function signatures for llvm_gcda_start_file()
-> and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
-> or newer may have noticed their kernels failing to boot due to a panic
-> when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
-> the function signatures so calling these functions doesn't panic the
-> kernel.
+> This interface is implemented in python scripts provided by the switch
+> platform
+> vendor.  Those scripts encode the mapping of CPLD i2c muxes to i2c buses to
+> port numbers, specific to each switch.
 > 
-> When we drop clang-10 support from the kernel, we should carefully
-> update the original implementations to try to preserve git blame,
-> deleting these implementations.
-> 
-> Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-> Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-> Cc: Fangrui Song <maskray@google.com>
-> Reported-by: Prasad Sodagudi<psodagud@quicinc.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> At the bottom of that python stack, all EEPROM access goes through
+> open/seek/read/close access to the optoe managed file in 
+> /sys/bus/i2c/devices/{num}-0050/eeprom.
 
-I can reproduce the panic (as a boot hang) in QEMU before this patch and
-it is resolved after it so:
+And this python stack is all open source? So you should be able to
+throw away parts of the bottom end and replace it with a different
+KAPI, and nobody will notice? In fact, this is probably how it was
+designed. Anybody working with out of tree code knows what gets merged
+later is going to be different because of review comments. And KAPI
+code is even more likely to be different. So nobody really expected
+optoe to get merged as is.
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+> You're not going to like this, but ethtool -e and ethtool -m both
+> return ' Ethernet0 Cannot get EEPROM data: Operation not supported',
+> for every port managed by the big switch silicon.
 
-However, the duplication hurts :( would it potentially be better to just
-do the full update to clang-11+ and require it for CONFIG_GCOV_KERNEL?
+You are still missing what i said. The existing IOCTL interface needs
+a network interface name. But there is no reason why you cannot extend
+the new netlink KAPI to take an alternative identifier, sfp42. That
+maps directly to the SFP device, without using an interface name. Your
+pile of python can directly use the netlink API, the ethtool command
+does not need to make use of this form of identifier, and you don't
+need to "screen scrape" ethtool.
 
-    depends on CC_IS_GCC || CLANG_VERSION >= 110000?
+It seems very unlikely optoe is going to get merged. The network
+maintainers are against it, due to KAPI issues. I'm trying to point
+out a path you can take to get code merged. But it is up to you if you
+decided to follow it.
 
-> ---
->  kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
-> 
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index c94b820a1b62..20e6760ec05d 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -75,7 +75,9 @@ struct gcov_fn_info {
->  
->  	u32 num_counters;
->  	u64 *counters;
-> +#if __clang_major__ < 11
->  	const char *function_name;
-> +#endif
->  };
->  
->  static struct gcov_info *current_info;
-> @@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
->  }
->  EXPORT_SYMBOL(llvm_gcov_init);
->  
-> +#if __clang_major__ < 11
->  void llvm_gcda_start_file(const char *orig_filename, const char version[4],
->  		u32 checksum)
->  {
-> @@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
->  	current_info->checksum = checksum;
->  }
->  EXPORT_SYMBOL(llvm_gcda_start_file);
-> +#else
-> +void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
-> +{
-> +	current_info->filename = orig_filename;
-> +	current_info->version = version;
-> +	current_info->checksum = checksum;
-> +}
-> +EXPORT_SYMBOL(llvm_gcda_start_file);
-> +#endif
->  
-> +#if __clang_major__ < 11
->  void llvm_gcda_emit_function(u32 ident, const char *function_name,
->  		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
->  {
-> @@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
->  	list_add_tail(&info->head, &current_info->functions);
->  }
->  EXPORT_SYMBOL(llvm_gcda_emit_function);
-> +#else
-> +void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
-> +		u8 use_extra_checksum, u32 cfg_checksum)
-> +{
-> +	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +
-> +	if (!info)
-> +		return;
-> +
-> +	INIT_LIST_HEAD(&info->head);
-> +	info->ident = ident;
-> +	info->checksum = func_checksum;
-> +	info->use_extra_checksum = use_extra_checksum;
-> +	info->cfg_checksum = cfg_checksum;
-> +	list_add_tail(&info->head, &current_info->functions);
-> +}
-> +EXPORT_SYMBOL(llvm_gcda_emit_function);
-> +#endif
->  
->  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
->  {
-> @@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
->  	}
->  }
->  
-> +#if __clang_major__ < 11
->  static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  {
->  	size_t cv_size; /* counter values size */
-> @@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  	kfree(fn_dup);
->  	return NULL;
->  }
-> +#else
-> +static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> +{
-> +	size_t cv_size; /* counter values size */
-> +	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
-> +			GFP_KERNEL);
-> +	if (!fn_dup)
-> +		return NULL;
-> +	INIT_LIST_HEAD(&fn_dup->head);
-> +
-> +	cv_size = fn->num_counters * sizeof(fn->counters[0]);
-> +	fn_dup->counters = vmalloc(cv_size);
-> +	if (!fn_dup->counters) {
-> +		kfree(fn_dup);
-> +		return NULL;
-> +	}
-> +
-> +	memcpy(fn_dup->counters, fn->counters, cv_size);
-> +
-> +	return fn_dup;
-> +}
-> +#endif
->  
->  /**
->   * gcov_info_dup - duplicate profiling data set
-> @@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
->   * gcov_info_free - release memory for profiling data set duplicate
->   * @info: profiling data set duplicate to free
->   */
-> +#if __clang_major__ < 11
->  void gcov_info_free(struct gcov_info *info)
->  {
->  	struct gcov_fn_info *fn, *tmp;
-> @@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
->  	kfree(info->filename);
->  	kfree(info);
->  }
-> +#else
-> +void gcov_info_free(struct gcov_info *info)
-> +{
-> +	struct gcov_fn_info *fn, *tmp;
-> +
-> +	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
-> +		vfree(fn->counters);
-> +		list_del(&fn->head);
-> +		kfree(fn);
-> +	}
-> +	kfree(info->filename);
-> +	kfree(info);
-> +}
-> +#endif
->  
->  #define ITER_STRIDE	PAGE_SIZE
->  
-> 
-> base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
+	Andrew
