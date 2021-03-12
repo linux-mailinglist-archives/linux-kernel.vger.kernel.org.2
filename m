@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C7F338B88
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B038B338C22
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhCLLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:32:41 -0500
-Received: from mga01.intel.com ([192.55.52.88]:5629 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233742AbhCLLcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:32:10 -0500
-IronPort-SDR: PiyDYWHhTZfSn09pBaD8PQI+D8q7AhBz3uNCvpAyUVRxhywYJCBQX4J9ROT775ucV0PsnIx5cP
- pa2C2Pv/ZMnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208658799"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="208658799"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:32:10 -0800
-IronPort-SDR: GetBU+v9+PpTFxa0SNpQdMuINbqrpXRN7JVNCBQ+GF9128MpNFsLePtw7OM0ulZuO22cvIlqOw
- P1oBQNlcg/PQ==
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="387326040"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:32:07 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lKg1U-00BpyJ-TL; Fri, 12 Mar 2021 13:32:04 +0200
-Date:   Fri, 12 Mar 2021 13:32:04 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] crypto: qat: fix couple crashes duing error handling
-Message-ID: <YEtRNIFD3Ff8fq5O@smile.fi.intel.com>
-References: <20210312074357.2384087-1-ztong0001@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312074357.2384087-1-ztong0001@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230512AbhCLMAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230388AbhCLL7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:59:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFDEC061761;
+        Fri, 12 Mar 2021 03:59:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ovZ8YsJFzLoqwrRu0EFBa5oGl3k6DgLyIZQNq1m2SxM=; b=HSxuiZGxVRE1jL1Kx47CLgpfns
+        Qs1SzyDGTbvHWW3F4eTB+uCt67F1OLHfSGhzs2FvMcunA5f0ugHVDtGQHHw0//1vQ9AhfeuKx/qoV
+        FQloXSP79doi7B9JRlMgZO2jQki9JWG2DwigaYPEnt/0ssiOWY91jwZ6wXxBD1Mz2WHkRXnpf5YDK
+        sRamyOI+vpShRNuovl++gDdhN0YJVy4i/gkKWFRm6d8G7Zo46jIef8Kq4nk+TjHuaIZxCrfPnrAud
+        FMVWtwunklXYIiZwrAH7OKXx9skeQp1flkyRCZlfa949erd+j8XOrp1g+rHS851zfXEI8A8XwqVA2
+        d2urk+gA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKgRc-00AYD5-Bd; Fri, 12 Mar 2021 11:59:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 012C13010CF;
+        Fri, 12 Mar 2021 12:59:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id DA31A2D00DEDE; Fri, 12 Mar 2021 12:59:02 +0100 (CET)
+Message-ID: <20210312113253.305040674@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 12 Mar 2021 12:32:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, rostedt@goodmis.org, hpa@zytor.com,
+        torvalds@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        peterz@infradead.org, jpoimboe@redhat.com,
+        alexei.starovoitov@gmail.com, mhiramat@kernel.org
+Subject: [PATCH 0/2] x86: Remove ideal_nops[]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 02:43:56AM -0500, Tong Zhang wrote:
-> There are a couple of issues in qat error handling. Those drivers tries to
-> release resources that is not initialized. This patch series tries to fix
-> crashes caused by incorrect error handling.
+Hi!
 
-Please, in this series and everywhere else use a common sense, when put
-backtraces, oopses, etc in the commit message, i.e. leave only ~2-3
-(significant) lines instead of 20-30.
+A while ago Steve complained about x86 being weird for having different NOPs [1]
 
--- 
-With Best Regards,
-Andy Shevchenko
+Having cursed the same thing before, I figured it was time to look at the NOP
+situation.
 
+32bit simply isn't a performance target anymore, so all we need is a set of
+NOPs that works on all.
+
+x86_64 has two main NOP variants, NOPL and prefix NOP. NOPL was introduced by
+P6 and is architecturally mandated for x86_64. However, some uarchs made the
+choice to limit NOPL decoding to a single port, which obviously limits NOPL
+throughput. Other uarchs have (severe) decoding penalties for excessive (>~3)
+prefixes, hobbling prefix NOP throughput.
+
+But the thing is, all the modern uarchs can handle both without issue; that is
+AMD K10 (2007) and later and Intel Ivy Bridge (2012) and later. The only
+exception is Atom, which has the prefix penalty.
+
+Since ultimate performance of a 10 year old chip (Intel Sandy Bridge, 2011) is
+simply irrelevant today, remove variable NOPs and use NOPL.
+
+This gives us deterministic NOPs and restores sanity.
+
+
+
+[1] https://lkml.kernel.org/r/20210302105827.3403656c@gandalf.local.home
 
