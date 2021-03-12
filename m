@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0DF338B5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E80338B5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhCLLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:17:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233692AbhCLLRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:17:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615547863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UGPDzUa5JilVZrEVbbRzUiBVPETkoDHcYduKqCj+MOo=;
-        b=b5iVaOfaYUBsZHo+EWiYYqTjrie1OlyVO3RuxJKUbiIw8z3RF1QEkHdjaJhM2Hc2jsQUIk
-        1OEhAzkb+2HHiIeUus+HoBxjTwQ9ifAp3OX+VguohP3FI0uqkNkupB95MqaeBhWJJJ5+vk
-        zXq3e4dkgXW7HQgdwJrNv9fyQcZE920=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-q5kalNEnMASwlMrnVkZ9-Q-1; Fri, 12 Mar 2021 06:17:41 -0500
-X-MC-Unique: q5kalNEnMASwlMrnVkZ9-Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12C8318460E5;
-        Fri, 12 Mar 2021 11:17:39 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 64077694CD;
-        Fri, 12 Mar 2021 11:17:29 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 12:17:26 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v4 3/9] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW
- for timing
-Message-ID: <20210312111726.6xfpc2cycab7yfld@kamzik.brq.redhat.com>
-References: <20210302125751.19080-1-wangyanan55@huawei.com>
- <20210302125751.19080-4-wangyanan55@huawei.com>
+        id S233295AbhCLLSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:18:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233737AbhCLLSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:18:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB0864F09;
+        Fri, 12 Mar 2021 11:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615547891;
+        bh=4M8/d1QtvNV0W22nnWX2De2qfNZVr8K7C/taDssa2Ss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hvgY2ixxwgnMDRs6DayZDJfXR1VG+agFl/c5ryWLihtPZrXyiAITc3Z3DhwjhWKSr
+         QixZ+cIFSfVRHu4wj4bqnJGhgTgoxG5Q0jiA/zFwgGZIAd9kbttdxrXMz+h8rc8DLf
+         MDeAFCrDlcWQpHH4KXEY+shjNwnrtMK00t5f1QibG3Md/5LlHoA1oaIwqvgMnuJWJq
+         uqmgObMsd6Ue5uqdFkktT4ksgWSGaYa+dit8HiN9xOqjsbTRGwR40tCGNsgeSqNRyX
+         XKYql/ytfOCaQm3wnG3kpztMyXHP3ok0WEpLpAMsOBbBGibTvIk9DztGVRjgRRV51L
+         JBSXW6eZQ3BHg==
+Date:   Fri, 12 Mar 2021 11:18:05 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 28/34] KVM: arm64: Use page-table to track page
+ ownership
+Message-ID: <20210312111804.GB32208@willie-the-truck>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-29-qperret@google.com>
+ <20210311183834.GC31378@willie-the-truck>
+ <YEsIxA/fKaDlSaio@google.com>
+ <20210312093205.GB32016@willie-the-truck>
+ <YEs+xi6IDj3gwX10@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302125751.19080-4-wangyanan55@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YEs+xi6IDj3gwX10@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:57:45PM +0800, Yanan Wang wrote:
-> In addition to function of CLOCK_MONOTONIC, flag CLOCK_MONOTONIC_RAW can
-> also shield possiable impact of NTP, which can provide more robustness.
+On Fri, Mar 12, 2021 at 10:13:26AM +0000, Quentin Perret wrote:
+> On Friday 12 Mar 2021 at 09:32:06 (+0000), Will Deacon wrote:
+> > I'm not saying to use the VMID directly, just that allocating half of the
+> > pte feels a bit OTT given that the state of things after this patch series
+> > is that we're using exactly 1 bit.
 > 
-> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> ---
->  tools/testing/selftests/kvm/demand_paging_test.c  |  8 ++++----
->  tools/testing/selftests/kvm/dirty_log_perf_test.c | 14 +++++++-------
->  tools/testing/selftests/kvm/lib/test_util.c       |  2 +-
->  tools/testing/selftests/kvm/steal_time.c          |  4 ++--
->  4 files changed, 14 insertions(+), 14 deletions(-)
->
+> Right, and that was the reason for the PROT_NONE approach in the
+> previous version, but we agreed it'd be worth generalizing to allow for
+> future use-cases :-)
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+Yeah, just generalising to 32 bits feels like going too far! I dunno,
+make it a u8 for now, or define the hypervisor owner ID as 1 and reject
+owners greater than that? We can easily extend it later.
 
+> > > > > @@ -517,28 +543,36 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> > > > >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+> > > > >  		return -E2BIG;
+> > > > >  
+> > > > > -	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+> > > > > -	if (kvm_pte_valid(old)) {
+> > > > > +	if (kvm_pte_valid(data->attr))
+> > > > 
+> > > > This feels like a bit of a hack to me: the 'attr' field in stage2_map_data
+> > > > is intended to correspond directly to the lower/upper attributes of the
+> > > > descriptor as per the architecture, so tagging the valid bit in there is
+> > > > pretty grotty. However, I can see the significant advantage in being able
+> > > > to re-use the stage2_map_walker functionality, so about instead of nobbling
+> > > > attr, you set phys to something invalid instead, e.g.:
+> > > > 
+> > > > 	#define KVM_PHYS_SET_OWNER	(-1ULL)
+> > > 
+> > > That'll confuse kvm_block_mapping_supported() and friends I think, at
+> > > least in their current form. If you _really_ don't like this, maybe we
+> > > could have an extra 'flags' field in stage2_map_data?
+> > 
+> > I was pondering this last night and I thought of two ways to do it:
+> > 
+> > 1. Add a 'bool valid' and then stick the owner and the phys in a union.
+> >    (yes, you'll need to update the block mapping checks to look at the
+> >     valid flag)
+> 
+> Right, though that is also used for the hyp s1 which doesn't use any of
+> this ATM. That shouldn't be too bad to change, I'll have a look.
+
+Oh, I meant stick the bool in the stage2_map_data so that should be limited
+to the stage2 path.
+
+Will
