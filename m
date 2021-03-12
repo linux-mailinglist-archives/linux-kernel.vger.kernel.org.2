@@ -2,199 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BC63389ED
+	by mail.lfdr.de (Postfix) with ESMTP id A01C63389EE
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbhCLKUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:20:36 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13912 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbhCLKUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:20:19 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dxhc34xlVzjVY0;
-        Fri, 12 Mar 2021 18:18:43 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 12 Mar 2021 18:20:03 +0800
-Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-References: <20210306082859.179541-1-yangjihong1@huawei.com>
- <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com>
- <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
- <02146240-e532-1c52-0589-bfff3fbe5166@huawei.com>
- <CAM9d7cjHAEhc-g4Fs3muwQrMV=Os5cn6NgOkf4vBeE+QK-Wu=w@mail.gmail.com>
- <cc7811c5-2d24-29ac-5a0c-71261a699a39@huawei.com>
- <CAM9d7ciM6bZmYepRCe_YY7mYZGbvrpwF7A_oCngM9GMoxPXS6A@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <360667d9-f0cc-866c-b0b9-b37dd85a9c45@huawei.com>
-Date:   Fri, 12 Mar 2021 18:20:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S233401AbhCLKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:20:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233158AbhCLKUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:20:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36AA265014;
+        Fri, 12 Mar 2021 10:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615544420;
+        bh=Ifsr9yM9IkQPwSwMx+ywHOlUP37f5ulHyfp022mvO2A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OeFAX9kP3QepFXQNlgoNBt/rCJK6ttlPb2z66g1Fm9rBpVgFrq/J8kdQjGgUsInD4
+         gufTH3sTe9dQr7Dv3m1+s38h6IxRmnl+E95aqXEnsDLBUvAp6tR8rtqUgKcqpjxqp2
+         /PLNgpAvUkhC6Nro80THrKr0uqEtcFagUQuiAA0MxjNvaSxWM5vILNol9qLy+s28F6
+         J+T1KgsOG6jMO3vUye9dOowxxCxt5qUUjvK/5fFSPtD4TT0Oc8cjHH1n0ypjxeC82d
+         7Bak7Zg5DjTXfZcRczfdSQNNgm2GdpCsxPAV6Z1gx+V3gwNXNzj3L7oBFGUwlhPO3w
+         6fsJIXl0X2yqA==
+Received: by mail-oo1-f43.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so1042119ool.0;
+        Fri, 12 Mar 2021 02:20:20 -0800 (PST)
+X-Gm-Message-State: AOAM533k97eGVayFQI6keYBO7LQKA/Fe9Aiu0lnA2lImthZVNwReb6d2
+        edS4zM+Glo2wjHxtQLGRnW6k0jzghbcXCLlQ/9k=
+X-Google-Smtp-Source: ABdhPJyxJbTVd+9o1L3Cm7RfyBDoKQYmHOnVheMTVTvF/CCztalbxCtJGX/FPRh6wEI0bbDfWUx947MungyzyrTvGEI=
+X-Received: by 2002:a4a:e9a2:: with SMTP id t2mr2692533ood.15.1615544419338;
+ Fri, 12 Mar 2021 02:20:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ciM6bZmYepRCe_YY7mYZGbvrpwF7A_oCngM9GMoxPXS6A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
+ <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+ <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
+ <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
+ <20210308211306.GA2920998@robh.at.kernel.org> <CAK8P3a2GfzUevuQNZeQarJ4GNFsuDj0g7oFuN940Hdaw06YJbA@mail.gmail.com>
+ <CAL_JsqK8FagJyQVyG5DAocUjLGZT91b6NzDm_DNMW1hdCz51Xg@mail.gmail.com>
+ <c5693760-3b18-e8f1-18b6-bae42c05d329@marcan.st> <CAL_Jsq+VLLPa98iaTvOkK-tjuBH4qY7FNEGtufYGv7rXAbwegQ@mail.gmail.com>
+ <332c0b9a-dcfd-4c3b-9038-47cbda90eb3f@marcan.st> <CAL_Jsq+X7JPm-xrxmy5bGKSuLO59yk6S=EuXmdMn0FwhpZAD7A@mail.gmail.com>
+ <CAK8P3a2HWbHc-aGHk792TVh6ea2j+aKswYrB6EBsjPA6fH1=xA@mail.gmail.com>
+ <CAL_JsqKYpsXKvcw7xbbYx6z7Cg3P9DxcpLUnOG+m0xeSRO7v_g@mail.gmail.com>
+ <CAK8P3a2iASEZf-YRh2SHYhNdUtpo8sdkuoxfk_MonXpXBk1kbg@mail.gmail.com> <CAL_JsqK200WcxD3PP1FToc5w2dyF3b6TYnf2oNd9Mpz77g68og@mail.gmail.com>
+In-Reply-To: <CAL_JsqK200WcxD3PP1FToc5w2dyF3b6TYnf2oNd9Mpz77g68og@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 12 Mar 2021 11:20:03 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3-aLCzWnGv0LPb3KPs_cUy6DXrz3QV5x7aNOU2Zi_48g@mail.gmail.com>
+Message-ID: <CAK8P3a3-aLCzWnGv0LPb3KPs_cUy6DXrz3QV5x7aNOU2Zi_48g@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Rob Herring <robh@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Mar 11, 2021 at 7:10 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 9:48 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > On Thu, Mar 11, 2021 at 5:10 PM Rob Herring <robh@kernel.org> wrote:
+> > > On Thu, Mar 11, 2021 at 2:12 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > On Wed, Mar 10, 2021 at 6:01 PM Rob Herring <robh@kernel.org> wrote:
+> > > > Ok, makes sense.
+> > > >
+> > > > Conceptually, I'd like to then see a check that verifies that the
+> > > > property is only set for nodes whose parent also has it set, since
+> > > > that is how AXI defines it: A bus can wait for the ack from its
+> > > > child node, or it can acknowledge the write to its parent early.
+> > > > However, this breaks down as soon as a bus does the early ack:
+> > > > all its children by definition use posted writes (as seen by the
+> > > > CPU), even if they wait for stores that come from other masters.
+> > > >
+> > > > Does this make sense to you?
+> > >
+> > > BTW, I don't think it's clear in this thread, but the current
+> > > definition proposed for the spec[1] and schema is 'nonposted-mmio' is
+> > > specific to 'simple-bus'. I like this restriction and we can expand
+> > > where 'nonposted-mmio' is allowed later if needed.
+> >
+> > That sounds ok, as long as we can express everything for the mac
+> > at the moment. Do we need to explicitly add a description to allow
+> > the property in the root node in addition to simple-bus to be able
+> > to enforce the rule about parent buses also having it?
+>
+> IMO it should not be allowed in the root node. That's a failure to
+> define a bus node.
 
-On 2021/3/12 16:39, Namhyung Kim wrote:
-> On Fri, Mar 12, 2021 at 4:19 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->>
->> Hello,
->> On 2021/3/12 13:49, Namhyung Kim wrote:
->>> Hi,
->>>
->>> On Fri, Mar 12, 2021 at 12:24 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>> Hello, Namhyung
->>>>
->>>> On 2021/3/11 22:42, Namhyung Kim wrote:
->>>>> Hi,
->>>>>
->>>>> On Thu, Mar 11, 2021 at 5:48 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> On 2021/3/6 16:28, Yang Jihong wrote:
->>>>>>> In hist__find_annotations function, since have a hist_entry per IP for the same
->>>>>>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
->>>>>>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
->>>>>
->>>>> I'm not sure it's still true that we have a hist_entry per IP.
->>>>> Afaik the default sort key is comm,dso,sym which means it should have a single
->>>>> hist_entry for each symbol.  It seems like an old comment..
->>>>>
->>>> Emm, yes, we have a hist_entry for per IP.
->>>> a member named "sym" in struct "hist_entry" points to symbol,
->>>> different IP may point to the same symbol.
->>>
->>> Are you sure about this?  It seems like a bug then.
->>>
->> Yes, now each IP corresponds to a hist_entry :)
->>
->> Last week I found that some sample events were missing when perf
->> annotate in stdio mode, so I went through the annotate code carefully.
->>
->> The event handling process is as follows:
->> process_sample_event
->>     evsel_add_sample
->>       hists__add_entry
->>         __hists__add_entry
->>           hists__findnew_entry
->>             hist_entry__new                  -> here allock new hist_entry
-> 
-> Yeah, so this is for a symbol.
-> 
->>
->>       hist_entry__inc_addr_samples
->>         symbol__inc_addr_samples
->>           symbol__hists
->>             annotated_source__new            -> here alloc annotate soruce
->>             annotated_source__alloc_histograms -> here alloc histograms
-> 
-> This should be for each IP (ideally it should be per instruction).
-> 
->>
->> By bugs, do you mean there's something wrong?
-> 
-> No. I think we were saying about different things.  :)
-> 
-OK, :)
-> 
->>>>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
->>>>> index a23ba6bb99b6..a91fe45bd69f 100644
->>>>> --- a/tools/perf/builtin-annotate.c
->>>>> +++ b/tools/perf/builtin-annotate.c
->>>>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
->>>>>                    } else {
->>>>>                            hist_entry__tty_annotate(he, evsel, ann);
->>>>>                            nd = rb_next(nd);
->>>>> -                       /*
->>>>> -                        * Since we have a hist_entry per IP for the same
->>>>> -                        * symbol, free he->ms.sym->src to signal we already
->>>>> -                        * processed this symbol.
->>>>> -                        */
->>>>> -                       zfree(&notes->src->cycles_hist);
->>>>> -                       zfree(&notes->src);
->>>>>                    }
->>>>>            }
->>>>>     }
->>>>>
->>>> This solution may have the following problem:
->>>> For example, if two sample events are in two different processes but in
->>>> the same symbol, repeated output may occur.
->>>> Therefore, a flag is required to indicate whether the symbol has been
->>>> processed to avoid repeated output.
->>>
->>> Hmm.. ok.  Yeah we don't care about the processes here.
->>> Then we should remove it from the sort key like below:
->>>
->>> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
->>>                   if (setup_sorting(annotate.session->evlist) < 0)
->>>                           usage_with_options(annotate_usage, options);
->>>           } else {
->>> +               sort_order = "dso,symbol";
->>>                   if (setup_sorting(NULL) < 0)
->>>                           usage_with_options(annotate_usage, options);
->>>           }
->>>
->>>
->> Are you referring to this solution?
->> --- a/tools/perf/builtin-annotate.c
->> +++ b/tools/perf/builtin-annotate.c
->> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists
->> *hists,
->>                   } else {
->>                           hist_entry__tty_annotate(he, evsel, ann);
->>                           nd = rb_next(nd);
->> -                       /*
->> -                        * Since we have a hist_entry per IP for the same
->> -                        * symbol, free he->ms.sym->src to signal we already
->> -                        * processed this symbol.
->> -                        */
->> -                       zfree(&notes->src->cycles_hist);
->> -                       zfree(&notes->src);
->>                   }
->>           }
->>    }
->> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
->>                   if (setup_sorting(annotate.session->evlist) < 0)
->>                           usage_with_options(annotate_usage, options);
->>           } else {
->> +               sort_order = "dso,symbol";
->>                   if (setup_sorting(NULL) < 0)
->>                           usage_with_options(annotate_usage, options);
->>           }
->> It seems to be a better solution without adding new member.
->> I just tested it and it works.
->>
->> If we decide to use this solution, I'll resubmit a v3 patch.
-> 
-> I prefer changing the sort order (and removing the zfree and comments).
-> 
-OK, I'll submit a v3 patch based on the "changing the sort order" solution.
+My interpretation would be that the root node defines the first bus
+connected to the CPU(s) themselves, which may already have
+posted writes. If writes on that bus are posted, then no child could
+be non-posted.
 
-Thanks,
-Yang
-> Thanks,
-> Namhyung
-> .
-> 
+I suppose it depends a bit on the mental model of what the nodes
+refer to. If you say that there cannot be a device with registers
+directly on the root node, but every bus defines its own space,
+then we don't need this, but I think a lot of machines would break
+if you try to enforce the rule that there cannot be devices on
+the root node.
+
+> Also, would that mean your memory has to be non-posted!?
+
+Good question. You could argue that this should not be because you
+don't want to use ioremap_np() flags but instead want this to be
+normal cacheable memory instead of device memory.
+
+On the other hand, you definitely don't want memory stores to be
+posted, as that would break coherency between the CPUs when
+a wmb() no longer has an effect.
+
+       Arnd
