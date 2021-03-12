@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ABA3391CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19C333919C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhCLPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:40 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55574 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbhCLPoL (ORCPT
+        id S231679AbhCLPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:43:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59145 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231378AbhCLPn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:44:11 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 603D71F46CA6
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 2C7934800C8; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 02/38] dt-bindings: power: supply: cpcap-battery: Convert to DT schema format
+        Fri, 12 Mar 2021 10:43:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615563806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+wFAgdTMewsnYQw+ZERGa5q6Bhh7JRNwg5iyXn7hZdE=;
+        b=HsJvm4C+Rm+owdN147MqK/TcB8ADVDG0Negr9thULE0fvUWZb1Yk0gqcsEK0fqKBpWtyhB
+        bG871AXp6vMfaaSti4sgwYBx+2YCaMDC606qYQM+PMvfIUKKFUECbepGjAKbnws/5ir5WR
+        FAk9ThAYvvbREuvKXbProo/dvJxpgg8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-Vr6MfYFMNziGKwocns9p2Q-1; Fri, 12 Mar 2021 10:43:23 -0500
+X-MC-Unique: Vr6MfYFMNziGKwocns9p2Q-1
+Received: by mail-wr1-f70.google.com with SMTP id p12so8743495wrn.18
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:43:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+wFAgdTMewsnYQw+ZERGa5q6Bhh7JRNwg5iyXn7hZdE=;
+        b=SyflaKm1Bl2SqFdo/MSMkBkH/IBMsgDrkCTeped7J5hFZgxI5ZgUbzdjV20XyNOhLf
+         h/hroFF3Kq7Pg9Yo89mBy/YwDhAHXwXq31lovz72c8uv3DaetTWPdzJhHOqDXTgMF89k
+         wFlYgm2SewUvUZCB3gXzSZ/jv3w9/nAL50crx3ctBfJp3y2F2IctOvNEhFMGWPdDBI0T
+         +gJzvvZwOX7zY5fOr7eqLXCZtBv/FZIKhDBlL0bk4gHFwkIqmUExWj8z34IEpbcRWipX
+         WilmA+a8T1lAZ5fmAvonXog1o44I8mjFVZtiejVa+rFQ348b8CcJJdGXNzSR6H4igVte
+         Cg5A==
+X-Gm-Message-State: AOAM533VQ0TA8pQIdIAmNeqf0V3+BCJSK2oLkMnb1T/84zsSXC5XnIxe
+        ulDrs6DPgi0fUvToQKcm0Lo3Ker1e6gz5LIQUy+xzc5gRhYya9xhx9EmKL2KBD8tWJUk6adAKqG
+        cxPab5gIkBizHL5ib0yoPdtVF
+X-Received: by 2002:adf:f411:: with SMTP id g17mr14347986wro.22.1615563802750;
+        Fri, 12 Mar 2021 07:43:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjGJU99dXivFeb9iRMuZRQB3sCBDdlFdIMJEYxj6+jLKpF48JR+OqaVPuMnodV6Ku2khpH7g==
+X-Received: by 2002:adf:f411:: with SMTP id g17mr14347973wro.22.1615563802618;
+        Fri, 12 Mar 2021 07:43:22 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w6sm8501228wrl.49.2021.03.12.07.43.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 07:43:22 -0800 (PST)
+Subject: Re: [PATCH 1/4] KVM: x86/mmu: Fix RCU usage in
+ handle_removed_tdp_mmu_page
+To:     Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20210311231658.1243953-1-bgardon@google.com>
+ <20210311231658.1243953-2-bgardon@google.com> <YEuKx6ZveaT5RgAs@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cc472f99-f9f0-8a63-c38b-31a650b4a39c@redhat.com>
 Date:   Fri, 12 Mar 2021 16:43:21 +0100
-Message-Id: <20210312154357.1561730-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEuKx6ZveaT5RgAs@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format. I also added the missing bits
-used by the only in-tree user and implemented in the driver.
+On 12/03/21 16:37, Sean Christopherson wrote:
+> On Thu, Mar 11, 2021, Ben Gardon wrote:
+>> The pt passed into handle_removed_tdp_mmu_page does not need RCU
+>> protection, as it is not at any risk of being freed by another thread at
+>> that point. However, the implicit cast from tdp_sptep_t to u64 * dropped
+>> the __rcu annotation without a proper rcu_derefrence. Fix this by
+>> passing the pt as a tdp_ptep_t and then rcu_dereferencing it in
+>> the function.
+>>
+>> Suggested-by: Sean Christopherson <seanjc@google.com>
+>> Reported-by: kernel test robot <lkp@xxxxxxxxx>
+> 
+> Should be <lkp@intel.com>.  Looks like you've been taking pointers from Paolo :-)
 
-Cc: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../bindings/power/supply/cpcap-battery.txt   | 31 -------
- .../bindings/power/supply/cpcap-battery.yaml  | 87 +++++++++++++++++++
- 2 files changed, 87 insertions(+), 31 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
- create mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml
+The day someone starts confusing employers in CCs you should tell them 
+"I see you have constructed a new email sending alias.  Your skills are 
+now complete".
 
-diff --git a/Documentation/devicetree/bindings/power/supply/cpcap-battery.txt b/Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
-deleted file mode 100644
-index a04efa22da01..000000000000
---- a/Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--Motorola CPCAP PMIC battery driver binding
--
--Required properties:
--- compatible: Shall be "motorola,cpcap-battery"
--- interrupts: Interrupt specifier for each name in interrupt-names
--- interrupt-names: Should contain the following entries:
--		   "lowbph", "lowbpl", "chrgcurr1", "battdetb"
--- io-channels: IIO ADC channel specifier for each name in io-channel-names
--- io-channel-names: Should contain the following entries:
--		    "battdetb", "battp", "chg_isense", "batti"
--- power-supplies: List of phandles for power-supplying devices, as
--		  described in power_supply.txt. Typically a reference
--		  to cpcap_charger.
--
--Example:
--
--cpcap_battery: battery {
--	compatible = "motorola,cpcap-battery";
--	interrupts-extended = <
--		&cpcap 5 0 &cpcap 3 0
--		&cpcap 20 0 &cpcap 54 0
--	>;
--	interrupt-names =
--		"lowbph", "lowbpl",
--		"chrgcurr1", "battdetb";
--	io-channels = <&cpcap_adc 0 &cpcap_adc 1
--		       &cpcap_adc 5 &cpcap_adc 6>;
--	io-channel-names = "battdetb", "battp",
--			   "chg_isense", "batti";
--	power-supplies = <&cpcap_charger>;
--};
-diff --git a/Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml b/Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml
-new file mode 100644
-index 000000000000..7153fd4ce55f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml
-@@ -0,0 +1,87 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Sebastian Reichel
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/cpcap-battery.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Motorola CPCAP PMIC battery
-+
-+maintainers:
-+  - Tony Lindgren <tony@atomide.com>
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description: |
-+  Motorola CPCAP is a PMIC found in some mobile phones, e.g.
-+  the Droid 4. This binding describes its battery fuel gauge
-+  sub-function.
-+
-+allOf:
-+  - $ref: power-supply.yaml#
-+
-+properties:
-+  compatible:
-+    const: motorola,cpcap-battery
-+
-+  interrupts:
-+    items:
-+      - description: eol interrupt
-+      - description: low battery percentage interrupt
-+      - description: critical battery percentage interrupt
-+      - description: charger detect interrupt
-+      - description: battery detect interrupt
-+      - description: coulomb counter calibration interrupt
-+
-+  interrupt-names:
-+    items:
-+      - const: eol
-+      - const: lowbph
-+      - const: lowbpl
-+      - const: chrgcurr1
-+      - const: battdetb
-+      - const: cccal
-+
-+  io-channels:
-+    items:
-+      - description: battery temperature
-+      - description: battery voltage
-+      - description: battery charge current
-+      - description: battery current
-+
-+  io-channel-names:
-+    items:
-+      - const: battdetb
-+      - const: battp
-+      - const: chg_isense
-+      - const: batti
-+
-+  power-supplies: true
-+
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - io-channels
-+  - io-channel-names
-+  - power-supplies
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    cpcap {
-+      battery {
-+        compatible = "motorola,cpcap-battery";
-+        interrupts-extended =
-+                <&cpcap 6 0>, <&cpcap 5 0>, <&cpcap 3 0>,
-+                <&cpcap 20 0>, <&cpcap 54 0>, <&cpcap 57 0>;
-+        interrupt-names =
-+                "eol", "lowbph", "lowbpl",
-+                "chrgcurr1", "battdetb", "cccal";
-+        io-channels = <&cpcap_adc 0>, <&cpcap_adc 1>,
-+                      <&cpcap_adc 5>, <&cpcap_adc 6>;
-+        io-channel-names = "battdetb", "battp",
-+                           "chg_isense", "batti";
-+        power-supplies = <&cpcap_charger>;
-+      };
-+    };
--- 
-2.30.1
+Paolo
+
+> https://lkml.org/lkml/2019/6/17/1210
+> 
+> Other than that,
+> 
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> 
+>> Signed-off-by: Ben Gardon <bgardon@google.com>
+> 
 
