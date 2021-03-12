@@ -2,265 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D333338F2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6A2338F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbhCLNxc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:53:32 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:43904 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231294AbhCLNxI (ORCPT
+        id S229487AbhCLN4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhCLN40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:53:08 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0URgiEo._1615557183;
-Received: from 30.240.101.205(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0URgiEo._1615557183)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Mar 2021 21:53:04 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v3 2/4] sched/fair: Make CFS bandwidth controller
- burstable
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <YEjDyADiVjVyt3ur@hirez.programming.kicks-ass.net>
-Date:   Fri, 12 Mar 2021 21:54:33 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
-        mingo@redhat.com, pauld@redhead.com, Paul Turner <pjt@google.com>,
-        rostedt@goodmis.org, Shanpei Chen <shanpeic@linux.alibaba.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <448372EF-B943-4E3E-8041-96884DF63BB8@linux.alibaba.com>
-References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
- <20210121110453.18899-3-changhuaixin@linux.alibaba.com>
- <YEjDyADiVjVyt3ur@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Fri, 12 Mar 2021 08:56:26 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E296EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:56:25 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 16so6843768ljc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:56:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0+cQI6IBGeUFnwRLsME/R/tm5JUnpBXS5OxVlu71yp4=;
+        b=mMF2TVCLPhwVCGaTyiVuCUd6NCDmmTEA7yh9NysOLee4jMJQ7JOY9v36HlbqsabBba
+         /FGf3Y7rJJjMyz+xTy0hwTnDzi3Y3cGhrd6FMj5fgVDOHJGtX8BaeLHdY5/jZCPttwRg
+         0Zzpc9bV6D+KgPBRRJpQ0+V+Z8Jnv2dHnoJgzgFMV6zz9UplBDRyBuoa2iz/Bwbw0vlO
+         eByN3mWN9gvWj1C06T4Fhwb7nRgNYlfQVjJBEt7gtE7okN84k0Viqos1wFh46bkKTMUP
+         TJgfhWXfX3+rnruqoByrVH46QnKqiXeJvT0TeafZdZIUtcXp3UwqujUo7O65z+LEiVcj
+         i11Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0+cQI6IBGeUFnwRLsME/R/tm5JUnpBXS5OxVlu71yp4=;
+        b=gSJ4kPyY4+lFDf91Yib5vnPPT3irXHktg+u/Vck6F2Z7pV7/sziKICJbVLE1NZ5i5W
+         E1U8RscqVuXU2SQpIps98JrtKGc1Xvsnm6HU5thpiOg5JoB7H0U/TupOEEQTdBKel5Bc
+         oCGoBNieKcELJHd4w2Ejjg8L3ci8eg+Ms01mTkEIwATHEtbapDVrWi0Eehw9iqLN8dSm
+         m0Owh2gIFEXpIQyXgVWkVsjtaChT8al3ktsMhQeV7X8wH4EzIOpc0tudmBj73qz8JWgS
+         lDCieV8dPO7Dcdkal2kvVYruTifmJibpK0exJ1ZuSUdiIQaMPuBJ7fFd48QsmWKROdik
+         QQhQ==
+X-Gm-Message-State: AOAM531ksPvSNe7gKWyeLc1V7qoaQDfSAgRI/Mn3ruHUBJrIPeJElddQ
+        fA8OGhnIqAgd7WmwcXMWv4w7Lr4qnX7CJx2Fp6s=
+X-Google-Smtp-Source: ABdhPJwffCGWRkIYD6jWDrR+Q0unl67vgMn+0dEdUWWEKjlYNiJpUUJIFaz6I1IKyXmNSfuo/Jf8Ma79sirQ5eT8Hic=
+X-Received: by 2002:a2e:a58f:: with SMTP id m15mr2385147ljp.400.1615557384397;
+ Fri, 12 Mar 2021 05:56:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20210312122531.2717093-1-daeho43@gmail.com> <YEtg8U7whCVV2tQt@kroah.com>
+In-Reply-To: <YEtg8U7whCVV2tQt@kroah.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 12 Mar 2021 22:56:13 +0900
+Message-ID: <CACOAw_zhZ0OgT-KCBmD_H6_U=CZCNY44D-ojH2AZah2cbAvdAQ@mail.gmail.com>
+Subject: Re: [PATCH v4] f2fs: add sysfs nodes to get runtime compression stat
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for suggesting me sysfs_emit().
 
+For atomic values, actually, those are needed for writer part, not reader.
 
-> On Mar 10, 2021, at 9:04 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> On Thu, Jan 21, 2021 at 07:04:51PM +0800, Huaixin Chang wrote:
->> Accumulate unused quota from previous periods, thus accumulated
->> bandwidth runtime can be used in the following periods. During
->> accumulation, take care of runtime overflow. Previous non-burstable
->> CFS bandwidth controller only assign quota to runtime, that saves a lot.
->> 
->> A sysctl parameter sysctl_sched_cfs_bw_burst_onset_percent is introduced to
->> denote how many percent of burst is given on setting cfs bandwidth. By
->> default it is 0, which means on burst is allowed unless accumulated.
->> 
->> Also, parameter sysctl_sched_cfs_bw_burst_enabled is introduced as a
->> switch for burst. It is enabled by default.
->> 
->> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
->> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-> 
-> Identical invalid SoB chain.
-> 
->> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> What exactly did the robot report; the whole patch?
++#define add_compr_block_stat(inode, blocks)                            \
++       do {                                                            \
++               struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);            \
++               int diff =3D F2FS_I(inode)->i_cluster_size - blocks;      \
++               atomic64_add(blocks, &sbi->compr_written_block);        \
++               atomic64_add(diff, &sbi->compr_saved_block);            \
++       } while (0)
 
-A warning is reported by the robot. And I have fixed it in this series. I'll remove this line,
-since it seems unnecessary.
+I needed a protection here, because they might be updated in the race condi=
+tion.
 
-> 
->> ---
->> include/linux/sched/sysctl.h |  2 ++
->> kernel/sched/core.c          | 31 +++++++++++++++++++++++++----
->> kernel/sched/fair.c          | 47 ++++++++++++++++++++++++++++++++++++--------
->> kernel/sched/sched.h         |  4 ++--
->> kernel/sysctl.c              | 18 +++++++++++++++++
->> 5 files changed, 88 insertions(+), 14 deletions(-)
->> 
->> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
->> index 3c31ba88aca5..3400828eaf2d 100644
->> --- a/include/linux/sched/sysctl.h
->> +++ b/include/linux/sched/sysctl.h
->> @@ -72,6 +72,8 @@ extern unsigned int sysctl_sched_uclamp_util_min_rt_default;
->> 
->> #ifdef CONFIG_CFS_BANDWIDTH
->> extern unsigned int sysctl_sched_cfs_bandwidth_slice;
->> +extern unsigned int sysctl_sched_cfs_bw_burst_onset_percent;
->> +extern unsigned int sysctl_sched_cfs_bw_burst_enabled;
->> #endif
->> 
->> #ifdef CONFIG_SCHED_AUTOGROUP
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 48d3bad12be2..fecf0f05ef0c 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -66,6 +66,16 @@ const_debug unsigned int sysctl_sched_features =
->>  */
->> const_debug unsigned int sysctl_sched_nr_migrate = 32;
->> 
->> +#ifdef CONFIG_CFS_BANDWIDTH
->> +/*
->> + * Percent of burst assigned to cfs_b->runtime on tg_set_cfs_bandwidth,
->> + * 0 by default.
->> + */
->> +unsigned int sysctl_sched_cfs_bw_burst_onset_percent;
->> +
->> +unsigned int sysctl_sched_cfs_bw_burst_enabled = 1;
->> +#endif
-> 
-> There's already an #ifdef block that contains that bandwidth_slice
-> thing, see the previous hunk, so why create a new #ifdef here?
-> 
-> Also, personally I think percentages are over-represented as members of
-> Q.
-> 
-Sorry, I don't quite understand the "members of Q". Is this saying that the percentages
-are over-designed here?
-
->> @@ -7891,7 +7901,7 @@ static DEFINE_MUTEX(cfs_constraints_mutex);
->> const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
->> static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
->> /* More than 203 days if BW_SHIFT equals 20. */
->> -static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
->> +const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
->> 
->> static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
->> 
->> @@ -7900,7 +7910,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
->> {
->> 	int i, ret = 0, runtime_enabled, runtime_was_enabled;
->> 	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
->> -	u64 buffer;
->> +	u64 buffer, burst_onset;
->> 
->> 	if (tg == &root_task_group)
->> 		return -EINVAL;
->> @@ -7961,11 +7971,24 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
->> 	cfs_b->burst = burst;
->> 	cfs_b->buffer = buffer;
->> 
->> -	__refill_cfs_bandwidth_runtime(cfs_b);
->> +	cfs_b->max_overrun = DIV_ROUND_UP_ULL(max_cfs_runtime, quota);
->> +	cfs_b->runtime = cfs_b->quota;
->> +
->> +	/* burst_onset needed */
->> +	if (cfs_b->quota != RUNTIME_INF &&
->> +			sysctl_sched_cfs_bw_burst_enabled &&
->> +			sysctl_sched_cfs_bw_burst_onset_percent > 0) {
-> 
-> 'creative' indentation again...
-> 
-> Also, this gives rise to the question as to why onset_percent is
-> separate from enabled.
-
-Odin noticed the precent thing, too. Maybe I will remove this and let cfsb start with 0 burst.
-In this way, this if statement can be removed too.
-
-> 
->> +
->> +		burst_onset = do_div(burst, 100) *
->> +			sysctl_sched_cfs_bw_burst_onset_percent;
-> 
-> and again..
-> 
->> +
->> +		cfs_b->runtime += burst_onset;
->> +		cfs_b->runtime = min(max_cfs_runtime, cfs_b->runtime);
->> +	}
->> 
->> 	/* Restart the period timer (if active) to handle new period expiry: */
->> 	if (runtime_enabled)
->> -		start_cfs_bandwidth(cfs_b);
->> +		start_cfs_bandwidth(cfs_b, 1);
->> 
->> 	raw_spin_unlock_irq(&cfs_b->lock);
->> 
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 6bb4f89259fd..abe6eb05fe09 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -4598,10 +4598,23 @@ static inline u64 sched_cfs_bandwidth_slice(void)
->>  *
->>  * requires cfs_b->lock
->>  */
->> -void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
->> +static void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b,
->> +		u64 overrun)
->> {
->> -	if (cfs_b->quota != RUNTIME_INF)
->> -		cfs_b->runtime = cfs_b->quota;
->> +	u64 refill;
->> +
->> +	if (cfs_b->quota != RUNTIME_INF) {
->> +
->> +		if (!sysctl_sched_cfs_bw_burst_enabled) {
->> +			cfs_b->runtime = cfs_b->quota;
->> +			return;
->> +		}
->> +
->> +		overrun = min(overrun, cfs_b->max_overrun);
->> +		refill = cfs_b->quota * overrun;
->> +		cfs_b->runtime += refill;
->> +		cfs_b->runtime = min(cfs_b->runtime, cfs_b->buffer);
->> +	}
->> }
->> 
->> static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
->> @@ -4623,7 +4636,7 @@ static int __assign_cfs_rq_runtime(struct cfs_bandwidth *cfs_b,
->> 	if (cfs_b->quota == RUNTIME_INF)
->> 		amount = min_amount;
->> 	else {
->> -		start_cfs_bandwidth(cfs_b);
->> +		start_cfs_bandwidth(cfs_b, 0);
->> 
->> 		if (cfs_b->runtime > 0) {
->> 			amount = min(cfs_b->runtime, min_amount);
->> @@ -4957,7 +4970,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->> 	if (cfs_b->idle && !throttled)
->> 		goto out_deactivate;
->> 
->> -	__refill_cfs_bandwidth_runtime(cfs_b);
->> +	__refill_cfs_bandwidth_runtime(cfs_b, overrun);
->> 
->> 	if (!throttled) {
->> 		/* mark as potentially idle for the upcoming period */
->> @@ -5181,6 +5194,7 @@ static enum hrtimer_restart sched_cfs_slack_timer(struct hrtimer *timer)
->> }
->> 
->> extern const u64 max_cfs_quota_period;
->> +extern const u64 max_cfs_runtime;
->> 
->> static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
->> {
->> @@ -5210,7 +5224,14 @@ static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
->> 			new = old * 2;
->> 			if (new < max_cfs_quota_period) {
->> 				cfs_b->period = ns_to_ktime(new);
->> -				cfs_b->quota *= 2;
->> +				cfs_b->quota = min(cfs_b->quota * 2,
->> +						max_cfs_runtime);
-> 
-> again, broken indent
-> 
->> +
->> +				cfs_b->buffer = min(max_cfs_runtime,
->> +						cfs_b->quota + cfs_b->burst);
-> 
-> and again..
-> 
->> +				/* Add 1 in case max_overrun becomes 0. */
-> 
-> A better comment would explain *why* 0 is a problem; and possibly
-> include a reference to the code that cares
-> (__refill_cfs_bandiwdth_runtime() afaict).
-> 
->> +				cfs_b->max_overrun >>= 1;
->> +				cfs_b->max_overrun++;
->> 
->> 				pr_warn_ratelimited(
->> 	"cfs_period_timer[cpu%d]: period too short, scaling up (new cfs_period_us = %lld, cfs_quota_us = %lld)\n",
-
+2021=EB=85=84 3=EC=9B=94 12=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 9:39, G=
+reg KH <gregkh@linuxfoundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Fri, Mar 12, 2021 at 09:25:31PM +0900, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > I've added new sysfs nodes to show runtime compression stat since mount=
+.
+> > compr_written_block - show the block count written after compression
+> > compr_saved_block - show the saved block count with compression
+> > compr_new_inode - show the count of inode newly enabled for compression
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > ---
+> > v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
+> >     related to kernel config
+> > v3: changed sysfs nodes' names and made them runtime stat, not
+> >     persistent on disk
+> > v4: changed sysfs nodes' desctiption
+> > ---
+> >  Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++
+> >  fs/f2fs/compress.c                      |  1 +
+> >  fs/f2fs/f2fs.h                          | 19 ++++++++
+> >  fs/f2fs/super.c                         |  7 +++
+> >  fs/f2fs/sysfs.c                         | 58 +++++++++++++++++++++++++
+> >  5 files changed, 109 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/AB=
+I/testing/sysfs-fs-f2fs
+> > index cbeac1bebe2f..ddd4bd6116fc 100644
+> > --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> > +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> > @@ -409,3 +409,27 @@ Description:     Give a way to change checkpoint m=
+erge daemon's io priority.
+> >               I/O priority "3". We can select the class between "rt" an=
+d "be",
+> >               and set the I/O priority within valid range of it. "," de=
+limiter
+> >               is necessary in between I/O class and priority number.
+> > +
+> > +What:                /sys/fs/f2fs/<disk>/compr_written_block
+> > +Date:                March 2021
+> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
+> > +Description: Show the block count written after compression since moun=
+t. Note
+> > +             that when the compressed blocks are deleted, this count d=
+oesn't
+> > +             decrease. If you write "0" here, you can initialize
+> > +             compr_written_block and compr_saved_block to "0".
+> > +
+> > +What:                /sys/fs/f2fs/<disk>/compr_saved_block
+> > +Date:                March 2021
+> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
+> > +Description: Show the saved block count with compression since mount. =
+Note
+> > +             that when the compressed blocks are deleted, this count d=
+oesn't
+> > +             decrease. If you write "0" here, you can initialize
+> > +             compr_written_block and compr_saved_block to "0".
+> > +
+> > +What:                /sys/fs/f2fs/<disk>/compr_new_inode
+> > +Date:                March 2021
+> > +Contact:     "Daeho Jeong" <daehojeong@google.com>
+> > +Description: Show the count of inode newly enabled for compression sin=
+ce mount.
+> > +             Note that when the compression is disabled for the files,=
+ this count
+> > +             doesn't decrease. If you write "0" here, you can initiali=
+ze
+> > +             compr_new_inode to "0".
+> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > index 77fa342de38f..3c9d797dbdd6 100644
+> > --- a/fs/f2fs/compress.c
+> > +++ b/fs/f2fs/compress.c
+> > @@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct com=
+press_ctx *cc,
+> >       if (fio.compr_blocks)
+> >               f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, f=
+alse);
+> >       f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
+> > +     add_compr_block_stat(inode, cc->nr_cpages);
+> >
+> >       set_inode_flag(cc->inode, FI_APPEND_WRITE);
+> >       if (cc->cluster_idx =3D=3D 0)
+> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > index e2d302ae3a46..2c989f8caf05 100644
+> > --- a/fs/f2fs/f2fs.h
+> > +++ b/fs/f2fs/f2fs.h
+> > @@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
+> >  #ifdef CONFIG_F2FS_FS_COMPRESSION
+> >       struct kmem_cache *page_array_slab;     /* page array entry */
+> >       unsigned int page_array_slab_size;      /* default page array sla=
+b size */
+> > +
+> > +     /* For runtime compression statistics */
+> > +     atomic64_t compr_written_block;
+> > +     atomic64_t compr_saved_block;
+> > +     atomic_t compr_new_inode;
+>
+> Why do you need these to be atomic?  What requires this?
+>
+> > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > +     if (!strcmp(a->attr.name, "compr_written_block")) {
+> > +             u64 bcount;
+> > +             int len;
+> > +
+> > +             bcount =3D atomic64_read(&sbi->compr_written_block);
+> > +
+> > +             len =3D scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
+>
+> Please use sysfs_emit() for new sysfs entries like these.  Makes it much
+> simpler.
+>
+> And look, you really do not need an atomic value as this is just a
+> random number you are sending to userspace that could be stale the
+> minute you read from it.
+>
+> Please just use a normal u64 and save the cpu sync for stuff like this.
+>
+> thanks,
+>
+> greg k-h
