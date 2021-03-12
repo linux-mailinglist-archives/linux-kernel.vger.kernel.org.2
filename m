@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CF1339819
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7A933982D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhCLURA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234673AbhCLUQp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:16:45 -0500
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EC5C061574;
-        Fri, 12 Mar 2021 12:16:45 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 9906E4CFCCBE9;
-        Fri, 12 Mar 2021 12:16:43 -0800 (PST)
-Date:   Fri, 12 Mar 2021 12:16:42 -0800 (PST)
-Message-Id: <20210312.121642.657598616674920805.davem@davemloft.net>
-To:     eric.dumazet@gmail.com
-Cc:     roid@nvidia.com, baijiaju1990@gmail.com, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        saeedm@nvidia.com
-Subject: Re: [PATCH] net: bonding: fix error return code of
- bond_neigh_init()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <5d4cbafa-dbad-9b66-c5be-bca6ecc8e6f3@gmail.com>
-References: <20210308031102.26730-1-baijiaju1990@gmail.com>
-        <e15f36f7-6421-69a3-f10a-45b83621b96f@nvidia.com>
-        <5d4cbafa-dbad-9b66-c5be-bca6ecc8e6f3@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 12 Mar 2021 12:16:44 -0800 (PST)
+        id S234768AbhCLUZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:25:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234750AbhCLUZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:25:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3700A64F85;
+        Fri, 12 Mar 2021 20:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615580708;
+        bh=PiAVnNdcv0wxF9iybfaUy8tQqGnHkVEy3c5oroa2KHM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=o8FQyHkyzFenyo0UuWd6wh2j7bC0C04wtwqWUTHR4M6gmRaPuUJJ0NeDg8Fmlanw2
+         KSYKf7p7QQ4SNM1I7HJv4xWx58gznLpo74xx6feJk9xU386bqRU9lIITw7CfVHOWsy
+         atv/kXx9b2boDhplUT1gjRlcMjIBYFfbiOWt+ShunEcrGBnurneffMQ3cdnYcWIxZn
+         1WWJbtunZwpJtk/Uk3tWK5yniysUib3d3ky5edhHFPQ4EIF8POI75wlUpIWCnXrbwY
+         UfEyccrXQXTbzulEbsv30wi5hrAQFolBhUA1qMPIN5Uq/3ENnWwqwydP2M8FBG0fhn
+         +WgQaR5gA8vKQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, tzungbi@google.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>, matthias.bgg@gmail.com
+Cc:     shane.chien@mediatek.com, Trevor.Wu@mediatek.com
+In-Reply-To: <1615516005-781-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1615516005-781-1-git-send-email-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8192: fix tdm out data is valid on rising edge
+Message-Id: <161558062956.11113.8460883520488854945.b4-ty@kernel.org>
+Date:   Fri, 12 Mar 2021 20:23:49 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Wed, 10 Mar 2021 17:55:04 +0100
+On Fri, 12 Mar 2021 10:26:45 +0800, Jiaxin Yu wrote:
+> This patch correct tdm out bck inverse register to AUDIO_TOP_CON3[3].
 
-> 
-> Agreed, this commit made no sense, please revert.
+Applied to
 
-Done.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: mediatek: mt8192: fix tdm out data is valid on rising edge
+      commit: 8d06b9633a66f41fed520f6eebd163189518ba79
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
