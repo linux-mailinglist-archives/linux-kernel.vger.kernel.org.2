@@ -2,291 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772F7338D03
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A26338D0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhCLM0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhCLMZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:25:39 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7742C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:25:38 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso8426376pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:25:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=heFiHRJ+yDXxsvP4FofmW3y6eiqEITqgGlgBBBwjlWI=;
-        b=rc85kEb472JL3UTVxb/VSg9CshQzVlWaps9ym3rGDLm9Kev+oXifXhdSNATALoko3r
-         T/EPPKN33y8081b0eCP/BJJ0FdwQI1Q+En1+BKnnzH1Qcd3saEaQiEtmSzO74NIffsYk
-         CRw/rN+q/3p7OFTnPletzuXHCNFIE6UMvuNSEqARRu8mf7g+ZrCzDfJBV+RyAAViSmHw
-         4GIx+mopjgpqdJ+uALQcKr7eU5sNaI/6Q05JMw7b0TJyYwA8PfigWJPDzwq8YLRU1qYC
-         bxgE3wdxwiwt8bfzTfnpuUljLtcP5bqEbRAdRFxmbpPz1/QnqV8CHlWTFKXKdwIgpag2
-         16yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=heFiHRJ+yDXxsvP4FofmW3y6eiqEITqgGlgBBBwjlWI=;
-        b=Ah3zj07sPEcXr9VhqTu8lI4RwEpaVw0Kre8CNF3szkFgyZ23X3PBKSIxYrJkJGoA0v
-         XjZzV8cHenKxOHe0j+44TfKmAkGyhafyuHpq4Sqwuf76QLnkJCvkLljS0eC8eFlTT2A+
-         hLl8knHqFlYNwfQ/X8vE4CTBQenzfN4dF37n38CgnLEEatUfIdCcsLrfGq1lWVGBQQ7U
-         ilySJa1DBy7I1SfeivTzUAG7RAjLkIt+t1XN7tBCFlLtq3FTWQeXXvXxWH2Q3Uj2BwyT
-         1NqFLclYBiUE4U7zDeDgYW0BXWxMcAKcmiretzzFi+IhXMDsqkWS7ATaJGxDE0eYTxBo
-         hL6A==
-X-Gm-Message-State: AOAM5310IO8lIlRE1tK09+wdYbzG7FiRJhg4bhBgAfJ+6otqJo2ZFEM6
-        snighFZVhQxxuBAAt3Ty9b+bU9Hv8XQ=
-X-Google-Smtp-Source: ABdhPJw49vEPwgasfueeMIIdV9hd8xf4AElMcbJp+JvjHlOxYZneNew9PD1sNKND+95PUq5jk5+aWw==
-X-Received: by 2002:a17:90a:bd97:: with SMTP id z23mr14381546pjr.189.1615551938111;
-        Fri, 12 Mar 2021 04:25:38 -0800 (PST)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:addc:c0e1:9aed:6202])
-        by smtp.gmail.com with ESMTPSA id iq6sm2208956pjb.31.2021.03.12.04.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 04:25:37 -0800 (PST)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v4] f2fs: add sysfs nodes to get runtime compression stat
-Date:   Fri, 12 Mar 2021 21:25:31 +0900
-Message-Id: <20210312122531.2717093-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+        id S229902AbhCLM1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:27:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231229AbhCLM0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:26:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9DA964F33;
+        Fri, 12 Mar 2021 12:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615552009;
+        bh=747j9DSXo0t9Jf0l71efpP6DocfOreSCvakfPgvlDQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jD3GOe98q+eVkqDufgvcovhk5QdTZ8fUthhlNljyuicVIYdBSHo2W6apYozR8cmWD
+         2A4i7KdQhrM5HutOaaxJDZqUEcHOBGwkLz3LCaDWK4fjGetekYyXf+CIXGQBH0bEC7
+         gjPEIV1bIuZe/L7bm3YFw855Y8F3wSuafRrtR0C30gwhUOFvLuW8DDpXPv498Khu4J
+         VRQMKBeLieUH8hE0ny7XHr/88AtSDUOD53DnsPEVUMXIt9nhkAg1E9VyDiipCSjPtG
+         KHpVAw3nrDoAucQl773y32z6LdgLe/6fV1o3xrwYSHo/IsUhuFd6bPDZmh9wUI7dzw
+         Nt6CDWBn8HyTg==
+Date:   Fri, 12 Mar 2021 13:26:47 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210312122647.GC3646@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304002632.23870-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+>  /**
+> + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> + *
+> + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
+> + * or poll_state_synchronize_rcu() to determine whether or not a full
+> + * grace period has elapsed in the meantime.  If the needed grace period
+> + * is not already slated to start, notifies RCU core of the need for that
+> + * grace period.
+> + *
+> + * Interrupts must be enabled for the case where it is necessary to awaken
+> + * the grace-period kthread.
+> + */
+> +unsigned long start_poll_synchronize_rcu(void)
+> +{
+> +	unsigned long flags;
+> +	unsigned long gp_seq = get_state_synchronize_rcu();
 
-I've added new sysfs nodes to show runtime compression stat since mount.
-compr_written_block - show the block count written after compression
-compr_saved_block - show the saved block count with compression
-compr_new_inode - show the count of inode newly enabled for compression
+Ah! It's using rcu_seq_snap() and not rcu_seq_current() and therefore it's
+waiting for a safe future grace period, right?
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
-v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
-    related to kernel config
-v3: changed sysfs nodes' names and made them runtime stat, not
-    persistent on disk
-v4: changed sysfs nodes' desctiption
----
- Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++
- fs/f2fs/compress.c                      |  1 +
- fs/f2fs/f2fs.h                          | 19 ++++++++
- fs/f2fs/super.c                         |  7 +++
- fs/f2fs/sysfs.c                         | 58 +++++++++++++++++++++++++
- 5 files changed, 109 insertions(+)
+If so, please discard my previous email.
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index cbeac1bebe2f..ddd4bd6116fc 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -409,3 +409,27 @@ Description:	Give a way to change checkpoint merge daemon's io priority.
- 		I/O priority "3". We can select the class between "rt" and "be",
- 		and set the I/O priority within valid range of it. "," delimiter
- 		is necessary in between I/O class and priority number.
-+
-+What:		/sys/fs/f2fs/<disk>/compr_written_block
-+Date:		March 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Show the block count written after compression since mount. Note
-+		that when the compressed blocks are deleted, this count doesn't
-+		decrease. If you write "0" here, you can initialize
-+		compr_written_block and compr_saved_block to "0".
-+
-+What:		/sys/fs/f2fs/<disk>/compr_saved_block
-+Date:		March 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Show the saved block count with compression since mount. Note
-+		that when the compressed blocks are deleted, this count doesn't
-+		decrease. If you write "0" here, you can initialize
-+		compr_written_block and compr_saved_block to "0".
-+
-+What:		/sys/fs/f2fs/<disk>/compr_new_inode
-+Date:		March 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Show the count of inode newly enabled for compression since mount.
-+		Note that when the compression is disabled for the files, this count
-+		doesn't decrease. If you write "0" here, you can initialize
-+		compr_new_inode to "0".
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 77fa342de38f..3c9d797dbdd6 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 	if (fio.compr_blocks)
- 		f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, false);
- 	f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
-+	add_compr_block_stat(inode, cc->nr_cpages);
- 
- 	set_inode_flag(cc->inode, FI_APPEND_WRITE);
- 	if (cc->cluster_idx == 0)
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e2d302ae3a46..2c989f8caf05 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	struct kmem_cache *page_array_slab;	/* page array entry */
- 	unsigned int page_array_slab_size;	/* default page array slab size */
-+
-+	/* For runtime compression statistics */
-+	atomic64_t compr_written_block;
-+	atomic64_t compr_saved_block;
-+	atomic_t compr_new_inode;
- #endif
- };
- 
-@@ -3955,6 +3960,18 @@ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
- void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
- int __init f2fs_init_compress_cache(void);
- void f2fs_destroy_compress_cache(void);
-+#define inc_compr_inode_stat(inode)					\
-+	do {								\
-+		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
-+		atomic_inc(&sbi->compr_new_inode);			\
-+	} while (0)
-+#define add_compr_block_stat(inode, blocks)				\
-+	do {								\
-+		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
-+		int diff = F2FS_I(inode)->i_cluster_size - blocks;	\
-+		atomic64_add(blocks, &sbi->compr_written_block);	\
-+		atomic64_add(diff, &sbi->compr_saved_block);		\
-+	} while (0)
- #else
- static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
- static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
-@@ -3983,6 +4000,7 @@ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return
- static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
- static inline int __init f2fs_init_compress_cache(void) { return 0; }
- static inline void f2fs_destroy_compress_cache(void) { }
-+#define inc_compr_inode_stat(inode)		do { } while (0)
- #endif
- 
- static inline void set_compress_context(struct inode *inode)
-@@ -4006,6 +4024,7 @@ static inline void set_compress_context(struct inode *inode)
- 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
- 	set_inode_flag(inode, FI_COMPRESSED_FILE);
- 	stat_inc_compr_inode(inode);
-+	inc_compr_inode_stat(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
- }
- 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 7069793752f1..88d9ecdee8d3 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3260,6 +3260,13 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
- 
- 	init_rwsem(&sbi->sb_lock);
- 	init_rwsem(&sbi->pin_sem);
-+
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+	/* For runtime compression statistics */
-+	atomic64_set(&sbi->compr_written_block, 0);
-+	atomic64_set(&sbi->compr_saved_block, 0);
-+	atomic_set(&sbi->compr_new_inode, 0);
-+#endif
- }
- 
- static int init_percpu_info(struct f2fs_sb_info *sbi)
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index e38a7f6921dd..2b6e5e6e1286 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -282,6 +282,38 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
- 		return len;
- 	}
- 
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+	if (!strcmp(a->attr.name, "compr_written_block")) {
-+		u64 bcount;
-+		int len;
-+
-+		bcount = atomic64_read(&sbi->compr_written_block);
-+
-+		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
-+		return len;
-+	}
-+
-+	if (!strcmp(a->attr.name, "compr_saved_block")) {
-+		u64 bcount;
-+		int len;
-+
-+		bcount = atomic64_read(&sbi->compr_saved_block);
-+
-+		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
-+		return len;
-+	}
-+
-+	if (!strcmp(a->attr.name, "compr_new_inode")) {
-+		u32 icount;
-+		int len;
-+
-+		icount = atomic_read(&sbi->compr_new_inode);
-+
-+		len = scnprintf(buf, PAGE_SIZE, "%u\n", icount);
-+		return len;
-+	}
-+#endif
-+
- 	ui = (unsigned int *)(ptr + a->offset);
- 
- 	return sprintf(buf, "%u\n", *ui);
-@@ -458,6 +490,24 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return count;
- 	}
- 
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+	if (!strcmp(a->attr.name, "compr_written_block") ||
-+		!strcmp(a->attr.name, "compr_saved_block")) {
-+		if (t != 0)
-+			return -EINVAL;
-+		atomic64_set(&sbi->compr_written_block, 0);
-+		atomic64_set(&sbi->compr_saved_block, 0);
-+		return count;
-+	}
-+
-+	if (!strcmp(a->attr.name, "compr_new_inode")) {
-+		if (t != 0)
-+			return -EINVAL;
-+		atomic_set(&sbi->compr_new_inode, 0);
-+		return count;
-+	}
-+#endif
-+
- 	*ui = (unsigned int)t;
- 
- 	return count;
-@@ -668,6 +718,9 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
- F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
- #endif
- 
- #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
-@@ -730,6 +783,11 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(moved_blocks_foreground),
- 	ATTR_LIST(moved_blocks_background),
- 	ATTR_LIST(avg_vblocks),
-+#endif
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+	ATTR_LIST(compr_written_block),
-+	ATTR_LIST(compr_saved_block),
-+	ATTR_LIST(compr_new_inode),
- #endif
- 	NULL,
- };
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Thanks.
