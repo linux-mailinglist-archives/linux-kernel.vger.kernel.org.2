@@ -2,68 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2E13397F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F058B3397F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbhCLUFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:05:17 -0500
-Received: from mga09.intel.com ([134.134.136.24]:22217 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234644AbhCLUFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:05:03 -0500
-IronPort-SDR: rtRvRL2LkeJzTAdaaKKpBxomrTL2IaafcCKX+xxLwNMKw3nrl/HJlFazr0scqkWGGeS3+jsVfA
- T0xDgHq25c3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188977454"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="188977454"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 12:05:00 -0800
-IronPort-SDR: 4FBujnPHzVKMGemsDs9zMwydsNGaVhrZP23a5Kmq1I/bUM3Y6N/leH4kCaK9t3fVQL/Bs8nRhR
- TSopgAANCS0w==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="411122199"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 12:05:00 -0800
-Date:   Fri, 12 Mar 2021 12:05:00 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
-Message-ID: <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
-References: <20210217024826.3466046-1-ira.weiny@intel.com>
- <20210312194141.GT7604@suse.cz>
+        id S234595AbhCLUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234531AbhCLUFv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:05:51 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918E8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:05:50 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id v15so5478506wrx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QGcOUOWYrtlGEtGtp6CRhZz9BsHqr4gvekeyWTQX/+U=;
+        b=qXjLpE1SzOwXL9eMZ4sVgx+Ho7QAI/X5+cU88dH2+5FstbM+imrk9OxnjbVeUcR6YI
+         rx0szxhQCI8AwDfNdyCzkSp6a+z9FHIl/SnJa9covZXzclAP8CNUjmxCgD7/534BDM6l
+         D5x0bFj0S+9CccUOvMiSnHZUhUyL4Nt9dfbwP5yvfRMnIxL7OfxWIDZJJgqN5xGHElo3
+         TzGsWFTFsxG3nrEYYJI+xiF1cTm5NaPZ7HLpKzP+u5x/paqU7X6VgvZCJ0OZpm/IBXfF
+         6pwmLJN2F3lsXuNQqTo21sTgShG48HUbToep4zwaSQVJ3Y5HPCcjdZGdYD0SEp5qRrJg
+         IczQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QGcOUOWYrtlGEtGtp6CRhZz9BsHqr4gvekeyWTQX/+U=;
+        b=QI+mCb/uSJC+cpusfI1WlMti7m6if1TobR9M/KZZPIEpUAaS4gXq4Rty4GPw6IxEiZ
+         hpYURsSzfK8eYSJXFX0cEYh6bmbRzcFFmTjAYoQybA/rj4Saah09N/B2YizB0F077HSr
+         jSkaFmFjkWhiUIPW8P8wK/B4Ibwx06U/szBweYBT33Q1R9f1zWkL9k+BnA8HLm6VM0S1
+         NBrwdLVJUB7sK3B+6W71/j1LK7YhmBKZlUiMrhXQxGlKEVWo0q4hPzNpU/B034///UNU
+         Q1H7EUWgAlyzdI2YBN5kQJKexsm8TJ7Tw2004kyIum+eb30zkh7j3xwOi02sMjnP/oJ0
+         FEGg==
+X-Gm-Message-State: AOAM530Nt3oviwz8wN04VKNQ++xAoICeZ3ROTVkaIPbFsod3Fghd8yuH
+        vv3NqYyPwq2Lvs+XWy+7nNKjf0j/uZku6n9hm0Y=
+X-Google-Smtp-Source: ABdhPJw8cRrGcaQUUVnqA8Tyww1Pzpw79qa1UHk7Y7H/248bMIaCPg9pzS91Nl7GhXEgRhZp4++izQ==
+X-Received: by 2002:adf:f04e:: with SMTP id t14mr15854532wro.100.1615579549084;
+        Fri, 12 Mar 2021 12:05:49 -0800 (PST)
+Received: from apalos.home (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
+        by smtp.gmail.com with ESMTPSA id i11sm9148238wro.53.2021.03.12.12.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 12:05:48 -0800 (PST)
+Date:   Fri, 12 Mar 2021 22:05:45 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 7/7] net: page_pool: use alloc_pages_bulk in refill code
+ path
+Message-ID: <YEvJmVrnTzKT1XAY@apalos.home>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
+ <20210312154331.32229-8-mgorman@techsingularity.net>
+ <CAKgT0UebK=mMwDV+UH8CqBRt0E0Koc7EB42kwgf0hYHDT_2OfQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312194141.GT7604@suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <CAKgT0UebK=mMwDV+UH8CqBRt0E0Koc7EB42kwgf0hYHDT_2OfQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 08:41:41PM +0100, David Sterba wrote:
-> On Tue, Feb 16, 2021 at 06:48:22PM -0800, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > I am submitting these for 5.13.
-> > 
-> > Further work to remove more kmap() calls in favor of the kmap_local_page() this
-> > series converts those calls which required more than a common pattern which
-> > were covered in my previous series[1].  This is the second of what I hope to be
-> > 3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
-> > because I need to have more eyes on it before I'm sure about what to do.  For
-> > now this series should be good to go for 5.13.
-> > 
-> > Also this series converts the kmaps in the raid5/6 code which required a fix to
-> > the kmap'ings which was submitted in [2].
+[...]
+> 6. return last_page
 > 
-> Branch added to for-next and will be moved to the devel queue next week.
-> I've added some comments about the ordering requirement, that's
-> something not obvious. There's a comment under 1st patch but that's
-> trivial to fix if needed. Thanks.
+> > +       /* Remaining pages store in alloc.cache */
+> > +       list_for_each_entry_safe(page, next, &page_list, lru) {
+> > +               list_del(&page->lru);
+> > +               if ((pp_flags & PP_FLAG_DMA_MAP) &&
+> > +                   unlikely(!page_pool_dma_map(pool, page))) {
+> > +                       put_page(page);
+> > +                       continue;
+> > +               }
+> 
+> So if you added a last_page pointer what you could do is check for it
+> here and assign it to the alloc cache. If last_page is not set the
+> block would be skipped.
+> 
+> > +               if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
+> > +                       pool->alloc.cache[pool->alloc.count++] = page;
+> > +                       pool->pages_state_hold_cnt++;
+> > +                       trace_page_pool_state_hold(pool, page,
+> > +                                                  pool->pages_state_hold_cnt);
+> > +               } else {
+> > +                       put_page(page);
+> 
+> If you are just calling put_page here aren't you leaking DMA mappings?
+> Wouldn't you need to potentially unmap the page before you call
+> put_page on it?
 
-I've replied to the first patch.  LMK if you want me to respin it.
+Oops, I completely missed that. Alexander is right here.
 
-Thanks!
-Ira
+> 
+> > +               }
+> > +       }
+> > +out:
+> >         if ((pp_flags & PP_FLAG_DMA_MAP) &&
+> > -           unlikely(!page_pool_dma_map(pool, page))) {
+> > -               put_page(page);
+> > +           unlikely(!page_pool_dma_map(pool, first_page))) {
+> > +               put_page(first_page);
+> 
+> I would probably move this block up and make it a part of the pp_order
+> block above. Also since you are doing this in 2 spots it might make
+> sense to look at possibly making this an inline function.
+> 
+> >                 return NULL;
+> >         }
+> >
+> >         /* Track how many pages are held 'in-flight' */
+> >         pool->pages_state_hold_cnt++;
+> > -       trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
+> > +       trace_page_pool_state_hold(pool, first_page, pool->pages_state_hold_cnt);
+> >
+> >         /* When page just alloc'ed is should/must have refcnt 1. */
+> > -       return page;
+> > +       return first_page;
+> >  }
+> >
+> >  /* For using page_pool replace: alloc_pages() API calls, but provide
+> > --
+> > 2.26.2
+> >
+
+Cheers
+/Ilias
