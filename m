@@ -2,157 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8A333862F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAE733863B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhCLGrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S231637AbhCLGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbhCLGql (ORCPT
+        with ESMTP id S230317AbhCLGvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:46:41 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD85C061574;
-        Thu, 11 Mar 2021 22:46:41 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 130so23278324qkh.11;
-        Thu, 11 Mar 2021 22:46:41 -0800 (PST)
+        Fri, 12 Mar 2021 01:51:44 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574F7C061574;
+        Thu, 11 Mar 2021 22:51:44 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 184so5401505ljf.9;
+        Thu, 11 Mar 2021 22:51:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DXa/TwpD5g1RF25czzNd+gGtn6u53gwLzzEg3FFw/vw=;
-        b=vAsRQfWy2jO5XPnaqsFqXNimuNNnRLcJ48DU84RYW0CnjzREhfN/KybhVsWr+Q5Nw9
-         1kjGr+MNE7+Qo18qMgbzcNzHhB5A7aaa8+shzWMUvtP9ivxXa94TPeVYhcbStnIErQvJ
-         raLPc2bTj218OlzO+CMXXahjQQbXrgX7PGfl5zTo1rMyqdGD227Yw9PB3LLx0byhbU6Z
-         wV0TjPoHERiOPvxFmrty6p/aDweYn06Gsx9fIcNGqkX9m7CCUuyGiuFxv/ED9iXGq9zY
-         R52x+W/Eh0E8lOZEC5VyrgyKFEur+4n1ajfwqUZkaHHc8DzrulcPOAVigPYSYcrkpL7X
-         JB3Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A02n+NMAd8eL7DH8iNao8zcIag1ILDz80ELEqIyHHZo=;
+        b=J36C5piggPIl7dd9yoqgznx8u7ngRlNKo2Pa32t1TywPcZPu09skaKUrDmQuXo7xW9
+         6VnoiMPBre59TN9nEYzmiUFgeORkHpFrPsT2xi+Xdmpkdat99bDJwiJ1o/GJ8jeCE037
+         GBrkdtsnnt2DNJ5NVvfGQaldTKVfc802rZHWwRtnyzqkz9IC+S6t8NBqOe8Lka286rD/
+         kW04k7BR6LW/NNl/5SAmE2oqZWY0xJRdy053PMPG9UPqV/ZlM53HWL3itEeIjxnA9pZU
+         tPPb6COS2nRqf0yejKp0wwfzVXFKkqnVrYdshUf0925fp5osJ9oVVpwUYYYgfqRDhp6+
+         z09g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DXa/TwpD5g1RF25czzNd+gGtn6u53gwLzzEg3FFw/vw=;
-        b=uRAmdNc83f1A+V9zWW4uzaNq95oqM0Hf30R4u/ydphxgdtYrgGqOm0zXCkwLUe6XnQ
-         80Yl91B66FpW8BkYbtmTNn+oelC4qdHuNGrO7PrU3DnKn7zItEKSZ6zo62vBNQ1hYXqt
-         QIF4UECsY2wsR8KYbY+0y4VYdQZt+sUNq+UUUW1WWZ2K9VPs172V0DvzUcvgxHKvZDz9
-         NhIC3Sf1PpbfnxxCXFGud8EHYq+3GIM87UxQk5R27C+FD4Z43LjavUTjYyjWzi/7hpIj
-         I6929Ic/aU46fT3Lwx52hyujGfX4tCGva5uyBSUDvpnKOndooWzgJV5d1bfHtZUxpySA
-         ySZw==
-X-Gm-Message-State: AOAM5316gp5LJhv5Wa3wH8A+/UjEdsBZ9OLv6xSr6xyynKMotNYsVlVe
-        zW08KTUMBO22Sd4D/UsR8A4=
-X-Google-Smtp-Source: ABdhPJwRN2GnIunUX8FoOoOJ62YJLzL/eVouPTGA75PcxzKc6HSSCQiNYnFEuWI4GUvXzjBdl5sqdQ==
-X-Received: by 2002:a37:9d57:: with SMTP id g84mr10563431qke.71.1615531600296;
-        Thu, 11 Mar 2021 22:46:40 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id g186sm3921843qke.0.2021.03.11.22.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Mar 2021 22:46:40 -0800 (PST)
-Subject: Re: [PATCH V11 0/5] dt: Add fdtoverlay rule and statically build
- unittest
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-References: <cover.1615354376.git.viresh.kumar@linaro.org>
- <7211f09e-092b-d928-0c69-e2dcd1fc7c1e@gmail.com>
- <20210312043110.hirx52ibepfrvvij@vireshk-i7>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <c3139c14-2099-a74d-5084-877c1532343f@gmail.com>
-Date:   Fri, 12 Mar 2021 00:46:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A02n+NMAd8eL7DH8iNao8zcIag1ILDz80ELEqIyHHZo=;
+        b=G8UPAr5YclS/Kl3GjPFcbAh7cypXh1xgfixNsgSRXmNk2yvXb0WL3GisFgWylagG4a
+         XhcN3QYc2O+ZMhgTHtwjlFy0gbG2xZMfukunlE9BSMJ/f5gPam4kNcAMbVdImyWJ+sRd
+         nx0JU39ZrJa4qi0zdfbNaFo4JC/a1fyodak2vrxckVWoWJbXGXm/laxAQVbQ2gRluGc1
+         m7G6dEodDcNmY3jsFZt7Tn+qUr4UwA5JvHYuk1YX0MI0me7gu845zOUephJTdcSsou77
+         fYF0clvBSkYZPIP3gC5w5DN1fCS0P+NZYuviurYlxp1oIDAxk31Ss7EhomwMp4AzE6cl
+         5bOw==
+X-Gm-Message-State: AOAM530Z1svgwawzJM6EaJXGYDfprPb1xVhrAbo5TmoxB4sZ1tGOTx7U
+        vl3pClrp1rqsDnPWoTL0/BESuLmQFkArueZjCOg=
+X-Google-Smtp-Source: ABdhPJwMrXrUdY9rDHk50mf/W++NSnpSBQ1pBOQOAXf6/w9+qK0X+o5+sPFXOHuvn0/NoRe4YANtg1fv0WApfz7nPcs=
+X-Received: by 2002:a2e:6e0c:: with SMTP id j12mr1507938ljc.365.1615531902839;
+ Thu, 11 Mar 2021 22:51:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312043110.hirx52ibepfrvvij@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210311221946.1319924-1-ribalda@chromium.org>
+ <20210311221946.1319924-4-ribalda@chromium.org> <YEqevkojuvniSTFS@pendragon.ideasonboard.com>
+ <CAPybu_2GF96ODzrkycAixiRg+L_BMCF40uW5jBhErND8v6STjA@mail.gmail.com> <YEqoBe5sQ+xP8PpY@pendragon.ideasonboard.com>
+In-Reply-To: <YEqoBe5sQ+xP8PpY@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Fri, 12 Mar 2021 07:51:26 +0100
+Message-ID: <CAPybu_11wgf4rdmWHvDRQUx0x8Z42KLrGeWzSEUTO=6A8L4BmA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] media: uvcvideo: Return -EIO for control errors
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/11/21 10:31 PM, Viresh Kumar wrote:
-> On 11-03-21, 17:27, Frank Rowand wrote:
->> On 3/9/21 11:35 PM, Viresh Kumar wrote:
->>> Viresh Kumar (4):
->>>   kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
->>>   kbuild: Allow .dtso format for overlay source files
->>>   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
->>>   of: unittest: Statically apply overlays using fdtoverlay
->>>
->>>  drivers/of/unittest-data/Makefile             | 48 ++++++++++
->>>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
->>>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
->>>  drivers/of/unittest-data/static_base_1.dts    |  4 +
->>>  drivers/of/unittest-data/static_base_2.dts    |  4 +
->>>  drivers/of/unittest-data/testcases.dts        | 23 ++---
->>>  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
->>>  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
->>>  scripts/Makefile.lib                          | 40 ++++++--
->>>  9 files changed, 218 insertions(+), 112 deletions(-)
->>>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->>>  create mode 100644 drivers/of/unittest-data/static_base_1.dts
->>>  create mode 100644 drivers/of/unittest-data/static_base_2.dts
->>>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
->>>
->>>
->>> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
->>>
->>
->> Does not apply to 5.12-rc2
-> 
-> I was based right over the 5.12-rc2 tag.
+Hi Laurent
 
-I don't know why I failed.  Given your report, I went back to
-v5.12-rc2 and the patch series applies fine.
+On Fri, Mar 12, 2021 at 12:30 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> On Thu, Mar 11, 2021 at 11:59:27PM +0100, Ricardo Ribalda Delgado wrote:
+> > On Thu, Mar 11, 2021 at 11:53 PM Laurent Pinchart wrote:
+> > > On Thu, Mar 11, 2021 at 11:19:43PM +0100, Ricardo Ribalda wrote:
+> > > > The device is doing something unspected with the control. Either because
+> > > > the protocol is not properly implemented or there has been a HW error.
+> > > >
+> > > > Fixes v4l2-compliance:
+> > > >
+> > > > Control ioctls (Input 0):
+> > > >                 fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+> > > >         test VIDIOC_G/S_CTRL: FAIL
+> > > >                 fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+> > > >         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> > > >
+> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > >
+> > > The change looks good to me.
+> > >
+> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > >
+> > > Which of the error codes below do you get with your camera, and for
+> > > which control ?
+> >
+> > Bus 001 Device 003: ID 05c8:03a2 Cheng Uei Precision Industry Co., Ltd
+> > (Foxlink) XiaoMi USB 2.0 Webcam
+> >
+> > info: checking extended control 'White Balance Temperature' (0x0098091a)
+> > Control error 7
+> > info: checking extended control 'Exposure (Absolute)' (0x009a0902)
+> > Control error 6
+>
+> :-S And what's the request (GET_CUR, GET_INFO, ...) ?
 
-Either way, my tags are ok.
+Failed to query (SET_CUR) UVC control 10 on unit 2: -32 (exp. 2).
+Failed to query (SET_CUR) UVC control 4 on unit 1: -32 (exp. 4)
+>
+> > > > ---
+> > > >  drivers/media/usb/uvc/uvc_video.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > >
+> > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > > index f2f565281e63..25fd8aa23529 100644
+> > > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > > @@ -112,6 +112,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+> > > >       case 5: /* Invalid unit */
+> > > >       case 6: /* Invalid control */
+> > > >       case 7: /* Invalid Request */
+> > > > +             /*
+> > > > +              * The firmware has not properly implemented
+> > > > +              * the control or there has been a HW error.
+> > > > +              */
+> > > > +             return -EIO;
+> > > >       case 8: /* Invalid value within range */
+> > > >               return -EINVAL;
+> > > >       default: /* reserved or unknown */
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-> 
->> because of a dependency on a patch to
->> scripts/Makefile.lib.  That patch has been merged by Linus
->> somewhere between -rc2 and -rc3.
-> 
-> git log --oneline v5.12-rc2..origin/master -- scripts/Makefile.lib
-> 
-> gives no results to me.
-> 
->> I had a working version
->> between -rc2 and -rc3 at commit e6f197677b2e
-> 
-> I have tried both Linus' tree and linux-next, and I don't see this
-> commit.
 
-Sorry about that, the commit id I gave was after applying the patch
-series.  The commit id I should have reported is 144c79ef3353.
 
--Frank
-
-> 
->> that does have
->> the required patch, so that is the version I used to test
->> this series.
->>
->> There is still confusion caused by the contortions that unittest
->> goes through to mis-use base DTBs vs overlay DTBs, so _after_
->> this series is merged by Rob, I will poke around and see if
->> I can change unittest so that it does not look like it is
->> mis-using DTBs and overlay DTBs.
->>
->>
->> Reviewed-by: Frank Rowand <frank.rowand@sony.com>
->> Tested-by: Frank Rowand <frank.rowand@sony.com>
-> 
-> Thanks.
-> 
-
+-- 
+Ricardo Ribalda
