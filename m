@@ -2,189 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E082F3392A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5BD3392A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhCLQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:01:44 -0500
-Received: from mga12.intel.com ([192.55.52.136]:16773 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232009AbhCLQBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:01:30 -0500
-IronPort-SDR: LeW9whgosBf0qQFByb5/5WDhptHrUuHON8Ux4WjU3dbHLq3ZS4sHRGPJh3NXjx1hk3emkrP6YT
- 0S8vwucqNftQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168122734"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="168122734"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:01:30 -0800
-IronPort-SDR: +tYUtikwOqGLdg82cqaEX8bTBOwucBY2wIOKMx+sFsGc6zzPprZtjk32u/r1xQ4Fypfvi8Nmfs
- M9LOCJS+5ARA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="603969354"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Mar 2021 08:01:28 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CBAF92AF; Fri, 12 Mar 2021 18:01:40 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ACPI: scan: Use unique number for instance_no
-Date:   Fri, 12 Mar 2021 18:01:37 +0200
-Message-Id: <20210312160137.19463-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S231346AbhCLQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:04:27 -0500
+Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:46895 "EHLO
+        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231557AbhCLQDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:03:53 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 210B51C3FA0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:03:52 +0000 (GMT)
+Received: (qmail 13536 invoked from network); 12 Mar 2021 16:03:51 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Mar 2021 16:03:51 -0000
+Date:   Fri, 12 Mar 2021 16:03:50 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210312160350.GW3697@techsingularity.net>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310104618.22750-3-mgorman@techsingularity.net>
+ <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
+ <20210311084200.GR3697@techsingularity.net>
+ <20210312124609.33d4d4ba@carbon>
+ <20210312145814.GA2577561@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210312145814.GA2577561@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current mechanism of incrementing and decrementing plain integer
-to get a next free instance_no when creating an ACPI device is fragile.
+On Fri, Mar 12, 2021 at 02:58:14PM +0000, Matthew Wilcox wrote:
+> On Fri, Mar 12, 2021 at 12:46:09PM +0100, Jesper Dangaard Brouer wrote:
+> > In my page_pool patch I'm bulk allocating 64 pages. I wanted to ask if
+> > this is too much? (PP_ALLOC_CACHE_REFILL=64).
+> > 
+> > The mlx5 driver have a while loop for allocation 64 pages, which it
+> > used in this case, that is why 64 is chosen.  If we choose a lower
+> > bulk number, then the bulk-alloc will just be called more times.
+> 
+> The thing about batching is that smaller batches are often better.
+> Let's suppose you need to allocate 100 pages for something, and the page
+> allocator takes up 90% of your latency budget.  Batching just ten pages
+> at a time is going to reduce the overhead to 9%.  Going to 64 pages
+> reduces the overhead from 9% to 2% -- maybe that's important, but
+> possibly not.
+> 
 
-In case of hot plug event or namespace removal of the device instances
-with the low numbers the plain integer counter can't cover the gaps
-and become desynchronized with real state of affairs. If during next
-hot plug event or namespace injection the new instances of
-the devices need to be instantiated, the counter may mistakenly point
-to the existing instance_no and kernel will complain:
-"sysfs: cannot create duplicate filename '/bus/acpi/devices/XXXX1234:02'"
+I do not think that something like that can be properly accessed in
+advance. It heavily depends on whether the caller is willing to amortise
+the cost of the batch allocation or if the timing of the bulk request is
+critical every single time.
 
-Replace plain integer approach by using IDA framework.
+> > The result of the API is to deliver pages as a double-linked list via
+> > LRU (page->lru member).  If you are planning to use llist, then how to
+> > handle this API change later?
+> > 
+> > Have you notice that the two users store the struct-page pointers in an
+> > array?  We could have the caller provide the array to store struct-page
+> > pointers, like we do with kmem_cache_alloc_bulk API.
+> 
+> My preference would be for a pagevec.  That does limit you to 15 pages
+> per call [1], but I do think that might be enough.  And the overhead of
+> manipulating a linked list isn't free.
+> 
 
-Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
-Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/acpi/internal.h |  4 ++-
- drivers/acpi/scan.c     | 55 +++++++++++++++++++++++++++++++++++++----
- 2 files changed, 53 insertions(+), 6 deletions(-)
+I'm opposed to a pagevec because it unnecessarily limits the caller.  The
+sunrpc user for example knows how many pages it needs at the time the bulk
+allocator is called but it's not the same value every time.  When tracing,
+I found it sometimes requested 1 page (most common request actually) and
+other times requested 200+ pages. Forcing it to call the batch allocator
+in chunks of 15 means the caller incurs the cost of multiple allocation
+requests which is almost as bad as calling __alloc_pages in a loop.
 
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index e6a5d997241c..6fee4f71ba1c 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -9,6 +9,8 @@
- #ifndef _ACPI_INTERNAL_H_
- #define _ACPI_INTERNAL_H_
- 
-+#include <linux/idr.h>
-+
- #define PREFIX "ACPI: "
- 
- int early_acpi_osi_init(void);
-@@ -98,7 +100,7 @@ extern struct list_head acpi_bus_id_list;
- 
- struct acpi_device_bus_id {
- 	const char *bus_id;
--	unsigned int instance_no;
-+	struct ida no;
- 	struct list_head node;
- };
- 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index a184529d8fa4..a118a58f7dad 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -468,9 +468,27 @@ static void acpi_device_release(struct device *dev)
- 	kfree(acpi_dev);
- }
- 
-+static int acpi_device_get_instance_no(struct acpi_device *device)
-+{
-+	const char *p;
-+	int result;
-+	int error;
-+
-+	p = strrchr(dev_name(&device->dev), ':');
-+	if (!p)
-+		return -ENODATA;
-+
-+	error = kstrtoint(p + 1, 16, &result);
-+	if (error)
-+		return error;
-+
-+	return result;
-+}
-+
- static void acpi_device_del(struct acpi_device *device)
- {
- 	struct acpi_device_bus_id *acpi_device_bus_id;
-+	int result;
- 
- 	mutex_lock(&acpi_device_lock);
- 	if (device->parent)
-@@ -479,9 +497,13 @@ static void acpi_device_del(struct acpi_device *device)
- 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
- 		if (!strcmp(acpi_device_bus_id->bus_id,
- 			    acpi_device_hid(device))) {
--			if (acpi_device_bus_id->instance_no > 0)
--				acpi_device_bus_id->instance_no--;
--			else {
-+			result = acpi_device_get_instance_no(device);
-+			if (result < 0)
-+				dev_warn(&device->dev, "Can't get instance no\n");
-+			else
-+				ida_simple_remove(&acpi_device_bus_id->no, result);
-+
-+			if (ida_is_empty(&acpi_device_bus_id->no)) {
- 				list_del(&acpi_device_bus_id->node);
- 				kfree_const(acpi_device_bus_id->bus_id);
- 				kfree(acpi_device_bus_id);
-@@ -631,6 +653,19 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
- 	return NULL;
- }
- 
-+static int acpi_device_set_name(struct acpi_device *device,
-+				struct acpi_device_bus_id *acpi_device_bus_id)
-+{
-+	int result;
-+
-+	result = ida_simple_get(&acpi_device_bus_id->no, 0, 255, GFP_KERNEL);
-+	if (result < 0)
-+		return result;
-+
-+	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
-+	return 0;
-+}
-+
- int acpi_device_add(struct acpi_device *device,
- 		    void (*release)(struct device *))
- {
-@@ -665,7 +700,9 @@ int acpi_device_add(struct acpi_device *device,
- 
- 	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
- 	if (acpi_device_bus_id) {
--		acpi_device_bus_id->instance_no++;
-+		result = acpi_device_set_name(device, acpi_device_bus_id);
-+		if (result < 0)
-+			goto err_unlock;
- 	} else {
- 		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
- 					     GFP_KERNEL);
-@@ -681,9 +718,17 @@ int acpi_device_add(struct acpi_device *device,
- 			goto err_unlock;
- 		}
- 
-+		ida_init(&acpi_device_bus_id->no);
-+
-+		result = acpi_device_set_name(device, acpi_device_bus_id);
-+		if (result < 0) {
-+			ida_destroy(&acpi_device_bus_id->no);
-+			kfree(acpi_device_bus_id);
-+			goto err_unlock;
-+		}
-+
- 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
- 	}
--	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
- 
- 	if (device->parent)
- 		list_add_tail(&device->node, &device->parent->children);
+I think the first version should have an easy API to start with. Optimise
+the implementation if it is a bottleneck. Only make the API harder to
+use if the callers are really willing to always allocate and size the
+array in advance and it's shown that it really makes a big difference
+performance-wise.
+
 -- 
-2.30.1
-
+Mel Gorman
+SUSE Labs
