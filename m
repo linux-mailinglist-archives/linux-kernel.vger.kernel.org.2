@@ -2,243 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D08E338932
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE30338940
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhCLJuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:50:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhCLJtb (ORCPT
+        id S233158AbhCLJvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:51:13 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13885 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233509AbhCLJu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:49:31 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35DBC061574;
-        Fri, 12 Mar 2021 01:49:30 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id ci14so52021032ejc.7;
-        Fri, 12 Mar 2021 01:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X/budyxfXl4/blczsR4CErrFNRt8Mt+0vRDmJ7OsswU=;
-        b=DTUXasxiiyPWzO5i/r6wl92RXC3cTnOTVkZkkdKXtGLftgRNtLHi0p4MPibHqv6NGM
-         IGRvo8X2vWTsdeBfmR1+bI6KziuRPMj59VyMFBjZVlAWcp315BBK/65H7ydyLAqbr/WN
-         INpGUl1YVoSgVwxRdS6WgorR7uS5y+g52KSiJ1dbYls0gNI0eBq4hzecFBgr6TX8nxgt
-         YYC1ETFJCxBOp0FhhzXqpZfaS7NPIovPzlOAvrDJ18zO+2dwG2jhEexAb/v510kj97rH
-         CppvADkeuKdmb8GqWYQnc5IveZYXN2aOByfwoIGRsqlIQdEjKZows4r++zZYYeyMBKSG
-         UR2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X/budyxfXl4/blczsR4CErrFNRt8Mt+0vRDmJ7OsswU=;
-        b=mFg+0CLnpk6FV/getAaYXweKNFzIyKoPr7onlDcnVIL3klhTLuMKUWYuN/piuVnHj1
-         1/3Qs61uJTtKf0n7GYKS2fayYQLgEQKBdDMFfSjBVlF7CIqmzUpFRxTCZkMF1PSbMOCX
-         1GjVxyezqorMjjF71prJNQDeQL+x1l28ILPOHRKsEWe1hWF/aBwMijx0OeJpMr4lG1KC
-         Ay0nMbTPAsu0APUVeOkOW1aInpCTPc1i19YDGmiFVpaJh7Tkq2b/y7z4eLJjHe7DCERA
-         9ur8etyjHf8ZihgtihTIVvDwlfPpCNBPTfjaId33X34Zj2nmtWPB2qDfPcbapQEiQgHY
-         oZQw==
-X-Gm-Message-State: AOAM533jHrTBwjosNxWv2+QxAYtoYzEdKvaE9FClqptVF87Vswp1cBnf
-        6U0JmwILcs23etBSifdV/6LjYYlR3NI=
-X-Google-Smtp-Source: ABdhPJwBCHXd+irZVwU78OBq1f2fMt8lJDb1A+a9jnR0h/nRr3R5KWj+8a6U+daEedXCDbpJM98l5g==
-X-Received: by 2002:a17:907:76ed:: with SMTP id kg13mr7161715ejc.99.1615542569454;
-        Fri, 12 Mar 2021 01:49:29 -0800 (PST)
-Received: from localhost.localdomain ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id b22sm2610455edv.96.2021.03.12.01.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:49:28 -0800 (PST)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] arm: dts: owl-s500-roseapplepi: Add ATC2603C PMIC
-Date:   Fri, 12 Mar 2021 11:49:27 +0200
-Message-Id: <2e0a2931ae3757f016948e7c78e8e54afa325ae0.1615538629.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 12 Mar 2021 04:50:57 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Dxgxt4RZ4z8w6w;
+        Fri, 12 Mar 2021 17:49:06 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 12 Mar
+ 2021 17:50:50 +0800
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: add sysfs nodes to get runtime
+ compression stat
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20210311023233.1034946-1-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <5000daf0-e204-4f49-f2e9-30489db46d1a@huawei.com>
+Date:   Fri, 12 Mar 2021 17:50:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311023233.1034946-1-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree node for ATC2603C PMIC and remove the 'fixed-3.1V'
-dummy regulator used for the uSD supply.
+On 2021/3/11 10:32, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> I've added new sysfs nodes to show runtime compression stat since mount.
+> compr_written_block - show the block count written after compression
+> compr_saved_block - show the saved block count with compression
+> compr_new_inode - show the count of inode newly enabled for compression
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
+>      related to kernel config.
+> v3: changed sysfs nodes' names and made them runtime stat, not
+>      persistent on disk
+> ---
+>   Documentation/ABI/testing/sysfs-fs-f2fs | 20 +++++++++
+>   fs/f2fs/compress.c                      |  1 +
+>   fs/f2fs/f2fs.h                          | 19 ++++++++
+>   fs/f2fs/super.c                         |  7 +++
+>   fs/f2fs/sysfs.c                         | 58 +++++++++++++++++++++++++
+>   5 files changed, 105 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index cbeac1bebe2f..f2981eb319cb 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -409,3 +409,23 @@ Description:	Give a way to change checkpoint merge daemon's io priority.
+>   		I/O priority "3". We can select the class between "rt" and "be",
+>   		and set the I/O priority within valid range of it. "," delimiter
+>   		is necessary in between I/O class and priority number.
+> +
+> +What:		/sys/fs/f2fs/<disk>/compr_written_block
+> +Date:		March 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	Show the block count written after compression since mount.
+> +		If you write "0" here, you can initialize compr_written_block and
+> +		compr_saved_block to "0".
+> +
+> +What:		/sys/fs/f2fs/<disk>/compr_saved_block
+> +Date:		March 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	Show the saved block count with compression since mount.
+> +		If you write "0" here, you can initialize compr_written_block and
+> +		compr_saved_block to "0".
+> +
+> +What:		/sys/fs/f2fs/<disk>/compr_new_inode
+> +Date:		March 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	Show the count of inode newly enabled for compression since mount.
+> +		If you write "0" here, you can initialize compr_new_inode to "0".
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 77fa342de38f..3c9d797dbdd6 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+>   	if (fio.compr_blocks)
+>   		f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, false);
+>   	f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
+> +	add_compr_block_stat(inode, cc->nr_cpages);
 
-Additionally, add 'SYSPWR' fixed regulator and provide cpu0 supply.
+If compressed cluster was overwritten as normal cluster, compr_saved_block value
+won't be decreased, is it fine?
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
-Please note the patch depends on the ATC260x PMIC support which is queued
-for merging in v5.13:
+>   
+>   	set_inode_flag(cc->inode, FI_APPEND_WRITE);
+>   	if (cc->cluster_idx == 0)
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index e2d302ae3a46..2c989f8caf05 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
+>   #ifdef CONFIG_F2FS_FS_COMPRESSION
+>   	struct kmem_cache *page_array_slab;	/* page array entry */
+>   	unsigned int page_array_slab_size;	/* default page array slab size */
+> +
+> +	/* For runtime compression statistics */
+> +	atomic64_t compr_written_block;
+> +	atomic64_t compr_saved_block;
+> +	atomic_t compr_new_inode;
+>   #endif
+>   };
+>   
+> @@ -3955,6 +3960,18 @@ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+>   void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+>   int __init f2fs_init_compress_cache(void);
+>   void f2fs_destroy_compress_cache(void);
+> +#define inc_compr_inode_stat(inode)					\
+> +	do {								\
+> +		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
+> +		atomic_inc(&sbi->compr_new_inode);			\
+> +	} while (0)
+> +#define add_compr_block_stat(inode, blocks)				\
+> +	do {								\
+> +		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
+> +		int diff = F2FS_I(inode)->i_cluster_size - blocks;	\
+> +		atomic64_add(blocks, &sbi->compr_written_block);	\
+> +		atomic64_add(diff, &sbi->compr_saved_block);		\
+> +	} while (0)
+>   #else
+>   static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+>   static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+> @@ -3983,6 +4000,7 @@ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return
+>   static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+>   static inline int __init f2fs_init_compress_cache(void) { return 0; }
+>   static inline void f2fs_destroy_compress_cache(void) { }
+> +#define inc_compr_inode_stat(inode)		do { } while (0)
+>   #endif
+>   
+>   static inline void set_compress_context(struct inode *inode)
+> @@ -4006,6 +4024,7 @@ static inline void set_compress_context(struct inode *inode)
+>   	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+>   	set_inode_flag(inode, FI_COMPRESSED_FILE);
+>   	stat_inc_compr_inode(inode);
+> +	inc_compr_inode_stat(inode);
 
-https://lore.kernel.org/lkml/cover.1611653995.git.cristian.ciocaltea@gmail.com/
-https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next&qt=range&q=a38fd8748464831584a19438cbb3082b5a2dab15..eac013a0b7041f5cfc8feedf429a767675350102
+Ditto, if we disable compressed file via f2fs_disable_compressed_file(),
+compr_new_inode value won't be decreased correctly.
 
- arch/arm/boot/dts/owl-s500-roseapplepi.dts | 132 ++++++++++++++++++++-
- 1 file changed, 126 insertions(+), 6 deletions(-)
+If there is no problem, it needs to add description to indicate it won't be
+aware of decrease of saved/written blocks or compressed inode number.
 
-diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-index ff91561ca99c..b8c5db2344aa 100644
---- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-+++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-@@ -2,7 +2,7 @@
- /*
-  * Roseapple Pi
-  *
-- * Copyright (C) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-+ * Copyright (C) 2020-2021 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-  */
- 
- /dts-v1/;
-@@ -27,20 +27,140 @@ memory@0 {
- 		reg = <0x0 0x80000000>; /* 2GB */
- 	};
- 
--	/* Fixed regulator used in the absence of PMIC */
--	sd_vcc: sd-vcc {
-+	syspwr: regulator-5v0 {
- 		compatible = "regulator-fixed";
--		regulator-name = "fixed-3.1V";
--		regulator-min-microvolt = <3100000>;
--		regulator-max-microvolt = <3100000>;
-+		regulator-name = "SYSPWR";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
- 		regulator-always-on;
- 	};
- };
- 
-+&cpu0 {
-+	cpu0-supply = <&vdd_cpu>;
-+};
-+
- &i2c0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2c0_pins>;
-+
-+	atc260x: pmic@65 {
-+		compatible = "actions,atc2603c";
-+		reg = <0x65>;
-+		interrupt-parent = <&sirq>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		reset-time-sec = <6>;
-+
-+		regulators {
-+			compatible = "actions,atc2603c-regulator";
-+
-+			dcdc1-supply = <&syspwr>;
-+			dcdc2-supply = <&syspwr>;
-+			dcdc3-supply = <&syspwr>;
-+			ldo1-supply = <&syspwr>;
-+			ldo2-supply = <&syspwr>;
-+			ldo3-supply = <&syspwr>;
-+			ldo5-supply = <&syspwr>;
-+			ldo6-supply = <&syspwr>;
-+			ldo7-supply = <&syspwr>;
-+			ldo8-supply = <&syspwr>;
-+			ldo11-supply = <&syspwr>;
-+			ldo12-supply = <&syspwr>;
-+			switchldo1-supply = <&vcc>;
-+
-+			vdd_cpu: dcdc1 {
-+				regulator-name = "VDD_CPU";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1400000>;
-+				regulator-always-on;
-+			};
-+
-+			vddq: dcdc2 {
-+				regulator-name = "VDDQ";
-+				regulator-min-microvolt = <1300000>;
-+				regulator-max-microvolt = <2150000>;
-+				regulator-always-on;
-+				regulator-boot-on;
-+			};
-+
-+			vcc: dcdc3 {
-+				regulator-name = "VCC";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc_3v3: ldo1 {
-+				regulator-name = "VCC_3V3";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			avcc: ldo2 {
-+				regulator-name = "AVCC";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vdd_1v8: ldo3 {
-+				regulator-name = "VDD_1V8";
-+				regulator-min-microvolt = <1500000>;
-+				regulator-max-microvolt = <2000000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc_3v1: ldo5 {
-+				regulator-name = "VCC_3V1";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+
-+			avdd: ldo6 {
-+				regulator-name = "AVDD";
-+				regulator-min-microvolt = <700000>;
-+				regulator-max-microvolt = <1400000>;
-+				regulator-always-on;
-+			};
-+
-+			sens_1v8: ldo7 {
-+				regulator-name = "SENS_1V8";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+			};
-+
-+			ldo8: ldo8 {
-+				regulator-name = "LDO8";
-+				regulator-min-microvolt = <2300000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+
-+			svcc: ldo11 {
-+				regulator-name = "SVCC";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			rtc_vdd: ldo12 {
-+				regulator-name = "RTC_VDD";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-always-on;
-+			};
-+
-+			sd_vcc: switchldo1 {
-+				regulator-name = "SD_VCC";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+				regulator-boot-on;
-+			};
-+		};
-+	};
- };
- 
- &i2c1 {
--- 
-2.30.2
+Thanks,
 
+>   	f2fs_mark_inode_dirty_sync(inode, true);
+>   }
+>   
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 7069793752f1..88d9ecdee8d3 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -3260,6 +3260,13 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+>   
+>   	init_rwsem(&sbi->sb_lock);
+>   	init_rwsem(&sbi->pin_sem);
+> +
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +	/* For runtime compression statistics */
+> +	atomic64_set(&sbi->compr_written_block, 0);
+> +	atomic64_set(&sbi->compr_saved_block, 0);
+> +	atomic_set(&sbi->compr_new_inode, 0);
+> +#endif
+>   }
+>   
+>   static int init_percpu_info(struct f2fs_sb_info *sbi)
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index e38a7f6921dd..2b6e5e6e1286 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -282,6 +282,38 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+>   		return len;
+>   	}
+>   
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +	if (!strcmp(a->attr.name, "compr_written_block")) {
+> +		u64 bcount;
+> +		int len;
+> +
+> +		bcount = atomic64_read(&sbi->compr_written_block);
+> +
+> +		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
+> +		return len;
+> +	}
+> +
+> +	if (!strcmp(a->attr.name, "compr_saved_block")) {
+> +		u64 bcount;
+> +		int len;
+> +
+> +		bcount = atomic64_read(&sbi->compr_saved_block);
+> +
+> +		len = scnprintf(buf, PAGE_SIZE, "%llu\n", bcount);
+> +		return len;
+> +	}
+> +
+> +	if (!strcmp(a->attr.name, "compr_new_inode")) {
+> +		u32 icount;
+> +		int len;
+> +
+> +		icount = atomic_read(&sbi->compr_new_inode);
+> +
+> +		len = scnprintf(buf, PAGE_SIZE, "%u\n", icount);
+> +		return len;
+> +	}
+> +#endif
+> +
+>   	ui = (unsigned int *)(ptr + a->offset);
+>   
+>   	return sprintf(buf, "%u\n", *ui);
+> @@ -458,6 +490,24 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>   		return count;
+>   	}
+>   
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +	if (!strcmp(a->attr.name, "compr_written_block") ||
+> +		!strcmp(a->attr.name, "compr_saved_block")) {
+> +		if (t != 0)
+> +			return -EINVAL;
+> +		atomic64_set(&sbi->compr_written_block, 0);
+> +		atomic64_set(&sbi->compr_saved_block, 0);
+> +		return count;
+> +	}
+> +
+> +	if (!strcmp(a->attr.name, "compr_new_inode")) {
+> +		if (t != 0)
+> +			return -EINVAL;
+> +		atomic_set(&sbi->compr_new_inode, 0);
+> +		return count;
+> +	}
+> +#endif
+> +
+>   	*ui = (unsigned int)t;
+>   
+>   	return count;
+> @@ -668,6 +718,9 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+>   F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
+>   #ifdef CONFIG_F2FS_FS_COMPRESSION
+>   F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
+> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
+> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
+> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+>   #endif
+>   
+>   #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+> @@ -730,6 +783,11 @@ static struct attribute *f2fs_attrs[] = {
+>   	ATTR_LIST(moved_blocks_foreground),
+>   	ATTR_LIST(moved_blocks_background),
+>   	ATTR_LIST(avg_vblocks),
+> +#endif
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +	ATTR_LIST(compr_written_block),
+> +	ATTR_LIST(compr_saved_block),
+> +	ATTR_LIST(compr_new_inode),
+>   #endif
+>   	NULL,
+>   };
+> 
