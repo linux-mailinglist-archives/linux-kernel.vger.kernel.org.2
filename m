@@ -2,123 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63D339259
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F334D339277
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhCLPwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:52:37 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:44711 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhCLPwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:52:13 -0500
-Received: by mail-ua1-f43.google.com with SMTP id q18so1460585uas.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:52:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+ufGY0BpS1FFe+dVBdNB94a4xu++ZlC5MzGN3kgXpLE=;
-        b=UY0+OOFuVkRynifu5L9Oq9abKTcqNpgmRyes4M1izKNyN41yUD5Wdz3glQEzcylTT4
-         FbBVOFbb9J8dM5jJl0QOq57Fr1xqgk8uUE737aYK8XfyO7S7ifk3CyE/EEtUtsylWRTe
-         5rJLXcITDhXEzlTYRWfqeM+W+CTsGdLwBW16Fg+8HxPhrdBCsvs+wIyF3U9vUI2F1NvC
-         aET/v17RkrZkaVJs6fzwou4Lz/0NNKYyaoVi9GPpu+ClWb3Yl/SySloBBM2jRareUd/A
-         AkOjQrLbo1o89qp2EDptSOJDYqAMa1nQFMgoufueBueCv6AkhTBcAydBNG56eJhEllgf
-         oc+w==
-X-Gm-Message-State: AOAM531tlwRk4SVydjs90F3At2fDd19nSkuPZanEB70eEr07wz72qNBC
-        E6vfYcTOaBcKHAyRkiOPe370tnPNckudWDzVUXI=
-X-Google-Smtp-Source: ABdhPJxCumYpIHmJF/Vw3mPrBZtFKjQV9FO4fc15rHi2hf+aiIEVAVv0yR+b7rK0YHXckIBF+0u3E8dWXbrbbjQxLo8=
-X-Received: by 2002:ab0:30b3:: with SMTP id b19mr8849816uam.58.1615564332725;
- Fri, 12 Mar 2021 07:52:12 -0800 (PST)
+        id S232372AbhCLPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:54:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:56294 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232553AbhCLPwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:52:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8D0211B3;
+        Fri, 12 Mar 2021 07:52:07 -0800 (PST)
+Received: from [10.57.52.136] (unknown [10.57.52.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DA3A3F7D7;
+        Fri, 12 Mar 2021 07:52:04 -0800 (PST)
+Subject: Re: [RFC PATCH v2 06/11] dma-direct: Support PCI P2PDMA pages in
+ dma-direct map_sg
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <iweiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-7-logang@deltatee.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <215e1472-5294-d20a-a43a-ff6dfe8cd66e@arm.com>
+Date:   Fri, 12 Mar 2021 15:52:02 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210107092652.3438696-4-atish.patra@wdc.com> <mhng-1400a3dd-651b-4a78-bb2d-1f10580add75@palmerdabbelt-glaptop>
- <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
-In-Reply-To: <CAOnJCU+mCPwbeOQpmHmu3ar_17otmgftiKHLL+Z4_nExpj0=cA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Mar 2021 16:52:01 +0100
-Message-ID: <CAMuHMdVOzdy9zA8uk0j4OxFWHQqu_jb7uMXRXqmioY+H-TdtkA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210311233142.7900-7-logang@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 7:34 PM Atish Patra <atishp@atishpatra.org> wrote:
-> On Wed, Jan 13, 2021 at 9:10 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > On Thu, 07 Jan 2021 01:26:51 PST (-0800), Atish Patra wrote:
-> > > SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
-> > > 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
-> > > allocation if it is requested to be aligned with SMP_CACHE_BYTES.
-> > >
-> > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > ---
-> > >  arch/riscv/include/asm/cache.h | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-> > > index 9b58b104559e..c9c669ea2fe6 100644
-> > > --- a/arch/riscv/include/asm/cache.h
-> > > +++ b/arch/riscv/include/asm/cache.h
-> > > @@ -7,7 +7,11 @@
-> > >  #ifndef _ASM_RISCV_CACHE_H
-> > >  #define _ASM_RISCV_CACHE_H
-> > >
-> > > +#ifdef CONFIG_64BIT
-> > >  #define L1_CACHE_SHIFT               6
-> > > +#else
-> > > +#define L1_CACHE_SHIFT               5
-> > > +#endif
-> > >
-> > >  #define L1_CACHE_BYTES               (1 << L1_CACHE_SHIFT)
-> >
-> > Should we not instead just
-> >
-> > #define SMP_CACHE_BYTES L1_CACHE_BYTES
-> >
-> > like a handful of architectures do?
-> >
->
-> The generic code already defines it that way in include/linux/cache.h
->
-> > The cache size is sort of fake here, as we don't have any non-coherent
-> > mechanisms, but IIRC we wrote somewhere that it's recommended to have 64-byte
-> > cache lines in RISC-V implementations as software may assume that for
-> > performance reasons.  Not really a strong reason, but I'd prefer to just make
-> > these match.
-> >
->
-> If it is documented somewhere in the kernel, we should update that. I
-> think SMP_CACHE_BYTES being 64
-> actually degrades the performance as there will be a fragmented memory
-> blocks with 32 bit bytes gap wherever
-> SMP_CACHE_BYTES is used as an alignment requirement.
->
-> In addition to that, Geert Uytterhoeven mentioned some panic on vex32
-> without this patch.
-> I didn't see anything in Qemu though.
+On 2021-03-11 23:31, Logan Gunthorpe wrote:
+> Add PCI P2PDMA support for dma_direct_map_sg() so that it can map
+> PCI P2PDMA pages directly without a hack in the callers. This allows
+> for heterogeneous SGLs that contain both P2PDMA and regular pages.
+> 
+> SGL segments that contain PCI bus addresses are marked with
+> sg_mark_pci_p2pdma() and are ignored when unmapped.
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>   kernel/dma/direct.c  | 35 ++++++++++++++++++++++++++++++++---
+>   kernel/dma/mapping.c | 13 ++++++++++---
+>   2 files changed, 42 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 002268262c9a..f326d32062dd 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -13,6 +13,7 @@
+>   #include <linux/vmalloc.h>
+>   #include <linux/set_memory.h>
+>   #include <linux/slab.h>
+> +#include <linux/pci-p2pdma.h>
+>   #include "direct.h"
+>   
+>   /*
+> @@ -387,19 +388,47 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+>   	struct scatterlist *sg;
+>   	int i;
+>   
+> -	for_each_sg(sgl, sg, nents, i)
+> +	for_each_sg(sgl, sg, nents, i) {
+> +		if (sg_is_pci_p2pdma(sg))
+> +			continue;
+> +
+>   		dma_direct_unmap_page(dev, sg->dma_address, sg_dma_len(sg), dir,
+>   			     attrs);
+> +	}
+>   }
+>   #endif
+>   
+>   int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+>   		enum dma_data_direction dir, unsigned long attrs)
+>   {
+> -	int i;
+> +	struct dev_pagemap *pgmap = NULL;
+> +	int i, map = -1, ret = 0;
+>   	struct scatterlist *sg;
+> +	u64 bus_off;
+>   
+>   	for_each_sg(sgl, sg, nents, i) {
+> +		if (is_pci_p2pdma_page(sg_page(sg))) {
+> +			if (sg_page(sg)->pgmap != pgmap) {
+> +				pgmap = sg_page(sg)->pgmap;
+> +				map = pci_p2pdma_dma_map_type(dev, pgmap);
+> +				bus_off = pci_p2pdma_bus_offset(sg_page(sg));
+> +			}
+> +
+> +			if (map < 0) {
+> +				sg->dma_address = DMA_MAPPING_ERROR;
+> +				ret = -EREMOTEIO;
+> +				goto out_unmap;
+> +			}
+> +
+> +			if (map) {
+> +				sg->dma_address = sg_phys(sg) + sg->offset -
+> +					bus_off;
+> +				sg_dma_len(sg) = sg->length;
+> +				sg_mark_pci_p2pdma(sg);
+> +				continue;
+> +			}
+> +		}
+> +
+>   		sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
+>   				sg->offset, sg->length, dir, attrs);
+>   		if (sg->dma_address == DMA_MAPPING_ERROR)
+> @@ -411,7 +440,7 @@ int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+>   
+>   out_unmap:
+>   	dma_direct_unmap_sg(dev, sgl, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   dma_addr_t dma_direct_map_resource(struct device *dev, phys_addr_t paddr,
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index b6a633679933..adc1a83950be 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -178,8 +178,15 @@ void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr, size_t size,
+>   EXPORT_SYMBOL(dma_unmap_page_attrs);
+>   
+>   /*
+> - * dma_maps_sg_attrs returns 0 on error and > 0 on success.
+> - * It should never return a value < 0.
+> + * dma_maps_sg_attrs returns 0 on any resource error and > 0 on success.
+> + *
+> + * If 0 is returned, the mapping can be retried and will succeed once
+> + * sufficient resources are available.
 
-FTR, I no longer need this patch on vexriscv.
-It seems it just masked an issue.
+That's not a guarantee we can uphold. Retrying forever in the vain hope 
+that a device might evolve some extra address bits, or a bounce buffer 
+might magically grow big enough for a gigantic mapping, isn't 
+necessarily the best idea.
 
-Gr{oetje,eeting}s,
+> + *
+> + * If there are P2PDMA pages in the scatterlist then this function may
+> + * return -EREMOTEIO to indicate that the pages are not mappable by the
+> + * device. In this case, an error should be returned for the IO as it
+> + * will never be successfully retried.
+>    */
+>   int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+>   		enum dma_data_direction dir, unsigned long attrs)
+> @@ -197,7 +204,7 @@ int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+>   		ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
+>   	else
+>   		ents = ops->map_sg(dev, sg, nents, dir, attrs);
+> -	BUG_ON(ents < 0);
+> +
 
-                        Geert
+This scares me - I hesitate to imagine the amount of driver/subsystem 
+code out there that will see nonzero and merrily set off iterating a 
+negative number of segments, if we open the floodgates of allowing 
+implementations to return error codes here.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Robin.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>   	debug_dma_map_sg(dev, sg, nents, ents, dir);
+>   
+>   	return ents;
+> 
