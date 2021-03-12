@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ADA3395EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B513395F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhCLSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:11:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:59024 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231906AbhCLSL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:11:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D802DED1;
-        Fri, 12 Mar 2021 10:11:28 -0800 (PST)
-Received: from [10.57.52.136] (unknown [10.57.52.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB8E33F7D7;
-        Fri, 12 Mar 2021 10:11:23 -0800 (PST)
-Subject: Re: [RFC PATCH v2 06/11] dma-direct: Support PCI P2PDMA pages in
- dma-direct map_sg
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org
-Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-7-logang@deltatee.com>
- <215e1472-5294-d20a-a43a-ff6dfe8cd66e@arm.com>
- <d7ead722-7356-8e0f-22de-cb9dea12b556@deltatee.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a8205c02-a43f-d4e8-a9fe-5963df3a7b40@arm.com>
-Date:   Fri, 12 Mar 2021 18:11:17 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232628AbhCLSMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:12:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232697AbhCLSMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:12:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615572739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FEwm7dbFA9YEtIy6iLHK/1/1xLzzzQXYHGmPoA51kGY=;
+        b=Z6xWg19dCUVYQWfzWDdNkaNCXeOG2uvNmCX3I9TE3x1c/plBsnqiG3ZkRpfFurUhfVoUUW
+        zGI2vG1CR57vIaus8tfmVuSrtPTozbS0S1wn8MQ7cx9N6cdxPwhTG0opz0iYVNd2sh5KqE
+        JLesZW+lpDg8VFSpNvbrUtZaS78FVUE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-jpXJYB58MXSSVdcSqKzM7A-1; Fri, 12 Mar 2021 13:12:18 -0500
+X-MC-Unique: jpXJYB58MXSSVdcSqKzM7A-1
+Received: by mail-wr1-f70.google.com with SMTP id n17so11531647wrq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:12:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FEwm7dbFA9YEtIy6iLHK/1/1xLzzzQXYHGmPoA51kGY=;
+        b=XUCdkQjNS/jxM2sqvsApaJMT0uFG8mBUoJDvd+8+6LlvB2SKX12grx0n7vb5bQCShi
+         dYEpD+c9SgdpE1KCetJyfof+zDHuNSEZxnOMy6GDzPvVNFvc+IBhec6r1VUBazrXhKzw
+         ZVq/TyD6lDjgB+Gj/mWgCdGHhKXijUnOpQnco+m/Is7Ccmi0okDCJtR3fH0Z68E0nVGP
+         UO3sO6n2n3GvS9iEmgounIGEM30jVeNgQtv7MT855+2KUaDYgI+9b4yI0Kox1bHQRx4q
+         b7x9D4MgNtP6DunEqPyhc4p9vmp53VnrqzVa1wnipCJZ1nZqB5bORuWoT+8vF3K3ZNf9
+         8XIg==
+X-Gm-Message-State: AOAM530XwgpJsL3KZx2bzM49x0seXK8F1E/iKMDCpyzeAaGl/++JgC3A
+        c1srb0RoLtZZfrqnIfML9bEL3mBtZZX9U0vx5zjjn/M9KGp+X6CH6U8mmdoRbz9lPnYxFjsBYHh
+        YacBU+w0ufpLbLa1ptHz6NWaYznsngLBNi07jyKKliu7IOTlObgZndZh0gzCVpGk+Ou/D7iV7Tw
+        0j
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr14411450wma.10.1615572736425;
+        Fri, 12 Mar 2021 10:12:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJztaR9pls6kz3Lfs5bJVbE2dnEL9uu98jcGBYdpHNScOrUa5G4QFWGNdLiPxHzLFm5fa/OULw==
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr14411425wma.10.1615572736164;
+        Fri, 12 Mar 2021 10:12:16 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q4sm3154713wma.20.2021.03.12.10.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 10:12:15 -0800 (PST)
+Subject: Re: [PATCH] KVM: x86/mmu: Skip !MMU-present SPTEs when removing SP in
+ exclusive mode
+To:     Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210310003029.1250571-1-seanjc@google.com>
+ <07cf7833-c74a-9ae0-6895-d74708b97f68@redhat.com>
+ <YEk2kBRUriFlCM62@google.com>
+ <CANgfPd9WS+ntjdh87Gk97MQq6FYNUk8KVE3jQYfmgr2mFb3Stw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c62c7635-48a8-dbc8-748e-188d402fd241@redhat.com>
+Date:   Fri, 12 Mar 2021 19:12:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <d7ead722-7356-8e0f-22de-cb9dea12b556@deltatee.com>
+In-Reply-To: <CANgfPd9WS+ntjdh87Gk97MQq6FYNUk8KVE3jQYfmgr2mFb3Stw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-12 16:24, Logan Gunthorpe wrote:
-> 
-> 
-> On 2021-03-12 8:52 a.m., Robin Murphy wrote:
->>> +
->>>            sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
->>>                    sg->offset, sg->length, dir, attrs);
->>>            if (sg->dma_address == DMA_MAPPING_ERROR)
->>> @@ -411,7 +440,7 @@ int dma_direct_map_sg(struct device *dev, struct
->>> scatterlist *sgl, int nents,
->>>      out_unmap:
->>>        dma_direct_unmap_sg(dev, sgl, i, dir, attrs |
->>> DMA_ATTR_SKIP_CPU_SYNC);
->>> -    return 0;
->>> +    return ret;
->>>    }
->>>      dma_addr_t dma_direct_map_resource(struct device *dev, phys_addr_t
->>> paddr,
->>> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
->>> index b6a633679933..adc1a83950be 100644
->>> --- a/kernel/dma/mapping.c
->>> +++ b/kernel/dma/mapping.c
->>> @@ -178,8 +178,15 @@ void dma_unmap_page_attrs(struct device *dev,
->>> dma_addr_t addr, size_t size,
->>>    EXPORT_SYMBOL(dma_unmap_page_attrs);
->>>      /*
->>> - * dma_maps_sg_attrs returns 0 on error and > 0 on success.
->>> - * It should never return a value < 0.
->>> + * dma_maps_sg_attrs returns 0 on any resource error and > 0 on success.
->>> + *
->>> + * If 0 is returned, the mapping can be retried and will succeed once
->>> + * sufficient resources are available.
+On 10/03/21 23:24, Ben Gardon wrote:
+> On Wed, Mar 10, 2021 at 1:14 PM Sean Christopherson <seanjc@google.com> wrote:
 >>
->> That's not a guarantee we can uphold. Retrying forever in the vain hope
->> that a device might evolve some extra address bits, or a bounce buffer
->> might magically grow big enough for a gigantic mapping, isn't
->> necessarily the best idea.
+>> On Wed, Mar 10, 2021, Paolo Bonzini wrote:
+>>> On 10/03/21 01:30, Sean Christopherson wrote:
+>>>> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+>>>> index 50ef757c5586..f0c99fa04ef2 100644
+>>>> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+>>>> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+>>>> @@ -323,7 +323,18 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+>>>>                              cpu_relax();
+>>>>                      }
+>>>>              } else {
+>>>> +                   /*
+>>>> +                    * If the SPTE is not MMU-present, there is no backing
+>>>> +                    * page associated with the SPTE and so no side effects
+>>>> +                    * that need to be recorded, and exclusive ownership of
+>>>> +                    * mmu_lock ensures the SPTE can't be made present.
+>>>> +                    * Note, zapping MMIO SPTEs is also unnecessary as they
+>>>> +                    * are guarded by the memslots generation, not by being
+>>>> +                    * unreachable.
+>>>> +                    */
+>>>>                      old_child_spte = READ_ONCE(*sptep);
+>>>> +                   if (!is_shadow_present_pte(old_child_spte))
+>>>> +                           continue;
+>>>>                      /*
+>>>>                       * Marking the SPTE as a removed SPTE is not
 > 
-> Perhaps this is just poorly worded. Returning 0 is the normal case and
-> nothing has changed there. The block layer, for example, will retry if
-> zero is returned as this only happens if it failed to allocate resources
-> for the mapping. The reason we have to return -1 is to tell the block
-> layer not to retry these requests as they will never succeed in the future.
+> This optimization also makes me think we could also skip the
+> __handle_changed_spte call in the read mode case if the SPTE change
+> was !PRESENT -> REMOVED.
 > 
->>> + *
->>> + * If there are P2PDMA pages in the scatterlist then this function may
->>> + * return -EREMOTEIO to indicate that the pages are not mappable by the
->>> + * device. In this case, an error should be returned for the IO as it
->>> + * will never be successfully retried.
->>>     */
->>>    int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int
->>> nents,
->>>            enum dma_data_direction dir, unsigned long attrs)
->>> @@ -197,7 +204,7 @@ int dma_map_sg_attrs(struct device *dev, struct
->>> scatterlist *sg, int nents,
->>>            ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
->>>        else
->>>            ents = ops->map_sg(dev, sg, nents, dir, attrs);
->>> -    BUG_ON(ents < 0);
->>> +
->>
->> This scares me - I hesitate to imagine the amount of driver/subsystem
->> code out there that will see nonzero and merrily set off iterating a
->> negative number of segments, if we open the floodgates of allowing
->> implementations to return error codes here.
-> 
-> Yes, but it will never happen on existing drivers/subsystems. The only
-> way it can return a negative number is if the driver passes in P2PDMA
-> pages which can't happen without changes in the driver. We are careful
-> about where P2PDMA pages can get into so we don't have to worry about
-> all the existing driver code out there.
+Yes, I think so.  It should be a separate patch anyway, so I've queued 
+this one.
 
-Sure, that's how things stand immediately after this patch. But then 
-someone comes along with the perfectly reasonable argument for returning 
-more expressive error information for regular mapping failures as well 
-(because sometimes those can be terminal too, as above), we start to get 
-divergent behaviour across architectures and random bits of old code 
-subtly breaking down the line. *That* is what makes me wary of making a 
-fundamental change to a long-standing "nonzero means success" interface...
+Paolo
 
-Robin.
