@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940023387EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982B033879E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhCLIua convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 03:50:30 -0500
-Received: from mail.curtumepanorama.com.br ([177.91.172.13]:42660 "EHLO
-        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232536AbhCLIuR (ORCPT
+        id S232353AbhCLIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:39:07 -0500
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:48872 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232321AbhCLIjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:50:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 76C7D3A1401;
-        Fri, 12 Mar 2021 05:02:16 -0300 (-03)
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3-k78f6T_vqy; Fri, 12 Mar 2021 05:02:16 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 472AB3A1461;
-        Fri, 12 Mar 2021 05:02:10 -0300 (-03)
-X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
-Received: from mail.curtumepanorama.com.br ([127.0.0.1])
-        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Gi7OrSx2SQD2; Fri, 12 Mar 2021 05:02:10 -0300 (-03)
-Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
-        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 9DBAE3A13BB;
-        Fri, 12 Mar 2021 05:01:53 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 12 Mar 2021 03:39:05 -0500
+X-Greylist: delayed 590 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 03:39:04 EST
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id A6B01E03A8;
+        Fri, 12 Mar 2021 16:29:11 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, kael_w@yeah.net
+Subject: [PATCH] arm: plat-pxa: delete redundant printing of the error
+Date:   Fri, 12 Mar 2021 16:28:40 +0800
+Message-Id: <20210312082841.37779-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 12 Mar 2021 09:02:00 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20210312080154.9DBAE3A13BB@mail.curtumepanorama.com.br>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHU4dGEhMHx1NHR0YVkpNSk5OSExMTkpCSUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKSkNITFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORg6Nxw4KD8NAwESFSoMGg4j
+        TykaCzlVSlVKTUpOTkhMTE5JSkNCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTkJJNwY+
+X-HM-Tid: 0a78258dc7262c17kusna6b01e03a8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+platform_get_irq() has already checked and printed the error,
+the printing here is not necessary at all.
 
-Sir/Madam,
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ arch/arm/plat-pxa/ssp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+diff --git a/arch/arm/plat-pxa/ssp.c b/arch/arm/plat-pxa/ssp.c
+index 563440315acd..9e77b3392c1e 100644
+--- a/arch/arm/plat-pxa/ssp.c
++++ b/arch/arm/plat-pxa/ssp.c
+@@ -146,10 +146,8 @@ static int pxa_ssp_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ssp->irq = platform_get_irq(pdev, 0);
+-	if (ssp->irq < 0) {
+-		dev_err(dev, "no IRQ resource defined\n");
++	if (ssp->irq < 0)
+ 		return -ENODEV;
+-	}
+ 
+ 	if (dev->of_node) {
+ 		const struct of_device_id *id =
+-- 
+2.25.1
 
