@@ -2,76 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4AF3399E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CEA3399E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhCLXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:02:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235683AbhCLXCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:02:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6CC164F4D;
-        Fri, 12 Mar 2021 23:02:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615590127;
-        bh=YjpH46E5wsNV0V6as8mJ95+AjvUcvV/u/mVOZl8KRBg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOmoNrl7OW/V8jOFswOIRyhAM8sQ5o9vYGhD/fmFRK5WLqZCmJ68tjNsEaiUsVnmw
-         vHxZmeX9O/idptY5NwkhF47YUIHbVKEylfzHlb5ahKME1hlazi2HkXY2RVDOC0Q5DS
-         orkVU42K+1JZsL9jOZwGF8qtyc1M0Vr6FArGZchcWZ+XwV7/Q6xNcV12rSd28oQeMk
-         EiPje11w5WGeR0E0jx1mG61xBtTTEq5UYhAYpyhifuCC7GXw2ui+tTCsY7GUxI2CP6
-         niSgG9YfFmSG6kFkZnXm4cneZv+2f4V8qN7aHM20rJWIdDY+8QI19EENcknga49RNi
-         jvKhV3r8FwnRg==
-From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, Xiubo.Lee@gmail.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
-        alsa-devel@alsa-project.org, nicoleotsuka@gmail.com,
-        festevam@gmail.com, tiwai@suse.com
-Cc:     Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: fsl_asrc_dma: request dma channel from specific controller
-Date:   Fri, 12 Mar 2021 23:00:49 +0000
-Message-Id: <161558981190.31753.12828472795254829304.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614935977-21638-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1614935977-21638-1-git-send-email-shengjiu.wang@nxp.com>
+        id S235716AbhCLXFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:05:11 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:34458 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235683AbhCLXFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:05:09 -0500
+Received: by mail-pj1-f50.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so5470183pjb.1;
+        Fri, 12 Mar 2021 15:05:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1Fati+nmw4FWAoUPVcOui5C+UhjJky7DBfRXn23yjM4=;
+        b=syPo5GAgniBLTxbrWJViZuwQo2qc60IREGN9cIUseU67sVz/S1awWRIL2BKYPUUQsR
+         +g+03mhSELr9ZcV8qkL2REuKECR1/gXzU87FMlZgbtaeQ/Ca/wWvg+q/7MOvyl1gv4/l
+         ydUD70RyXnR/wXQo9m5ALhK7PcWtYyfC9dxZxBKKDzt7dfAhwStBRD6X/qqVikXURZDi
+         wiXcEi5JtT5/E6KE2PdN+2kRg/gqaEqgMPtqvAhuA7WUZLMCYA0rzDtSbXjgAMGGGqDT
+         ttyfbG2JtaddWpvfiAUHGu7I+XPUaakGczsRgNcIajrZUC3WEyqV7ImE/PEN6w6O2bnM
+         gUgw==
+X-Gm-Message-State: AOAM532DH+L4P83Xle92nshTyW52t+HCDiQyVUz9kZL7vwPC12acwXBP
+        YplhChZGs57RVqVK7cZiudyBzzxCVE8=
+X-Google-Smtp-Source: ABdhPJyr2CJcIjWn7uUsvybP+ORgnknpVlAXUd6/JhjPOTsq+8SpMH6uy/9ZoED9/KTiQ0mfqKoXKg==
+X-Received: by 2002:a17:90a:1f0e:: with SMTP id u14mr561782pja.155.1615590309319;
+        Fri, 12 Mar 2021 15:05:09 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:fbe5:cb45:a308:1d2c? ([2601:647:4000:d7:fbe5:cb45:a308:1d2c])
+        by smtp.gmail.com with ESMTPSA id b186sm6563561pfb.170.2021.03.12.15.05.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 15:05:08 -0800 (PST)
+From:   Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
+ tagset in elevator_exit()
+To:     John Garry <john.garry@huawei.com>, Ming Lei <ming.lei@redhat.com>
+Cc:     hare@suse.de, axboe@kernel.dk, hch@lst.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
+        yuyufen@huawei.com
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-3-git-send-email-john.garry@huawei.com>
+ <YElrSFGyim3rjDN+@T590> <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
+Message-ID: <2b0c66ba-03b3-844c-1684-f8e80d11cdbb@acm.org>
+Date:   Fri, 12 Mar 2021 15:05:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 17:19:37 +0800, Shengjiu Wang wrote:
-> Request dma channel from specific dma controller instead of generic
-> dma controller list, otherwise, may get the wrong dma controller
-> if there are multi dma controllers such as i.MX8MP.
+On 3/11/21 12:21 AM, John Garry wrote:
+> On 11/03/2021 00:58, Ming Lei wrote:
+>> I think this way can't be accepted since switching one queue's scheduler
+>> is nothing to do with other request queues attached to same HBA.
+>>
+>> This patch will cause performance regression because userspace may
+>> switch scheduler according to medium or workloads, at that time other
+>> LUNs will be affected by this patch.
+> 
+> Hmmm..that was my concern also. Do you think that it may cause a big
+> impact? Depends totally on the workload, I suppose.
+> 
+> FWIW, it is useful though for solving both iterator problems.
 
-Applied to
+Hi John,
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: fsl_asrc_dma: request dma channel from specific controller
-      commit: ee427ea4f12672e5d7874abaa634ddee0ff2bb97
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+How about replacing the entire patch series with the patch below? The
+patch below has the following advantages:
+- Instead of making the race window smaller, the race is fixed
+  completely.
+- No new atomic instructions are added to the block layer code.
+- No early return is inserted in blk_mq_tagset_busy_iter().
 
 Thanks,
-Mark
+
+Bart.
+
+From a0e534012a766bd6e53cdd466eec0a811164c12a Mon Sep 17 00:00:00 2001
+From: Bart Van Assche <bvanassche@acm.org>
+Date: Wed, 10 Mar 2021 19:11:47 -0800
+Subject: [PATCH] blk-mq: Fix races between iterating over requests and freeing
+ requests
+
+Multiple users have reported use-after-free complaints similar to the
+following (see also https://lore.kernel.org/linux-block/1545261885.185366.488.camel@acm.org/):
+
+BUG: KASAN: use-after-free in bt_iter+0x86/0xf0
+Read of size 8 at addr ffff88803b335240 by task fio/21412
+
+CPU: 0 PID: 21412 Comm: fio Tainted: G        W         4.20.0-rc6-dbg+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
+Call Trace:
+ dump_stack+0x86/0xca
+ print_address_description+0x71/0x239
+ kasan_report.cold.5+0x242/0x301
+ __asan_load8+0x54/0x90
+ bt_iter+0x86/0xf0
+ blk_mq_queue_tag_busy_iter+0x373/0x5e0
+ blk_mq_in_flight+0x96/0xb0
+ part_in_flight+0x40/0x140
+ part_round_stats+0x18e/0x370
+ blk_account_io_start+0x3d7/0x670
+ blk_mq_bio_to_request+0x19c/0x3a0
+ blk_mq_make_request+0x7a9/0xcb0
+ generic_make_request+0x41d/0x960
+ submit_bio+0x9b/0x250
+ do_blockdev_direct_IO+0x435c/0x4c70
+ __blockdev_direct_IO+0x79/0x88
+ ext4_direct_IO+0x46c/0xc00
+ generic_file_direct_write+0x119/0x210
+ __generic_file_write_iter+0x11c/0x280
+ ext4_file_write_iter+0x1b8/0x6f0
+ aio_write+0x204/0x310
+ io_submit_one+0x9d3/0xe80
+ __x64_sys_io_submit+0x115/0x340
+ do_syscall_64+0x71/0x210
+
+When multiple request queues share a tag set and when switching the I/O
+scheduler for one of the request queues that uses this tag set, the
+following race can happen:
+* blk_mq_tagset_busy_iter() calls bt_tags_iter() and bt_tags_iter() assigns
+  a pointer to a scheduler request to the local variable 'rq'.
+* blk_mq_sched_free_requests() is called to free hctx->sched_tags.
+* blk_mq_tagset_busy_iter() dereferences 'rq' and triggers a use-after-free.
+
+Fix this race as follows:
+* Use rcu_assign_pointer() and rcu_dereference() to access hctx->tags->rqs[].
+* Protect hctx->tags->rqs[] reads with an RCU read-side lock.
+* No new rcu_barrier() call has been added because clearing the request
+  pointer in hctx->tags->rqs[] happens before blk_queue_exit() and the
+  blk_freeze_queue() call in blk_cleanup_queue() triggers an RCU barrier
+  after all scheduler request pointers assiociated with a request queue
+  have been removed from hctx->tags->rqs[] and before these scheduler
+  requests are freed.
+
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+---
+ block/blk-mq-tag.c | 27 +++++++++++++++++----------
+ block/blk-mq-tag.h |  2 +-
+ block/blk-mq.c     | 10 ++++++----
+ block/blk-mq.h     |  1 +
+ 4 files changed, 25 insertions(+), 15 deletions(-)
+
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e704d..8351c3f2fe2d 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -206,18 +206,23 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	struct blk_mq_tags *tags = hctx->tags;
+ 	bool reserved = iter_data->reserved;
+ 	struct request *rq;
++	bool res = true;
+
+ 	if (!reserved)
+ 		bitnr += tags->nr_reserved_tags;
+-	rq = tags->rqs[bitnr];
++
++	rcu_read_lock();
++	rq = rcu_dereference(tags->rqs[bitnr]);
+
+ 	/*
+ 	 * We can hit rq == NULL here, because the tagging functions
+ 	 * test and set the bit before assigning ->rqs[].
+ 	 */
+ 	if (rq && rq->q == hctx->queue && rq->mq_hctx == hctx)
+-		return iter_data->fn(hctx, rq, iter_data->data, reserved);
+-	return true;
++		res = iter_data->fn(hctx, rq, iter_data->data, reserved);
++	rcu_read_unlock();
++
++	return res;
+ }
+
+ /**
+@@ -264,10 +269,12 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	struct blk_mq_tags *tags = iter_data->tags;
+ 	bool reserved = iter_data->flags & BT_TAG_ITER_RESERVED;
+ 	struct request *rq;
++	bool res = true;
+
+ 	if (!reserved)
+ 		bitnr += tags->nr_reserved_tags;
+
++	rcu_read_lock();
+ 	/*
+ 	 * We can hit rq == NULL here, because the tagging functions
+ 	 * test and set the bit before assigning ->rqs[].
+@@ -275,13 +282,13 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	if (iter_data->flags & BT_TAG_ITER_STATIC_RQS)
+ 		rq = tags->static_rqs[bitnr];
+ 	else
+-		rq = tags->rqs[bitnr];
+-	if (!rq)
+-		return true;
+-	if ((iter_data->flags & BT_TAG_ITER_STARTED) &&
+-	    !blk_mq_request_started(rq))
+-		return true;
+-	return iter_data->fn(rq, iter_data->data, reserved);
++		rq = rcu_dereference(tags->rqs[bitnr]);
++	if (rq && (!(iter_data->flags & BT_TAG_ITER_STARTED) ||
++		   blk_mq_request_started(rq)))
++		res = iter_data->fn(rq, iter_data->data, reserved);
++	rcu_read_unlock();
++
++	return res;
+ }
+
+ /**
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333a4a..7a6d04733261 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -17,7 +17,7 @@ struct blk_mq_tags {
+ 	struct sbitmap_queue __bitmap_tags;
+ 	struct sbitmap_queue __breserved_tags;
+
+-	struct request **rqs;
++	struct request __rcu **rqs;
+ 	struct request **static_rqs;
+ 	struct list_head page_list;
+ };
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index d4d7c1caa439..594bf7f4ed9a 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -495,8 +495,10 @@ static void __blk_mq_free_request(struct request *rq)
+ 	blk_crypto_free_request(rq);
+ 	blk_pm_mark_last_busy(rq);
+ 	rq->mq_hctx = NULL;
+-	if (rq->tag != BLK_MQ_NO_TAG)
++	if (rq->tag != BLK_MQ_NO_TAG) {
+ 		blk_mq_put_tag(hctx->tags, ctx, rq->tag);
++		rcu_assign_pointer(hctx->tags->rqs[rq->tag], NULL);
++	}
+ 	if (sched_tag != BLK_MQ_NO_TAG)
+ 		blk_mq_put_tag(hctx->sched_tags, ctx, sched_tag);
+ 	blk_mq_sched_restart(hctx);
+@@ -839,8 +841,8 @@ EXPORT_SYMBOL(blk_mq_delay_kick_requeue_list);
+ struct request *blk_mq_tag_to_rq(struct blk_mq_tags *tags, unsigned int tag)
+ {
+ 	if (tag < tags->nr_tags) {
+-		prefetch(tags->rqs[tag]);
+-		return tags->rqs[tag];
++		prefetch((__force void *)tags->rqs[tag]);
++		return rcu_dereference_check(tags->rqs[tag], true);
+ 	}
+
+ 	return NULL;
+@@ -1111,7 +1113,7 @@ static bool blk_mq_get_driver_tag(struct request *rq)
+ 		rq->rq_flags |= RQF_MQ_INFLIGHT;
+ 		__blk_mq_inc_active_requests(hctx);
+ 	}
+-	hctx->tags->rqs[rq->tag] = rq;
++	rcu_assign_pointer(hctx->tags->rqs[rq->tag], rq);
+ 	return true;
+ }
+
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index 3616453ca28c..9ccb1818303b 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -226,6 +226,7 @@ static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
+ 					   struct request *rq)
+ {
+ 	blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
++	rcu_assign_pointer(hctx->tags->rqs[rq->tag], NULL);
+ 	rq->tag = BLK_MQ_NO_TAG;
+
+ 	if (rq->rq_flags & RQF_MQ_INFLIGHT) {
