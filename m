@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523D43390CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0881F3390D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhCLPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S230072AbhCLPJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhCLPIf (ORCPT
+        with ESMTP id S232043AbhCLPJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:08:35 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F233CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:08:34 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 7so5006467wrz.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:08:34 -0800 (PST)
+        Fri, 12 Mar 2021 10:09:08 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EFBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:07 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so15396651wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=N8S2s5rJcGUHcU1OSYPYZlzzNPfPJNrusRzWOjftzyo=;
-        b=twQbMdDX+E/m9JxLOQUn4niREFm6u3gAjlBCftyWk/7Fc/oeTFWTqT9K7jY/8bju9d
-         b5YxYepSmu3bX1j7LLh+LkFptHi1EiE7m2a2Ed3dP3BLPhtplfe85beWxk2KycARy3Dx
-         nUbSAwMymVzlgNUMhY3f0c6x4ss8w8ohraRgOvp4ejdCYIGyuqk9v9U29N04WJD40jOv
-         +Hp6h0zyAe+K2TsDXzbs4E1khq/VwC9xMn5AXy17uNZ9vNPzTQAFlAprxlE6puHVWg0N
-         iZlC1sWYwMT4Q2I9ynUaPw7gq1/5CHSx3XY5ZuAqEedMV/Vgk95QAGdrXuY18mBlkq1x
-         s9YQ==
+        bh=8MLa7BfE7dVLn4tTMKZ+HSLGOdEizmmjEqt3urdruHo=;
+        b=YXc7cfUGiDH4BrcqeCbErclE5UpFbj0KRoCqW+CdxyNwQfypBnOQ/JXl/BQWZPYMSf
+         5Ot87rpsNwc67IcIMaUT/2mT5iQ6JifR2oOH4+1U/x2JoNkrhbmVOP0/YaoFweuMp7Xz
+         9cjsoeb2E5H/+ycRfan42lPk+YhVQV0q9C93ePz3hYTf3vqsa7zhKFLd+0J374z3OvPR
+         q6pRk3yb3Fm5X2u5AfJvSoi8ssYpIoIVql9zeUnzsjQwAIsrhkKfqf6SypfcT5+zh6SL
+         StmOqnQ0w/Qq6RFrjTQcbTOAerPuU/TSLKo2ozPFpgkU0a0XsO0QSJg8Jy9m9AYJukk+
+         DznQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=N8S2s5rJcGUHcU1OSYPYZlzzNPfPJNrusRzWOjftzyo=;
-        b=Z86WNJpqfw9mpH6CUanYJXTWqyg1gxMsazMFtuEd7332CA7S8pPYU/Tz9Da86exfKr
-         zYF5vG1V3Nope0aESBk+yPYx3lwY2jiS91Ob1t0yfOWM9cp0RdcS8rsFXpI8psx/Va/d
-         LVrk49wDst2lCGhK7LitgjpJ/LI2qnaf9DA2pLNuExrcsJv8faJRoirNFm7bBW9epDT6
-         wrTipB006JR9HreQiXVnPbP+yQTADOhaXffEgdiO7k7iiKv0jGgs3OkNd+V+yg/13d9j
-         C09FU8EI2Obox4N96O8VsvLQQBkkkGhfbsB7IIzDGph2sTTJ8POArktExzkmWd7n6Gje
-         S/8w==
-X-Gm-Message-State: AOAM533MfjdvA7CH/8KJjlwfJbHjYZLA073LZ3dcE9eo4+P2TE/MwZmE
-        Q2QcBcqWJ4J3K8sE7qC2ATi9BA==
-X-Google-Smtp-Source: ABdhPJz/fg6ZuEZUeczFW5KClcE82a/e1SH/ti4JB0iIeTLRh6rAj6AKum0qDQiG+Fg3pNtedgSgCQ==
-X-Received: by 2002:a5d:5051:: with SMTP id h17mr14242807wrt.80.1615561710089;
-        Fri, 12 Mar 2021 07:08:30 -0800 (PST)
+        bh=8MLa7BfE7dVLn4tTMKZ+HSLGOdEizmmjEqt3urdruHo=;
+        b=Uc3IaOOSFE+t0sYr+IWvbt7gZbIshnogw/K6ahy5egUKwDY+OfOzUOwMdvtyDBsLnD
+         akdFFOqlpA/MacE8MONIEbQw7obj7hersrSwFn7bDlOjyfhi1vGb6/ca/IpidblK3bdZ
+         6uXaW7tEBNUqFWfq2px1CRsPvdVT+xXxGbBXRnWk1D7G+hPIIrTe5M/PM0U01oD6jVlq
+         sInf9qyvBiOK1yr9KgycrdF6bskL0VBt6qRDfjMmMsoZXO797iGqfoRVnX50+wHkQijT
+         4HsidCvFxU3nPHAXnHLUbJQPMuHvqM/xTmFKettuwTVti2IbI0jxsYn00oDpDjoU8m/J
+         AJ5Q==
+X-Gm-Message-State: AOAM532H8y97iKSufs3YXKITC9f7+TnLM7oF4eiCfKi1ijYVPwFMfcnt
+        qzW6BlsXVC6tK+AnBluHbudPpw==
+X-Google-Smtp-Source: ABdhPJzugoYcXn8oExDHUrj07sG0kptHYTO8yEvVKp4/4x1MmKQHsAr23VIN62ownUD9pD+bMeZBnA==
+X-Received: by 2002:a05:600c:2053:: with SMTP id p19mr13577526wmg.87.1615561741593;
+        Fri, 12 Mar 2021 07:09:01 -0800 (PST)
 Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
-        by smtp.gmail.com with ESMTPSA id j30sm9332276wrj.62.2021.03.12.07.08.29
+        by smtp.gmail.com with ESMTPSA id w131sm2402679wmb.8.2021.03.12.07.09.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 07:08:29 -0800 (PST)
-Date:   Fri, 12 Mar 2021 16:08:24 +0100
+        Fri, 12 Mar 2021 07:09:00 -0800 (PST)
+Date:   Fri, 12 Mar 2021 16:08:55 +0100
 From:   Marco Elver <elver@google.com>
 To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -56,69 +56,90 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/11] kasan: docs: update boot parameters section
-Message-ID: <YEuD6CIhVsSo9uqA@elver.google.com>
+Subject: Re: [PATCH v2 06/11] kasan: docs: update GENERIC implementation
+ details section
+Message-ID: <YEuEB3IhoXdixgiP@elver.google.com>
 References: <c2bbb56eaea80ad484f0ee85bb71959a3a63f1d7.1615559068.git.andreyknvl@google.com>
- <01364952f15789948f0627d6733b5cdf5209f83a.1615559068.git.andreyknvl@google.com>
+ <f2f35fdab701f8c709f63d328f98aec2982c8acc.1615559068.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01364952f15789948f0627d6733b5cdf5209f83a.1615559068.git.andreyknvl@google.com>
+In-Reply-To: <f2f35fdab701f8c709f63d328f98aec2982c8acc.1615559068.git.andreyknvl@google.com>
 User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Mar 12, 2021 at 03:24PM +0100, Andrey Konovalov wrote:
-> Update the "Boot parameters" section in KASAN documentation:
+> Update the "Implementation details" section for generic KASAN:
 > 
-> - Mention panic_on_warn.
-> - Mention kasan_multi_shot and its interaction with panic_on_warn.
-> - Clarify kasan.fault=panic interaction with panic_on_warn.
-> - A readability clean-up.
+> - Don't mention kmemcheck, it's not present in the kernel anymore.
+> - Don't mention GCC as the only supported compiler.
+> - Update kasan_mem_to_shadow() definition to match actual code.
+> - Punctuation, readability, and other minor clean-ups.
 > 
 > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 Reviewed-by: Marco Elver <elver@google.com>
 
 > ---
->  Documentation/dev-tools/kasan.rst | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+>  Documentation/dev-tools/kasan.rst | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
 > 
 > diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index cd12c890b888..1189be9b4cb5 100644
+> index 1189be9b4cb5..986410bf269f 100644
 > --- a/Documentation/dev-tools/kasan.rst
 > +++ b/Documentation/dev-tools/kasan.rst
-> @@ -174,10 +174,16 @@ call_rcu() and workqueue queuing.
->  Boot parameters
->  ~~~~~~~~~~~~~~~
+> @@ -200,12 +200,11 @@ Implementation details
+>  Generic KASAN
+>  ~~~~~~~~~~~~~
 >  
-> +KASAN is affected by the generic ``panic_on_warn`` command line parameter.
-> +When it is enabled, KASAN panics the kernel after printing a bug report.
-> +
-> +By default, KASAN prints a bug report only for the first invalid memory access.
-> +With ``kasan_multi_shot``, KASAN prints a report on every invalid access. This
-> +effectively disables ``panic_on_warn`` for KASAN reports.
-> +
->  Hardware tag-based KASAN mode (see the section about various modes below) is
->  intended for use in production as a security mitigation. Therefore, it supports
-> -boot parameters that allow to disable KASAN competely or otherwise control
-> -particular KASAN features.
-> +boot parameters that allow disabling KASAN or controlling its features.
+> -From a high level perspective, KASAN's approach to memory error detection is
+> -similar to that of kmemcheck: use shadow memory to record whether each byte of
+> -memory is safe to access, and use compile-time instrumentation to insert checks
+> -of shadow memory on each memory access.
+> +Software KASAN modes use shadow memory to record whether each byte of memory is
+> +safe to access and use compile-time instrumentation to insert shadow memory
+> +checks before each memory access.
 >  
->  - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
+> -Generic KASAN dedicates 1/8th of kernel memory to its shadow memory (e.g. 16TB
+> +Generic KASAN dedicates 1/8th of kernel memory to its shadow memory (16TB
+>  to cover 128TB on x86_64) and uses direct mapping with a scale and offset to
+>  translate a memory address to its corresponding shadow address.
 >  
-> @@ -185,8 +191,8 @@ particular KASAN features.
->    traces collection (default: ``on``).
+> @@ -214,23 +213,23 @@ address::
 >  
->  - ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
-> -  report or also panic the kernel (default: ``report``). Note, that tag
-> -  checking gets disabled after the first reported bug.
-> +  report or also panic the kernel (default: ``report``). The panic happens even
-> +  if ``kasan_multi_shot`` is enabled.
+>      static inline void *kasan_mem_to_shadow(const void *addr)
+>      {
+> -	return ((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
+> +	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
+>  		+ KASAN_SHADOW_OFFSET;
+>      }
 >  
->  Implementation details
->  ----------------------
+>  where ``KASAN_SHADOW_SCALE_SHIFT = 3``.
+>  
+>  Compile-time instrumentation is used to insert memory access checks. Compiler
+> -inserts function calls (__asan_load*(addr), __asan_store*(addr)) before each
+> -memory access of size 1, 2, 4, 8 or 16. These functions check whether memory
+> -access is valid or not by checking corresponding shadow memory.
+> +inserts function calls (``__asan_load*(addr)``, ``__asan_store*(addr)``) before
+> +each memory access of size 1, 2, 4, 8, or 16. These functions check whether
+> +memory accesses are valid or not by checking corresponding shadow memory.
+>  
+> -GCC 5.0 has possibility to perform inline instrumentation. Instead of making
+> -function calls GCC directly inserts the code to check the shadow memory.
+> -This option significantly enlarges kernel but it gives x1.1-x2 performance
+> -boost over outline instrumented kernel.
+> +With inline instrumentation, instead of making function calls, the compiler
+> +directly inserts the code to check shadow memory. This option significantly
+> +enlarges the kernel, but it gives an x1.1-x2 performance boost over the
+> +outline-instrumented kernel.
+>  
+> -Generic KASAN is the only mode that delays the reuse of freed object via
+> +Generic KASAN is the only mode that delays the reuse of freed objects via
+>  quarantine (see mm/kasan/quarantine.c for implementation).
+>  
+>  Software tag-based KASAN
 > -- 
 > 2.31.0.rc2.261.g7f71774620-goog
 > 
