@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D87E33839E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3753383A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhCLCad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:30:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhCLCaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:30:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9C7BF64F8E;
-        Fri, 12 Mar 2021 02:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615516215;
-        bh=D9MGN+fFbdK2/TfRH+aX4F9qV+vkMaXDR6zIXqOBh0Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WgQYNjAQrq31VD+J0hE6MEuogKxf2Iir3eHtmYXtQ9WVins9FpZ2yk/CXNDl/11mR
-         C0OdBHp+1kr+ODjwsqpZAtpGexv4cOX7amH2/peAkRTcsbr90aHiM84svS75ruG+Fp
-         LUDxTGG4mF9kZo9trGQV2JQULAtIZSzlnfE4qPE9rREnXNZCaE+HLN+oPfOV4Jq2Tj
-         H35/VXsyrubVwjm+mcrkBJ0yWQ+U21rx1FUTITTiSqKQP2cj7D47xlkqKFvOUwd7I4
-         9V2vhFZz7bu7Cc8e6kCvtpIb02U82RUVCsJuQQWmzSVCIyMeXADilAWzYMEgXRIj1K
-         icaZBDn6egSvg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 94AFC6096F;
-        Fri, 12 Mar 2021 02:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229938AbhCLCdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:33:05 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:50883 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhCLCcp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 21:32:45 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id B3B052EA45F;
+        Thu, 11 Mar 2021 21:32:44 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id BfnoFxK84qvP; Thu, 11 Mar 2021 21:15:41 -0500 (EST)
+Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id E79F12EA3A7;
+        Thu, 11 Mar 2021 21:32:43 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH][next] scsi: sg: return -ENOMEM on out of memory error
+To:     Colin King <colin.king@canonical.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210311233359.81305-1-colin.king@canonical.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <90e260c2-34f7-e156-0c36-6ff00c91311b@interlog.com>
+Date:   Thu, 11 Mar 2021 21:32:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/qlcnic: Fix a use after free in
- qlcnic_83xx_get_minidump_template
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161551621560.2118.16949794458135150794.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Mar 2021 02:30:15 +0000
-References: <20210311040140.7339-1-lyl2019@mail.ustc.edu.cn>
-In-Reply-To: <20210311040140.7339-1-lyl2019@mail.ustc.edu.cn>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     shshaikh@marvell.com, manishc@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210311233359.81305-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 10 Mar 2021 20:01:40 -0800 you wrote:
-> In qlcnic_83xx_get_minidump_template, fw_dump->tmpl_hdr was freed by
-> vfree(). But unfortunately, it is used when extended is true.
+On 2021-03-11 6:33 p.m., Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Fixes: 7061b2bdd620e ("qlogic: Deletion of unnecessary checks before two function calls")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> The sg_proc_seq_show_debug should return -ENOMEM on an
+> out of memory error rather than -1. Fix this.
+> 
+> Fixes: 94cda6cf2e44 ("scsi: sg: Rework debug info")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+
+Thanks.
+
 > ---
->  drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c | 3 +++
->  1 file changed, 3 insertions(+)
-
-Here is the summary with links:
-  - net/qlcnic: Fix a use after free in qlcnic_83xx_get_minidump_template
-    https://git.kernel.org/netdev/net/c/db74623a3850
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>   drivers/scsi/sg.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+> index 79f05afa4407..85e86cbc6891 100644
+> --- a/drivers/scsi/sg.c
+> +++ b/drivers/scsi/sg.c
+> @@ -4353,7 +4353,7 @@ sg_proc_seq_show_debug(struct seq_file *s, void *v)
+>   	if (!bp) {
+>   		seq_printf(s, "%s: Unable to allocate %d on heap, finish\n",
+>   			   __func__, bp_len);
+> -		return -1;
+> +		return -ENOMEM;
+>   	}
+>   	read_lock_irqsave(&sg_index_lock, iflags);
+>   	sdp = it ? sg_lookup_dev(it->index) : NULL;
+> 
 
