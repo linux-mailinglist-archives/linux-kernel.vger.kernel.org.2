@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E8E3393F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9A93393FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhCLQx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:53:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
+        id S231636AbhCLQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:55:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232283AbhCLQxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:53:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C58E764FD9;
-        Fri, 12 Mar 2021 16:53:30 +0000 (UTC)
+        id S231557AbhCLQzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:55:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A116501A;
+        Fri, 12 Mar 2021 16:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615568011;
-        bh=aF/mMRBTJBBXplInmQ4Ie8yBGvNGzPk48GM4ArjgNIE=;
+        s=k20201202; t=1615568113;
+        bh=ZeBBYJbX5TTtyT0dZTCaJBzVFjARmrNBeHuAj2mMTns=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q3JXi+S0hFtM7MxJAZcxykl+OYDBOkih6O6UNKQGYBMLG+PAiy2VR2W9zXtkpEYKk
-         V8fftnIRLe65q1nHXjfuYR77hVjdPJ5LEMzH6nYNY0szn8mWyK+Yc4LeGJEkY1Igla
-         nDw0M+TJSTqdj76HRi4mcpWJsutWWz6BMlVLvx47h2E3yOH41kKXa/XtQOYhX4r3V0
-         tdwR02tvj109O1T6FwoJE7EZLIFlegiMwY9PC0xI13FDMWyAdZaUugZNFStpVQ1xa9
-         nqXM5QuRmRuNqjDLqMs87v4NQcw0untqVeetygnm6pwYoyVmbxQ9KR920fw+EkmzZ5
-         2FJC+04lDPyzw==
-Date:   Fri, 12 Mar 2021 18:53:06 +0200
+        b=AcZh0lzVxiLPLlBBURb6qvCfpeP9eyPFOsPlcWipO6nb5Qc+yVdvr0yl29U64zMhQ
+         qLbG16YdWhTCDT2YvGmLphB8Hw63BSizTq52kgqa8s8zAYKlVUKC+sMQ4Ky8P9v90n
+         qNtvsW4jZ9t3NtxAitq+RYk+Sg5ecwsXZGvbWfsaR3PdSeAiDVCV1rPYt/boKD1z2U
+         GSpUDj2bQNWqhIE4cqXf091y0K25C9m9sVfj0W9OTr4ygGAlWVhh4ugJDRmF21T59N
+         OmWgwTU1cV4S4QECc0C3kV2TwmHZkJDdOv+i4COA2SVYztl6PoiPxe/TnQir1XXbiE
+         PM1BwL0LLDiVg==
+Date:   Fri, 12 Mar 2021 18:54:48 +0200
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
- SGX_INVALID_SIGNATURE
-Message-ID: <YEuccsOIBlACqG6A@kernel.org>
-References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
- <YDy51R2Wva7s+k/x@kernel.org>
- <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
- <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
- <YD5B7P++T6jLoWBR@kernel.org>
- <1f5c2375-39e2-65a8-3ad3-8dc43422f568@linux.alibaba.com>
- <YEk8f/29icpsUhas@kernel.org>
- <20ef1254-007d-04ce-8df5-5122ffd4d8d3@linux.alibaba.com>
- <YEmRlQ8vL2inziEK@kernel.org>
- <710b65d6-e492-ae24-f2af-6973e1df1b85@linux.alibaba.com>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mjg59@google.com
+Subject: Re: [PATCH v2 1/3] tpm: efi: Use local variable for calculating
+ final log size
+Message-ID: <YEuc2JV2YBzlQtB5@kernel.org>
+References: <20210310221916.356716-1-stefanb@linux.ibm.com>
+ <20210310221916.356716-2-stefanb@linux.ibm.com>
+ <YElUiIFkyf6txZoV@kernel.org>
+ <YElVN0kwMIyeF9gQ@kernel.org>
+ <39ea4fef-0a21-ad06-118f-dbdf01cd5c61@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <710b65d6-e492-ae24-f2af-6973e1df1b85@linux.alibaba.com>
+In-Reply-To: <39ea4fef-0a21-ad06-118f-dbdf01cd5c61@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:53:49PM +0800, Tianjia Zhang wrote:
+On Thu, Mar 11, 2021 at 09:02:38AM -0500, Stefan Berger wrote:
 > 
-> 
-> On 3/11/21 11:42 AM, Jarkko Sakkinen wrote:
-> > On Thu, Mar 11, 2021 at 10:47:50AM +0800, Jia Zhang wrote:
-> > > 
-> > > 
-> > > On 2021/3/11 上午5:39, Jarkko Sakkinen wrote:
-> > > > On Wed, Mar 10, 2021 at 08:44:44PM +0800, Jia Zhang wrote:
-> > > > > 
-> > > > > 
-> > > > > On 2021/3/2 下午9:47, Jarkko Sakkinen wrote:
-> > > > > > On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
-> > > > > > > On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
-> > > > > > > <tianjia.zhang@linux.alibaba.com> wrote:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
-> > > > > > > > > On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
-> > > > > > > > > > q2 is not always 384-byte length. Sometimes it only has 383-byte.
-> > > > > > > > > 
-> > > > > > > > > What does determine this?
-> > > > > > > > > 
-> > > > > > > > > > In this case, the valid portion of q2 is reordered reversely for
-> > > > > > > > > > little endian order, and the remaining portion is filled with zero.
-> > > > > > > > > 
-> > > > > > > > > I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
-> > > > > > > > > 
-> > > > > > > > > I'm lacking these details:
-> > > > > > > > > 
-> > > > > > > > > 1. Why the length of Q2 can vary?
-> > > > > > > > > 2. Why reversing the bytes is the correct measure to counter-measure
-> > > > > > > > >      this variation?
-> > > > > > > > > 
-> > > > > > > > > /Jarkko
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > When use openssl to generate a key instead of using the built-in
-> > > > > > > > sign_key.pem, there is a probability that will encounter this problem.
-> > > > > > > > 
-> > > > > > > > Here is a problematic key I encountered. The calculated q1 and q2 of
-> > > > > > > > this key are both 383 bytes, If the length is not processed, the
-> > > > > > > > hardware signature will fail.
-> > > > > > > 
-> > > > > > > Presumably the issue is that some keys have parameters that have
-> > > > > > > enough leading 0 bits to be effectively shorter.  The openssl API
-> > > > > > > (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
-> > > > > > > variable-size integers.
-> > > > > > 
-> > > > > > But the test uses a static key. It used to generate a key on fly but
-> > > > > 
-> > > > > IMO even though the test code, it comes from the linux kernel, meaning
-> > > > > that its quality has a certain guarantee and it is a good reference, so
-> > > > > the test code still needs to ensure its correctness.
+> On 3/10/21 6:24 PM, Jarkko Sakkinen wrote:
+> > On Thu, Mar 11, 2021 at 01:21:47AM +0200, Jarkko Sakkinen wrote:
+> > > On Wed, Mar 10, 2021 at 05:19:14PM -0500, Stefan Berger wrote:
+> > > > When tpm_read_log_efi is called multiple times, which happens when
+> > > > one loads and unloads a TPM2 driver multiple times, then the global
+> > > > variable efi_tpm_final_log_size will at some point become a negative
+> > > > number due to the subtraction of final_events_preboot_size occurring
+> > > > each time. Use a local variable to avoid this integer underflow.
 > > > > 
-> > > > Hmm... what is working incorrectly then?
-> > > 
-> > > In current implementation, it is working well, after all the static key
-> > > can derive the full 384-byte length of q1 and q2. As mentioned above, if
-> > > someone refers to the design of signing tool from selftest code, it is
-> > > quite possible that the actual implementation will use dynamical or
-> > > external signing key deriving shorter q1 and/or q2 in length.
+> > > > The following issue is now resolved:
+> > > > 
+> > > > Mar  8 15:35:12 hibinst kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> > > > Mar  8 15:35:12 hibinst kernel: Workqueue: tpm-vtpm vtpm_proxy_work [tpm_vtpm_proxy]
+> > > > Mar  8 15:35:12 hibinst kernel: RIP: 0010:__memcpy+0x12/0x20
+> > > > Mar  8 15:35:12 hibinst kernel: Code: 00 b8 01 00 00 00 85 d2 74 0a c7 05 44 7b ef 00 0f 00 00 00 c3 cc cc cc 66 66 90 66 90 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 <f3> 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 f3 a4
+> > > > Mar  8 15:35:12 hibinst kernel: RSP: 0018:ffff9ac4c0fcfde0 EFLAGS: 00010206
+> > > > Mar  8 15:35:12 hibinst kernel: RAX: ffff88f878cefed5 RBX: ffff88f878ce9000 RCX: 1ffffffffffffe0f
+> > > > Mar  8 15:35:12 hibinst kernel: RDX: 0000000000000003 RSI: ffff9ac4c003bff9 RDI: ffff88f878cf0e4d
+> > > > Mar  8 15:35:12 hibinst kernel: RBP: ffff9ac4c003b000 R08: 0000000000001000 R09: 000000007e9d6073
+> > > > Mar  8 15:35:12 hibinst kernel: R10: ffff9ac4c003b000 R11: ffff88f879ad3500 R12: 0000000000000ed5
+> > > > Mar  8 15:35:12 hibinst kernel: R13: ffff88f878ce9760 R14: 0000000000000002 R15: ffff88f77de7f018
+> > > > Mar  8 15:35:12 hibinst kernel: FS:  0000000000000000(0000) GS:ffff88f87bd00000(0000) knlGS:0000000000000000
+> > > > Mar  8 15:35:12 hibinst kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > Mar  8 15:35:12 hibinst kernel: CR2: ffff9ac4c003c000 CR3: 00000001785a6004 CR4: 0000000000060ee0
+> > > > Mar  8 15:35:12 hibinst kernel: Call Trace:
+> > > > Mar  8 15:35:12 hibinst kernel: tpm_read_log_efi+0x152/0x1a7
+> > > > Mar  8 15:35:12 hibinst kernel: tpm_bios_log_setup+0xc8/0x1c0
+> > > > Mar  8 15:35:12 hibinst kernel: tpm_chip_register+0x8f/0x260
+> > > > Mar  8 15:35:12 hibinst kernel: vtpm_proxy_work+0x16/0x60 [tpm_vtpm_proxy]
+> > > > Mar  8 15:35:12 hibinst kernel: process_one_work+0x1b4/0x370
+> > > > Mar  8 15:35:12 hibinst kernel: worker_thread+0x53/0x3e0
+> > > > Mar  8 15:35:12 hibinst kernel: ? process_one_work+0x370/0x370
+> > > > 
+> > > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > > Fixes tag for this one?
+> > Or just sanity check, I think it is:
 > > 
-> > A self-test needs is not meant to be generic to be directly used in 3rd
-> > party code. With the current key there is not issue => there is no issue.
+> > Fixes: 166a2809d65b ("tpm: Don't duplicate events from the final event log in the TCG2 log")
+> Looks good.
 > > 
+> > Also, I guess all of the patches ought to have stable cc, right?
 > 
-> For keys generated on fly, self-test does not work properly, this experience
-> is really worse.
+> Yes, please. I think the maintainer has to add this 'at some point'.
+> 
+> Since you queued them already I won't send a v3.
+> 
+> 
+> Thanks!
+> 
+> �� Stefan
 
-It does not generate keys on fly. There's a static key.
+OK, I'll add cc's before I send the PR, thanks.
 
 /Jarkko
