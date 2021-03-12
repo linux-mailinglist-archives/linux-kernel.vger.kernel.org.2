@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A05339130
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A38E33913D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhCLPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:23:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:55642 "EHLO foss.arm.com"
+        id S231733AbhCLP2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:28:51 -0500
+Received: from mout.gmx.net ([212.227.17.20]:58795 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231789AbhCLPXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:23:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1A221FB;
-        Fri, 12 Mar 2021 07:23:47 -0800 (PST)
-Received: from [10.37.8.6] (unknown [10.37.8.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C60A3F7D7;
-        Fri, 12 Mar 2021 07:23:45 -0800 (PST)
-Subject: Re: [PATCH v15 5/8] arm64: mte: Enable TCO in functions that can read
- beyond buffer limits
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210312142210.21326-1-vincenzo.frascino@arm.com>
- <20210312142210.21326-6-vincenzo.frascino@arm.com>
- <20210312151259.GB24210@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <31b7a388-4c57-cb25-2d30-da7c37e2b4d6@arm.com>
-Date:   Fri, 12 Mar 2021 15:23:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230302AbhCLP2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:28:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615562901;
+        bh=5kxWxnJH6TxGILTbWiEuWrtMiE4DpLAno4eP5DaAVnM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=kiKXOysos2SmX0B8pydGx/TlqeNKGYPZVqafF9L5KKf1Al2XFMky8lQfp1MKLafQR
+         u/QUfHptnDrDwR7jBurSje/dRs7eWKoCvC+Tz3VLm8bFRNSY83gukQN+tuzcSAODwF
+         IZKra52x10JkVmVRzlG1owQNUrmao7pr1QvPzkEI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MeU0q-1lutsH2fjA-00aZGP; Fri, 12
+ Mar 2021 16:28:21 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [RFC PATCH] docs: Group arch-specific documentation under "CPU Architectures"
+Date:   Fri, 12 Mar 2021 16:28:03 +0100
+Message-Id: <20210312152804.2110703-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210312151259.GB24210@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8ebQTw4lZ+rVZ5nvFoAmTj5OAS3v/fSaT0/jFvCvQVpD2gpKnVw
+ DilHPjUKk0X3YA+e0yFNd1JIULXgIiQL40MkLj7dZA8ysVSSilzZ7qMxg0HWQZ1wZq9/0K3
+ AlikEl29YsjY9T29dZz7XsfV1x5rdiUHqcVejJieZkb79pkNISCbXGhKVp5K9eocWVNHWNb
+ CCflKytTdcFSBiCjkTG9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uihwH/s/73s=:+hoH2NdeT68B6TmcizC9x1
+ TXVdHUe+JqESQt16Cq5/oXL3DvFyFqeaXccPt9272v//kgr3m8I0HKN4pRVradhhqBazITH7z
+ BbDh82hc+C6xAu1YOOl/p58eCju57v2gzTnsTnIk3KJBaFXpo0gOUT01yse58b2Gb0TLHmP3B
+ iO8qd4J12Wkpa/Nfs/y7NWqqO6bUrRiUQVHiuhAst9cBuXHRD1PYYx6y4KwAuTjYb6hQ/Rxsu
+ 4Rh7HBmuXbztjNUPCa1/AbxuAiiivPP3OlMWQW1sJIijtCfksooewFj0nnHAoynHoLyynUkun
+ t7RGGKqiPEQHhHHpzpJvVZJ9NNDhGoiRMeh//UM8cVa6rYYMma2SPhXVJk/qSTyAikR6LbV4N
+ pouSs8E9SSJWIj6CfbEn7BMDuaWfDS0ZRMjlecjFRrgopGIbOjg1XNZesVdGqhfbiaZd/shtG
+ AsOwJORRB9VMct6kVmuYcX4AfHQ5M9VEbN4ivte5AaQjT4ir1Xj8kt5slQuR2CZfwdNT2KHYs
+ wmru5aU2NjA2wff8w7VcDcb/bf9G9hp+Ja78L4MemUNHGE58bgAIUtePAP9eCp7jU1zZ5K7IC
+ 94guYKUzco1RFQa3/Mhw+T2PK8021yuCHoF8lwcPt/q1jy+xssVya+koF1aBOWK9pkfjA8f/R
+ l5ZsYi/Zl4oZ4lLN/SnKD2i+q6cPvMru0mG9BjYePiTHwchhHlsDRG4Fq0dO+Xj9OjqSngkzU
+ aMc0KVWmjwEupvidUCE+dXxuIwMiLE0bzmsokMK3PDoTKCDvSVKzYORAKsl5L3x4VyOXMc/9F
+ OtjA0VL0FSNja1T1BVrci/JdSpkHG27IJCCohsnGiksPsKAC849jSCMly54uYsmxeXUoPoAdo
+ +ABCTXVJnsJjMza5TP8Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 3:13 PM, Catalin Marinas wrote:
-> On Fri, Mar 12, 2021 at 02:22:07PM +0000, Vincenzo Frascino wrote:
->> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
->> index 9b557a457f24..8603c6636a7d 100644
->> --- a/arch/arm64/include/asm/mte.h
->> +++ b/arch/arm64/include/asm/mte.h
->> @@ -90,5 +90,20 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
->>  
->>  #endif /* CONFIG_ARM64_MTE */
->>  
->> +#ifdef CONFIG_KASAN_HW_TAGS
->> +/* Whether the MTE asynchronous mode is enabled. */
->> +DECLARE_STATIC_KEY_FALSE(mte_async_mode);
->> +
->> +static inline bool system_uses_mte_async_mode(void)
->> +{
->> +	return static_branch_unlikely(&mte_async_mode);
->> +}
->> +#else
->> +static inline bool system_uses_mte_async_mode(void)
->> +{
->> +	return false;
->> +}
->> +#endif /* CONFIG_KASAN_HW_TAGS */
-> 
-> You can write this with fewer lines:
-> 
-> DECLARE_STATIC_KEY_FALSE(mte_async_mode);
-> 
-> static inline bool system_uses_mte_async_mode(void)
-> {
-> 	return IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&
-> 		static_branch_unlikely(&mte_async_mode);
-> }
-> 
-> The compiler will ensure that mte_async_mode is not referred when
-> !CONFIG_KASAN_HW_TAGS and therefore doesn't need to be defined.
->
+To declutter the top-level table of contents (the side bar), this
+patch reduces the architecture-specfic documentation to one top-level
+item, "CPU Architectures".
 
-Yes, I agree, but I introduce "#ifdef CONFIG_KASAN_HW_TAGS" in the successive
-patch anyway, according to me the overall code looks more uniform like this. But
-I do not have a strong opinion or preference on this.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
 
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index fa755cf94e01..9362928ba0d5 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -26,6 +26,10 @@ u64 gcr_kernel_excl __ro_after_init;
->>  
->>  static bool report_fault_once = true;
->>  
->> +/* Whether the MTE asynchronous mode is enabled. */
->> +DEFINE_STATIC_KEY_FALSE(mte_async_mode);
->> +EXPORT_SYMBOL_GPL(mte_async_mode);
-> 
-> Maybe keep these bracketed by #ifdef CONFIG_KASAN_HW_TAGS. I think the
-> mte_enable_kernel_*() aren't needed either if KASAN_HW is disabled (you
-> can do it with an additional patch).
->
+As a side effect, the TOC in index.html effectively gets one level of
+detail less. This could be fixed by specifying ':maxdepth: 3'.
+=2D--
+ Documentation/arch.rst  | 26 ++++++++++++++++++++++++++
+ Documentation/index.rst | 20 ++------------------
+ 2 files changed, 28 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/arch.rst
 
-Makes sense, I will add it in the next version.
+diff --git a/Documentation/arch.rst b/Documentation/arch.rst
+new file mode 100644
+index 0000000000000..f10bd32a5972e
+=2D-- /dev/null
++++ b/Documentation/arch.rst
+@@ -0,0 +1,26 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++CPU Architectures
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++
++These books provide programming details about architecture-specific
++implementation.
++
++.. toctree::
++   :maxdepth: 2
++
++   arm/index
++   arm64/index
++   ia64/index
++   m68k/index
++   mips/index
++   nios2/index
++   openrisc/index
++   parisc/index
++   powerpc/index
++   riscv/index
++   s390/index
++   sh/index
++   sparc/index
++   x86/index
++   xtensa/index
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 31f2adc8542dc..54ce34fd6fbda 100644
+=2D-- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -149,27 +149,11 @@ Architecture-agnostic documentation
+ Architecture-specific documentation
+ -----------------------------------
 
-> With these, you can add:
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
+-These books provide programming details about architecture-specific
+-implementation.
+-
+ .. toctree::
+    :maxdepth: 2
 
--- 
-Regards,
-Vincenzo
+-   arm/index
+-   arm64/index
+-   ia64/index
+-   m68k/index
+-   mips/index
+-   nios2/index
+-   openrisc/index
+-   parisc/index
+-   powerpc/index
+-   riscv/index
+-   s390/index
+-   sh/index
+-   sparc/index
+-   x86/index
+-   xtensa/index
++   arch
++
+
+ Other documentation
+ -------------------
+=2D-
+2.30.1
+
