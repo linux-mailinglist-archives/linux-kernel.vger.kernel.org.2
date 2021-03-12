@@ -2,205 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AFA339806
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD6633980E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhCLUKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:10:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234654AbhCLUJt (ORCPT
+        id S234607AbhCLUMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234611AbhCLUMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:09:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615579788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jyz52keAoIKnP4MO3/5Lr7keCuYbmY1/k6xZpVT/8EI=;
-        b=clj84phO4ijnJ/uGKeAklKA2NuPecoRl+dZpF0wOOZaQuchFUwRJ39r9yTtYtU+mup/VM/
-        Ctl8E9Y39AD92u+lqLoyc69QC6l+233UHcaxOBAdataT2d1f02ixktcVVjhikOsicOss54
-        /mpgK29bNDCNLgximE8imS+PEdOXwSU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-OSk_6vnuNbKzkCrXTnd6Sg-1; Fri, 12 Mar 2021 15:09:45 -0500
-X-MC-Unique: OSk_6vnuNbKzkCrXTnd6Sg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E644984B9A1;
-        Fri, 12 Mar 2021 20:09:43 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 716FE6087C;
-        Fri, 12 Mar 2021 20:09:39 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 13:09:38 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Subject: Re: [PATCH] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210312130938.1e535e50@omen.home.shazbot.org>
-In-Reply-To: <20210312194147.GH2356281@nvidia.com>
-References: <161539852724.8302.17137130175894127401.stgit@gimli.home>
-        <20210310181446.GZ2356281@nvidia.com>
-        <20210310113406.6f029fcf@omen.home.shazbot.org>
-        <20210310184011.GA2356281@nvidia.com>
-        <20210312121611.07a313e3@omen.home.shazbot.org>
-        <20210312194147.GH2356281@nvidia.com>
+        Fri, 12 Mar 2021 15:12:32 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CF6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:12:32 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lKo8y-0004RE-Cj; Fri, 12 Mar 2021 21:12:20 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lKo8w-00089j-Gb; Fri, 12 Mar 2021 21:12:18 +0100
+Date:   Fri, 12 Mar 2021 21:12:17 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v8 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
+Message-ID: <20210312201217.n2sav23swy7ii4uo@pengutronix.de>
+References: <20210312122454.24480-1-nsaenzjulienne@suse.de>
+ <20210312122454.24480-12-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e6h2cu7dk3om4cg7"
+Content-Disposition: inline
+In-Reply-To: <20210312122454.24480-12-nsaenzjulienne@suse.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 15:41:47 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> On Fri, Mar 12, 2021 at 12:16:11PM -0700, Alex Williamson wrote:
-> > On Wed, 10 Mar 2021 14:40:11 -0400
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > On Wed, Mar 10, 2021 at 11:34:06AM -0700, Alex Williamson wrote:
-> > >   
-> > > > > I think after the address_space changes this should try to stick with
-> > > > > a normal io_rmap_pfn_range() done outside the fault handler.    
-> > > > 
-> > > > I assume you're suggesting calling io_remap_pfn_range() when device
-> > > > memory is enabled,    
-> > > 
-> > > Yes, I think I saw Peter thinking along these lines too
-> > > 
-> > > Then fault just always causes SIGBUS if it gets called  
-> > 
-> > Trying to use the address_space approach because otherwise we'd just be
-> > adding back vma list tracking, it looks like we can't call
-> > io_remap_pfn_range() while holding the address_space i_mmap_rwsem via
-> > i_mmap_lock_write(), like done in unmap_mapping_range().  lockdep
-> > identifies a circular lock order issue against fs_reclaim.  Minimally we
-> > also need vma_interval_tree_iter_{first,next} exported in order to use
-> > vma_interval_tree_foreach().  Suggestions?  Thanks,  
-> 
-> You are asking how to put the BAR back into every VMA when it is
-> enabled again after it has been zap'd?
+--e6h2cu7dk3om4cg7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Exactly.
- 
-> What did the lockdep splat look like? Is it a memory allocation?
+Hello Nicolas,
 
+On Fri, Mar 12, 2021 at 01:24:54PM +0100, Nicolas Saenz Julienne wrote:
+> Adds support to control the PWM bus available in official Raspberry Pi
+> PoE HAT. Only RPi's co-processor has access to it, so commands have to
+> be sent through RPi's firmware mailbox interface.
+>=20
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>=20
+> ---
+>=20
+> Changes since v7:
+>  - Remove unwarranted RPI_PWM_DEF_DUTY_REG usage
+>=20
+>  Changes since v6:
+> - Use %pe
+> - Round divisions properly
+> - Use dev_err_probe()
+> - Pass check_patch
+>=20
+> Changes since v3:
+>  - Rename compatible string to be more explicit WRT to bus's limitations
+>=20
+> Changes since v2:
+>  - Use devm_rpi_firmware_get()
+>  - Rename driver
+>  - Small cleanups
+>=20
+> Changes since v1:
+>  - Use default pwm bindings and get rid of xlate() function
+>  - Correct spelling errors
+>  - Correct apply() function
+>  - Round values
+>  - Fix divisions in arm32 mode
+>  - Small cleanups
+>=20
+>  drivers/pwm/Kconfig               |   9 ++
+>  drivers/pwm/Makefile              |   1 +
+>  drivers/pwm/pwm-raspberrypi-poe.c | 206 ++++++++++++++++++++++++++++++
+>  3 files changed, 216 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-raspberrypi-poe.c
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index a7a7a9f26aef..d3371ac7b871 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -431,6 +431,15 @@ config PWM_PXA
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-pxa.
+> =20
+> +config PWM_RASPBERRYPI_POE
+> +	tristate "Raspberry Pi Firwmware PoE Hat PWM support"
+> +	# Make sure not 'y' when RASPBERRYPI_FIRMWARE is 'm'. This can only
+> +	# happen when COMPILE_TEST=3Dy, hence the added !RASPBERRYPI_FIRMWARE.
+> +	depends on RASPBERRYPI_FIRMWARE || (COMPILE_TEST && !RASPBERRYPI_FIRMWA=
+RE)
+> +	help
+> +	  Enable Raspberry Pi firmware controller PWM bus used to control the
+> +	  official RPI PoE hat
+> +
+>  config PWM_RCAR
+>  	tristate "Renesas R-Car PWM support"
+>  	depends on ARCH_RENESAS || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index 4e35a55fa7b6..d3879619bd76 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -39,6 +39,7 @@ obj-$(CONFIG_PWM_NTXEC)		+=3D pwm-ntxec.o
+>  obj-$(CONFIG_PWM_OMAP_DMTIMER)	+=3D pwm-omap-dmtimer.o
+>  obj-$(CONFIG_PWM_PCA9685)	+=3D pwm-pca9685.o
+>  obj-$(CONFIG_PWM_PXA)		+=3D pwm-pxa.o
+> +obj-$(CONFIG_PWM_RASPBERRYPI_POE)	+=3D pwm-raspberrypi-poe.o
+>  obj-$(CONFIG_PWM_RCAR)		+=3D pwm-rcar.o
+>  obj-$(CONFIG_PWM_RENESAS_TPU)	+=3D pwm-renesas-tpu.o
+>  obj-$(CONFIG_PWM_ROCKCHIP)	+=3D pwm-rockchip.o
+> diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberr=
+ypi-poe.c
+> new file mode 100644
+> index 000000000000..71ade5e55069
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-raspberrypi-poe.c
+> @@ -0,0 +1,206 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-rc1+ #18 Not tainted
-------------------------------------------------------
-CPU 0/KVM/1406 is trying to acquire lock:
-ffffffffa5a58d60 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0x83/0xd0
+2021?
 
-but task is already holding lock:
-ffff94c0f3e8fb08 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: vfio_device_io_remap_mapping_range+0x31/0x120 [vfio]
+> + * For more information on Raspberry Pi's PoE hat see:
+> + * https://www.raspberrypi.org/products/poe-hat/
 
-which lock already depends on the new lock.
+Out of personal interest: Is this hat also able to power a RPi CM4?
 
+> + * Limitations:
+> + *  - No disable bit, so a disabled PWM is simulated by duty_cycle 0
+> + *  - Only normal polarity
+> + *  - Fixed 12.5 kHz period
+> + *
+> + * The current period is completed when HW is reconfigured.
+> + */
 
-the existing dependency chain (in reverse order) is:
+Other than that as mentioned in the previous round: This looks good,
 
--> #1 (&mapping->i_mmap_rwsem){++++}-{3:3}:
-       down_write+0x3d/0x70
-       dma_resv_lockdep+0x1b0/0x298
-       do_one_initcall+0x5b/0x2d0
-       kernel_init_freeable+0x251/0x298
-       kernel_init+0xa/0x111
-       ret_from_fork+0x22/0x30
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       __lock_acquire+0x111f/0x1e10
-       lock_acquire+0xb5/0x380
-       fs_reclaim_acquire+0xa3/0xd0
-       kmem_cache_alloc_trace+0x30/0x2c0
-       memtype_reserve+0xc3/0x280
-       reserve_pfn_range+0x86/0x160
-       track_pfn_remap+0xa6/0xe0
-       remap_pfn_range+0xa8/0x610
-       vfio_device_io_remap_mapping_range+0x93/0x120 [vfio]
-       vfio_pci_test_and_up_write_memory_lock+0x34/0x40 [vfio_pci]
-       vfio_basic_config_write+0x12d/0x230 [vfio_pci]
-       vfio_pci_config_rw+0x1b7/0x3a0 [vfio_pci]
-       vfs_write+0xea/0x390
-       __x64_sys_pwrite64+0x72/0xb0
-       do_syscall_64+0x33/0x40
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+What is your thought about how to get this series merged? At least
+input, staging, armsoc, clk, reset anf firmware are touched. Do you
+prepare a branch for merging in the relevant trees (once you have all
+the necessary Acks)?
 
-other info that might help us debug this:
+Best regards
+Uwe
 
- Possible unsafe locking scenario:
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&mapping->i_mmap_rwsem);
-                               lock(fs_reclaim);
-                               lock(&mapping->i_mmap_rwsem);
-  lock(fs_reclaim);
+--e6h2cu7dk3om4cg7
+Content-Type: application/pgp-signature; name="signature.asc"
 
- *** DEADLOCK ***
+-----BEGIN PGP SIGNATURE-----
 
-2 locks held by CPU 0/KVM/1406:
- #0: ffff94c0f9c71ef0 (&vdev->memory_lock){++++}-{3:3}, at: vfio_basic_config_write+0x19a/0x230 [vfio_pci]
- #1: ffff94c0f3e8fb08 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: vfio_device_io_remap_mapping_range+0x31/0x120 [vfio]
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBLyx0ACgkQwfwUeK3K
+7Ak+VQf+I16Pur4J8v1VK5J08zAGFG+/Lgxk4CBXKIV1Hs8zZ+Xj6Y7sobqkPmiG
+/75gKqcFB43BHDrOAwWVMNlE9OChTTrI9grjBHBTGl+46cJkuu5qus/xptp3mxQu
+zdTcmzfkrLYPdw3AQaofaLHg5IL0RZkvovBmiUa+JaN89EtjvuLRIFL8wtipt/0J
+rE8baVUKZd1ttRm+eotIk3iknzxFUe3xAVFJ8YRlNBwyGlEQQBsZFku3+rP2p47w
+6K30Tnft0JKiK+4fuMFhQ5xw3ugSSWThr6/kDYQnTk/BagTPeUyftRmh4/JNkc8X
+7OhSbf8srKbZC8859TEqJZ5M48RRxw==
+=bnOj
+-----END PGP SIGNATURE-----
 
-stack backtrace:
-CPU: 3 PID: 1406 Comm: CPU 0/KVM Not tainted 5.12.0-rc1+ #18
-Hardware name: System manufacturer System Product Name/P8H67-M PRO, BIOS 3904 04/27/2013
-Call Trace:
- dump_stack+0x7f/0xa1
- check_noncircular+0xcf/0xf0
- __lock_acquire+0x111f/0x1e10
- lock_acquire+0xb5/0x380
- ? fs_reclaim_acquire+0x83/0xd0
- ? pat_enabled+0x10/0x10
- ? memtype_reserve+0xc3/0x280
- fs_reclaim_acquire+0xa3/0xd0
- ? fs_reclaim_acquire+0x83/0xd0
- kmem_cache_alloc_trace+0x30/0x2c0
- memtype_reserve+0xc3/0x280
- reserve_pfn_range+0x86/0x160
- track_pfn_remap+0xa6/0xe0
- remap_pfn_range+0xa8/0x610
- ? lock_acquire+0xb5/0x380
- ? vfio_device_io_remap_mapping_range+0x31/0x120 [vfio]
- ? lock_is_held_type+0xa5/0x120
- vfio_device_io_remap_mapping_range+0x93/0x120 [vfio]
- vfio_pci_test_and_up_write_memory_lock+0x34/0x40 [vfio_pci]
- vfio_basic_config_write+0x12d/0x230 [vfio_pci]
- vfio_pci_config_rw+0x1b7/0x3a0 [vfio_pci]
- vfs_write+0xea/0x390
- __x64_sys_pwrite64+0x72/0xb0
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f80176152ff
-Code: 08 89 3c 24 48 89 4c 24 18 e8 3d f3 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 48 8b 74 24 08 8b 3c 24 b8 12 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 04 24 e8 6d f3 ff ff 48 8b
-RSP: 002b:00007f7efa5f72f0 EFLAGS: 00000293 ORIG_RAX: 0000000000000012
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f80176152ff
-RDX: 0000000000000002 RSI: 00007f7efa5f736c RDI: 000000000000002d
-RBP: 000055b66913d530 R08: 0000000000000000 R09: 000000000000ffff
-R10: 0000070000000004 R11: 0000000000000293 R12: 0000000000000004
-R13: 0000000000000102 R14: 0000000000000002 R15: 000055b66913d530
-
-> Does current_gfp_context()/memalloc_nofs_save()/etc solve it?
-
-Will investigate...
- 
-> The easiest answer is to continue to use fault and the
-> vmf_insert_page()..
-> 
-> But it feels like it wouuld be OK to export enough i_mmap machinery to
-> enable this. Cleaner than building your own tracking, which would
-> still have the same ugly mmap_sem inversion issue which was preventing
-> this last time.
-
-Yup, I'd rather fault than add that back, but I'm not sure we have a
-mapping function compatible with this framework.  Thanks,
-
-Alex
-
+--e6h2cu7dk3om4cg7--
