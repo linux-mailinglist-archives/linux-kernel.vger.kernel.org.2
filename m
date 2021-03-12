@@ -2,202 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DD8338658
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A83338665
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhCLHFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        id S231911AbhCLHIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhCLHF2 (ORCPT
+        with ESMTP id S231849AbhCLHIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:05:28 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AE3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:05:28 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id b10so1441947uap.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 23:05:28 -0800 (PST)
+        Fri, 12 Mar 2021 02:08:13 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5EAC061574;
+        Thu, 11 Mar 2021 23:08:13 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id f12so3085942qtq.4;
+        Thu, 11 Mar 2021 23:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yCWiCgZgy0rQubjdbPrqQeeH4Nm7CRjuGtpK8dVdbJE=;
-        b=bUPXRMgowlrM4ZzMctIpARCjLvHSazlKGgAYOdpoxsdda7CreRNXBaEeadTPxxAyMj
-         lMrMT2AQPDrEZWqfabrHsmfNXNErSDIBRqUK2XK31+p/2OExqJun5V7pWMq0Xs+xLlTz
-         N27SHrVoFEI4+mXwAFZxO6GUkuMjQ7YwtJIAsH2LyvUnjo/VK6JqzsELcCjViMKykrh6
-         3g9mR73rttRerVa4kSnw8Hor65Xhiw63EEROlPaKt4BCh7kcNRyBydd4DtATqGpJwOTP
-         yUiVEd7hhozbHat8hJGqYcL5qd5NUBrQQ8TkidGwKyb3+QHBVtj8TYSg/Crlvyr8wJuM
-         /qiQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DvgmjGd5npZcPxA1X72is4z6QiybdF+GT4ayLBGttvY=;
+        b=Q7mRlVcx8SIMhCb2j8vkqdkMC4Q1arhBzdr/hbccH47+lFebC9eYJRNuoStNBOjW2A
+         I6wiLGNCsjTsN3sfGWQ10sR4WAuzxS+436sL0hji1lGGdVo7ERHBWxGpX/xsMSQYqYtl
+         r5WgMujO7q95FJorLmpR1NltARuuRJrKlyANd2Ec3TPw9beb6uyUEOxI3OyH9XxPsIH8
+         h5u3iot2noBD4rHCQoAbcc0NZnpqljlDqghlqrUrjup5/RUPGjeslr433H3lpudCgOE6
+         KBUEyNFLiGh4mtbBSeOex1xjTzMtk0gl+FKumWbpwSQrOvbxthRcnm4O0O360usrap0R
+         npQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yCWiCgZgy0rQubjdbPrqQeeH4Nm7CRjuGtpK8dVdbJE=;
-        b=KbzYIJcWUrBVkefXYVPaxrDmLsNz74az4Vd7YlK6V9Jf4Wgd/DY5bGG+IOHp/U5fb1
-         Sx+4NCY11tpbVTG+JyjWSVQfFu5uKgUiJFG+YRBcQIV1XfO0zKXL8HQZIHiolcAXl6GP
-         GIaKPxEeFr/rCiQLwHjLcPigobuWK3c9YWJUzfjYJuDuBckBYBuYFz8SjbRA33irs6Fi
-         wRtTcB4qMUl7XRVJHBTu/9hEXsJcZp0IbAFfD8K71UaQePtHErTXf5FRISJn7rshyyJo
-         2n4sHSkgTuSofoThanXs/dyn1TqfeItg1fgekLM0wK8ew0WmcxSFquB4RYG16Ni7BT4F
-         XEhg==
-X-Gm-Message-State: AOAM533uzSHPX30TFgvarxZ5Xy6dreex0gXhyjDPlCZ37qmG+b4f1M+J
-        i7AkIip5bemjz0A+iqjXClnEI23ojgpFwTChNgVmQA==
-X-Google-Smtp-Source: ABdhPJzbI8eoQprNIlBFOmEK4fN/XYLPnSccl1qjGnbhAnOZVPy/uSzXgMUaAbesaSQpuulGcJW7ZGr8198Zyccb0Ks=
-X-Received: by 2002:ab0:6903:: with SMTP id b3mr7459633uas.65.1615532727640;
- Thu, 11 Mar 2021 23:05:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DvgmjGd5npZcPxA1X72is4z6QiybdF+GT4ayLBGttvY=;
+        b=FlJW8YFv42UVQTKvCK2zb3ymhrPbzNp8u1khOUhehZBMPlKeaSvdN/UAy4m4+NrJuh
+         DEvB1agS1BpZUk1U59VpPQLv3AeeGxfjsry8rze3rjzClaegJJ/bP0CR5CGaTMk8qCI3
+         xchxN8oysowcY7GBBIu5NuBfBlNMval5yoK3EgdfPYNK55DAZ3soP559+gKHGrY7CMI1
+         PQpfF3tnIxGYgYMg35lQZjjv/1J5kW91A5EE5LTcaT0MTZSajgn1BhJnPkJX+wPttvN2
+         jMCzgYnJ57MgPQGuJOeOSI8YLQwsnRorusIwqk1fZ/5PH09psYAEzNOLFIPL+ZzwoNqA
+         OOog==
+X-Gm-Message-State: AOAM530emQjysirXb5tR854/VXp2ar9rbTjYe/MKQmHoy4KOHcQibIXu
+        ao60c94marApdX89Y5yibBM=
+X-Google-Smtp-Source: ABdhPJykIktGOZFOaqpLdbrnH6dgVY2BrDHqyqbH3dyO+U1lJoo28ioXvnzNVxSt5crCWMtyI5VkUw==
+X-Received: by 2002:ac8:5047:: with SMTP id h7mr9480366qtm.22.1615532892774;
+        Thu, 11 Mar 2021 23:08:12 -0800 (PST)
+Received: from localhost.localdomain ([138.199.13.196])
+        by smtp.gmail.com with ESMTPSA id 7sm3870536qkm.64.2021.03.11.23.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 23:08:12 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, unixbhaskar@gmail.com,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] net: ethernet: dec: tulip: Random spelling fixes throughout the file pnic2.c
+Date:   Fri, 12 Mar 2021 12:35:42 +0530
+Message-Id: <20210312070542.31309-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210312052443.3797674-1-badhri@google.com> <20210312052443.3797674-2-badhri@google.com>
- <dba54e90-17e7-ab42-bc82-4ca39ee5de30@roeck-us.net>
-In-Reply-To: <dba54e90-17e7-ab42-bc82-4ca39ee5de30@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 11 Mar 2021 23:04:51 -0800
-Message-ID: <CAPTae5KdDh-+UTwxQ7v_g-vp0QPHcjC_myBnc+vsHCkkq+BCXA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] usb: typec: tcpci_maxim: configure charging & data paths
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:39 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 3/11/21 9:24 PM, Badhri Jagan Sridharan wrote:
-> > The change exposes the data_role and the orientation as a extcon
-> > interface for configuring the USB data controller.
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> > Changes since V1:
-> > - Dropped changes related to get_/set_current_limit and pd_capable
-> >   callback. Will send them in as separate patches.
-> > ---
-> >  drivers/usb/typec/tcpm/tcpci_maxim.c | 56 ++++++++++++++++++++++++++++
-> >  1 file changed, 56 insertions(+)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > index 041a1c393594..1210445713ee 100644
-> > --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > @@ -7,6 +7,8 @@
-> >
-> >  #include <linux/interrupt.h>
-> >  #include <linux/i2c.h>
-> > +#include <linux/extcon.h>
-> > +#include <linux/extcon-provider.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> >  #include <linux/regmap.h>
-> > @@ -46,6 +48,8 @@ struct max_tcpci_chip {
-> >       struct device *dev;
-> >       struct i2c_client *client;
-> >       struct tcpm_port *port;
-> > +     bool attached;
-> > +     struct extcon_dev *extcon;
-> >  };
-> >
-> >  static const struct regmap_range max_tcpci_tcpci_range[] = {
-> > @@ -439,6 +443,39 @@ static int tcpci_init(struct tcpci *tcpci, struct tcpci_data *data)
-> >       return -1;
-> >  }
-> >
-> > +static void max_tcpci_set_roles(struct tcpci *tcpci, struct tcpci_data *data, bool attached,
-> > +                             enum typec_role role, enum typec_data_role data_role)
-> > +{
-> > +     struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-> > +
-> > +     chip->attached = attached;
-> > +
-> > +     if (!attached) {
-> > +             extcon_set_state_sync(chip->extcon, EXTCON_USB_HOST, 0);
-> > +             extcon_set_state_sync(chip->extcon, EXTCON_USB, 0);
-> > +             return;
-> > +     }
-> > +
-> > +     extcon_set_state_sync(chip->extcon, data_role == TYPEC_HOST ? EXTCON_USB_HOST : EXTCON_USB,
-> > +                           1);
-> > +}
-> > +
-> > +static void max_tcpci_set_cc_polarity(struct tcpci *tcpci, struct tcpci_data *data,
-> > +                                   enum typec_cc_polarity polarity)
-> > +{
-> > +     struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-> > +
-> > +     extcon_set_property(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY,
-> > +                         (union extcon_property_value)(int)polarity);
-> > +     extcon_set_property(chip->extcon, EXTCON_USB_HOST, EXTCON_PROP_USB_TYPEC_POLARITY,
-> > +                         (union extcon_property_value)(int)polarity);
-> > +}
-> > +
-> > +static const unsigned int usbpd_extcon[] = {
-> > +     EXTCON_USB,
-> > +     EXTCON_USB_HOST,
-> > +};
-> > +
-> >  static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id *i2c_id)
-> >  {
-> >       int ret;
-> > @@ -472,6 +509,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
-> >       chip->data.auto_discharge_disconnect = true;
-> >       chip->data.vbus_vsafe0v = true;
-> >       chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
-> > +     chip->data.set_roles = max_tcpci_set_roles;
-> > +     chip->data.set_cc_polarity = max_tcpci_set_cc_polarity;
-> >
-> >       max_tcpci_init_regs(chip);
-> >       chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> > @@ -484,6 +523,23 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
-> >       if (ret < 0)
-> >               goto unreg_port;
-> >
-> > +     chip->extcon = devm_extcon_dev_allocate(&client->dev, usbpd_extcon);
-> > +     if (IS_ERR(chip->extcon)) {
-> > +             dev_err(&client->dev, "Error allocating extcon: %ld\n", PTR_ERR(chip->extcon));
-> > +             ret = PTR_ERR(chip->extcon);
-> > +             goto unreg_port;
-> > +     }
-> > +
-> > +     ret = devm_extcon_dev_register(&client->dev, chip->extcon);
-> > +     if (ret < 0) {
-> > +             dev_err(&client->dev, "failed to register extcon device");
-> > +             goto unreg_port;
-> > +     }
->
-> Effectively this mandates extcon support to be able to use this driver/chip.
-> Does that make sense ? If this is indeed mandatory, how did it work so far ?
-Hi Guenter,
 
-We had this in our downstream branch but didnt get a chance to send it
-to linux upstream.
-I should wrap it in "if(IS_ENABLED(CONFIG_EXTCON))", the tcpc can work
-without the
-extcon.
+Random spelling fixes throughout the file.
 
->
-> Also, what makes this code chip specific ?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/net/ethernet/dec/tulip/pnic2.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Extcon here as is not chip code specific, but, the driver which
-subscribes to the extcon interface is chip specific.
-I hope it's ok to still send this.
+diff --git a/drivers/net/ethernet/dec/tulip/pnic2.c b/drivers/net/ethernet/dec/tulip/pnic2.c
+index 412adaa7fdf8..04daffb8db2a 100644
+--- a/drivers/net/ethernet/dec/tulip/pnic2.c
++++ b/drivers/net/ethernet/dec/tulip/pnic2.c
+@@ -107,7 +107,7 @@ void pnic2_start_nway(struct net_device *dev)
+          */
+ 	csr14 = (ioread32(ioaddr + CSR14) & 0xfff0ee39);
 
-Thanks,
-Badhri
+-        /* bit 17 - advetise 100baseTx-FD */
++        /* bit 17 - advertise 100baseTx-FD */
+         if (tp->sym_advertise & 0x0100) csr14 |= 0x00020000;
 
+         /* bit 16 - advertise 100baseTx-HD */
+@@ -116,7 +116,7 @@ void pnic2_start_nway(struct net_device *dev)
+         /* bit 6 - advertise 10baseT-HD */
+         if (tp->sym_advertise & 0x0020) csr14 |= 0x00000040;
 
->
-> Thanks,
-> Guenter
->
-> > +
-> > +     extcon_set_property_capability(chip->extcon, EXTCON_USB, EXTCON_PROP_USB_TYPEC_POLARITY);
-> > +     extcon_set_property_capability(chip->extcon, EXTCON_USB_HOST,
-> > +                                    EXTCON_PROP_USB_TYPEC_POLARITY);
-> > +
-> >       device_init_wakeup(chip->dev, true);
-> >       return 0;
-> >
-> >
->
+-        /* Now set bit 12 Link Test Enable, Bit 7 Autonegotiation Enable
++        /* Now set bit 12 Link Test Enable, Bit 7 Auto negotiation Enable
+          * and bit 0 Don't PowerDown 10baseT
+          */
+         csr14 |= 0x00001184;
+@@ -157,7 +157,7 @@ void pnic2_start_nway(struct net_device *dev)
+         /* all set up so now force the negotiation to begin */
+
+         /* read in current values and mask off all but the
+-	 * Autonegotiation bits 14:12.  Writing a 001 to those bits
++	 * Auto negotiation bits 14:12.  Writing a 001 to those bits
+          * should start the autonegotiation
+          */
+         csr12 = (ioread32(ioaddr + CSR12) & 0xffff8fff);
+@@ -290,7 +290,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
+ 	                csr14 = (ioread32(ioaddr + CSR14) & 0xffffff7f);
+                         iowrite32(csr14,ioaddr + CSR14);
+
+-                        /* what should we do when autonegotiate fails?
++                        /* what should we do when auto negotiate fails?
+                          * should we try again or default to baseline
+                          * case.  I just don't know.
+                          *
+--
+2.26.2
+
