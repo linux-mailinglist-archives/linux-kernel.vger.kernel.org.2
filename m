@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BCA33949C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2963394A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhCLRYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:24:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:57776 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232217AbhCLRYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:24:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6F481FB;
-        Fri, 12 Mar 2021 09:24:04 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CAC013F7D7;
-        Fri, 12 Mar 2021 09:24:03 -0800 (PST)
-Date:   Fri, 12 Mar 2021 17:24:01 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-Message-ID: <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
-References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
- <20210127110944.41813-3-alexander.sverdlin@nokia.com>
- <20210307172650.uztx3sk5abybbp3f@e107158-lin.cambridge.arm.com>
- <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
- <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
- <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
- <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
- <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
+        id S232892AbhCLRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhCLRYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:24:47 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439B5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:24:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=A8DHxd3B4mLJMJjOm4DHg+SNyU281tj9AwvdPHJlO0k=; b=Ma0qzAO+wMIAeWzeWO5YvDOCeq
+        x6m7hjIeDG/NUhpC4M0OmTTuVQkdGfQmqJsABrIVOgoTHflcZvdGmPE+I22xlI0y0MiS6tBYk4Ty+
+        fArVbl0ZhQaT0nOSz2AjwQdcAiHYS/BOx7CGxkyaUjCt9b0XdWC870hv7BOJKKPVYua38N+mN/Ov2
+        9hbn59aEpv5wWTImvZBKG3frLEqKAk2EVsJTd03eHNVM5CM/TdlGcfUhdyh0KqDN6JDV9qYoeJpD0
+        b+rNaKuQxYm9vcmAieABdZUp6ueJxGeR4z94ZcCO5btztqkob4ulRTtu+5A/uVVfGJQFEHcKEA6/y
+        K3yFwEFg==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKlWm-0014ZL-BR; Fri, 12 Mar 2021 17:24:44 +0000
+Subject: Re: [PATCH] vdpa: fix build dependency of VIRTIO_PCI_LIB
+To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20210312093633.3948-1-jasowang@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <87031e3b-a1b4-023b-6f8d-cf3d5797b922@infradead.org>
+Date:   Fri, 12 Mar 2021 09:24:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210312093633.3948-1-jasowang@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander
-
-On 03/10/21 18:17, Alexander Sverdlin wrote:
-> Hi!
+On 3/12/21 1:36 AM, Jason Wang wrote:
+> The modern PCI device module should be built independently without
+> VIRTIO. This patch fixes this.
 > 
-> On 10/03/2021 17:14, Florian Fainelli wrote:
-> >>>>> I tried on 5.12-rc2 and 5.11 but couldn't reproduce the problem using your
-> >>> I still can't reproduce on 5.12-rc2.
-> >>>
-> >>> I do have CONFIG_ARM_MODULE_PLTS=y. Do you need to do something else after
-> >>> loading the module? I tried starting ftrace, but maybe there's a particular
-> >>> combination required?
-> >> You need to load a BIG module, so big that it has no place in the modules area
-> >> any more and goes to vmalloc area.
-> > You absolutely need a very big module maybe more than one. When I tested
-> > this, I could use the two proprietary modules (*sigh*) that I needed to
-> > exercise against and loading one but not the other was not enough to
-> > make the second module loading spill into vmalloc space.
+> Fixes: 7075992ba8873（“vdpa: introduce virtio pci driver")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+Thanks.
+
+> ---
+>  drivers/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Here is what I use instead of these real world "proprietary" modules (which of course
-> were the real trigger for the patch):
+> diff --git a/drivers/Makefile b/drivers/Makefile
+> index fd11b9ac4cc3..911ee117def4 100644
+> --- a/drivers/Makefile
+> +++ b/drivers/Makefile
+> @@ -42,6 +42,7 @@ obj-$(CONFIG_DMADEVICES)	+= dma/
+>  obj-y				+= soc/
+>  
+>  obj-$(CONFIG_VIRTIO)		+= virtio/
+> +obj-$(CONFIG_VIRTIO_PCI_LIB)	+= virtio/
+>  obj-$(CONFIG_VDPA)		+= vdpa/
+>  obj-$(CONFIG_XEN)		+= xen/
+>  
 > 
-> https://www.spinics.net/lists/arm-kernel/msg878599.html
 
-I am testing with your module. I can't reproduce the problem you describe with
-it as I stated.
 
-I will try to spend more time on it on the weekend.
+-- 
+~Randy
 
-Thanks
-
---
-Qais Yousef
