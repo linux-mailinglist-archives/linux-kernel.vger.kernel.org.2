@@ -2,253 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF10B3389A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7E33389BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbhCLKGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:06:55 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:39702 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbhCLKGW (ORCPT
+        id S233170AbhCLKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:11:56 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37692 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233039AbhCLKLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:06:22 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 342E88F9;
-        Fri, 12 Mar 2021 11:06:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615543580;
-        bh=pp3+amsK8swh3Q3bfX4+s7S8jPDOfKNbe5UiT7gfVVg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DO6omztA98uSm0UVriVII0Jf5ThKBcCeBS+wUERCjZm3xBH9PbrpQAHdkz8BauskO
-         AYHWJnkzdPZL/Rdc4Kr9wD7tP7mTIP8NHNKQ3Spf2o5Ps/BAVfS6wDC1nTNAe8JXw2
-         scOCdgVY0opx8zfVVS4VfWzAfJdzJ6kwlQoYMbio=
-Date:   Fri, 12 Mar 2021 12:05:44 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: media: Convert video-mux to DT schema
-Message-ID: <YEs8+EOc/k7U2pGp@pendragon.ideasonboard.com>
-References: <20210311234042.1588310-1-robh@kernel.org>
- <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
- <20210312072904.GA3@paasikivi.fi.intel.com>
+        Fri, 12 Mar 2021 05:11:21 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0URdxU9N_1615543878;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URdxU9N_1615543878)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 12 Mar 2021 18:11:18 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, rostedt@goodmis.org, eric.dumazet@gmail.com,
+        mingo@redhat.com
+Subject: [PATCH RESEND net-next] tracing: remove holes in events
+Date:   Fri, 12 Mar 2021 18:08:33 +0800
+Message-Id: <20210312100832.19760-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210312072904.GA3@paasikivi.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+There are some holes in the event definitions, spaces are wasted. Based
+on the analysis result of pahole and event format files, 22 events have
+more than one hole. To change less and fix worst, 5 events are picked
+up and fixed in this patch according the following rules.
 
-On Fri, Mar 12, 2021 at 09:29:04AM +0200, Sakari Ailus wrote:
-> On Fri, Mar 12, 2021 at 03:25:11AM +0200, Laurent Pinchart wrote:
-> > On Thu, Mar 11, 2021 at 04:40:42PM -0700, Rob Herring wrote:
-> > > Now that we have the graph schema, convert the video-mux binding to DT
-> > > schema.
-> > > 
-> > > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > > Cc: linux-media@vger.kernel.org
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../devicetree/bindings/media/video-mux.txt   | 60 ------------
-> > >  .../devicetree/bindings/media/video-mux.yaml  | 93 +++++++++++++++++++
-> > >  2 files changed, 93 insertions(+), 60 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/media/video-mux.txt
-> > >  create mode 100644 Documentation/devicetree/bindings/media/video-mux.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/media/video-mux.txt b/Documentation/devicetree/bindings/media/video-mux.txt
-> > > deleted file mode 100644
-> > > index 63b9dc913e45..000000000000
-> > > --- a/Documentation/devicetree/bindings/media/video-mux.txt
-> > > +++ /dev/null
-> > > @@ -1,60 +0,0 @@
-> > > -Video Multiplexer
-> > > -=================
-> > > -
-> > > -Video multiplexers allow to select between multiple input ports. Video received
-> > > -on the active input port is passed through to the output port. Muxes described
-> > > -by this binding are controlled by a multiplexer controller that is described by
-> > > -the bindings in Documentation/devicetree/bindings/mux/mux-controller.txt
-> > > -
-> > > -Required properties:
-> > > -- compatible : should be "video-mux"
-> > > -- mux-controls : mux controller node to use for operating the mux
-> > > -- #address-cells: should be <1>
-> > > -- #size-cells: should be <0>
-> > > -- port@*: at least three port nodes containing endpoints connecting to the
-> > > -  source and sink devices according to of_graph bindings. The last port is
-> > > -  the output port, all others are inputs.
-> > > -
-> > > -Optionally, #address-cells, #size-cells, and port nodes can be grouped under a
-> > > -ports node as described in Documentation/devicetree/bindings/graph.txt.
-> > > -
-> > > -Example:
-> > > -
-> > > -	mux: mux-controller {
-> > > -		compatible = "gpio-mux";
-> > > -		#mux-control-cells = <0>;
-> > > -
-> > > -		mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-> > > -	};
-> > > -
-> > > -	video-mux {
-> > > -		compatible = "video-mux";
-> > > -		mux-controls = <&mux>;
-> > > -		#address-cells = <1>;
-> > > -		#size-cells = <0>;
-> > > -
-> > > -		port@0 {
-> > > -			reg = <0>;
-> > > -
-> > > -			mux_in0: endpoint {
-> > > -				remote-endpoint = <&video_source0_out>;
-> > > -			};
-> > > -		};
-> > > -
-> > > -		port@1 {
-> > > -			reg = <1>;
-> > > -
-> > > -			mux_in1: endpoint {
-> > > -				remote-endpoint = <&video_source1_out>;
-> > > -			};
-> > > -		};
-> > > -
-> > > -		port@2 {
-> > > -			reg = <2>;
-> > > -
-> > > -			mux_out: endpoint {
-> > > -				remote-endpoint = <&capture_interface_in>;
-> > > -			};
-> > > -		};
-> > > -	};
-> > > -};
-> > > diff --git a/Documentation/devicetree/bindings/media/video-mux.yaml b/Documentation/devicetree/bindings/media/video-mux.yaml
-> > > new file mode 100644
-> > > index 000000000000..780fbbd46a38
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/video-mux.yaml
-> > > @@ -0,0 +1,93 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/video-mux.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Video Multiplexer
-> > > +
-> > > +maintainers:
-> > > +  - Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > +
-> > > +description:
-> > > +  Video multiplexers allow to select between multiple input ports. Video
-> > > +  received on the active input port is passed through to the output port. Muxes
-> > > +  described by this binding are controlled by a multiplexer controller.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: video-mux
-> > > +
-> > > +  mux-controls:
-> > > +    maxItems: 1
-> > > +
-> > > +  '#address-cells':
-> > > +    const: 1
-> > > +
-> > > +  '#size-cells':
-> > > +    const: 0
-> > > +
-> > > +  ports:
-> > > +    $ref: /schemas/graph.yaml#/properties/ports
-> > > +
-> > > +    patternProperties:
-> > > +      '^port@':
-> > > +        $ref: /schemas/graph.yaml#/properties/port
-> > 
-> > Should we require at least port@0, port@1 and port@2 ?
-> > 
-> > > +
-> > > +patternProperties:
-> > > +  '^port@':
-> > > +    $ref: /schemas/graph.yaml#/properties/port
-> > > +    description:
-> > > +      At least three port nodes containing endpoints connecting to the source
-> > > +      and sink devices according to of_graph bindings. The last port is the
-> > > +      output port, all others are inputs.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - mux-controls
-> > 
-> > Should a constraint be added to ensure that either a ports node or
-> > port@0, port@1 and port@2 nodes exists ?
-> 
-> It's not meaningful to have this device without such nodes. But a mux with
-> more ports could be connected in a way that leaves one or both of ports 1
-> and 2 unconnected. It's still not a likely configuration but a possible
-> one.
+Rules:
 
-Those ports wouldn't be connected, but they could still exist in DT.
+  - try not to affect reading habit and understanding of the fields;
+  - can be completely fixed (all holes are removed);
 
-> Either way,
-> 
-> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > 
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/gpio/gpio.h>
-> > > +
-> > > +    mux: mux-controller {
-> > > +        compatible = "gpio-mux";
-> > > +        #mux-control-cells = <0>;
-> > > +
-> > > +        mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-> > > +    };
-> > > +
-> > > +    video-mux {
-> > > +        compatible = "video-mux";
-> > > +        mux-controls = <&mux>;
-> > > +        #address-cells = <1>;
-> > > +        #size-cells = <0>;
-> > > +
-> > > +        port@0 {
-> > > +            reg = <0>;
-> > > +
-> > > +            mux_in0: endpoint {
-> > > +                remote-endpoint = <&video_source0_out>;
-> > > +            };
-> > > +        };
-> > > +
-> > > +        port@1 {
-> > > +            reg = <1>;
-> > > +
-> > > +            mux_in1: endpoint {
-> > > +                remote-endpoint = <&video_source1_out>;
-> > > +            };
-> > > +        };
-> > > +
-> > > +        port@2 {
-> > > +            reg = <2>;
-> > > +
-> > > +            mux_out: endpoint {
-> > > +                remote-endpoint = <&capture_interface_in>;
-> > > +            };
-> > > +        };
-> > > +    };
-> > > +...
+NOTES:
 
+  - changing the order of event fields breaks API compatibility,
+    programs should parse and determine the real data order, instead of
+    hard-coded the order of fields;
+  - reduce holes as much as possible when adding / modifying;
+
+Summary (#event_name #before -> #after):
+
+ 1. net_dev_start_xmit
+    5 holes (10 bytes) -> 0
+
+ 2. net_dev_rx_verbose_template
+    6 holes (17 bytes) -> 0
+
+ 3. tcp_probe
+    3 holes (8 bytes) -> 0
+
+ 4. qdisc_dequeue
+    2 holes (8 bytes) -> 0
+
+ 5. rpc_xdr_alignment
+    2 holes (8 bytes) -> 0
+
+Link: https://www.spinics.net/lists/netdev/msg726308.html
+Link: https://www.spinics.net/lists/netdev/msg726451.html
+Cc: David Miller <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+---
+ include/trace/events/net.h    | 42 +++++++++++++++++------------------
+ include/trace/events/qdisc.h  |  4 ++--
+ include/trace/events/sunrpc.h |  4 ++--
+ include/trace/events/tcp.h    |  2 +-
+ 4 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/include/trace/events/net.h b/include/trace/events/net.h
+index 2399073c3afc..b1db7ab88d4b 100644
+--- a/include/trace/events/net.h
++++ b/include/trace/events/net.h
+@@ -20,18 +20,18 @@ TRACE_EVENT(net_dev_start_xmit,
+ 	TP_STRUCT__entry(
+ 		__string(	name,			dev->name	)
+ 		__field(	u16,			queue_mapping	)
++		__field(	u16,			protocol	)
+ 		__field(	const void *,		skbaddr		)
++		__field(	u8,			ip_summed	)
+ 		__field(	bool,			vlan_tagged	)
+ 		__field(	u16,			vlan_proto	)
+ 		__field(	u16,			vlan_tci	)
+-		__field(	u16,			protocol	)
+-		__field(	u8,			ip_summed	)
++		__field(	bool,			transport_offset_valid)
++		__field(	u8,			tx_flags	)
+ 		__field(	unsigned int,		len		)
+ 		__field(	unsigned int,		data_len	)
+ 		__field(	int,			network_offset	)
+-		__field(	bool,			transport_offset_valid)
+ 		__field(	int,			transport_offset)
+-		__field(	u8,			tx_flags	)
+ 		__field(	u16,			gso_size	)
+ 		__field(	u16,			gso_segs	)
+ 		__field(	u16,			gso_type	)
+@@ -40,19 +40,19 @@ TRACE_EVENT(net_dev_start_xmit,
+ 	TP_fast_assign(
+ 		__assign_str(name, dev->name);
+ 		__entry->queue_mapping = skb->queue_mapping;
++		__entry->protocol = ntohs(skb->protocol);
+ 		__entry->skbaddr = skb;
++		__entry->ip_summed = skb->ip_summed;
+ 		__entry->vlan_tagged = skb_vlan_tag_present(skb);
+ 		__entry->vlan_proto = ntohs(skb->vlan_proto);
+ 		__entry->vlan_tci = skb_vlan_tag_get(skb);
+-		__entry->protocol = ntohs(skb->protocol);
+-		__entry->ip_summed = skb->ip_summed;
++		__entry->transport_offset_valid =
++			skb_transport_header_was_set(skb);
++		__entry->tx_flags = skb_shinfo(skb)->tx_flags;
+ 		__entry->len = skb->len;
+ 		__entry->data_len = skb->data_len;
+ 		__entry->network_offset = skb_network_offset(skb);
+-		__entry->transport_offset_valid =
+-			skb_transport_header_was_set(skb);
+ 		__entry->transport_offset = skb_transport_offset(skb);
+-		__entry->tx_flags = skb_shinfo(skb)->tx_flags;
+ 		__entry->gso_size = skb_shinfo(skb)->gso_size;
+ 		__entry->gso_segs = skb_shinfo(skb)->gso_segs;
+ 		__entry->gso_type = skb_shinfo(skb)->gso_type;
+@@ -170,23 +170,23 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
+ 	TP_STRUCT__entry(
+ 		__string(	name,			skb->dev->name	)
+ 		__field(	unsigned int,		napi_id		)
+-		__field(	u16,			queue_mapping	)
+ 		__field(	const void *,		skbaddr		)
++		__field(	u16,			queue_mapping	)
++		__field(	u8,			ip_summed	)
+ 		__field(	bool,			vlan_tagged	)
+ 		__field(	u16,			vlan_proto	)
+ 		__field(	u16,			vlan_tci	)
+ 		__field(	u16,			protocol	)
+-		__field(	u8,			ip_summed	)
+-		__field(	u32,			hash		)
+ 		__field(	bool,			l4_hash		)
++		__field(	bool,			mac_header_valid)
++		__field(	int,			mac_header	)
+ 		__field(	unsigned int,		len		)
+ 		__field(	unsigned int,		data_len	)
+ 		__field(	unsigned int,		truesize	)
+-		__field(	bool,			mac_header_valid)
+-		__field(	int,			mac_header	)
+-		__field(	unsigned char,		nr_frags	)
++		__field(	u32,			hash		)
+ 		__field(	u16,			gso_size	)
+ 		__field(	u16,			gso_type	)
++		__field(	unsigned char,		nr_frags	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -196,23 +196,23 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
+ #else
+ 		__entry->napi_id = 0;
+ #endif
+-		__entry->queue_mapping = skb->queue_mapping;
+ 		__entry->skbaddr = skb;
++		__entry->queue_mapping = skb->queue_mapping;
++		__entry->ip_summed = skb->ip_summed;
+ 		__entry->vlan_tagged = skb_vlan_tag_present(skb);
+ 		__entry->vlan_proto = ntohs(skb->vlan_proto);
+ 		__entry->vlan_tci = skb_vlan_tag_get(skb);
+ 		__entry->protocol = ntohs(skb->protocol);
+-		__entry->ip_summed = skb->ip_summed;
+-		__entry->hash = skb->hash;
+ 		__entry->l4_hash = skb->l4_hash;
++		__entry->mac_header_valid = skb_mac_header_was_set(skb);
++		__entry->mac_header = skb_mac_header(skb) - skb->data;
+ 		__entry->len = skb->len;
+ 		__entry->data_len = skb->data_len;
+ 		__entry->truesize = skb->truesize;
+-		__entry->mac_header_valid = skb_mac_header_was_set(skb);
+-		__entry->mac_header = skb_mac_header(skb) - skb->data;
+-		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
++		__entry->hash = skb->hash;
+ 		__entry->gso_size = skb_shinfo(skb)->gso_size;
+ 		__entry->gso_type = skb_shinfo(skb)->gso_type;
++		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
+ 	),
+ 
+ 	TP_printk("dev=%s napi_id=%#x queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
+diff --git a/include/trace/events/qdisc.h b/include/trace/events/qdisc.h
+index 330d32d84485..9e7d00256785 100644
+--- a/include/trace/events/qdisc.h
++++ b/include/trace/events/qdisc.h
+@@ -22,8 +22,8 @@ TRACE_EVENT(qdisc_dequeue,
+ 		__field(	struct Qdisc *,		qdisc	)
+ 		__field(const	struct netdev_queue *,	txq	)
+ 		__field(	int,			packets	)
+-		__field(	void *,			skbaddr	)
+ 		__field(	int,			ifindex	)
++		__field(	void *,			skbaddr	)
+ 		__field(	u32,			handle	)
+ 		__field(	u32,			parent	)
+ 		__field(	unsigned long,		txq_state)
+@@ -34,8 +34,8 @@ TRACE_EVENT(qdisc_dequeue,
+ 		__entry->qdisc		= qdisc;
+ 		__entry->txq		= txq;
+ 		__entry->packets	= skb ? packets : 0;
+-		__entry->skbaddr	= skb;
+ 		__entry->ifindex	= txq->dev ? txq->dev->ifindex : 0;
++		__entry->skbaddr	= skb;
+ 		__entry->handle		= qdisc->handle;
+ 		__entry->parent		= qdisc->parent;
+ 		__entry->txq_state	= txq->state;
+diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
+index 036eb1f5c133..39f4fdcf4d0f 100644
+--- a/include/trace/events/sunrpc.h
++++ b/include/trace/events/sunrpc.h
+@@ -715,8 +715,8 @@ TRACE_EVENT(rpc_xdr_alignment,
+ 		__field(unsigned int, task_id)
+ 		__field(unsigned int, client_id)
+ 		__field(int, version)
+-		__field(size_t, offset)
+ 		__field(unsigned int, copied)
++		__field(size_t, offset)
+ 		__field(const void *, head_base)
+ 		__field(size_t, head_len)
+ 		__field(const void *, tail_base)
+@@ -739,8 +739,8 @@ TRACE_EVENT(rpc_xdr_alignment,
+ 		__entry->version = task->tk_client->cl_vers;
+ 		__assign_str(procedure, task->tk_msg.rpc_proc->p_name)
+ 
+-		__entry->offset = offset;
+ 		__entry->copied = copied;
++		__entry->offset = offset;
+ 		__entry->head_base = xdr->buf->head[0].iov_base,
+ 		__entry->head_len = xdr->buf->head[0].iov_len,
+ 		__entry->page_len = xdr->buf->page_len,
+diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+index ba94857eea11..831abc267373 100644
+--- a/include/trace/events/tcp.h
++++ b/include/trace/events/tcp.h
+@@ -248,8 +248,8 @@ TRACE_EVENT(tcp_probe,
+ 		__field(__u16, sport)
+ 		__field(__u16, dport)
+ 		__field(__u16, family)
+-		__field(__u32, mark)
+ 		__field(__u16, data_len)
++		__field(__u32, mark)
+ 		__field(__u32, snd_nxt)
+ 		__field(__u32, snd_una)
+ 		__field(__u32, snd_cwnd)
 -- 
-Regards,
+2.19.1.6.gb485710b
 
-Laurent Pinchart
