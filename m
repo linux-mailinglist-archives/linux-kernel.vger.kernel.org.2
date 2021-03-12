@@ -2,70 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54697338BAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD8A338BB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhCLLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:40:57 -0500
-Received: from mga11.intel.com ([192.55.52.93]:39430 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233815AbhCLLkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:40:32 -0500
-IronPort-SDR: Yo1NP345y2OQxQoowHH6b4DwmjdogczuOn3ePZLvP+vZoIlxTbVy/Xw+MZoXn8rDe+Q4x9dZym
- Z/SXe2/J/g4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="185465721"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="185465721"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:40:31 -0800
-IronPort-SDR: KmDbjmZ3TpUjoKFXZpa+TXSHMly9BGSPxV+CtAzBBYHA6vhFN1fn0dAHtRBQTm/s9hs0gGBTbg
- ZCiqxZjtvzCQ==
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="372652249"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 03:40:28 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lKg9Y-00Bq4M-So; Fri, 12 Mar 2021 13:40:24 +0200
-Date:   Fri, 12 Mar 2021 13:40:24 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v4 07/11] lib: bitmap: provide devm_bitmap_alloc() and
- devm_bitmap_zalloc()
-Message-ID: <YEtTKJliHBep7bL4@smile.fi.intel.com>
-References: <20210312095700.16277-1-brgl@bgdev.pl>
- <20210312095700.16277-8-brgl@bgdev.pl>
+        id S232065AbhCLLmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:42:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233911AbhCLLlb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:41:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615549290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jHxvC75w9X24DxN9G8Wywf246TTfX1Ko6CkI1Ni8H8=;
+        b=OoSlD3BoRSFbMTArQkxaOxmFr/qfuVcGURnNJDUBXZW9NX+uAsrCs+GqN6jF0hYmsGvk6V
+        yAwIInYoSRtK589FsL0Lz+AyUjEeLlZXrDOFKDEVIUox8sx2f8jhpWWSog4HsWHbeLBxMj
+        08d3NabwR1aH0iTBqn8i2Tufi6vV5yY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-93NYT4tYNUKlYYYmJOtiQA-1; Fri, 12 Mar 2021 06:41:26 -0500
+X-MC-Unique: 93NYT4tYNUKlYYYmJOtiQA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C74C48AA1F6;
+        Fri, 12 Mar 2021 11:41:12 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B2D766F80B;
+        Fri, 12 Mar 2021 11:40:32 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 12:40:29 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v4 6/9] KVM: selftests: Add a helper to get system
+ default hugetlb page size
+Message-ID: <20210312114029.ju66lm5rrqdakgar@kamzik.brq.redhat.com>
+References: <20210302125751.19080-1-wangyanan55@huawei.com>
+ <20210302125751.19080-7-wangyanan55@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312095700.16277-8-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210302125751.19080-7-wangyanan55@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 10:56:56AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Tue, Mar 02, 2021 at 08:57:48PM +0800, Yanan Wang wrote:
+> If HUGETLB is configured in the host kernel, then we can know the system
+> default hugetlb page size through *cat /proc/meminfo*. Otherwise, we will
+> not see the information of hugetlb pages in file /proc/meminfo if it's not
+> configured. So add a helper to determine whether HUGETLB is configured and
+> then get the default page size by reading /proc/meminfo.
 > 
-> Provide managed variants of bitmap_alloc() and bitmap_zalloc().
+> This helper can be useful when a program wants to use the default hugetlb
+> pages of the system and doesn't know the default page size.
+> 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  .../testing/selftests/kvm/include/test_util.h |  1 +
+>  tools/testing/selftests/kvm/lib/test_util.c   | 27 +++++++++++++++++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+> index ef24c76ba89a..e087174eefe5 100644
+> --- a/tools/testing/selftests/kvm/include/test_util.h
+> +++ b/tools/testing/selftests/kvm/include/test_util.h
+> @@ -80,6 +80,7 @@ struct vm_mem_backing_src_alias {
+>  
+>  bool thp_configured(void);
+>  size_t get_trans_hugepagesz(void);
+> +size_t get_def_hugetlb_pagesz(void);
+>  void backing_src_help(void);
+>  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
+>  
+> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> index f2d133f76c67..80d68dbd72d2 100644
+> --- a/tools/testing/selftests/kvm/lib/test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> @@ -153,6 +153,33 @@ size_t get_trans_hugepagesz(void)
+>  	return size;
+>  }
+>  
+> +size_t get_def_hugetlb_pagesz(void)
+> +{
+> +	char buf[64];
+> +	const char *tag = "Hugepagesize:";
+> +	FILE *f;
+> +
+> +	f = fopen("/proc/meminfo", "r");
+> +	TEST_ASSERT(f != NULL, "Error in opening /proc/meminfo: %d", errno);
+> +
+> +	while (fgets(buf, sizeof(buf), f) != NULL) {
+> +		if (strstr(buf, tag) == buf) {
+> +			fclose(f);
+> +			return strtoull(buf + strlen(tag), NULL, 10) << 10;
+> +		}
+> +	}
+> +
+> +	if (feof(f)) {
+> +		fclose(f);
+> +		TEST_FAIL("HUGETLB is not configured in host kernel");
+> +	} else {
+> +		fclose(f);
+> +		TEST_FAIL("Error in reading /proc/meminfo: %d", errno);
+> +	}
 
-Perhaps I missed your answer to Greg's comment...
-So, what do you think about adding _GPL to the export?
+fclose() can be factored out.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +
+> +	return 0;
+> +}
+> +
+>  void backing_src_help(void)
+>  {
+>  	int i;
+> -- 
+> 2.23.0
+>
 
+Besides the fclose comment and the same errno comment as the previous
+patch
+
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
