@@ -2,152 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C463339386
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785CA3393A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhCLQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:37:20 -0500
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:44584 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231789AbhCLQhB (ORCPT
+        id S232798AbhCLQh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:37:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39212 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232229AbhCLQhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:37:01 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lKkmR-0002cL-MC; Fri, 12 Mar 2021 16:36:51 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- schedule_tail
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <000000000000b74f1b05bd316729@google.com>
- <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
- <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
- <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
- <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <4ce57c7e-6e5d-d136-0a81-395a4207ba44@codethink.co.uk>
-Date:   Fri, 12 Mar 2021 16:36:50 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 12 Mar 2021 11:37:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615567045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FnVUzFvzsl3Bp0QFRDBlIHeV43tl8slTgFSG/RNrL70=;
+        b=UdxRWwsvBgtrZ56feaDtqTWoDv35uNfgMy90MWuIZpWlb/EtkdMrUo6BgSLaydcL9YF+bL
+        YpJY6cvIW225smoHLXgx94ajK7P4W/70m4N4Knndvf58yFRSPfuL7F4Eqt76YDH9xYhOIo
+        r3gB4Eavm0WsJv0386YCMFWDVPw8uCU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-kF_I14VGMT-R9-CJQ8RLzQ-1; Fri, 12 Mar 2021 11:37:23 -0500
+X-MC-Unique: kF_I14VGMT-R9-CJQ8RLzQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FF9E192D786;
+        Fri, 12 Mar 2021 16:37:22 +0000 (UTC)
+Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 077E8610A8;
+        Fri, 12 Mar 2021 16:37:15 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net] wireless/nl80211: fix wdev_id may be used uninitialized
+Date:   Fri, 12 Mar 2021 11:36:51 -0500
+Message-Id: <20210312163651.1398207-1-jarod@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/2021 16:34, Ben Dooks wrote:
-> On 12/03/2021 16:30, Ben Dooks wrote:
->> On 12/03/2021 15:12, Dmitry Vyukov wrote:
->>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk> 
->>> wrote:
->>>>
->>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
->>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
->>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for 
->>>>>> arch_dup_tas..
->>>>>> git tree: 
->>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>>>> console output: 
->>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
->>>>>> kernel config: 
->>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->>>>>> dashboard link: 
->>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
->>>>>> userspace arch: riscv64
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to 
->>>>>> the commit:
->>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
->>>>>
->>>>> +riscv maintainers
->>>>>
->>>>> This is riscv64-specific.
->>>>> I've seen similar crashes in put_user in other places. It looks like
->>>>> put_user crashes in the user address is not mapped/protected (?).
->>>>
->>>> I've been having a look, and this seems to be down to access of the
->>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
->>>> bad address to clone?
->>>>
->>>>   From looking at the code, the put_user() code should have set the
->>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
->>>> s2 register in the crash report) and from looking at the compiler
->>>> output from my gcc-10, the code looks to be dong the relevant csrs
->>>> and then csrc around the put_user
->>>>
->>>> So currently I do not understand how the above could have happened
->>>> over than something re-tried the code seqeunce and ended up retrying
->>>> the faulting instruction without the SR_SUM bit set.
->>>
->>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
->>> strange that 99% of these crashes are in schedule_tail. If it would be
->>> qemu, then they would be more evenly distributed...
->>>
->>> Another observation: looking at a dozen of crash logs, in none of
->>> these cases fuzzer was actually trying to fuzz clone with some insane
->>> arguments. So it looks like completely normal clone's (e..g coming
->>> from pthread_create) result in this crash.
->>>
->>> I also wonder why there is ret_from_exception, is it normal? I see
->>> handle_exception disables SR_SUM:
->>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73 
->>>
->>
->> So I think if SR_SUM is set, then it faults the access to user memory
->> which the _user() routines clear to allow them access.
->>
->> I'm thinking there is at least one issue here:
->>
->> - the test in fault is the wrong way around for die kernel
->> - the handler only catches this if the page has yet to be mapped.
->>
->> So I think the test should be:
->>
->>          if (!user_mode(regs) && addr < TASK_SIZE &&
->>                          unlikely(regs->status & SR_SUM)
->>
->> This then should continue on and allow the rest of the handler to
->> complete mapping the page if it is not there.
->>
->> I have been trying to create a very simple clone test, but so far it
->> has yet to actually trigger anything.
-> 
-> I should have added there doesn't seem to be a good way to use mmap()
-> to allocate memory but not insert a vm-mapping post the mmap().
-> 
-> 
+Build currently fails with -Werror=maybe-uninitialized set:
 
-How difficult is it to try building a branch with the above test
-modified?
+net/wireless/nl80211.c: In function '__cfg80211_wdev_from_attrs':
+net/wireless/nl80211.c:124:44: error: 'wdev_id' may be used
+uninitialized in this function [-Werror=maybe-uninitialized]
 
+Easy fix is to just initialize wdev_id to 0, since it's value doesn't
+otherwise matter unless have_wdev_id is true.
+
+Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the driver")
+CC: Johannes Berg <johannes@sipsolutions.net>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Jakub Kicinski <kuba@kernel.org>
+CC: linux-wireless@vger.kernel.org
+CC: netdev@vger.kernel.org
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+ net/wireless/nl80211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 521d36bb0803..a157783760c7 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -70,7 +70,7 @@ __cfg80211_wdev_from_attrs(struct cfg80211_registered_device *rdev,
+ 	struct wireless_dev *result = NULL;
+ 	bool have_ifidx = attrs[NL80211_ATTR_IFINDEX];
+ 	bool have_wdev_id = attrs[NL80211_ATTR_WDEV];
+-	u64 wdev_id;
++	u64 wdev_id = 0;
+ 	int wiphy_idx = -1;
+ 	int ifidx = -1;
+ 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+2.29.2
 
-https://www.codethink.co.uk/privacy.html
