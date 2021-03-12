@@ -2,406 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819C8338867
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B3533886D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhCLJQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbhCLJP4 (ORCPT
+        id S232760AbhCLJRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:17:01 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:34177 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232759AbhCLJQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:15:56 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8722DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:56 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id t29so1408270pfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IuKmC3U/w6VVBrCrtF9rQRP5Gz8Ne6UwFOucvhUXn7k=;
-        b=Eu5w0appH3PowFFZzk7Sz+idfDSNz9ugXCA24Jiz9UhyeUnMva4RH0GZ5FmxH8kOGu
-         47r9VJkbxdDpVEgnnnRSoxORRl6NsMJUggPRN8YtvSPUcj0kDjDCMxjGQdjQaCjX1sib
-         q6Yr3HAmNUBKichyNS0koaYsGy0lIEo0vehbVYTxUQD5b57+ER7Oe/t08Eh/vqjN9k9d
-         Ztdmvf7uWFNG92Qj/whraHZDWE5AByDc3PjWp4yHx1So+IIBHtcxc/FLlCAc+qHU2i0a
-         tie+KZ1PEPcC77BqqUEfyR4N+SfdPpIW7CNDhnfUWJc/vQ6W9DD9PvxwMlKSvpRU3Dlm
-         ZEVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IuKmC3U/w6VVBrCrtF9rQRP5Gz8Ne6UwFOucvhUXn7k=;
-        b=fOtDTe3tFSBU+VnAbVUT3ClG4gJUFrOU0Csu0hK9+CPjtwLv41qg4JK6BGAaT7rlZk
-         yVWpvzF4aqnfk+0rctzQXM3P2ZkmlcEj4oGoMw/2MquSsw6K+ZfZOrn5hzbpZEIm6pSs
-         hYQJAboriHhIxA8P0pT5z9jQQWNDLkLJOdR5fx/T4YtU0zpqUzCOTMQuPp9Ri1+UX4Dl
-         q+vgS2WEPQHW8gcKu4wfHpgtovwuofmdTX1/PI4cg91QfQJf6PGX9NIa1NQqFmuIVajg
-         wDWbfkmzpRHKCqscnigakt59CdZgMgO+s9y396zAoS2MpFNNUL70fIFEuTM4km68CuMR
-         yDOA==
-X-Gm-Message-State: AOAM530EX3EB8sNkn79SlKmZeR4oFvZCtmQsw31FoZxYAc88/c08Jkt4
-        uVLaXjOjYE9/CE3serprlhA=
-X-Google-Smtp-Source: ABdhPJxsJTX2gZUWLMdhQdIgK1vansGSI06cYEREWM7b4iMUlrcXNL4s9xALgra3n6uiDOHeKGft+A==
-X-Received: by 2002:a63:170e:: with SMTP id x14mr10975941pgl.245.1615540556123;
-        Fri, 12 Mar 2021 01:15:56 -0800 (PST)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id f2sm1591694pju.46.2021.03.12.01.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:15:55 -0800 (PST)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, zhangxuezhi1@yulong.com,
-        tzimmermann@suse.de, kraxel@redhat.com, sam@ravnborg.org
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/tiny: add support for Waveshare 2inch LCD module
-Date:   Fri, 12 Mar 2021 09:15:46 +0000
-Message-Id: <20210312091546.99072-1-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Mar 2021 04:16:25 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mq2za-1m6Zu93JdC-00n5GJ for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021
+ 10:16:24 +0100
+Received: by mail-oi1-f182.google.com with SMTP id t83so16189522oih.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:16:23 -0800 (PST)
+X-Gm-Message-State: AOAM530s3IQ55joEp6ZTC6VaYZvw5W32LWi7q6wN7AUN27tLgD2d5eke
+        PkhVohiFLoRtj2MVNSIJ/9be3qeSVOzZzmvbhjM=
+X-Google-Smtp-Source: ABdhPJzmaVJ1BJErR0dLY0ZxkdxZtpByDi2BzxzHbvs2pmhYjuIxfSu88HTZsMy7qzRtHS5rf9KAplSRmoOlQnAR19o=
+X-Received: by 2002:aca:5945:: with SMTP id n66mr1452819oib.11.1615540582581;
+ Fri, 12 Mar 2021 01:16:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com> <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+In-Reply-To: <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 12 Mar 2021 10:16:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
+Message-ID: <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:DQkhMu1oVOffxNsOUlwi9GTiGGqMmjg3ajOF+kNugpIha9Nxj9P
+ zjLrojwHLVPXWurPTrsvPaJVmmGWLP9bN+nkc1EufG111pA8KXNuEWOkJnHsckdDc8SZRRb
+ /OJxVu9YmaqIwSjpHDqWH7uS2UFVVH/XQ1bgc8dR6RINdj6lfJOUSBsBGiJFw/z2lkdbvqT
+ NS4ug4SDwLt7LhZpZtk+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bQS5kUZcg6Q=:Lawee56K8oohShpggzm8LO
+ AVgFUUt5QLscimAeTwdjfjRpwBDJI4DIOn4ilaQEH6tecpkLvNYD80xL40tAppqKm1kmeYoGJ
+ f9vsSg8dnpzwQcI2sV5Rahki5UHgr32tZOT/+9eSOhzuenUkN/F5NPyGsSutwZN4ImeMU4evR
+ X+VkFbyPw0NYwpqGUVN300k2iRny9+u4HN7lJ1XZZCwarHHvXs8lq0FeJXMl6oeiJ4UYpqJ4O
+ 81UBDhl1fpzhdQ88Y0Z4fZxPka/7ONwNpUaMQtPPH/r4FpTqndgYKp7lxqJhAeyBhzugAOemI
+ rs0wkpbG+bqN9CnP+DzFz1z5Zpe0+IHwkoPB2qJzp4KjhRhaAAsD4RRX04iBNijit/rsVaFWS
+ qTDhfUGSOAQE9ScCUnE9CSJh+/LW9v78o92w7Ai5Sn78tRlP1fug6MQbd/gNF77Bh97N+WyLq
+ 5QrgZWsloeIsThbR66TZthJU86m+/VTG6DV81bULQnsKrawhDTS04gCuFnEDtKI4FbK3sqV/s
+ M4WAfay+ZtaUjlJQUJeSkeLty321bJhx1ApgsZgnIkO/2znd4OXNT2FT01ikaSsZA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Carlis" <zhangxuezhi1@yulong.com>
+On Fri, Mar 12, 2021 at 9:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Fri, Mar 12, 2021 at 9:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Thu, Mar 11, 2021 at 6:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > a) accessing a legacy ISA/LPC port should not result in an oops,
+> >     but should instead return values with all bits set. There could
+> >     be a ratelimited console warning about broken drivers, but we
+> >     can't assume that all drivers work correctly, as some ancient
+> >     PC style drivers still rely on this.
+> >     John Garry has recently worked on a related bugfix, so maybe
+> >     either this is the same bug he encountered (and hasn't merged
+> >     yet), or if his fix got merged there is still a remaining problem.
 
-This adds a new module for the ST7789V controller with parameters for
-the Waveshare 2inch LCD module.
+> > b) It should not be possible to open /dev/ttyS3 if the device is
+> >     not initialized. What is the output of 'cat /proc/tty/driver/serial'
+> >     on this machine? Do you see any messages from the serial
+> >     driver in the boot log?
+> >     Unfortunately there are so many different ways to probe devices
+> >     in the 8250 driver that I don't know where this comes from.
+> >     Your config file has
+> >    CONFIG_SERIAL_8250_PNP=y
+> >    CONFIG_SERIAL_8250_NR_UARTS=32
+> >    CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+> >    CONFIG_SERIAL_8250_EXTENDED=y
+> >    I guess it's probably the preconfigured uarts that somehow
+> >    become probed without initialization, but it could also be
+> >    an explicit device incorrectly described by qemu.
+>
+>
+> Here is fool boot log, /proc/tty/driver/serial and the crash:
+> https://gist.githubusercontent.com/dvyukov/084890d9b4aa7cd54f468e652a9b5881/raw/54c12248ff6a4885ba6c530d56b3adad59bc6187/gistfile1.txt
 
-Signed-off-by: Carlis <zhangxuezhi1@yulong.com>
----
-v2:change compatible value.
----
- MAINTAINERS                    |   7 +
- drivers/gpu/drm/tiny/Kconfig   |  14 ++
- drivers/gpu/drm/tiny/Makefile  |   1 +
- drivers/gpu/drm/tiny/st7789v.c | 269 +++++++++++++++++++++++++++++++++
- 4 files changed, 291 insertions(+)
- create mode 100644 drivers/gpu/drm/tiny/st7789v.c
+Ok, so there are four 8250 ports, and none of them are initialized,
+while the console is on /dev/ttyAMA0 using a different driver.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..25c4ae12cecf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5769,6 +5769,13 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
- F:	drivers/gpu/drm/tiny/st7735r.c
- 
-+DRM DRIVER FOR SITRONIX ST7789V PANELS
-+M:	Carlis <zhangxuezhi1@yulong.com>
-+S:	Maintained
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+F:	Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
-+F:	drivers/gpu/drm/tiny/st7789v.c
-+
- DRM DRIVER FOR SONY ACX424AKP PANELS
- M:	Linus Walleij <linus.walleij@linaro.org>
- S:	Maintained
-diff --git a/drivers/gpu/drm/tiny/Kconfig b/drivers/gpu/drm/tiny/Kconfig
-index 2b6414f0fa75..ac2c7fb702f0 100644
---- a/drivers/gpu/drm/tiny/Kconfig
-+++ b/drivers/gpu/drm/tiny/Kconfig
-@@ -131,3 +131,17 @@ config TINYDRM_ST7735R
- 	  * Okaya RH128128T 1.44" 128x128 TFT
- 
- 	  If M is selected the module will be called st7735r.
-+
-+config TINYDRM_ST7789V
-+	tristate "DRM support for Sitronix ST7789V display panels"
-+	depends on DRM && SPI
-+	select DRM_KMS_HELPER
-+	select DRM_KMS_CMA_HELPER
-+	select DRM_MIPI_DBI
-+	select BACKLIGHT_CLASS_DEVICE
-+	help
-+	  DRM driver for Sitronix ST7789V with one of the following
-+	  LCDs:
-+	  * Waveshare 2inch lcd module 240x320 TFT
-+
-+	  If M is selected the module will be called st7789v.
-diff --git a/drivers/gpu/drm/tiny/Makefile b/drivers/gpu/drm/tiny/Makefile
-index 6ae4e9e5a35f..aa0caa2b6c16 100644
---- a/drivers/gpu/drm/tiny/Makefile
-+++ b/drivers/gpu/drm/tiny/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_TINYDRM_MI0283QT)		+= mi0283qt.o
- obj-$(CONFIG_TINYDRM_REPAPER)		+= repaper.o
- obj-$(CONFIG_TINYDRM_ST7586)		+= st7586.o
- obj-$(CONFIG_TINYDRM_ST7735R)		+= st7735r.o
-+obj-$(CONFIG_TINYDRM_ST7789V)		+= st7789v.o
-diff --git a/drivers/gpu/drm/tiny/st7789v.c b/drivers/gpu/drm/tiny/st7789v.c
-new file mode 100644
-index 000000000000..9b4bb9edba40
---- /dev/null
-+++ b/drivers/gpu/drm/tiny/st7789v.c
-@@ -0,0 +1,269 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * DRM driver for display panels connected to a Sitronix ST7789V
-+ * display controller in SPI mode.
-+ *
-+ * Copyright 2017 David Lechner <david@lechnology.com>
-+ * Copyright (C) 2019 Glider bvba
-+ */
-+
-+#include <linux/backlight.h>
-+#include <linux/delay.h>
-+#include <linux/dma-buf.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/property.h>
-+#include <linux/spi/spi.h>
-+#include <video/mipi_display.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_fb_helper.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
-+#include <drm/drm_managed.h>
-+#include <drm/drm_mipi_dbi.h>
-+
-+#define ST7789V_PORCTRL     0xb2
-+#define ST7789V_GCTRL       0xb7
-+#define ST7789V_VCOMS       0xbb
-+#define ST7789V_LCMCTRL     0xc0
-+#define ST7789V_VDVVRHEN    0xc2
-+#define ST7789V_VRHS        0xc3
-+#define ST7789V_VDVS        0xc4
-+#define ST7789V_FRCTRL2     0xc6
-+#define ST7789V_PWCTRL1     0xd0
-+#define ST7789V_PVGAMCTRL   0xe0
-+#define ST7789V_NVGAMCTRL   0xe1
-+
-+#define ST7789V_MY	BIT(7)
-+#define ST7789V_MX	BIT(6)
-+#define ST7789V_MV	BIT(5)
-+#define ST7789V_RGB	BIT(3)
-+
-+struct st7789v_cfg {
-+	const struct drm_display_mode mode;
-+	unsigned int left_offset;
-+	unsigned int top_offset;
-+	unsigned int write_only:1;
-+	unsigned int rgb:1;		/* RGB (vs. BGR) */
-+};
-+
-+struct st7789v_priv {
-+	struct mipi_dbi_dev dbidev;	/* Must be first for .release() */
-+	const struct st7789v_cfg *cfg;
-+};
-+
-+static void st7789v_pipe_enable(struct drm_simple_display_pipe *pipe,
-+				struct drm_crtc_state *crtc_state,
-+				struct drm_plane_state *plane_state)
-+{
-+	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(pipe->crtc.dev);
-+	struct st7789v_priv *priv = container_of(dbidev, struct st7789v_priv,
-+						 dbidev);
-+	struct mipi_dbi *dbi = &dbidev->dbi;
-+	int ret, idx;
-+	u8 addr_mode;
-+
-+	if (!drm_dev_enter(pipe->crtc.dev, &idx))
-+		return;
-+
-+	DRM_DEBUG_KMS("\n");
-+
-+	ret = mipi_dbi_poweron_reset(dbidev);
-+	if (ret)
-+		goto out_exit;
-+
-+	msleep(150);
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
-+	msleep(100);
-+
-+
-+	switch (dbidev->rotation) {
-+	default:
-+		addr_mode = 0;
-+		break;
-+	case 90:
-+		addr_mode = ST7789V_MY | ST7789V_MV;
-+		break;
-+	case 180:
-+		addr_mode = ST7789V_MX | ST7789V_MY;
-+		break;
-+	case 270:
-+		addr_mode = ST7789V_MX | ST7789V_MV;
-+		break;
-+	}
-+
-+	if (priv->cfg->rgb)
-+		addr_mode |= ST7789V_RGB;
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
-+			 MIPI_DCS_PIXEL_FMT_16BIT);
-+	mipi_dbi_command(dbi, MIPI_DCS_ENTER_INVERT_MODE);
-+	mipi_dbi_command(dbi, ST7789V_PORCTRL, 0x0c, 0x0c, 0x00, 0x33, 0x33);
-+	mipi_dbi_command(dbi, ST7789V_GCTRL, 0x35);
-+	mipi_dbi_command(dbi, ST7789V_VCOMS, 0x1f);
-+	mipi_dbi_command(dbi, ST7789V_LCMCTRL, 0x2c);
-+	mipi_dbi_command(dbi, ST7789V_VDVVRHEN, 0x01);
-+	mipi_dbi_command(dbi, ST7789V_VRHS, 0x12);
-+	mipi_dbi_command(dbi, ST7789V_VDVS, 0x20);
-+	mipi_dbi_command(dbi, ST7789V_FRCTRL2, 0x0f);
-+	mipi_dbi_command(dbi, ST7789V_PWCTRL1, 0xa4, 0xa1);
-+	mipi_dbi_command(dbi, ST7789V_PVGAMCTRL, 0xd0, 0x08, 0x11, 0x08, 0x0c,
-+				0x15, 0x39, 0x33, 0x50, 0x36, 0x13, 0x14, 0x29, 0x2d);
-+	mipi_dbi_command(dbi, ST7789V_NVGAMCTRL, 0xd0, 0x08, 0x10, 0x08, 0x06,
-+				0x06, 0x39, 0x44, 0x51, 0x0b, 0x16, 0x14, 0x2f, 0x31);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
-+	msleep(100);
-+	mipi_dbi_enable_flush(dbidev, crtc_state, plane_state);
-+
-+out_exit:
-+	drm_dev_exit(idx);
-+}
-+
-+static const struct drm_simple_display_pipe_funcs st7789v_pipe_funcs = {
-+	.enable		= st7789v_pipe_enable,
-+	.disable	= mipi_dbi_pipe_disable,
-+	.update		= mipi_dbi_pipe_update,
-+	.prepare_fb	= drm_gem_fb_simple_display_pipe_prepare_fb,
-+};
-+
-+static const struct st7789v_cfg ws_2inch_lcd_cfg = {
-+	.mode		= { DRM_SIMPLE_MODE(240, 320, 34, 43) },
-+	/* Cannot read from Waveshare 2inch lcd module" display via SPI */
-+	.write_only	= true,
-+	.rgb		= false,
-+};
-+
-+
-+DEFINE_DRM_GEM_CMA_FOPS(st7789v_fops);
-+
-+static const struct drm_driver st7789v_driver = {
-+	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
-+	.fops			= &st7789v_fops,
-+	DRM_GEM_CMA_DRIVER_OPS_VMAP,
-+	.debugfs_init		= mipi_dbi_debugfs_init,
-+	.name			= "st7789v",
-+	.desc			= "Sitronix ST7789R",
-+	.date			= "20210310",
-+	.major			= 1,
-+	.minor			= 0,
-+};
-+
-+static const struct of_device_id st7789v_of_match[] = {
-+	{ .compatible = "waveshare,ws2inch", .data = &ws_2inch_lcd_cfg },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, st7789v_of_match);
-+
-+static const struct spi_device_id st7789v_id[] = {
-+	{ "ws2inch", (uintptr_t)&ws_2inch_lcd_cfg },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, st7789v_id);
-+
-+static int st7789v_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	const struct st7789v_cfg *cfg;
-+	struct mipi_dbi_dev *dbidev;
-+	struct st7789v_priv *priv;
-+	struct drm_device *drm;
-+	struct mipi_dbi *dbi;
-+	struct gpio_desc *dc;
-+	u32 rotation = 0;
-+	int ret;
-+
-+	cfg = device_get_match_data(&spi->dev);
-+	if (!cfg)
-+		cfg = (void *)spi_get_device_id(spi)->driver_data;
-+
-+	priv = devm_drm_dev_alloc(dev, &st7789v_driver,
-+				  struct st7789v_priv, dbidev.drm);
-+	if (IS_ERR(priv))
-+		return PTR_ERR(priv);
-+
-+	dbidev = &priv->dbidev;
-+	priv->cfg = cfg;
-+
-+	dbi = &dbidev->dbi;
-+	drm = &dbidev->drm;
-+
-+	dbi->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(dbi->reset)) {
-+		DRM_DEV_ERROR(dev, "Failed to get gpio 'reset'\n");
-+		return PTR_ERR(dbi->reset);
-+	}
-+
-+	dc = devm_gpiod_get(dev, "dc", GPIOD_OUT_LOW);
-+	if (IS_ERR(dc)) {
-+		DRM_DEV_ERROR(dev, "Failed to get gpio 'dc'\n");
-+		return PTR_ERR(dc);
-+	}
-+
-+	dbidev->backlight = devm_of_find_backlight(dev);
-+	if (IS_ERR(dbidev->backlight))
-+		return PTR_ERR(dbidev->backlight);
-+
-+	device_property_read_u32(dev, "rotation", &rotation);
-+
-+	ret = mipi_dbi_spi_init(spi, dbi, dc);
-+	if (ret)
-+		return ret;
-+
-+	if (cfg->write_only)
-+		dbi->read_commands = NULL;
-+
-+	dbidev->left_offset = cfg->left_offset;
-+	dbidev->top_offset = cfg->top_offset;
-+
-+	ret = mipi_dbi_dev_init(dbidev, &st7789v_pipe_funcs, &cfg->mode,
-+				rotation);
-+	if (ret)
-+		return ret;
-+
-+	drm_mode_config_reset(drm);
-+
-+	ret = drm_dev_register(drm, 0);
-+	if (ret)
-+		return ret;
-+
-+	spi_set_drvdata(spi, drm);
-+
-+	drm_fbdev_generic_setup(drm, 0);
-+
-+	return 0;
-+}
-+
-+static int st7789v_remove(struct spi_device *spi)
-+{
-+	struct drm_device *drm = spi_get_drvdata(spi);
-+
-+	drm_dev_unplug(drm);
-+	drm_atomic_helper_shutdown(drm);
-+
-+	return 0;
-+}
-+
-+static void st7789v_shutdown(struct spi_device *spi)
-+{
-+	drm_atomic_helper_shutdown(spi_get_drvdata(spi));
-+}
-+
-+static struct spi_driver st7789v_spi_driver = {
-+	.driver = {
-+		.name = "st7789v-dbi",
-+		.of_match_table = st7789v_of_match,
-+	},
-+	.id_table = st7789v_id,
-+	.probe = st7789v_probe,
-+	.remove = st7789v_remove,
-+	.shutdown = st7789v_shutdown,
-+};
-+module_spi_driver(st7789v_spi_driver);
-+
-+MODULE_DESCRIPTION("Sitronix ST7789V DRM driver");
-+MODULE_AUTHOR("Carlis <zhangxuezhi1@yulong.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+I'm fairly sure this is a bug in the kernel then, not in qemu.
 
+
+I also see that the PCI I/O space gets mapped to a physical address:
+[    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
+0x003eff0000..0x003effffff -> 0x0000000000
+
+So it's probably qemu that triggers the 'synchronous external
+abort' when accessing the PCI I/O space, which in turn hints
+towards a bug in qemu. Presumably it only returns data from
+I/O ports that are actually mapped to a device when real hardware
+is supposed to return 0xffffffff when reading from unused I/O ports.
+This would be separate from the work that John did, which only
+fixed the kernel for accessing I/O port ranges that do not have
+a corresponding MMU mapping to hardware ports.
+
+       Arnd
