@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B908C338890
+	by mail.lfdr.de (Postfix) with ESMTP id 699EE33888F
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhCLJZM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 04:25:12 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54247 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232840AbhCLJZK (ORCPT
+        id S232834AbhCLJZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:25:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34048 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232808AbhCLJZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:25:10 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-246-bXCeiKEdM4OAsnjZn57_UQ-1; Fri, 12 Mar 2021 09:25:02 +0000
-X-MC-Unique: bXCeiKEdM4OAsnjZn57_UQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 12 Mar 2021 09:25:01 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 12 Mar 2021 09:25:01 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Guenter Roeck' <linux@roeck-us.net>,
-        Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-Subject: RE: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXFr5yGwPv8sFHu0aW8iQkc3zyi6qAERyg
-Date:   Fri, 12 Mar 2021 09:25:01 +0000
-Message-ID: <1a7d43e6a16c46cdbe63b497b29ac453@AcuMS.aculab.com>
-References: <20210311081842.GA1070@ninjato>
- <94dfa9dc-a80c-98ba-4169-44cce3d810f7@alliedtelesis.co.nz>
- <725c5e51-65df-e17d-e2da-0982efacf2d2@roeck-us.net>
-In-Reply-To: <725c5e51-65df-e17d-e2da-0982efacf2d2@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 12 Mar 2021 04:25:06 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lKe2a-0006Wa-95; Fri, 12 Mar 2021 09:25:04 +0000
+Subject: Re: [PATCH] pinctrl: core: Set ret to 0 when group is skipped
+To:     Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     dan.carpenter@oracle.com, linux-gpio@vger.kernel.org
+References: <e5203bae68eb94b4b8b4e67e5e7b4d86bb989724.1615534291.git.michal.simek@xilinx.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <ced576c2-11a3-3fbf-0fdf-4620a442cadf@canonical.com>
+Date:   Fri, 12 Mar 2021 09:25:03 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <e5203bae68eb94b4b8b4e67e5e7b4d86bb989724.1615534291.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linuxppc-dev Guenter Roeck
-> Sent: 11 March 2021 21:35
+On 12/03/2021 07:31, Michal Simek wrote:
+> Static analyzer tool found that the ret variable is not initialized but
+> code expects ret value >=0 when pinconf is skipped in the first pinmux
+> loop. The same expectation is for pinmux in a pinconf loop.
+> That's why initialize ret to 0 to avoid uninitialized ret value in first
+> loop or reusing ret value from first loop in second.
 > 
-> On 3/11/21 1:17 PM, Chris Packham wrote:
-> >
-> > On 11/03/21 9:18 pm, Wolfram Sang wrote:
-> >>> Bummer. What is really weird is that you see clock stretching under
-> >>> CPU load. Normally clock stretching is triggered by the device, not
-> >>> by the host.
-> >> One example: Some hosts need an interrupt per byte to know if they
-> >> should send ACK or NACK. If that interrupt is delayed, they stretch the
-> >> clock.
-> >>
-> > It feels like something like that is happening. Looking at the T2080
-> > Reference manual there is an interesting timing diagram (Figure 14-2 if
-> > someone feels like looking it up). It shows SCL low between the ACK for
-> > the address and the data byte. I think if we're delayed in sending the
-> > next byte we could violate Ttimeout or Tlow:mext from the SMBUS spec.
-> >
+> Addresses-Coverity: ("Uninitialized variables")
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> CC: Colin Ian King <colin.king@canonical.com>
+> CC: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 > 
-> I think that really leaves you only two options that I can see:
-> Rework the driver to handle critical actions (such as setting TXAK,
-> and everything else that might result in clock stretching) in the
-> interrupt handler, or rework the driver to handle everything in
-> a high priority kernel thread.
+>  drivers/pinctrl/core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index f5c32d2a3c91..136c323d855e 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1266,6 +1266,7 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>  			break;
+>  		case PIN_MAP_TYPE_CONFIGS_PIN:
+>  		case PIN_MAP_TYPE_CONFIGS_GROUP:
+> +			ret = 0;
+>  			break;
+>  		default:
+>  			ret = -EINVAL;
+> @@ -1284,6 +1285,7 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>  	list_for_each_entry(setting, &state->settings, node) {
+>  		switch (setting->type) {
+>  		case PIN_MAP_TYPE_MUX_GROUP:
+> +			ret = 0;
+>  			break;
+>  		case PIN_MAP_TYPE_CONFIGS_PIN:
+>  		case PIN_MAP_TYPE_CONFIGS_GROUP:
+> 
 
-I'm not sure a high priority kernel thread will help.
-Without CONFIG_PREEMPT (which has its own set of nasties)
-a RT process won't be scheduled until the processor it last
-ran on does a reschedule.
-I don't think a kernel thread will be any different from a
-user process running under the RT scheduler.
+Thanks Michal,
 
-I'm trying to remember the smbus spec (without remembering the I2C one).
-While basically a clock+data bit-bang the slave is allowed to drive
-the clock low to extend a cycle.
-It may be allowed to do this at any point?
-The master can generate the data at almost any rate (below the maximum)
-but I don't think it can go down to zero.
-But I do remember one of the specs having a timeout.
-
-But I'd have thought the slave should answer the cycle correctly
-regardless of any 'random' delays the master adds in.
-Unless you are getting away with de-asserting chipselect?
-
-The only implementation I've done is one an FPGA so doesn't have
-worry about interrupt latencies.
-It doesn't actually support clock stretching; it wasn't in the
-code I started from and none of the slaves we need to connect to
-ever does it.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
