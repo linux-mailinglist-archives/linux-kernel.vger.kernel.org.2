@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C94C3396D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685303396CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhCLSng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:43:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233832AbhCLSnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:43:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E3C164DEF;
-        Fri, 12 Mar 2021 18:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615574611;
-        bh=sKX2rrb6XkiYk5GQI8k4S0Xcn1WhEhpPzkJYF4w5HQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WGa+OIImtBLT6B9fBhRu9whkob+oyS22VSvs/u9Hl+jTC06bBuhomU1HA92pU+7qP
-         V44Py2/oLpwuvLVslyFSAmiQpPhUViqyPypv1+1luj2tmFp6mHHF1+LdrbbkgtX6MC
-         A0Hkek/kJvJHWBF5rOosCmIDbpmLNmz+w078KgNWiZiDkTObqd+IneILAMFj5sg87o
-         I+ynB0YhhFoPyTzO/naeUawbmx7KINbkX+4LnCvkg6dhZg6EwoQzzqFPGFwb0e4siB
-         UK9w9UmnnxtwxGMPlC1fQhr478bXztBwBXb4VC+dO95r2mbwgU2zZge2x3LnKMak5n
-         GcJTCFp0+Lwcg==
-Date:   Fri, 12 Mar 2021 18:42:18 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pwm@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
- v5.13 merge window
-Message-ID: <20210312184218.GL5348@sirena.org.uk>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
- <20210301102826.GK641347@dell>
- <20210309200520.GA4931@dell>
- <20210310113959.dnokjrt7dos43fx6@pengutronix.de>
- <YEizYHPnzyLad6Yi@piout.net>
+        id S233846AbhCLSne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233577AbhCLSnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:43:04 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F213DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:43:03 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id r7so3516946ilb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RzyG8WNK+n+PA4HkSryeYxoXrjHZwQvUJZnWM65b7jk=;
+        b=PtL9UnVp5IewSgsRWwK17TxRaICLLCcod2mE0ZRlXvjqjEX/sRk1U00Ih2/yjJkzKD
+         ctzMhCeWjnCLaN8mr6rckXpJ/TlZhGuyYxJvPxXtO2hQJdeTI1hn5YDcXOvKebavCnXB
+         okN4tHz7kdTzMeYYpucHnv3yIZIVdpyuN9XY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RzyG8WNK+n+PA4HkSryeYxoXrjHZwQvUJZnWM65b7jk=;
+        b=Jb8hZ5D5RNFveGyBgweaCOUdZEDyTHxIP3QsKdsJpNr+xesMM+k81iK5/VpztCn1X5
+         AEe/Kp/tdg85I7r6WgdYpiE4SUiQP7gms999nkthe8QdoY4K1ZMakev2SbNNUgipwD97
+         h5Cj9ZL6e9jP53nXsLii6kNdqE3sVbyEj8Hyo9Tvkn+dJEsRx9A6QwnxIyfpY4zuyWu4
+         s/xzciVcGqArUlQH5eHXO5IKjN0DQoP20GdFt2hsZsA9TAVvj8SGgYrUCIfluZZuw2pv
+         oSIzdZYIpKfthQ3NwfjoPk6MlM2Wiblx8FNBZr5aWs9WTf2VECAVb5iV67w5Zf98QSDf
+         jW8w==
+X-Gm-Message-State: AOAM530+osmvSNxflSN/PUIX0lHZvZZnO+GNGS7vAIcWHLSZKWIBaYF5
+        2XWS4bGfls4f6GJhCk+dWAXJb3GSipCOZg==
+X-Google-Smtp-Source: ABdhPJydvBD7fKk74/zHdNkNXjloYb88pr9lKSDcjI96Zxp9+Yx2N/b27QdDm73GjKJr+YXW/8LurQ==
+X-Received: by 2002:a05:6e02:92f:: with SMTP id o15mr3784956ilt.111.1615574583407;
+        Fri, 12 Mar 2021 10:43:03 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s14sm3319816ilj.83.2021.03.12.10.43.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 10:43:03 -0800 (PST)
+Subject: Re: [PATCH] usbip: fix vhci races in connection tear down
+To:     Johan Hovold <johan@kernel.org>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210312022737.44122-1-skhan@linuxfoundation.org>
+ <YEtGMMjOg3pHTSma@hovoldconsulting.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3d2c0b3b-07fb-8f59-d7b4-81d7d992636c@linuxfoundation.org>
+Date:   Fri, 12 Mar 2021 11:43:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sMZCuqyhuhd4ycTi"
-Content-Disposition: inline
-In-Reply-To: <YEizYHPnzyLad6Yi@piout.net>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEtGMMjOg3pHTSma@hovoldconsulting.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/12/21 3:45 AM, Johan Hovold wrote:
+> On Thu, Mar 11, 2021 at 07:27:37PM -0700, Shuah Khan wrote:
+>> vhci_shutdown_connection() references connection state (tcp_socket,
+>> tcp_rx, tcp_tx, sockfd) saved in usbpip_device without holding the
+>> lock.
+>>
+>> Current connection tear down sequence:
+>> Step 1: shutdown the socket
+>> Step 2: stop rx thread and reset tcp_rx pointer
+>> Step 3: stop tx thread and reset tcp_tx pointer
+>> Step 4: Reset tcp_socket and sockfd
+>>
+>> There are several race windows between these steps. In addition, device
+>> reset routine (vhci_device_reset) resets tcp_socket and sockfd holding
+>> the lock.
+>>
+>> Fix these races:
+>> - Introduce in_disconnect flag to ensure vhci_shutdown_connection() runs
+>>    only once.
+>> - Change attach_store() to initialize in_disconnect to false while
+>>    initializing connection status (tcp_socket, tcp_rx, tcp_tx, sockfd)
+>> - Change vhci_shutdown_connection() to check in_disconnect and bail
+>>    out if disconnect is in progress.
+>> - Change vhci_shutdown_connection() to
+>>    -- hold lock to save connection state pointers and unlock.
+>>    -- Shutdown the socket and stop threads.
+>>    -- Hold lock to clear connection status and in_disconnect flag.
+>> - Change vhci_device_reset() to reset tcp_socket and sockfd.
+>>    if !in_disconnect
+>>
+>> Tested syzbot and the reproducer did not trigger any issue.
+>>
+>> Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>> ---
+>>   drivers/usb/usbip/usbip_common.h |  1 +
+>>   drivers/usb/usbip/vhci_hcd.c     | 55 +++++++++++++++++++++++---------
+>>   drivers/usb/usbip/vhci_sysfs.c   |  4 +++
+>>   3 files changed, 45 insertions(+), 15 deletions(-)
+> 
+>> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+>> index 3209b5ddd30c..c1917efe5737 100644
+>> --- a/drivers/usb/usbip/vhci_hcd.c
+>> +++ b/drivers/usb/usbip/vhci_hcd.c
+>> @@ -1007,31 +1007,54 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+>>   static void vhci_shutdown_connection(struct usbip_device *ud)
+>>   {
+>>   	struct vhci_device *vdev = container_of(ud, struct vhci_device, ud);
+>> +	unsigned long flags;
+>> +	struct socket *socket;
+>> +	struct task_struct *tcp_rx = NULL;
+>> +	struct task_struct *tcp_tx = NULL;
+>> +	int sockfd = 0;
+>> +
+>> +	spin_lock_irqsave(&ud->lock, flags);
+>> +	if (vdev->ud.in_disconnect) {
+>> +		pr_info("%s: Disconnect in progress for sockfd %d\n",
+>> +			__func__, ud->sockfd);
+> 
+> Looks like you forgot to remove all you debug printks like this one
+> before submitting.
+> 
 
---sMZCuqyhuhd4ycTi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Some printks were already in there and helped with debug. Yes I added
+a few more when I submitted for syzbot testing.
 
-On Wed, Mar 10, 2021 at 12:54:08PM +0100, Alexandre Belloni wrote:
-> On 10/03/2021 12:39:59+0100, Uwe Kleine-K=F6nig wrote:
+I will clean them up i v2.
 
-> > IMHO there are two ways forward: Either someone (Lee again?) creates a
-> > new pull request for this series rebased on -rc2; or we accept that
-> > these few patches are based on -rc1. For the latter it would be
-> > beneficial to merge the tag into a tree that is already based on -rc2.
+thanks,
+-- Shuah
 
-> The solution is simply for the maintainers merging the immutable branch
-> to do that in a branch based on -rc2. Eg. I've rebased rtc-next on -rc2
-> (fast forward, I didn't have any patch). I can now merge this branch if
-> necessary, problem solved. If you can't rebased, nothing prevents you
-> from merging -rc2 in any branch.
-
-That doesn't exactly address the issue - the goal was to reduce the
-number of commits that a bisect could hit which have the swapfile bug
-but lack the fix.  How serious a few extra commits on a shared branch
-really are is of course an open question though.
-
---sMZCuqyhuhd4ycTi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLtgkACgkQJNaLcl1U
-h9CB+wf/ZO7mIUoi7YJ5RncEf1EitAjvU8hcKZiAZOlXiI1OS8PQOpWUQ5K+RbDD
-NJIy7txxdvWxHDxl1pG7f/3iZ0j1S/3VWPDj8U6L04HcMCivzVFsfGME8coY6V8P
-GnJDXv/7OCbnDvmUz8TYpcKRI+OSbOVadnQH2eUoGz1BZ9AAyJ1LL1qHKx7vOp2Z
-rwoSkqkJwBVyuR+bjHFR4vHeBLfcxyBJ0DJG0Cb7INwK1D6t1qbnk90+mSFx3myS
-3ji8G1NRtqfZH5cG76rCoWnXiaDRCPhnanQeI3p3qCEF5PDJQG7ODmWY95HJyZJh
-RNgn4Del1wOcCkNVuV+u5M9+dLu73g==
-=ckES
------END PGP SIGNATURE-----
-
---sMZCuqyhuhd4ycTi--
