@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA12338EFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD46338EF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhCLNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhCLNlA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:41:00 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF61EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:40:59 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id ox4so37818000ejb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:40:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SlkfLw8Neaaz5YToNxw3zyE/AeBfKZ9Au+54DNTf9Hg=;
-        b=GRlQoI0IO2icO5oP/pQqgiELU7s2k4QaUbN89SPnVCX4EFGKK/xS7bHZaBeSCtYn+x
-         LB7rIUXyM9eUVBqyooCCqKlDe/oplETynuBc0/gZgDMYZ1Auq+yxGJEvEYuh/VdpivN4
-         S3S+I8544E7KYIw1/57UnsGPUWq+R9A+bCfFB0tDS5oDSs9CMgr+HvmSjPLUsCPEgiAc
-         ccSBLkzKfpv6+QhsRnaQnGDC367d7tJSPtlj5CR26TjytMmSI4wOY9+vNb7SImAG/QOm
-         sZzgP284Dz1oWV/RyGldeAWdCRYeO1TjFHhhps295Xss4Hzht8XMMuNjABIsGkrchzql
-         fA6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SlkfLw8Neaaz5YToNxw3zyE/AeBfKZ9Au+54DNTf9Hg=;
-        b=k0QqoGP8Ro9zgvlOWojWlawO+Esi+Up3BHBhCXxhShxa1i3+o/wJkceNeh7j7yCoM4
-         TLi11bhEi5rPC7PI7cK0Kjihpi+Ygb9+DfR7U6bgKeu72Tcq9yM/FphanRR7wvgSFiwP
-         LvuX73BHpyzLC9sX0faJYO0tkPG8c8ZaKpOT4o3GVpn/ULsWata5K/F9KFfla+sJ5mtY
-         iqoFfOPUNqBixkpZ3MHMSe1HWhJ2lagMryQOuOuUWQXTstEqpaqF2O+DJXsLxQfVJ3Ll
-         lLD/xL3PTcfjIUrn/BZg8nfJvnI4zxiDun2EMvS6DWAMedbzVcGacO+QCMaU0QEGflGz
-         Oflg==
-X-Gm-Message-State: AOAM530+jPL32qfRXa2yv9NBF9+MkwMNxek8QbNenMGNYvAWVGqKemql
-        QfwWFPmCzPc/bj7Bi+49oETg4987xYEiPQMzcx0AUw==
-X-Google-Smtp-Source: ABdhPJwtm4v97kPrzdnQxf0mV2PkLS8sJs5nBVfE1CL3gYBJyAzifajJbvTYVgx2t203x80Jo1LjyBsd0Q/Fgg/CuYk=
-X-Received: by 2002:a17:906:c0c8:: with SMTP id bn8mr8450077ejb.445.1615556458708;
- Fri, 12 Mar 2021 05:40:58 -0800 (PST)
+        id S231166AbhCLNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:37:42 -0500
+Received: from mga05.intel.com ([192.55.52.43]:26445 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhCLNhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:37:09 -0500
+IronPort-SDR: jqgKNmJTYCCXqnWHRzMz3gE2VfmhrOcQ8me2Ac14sbGuvA3FmVPPJvSHLmRks1f5jgljw9EPn3
+ Uuc+dXLwjErQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="273874660"
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="273874660"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:37:09 -0800
+IronPort-SDR: V2atn+ntx1sM1XTuf8bpfyPFuC7//4sfqIcoIJMHrc9Xq6L6ypx2vY4+Fzu2g+23mUFPoDtCnJ
+ UNzqEdZVLeDQ==
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="411008616"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:37:05 -0800
+Date:   Fri, 12 Mar 2021 21:41:14 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Doug Smythies <dsmythies@telus.net>, bas@basnieuwenhuizen.nl,
+        Bingsong Si <owen.si@ucloud.cn>,
+        youling257 <youling257@gmail.com>
+Cc:     bas@basnieuwenhuizen.nl, erwanaliasr1@gmail.com, owen.si@ucloud.cn,
+        youling257 <youling257@gmail.com>, lenb@kernel.org,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        Len Brown <len.brown@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
+Message-ID: <20210312134114.GA21436@chenyu-desktop>
+References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
+ <20210308134957.23852-1-youling257@gmail.com>
+ <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+ <20210308161548.GA37664@chenyu-desktop>
+ <CAAYoRsVkrHberSgM42dqYjdVwz8vumURJ1_DGeV1R5-=LMdjVA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 12 Mar 2021 14:40:47 +0100
-Message-ID: <CAMpxmJW=z+jX3grh+KuikEo0hwPNqz0JQDEyfGLsFzF8A8+f2w@mail.gmail.com>
-Subject: Re: [PATCH v6 0/6] gpiolib: switch to fwnode in the core
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAYoRsVkrHberSgM42dqYjdVwz8vumURJ1_DGeV1R5-=LMdjVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 10:37 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> GPIO library uses of_node and fwnode in the core in non-unified way.
-> The series cleans this up and improves IRQ domain creation for non-OF cases
-> where currently the names of the domain are 'unknown'.
->
-> This has been tested on Intel Galileo Gen 2.
->
-> It touches GPIO core parts and it's expected that the series is routed via
-> GPIO tree.
->
-> In v6:
-> - added tag to the patch 5 (Rafael)
-> - dropped ops temporary variable (Rafael)
->
-> In v5:
-> - same as v4 + v3 (patches 1-4/5) in order to route via GPIO tree (Bart)
->
-> In v4:
-> - based on Rafael's bleeding-edge
-> - split the rest to two patches (Rafael)
-> - elaborate WARN() deduplication in the commit message (Rafael)
->
-> In v3:
-> - fixed subtle bug in gpiod_count
-> - made irq_domain_add_simple() static inline (Marc)
->
-> In v2:
-> - added a new patch due to functionality in irq_comain_add_simple() (Linus)
-> - tagged patches 2-4 (Linus)
-> - Cc'ed to Rafael
->
-> Andy Shevchenko (6):
->   irqdomain: Introduce irq_domain_create_simple() API
->   gpiolib: Unify the checks on fwnode type
->   gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
->   gpiolib: Introduce acpi_gpio_dev_init() and call it from core
->   gpiolib: Reuse device's fwnode to create IRQ domain
->   gpiolib: Fold conditionals into a simple ternary operator
->
->  Documentation/core-api/irq/irq-domain.rst | 22 ++++----
->  drivers/gpio/gpiolib-acpi.c               |  7 +++
->  drivers/gpio/gpiolib-acpi.h               |  4 ++
->  drivers/gpio/gpiolib-of.c                 |  6 ++-
->  drivers/gpio/gpiolib.c                    | 62 +++++++++--------------
->  include/linux/irqdomain.h                 | 19 +++++--
->  kernel/irq/irqdomain.c                    | 20 ++++----
->  7 files changed, 75 insertions(+), 65 deletions(-)
->
-> --
-> 2.30.1
->
+Hi Youling, Bas, and Bingsong,
+On Wed, Mar 10, 2021 at 04:03:31PM -0800, Doug Smythies wrote:
+> Hi Yu,
+> 
+> I am just resending your e-mail, adjusting the "To:" list to
+> include the 3 others that have submitted similar patches.
+> 
+> ... Doug
+> 
+Could you please help check if the following combined patch works?
 
-Series applied, thanks!
+Thanks,
+Chenyu
 
-Bartosz
+
+From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
+From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Date: Fri, 12 Mar 2021 21:27:40 +0800
+Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+
+It was reported that on Zen+ system turbostat started exiting,
+which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
+offset_to_idx wasn't returning a non-negative index.
+
+This patch combined the modification from Bingsong Si and
+Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
+MSR_PKG_ENERGY_STATUS.
+
+Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
+Reported-by: youling257 <youling257@gmail.com>
+Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index a7c4f0772e53..a7c965734fdf 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -297,7 +297,10 @@ int idx_to_offset(int idx)
+ 
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		offset = MSR_PKG_ENERGY_STATUS;
++		if (do_rapl & RAPL_AMD_F17H)
++			offset = MSR_PKG_ENERGY_STAT;
++		else
++			offset = MSR_PKG_ENERGY_STATUS;
+ 		break;
+ 	case IDX_DRAM_ENERGY:
+ 		offset = MSR_DRAM_ENERGY_STATUS;
+@@ -326,6 +329,7 @@ int offset_to_idx(int offset)
+ 
+ 	switch (offset) {
+ 	case MSR_PKG_ENERGY_STATUS:
++	case MSR_PKG_ENERGY_STAT:
+ 		idx = IDX_PKG_ENERGY;
+ 		break;
+ 	case MSR_DRAM_ENERGY_STATUS:
+@@ -353,7 +357,7 @@ int idx_valid(int idx)
+ {
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		return do_rapl & RAPL_PKG;
++		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
+ 	case IDX_DRAM_ENERGY:
+ 		return do_rapl & RAPL_DRAM;
+ 	case IDX_PP0_ENERGY:
+-- 
+2.25.1
+
