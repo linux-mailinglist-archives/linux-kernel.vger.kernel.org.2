@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD04C338D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B8C338D62
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhCLMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
+        id S230341AbhCLMqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhCLMoM (ORCPT
+        with ESMTP id S229677AbhCLMqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:44:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C65C061574;
-        Fri, 12 Mar 2021 04:44:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kA2zAbVU2u9LtJpiwYGKaIj40CL11SeMzPwy8fqCxkY=; b=kf7NOn2KwwvzyGg78S230QQcFN
-        MIXvadkSKEGfs3IHGJYDuqpq7MQvxUHU8YT1P8C7AoXgk/YM55DC8ixq3tLScOup5+O6bBCL/4JCg
-        c8aAkcRMZMUU0iPxI0YHCmqB1j5nivVV7u8fXzId29IajJupo3WZOMQVJ9HjrGxBlvU60ue7gnFmr
-        aQP7ZFF+qIVomRCv4AL4WFChMBhJDpQLWNHdV57AFLYIdTvsWmWrbJg0sCLvBYRXn9GAKns6AoM56
-        3q48mGoGEOR8JwVIwMbtxOA5aND4OcK+zojxIaDwMqVwZQV5n2xLMvdZ37fEFAJUe34nQeuv2S+kk
-        /+WdLXCg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKh8d-00Af8Y-Mi; Fri, 12 Mar 2021 12:43:38 +0000
-Date:   Fri, 12 Mar 2021 12:43:31 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210312124331.GY3479805@casper.infradead.org>
-References: <20210310104618.22750-1-mgorman@techsingularity.net>
- <20210310104618.22750-3-mgorman@techsingularity.net>
+        Fri, 12 Mar 2021 07:46:03 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12148C061574;
+        Fri, 12 Mar 2021 04:46:03 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 16so9373005pgo.13;
+        Fri, 12 Mar 2021 04:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WQYnUu+syC+gJ8SAwcXk3ME3qoa+YQ2AJhsnB1gGC0o=;
+        b=aE5NM6ZW1qYl1zkoxxXT5WOAWfDxAjW7iffwXjfiGY1vogvex3Gu6OIEfPk3pkHj02
+         Zz0n/mYS6yu3DIevEIKnQMxpaheWsldXpzbT1a+4GsiRzh0EwvSz5THfKlyeOJwYHEtv
+         fQbd0v9cr9j+ZTmbPc2NxodMfpRA2ZoW3UzIBemBJXRwE2QotCjknpoGroRvjniBw24E
+         90wAYskdbVDJMCzi0XkZjYk2UgyXgPkgArT/VFNv6IDw/l4x17uKa+Dw4UymII8AgY42
+         pQ+HoHkO8Bgs+x+uLgK66G/bRtgl13CXh17Va0pE3gDuCUKTj1FyBOi6V5kk6Qr3wOzn
+         gqOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WQYnUu+syC+gJ8SAwcXk3ME3qoa+YQ2AJhsnB1gGC0o=;
+        b=LpPTv1qShx7GDSDQEgrYyNgpu1ngE0WexFg/OHhZrnDTnP+csdFg1bqnwsV+ZOBPhb
+         gwxeXQN79NK0wyn8mB38elgV/EemYcKlrrK6TNKJe1TELrWaIO5Z/qLC20VtRRLfQr0m
+         nfU3J0G6kaAw7+QZvNnoQ5MxGW79dm1i+0vKk6lsmL6rElD4F7cZ0UOl2PJhOe7NBFv0
+         cP807FnyKJxJ8gsw+DtwkmCHD/4f4CxT9msOGPdUYy+sZyWKwwHPMUQGCOpq9ky/DTZz
+         Cc1fkSknteDiwb3f1N+kE3eiIOsYPVgQu3jZ483pzNxbvlpRr582Da8vI0E0QFMxqTDL
+         uYvQ==
+X-Gm-Message-State: AOAM533sTfCNiLI9SHxZZfEHY6KS8dG6fW1Mr34plfQL1ie/fU/l5WcI
+        jVmyxPw3sfTdkXCPurD572FCIyCnAi5aWxyntCYNgtJaN78+6g==
+X-Google-Smtp-Source: ABdhPJy1gLF+5uC+aMtgLHYJCioOBbsbw6QtQSyMU0wEp3yZFAWTbWaTPUhjfHXLYs31TP/ommj/TrjwbDUVXTSbb1Q=
+X-Received: by 2002:a65:4bc5:: with SMTP id p5mr11478206pgr.74.1615553162596;
+ Fri, 12 Mar 2021 04:46:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310104618.22750-3-mgorman@techsingularity.net>
+References: <d66e78e3-2000-611b-cd74-8a61461153e8@canonical.com>
+ <5c08bd61-688f-e95b-5fa3-584f190ed4bf@xilinx.com> <bf508c29-4a51-5f97-8459-06c1fe74b60f@canonical.com>
+In-Reply-To: <bf508c29-4a51-5f97-8459-06c1fe74b60f@canonical.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 12 Mar 2021 14:45:46 +0200
+Message-ID: <CAHp75VcEU=Axi7k41rUxps4LehEzbG12z410VVBbwPtMCbJHrQ@mail.gmail.com>
+Subject: Re: pinctrl: core: Handling pinmux and pinconf separately
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:46:15AM +0000, Mel Gorman wrote:
-> +int __alloc_pages_bulk_nodemask(gfp_t gfp_mask, int preferred_nid,
-> +				nodemask_t *nodemask, int nr_pages,
-> +				struct list_head *list);
+On Thu, Mar 11, 2021 at 1:26 PM Colin Ian King <colin.king@canonical.com> wrote:
+> On 11/03/2021 11:16, Michal Simek wrote:
+> > On 3/11/21 11:57 AM, Colin Ian King wrote:
 
-For the next revision, can you ditch the '_nodemask' part of the name?
-Andrew just took this patch from me:
+> >> For the PIN_MAP_TYPE_CONFIGS_PIN and PIN_MAP_TYPE_CONFIGS_GROUP
+> >> setting->type cases the loop can break out with ret not being set. Since
+> >> ret has not been initialized it the ret < 0 check is checking against an
+> >> uninitialized value.
+> >>
+> >> I was not sure if the PIN_MAP_TYPE_CONFIGS_PIN and
+> >> PIN_MAP_TYPE_CONFIGS_GROUP cases should be setting ret and if so, what
+> >> the value of ret should be set to (is it an error condition or not?). Or
+> >> should ret be initialized to 0 or a default error value at the start of
+> >> the function.
+> >>
+> >> Hence I'm reporting this issue.
+> >
+> > What about this? Is this passing static analysis?
+>
+> It will take me 2 hours to re-run the analysis, but from eyeballing the
+> code I think the assignments will fix this.
 
-    mm/page_alloc: combine __alloc_pages and __alloc_pages_nodemask
-    
-    There are only two callers of __alloc_pages() so prune the thicket of
-    alloc_page variants by combining the two functions together.  Current
-    callers of __alloc_pages() simply add an extra 'NULL' parameter and
-    current callers of __alloc_pages_nodemask() call __alloc_pages() instead.
+It surprises me that tools in the 21st century can't run on a subset
+of the data.
 
-...
+Had you filed a bug to the Coverity team that they will provide a way
+to rerun analysis on a subset of the data?
 
--__alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
--                                                       nodemask_t *nodemask);
--
--static inline struct page *
--__alloc_pages(gfp_t gfp_mask, unsigned int order, int preferred_nid)
--{
--       return __alloc_pages_nodemask(gfp_mask, order, preferred_nid, NULL);
--}
-+struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
-+               nodemask_t *nodemask);
 
-So calling this function __alloc_pages_bulk() fits with the new naming
-scheme.
-
-> @@ -4919,6 +4934,9 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->  		struct alloc_context *ac, gfp_t *alloc_mask,
->  		unsigned int *alloc_flags)
->  {
-> +	gfp_mask &= gfp_allowed_mask;
-> +	*alloc_mask = gfp_mask;
-
-Also I renamed alloc_mask to alloc_gfp.
-
+-- 
+With Best Regards,
+Andy Shevchenko
