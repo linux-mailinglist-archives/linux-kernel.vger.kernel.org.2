@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE3433922B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D01E339235
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhCLPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhCLPql (ORCPT
+        id S229959AbhCLPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:48:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39156 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232311AbhCLPsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:46:41 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7628C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:46:40 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f9e2:c536:b8cc:fbbc])
-        by laurent.telenet-ops.be with bizsmtp
-        id fTmc2400D1ACAb301Tmcmh; Fri, 12 Mar 2021 16:46:38 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lKjzn-0079iK-SM; Fri, 12 Mar 2021 16:46:35 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lKjzn-00ErPJ-8j; Fri, 12 Mar 2021 16:46:35 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] RISC-V: Fix out-of-bounds accesses in init_resources()
-Date:   Fri, 12 Mar 2021 16:46:34 +0100
-Message-Id: <20210312154634.3541844-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Mar 2021 10:48:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615564117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dvDHhjhApUIGkxAldXJIyTxY9YDcb/M12Kv81Sgxp0k=;
+        b=KSvvj66B0F0UmX4/dagzxliH/V9y46e0E77lUkS7sGmFveV04xtJnWITD0QTILv9y4llfE
+        XWOwm60T9ZDbwss5s1ja7yI5ipg3e9FNA+5iUcRv2XXoSrTMCEJE9oPIq0NXQbKMdeVK2x
+        9MX+TNdFms/iYiBKkLx3yC+SdUWYMzk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-L5H8X6_8ONWGSZHGuZ-8jA-1; Fri, 12 Mar 2021 10:48:33 -0500
+X-MC-Unique: L5H8X6_8ONWGSZHGuZ-8jA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 083C99252F;
+        Fri, 12 Mar 2021 15:48:32 +0000 (UTC)
+Received: from [10.36.114.197] (ovpn-114-197.ams2.redhat.com [10.36.114.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ED217196E3;
+        Fri, 12 Mar 2021 15:48:29 +0000 (UTC)
+Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()")
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Liang, Liang (Leo)" <Liang.Liang@amd.com>
+Cc:     "Huang, Ray" <Ray.Huang@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>
+References: <MN2PR12MB448872F0BE8F49C78AF908F3F7909@MN2PR12MB4488.namprd12.prod.outlook.com>
+ <2f7c20ea-888f-65b6-6607-c86aab65acce@redhat.com>
+ <MN2PR12MB44886034D18F900F4FE45D8DF76F9@MN2PR12MB4488.namprd12.prod.outlook.com>
+ <15faeb97-d031-f70a-adab-f2966e0b1221@redhat.com>
+ <MN2PR12MB44884289499B6B16A0E9017DF76F9@MN2PR12MB4488.namprd12.prod.outlook.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b5faa9b9-6f40-f8e4-cf7c-795b429e02a8@redhat.com>
+Date:   Fri, 12 Mar 2021 16:48:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN2PR12MB44884289499B6B16A0E9017DF76F9@MN2PR12MB4488.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-init_resources() allocates an array of resources, based on the current
-total number of memory regions and reserved memory regions.  However,
-allocating this array using memblock_alloc() might increase the number
-of reserved memory regions.  If that happens, populating the array later
-based on the new number of regions will cause out-of-bounds writes
-beyond the end of the allocated array.
+> 8G (with some carve out for the integrated GPU).
+> [    0.044181] Memory: 6858688K/7200304K available (14345K kernel code, 9659K rwdata, 4980K rodata, 2484K init, 12292K bss, 341360K reserved, 0K cma-reserved)
+> 
+> Nothing particularly special about these systems that I am aware of.  I'll see if we can repro this issue on any other platforms, but so far, not one has noticed any problems.
+> 
+>>
+>> Increasing the boot time from a few seconds to 2-3 minutes does not smell
+>> like some corner case cache effects we might be hitting in this particular
+>> instance - there have been minor reports that it either slightly increased or
+>> slightly decreases initial system performance, but that was about it.
+>>
+>> Either, yet another latent BUG (but why? why should memory access
+>> suddenly be that slow? I could only guess that we are now making sooner
+>> use of very slow memory), or there is really something else weird going on.
+> 
+> Looks like pretty much everything is slower based on the timestamps in the dmesg output.  There is a big jump here:
 
-Fix this by allocating one more entry, which may or may not be used.
+If we're really dealing with some specific slow memory regions and that 
+memory gets allocated for something that gets used regularly, then we 
+might get a general slowdown. Hard to identify, though :)
 
-Fixes: 797f0375dd2ef5cd ("RISC-V: Do not allocate memblock while iterating reserved memblocks")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Tested on vexriscv, which works now using L1_CACHE_SHIFT = 6, too.
+> 
+>> [    3.758596] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
+>> [    3.759372] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
+>> [   16.177983] ACPI: 13 ACPI AML tables successfully acquired and loaded
+>> [   17.099316] ACPI: [Firmware Bug]: BIOS _OSI(Linux) query ignored
+>> [   18.969959] ACPI: EC: EC started
+> 
+> And here:
+> 
+>> [   36.566608] PCI: CLS 64 bytes, default 64
+>> [   36.575383] Trying to unpack rootfs image as initramfs...
+>> [   44.594348] Initramfs unpacking failed: Decoding failed
+>> [   44.765141] Freeing initrd memory: 46348K
+> 
+> Also seeing soft lockups:
+>> [  124.588634] watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [swapper/1:0]
 
-This issue may show up during early boot as:
+Yes, I noticed that -- there is a heavy slowdown somewhere.
 
-    Unable to handle kernel paging request at virtual address c8000008
-    Oops [#1]
-    CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-orangecrab-00023-g7c4fc8e3e982-dirty #137
-    epc: c04d6660 ra : c04d6560 sp : c05ddf70
-     gp : c0678bc0 tp : c05e5b40 t0 : c8000000
-     t1 : 00030000 t2 : ffffffff s0 : c05ddfc0
-     s1 : c8000000 a0 : 00000000 a1 : c7ffffe0
-     a2 : 00000005 a3 : 00000001 a4 : 0000000c
-     a5 : 00000000 a6 : c04fe000 a7 : 0000000c
-     s2 : c04fe098 s3 : 000000a0 s4 : c7ffff60
-     s5 : c04fe0dc s6 : 80000200 s7 : c059f1d4
-     s8 : 81000200 s9 : c059f1f0 s10: 80000200
-     s11: c059f1d4 t3 : 405dbb60 t4 : c05e6f08
-     t5 : 81000200 t6 : 40501000
-    status: 00000100 badaddr: c8000008 cause: 0000000f
-    random: get_random_bytes called from print_oops_end_marker+0x38/0x7c with crng_init=0
-    ---[ end trace 0000000000000000 ]---
+As that patch is v5.10 already (and we're close to v5.12) I assume 
+something is particularly weird about the platform you are running on - 
+because this is the first time I see a report like that.
 
-or much later as:
-
-    Unable to handle kernel paging request at virtual address 69726573
----
- arch/riscv/kernel/setup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index e85bacff1b5075ee..f8f15332caa20263 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -147,7 +147,8 @@ static void __init init_resources(void)
- 	bss_res.end = __pa_symbol(__bss_stop) - 1;
- 	bss_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
- 
--	mem_res_sz = (memblock.memory.cnt + memblock.reserved.cnt) * sizeof(*mem_res);
-+	/* + 1 as memblock_alloc() might increase memblock.reserved.cnt */
-+	mem_res_sz = (memblock.memory.cnt + memblock.reserved.cnt + 1) * sizeof(*mem_res);
- 	mem_res = memblock_alloc(mem_res_sz, SMP_CACHE_BYTES);
- 	if (!mem_res)
- 		panic("%s: Failed to allocate %zu bytes\n", __func__, mem_res_sz);
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
