@@ -2,152 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B6D3390D2
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1863390D3
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhCLPJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S232165AbhCLPJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhCLPJN (ORCPT
+        with ESMTP id S231679AbhCLPJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:09:13 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B915C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:13 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id v11so1964019wro.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:13 -0800 (PST)
+        Fri, 12 Mar 2021 10:09:23 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0008DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:22 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id g8so4017633wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 07:09:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6z5yK8vEdlIPN8f6oHZ6+h6lqAhTCq/itvEZweQcS40=;
-        b=SPoSWepUZZcZbGEOBlAli4oXCu/0VO5KeExM0FWwcOByekNYj7WLqNUH4xpPX4WZFo
-         ySMH/S7b5x3kjFXw0C8B2FVWkWRZW16IPAE52q6rIP46olkrJ/h/ZoMvu2dkHb2re0FB
-         zkLIjlqC5sL5C4Kb8HOQlgxSaySo665y2PgQzf+NDaCML34hV2U0ylk1IRINCFmtg3gP
-         F1msse7QguYjEcN4QLorVAjscl9m8A9MaOGIZSEODdf+phfliSTfgQnHlCZIIWCazZtc
-         zkBhu083V+HTWuBQxkNzgTOxx7egxFew1YGNfiRDFHJa9NwMDfoO6d+pEmCBMu+TmdLn
-         E/vA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=gtvZkycLjntznV5+6tLS7tFxXM/9IJvZKgaaSBlNSTQ=;
+        b=R1RmWkGT1x3hbCJUbRvCXQ89MYHdUlI1InTiHA94uSD3kBkHraP9FJuQ5AOdPyYNjI
+         CxpdxKcbYtXwFSWerFivcZMkUpprYKgsrOx4rtyLl2XG4hm8pZp1ZB4AJaZu7BXMYkrv
+         IZkdoO2UOBQZ9q4Bd59/0/QGnknnVLD2C3KPkdQ/kxctcFUGo/Tl5pN53hBQ6U4Mhi6n
+         T2OW+xMGVCI0a7Dt2rBmfxSR46OJj2xqbKVXy6eEWHau9t10ygndE2xB0n/NmJVxdUF2
+         ldgER97oDBp2llh6cKLStXwDOtZ0iAgaSks7I8kVjt2BYdnrN93CYS2bKkJ3KBiSm3NO
+         gpPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6z5yK8vEdlIPN8f6oHZ6+h6lqAhTCq/itvEZweQcS40=;
-        b=pKkEI0hlPFgqgMRbj5iXDWhndFTBBGYVWEmIDV70el4rBUX70gf4yXqq1U/SGSctFz
-         Begk+lTN+dfgHEscco4FI/fCGQgFsU+R6yhhaNnKIjz0C2ibyU9JV3XWFdzUJ3EZecKP
-         fsDp09MHx5Dwfuy+vRUAp/ohHng2NSn+jHHcHX6E0xEXxpiJoDhUVipC976jBnzKEhkt
-         2QplIB9mXSZw4Pj9FWqKmSmtja/xv7bIOZhjx2ipvGGF2OFetykuGRTskIhwniuohpDo
-         53s/sJs/pS/vyn2TwLNg3R5xzMKJlc7QiLstNC4SS4dmPYYNbC+Ga0Pur9Hh7TCCWSei
-         PusA==
-X-Gm-Message-State: AOAM532dL7/aIErJ/yTosWD6nSnkf01WHGuKBePLs+/U/FGEAt1MQ93+
-        ONGDLctFw0l+wJ+Xa1rIKVcumg==
-X-Google-Smtp-Source: ABdhPJzX0GBowZ73CykHUe0qR+AXWgyRwFYf4xN0vLpadApF7HRvmSNgjf5B+3YuBS9k55qAx/9s8A==
-X-Received: by 2002:adf:f851:: with SMTP id d17mr14371835wrq.267.1615561751666;
-        Fri, 12 Mar 2021 07:09:11 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id a13sm6155249wrp.31.2021.03.12.07.09.10
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gtvZkycLjntznV5+6tLS7tFxXM/9IJvZKgaaSBlNSTQ=;
+        b=R05BjIuImyMX/M+WE/exI9lrLPbgKecXJFpojpbZxd5pi7FK1mmBnrBlz77HF0JFcJ
+         aaJuDh9WM2ivE4xnzfkMyfeuRyIzc5uKM0LXTzNslwdRMj8gCTGQH++PwWh9+Wd/uexb
+         yM/Qjs3kor25ZYQoeggvpMdGwoosaV+cT/S69BEmdGpJNm/hPzZSvGMhY0RYPVPhCQX2
+         KLXniDi2TowmYCrhtPYWPpyExO77CgM8t8NhC8kLnl4RxpC7ZB92duyTT4hAILme9Ctx
+         sT/VSXArIBV63Y6Fwr1Apjl6r4UHj8no1P8k9aOGTivCHdCQcA5y1iSAekMq3/mPYLNB
+         ambA==
+X-Gm-Message-State: AOAM530AtmSzf8Rrt5KdB0Aa7nrJ1UvpqaXUKXd8ohrnV0A+4Pm3HSRt
+        VFaZWZEaObssz1nkpS93YFTknQ==
+X-Google-Smtp-Source: ABdhPJwBfXueLJBMCj23l7EQ07XOv08i1is4PTUitFfFu5xK0O1WheNDM1Dolhaht3ud+Qzv7dg38Q==
+X-Received: by 2002:a1c:4986:: with SMTP id w128mr13516548wma.37.1615561761555;
+        Fri, 12 Mar 2021 07:09:21 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
+        by smtp.gmail.com with ESMTPSA id m3sm2303932wmc.48.2021.03.12.07.09.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 07:09:11 -0800 (PST)
-Date:   Fri, 12 Mar 2021 15:09:09 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 07/10] of: fdt: Demote kernel-doc abuses
-Message-ID: <20210312150909.GV701493@dell>
-References: <20210312110758.2220959-1-lee.jones@linaro.org>
- <20210312110758.2220959-8-lee.jones@linaro.org>
- <CAL_JsqJe7rp-FyXmPmf8RfBWrP0EmW7etML13HKLqEobtR2=Kg@mail.gmail.com>
+        Fri, 12 Mar 2021 07:09:20 -0800 (PST)
+Date:   Fri, 12 Mar 2021 16:09:15 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/11] kasan: docs: update SW_TAGS implementation
+ details section
+Message-ID: <YEuEG+K4/V4zn9l4@elver.google.com>
+References: <c2bbb56eaea80ad484f0ee85bb71959a3a63f1d7.1615559068.git.andreyknvl@google.com>
+ <69b9b2e49d8cf789358fa24558be3fc0ce4ee32c.1615559068.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqJe7rp-FyXmPmf8RfBWrP0EmW7etML13HKLqEobtR2=Kg@mail.gmail.com>
+In-Reply-To: <69b9b2e49d8cf789358fa24558be3fc0ce4ee32c.1615559068.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021, Rob Herring wrote:
-
-> On Fri, Mar 12, 2021 at 4:08 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/of/fdt.c:478: warning: Function parameter or member 'node' not described in '__reserved_mem_reserve_reg'
-> >  drivers/of/fdt.c:478: warning: Function parameter or member 'uname' not described in '__reserved_mem_reserve_reg'
-> >  drivers/of/fdt.c:525: warning: Function parameter or member 'node' not described in '__reserved_mem_check_root'
-> >  drivers/of/fdt.c:547: warning: Function parameter or member 'node' not described in '__fdt_scan_reserved_mem'
-> >  drivers/of/fdt.c:547: warning: Function parameter or member 'uname' not described in '__fdt_scan_reserved_mem'
-> >  drivers/of/fdt.c:547: warning: Function parameter or member 'depth' not described in '__fdt_scan_reserved_mem'
-> >  drivers/of/fdt.c:547: warning: Function parameter or member 'data' not described in '__fdt_scan_reserved_mem'
-> >  drivers/of/fdt.c:547: warning: expecting prototype for fdt_scan_reserved_mem(). Prototype was for __fdt_scan_reserved_mem() instead
-> >  drivers/of/fdt.c:663: warning: Function parameter or member 'parent' not described in 'of_scan_flat_dt_subnodes'
-> >  drivers/of/fdt.c:708: warning: Function parameter or member 'node' not described in 'of_get_flat_dt_prop'
-> >  drivers/of/fdt.c:708: warning: Function parameter or member 'name' not described in 'of_get_flat_dt_prop'
-> >  drivers/of/fdt.c:708: warning: Function parameter or member 'size' not described in 'of_get_flat_dt_prop'
-> >  drivers/of/fdt.c:758: warning: Function parameter or member 'node' not described in 'of_flat_dt_match'
-> >  drivers/of/fdt.c:758: warning: Function parameter or member 'compat' not described in 'of_flat_dt_match'
-> >  drivers/of/fdt.c:778: warning: Function parameter or member 'node' not described in 'of_get_flat_dt_phandle'
-> >  drivers/of/fdt.c:778: warning: expecting prototype for of_get_flat_dt_prop(). Prototype was for of_get_flat_dt_phandle() instead
-> >  drivers/of/fdt.c:955: warning: Function parameter or member 'node' not described in 'early_init_dt_scan_root'
-> >  drivers/of/fdt.c:955: warning: Function parameter or member 'uname' not described in 'early_init_dt_scan_root'
-> >  drivers/of/fdt.c:955: warning: Function parameter or member 'depth' not described in 'early_init_dt_scan_root'
-> >  drivers/of/fdt.c:955: warning: Function parameter or member 'data' not described in 'early_init_dt_scan_root'
-> >  drivers/of/fdt.c:991: warning: Function parameter or member 'node' not described in 'early_init_dt_scan_memory'
-> >  drivers/of/fdt.c:991: warning: Function parameter or member 'uname' not described in 'early_init_dt_scan_memory'
-> >  drivers/of/fdt.c:991: warning: Function parameter or member 'depth' not described in 'early_init_dt_scan_memory'
-> >  drivers/of/fdt.c:991: warning: Function parameter or member 'data' not described in 'early_init_dt_scan_memory'
-> >
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Frank Rowand <frowand.list@gmail.com>
-> > Cc: benh@kernel.crashing.org
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/of/fdt.c | 19 ++++++++++---------
-> >  1 file changed, 10 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > index dcc1dd96911a9..1fb3348eb9516 100644
-> > --- a/drivers/of/fdt.c
-> > +++ b/drivers/of/fdt.c
-> > @@ -470,7 +470,7 @@ void *initial_boot_params __ro_after_init;
-> >
-> >  static u32 of_fdt_crc32;
-> >
-> > -/**
-> > +/*
-> >   * __reserved_mem_reserve_reg() - reserve all memory described in 'reg' property
-> >   */
-> >  static int __init __reserved_mem_reserve_reg(unsigned long node,
-> > @@ -516,7 +516,7 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
-> >         return 0;
-> >  }
-> >
-> > -/**
-> > +/*
-> >   * __reserved_mem_check_root() - check if #size-cells, #address-cells provided
-> >   * in /reserved-memory matches the values supported by the current implementation,
-> >   * also check if ranges property has been provided
-> > @@ -539,7 +539,7 @@ static int __init __reserved_mem_check_root(unsigned long node)
-> >         return 0;
-> >  }
-> >
-> > -/**
-> > +/*
-> >   * fdt_scan_reserved_mem() - scan a single FDT node for reserved memory
+On Fri, Mar 12, 2021 at 03:24PM +0100, Andrey Konovalov wrote:
+> Update the "Implementation details" section for SW_TAGS KASAN:
 > 
-> This is still wrong. Should be __fdt_scan_reserved_mem.
+> - Clarify the introduction sentence.
+> - Punctuation, readability, and other minor clean-ups.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Ah, the warning went away because I demoted it.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Will fix.  The others too.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> ---
+>  Documentation/dev-tools/kasan.rst | 39 +++++++++++++++----------------
+>  1 file changed, 19 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index 986410bf269f..5873d80cc1fd 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -235,38 +235,37 @@ quarantine (see mm/kasan/quarantine.c for implementation).
+>  Software tag-based KASAN
+>  ~~~~~~~~~~~~~~~~~~~~~~~~
+>  
+> -Software tag-based KASAN requires software memory tagging support in the form
+> -of HWASan-like compiler instrumentation (see HWASan documentation for details).
+> -
+> -Software tag-based KASAN is currently only implemented for arm64 architecture.
+> +Software tag-based KASAN uses a software memory tagging approach to checking
+> +access validity. It is currently only implemented for the arm64 architecture.
+>  
+>  Software tag-based KASAN uses the Top Byte Ignore (TBI) feature of arm64 CPUs
+> -to store a pointer tag in the top byte of kernel pointers. Like generic KASAN
+> -it uses shadow memory to store memory tags associated with each 16-byte memory
+> -cell (therefore it dedicates 1/16th of the kernel memory for shadow memory).
+> +to store a pointer tag in the top byte of kernel pointers. It uses shadow memory
+> +to store memory tags associated with each 16-byte memory cell (therefore, it
+> +dedicates 1/16th of the kernel memory for shadow memory).
+>  
+> -On each memory allocation software tag-based KASAN generates a random tag, tags
+> -the allocated memory with this tag, and embeds this tag into the returned
+> +On each memory allocation, software tag-based KASAN generates a random tag, tags
+> +the allocated memory with this tag, and embeds the same tag into the returned
+>  pointer.
+>  
+>  Software tag-based KASAN uses compile-time instrumentation to insert checks
+> -before each memory access. These checks make sure that tag of the memory that
+> -is being accessed is equal to tag of the pointer that is used to access this
+> -memory. In case of a tag mismatch software tag-based KASAN prints a bug report.
+> +before each memory access. These checks make sure that the tag of the memory
+> +that is being accessed is equal to the tag of the pointer that is used to access
+> +this memory. In case of a tag mismatch, software tag-based KASAN prints a bug
+> +report.
+>  
+> -Software tag-based KASAN also has two instrumentation modes (outline, that
+> -emits callbacks to check memory accesses; and inline, that performs the shadow
+> +Software tag-based KASAN also has two instrumentation modes (outline, which
+> +emits callbacks to check memory accesses; and inline, which performs the shadow
+>  memory checks inline). With outline instrumentation mode, a bug report is
+> -simply printed from the function that performs the access check. With inline
+> -instrumentation a brk instruction is emitted by the compiler, and a dedicated
+> -brk handler is used to print bug reports.
+> +printed from the function that performs the access check. With inline
+> +instrumentation, a ``brk`` instruction is emitted by the compiler, and a
+> +dedicated ``brk`` handler is used to print bug reports.
+>  
+>  Software tag-based KASAN uses 0xFF as a match-all pointer tag (accesses through
+> -pointers with 0xFF pointer tag aren't checked). The value 0xFE is currently
+> +pointers with the 0xFF pointer tag are not checked). The value 0xFE is currently
+>  reserved to tag freed memory regions.
+>  
+> -Software tag-based KASAN currently only supports tagging of
+> -kmem_cache_alloc/kmalloc and page_alloc memory.
+> +Software tag-based KASAN currently only supports tagging of slab and page_alloc
+> +memory.
+>  
+>  Hardware tag-based KASAN
+>  ~~~~~~~~~~~~~~~~~~~~~~~~
+> -- 
+> 2.31.0.rc2.261.g7f71774620-goog
+> 
