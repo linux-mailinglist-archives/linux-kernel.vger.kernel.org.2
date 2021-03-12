@@ -2,189 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2190339205
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960163391AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhCLPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:45:04 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55600 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhCLPoN (ORCPT
+        id S232093AbhCLPoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:44:11 -0500
+Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:51993 "EHLO
+        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231990AbhCLPng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:44:13 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 840081F46E96
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 3D37C4800E0; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 08/38] dt-bindings: power: supply: bq24735: Convert to DT schema format
-Date:   Fri, 12 Mar 2021 16:43:27 +0100
-Message-Id: <20210312154357.1561730-9-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+        Fri, 12 Mar 2021 10:43:36 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id A2EF21C400D
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:32 +0000 (GMT)
+Received: (qmail 19847 invoked from network); 12 Mar 2021 15:43:32 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:32 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 4/7] SUNRPC: Set rq_page_end differently
+Date:   Fri, 12 Mar 2021 15:43:28 +0000
+Message-Id: <20210312154331.32229-5-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format.
+From: Chuck Lever <chuck.lever@oracle.com>
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Refactor:
+
+I'm about to use the loop variable @i for something else.
+
+As far as the "i++" is concerned, that is a post-increment. The
+value of @i is not used subsequently, so the increment operator
+is unnecessary and can be removed.
+
+Also note that nfsd_read_actor() was renamed nfsd_splice_actor()
+by commit cf8208d0eabd ("sendfile: convert nfsd to
+splice_direct_to_actor()").
+
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- .../bindings/power/supply/bq24735.yaml        | 88 +++++++++++++++++++
- .../bindings/power/supply/ti,bq24735.txt      | 39 --------
- 2 files changed, 88 insertions(+), 39 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/power/supply/bq24735.yaml
- delete mode 100644 Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
+ net/sunrpc/svc_xprt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/bq24735.yaml b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-new file mode 100644
-index 000000000000..8a3a31ada128
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-@@ -0,0 +1,88 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Sebastian Reichel
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/bq24735.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Binding for TI BQ24735 Li-Ion Battery Charger
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+allOf:
-+  - $ref: power-supply.yaml#
-+
-+properties:
-+  compatible:
-+    const: ti,bq24735
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description: AC adapter plug event interrupt
-+    maxItems: 1
-+
-+  ti,ac-detect-gpios:
-+    maxItems: 1
-+    description: |
-+      This GPIO is optionally used to read the AC adapter status. This is a Host GPIO
-+      that is configured as an input and connected to the ACOK pin on the bq24735.
-+      Note: for backwards compatibility reasons, the GPIO must be active on AC adapter
-+      absence despite ACOK being active (high) on AC adapter presence.
-+
-+  ti,charge-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Used to control and set the charging current.
-+      This value must be between 128mA and 8.128A with a 64mA step resolution.
-+      The POR value is 0x0000h. This number is in mA (e.g. 8192).
-+      See spec for more information about the ChargeCurrent (0x14h) register.
-+
-+  ti,charge-voltage:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Used to control and set the charging voltage.
-+      This value must be between 1.024V and 19.2V with a 16mV step resolution.
-+      The POR value is 0x0000h. This number is in mV (e.g. 19200).
-+      See spec for more information about the ChargeVoltage (0x15h) register.
-+
-+  ti,input-current:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Used to control and set the charger input current.
-+      This value must be between 128mA and 8.064A with a 128mA step resolution.
-+      The POR value is 0x1000h. This number is in mA (e.g. 8064).
-+      See the spec for more information about the InputCurrent (0x3fh) register.
-+
-+  ti,external-control:
-+    type: boolean
-+    description: |
-+      Indicates that the charger is configured externally and that the host should not
-+      attempt to enable/disable charging or set the charge voltage/current.
-+
-+  poll-interval:
-+    description: |
-+      If 'interrupts' is not specified, poll AC adapter presence with this interval (milliseconds).
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      charger@9 {
-+        compatible = "ti,bq24735";
-+        reg = <0x9>;
-+        ti,ac-detect-gpios = <&gpio 72 0x1>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt b/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
-deleted file mode 100644
-index de45e1a2a4d9..000000000000
---- a/Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
-+++ /dev/null
-@@ -1,39 +0,0 @@
--TI BQ24735 Charge Controller
--~~~~~~~~~~
--
--Required properties :
-- - compatible : "ti,bq24735"
--
--Optional properties :
-- - interrupts : Specify the interrupt to be used to trigger when the AC
--   adapter is either plugged in or removed.
-- - ti,ac-detect-gpios : This GPIO is optionally used to read the AC adapter
--   status. This is a Host GPIO that is configured as an input and connected
--   to the ACOK pin on the bq24735. Note: for backwards compatibility reasons,
--   the GPIO must be active on AC adapter absence despite ACOK being active
--   (high) on AC adapter presence.
-- - ti,charge-current : Used to control and set the charging current. This value
--   must be between 128mA and 8.128A with a 64mA step resolution. The POR value
--   is 0x0000h. This number is in mA (e.g. 8192), see spec for more information
--   about the ChargeCurrent (0x14h) register.
-- - ti,charge-voltage : Used to control and set the charging voltage. This value
--   must be between 1.024V and 19.2V with a 16mV step resolution. The POR value
--   is 0x0000h. This number is in mV (e.g. 19200), see spec for more information
--   about the ChargeVoltage (0x15h) register.
-- - ti,input-current : Used to control and set the charger input current. This
--   value must be between 128mA and 8.064A with a 128mA step resolution. The
--   POR value is 0x1000h. This number is in mA (e.g. 8064), see the spec for
--   more information about the InputCurrent (0x3fh) register.
-- - ti,external-control : Indicates that the charger is configured externally
--   and that the host should not attempt to enable/disable charging or set the
--   charge voltage/current.
-- - poll-interval : In case 'interrupts' is not specified, poll AC adapter
--   presence with this interval (milliseconds).
--
--Example:
--
--	bq24735@9 {
--		compatible = "ti,bq24735";
--		reg = <0x9>;
--		ti,ac-detect-gpios = <&gpio 72 0x1>;
--	}
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index dcc50ae54550..cfa7e4776d0e 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -667,8 +667,8 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
+ 			}
+ 			rqstp->rq_pages[i] = p;
+ 		}
+-	rqstp->rq_page_end = &rqstp->rq_pages[i];
+-	rqstp->rq_pages[i++] = NULL; /* this might be seen in nfs_read_actor */
++	rqstp->rq_page_end = &rqstp->rq_pages[pages];
++	rqstp->rq_pages[pages] = NULL; /* this might be seen in nfsd_splice_actor() */
+ 
+ 	/* Make arg->head point to first page and arg->pages point to rest */
+ 	arg = &rqstp->rq_arg;
 -- 
-2.30.1
+2.26.2
 
