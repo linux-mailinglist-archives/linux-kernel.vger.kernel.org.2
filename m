@@ -2,169 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8453389B9
+	by mail.lfdr.de (Postfix) with ESMTP id CDFB13389BA
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhCLKLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:11:21 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45762 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbhCLKK7 (ORCPT
+        id S233128AbhCLKLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:11:23 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:48973 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233023AbhCLKLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:10:59 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAeIR047426;
-        Fri, 12 Mar 2021 04:10:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615543840;
-        bh=w9BhnOsEXmDnJr92k5Gv+KiRM15+qBMHanC1ChiW5y8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Q1y4mXRmZoDuNdAxSGTuidk/rBcl5zVhXbMMSrben/24a6sldTbhEvz/T84eVCUD9
-         Zb/9ylbktvKAocZiKm3aYcervRw2AWWppoMaADkwV+bKFYfb8Db/ZbJ+5WtAgtDIX1
-         nSwMa/4tHCDvMbE9QUm9Fh1ITR7/Ey7tThYBVmNU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CAAeDF039353
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Mar 2021 04:10:40 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 04:10:40 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 04:10:40 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CAAdIv038442;
-        Fri, 12 Mar 2021 04:10:39 -0600
-Date:   Fri, 12 Mar 2021 15:40:38 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312101036.jfz2733ssv4nhfey@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+        Fri, 12 Mar 2021 05:11:17 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MxE5Y-1ledUi157Q-00xZUl for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021
+ 11:11:16 +0100
+Received: by mail-oo1-f49.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso1399812ooq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:11:16 -0800 (PST)
+X-Gm-Message-State: AOAM533hxlpktTjiznqkFhb9inLKh9XnzIvAK1k4whdbThMZ2p85rb40
+        VJ8CDwqdYyNmYAaw4D8geKpJAuLQsdIgl568Q5c=
+X-Google-Smtp-Source: ABdhPJz8/CIhaCMY3e4m42A2g6CP7hIU2c8qbOPobmaOxdjD9Q+mXuESPm7Xpc/XF0fDCeoBYEstu48X+caG94ZUCaI=
+X-Received: by 2002:a4a:304a:: with SMTP id z10mr2771319ooz.26.1615543874960;
+ Fri, 12 Mar 2021 02:11:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
+ <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+ <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com> <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com>
+In-Reply-To: <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 12 Mar 2021 11:10:58 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
+Message-ID: <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:FGhDDW6dfB4k+qSladY8t6mv2smKWyjZkjH/dfNqO6zRT2SRzyG
+ cqrEu5uXNaE7f/9A2kVdyBpJqtauqrP2pzpIln/PG31/Pk8LktQLU/bYUjIJ8dpwWOALROT
+ nELd+BIQNhHtQMPBsA/imsKLB7/eoenOaMoxAO6FgIzpfKxnvK+tCuSFp2mFyTK10Gge13U
+ 3Gb026ngfTU/1frZMfUdg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HhbIGF1s3pU=:tFY0x5F2La/sELLuOvNvQG
+ XXb4FYpHpKcKUKIBVOpb1pajZOpLdsteql1MwUc0efxooQsDUD/O6oL52bXnhXedPHcFJnBMN
+ RWaINIwdjZCSgVV537pDMrJ7l7/mBA5BQsIH45NtiBtZYwwmMsU3qLu6+MyOL9JxLyny9vsIK
+ 5aYImv2olJDwFoC1GF63pUQVgxZ1o4l/UyOMRR4KL1YhPLEyqUjDspwtj/ZBBsK9rpre+Yz0f
+ aLfjynBu97DEULXzc1hKhiI9I0lTQOhJEMTEntLOhRpPoONCXTzea5OyGuEcr9huXnVQELGZA
+ 89qrtYE7ieHzajBloslsKyF381ZKfxlUW5y1BF34uB4ymwc/C4BsEUR+SDC0PNXfeGic9mxW0
+ oW1jL0yrGO38o9BsLBZde4FGkGfZDMxysnDBTtDQuOhBMdHek181J7DGaawtq+6TwKvmjJKei
+ ZKaPfVuN5x1hkCrCCppIr4neWzf8bSpuYC0Fw6Rn1n2V/mwuTsdTOsc7YYg4fccXpX9TGnmtz
+ zzYuUyOButr0JXqf44fEev9KDycHQbRoJs5LggLfN2BGD2xj+t9pBnc+mLoqAqVUw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 09:09AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/11/21 9:12 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Hi,
-> > 
-> > This series adds support for OSPI PHY calibration on the Cadence OSPI
-> > controller. This calibration procedure is needed to allow high clock
-> > speeds in 8D-8D-8D mode. The procedure reads some pre-determined pattern
-> > data from the flash and runs a sequence of test reads to find out the
-> > optimal delays for high speed transfer. More details on the calibration
-> > procedure in patch 5/6.
-> 
-> Can the calibration sequence be avoided if the controller is informed
-> about the frequency on which the flash operates?
+On Fri, Mar 12, 2021 at 10:21 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, Mar 12, 2021 at 10:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Fri, Mar 12, 2021 at 9:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > On Fri, Mar 12, 2021 at 9:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Thu, Mar 11, 2021 at 6:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > a) accessing a legacy ISA/LPC port should not result in an oops,
+> > > >     but should instead return values with all bits set. There could
+> > > >     be a ratelimited console warning about broken drivers, but we
+> > > >     can't assume that all drivers work correctly, as some ancient
+> > > >     PC style drivers still rely on this.
+> > > >     John Garry has recently worked on a related bugfix, so maybe
+> > > >     either this is the same bug he encountered (and hasn't merged
+> > > >     yet), or if his fix got merged there is still a remaining problem.
+> >
+> > > > b) It should not be possible to open /dev/ttyS3 if the device is
+> > > >     not initialized. What is the output of 'cat /proc/tty/driver/serial'
+> > > >     on this machine? Do you see any messages from the serial
+> > > >     driver in the boot log?
+> > > >     Unfortunately there are so many different ways to probe devices
+> > > >     in the 8250 driver that I don't know where this comes from.
+> > > >     Your config file has
+> > > >    CONFIG_SERIAL_8250_PNP=y
+> > > >    CONFIG_SERIAL_8250_NR_UARTS=32
+> > > >    CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+> > > >    CONFIG_SERIAL_8250_EXTENDED=y
+> > > >    I guess it's probably the preconfigured uarts that somehow
+> > > >    become probed without initialization, but it could also be
+> > > >    an explicit device incorrectly described by qemu.
+> > >
+> > >
+> > > Here is fool boot log, /proc/tty/driver/serial and the crash:
+> > > https://gist.githubusercontent.com/dvyukov/084890d9b4aa7cd54f468e652a9b5881/raw/54c12248ff6a4885ba6c530d56b3adad59bc6187/gistfile1.txt
+> >
+> > Ok, so there are four 8250 ports, and none of them are initialized,
+> > while the console is on /dev/ttyAMA0 using a different driver.
+> >
+> > I'm fairly sure this is a bug in the kernel then, not in qemu.
+> >
+> >
+> > I also see that the PCI I/O space gets mapped to a physical address:
+> > [    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
+> > 0x003eff0000..0x003effffff -> 0x0000000000
+> >
+> > So it's probably qemu that triggers the 'synchronous external
+> > abort' when accessing the PCI I/O space, which in turn hints
+> > towards a bug in qemu. Presumably it only returns data from
+> > I/O ports that are actually mapped to a device when real hardware
+> > is supposed to return 0xffffffff when reading from unused I/O ports.
+> > This would be separate from the work that John did, which only
+> > fixed the kernel for accessing I/O port ranges that do not have
+> > a corresponding MMU mapping to hardware ports.
+>
+> Will John's patch fix this crash w/o any changes in qemu? That would
+> be good enough for syzbot. Otherwise we need to report the issue to
+> qemu.
 
-Maybe I don't understand this correctly, but there should not be any 
-frequency on which the flash operates. The controller drives the SPI 
-clock so the frequency is decided by the controller. Sure, there is a 
-max supported frequency for the flash but the controller can run it 
-slower than that if it wishes. The flash has no say in that.
+No, this was a third issue. As far as I remember, this would result in
+a similar problem in the case where there is no PCI bus at all, or
+where no PCI host has an I/O port range, so the inb() from the serial
+driver would cause a page fault. The problem you ran into happens
+in qemu when the PCI I/O ports are mapped to hardware registers
+that cause an exception when accessed.
 
-Anyway, the exact frequency at which the flash is running is not it is 
-looking for. More details below.
+If you just want to work around the problem for now, it should
+go away if you set CONFIG_SERIAL_8250_RUNTIME_UARTS
+to zero.
 
-> 
-> Can you add more details about the optimal delays? Are we talking about
-> flash's AC characteristics? Is the calibration still needed if the upper
-> layer informs the QSPI controller about the needed delays?
-
-There is usually a delay from when the flash drives the data line (IOW, 
-puts a data bit on it) and when the signal reaches the controller. This 
-delay can vary by the flash, board, silicon characteristics, 
-temperature, etc.
-
-At lower speeds (25 MHz for example) this delay is not a problem because 
-the clock period is longer so there is much more time to sample the data 
-line. It is very likely the controller will sample at a time when the 
-data line is valid. At high speeds (166 MHz for example), especially in 
-DDR mode, this delay starts to play a larger role because the time to 
-sample the data line is much smaller. Now unless the delay is accounted 
-for, it is possible that the controller samples the data line too late 
-or too early and sees invalid data.
-
-These delays depend on physical characteristics so it is not possible 
-for any upper layer to inform the controller about it. How will they 
-even know what the required delay is?
-
-In summary, no, there is no way an upper layer can inform the controller 
-about this delay.
-
-> 
-> Cheers,
-> ta
-> 
-> > 
-> > The main problem here is telling the controller where to find the
-> > pattern and how to read it. This RFC uses nvmem cells which point to a
-> > fixed partition containing the data to do the reads. It depends on [0]
-> > and [1].
-> > 
-> > The obvious problem with this is it won't work when the partitions are
-> > defined via command line. I don't see any good way to add nvmem cells to
-> > command line partitions. I would like some help or ideas here. We don't
-> > necessarily have to use nvmem either. Any way that can cleanly and
-> > consistently let the controller find out where the pattern is stored is
-> > good.
-> > 
-> > The dts patch depends on [2].
-> > 
-> > Tested on TI's J721E EVM.
-> > 
-> > [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210302190012.1255-1-zajec5@gmail.com/
-> > [1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210308011853.19360-1-ansuelsmth@gmail.com/
-> > [2] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210305153926.3479-2-p.yadav@ti.com/
-> > 
-> > Pratyush Yadav (6):
-> >   spi: spi-mem: Tell controller when device is ready for calibration
-> >   mtd: spi-nor: core: consolidate read op creation
-> >   mtd: spi-nor: core: run calibration when initialization is done
-> >   spi: cadence-qspi: Use PHY for DAC reads if possible
-> >   spi: cadence-qspi: Tune PHY to allow running at higher frequencies
-> >   arm64: dts: ti: k3-j721e-som-p0: Enable PHY calibration
-> > 
-> >  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi |  55 ++
-> >  drivers/mtd/spi-nor/core.c                  |  74 +-
-> >  drivers/spi/spi-cadence-quadspi.c           | 820 +++++++++++++++++++-
-> >  drivers/spi/spi-mem.c                       |  12 +
-> >  include/linux/spi/spi-mem.h                 |   8 +
-> >  5 files changed, 916 insertions(+), 53 deletions(-)
-> > 
-> > --
-> > 2.30.0
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> > 
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+       Arnd
