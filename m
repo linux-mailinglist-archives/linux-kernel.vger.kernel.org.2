@@ -2,88 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D80338318
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A0D33831A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 02:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCLBTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 20:19:31 -0500
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:53760 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhCLBTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 20:19:30 -0500
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 7ED5312D4EA;
-        Thu, 11 Mar 2021 20:19:25 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=Tflsr+pFN7bsoUlPi5vEKVYQZ00=; b=OOzUfy
-        KR4tPWhjnsEd7BqUYQUw5VZGQI/N6BcVPHUwKSOyaobYDJ+GyX/7NZ69ku6sZMOv
-        to1lhxSQuMT6ISO2IQoiuhSUYATpiUwqITtgpvAxsDWaLeBEYFDT/VJuo9WUo1m4
-        S7usEKDE+EuP9Iv1cnbRlN9aJx/yBF/wzDJlk=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 76F8D12D4E9;
-        Thu, 11 Mar 2021 20:19:25 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=8Y4tISx9JtvPwheWVqOA1yet+FMGrYmjDlVphbkup2o=; b=etAf4Pw5RO5mO4Dt38gY2H9qe1IMfp0uZAp3KC6n6jPE4lEInH/pe+uXf7HhhtEJuk2Qt6jkGpxctzTy3+Um9IdyidP2RVaUfsU4cEt0lhucnQiWLeEvras/x+MC5k2f+e86KRpULawJiQ2apXN3stdnNm0vJGT5gAIil8MpIOA=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230452AbhCLBUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 20:20:41 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:17725 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229568AbhCLBUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 20:20:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615512013; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=i1rLI2849axKxL19lxDHqUeq6hMWiO7j2pQh0uXZGgY=;
+ b=mAXI+vibsBtmC9ERh1x1QIVw+dEdM7HyVZuqymUGIW4THF3HnQJNIhA9Cec5ximiOc3ADmE4
+ 6F1VyAzzVqexrCgyuy/cEM4KAbumS+Jr4poPYrpSFhJeiebRAJFybcNf7DEL8qMFfRVDBPrd
+ SuDXvwqOZ1X7aF5ERTpxFrDWe1E=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604ac1c11de5dd7b992dd2b7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Mar 2021 01:20:01
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76C9EC43465; Fri, 12 Mar 2021 01:20:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 79EC512D4E8;
-        Thu, 11 Mar 2021 20:19:22 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id B6B052DA0024;
-        Thu, 11 Mar 2021 20:19:20 -0500 (EST)
-Date:   Thu, 11 Mar 2021 20:19:20 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        =?ISO-8859-15?Q?Bernhard_Rosenkr=E4nzer?= <bero@lindev.ch>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: collect minimum tool versions into
- scripts/min-tool-version.sh
-In-Reply-To: <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
-Message-ID: <32or985-8s52-17pr-62qq-s1q3r13p12no@syhkavp.arg>
-References: <20210311094624.923913-1-masahiroy@kernel.org> <CANiq72m1e9MD83sP5iZCfzoCR0qLz2HQj_VVkE4X-56vf6e7fw@mail.gmail.com>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9CF8C433C6;
+        Fri, 12 Mar 2021 01:19:58 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: FA10F8AC-82D0-11EB-AE2E-D609E328BF65-78420484!pb-smtp21.pobox.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 12 Mar 2021 09:19:58 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v26 2/4] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210303062829epcms2p678450953f611c340a2b8e88b5542fe73@epcms2p6>
+References: <20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p2>
+ <CGME20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p6>
+ <20210303062829epcms2p678450953f611c340a2b8e88b5542fe73@epcms2p6>
+Message-ID: <27fe9c42f4b9539f07f75b7978ab305e@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021, Miguel Ojeda wrote:
-
-> On Thu, Mar 11, 2021 at 10:47 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > +# When you raise the minimum version, please update
-> > +# Documentation/process/changes.rst as well.
-> > +min_gcc_version=4.9.0
-> > +min_llvm_version=10.0.1
-> > +min_icc_version=16.0.3 # temporary
-> > +min_binutils_version=2.23.0
+On 2021-03-03 14:28, Daejun Park wrote:
+> This is a patch for managing L2P map in HPB module.
 > 
-> +1 to creating a central place for all minimum versions.
+> The HPB divides logical addresses into several regions. A region 
+> consists
+> of several sub-regions. The sub-region is a basic unit where L2P 
+> mapping is
+> managed. The driver loads L2P mapping data of each sub-region. The 
+> loaded
+> sub-region is called active-state. The HPB driver unloads L2P mapping 
+> data
+> as region unit. The unloaded region is called inactive-state.
 > 
->     Acked-by: Miguel Ojeda <ojeda@kernel.org>
+> Sub-region/region candidates to be loaded and unloaded are delivered 
+> from
+> the UFS device. The UFS device delivers the recommended active 
+> sub-region
+> and inactivate region to the driver using sensedata.
+> The HPB module performs L2P mapping management on the host through the
+> delivered information.
 > 
-> I wonder if you considered creating a folder with files like
-> `scripts/min_versions/gcc` containing the version string. That would
-> make it easier for reading from other languages or even importing them
-> dynamically into the documentation, thus removing even more
-> duplication.
+> A pinned region is a pre-set regions on the UFS device that is always
+> activate-state.
+> 
+> The data structure for map data request and L2P map uses mempool API,
+> minimizing allocation overhead while avoiding static allocation.
+> 
+> The mininum size of the memory pool used in the HPB is implemented
+> as a module parameter, so that it can be configurable by the user.
+> 
+> To gurantee a minimum memory pool size of 4MB: 
+> ufshpb_host_map_kbytes=4096
+> 
+> The map_work manages active/inactive by 2 "to-do" lists.
+> Each hpb lun maintains 2 "to-do" lists:
+>   hpb->lh_inact_rgn - regions to be inactivated, and
+>   hpb->lh_act_srgn - subregions to be activated
+> Those lists are maintained on IO completion.
+> 
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> Reviewed-by: Can Guo <cang@codeaurora.org>
+> Acked-by: Avri Altman <Avri.Altman@wdc.com>
+> Tested-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> ---
+>  drivers/scsi/ufs/ufs.h    |   36 ++
+>  drivers/scsi/ufs/ufshcd.c |    4 +
+>  drivers/scsi/ufs/ufshpb.c | 1091 ++++++++++++++++++++++++++++++++++++-
+>  drivers/scsi/ufs/ufshpb.h |   65 +++
+>  4 files changed, 1181 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+> index 65563635e20e..957763db1006 100644
+> --- a/drivers/scsi/ufs/ufs.h
+> +++ b/drivers/scsi/ufs/ufs.h
+> @@ -472,6 +472,41 @@ struct utp_cmd_rsp {
+>  	u8 sense_data[UFS_SENSE_SIZE];
+>  };
+> ...
+> +/*
+> + * This function will parse recommended active subregion information 
+> in sense
+> + * data field of response UPIU with SAM_STAT_GOOD state.
+> + */
+> +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> +{
+> +	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(lrbp->cmd->device);
+> +	struct utp_hpb_rsp *rsp_field = &lrbp->ucd_rsp_ptr->hr;
+> +	int data_seg_len;
+> +
+> +	if (unlikely(lrbp->lun != rsp_field->lun)) {
+> +		struct scsi_device *sdev;
+> +		bool found = false;
+> +
+> +		__shost_for_each_device(sdev, hba->host) {
+> +			hpb = ufshpb_get_hpb_data(sdev);
+> +
+> +			if (!hpb)
+> +				continue;
+> +
+> +			if (rsp_field->lun == hpb->lun) {
+> +				found = true;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!found)
+> +			return;
+> +	}
+> +
+> +	if (!hpb)
+> +		return;
+> +
+> +	if ((ufshpb_get_state(hpb) != HPB_PRESENT) &&
+> +	    (ufshpb_get_state(hpb) != HPB_SUSPEND)) {
+> +		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> +			   "%s: ufshpb state is not PRESENT/SUSPEND\n",
+> +			   __func__);
 
-Alternatively, the documentation could be the actual reference and the 
-script would parse the documentation to get those values out.
+Please mute these prints before hpb is fully initilized, otherwise
+there can be tons of these prints during bootup. Say set a flag in
+ufshpb_hpb_lu_prepared() and check for that flag - just a rough idea.
 
+Thanks,
+Can Guo.
 
-Nicolas
+> +		return;
+> +	}
+> +
