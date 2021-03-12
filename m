@@ -2,193 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B1A338EB7
+	by mail.lfdr.de (Postfix) with ESMTP id 91764338EB6
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCLNZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:25:16 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:54682 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229568AbhCLNZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:25:14 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DxmlD0Dylz9ttBh;
-        Fri, 12 Mar 2021 14:25:12 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 3005F1ETpgzu; Fri, 12 Mar 2021 14:25:11 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DxmlC6Nkjz9ttBY;
-        Fri, 12 Mar 2021 14:25:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 598788B815;
-        Fri, 12 Mar 2021 14:25:12 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id a_PaZruFI7yH; Fri, 12 Mar 2021 14:25:12 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EEEA38B812;
-        Fri, 12 Mar 2021 14:25:11 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id BB23B675BA; Fri, 12 Mar 2021 13:25:11 +0000 (UTC)
-Message-Id: <c95a648fdf75992c9d88f3c73cc23e7537fcf2ad.1615555354.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0ad4629c2d222019e82fcdfccc70d372beb4adf9.1615398265.git.christophe.leroy@csgroup.eu>
-References: <0ad4629c2d222019e82fcdfccc70d372beb4adf9.1615398265.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 03/15] powerpc/align: Convert emulate_spe() to user_access_begin
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 12 Mar 2021 13:25:11 +0000 (UTC)
+        id S230386AbhCLNZP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:25:15 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:58784 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229567AbhCLNZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:25:07 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0URgfvzG_1615555500;
+Received: from 30.240.101.205(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0URgfvzG_1615555500)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 12 Mar 2021 21:25:01 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v3 0/4] sched/fair: Burstable CFS bandwidth controller
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <CAFpoUr0jqE9T-PohSDNXuTacvK1=2F9-hbTGszcL0t28vbyehQ@mail.gmail.com>
+Date:   Fri, 12 Mar 2021 21:26:30 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Odin Ugedal <odin@uged.al>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
+        mingo@redhat.com, pauld@redhead.com, peterz@infradead.org,
+        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com, Tejun Heo <tj@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <913F5DAA-A898-41E7-99AB-6E942A77B523@linux.alibaba.com>
+References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+ <20210209131719.1193428-1-odin@uged.al>
+ <6112D83C-9A5F-4317-8AF1-DF49132135FB@linux.alibaba.com>
+ <CAFpoUr0jqE9T-PohSDNXuTacvK1=2F9-hbTGszcL0t28vbyehQ@mail.gmail.com>
+To:     Odin Ugedal <odin@ugedal.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts emulate_spe() to using user_access_begin
-logic.
 
-Since commit 662bbcb2747c ("mm, sched: Allow uaccess in atomic with
-pagefault_disable()"), might_fault() doesn't fire when called from
-sections where pagefaults are disabled, which must be the case
-when using _inatomic variants of __get_user and __put_user. So
-the might_fault() in user_access_begin() is not a problem.
 
-There was a verification of user_mode() together with the access_ok(),
-but there is a second verification of user_mode() just after, that
-leads to immediate return. The access_ok() is now part of the
-user_access_begin which is called after that other user_mode()
-verification, so no need to check user_mode() again.
+> On Mar 10, 2021, at 7:11 PM, Odin Ugedal <odin@ugedal.com> wrote:
+> 
+> Hi,
+> 
+>> If there are cases where the "start bandwidth" matters, I think there is need to expose the
+>> "start bandwidth" explicitly too. However, I doubt the existence of such cases from my view
+>> and the two examples above.
+> 
+> Yeah, I don't think there will be any cases where users will be
+> "depending" on having burst available,
+> so I agree in that sense.
+> 
+>> In my thoughts, this patchset keeps cgroup usage within the quota in the longer term, and allows
+>> cgroup to respond to a burst of work with the help of a reasonable burst buffer. If quota is set correctly
+>> above average usage, and enough burst buffer is set to meet the needs of bursty work. In this
+>> case, it makes no difference whether this cgroup runs with 0 start bandwidth or all of it.
+>> Thus I used sysctl_sched_cfs_bw_burst_onset_percent to decided the start bandwidth
+>> to leave some convenience here. If this sysctl interface is confusing, I wonder whether it
+>> is a good idea not to expose this interface.
+>> 
+>> For the first case mentioned above, if Kubernet users care the "start bandwidth" for process startup,
+>> maybe it is better to give all of it rather than a part?
+> 
+> Yeah, I am a bit afraid there will be some confusion, so not sure if
+> the sysctl is the best way to do it.
+> 
+> But I would like feedback from others to highlight the problem as
+> well, that would be helpful. I think a simple "API"
+> where you get 0 burst or full burst on "set" (the one we decide on)
+> would be best to avoid unnecessary complexity.
+> 
+> Start burst when starting up a new process in a new cgroup might be
+> helpful, so maybe that is a vote for
+> full burst? However, in long term that doesn't matter, so 0 burst on
+> start would work as well.
+> 
+>> For the second case with quota changes over time, I think it is important making sure each change works
+>> long enough to enforce average quota limit. Does it really matter to control "start burst" on each change?
+> 
+> No, I don't think so. Doing so would be another thing to set per
+> cgroup, and that would just clutter the api
+> more than necessary imo., since we cannot come up with any real use cases.
+> 
+>> It is an copy of runtime at period start, and used to calculate burst time during a period.
+>> Not quite remaining_runtime_prev_period.
+> 
+> Ahh, I see, I misunderstood the code. So in a essence it is
+> "runtime_at_period_start"?
+> 
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
----
-v3:
-- Changed the second user_read_access_begin() to user_write_access_begin()
-- Reworded explaination about the user_mode() with access_ok() in the commit message
----
- arch/powerpc/kernel/align.c | 61 ++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
+Yes, it is "runtime_at_preiod_start".
 
-diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
-index c7797eb958c7..f362c99213be 100644
---- a/arch/powerpc/kernel/align.c
-+++ b/arch/powerpc/kernel/align.c
-@@ -107,7 +107,6 @@ static struct aligninfo spe_aligninfo[32] = {
- static int emulate_spe(struct pt_regs *regs, unsigned int reg,
- 		       struct ppc_inst ppc_instr)
- {
--	int ret;
- 	union {
- 		u64 ll;
- 		u32 w[2];
-@@ -127,11 +126,6 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
- 	nb = spe_aligninfo[instr].len;
- 	flags = spe_aligninfo[instr].flags;
- 
--	/* Verify the address of the operand */
--	if (unlikely(user_mode(regs) &&
--		     !access_ok(addr, nb)))
--		return -EFAULT;
--
- 	/* userland only */
- 	if (unlikely(!user_mode(regs)))
- 		return 0;
-@@ -169,26 +163,27 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
- 		}
- 	} else {
- 		temp.ll = data.ll = 0;
--		ret = 0;
- 		p = addr;
- 
-+		if (!user_read_access_begin(addr, nb))
-+			return -EFAULT;
-+
- 		switch (nb) {
- 		case 8:
--			ret |= __get_user_inatomic(temp.v[0], p++);
--			ret |= __get_user_inatomic(temp.v[1], p++);
--			ret |= __get_user_inatomic(temp.v[2], p++);
--			ret |= __get_user_inatomic(temp.v[3], p++);
-+			unsafe_get_user(temp.v[0], p++, Efault_read);
-+			unsafe_get_user(temp.v[1], p++, Efault_read);
-+			unsafe_get_user(temp.v[2], p++, Efault_read);
-+			unsafe_get_user(temp.v[3], p++, Efault_read);
- 			fallthrough;
- 		case 4:
--			ret |= __get_user_inatomic(temp.v[4], p++);
--			ret |= __get_user_inatomic(temp.v[5], p++);
-+			unsafe_get_user(temp.v[4], p++, Efault_read);
-+			unsafe_get_user(temp.v[5], p++, Efault_read);
- 			fallthrough;
- 		case 2:
--			ret |= __get_user_inatomic(temp.v[6], p++);
--			ret |= __get_user_inatomic(temp.v[7], p++);
--			if (unlikely(ret))
--				return -EFAULT;
-+			unsafe_get_user(temp.v[6], p++, Efault_read);
-+			unsafe_get_user(temp.v[7], p++, Efault_read);
- 		}
-+		user_read_access_end();
- 
- 		switch (instr) {
- 		case EVLDD:
-@@ -255,31 +250,41 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
- 
- 	/* Store result to memory or update registers */
- 	if (flags & ST) {
--		ret = 0;
- 		p = addr;
-+
-+		if (!user_write_access_begin(addr, nb))
-+			return -EFAULT;
-+
- 		switch (nb) {
- 		case 8:
--			ret |= __put_user_inatomic(data.v[0], p++);
--			ret |= __put_user_inatomic(data.v[1], p++);
--			ret |= __put_user_inatomic(data.v[2], p++);
--			ret |= __put_user_inatomic(data.v[3], p++);
-+			unsafe_put_user(data.v[0], p++, Efault_write);
-+			unsafe_put_user(data.v[1], p++, Efault_write);
-+			unsafe_put_user(data.v[2], p++, Efault_write);
-+			unsafe_put_user(data.v[3], p++, Efault_write);
- 			fallthrough;
- 		case 4:
--			ret |= __put_user_inatomic(data.v[4], p++);
--			ret |= __put_user_inatomic(data.v[5], p++);
-+			unsafe_put_user(data.v[4], p++, Efault_write);
-+			unsafe_put_user(data.v[5], p++, Efault_write);
- 			fallthrough;
- 		case 2:
--			ret |= __put_user_inatomic(data.v[6], p++);
--			ret |= __put_user_inatomic(data.v[7], p++);
-+			unsafe_put_user(data.v[6], p++, Efault_write);
-+			unsafe_put_user(data.v[7], p++, Efault_write);
- 		}
--		if (unlikely(ret))
--			return -EFAULT;
-+		user_write_access_end();
- 	} else {
- 		*evr = data.w[0];
- 		regs->gpr[reg] = data.w[1];
- 	}
- 
- 	return 1;
-+
-+Efault_read:
-+	user_read_access_end();
-+	return -EFAULT;
-+
-+Efault_write:
-+	user_write_access_end();
-+	return -EFAULT;
- }
- #endif /* CONFIG_SPE */
- 
--- 
-2.25.0
+>> Yeah, there is the updating problem. It is okey not to expose cfs_b->runtime then.
+> 
+> Yeah, I think dropping it all together is the best solution.
+> 
+> 
+>> This comment does not mean any loss any unnecessary throttle for present cfsb.
+>> All this means is that all quota refilling that is not done during timer stop should be
+>> refilled on timer start, for the burstable cfsb.
+>> 
+>> Maybe I shall change this comment in some way if it is misleading?
+> 
+> I think I formulated my question badly. The comment makes sense, I am
+> just trying to compare how "start_cfs_bandwidth"
+> works after your patch compared to how it works currently. As I
+> understand, without this patch "start_cfs_bandwidth" will
+> never refill runtime, while with your patch, it will refill even when
+> overrun=0 with burst disabled. Is that an intended change in
+> behavior, or am I not understanding the patch?
+> 
+
+Good point. The way "start_cfs_bandwidth" works is changed indeed. The present cfs_b doesn't
+have to refill bandwidth because quota is not used during the period before timer stops. With this patch,
+runtime is refilled no matter burst is enabled or not. Do you suggest not refilling runtime unless burst
+is enabled here?
+
+> 
+> On another note, I have also been testing this patch, and I am not
+> able to reproduce your schbench results. Both with and without burst,
+> it gets the same result, and no nr_throttled stays at 0 (tested on a
+> 32-core system). Can you try to rerun your tests with the mainline
+> to see if you still get the same results? (Also, I see you are running
+> with 30 threads. How many cores do your test setup have?). To actually
+> say that the result is real, all cores used should maybe be
+> exclusively reserved as well, to avoid issues where other processes
+> cause a
+> spike in latency.
+> 
+
+Spikes indeed cause trouble. If nr_throttle stays at 0, I suggest change quota from 700000 to 600000,
+which is still above the average utilization 500%. I have rerun on a 64-core system and reproduced the
+results. And I think it should work on a 32-core system too, as there are 20 active workers in each round.
+
+If you still have trouble, I suggest test in the following way. And it should work on a two-core system.
+
+mkdir /sys/fs/cgroup/cpu/test
+echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+echo 300000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+
+./schbench -m 1 -t 3 -r 20 -c 200000 -R 4
+
+On my machine, two workers work for 200ms and sleep for 300ms in each round. The average utilization is
+around 80%.
+  
+
+> 
+> Odin
 
