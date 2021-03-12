@@ -2,239 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0558A3391FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2963391AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhCLPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:55 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55620 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbhCLPoO (ORCPT
+        id S232558AbhCLPoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:44:15 -0500
+Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:55233 "EHLO
+        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232035AbhCLPnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:44:14 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 9EF021F46E6C
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 455C74800E3; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 11/38] dt-bindings: power: supply: sbs-manager: Convert to DT schema format
-Date:   Fri, 12 Mar 2021 16:43:30 +0100
-Message-Id: <20210312154357.1561730-12-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+        Fri, 12 Mar 2021 10:43:37 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id BA56B1ACF
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:33 +0000 (GMT)
+Received: (qmail 19934 invoked from network); 12 Mar 2021 15:43:33 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:33 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 7/7] net: page_pool: use alloc_pages_bulk in refill code path
+Date:   Fri, 12 Mar 2021 15:43:31 +0000
+Message-Id: <20210312154331.32229-8-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format.
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+There are cases where the page_pool need to refill with pages from the
+page allocator. Some workloads cause the page_pool to release pages
+instead of recycling these pages.
+
+For these workload it can improve performance to bulk alloc pages from
+the page-allocator to refill the alloc cache.
+
+For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
+redirecting xdp_frame packets into a veth, that does XDP_PASS to create
+an SKB from the xdp_frame, which then cannot return the page to the
+page_pool. In this case, we saw[1] an improvement of 18.8% from using
+the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
+
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 ---
- .../bindings/power/supply/sbs,sbs-manager.txt |  66 -----------
- .../power/supply/sbs,sbs-manager.yaml         | 111 ++++++++++++++++++
- 2 files changed, 111 insertions(+), 66 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt
- create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+ net/core/page_pool.c | 62 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 23 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt
-deleted file mode 100644
-index 4b2195571a49..000000000000
---- a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt
-+++ /dev/null
-@@ -1,66 +0,0 @@
--Binding for sbs-manager
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 40e1b2beaa6c..a5889f1b86aa 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -208,44 +208,60 @@ noinline
+ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 						 gfp_t _gfp)
+ {
++	const int bulk = PP_ALLOC_CACHE_REFILL;
++	struct page *page, *next, *first_page;
+ 	unsigned int pp_flags = pool->p.flags;
+-	struct page *page;
++	unsigned int pp_order = pool->p.order;
++	int pp_nid = pool->p.nid;
++	LIST_HEAD(page_list);
+ 	gfp_t gfp = _gfp;
+ 
+-	/* We could always set __GFP_COMP, and avoid this branch, as
+-	 * prep_new_page() can handle order-0 with __GFP_COMP.
+-	 */
+-	if (pool->p.order)
++	/* Don't support bulk alloc for high-order pages */
++	if (unlikely(pp_order)) {
+ 		gfp |= __GFP_COMP;
++		first_page = alloc_pages_node(pp_nid, gfp, pp_order);
++		if (unlikely(!first_page))
++			return NULL;
++		goto out;
++	}
+ 
+-	/* FUTURE development:
+-	 *
+-	 * Current slow-path essentially falls back to single page
+-	 * allocations, which doesn't improve performance.  This code
+-	 * need bulk allocation support from the page allocator code.
+-	 */
 -
--Required properties:
--- compatible: "<vendor>,<part-number>", "sbs,sbs-charger" as fallback. The part
--  number compatible string might be used in order to take care of vendor
--  specific registers.
--- reg: integer, i2c address of the device. Should be <0xa>.
--Optional properties:
--- gpio-controller: Marks the port as GPIO controller.
--  See "gpio-specifier" in .../devicetree/bindings/gpio/gpio.txt.
--- #gpio-cells: Should be <2>. The first cell is the pin number, the second cell
--  is used to specify optional parameters:
--  See "gpio-specifier" in .../devicetree/bindings/gpio/gpio.txt.
--
--From OS view the device is basically an i2c-mux used to communicate with up to
--four smart battery devices at address 0xb. The driver actually implements this
--behaviour. So standard i2c-mux nodes can be used to register up to four slave
--batteries. Channels will be numerated starting from 1 to 4.
--
--Example:
--
--batman@a {
--    compatible = "lltc,ltc1760", "sbs,sbs-manager";
--    reg = <0x0a>;
--    #address-cells = <1>;
--    #size-cells = <0>;
--
--    gpio-controller;
--    #gpio-cells = <2>;
--
--    i2c@1 {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        reg = <1>;
--
--        battery@b {
--            compatible = "ti,bq2060", "sbs,sbs-battery";
--            reg = <0x0b>;
--            sbs,battery-detect-gpios = <&batman 1 1>;
--        };
--    };
--
--    i2c@2 {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        reg = <2>;
--
--        battery@b {
--            compatible = "ti,bq2060", "sbs,sbs-battery";
--            reg = <0x0b>;
--            sbs,battery-detect-gpios = <&batman 2 1>;
--        };
--    };
--
--    i2c@3 {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        reg = <3>;
--
--        battery@b {
--            compatible = "ti,bq2060", "sbs,sbs-battery";
--            reg = <0x0b>;
--            sbs,battery-detect-gpios = <&batman 3 1>;
--        };
--    };
--};
-diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
-new file mode 100644
-index 000000000000..592c476d83e6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
-@@ -0,0 +1,111 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/supply/sbs,sbs-manager.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+-	/* Cache was empty, do real allocation */
+-#ifdef CONFIG_NUMA
+-	page = alloc_pages_node(pool->p.nid, gfp, pool->p.order);
+-#else
+-	page = alloc_pages(gfp, pool->p.order);
+-#endif
+-	if (!page)
++	if (unlikely(!__alloc_pages_bulk(gfp, pp_nid, NULL, bulk, &page_list)))
+ 		return NULL;
+ 
++	/* First page is extracted and returned to caller */
++	first_page = list_first_entry(&page_list, struct page, lru);
++	list_del(&first_page->lru);
 +
-+title: SBS compliant manger
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+allOf:
-+  - $ref: power-supply.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - lltc,ltc1760
-+          - enum:
-+              - sbs,sbs-manager
-+      - items:
-+          - const: sbs,sbs-manager
-+
-+  reg:
-+    const: 0xa
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  gpio-controller: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+dependencies:
-+  '#gpio-cells': [gpio-controller]
-+  gpio-controller: ['#gpio-cells']
-+
-+patternProperties:
-+  "^i2c@[1-4]$":
-+    type: object
-+
-+    allOf:
-+      - $ref: /schemas/i2c/i2c-controller.yaml#
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      batman: battery-manager@a {
-+        compatible = "lltc,ltc1760", "sbs,sbs-manager";
-+        reg = <0x0a>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+
-+        i2c@1 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          reg = <1>;
-+
-+          battery@b {
-+            compatible = "ti,bq20z65", "sbs,sbs-battery";
-+            reg = <0x0b>;
-+            sbs,battery-detect-gpios = <&batman 1 1>;
-+          };
-+        };
-+
-+        i2c@2 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          reg = <2>;
-+
-+          battery@b {
-+            compatible = "ti,bq20z65", "sbs,sbs-battery";
-+            reg = <0x0b>;
-+            sbs,battery-detect-gpios = <&batman 2 1>;
-+          };
-+        };
-+
-+        i2c@3 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          reg = <3>;
-+
-+          battery@b {
-+            compatible = "ti,bq20z65", "sbs,sbs-battery";
-+            reg = <0x0b>;
-+            sbs,battery-detect-gpios = <&batman 3 1>;
-+          };
-+        };
-+      };
-+    };
++	/* Remaining pages store in alloc.cache */
++	list_for_each_entry_safe(page, next, &page_list, lru) {
++		list_del(&page->lru);
++		if ((pp_flags & PP_FLAG_DMA_MAP) &&
++		    unlikely(!page_pool_dma_map(pool, page))) {
++			put_page(page);
++			continue;
++		}
++		if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
++			pool->alloc.cache[pool->alloc.count++] = page;
++			pool->pages_state_hold_cnt++;
++			trace_page_pool_state_hold(pool, page,
++						   pool->pages_state_hold_cnt);
++		} else {
++			put_page(page);
++		}
++	}
++out:
+ 	if ((pp_flags & PP_FLAG_DMA_MAP) &&
+-	    unlikely(!page_pool_dma_map(pool, page))) {
+-		put_page(page);
++	    unlikely(!page_pool_dma_map(pool, first_page))) {
++		put_page(first_page);
+ 		return NULL;
+ 	}
+ 
+ 	/* Track how many pages are held 'in-flight' */
+ 	pool->pages_state_hold_cnt++;
+-	trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
++	trace_page_pool_state_hold(pool, first_page, pool->pages_state_hold_cnt);
+ 
+ 	/* When page just alloc'ed is should/must have refcnt 1. */
+-	return page;
++	return first_page;
+ }
+ 
+ /* For using page_pool replace: alloc_pages() API calls, but provide
 -- 
-2.30.1
+2.26.2
 
