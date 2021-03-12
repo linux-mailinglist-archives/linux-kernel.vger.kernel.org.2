@@ -2,87 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EDD338EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B1A338EB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhCLN2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:28:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:56991 "EHLO mga09.intel.com"
+        id S230491AbhCLNZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:25:16 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:54682 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhCLN1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:27:37 -0500
-IronPort-SDR: dGPVNBIuPmpETWoy4WzGizGiiYFrV+kYYWlb2hQCUqLZqT7KftnflLZrpTHRz/ZRmyTEVjkL1Q
- 14bzabPhUtgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188925753"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="188925753"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:27:37 -0800
-IronPort-SDR: i+3KB8FYhMLUI2Ye/5d04LmVyMyQvKK6fllupe43LD/2qmEewkF8lntYQODm/WpR49sFoQvnNk
- IZxHkZofr0Bw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="409848770"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga007.jf.intel.com with ESMTP; 12 Mar 2021 05:27:36 -0800
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     vincent.weaver@maine.edu, eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
-Subject: [PATCH 2/2] perf/x86/intel: Fix unchecked MSR access error caused by VLBR_EVENT
-Date:   Fri, 12 Mar 2021 05:21:38 -0800
-Message-Id: <1615555298-140216-2-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615555298-140216-1-git-send-email-kan.liang@linux.intel.com>
-References: <1615555298-140216-1-git-send-email-kan.liang@linux.intel.com>
+        id S229568AbhCLNZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:25:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DxmlD0Dylz9ttBh;
+        Fri, 12 Mar 2021 14:25:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 3005F1ETpgzu; Fri, 12 Mar 2021 14:25:11 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DxmlC6Nkjz9ttBY;
+        Fri, 12 Mar 2021 14:25:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 598788B815;
+        Fri, 12 Mar 2021 14:25:12 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id a_PaZruFI7yH; Fri, 12 Mar 2021 14:25:12 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EEEA38B812;
+        Fri, 12 Mar 2021 14:25:11 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BB23B675BA; Fri, 12 Mar 2021 13:25:11 +0000 (UTC)
+Message-Id: <c95a648fdf75992c9d88f3c73cc23e7537fcf2ad.1615555354.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <0ad4629c2d222019e82fcdfccc70d372beb4adf9.1615398265.git.christophe.leroy@csgroup.eu>
+References: <0ad4629c2d222019e82fcdfccc70d372beb4adf9.1615398265.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 03/15] powerpc/align: Convert emulate_spe() to user_access_begin
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Axtens <dja@axtens.net>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 12 Mar 2021 13:25:11 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+This patch converts emulate_spe() to using user_access_begin
+logic.
 
-On a Haswell machine, the perf_fuzzer managed to trigger this message:
+Since commit 662bbcb2747c ("mm, sched: Allow uaccess in atomic with
+pagefault_disable()"), might_fault() doesn't fire when called from
+sections where pagefaults are disabled, which must be the case
+when using _inatomic variants of __get_user and __put_user. So
+the might_fault() in user_access_begin() is not a problem.
 
-[117248.075892] unchecked MSR access error: WRMSR to 0x3f1 (tried to
-write 0x0400000000000000) at rIP: 0xffffffff8106e4f4
-(native_write_msr+0x4/0x20)
-[117248.089957] Call Trace:
-[117248.092685]  intel_pmu_pebs_enable_all+0x31/0x40
-[117248.097737]  intel_pmu_enable_all+0xa/0x10
-[117248.102210]  __perf_event_task_sched_in+0x2df/0x2f0
-[117248.107511]  finish_task_switch.isra.0+0x15f/0x280
-[117248.112765]  schedule_tail+0xc/0x40
-[117248.116562]  ret_from_fork+0x8/0x30
+There was a verification of user_mode() together with the access_ok(),
+but there is a second verification of user_mode() just after, that
+leads to immediate return. The access_ok() is now part of the
+user_access_begin which is called after that other user_mode()
+verification, so no need to check user_mode() again.
 
-A fake event called VLBR_EVENT may use the bit 58 of the PEBS_ENABLE, if
-the precise_ip is set. The bit 58 is reserved by the HW. Accessing the
-bit causes the unchecked MSR access error.
-
-The fake event doesn't support PEBS. The case should be rejected.
-
-Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
-Reported-by: Vince Weaver <vincent.weaver@maine.edu>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
 ---
- arch/x86/events/intel/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+v3:
+- Changed the second user_read_access_begin() to user_write_access_begin()
+- Reworded explaination about the user_mode() with access_ok() in the commit message
+---
+ arch/powerpc/kernel/align.c | 61 ++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 28 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 5bac48d..6789619 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3659,6 +3659,9 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 		return ret;
+diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
+index c7797eb958c7..f362c99213be 100644
+--- a/arch/powerpc/kernel/align.c
++++ b/arch/powerpc/kernel/align.c
+@@ -107,7 +107,6 @@ static struct aligninfo spe_aligninfo[32] = {
+ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 		       struct ppc_inst ppc_instr)
+ {
+-	int ret;
+ 	union {
+ 		u64 ll;
+ 		u32 w[2];
+@@ -127,11 +126,6 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 	nb = spe_aligninfo[instr].len;
+ 	flags = spe_aligninfo[instr].flags;
  
- 	if (event->attr.precise_ip) {
-+		if ((event->attr.config & INTEL_ARCH_EVENT_MASK) == INTEL_FIXED_VLBR_EVENT)
-+			return -EINVAL;
+-	/* Verify the address of the operand */
+-	if (unlikely(user_mode(regs) &&
+-		     !access_ok(addr, nb)))
+-		return -EFAULT;
+-
+ 	/* userland only */
+ 	if (unlikely(!user_mode(regs)))
+ 		return 0;
+@@ -169,26 +163,27 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 		}
+ 	} else {
+ 		temp.ll = data.ll = 0;
+-		ret = 0;
+ 		p = addr;
+ 
++		if (!user_read_access_begin(addr, nb))
++			return -EFAULT;
 +
- 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
- 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
- 			if (!(event->attr.sample_type &
+ 		switch (nb) {
+ 		case 8:
+-			ret |= __get_user_inatomic(temp.v[0], p++);
+-			ret |= __get_user_inatomic(temp.v[1], p++);
+-			ret |= __get_user_inatomic(temp.v[2], p++);
+-			ret |= __get_user_inatomic(temp.v[3], p++);
++			unsafe_get_user(temp.v[0], p++, Efault_read);
++			unsafe_get_user(temp.v[1], p++, Efault_read);
++			unsafe_get_user(temp.v[2], p++, Efault_read);
++			unsafe_get_user(temp.v[3], p++, Efault_read);
+ 			fallthrough;
+ 		case 4:
+-			ret |= __get_user_inatomic(temp.v[4], p++);
+-			ret |= __get_user_inatomic(temp.v[5], p++);
++			unsafe_get_user(temp.v[4], p++, Efault_read);
++			unsafe_get_user(temp.v[5], p++, Efault_read);
+ 			fallthrough;
+ 		case 2:
+-			ret |= __get_user_inatomic(temp.v[6], p++);
+-			ret |= __get_user_inatomic(temp.v[7], p++);
+-			if (unlikely(ret))
+-				return -EFAULT;
++			unsafe_get_user(temp.v[6], p++, Efault_read);
++			unsafe_get_user(temp.v[7], p++, Efault_read);
+ 		}
++		user_read_access_end();
+ 
+ 		switch (instr) {
+ 		case EVLDD:
+@@ -255,31 +250,41 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 
+ 	/* Store result to memory or update registers */
+ 	if (flags & ST) {
+-		ret = 0;
+ 		p = addr;
++
++		if (!user_write_access_begin(addr, nb))
++			return -EFAULT;
++
+ 		switch (nb) {
+ 		case 8:
+-			ret |= __put_user_inatomic(data.v[0], p++);
+-			ret |= __put_user_inatomic(data.v[1], p++);
+-			ret |= __put_user_inatomic(data.v[2], p++);
+-			ret |= __put_user_inatomic(data.v[3], p++);
++			unsafe_put_user(data.v[0], p++, Efault_write);
++			unsafe_put_user(data.v[1], p++, Efault_write);
++			unsafe_put_user(data.v[2], p++, Efault_write);
++			unsafe_put_user(data.v[3], p++, Efault_write);
+ 			fallthrough;
+ 		case 4:
+-			ret |= __put_user_inatomic(data.v[4], p++);
+-			ret |= __put_user_inatomic(data.v[5], p++);
++			unsafe_put_user(data.v[4], p++, Efault_write);
++			unsafe_put_user(data.v[5], p++, Efault_write);
+ 			fallthrough;
+ 		case 2:
+-			ret |= __put_user_inatomic(data.v[6], p++);
+-			ret |= __put_user_inatomic(data.v[7], p++);
++			unsafe_put_user(data.v[6], p++, Efault_write);
++			unsafe_put_user(data.v[7], p++, Efault_write);
+ 		}
+-		if (unlikely(ret))
+-			return -EFAULT;
++		user_write_access_end();
+ 	} else {
+ 		*evr = data.w[0];
+ 		regs->gpr[reg] = data.w[1];
+ 	}
+ 
+ 	return 1;
++
++Efault_read:
++	user_read_access_end();
++	return -EFAULT;
++
++Efault_write:
++	user_write_access_end();
++	return -EFAULT;
+ }
+ #endif /* CONFIG_SPE */
+ 
 -- 
-2.7.4
+2.25.0
 
