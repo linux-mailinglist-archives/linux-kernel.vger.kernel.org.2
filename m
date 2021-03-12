@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B58338B99
+	by mail.lfdr.de (Postfix) with ESMTP id 9C915338B98
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhCLLhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:37:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
+        id S229748AbhCLLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:37:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhCLLg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:36:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6223F64F6F;
-        Fri, 12 Mar 2021 11:36:58 +0000 (UTC)
+        id S231437AbhCLLgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:36:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB2C64FB9;
+        Fri, 12 Mar 2021 11:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615549018;
-        bh=Y3U0bmKJUb+3XHj6p4SPQWcNUnYsIrcL8PrFDSr94oo=;
+        s=k20201202; t=1615549004;
+        bh=Tnmzg1VNWRp37vPZH7WBHF69zo4cruqMAptSEKsDpE4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d1fhTAliRK4bwizKdTteFC6Hd7b76kVDBu6CuADnw71jrWGxEGBQxnzUqPp5JYiZx
-         u2QQZ6YetXpIxxMinOxrnFsYy/ZCEHoMsjhUlpV9CA4UdzaOTquwk6zp98Tto0Dn0c
-         NMJ1nRdp2wy/MiyVhNee2Yt812Wfow54HMAA+YtLYhUj71aVqiIbt71FzH/PiVNbMr
-         fdXgstxUouTUJV1DIdJKlQDZcof6aH05FhtVjDWhg7xywIO+9qGvVYoCc5hHY/Y1cV
-         rVQiw4tpiywZL0Nds+MW6CcX6c7xYjTfO4DAPY4S6mP0UM3mgE5vCwuJi4pPqMv4gk
-         gdb22glb6W4rw==
-Date:   Fri, 12 Mar 2021 11:35:44 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
-        thierry.reding@gmail.com
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-Message-ID: <20210312113544.GB5348@sirena.org.uk>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+        b=W/fav6v6j9c1sr6Et0T7YtmGJSMg4RyEoLnMA/co9nN/OBXrOQLJrtp+gk/6s6XAE
+         hUK4HFynm6jq9pgRe/XG+RoYmhe0DCEyaEYPKpOWiUHyjuaaHTMt9tpES9moyFWDpj
+         fUiQIJuEnIHdAnbTKBywNw+n1kwnJN0L3j/RuCaCstCmY2lIXWy194pwK7tD9ApdoW
+         nYgP5ltxrab4g8LZ0bxbUwYMh0/1uPbKC9CL91Qx2ZmIaPhdWNripUKQkQ+j/DJsTZ
+         r99jsE+iw9oPJ8NdThPjsutWFWHutaEc8x/rlYS09F6qrDSrYj3icAKZJfQU4nmjjZ
+         Noe+S0gYjYxKw==
+Date:   Fri, 12 Mar 2021 12:36:41 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 06/10] softirq: Don't try waking ksoftirqd
+ before it has been spawned
+Message-ID: <20210312113641.GA3646@lothringen>
+References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
+ <20210304000019.22459-6-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210304000019.22459-6-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 03, 2021 at 04:00:15PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> If there is heavy softirq activity, the softirq system will attempt
+> to awaken ksoftirqd and will stop the traditional back-of-interrupt
+> softirq processing.  This is all well and good, but only if the
+> ksoftirqd kthreads already exist, which is not the case during early
+> boot, in which case the system hangs.
+> 
+> One reproducer is as follows:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
+> 
+> This commit therefore adds a couple of existence checks for ksoftirqd
+> and forces back-of-interrupt softirq processing when ksoftirqd does not
+> yet exist.  With this change, the above test passes.
+> 
+> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> [ paulmck: Remove unneeded check per Sebastian Siewior feedback. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
---f2QGlHpHGjS2mn6Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 11, 2021 at 11:11:15PM +0100, Michael Walle wrote:
-> Am 2021-03-11 17:15, schrieb Mark Brown:
-
-> > The trick is figuring out if it's best to vary the input clock
-> > or to use the FLL to adapt a fixed input clock,
-
-> For simple-audio-card you can set the "clock" property if you want
-> that clock to be changed/enabled/disabled. But that doesn't seem to
-> be the way to go, at least it was NAKed by Rob for the audio-graph-card.
-> I don't see a way to figure out if MCLK should be controlled by
-> simple-*-card without adding further properties to the device tree.
-
-If the card has a clock API clock as sysclk then set_sysclk(() should
-be configuring that clock.
-
---f2QGlHpHGjS2mn6Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLUg8ACgkQJNaLcl1U
-h9CSGwgAhrOIMEFqoBHhAxZirq3hXq7cqfPrHmJx8Y03rBpjXiY5Syx8tbIGHLHL
-THMEzZwO2/QPnVG39A/KCu2fv4Pjd5EHzlV1ZurXSWFEFtXzzW06Kyx5TYq/wQch
-UlYziTkkW97LkhsBGYTGLQT9lHbdkiQi2CZzv+DrfWA1ZEql2IThGI8/tHwvOiDQ
-nl8Lm1QgjJ2jwiKZc2fWDoNnC6++ggNAQaCEwYyxpMSNgo55smZMTCJc7xHpU/Xp
-1u1jYSrWDZwj3GwgbJKzZjFEQ1bWsWBwapjxOz1A30qo0SfCKk9N1OK3fi3DRB6m
-FuL4a2mG40TQ+qsz3mx6MKAfagTMMQ==
-=nIRs
------END PGP SIGNATURE-----
-
---f2QGlHpHGjS2mn6Y--
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
