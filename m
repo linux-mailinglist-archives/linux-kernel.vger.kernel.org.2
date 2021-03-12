@@ -2,132 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BF73391B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCD4339203
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhCLPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:44:16 -0500
-Received: from outbound-smtp07.blacknight.com ([46.22.139.12]:60081 "EHLO
-        outbound-smtp07.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232032AbhCLPnh (ORCPT
+        id S233053AbhCLPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:45:00 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55618 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhCLPoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:43:37 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id B94291C4010
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:43:33 +0000 (GMT)
-Received: (qmail 19870 invoked from network); 12 Mar 2021 15:43:32 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 12 Mar 2021 15:43:32 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 5/7] SUNRPC: Refresh rq_pages using a bulk page allocator
-Date:   Fri, 12 Mar 2021 15:43:29 +0000
-Message-Id: <20210312154331.32229-6-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210312154331.32229-1-mgorman@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
+        Fri, 12 Mar 2021 10:44:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 8FC201F46E98
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 428CE4800E2; Fri, 12 Mar 2021 16:44:08 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH 10/38] dt-bindings: power: supply: sbs-charger: Convert to DT schema format
+Date:   Fri, 12 Mar 2021 16:43:29 +0100
+Message-Id: <20210312154357.1561730-11-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+Convert the binding to DT schema format.
 
-Reduce the rate at which nfsd threads hammer on the page allocator.
-This improves throughput scalability by enabling the threads to run
-more independently of each other.
-
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- net/sunrpc/svc_xprt.c | 43 +++++++++++++++++++++++++++++++------------
- 1 file changed, 31 insertions(+), 12 deletions(-)
+ .../power/supply/sbs,sbs-charger.yaml         | 55 +++++++++++++++++++
+ .../bindings/power/supply/sbs_sbs-charger.txt | 21 -------
+ 2 files changed, 55 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
 
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index cfa7e4776d0e..38a8d6283801 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -642,11 +642,12 @@ static void svc_check_conn_limits(struct svc_serv *serv)
- static int svc_alloc_arg(struct svc_rqst *rqstp)
- {
- 	struct svc_serv *serv = rqstp->rq_server;
-+	unsigned long needed;
- 	struct xdr_buf *arg;
-+	struct page *page;
- 	int pages;
- 	int i;
- 
--	/* now allocate needed pages.  If we get a failure, sleep briefly */
- 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
- 	if (pages > RPCSVC_MAXPAGES) {
- 		pr_warn_once("svc: warning: pages=%u > RPCSVC_MAXPAGES=%lu\n",
-@@ -654,19 +655,28 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 		/* use as many pages as possible */
- 		pages = RPCSVC_MAXPAGES;
- 	}
--	for (i = 0; i < pages ; i++)
--		while (rqstp->rq_pages[i] == NULL) {
--			struct page *p = alloc_page(GFP_KERNEL);
--			if (!p) {
--				set_current_state(TASK_INTERRUPTIBLE);
--				if (signalled() || kthread_should_stop()) {
--					set_current_state(TASK_RUNNING);
--					return -EINTR;
--				}
--				schedule_timeout(msecs_to_jiffies(500));
+diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
+new file mode 100644
+index 000000000000..cb73ffa4778e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/sbs,sbs-charger.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	for (needed = 0, i = 0; i < pages ; i++)
-+		if (!rqstp->rq_pages[i])
-+			needed++;
-+	if (needed) {
-+		LIST_HEAD(list);
++title: SBS compliant charger
 +
-+retry:
-+		alloc_pages_bulk(GFP_KERNEL, needed, &list);
-+		for (i = 0; i < pages; i++) {
-+			if (!rqstp->rq_pages[i]) {
-+				page = list_first_entry_or_null(&list,
-+								struct page,
-+								lru);
-+				if (unlikely(!page))
-+					goto empty_list;
-+				list_del(&page->lru);
-+				rqstp->rq_pages[i] = page;
-+				needed--;
- 			}
--			rqstp->rq_pages[i] = p;
- 		}
-+	}
- 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
- 	rqstp->rq_pages[pages] = NULL; /* this might be seen in nfsd_splice_actor() */
- 
-@@ -681,6 +691,15 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 	arg->len = (pages-1)*PAGE_SIZE;
- 	arg->tail[0].iov_len = 0;
- 	return 0;
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
 +
-+empty_list:
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	if (signalled() || kthread_should_stop()) {
-+		set_current_state(TASK_RUNNING);
-+		return -EINTR;
-+	}
-+	schedule_timeout(msecs_to_jiffies(500));
-+	goto retry;
- }
- 
- static bool
++description: |
++  Charger compatible with the smart battery system specifications
++
++allOf:
++  - $ref: power-supply.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - lltc,ltc4100
++          - enum:
++              - sbs,sbs-charger
++      - items:
++          - const: sbs,sbs-charger
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        charger@9 {
++            compatible = "lltc,ltc4100", "sbs,sbs-charger";
++            reg = <0x9>;
++            interrupt-parent = <&gpio6>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++       };
++    };
+diff --git a/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt b/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
+deleted file mode 100644
+index 84e74151eef2..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-SBS sbs-charger
+-~~~~~~~~~~
+-
+-Required properties:
+- - compatible: "<vendor>,<part-number>", "sbs,sbs-charger" as fallback. The part
+-     number compatible string might be used in order to take care of vendor
+-     specific registers.
+-
+-Optional properties:
+-- interrupts: Interrupt mapping for GPIO IRQ. Use in conjunction with
+-    "interrupt-parent". If an interrupt is not provided the driver will switch
+-    automatically to polling.
+-
+-Example:
+-
+-	ltc4100@9 {
+-		compatible = "lltc,ltc4100", "sbs,sbs-charger";
+-		reg = <0x9>;
+-		interrupt-parent = <&gpio6>;
+-		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+-	};
 -- 
-2.26.2
+2.30.1
 
