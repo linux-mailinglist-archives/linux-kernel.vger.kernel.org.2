@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2223388C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61523388CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhCLJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:34:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60061 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232686AbhCLJd6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:33:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615541637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rj53vgUL+fBc1sW2QW6DZG1JFSB+puhdylPCj8GuUxQ=;
-        b=JQAoSx6Z0S+f/I3XBFZHUqNNFofNkUBiWJn7NtJqIs9KzE4emX9zEX1AH1QeNswwKAEx04
-        yewuW2cwuxeylcASxWdINLerNkB3Kk5J7K8fDVOyceYweOQlzYA04I9Z/9Gvyn1FhN8pJY
-        MsWWmjUljEbmQyJLcauXuV2PZbxMIuo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-LQlaec_hOfOaql8j20nvfQ-1; Fri, 12 Mar 2021 04:33:53 -0500
-X-MC-Unique: LQlaec_hOfOaql8j20nvfQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9087C760C1;
-        Fri, 12 Mar 2021 09:33:51 +0000 (UTC)
-Received: from [10.36.114.197] (ovpn-114-197.ams2.redhat.com [10.36.114.197])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 595F9196E3;
-        Fri, 12 Mar 2021 09:33:49 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
-        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
-        linux-fsdevel@vger.kernel.org
-References: <20210310161429.399432-1-minchan@kernel.org>
- <20210310161429.399432-3-minchan@kernel.org>
- <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
-Message-ID: <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
-Date:   Fri, 12 Mar 2021 10:33:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S232888AbhCLJhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:37:18 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:33826 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232686AbhCLJgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 04:36:52 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowAA3Pw8bNktgUYoCAA--.13288S2;
+        Fri, 12 Mar 2021 17:36:28 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     tiwai@suse.com, perex@perex.cz, joe@perches.com, jgg@ziepe.ca,
+        chao@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: sb: Remove extra brackets
+Date:   Fri, 12 Mar 2021 09:36:25 +0000
+Message-Id: <20210312093625.65650-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAA3Pw8bNktgUYoCAA--.13288S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF48ZFy5WF43tF47JF48tFb_yoWxZrgEya
+        1fXF4IgF4DXa9Iv3W5Ja4Fqr4qkFykZFs2gr1xKr47GrykJF13Zw4UJrnrWrs8urZ5CFy2
+        gw1DZay8CasFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8tku7UUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwcSA1z4j4xQ2AACsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.03.21 10:03, David Hildenbrand wrote:
-> On 10.03.21 17:14, Minchan Kim wrote:
->> ffer_head LRU caches will be pinned and thus cannot be migrated.
->> This can prevent CMA allocations from succeeding, which are often used
->> on platforms with co-processors (such as a DSP) that can only use
->> physically contiguous memory. It can also prevent memory
->> hot-unplugging from succeeding, which involves migrating at least
->> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
->> GiB based on the architecture in use.
-> 
-> Actually, it's memory_block_size_bytes(), which can be even bigger
-> (IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that
-> will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
-> 
->>
->> Correspondingly, invalidate the BH LRU caches before a migration
->> starts and stop any buffer_head from being cached in the LRU caches,
->> until migration has finished.
-> 
-> Sounds sane to me.
-> 
+Remove extra brackets.
 
-Diving a bit into the code, I am wondering:
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ sound/isa/sb/sb16_csp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-a) Are these buffer head pages marked as movable?
-
-IOW, are they either PageLRU() or __PageMovable()?
-
-
-b) How do these pages end up on ZONE_MOVABLE or MIGRATE_CMA?
-
-I assume these pages come via
-alloc_page_buffers()->alloc_buffer_head()->kmem_cache_zalloc(GFP_NOFS | 
-__GFP_ACCOUNT)
-
-
-
+diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
+index 8635a2b6b36b..2c292bf0f5ae 100644
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -769,7 +769,7 @@ static int snd_sb_csp_autoload(struct snd_sb_csp * p, snd_pcm_format_t pcm_sfmt,
+ 
+ 			p->running = 0;				/* clear autoloaded flag */
+ 			p->mode = 0;
+-			return (err);
++			return err;
+ 		} else {
+ 			p->running = SNDRV_SB_CSP_ST_AUTO;	/* set autoloaded flag */
+ 			p->acc_width = SNDRV_SB_CSP_SAMPLE_16BIT;	/* only 16 bit data */
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
