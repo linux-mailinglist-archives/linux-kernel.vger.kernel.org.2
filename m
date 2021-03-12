@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA413399A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3163399AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhCLW1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S235573AbhCLW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbhCLW1i (ORCPT
+        with ESMTP id S235534AbhCLW2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:27:38 -0500
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054A4C061574;
-        Fri, 12 Mar 2021 14:27:38 -0800 (PST)
-Received: by sf.home (Postfix, from userid 1000)
-        id 9FDD95A22061; Fri, 12 Mar 2021 22:27:32 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>, linux-ia64@vger.kernel.org,
-        storagedev@microchip.com, linux-scsi@vger.kernel.org,
-        Joe Szczypek <jszczype@redhat.com>,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Don Brace <don.brace@microchip.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
-Date:   Fri, 12 Mar 2021 22:27:18 +0000
-Message-Id: <20210312222718.4117508-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
-References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
+        Fri, 12 Mar 2021 17:28:30 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39D0C061574;
+        Fri, 12 Mar 2021 14:28:29 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4BD3B88F;
+        Fri, 12 Mar 2021 23:28:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615588108;
+        bh=/sMIq1hDnpODcSNiUzu/uMri0rA2SOMdhVlPhhDuXSc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=My/5yeehl/Xm3FtaDVr19sHyEWUHBLKePWoIyMIvvI8pMpCsQFW4UHc6d+bOBvPHu
+         AMTBepMEYH+6DMDxVNh2zcPmBY9dv6T0OCk2JLDvXd2GvMcp+OkvZ88pDkt6AN0H3r
+         KzxjuDyFGVeGO6/+WJFABcilquIIG/aXyywaDqPE=
+Date:   Sat, 13 Mar 2021 00:27:53 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v3 7/8] media: uvcvideo: Set a different name for the
+ metadata entity
+Message-ID: <YEvq6TlGCL3NSqJ9@pendragon.ideasonboard.com>
+References: <20210312124830.1344255-1-ribalda@chromium.org>
+ <20210312124830.1344255-8-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210312124830.1344255-8-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The failure initially observed as boot failure on rx3600 ia64 machine
-with RAID bus controller: Hewlett-Packard Company Smart Array P600:
+Hi Ricardo,
 
-    kernel unaligned access to 0xe000000105dd8b95, ip=0xa000000100b87551
-    kernel unaligned access to 0xe000000105dd8e95, ip=0xa000000100b87551
-    hpsa 0000:14:01.0: Controller reports max supported commands of 0 Using 16 instead. Ensure that firmware is up to date.
-    swapper/0[1]: error during unaligned kernel access
+Thank you for the patch.
 
-Here unaligned access comes from 'struct CommandList' that happens
-to be packed. The change f749d8b7a ("scsi: hpsa: Correct dev cmds
-outstanding for retried cmds") introduced unexpected padding and
-un-aligned atomic_t from natural alignment to something else.
+On Fri, Mar 12, 2021 at 01:48:29PM +0100, Ricardo Ribalda wrote:
+> All the entities must have a unique name. And now that we are at it, we
+> append the entity->id to the name to avoid collisions on multi-chain
+> devices.
+> 
+> Fixes v4l2-compliance:
+> Media Controller ioctls:
+>                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
+>         test MEDIA_IOC_G_TOPOLOGY: FAIL
+>                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
+> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_driver.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 35873cf2773d..6c928e708615 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2154,6 +2154,18 @@ static void uvc_unregister_video(struct uvc_device *dev)
+>  #endif
+>  }
+>  
+> +static int uvc_oterm_id(struct uvc_video_chain *chain)
+> +{
+> +	struct uvc_entity *entity;
+> +
+> +	list_for_each_entry(entity, &chain->entities, chain) {
+> +		if (UVC_ENTITY_IS_OTERM(entity))
+> +			return entity->id;
 
-This change does not remove packing annotation from struct but only
-restores alignment of atomic variable.
+It can also be an ITERM for output devices. You can drop this function
+and use stream>header.bTerminalLink below (see uvc_stream_by_id() and
+its usage in uvc_register_terms()).
 
-The change is tested on the same rx3600 machine.
+> +	}
+> +
+> +	return -1;
+> +}
+> +
+>  int uvc_register_video_device(struct uvc_device *dev,
+>  			      struct uvc_streaming *stream,
+>  			      struct video_device *vdev,
+> @@ -2162,6 +2174,8 @@ int uvc_register_video_device(struct uvc_device *dev,
+>  			      const struct v4l2_file_operations *fops,
+>  			      const struct v4l2_ioctl_ops *ioctl_ops)
+>  {
+> +	char prefix[sizeof(vdev->name) - 9];
+> +	const char *suffix;
+>  	int ret;
+>  
+>  	/* Initialize the video buffers queue. */
+> @@ -2190,16 +2204,21 @@ int uvc_register_video_device(struct uvc_device *dev,
+>  	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+>  	default:
+>  		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
+> +		suffix = "video";
+>  		break;
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+>  		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
+> +		suffix = "out";
 
-CC: linux-ia64@vger.kernel.org
-CC: storagedev@microchip.com
-CC: linux-scsi@vger.kernel.org
-CC: Joe Szczypek <jszczype@redhat.com>
-CC: Scott Benesh <scott.benesh@microchip.com>
-CC: Scott Teel <scott.teel@microchip.com>
-CC: Tomas Henzl <thenzl@redhat.com>
-CC: "Martin K. Petersen" <martin.petersen@oracle.com>
-CC: Don Brace <don.brace@microchip.com>
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Suggested-by: Don Brace <don.brace@microchip.com>
-Fixes: f749d8b7a "scsi: hpsa: Correct dev cmds outstanding for retried cmds"
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- drivers/scsi/hpsa_cmd.h | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+I wonder if these two should be video-cap and video-out (or vid-cap and
+vid-out if you want to shorten them) ?
 
-diff --git a/drivers/scsi/hpsa_cmd.h b/drivers/scsi/hpsa_cmd.h
-index d126bb877250..617bdae9a7de 100644
---- a/drivers/scsi/hpsa_cmd.h
-+++ b/drivers/scsi/hpsa_cmd.h
-@@ -20,6 +20,9 @@
- #ifndef HPSA_CMD_H
- #define HPSA_CMD_H
- 
-+#include <linux/build_bug.h> /* static_assert */
-+#include <linux/stddef.h> /* offsetof */
-+
- /* general boundary defintions */
- #define SENSEINFOBYTES          32 /* may vary between hbas */
- #define SG_ENTRIES_IN_CMD	32 /* Max SG entries excluding chain blocks */
-@@ -448,11 +451,20 @@ struct CommandList {
- 	 */
- 	struct hpsa_scsi_dev_t *phys_disk;
- 
--	bool retry_pending;
-+	int retry_pending;
- 	struct hpsa_scsi_dev_t *device;
- 	atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
- } __aligned(COMMANDLIST_ALIGNMENT);
- 
-+/*
-+ * Make sure our embedded atomic variable is aligned. Otherwise we break atomic
-+ * operations on architectures that don't support unaligned atomics like IA64.
-+ *
-+ * Ideally this header should be cleaned up to only mark individual structs as
-+ * packed.
-+ */
-+static_assert(offsetof(struct CommandList, refcount) % __alignof__(atomic_t) == 0);
-+
- /* Max S/G elements in I/O accelerator command */
- #define IOACCEL1_MAXSGENTRIES           24
- #define IOACCEL2_MAXSGENTRIES		28
+>  		break;
+>  	case V4L2_BUF_TYPE_META_CAPTURE:
+>  		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
+> +		suffix = "meta";
+>  		break;
+>  	}
+>  
+> -	strscpy(vdev->name, dev->name, sizeof(vdev->name));
+> +	strscpy(prefix, dev->name, sizeof(prefix));
+> +	snprintf(vdev->name, sizeof(vdev->name), "%s-%d %s", prefix,
+
+The unit ID is never negative, so %u ?
+
+> +		 uvc_oterm_id(stream->chain), suffix);
+
+Truncating the device name at the beginning of the video node name isn't
+very nice :-S How about the following ?
+
+	snprintf(vdev->name, sizeof(vdev->name), "%s-%u (%s)", type_name,
+		 uvc_oterm_id(stream->chain), dev->name);
+
+with the suffix variable renamed to type_name ?
+
+Thinking some more about it, vdev->name serves two purposes in the
+driver: creating the entity name, and reporting the card name in
+querycap. The former is done in the V4L2 core, which uses vdev->name
+as-is. In this context, we con't need to add dev->name, it would be
+redundant as the media controller device already reports it. The latter
+is done in uvc_ioctl_querycap(). How about dropping dev->name from
+vdev->name, and modifying uvc_ioctl_querycap() to use dev->name instead
+of cap->card ?
+
+>  
+>  	/*
+>  	 * Set the driver data before calling video_register_device, otherwise
+
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
