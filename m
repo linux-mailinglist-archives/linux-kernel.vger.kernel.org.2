@@ -2,92 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBCF338C61
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D96338C67
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhCLMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:06:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229568AbhCLMGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:06:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 470F764FD6;
-        Fri, 12 Mar 2021 12:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615550769;
-        bh=DHmyk8GUReblYUlhSMgM0JiPJvuHbVNLZgcQ4Uqew+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZMnlJOK4+abTr5z6UYLOMd63xUlgezqJXvqxpjbY9ta+qtcZwgxxfDbPmXKjn9G/x
-         fJH3pXeWHvA3lHlndJknsq+TlkHWBGctbcZ81JOI6QsX3ZMv0nto7+QDcim7ArHJOj
-         9I2mVhq9wW7bbwMSGLddZUQCee/FnVMFe3vTv7qt+FXXGGY2F6rtrcv+V9DZqtm7t+
-         WU6H07eYP7vHhX0lFQfBr6wobUMro6CUc76cwUfvvD82C5sTLKLO/AJOmNRIeBK1fe
-         6c/mh7emCx1217+ygNXUp4FTLCvL4uNCNfu0hgYTLvLGOVAiG7NWTlatoHNVIMKJGt
-         DeotHYNFPoIhQ==
-Date:   Fri, 12 Mar 2021 12:04:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
-        thierry.reding@gmail.com
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-Message-ID: <20210312120456.GD5348@sirena.org.uk>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
- <20210312113544.GB5348@sirena.org.uk>
- <6ed28bb5330879b1919aced5174f319f@walle.cc>
+        id S229568AbhCLMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhCLMIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:08:06 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3391BC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:08:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id l11so4669823wrp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 04:08:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bYlq3QuwCXBZy32rCYPOxMij/FKdzPl+ga1AXT6AMUw=;
+        b=BCLpHAq5ldRKBvqrEtoKcuGqLL2GKiwjrR1A+mvEO/ekxNx/FUaU8ijHmzdhmUaUMc
+         U6hIJc3dYCzUaB7CqpdXES3WakTBHjPlFyCsZC/Jv/mwT3Hxq9TtHqeAyUzrI4QSFbQU
+         HjbLN8JsTbtdtzJeVi5Bz/rz3rJOnxf5kpYUY6ZeMym6WqGpCNByUim+7tnccsRbQy6h
+         vnHRT7VSnQ6gBIycjjt60ZGmIhx0GOZH66e4mOIhXgLmcVeLbo+t48mH0NrxnpjWmSst
+         RlIVmFO1W5t0vHV6wIXXyogQkwEIeTM0BKMWgOlSOKLOQOk1XIXppgSOdqqqcufq5vpb
+         Iqsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bYlq3QuwCXBZy32rCYPOxMij/FKdzPl+ga1AXT6AMUw=;
+        b=B2bGcAR8B0zyT3bogh4n3gw9xUk3yA11yqiDUHl17nuE/IMmcJwf5wvkaLOF0m83A+
+         1TiC2ouOd5c7PZONvvA2YzaFSfpvc0gmREvqklUU6f2+XFAaGDXPsYlcvQMxI8jJyCxp
+         iOlycdzf91uH7WiyCmjhHBip+YCzH66C0lSvd0s1zuWBROt5knS2LorhIO0m56pK2IuG
+         ph0EWCAtWv0bSoN7enYOlC/6Gp5ykpLRjbMNX6FEQK/tCkDah4KmUpJOfEhETvfKUR47
+         RrMMj+sz35z0FIuw7fKomxGRar+bIK93WMmguufV2rmv+OUYDklkgcTu9LGvDCXc6Anq
+         gKYA==
+X-Gm-Message-State: AOAM530ugcLRgVQymIGNfUajdZ8HedTY51d/tGI6Bp0zKMkvTPKs0wZ4
+        YcCwiBla7ndutJUtilwVDQWlUg==
+X-Google-Smtp-Source: ABdhPJy9bWztyuiT+IyYCfmcTc6apygViQxe58Ssuj9DGSSxkLBEXiYFUHnmL6jsm9M/TOMs5ZHdww==
+X-Received: by 2002:adf:f60b:: with SMTP id t11mr8471788wrp.269.1615550884731;
+        Fri, 12 Mar 2021 04:08:04 -0800 (PST)
+Received: from apalos.home (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
+        by smtp.gmail.com with ESMTPSA id g5sm7501708wrq.30.2021.03.12.04.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 04:08:04 -0800 (PST)
+Date:   Fri, 12 Mar 2021 14:08:00 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
+ subsystem
+Message-ID: <YEtZoAJATXZoK3a+@apalos.home>
+References: <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+ <6c542548-cc16-af68-c755-df52bd13b209@marcan.st>
+ <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
+ <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st>
+ <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
+ <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
+ <e5d3f4b5-748e-0700-b897-393187b2bb1a@marcan.st>
+ <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
+ <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
+ <CAFA6WYNzEofaQpEQFRG+XaWQqkEWugOW-1qEf=9J2-tje59QsA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2Z2K0IlrPCVsbNpk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ed28bb5330879b1919aced5174f319f@walle.cc>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFA6WYNzEofaQpEQFRG+XaWQqkEWugOW-1qEf=9J2-tje59QsA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 05:29:20PM +0530, Sumit Garg wrote:
+> On Fri, 12 Mar 2021 at 01:59, Hector Martin <marcan@marcan.st> wrote:
+> >
+> > On 11/03/2021 23.31, Linus Walleij wrote:
+> > > I understand your argument, is your position such that the nature
+> > > of the hardware is such that community should leave this hardware
+> > > alone and not try to make use of RPMB  for say ordinary (self-installed)
+> > > Linux distributions?
+> >
+> > It's not really that the community should leave this hardware alone, so
+> > much that I think there is a very small subset of users who will be able
+> > to benefit from it, and that subset will be happy with a usable
+> > kernel/userspace interface and some userspace tooling for this purpose,
+> > including provisioning and such.
+> >
+> > Consider the prerequisites for using RPMB usefully here:
+> >
+> > * You need (user-controlled) secureboot
+> 
+> Agree with this prerequisite since secure boot is essential to build
+> initial trust in any system whether that system employs TEE, TPM,
+> secure elements etc.
+> 
+> > * You need secret key storage - so either some kind of CPU-fused key, or
+> > one protected by a TPM paired with the secureboot (key sealed to PCR
+> > values and such)
+> > * But if you have a TPM, that can handle secure counters for you already
+> > AIUI, so you don't need RPMB
+> 
+> Does TPM provide replay protected memory to store information such as:
+> - PIN retry timestamps?
+> - Hash of encrypted nvme? IMO, having replay protection for user data
+> on encrypted nvme is a valid use-case.
+> 
+> > * So this means you must be running a non-TPM secureboot system
+> >
+> 
+> AFAIK, there exist such systems which provide you with a hardware
+> crypto accelerator (like CAAM on i.Mx SoCs) that can protect your keys
+> (in this case RPMB key) and hence can leverage RPMB for replay
+> protection.
+> 
+> > And so we're back to embedded platforms like Android phones and other
+> > SoC stuff... user-controlled secureboot is already somewhat rare here,
+> > and even rarer are the cases where the user controls the whole chain
+> > including the TEE if any (otherwise it'll be using RPMB already); this
+> > pretty much excludes all production Android phones except for a few
+> > designed as completely open systems; we're left with those and a subset
+> > of dev boards (e.g. the Jetson TX1 I did fuse experiments on). In the
+> > end, those systems will probably end up with fairly bespoke set-ups for
+> > any given device or SoC family, for using RPMB.
+> >
+> > But then again, if you have a full secureboot system where you control
+> > the TEE level, wouldn't you want to put the RPMB shenanigans there and
+> > get some semblance of secure TPM/keystore/attempt throttling
+> > functionality that is robust against Linux exploits and has a smaller
+> > attack surface? Systems without EL3 are rare (Apple M1 :-)) so it makes
+> > more sense to do this on those that do have it. If you're paranoid
+> > enough to be getting into building your own secure system with
+> > anti-rollback for retry counters, you should be heading in that directly
+> > anyway.
+> >
+> > And now Linux's RPMB code is useless because you're running the stack in
+> > the secure monitor instead :-)
+> >
+> 
+> As Linus mentioned in other reply, there are limitations in order to
+> put eMMC/RPMB drivers in TEE / secure monitor such as:
+> - One of the design principle for a TEE is to keep its footprint as
+> minimal as possible like in OP-TEE we generally try to rely on Linux
+> for filesystem services, RPMB access etc. And currently we rely on a
+> user-space daemon (tee-supplicant) for RPMB access which IMO isn't as
+> secure as compared to direct RPMB access via kernel.
+> - Most embedded systems possess a single storage device (like eMMC)
+> for which the kernel needs to play an arbiter role.
 
---2Z2K0IlrPCVsbNpk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yep exactly. This is a no-go for small embedded platforms with a single eMMC.
+The device *must* be in the non-secure world, so the bootloader can load the
+kernel/rootfs from the eMMC.  If you restrain that in secure world access
+only, that complicates things a lot ...
 
-On Fri, Mar 12, 2021 at 01:01:41PM +0100, Michael Walle wrote:
-> Am 2021-03-12 12:35, schrieb Mark Brown:
+> 
+> It looks like other TEE implementations such as Trusty on Android [1]
+> and QSEE [2] have a similar interface for RPMB access.
+> 
+> So it's definitely useful for various TEE implementations to have
+> direct RPMB access via kernel. And while we are at it, I think it
+> should be useful (given replay protection benefits) to provide an
+> additional kernel interface to RPMB leveraging Trusted and Encrypted
+> Keys subsystem.
 
-> > If the card has a clock API clock as sysclk then set_sysclk(() should
-> > be configuring that clock.
+As for the EFI that was mentioned earlier, newer Arm devices and the
+standardization behind those, is actually trying to use UEFI on most
+of the platforms.  FWIW we already have code that manages the EFI variables in
+the RPMB (which is kind of irrelevant to the current discussion, just giving
+people a heads up).
 
-> What do you mean by "the card". The simple-audio-card itself?
-
-> Take a look at:
-> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts#L29
-
-> Does the card has a clock? IMHO the WM8904 codec has a clock, but not
-> the audio card.
-
-The clock on the CODEC, which the card configures.  The CODEC should be
-passing on the configuration to the clock API.
-
---2Z2K0IlrPCVsbNpk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLWOcACgkQJNaLcl1U
-h9Dr4wf/RvhCgjsXMqQfCMBjIX58G+v9Cg2OPPplcaKKCYDjRg91mNXrL3E80qFQ
-HOfZJ33uxBY2xnzXmfnttbMlnRrQys2U0XPqbQXNnJTnHmJu4XqVU/j+c8QJeKJK
-DCYp/qmAvUqm3i4KDM/bbqIeNCiXHtVZ6FvLdrEL8smdJhXdMGFA24rOvNMlhCyw
-T2/y0+K/70cbhiWTrVFs4LyRnGdlIooLdErAfQ0ZoXnsid0QNObGiS0eOSjssjke
-gfwoUWcR5skL2eEzLBkWAOnJM1Am5S56kSpMaF/69BfwwINbfV7GpCZFOHbI+Zy1
-0ZPH0ScPMHaRdPcpq9ArImBAxwU+Fw==
-=mvjs
------END PGP SIGNATURE-----
-
---2Z2K0IlrPCVsbNpk--
+Regards
+/Ilias
+> 
+> [1] https://android.googlesource.com/trusty/app/storage/
+> [2] https://www.qualcomm.com/media/documents/files/guard-your-data-with-the-qualcomm-snapdragon-mobile-platform.pdf
+> 
+> -Sumit
+> 
+> > --
+> > Hector Martin (marcan@marcan.st)
+> > Public Key: https://mrcn.st/pub
