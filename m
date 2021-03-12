@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5032338A8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7329A338A92
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhCLKt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:49:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13156 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhCLKt1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:49:27 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DxjCv5Q4pzmWPx;
-        Fri, 12 Mar 2021 18:46:19 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 12 Mar 2021 18:48:29 +0800
-Subject: Re: [PATCH v3 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending state
- to physical side
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210127121337.1092-1-lushenming@huawei.com>
- <20210127121337.1092-4-lushenming@huawei.com> <87tupif3x3.wl-maz@kernel.org>
- <0820f429-4c29-acd6-d9e0-af9f6deb68e4@huawei.com>
- <87k0qcg2s6.wl-maz@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <aecfbf72-c653-e967-b539-89f629b52cde@huawei.com>
-Date:   Fri, 12 Mar 2021 18:48:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S233468AbhCLKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:51:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233620AbhCLKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:50:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F174B65021;
+        Fri, 12 Mar 2021 10:50:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615546244;
+        bh=fgKpPGWl7vdkjYlq9KFgP4TmOGenokxAgG3aU4o71JY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EGkoAHZ79zm0HpbPJC1fOXOeeVwESsGko2HmFJdypim7agTxOBhI1QIl8NgHn4jnH
+         u1lKjyKNHRY3jwRJnAwgFSfErfSW0fHdFR6Bk4BGeOczdoGAKSyOi/PDMVsedTUcZV
+         rppAP5450ZSZ5geAA3vLXaZ0eoMnCWYxD8alfsUsNGMCd8v22EEYtlyxCFmcskiK4y
+         0E5YAPYum2/u5+gjOAOizGwbK5UALblRhWac40JBSs5fZDkdMRvvcTsktyBo/DiIAM
+         PqAAV0xM5DD8d04jkpkKLMTvaSzBtrJ/G04MY5mAbdMDc+sp2JdixHQIGb3WNBN94t
+         W5Napa7mNglcA==
+Date:   Fri, 12 Mar 2021 10:49:31 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
+Message-ID: <20210312104931.GA5348@sirena.org.uk>
+References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
+ <20210309153455.GB4878@sirena.org.uk>
+ <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0qcg2s6.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Disposition: inline
+In-Reply-To: <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/12 17:05, Marc Zyngier wrote:
-> On Thu, 11 Mar 2021 12:32:07 +0000,
-> Shenming Lu <lushenming@huawei.com> wrote:
->>
->> On 2021/3/11 17:14, Marc Zyngier wrote:
->>> On Wed, 27 Jan 2021 12:13:36 +0000,
->>> Shenming Lu <lushenming@huawei.com> wrote:
->>>>
->>>> From: Zenghui Yu <yuzenghui@huawei.com>
->>>>
->>>> When setting the forwarding path of a VLPI (switch to the HW mode),
->>>> we could also transfer the pending state from irq->pending_latch to
->>>> VPT (especially in migration, the pending states of VLPIs are restored
->>>> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
->>>> a VLPI to pending.
->>>>
->>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>>> ---
->>>>  arch/arm64/kvm/vgic/vgic-v4.c | 14 ++++++++++++++
->>>>  1 file changed, 14 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
->>>> index ac029ba3d337..a3542af6f04a 100644
->>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->>>> @@ -449,6 +449,20 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
->>>>  	irq->host_irq	= virq;
->>>>  	atomic_inc(&map.vpe->vlpi_count);
->>>>  
->>>> +	/* Transfer pending state */
->>>> +	if (irq->pending_latch) {
->>>> +		ret = irq_set_irqchip_state(irq->host_irq,
->>>> +					    IRQCHIP_STATE_PENDING,
->>>> +					    irq->pending_latch);
->>>> +		WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
->>>> +
->>>> +		/*
->>>> +		 * Let it be pruned from ap_list later and don't bother
->>>> +		 * the List Register.
->>>> +		 */
->>>> +		irq->pending_latch = false;
->>>
->>> NAK. If the interrupt is on the AP list, it must be pruned from it
->>> *immediately*. The only case where it can be !pending and still on the
->>> AP list is in interval between sync and prune. If we start messing
->>> with this, we can't reason about the state of this list anymore.
->>>
->>> Consider calling vgic_queue_irq_unlock() here.
->>
->> Thanks for giving a hint, but it seems that vgic_queue_irq_unlock() only
->> queues an IRQ after checking, did you mean vgic_prune_ap_list() instead?
-> 
-> No, I really mean vgic_queue_irq_unlock(). It can be used to remove
-> the pending state from an interrupt, and drop it from the AP
-> list. This is exactly what happens when clearing the pending state of
-> a level interrupt, for example.
 
-Hi, I have gone through vgic_queue_irq_unlock more than once, but still can't
-find the place in it to drop an IRQ from the AP list... Did I miss something ?...
-Or could you help to point it out? Thanks very much for this!
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Shenming
+On Fri, Mar 12, 2021 at 10:32:54AM +0200, Daniel Baluta wrote:
+> On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
 
-> 
-> 	M.
-> 
+> > > +                     if (!dai_link->platforms->of_node)
+> > > +                             dai_link->platforms->name = component->name;
+
+> > Why would we prefer the node name over something explicitly configured?
+
+> Not sure I follow your question. I think the difference stands in the
+> way we treat OF vs non-OF platforms.
+
+If an explicit name has been provided why would we override it with an
+autogenerated one?
+
+--pWyiEgJYm5f9v55/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLRzoACgkQJNaLcl1U
+h9DHLgf/dCrl7QiN+jfF0cGbC1JdfYVq4HAVtswUrQEnPISDtyOBMpD2WjMCmM8j
+mAv2nD3wC8p0mFgDWKn/KEcmsj7KXiFO3sD63kQsiolJrk5rTX5NAtvHeVuXxZ8+
+yQVlP6G8CVpAcjk6CcKpEtWp+cT1H2uDXq4XyGzILCfzlPNqfRRLU9wZesvB3mtS
+mpd1v/6aN6iXcbKYQWzD4jR70WsTAJw3IFcUtJCGejos6hHYSsrdhD8rPuT59WY7
+T/lXXFVZM7+nwbd5AeL/CqlldmKcS40nfRevG9GbIkpm37kFdWvk0g1shf83owPB
+6HOiE4Gctdl3DTxDYJgLfMNNXrZF/w==
+=pOj0
+-----END PGP SIGNATURE-----
+
+--pWyiEgJYm5f9v55/--
