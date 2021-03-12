@@ -2,230 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0938339541
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DAA339542
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhCLRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:42:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbhCLRmh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:42:37 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185DBC061574;
-        Fri, 12 Mar 2021 09:42:37 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id g27so26607688iox.2;
-        Fri, 12 Mar 2021 09:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=2BpBKC6amLfVKktHpaa9KFseSm9F+CF9ejShdCoo9Lk=;
-        b=RNVUMyfRaM22EyZhJqGc2FjFtG24jh/dlA99EZpkj2QIeuA5wmzDD7Uw3tQHvweJ0h
-         diyu8oUY5Kxnug0/6dSK/dBW9aAqoxs5T/Ri5mqc7dpcNZP07p3HVWWzVDh++7pwG2gz
-         NAnFoOmKAwCpZaplKrfWdlHenxNMulCdehrhf11wymFTYW0aRAennY2Jtyq8SZVAu8iR
-         Lj98au0NlnvFvS9i2pU2QMvpcOctjcLAzLRJD1+nzr6m/8sZTOyKcHgXvHx7n4wLS4oe
-         00ELcuZeYxwp5QIstQLMzE42/C+wL1+F2jJU8krQkEsysRceflowC+0Pbf90/f1WCL0k
-         xkaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=2BpBKC6amLfVKktHpaa9KFseSm9F+CF9ejShdCoo9Lk=;
-        b=aqFKw54p4bfXzskJ8RnLXj4Yv7V8VsFAUFakQs60+nlB5Gjnu+T2nwAPUF6CHljraN
-         8GoI5kLZrssrA5cKXTd5HKr6o+HOJQtgtYi36c+xm2xTUacEhV6wh4fawpQqPyNHrYIn
-         lI6YPL+RzeZa+0U+SP2MmYfWnnOUYpVoHWaP8XQIsbwXvW1jDB1HO+eYZH0pLsG1gED1
-         cQf20icQOsJGSPQwxGhZ/EJAmQnUROdrotPTsBLmQx0x2SK9aThkvAxWIZ2pJBmfOSnj
-         U9fvTIbuV4DfWu/xFC6QPzLcHOi5QswjSsqs09FduSxXwILbuO4+j1Gzrd8C7cEWoXQD
-         WJtQ==
-X-Gm-Message-State: AOAM533YsEleVCWPundQeMBQuGHXd3ORvO6GiIyI8i6HNB6YMZgemKQc
-        nLcWGcAOMB1fnXIurViAqBdZsO5p3qSEAW3q4hP9uTrAK8eC+g==
-X-Google-Smtp-Source: ABdhPJyZs5tkHkT6iAbmuJzaJs8b6g/jN6Hv8IE0YuC3erSgi9DEOUXbGhc7CLCi5/lXeSqaV1gM6NDU9VwmsH1le7Y=
-X-Received: by 2002:a5d:9d13:: with SMTP id j19mr302189ioj.110.1615570956506;
- Fri, 12 Mar 2021 09:42:36 -0800 (PST)
+        id S231636AbhCLRnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:43:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:58136 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229959AbhCLRnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:43:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C507A1FB;
+        Fri, 12 Mar 2021 09:43:22 -0800 (PST)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42F903F7D7;
+        Fri, 12 Mar 2021 09:43:21 -0800 (PST)
+From:   James Morse <james.morse@arm.com>
+Subject: Re: [PATCH 12/24] x86/resctrl: Add closid to the staged config
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20201030161120.227225-1-james.morse@arm.com>
+ <20201030161120.227225-13-james.morse@arm.com>
+ <136b0a82-7d77-dc08-80ca-5265d4af30fd@intel.com>
+Message-ID: <e213926b-01af-403f-3a71-0cb95f6ee7f8@arm.com>
+Date:   Fri, 12 Mar 2021 17:43:20 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <CA+icZUXUAVAusGBKSAtUEN1kH2PLchpi0cU+w-m67QznA7+F4A@mail.gmail.com>
- <20210305194745.GF48113@rowland.harvard.edu> <CA+icZUXEWh6G-Bm9-2F1X=S=ZYog37PiaMWHUjZWs1g-KDOqJg@mail.gmail.com>
- <CA+icZUUBpB9UFEypCFmCYc2grUC11QESNwj0_cXfut9fx0JOQA@mail.gmail.com>
- <20210306165808.GD74411@rowland.harvard.edu> <CA+icZUWXBtOo+7TBGHFA=aKBs5o9hy3Po6NM0EPssu6y4SOZsQ@mail.gmail.com>
- <CA+icZUXcYY53DxpMRQmveuwUv0QVV7rtRorbxWUaVujJZuCB-A@mail.gmail.com>
- <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
- <20210307154645.GA103559@rowland.harvard.edu> <CA+icZUVLC7=-MsXeGQOrAe1emzGW2UwWYxh3EHGPhjR=chygoQ@mail.gmail.com>
- <20210307170702.GB104554@rowland.harvard.edu> <CA+icZUWaGt2k4kdV0JHqKUkB8DySqdeUgVNnVT1BUo8aveGZOw@mail.gmail.com>
- <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
-In-Reply-To: <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 12 Mar 2021 18:41:58 +0100
-Message-ID: <CA+icZUXkheVR-c9cdsJmeS9+FZj4Gswii+xBoAWK882QNdfcTg@mail.gmail.com>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <136b0a82-7d77-dc08-80ca-5265d4af30fd@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK, now for the records:
+Hi Reinette,
 
-[ /etc/modprobe.d/usb-storage.conf  ]
+On 17/11/2020 23:46, Reinette Chatre wrote:
+> On 10/30/2020 9:11 AM, James Morse wrote:
+>> Once the L2/L2CODE/L2DATA resources are merged, there may be two
+>> configurations staged for one resource when CDP is enabled. The
+>> closid should always be passed with the type of configuration to the
+>> arch code.
+>>
+>> Because update_domains() will eventually apply a set of configurations,
+>> it should take the closid from the same place, so they pair up.
+>>
+>> Move the closid to be a staged parameter.
+> 
+> Move implies that it is taken from one location and added to another. This seems like a
+> copy instead?
 
-# Add quirks for USB Mass Storage devices
-#
-# Link: https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
-#
-# Option #1: Use Kernel command line parameter
-# [1] Usage: usb-storage.quirks=<VID:PID:Flags>
-# [2] VendorID (VID) and ProductID (PID):
-#     ASMedia M1042 USB-3.0 controller: VID: 174c PID: 55aa
-# [3] Flags:
-#     t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
-#     u = IGNORE_UAS (don't bind to the uas driver);
-# [4] Example: usb-storage.quirks=174c:55aa:t
-#
-# Option #2: Set quirk via sysfs
-# DEBUG: echo '174c:55aa:t' > /sys/module/usb_storage/parameters/quirks
-#
-# Option #3: Pass options via /etc/modprobe.d/usb-storage.conf (this file here)
-# XXX: Do NOT forget to run `update-initramfs` command!
-options usb-storage quirks=174c:55aa:t
-- EOF -
+I'll rephrase it.
 
-With generating a new /boot/initrd.img via `update-initramfs` this
-looks good to me:
 
-root# LC_ALL=C dmesg -T | egrep -i 'quirks|reset|SCSI ioctl error'
-[Fri Mar 12 18:25:56 2021] xhci_hcd 0000:03:00.0: hcc params
-0x0200f180 hci version 0x96 quirks 0x0000000000080000
-[Fri Mar 12 18:25:57 2021] usb-storage 4-1:1.0: Quirks match for vid
-174c pid 55aa: 2400000
-[Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:01 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-number 2 using xhci_hcd
-[Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:29 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
-[Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd A1, prog ata_id
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
-[Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
-[Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
-[Fri Mar 12 18:28:10 2021] SCSI ioctl error, cmd 85, prog smartctl
-[Fri Mar 12 18:28:11 2021] SCSI ioctl error, cmd 85, prog smartctl
-[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-[Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+>> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>> b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>> index 0c95ed83eb05..b107c0202cfb 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+>> @@ -72,6 +72,7 @@ int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
+>>       if (!bw_validate(data->buf, &bw_val, r))
+>>           return -EINVAL;
+>>       cfg->new_ctrl = bw_val;
+>> +    cfg->closid = data->rdtgrp->closid;
+>>       cfg->have_new_ctrl = true;
+>>         return 0;
+>> @@ -178,6 +179,7 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
+>>       }
+>>         cfg->new_ctrl = cbm_val;
+>> +    cfg->closid = data->rdtgrp->closid;
+>>       cfg->have_new_ctrl = true;
 
-Your diff now should say; s/SCSI ioctl error/SCSI ioctl info'.
+> rdtgrp is already available so it could just be:
+> cfg->closid = rdtgrp->closid?
 
-Alan, so "t" flags should be added as a quirks to linux-kernel sources...
+Yes, this is just trying to be identical to the earlier version.
+I'll change it.
 
-t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
 
-...for my ASMedia USB-3.0 controller?
+>>       return 0;
+>> @@ -245,15 +247,15 @@ static int parse_line(char *line, struct resctrl_schema *s,
+>>   }
+>>     static void apply_config(struct rdt_hw_domain *hw_dom,
+>> -             struct resctrl_staged_config *cfg, int closid,
+>> +             struct resctrl_staged_config *cfg,
+>>                cpumask_var_t cpu_mask, bool mba_sc)
+>>   {
+>>       struct rdt_domain *dom = &hw_dom->resctrl;
+>>       u32 *dc = mba_sc ? hw_dom->mbps_val : hw_dom->ctrl_val;
+>>   -    if (cfg->new_ctrl != dc[closid]) {
+>> +    if (cfg->new_ctrl != dc[cfg->closid]) {
+>>           cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+>> -        dc[closid] = cfg->new_ctrl;
+>> +        dc[cfg->closid] = cfg->new_ctrl;
+>>       }
+>>         cfg->have_new_ctrl = false;
+>> @@ -284,7 +286,7 @@ int update_domains(struct rdt_resource *r, int closid)
+>>               if (!cfg->have_new_ctrl)
+>>                   continue;
+>>   -            apply_config(hw_dom, cfg, closid, cpu_mask, mba_sc);
+>> +            apply_config(hw_dom, cfg, cpu_mask, mba_sc);
+>>           }
+>>       }
 
-- Sedat -
+> It is not clear to me that storing the closid in the staged config is necessary. A closid
+> is associated with a resource group so when the user writes to the schemata file all
+> configurations would be (from the resource group perspective) for the same closid. This is
+> the value provided here to update domains. Looking ahead in this series this closid is
+> later used to compute the index (get_config_index()) that would use as input cfg->closid,
+> but that cfg->closid would be identical for all resources/staged configs and then the new
+> index would be computed based on the resource type. Having the closid in the staged config
+> thus does not seem to be necessary, it could remain as this function parameter and be used
+> for all staged configs?
+
+Yes, when emulating CDP with MPAM, these can be two unrelated numbers, but it looks like I
+lost track of the 'its always going to be the same value' for each invocation through the
+filesystem.
+
+An earlier version tried to push separate code/data closid values further into the resctrl
+code, but I thought it was getting too confusing.
+The x86 CDP behaviour is either 'configuration is twice the size' or 'an odd even
+pair of closid' depending on how you look at it. For MPAM the equivalent feature is an
+(arbitary!) pair of closid/partid.
+
+Yes its not necessary for resctrl, I'll see how much of this I can unpick!
+
+
+Thanks,
+
+James
