@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ACA3393BD
+	by mail.lfdr.de (Postfix) with ESMTP id EC80C3393BF
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhCLQlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:41:02 -0500
+        id S232582AbhCLQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:41:05 -0500
 Received: from mga14.intel.com ([192.55.52.115]:14817 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232238AbhCLQkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:40:31 -0500
-IronPort-SDR: not9pxQRnV+5Wh7TjtOAaDXjjQfEUl6CDs6TBSwnChTQgyOT+mCOV/izDJIKeo1dFLOI9L/IEb
- XFI6geJuKadw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188219735"
+        id S232398AbhCLQkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:40:32 -0500
+IronPort-SDR: rAZUWHzfJT70VS6L9481BCQOhv+cVNe4Q/fiLmd/FdLs6JSgShL77kFQJgt9T+7BIcTS+9TKyo
+ 1sj7MolXeKrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188219740"
 X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="188219735"
+   d="scan'208";a="188219740"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:40:30 -0800
-IronPort-SDR: 3Y26spR0Q4CSEh2LJWX6yubgaDIhsq+WcdUvg0B52vThB64huDzeSWwpMnSKRpdGe4IYumAo+r
- w3HAXHDtGbrw==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:40:32 -0800
+IronPort-SDR: jTQYy+zNIlcIISoRaXE3Y4QV8oolu1HBzBJVssr7SdAC2O1MfycTc9PN63fKSyIv/bwsfvXtjA
+ bmIaco+yVpJg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="404469083"
+   d="scan'208";a="404469086"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Mar 2021 08:40:30 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 12 Mar 2021 08:40:31 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org, acme@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     alexander.shishkin@linux.intel.com, jolsa@redhat.com,
         eranian@google.com, namhyung@kernel.org, ak@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 4/5] perf/x86/intel/uncore: Generic support for the PCI type of uncore blocks
-Date:   Fri, 12 Mar 2021 08:34:37 -0800
-Message-Id: <1615566878-70244-5-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 5/5] perf/x86/intel/uncore: Generic support for the MMIO type of uncore blocks
+Date:   Fri, 12 Mar 2021 08:34:38 -0800
+Message-Id: <1615566878-70244-6-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
 References: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,323 +44,176 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Kan Liang <kan.liang@linux.intel.com>
 
 The discovery table provides the generic uncore block information
-for the PCI type of uncore blocks, which is good enough to provide
+for the MMIO type of uncore blocks, which is good enough to provide
 basic uncore support.
 
-The PCI BUS and DEVFN information can be retrieved from the box control
-field. Introduce the uncore_pci_pmus_register() to register all the
-PCICFG type of uncore blocks. The old PCI probe/remove way is dropped.
+The box control field is composed of the BAR address and box control
+offset. When initializing the uncore blocks, perf should ioremap the
+address from the box control field.
 
-The PCI BUS and DEVFN information are different among dies. Add box_ctls
-to store the box control field of each die.
-
-Add a new BUS notifier for the PCI type of uncore block to support the
-hotplug. If the device is "hot remove", the corresponding registered PMU
-has to be unregistered. Perf cannot locate the PMU by searching a const
-pci_device_id table, because the discovery tables don't provide such
-information. Introduce uncore_pci_find_dev_pmu_from_types() to search
-the whole uncore_pci_uncores for the PMU.
-
-Implement generic support for the PCI type of uncore block.
+Implement the generic support for the MMIO type of uncore block.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/uncore.c           | 91 +++++++++++++++++++++++++++++---
- arch/x86/events/intel/uncore.h           |  6 ++-
- arch/x86/events/intel/uncore_discovery.c | 80 ++++++++++++++++++++++++++++
- arch/x86/events/intel/uncore_discovery.h |  7 +++
- 4 files changed, 177 insertions(+), 7 deletions(-)
+ arch/x86/events/intel/uncore.c           |  1 +
+ arch/x86/events/intel/uncore.h           |  1 +
+ arch/x86/events/intel/uncore_discovery.c | 98 ++++++++++++++++++++++++++++++++
+ arch/x86/events/intel/uncore_discovery.h |  1 +
+ 4 files changed, 101 insertions(+)
 
 diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 45a65d3..762a8e8 100644
+index 762a8e8..7143d9d 100644
 --- a/arch/x86/events/intel/uncore.c
 +++ b/arch/x86/events/intel/uncore.c
-@@ -1028,10 +1028,37 @@ static int uncore_pci_get_dev_die_info(struct pci_dev *pdev, int *die)
- 	return 0;
- }
- 
-+static struct intel_uncore_pmu *
-+uncore_pci_find_dev_pmu_from_types(struct pci_dev *pdev)
-+{
-+	struct intel_uncore_type **types = uncore_pci_uncores;
-+	struct intel_uncore_type *type;
-+	u64 box_ctl;
-+	int i, die;
-+
-+	for (; *types; types++) {
-+		type = *types;
-+		for (die = 0; die < __uncore_max_dies; die++) {
-+			for (i = 0; i < type->num_boxes; i++) {
-+				if (!type->box_ctls[die])
-+					continue;
-+				box_ctl = type->box_ctls[die] + type->pci_offsets[i];
-+				if (pdev->devfn == UNCORE_DISCOVERY_PCI_DEVFN(box_ctl) &&
-+				    pdev->bus->number == UNCORE_DISCOVERY_PCI_BUS(box_ctl) &&
-+				    pci_domain_nr(pdev->bus) == UNCORE_DISCOVERY_PCI_DOMAIN(box_ctl))
-+					return &type->pmus[i];
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
- /*
-  * Find the PMU of a PCI device.
-  * @pdev: The PCI device.
-  * @ids: The ID table of the available PCI devices with a PMU.
-+ *       If NULL, search the whole uncore_pci_uncores.
-  */
- static struct intel_uncore_pmu *
- uncore_pci_find_dev_pmu(struct pci_dev *pdev, const struct pci_device_id *ids)
-@@ -1041,6 +1068,9 @@ uncore_pci_find_dev_pmu(struct pci_dev *pdev, const struct pci_device_id *ids)
- 	kernel_ulong_t data;
- 	unsigned int devfn;
- 
-+	if (!ids)
-+		return uncore_pci_find_dev_pmu_from_types(pdev);
-+
- 	while (ids && ids->vendor) {
- 		if ((ids->vendor == pdev->vendor) &&
- 		    (ids->device == pdev->device)) {
-@@ -1279,6 +1309,48 @@ static void uncore_pci_sub_driver_init(void)
- 		uncore_pci_sub_driver = NULL;
- }
- 
-+static int uncore_pci_bus_notify(struct notifier_block *nb,
-+				     unsigned long action, void *data)
-+{
-+	return uncore_bus_notify(nb, action, data, NULL);
-+}
-+
-+static struct notifier_block uncore_pci_notifier = {
-+	.notifier_call = uncore_pci_bus_notify,
-+};
-+
-+
-+static void uncore_pci_pmus_register(void)
-+{
-+	struct intel_uncore_type **types = uncore_pci_uncores;
-+	struct intel_uncore_type *type;
-+	struct intel_uncore_pmu *pmu;
-+	struct pci_dev *pdev;
-+	u64 box_ctl;
-+	int i, die;
-+
-+	for (; *types; types++) {
-+		type = *types;
-+		for (die = 0; die < __uncore_max_dies; die++) {
-+			for (i = 0; i < type->num_boxes; i++) {
-+				if (!type->box_ctls[die])
-+					continue;
-+				box_ctl = type->box_ctls[die] + type->pci_offsets[i];
-+				pdev = pci_get_domain_bus_and_slot(UNCORE_DISCOVERY_PCI_DOMAIN(box_ctl),
-+								   UNCORE_DISCOVERY_PCI_BUS(box_ctl),
-+								   UNCORE_DISCOVERY_PCI_DEVFN(box_ctl));
-+				if (!pdev)
-+					continue;
-+				pmu = &type->pmus[i];
-+
-+				uncore_pci_pmu_register(pdev, type, pmu, die);
-+			}
-+		}
-+	}
-+
-+	bus_register_notifier(&pci_bus_type, &uncore_pci_notifier);
-+}
-+
- static int __init uncore_pci_init(void)
- {
- 	size_t size;
-@@ -1295,12 +1367,15 @@ static int __init uncore_pci_init(void)
- 	if (ret)
- 		goto errtype;
- 
--	uncore_pci_driver->probe = uncore_pci_probe;
--	uncore_pci_driver->remove = uncore_pci_remove;
-+	if (uncore_pci_driver) {
-+		uncore_pci_driver->probe = uncore_pci_probe;
-+		uncore_pci_driver->remove = uncore_pci_remove;
- 
--	ret = pci_register_driver(uncore_pci_driver);
--	if (ret)
--		goto errtype;
-+		ret = pci_register_driver(uncore_pci_driver);
-+		if (ret)
-+			goto errtype;
-+	} else
-+		uncore_pci_pmus_register();
- 
- 	if (uncore_pci_sub_driver)
- 		uncore_pci_sub_driver_init();
-@@ -1324,7 +1399,10 @@ static void uncore_pci_exit(void)
- 		pcidrv_registered = false;
- 		if (uncore_pci_sub_driver)
- 			bus_unregister_notifier(&pci_bus_type, &uncore_pci_sub_notifier);
--		pci_unregister_driver(uncore_pci_driver);
-+		if (uncore_pci_driver)
-+			pci_unregister_driver(uncore_pci_driver);
-+		else
-+			bus_unregister_notifier(&pci_bus_type, &uncore_pci_notifier);
- 		uncore_types_exit(uncore_pci_uncores);
- 		kfree(uncore_extra_pci_dev);
- 		uncore_free_pcibus_map();
-@@ -1672,6 +1750,7 @@ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
- 
+@@ -1751,6 +1751,7 @@ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
  static const struct intel_uncore_init_fun generic_uncore_init __initconst = {
  	.cpu_init = intel_uncore_generic_uncore_cpu_init,
-+	.pci_init = intel_uncore_generic_uncore_pci_init,
+ 	.pci_init = intel_uncore_generic_uncore_pci_init,
++	.mmio_init = intel_uncore_generic_uncore_mmio_init,
  };
  
  static const struct x86_cpu_id intel_uncore_match[] __initconst = {
 diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 05c8e06..76fc898 100644
+index 76fc898..549cfb2 100644
 --- a/arch/x86/events/intel/uncore.h
 +++ b/arch/x86/events/intel/uncore.h
-@@ -58,6 +58,7 @@ struct intel_uncore_type {
- 	unsigned fixed_ctr;
- 	unsigned fixed_ctl;
- 	unsigned box_ctl;
-+	u64 *box_ctls;	/* Unit ctrl addr of the first box of each die */
+@@ -70,6 +70,7 @@ struct intel_uncore_type {
  	union {
- 		unsigned msr_offset;
- 		unsigned mmio_offset;
-@@ -66,7 +67,10 @@ struct intel_uncore_type {
- 	unsigned num_shared_regs:8;
- 	unsigned single_fixed:1;
- 	unsigned pair_ctr_ctl:1;
--	unsigned *msr_offsets;
-+	union {
-+		unsigned *msr_offsets;
-+		unsigned *pci_offsets;
-+	};
+ 		unsigned *msr_offsets;
+ 		unsigned *pci_offsets;
++		unsigned *mmio_offsets;
+ 	};
  	unsigned *box_ids;
  	struct event_constraint unconstrainted;
- 	struct event_constraint *constraints;
 diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
-index c14a650..7a73da7 100644
+index 7a73da7..a3abea8 100644
 --- a/arch/x86/events/intel/uncore_discovery.c
 +++ b/arch/x86/events/intel/uncore_discovery.c
-@@ -381,6 +381,71 @@ static struct intel_uncore_ops generic_uncore_msr_ops = {
- 	.read_counter		= uncore_msr_read_counter,
+@@ -446,6 +446,90 @@ static struct intel_uncore_ops generic_uncore_pci_ops = {
+ 	.read_counter	= intel_generic_uncore_pci_read_counter,
  };
  
-+static void intel_generic_uncore_pci_init_box(struct intel_uncore_box *box)
-+{
-+	struct pci_dev *pdev = box->pci_dev;
-+	int box_ctl = uncore_pci_box_ctl(box);
++#define UNCORE_GENERIC_MMIO_SIZE		0x4000
 +
-+	__set_bit(UNCORE_BOX_FLAG_CTL_OFFS8, &box->flags);
-+	pci_write_config_dword(pdev, box_ctl, GENERIC_PMON_BOX_CTL_INT);
++static unsigned int generic_uncore_mmio_box_ctl(struct intel_uncore_box *box)
++{
++	struct intel_uncore_type *type = box->pmu->type;
++
++	if (!type->box_ctls || !type->box_ctls[box->dieid] || !type->mmio_offsets)
++		return 0;
++
++	return type->box_ctls[box->dieid] + type->mmio_offsets[box->pmu->pmu_idx];
 +}
 +
-+static void intel_generic_uncore_pci_disable_box(struct intel_uncore_box *box)
++static void intel_generic_uncore_mmio_init_box(struct intel_uncore_box *box)
 +{
-+	struct pci_dev *pdev = box->pci_dev;
-+	int box_ctl = uncore_pci_box_ctl(box);
++	unsigned int box_ctl = generic_uncore_mmio_box_ctl(box);
++	struct intel_uncore_type *type = box->pmu->type;
++	resource_size_t addr;
 +
-+	pci_write_config_dword(pdev, box_ctl, GENERIC_PMON_BOX_CTL_FRZ);
++	if (!box_ctl) {
++		pr_warn("Uncore type %d box %d: Invalid box control address.\n",
++			type->type_id, type->box_ids[box->pmu->pmu_idx]);
++		return;
++	}
++
++	addr = box_ctl;
++	box->io_addr = ioremap(addr, UNCORE_GENERIC_MMIO_SIZE);
++	if (!box->io_addr) {
++		pr_warn("Uncore type %d box %d: ioremap error for 0x%llx.\n",
++			type->type_id, type->box_ids[box->pmu->pmu_idx],
++			(unsigned long long)addr);
++		return;
++	}
++
++	writel(GENERIC_PMON_BOX_CTL_INT, box->io_addr);
 +}
 +
-+static void intel_generic_uncore_pci_enable_box(struct intel_uncore_box *box)
++static void intel_generic_uncore_mmio_disable_box(struct intel_uncore_box *box)
 +{
-+	struct pci_dev *pdev = box->pci_dev;
-+	int box_ctl = uncore_pci_box_ctl(box);
++	if (!box->io_addr)
++		return;
 +
-+	pci_write_config_dword(pdev, box_ctl, 0);
++	writel(GENERIC_PMON_BOX_CTL_FRZ, box->io_addr);
 +}
 +
-+static void intel_generic_uncore_pci_enable_event(struct intel_uncore_box *box,
-+					    struct perf_event *event)
++static void intel_generic_uncore_mmio_enable_box(struct intel_uncore_box *box)
 +{
-+	struct pci_dev *pdev = box->pci_dev;
-+	struct hw_perf_event *hwc = &event->hw;
++	if (!box->io_addr)
++		return;
 +
-+	pci_write_config_dword(pdev, hwc->config_base, hwc->config);
++	writel(0, box->io_addr);
 +}
 +
-+static void intel_generic_uncore_pci_disable_event(struct intel_uncore_box *box,
++static void intel_generic_uncore_mmio_enable_event(struct intel_uncore_box *box,
 +					     struct perf_event *event)
 +{
-+	struct pci_dev *pdev = box->pci_dev;
 +	struct hw_perf_event *hwc = &event->hw;
 +
-+	pci_write_config_dword(pdev, hwc->config_base, 0);
++	if (!box->io_addr)
++		return;
++
++	writel(hwc->config, box->io_addr + hwc->config_base);
 +}
 +
-+static u64 intel_generic_uncore_pci_read_counter(struct intel_uncore_box *box,
-+					   struct perf_event *event)
++static void intel_generic_uncore_mmio_disable_event(struct intel_uncore_box *box,
++					      struct perf_event *event)
 +{
-+	struct pci_dev *pdev = box->pci_dev;
 +	struct hw_perf_event *hwc = &event->hw;
-+	u64 count = 0;
 +
-+	pci_read_config_dword(pdev, hwc->event_base, (u32 *)&count);
-+	pci_read_config_dword(pdev, hwc->event_base + 4, (u32 *)&count + 1);
++	if (!box->io_addr)
++		return;
 +
-+	return count;
++	writel(0, box->io_addr + hwc->config_base);
 +}
 +
-+static struct intel_uncore_ops generic_uncore_pci_ops = {
-+	.init_box	= intel_generic_uncore_pci_init_box,
-+	.disable_box	= intel_generic_uncore_pci_disable_box,
-+	.enable_box	= intel_generic_uncore_pci_enable_box,
-+	.disable_event	= intel_generic_uncore_pci_disable_event,
-+	.enable_event	= intel_generic_uncore_pci_enable_event,
-+	.read_counter	= intel_generic_uncore_pci_read_counter,
++static struct intel_uncore_ops generic_uncore_mmio_ops = {
++	.init_box	= intel_generic_uncore_mmio_init_box,
++	.exit_box	= uncore_mmio_exit_box,
++	.disable_box	= intel_generic_uncore_mmio_disable_box,
++	.enable_box	= intel_generic_uncore_mmio_enable_box,
++	.disable_event	= intel_generic_uncore_mmio_disable_event,
++	.enable_event	= intel_generic_uncore_mmio_enable_event,
++	.read_counter	= uncore_mmio_read_counter,
 +};
 +
  static bool uncore_update_uncore_type(enum uncore_access_type type_id,
  				      struct intel_uncore_type *uncore,
  				      struct intel_uncore_discovery_type *type)
-@@ -399,6 +464,14 @@ static bool uncore_update_uncore_type(enum uncore_access_type type_id,
- 		uncore->box_ctl = (unsigned int)type->box_ctrl;
- 		uncore->msr_offsets = type->box_offset;
+@@ -472,6 +556,15 @@ static bool uncore_update_uncore_type(enum uncore_access_type type_id,
+ 		uncore->box_ctls = type->box_ctrl_die;
+ 		uncore->pci_offsets = type->box_offset;
  		break;
-+	case UNCORE_ACCESS_PCI:
-+		uncore->ops = &generic_uncore_pci_ops;
-+		uncore->perf_ctr = (unsigned int)UNCORE_DISCOVERY_PCI_BOX_CTRL(type->box_ctrl) + type->ctr_offset;
-+		uncore->event_ctl = (unsigned int)UNCORE_DISCOVERY_PCI_BOX_CTRL(type->box_ctrl) + type->ctl_offset;
-+		uncore->box_ctl = (unsigned int)UNCORE_DISCOVERY_PCI_BOX_CTRL(type->box_ctrl);
++	case UNCORE_ACCESS_MMIO:
++		uncore->ops = &generic_uncore_mmio_ops;
++		uncore->perf_ctr = (unsigned int)type->ctr_offset;
++		uncore->event_ctl = (unsigned int)type->ctl_offset;
++		uncore->box_ctl = (unsigned int)type->box_ctrl;
 +		uncore->box_ctls = type->box_ctrl_die;
-+		uncore->pci_offsets = type->box_offset;
++		uncore->mmio_offsets = type->box_offset;
++		uncore->mmio_map_size = UNCORE_GENERIC_MMIO_SIZE;
 +		break;
  	default:
  		return false;
  	}
-@@ -446,3 +519,10 @@ void intel_uncore_generic_uncore_cpu_init(void)
- {
- 	uncore_msr_uncores = intel_uncore_generic_init_uncores(UNCORE_ACCESS_MSR);
+@@ -526,3 +619,8 @@ int intel_uncore_generic_uncore_pci_init(void)
+ 
+ 	return 0;
  }
 +
-+int intel_uncore_generic_uncore_pci_init(void)
++void intel_uncore_generic_uncore_mmio_init(void)
 +{
-+	uncore_pci_uncores = intel_uncore_generic_init_uncores(UNCORE_ACCESS_PCI);
-+
-+	return 0;
++	uncore_mmio_uncores = intel_uncore_generic_init_uncores(UNCORE_ACCESS_MMIO);
 +}
 diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
-index 81b7711..9e69e2b 100644
+index 9e69e2b..60d70aa 100644
 --- a/arch/x86/events/intel/uncore_discovery.h
 +++ b/arch/x86/events/intel/uncore_discovery.h
-@@ -23,6 +23,12 @@
- /* Global discovery table size */
- #define UNCORE_DISCOVERY_GLOBAL_MAP_SIZE	0x20
- 
-+#define UNCORE_DISCOVERY_PCI_DOMAIN(data)	((data >> 28) & 0x7)
-+#define UNCORE_DISCOVERY_PCI_BUS(data)		((data >> 20) & 0xff)
-+#define UNCORE_DISCOVERY_PCI_DEVFN(data)	((data >> 12) & 0xff)
-+#define UNCORE_DISCOVERY_PCI_BOX_CTRL(data)	(data & 0xfff)
-+
-+
- #define uncore_discovery_invalid_unit(unit)			\
- 	(!unit.table1 || !unit.ctl || !unit.table3 ||	\
- 	 unit.table1 == -1ULL || unit.ctl == -1ULL ||	\
-@@ -121,3 +127,4 @@ struct intel_uncore_discovery_type {
- bool intel_uncore_has_discovery_tables(void);
+@@ -128,3 +128,4 @@ bool intel_uncore_has_discovery_tables(void);
  void intel_uncore_clear_discovery_tables(void);
  void intel_uncore_generic_uncore_cpu_init(void);
-+int intel_uncore_generic_uncore_pci_init(void);
+ int intel_uncore_generic_uncore_pci_init(void);
++void intel_uncore_generic_uncore_mmio_init(void);
 -- 
 2.7.4
 
