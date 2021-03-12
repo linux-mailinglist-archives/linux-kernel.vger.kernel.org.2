@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C03339484
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7DE339492
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhCLRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhCLRR1 (ORCPT
+        id S232782AbhCLRTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:19:44 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:35891 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhCLRT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:17:27 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9366C061574;
-        Fri, 12 Mar 2021 09:17:26 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id q5so3627586pgk.5;
-        Fri, 12 Mar 2021 09:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X5T+1cZx7Ze9HLcDcUFhAoG7Y0mpEVmrKDYi0os1bZE=;
-        b=nwSUnGgDe1RavjwqezmE3K7rZLKM25jazvEOwEgTtQbDHDSImMIXoev0JTWQHt9IDI
-         ArmuMuMFKn5uN4oOhoLP+zIyszMiZlvFA5Eb+/YRgIngQh/eAlwF83DRVCzQTWwcZ4FP
-         9A9k+2X/ZVT0+F5Tap+vfB9mFD1/BUGqa6eNaogQR+kgr7IhvPZs9q+qpbpSmNLd+K5V
-         kJQdli+TA0Am7Px/AO7ZtOqwUzOQQRO35hztpMTz6XD7rL5zpK8W2CRVGbN6EVqM+z2v
-         7ofbN8044OVu0vBV1AoGAfH7ZYORFyF98gLB1IrbwnlaTdoi65dlBRTDF77sgXtddARo
-         D0FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=X5T+1cZx7Ze9HLcDcUFhAoG7Y0mpEVmrKDYi0os1bZE=;
-        b=jlPVT/5hLi2Y+BUv6dDFObj3wCAqtQBnWYBMUfp/eDvK5UETGAxfvxmeq66pke4Ss0
-         aOz8l1FOofRu44TigYqqbsVuChLtNbg2qNxeS4xSteVlJ3fjwx1neTqRHvDe2NHHtpiU
-         I4SXURs/hDc0HTBsjE0FcD0qk0ZF4cMVfm0WL3gELZqFymf+/dfKy7SCVFh36SSRv8gK
-         crR1/lNZL9pYvqMowsPFSgO/1B4EpDjQnwFy0DFF85rbt66I7OX0vkdMA0N+JfI/mE4R
-         sjmZW5u0N2koK8PIXEhr3I/+MBsoFYSGsZULFQqEEW+nczgnsJvhzAi0w5ppaGZJk6XU
-         oGvw==
-X-Gm-Message-State: AOAM5324p8YPHh0mOZgBV382x6kwcLvrsTrKrzh4E/UpsHrRr2Q3Uj/X
-        66+6g4iDEMLDxu0KZa+ei3jo7H9hi64=
-X-Google-Smtp-Source: ABdhPJzqNpRSsGwU1QmpjOx064HIxZbOPkL28CMseU3xup1dCP0HxRqcDxNEm1bd4JA4HCqMmW65TA==
-X-Received: by 2002:a63:1021:: with SMTP id f33mr12680153pgl.409.1615569446373;
-        Fri, 12 Mar 2021 09:17:26 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:8d76:9272:43a9:a6d0])
-        by smtp.gmail.com with ESMTPSA id y4sm6004799pfn.67.2021.03.12.09.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 09:17:25 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 12 Mar 2021 09:17:23 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
-        mhocko@suse.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
-Message-ID: <YEuiI44IRjBOQ8Wy@google.com>
-References: <20210310161429.399432-1-minchan@kernel.org>
- <20210310161429.399432-3-minchan@kernel.org>
- <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
- <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
+        Fri, 12 Mar 2021 12:19:29 -0500
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 12CHJ0Fr003425;
+        Sat, 13 Mar 2021 02:19:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 12CHJ0Fr003425
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615569541;
+        bh=GozglGRmJ4MmfZBSlP11BHzsPKe31X7+unemMC3S8jQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ckIYs/z2fF6DrYfZVam098tADF4n+CXsg8qIgRlrZV1tI5jftkOwC+n3+NLoRvDRE
+         +s/RmwUvwsHuwkxQEUojAwLlCKOnWnJbIuzp2UT1Q9Sg/+spJPHNG+k8MnjE8WH8QC
+         37hscqGvaexPinH5ntodV8zpiZz4xQBipmEwFfrnoxurmmqqeYZ9WoMsPJ3KqGsojt
+         Ga2F/2nONaMr98uFcC8ZhZPzWDg4A1199dd2hbeeCUUJMG6QRW08FmwetBl3ipdWiy
+         wg+vehhZVMOMAhOmaNLusNcTv8DzVtcLit1wXBHQkUawB7KvN0x7y2bymVw43zrDAQ
+         pWakjHsrE6ICQ==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so11377617pjb.0;
+        Fri, 12 Mar 2021 09:19:01 -0800 (PST)
+X-Gm-Message-State: AOAM5316MxNnTXVAo1/1i7OptbsCxogJ6whnXPc61hiW4iZKnsQu91VN
+        3LxU3J9qSEriq+c9CP5mioITo5QoL59Tik+jjrA=
+X-Google-Smtp-Source: ABdhPJx4kjKatvvX3YUK1AwXdNBNH+gIfE6Nz6EskjoF+x7wQaAkgMc+r8DF8Op0JCR2ruQXf1fspCsaR8ljEbfDrp0=
+X-Received: by 2002:a17:90a:fb54:: with SMTP id iq20mr10676742pjb.153.1615569540243;
+ Fri, 12 Mar 2021 09:19:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
+References: <20210303183333.46543-1-masahiroy@kernel.org> <20210303183333.46543-4-masahiroy@kernel.org>
+ <CAKwvOdmNKKpZY38=ayM3NfU5K_27P_CqkKtLx7CbRw6_mFuxPA@mail.gmail.com>
+In-Reply-To: <CAKwvOdmNKKpZY38=ayM3NfU5K_27P_CqkKtLx7CbRw6_mFuxPA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 13 Mar 2021 02:18:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASBQ-WOWLgLCWa1Qb74PU_HrU1jk=SeRwH+XoT_NF93AA@mail.gmail.com>
+Message-ID: <CAK7LNASBQ-WOWLgLCWa1Qb74PU_HrU1jk=SeRwH+XoT_NF93AA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] kbuild: dwarf: use AS_VERSION instead of test_dwarf5_support.sh
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 10:33:48AM +0100, David Hildenbrand wrote:
-> On 12.03.21 10:03, David Hildenbrand wrote:
-> > On 10.03.21 17:14, Minchan Kim wrote:
-> > > ffer_head LRU caches will be pinned and thus cannot be migrated.
-> > > This can prevent CMA allocations from succeeding, which are often used
-> > > on platforms with co-processors (such as a DSP) that can only use
-> > > physically contiguous memory. It can also prevent memory
-> > > hot-unplugging from succeeding, which involves migrating at least
-> > > MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
-> > > GiB based on the architecture in use.
-> > 
-> > Actually, it's memory_block_size_bytes(), which can be even bigger
-> > (IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that
-> > will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
-> > 
-> > > 
-> > > Correspondingly, invalidate the BH LRU caches before a migration
-> > > starts and stop any buffer_head from being cached in the LRU caches,
-> > > until migration has finished.
-> > 
-> > Sounds sane to me.
-> > 
-> 
-> Diving a bit into the code, I am wondering:
-> 
-> 
-> a) Are these buffer head pages marked as movable?
-> 
-> IOW, are they either PageLRU() or __PageMovable()?
-> 
-> 
-> b) How do these pages end up on ZONE_MOVABLE or MIGRATE_CMA?
-> 
-> I assume these pages come via
-> alloc_page_buffers()->alloc_buffer_head()->kmem_cache_zalloc(GFP_NOFS |
-> __GFP_ACCOUNT)
-> 
+On Thu, Mar 4, 2021 at 5:44 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > The test code in scripts/test_dwarf5_support.sh is somewhat difficult
+> > to understand, but after all, we want to check binutils >= 2.35.2
+> >
+> > From the former discussion, the requrement for generating DRAWF v5 from
+>
+> ^typos: s/requrement/requirement, s/DRAWF/DWARF
+>
+> (in vim you can `:set spell` (`:set nospell` to disable), there's
+> probably a nice way to auto set this on buffer entry for a commit
+> message)
 
-It's indirect it was not clear
 
-try_to_release_page
-    try_to_free_buffers
-        buffer_busy
-            failed
+I cannot be accustomed to vim.
 
-Yeah, comment is misleading. This one would be better.
+I use emacs for coding, and nano editor
+for editing simple text files, and input commit log.
 
-        /*
-         * the refcount of buffer_head in bh_lru prevents dropping the
-         * attached page(i.e., try_to_free_buffers) so it could cause
-         * failing page migrationn.
-         * Skip putting upcoming bh into bh_lru until migration is done.
-         */
+I invoke aspell from nano (Ctrl-t, Ctrl-s), but
+I sometimes forget to do spell checking.
+
+
+
+> >
+> >  config DEBUG_INFO_DWARF5
+> >         bool "Generate DWARF Version 5 debuginfo"
+> > -       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+> > -       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> > +       depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && AS_IS_GNU && AS_VERSION >= 23502) || (CC_IS_CLANG && AS_IS_LLVM)
+>
+> Would this be more concise as:
+> +       depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && (AS_IS_LLVM
+> || (AS_IS_GNU && AS_VERSION >= 23502))
+>
+
+Yes, this is simpler.
+I will do it in v2.
+
+Thanks.
+
+
+-- 
+Best Regards
+Masahiro Yamada
