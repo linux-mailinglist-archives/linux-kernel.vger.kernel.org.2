@@ -2,111 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB2338A9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAE3338A7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhCLKxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:53:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233641AbhCLKxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:53:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B6D56501B;
-        Fri, 12 Mar 2021 10:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615545895;
-        bh=UfOV09KQcKMeWL12uT+LRLZWIw6CpoAZkllye4DuvZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cFRuOfo4hYjQH16EHW8ytC693/8mGqx8Eksw99CvF2BmY6ymqNr62HU+ozvYwth6v
-         FJgF2wabUH1Jxh0cOymAk70aFfT8hM3wNrqHzEOyzwRBPWHeqHpqt+7qnPzZnIcazq
-         ZqaS475OlHk6KfmkJoOnV1Kr4v6WBXb7Rdswd3ReyBRhnVx4Eyve6AzthZszMBQMgX
-         S6h7BpBUQDhtolWE6sDoHNCNCnkM0ocM684GenOxqAWa3ktEK6eikvK4FIdUp1B1W2
-         +71qIij1IjFFIbhtU2UaIAoR/QvrVjt9yuEKUHc84t5wbvjO9M19J0abZ9Ji2IDBd7
-         6P53bZiDVySWw==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lKfI0-0007H0-7k; Fri, 12 Mar 2021 11:45:04 +0100
-Date:   Fri, 12 Mar 2021 11:45:04 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: Re: [PATCH] usbip: fix vhci races in connection tear down
-Message-ID: <YEtGMMjOg3pHTSma@hovoldconsulting.com>
-References: <20210312022737.44122-1-skhan@linuxfoundation.org>
+        id S233332AbhCLKqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232002AbhCLKqk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:46:40 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95004C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:46:39 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id 130so23702936qkh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:46:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CbTnkwF9jZvTICHISiWHqX+MSzNNXjxaL1uyqbdkk7Q=;
+        b=TVu9DnEdevr/4idBCVO9humpKUzm9IKwQ6TS+6EJtCHwduRTKYu9P4TpJTzX0lNdN6
+         sQslaZfn1VNICNYxZpju1QvJjCddxR5L2ypnRgatsph7AztboI476+udBDjaD4LV8wwB
+         EwAtu0MN0+dp7XU7drpNUhuy/R+dXjdxBPbTb9cfFyJALVgYAk+tk+eExjEuzSghKjFY
+         rv+lVyxavY4daNG0/tW2LgXg+w+VeyPBxgkT7Vab5zy799eTAFs70MGFTX3B9QHg1poG
+         SI1ls89JFBwGNCV3B9777Itl09WBcpRuiXD4nQC5+KYdijtXGtIMwXabDaCLiCf7+/06
+         pw/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CbTnkwF9jZvTICHISiWHqX+MSzNNXjxaL1uyqbdkk7Q=;
+        b=Faal6fBqo7ut9KAlBWW4haSGJ0997cW8CFWY6h8UoXgnkZ1hueWJ5AGCho6Beo97BF
+         SKUYjKI1Bp6dKbCckv8ZRJTn1Jk9Gp6t4AmXQKGkhAAnLxAMie+7tJMFRwVykIu16HOw
+         Lm+PIS9AMp8Fi/6O8DbVK8qI6whzKp05DJfQVO56ipBybYqVrl7af4VXUrYGYhvSkgKu
+         eEis2XGJnY5Wa7UMJg3bEgTNZO0uwhCBDy9+8Ztsic+B/zVcDAqb+joSxduAIrwbzpKU
+         tg2HLjK5tytc8UTjRgoZ3g5QYShFA+TVjLh5GryDLYWI1nkWaM0S7IEKJpmHD/vNKVoq
+         2OlA==
+X-Gm-Message-State: AOAM533R6C6kC6R7OS3y0j8z+QxaxL59y9KisYLdc0kMLWMxOu0uQx80
+        iq+8xFvserzhJYCevvpeVixO6GSV8klfCFH0Nk04Vw==
+X-Google-Smtp-Source: ABdhPJxxljDNrYSxXq5RhX/MooMYbYFsFAvRUes/yZE6deyLs5iSBeZAUt0HZaZ+xx+nh63MHW+66HbsJVoodlYXl4o=
+X-Received: by 2002:a37:96c4:: with SMTP id y187mr12655184qkd.231.1615545998480;
+ Fri, 12 Mar 2021 02:46:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312022737.44122-1-skhan@linuxfoundation.org>
+References: <0000000000009cd8d505bd545452@google.com>
+In-Reply-To: <0000000000009cd8d505bd545452@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 12 Mar 2021 11:46:27 +0100
+Message-ID: <CACT4Y+a68cidsRa1zd8h=rNVkwyYKdihBtO2YBPyyxwc2Twpng@mail.gmail.com>
+Subject: Re: [syzbot] upstream boot error: WARNING in vkms_vblank_simulate
+To:     syzbot <syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, melissa.srw@gmail.com,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 07:27:37PM -0700, Shuah Khan wrote:
-> vhci_shutdown_connection() references connection state (tcp_socket,
-> tcp_rx, tcp_tx, sockfd) saved in usbpip_device without holding the
-> lock.
-> 
-> Current connection tear down sequence:
-> Step 1: shutdown the socket
-> Step 2: stop rx thread and reset tcp_rx pointer
-> Step 3: stop tx thread and reset tcp_tx pointer
-> Step 4: Reset tcp_socket and sockfd
-> 
-> There are several race windows between these steps. In addition, device
-> reset routine (vhci_device_reset) resets tcp_socket and sockfd holding
-> the lock.
-> 
-> Fix these races:
-> - Introduce in_disconnect flag to ensure vhci_shutdown_connection() runs
->   only once.
-> - Change attach_store() to initialize in_disconnect to false while
->   initializing connection status (tcp_socket, tcp_rx, tcp_tx, sockfd)
-> - Change vhci_shutdown_connection() to check in_disconnect and bail
->   out if disconnect is in progress.
-> - Change vhci_shutdown_connection() to
->   -- hold lock to save connection state pointers and unlock.
->   -- Shutdown the socket and stop threads.
->   -- Hold lock to clear connection status and in_disconnect flag.
-> - Change vhci_device_reset() to reset tcp_socket and sockfd.
->   if !in_disconnect
-> 
-> Tested syzbot and the reproducer did not trigger any issue.
-> 
-> Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+On Fri, Mar 12, 2021 at 11:26 AM syzbot
+<syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    f78d76e7 Merge tag 'drm-fixes-2021-03-12-1' of git://anong..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11c16ba2d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dc02c6afcb046874
+> dashboard link: https://syzkaller.appspot.com/bug?extid=333bd014262fd5d0a418
+> userspace arch: arm
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+333bd014262fd5d0a418@syzkaller.appspotmail.com
+
+This WARNING seems to be happening just randomly.
+It was already reported as:
+
+#syz dup: WARNING in vkms_vblank_simulate (2)
+https://syzkaller.appspot.com/bug?id=9b10491371879700d6a21c15684c2232ff015084
+
+It now has whooping 48589 crashes and also crashes slow qemu tcg instances.
+
+
+
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 0 at drivers/gpu/drm/vkms/vkms_crtc.c:21 vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc2-syzkaller-00338-gf78d76e72a46 #0
+> Hardware name: linux,dummy-virt (DT)
+> pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
+> pc : vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:21
+> lr : hrtimer_forward_now include/linux/hrtimer.h:510 [inline]
+> lr : vkms_vblank_simulate+0x90/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:19
+> sp : ffff00006a693cd0
+> x29: ffff00006a693cd0 x28: ffff00000c9d1e58
+> x27: dfff800000000000 x26: ffff00006a67f540
+> x25: 1fffe0000d4cfeb1 x24: 1fffe0000d4cfeaa
+> x23: ffff00000c9d0d30 x22: 0000000000fe4c00
+> x21: ffff00006a67f540 x20: ffff00000c9d0e58
+> x19: ffff00000c9d1e58 x18: ffff00006a6a1b48
+> x17: 1fffe00001952345 x16: 0000000000000000
+> x15: ffff8000197bf810 x14: 1fffe0000d4d2750
+> x13: 0000000000000001 x12: 0000000000000033
+> x11: 1ffff00002fb4936 x10: 0000000000000007
+> x9 : 1ffff00002fb4943 x8 : ffff800017d14c00
+> x7 : 00000000f1f1f1f1 x6 : dfff800000000000
+> x5 : 7fffffffffffffff x4 : 00000008e44f6b90
+> x3 : 00000008e54db790 x2 : 00000008e44f6b90
+> x1 : 00000008e54db790 x0 : 0000000000000002
+> Call trace:
+>  vkms_vblank_simulate+0x26c/0x2f4 drivers/gpu/drm/vkms/vkms_crtc.c:41
+>  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+>  __hrtimer_run_queues+0x590/0xe40 kernel/time/hrtimer.c:1583
+>  hrtimer_interrupt+0x2d4/0x810 kernel/time/hrtimer.c:1645
+>  timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
+>  arch_timer_handler_phys+0x4c/0x70 drivers/clocksource/arm_arch_timer.c:665
+>  handle_percpu_devid_irq+0x19c/0x330 kernel/irq/chip.c:930
+>  generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
+>  generic_handle_irq kernel/irq/irqdesc.c:652 [inline]
+>  __handle_domain_irq+0x11c/0x1f0 kernel/irq/irqdesc.c:689
+>  handle_domain_irq include/linux/irqdesc.h:176 [inline]
+>  gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
+>  el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
+>  arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
+>  queue_work_on+0x74/0x110 kernel/workqueue.c:1528
+>  queue_work include/linux/workqueue.h:507 [inline]
+>  cursor_timer_handler+0x64/0x100 drivers/video/fbdev/core/fbcon.c:397
+>  call_timer_fn+0x1d4/0x9c4 kernel/time/timer.c:1431
+>  expire_timers kernel/time/timer.c:1476 [inline]
+>  __run_timers.part.0+0x530/0xa00 kernel/time/timer.c:1745
+>  __run_timers kernel/time/timer.c:1726 [inline]
+>  run_timer_softirq+0xa4/0x1a0 kernel/time/timer.c:1758
+>  _stext+0x2b4/0x1084
+>  do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+>  invoke_softirq kernel/softirq.c:228 [inline]
+>  __irq_exit_rcu+0x46c/0x510 kernel/softirq.c:422
+>  irq_exit+0x14/0x84 kernel/softirq.c:446
+>  __handle_domain_irq+0x120/0x1f0 kernel/irq/irqdesc.c:692
+>  handle_domain_irq include/linux/irqdesc.h:176 [inline]
+>  gic_handle_irq+0x5c/0x1b0 drivers/irqchip/irq-gic.c:370
+>  el1_irq+0xb4/0x180 arch/arm64/kernel/entry.S:669
+>  arch_local_irq_enable+0xc/0x14 arch/arm64/include/asm/irqflags.h:37
+>  default_idle_call+0x64/0xf4 kernel/sched/idle.c:112
+>  cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+>  do_idle+0x38c/0x4ec kernel/sched/idle.c:300
+>  cpu_startup_entry+0x28/0x80 kernel/sched/idle.c:397
+>  rest_init+0x1d0/0x2cc init/main.c:721
+>  arch_call_rest_init+0x10/0x1c
+>  start_kernel+0x3b0/0x3e8 init/main.c:1064
+>  0x0
+>
+>
 > ---
->  drivers/usb/usbip/usbip_common.h |  1 +
->  drivers/usb/usbip/vhci_hcd.c     | 55 +++++++++++++++++++++++---------
->  drivers/usb/usbip/vhci_sysfs.c   |  4 +++
->  3 files changed, 45 insertions(+), 15 deletions(-)
-
-> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-> index 3209b5ddd30c..c1917efe5737 100644
-> --- a/drivers/usb/usbip/vhci_hcd.c
-> +++ b/drivers/usb/usbip/vhci_hcd.c
-> @@ -1007,31 +1007,54 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
->  static void vhci_shutdown_connection(struct usbip_device *ud)
->  {
->  	struct vhci_device *vdev = container_of(ud, struct vhci_device, ud);
-> +	unsigned long flags;
-> +	struct socket *socket;
-> +	struct task_struct *tcp_rx = NULL;
-> +	struct task_struct *tcp_tx = NULL;
-> +	int sockfd = 0;
-> +
-> +	spin_lock_irqsave(&ud->lock, flags);
-> +	if (vdev->ud.in_disconnect) {
-> +		pr_info("%s: Disconnect in progress for sockfd %d\n",
-> +			__func__, ud->sockfd);
-
-Looks like you forgot to remove all you debug printks like this one
-before submitting.
-
-> +		spin_unlock_irqrestore(&ud->lock, flags);
-> +		return;
-> +	}
-
-Johan
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000009cd8d505bd545452%40google.com.
