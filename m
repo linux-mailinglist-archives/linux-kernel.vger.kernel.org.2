@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50353382EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E383382EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 01:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCLAui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 19:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S231495AbhCLAx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 19:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbhCLAty (ORCPT
+        with ESMTP id S229578AbhCLAxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 19:49:54 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CC3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 16:49:54 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id bt20so7550360qvb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 16:49:54 -0800 (PST)
+        Thu, 11 Mar 2021 19:53:02 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FF9C061574;
+        Thu, 11 Mar 2021 16:53:02 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id bt4so4324457pjb.5;
+        Thu, 11 Mar 2021 16:53:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Wy+IwcbFe5iyl37uDl+oXBLCNbLEHUQXvTEZYf7ymx8=;
-        b=TFaPttpAjNfe+2iixUj6bfpglHAqdyJonN+f/D/N4GxhYzufIVNkNGd52Z481IiXLa
-         J7zK9PmVKfZgaMXiBRQ+GQtnc7Vrgn9nMBlfx1v+5B/BOEhThUKYOHdycFINi66rsJ9n
-         k+rlStscftY35kfr5wg7QYXNcjmxPrl9goemzUQa08kgwYkcgPAmxhdD5RlWO5s5tIcf
-         2Qxw4fQhL1ORNIz5WRig2l6/Q8mJ6txwoQqqPLf970ALae7jjgaj4GvNENLYY1wAqFr7
-         2UZoruoI+cwg1gYH1874qrh6FP4ZiB0odU/ppmrbRZZrBthB+1LqWzxw8PqfRpKrDzFV
-         7Wvg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eMFqKRtgcs+0ebOYFdj+44tpkQFNCqnBlU/CvJWBuDU=;
+        b=NQGFr/9BtzOWNGk4TF3mbMQjvIfJXrzqXbX/HRuRhBtZOciXZzlfdvOcml3elyXK7K
+         rv2vLMW6fwC2BonjNxQhTX9u/7qSkVCtsZnzLabfS+s81Glq0okX3/tb3u+fPckWqyg+
+         1meerjcOBPMLylZ2fjSeuVEeForjVNV+CI49KzFakXwwchlVJFiHV6cLDHFuOyHIdIdV
+         BjerrmBtAmakLcLfS71lK76hZQonQM107FLAf6I13Dg1UsJ+BLvDLgEV0/8aNdX5ojVe
+         0cxb1xfdMfkpghln3PT9xezP4D/Q2w2rhRCNDlJxifYQYsDFoRsPAWTecGATNP57EBJL
+         kz6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Wy+IwcbFe5iyl37uDl+oXBLCNbLEHUQXvTEZYf7ymx8=;
-        b=HxWbEUcePUYY8OTC0sJ9gT/ivhDK9dja5yE7f0UhRjLoxJLgJGUF7+M2/h8kNpnYNa
-         qRjE37lvz0ww9uFIMq0PvTN7hXK1O2vhR5wMwrPb1tZyzSVLR1aeGpEzcumB5zNXJ5oI
-         MJ6jeS0wGjL19XclDgZeC/7tJR66CbhSglAMb978/38zg14ChrtXfPHmAiN2GpxwdYQo
-         2AqxuUw7z2VUrpFoQEIXtyBkhYoPNlmmdUbrWHul2eUYex55Ya6eV7eBdtIW4Bw7cSAW
-         9OM3qWPmzH9xy6zTmHhl3LMsRJeQkYwSW5uw5k47Hv32Y4c2ksd6KUYqJVdXepJA2EuL
-         /t2A==
-X-Gm-Message-State: AOAM530AhJtlxSdqimyNfbBoxJiuj1b3AvDz9KApDxAk7n2fxp8nGIf+
-        0pV5g7FqU59yNxew+4Dy1XeSwmkWHS09XIDoWco=
-X-Google-Smtp-Source: ABdhPJznSvPJLG6qaFoP2kj2Ov4WrW1xkoR+hl4AeQuvmUyvA146uVMjKfz/DR0rMwbjq3TBrHrovQw5xd3PO2vJOjg=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c86b:8269:af92:55a])
- (user=samitolvanen job=sendgmr) by 2002:ad4:50c7:: with SMTP id
- e7mr10016068qvq.58.1615510193452; Thu, 11 Mar 2021 16:49:53 -0800 (PST)
-Date:   Thu, 11 Mar 2021 16:49:19 -0800
-In-Reply-To: <20210312004919.669614-1-samitolvanen@google.com>
-Message-Id: <20210312004919.669614-18-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210312004919.669614-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 17/17] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eMFqKRtgcs+0ebOYFdj+44tpkQFNCqnBlU/CvJWBuDU=;
+        b=AmgkpYgLurW3fazA/0EmhVmnL8xKGsZ8mwQRvV3o7ix1cyGKtO2dfsag6Ux0M2Jxgp
+         JQf3DxuN5SzqbdP6a0DkRuuLNxhtzVn3r5qnjbzomaTKkE0mREoJWlkeYUukXgBOxqZl
+         9qXe/35rHXoJ4/c5Z2IwIPjzUxrafoXBT1Vi3QgcXZf9MPaI8RDsAz8nm5NsIRLQ/6bI
+         g251XiOLV7FWvGfUcuwDfT4cCpkL2ZoE6riLC2HB+7aaayeVKTGYagKZdt2aC6O/g4xD
+         mYlW2POjbvA43+h1blPJRDSOdlWNivbulkilIzkhkk37JT4P43+acuYs9+pT+d+bIGoW
+         Ew2Q==
+X-Gm-Message-State: AOAM533umiSnKsMxufru7eVMPWgTgw7DbL5pEvQDFaAs6r+8yo7phwPi
+        38npwoiiGJEvuIVGbtRN9BlJiQ8TlCo=
+X-Google-Smtp-Source: ABdhPJzU/8gzgNU0reee2x/1TuHv1YF8O6jb+VuWwtYh9PXxS3De1BKhvGnSz0XW5gKMhDt/EoV8zg==
+X-Received: by 2002:a17:902:be06:b029:e3:7031:bef with SMTP id r6-20020a170902be06b02900e370310befmr10763852pls.19.1615510381644;
+        Thu, 11 Mar 2021 16:53:01 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x14sm3554079pfm.207.2021.03.11.16.53.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 16:53:01 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Abhishek Shah <abhishek.shah@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
+        DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: phy: broadcom: Fix RGMII delays for BCM50160 and BCM50610M
+Date:   Thu, 11 Mar 2021 16:52:50 -0800
+Message-Id: <20210312005251.3353889-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+The PHY driver entry for BCM50160 and BCM50610M calls
+bcm54xx_config_init() but does not call bcm54xx_config_clock_delay() in
+order to configuration appropriate clock delays on the PHY, fix that.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Fixes: 733336262b28 ("net: phy: Allow BCM5481x PHYs to setup internal TX/RX clock delay")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Hi,
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1f212b47a48a..6be5b61a0f17 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
+More (all) PHY entries that support RGMII should arguably do the same
+thing here but given that we had a bad history of seeing broken
+DTS/DTBs, I prefer to take a conservative approach here and submit a
+localized fix to the hardware I just had to test this on.
+
+While this dates back to before the commit in Fixes tag, that commit
+introduces the bcm54xx_config_clock_delay() function and would make it
+go far enough for stable back ports.
+
+ drivers/net/phy/broadcom.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index fa0be591ae79..4c2f8bb51eef 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -342,6 +342,10 @@ static int bcm54xx_config_init(struct phy_device *phydev)
+ 	bcm54xx_adjust_rxrefclk(phydev);
+ 
+ 	switch (BRCM_PHY_MODEL(phydev)) {
++	case PHY_ID_BCM50610:
++	case PHY_ID_BCM50610M:
++		err = bcm54xx_config_clock_delay(phydev);
++		break;
+ 	case PHY_ID_BCM54210E:
+ 		err = bcm54210e_config_init(phydev);
+ 		break;
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.25.1
 
