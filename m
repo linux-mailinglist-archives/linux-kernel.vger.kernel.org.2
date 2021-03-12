@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710143399C3
+	by mail.lfdr.de (Postfix) with ESMTP id BD7963399C4
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235598AbhCLWmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S235604AbhCLWmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhCLWlp (ORCPT
+        with ESMTP id S235599AbhCLWlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:41:45 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16595C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:41:45 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id f81so30710694yba.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:41:44 -0800 (PST)
+        Fri, 12 Mar 2021 17:41:47 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181E7C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:41:47 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b127so30757348ybc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 14:41:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=n62ZXlNKUIkGTReX7MmHBLgk3X3V3EW5NpQWFJzdSTA=;
-        b=aLhrSS1Nwvx9iyYPtCrZODRxYwey1++byvUcw++hpshNbVmJZNuPtkU03Ivn2MSqSM
-         i9DHhM9UrfLrgDuo1iG0QurKd4840oIfLU2RUiHBBON466AdyqgYuiVLYRQpAV9YWW3a
-         kPmUaAclUxQrux4076L0Rqb4gifdSJjoqaAfpkSs4TvG8xAzKmvy8ta00HkHRwrmntTU
-         /G6huvVMhPVt4T3BFYEirBWr+vfK6JRK4R8yCng22cvOBvKEyQyzJE4OLHf6j/z+ypEF
-         V/2ZaMhlburbGEpg2rdl7cPzOZmvJqHNDUOtPUcEFSlOYDxC7QoFmvPxPUM+acQEveUQ
-         yr0g==
+        bh=HUxwt7fMNMSOl9TDVy0HKmyLht64Yf2wRDVakO/oeqM=;
+        b=qBA3e1xbPS3Zik4ZzgiUkY+MduWKZs+gydr/D5r/tgoSPqZk+akqK1ORjw6rzVcUko
+         oQNrbswIITUeZfKBFZIYhpbOSpK4hRqd2QwYHcAM1EQaeV8HszvQTxFt4pJlE1StAEhy
+         R/zFQWZGzZ4ZW8Vu4bRdXuKHdciUazcKQ1Bm7p44E+oaJ7vR3OPfLQuRPcM+0pj8kREC
+         xSAMMOiKda+flTFurl1Ls/lIg4cebBECOzRmlv958GJXYLTjSAIC9mmg2kyZBOUzjhI2
+         6QjsPUWYzbQLVKLMjgNT4xPPq0CKAHwFVPQYYvdw5ScN64bNl/W92gZt/v39Qx8kCH6a
+         B/XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=n62ZXlNKUIkGTReX7MmHBLgk3X3V3EW5NpQWFJzdSTA=;
-        b=p26pNLpOU1ViG9bVlVt0IylfiXNdgiI4vvPUfOnsPc5rP7w6MgSa6ybwb0G3Uc6hoV
-         3s+O7eeYIFiXBvIx3tTeviGt0pw5Xh7Bgp9bkoqZ1YqHe6fo/SFj5yCFbQJhVYfVO5ds
-         O/eNaJfN9+RnQ6JpEmJDsgYH1/475A26sYWHxOevKiZVGz3YsDeIGGhcnZ5w1kfUOeK6
-         zEUHQdcPuC3BtEWj27EePvXO/hWwRAKgub2iGhr1XBFaxKNgnBHquvLkTHsjuDCuUnk4
-         BTbZ+QohEyexF30QiahLeeJCJv/v5B278u8OMC0Sgg7Vm4RgEhAcWyGXEytZ3S7H8hCI
-         NohQ==
-X-Gm-Message-State: AOAM531edXB7rzJbgQ+GgkT7InPC09IAQ+Z2HBHZCkbepNXdgxu6/H5e
-        k7ZvobFbr5vytTLDQjhG53jTI64VF69+iijZsxM=
-X-Google-Smtp-Source: ABdhPJz2oQ+G7JS6YVQOmBxyT6jWmv/C/U+k0ZBL3BYwO1mGCg63BYC9R9xmgOxmF0f6pY48IRqUxfdfdpuqe0c4dGw=
+        bh=HUxwt7fMNMSOl9TDVy0HKmyLht64Yf2wRDVakO/oeqM=;
+        b=eesvdjorawfqj1qhPisFi5buF59lDliLDuJrS+V///2ooIy+dEu6fukqKUphhFxOyq
+         pGI0c0qa9yGWMRuBwpujcxIWD9BdzhjKubyNL2zCXggt0O3o0E1nftz965ENJVm78oH+
+         eibenfdncwSzk4p7h0jrs9C6FrV9bx0hN8F+dj1ua16j2VnL1m/nroXOWRBIZ1EBD24n
+         JEuevWaTrZj+T3+N5Q8FdWG9UiNPc27M3H4gSyEmJCpIHGkiSiicAPQ2HoWrJWjDZDWj
+         Bso1dKNxhWRFrWZAHTVPUSYP75qR7CrqChLBog+9hzGg7wRPANcQG+f6EA5Dk1hWRN3g
+         n/yQ==
+X-Gm-Message-State: AOAM533hLiPGUv6MrLqFg0wSDAstaUjK4mQqjNimtKr7Z/VDdSfzHqCk
+        vA+3trxDv79OozIupA9lXC8rpJibQw9yQFeHRC4=
+X-Google-Smtp-Source: ABdhPJzTjgoS0OCrMOSDzAWzNH6GvqS+mPV90ai8syps5T+q+bLm/CraIrvP9SnX72IuCyMbDKKNGVMkYV9YqRZdI1s=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f1f4:3252:5898:ad84])
- (user=ndesaulniers job=sendgmr) by 2002:a25:6189:: with SMTP id
- v131mr20618833ybb.481.1615588904059; Fri, 12 Mar 2021 14:41:44 -0800 (PST)
-Date:   Fri, 12 Mar 2021 14:41:30 -0800
-In-Reply-To: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
-Message-Id: <20210312224132.3413602-1-ndesaulniers@google.com>
+ (user=ndesaulniers job=sendgmr) by 2002:a25:ca8e:: with SMTP id
+ a136mr22450826ybg.156.1615588906145; Fri, 12 Mar 2021 14:41:46 -0800 (PST)
+Date:   Fri, 12 Mar 2021 14:41:31 -0800
+In-Reply-To: <20210312224132.3413602-1-ndesaulniers@google.com>
+Message-Id: <20210312224132.3413602-2-ndesaulniers@google.com>
 Mime-Version: 1.0
-References: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
+References: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161> <20210312224132.3413602-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2 0/2] gcov fixes for clang-11
+Subject: [PATCH v2 1/2] gcov: fix clang-11+ support
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Peter Oberparleiter <oberpar@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>
@@ -59,7 +59,8 @@ Cc:     Nathan Chancellor <nathan@kernel.org>,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
         Fangrui Song <maskray@google.com>,
         Prasad Sodagudi <psodagud@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,20 +73,156 @@ when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
 the function signatures so calling these functions doesn't panic the
 kernel.
 
-The first patch should allow us to backport it to stable; the second
-drops support for older toolchains.
-
 Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
 Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
+Cc: stable@vger.kernel.org # 5.4
+Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+---
+Changes V1 -> V2:
+* Use CONFIG_CLANG_VERSION instead of __clang_major__.
+* Pick up and retain Suggested-by, Tested-by, and Reviewed-by tags.
+* Drop note from commit message about `git blame`; I did what was
+  sugguested in V1, but it still looks to git like I wrote those
+  functions. Oh well.
 
-Nick Desaulniers (2):
-  gcov: fix clang-11+ support
-  gcov: clang: drop support for clang-10 and older
+ kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
- kernel/gcov/Kconfig |  1 +
- kernel/gcov/clang.c | 32 ++++++++------------------------
- 2 files changed, 9 insertions(+), 24 deletions(-)
-
+diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
+index c94b820a1b62..8743150db2ac 100644
+--- a/kernel/gcov/clang.c
++++ b/kernel/gcov/clang.c
+@@ -75,7 +75,9 @@ struct gcov_fn_info {
+ 
+ 	u32 num_counters;
+ 	u64 *counters;
++#if CONFIG_CLANG_VERSION < 110000
+ 	const char *function_name;
++#endif
+ };
+ 
+ static struct gcov_info *current_info;
+@@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
+ }
+ EXPORT_SYMBOL(llvm_gcov_init);
+ 
++#if CONFIG_CLANG_VERSION < 110000
+ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
+ 		u32 checksum)
+ {
+@@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
+ 	current_info->checksum = checksum;
+ }
+ EXPORT_SYMBOL(llvm_gcda_start_file);
++#else
++void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
++{
++	current_info->filename = orig_filename;
++	current_info->version = version;
++	current_info->checksum = checksum;
++}
++EXPORT_SYMBOL(llvm_gcda_start_file);
++#endif
+ 
++#if CONFIG_CLANG_VERSION < 110000
+ void llvm_gcda_emit_function(u32 ident, const char *function_name,
+ 		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
+ {
+@@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
+ 	list_add_tail(&info->head, &current_info->functions);
+ }
+ EXPORT_SYMBOL(llvm_gcda_emit_function);
++#else
++void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
++		u8 use_extra_checksum, u32 cfg_checksum)
++{
++	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
++
++	if (!info)
++		return;
++
++	INIT_LIST_HEAD(&info->head);
++	info->ident = ident;
++	info->checksum = func_checksum;
++	info->use_extra_checksum = use_extra_checksum;
++	info->cfg_checksum = cfg_checksum;
++	list_add_tail(&info->head, &current_info->functions);
++}
++EXPORT_SYMBOL(llvm_gcda_emit_function);
++#endif
+ 
+ void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
+ {
+@@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
+ 	}
+ }
+ 
++#if CONFIG_CLANG_VERSION < 110000
+ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
+ {
+ 	size_t cv_size; /* counter values size */
+@@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
+ 	kfree(fn_dup);
+ 	return NULL;
+ }
++#else
++static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
++{
++	size_t cv_size; /* counter values size */
++	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
++			GFP_KERNEL);
++	if (!fn_dup)
++		return NULL;
++	INIT_LIST_HEAD(&fn_dup->head);
++
++	cv_size = fn->num_counters * sizeof(fn->counters[0]);
++	fn_dup->counters = vmalloc(cv_size);
++	if (!fn_dup->counters) {
++		kfree(fn_dup);
++		return NULL;
++	}
++
++	memcpy(fn_dup->counters, fn->counters, cv_size);
++
++	return fn_dup;
++}
++#endif
+ 
+ /**
+  * gcov_info_dup - duplicate profiling data set
+@@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
+  * gcov_info_free - release memory for profiling data set duplicate
+  * @info: profiling data set duplicate to free
+  */
++#if CONFIG_CLANG_VERSION < 110000
+ void gcov_info_free(struct gcov_info *info)
+ {
+ 	struct gcov_fn_info *fn, *tmp;
+@@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
+ 	kfree(info->filename);
+ 	kfree(info);
+ }
++#else
++void gcov_info_free(struct gcov_info *info)
++{
++	struct gcov_fn_info *fn, *tmp;
++
++	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
++		vfree(fn->counters);
++		list_del(&fn->head);
++		kfree(fn);
++	}
++	kfree(info->filename);
++	kfree(info);
++}
++#endif
+ 
+ #define ITER_STRIDE	PAGE_SIZE
+ 
 
 base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
 -- 
