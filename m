@@ -2,167 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19F2339679
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF01A33967B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhCLS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:28:38 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:47694 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhCLS2I (ORCPT
+        id S233433AbhCLS2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233194AbhCLS2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:28:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=Hyn4+hD/rcL5U1sAMSyBYqlThrIcs7n2BvWezL3fddg=; b=O02RcMlN/pcj/N4ypIgx4I/pQ5
-        odKzndiBxONwDvQY7XeQHM0yUL6tNtRu+tqAeZboQCn2uqEptBRencRIbjQGRldJW/jyvUA/KDtL+
-        coOgr94guexcTd1f7Szt8zRpwy1IvMAy2W3ftljmL4P8GFdKj1SN8onH4rfBxF57fhBf9xXAzAhQV
-        /qljiRXeamubdsafvZ8ZJFJ3NXcbdH1tgLymdvkHTAsjp3Q7Tool9D/nXyWTP4daDpVDiawZwjhWQ
-        lPu90abCSPKAPLbTenEiF3R13QKr9Taag/gseqawH8n8+t4hT7g05jFpAdVBsSakM2wzLS7c3hm29
-        lwmEDUkA==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lKmVn-0000Xs-8W; Fri, 12 Mar 2021 11:27:48 -0700
-To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org
-Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-7-logang@deltatee.com>
- <215e1472-5294-d20a-a43a-ff6dfe8cd66e@arm.com>
- <d7ead722-7356-8e0f-22de-cb9dea12b556@deltatee.com>
- <a8205c02-a43f-d4e8-a9fe-5963df3a7b40@arm.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <367fa81e-588d-5734-c69c-8cdc800dcb7e@deltatee.com>
-Date:   Fri, 12 Mar 2021 11:27:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 12 Mar 2021 13:28:21 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7F2C061574;
+        Fri, 12 Mar 2021 10:28:20 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id f10so3444730ilq.5;
+        Fri, 12 Mar 2021 10:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ze6w/eTCOz/OO2OOk3Zl0RLx/goZvKrUNfJf9efgDaQ=;
+        b=bJyumMMvXzGYhWnVLS7lUDvseVzaqeK14xLUAzm3aK0I5TTnkDVQong9yduJ/Tlm2O
+         zJ9AntNRqzvRYAeKEj7pjVXagUJd7g7u61RMIL6OGfQHuYfRLIAA/GFLKo2r8xpArGAh
+         ePH+zQ2eWFMfDUM6XZe/EMcN0L7WF9D/6qmK25Nid5x2dE92j/QggC4Us1YsFYNmSCSU
+         mgVsTXMYEX113brGbAPzVYSTgznjcJl5fDHkzTzyR1ufoi+dy2ucVjnuQuIoR47okmNF
+         tktQNTQGTk7Ig+0ko0yMWH9Kkz5/HCzBhDg38tHsyab0LZN+DsWRHWZmJiLWAAJjuIyG
+         QVAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ze6w/eTCOz/OO2OOk3Zl0RLx/goZvKrUNfJf9efgDaQ=;
+        b=mgsibyGC/JhSUCH+2dt2mdaU3I94D1PO76AXhzvHZthm9BQ7NYcLzqvtQPVFJ1jAiX
+         ni25mAhgzKOda5nMfGeEmyAPtNYrG0OzB8oV0VwLWnRQkcqLdci1qh/SDqDhRlvlwmU7
+         HNv9Q1bx5cwYc1luHgwR9cXdp5D8+PsFCSyCIvfBZ2uSj6CRkbFfSsa3Gp9YhHgmf6jo
+         qyrITPw+g6c6Af+MvzQUZNd2ZEgAoFDGuEgJate8gEzVONmL859OdccP5DL+uur5Q1mv
+         aFuRQWSkHsiNJMZ7X1pS14VP85tQrIQslV0CwVs39n/phWIxRJw70Cl+iHH8EQkuAcS8
+         dnIw==
+X-Gm-Message-State: AOAM533H8hRjPQVdSO1UBTTYSVREKfAmLBitV6kgdWku0+ixEdqs0nRi
+        lnkUAoLE4xy4IsrPnoRw1/I=
+X-Google-Smtp-Source: ABdhPJx/8daUaRvyk6SF2ZZ5BxWN8dTS4tj6Ww+SiaGK6e/WxuzZvAty7d73XQ7XyLYoa1LaSJh71g==
+X-Received: by 2002:a05:6e02:1384:: with SMTP id d4mr3696040ilo.307.1615573700278;
+        Fri, 12 Mar 2021 10:28:20 -0800 (PST)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id c5sm1415362ioi.0.2021.03.12.10.28.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 10:28:19 -0800 (PST)
+From:   Tianling Shen <cnsztl@gmail.com>
+X-Google-Original-From: Tianling Shen <cnsztl@immortalwrt.org>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        David Bauer <mail@david-bauer.net>,
+        Tianling Shen <cnsztl@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Sat, 13 Mar 2021 02:27:54 +0800
+Message-Id: <20210312182755.14018-1-cnsztl@immortalwrt.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <a8205c02-a43f-d4e8-a9fe-5963df3a7b40@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, hch@lst.de, andrzej.jakowski@intel.com, sbates@raithlin.com, dan.j.williams@intel.com, daniel.vetter@ffwll.ch, jason@jlekstrand.net, jgg@ziepe.ca, christian.koenig@amd.com, willy@infradead.org, dave.hansen@linux.intel.com, jhubbard@nvidia.com, dave.b.minturn@intel.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [RFC PATCH v2 06/11] dma-direct: Support PCI P2PDMA pages in
- dma-direct map_sg
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tianling Shen <cnsztl@gmail.com>
 
+Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
 
-On 2021-03-12 11:11 a.m., Robin Murphy wrote:
-> On 2021-03-12 16:24, Logan Gunthorpe wrote:
->>
->>
->> On 2021-03-12 8:52 a.m., Robin Murphy wrote:
->>>> +
->>>>            sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
->>>>                    sg->offset, sg->length, dir, attrs);
->>>>            if (sg->dma_address == DMA_MAPPING_ERROR)
->>>> @@ -411,7 +440,7 @@ int dma_direct_map_sg(struct device *dev, struct
->>>> scatterlist *sgl, int nents,
->>>>      out_unmap:
->>>>        dma_direct_unmap_sg(dev, sgl, i, dir, attrs |
->>>> DMA_ATTR_SKIP_CPU_SYNC);
->>>> -    return 0;
->>>> +    return ret;
->>>>    }
->>>>      dma_addr_t dma_direct_map_resource(struct device *dev, phys_addr_t
->>>> paddr,
->>>> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
->>>> index b6a633679933..adc1a83950be 100644
->>>> --- a/kernel/dma/mapping.c
->>>> +++ b/kernel/dma/mapping.c
->>>> @@ -178,8 +178,15 @@ void dma_unmap_page_attrs(struct device *dev,
->>>> dma_addr_t addr, size_t size,
->>>>    EXPORT_SYMBOL(dma_unmap_page_attrs);
->>>>      /*
->>>> - * dma_maps_sg_attrs returns 0 on error and > 0 on success.
->>>> - * It should never return a value < 0.
->>>> + * dma_maps_sg_attrs returns 0 on any resource error and > 0 on
->>>> success.
->>>> + *
->>>> + * If 0 is returned, the mapping can be retried and will succeed once
->>>> + * sufficient resources are available.
->>>
->>> That's not a guarantee we can uphold. Retrying forever in the vain hope
->>> that a device might evolve some extra address bits, or a bounce buffer
->>> might magically grow big enough for a gigantic mapping, isn't
->>> necessarily the best idea.
->>
->> Perhaps this is just poorly worded. Returning 0 is the normal case and
->> nothing has changed there. The block layer, for example, will retry if
->> zero is returned as this only happens if it failed to allocate resources
->> for the mapping. The reason we have to return -1 is to tell the block
->> layer not to retry these requests as they will never succeed in the
->> future.
->>
->>>> + *
->>>> + * If there are P2PDMA pages in the scatterlist then this function may
->>>> + * return -EREMOTEIO to indicate that the pages are not mappable by
->>>> the
->>>> + * device. In this case, an error should be returned for the IO as it
->>>> + * will never be successfully retried.
->>>>     */
->>>>    int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int
->>>> nents,
->>>>            enum dma_data_direction dir, unsigned long attrs)
->>>> @@ -197,7 +204,7 @@ int dma_map_sg_attrs(struct device *dev, struct
->>>> scatterlist *sg, int nents,
->>>>            ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
->>>>        else
->>>>            ents = ops->map_sg(dev, sg, nents, dir, attrs);
->>>> -    BUG_ON(ents < 0);
->>>> +
->>>
->>> This scares me - I hesitate to imagine the amount of driver/subsystem
->>> code out there that will see nonzero and merrily set off iterating a
->>> negative number of segments, if we open the floodgates of allowing
->>> implementations to return error codes here.
->>
->> Yes, but it will never happen on existing drivers/subsystems. The only
->> way it can return a negative number is if the driver passes in P2PDMA
->> pages which can't happen without changes in the driver. We are careful
->> about where P2PDMA pages can get into so we don't have to worry about
->> all the existing driver code out there.
-> 
-> Sure, that's how things stand immediately after this patch. But then
-> someone comes along with the perfectly reasonable argument for returning
-> more expressive error information for regular mapping failures as well
-> (because sometimes those can be terminal too, as above), we start to get
-> divergent behaviour across architectures and random bits of old code
-> subtly breaking down the line. *That* is what makes me wary of making a
-> fundamental change to a long-standing "nonzero means success" interface...
+Changes in v2:
+- Disable display for NanoPi R4S (reference commit: 74532de460ec)
+- Light "sys" LED on NanoPi R4S (reference commit: 833821eeab91)
 
-So then we reject the patches that make that change. Seems like an odd
-argument to say that we can't do something that won't cause problems
-because someone might use it as an example and do something that will
-cause problems. Reject the change that causes the problem.
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Logan
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index c3036f95c7bc..4a6f772c1043 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -134,6 +134,7 @@ properties:
+               - friendlyarm,nanopi-m4
+               - friendlyarm,nanopi-m4b
+               - friendlyarm,nanopi-neo4
++              - friendlyarm,nanopi-r4s
+           - const: rockchip,rk3399
+ 
+       - description: GeekBuying GeekBox
+-- 
+2.17.1
+
