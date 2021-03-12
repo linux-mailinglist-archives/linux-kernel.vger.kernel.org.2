@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4238F33837F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E7A338385
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhCLCUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:20:06 -0500
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:46444 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhCLCTg (ORCPT
+        id S231396AbhCLCWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:22:14 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:52287 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230494AbhCLCWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:19:36 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.228])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id AEACA40014A;
-        Fri, 12 Mar 2021 10:19:34 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] rdma: delete the useless casting value returned
-Date:   Fri, 12 Mar 2021 10:19:30 +0800
-Message-Id: <1615515570-1692-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkMfGBkZQh5LGkkaVkpNSk5OSk5OTE9CT0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OlE6Azo6OT8LAwIjHzdDEise
-        PAlPCShVSlVKTUpOTkpOTkxOSUlLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUNZV1kIAVlBSk5DSTcG
-X-HM-Tid: 0a78243b6259d991kuwsaeaca40014a
+        Thu, 11 Mar 2021 21:22:01 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0URXf30A_1615515718;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URXf30A_1615515718)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 12 Mar 2021 10:21:58 +0800
+Date:   Fri, 12 Mar 2021 10:21:58 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     eric.dumazet@gmail.com, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] tracing: remove holes in events
+Message-ID: <YErQRmAuRyVa0f2J@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20210311094414.12774-1-tonylu@linux.alibaba.com>
+ <20210311085619.3de5a62a@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311085619.3de5a62a@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-WARNING: casting value returned by memory allocation function is useless.
+On Thu, Mar 11, 2021 at 08:56:19AM -0500, Steven Rostedt wrote:
+> On Thu, 11 Mar 2021 17:44:15 +0800
+> Tony Lu <tonylu@linux.alibaba.com> wrote:
+> 
+> > ---
+> >  include/trace/events/net.h    | 42 +++++++++++++++++------------------
+> >  include/trace/events/qdisc.h  |  4 ++--
+> >  include/trace/events/sunrpc.h |  4 ++--
+> >  include/trace/events/tcp.h    |  2 +-
+> >  4 files changed, 26 insertions(+), 26 deletions(-)
+> 
+> 
+> If all the above are owned by networking, then this patch needs to go
+> through the networking tree.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- include/rdma/ib_verbs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, I will resend it.
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index ca28fca..f4d24d8
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2259,7 +2259,7 @@ struct iw_cm_conn_param;
- 				      struct ib_struct)))
- 
- #define rdma_zalloc_drv_obj_gfp(ib_dev, ib_type, gfp)                         \
--	((struct ib_type *)kzalloc(ib_dev->ops.size_##ib_type, gfp))
-+	kzalloc(ib_dev->ops.size_##ib_type, gfp)
- 
- #define rdma_zalloc_drv_obj(ib_dev, ib_type)                                   \
- 	rdma_zalloc_drv_obj_gfp(ib_dev, ib_type, GFP_KERNEL)
--- 
-2.7.4
 
+Cheers,
+Tony Lu
+
+> 
+> -- Steve
