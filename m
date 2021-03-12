@@ -2,156 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB79339688
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D64B3396CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhCLSaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:30:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233087AbhCLS3t (ORCPT
+        id S233815AbhCLSmb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 13:42:31 -0500
+Received: from mail.curtumepanorama.com.br ([177.91.172.13]:35480 "EHLO
+        mail.curtumepanorama.com.br" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233036AbhCLSmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:29:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615573789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sOSxvjAqkNARupZvLwz7lg1cG/dMG1l8R8/qYQHbrPQ=;
-        b=Kz4lMGPwTUJMXIGnmOeS0Xlesr3k6OtuecvH+K0jBxXfUdcFlIu1Z7N+4u6B90QXmuIk++
-        qTCTqw6wZRsY20hBMr5+YqThVK1EnG0izvaIbDR63oc2Hhwi1HN0rD6ua0EMThqdrw9EFk
-        6tezIbSNcmEHYOmyKiQuXrARmJBnSFs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-YBdJOXq0NlmuU1NFlQemVg-1; Fri, 12 Mar 2021 13:29:47 -0500
-X-MC-Unique: YBdJOXq0NlmuU1NFlQemVg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BEFA1B18BC0;
-        Fri, 12 Mar 2021 18:29:45 +0000 (UTC)
-Received: from krava (unknown [10.40.192.54])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 918C65D6BA;
-        Fri, 12 Mar 2021 18:29:41 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 19:29:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 04/10] libperf: Add evsel mmap support
-Message-ID: <YEuzFHyjubILDA5h@krava>
-References: <20210311000837.3630499-1-robh@kernel.org>
- <20210311000837.3630499-5-robh@kernel.org>
- <YEtzl5c1m7jxWkEw@krava>
- <CAL_JsqLMDLRN2OvMt7cBb1tPWmsupCzQ7DOs_P8nbpjirP4Hwg@mail.gmail.com>
+        Fri, 12 Mar 2021 13:42:01 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 570EA3E7369;
+        Fri, 12 Mar 2021 14:09:01 -0300 (-03)
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id qVsbLd_iOrj0; Fri, 12 Mar 2021 14:09:00 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTP id 1BF513E4102;
+        Fri, 12 Mar 2021 13:34:36 -0300 (-03)
+X-Virus-Scanned: amavisd-new at curtumepanorama.com.br
+Received: from mail.curtumepanorama.com.br ([127.0.0.1])
+        by localhost (mail.curtumepanorama.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kKpCyiW-YOtB; Fri, 12 Mar 2021 13:34:36 -0300 (-03)
+Received: from [10.101.226.51] (188-206-104-122.mobile.kpn.net [188.206.104.122])
+        by mail.curtumepanorama.com.br (Postfix) with ESMTPA id 422023E3E99;
+        Fri, 12 Mar 2021 13:32:12 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLMDLRN2OvMt7cBb1tPWmsupCzQ7DOs_P8nbpjirP4Hwg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 12 Mar 2021 17:32:36 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20210312163213.422023E3E99@mail.curtumepanorama.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:34:39AM -0700, Rob Herring wrote:
-> On Fri, Mar 12, 2021 at 6:59 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 05:08:31PM -0700, Rob Herring wrote:
-> >
-> > SNIP
-> >
-> > > +
-> > >  static int
-> > >  sys_perf_event_open(struct perf_event_attr *attr,
-> > >                   pid_t pid, int cpu, int group_fd,
-> > > @@ -137,6 +147,8 @@ void perf_evsel__free_fd(struct perf_evsel *evsel)
-> > >  {
-> > >       xyarray__delete(evsel->fd);
-> > >       evsel->fd = NULL;
-> > > +     xyarray__delete(evsel->mmap);
-> > > +     evsel->mmap = NULL;
-> > >  }
-> > >
-> > >  void perf_evsel__close(struct perf_evsel *evsel)
-> > > @@ -156,6 +168,45 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
-> > >       perf_evsel__close_fd_cpu(evsel, cpu);
-> > >  }
-> > >
-> > > +int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
-> > > +{
-> > > +     int ret, cpu, thread;
-> > > +     struct perf_mmap_param mp = {
-> > > +             .prot = PROT_READ | PROT_WRITE,
-> > > +             .mask = (pages * page_size) - 1,
-> > > +     };
-> >
-> > I don't mind using evsel->fd for dimensions below,
-> > but we need to check in here that it's defined,
-> > that perf_evsel__open was called
-> 
-> Right, so I'll add this here:
-> 
-> if (evsel->fd == NULL)
->     return -EINVAL;
-> 
-> Note that struct evsel has dimensions in it, but they are only set in
-> the evlist code. I couldn't tell if that was by design or mistake.
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-we do? we have the cpus and threads in perf_evsel no?
-also you'd need perf_evsel not evsel, right?
+Sir/Madam,
 
-> 
-> BTW, I just noticed perf_evsel__open is leaking memory on most of its
-> error paths.
+CONGRATULATIONS!!!
 
-nice.. let's fix it ;-)
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 10th of March 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
 
-thanks,
-jirka
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
 
-> 
-> >
-> > jirka
-> >
-> > > +
-> > > +     if (evsel->mmap == NULL &&
-> > > +         perf_evsel__alloc_mmap(evsel, xyarray__max_x(evsel->fd), xyarray__max_y(evsel->fd)) < 0)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
-> > > +             for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
-> > > +                     int fd = FD(evsel, cpu, thread);
-> > > +                     struct perf_mmap *map = MMAP(evsel, cpu, thread);
-> > > +
-> > > +                     if (fd < 0)
-> > > +                             continue;
-> > > +
-> > > +                     perf_mmap__init(map, NULL, false, NULL);
-> > > +
-> > > +                     ret = perf_mmap__mmap(map, &mp, fd, cpu);
-> > > +                     if (ret)
-> > > +                             return -1;
-> > > +             }
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> >
-> > SNIP
-> >
-> 
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
 
