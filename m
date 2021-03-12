@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73FE338F0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B613338F0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhCLNoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:44:12 -0500
-Received: from mga14.intel.com ([192.55.52.115]:1261 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231473AbhCLNno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:43:44 -0500
-IronPort-SDR: MaAL0pdl+F7MksSxv/r3zFN6pYBXlsv8nrKAt3kqC5MTO9vrGZzWcgbl1vlPholnzfcuPTZpY1
- uLF5Tii6OGIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188196053"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="188196053"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:43:43 -0800
-IronPort-SDR: QbMPPqD0pq8xGs0CiH/bt1XAZSc8+dTyeUCqbGc4pSyGIsGn7n/ON8MhLnxp9IXBBWjgD32cGv
- 5MLkla02i8CQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="387352398"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 12 Mar 2021 05:43:41 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 77E9D2AF; Fri, 12 Mar 2021 15:43:53 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: [PATCH v1 1/1] iio: chemical: bmp680: Drop unneeded explicit castings
-Date:   Fri, 12 Mar 2021 15:43:49 +0200
-Message-Id: <20210312134349.3472-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S231466AbhCLNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:45:19 -0500
+Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:57053 "EHLO
+        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231493AbhCLNo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:44:58 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 2D86C1A48
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:44:57 +0000 (GMT)
+Received: (qmail 26842 invoked from network); 12 Mar 2021 13:44:57 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Mar 2021 13:44:57 -0000
+Date:   Fri, 12 Mar 2021 13:44:55 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210312134455.GU3697@techsingularity.net>
+References: <20210310104618.22750-1-mgorman@techsingularity.net>
+ <20210310104618.22750-3-mgorman@techsingularity.net>
+ <20210310154650.ad9760cd7cb9ac4acccf77ee@linux-foundation.org>
+ <20210311084200.GR3697@techsingularity.net>
+ <20210312124609.33d4d4ba@carbon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210312124609.33d4d4ba@carbon>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In few places the unnecessary explicit castings are being used.
-Drop them for good.
+On Fri, Mar 12, 2021 at 12:46:09PM +0100, Jesper Dangaard Brouer wrote:
+> > > > <SNIP>
+> > > > +	if (!zone)
+> > > > +		return 0;
+> > > > +
+> > > > +	/* Attempt the batch allocation */
+> > > > +	local_irq_save(flags);
+> > > > +	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+> > > > +	pcp_list = &pcp->lists[ac.migratetype];
+> > > > +
+> > > > +	while (alloced < nr_pages) {
+> > > > +		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
+> > > > +								pcp, pcp_list);
+> > > > +		if (!page)
+> > > > +			break;
+> > > > +
+> > > > +		prep_new_page(page, 0, gfp_mask, 0);  
+> > > 
+> > > I wonder if it would be worth running prep_new_page() in a second pass,
+> > > after reenabling interrupts.
+> > >   
+> > 
+> > Possibly, I could add another patch on top that does this because it's
+> > trading the time that IRQs are disabled for a list iteration.
+> 
+> I for one like this idea, of moving prep_new_page() to a second pass.
+> As per below realtime concern, to reduce the time that IRQs are
+> disabled.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/chemical/bme680_i2c.c | 3 +--
- drivers/iio/chemical/bme680_spi.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Already done.
 
-diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
-index de9c9e3d23ea..29c0dfa4702b 100644
---- a/drivers/iio/chemical/bme680_i2c.c
-+++ b/drivers/iio/chemical/bme680_i2c.c
-@@ -26,8 +26,7 @@ static int bme680_i2c_probe(struct i2c_client *client,
- 
- 	regmap = devm_regmap_init_i2c(client, &bme680_regmap_config);
- 	if (IS_ERR(regmap)) {
--		dev_err(&client->dev, "Failed to register i2c regmap %d\n",
--				(int)PTR_ERR(regmap));
-+		dev_err(&client->dev, "Failed to register i2c regmap %ld\n", PTR_ERR(regmap));
- 		return PTR_ERR(regmap);
- 	}
- 
-diff --git a/drivers/iio/chemical/bme680_spi.c b/drivers/iio/chemical/bme680_spi.c
-index 3b838068a7e4..6f56ad48cc40 100644
---- a/drivers/iio/chemical/bme680_spi.c
-+++ b/drivers/iio/chemical/bme680_spi.c
-@@ -132,8 +132,7 @@ static int bme680_spi_probe(struct spi_device *spi)
- 	regmap = devm_regmap_init(&spi->dev, &bme680_regmap_bus,
- 				  bus_context, &bme680_regmap_config);
- 	if (IS_ERR(regmap)) {
--		dev_err(&spi->dev, "Failed to register spi regmap %d\n",
--				(int)PTR_ERR(regmap));
-+		dev_err(&spi->dev, "Failed to register spi regmap %ld\n", PTR_ERR(regmap));
- 		return PTR_ERR(regmap);
- 	}
- 
+> > > Speaking of which, will the realtime people get upset about the
+> > > irqs-off latency?  How many pages are we talking about here?
+> > >   
+> 
+> In my page_pool patch I'm bulk allocating 64 pages. I wanted to ask if
+> this is too much? (PP_ALLOC_CACHE_REFILL=64).
+> 
+
+I expect no, it's not too much. The refill path should be short.
+
+> > At the moment, it looks like batches of up to a few hundred at worst. I
+> > don't think realtime sensitive applications are likely to be using the
+> > bulk allocator API at this point.
+> > 
+> > The realtime people have a worse problem in that the per-cpu list does
+> > not use local_lock and disable IRQs more than it needs to on x86 in
+> > particular. I've a prototype series for this as well which splits the
+> > locking for the per-cpu list and statistic handling and then converts the
+> > per-cpu list to local_lock but I'm getting this off the table first because
+> > I don't want multiple page allocator series in flight at the same time.
+> > Thomas, Peter and Ingo would need to be cc'd on that series to review
+> > the local_lock aspects.
+> > 
+> > Even with local_lock, it's not clear to me why per-cpu lists need to be
+> > locked at all because potentially it could use a lock-free llist with some
+> > struct page overloading. That one is harder to predict when batches are
+> > taken into account as splicing a batch of free pages with llist would be
+> > unsafe so batch free might exchange IRQ disabling overhead with multiple
+> > atomics. I'd need to recheck things like whether NMI handlers ever call
+> > the page allocator (they shouldn't but it should be checked).  It would
+> > need a lot of review and testing.
+> 
+> The result of the API is to deliver pages as a double-linked list via
+> LRU (page->lru member).  If you are planning to use llist, then how to
+> handle this API change later?
+> 
+
+I would not have to. The per-cpu list internally can use llist internally
+while pages returned to the bulk allocator user can still be a doubly
+linked list. An llist_node fits in less space than the list_head lru.
+
+> Have you notice that the two users store the struct-page pointers in an
+> array?  We could have the caller provide the array to store struct-page
+> pointers, like we do with kmem_cache_alloc_bulk API.
+> 
+
+That is a possibility but it ties the caller into declaring an array,
+either via kmalloc, within an existing struct or on-stack. They would
+then need to ensure that nr_pages does not exceed the array size or pass
+in the array size. It's more error prone and a harder API to use.
+
+> You likely have good reasons for returning the pages as a list (via
+> lru), as I can see/imagine that there are some potential for grabbing
+> the entire PCP-list.
+> 
+
+I used a list so that user was only required to define a list_head on
+the stack to use the API.
+
 -- 
-2.30.1
-
+Mel Gorman
+SUSE Labs
