@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6D0338B12
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F54338B14
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhCLLIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:08:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
+        id S233992AbhCLLI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233808AbhCLLII (ORCPT
+        with ESMTP id S233814AbhCLLII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Mar 2021 06:08:08 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4544C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:07 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id e18so1541260wrt.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:07 -0800 (PST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63040C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:08 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id v15so4574930wrx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LUHr4ymMi5VBqrEoXKDtGcta5lpuLHD7VRSm0+qQluo=;
-        b=OsUv5iLhDgVhzhV0LgtfnRfdzSikIjb7ns1xlfS49V36qOY1J3vfBg4n7bat4iDp+h
-         AQ5oMDxUUOgzdq4yCF/9y7XtceVljvkjbEm425LoibpX1+zdwxHJuiHCPNQyFxeObLdL
-         w0DjPjN7ery3banas/9niexyypuvzerUOtQJSoI/RA61ZC5vx5qeLSksVr8fSBTtzs+u
-         h8FiAzGy4ijoGkLsKP0f4sthFzaFuqAiinDXe/X90am1N8pX5IskzxNHvWUE4XNnUxz7
-         8PEqcIExAqwI6GCqx3yog1itbJYOV+ObEwkSnBbF5kY1ZHi0YIknnZIXgIsd4bRbhy+g
-         WDkg==
+        bh=0k9bZZ6oep6a8gAswjqXP9lEO++F0b2FjoK2nqaF0JQ=;
+        b=mlx3SwYKgets0dI286MU1qf+QdAehdwSkI3REXJk6LdrlclARx4DshlQpHLevNaVKQ
+         DOJrVrL4VYk4KkaILsN+AyiW31ulsdIi8GhWDtybTbOLuzarGIYTljhGIr8E6Gny4sc7
+         NDxWEevHpSVpiwQQgM+51Nok6G8YL1NV2lhdFMO5BDXUMrGL9/EE14RTUnGeOVK35Cpk
+         KUgxOQ9vkP3p6/hF4gETlmO8Q1YVnwDARTAlEs36AGI0/u7ym+9hP6Wt8z7ievurh2gP
+         ZGqMYpB5ahjbN5MMHasdSCji/yrMG3Ppqgs0VSJe5kEeyQ7I0M1uDq3ZGUUPvDlYgqhr
+         YFMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LUHr4ymMi5VBqrEoXKDtGcta5lpuLHD7VRSm0+qQluo=;
-        b=M9akdp9rv9f7eItjeeasLDp02AE/5uiHy4FdksRwIKHHs8aH1cWMh6rw1iJMV/w02K
-         RbdWR/EzvUkQK3T9AmEOJ5jFjVnKDl6LXryffewvmo9u3shRRmBNGH3H1KK03lLP/90R
-         i+ntArB9QBdHFgMs6I39BT3dbPNHC+LdpkSjWU2Ntmb2D9h5Gcnlb3eORff2nZvqnwNM
-         XLq9gd/yaVvjue4yufs7MQfqFs6D0KiAsQ35Moy78qcomAXn0gtfduenTzIBCcqpRr79
-         OjSUuL5du05xmKYlQpsrNhcu1k9/KeGppBUJO22A4xaZdGTYKurFj7BU5GDFZySZB17B
-         bELg==
-X-Gm-Message-State: AOAM531KC1cOqg2Nd4hGp/Ce3M82NtS5X/+SuR6tjLzAdgpcd0+llQqq
-        aaiGCUlohoJdIaZtotdxFbr0Dw==
-X-Google-Smtp-Source: ABdhPJxPwM7mzaADhbedyeAbCrfKZ/Pq8+9lqMcX1l0YkJW2Au3KMcTr64Gn3M2RWPwrMzOXchpF2g==
-X-Received: by 2002:adf:ee4f:: with SMTP id w15mr13382205wro.199.1615547286375;
-        Fri, 12 Mar 2021 03:08:06 -0800 (PST)
+        bh=0k9bZZ6oep6a8gAswjqXP9lEO++F0b2FjoK2nqaF0JQ=;
+        b=DyYBYLqVtufenKamGFe6lBp81jeH4LyNIAJYSH4ob0l3Z3BLHIF0zbMr+8BkztZ+yZ
+         uCzv+ybvh/Q6sQtllkQLOmkJ5kfdy3zHEu3Pz+2MQDuDgCtbc8XQR3p/NH6J1yrLbIjC
+         HzGY4ubDPqkmBjVzw2i/0llL2yskZ2Z5NUU1HqN7lODfklgnqe7cuyf6tzL3a75v7JXU
+         f1J1AdSOGPcehCx1QffLLby/9T+Ft7ETXVBtGkyOuQ8aayYHtZl6CeC55a5fDr2c1ANv
+         FOg+NJo2Vba4Xgq4G2kxeBOzl/uq7tNn65q3hgRYzKxTDTc3EqNxUdhzTBDJ60m8tT1M
+         Yi1A==
+X-Gm-Message-State: AOAM530jTQ+cKbOAVzRV9mMd+NwvtnS6bYsAokyRAbeUlZBIkpDKsVvk
+        B51VSpJ+cP6cAOwmH9Yf9Ldsnw==
+X-Google-Smtp-Source: ABdhPJzmmAGscwRgfqeXsshThlq74TTYYKWUNa7WJfQttZu4ydNHIHY/6lBL2MqTWT7SMaShhY+LEA==
+X-Received: by 2002:a5d:67cf:: with SMTP id n15mr13267191wrw.95.1615547287168;
+        Fri, 12 Mar 2021 03:08:07 -0800 (PST)
 Received: from dell.default ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id f126sm1813003wmf.17.2021.03.12.03.08.05
+        by smtp.gmail.com with ESMTPSA id f126sm1813003wmf.17.2021.03.12.03.08.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 03:08:05 -0800 (PST)
+        Fri, 12 Mar 2021 03:08:06 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, devicetree@vger.kernel.org
-Subject: [PATCH 05/10] of: property: Provide missing member description and remove excess param
-Date:   Fri, 12 Mar 2021 11:07:53 +0000
-Message-Id: <20210312110758.2220959-6-lee.jones@linaro.org>
+        devicetree@vger.kernel.org
+Subject: [PATCH 06/10] of: address: Demote non-conformant kernel-doc header
+Date:   Fri, 12 Mar 2021 11:07:54 +0000
+Message-Id: <20210312110758.2220959-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210312110758.2220959-1-lee.jones@linaro.org>
 References: <20210312110758.2220959-1-lee.jones@linaro.org>
@@ -67,38 +67,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/of/property.c:1239: warning: Function parameter or member 'optional' not described in 'supplier_bindings'
- drivers/of/property.c:1366: warning: Excess function parameter 'dev' description in 'of_link_property'
+ drivers/of/address.c:868: warning: Function parameter or member 'dev' not described in 'of_address_to_resource'
+ drivers/of/address.c:868: warning: Function parameter or member 'index' not described in 'of_address_to_resource'
+ drivers/of/address.c:868: warning: Function parameter or member 'r' not described in 'of_address_to_resource'
 
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
 Cc: devicetree@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/of/property.c | 2 +-
+ drivers/of/address.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 5036a362f52e7..5faf24a791c9d 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1225,6 +1225,7 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
-  * @parse_prop.prop_name: Name of property holding a phandle value
-  * @parse_prop.index: For properties holding a list of phandles, this is the
-  *		      index into the list
-+ * @optional: Describes whether a supplier is mandatory or not
-  *
-  * Returns:
-  * parse_prop() return values are
-@@ -1344,7 +1345,6 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 73ddf2540f3fe..9350697ae5aad 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -855,7 +855,7 @@ static int __of_address_to_resource(struct device_node *dev,
+ 	return 0;
+ }
  
- /**
-  * of_link_property - Create device links to suppliers listed in a property
-- * @dev: Consumer device
-  * @con_np: The consumer device tree node which contains the property
-  * @prop_name: Name of property to be parsed
+-/**
++/*
+  * of_address_to_resource - Translate device tree address and return as resource
   *
+  * Note that if your address is a PIO address, the conversion will fail if
 -- 
 2.27.0
 
