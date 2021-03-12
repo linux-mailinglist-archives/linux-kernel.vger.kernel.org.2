@@ -2,92 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCB03389CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF10B3389A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhCLKOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:14:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233241AbhCLKNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:13:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A3764FE0;
-        Fri, 12 Mar 2021 10:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615543392;
-        bh=CXYKx7axsfKXw2XBYeApFSKwoY/rOIiGq6qs42H2XdI=;
+        id S233040AbhCLKGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:06:55 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39702 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232877AbhCLKGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:06:22 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 342E88F9;
+        Fri, 12 Mar 2021 11:06:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615543580;
+        bh=pp3+amsK8swh3Q3bfX4+s7S8jPDOfKNbe5UiT7gfVVg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vnnGNkrII1WysOM8poKSTCBYj60kbz3yq1rn7CYyUxeK/lkqEKf5YcdyGLwKSDp0G
-         bj05gpqdtZkRK4eOkQws3TCQHG0n7Nb8E7t0BPSaPuYwVmow7zyJNp5fu0jh13bRz/
-         d/lAqUBbjuLMFORpWAcJ4qQolA8SgR2kPSLSIVog=
-Date:   Fri, 12 Mar 2021 11:03:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] [backport for 5.10] powerpc/603: Fix protection of user
- pages mapped with PROT_NONE
-Message-ID: <YEs8XbJwrkZzc1eJ@kroah.com>
-References: <656520fecf792b8842dc54beec2da3bc29d0133c.1615486986.git.christophe.leroy@csgroup.eu>
+        b=DO6omztA98uSm0UVriVII0Jf5ThKBcCeBS+wUERCjZm3xBH9PbrpQAHdkz8BauskO
+         AYHWJnkzdPZL/Rdc4Kr9wD7tP7mTIP8NHNKQ3Spf2o5Ps/BAVfS6wDC1nTNAe8JXw2
+         scOCdgVY0opx8zfVVS4VfWzAfJdzJ6kwlQoYMbio=
+Date:   Fri, 12 Mar 2021 12:05:44 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: media: Convert video-mux to DT schema
+Message-ID: <YEs8+EOc/k7U2pGp@pendragon.ideasonboard.com>
+References: <20210311234042.1588310-1-robh@kernel.org>
+ <YErC9/zxKKRXaj+m@pendragon.ideasonboard.com>
+ <20210312072904.GA3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <656520fecf792b8842dc54beec2da3bc29d0133c.1615486986.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <20210312072904.GA3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:24:30PM +0000, Christophe Leroy wrote:
-> (cherry picked from commit c119565a15a628efdfa51352f9f6c5186e506a1c)
-> 
-> On book3s/32, page protection is defined by the PP bits in the PTE
-> which provide the following protection depending on the access
-> keys defined in the matching segment register:
-> - PP 00 means RW with key 0 and N/A with key 1.
-> - PP 01 means RW with key 0 and RO with key 1.
-> - PP 10 means RW with both key 0 and key 1.
-> - PP 11 means RO with both key 0 and key 1.
-> 
-> Since the implementation of kernel userspace access protection,
-> PP bits have been set as follows:
-> - PP00 for pages without _PAGE_USER
-> - PP01 for pages with _PAGE_USER and _PAGE_RW
-> - PP11 for pages with _PAGE_USER and without _PAGE_RW
-> 
-> For kernelspace segments, kernel accesses are performed with key 0
-> and user accesses are performed with key 1. As PP00 is used for
-> non _PAGE_USER pages, user can't access kernel pages not flagged
-> _PAGE_USER while kernel can.
-> 
-> For userspace segments, both kernel and user accesses are performed
-> with key 0, therefore pages not flagged _PAGE_USER are still
-> accessible to the user.
-> 
-> This shouldn't be an issue, because userspace is expected to be
-> accessible to the user. But unlike most other architectures, powerpc
-> implements PROT_NONE protection by removing _PAGE_USER flag instead of
-> flagging the page as not valid. This means that pages in userspace
-> that are not flagged _PAGE_USER shall remain inaccessible.
-> 
-> To get the expected behaviour, just mimic other architectures in the
-> TLB miss handler by checking _PAGE_USER permission on userspace
-> accesses as if it was the _PAGE_PRESENT bit.
-> 
-> Note that this problem only is only for 603 cores. The 604+ have
-> an hash table, and hash_page() function already implement the
-> verification of _PAGE_USER permission on userspace pages.
-> 
-> Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
-> Change-Id: I68bc5e5ff4542bdfcdcd12923fa96a5811707475
-> Cc: stable@vger.kernel.org # v5.2+
-> Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> Link: https://lore.kernel.org/r/4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu
-> ---
->  arch/powerpc/kernel/head_book3s_32.S | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+Hi Sakari,
 
-Both backports applied, thanks.
+On Fri, Mar 12, 2021 at 09:29:04AM +0200, Sakari Ailus wrote:
+> On Fri, Mar 12, 2021 at 03:25:11AM +0200, Laurent Pinchart wrote:
+> > On Thu, Mar 11, 2021 at 04:40:42PM -0700, Rob Herring wrote:
+> > > Now that we have the graph schema, convert the video-mux binding to DT
+> > > schema.
+> > > 
+> > > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > Cc: linux-media@vger.kernel.org
+> > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > ---
+> > >  .../devicetree/bindings/media/video-mux.txt   | 60 ------------
+> > >  .../devicetree/bindings/media/video-mux.yaml  | 93 +++++++++++++++++++
+> > >  2 files changed, 93 insertions(+), 60 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/media/video-mux.txt
+> > >  create mode 100644 Documentation/devicetree/bindings/media/video-mux.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/media/video-mux.txt b/Documentation/devicetree/bindings/media/video-mux.txt
+> > > deleted file mode 100644
+> > > index 63b9dc913e45..000000000000
+> > > --- a/Documentation/devicetree/bindings/media/video-mux.txt
+> > > +++ /dev/null
+> > > @@ -1,60 +0,0 @@
+> > > -Video Multiplexer
+> > > -=================
+> > > -
+> > > -Video multiplexers allow to select between multiple input ports. Video received
+> > > -on the active input port is passed through to the output port. Muxes described
+> > > -by this binding are controlled by a multiplexer controller that is described by
+> > > -the bindings in Documentation/devicetree/bindings/mux/mux-controller.txt
+> > > -
+> > > -Required properties:
+> > > -- compatible : should be "video-mux"
+> > > -- mux-controls : mux controller node to use for operating the mux
+> > > -- #address-cells: should be <1>
+> > > -- #size-cells: should be <0>
+> > > -- port@*: at least three port nodes containing endpoints connecting to the
+> > > -  source and sink devices according to of_graph bindings. The last port is
+> > > -  the output port, all others are inputs.
+> > > -
+> > > -Optionally, #address-cells, #size-cells, and port nodes can be grouped under a
+> > > -ports node as described in Documentation/devicetree/bindings/graph.txt.
+> > > -
+> > > -Example:
+> > > -
+> > > -	mux: mux-controller {
+> > > -		compatible = "gpio-mux";
+> > > -		#mux-control-cells = <0>;
+> > > -
+> > > -		mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+> > > -	};
+> > > -
+> > > -	video-mux {
+> > > -		compatible = "video-mux";
+> > > -		mux-controls = <&mux>;
+> > > -		#address-cells = <1>;
+> > > -		#size-cells = <0>;
+> > > -
+> > > -		port@0 {
+> > > -			reg = <0>;
+> > > -
+> > > -			mux_in0: endpoint {
+> > > -				remote-endpoint = <&video_source0_out>;
+> > > -			};
+> > > -		};
+> > > -
+> > > -		port@1 {
+> > > -			reg = <1>;
+> > > -
+> > > -			mux_in1: endpoint {
+> > > -				remote-endpoint = <&video_source1_out>;
+> > > -			};
+> > > -		};
+> > > -
+> > > -		port@2 {
+> > > -			reg = <2>;
+> > > -
+> > > -			mux_out: endpoint {
+> > > -				remote-endpoint = <&capture_interface_in>;
+> > > -			};
+> > > -		};
+> > > -	};
+> > > -};
+> > > diff --git a/Documentation/devicetree/bindings/media/video-mux.yaml b/Documentation/devicetree/bindings/media/video-mux.yaml
+> > > new file mode 100644
+> > > index 000000000000..780fbbd46a38
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/video-mux.yaml
+> > > @@ -0,0 +1,93 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/video-mux.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Video Multiplexer
+> > > +
+> > > +maintainers:
+> > > +  - Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > +
+> > > +description:
+> > > +  Video multiplexers allow to select between multiple input ports. Video
+> > > +  received on the active input port is passed through to the output port. Muxes
+> > > +  described by this binding are controlled by a multiplexer controller.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: video-mux
+> > > +
+> > > +  mux-controls:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#address-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#size-cells':
+> > > +    const: 0
+> > > +
+> > > +  ports:
+> > > +    $ref: /schemas/graph.yaml#/properties/ports
+> > > +
+> > > +    patternProperties:
+> > > +      '^port@':
+> > > +        $ref: /schemas/graph.yaml#/properties/port
+> > 
+> > Should we require at least port@0, port@1 and port@2 ?
+> > 
+> > > +
+> > > +patternProperties:
+> > > +  '^port@':
+> > > +    $ref: /schemas/graph.yaml#/properties/port
+> > > +    description:
+> > > +      At least three port nodes containing endpoints connecting to the source
+> > > +      and sink devices according to of_graph bindings. The last port is the
+> > > +      output port, all others are inputs.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - mux-controls
+> > 
+> > Should a constraint be added to ensure that either a ports node or
+> > port@0, port@1 and port@2 nodes exists ?
+> 
+> It's not meaningful to have this device without such nodes. But a mux with
+> more ports could be connected in a way that leaves one or both of ports 1
+> and 2 unconnected. It's still not a likely configuration but a possible
+> one.
 
-greg k-h
+Those ports wouldn't be connected, but they could still exist in DT.
+
+> Either way,
+> 
+> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> 
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > 
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +
+> > > +    mux: mux-controller {
+> > > +        compatible = "gpio-mux";
+> > > +        #mux-control-cells = <0>;
+> > > +
+> > > +        mux-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+> > > +    };
+> > > +
+> > > +    video-mux {
+> > > +        compatible = "video-mux";
+> > > +        mux-controls = <&mux>;
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        port@0 {
+> > > +            reg = <0>;
+> > > +
+> > > +            mux_in0: endpoint {
+> > > +                remote-endpoint = <&video_source0_out>;
+> > > +            };
+> > > +        };
+> > > +
+> > > +        port@1 {
+> > > +            reg = <1>;
+> > > +
+> > > +            mux_in1: endpoint {
+> > > +                remote-endpoint = <&video_source1_out>;
+> > > +            };
+> > > +        };
+> > > +
+> > > +        port@2 {
+> > > +            reg = <2>;
+> > > +
+> > > +            mux_out: endpoint {
+> > > +                remote-endpoint = <&capture_interface_in>;
+> > > +            };
+> > > +        };
+> > > +    };
+> > > +...
+
+-- 
+Regards,
+
+Laurent Pinchart
