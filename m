@@ -2,241 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC0F339528
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081F533951C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhCLRh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        id S232348AbhCLRgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhCLRgy (ORCPT
+        with ESMTP id S232253AbhCLRgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:36:54 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDE9C061761;
-        Fri, 12 Mar 2021 09:36:53 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso8813967pjb.4;
-        Fri, 12 Mar 2021 09:36:53 -0800 (PST)
+        Fri, 12 Mar 2021 12:36:22 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCCBC061574;
+        Fri, 12 Mar 2021 09:36:22 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e7so3280144ile.7;
+        Fri, 12 Mar 2021 09:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zjhsutfaeg2zNXMNMCFjuL9SYJCyEz5Q4XqI1wTv0Ik=;
-        b=RF1TURJaNG+GldM5/SQ5joAXkkFNDBuM6+XdowZkvodau/rvsnvyF73wAIafTxZqBO
-         8rC+JnPWv17QtUrQTGLCn5KLUGMBbaCI16q2z8FcQyOi38KYGJcUmvLPZpz/dOnb2+RW
-         c3/+v1daRTRlp1Ox1h+BdTUvcQmo6Iv1Dr+ifqoiyAzlE4EhPFos6ippfrB8U5D2Rtuz
-         I0fgFtnbj0JB0mkreB86chsonVUecAX97iELeurqJxxfzgRBtgPUQLS+GBqQnBS4e3g3
-         ZvQKSejG9CkqckJb6TieLKtyZshMR7rjLwpTIs3YUqMxQTTXnnNH82TAbPDCno1IsKA/
-         Pybg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=dN5wWCL4386GqSoA/EHOirCNKD6L6wdiesXxnENmxI4=;
+        b=uwmdaRLNlcTGrBoHcZg9vpO17c4wP0MIYDnS+c6SUFnK19aH1uc8zwC13NkqAhVN9J
+         lr4JIaMa/r9t8/EnXQ01FAm91BrrxU55AyshFsirtI42pCVGPFf+NPbCWbS1oVHyQPav
+         88P0GeJGfKWqgbEgNJtETZHBBvQrQfdb5sxGvkUdsWBd5vmGXblcEgI60IxeXBxBSy29
+         9Dy0GZsOYeZvUEV1Jk72JFljzqE9aPzKYrc/ApY7AxWFyHNt3ZBIuKTNnkaWNPmoRQWO
+         TEA5KJC1nMatvl++btw4dkfb45vH4fGzaGBy8PqlDP1LdgHrDekHCjLyQ+62s01h1xr9
+         E1rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zjhsutfaeg2zNXMNMCFjuL9SYJCyEz5Q4XqI1wTv0Ik=;
-        b=tyNOzVNOkLeD0HjB0A8zDsnbdAiLmVX6hQU0Zm4LGrhEiaNVfAZ2ag8jQBqGCf4not
-         YN/ny77HI/yJldm4X6bGibUDhoNOJF/020YyL5qBnf2OQSm8whuarGYghPEdYcgZi+KU
-         XIivJ2J3s9H8YIWCWL1RF3bKBXsppWUdQZzSk6C0gYDTVUTB2Tbs8nbyR9BhKuBraZ/Y
-         Svk4Y3Yuvr0lOAdpEOwPq/emzX3FAdopptTs5MiJnhEq2/AHZqH+oDUeNzfgEUxA2V+T
-         wOigJKxq667im9zbd0yPkbXMcU+XuXeVSAgmfeuPgDSn/iCWBWBdyt0OBfEzmRgo6voi
-         KYzA==
-X-Gm-Message-State: AOAM533euhx0kCk7KG86tWKIlHqq4FKZXcNW8pWTwSprdTCICW4eRh9G
-        RRfKu/ts5uEfmvtK34HBvuE=
-X-Google-Smtp-Source: ABdhPJxTH/NXED/lfZqHjFsm4/PGtY8ZKPZbRVS/szN/fl0IfyyToFyhfbcnYUS3XB1iCAI5DPxfKg==
-X-Received: by 2002:a17:902:7444:b029:e4:30bf:8184 with SMTP id e4-20020a1709027444b02900e430bf8184mr115558plt.45.1615570613463;
-        Fri, 12 Mar 2021 09:36:53 -0800 (PST)
-Received: from localhost.localdomain ([103.248.31.144])
-        by smtp.googlemail.com with ESMTPSA id l10sm180045pfc.125.2021.03.12.09.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 09:36:53 -0800 (PST)
-From:   ameynarkhede03@gmail.com
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device reset mechanism
-Date:   Fri, 12 Mar 2021 23:04:52 +0530
-Message-Id: <20210312173452.3855-5-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210312173452.3855-1-ameynarkhede03@gmail.com>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=dN5wWCL4386GqSoA/EHOirCNKD6L6wdiesXxnENmxI4=;
+        b=IWaf0TbNbKsQGrWeNgt1iIlkfIoxmI75y+UwIEDiBfRqkuKKV60MYHDHGrwYKvI2zd
+         tT3Omh6L2rRzVD8vFymkmcLLGZ/kJ/U0fHSs2j3jg+UryknF1rAOYElsId40bWl+Nlai
+         jNTFK5lmRIZF8jxAKaKfywo/yqAQu1UDIe0rlHNTHZniRAgAAoE4xfODMfKKZJFVVtNl
+         YbvGcYo/B+36Z2HoRCG4X0zVgGuressZ/YXoSxP/gm6VsOizcbtfcEa5avYP29VCmBTk
+         pQ4+AGITFyJHI0PNKJ8zgdetpvV9JqebFIHWoe5WpfB5dz9wey6sAdnLTAnGkmNLKnwH
+         WjCw==
+X-Gm-Message-State: AOAM533OYoeOSMKnvWGQxiYMDaHbQnzqmibkHdpv4zEfg2JsnX5BjkqT
+        ShdRuNPKyDv43rnWIK8fsEWnRIsmEqUxtEPJ+9M=
+X-Google-Smtp-Source: ABdhPJwS/i2cdWbmHCySXYUOm3H63v3joSX1rd/sI2Q5oPC4Rhia8d49/en/fQwRV7y/dZ2La6gGcG1FBfZVsE0dH7U=
+X-Received: by 2002:a92:c7c2:: with SMTP id g2mr3638312ilk.209.1615570581648;
+ Fri, 12 Mar 2021 09:36:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210312113253.305040674@infradead.org> <CA+icZUVa7c4aZ=Tq-Axfqu9hT2QR-iNbAMGHE6u1ps-6Vw35=A@mail.gmail.com>
+ <20210312144726.GA22098@zn.tnic> <20210312122622.603bd82c@gandalf.local.home>
+In-Reply-To: <20210312122622.603bd82c@gandalf.local.home>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 12 Mar 2021 18:35:45 +0100
+Message-ID: <CA+icZUUpQWtLcqjK+07ktO5PCoJ+2HEHzyp4tRRqHZpAOatq5g@mail.gmail.com>
+Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        hpa@zytor.com, torvalds@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
+        mhiramat@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amey Narkhede <ameynarkhede03@gmail.com>
+On Fri, Mar 12, 2021 at 6:26 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Fri, 12 Mar 2021 15:47:26 +0100
+> Borislav Petkov <bp@alien8.de> wrote:
+>
+> > On Fri, Mar 12, 2021 at 03:29:48PM +0100, Sedat Dilek wrote:
+> > > What does this change exactly mean to/for me?
+> >
+> > Probably nothing.
+> >
+> > I would be very surprised if it would be at all noticeable for you -
+> > it's not like the kernel is executing long streams of NOPs in fast
+> > paths.
+> >
+>
+> With ftrace enabled, every function starts with a NOP. But that said, the
+> simple answer is for Sedat to apply the patches on his box and do some
+> performance testing. It doesn't matter if you are white, black, male,
+> female, or anything in between. As my daughter's swim coach said; it's the
+> numbers that matter here. Run a bunch of benchmarks on your box on the
+> latest kernel, apply Peter's patches, and then run the benchmarks again on
+> the latest kernel with Peter's patches and then report the difference. If
+> it's negligible then there's nothing to worry about.
+>
 
-Add reset_methods_enabled bitmap to struct pci_dev to
-keep track of user preferred device reset mechanisms.
-Add reset_method sysfs attribute to query and set
-user preferred device reset mechanisms.
+Hey Steve, you degraded me to a number :-).
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+I dunno which Git tree this patchset applies to, but I check if I can
+apply the patchset to my current local Git.
+Then build a kernel in the same build-environment.
+Lemme see.
 
- Documentation/ABI/testing/sysfs-bus-pci | 15 ++++++
- drivers/pci/pci-sysfs.c                 | 66 +++++++++++++++++++++++--
- drivers/pci/pci.c                       |  3 +-
- include/linux/pci.h                     |  2 +
- 4 files changed, 82 insertions(+), 4 deletions(-)
+To say with Linus's words:
+"Numbers talk - bullshit walks."
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index 25c9c3977..ae53ecd2e 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -121,6 +121,21 @@ Description:
- 		child buses, and re-discover devices removed earlier
- 		from this part of the device tree.
-
-+What:		/sys/bus/pci/devices/.../reset_method
-+Date:		March 2021
-+Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
-+Description:
-+		Some devices allow an individual function to be reset
-+		without affecting other functions in the same slot.
-+		For devices that have this support, a file named reset_method
-+		will be present in sysfs. Reading this file will give names
-+		of the device supported reset methods. Currently used methods
-+		are enclosed in brackets. Writing the name of any of the device
-+		supported reset method to this file will set the reset method to
-+		be used when resetting the device. Writing "none" to this file
-+		will disable ability to reset the device and writing "default"
-+		will return to the original value.
-+
- What:		/sys/bus/pci/devices/.../reset
- Date:		July 2009
- Contact:	Michael S. Tsirkin <mst@redhat.com>
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 78d2c130c..3cd06d1c0 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -1304,6 +1304,59 @@ static const struct bin_attribute pcie_config_attr = {
- 	.write = pci_write_config,
- };
-
-+static ssize_t reset_method_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
-+{
-+	const struct pci_reset_fn_method *reset;
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	ssize_t len = 0;
-+	int i;
-+
-+	for (i = 0, reset = pci_reset_fn_methods; reset->reset_fn; i++, reset++) {
-+		if (pdev->reset_methods_enabled & (1 << i))
-+			len += sysfs_emit_at(buf, len, "[%s] ", reset->name);
-+		else if (pdev->reset_methods & (1 << i))
-+			len += sysfs_emit_at(buf, len, "%s ", reset->name);
-+	}
-+
-+	return len;
-+}
-+
-+static ssize_t reset_method_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	const struct pci_reset_fn_method *reset = pci_reset_fn_methods;
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u8 reset_mechanism;
-+	int i = 0;
-+
-+	/* Writing none disables reset */
-+	if (sysfs_streq(buf, "none")) {
-+		reset_mechanism = 0;
-+	} else if (sysfs_streq(buf, "default")) {
-+		/* Writing default returns to initial value */
-+		reset_mechanism = pdev->reset_methods;
-+	} else {
-+		reset_mechanism = 0;
-+		for (; reset->reset_fn; i++, reset++) {
-+			if (sysfs_streq(buf, reset->name)) {
-+				reset_mechanism = 1 << i;
-+				break;
-+			}
-+		}
-+		if (!reset_mechanism || !(pdev->reset_methods & reset_mechanism))
-+			return -EINVAL;
-+	}
-+
-+	pdev->reset_methods_enabled = reset_mechanism;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(reset_method);
-+
- static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
- 			   const char *buf, size_t count)
- {
-@@ -1337,11 +1390,16 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
- 	if (dev->reset_methods) {
- 		retval = device_create_file(&dev->dev, &dev_attr_reset);
- 		if (retval)
--			goto error;
-+			goto err_reset;
-+		retval = device_create_file(&dev->dev, &dev_attr_reset_method);
-+		if (retval)
-+			goto err_method;
- 	}
- 	return 0;
-
--error:
-+err_method:
-+	device_remove_file(&dev->dev, &dev_attr_reset);
-+err_reset:
- 	pcie_vpd_remove_sysfs_dev_files(dev);
- 	return retval;
- }
-@@ -1417,8 +1475,10 @@ int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev)
- static void pci_remove_capabilities_sysfs(struct pci_dev *dev)
- {
- 	pcie_vpd_remove_sysfs_dev_files(dev);
--	if (dev->reset_methods)
-+	if (dev->reset_methods) {
- 		device_remove_file(&dev->dev, &dev_attr_reset);
-+		device_remove_file(&dev->dev, &dev_attr_reset_method);
-+	}
- }
-
- /**
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index b7f6c6588..81cebea56 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5106,7 +5106,7 @@ int __pci_reset_function_locked(struct pci_dev *dev)
- 	might_sleep();
-
- 	for (i = 0, reset = pci_reset_fn_methods; reset->reset_fn; i++, reset++) {
--		if (!(dev->reset_methods & (1 << i)))
-+		if (!(dev->reset_methods_enabled & (1 << i)))
- 			continue;
-
- 		/*
-@@ -5153,6 +5153,7 @@ void pci_init_reset_methods(struct pci_dev *dev)
- 		else if (rc != -ENOTTY)
- 			break;
- 	}
-+	dev->reset_methods_enabled = dev->reset_methods;
- }
-
- /**
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index a2f003f4e..400f614e0 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -335,6 +335,8 @@ struct pci_dev {
- 	 * See pci_reset_fn_methods array in pci.c
- 	 */
- 	u8 __bitwise reset_methods;		/* bitmap for device supported reset capabilities */
-+	/* bitmap for user enabled and device supported reset capabilities */
-+	u8 __bitwise reset_methods_enabled;
- #ifdef CONFIG_PCIEAER
- 	u16		aer_cap;	/* AER capability offset */
- 	struct aer_stats *aer_stats;	/* AER stats for this device */
---
-2.30.2
+- Sedat -
