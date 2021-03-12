@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041CA339429
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390F733942C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhCLRA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:00:59 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33758 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhCLRAc (ORCPT
+        id S232105AbhCLRBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:01:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26975 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232816AbhCLRBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:00:32 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12CH08kt121082;
-        Fri, 12 Mar 2021 11:00:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615568408;
-        bh=zaa/mRSUMAXzQt5H0aezjgMFIyojIQMSj0VLcmmYG0Q=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZJYQk2vaku81q9JFcftwYrDwiWbZAGlKsxDCS7xolALzY4tOV4aVF0BWT02/gjsTp
-         wiE2GWxclQRfYGBLI08wpZYK4vWqCWAfNIIbz7pXQZkZ1gu8Y/UYMWawOwyep9KYhn
-         7OqlbC/XkucryFWnndJAdBy0aUZO5x7G+oqOfb3k=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12CH07Vl049603
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Mar 2021 11:00:08 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 12
- Mar 2021 11:00:07 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 12 Mar 2021 11:00:07 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12CH06Rj086882;
-        Fri, 12 Mar 2021 11:00:07 -0600
-Date:   Fri, 12 Mar 2021 22:30:02 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
- spi-cadence-quadspi
-Message-ID: <20210312170000.szh55346o7sm6ase@ti.com>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <b9450a151cce89cde47b4d6a76c74b32@walle.cc>
+        Fri, 12 Mar 2021 12:01:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615568466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ibEFyDcNRQcFn8mb4AJj959j835v5WAGXwvC24n6Zqc=;
+        b=I0IBufzOBHZuLs3yATIUxypoONAlotlsepVoBBmN/qGJXXKurJGDIcUlpx0Xrz5eUVnAtT
+        HJl50HM3zWvmZrEZmco1e4dpVCOCiMJwW/lOrrTeFBYmH4zSrmuPyK72umPK36W7E6yv1V
+        XMgiVitsYZ3k82/JD6vuGPW4aZmXicw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-CUuGYRb9Prylgl9tAsOqwQ-1; Fri, 12 Mar 2021 12:00:58 -0500
+X-MC-Unique: CUuGYRb9Prylgl9tAsOqwQ-1
+Received: by mail-wr1-f72.google.com with SMTP id h5so11387728wrr.17
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 09:00:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ibEFyDcNRQcFn8mb4AJj959j835v5WAGXwvC24n6Zqc=;
+        b=TCPTCP6MTG5Af8fRVg5cNQqRj3YAr0+vh7h51GT8ki4lRRDQ3yxF5yyxKF0pYa3TRj
+         dc+ptVIV4NcnqOTNgi5i0ZhUuJ3iElKF09Qsx+D3MuT5QhOXq+V5xnxHocDWtP25zIXN
+         6/i1hCE1mnN0VEsEUNoqMXGErPIjRuL6DQjeAt5W9B5NOFOJgBMm+jzSq7pY9Jo93cNs
+         yyyZm45Mj6SlA+IArdunSu1+QoQn58SCdJtC5zDJgSp3oomhkR/eOfRhNr2eLy++vYRD
+         rqonmAwNCyLoa80ujKAwAMXLEDGSE68544Gh4Wle9QuBfeojK0oi924N5TWZ8JnYhyrO
+         ybbw==
+X-Gm-Message-State: AOAM531SPtOaIy2xUfPaKuYuA7DwmYiSGXW1FMYFfa2DcxIlTNgY6n7D
+        Dr8t2FLHNaabmz2soRTtBCpWy2WDPf2q/YU8rWspiIs+8lsEJ0RHpc0RMqxXMV3wkswQ9bijRhO
+        lMskS6oK9dKEytdkq63kNDfYn
+X-Received: by 2002:adf:ab52:: with SMTP id r18mr14896224wrc.65.1615568451693;
+        Fri, 12 Mar 2021 09:00:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxfQkaiAQ/ku5Iskzu4+3i1V5GziZi87TzTf1flgCqphkmpmEAqCUhOTWTVnB2ZyCnQdx7k/Q==
+X-Received: by 2002:adf:ab52:: with SMTP id r18mr14895600wrc.65.1615568446554;
+        Fri, 12 Mar 2021 09:00:46 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s11sm2957818wme.22.2021.03.12.09.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 09:00:45 -0800 (PST)
+Subject: Re: [PATCH 4/4] KVM: x86/mmu: Factor out tdp_iter_return_to_root
+To:     Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20210311231658.1243953-1-bgardon@google.com>
+ <20210311231658.1243953-5-bgardon@google.com> <YEuYTF3mzzMCkz5c@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f3bf9ad8-8179-b2bf-7511-403ed4d1d165@redhat.com>
+Date:   Fri, 12 Mar 2021 18:00:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <b9450a151cce89cde47b4d6a76c74b32@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YEuYTF3mzzMCkz5c@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 02:32PM, Michael Walle wrote:
-> Am 2021-03-11 20:12, schrieb Pratyush Yadav:
-> > The main problem here is telling the controller where to find the
-> > pattern and how to read it. This RFC uses nvmem cells which point to a
-> > fixed partition containing the data to do the reads. It depends on [0]
-> > and [1].
-> > 
-> > The obvious problem with this is it won't work when the partitions are
-> > defined via command line. I don't see any good way to add nvmem cells to
-> > command line partitions. I would like some help or ideas here. We don't
-> > necessarily have to use nvmem either. Any way that can cleanly and
-> > consistently let the controller find out where the pattern is stored is
-> > good.
+On 12/03/21 17:35, Sean Christopherson wrote:
+> What about calling it tdp_iter_restart()?  Or tdp_iter_resume()?  Or something
+> like tdp_iter_restart_at_next() if we want it to give a hint that the next_last
+> thing is where it restarts.
 > 
-> The NXP LS1028A SoC has a similar calibration (although there its done
-> in hardware it seems) and there the datasheet mentions there are flash
-> devices which supports a preamble before a read function. The preamble
-> is then some kind of learning pattern. Did you see a flash which actually
-> supports that in the wild? I can't find any publicly available datasheets
-> of 8bit I/O SPI NOR flashes.
+> I think I like tdp_iter_restart() the best.  It'd be easy enough to add a
+> function comment clarifying from where it restarts, and IMO the resulting code
+> in tdp_mmu_iter_cond_resched() is the most intutive, e.g. it makes it very clear
+> that the walk is being restarted in some capacity after yielding.
 
-I haven't seen any such flash but it looks like Tudor has.
+I agree with tdp_iter_restart(), or tdp_iter_restart_from_root() too.
 
-> 
-> -michael
+Paolo
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
