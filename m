@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775C33994B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 855B633994F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhCLVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:52:07 -0500
-Received: from mga12.intel.com ([192.55.52.136]:43337 "EHLO mga12.intel.com"
+        id S235377AbhCLVwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:52:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235288AbhCLVv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:51:57 -0500
-IronPort-SDR: 75oQiYs0q8lBYyvsj4aqnLxrFGdlnp52n4j6zSaC8f8mtLA395WqqeiN4IWDe/5NI9wnbpdIwA
- a4kpJ8gBWEfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168167076"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="168167076"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 13:51:47 -0800
-IronPort-SDR: sEyJrDV40PbpN3UUX4MfDknCTVMh3ZsDfnCTf3oW0fZUX3PViyeFQOyP6D56iLGZVq2GfKBxd5
- oZTffeEAW6Yw==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="510453600"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 13:51:47 -0800
-Date:   Fri, 12 Mar 2021 21:51:40 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        id S235347AbhCLVwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:52:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 084CE64F73;
+        Fri, 12 Mar 2021 21:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615585950;
+        bh=DmeIx9BwxAyci4fTOWp6uYyGctOd9rLpAOz0oaNZw6w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KLaCaGEuq2tvxoh4HCcQ/5MePyD8bfro3HVs0guIkI+6UXSI4OwxjSpDVmPwVHein
+         uJiZFWNfK2sWGg4Eapruu1Q+J7v8TrBYe3y/Q2Q1RQAdQ/hi3M6u/Uit3ILEouofKp
+         HX9LqXtFgsj3/RNnIegw7isg6KVbQ6OSxst/1rGPiTxfeuR2EIHBjfirybHz4gFAJe
+         TfaF63bA99m0gpZdLZCQM4SbeTOqphls58RJzvyownKyn8KMgjqM/jinnnjWEnph6Z
+         PJXS89Yge8ihPUjF0uc5xxCO42q2lLaOTQQYG9alzEFNBdlVSEVC1kw9i/2y5zTrUp
+         iqpubiKb1VO3A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E2BC660A2D;
+        Fri, 12 Mar 2021 21:52:29 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 5.12-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
+References: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <a139e36ef462b5a9678edd0e97477ff187d6f1d9.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 1112963427d6d186f8729cf36fefb70d5ca5a84a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9afc1163794707a304f107bf21b8b37e5c6c34f4
+Message-Id: <161558594987.23578.431083380474158862.pr-tracker-bot@kernel.org>
+Date:   Fri, 12 Mar 2021 21:52:29 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 02/21] selftests/resctrl: Fix compilation issues for
- global variables
-Message-ID: <YEvibJFnQhCncaqr@otcwcpicx3.sc.intel.com>
-References: <20210307145502.2916364-1-fenghua.yu@intel.com>
- <20210307145502.2916364-3-fenghua.yu@intel.com>
- <bf2efac2-99bf-5b58-8952-db9291a1eae1@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf2efac2-99bf-5b58-8952-db9291a1eae1@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Babu,
+The pull request you sent on Fri, 12 Mar 2021 11:05:45 -0800:
 
-On Fri, Mar 12, 2021 at 01:08:31PM -0600, Babu Moger wrote:
-> > From: Fenghua Yu <fenghua.yu@intel.com>
-> > Taking a closer look at the usage of these variables reveals that these
-> > variables are used only locally to functions such as cqm_resctrl_val()
-> 
-> %s/ locally to functions/locally in two functions
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-OK. Will change it.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9afc1163794707a304f107bf21b8b37e5c6c34f4
 
-> > -int get_cbm_mask(char *cache_type)
-> > +int get_cbm_mask(char *cache_type, char *cbm_mask)
-> >  {
-> >  	char cbm_mask_path[1024];
-> >  	FILE *fp;
-> > 
-> > +	if (!cbm_mask)
-> > +		return -1;
-> 
-> Can cbm_mask be NULL? I see it is statically allocated.
-> Or should this be if (!(*cbm_mask))? Or did I miss something.
+Thank you!
 
-This is a sanity checking. Although current callers do pass statically
-allocated cbm_mask to the parameter, future callers may incorrectly pass
-un-allocated cbm_mask to the parameter and may cause segmentation fault
-without the sanity checking. To debug this kind of issue, the sanity
-checking will be very helpful.
-
-So I would keep this sanity checking.
-
-Thanks.
-
--Fenghua
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
