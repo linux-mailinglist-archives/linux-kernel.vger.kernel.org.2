@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9D8338487
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2A533848C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhCLEBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 23:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        id S232068AbhCLEFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 23:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCLEAx (ORCPT
+        with ESMTP id S232046AbhCLEF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:00:53 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E30C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 20:00:52 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AE56C891AE;
-        Fri, 12 Mar 2021 17:00:45 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615521645;
-        bh=yI8trAd3ao13rNl6rIVpq9FqvKLYFctX8QAW3Enc2Iw=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=0W3SCRdw4Xtd8ZFFXiMbRxXpdwMD+QuOVklR0LRHHKm9T75GK+CI4NjDFcr33zvja
-         vWrOplG+CfEElhmue4gv0O91UG7xN5lCSsvnJ0hUG7KjyK2yDbxoGtbuvXG17NAZCN
-         M4s4laGVxmLTuu8qvi12RNzKS9PEsmY2yILcsMzcza73/XN8xuxzH9LP0467fs0h7f
-         goF5BKj6DVfw7LwrBmG5HZAPGaiHe3XlvHzZXhOkf6IzLCzh7JFvbDmCk2bDWMEHhM
-         LnWSOHaJ1Y7qEqd+xPpe3UmjGnAbPVwQ6D2bkL1vZe/ldxszYZgLSLdONvabBbK2/s
-         aCNN8vLYFi6Ng==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B604ae76d0001>; Fri, 12 Mar 2021 17:00:45 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Mar 2021 17:00:45 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Fri, 12 Mar 2021 17:00:45 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the hwmon-staging tree
-Thread-Topic: linux-next: build warning after merge of the hwmon-staging tree
-Thread-Index: AQHXFvLd66CCjVo1ME+BB5ECZG7ZJKp+4LkA
-Date:   Fri, 12 Mar 2021 04:00:45 +0000
-Message-ID: <27340bd8-2009-683d-ac44-b6bb51f4347e@alliedtelesis.co.nz>
-References: <20210312145031.5df91293@canb.auug.org.au>
-In-Reply-To: <20210312145031.5df91293@canb.auug.org.au>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <0FA5FCA01A1D5F429D614660C238EEAD@atlnz.lc>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 11 Mar 2021 23:05:26 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341F7C061574;
+        Thu, 11 Mar 2021 20:05:26 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10431551pjv.1;
+        Thu, 11 Mar 2021 20:05:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bhLsdKTKPsK8gXpEmj198G0NYLh6qAY7tBjV7BgQoSc=;
+        b=UKS49ZrM/eMONEw0OIbkqsxF8jig8YJvNrVgrcF5VIQqHKEJrXlHWBIso99ozodTA6
+         mkItFWPk38ujQ98P9iuswKEI96ReZw715CCWaIGF+ANIDB857/ERd6fL+wWtdhn6eajR
+         cV8INdr573EuVmRZEOj5UZClfKEB0LZVOFEA+Fp1k/+5qzx8UNalnQVYqwZ0RbeBtOn8
+         njBQh1zE2Nnwllg42HyENXdOlO2xlnkDNTseeLcnzpVMEgB4MnU5U77PIkoDkhQ73ymf
+         Y1luXUx2DTvgP93zYuGALD6wbT8Q20jNx8x7i41i0JdwDstekfMMFJO7w27MfYSMB/Cs
+         5xMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bhLsdKTKPsK8gXpEmj198G0NYLh6qAY7tBjV7BgQoSc=;
+        b=a7EN/kKtGaLnMc/CSXU1xsddvJ02GsrfnzzcbtIuEBF9QfDrtYPkHy2ZbobDhv6XE3
+         Z1wWiTfHfg2tq5WllqCN6ZSAah9JgYsnVjhlQMXZZHr44LLRgrxUL/pdtVVzu/Vb8sI8
+         tmo5wSQOZXgCjYh+TVzHJAZjFZBLeJS9tJ3/80oMdYOYcw+I14z06KtLFn6YWg7ijX34
+         Flj9O08fCeTu8Oh+pFBRiu1xhvXFqVYhf+DDql4Zt2P0KViueruAyvQfrwysF8vp9hjo
+         +nWCiAC9Ww6IZCEM0sqyM4QSYzHsVovzqdJ3e7ngRddKT7RJO2b9AR+1n4tY13LDvFRC
+         BVZw==
+X-Gm-Message-State: AOAM532HC9Gsx+YChEnsCwQR8dWWADQWbE89kbkL0SjAvRXjcIB+VjQK
+        yOkFnm7XRu5lAnnszAO/mTg=
+X-Google-Smtp-Source: ABdhPJxRWSSCKUdAbY2ziGUv6hLcADfCUBAk+M4+oMSB7B1aREaTlUcbkwVaqlD0qTmmxVKsEU8wFw==
+X-Received: by 2002:a17:90a:c249:: with SMTP id d9mr12275929pjx.104.1615521925628;
+        Thu, 11 Mar 2021 20:05:25 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:1292:bfb3:b910:e5ec])
+        by smtp.gmail.com with ESMTPSA id z68sm3664526pfz.39.2021.03.11.20.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 20:05:25 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        bkkarthik@pesu.pes.edu
+Subject: Re: [PATCH] net: socket.c: Fix comparison issues
+Date:   Thu, 11 Mar 2021 20:05:20 -0800
+Message-Id: <20210312040520.12213-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210311044408.t6qut7taaagt4a63@kewl-virtual-machine>
+References: <20210311044408.t6qut7taaagt4a63@kewl-virtual-machine>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=dESyimp9J3IA:10 a=HfXy9D3km2D_YShY56gA:9 a=pILNOxqGKmIA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/03/21 4:50 pm, Stephen Rothwell wrote:
-> Hi all,
->
-> After merging the hwmon-staging tree, today's linux-next build (htmldocs)
-> produced this warning:
->
-> Documentation/hwmon/ir36021.rst:34: WARNING: Malformed table.
-> No bottom table border found.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> curr1_label             "iin"
-> curr1_input             Measured input current
-> curr1_alarm             Input fault alarm
->
-> curr2_label             "iout1"
-> curr2_input             Measured output current
-> curr2_alarm             Output over-current alarm
->
-> in1_label               "vin"
-> in1_input               Measured input voltage
-> in1_alarm               Input under-voltage alarm
->
-> in2_label               "vout1"
-> in2_input               Measured output voltage
-> in2_alarm               Output over-voltage alarm
->
-> power1_label            "pin"
-> power1_input            Measured input power
-> power1_alarm            Input under-voltage alarm
->
-> power2_label            "pout1"
-> power2_input            Measured output power
->
-> temp1_input             Measured temperature
-> temp1_alarm             Temperature alarm
->
-> temp2_input             Measured other loop temperature
-> temp2_alarm             Temperature alarm
->
-> Caused by commit
->
->    0be9fee30ff9 ("hwmon: (pmbus) Add driver for Infineon IR36021")
->
-Easy enough to fix. Who should I send the patch to?=
+What is the reason for this change? Why is the new way better than the
+old way?
