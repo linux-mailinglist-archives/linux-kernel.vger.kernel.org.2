@@ -2,88 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ECE339049
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43900339051
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCLOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:48:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhCLOsV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:48:21 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10DDAC061574;
-        Fri, 12 Mar 2021 06:48:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=eNe3lMdiYSlKSx8VAknAbgTJQAiODgr25WWb
-        vEVvKw8=; b=vkd8x3CPwQqjbSXY7DrdPHrJ/u/bevx/DjhcTz2DIjOi/l7PcaiK
-        14bsSV96+2nPgBytfc6g0dfksZJyi149ANM4bHe6JFTPq8IYvYAHLEPA46bIm1MZ
-        ret2tV0E7+NTrAJOhwcfj4VDtgenVGLpCkIgb7cLqxlWh3ngh2xPjks=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Fri, 12 Mar
- 2021 22:47:53 +0800 (GMT+08:00)
-X-Originating-IP: [114.214.251.230]
-Date:   Fri, 12 Mar 2021 22:47:53 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Tom Parkin" <tparkin@katalix.com>
-Cc:     paulus@samba.org, davem@davemloft.net, linux-ppp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [BUG] net/ppp: A use after free in ppp_unregister_channe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <20210312101258.GA4951@katalix.com>
-References: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
- <20210312101258.GA4951@katalix.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S230302AbhCLOtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:49:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231670AbhCLOtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:49:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8217464F6A;
+        Fri, 12 Mar 2021 14:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615560552;
+        bh=XItlzqmS1GgbFrUy1lmYHco4asVlYr1fnKFtgVypdOc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qocWN2ABH3LybTsLHQVJtXDGBhxHZ8/Maf76z8hfmdcWXSYy8FlGbn70fZKD/ZOIC
+         rwqc5c3WfY2fu46PjUOfM/VROHlV7IPEll6pyAEVC/nTGR7IM8cuhmrQpxsyIBCj+q
+         rAd/u8K2y1xAitBYsUnNbrJEYIbemU58xbhBmrxJy6cKHWG7CAi7/mEaSO64TSN2Ck
+         eV2IYd1yj+/W/t7cEZB8s5HfDAi6hdCHBudsa3FbAZ5JBi4N+xUViM+WV2elAKmMgG
+         21WppUe7hdkxdNcvxMWFtMtrGx6sDH5K/PENVyu1/IpHt89p3QOLKdMP5PMymrovev
+         47VsOEekNE7Jg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4C2CE3523783; Fri, 12 Mar 2021 06:49:12 -0800 (PST)
+Date:   Fri, 12 Mar 2021 06:49:12 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] kvfree_rcu: convert a page cache to lock-free variant
+Message-ID: <20210312144912.GG2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210308194950.12320-1-urezki@gmail.com>
+ <20210308194950.12320-2-urezki@gmail.com>
+ <CA+KHdyX-h2KHEEvZmbeLVdjBzW7o37_GvQrGj55-d4i-+HLboQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <2ad7aaa2.fcad.17826e87afb.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygBXXDwZf0tg0AcVAA--.2W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoSBlQhn5CimQABsf
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KHdyX-h2KHEEvZmbeLVdjBzW7o37_GvQrGj55-d4i-+HLboQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIlRvbSBQYXJraW4i
-IDx0cGFya2luQGthdGFsaXguY29tPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMTIgMTg6MTI6
-NTggKOaYn+acn+S6lCkNCj4g5pS25Lu25Lq6OiBseWwyMDE5QG1haWwudXN0Yy5lZHUuY24NCj4g
-5oqE6YCBOiBwYXVsdXNAc2FtYmEub3JnLCBkYXZlbUBkYXZlbWxvZnQubmV0LCBsaW51eC1wcHBA
-dmdlci5rZXJuZWwub3JnLCBuZXRkZXZAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnDQo+IOS4u+mimDogUmU6IFtCVUddIG5ldC9wcHA6IEEgdXNlIGFmdGVyIGZy
-ZWUgaW4gcHBwX3VucmVnaXN0ZXJfY2hhbm5lDQo+IA0KPiBUaGFua3MgZm9yIHRoZSByZXBvcnQh
-DQo+IA0KPiBPbiAgVGh1LCBNYXIgMTEsIDIwMjEgYXQgMjA6MzQ6NDQgKzA4MDAsIGx5bDIwMTlA
-bWFpbC51c3RjLmVkdS5jbiB3cm90ZToNCj4gPiBGaWxlOiBkcml2ZXJzL25ldC9wcHAvcHBwX2dl
-bmVyaWMuYw0KPiA+IA0KPiA+IEluIHBwcF91bnJlZ2lzdGVyX2NoYW5uZWwsIHBjaCBjb3VsZCBi
-ZSBmcmVlZCBpbiBwcHBfdW5icmlkZ2VfY2hhbm5lbHMoKQ0KPiA+IGJ1dCBhZnRlciB0aGF0IHBj
-aCBpcyBzdGlsbCBpbiB1c2UuIEluc2lkZSB0aGUgZnVuY3Rpb24gcHBwX3VuYnJpZGdlX2NoYW5u
-ZWxzLA0KPiA+IGlmICJwY2hiYiA9PSBwY2giIGlzIHRydWUgYW5kIHRoZW4gcGNoIHdpbGwgYmUg
-ZnJlZWQuDQo+IA0KPiBEbyB5b3UgaGF2ZSBhIHdheSB0byByZXByb2R1Y2UgYSB1c2UtYWZ0ZXIt
-ZnJlZSBzY2VuYXJpbz8NCj4gDQo+IEZyb20gc3RhdGljIGFuYWx5c2lzIEknbSBub3Qgc3VyZSBo
-b3cgcGNoIHdvdWxkIGJlIGZyZWVkIGluDQo+IHBwcF91bmJyaWRnZV9jaGFubmVscyB3aGVuIGNh
-bGxlZCB2aWEuIHBwcF91bnJlZ2lzdGVyX2NoYW5uZWwuDQo+IA0KPiBJbiB0aGVvcnkgKGF0IGxl
-YXN0ISkgdGhlIGNhbGxlciBvZiBwcHBfcmVnaXN0ZXJfbmV0X2NoYW5uZWwgaG9sZHMgDQo+IGEg
-cmVmZXJlbmNlIG9uIHN0cnVjdCBjaGFubmVsIHdoaWNoIHBwcF91bnJlZ2lzdGVyX2NoYW5uZWwg
-ZHJvcHMuDQo+IA0KPiBFYWNoIGNoYW5uZWwgaW4gYSBicmlkZ2VkIHBhaXIgaG9sZHMgYSByZWZl
-cmVuY2Ugb24gdGhlIG90aGVyLg0KPiANCj4gSGVuY2Ugb24gcmV0dXJuIGZyb20gcHBwX3VuYnJp
-ZGdlX2NoYW5uZWxzLCB0aGUgY2hhbm5lbCBzaG91bGQgbm90IGhhdmUNCj4gYmVlbiBmcmVlZCAo
-aW4gdGhpcyBjb2RlIHBhdGgpIGJlY2F1c2UgdGhlIHBwcF9yZWdpc3Rlcl9uZXRfY2hhbm5lbA0K
-PiByZWZlcmVuY2UgaGFzIG5vdCB5ZXQgYmVlbiBkcm9wcGVkLg0KPiANCj4gTWF5YmUgdGhlcmUg
-aXMgYW4gaXNzdWUgd2l0aCB0aGUgcmVmZXJlbmNlIGNvdW50aW5nIG9yIGEgcmFjZSBvZiBzb21l
-DQo+IHNvcnQ/DQo+IA0KPiA+IEkgY2hlY2tlZCB0aGUgY29tbWl0IGhpc3RvcnkgYW5kIGZvdW5k
-IHRoYXQgdGhpcyBwcm9ibGVtIGlzIGludHJvZHVjZWQgZnJvbQ0KPiA+IDRjZjQ3NmNlZDQ1ZDcg
-KCJwcHA6IGFkZCBQUFBJT0NCUklER0VDSEFOIGFuZCBQUFBJT0NVTkJSSURHRUNIQU4gaW9jdGxz
-IikuDQo+ID4gDQo+ID4gSSBoYXZlIG5vIGlkZWEgYWJvdXQgaG93IHRvIGdlbmVyYXRlIGEgc3Vp
-dGFibGUgcGF0Y2gsIHNvcnJ5Lg0KDQpUaGlzIGlzc3VlIHdhcyByZXBvcnRlZCBieSBhIHBhdGgt
-c2Vuc2l0aXZlIHN0YXRpYyBhbmFseXplciBkZXZlbG9wZWQgYnkgb3VyIExhYiwNCnRodXMgaSBo
-YXZlIG5vdCBhIGNyYXNoIG9yIGJ1ZyBsb2cuDQoNCkFzIHRoZSByZXR1cm4gdHlwZSBvZiBwcHBf
-dW5icmlkZ2VfY2hhbm5lbHMoKSBpcyBhIGludCwgY2FuIHdlIHJldHVybiBhIHZhbHVlIHRvDQpp
-bmZvcm0gY2FsbGVyIHRoYXQgdGhlIGNoYW5uZWwgaXMgZnJlZWQ/DQoNCg==
+On Fri, Mar 12, 2021 at 01:38:14PM +0100, Uladzislau Rezki wrote:
+> Hello, Paul.
+> 
+> Please do not consider this patch. It is buggy :)
+
+Consider it formally withdrawn, and thank you for letting me know!
+
+							Thanx, Paul
+
+> --
+> Vlad Rezki
+> 
+> On Mon, Mar 8, 2021 at 8:50 PM Uladzislau Rezki (Sony) <urezki@gmail.com>
+> wrote:
+> 
+> > Implement an access to the page cache as lock-free variant. This
+> > is done because there are extra places where an access is required,
+> > therefore making it lock-less will remove any lock contention.
+> >
+> > For example we have a shrinker path as well as a reclaim kthread.
+> > In both cases a current CPU can access to a remote per-cpu page
+> > cache that would require taking a lock to protect it.
+> >
+> > An "rcuscale" performance test suite can detect it and shows some
+> > slight improvements:
+> >
+> > ../kvm.sh --memory 16G --torture rcuscale --allcpus --duration 10 \
+> > --kconfig CONFIG_NR_CPUS=64 --bootargs "rcuscale.kfree_rcu_test=1 \
+> > rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 \
+> > rcuscale.kfree_rcu_test_double=1 torture.disable_onoff_at_boot"
+> > --trust-make
+> >
+> > 100 iterations, checking total time taken by all kfree'ers in ns.:
+> >
+> > default: AVG: 10968415107.5 MIN: 10668412500 MAX: 11312145160
+> > patch:   AVG: 10787596486.1 MIN: 10397559880 MAX: 11214901050
+> >
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  kernel/rcu/tree.c | 91 +++++++++++++++++++++++++++++------------------
+> >  1 file changed, 56 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 9c8cfb01e9a6..4f04664d5ac0 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3167,8 +3167,9 @@ struct kfree_rcu_cpu {
+> >         atomic_t work_in_progress;
+> >         struct hrtimer hrtimer;
+> >
+> > +       // lock-free cache.
+> >         struct llist_head bkvcache;
+> > -       int nr_bkv_objs;
+> > +       atomic_t nr_bkv_objs;
+> >  };
+> >
+> >  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> > @@ -3215,49 +3216,79 @@ krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp,
+> > unsigned long flags)
+> >         raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> >  }
+> >
+> > +/*
+> > + * Increment 'v', if 'v' is below 'thresh'. Returns true if we
+> > + * succeeded, false if 'v' + 1 would be bigger than 'thresh'.
+> > + *
+> > + * Decrement 'v' if 'v' is upper 'thresh'. Returns true if we
+> > + * succeeded, false if 'v' - 1 would be smaller than 'thresh'.
+> > + */
+> > +static inline bool
+> > +atomic_test_inc_dec(atomic_t *v, unsigned int thresh, bool inc)
+> > +{
+> > +       unsigned int cur = atomic_read(v);
+> > +       unsigned int old;
+> > +
+> > +       for (;;) {
+> > +               if (inc) {
+> > +                       if (cur >= thresh)
+> > +                               return false;
+> > +               } else {
+> > +                       if (cur <= thresh)
+> > +                               return false;
+> > +               }
+> > +
+> > +               old = atomic_cmpxchg(v, cur, inc ? (cur + 1):(cur - 1));
+> > +               if (old == cur)
+> > +                       break;
+> > +
+> > +               cur = old;
+> > +       }
+> > +
+> > +       return true;
+> > +}
+> > +
+> >  static inline struct kvfree_rcu_bulk_data *
+> >  get_cached_bnode(struct kfree_rcu_cpu *krcp)
+> >  {
+> > -       if (!krcp->nr_bkv_objs)
+> > -               return NULL;
+> > +       struct kvfree_rcu_bulk_data *bnode = NULL;
+> >
+> > -       krcp->nr_bkv_objs--;
+> > -       return (struct kvfree_rcu_bulk_data *)
+> > -               llist_del_first(&krcp->bkvcache);
+> > +       if (atomic_test_inc_dec(&krcp->nr_bkv_objs, 0, false))
+> > +               bnode = (struct kvfree_rcu_bulk_data *)
+> > +                       llist_del_first(&krcp->bkvcache);
+> > +
+> > +       return bnode;
+> >  }
+> >
+> >  static inline bool
+> >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+> >         struct kvfree_rcu_bulk_data *bnode)
+> >  {
+> > -       // Check the limit.
+> > -       if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+> > -               return false;
+> > -
+> > -       llist_add((struct llist_node *) bnode, &krcp->bkvcache);
+> > -       krcp->nr_bkv_objs++;
+> > -       return true;
+> > +       if (atomic_test_inc_dec(&krcp->nr_bkv_objs, rcu_min_cached_objs,
+> > true)) {
+> > +               llist_add((struct llist_node *) bnode, &krcp->bkvcache);
+> > +               return true;
+> > +       }
+> >
+> > +       return false;
+> >  }
+> >
+> >  static int
+> >  drain_page_cache(struct kfree_rcu_cpu *krcp)
+> >  {
+> > -       unsigned long flags;
+> > -       struct llist_node *page_list, *pos, *n;
+> > -       int freed = 0;
+> > +       struct kvfree_rcu_bulk_data *bnode;
+> > +       int num_pages, i;
+> >
+> > -       raw_spin_lock_irqsave(&krcp->lock, flags);
+> > -       page_list = llist_del_all(&krcp->bkvcache);
+> > -       krcp->nr_bkv_objs = 0;
+> > -       raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +       num_pages = atomic_read(&krcp->nr_bkv_objs);
+> > +
+> > +       for (i = 0; i < num_pages; i++) {
+> > +               bnode = get_cached_bnode(krcp);
+> > +               if (!bnode)
+> > +                       break;
+> >
+> > -       llist_for_each_safe(pos, n, page_list) {
+> > -               free_page((unsigned long)pos);
+> > -               freed++;
+> > +               free_page((unsigned long) bnode);
+> >         }
+> >
+> > -       return freed;
+> > +       return i;
+> >  }
+> >
+> >  /*
+> > @@ -3314,10 +3345,8 @@ static void kfree_rcu_work(struct work_struct *work)
+> >                         }
+> >                         rcu_lock_release(&rcu_callback_map);
+> >
+> > -                       raw_spin_lock_irqsave(&krcp->lock, flags);
+> >                         if (put_cached_bnode(krcp, bkvhead[i]))
+> >                                 bkvhead[i] = NULL;
+> > -                       raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> >
+> >                         if (bkvhead[i])
+> >                                 free_page((unsigned long) bkvhead[i]);
+> > @@ -3460,7 +3489,6 @@ static void fill_page_cache_func(struct work_struct
+> > *work)
+> >         struct kfree_rcu_cpu *krcp =
+> >                 container_of(work, struct kfree_rcu_cpu,
+> >                         page_cache_work.work);
+> > -       unsigned long flags;
+> >         bool pushed;
+> >         int i;
+> >
+> > @@ -3469,10 +3497,7 @@ static void fill_page_cache_func(struct work_struct
+> > *work)
+> >                         __get_free_page(GFP_KERNEL | __GFP_NORETRY |
+> > __GFP_NOMEMALLOC | __GFP_NOWARN);
+> >
+> >                 if (bnode) {
+> > -                       raw_spin_lock_irqsave(&krcp->lock, flags);
+> >                         pushed = put_cached_bnode(krcp, bnode);
+> > -                       raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > -
+> >                         if (!pushed) {
+> >                                 free_page((unsigned long) bnode);
+> >                                 break;
+> > @@ -3647,17 +3672,13 @@ kfree_rcu_shrink_count(struct shrinker *shrink,
+> > struct shrink_control *sc)
+> >  {
+> >         int cpu;
+> >         unsigned long count = 0;
+> > -       unsigned long flags;
+> >
+> >         /* Snapshot count of all CPUs */
+> >         for_each_possible_cpu(cpu) {
+> >                 struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> >
+> >                 count += READ_ONCE(krcp->count);
+> > -
+> > -               raw_spin_lock_irqsave(&krcp->lock, flags);
+> > -               count += krcp->nr_bkv_objs;
+> > -               raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +               count += atomic_read(&krcp->nr_bkv_objs);
+> >         }
+> >
+> >         WRITE_ONCE(backoff_page_cache_fill, true);
+> > --
+> > 2.20.1
+> >
+> >
+> 
+> -- 
+> Uladzislau Rezki
