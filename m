@@ -2,176 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C817339639
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E3E33965F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhCLSXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:23:19 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:55486 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhCLSXJ (ORCPT
+        id S233703AbhCLSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:25:26 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:53516 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233559AbhCLSZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:23:09 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lKmRH-00HQQm-Fo; Fri, 12 Mar 2021 11:23:07 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lKmRG-006GW6-3r; Fri, 12 Mar 2021 11:23:06 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Qianli Zhao <zhaoqianligood@gmail.com>
-Cc:     christian@brauner.io, axboe@kernel.dk, oleg@redhat.com,
-        tglx@linutronix.de, pcc@google.com, linux-kernel@vger.kernel.org,
-        zhaoqianli@xiaomi.com
-References: <1615519478-178620-1-git-send-email-zhaoqianligood@gmail.com>
-Date:   Fri, 12 Mar 2021 12:23:11 -0600
-In-Reply-To: <1615519478-178620-1-git-send-email-zhaoqianligood@gmail.com>
-        (Qianli Zhao's message of "Fri, 12 Mar 2021 11:24:38 +0800")
-Message-ID: <m1ft10i640.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 12 Mar 2021 13:25:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=0Bko3Ie4Uvc54xcT0jJ3kOx/RyID/leZ9OA8KNpjYtM=; b=CvA51+dv8WoK6+gl9j6losyRNn
+        z37elIJkHQw426VAvjyMmd5/0Bd+jcoHqQyCw3hNZXYLCffs7knNFKg37WykjcodyfX3G0aUY9C/N
+        87MYNvRj2Eqb6cgu0n88BCBDou0hrsXHvB4Nmj2WQOYVly/WtQI9tInfq2+WIY2k0r5NA4XjiQnC8
+        jSbqLYAUD3AAr9GYj35jdwDqzulDyyaRmX0uMROhg7AzCCnxVMOvjv7zXs8EERUsmx2i5k9gx9zxT
+        EjrLzWUJo5R3pYhi7CTAcr61789tRhIu7upZlkGmerp5l9Bp0T4JHFW5BD5in+k90UHt3tBzvYj37
+        TaJqDq4A==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lKmT0-0000WH-0K; Fri, 12 Mar 2021 11:24:55 -0700
+To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <iweiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <6b9be188-1ec7-527c-ae47-3f5b4e153758@arm.com>
+ <c66d247e-5da9-4866-8e6b-ee2ec4bc03d5@deltatee.com>
+ <90a2825c-da2f-c031-a70f-08c5efb3db56@arm.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <b7e007cc-d657-239e-5e2f-5de6ebec38c8@deltatee.com>
+Date:   Fri, 12 Mar 2021 11:24:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lKmRG-006GW6-3r;;;mid=<m1ft10i640.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/f1kXFGkxezBTJ1EPv0GbYNbbdaorH2Es=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+In-Reply-To: <90a2825c-da2f-c031-a70f-08c5efb3db56@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, hch@lst.de, andrzej.jakowski@intel.com, sbates@raithlin.com, dan.j.williams@intel.com, daniel.vetter@ffwll.ch, jason@jlekstrand.net, jgg@ziepe.ca, christian.koenig@amd.com, willy@infradead.org, iweiny@intel.com, dave.hansen@linux.intel.com, jhubbard@nvidia.com, dave.b.minturn@intel.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
 X-Spam-Level: 
-X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_SpammyWords
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4995]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Qianli Zhao <zhaoqianligood@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 513 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.4 (0.7%), b_tie_ro: 2.4 (0.5%), parse: 1.10
-        (0.2%), extract_message_metadata: 13 (2.6%), get_uri_detail_list: 2.7
-        (0.5%), tests_pri_-1000: 5 (1.1%), tests_pri_-950: 1.44 (0.3%),
-        tests_pri_-900: 1.14 (0.2%), tests_pri_-90: 138 (26.9%), check_bayes:
-        136 (26.5%), b_tokenize: 11 (2.2%), b_tok_get_all: 8 (1.6%),
-        b_comp_prob: 2.7 (0.5%), b_tok_touch_all: 111 (21.6%), b_finish: 0.72
-        (0.1%), tests_pri_0: 336 (65.5%), check_dkim_signature: 0.42 (0.1%),
-        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 1.07 (0.2%), tests_pri_10:
-        2.8 (0.5%), tests_pri_500: 7 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH V2] exit: trigger panic when global init has exited
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [RFC PATCH v2 00/11] Add support to dma_map_sg for P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qianli Zhao <zhaoqianligood@gmail.com> writes:
 
-> From: Qianli Zhao <zhaoqianli@xiaomi.com>
->
-> When init sub-threads running on different CPUs exit at the same time,
-> zap_pid_ns_processe()->BUG() may be happened.
-> And every thread status is abnormal after exit(PF_EXITING set,task->mm=NULL etc),
-> which makes it difficult to parse coredump from fulldump normally.
-> In order to fix the above problem, when any one init has been set to SIGNAL_GROUP_EXIT,
-> trigger panic immediately, and prevent other init threads from continuing to exit.
->
-> [   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
-> [   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
-> [   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
->
-> PID: 552   CPU: 4   COMMAND: "init"
-> PID: 1     CPU: 7   COMMAND: "init"
-> core4                           core7
-> ...                             sys_exit_group()
->                                 do_group_exit()
->                                    - sig->flags = SIGNAL_GROUP_EXIT
->                                    - zap_other_threads()
->                                 do_exit() //PF_EXITING is set
-> ret_to_user()
-> do_notify_resume()
-> get_signal()
->     - signal_group_exit
->     - goto fatal;
-> do_group_exit()
-> do_exit() //PF_EXITING is set
->     - panic("Attempted to kill init! exitcode=0x%08x\n")
->                                 exit_notify()
->                                 find_alive_thread() //no alive sub-threads
->                                 zap_pid_ns_processes()//CONFIG_PID_NS is not set
->                                 BUG()
->
-> Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
 
-The changelog is much better thank you.
+On 2021-03-12 10:46 a.m., Robin Murphy wrote:
+> On 2021-03-12 16:18, Logan Gunthorpe wrote:
+>>
+>>
+>> On 2021-03-12 8:51 a.m., Robin Murphy wrote:
+>>> On 2021-03-11 23:31, Logan Gunthorpe wrote:
+>>>> Hi,
+>>>>
+>>>> This is a rework of the first half of my RFC for doing P2PDMA in
+>>>> userspace
+>>>> with O_DIRECT[1].
+>>>>
+>>>> The largest issue with that series was the gross way of flagging P2PDMA
+>>>> SGL segments. This RFC proposes a different approach, (suggested by
+>>>> Dan Williams[2]) which uses the third bit in the page_link field of the
+>>>> SGL.
+>>>>
+>>>> This approach is a lot less hacky but comes at the cost of adding a
+>>>> CONFIG_64BIT dependency to CONFIG_PCI_P2PDMA and using up the last
+>>>> scarce bit in the page_link. For our purposes, a 64BIT restriction is
+>>>> acceptable but it's not clear if this is ok for all usecases hoping
+>>>> to make use of P2PDMA.
+>>>>
+>>>> Matthew Wilcox has already suggested (off-list) that this is the wrong
+>>>> approach, preferring a new dma mapping operation and an SGL
+>>>> replacement. I
+>>>> don't disagree that something along those lines would be a better long
+>>>> term solution, but it involves overcoming a lot of challenges to get
+>>>> there. Creating a new mapping operation still means adding support to
+>>>> more
+>>>> than 25 dma_map_ops implementations (many of which are on obscure
+>>>> architectures) or creating a redundant path to fallback with
+>>>> dma_map_sg()
+>>>> for every driver that uses the new operation. This RFC is an approach
+>>>> that doesn't require overcoming these blocks.
+>>>
+>>> I don't really follow that argument - you're only adding support to two
+>>> implementations with the awkward flag, so why would using a dedicated
+>>> operation instead be any different? Whatever callers need to do if
+>>> dma_pci_p2pdma_supported() says no, they could equally do if
+>>> dma_map_p2p_sg() (or whatever) returns -ENXIO, no?
+>>
+>> The thing is if the dma_map_sg doesn't support P2PDMA then P2PDMA
+>> transactions cannot be done, but regular transactions can still go
+>> through as they always did.
+>>
+>> But replacing dma_map_sg() with dma_map_new() affects all operations,
+>> P2PDMA or otherwise. If dma_map_new() isn't supported it can't simply
+>> not support P2PDMA; it has to maintain a fallback path to dma_map_sg().
+> 
+> But AFAICS the equivalent fallback path still has to exist either way.
+> My impression so far is that callers would end up looking something like
+> this:
+> 
+>     if (dma_pci_p2pdma_supported()) {
+>         if (dma_map_sg(...) < 0)
+>             //do non-p2p fallback due to p2p failure
+>     } else {
+>         //do non-p2p fallback due to lack of support
+>     }
+> 
+> at which point, simply:
+> 
+>     if (dma_map_sg_p2p(...) < 0)
+>         //do non-p2p fallback either way
+> 
+> seems entirely reasonable. What am I missing?
 
-As Oleg pointer out we need to do something like the code below.
+No, that's not how it works. The dma_pci_p2pdma_supported() flag gates
+whether P2PDMA pages will be used at a much higher level. Currently with
+NVMe, if P2PDMA is supported, it sets the QUEUE_FLAG_PCI_P2PDMA on the
+block queue. This is then tested with blk_queue_pci_p2pdma() before any
+P2PDMA transaction with the block device is started.
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e35e69a..bc676c06ef9a 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -785,15 +785,16 @@ void __noreturn do_exit(long code)
- 		sync_mm_rss(tsk->mm);
- 	acct_update_integrals(tsk);
- 	group_dead = atomic_dec_and_test(&tsk->signal->live);
-+	/*
-+	 * If the global init has exited, panic immediately to get a
-+	 * useable coredump.
-+	 */
-+	if (unlikely(is_global_init(tsk) &&
-+		     (group_dead || (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
-+		panic("Attempted to kill init! exitcode=0x%08x\n",
-+		      tsk->signal->group_exit_code ?: (int)code);
-+	}
- 	if (group_dead) {
--		/*
--		 * If the last thread of global init has exited, panic
--		 * immediately to get a useable coredump.
--		 */
--		if (unlikely(is_global_init(tsk)))
--			panic("Attempted to kill init! exitcode=0x%08x\n",
--				tsk->signal->group_exit_code ?: (int)code);
--
- #ifdef CONFIG_POSIX_TIMERS
- 		hrtimer_cancel(&tsk->signal->real_timer);
- 		exit_itimers(tsk->signal);
+In the following patches that could add userspace support,
+blk_queue_pci_p2pdma() is used to add a flag to GUP which allows P2PDMA
+pages into the driver via O_DIRECT.
 
-There is still a race that could lead to the BUG in zap_pid_ns_processes.
-We still have a case where the last two threads of a process call
-pthread_exit (aka do_exit not do_group_exit in the kernel).
+There is no fallback path on the dma_map_sg() operation if p2pdma is not
+supported. dma_map_sg() is always used. The code simply prevents pages
+from getting there in the first place.
 
-Thread A                            Thread B
-do_exit()                           do_exit()
+A new DMA operation would have to be:
 
- exit_signals()
-   tsk->flags |= PF_EXITING;
- group_dead = false;
-                                    exit_signals()
-                                      tsk->flags |= PF_EXITING;
- exit_notify()
-  forget_original_parent
-    find_child_reaper
-      reaper = find_alive_thread()
-      zap_pid_ns_processes()
-         BUG()
-                                    group_dead = true;
-                                    if (is_global_init())
-                                    	panic("Attemted to kill init");
+if (dma_has_new_operation()) {
+     // create input for dma_map_new_op()
+     // map with dma_map_new_op()
+     // parse output of dma_map_new_op()
+} else {
+     // create SGL
+     dma_map_sg()
+     // convert SGL to hardware map
+}
 
-As we are guaranteed to see the panic with my change above I suggest
-we augment it by simply removing the BUG in zap_pid_ns_processes.
+And this if statement has nothing to do with p2pdma support or not.
 
-Or maybe not if there is a better way to write the panic code.  I don't
-think having pid namespaces compiled out is a particularly common case.
-So whatever we can do to keep the code correct and reduce testing.
+> 
+> Let's not pretend that overloading an existing API means we can start
+> feeding P2P pages into any old subsystem/driver without further changes
+> - there already *are* at least some that retry ad infinitum if DMA
+> mapping fails (the USB layer springs to mind...) and thus wouldn't
+> handle the PCI_P2PDMA_MAP_NOT_SUPPORTED case acceptably.
 
-Eric
+Yes, nobody is pretending that at all. We are being very careful with
+P2PDMA pages and we don't want them to get into any driver that isn't
+explicitly written to expect them. With the code in the current kernel
+this is all very explicit and done ahead of time (with
+QUEUE_FLAG_PCI_P2PDMA and similar). Once the pages get into userspace,
+GUP will reject them unless the driver getting the pages specifically
+sets a flag indicating support for them.
+
+>> Given that the inputs and outputs for dma_map_new() will be completely
+>> different data structures this will be quite a lot of similar paths
+>> required in the driver. (ie mapping a bvec to the input struct and the
+>> output struct to hardware requirements) If a bug crops up in the old
+>> dma_map_sg(), developers might not notice it for some time seeing it
+>> won't be used on the most popular architectures.
+> 
+> Huh? I'm specifically suggesting a new interface that takes the *same*
+> data structure (at least to begin with), but just gives us more
+> flexibility in terms of introducing p2p-aware behaviour somewhat more
+> safely. Yes, we already know that we ultimately want something better
+> than scatterlists for representing things like this and dma-buf imports,
+> but that hardly has to happen overnight.
+
+Ok, well that's not what Matthew had suggested off list. He specifically
+was suggesting new data structures. And yes, that isn't going to happen
+overnight.
+
+If we have a dma_map_sg() and a dma_map_sg_p2p() that are identical
+except dma_map_sg_p2p() supports p2pdma memory and can return -1 then
+that doesn't sound so bad to me. So dma_map_sg() would simply be call
+dma_map_sg_p2p() and add the BUG() on the return code. Though I really
+don't see the benefit of the extra annotations. I don't think it really
+adds any value. The tricky thing in the API is the SGL which needs to
+flag segments for P2PDMA and the new function doesn't solve that.
+
+Logan
