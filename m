@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3753383A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F4204338416
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 03:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCLCdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 21:33:05 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:50883 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCLCcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:32:45 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id B3B052EA45F;
-        Thu, 11 Mar 2021 21:32:44 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id BfnoFxK84qvP; Thu, 11 Mar 2021 21:15:41 -0500 (EST)
-Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id E79F12EA3A7;
-        Thu, 11 Mar 2021 21:32:43 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH][next] scsi: sg: return -ENOMEM on out of memory error
-To:     Colin King <colin.king@canonical.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210311233359.81305-1-colin.king@canonical.com>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <90e260c2-34f7-e156-0c36-6ff00c91311b@interlog.com>
-Date:   Thu, 11 Mar 2021 21:32:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210311233359.81305-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+        id S231657AbhCLCyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 21:54:07 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:52994 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231434AbhCLCyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 21:54:00 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 067671A04F4;
+        Fri, 12 Mar 2021 03:53:59 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4B75D1A04A3;
+        Fri, 12 Mar 2021 03:53:52 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 754AC402A7;
+        Fri, 12 Mar 2021 03:53:43 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, timur@kernel.org,
+        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 0/6] Add audio driver base on rpmsg on i.MX platform
+Date:   Fri, 12 Mar 2021 10:38:39 +0800
+Message-Id: <1615516725-4975-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 6:33 p.m., Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The sg_proc_seq_show_debug should return -ENOMEM on an
-> out of memory error rather than -1. Fix this.
-> 
-> Fixes: 94cda6cf2e44 ("scsi: sg: Rework debug info")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Asymmetric multiprocessor, there is Cortex-A core and Cortex-M core,
+Linux is running on A core, RTOS is running on M core.
+The audio hardware device can be controlled by Cortex-M device,
+So audio playback/capture can be handled by M core.
 
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+Rpmsg is the interface for sending and receiving msg to and from M
+core, that we can create a virtual sound on Cortex-A core side.
 
-Thanks.
+A core will tell the Cortex-M core sound format/rate/channel,
+where is the data buffer, what is the period size, when to start,
+when to stop and when suspend or resume happen, each of this behavior
+there is defined rpmsg command.
 
-> ---
->   drivers/scsi/sg.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-> index 79f05afa4407..85e86cbc6891 100644
-> --- a/drivers/scsi/sg.c
-> +++ b/drivers/scsi/sg.c
-> @@ -4353,7 +4353,7 @@ sg_proc_seq_show_debug(struct seq_file *s, void *v)
->   	if (!bp) {
->   		seq_printf(s, "%s: Unable to allocate %d on heap, finish\n",
->   			   __func__, bp_len);
-> -		return -1;
-> +		return -ENOMEM;
->   	}
->   	read_lock_irqsave(&sg_index_lock, iflags);
->   	sdp = it ? sg_lookup_dev(it->index) : NULL;
-> 
+Especially we designed the low power audio case, that is to
+allocate a large buffer and fill the data, then Cortex-A core can go
+to sleep mode, Cortex-M core continue to play the sound, when the
+buffer is consumed, Cortex-M core will trigger the Cortex-A core to
+wakeup to fill data.
+
+changes in v5:
+- remove unneeded property in binding doc and driver
+- update binding doc according to Rob's comments.
+- Fix link issue reported by kernel test robot
+
+changes in v4:
+- remove the sound card node, merge the property to cpu dai node
+  according to Rob's comments.
+- sound card device will be registered by cpu dai driver.
+- Fix do_div issue reported by kernel test robot
+
+changes in v3:
+- add local refcount for clk enablement in hw_params()
+- update the document according Rob's comments
+
+changes in v2:
+- update codes and comments according to Mark's comments
+
+Shengjiu Wang (6):
+  ASoC: soc-component: Add snd_soc_pcm_component_ack
+  ASoC: fsl_rpmsg: Add CPU DAI driver for audio base on rpmsg
+  ASoC: dt-bindings: fsl_rpmsg: Add binding doc for rpmsg audio device
+  ASoC: imx-audio-rpmsg: Add rpmsg_driver for audio channel
+  ASoC: imx-pcm-rpmsg: Add platform driver for audio base on rpmsg
+  ASoC: imx-rpmsg: Add machine driver for audio base on rpmsg
+
+ .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 108 +++
+ include/sound/soc-component.h                 |   3 +
+ sound/soc/fsl/Kconfig                         |  30 +
+ sound/soc/fsl/Makefile                        |   6 +
+ sound/soc/fsl/fsl_rpmsg.c                     | 279 ++++++
+ sound/soc/fsl/fsl_rpmsg.h                     |  35 +
+ sound/soc/fsl/imx-audio-rpmsg.c               | 140 +++
+ sound/soc/fsl/imx-pcm-rpmsg.c                 | 918 ++++++++++++++++++
+ sound/soc/fsl/imx-pcm-rpmsg.h                 | 512 ++++++++++
+ sound/soc/fsl/imx-rpmsg.c                     | 150 +++
+ sound/soc/soc-component.c                     |  14 +
+ sound/soc/soc-pcm.c                           |   2 +
+ 12 files changed, 2197 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+ create mode 100644 sound/soc/fsl/fsl_rpmsg.c
+ create mode 100644 sound/soc/fsl/fsl_rpmsg.h
+ create mode 100644 sound/soc/fsl/imx-audio-rpmsg.c
+ create mode 100644 sound/soc/fsl/imx-pcm-rpmsg.c
+ create mode 100644 sound/soc/fsl/imx-pcm-rpmsg.h
+ create mode 100644 sound/soc/fsl/imx-rpmsg.c
+
+-- 
+2.27.0
 
