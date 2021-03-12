@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A5A339171
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C060233917A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhCLPfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:35:31 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58513 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231601AbhCLPfH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:35:07 -0500
-X-UUID: a4def33f50584c7ca6d83c44e186eb54-20210312
-X-UUID: a4def33f50584c7ca6d83c44e186eb54-20210312
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 703916706; Fri, 12 Mar 2021 23:34:53 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 12 Mar 2021 23:34:52 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Mar 2021 23:34:52 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <drinkcat@chromium.org>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v6 1/5] soc: mediatek: pwrap: use BIT() macro
-Date:   Fri, 12 Mar 2021 23:34:42 +0800
-Message-ID: <1615563286-22126-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        id S232493AbhCLPgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:36:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231679AbhCLPf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:35:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E1E464F4D;
+        Fri, 12 Mar 2021 15:35:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615563357;
+        bh=eEKFK3OThEMIo+ZId/9KGlssHgbryRe18XUiNaBF2R0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LOuteIOL+nMhXruJzsVz5ttEqS4PASeXqgxlCS/YiPDV1m0y7FDOy1ccVYnuxsaCo
+         JLM9RxNbLkT+5R7FJ5SPUoNK3j2+H4ZxHZpcGotcu+SqBReVshez0HaRTPbYaRIheC
+         Mla9LwjsK9uL94ITTSzWRTXRB6Fv1Gf7xvKximTcc6yIQlIqjCUKmbjKRkHagTkmg2
+         9tsVHVAiPHQ6uNhyLWMZOSzzw3v7tSvtSJhQ2fAgQt/V1+kVAi+n+A6l7ImDvNoRdI
+         tv3Ec7Cz1npmA6x25QZFtEYSUy+E2rWZNHr0k0aEsSHLwd+QjVmZ5OryEqsfLzR/y2
+         2XnMhmCwOidnA==
+Date:   Fri, 12 Mar 2021 15:34:43 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Subject: Re: [PATCH 3/7] ASoC: codecs: wcd938x: add basic driver
+Message-ID: <20210312153443.GI5348@sirena.org.uk>
+References: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
+ <20210311173416.25219-4-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="16qp2B0xu0fRvRD7"
+Content-Disposition: inline
+In-Reply-To: <20210311173416.25219-4-srinivas.kandagatla@linaro.org>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a better BIT() marco for the bit definition.
-No functional changes, cleanup only.
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
----
-changes since v5:
-- no change.
----
- drivers/soc/mediatek/mtk-pmic-wrap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--16qp2B0xu0fRvRD7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediatek/mtk-pmic-wrap.c
-index 5d34e8b9c988..c897205ad11f 100644
---- a/drivers/soc/mediatek/mtk-pmic-wrap.c
-+++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
-@@ -27,8 +27,8 @@
- #define PWRAP_GET_WACS_RDATA(x)		(((x) >> 0) & 0x0000ffff)
- #define PWRAP_GET_WACS_FSM(x)		(((x) >> 16) & 0x00000007)
- #define PWRAP_GET_WACS_REQ(x)		(((x) >> 19) & 0x00000001)
--#define PWRAP_STATE_SYNC_IDLE0		(1 << 20)
--#define PWRAP_STATE_INIT_DONE0		(1 << 21)
-+#define PWRAP_STATE_SYNC_IDLE0		BIT(20)
-+#define PWRAP_STATE_INIT_DONE0		BIT(21)
- 
- /* macro for WACS FSM */
- #define PWRAP_WACS_FSM_IDLE		0x00
--- 
-2.18.0
+On Thu, Mar 11, 2021 at 05:34:12PM +0000, Srinivas Kandagatla wrote:
 
+> +static int wcd9380_update_status(struct sdw_slave *slave,
+> +				 enum sdw_slave_status status)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int wcd9380_port_prep(struct sdw_slave *slave,
+> +			     struct sdw_prepare_ch *prepare_ch,
+> +			     enum sdw_port_prep_ops state)
+> +{
+> +	return 0;
+> +}
+
+If these can legitimately be empty I'd expect the framework to support
+them being omitted.
+
+--16qp2B0xu0fRvRD7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLihIACgkQJNaLcl1U
+h9Ci5Af+PqSg4yirqEFMszFh/ZclR61rSGqEGOzB8LWC3qEET8W5UpRKUKtDdRHb
+wXhbQkw5H6mbRHy/oqQVUaLXQm8U2Xt4CwyZSTCS3CHmYasfkk63kbhaccT1xxAf
+UdPxODkq/8ykC7eM9aGWG1D5sqdGZg+hRlIVtMKAev5K9i5AOxWQAx5qSKwukA+9
+taUkuvFN3xxxw2Lkiv1NTncSn+B/TXwfXcYAOF3GLkeJyRjvd/tfzX+gImSoL+kT
+D/EPmg8APp36rkq7JAH1GGjrisac/FuEyecDFhFY1KyWrzyuD6yx0uJRkn5oYWK7
+istKWxTEaCQjxtaj3iBkxKkFF23W7w==
+=PrKP
+-----END PGP SIGNATURE-----
+
+--16qp2B0xu0fRvRD7--
