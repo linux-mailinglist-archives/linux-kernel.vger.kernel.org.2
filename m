@@ -2,146 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6215E3396C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5701D3396C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhCLSju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:39:50 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50207 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233659AbhCLSje (ORCPT
+        id S233480AbhCLSl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233036AbhCLSlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:39:34 -0500
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1lKmhB-000894-Ur
-        for linux-kernel@vger.kernel.org; Fri, 12 Mar 2021 18:39:33 +0000
-Received: by mail-wr1-f72.google.com with SMTP id p15so11431142wre.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:39:33 -0800 (PST)
+        Fri, 12 Mar 2021 13:41:19 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAE1C061574;
+        Fri, 12 Mar 2021 10:41:18 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id s21so2471876pfm.1;
+        Fri, 12 Mar 2021 10:41:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4yRPxufzWT3thQ7Bv+f09drpbgtD2Z1Oj1m47AWLtpw=;
+        b=XW4UHta53j/lMCQhf6ZIWbHCTtIkoPjRHjL0Y3ZT9eSjftYN418B5pVvbexerz/rb/
+         JwRTG+v8LcqiY409epXxWGrojOVTZ14YZZ4clda2vG4nm9mnUv+gimOj+xaQ1GZKyE4e
+         Kk09hRUU1VvtrMrWFPkKxgm1epfBndvbr7D6zKWoCZowENAXebbGCVyTdZ6oU4/pFUJ5
+         8fxlIg07MF7F9r0Ae3cj9DvkZWBZvjuxz9DE37hdhfGADWJEgQz5uO2laQ+5iOBvNhCk
+         4OvAoGNmYmydYS9uHLJBk6tt71cV8HYBXghCyDS9NN+J83/uO4LMKC5dt5sAQVOItXa0
+         3bQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LrjNNl1HaKs81EwyUtlVbxVaHe5LD/KaCHpzeDYGj+o=;
-        b=abU2XEMAf9OZTu5xEbx9+QEYKKKbbBiEqpTiQLcUXDcSItUoavV7RXoxCJfTR0skdQ
-         nblxbPeCjua47iSTc9K6LY/HwjTPiA7cypzzM2X120HLNlARetuYVOn7TA8kBBrwVu1e
-         xpmptoG46uw8odaJDJmQMrz0BHlrArYu4au8hydQ+zY4SAXcRn3wBMYtkQgXxGlRZJ9I
-         LM29W20cuhKuYcfiAH1SeyYC7e9ofd/FQJZXsOVGxx5TmfJ1BSXYZlWzXPvvDKC7EUVH
-         S66+0n7NsghgUXbJYumdUNTdKnPFzo46Il3HZYInxV1X0NYDmt+n92UyJWfFyt7NQWp6
-         K6Hw==
-X-Gm-Message-State: AOAM533TAfl3HomXe0tWBte62G2oxV/+WufWZulGaLZ6rmeXhrqzULAN
-        tDeXKg+a1ZE7636vX73i6R6HWbxn/WpSOpaqCSeYOTFig7TDmoJUglARtLmDXuCUW5fAluHG4No
-        N6C6r7XMQtuIk/2YG6JNIAY7KQ4Ae8OWo7ryyt98INg==
-X-Received: by 2002:a1c:a745:: with SMTP id q66mr14496831wme.21.1615574372795;
-        Fri, 12 Mar 2021 10:39:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzh1ffwB1Uew4hafYvV0CTsLEim5/cOL5h+Fe/qbWWW0iWFNrKSI/8eqeeu4xEez9yaC1IRwQ==
-X-Received: by 2002:a1c:a745:: with SMTP id q66mr14496817wme.21.1615574372517;
-        Fri, 12 Mar 2021 10:39:32 -0800 (PST)
-Received: from ?IPv6:2a01:4b00:85fd:d700:32b0:795:72f:7832? ([2a01:4b00:85fd:d700:32b0:795:72f:7832])
-        by smtp.gmail.com with ESMTPSA id s23sm2959737wmc.35.2021.03.12.10.39.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 10:39:32 -0800 (PST)
-To:     David Howells <dhowells@redhat.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
- <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist
- keyring
-Message-ID: <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com>
-Date:   Fri, 12 Mar 2021 18:39:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4yRPxufzWT3thQ7Bv+f09drpbgtD2Z1Oj1m47AWLtpw=;
+        b=Ae6raJVoLRsXXkoHAC+hLIbcquRZqvNqfjVj1rv5mVPYL6G9NLF3eqY8OAMU1QJfb4
+         sAIP0ZbJYzGThKTSOK50DDgHd2LQES2l2st7jBJ1ZXuCSMhYJdo59kklQM7VpKswIFPD
+         V0weauXLOcHD4wCV3NnTjqq1i8YXyDF3lBzlyssTEZQ67kSYFvUXdRmIvmlacjY6bfXZ
+         vtBtM2EG4Y13Y6aipb0GdJ+PIfrqhBftOGPqHmYhD3ichAwEzn3cRvAKv55sVAlVW1b4
+         9xqH38gTbg293SBWP68YsqhKAwvJfaYry4UZq++1ymTO76xOoGonBX6trSmWytdW/dCE
+         IiEA==
+X-Gm-Message-State: AOAM5304EqVwNw2vB8EBd/3LwLE+TH7ti+BeEBPUZns4fQVeBrPuCbi3
+        aB6ZHFUrMUlyE2v9CESJfX9hHnuea0dPHw==
+X-Google-Smtp-Source: ABdhPJzX+Kk6OzaJLcGb4y3lU8P7acpzzlbTVaWA3v23i0E2TNvrXi406JAmWEYpkU4MvEGaPDXmKg==
+X-Received: by 2002:a63:7885:: with SMTP id t127mr12651569pgc.237.1615574477523;
+        Fri, 12 Mar 2021 10:41:17 -0800 (PST)
+Received: from localhost ([103.248.31.144])
+        by smtp.gmail.com with ESMTPSA id v27sm6104554pfi.89.2021.03.12.10.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 10:41:17 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:10:38 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, raphael.norwitz@nutanix.com
+Subject: Re: [PATCH 0/4] Expose and manage PCI device reset
+Message-ID: <20210312184038.to3g3px6ep4xfavn@archlinux>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312112043.3f2954e3@omen.home.shazbot.org>
 MIME-Version: 1.0
-In-Reply-To: <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312112043.3f2954e3@omen.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/02/2021 20:59, David Howells wrote:
-> From: Eric Snowberg <eric.snowberg@oracle.com>
-> 
-> During boot the Secure Boot Forbidden Signature Database, dbx,
-> is loaded into the blacklist keyring.  Systems booted with shim
-> have an equivalent Forbidden Signature Database called mokx.
-> Currently mokx is only used by shim and grub, the contents are
-> ignored by the kernel.
-> 
-> Add the ability to load mokx into the blacklist keyring during boot.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> Suggested-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Link: https://lore.kernel.org/r/20210122181054.32635-5-eric.snowberg@oracle.com/ # v5
-> Link: https://lore.kernel.org/r/c33c8e3839a41e9654f41cc92c7231104931b1d7.camel@HansenPartnership.com/
-> ---
-> 
->  security/integrity/platform_certs/load_uefi.c |   20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
-> index ee4b4c666854..f290f78c3f30 100644
-> --- a/security/integrity/platform_certs/load_uefi.c
-> +++ b/security/integrity/platform_certs/load_uefi.c
-> @@ -132,8 +132,9 @@ static int __init load_moklist_certs(void)
->  static int __init load_uefi_certs(void)
->  {
->  	efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
-> -	void *db = NULL, *dbx = NULL;
-> -	unsigned long dbsize = 0, dbxsize = 0;
-> +	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
-> +	void *db = NULL, *dbx = NULL, *mokx = NULL;
-> +	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
->  	efi_status_t status;
->  	int rc = 0;
->  
-> @@ -175,6 +176,21 @@ static int __init load_uefi_certs(void)
->  		kfree(dbx);
->  	}
->  
-> +	mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
-> +	if (!mokx) {
-> +		if (status == EFI_NOT_FOUND)
-> +			pr_debug("mokx variable wasn't found\n");
-> +		else
-> +			pr_info("Couldn't get mokx list\n");
-> +	} else {
-> +		rc = parse_efi_signature_list("UEFI:MokListXRT",
-> +					      mokx, mokxsize,
-> +					      get_handler_for_dbx);
-> +		if (rc)
-> +			pr_err("Couldn't parse mokx signatures %d\n", rc);
-> +		kfree(mokx);
-> +	}
-> +
+On 21/03/12 11:20AM, Alex Williamson wrote:
+> On Fri, 12 Mar 2021 23:04:48 +0530
+> ameynarkhede03@gmail.com wrote:
+>
+> > From: Amey Narkhede <ameynarkhede03@gmail.com>
+> >
+> > PCI and PCIe devices may support a number of possible reset mechanisms
+> > for example Function Level Reset (FLR) provided via Advanced Feature or
+> > PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+> > Currently the PCI subsystem creates a policy prioritizing these reset methods
+> > which provides neither visibility nor control to userspace.
+> >
+> > Expose the reset methods available per device to userspace, via sysfs
+> > and allow an administrative user or device owner to have ability to
+> > manage per device reset method priorities or exclusions.
+> > This feature aims to allow greater control of a device for use cases
+> > as device assignment, where specific device or platform issues may
+> > interact poorly with a given reset method, and for which device specific
+> > quirks have not been developed.
+> >
+> > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> > Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+>
+> Reviews/Acks/Sign-off-by from others (aside from Tested/Reported-by)
+> really need to be explicit, IMO.  This is a common issue for new
+> developers, but it really needs to be more formal.  I wouldn't claim to
+> be able to speak for Raphael and interpret his comments so far as his
+> final seal of approval.
+>
+> Also in the patches, all Sign-offs/Reviews/Acks need to be above the
+> triple dash '---' line.  Anything between that line and the beginning
+> of the diff is discarded by tools.  People will often use that for
+> difference between version since it will be discarded on commit.
+> Likewise, the cover letter is not committed, so Review-by there are
+> generally not done.  I generally make my Sign-off last in the chain and
+> maintainers will generally add theirs after that.  This makes for a
+> chain where someone can read up from the bottom to see how this commit
+> entered the kernel.  Reviews, Acks, and whatnot will therefore usually
+> be collected above the author posting the patch.
+>
+> Since this is a v1 patch and it's likely there will be more revisions,
+> rather than send a v2 immediately with corrections, I'd probably just
+> reply to the cover letter retracting Raphael's Review-by for him to
+> send his own and noting that you'll fix the commit reviews formatting,
+> but will wait for a bit for further comments before sending a new
+> version.
+>
+> No big deal, nice work getting it sent out.  Thanks,
+>
+> Alex
+>
+Raphael sent me the email with
+Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com> that
+is why I included it.
+So basically in v2 I should reorder tags such that Sign-off will be
+the last. Did I get that right? Or am I missing something?
 
+Thanks,
+Amey
 
-My preference would be if the above hunk was moved into the
-load_moklist_certs() function which is called just below. Such that
-loading of MokListRT & MOkListXRT are done next to each other.
-
-And also implement loading the same way it is done for MokListRT -
-specifically via the EFI MOKvar config table & then via a variable.
-
-See 726bd8965a5f112d9601f7ce68effa1e46e02bf2 otherwise large MokListXRT
-will fail to parse.
-
->  	/* Load the MokListRT certs */
->  	rc = load_moklist_certs();
->  
-> 
-> 
-> 
-
+> > Amey Narkhede (4):
+> >   PCI: Refactor pcie_flr to follow calling convention of other reset
+> >     methods
+> >   PCI: Add new bitmap for keeping track of supported reset mechanisms
+> >   PCI: Remove reset_fn field from pci_dev
+> >   PCI/sysfs: Allow userspace to query and set device reset mechanism
+> >
+> >  Documentation/ABI/testing/sysfs-bus-pci       |  15 ++
+> >  drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
+> >  drivers/crypto/qat/qat_common/adf_aer.c       |   2 +-
+> >  drivers/infiniband/hw/hfi1/chip.c             |   4 +-
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 +-
+> >  .../ethernet/cavium/liquidio/lio_vf_main.c    |   4 +-
+> >  .../ethernet/cavium/liquidio/octeon_mailbox.c |   2 +-
+> >  drivers/net/ethernet/freescale/enetc/enetc.c  |   2 +-
+> >  .../ethernet/freescale/enetc/enetc_pci_mdio.c |   2 +-
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   4 +-
+> >  drivers/pci/pci-sysfs.c                       |  68 +++++++-
+> >  drivers/pci/pci.c                             | 160 ++++++++++--------
+> >  drivers/pci/pci.h                             |  11 +-
+> >  drivers/pci/pcie/aer.c                        |  12 +-
+> >  drivers/pci/probe.c                           |   4 +-
+> >  drivers/pci/quirks.c                          |  17 +-
+> >  include/linux/pci.h                           |  17 +-
+> >  17 files changed, 213 insertions(+), 117 deletions(-)
+> >
+> > --
+> > 2.30.2
+> >
+>
