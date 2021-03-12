@@ -2,133 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD12E339119
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED81233911D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhCLPTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:19:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:55520 "EHLO foss.arm.com"
+        id S232257AbhCLPUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:20:10 -0500
+Received: from elvis.franken.de ([193.175.24.41]:53102 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232035AbhCLPTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:19:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C1531FB;
-        Fri, 12 Mar 2021 07:19:30 -0800 (PST)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56CCE3F7D7;
-        Fri, 12 Mar 2021 07:19:27 -0800 (PST)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v10 6/6] KVM: arm64: Document MTE capability and ioctl
-Date:   Fri, 12 Mar 2021 15:19:02 +0000
-Message-Id: <20210312151902.17853-7-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210312151902.17853-1-steven.price@arm.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
+        id S232035AbhCLPTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:19:47 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lKjZo-0002cX-00; Fri, 12 Mar 2021 16:19:44 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 98FE4C2118; Fri, 12 Mar 2021 16:19:34 +0100 (CET)
+Date:   Fri, 12 Mar 2021 16:19:34 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Mike Rapoport <rppt@kernel.org>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Tobias Wolf <dev-NTEO@vplace.de>,
+        Marcin Nowakowski <marcin.nowakowski@mips.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: fix memory reservation for non-usermem setups
+Message-ID: <20210312151934.GA4209@alpha.franken.de>
+References: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
-granting a guest access to the tags, and provides a mechanism for the
-VMM to enable it.
+On Sun, Mar 07, 2021 at 11:40:30AM -0800, Ilya Lipnitskiy wrote:
+> From: Tobias Wolf <dev-NTEO@vplace.de>
+> 
+> Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
+> issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
+> not. As the prerequisite of custom memory map has been removed, this results
+> in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
+> platform.
 
-A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
-access the tags of a guest without having to maintain a PROT_MTE mapping
-in userspace. The above capability gates access to the ioctl.
+and where is the problem here ?
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- Documentation/virt/kvm/api.rst | 53 ++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+Thomas.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 1a2b5210cdbf..ccc84f21ba5e 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4938,6 +4938,40 @@ see KVM_XEN_VCPU_SET_ATTR above.
- The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
- with the KVM_XEN_VCPU_GET_ATTR ioctl.
- 
-+4.131 KVM_ARM_MTE_COPY_TAGS
-+---------------------------
-+
-+:Capability: KVM_CAP_ARM_MTE
-+:Architectures: arm64
-+:Type: vm ioctl
-+:Parameters: struct kvm_arm_copy_mte_tags
-+:Returns: 0 on success, < 0 on error
-+
-+::
-+
-+  struct kvm_arm_copy_mte_tags {
-+	__u64 guest_ipa;
-+	__u64 length;
-+	union {
-+		void __user *addr;
-+		__u64 padding;
-+	};
-+	__u64 flags;
-+	__u64 reserved[2];
-+  };
-+
-+Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
-+fieldmust point to a buffer which the tags will be copied to or from.
-+
-+``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
-+``KVM_ARM_TAGS_FROM_GUEST``.
-+
-+The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
-+bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
-+value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+``PTRACE_POKEMTETAGS``.
-+
- 5. The kvm_run structure
- ========================
- 
-@@ -6227,6 +6261,25 @@ KVM_RUN_BUS_LOCK flag is used to distinguish between them.
- This capability can be used to check / enable 2nd DAWR feature provided
- by POWER10 processor.
- 
-+7.23 KVM_CAP_ARM_MTE
-+--------------------
-+
-+:Architectures: arm64
-+:Parameters: none
-+
-+This capability indicates that KVM (and the hardware) supports exposing the
-+Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-+VMM before the guest will be granted access.
-+
-+When enabled the guest is able to access tags associated with any memory given
-+to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
-+that the tags are maintained during swap or hibernation of the host; however
-+the VMM needs to manually save/restore the tags as appropriate if the VM is
-+migrated.
-+
-+When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-+perform a bulk copy of tags to/from the guest.
-+
- 8. Other capabilities.
- ======================
- 
 -- 
-2.20.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
