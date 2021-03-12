@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8CE33937D
+	by mail.lfdr.de (Postfix) with ESMTP id 32E8633937F
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhCLQeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:34:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhCLQeG (ORCPT
+        id S232262AbhCLQei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:34:38 -0500
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:44450 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231789AbhCLQed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:34:06 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41885C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:34:06 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id l8so25949780ybe.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xd1OpSyULBAJCoaVVVrUuAIYtmhkhP65BjNqmabUSts=;
-        b=tbXRuUKTAJ5OAzLt4K/pJhrwxAyj+0prXM6A/hLCmCMfOhznh8CB2cMbHU4IgyVxW5
-         Im21oExo+0EMEbC1VIEOvaPHRbzZFruXZG8nlj4Tt0atYQ+i6rCMf8Sc1UetIG0kNtca
-         sA6HIkx89UhP/NR7A8HDOO9I2rtiH5F5Ej+PRtgcL/gyhMeWSEYGjDsbV9Rf1ttIMRgt
-         2nYv+umR2yKe+MvCQOWDNXYAuQm1O4y61WtiTBvisiV+ldsE+sA1dzI9Ck7X7JKed6ei
-         x/HX5w7QqT+ZhF3g13nEw7CMcayY8A1UDh2YtoTSl+3Sj+MEAiprFeCVGeD0XhqbPnxB
-         +ISA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xd1OpSyULBAJCoaVVVrUuAIYtmhkhP65BjNqmabUSts=;
-        b=qwQwojqZMAO5fCZ3Mwt2+5dRglV5ZOZAPMsL/MCkCoTJWUPkhvmY/EnxsmY3uxOYOb
-         2OtC3jSnUBT/5HM7nSBCpBxjVd2rgnsupg3K7cnZAoYJIj+Fmql+grTOWZRZuv4M8LNO
-         8aNoJDTfnzlshkQeCOKgGaY5oliGyne1lgTZjRq8qIFuXcudqJtvq7AKfbshA8p0ynNY
-         Ss0q6CJchPtMJxvlbRdA1S70cqmnnkB0nRwEtXWtxl7n0dibdWa/G2akUtru2qAdLyvU
-         nGEJA6gjr5DGacbmWI5oa+VjeQKOdowiO0JZEukx9+9FkAl7/HAb99zJhONw3ls6pF5d
-         mpZw==
-X-Gm-Message-State: AOAM533B5BmOYV+grLTxOmA62dFOPlvPL1UEt4wSmRwH2idjrO/4ZDug
-        Zlj4fY27q6Rd1SLdmYHLbVbmwGZB55fzTvM0VYcUFA==
-X-Google-Smtp-Source: ABdhPJxTNip7fRhXXacvymw5GDHidct5oiKxuvIuYl2k74buQ2MPzFqhAIv6SB81Zi9YTWU8TyTZ7l+/yTWNknU9dnM=
-X-Received: by 2002:a5b:78f:: with SMTP id b15mr20254754ybq.234.1615566845126;
- Fri, 12 Mar 2021 08:34:05 -0800 (PST)
+        Fri, 12 Mar 2021 11:34:33 -0500
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lKkk5-0002Vs-5D; Fri, 12 Mar 2021 16:34:25 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+ <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+ <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
+Date:   Fri, 12 Mar 2021 16:34:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210312162127.239795-1-alobakin@pm.me> <20210312162127.239795-5-alobakin@pm.me>
-In-Reply-To: <20210312162127.239795-5-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 12 Mar 2021 17:33:53 +0100
-Message-ID: <CANn89i+T-r=i3GBv-9EWBjpR_NhgZ=vP08BwTGXc8Kw3nO+OEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/4] gro: improve flow distribution across GRO
- buckets in dev_gro_receive()
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 5:22 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Most of the functions that "convert" hash value into an index
-> (when RPS is configured / XPS is not configured / etc.) set
-> reciprocal_scale() on it. Its logics is simple, but fair enough and
-> accounts the entire input value.
-> On the opposite side, 'hash & (GRO_HASH_BUCKETS - 1)' expression uses
-> only 3 least significant bits of the value, which is far from
-> optimal (especially for XOR RSS hashers, where the hashes of two
-> different flows may differ only by 1 bit somewhere in the middle).
->
-> Use reciprocal_scale() here too to take the entire hash value into
-> account and improve flow dispersion between GRO hash buckets.
->
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/core/dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 65d9e7d9d1e8..bd7c9ba54623 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5952,7 +5952,7 @@ static void gro_flush_oldest(struct napi_struct *napi, struct list_head *head)
->
->  static enum gro_result dev_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
->  {
-> -       u32 bucket = skb_get_hash_raw(skb) & (GRO_HASH_BUCKETS - 1);
-> +       u32 bucket = reciprocal_scale(skb_get_hash_raw(skb), GRO_HASH_BUCKETS);
+On 12/03/2021 16:30, Ben Dooks wrote:
+> On 12/03/2021 15:12, Dmitry Vyukov wrote:
+>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk> 
+>> wrote:
+>>>
+>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>>>
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for 
+>>>>> arch_dup_tas..
+>>>>> git tree:       
+>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>>> console output: 
+>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>>>> kernel config:  
+>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>>>> dashboard link: 
+>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>>>> userspace arch: riscv64
+>>>>>
+>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>
+>>>>> IMPORTANT: if you fix the issue, please add the following tag to 
+>>>>> the commit:
+>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>>>
+>>>> +riscv maintainers
+>>>>
+>>>> This is riscv64-specific.
+>>>> I've seen similar crashes in put_user in other places. It looks like
+>>>> put_user crashes in the user address is not mapped/protected (?).
+>>>
+>>> I've been having a look, and this seems to be down to access of the
+>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+>>> bad address to clone?
+>>>
+>>>   From looking at the code, the put_user() code should have set the
+>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+>>> s2 register in the crash report) and from looking at the compiler
+>>> output from my gcc-10, the code looks to be dong the relevant csrs
+>>> and then csrc around the put_user
+>>>
+>>> So currently I do not understand how the above could have happened
+>>> over than something re-tried the code seqeunce and ended up retrying
+>>> the faulting instruction without the SR_SUM bit set.
+>>
+>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
+>> strange that 99% of these crashes are in schedule_tail. If it would be
+>> qemu, then they would be more evenly distributed...
+>>
+>> Another observation: looking at a dozen of crash logs, in none of
+>> these cases fuzzer was actually trying to fuzz clone with some insane
+>> arguments. So it looks like completely normal clone's (e..g coming
+>> from pthread_create) result in this crash.
+>>
+>> I also wonder why there is ret_from_exception, is it normal? I see
+>> handle_exception disables SR_SUM:
+>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73 
+>>
+> 
+> So I think if SR_SUM is set, then it faults the access to user memory
+> which the _user() routines clear to allow them access.
+> 
+> I'm thinking there is at least one issue here:
+> 
+> - the test in fault is the wrong way around for die kernel
+> - the handler only catches this if the page has yet to be mapped.
+> 
+> So I think the test should be:
+> 
+>          if (!user_mode(regs) && addr < TASK_SIZE &&
+>                          unlikely(regs->status & SR_SUM)
+> 
+> This then should continue on and allow the rest of the handler to
+> complete mapping the page if it is not there.
+> 
+> I have been trying to create a very simple clone test, but so far it
+> has yet to actually trigger anything.
 
-This is going to use 3 high order bits instead of 3 low-order bits.
-Now, had you use hash_32(skb_get_hash_raw(skb), 3), you could have
-claimed to use "more bits"
+I should have added there doesn't seem to be a good way to use mmap()
+to allocate memory but not insert a vm-mapping post the mmap().
 
-Toeplitz already shuffles stuff.
 
-Adding a multiply here seems not needed.
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
-Please provide experimental results, because this looks unnecessary to me.
+https://www.codethink.co.uk/privacy.html
