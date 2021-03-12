@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B0233861C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBE0338621
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhCLGnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:43:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231420AbhCLGmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:42:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A66064F80;
-        Fri, 12 Mar 2021 06:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615531364;
-        bh=oub8oU5fuWVsuTJd+yXYklWg8cIhkZlVSztr+7X5nEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b9fg0x5gYaRk3Y3vFjwXLhGHMNBreOff1r8WRlV+slxJH7wD5I/yXj944xALnHHT/
-         sPAfN+COCEwEyYQFWYnm5Mt2OWhE8klbrrRmS3lbnKtmnROXZiwsbbx6Z9gEPw8NHT
-         5HwwbobH0LjL5nHwFnDR0U3Dnow1Nsb8RphHhqOjcCMyeiFdkbk3yjVe1gTOujKUMo
-         YibM4IxAZnO8G5t+kA+rWgb7spIeZT961PlZxI2NhOzRxntIQbU7t5nHXY52GUrKj6
-         rgsYFp3z9Zs1XOPEP0AhdJIf122c1S00EnCdXbFV+iI3efAqSdYHe/+hxWhLXmCesO
-         cprlh8KUxIOdA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH -tip v2 05/10] x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
-Date:   Fri, 12 Mar 2021 15:42:39 +0900
-Message-Id: <161553135897.1038734.7043989402295618036.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S232032AbhCLGnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:43:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCLGnB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:43:01 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32162C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:43:01 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id t16so3785501qvr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:43:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+gDfhRK8SeEpvOytoMC9TfOJ2HPdOSZgyvUXbZYZlfA=;
+        b=DSO+oaQ82KThjwUxwdCvoYLgfwmpi067P7qeagoh7V31NwkJoT/5t1Px9kTYGNMy73
+         OfqSRuM5KBYnVKFni30I40a7VBIOY/VX9TqUrljOQK8ri2ZAWlqh5bnCpblzN6/yFpYQ
+         3xGI7JDuLrwsZ69VnLBfzfyfL/pwjHF5I+RVK3hxIVO7Mcf8gSPy4B+Jeglwq9wSPKN5
+         D/2fwLoZhc5qGDald/YH415G/Iz1JVzY1BP37CgnBzPimtinL6MVDT9O2OlOsTOS4H0p
+         dMQUPWqf24Ir7V4oxz3K85CiT2DKscmXEIWpzKBw3y6LqXb7gyje2RnuCZg/3CBx0CkO
+         GNnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+gDfhRK8SeEpvOytoMC9TfOJ2HPdOSZgyvUXbZYZlfA=;
+        b=TCJSmagDwAPt1dFFUQHP3qaCkrtWN0vCpE6UNGeq0bYK4TB/jPA8hl6uOwPQ7Njch6
+         QenNHhvx7+xoSDnRWML5Dw+keP1Pm3vrScVMNWdj9WJmOJxp6w5ISmYCF2fbfH4dJ6T1
+         Ax/pbYdTMwQnGgSCEBRO9/32d8L6lWIqM6bYz9YTaQhwblAC3QW6+UWninV+NLZaPLWe
+         +vLOkN2mr54p7oKFfSNbm609shpYZ99kSmkRzhevW3veEjTq7osGSXYfHUVk01Wre5S7
+         uNcdB5W5UQssuR348AOZfnPbKP62S7zI5Wa8H/ezFrTV8ftlIAOpfDWExhElDZlDs5S3
+         ObiQ==
+X-Gm-Message-State: AOAM5323mcvsLfj5fo6Rp8rglnDwChZehG09as4UbSJEZFRvvJYBFLOm
+        NEJG6A9y7HYbr2BMwEMCIyKvvNQvnOmj3XOHo2UboQ==
+X-Google-Smtp-Source: ABdhPJzEM5s3oSLjaZ27Xt6uQrIo7xYZejVL47bJMdFf1WyDWoWrCwJKNMe0ItOU8/gUOKtLiPND3VPONn5iYvql2co=
+X-Received: by 2002:ad4:410d:: with SMTP id i13mr10778021qvp.44.1615531380220;
+ Thu, 11 Mar 2021 22:43:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com> <CACT4Y+Z_Req6qLArMOH0FHR92cTPyv+PLM91CCjkSw4Ua_vWjw@mail.gmail.com>
+In-Reply-To: <CACT4Y+Z_Req6qLArMOH0FHR92cTPyv+PLM91CCjkSw4Ua_vWjw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 12 Mar 2021 07:42:48 +0100
+Message-ID: <CACT4Y+aWtSRdq+P_pVXb2yXKzwiF9ECuy2B7yGW8dC-emRv5Fw@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+On Thu, Mar 11, 2021 at 6:25 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Thu, Mar 11, 2021 at 2:30 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Thu, Mar 11, 2021 at 12:38 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > The instances found few arm64-specific issues that we have not
+> > > observed on other instances:
+> >
+> > I've had a brief look at these:
+> >
+> > > https://syzkaller.appspot.com/bug?id=1d22a2cc3521d5cf6b41bd6b825793c2015f861f
+> >
+> > This one  doesn't seem arm64 specific at all. While the KASAN report has shown
+> > up on arm64, the link to
+> > https://syzkaller.appspot.com/bug?id=aa8808729c0a3540e6a29f0d45394665caf79dca
+> > seems to be for x86 machines running into the same problem.
+>
+> You are right. It's probably a consequence of some configs being enabled.
+> I think we need to enable CONFIG_FW_LOADER_USER_HELPER on x86_64
+> upstream instances as well.
+>
+>
+> > Looking deeper into the log, I see that fw_load_sysfs_fallback() finds
+> > an existing
+> > list entry on the global "pending_fw_head" list, which seems to have been freed
+> > earlier (the allocation listed here is not for a firmware load, so presumably it
+> > was recycled in the meantime). The log shows that this is the second time that
+> > loading the regulatory database failed in that run, so my guess is that it was
+> > the first failed load that left the freed firmware private data on the
+> > list, but I
+> > don't see how that happened.
+>
+> Can it be as simple as: fw_load_sysfs_fallback adds fw to the pending
+> list, but then returns with an error w/o removing it from the list?
+> There are some errors checks after that:
+> https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/base/firmware_loader/fallback.c#L536
+> and it seems that the caller deletes fw in this case:
+> https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/base/firmware_loader/main.c#L839
 
-Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
-information is generated on the kretprobe_trampoline correctly.
-
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- [MH] Add patch description.
----
- arch/x86/include/asm/unwind_hints.h |    5 +++++
- arch/x86/kernel/kprobes/core.c      |    3 ++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index 8e574c0afef8..8b33674288ea 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -52,6 +52,11 @@
- 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
- .endm
- 
-+#else
-+
-+#define UNWIND_HINT_FUNC \
-+	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_UNWIND_HINTS_H */
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 3c00b773fe2e..e079eb487ecd 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1023,6 +1023,7 @@ asm(
- 	/* We don't bother saving the ss register */
- #ifdef CONFIG_X86_64
- 	"	pushq %rsp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
-@@ -1033,6 +1034,7 @@ asm(
- 	"	popfq\n"
- #else
- 	"	pushl %esp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfl\n"
- 	SAVE_REGS_STRING
- 	"	movl %esp, %eax\n"
-@@ -1046,7 +1048,6 @@ asm(
- 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
- );
- NOKPROBE_SYMBOL(kretprobe_trampoline);
--STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
- 
- 
- /*
-
+I've enabled CONFIG_FW_LOADER_USER_HELPER for all instances and syzbot
+come up with a repro and KASAN report with alloc/free stacks:
+https://lore.kernel.org/lkml/000000000000af467105bd5128fc@google.com/
