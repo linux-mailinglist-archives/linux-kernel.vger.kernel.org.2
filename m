@@ -2,140 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274E033976F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E5B339792
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhCLTcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:32:09 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:48540 "EHLO
+        id S234345AbhCLTlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:41:45 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:56010 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbhCLTcH (ORCPT
+        with ESMTP id S234267AbhCLTlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:32:07 -0500
+        Fri, 12 Mar 2021 14:41:42 -0500
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CJOcok119704;
-        Fri, 12 Mar 2021 19:30:57 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CJO8dN119563;
+        Fri, 12 Mar 2021 19:40:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=XiSuSVylX3nAXHUv2HaPV2MVQo+uIjeNb3xewz660XA=;
- b=IpRyK9QUBbUTiqLOLDgSmN10NRHPHo533cbTZqWkWveEeHcuUpW8BU3YLVb558mbxy0K
- RXT3kQtxO4NDnwfTdcj8otUGMtivn05cBEASSv6DNxCFc74WI0aj+2AHB5IOxcNq0Qbt
- PbxCOTKDJHAgPiuAIkJm2Zbo7RCv3MgpqcUMVLmjWTg8RgaGi4/i08NkoTdQdo0iYdmW
- bkpYI4F7PtdAzz1WjY2t6mJOuigGpA63vLGB0Fl00m06S2JYxLCd8Waq3WA3+issGVC1
- PSp5TFXWFzGOJlGhaKuSfGFlUA6ATIE2ajD8gCE3PEoExOBz3TS720GM2PE4nwB4deOH WQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37415rjw3u-1
+ bh=12zReYUGH8cTfsWdFES/CawHZM1/espa2xktq1kRz2s=;
+ b=KTy3GsGnk7hrr+UAyL5IklTUZLhmNyT4RQMi9Sv2VUm5EEFlbITaFndzI9ijn+9U0cO5
+ Ylm0a2PTckAy7tmnDZ9ABgEJGEp40SQZ/XZXf88uWNXLS0VndbmJ8VrZTtdfX95pZCfg
+ KXw5GUj2wZNwCz1A4hlJh88TBLhAWoqToa6lAI9zdoia7sA91oGLHLkqYzuVdnmecQkB
+ GzbPBHm8/B71GbmNRU+A9h6JN4Rx/aYTQuBvYzW1jV4hc8KIHcolwubKbK/he/U/tfia
+ 9V65mdnzgM/Wy1J5E05IHhF1mhnzhaBE5/Jqe5NI1+P/fkZnJpNwodiZXPOmANEGw+JK mw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37415rjws7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 19:30:57 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CJPQZ1056606;
-        Fri, 12 Mar 2021 19:30:56 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
-        by userp3020.oracle.com with ESMTP id 378cexekr4-1
+        Fri, 12 Mar 2021 19:40:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12CJXRxK087262;
+        Fri, 12 Mar 2021 19:40:23 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by aserp3030.oracle.com with ESMTP id 378cb4qa09-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 19:30:56 +0000
+        Fri, 12 Mar 2021 19:40:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AQ9urwbTfN1dGdDnDaSXOWN1vL2RDKSlIQCBbh35DPYQk3p080GqidLjbhoK/BBJd/cSGPZZ65Jct9NBxNSvV82UkNahMH9s78Hv/6E7gkLsMLZFgYD9T5oKaFcCpe/n4ee4nQQ5y0NQUzMJZO3vivykefppdobhFT+jVBsBzsZKYY8gfN1RuqZA6Ftb2i7GVxagiYPjT5yljZZQX8VWQa0FuEhV+Yck2FI43vRdy2B2Ag7l+6v/E/heksje+Ng0AqjczMyAwgkdfq2jKd/szWnaixzslWn5SqE6WkcOnqaaP07+KTZuaVi5r8A/6qEbBBVLqwKmNzTSZubHCRQ8jA==
+ b=JIrdHyiyBh+OxYURiVMcb9/Llzi5J0abDaczB/QBLoVRsNbu/PVYszjTKPIdvsC5oTE9pV5kG8czISRIhGfQAPFhZs5luz0F6jQp4a0sKL+Vg/9+lzprVjoIv0rZllfJOjLaS0eaW29VDtqT8peMEe+UvWceq3ODuJmlerqfrstZrz/qdZmIO/7EtTacannFyOU/uB+fXMbCSiDKu0Fj52E8DghIL31TZtONYzsijbJgbplgzZpksrhzkjht0MVlNht/D/2oZniINwN8QAF10s8mQRBK6AIrpe3IBExR4eYEWs2EHHB00VydkaItAwR7Zbs4wsdENXHvO01jrT+3lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XiSuSVylX3nAXHUv2HaPV2MVQo+uIjeNb3xewz660XA=;
- b=Cj/HVZeisNbC9UOYOpL7YoB/phJEuKRDVCPRsMS+So6sJuViMvGLFbJgOWF5UN2Z9udeuuI6GTJ53bpKDUvSnYTLfwfAVf0RASW5QacLxApDk5G7JFn65405Z3l2MPLbAjhgdavd99/+upxB6BzJVqc0wcklkTnQmdf6yqwkJ2TWwHKhK3FpRhAcvUB6vZGecx1sNDGGP017n/A7dFqGn2er/fHViXECpmY+I0ql7uVdbs2dptRZen1GfmnRpzNml4c7YI26LkRoLhHsMHporZMMA2zZiJpsVWcDZ5/SbazIG9GKHBZ8YCYLLugKKuKx8+NVV5SlXJuX22nWHPD6LA==
+ bh=12zReYUGH8cTfsWdFES/CawHZM1/espa2xktq1kRz2s=;
+ b=aRLTNZgC8EUBYXN1E9+Iblz48E/8ES+y3QF/uBiIpXnTfMo2xhRQgl4Zpp5tYo2x2EebOpjKUmLba6y8GkfKwPqn6EEb/hvsHeavOacNNXNbnnKOoqhYMq7Z34PsEyFF+lnbLycEMBLKq0p5hquyZCO3w8BPj73gMScrZYpgt4JDXRU8+xC5m2tz1+h6ZnP+nVYIy7yBE7wjpz7mdJQ8wZo79pr19ZC67HRHGG17cAhoq8R9fh8Z1NsK9miq8i40G1f92LBiHd/lobGii/A8bLjkYNJ4ZhiZOELTsXFqXRmPvzcD6QI34IkxlAw/rwgQHS2XD2Pn/RmrL4X6KLIChg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XiSuSVylX3nAXHUv2HaPV2MVQo+uIjeNb3xewz660XA=;
- b=IpOcMDrd0RR/XLkTmIzouweRzxmcpIAaNJGtOG+sKduM9DtuFvoV+cLqbg9wjHVPgH+TJr2YpZuM7VHnAg5RWDkZHkicApbyKT8IjaiCGtz/UujnyrNEkoMyVnoRxcwyBpy9K2jJ1j/EaWAHpUn63SkNALynxHNbMTjdHr07818=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BY5PR10MB4353.namprd10.prod.outlook.com (2603:10b6:a03:201::7) with
+ bh=12zReYUGH8cTfsWdFES/CawHZM1/espa2xktq1kRz2s=;
+ b=KpQDV65Oax/aZEuh+ry7aU5bk/oqWU8XmXuWlpVrJ0hh3+AxDvWkhQkwzMnUfurvZvJy5+5MSoJekSKziV5fVLsFr1aWshRjshThIy+EfeHN/iRNcIoyCFCu7SORi7Sc2Cx15ZheX40TUtFb6SCQWTLVSEZTxHYf5tq5Xp2H25U=
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by BYAPR10MB3687.namprd10.prod.outlook.com (2603:10b6:a03:125::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Fri, 12 Mar
- 2021 19:09:16 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3933.031; Fri, 12 Mar 2021
- 19:09:15 +0000
-Subject: Re: [PATCH v2] hugetlb_cgroup: fix imbalanced css_get and css_put
- pair for shared mappings
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     almasrymina@google.com, rientjes@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210301120540.37076-1-linmiaohe@huawei.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <771ee69e-61d9-b1c9-b72d-3a50d2cbe4de@oracle.com>
-Date:   Fri, 12 Mar 2021 11:09:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210301120540.37076-1-linmiaohe@huawei.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.29; Fri, 12 Mar
+ 2021 19:13:09 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::44f7:1d8f:cc50:48ad]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::44f7:1d8f:cc50:48ad%6]) with mapi id 15.20.3912.027; Fri, 12 Mar 2021
+ 19:13:09 +0000
+Subject: Re: [PATCH 1/1] KVM: x86: to track if L1 is running L2 VM
+To:     Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, joe.jin@oracle.com
+References: <20210305225747.7682-1-dongli.zhang@oracle.com>
+ <cebd5f51-12e8-44e5-7568-8890343ca36e@redhat.com>
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+Message-ID: <f0de2138-74f1-410a-f079-9d697ca6f145@oracle.com>
+Date:   Fri, 12 Mar 2021 11:13:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <cebd5f51-12e8-44e5-7568-8890343ca36e@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR20CA0013.namprd20.prod.outlook.com
- (2603:10b6:300:13d::23) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+X-Originating-IP: [2601:646:c303:6700::a4a4]
+X-ClientProxiedBy: CH2PR18CA0053.namprd18.prod.outlook.com
+ (2603:10b6:610:55::33) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR20CA0013.namprd20.prod.outlook.com (2603:10b6:300:13d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 19:09:15 +0000
+Received: from [IPv6:2601:646:c303:6700::a4a4] (2601:646:c303:6700::a4a4) by CH2PR18CA0053.namprd18.prod.outlook.com (2603:10b6:610:55::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 19:13:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ebdd2665-bfce-4ab0-db2c-08d8e58a5461
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4353:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB4353556B14A9C2FE98826BFAE26F9@BY5PR10MB4353.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 48c3b21e-11c4-4ce3-ad7f-08d8e58adf85
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3687:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3687F7F26E05F1EC7C611C41F06F9@BYAPR10MB3687.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PopIWtuPGtA1UDQ55Tac/Q/R/zhbkq0HvwzaXePHlQu2MJ4NZSglYre74M4AsCwvSBoRDnwOEMegrT6J4Z/+rSRe2Vfz5f6DoeWn0iTjdqNRxH0TDU7WeE2tgzU6M7rMJ3rj1lGqb9mK0vWCEzHUXjh2gwJFjEyiXTQ6dymVsu+cBlNafhjxU5x2DqnPa5Xwte2g/3b+WNjMMUTve1cl1yVJ4+oG7YftMJ4M8f4AocZneWpykjac4ZlITr+n3JTLroCvbCiM7w/XYkYyeilXxZXXhPzHRYxVo8U3P6oe3eNoMEPd1oyicKcDk5AyS9wshiCkUlKBalqHtI4NENUJvmfBMkRIT9NF3syyLcT7JsTOtKEXFum3l9RIOjS0kSkCJ5ZY2BmbAxwlcn7yTunNTX8eQvt45dE/MBuCvvPDGzlh83gaE3rdvKpZ7eb8+tZyLtWonDD5fbcHvlRprbMAcLs9dm2CaKdgfde1zTnAC8FCZf3XO7P2oPskO0/UMavgFXskY/eR1tyVv/GMG9VNcjvBn+Lt62gSDoaecXBvin1IZPcQOHulkMgLsEY9V/Pmc130hImobZ8PxlVjOIGR3HGxJ4PkA5yQaoS3B0xekWqIB86xTQNKlyN0miYb8zqV7FhhgvCqko6FuKN8xYsOKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(136003)(376002)(346002)(66946007)(44832011)(8936002)(5660300002)(66476007)(16576012)(66556008)(4326008)(83380400001)(53546011)(6486002)(52116002)(8676002)(86362001)(2616005)(26005)(186003)(16526019)(36756003)(478600001)(31696002)(956004)(2906002)(31686004)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dkZEUy9SRnY1MFpuVHBOaHR0eTNxNXYyQkw5cFd6UTY3ZDBIL2pZVnpGUDk1?=
- =?utf-8?B?emtmTDFmTTdLbFNRRUtuZ09jTWdGeWxoTlhvN1orazR2RUZqeERTY2NYOVBK?=
- =?utf-8?B?c3J5ZGluZ3BhWDNBaG9OQ1piREFTRmZsaUl2TUNzK1FIcUkzYzVENmNJNmdF?=
- =?utf-8?B?a2tjNC9LYTdKckR3bnVTR0YyNUttcmtIWlFPYW1URTE5cDFJbEdnTTNiejJO?=
- =?utf-8?B?NXJNZHRHajJuZThsQ01EOTJyVzlrRlF2WFZ4YjJNakxGMVVuZjRFU25NUnFj?=
- =?utf-8?B?SXd5WDhaTThDdTd6OU1JeFhHTGpBVDNTNVlOeUNwVTV0Qm5tSVpLeEpXZ2Q0?=
- =?utf-8?B?OTJaZmlqMEZud3AxcEpJMFR6V1dwakhRU1Bwc25WK1BEYnhtaXVGbzMxZVhu?=
- =?utf-8?B?OUVxdm4rNnEydUJMbWhhRllXcHhsQXR1UkUzMXloSGp5NmNxSnVRcHBCeG5W?=
- =?utf-8?B?VG92Q3hhTGxYc0VJNTR3Z3RibGsvUjdYK1d3ampqRXhmSzMwZEppUzA1RlhM?=
- =?utf-8?B?MWlNNm85dGpyeGNpeEFzNm1TZVNjVXQ2UkZZd0QwaVZQR1pLdjM3dWs1cDJE?=
- =?utf-8?B?cnlOYVFMYldNOXZLZlJoYTlTRlVjUVhFMzM0VnFqWHA0MFdWQ0duREF4dUxH?=
- =?utf-8?B?NExwZWJON05iRjc5OXdOTGFMVzgzZC8zUFlyaTR0V1FqVkgrVVJPWVZ5bmVy?=
- =?utf-8?B?NEJVR1NxWkk4SG40NVNPQ21kM0ZpS3k4cFB3djZSbmttVmJleXJiYkgrdmxZ?=
- =?utf-8?B?aHNPQThPeGpQQ1NGaVRPMDFjWWxqdG1LRFNuU1FLZHVkTVVXRU5SZmdYTmZi?=
- =?utf-8?B?dFBVUXBqU1FjKzhtNUMxV001WGtGTVhXUUM5eC9XOTBibjJKS2d0b2tYdlRN?=
- =?utf-8?B?LzhhLzBHZk1hUkVUNE5EaUFabkQyaEpMTTJnMlYzM0NOVzB6NHJPSnJVV2dB?=
- =?utf-8?B?V3lRUm1nOUlJMjJaR0wyeEhEZE51K0dFVXRodTlmWVhJN1A1WEZDOGZwdXZI?=
- =?utf-8?B?bldZS3V6S0ZCYkdMRmdkOHVCZDVUb21XMXc0S2VtZFdjaEU4NnN5aGtoY1hy?=
- =?utf-8?B?YUsrc1cwejNFV3UxcXNJNFhVYVZtMjYwUUNsbW1rZVpZSzJNYS8xVTlNVkIz?=
- =?utf-8?B?L1V0L1RLRDhnN0tDN01kQ3V1NWJyYW9vbDlDUEowWUduNFBCZk5nUlhMaXlG?=
- =?utf-8?B?RGdvb3FVRE4vK0tZcUpadDJ2Y3k5dlFEVk9aYjlWN3A1KzBERTlCN05ZMFRU?=
- =?utf-8?B?RXhxN2NTRWFVbURrbEpWQzVmQnV4Z0c2WGNjSC9VbGkvdHdzeStGaDZPM3Z0?=
- =?utf-8?B?eWVlUVBLMmIvdk1ReHNzY2Q2bHY4T3AyZHVLUU41ZVpJUFViTTBqVVNYTUFn?=
- =?utf-8?B?VHg5OENranZsN1NFbXZIbXRFM0JFR1dWS1pySVhlcHJESWdKNmJlWFhMdTRQ?=
- =?utf-8?B?VndudVY1ZitBb1VRcWhFRW5YNERTUkJnNlY5TWlYTEFOMXlHSTQ1SHhPTG5W?=
- =?utf-8?B?TzVOZHVpQjBORVZGSnJ2Q2lDcWx1YloxWE1PYXEvMXBQR25ROVUxWndVQVZX?=
- =?utf-8?B?ZWpMMTNYcTQzV2xZalI4bk9nUmxhbi9KMWpNMUIwbFJkVWVoamhod20wSk1N?=
- =?utf-8?B?RDNDUHV0QWlEUG84K0E3RktQT2FtZ2VzNk9oODBzVGFtS0xQSVFDWkVOYURz?=
- =?utf-8?B?d1FGeFBEaUlkU3ZxNWN3bDlTQ2JUS2FZUHVVN1VFdmFuT04zSjJvbzVhRUpE?=
- =?utf-8?Q?eUQNt0e1Kn2hqNiPKj6zEz1rH7HLh/pMczkRcXB?=
+X-Microsoft-Antispam-Message-Info: gj8SSRYPfYf30FE+FDRQOah4ATaoudZIsay9/+QB6PmTVqd2p+u9KW3rDpBANY7P8drzUPNbzhtEheGktzJ1D9U8fXnAwVybT7T+/AlP58iAZjYf1S7F367+VJ/5Kcp6BfyrlhTPJL4KqLd3szH1WaVcX35Ww9l1QrZVZal/W7usvYWB/76BUmZEc+mtVD7MDfU2KsBpXDhT7zG3ctQZyRk3Xu7wgITEr66VHQyGE8OmuODAAhZ2bOy1x70l2psoPLgTAB/5iIgiPuJKOUUSdAoK7p2by1LdxWc+nmQIBpNcNHELODk3bh6txICIM81FeI3noENOYZMRxcit1jcLl/CWGglBbdO0laqf7Ij+Ooa1rWZGh4EJeRLHtRhvO7SvBNBZd8M8ZXcMyDHQzasqTujlkpKjMkXHXO8u08rqUVPZArOm4Sq6cyUWjRLFFSYIHe7/f5/aE4fjdUazWZopWsXywVr/1kGmd6qZlCB2eN76m8Iq6BemSaTZCKSF72o+McY4p3aLTWjZpkaE92vyJx7ssDwhUrnIyxT0exgxg6P3tbbsgIXbAGY13TfYZaZIuC+Yeitn+oSJwZJ5ES1RKWr3iZR4vmj55bGTTrfjyB0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39860400002)(376002)(136003)(7416002)(186003)(8676002)(36756003)(316002)(6666004)(53546011)(478600001)(66946007)(4744005)(44832011)(83380400001)(86362001)(31686004)(2906002)(4326008)(16526019)(107886003)(6486002)(8936002)(66476007)(31696002)(66556008)(2616005)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SjM4a3MyeUY0RkpMbUFmVDNqZDFCYWNkLzRNTXV4VUFVTmRnV3lLVm9pRjZ3?=
+ =?utf-8?B?TlFZUjRQa1NjR2RQZHVYYWlPcmdnQm5pRHpmNzBrZ21yYWhwZ1FTSFNwRTQx?=
+ =?utf-8?B?TnN4TWlmcmRqa0RSTlFObGxPeVAyU1VjQ2tKVkpRd212aWo2MDFqT0Z2Y1Jh?=
+ =?utf-8?B?YUg3cDFDdVdwOWQ2Wlpha3BlVjBPOXM3T01vblZPa2MrRmsvQW9IL3lyMEdJ?=
+ =?utf-8?B?NkpiNm9EN1dndmtrYkZFVHlkZS8wVjNkNDAvYW1aM2pqejBmUWNDRnVVMDYy?=
+ =?utf-8?B?VVpIVFVmZ09Pb0N4MFZkcU1ieGU2dkV4R2dsTEU3VFM4UWNHV2lUeW9LSHZU?=
+ =?utf-8?B?RkdqbWtuZmdjTVRMS1ozSFhFWU96YzFFWkRCWG55SHVpTldHbks5Uk5HcTZ6?=
+ =?utf-8?B?Q3NaNGJ3S2xLbEFRbXVEeUg2MU9PY3lNZjM2Z1N6UlJneGl3L2dQL3ZTV2JE?=
+ =?utf-8?B?aEpKeDZNR3ZvUUdrRC9nK2VqTEtiNzdYZEVIVkd0bVJyQW8zSHdMVk9xMk9M?=
+ =?utf-8?B?clJpb3pFQ2o2eHBZbld4UVdQN2IrZFRKNnlQRTlZZEQ3NjJIWDE4U0NwY0RX?=
+ =?utf-8?B?Z3BDRXRqbVFYcENESHF0UWdudS9XdFVWdzQ5QkduRFNNbFRDUWNoS2FPSy84?=
+ =?utf-8?B?YmJlTkl0RFJtQ3czVE95a3NwNmorM3BXYkRsV01OVTBhQ25uODQ3VVlPaU4y?=
+ =?utf-8?B?ejErUG5FbG5GcU5VMkxIQTlkWnZCS2xHZmpTcEJCK0FXaE9MazJMcHR3K2R6?=
+ =?utf-8?B?clRPejBrazd1KzUwSHcrUWwveWRCSTBTeXl1MlFvazduWHhUVFlFbGlSamJt?=
+ =?utf-8?B?dm5hMWhodHNUWmtqZnY0WmRkVmRpWGExd1hlK2J5OUhqOUxLQlFSMjVyZXVx?=
+ =?utf-8?B?d2VQZjRxbXRaMDQ0VHJTamJIL2gzUi92djIrZFE2S21PVnhJYytrWDhzZ25T?=
+ =?utf-8?B?SkVFQnJCblg1ZFREWitIUG9LU1NkNWw4aHNWOW1NUW1Hd0hacnVzOVgyL1RM?=
+ =?utf-8?B?NEVaMWFSTjhMRGlIQ0NZODkvYVNJQWVTdGZ3bURYQlY5R1NZL0g5OXVHaGR3?=
+ =?utf-8?B?VHpYRHpqK2t4Ym1hRWNLb1BMQXdaWFB3ZTZxOGpIZTRhbjRNaUkzdWx2dndI?=
+ =?utf-8?B?NEFVY0o2YlpVTklXN2g5dGpFMWZWd01rcHZ0UXhZSEhhR3IyWW5VdXJQS05h?=
+ =?utf-8?B?aHhMZ2ttUlJGQ0EvUFVkcHRpK216Zk05WERtdE5RK3Z3Z2xqTktGekJ5Nm05?=
+ =?utf-8?B?MURFbUVrTDBDeXVFYW9YWHplMEt5a3Z3MmFRMEpxbHUvL1lEUDMrdTk1cUVs?=
+ =?utf-8?B?dmYwdTNUUXFYbzRMSTR2VFpwN3k3U0tjaCtCekpVTEw5Z0Q1cDlVMGplM2s4?=
+ =?utf-8?B?VnBEMDZXTysxYnV6RmpaeThpcWVlOUhNRkZLelFqeE1jOUFuTmpIOVJuckhk?=
+ =?utf-8?B?MU5UOWgxY1dYczMrVllKZFdiVWIvOTEzaGM4NGhGQUxsYmRwM1ZpbDFwVTJE?=
+ =?utf-8?B?SmYwVjR6N1BYY2x4dE16Z2ZvRE03bk91K201d1kzdnViYjdlcFA2cThzTEVp?=
+ =?utf-8?B?ZXBha0hvOVBBUnBZcFVzbDgyLzFlQjZDT1N4YTA3dmhXdUlvMXBFdWJDMm9Z?=
+ =?utf-8?B?ZHhxZnowbDFXUW02d3VVeFA2WURURVNCbk1oZ1czZ084dE52S2Q0TXI4cVQx?=
+ =?utf-8?B?dWVtRDlqQ1FaUGpwNWVFTDFZU0NvNCt0cjlpWC9hb1VJNzVZb08ydzZrZWFh?=
+ =?utf-8?B?Ty9jWnlrbkhDT2hLcVcvM3VscTE5ZUU1UFBXSWVsU1Bsb0NIblRVeXRhQTFQ?=
+ =?utf-8?B?RU9NbUxRNnpCNnhkRjcydz09?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ebdd2665-bfce-4ab0-db2c-08d8e58a5461
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48c3b21e-11c4-4ce3-ad7f-08d8e58adf85
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 19:09:15.9042
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 19:13:09.2741
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pSDlaWQooZ/AsvDwQ5or90trR6KoZuEEyQXOtMRu7TTZ5Sbv/Eq4fQCkhvoD3wIh9Fz9MM2w60EcGNuMiMziPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4353
+X-MS-Exchange-CrossTenant-UserPrincipalName: WjqXfElZVNnWreLZaG4Q6qXJnBvRamk/u/81zSvrkt//h1UmHF0+bUoz2bQ3O0qXagKFjxs9CZscZ6xwVn5EUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3687
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9921 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- adultscore=0 phishscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103120142
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9921 signatures=668683
@@ -148,276 +151,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 4:05 AM, Miaohe Lin wrote:
-> The current implementation of hugetlb_cgroup for shared mappings could have
-> different behavior. Consider the following two scenarios:
+Hi Paolo,
+
+On 3/6/21 5:56 AM, Paolo Bonzini wrote:
+> On 05/03/21 23:57, Dongli Zhang wrote:
+>> The new per-cpu stat 'nested_run' is introduced in order to track if L1 VM
+>> is running or used to run L2 VM.
+>>
+>> An example of the usage of 'nested_run' is to help the host administrator
+>> to easily track if any L1 VM is used to run L2 VM. Suppose there is issue
+>> that may happen with nested virtualization, the administrator will be able
+>> to easily narrow down and confirm if the issue is due to nested
+>> virtualization via 'nested_run'. For example, whether the fix like
+>> commit 88dddc11a8d6 ("KVM: nVMX: do not use dangling shadow VMCS after
+>> guest reset") is required.
+>>
+>> Cc: Joe Jin <joe.jin@oracle.com>
+>> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+...
 > 
-> 1.Assume initial css reference count of hugetlb_cgroup is 1:
->   1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
-> count is 2 associated with 1 file_region.
->   1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
-> count is 3 associated with 2 file_region.
->   1.3 coalesce_file_region will coalesce these two file_regions into one.
-> So css reference count is 3 associated with 1 file_region now.
+> Queued, thanks.
 > 
-> 2.Assume initial css reference count of hugetlb_cgroup is 1 again:
->   2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
-> count is 2 associated with 1 file_region.
-> 
-> Therefore, we might have one file_region while holding one or more css
-> reference counts. This inconsistency could lead to imbalanced css_get()
-> and css_put() pair. If we do css_put one by one (i.g. hole punch case),
-> scenario 2 would put one more css reference. If we do css_put all together
-> (i.g. truncate case), scenario 1 will leak one css reference.
-> 
-> The imbalanced css_get() and css_put() pair would result in a non-zero
-> reference when we try to destroy the hugetlb cgroup. The hugetlb cgroup
-> directory is removed __but__ associated resource is not freed. This might
-> result in OOM or can not create a new hugetlb cgroup in a busy workload
-> ultimately.
-> 
-> In order to fix this, we have to make sure that one file_region must hold
-> and only hold one css reference. So in coalesce_file_region case, we should
+> Paolo
+>
 
-I think this would sound/read better if stated as:
-... one file_region must hold exactly one css reference ...
+While testing the most recent kvm tree, I did not find this patch queued
+(debugfs entry for nested_run not available). Would you mind help confirm?
 
-This phrase is repeated in comments throughout the patch.
+Thank you very much!
 
-> release one css reference before coalescence. Also only put css reference
-> when the entire file_region is removed.
-> 
-> The last thing to note is that the caller of region_add() will only hold
-> one reference to h_cg->css for the whole contiguous reservation region.
-> But this area might be scattered when there are already some file_regions
-> reside in it. As a result, many file_regions may share only one h_cg->css
-> reference. In order to ensure that one file_region must hold and only hold
-> one h_cg->css reference, we should do css_get() for each file_region and
-> release the reference held by caller when they are done.
+Dongli Zhang
 
-Thanks for adding this to the commit message.
-
-> 
-> Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
-> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: stable@kernel.org
-> ---
-> v1->v2:
-> 	Fix auto build test ERROR when CGROUP_HUGETLB is disabled.
-> ---
->  include/linux/hugetlb_cgroup.h | 15 ++++++++++--
->  mm/hugetlb.c                   | 42 ++++++++++++++++++++++++++++++----
->  mm/hugetlb_cgroup.c            | 11 +++++++--
->  3 files changed, 60 insertions(+), 8 deletions(-)
-
-Just a few minor nits below, all in comments.  It is not required, but
-would be nice to update these.  Code looks good.
-
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-
-> 
-> diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
-> index 2ad6e92f124a..0bff345c4bc6 100644
-> --- a/include/linux/hugetlb_cgroup.h
-> +++ b/include/linux/hugetlb_cgroup.h
-> @@ -113,6 +113,11 @@ static inline bool hugetlb_cgroup_disabled(void)
->  	return !cgroup_subsys_enabled(hugetlb_cgrp_subsys);
->  }
->  
-> +static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
-> +{
-> +	css_put(&h_cg->css);
-> +}
-> +
->  extern int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
->  					struct hugetlb_cgroup **ptr);
->  extern int hugetlb_cgroup_charge_cgroup_rsvd(int idx, unsigned long nr_pages,
-> @@ -138,7 +143,8 @@ extern void hugetlb_cgroup_uncharge_counter(struct resv_map *resv,
->  
->  extern void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->  						struct file_region *rg,
-> -						unsigned long nr_pages);
-> +						unsigned long nr_pages,
-> +						bool region_del);
->  
->  extern void hugetlb_cgroup_file_init(void) __init;
->  extern void hugetlb_cgroup_migrate(struct page *oldhpage,
-> @@ -147,7 +153,8 @@ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
->  #else
->  static inline void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->  						       struct file_region *rg,
-> -						       unsigned long nr_pages)
-> +						       unsigned long nr_pages,
-> +						       bool region_del)
->  {
->  }
->  
-> @@ -185,6 +192,10 @@ static inline bool hugetlb_cgroup_disabled(void)
->  	return true;
->  }
->  
-> +static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
-> +{
-> +}
-> +
->  static inline int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
->  					       struct hugetlb_cgroup **ptr)
->  {
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 8fb42c6dd74b..87db91dff47f 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -280,6 +280,18 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
->  		nrg->reservation_counter =
->  			&h_cg->rsvd_hugepage[hstate_index(h)];
->  		nrg->css = &h_cg->css;
-> +		/*
-> +		 * The caller (hugetlb_reserve_pages now) will only hold one
-
-This can be called from other places such as alloc_huge_page.  Correct?
-If so, we should drop the mention of hugetlb_reserve_pages.
-
-> +		 * h_cg->css reference for the whole contiguous reservation
-> +		 * region. But this area might be scattered when there are
-> +		 * already some file_regions reside in it. As a result, many
-> +		 * file_regions may share only one h_cg->css reference. In
-> +		 * order to ensure that one file_region must hold and only
-> +		 * hold one h_cg->css reference, we should do css_get for
-
-... must hold exactly one ...
-
-> +		 * each file_region and leave the reference held by caller
-> +		 * untouched.
-> +		 */
-> +		css_get(&h_cg->css);
->  		if (!resv->pages_per_hpage)
->  			resv->pages_per_hpage = pages_per_huge_page(h);
->  		/* pages_per_hpage should be the same for all entries in
-> @@ -293,6 +305,14 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
->  #endif
->  }
->  
-> +static void put_uncharge_info(struct file_region *rg)
-> +{
-> +#ifdef CONFIG_CGROUP_HUGETLB
-> +	if (rg->css)
-> +		css_put(rg->css);
-> +#endif
-> +}
-> +
->  static bool has_same_uncharge_info(struct file_region *rg,
->  				   struct file_region *org)
->  {
-> @@ -316,6 +336,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
->  		prg->to = rg->to;
->  
->  		list_del(&rg->link);
-> +		put_uncharge_info(rg);
->  		kfree(rg);
->  
->  		rg = prg;
-> @@ -327,6 +348,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
->  		nrg->from = rg->from;
->  
->  		list_del(&rg->link);
-> +		put_uncharge_info(rg);
->  		kfree(rg);
->  	}
->  }
-> @@ -659,7 +681,7 @@ static long region_del(struct resv_map *resv, long f, long t)
->  
->  			del += t - f;
->  			hugetlb_cgroup_uncharge_file_region(
-> -				resv, rg, t - f);
-> +				resv, rg, t - f, false);
->  
->  			/* New entry for end of split region */
->  			nrg->from = t;
-> @@ -680,7 +702,7 @@ static long region_del(struct resv_map *resv, long f, long t)
->  		if (f <= rg->from && t >= rg->to) { /* Remove entire region */
->  			del += rg->to - rg->from;
->  			hugetlb_cgroup_uncharge_file_region(resv, rg,
-> -							    rg->to - rg->from);
-> +							    rg->to - rg->from, true);
->  			list_del(&rg->link);
->  			kfree(rg);
->  			continue;
-> @@ -688,13 +710,13 @@ static long region_del(struct resv_map *resv, long f, long t)
->  
->  		if (f <= rg->from) {	/* Trim beginning of region */
->  			hugetlb_cgroup_uncharge_file_region(resv, rg,
-> -							    t - rg->from);
-> +							    t - rg->from, false);
->  
->  			del += t - rg->from;
->  			rg->from = t;
->  		} else {		/* Trim end of region */
->  			hugetlb_cgroup_uncharge_file_region(resv, rg,
-> -							    rg->to - f);
-> +							    rg->to - f, false);
->  
->  			del += rg->to - f;
->  			rg->to = f;
-> @@ -5128,6 +5150,10 @@ bool hugetlb_reserve_pages(struct inode *inode,
->  			 */
->  			long rsv_adjust;
->  
-> +			/*
-> +			 * hugetlb_cgroup_uncharge_cgroup_rsvd() will put the
-> +			 * reference to h_cg->css. See comment below for detail.
-> +			 */
->  			hugetlb_cgroup_uncharge_cgroup_rsvd(
->  				hstate_index(h),
->  				(chg - add) * pages_per_huge_page(h), h_cg);
-> @@ -5135,6 +5161,14 @@ bool hugetlb_reserve_pages(struct inode *inode,
->  			rsv_adjust = hugepage_subpool_put_pages(spool,
->  								chg - add);
->  			hugetlb_acct_memory(h, -rsv_adjust);
-> +		} else if (h_cg) {
-> +			/*
-> +			 * The file_regions will hold their own reference to
-> +			 * h_cg->css. So we should release the reference held
-> +			 * via hugetlb_cgroup_charge_cgroup_rsvd() when we are
-> +			 * done.
-> +			 */
-> +			hugetlb_cgroup_put_rsvd_cgroup(h_cg);
->  		}
->  	}
->  	return true;
-> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-> index f68b51fcda3d..8668ba87cfe4 100644
-> --- a/mm/hugetlb_cgroup.c
-> +++ b/mm/hugetlb_cgroup.c
-> @@ -391,7 +391,8 @@ void hugetlb_cgroup_uncharge_counter(struct resv_map *resv, unsigned long start,
->  
->  void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->  					 struct file_region *rg,
-> -					 unsigned long nr_pages)
-> +					 unsigned long nr_pages,
-> +					 bool region_del)
->  {
->  	if (hugetlb_cgroup_disabled() || !resv || !rg || !nr_pages)
->  		return;
-> @@ -400,7 +401,13 @@ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->  	    !resv->reservation_counter) {
->  		page_counter_uncharge(rg->reservation_counter,
->  				      nr_pages * resv->pages_per_hpage);
-> -		css_put(rg->css);
-> +		/*
-> +		 * Only do css_put(rg->css) when we delete the entire region
-> +		 * because one file_region must hold and only hold one rg->css
-
-... must hold exactly one ...
-
--- 
-Mike Kravetz
-
-> +		 * reference.
-> +		 */
-> +		if (region_del)
-> +			css_put(rg->css);
->  	}
->  }
->  
-> 
