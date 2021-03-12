@@ -2,526 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C753395C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EB63395D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhCLSBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:01:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:58912 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhCLSAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:00:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD02101E;
-        Fri, 12 Mar 2021 10:00:43 -0800 (PST)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C06DA3F7D7;
-        Fri, 12 Mar 2021 10:00:41 -0800 (PST)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: [PATCH v2 24/24] x86/resctrl: Merge the CDP resources
-Date:   Fri, 12 Mar 2021 17:58:49 +0000
-Message-Id: <20210312175849.8327-25-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210312175849.8327-1-james.morse@arm.com>
-References: <20210312175849.8327-1-james.morse@arm.com>
+        id S232255AbhCLSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:05:57 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:40355 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231679AbhCLSFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:05:25 -0500
+Received: (qmail 306756 invoked by uid 1000); 12 Mar 2021 13:05:23 -0500
+Date:   Fri, 12 Mar 2021 13:05:23 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using
+ xhci_hcd
+Message-ID: <20210312180523.GB302347@rowland.harvard.edu>
+References: <20210306165808.GD74411@rowland.harvard.edu>
+ <CA+icZUWXBtOo+7TBGHFA=aKBs5o9hy3Po6NM0EPssu6y4SOZsQ@mail.gmail.com>
+ <CA+icZUXcYY53DxpMRQmveuwUv0QVV7rtRorbxWUaVujJZuCB-A@mail.gmail.com>
+ <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
+ <20210307154645.GA103559@rowland.harvard.edu>
+ <CA+icZUVLC7=-MsXeGQOrAe1emzGW2UwWYxh3EHGPhjR=chygoQ@mail.gmail.com>
+ <20210307170702.GB104554@rowland.harvard.edu>
+ <CA+icZUWaGt2k4kdV0JHqKUkB8DySqdeUgVNnVT1BUo8aveGZOw@mail.gmail.com>
+ <CA+icZUWb40r1MTFYk9S0h2XgGfqCQtxpm9yHKNr3PDnDbUNBKQ@mail.gmail.com>
+ <CA+icZUXkheVR-c9cdsJmeS9+FZj4Gswii+xBoAWK882QNdfcTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUXkheVR-c9cdsJmeS9+FZj4Gswii+xBoAWK882QNdfcTg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that resctrl uses the schema's configuration type is the source of
-CODE/DATA configuration styles, and there is only one configuration
-array between the three views of the resource, remove the CODE and DATA
-aliases.
+On Fri, Mar 12, 2021 at 06:41:58PM +0100, Sedat Dilek wrote:
+> OK, now for the records:
+> 
+> [ /etc/modprobe.d/usb-storage.conf  ]
+> 
+> # Add quirks for USB Mass Storage devices
+> #
+> # Link: https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+> #
+> # Option #1: Use Kernel command line parameter
+> # [1] Usage: usb-storage.quirks=<VID:PID:Flags>
+> # [2] VendorID (VID) and ProductID (PID):
+> #     ASMedia M1042 USB-3.0 controller: VID: 174c PID: 55aa
+> # [3] Flags:
+> #     t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
+> #     u = IGNORE_UAS (don't bind to the uas driver);
+> # [4] Example: usb-storage.quirks=174c:55aa:t
+> #
+> # Option #2: Set quirk via sysfs
+> # DEBUG: echo '174c:55aa:t' > /sys/module/usb_storage/parameters/quirks
+> #
+> # Option #3: Pass options via /etc/modprobe.d/usb-storage.conf (this file here)
+> # XXX: Do NOT forget to run `update-initramfs` command!
+> options usb-storage quirks=174c:55aa:t
+> - EOF -
+> 
+> With generating a new /boot/initrd.img via `update-initramfs` this
+> looks good to me:
+> 
+> root# LC_ALL=C dmesg -T | egrep -i 'quirks|reset|SCSI ioctl error'
+> [Fri Mar 12 18:25:56 2021] xhci_hcd 0000:03:00.0: hcc params
+> 0x0200f180 hci version 0x96 quirks 0x0000000000080000
+> [Fri Mar 12 18:25:57 2021] usb-storage 4-1:1.0: Quirks match for vid
+> 174c pid 55aa: 2400000
+> [Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:25:57 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:58 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:25:59 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:00 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:01 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:01 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:02 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:03 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:24 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:29 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:30 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:31 2021] SCSI ioctl error, cmd 85, prog smartd
+> [Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:39 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd A1, prog ata_id
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:40 2021] SCSI ioctl error, cmd 85, prog hdparm
+> [Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:43 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:44 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:49 2021] SCSI ioctl error, cmd 85, prog udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:26:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
+> [Fri Mar 12 18:28:09 2021] SCSI ioctl error, cmd 85, prog smartctl
+> [Fri Mar 12 18:28:10 2021] SCSI ioctl error, cmd 85, prog smartctl
+> [Fri Mar 12 18:28:11 2021] SCSI ioctl error, cmd 85, prog smartctl
+> [Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:49 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
+> [Fri Mar 12 18:36:50 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
 
-This allows the alloc_ctrlval_array() and complications around free()ing
-the ctrl_val arrays to be removed.
+Although it's not conclusive, this log seems to indicate that ata_id
+is the only program causing resets.  Have you tried preventing the 
+ata_id program from running (for example, by renaming it)?
 
-To continue providing the CDP user-interface, the resctrl filesystem
-code creates two schema for one resource when CDP is enabled, and
-generates the names itself. This ensures the user interface is the
-same when another architecture emulates CDPs behaviour.
+> Your diff now should say; s/SCSI ioctl error/SCSI ioctl info'.
 
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-Signed-off-by: James Morse <james.morse@arm.com>
----
-Changes since v1:
- * rdt_get_cdp_config() is kept for its comment.
----
- arch/x86/kernel/cpu/resctrl/core.c     | 174 ++-----------------------
- arch/x86/kernel/cpu/resctrl/internal.h |   4 -
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 122 ++++++++---------
- 3 files changed, 75 insertions(+), 225 deletions(-)
+No, it shouldn't.  The log message itself is an info, but the event it
+reports is an error.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 5021a726e87d..7c20d0469b3a 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -78,42 +78,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L3_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L3DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L3DATA,
--			.name			= "L3DATA",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L3CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L3CODE,
--			.name			= "L3CODE",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_L2] =
- 	{
- 		.conf_type			= CDP_BOTH,
-@@ -132,42 +96,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L2_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L2DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L2DATA,
--			.name			= "L2DATA",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L2CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.resctrl = {
--			.rid			= RDT_RESOURCE_L2CODE,
--			.name			= "L2CODE",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_MBA] =
- 	{
- 		.conf_type			= CDP_BOTH,
-@@ -339,40 +267,24 @@ static void rdt_get_cache_alloc_cfg(int idx, struct rdt_resource *r)
- 	r->alloc_enabled = true;
- }
- 
--static void rdt_get_cdp_config(int level, int type)
-+static void rdt_get_cdp_config(int level)
- {
--	struct rdt_resource *r_l = &rdt_resources_all[level].resctrl;
--	struct rdt_hw_resource *hw_res_l = resctrl_to_arch_res(r_l);
--	struct rdt_resource *r = &rdt_resources_all[type].resctrl;
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
--
--	hw_res->num_closid = hw_res_l->num_closid;
--	r->cache.cbm_len = r_l->cache.cbm_len;
--	r->default_ctrl = r_l->default_ctrl;
--	r->cache.shareable_bits = r_l->cache.shareable_bits;
--	r->data_width = (r->cache.cbm_len + 3) / 4;
--	r->alloc_capable = true;
- 	/*
- 	 * By default, CDP is disabled. CDP can be enabled by mount parameter
- 	 * "cdp" during resctrl file system mount time.
- 	 */
--	r->alloc_enabled = false;
- 	rdt_resources_all[level].cdp_enabled = false;
--	rdt_resources_all[type].cdp_enabled = false;
- 	rdt_resources_all[level].cdp_capable = true;
--	rdt_resources_all[type].cdp_capable = true;
- }
- 
- static void rdt_get_cdp_l3_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L3);
- }
- 
- static void rdt_get_cdp_l2_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L2);
- }
- 
- static void
-@@ -509,58 +421,6 @@ void setup_default_ctrlval(struct rdt_resource *r, u32 *dc, u32 *dm)
- 	}
- }
- 
--static u32 *alloc_ctrlval_array(struct rdt_resource *r, struct rdt_domain *d,
--				bool mba_sc)
--{
--	/* these are for the underlying hardware, they may not match r/d */
--	struct rdt_domain *underlying_domain;
--	struct rdt_hw_resource *hw_res;
--	struct rdt_hw_domain *hw_dom;
--	bool remapped;
--
--	switch (r->rid) {
--	case RDT_RESOURCE_L3DATA:
--	case RDT_RESOURCE_L3CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L3];
--		remapped = true;
--		break;
--	case RDT_RESOURCE_L2DATA:
--	case RDT_RESOURCE_L2CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L2];
--		remapped = true;
--		break;
--	default:
--		hw_res = resctrl_to_arch_res(r);
--		remapped = false;
--	}
--
--
--	/*
--	 * If we changed the resource, we need to search for the underlying
--	 * domain. Doing this for all resources would make it tricky to add the
--	 * first resource, as domains aren't added to a resource list until
--	 * after the ctrlval arrays have been allocated.
--	 */
--	if (remapped)
--		underlying_domain = rdt_find_domain(&hw_res->resctrl, d->id,
--						    NULL);
--	else
--		underlying_domain = d;
--	hw_dom = resctrl_to_arch_dom(underlying_domain);
--
--	if (mba_sc) {
--		if (hw_dom->mbps_val)
--			return hw_dom->mbps_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->mbps_val), GFP_KERNEL);
--	} else {
--		if (hw_dom->ctrl_val)
--			return hw_dom->ctrl_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->ctrl_val), GFP_KERNEL);
--	}
--}
--
- static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- {
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
-@@ -568,11 +428,13 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- 	struct msr_param m;
- 	u32 *dc, *dm;
- 
--	dc = alloc_ctrlval_array(r, d, false);
-+	dc = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->ctrl_val),
-+			   GFP_KERNEL);
- 	if (!dc)
- 		return -ENOMEM;
- 
--	dm = alloc_ctrlval_array(r, d, true);
-+	dm = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->mbps_val),
-+			   GFP_KERNEL);
- 	if (!dm) {
- 		kfree(dc);
- 		return -ENOMEM;
-@@ -731,14 +593,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 		if (d->plr)
- 			d->plr->d = NULL;
- 
--		/* temporary: these four don't have a unique ctrlval array */
--		if ((r->rid != RDT_RESOURCE_L3CODE) &&
--		    (r->rid != RDT_RESOURCE_L3DATA) &&
--		    (r->rid != RDT_RESOURCE_L2CODE) &&
--		    (r->rid != RDT_RESOURCE_L2DATA)) {
--			kfree(hw_dom->ctrl_val);
--			kfree(hw_dom->mbps_val);
--		}
-+		kfree(hw_dom->ctrl_val);
-+		kfree(hw_dom->mbps_val);
- 		bitmap_free(d->rmid_busy_llc);
- 		kfree(d->mbm_total);
- 		kfree(d->mbm_local);
-@@ -1011,11 +867,7 @@ static __init void rdt_init_res_defs_intel(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = false;
- 			r->cache.arch_has_empty_bitmaps = false;
- 			r->cache.arch_has_per_cpu_cfg = false;
-@@ -1035,11 +887,7 @@ static __init void rdt_init_res_defs_amd(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = true;
- 			r->cache.arch_has_empty_bitmaps = true;
- 			r->cache.arch_has_per_cpu_cfg = true;
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index ac36249f43ba..e06bc5ccf6cd 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -402,11 +402,7 @@ extern struct dentry *debugfs_resctrl;
- 
- enum resctrl_res_level {
- 	RDT_RESOURCE_L3,
--	RDT_RESOURCE_L3DATA,
--	RDT_RESOURCE_L3CODE,
- 	RDT_RESOURCE_L2,
--	RDT_RESOURCE_L2DATA,
--	RDT_RESOURCE_L2CODE,
- 	RDT_RESOURCE_MBA,
- 
- 	/* Must be the last */
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 36e2905f4da6..1dfb41e1277a 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1880,10 +1880,10 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
- 	if (!hw_res->cdp_capable)
- 		return;
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA].resctrl)
-+	if (r->rid == RDT_RESOURCE_L2)
- 		l2_qos_cfg_update(&hw_res->cdp_enabled);
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA].resctrl)
-+	if (r->rid == RDT_RESOURCE_L3)
- 		l3_qos_cfg_update(&hw_res->cdp_enabled);
- }
- 
-@@ -1912,68 +1912,42 @@ static int set_mba_sc(bool mba_sc)
- 	return 0;
- }
- 
--static int cdp_enable(int level, int data_type, int code_type)
-+static int cdp_enable(int level)
- {
--	struct rdt_resource *r_ldata = &rdt_resources_all[data_type].resctrl;
--	struct rdt_resource *r_lcode = &rdt_resources_all[code_type].resctrl;
- 	struct rdt_resource *r_l = &rdt_resources_all[level].resctrl;
- 	int ret;
- 
--	if (!r_l->alloc_capable || !r_ldata->alloc_capable ||
--	    !r_lcode->alloc_capable)
-+	if (!r_l->alloc_capable)
- 		return -EINVAL;
- 
- 	ret = set_cache_qos_cfg(level, true);
--	if (!ret) {
--		r_l->alloc_enabled = false;
--		r_ldata->alloc_enabled = true;
--		r_lcode->alloc_enabled = true;
-+	if (!ret)
- 		rdt_resources_all[level].cdp_enabled = true;
--		rdt_resources_all[data_type].cdp_enabled = true;
--		rdt_resources_all[code_type].cdp_enabled = true;
--	}
-+
- 	return ret;
- }
- 
--static void cdp_disable(int level, int data_type, int code_type)
-+static void cdp_disable(int level)
- {
- 	struct rdt_hw_resource *r_hw = &rdt_resources_all[level];
--	struct rdt_resource *r = &r_hw->resctrl;
--
--	r->alloc_enabled = r->alloc_capable;
- 
- 	if (r_hw->cdp_enabled) {
--		rdt_resources_all[data_type].resctrl.alloc_enabled = false;
--		rdt_resources_all[code_type].resctrl.alloc_enabled = false;
- 		set_cache_qos_cfg(level, false);
- 		r_hw->cdp_enabled = false;
--		rdt_resources_all[data_type].cdp_enabled = false;
--		rdt_resources_all[code_type].cdp_enabled = false;
- 	}
- }
- 
- int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
- {
- 	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
--	enum resctrl_res_level code_type, data_type;
- 
- 	if (!hw_res->cdp_capable)
- 		return -EINVAL;
- 
--	if (l == RDT_RESOURCE_L3) {
--		code_type = RDT_RESOURCE_L3CODE;
--		data_type = RDT_RESOURCE_L3DATA;
--	} else if (l == RDT_RESOURCE_L2) {
--		code_type = RDT_RESOURCE_L2CODE;
--		data_type = RDT_RESOURCE_L2DATA;
--	} else {
--		return -EINVAL;
--	}
--
- 	if (enable)
--		return cdp_enable(l, data_type, code_type);
-+		return cdp_enable(l);
- 
--	cdp_disable(l, data_type, code_type);
-+	cdp_disable(l);
- 
- 	return 0;
- }
-@@ -2072,40 +2046,72 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
- 	return ret;
- }
- 
--static int schemata_list_create(void)
-+static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type)
- {
--	struct rdt_resource *r;
- 	struct resctrl_schema *s;
-+	const char *suffix = "";
- 	int ret, cl;
- 
--	for_each_alloc_enabled_rdt_resource(r) {
--		s = kzalloc(sizeof(*s), GFP_KERNEL);
--		if (!s)
--			return -ENOMEM;
--
--		s->res = r;
--		s->conf_type = resctrl_to_arch_res(r)->conf_type;
--		s->num_closid = resctrl_arch_get_num_closid(r);
--		if (resctrl_arch_get_cdp_enabled(r->rid))
--			s->num_closid /= 2;
--
--		ret = snprintf(s->name, sizeof(s->name), r->name);
--		if (ret >= sizeof(s->name)) {
--			kfree(s);
--			return -EINVAL;
--		}
-+	s = kzalloc(sizeof(*s), GFP_KERNEL);
-+	if (!s)
-+		return -ENOMEM;
- 
--		cl = strlen(s->name);
--		if (cl > max_name_width)
--			max_name_width = cl;
-+	s->res = r;
-+	s->num_closid = resctrl_arch_get_num_closid(r);
-+	if (resctrl_arch_get_cdp_enabled(r->rid))
-+		s->num_closid /= 2;
- 
--		INIT_LIST_HEAD(&s->list);
--		list_add(&s->list, &resctrl_schema_all);
-+	s->conf_type = type;
-+	switch (type) {
-+	case CDP_CODE:
-+		suffix = "CODE";
-+		break;
-+	case CDP_DATA:
-+		suffix = "DATA";
-+		break;
-+	case CDP_BOTH:
-+		suffix = "";
-+		break;
- 	}
- 
-+	ret = snprintf(s->name, sizeof(s->name), "%s%s", r->name, suffix);
-+	if (ret >= sizeof(s->name)) {
-+		kfree(s);
-+		return -EINVAL;
-+	}
-+
-+	cl = strlen(s->name);
-+	if (cl > max_name_width)
-+		max_name_width = cl;
-+
-+	INIT_LIST_HEAD(&s->list);
-+	list_add(&s->list, &resctrl_schema_all);
-+
- 	return 0;
- }
- 
-+static int schemata_list_create(void)
-+{
-+	struct rdt_resource *r;
-+	int ret = 0;
-+
-+	for_each_alloc_enabled_rdt_resource(r) {
-+		if (resctrl_arch_get_cdp_enabled(r->rid)) {
-+			ret = schemata_list_add(r, CDP_CODE);
-+			if (ret)
-+				break;
-+
-+			ret = schemata_list_add(r, CDP_DATA);
-+		} else
-+			ret = schemata_list_add(r, CDP_BOTH);
-+
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
- static void schemata_list_destroy(void)
- {
- 	struct resctrl_schema *s, *tmp;
--- 
-2.30.0
+> Alan, so "t" flags should be added as a quirks to linux-kernel sources...
+> 
+> t = NO_ATA_1X  (don't allow ATA(12) and ATA(16) commands, uas only);
+> 
+> ...for my ASMedia USB-3.0 controller?
 
+That's not at all clear.  This is a very common and popular device,
+and nobody else has reported these problems.  It could be that
+something is odd about your particular drive or computer, not these
+drives in general.
+
+Alan Stern
