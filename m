@@ -2,230 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327C1339A30
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5661A339A33
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbhCLXyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:54:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55969 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhCLXx7 (ORCPT
+        id S235911AbhCLXzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235895AbhCLXzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:53:59 -0500
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1lKrbR-000770-NO
-        for linux-kernel@vger.kernel.org; Fri, 12 Mar 2021 23:53:57 +0000
-Received: by mail-wr1-f72.google.com with SMTP id g5so11804813wrd.22
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:53:57 -0800 (PST)
+        Fri, 12 Mar 2021 18:55:25 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BA8C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:55:25 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id bx7so10311358edb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:55:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rzd7+ZoYoDpZEoFW2ukEyXWX/0rak66ElJiDi393MkE=;
+        b=VjoAQ0HV4kGAFzlCqfDZ5KjrjlpNhgisoLLO9q6dTfT7I1qoxP/qX5JtUjO+2jwh4S
+         L/OMVemBBR0n0UV5xSKHBWWMFojdGQOSu5TbP5iiODlndJBbZWc3kKzQAkR04L3p5Ya6
+         C8gMkQBB0Ch2QuZIP2k68eGuKVZb5zwIJ373A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=7ZCZm1oAiUrgwSQnZnDLOJiP4+DsfLQzqupcIwXbELU=;
-        b=ghfFAotBtNzmCeWQyhzGy+H+yOhSwUFTOJJf+vZXVNf9wfAKgtoSBw3as7FTfounRH
-         5E9/kdsOhmfjbRB5go1QzinyvB4TINeB066MxxEfs3jVYuxm47AaQ19+yHuo0z0hCH6g
-         HFWA0fP9abGBfy2X3elZ5Jq6lDJBG6IluVIvL/mliVDvBu76ZkE2YlWHGQtEx5OsnnGD
-         DX9x9wNDmrhuZ91GyPVkg9Ng6VOjIY47Mrroy661CjOuiZt+B4A+FIKk/2Ecl2GuGHaY
-         PRl11PPegpQS4NYqNXKBTAuUjHe8AiqqC52+QG1CT+X8/4muIQ8xXgdKqFU9ry+8B1VH
-         5d9Q==
-X-Gm-Message-State: AOAM532hBmwvNwy7XaDOjytxY5jyM4rF3feSeLl1l+/LzH8u25L8E6Py
-        W/Wwr99njBCfdl0sgsf18Yv+rldDNpIFLKqm0JJaU6RxocAV/WHOZ7OFfPAU83CMfrjuOoMPNqP
-        OwZtQoRtypc6+xMW2HaoSzWNhG94m+nT5iBLQwyn2ZA==
-X-Received: by 2002:a5d:6602:: with SMTP id n2mr16545577wru.262.1615593237075;
-        Fri, 12 Mar 2021 15:53:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwGXE6jQhAZ+V//927u6nMp5SR8npIGGiyqbB6+rvIDzIn2QXmFdXRd+GDjto+AigW+B+V9eQ==
-X-Received: by 2002:a5d:6602:: with SMTP id n2mr16545559wru.262.1615593236796;
-        Fri, 12 Mar 2021 15:53:56 -0800 (PST)
-Received: from ?IPv6:2a01:4b00:85fd:d700:32b0:795:72f:7832? ([2a01:4b00:85fd:d700:32b0:795:72f:7832])
-        by smtp.gmail.com with ESMTPSA id n6sm11304469wrw.63.2021.03.12.15.53.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 15:53:56 -0800 (PST)
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
- <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
- <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com>
- <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist
- keyring
-Message-ID: <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com>
-Date:   Fri, 12 Mar 2021 23:53:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rzd7+ZoYoDpZEoFW2ukEyXWX/0rak66ElJiDi393MkE=;
+        b=snPhYWBSPXKuVW4s2r70YV7CqW7SWMa30QweK+jMqEoF+4LPFe1XwS+UzlXqEwamzn
+         KD6Z9vzzMePK4WmEySJLNGS5STlcKTd4Y4Seh42u7GoGwXxKBvQtmIG4dxtg+yzJDurY
+         LtZldilcpbemVlZDVbDGIR/B0/mo7fvIK5+6byC68UQ+rbnU0roe+nopI81cUzylk160
+         7Tnh6+rpuR6UQRBQzQya1aFv6SLkMZdLfBOvGZSjOQTFrKEWgIUaEKJCM5BwPRi2S4EP
+         q86IWaaNk5qkFMpi9jJr06qWup1O1L1M2PVU1X1KmgEj6jkbGOwzhh/ic6KCskJrbx2+
+         6RWg==
+X-Gm-Message-State: AOAM530ee+rhvW4UfZ7JG9hpa+aetyRVlVDXO1okmRVQA5D3mDE6P2Gv
+        02QY/Syqy0Ch/818IfCLsjWA6g==
+X-Google-Smtp-Source: ABdhPJzj7Jyoj3a/fwGAUOfnDN/rkgO3gX6tAfJgvW2k+UfN/O7/sMPST7A5m/0i6kGd1woPr14Hag==
+X-Received: by 2002:aa7:d687:: with SMTP id d7mr16771885edr.118.1615593323732;
+        Fri, 12 Mar 2021 15:55:23 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id hd37sm3225749ejc.114.2021.03.12.15.55.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 15:55:23 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v4 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
+Date:   Sat, 13 Mar 2021 00:55:20 +0100
+Message-Id: <20210312235521.1408503-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-In-Reply-To: <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="gXb40WsqiDhPW5FJqKAHLdZ82XXr2FLWT"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gXb40WsqiDhPW5FJqKAHLdZ82XXr2FLWT
-Content-Type: multipart/mixed; boundary="8zzh5UaugWrxeINg04AAMy3u0zIVsWadb";
- protected-headers="v1"
-From: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To: Eric Snowberg <eric.snowberg@oracle.com>
-Cc: David Howells <dhowells@redhat.com>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- Jarkko Sakkinen <jarkko@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?=
- <mic@digikod.net>, keyrings@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com>
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist
- keyring
-References: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
- <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
- <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com>
- <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com>
-In-Reply-To: <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com>
+On architectures where there is no coherent caching such as ARM use the
+dma_alloc_noncontiguous API and handle manually the cache flushing using
+dma_sync_sgtable().
 
---8zzh5UaugWrxeINg04AAMy3u0zIVsWadb
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+If the architechture has coherent cache, the API falls back to
+alloc_dma_pages, so we can remove the coherent caching code-path from the
+driver, making it simpler.
 
-On 12/03/2021 21:49, Eric Snowberg wrote:
->=20
->> On Mar 12, 2021, at 11:39 AM, Dimitri John Ledkov <dimitri.ledkov@cano=
-nical.com> wrote:
->>
->> On 25/02/2021 20:59, David Howells wrote:
->>> From: Eric Snowberg <eric.snowberg@oracle.com>
->>>
->>> During boot the Secure Boot Forbidden Signature Database, dbx,
->>> is loaded into the blacklist keyring.  Systems booted with shim
->>> have an equivalent Forbidden Signature Database called mokx.
->>> Currently mokx is only used by shim and grub, the contents are
->>> ignored by the kernel.
->>>
->>> Add the ability to load mokx into the blacklist keyring during boot.
->>>
->>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
->>> Suggested-by: James Bottomley <James.Bottomley@HansenPartnership.com>=
+With this patch on the affected architectures we can measure up to 20x
+performance improvement in uvc_video_copy_data_work().
 
->>> Signed-off-by: David Howells <dhowells@redhat.com>
->>> cc: Jarkko Sakkinen <jarkko@kernel.org>
->>> Link: https://lore.kernel.org/r/20210122181054.32635-5-eric.snowberg@=
-oracle.com/ # v5
->>> Link: https://lore.kernel.org/r/c33c8e3839a41e9654f41cc92c7231104931b=
-1d7.camel@HansenPartnership.com/
->>> ---
->>>
->>> security/integrity/platform_certs/load_uefi.c |   20 ++++++++++++++++=
-++--
->>> 1 file changed, 18 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/security/integrity/platform_certs/load_uefi.c b/security=
-/integrity/platform_certs/load_uefi.c
->>> index ee4b4c666854..f290f78c3f30 100644
->>> --- a/security/integrity/platform_certs/load_uefi.c
->>> +++ b/security/integrity/platform_certs/load_uefi.c
->>> @@ -132,8 +132,9 @@ static int __init load_moklist_certs(void)
->>> static int __init load_uefi_certs(void)
->>> {
->>> 	efi_guid_t secure_var =3D EFI_IMAGE_SECURITY_DATABASE_GUID;
->>> -	void *db =3D NULL, *dbx =3D NULL;
->>> -	unsigned long dbsize =3D 0, dbxsize =3D 0;
->>> +	efi_guid_t mok_var =3D EFI_SHIM_LOCK_GUID;
->>> +	void *db =3D NULL, *dbx =3D NULL, *mokx =3D NULL;
->>> +	unsigned long dbsize =3D 0, dbxsize =3D 0, mokxsize =3D 0;
->>> 	efi_status_t status;
->>> 	int rc =3D 0;
->>>
->>> @@ -175,6 +176,21 @@ static int __init load_uefi_certs(void)
->>> 		kfree(dbx);
->>> 	}
->>>
->>> +	mokx =3D get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status)=
-;
->>> +	if (!mokx) {
->>> +		if (status =3D=3D EFI_NOT_FOUND)
->>> +			pr_debug("mokx variable wasn't found\n");
->>> +		else
->>> +			pr_info("Couldn't get mokx list\n");
->>> +	} else {
->>> +		rc =3D parse_efi_signature_list("UEFI:MokListXRT",
->>> +					      mokx, mokxsize,
->>> +					      get_handler_for_dbx);
->>> +		if (rc)
->>> +			pr_err("Couldn't parse mokx signatures %d\n", rc);
->>> +		kfree(mokx);
->>> +	}
->>> +
->>
->>
->> My preference would be if the above hunk was moved into the
->> load_moklist_certs() function which is called just below. Such that
->> loading of MokListRT & MOkListXRT are done next to each other.
->>
->> And also implement loading the same way it is done for MokListRT -
->> specifically via the EFI MOKvar config table & then via a variable.
->>
->> See 726bd8965a5f112d9601f7ce68effa1e46e02bf2 otherwise large MokListXR=
-T
->> will fail to parse.
->=20
-> Is this support available from shim now?  Previously I thought only
-> MOK could be loaded from the config table, not MOKx.
->=20
+Eg: aarch64 with an external usb camera
 
-It is about to become available across all distributions with the next
-shim as everyone is about to ship SBAT capable shims.
+NON_CONTIGUOUS
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 67034480 : duration 33303
+FPS: 29.99
+URB: 523446/4993 uS/qty: 104.836 avg 132.532 std 13.230 min 831.094 max (uS)
+header: 76564/4993 uS/qty: 15.334 avg 15.229 std 3.438 min 186.875 max (uS)
+latency: 468945/4992 uS/qty: 93.939 avg 132.577 std 9.531 min 824.010 max (uS)
+decode: 54161/4993 uS/qty: 10.847 avg 6.313 std 1.614 min 111.458 max (uS)
+raw decode speed: 9.931 Gbits/s
+raw URB handling speed: 1.025 Gbits/s
+throughput: 16.102 Mbits/s
+URB decode CPU usage 0.162600 %
 
-=46rom my system with the next shim & 5.10 kernel I have:
+COHERENT
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 54683536 : duration 33302
+FPS: 29.99
+URB: 1478135/4000 uS/qty: 369.533 avg 390.357 std 22.968 min 3337.865 max (uS)
+header: 79761/4000 uS/qty: 19.940 avg 18.495 std 1.875 min 336.719 max (uS)
+latency: 281077/4000 uS/qty: 70.269 avg 83.102 std 5.104 min 735.000 max (uS)
+decode: 1197057/4000 uS/qty: 299.264 avg 318.080 std 1.615 min 2806.667 max (uS)
+raw decode speed: 365.470 Mbits/s
+raw URB handling speed: 295.986 Mbits/s
+throughput: 13.136 Mbits/s
+URB decode CPU usage 3.594500 %
 
-$ ls /sys/firmware/efi/mok-variables/
-MokIgnoreDB  MokListRT  MokListXRT  MokSBStateRT  SbatRT
+In non-affected architectures we see no significant impact.
 
-It's not just a single Mok variable, but _all_ mok variables are
-available from the mok-table that are used to determine mok state.
-Including whether or not db should be ignored, whether or not signature
-verification is turned off, and what are the SBAT generation revocations
-are, in addition to MokListRT & MokListXRT.
+Eg: x86 with an external usb camera
 
-For example, kernel could gain further functionality to honor the user
-choices and disable loading db controlled by MokIgnoreDB especially
-since shim chooses to not consider db certificates & hashes as trust-wort=
-hy.
+NON_CONTIGUOUS
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 70179056 : duration 33301
+FPS: 29.99
+URB: 288901/4897 uS/qty: 58.995 avg 26.022 std 4.319 min 253.853 max (uS)
+header: 54792/4897 uS/qty: 11.189 avg 6.218 std 0.620 min 61.750 max (uS)
+latency: 236602/4897 uS/qty: 48.315 avg 24.244 std 1.764 min 240.924 max (uS)
+decode: 52298/4897 uS/qty: 10.679 avg 8.299 std 1.638 min 108.861 max (uS)
+raw decode speed: 10.796 Gbits/s
+raw URB handling speed: 1.949 Gbits/s
+throughput: 16.859 Mbits/s
+URB decode CPU usage 0.157000 %
 
-Regards,
+COHERENT
+frames:  999
+packets: 999
+empty:   0 (0 %)
+errors:  0
+invalid: 0
+pts: 0 early, 0 initial, 999 ok
+scr: 0 count ok, 0 diff ok
+sof: 2048 <= sof <= 0, freq 0.000 kHz
+bytes 71818320 : duration 33301
+FPS: 29.99
+URB: 321021/5000 uS/qty: 64.204 avg 23.001 std 10.430 min 268.837 max (uS)
+header: 54308/5000 uS/qty: 10.861 avg 5.104 std 0.778 min 54.736 max (uS)
+latency: 268799/5000 uS/qty: 53.759 avg 21.827 std 6.095 min 255.153 max (uS)
+decode: 52222/5000 uS/qty: 10.444 avg 7.137 std 1.874 min 71.103 max (uS)
+raw decode speed: 11.048 Gbits/s
+raw URB handling speed: 1.789 Gbits/s
+throughput: 17.253 Mbits/s
+URB decode CPU usage 0.156800 %
 
-Dimitri.
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
 
+Changelog from v3 (Thanks Laurent!):
 
---8zzh5UaugWrxeINg04AAMy3u0zIVsWadb--
+- Rename stream_dir and stream_to_dmadev to avoid collisions
+- Improve commit message
 
---gXb40WsqiDhPW5FJqKAHLdZ82XXr2FLWT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+ drivers/media/usb/uvc/uvc_video.c | 94 +++++++++++++++++++++++--------
+ drivers/media/usb/uvc/uvcvideo.h  |  5 +-
+ 2 files changed, 73 insertions(+), 26 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index f2f565281e63..cdd8eb500bb7 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -6,11 +6,14 @@
+  *          Laurent Pinchart (laurent.pinchart@ideasonboard.com)
+  */
+ 
++#include <linux/dma-mapping.h>
++#include <linux/highmem.h>
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/usb.h>
++#include <linux/usb/hcd.h>
+ #include <linux/videodev2.h>
+ #include <linux/vmalloc.h>
+ #include <linux/wait.h>
+@@ -1096,6 +1099,29 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+ 	return data[0];
+ }
+ 
++static inline enum dma_data_direction uvc_stream_dir(
++				struct uvc_streaming *stream)
++{
++	if (stream->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return DMA_FROM_DEVICE;
++	else
++		return DMA_TO_DEVICE;
++}
++
++static inline struct device *uvc_stream_to_dmadev(struct uvc_streaming *stream)
++{
++	return bus_to_hcd(stream->dev->udev->bus)->self.sysdev;
++}
++
++static int uvc_submit_urb(struct uvc_urb *uvc_urb, gfp_t mem_flags)
++{
++	/* Sync DMA. */
++	dma_sync_sgtable_for_device(uvc_stream_to_dmadev(uvc_urb->stream),
++				    uvc_urb->sgt,
++				    uvc_stream_dir(uvc_urb->stream));
++	return usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
++}
++
+ /*
+  * uvc_video_decode_data_work: Asynchronous memcpy processing
+  *
+@@ -1117,7 +1143,7 @@ static void uvc_video_copy_data_work(struct work_struct *work)
+ 		uvc_queue_buffer_release(op->buf);
+ 	}
+ 
+-	ret = usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
++	ret = uvc_submit_urb(uvc_urb, GFP_KERNEL);
+ 	if (ret < 0)
+ 		dev_err(&uvc_urb->stream->intf->dev,
+ 			"Failed to resubmit video URB (%d).\n", ret);
+@@ -1537,6 +1563,12 @@ static void uvc_video_complete(struct urb *urb)
+ 	/* Re-initialise the URB async work. */
+ 	uvc_urb->async_operations = 0;
+ 
++	/* Sync DMA and invalidate vmap range. */
++	dma_sync_sgtable_for_cpu(uvc_stream_to_dmadev(uvc_urb->stream),
++				 uvc_urb->sgt, uvc_stream_dir(stream));
++	invalidate_kernel_vmap_range(uvc_urb->buffer,
++				     uvc_urb->stream->urb_size);
++
+ 	/*
+ 	 * Process the URB headers, and optionally queue expensive memcpy tasks
+ 	 * to be deferred to a work queue.
+@@ -1545,7 +1577,7 @@ static void uvc_video_complete(struct urb *urb)
+ 
+ 	/* If no async work is needed, resubmit the URB immediately. */
+ 	if (!uvc_urb->async_operations) {
+-		ret = usb_submit_urb(uvc_urb->urb, GFP_ATOMIC);
++		ret = uvc_submit_urb(uvc_urb, GFP_ATOMIC);
+ 		if (ret < 0)
+ 			dev_err(&stream->intf->dev,
+ 				"Failed to resubmit video URB (%d).\n", ret);
+@@ -1560,24 +1592,49 @@ static void uvc_video_complete(struct urb *urb)
+  */
+ static void uvc_free_urb_buffers(struct uvc_streaming *stream)
+ {
++	struct device *dma_dev = uvc_stream_to_dmadev(stream);
+ 	struct uvc_urb *uvc_urb;
+ 
+ 	for_each_uvc_urb(uvc_urb, stream) {
+ 		if (!uvc_urb->buffer)
+ 			continue;
+ 
+-#ifndef CONFIG_DMA_NONCOHERENT
+-		usb_free_coherent(stream->dev->udev, stream->urb_size,
+-				  uvc_urb->buffer, uvc_urb->dma);
+-#else
+-		kfree(uvc_urb->buffer);
+-#endif
++		dma_vunmap_noncontiguous(dma_dev, uvc_urb->buffer);
++		dma_free_noncontiguous(dma_dev, stream->urb_size, uvc_urb->sgt,
++				       uvc_stream_dir(stream));
++
+ 		uvc_urb->buffer = NULL;
++		uvc_urb->sgt = NULL;
+ 	}
+ 
+ 	stream->urb_size = 0;
+ }
+ 
++static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
++				 struct uvc_urb *uvc_urb, gfp_t gfp_flags)
++{
++	struct device *dma_dev = uvc_stream_to_dmadev(stream);
++
++	uvc_urb->sgt = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
++					       uvc_stream_dir(stream),
++					       gfp_flags, 0);
++	if (!uvc_urb->sgt)
++		return false;
++	uvc_urb->dma = uvc_urb->sgt->sgl->dma_address;
++
++	uvc_urb->buffer = dma_vmap_noncontiguous(dma_dev, stream->urb_size,
++						 uvc_urb->sgt);
++	if (!uvc_urb->buffer) {
++		dma_free_noncontiguous(dma_dev, stream->urb_size,
++				       uvc_urb->sgt,
++				       uvc_stream_dir(stream));
++		uvc_urb->sgt = NULL;
++		return false;
++	}
++
++	return true;
++}
++
+ /*
+  * Allocate transfer buffers. This function can be called with buffers
+  * already allocated when resuming from suspend, in which case it will
+@@ -1608,19 +1665,12 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
+ 
+ 	/* Retry allocations until one succeed. */
+ 	for (; npackets > 1; npackets /= 2) {
++		stream->urb_size = psize * npackets;
++
+ 		for (i = 0; i < UVC_URBS; ++i) {
+ 			struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
+ 
+-			stream->urb_size = psize * npackets;
+-#ifndef CONFIG_DMA_NONCOHERENT
+-			uvc_urb->buffer = usb_alloc_coherent(
+-				stream->dev->udev, stream->urb_size,
+-				gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
+-#else
+-			uvc_urb->buffer =
+-			    kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
+-#endif
+-			if (!uvc_urb->buffer) {
++			if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
+ 				uvc_free_urb_buffers(stream);
+ 				break;
+ 			}
+@@ -1730,12 +1780,8 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
+ 		urb->context = uvc_urb;
+ 		urb->pipe = usb_rcvisocpipe(stream->dev->udev,
+ 				ep->desc.bEndpointAddress);
+-#ifndef CONFIG_DMA_NONCOHERENT
+ 		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+ 		urb->transfer_dma = uvc_urb->dma;
+-#else
+-		urb->transfer_flags = URB_ISO_ASAP;
+-#endif
+ 		urb->interval = ep->desc.bInterval;
+ 		urb->transfer_buffer = uvc_urb->buffer;
+ 		urb->complete = uvc_video_complete;
+@@ -1795,10 +1841,8 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
+ 
+ 		usb_fill_bulk_urb(urb, stream->dev->udev, pipe,	uvc_urb->buffer,
+ 				  size, uvc_video_complete, uvc_urb);
+-#ifndef CONFIG_DMA_NONCOHERENT
+ 		urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+ 		urb->transfer_dma = uvc_urb->dma;
+-#endif
+ 
+ 		uvc_urb->urb = urb;
+ 	}
+@@ -1895,7 +1939,7 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
+ 
+ 	/* Submit the URBs. */
+ 	for_each_uvc_urb(uvc_urb, stream) {
+-		ret = usb_submit_urb(uvc_urb->urb, gfp_flags);
++		ret = uvc_submit_urb(uvc_urb, gfp_flags);
+ 		if (ret < 0) {
+ 			dev_err(&stream->intf->dev,
+ 				"Failed to submit URB %u (%d).\n",
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 97df5ecd66c9..cce5e38133cd 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -219,6 +219,7 @@
+  */
+ 
+ struct gpio_desc;
++struct sg_table;
+ struct uvc_device;
+ 
+ /* TODO: Put the most frequently accessed fields at the beginning of
+@@ -545,7 +546,8 @@ struct uvc_copy_op {
+  * @urb: the URB described by this context structure
+  * @stream: UVC streaming context
+  * @buffer: memory storage for the URB
+- * @dma: DMA coherent addressing for the urb_buffer
++ * @dma: Allocated DMA handle
++ * @sgt: sgt_table with the urb locations in memory
+  * @async_operations: counter to indicate the number of copy operations
+  * @copy_operations: work descriptors for asynchronous copy operations
+  * @work: work queue entry for asynchronous decode
+@@ -556,6 +558,7 @@ struct uvc_urb {
+ 
+ 	char *buffer;
+ 	dma_addr_t dma;
++	struct sg_table *sgt;
+ 
+ 	unsigned int async_operations;
+ 	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
-iQIzBAEBCgAdFiEE7iQKBSojGtiSWEHXm47ISdXvcO0FAmBL/xIACgkQm47ISdXv
-cO1Hew/+JJxsy8gCfVJE1ODcQKECvIstvSuJGFnmsIsqjZP5AnvmtteKUpO2JIO9
-ASLPAJOmRbBh+y7at6D8g5fi/T1zsp9By+T+yk+XzmzKwdIiuQ9IzcAF8QDsXnro
-N06N77bXnRNVaLxx0K4/ASLqLWru8S4S3Y0PbHSjd3k9DmYC73sXlMTgjWiNHToU
-q+2Ykb94Iz1nKPCl8Z6J7qhL1oFU1BXesz7ZKcXaEdRwDvmHlVfRex8SU5ggYqHH
-bPZ23qS3SU/Bh1ytTpGkSMTZmkaL2Cg6x9m4chKdZ1c9YTdv8yZjQtAgaWjCjX92
-7Y8szmvsmBCntiwz9YdTQ5T54cJXZCc+LGAWEIa2EALQZK1ub4NdDEPTrlkd4Ny0
-fTKfxbyxrWL/+pB9jiG8Q7+U9cpGJ7Fa/hfS0t07UGqtmW5WCgyjlhUKVMMsHum4
-XbbXt/K8s8E9dRBxEN7tZtwOs97tkvnzGFhsVgAVz8LjG3XoY2qVRd48YbFk6kBy
-4EKgJ6QpktuGPkfEc5ijtGNGMU+iYTcQZN13e57SGvcwDnINaBxfh/J4nDgmZAJ/
-Z5yDqgUBu53UBmakzpyilYjMALWwacIt63s3hBWvl0+FcsEyldv1em2zSceShKz5
-feaYEeDFROD9c8SHwy7oAi4lKKzUaqoLvkn25PSJxN/Jkm1ZY5M=
-=oaZ7
------END PGP SIGNATURE-----
-
---gXb40WsqiDhPW5FJqKAHLdZ82XXr2FLWT--
