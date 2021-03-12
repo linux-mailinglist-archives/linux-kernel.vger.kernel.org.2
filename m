@@ -2,191 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CFD338FCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5D8338FC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhCLOW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:22:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:54638 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231789AbhCLOWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:22:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3A8C11B3;
-        Fri, 12 Mar 2021 06:22:39 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D16D13F793;
-        Fri, 12 Mar 2021 06:22:37 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH v15 8/8] kasan, arm64: tests supports for HW_TAGS async mode
-Date:   Fri, 12 Mar 2021 14:22:10 +0000
-Message-Id: <20210312142210.21326-9-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210312142210.21326-1-vincenzo.frascino@arm.com>
-References: <20210312142210.21326-1-vincenzo.frascino@arm.com>
+        id S231907AbhCLOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:22:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231636AbhCLOW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:22:26 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF23CC061574;
+        Fri, 12 Mar 2021 06:22:25 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id v4so1869999wrp.13;
+        Fri, 12 Mar 2021 06:22:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+hYBdQtD1kvHY3itnyV4r/pAOywMq3KjiiJrNDj4dt8=;
+        b=pppS/qVUSnEY4MY262cIQ8T5gm8QsBc+E6QBbUrw2NYYp29gVTFpdFAyvkUgV+Hz7b
+         8RjUw4oPoGpe1X7s+Wpn8+9q823QlGQg+QFtSKInmww3nweVODJw+7JI6bHBreUQeMcc
+         MzRs8+dabQgerv1l1z/v4s+V8LS0tSdjEr83SUdWv0RNFPcueodOeGQznM8L7W3SsxH2
+         YzEw40dqaapjTjz7krIfyLUz0FEgp0u8tQymdgn0kgjKswT/9zjuklKfnobwQCgc9QOl
+         fngd6LUeuFHFRQ0+Z+QMI32RL7ZbLu7+vEIMFkZAEw6kdpV8RoSZDw/Vi5Qz7J1K7CrP
+         +wjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+hYBdQtD1kvHY3itnyV4r/pAOywMq3KjiiJrNDj4dt8=;
+        b=bzmyVNA7aGujNzvW6cCrNpA/sotRmHPFlVHyjaBWu+njDKUdnGhcbdz4helT/PQvnS
+         KNH+Xrfvt/vE86l0BGMT2O+g98SvI3aLHn5RBRNeSeJNxBMD2Wt06EmrZ08Bf0H54ssm
+         Um79p86dvDDOci8yrTrmD70aZ3XHjmJ032bAdtb5uSccON1vDFix8AzHvdzIHECz6XXs
+         oMuU2VUkMns60G+RK4YgPgZdh2RpaROcexHvr+n9ZNOx5NAawl1AcpliktQ0PqaBiP9K
+         fP0VUYoTzQBw+7UjUH8xiC5NV7HGK3CNTa6V1Hr9SdQm8UO4QeyC0Hhj+Jy3mkgHHzJO
+         jk4Q==
+X-Gm-Message-State: AOAM532OYzOcJuiurLSiacc6n026Nb9cR/wmC43GtIIaqzhFO2WjEERn
+        iZvRT7fd0TbWykUK9UzwAJQ=
+X-Google-Smtp-Source: ABdhPJyiJ3JllaWBfhjuuWB1hp0JIHrff1mpxj6hNYsNQxiAPrW2S0YXI3Xl/d9tY+/GbAcRjLaLtQ==
+X-Received: by 2002:adf:a302:: with SMTP id c2mr14251966wrb.212.1615558944564;
+        Fri, 12 Mar 2021 06:22:24 -0800 (PST)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id w6sm8235644wrl.49.2021.03.12.06.22.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 06:22:24 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH] mips: bmips: fix and improve reboot nodes
+Date:   Fri, 12 Mar 2021 15:22:22 +0100
+Message-Id: <20210312142222.29643-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@google.com>
+Commit a23c4134955e added the clock controller nodes, incorrectly changing the
+syscon reboot nodes addresses.
 
-This change adds KASAN-KUnit tests support for the async HW_TAGS mode.
+- Fix syscon reboot nodes addresses (commit a23c4134955e added the clock
+controller nodes, incorrectly changing the syscon reboot nodes addresses).
+- Rename periph_cntl to pll_cntl and timer_cntl to soft_reset (bcm6328).
+- Make syscon-reboot nodes childs of the syscon node, so that we no longer
+need a phandle.
 
-In async mode, tag fault aren't being generated synchronously when a
-bad access happens, but are instead explicitly checked for by the kernel.
-
-As each KASAN-KUnit test expect a fault to happen before the test is over,
-check for faults as a part of the test handler.
-
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Fixes: a23c4134955e ("MIPS: BMIPS: add clock controller nodes")
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- arch/arm64/include/asm/memory.h |  1 +
- lib/test_kasan.c                | 17 +++++++++++------
- mm/kasan/hw_tags.c              |  6 ++++++
- mm/kasan/kasan.h                |  6 ++++++
- mm/kasan/report.c               |  5 +++++
- 5 files changed, 29 insertions(+), 6 deletions(-)
+ arch/mips/boot/dts/brcm/bcm3368.dtsi  | 15 +++++++--------
+ arch/mips/boot/dts/brcm/bcm63268.dtsi | 15 +++++++--------
+ arch/mips/boot/dts/brcm/bcm6328.dtsi  | 15 +++++++--------
+ arch/mips/boot/dts/brcm/bcm6358.dtsi  | 15 +++++++--------
+ arch/mips/boot/dts/brcm/bcm6362.dtsi  | 15 +++++++--------
+ arch/mips/boot/dts/brcm/bcm6368.dtsi  | 15 +++++++--------
+ 6 files changed, 42 insertions(+), 48 deletions(-)
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index 8b0beaedbe1f..b943879c1c24 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -246,6 +246,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
- #define arch_enable_tagging_sync()		mte_enable_kernel_sync()
- #define arch_enable_tagging_async()		mte_enable_kernel_async()
- #define arch_set_tagging_report_once(state)	mte_set_report_once(state)
-+#define arch_force_async_tag_fault()		mte_check_tfsr_exit()
- #define arch_init_tags(max_tag)			mte_init_tags(max_tag)
- #define arch_get_random_tag()			mte_get_random_tag()
- #define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 479c31a5dc21..785e724ce0d8 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -69,10 +69,10 @@ static void kasan_test_exit(struct kunit *test)
-  * resource named "kasan_data". Do not use this name for KUnit resources
-  * outside of KASAN tests.
-  *
-- * For hardware tag-based KASAN, when a tag fault happens, tag checking is
-- * normally auto-disabled. When this happens, this test handler reenables
-- * tag checking. As tag checking can be only disabled or enabled per CPU, this
-- * handler disables migration (preemption).
-+ * For hardware tag-based KASAN in sync mode, when a tag fault happens, tag
-+ * checking is auto-disabled. When this happens, this test handler reenables
-+ * tag checking. As tag checking can be only disabled or enabled per CPU,
-+ * this handler disables migration (preemption).
-  *
-  * Since the compiler doesn't see that the expression can change the fail_data
-  * fields, it can reorder or optimize away the accesses to those fields.
-@@ -80,7 +80,8 @@ static void kasan_test_exit(struct kunit *test)
-  * expression to prevent that.
-  */
- #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
--	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
-+	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
-+	    !kasan_async_mode_enabled())			\
- 		migrate_disable();				\
- 	WRITE_ONCE(fail_data.report_expected, true);		\
- 	WRITE_ONCE(fail_data.report_found, false);		\
-@@ -92,10 +93,14 @@ static void kasan_test_exit(struct kunit *test)
- 	barrier();						\
- 	expression;						\
- 	barrier();						\
-+	if (kasan_async_mode_enabled())				\
-+		kasan_force_async_fault();			\
-+	barrier();						\
- 	KUNIT_EXPECT_EQ(test,					\
- 			READ_ONCE(fail_data.report_expected),	\
- 			READ_ONCE(fail_data.report_found));	\
--	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
-+	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
-+	    !kasan_async_mode_enabled()) {			\
- 		if (READ_ONCE(fail_data.report_found))		\
- 			kasan_enable_tagging_sync();		\
- 		migrate_enable();				\
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index 1df4ce803861..4004388b4e4b 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -252,4 +252,10 @@ void kasan_enable_tagging_sync(void)
- }
- EXPORT_SYMBOL_GPL(kasan_enable_tagging_sync);
+diff --git a/arch/mips/boot/dts/brcm/bcm3368.dtsi b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+index db7e801dad55..8842ce221582 100644
+--- a/arch/mips/boot/dts/brcm/bcm3368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+@@ -60,17 +60,16 @@
+ 			#clock-cells = <1>;
+ 		};
  
-+void kasan_force_async_fault(void)
-+{
-+	hw_force_async_tag_fault();
-+}
-+EXPORT_SYMBOL_GPL(kasan_force_async_fault);
-+
- #endif
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 02957cec1a61..c1581e8a9b8e 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -304,6 +304,9 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #ifndef arch_set_tagging_report_once
- #define arch_set_tagging_report_once(state)
- #endif
-+#ifndef arch_force_async_tag_fault
-+#define arch_force_async_tag_fault()
-+#endif
- #ifndef arch_get_random_tag
- #define arch_get_random_tag()	(0xFF)
- #endif
-@@ -318,6 +321,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
- #define hw_enable_tagging_async()		arch_enable_tagging_async()
- #define hw_init_tags(max_tag)			arch_init_tags(max_tag)
- #define hw_set_tagging_report_once(state)	arch_set_tagging_report_once(state)
-+#define hw_force_async_tag_fault()		arch_force_async_tag_fault()
- #define hw_get_random_tag()			arch_get_random_tag()
- #define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
- #define hw_set_mem_tag_range(addr, size, tag)	arch_set_mem_tag_range((addr), (size), (tag))
-@@ -334,11 +338,13 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+-		periph_cntl: syscon@fff8c008 {
++		pll_cntl: syscon@fff8c008 {
+ 			compatible = "syscon";
+-			reg = <0xfff8c000 0x4>;
++			reg = <0xfff8c008 0x4>;
+ 			native-endian;
+-		};
  
- void kasan_set_tagging_report_once(bool state);
- void kasan_enable_tagging_sync(void);
-+void kasan_force_async_fault(void);
+-		reboot: syscon-reboot@fff8c008 {
+-			compatible = "syscon-reboot";
+-			regmap = <&periph_cntl>;
+-			offset = <0x0>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
  
- #else /* CONFIG_KASAN_HW_TAGS || CONFIG_KASAN_KUNIT_TEST */
+ 		periph_intc: interrupt-controller@fff8c00c {
+diff --git a/arch/mips/boot/dts/brcm/bcm63268.dtsi b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+index 575c9d3eb4c8..fabee40a3bd1 100644
+--- a/arch/mips/boot/dts/brcm/bcm63268.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+@@ -62,17 +62,16 @@
+ 			#clock-cells = <1>;
+ 		};
  
- static inline void kasan_set_tagging_report_once(bool state) { }
- static inline void kasan_enable_tagging_sync(void) { }
-+static inline void kasan_force_async_fault(void) { }
+-		periph_cntl: syscon@10000008 {
++		pll_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+-		};
  
- #endif /* CONFIG_KASAN_HW_TAGS || CONFIG_KASAN_KUNIT_TEST */
+-		reboot: syscon-reboot@10000008 {
+-			compatible = "syscon-reboot";
+-			regmap = <&periph_cntl>;
+-			offset = <0x0>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
  
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 8b0843a2cdd7..14bd51ea2348 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -366,6 +366,11 @@ void kasan_report_async(void)
- {
- 	unsigned long flags;
+ 		periph_rst: reset-controller@10000010 {
+diff --git a/arch/mips/boot/dts/brcm/bcm6328.dtsi b/arch/mips/boot/dts/brcm/bcm6328.dtsi
+index fe93f2692281..393751aa3b0b 100644
+--- a/arch/mips/boot/dts/brcm/bcm6328.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6328.dtsi
+@@ -100,17 +100,16 @@
+ 			status = "disabled";
+ 		};
  
-+#if IS_ENABLED(CONFIG_KUNIT)
-+	if (current->kunit_test)
-+		kasan_update_kunit_status(current->kunit_test);
-+#endif /* IS_ENABLED(CONFIG_KUNIT) */
-+
- 	start_report(&flags);
- 	pr_err("BUG: KASAN: invalid-access\n");
- 	pr_err("Asynchronous mode enabled: no access details available\n");
+-		timer: syscon@10000040 {
++		soft_reset: syscon@10000068 {
+ 			compatible = "syscon";
+-			reg = <0x10000040 0x2c>;
++			reg = <0x10000068 0x4>;
+ 			native-endian;
+-		};
+ 
+-		reboot: syscon-reboot@10000068 {
+-			compatible = "syscon-reboot";
+-			regmap = <&timer>;
+-			offset = <0x28>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
+ 
+ 		leds0: led-controller@10000800 {
+diff --git a/arch/mips/boot/dts/brcm/bcm6358.dtsi b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+index f8753becc164..8c2cb80c5b20 100644
+--- a/arch/mips/boot/dts/brcm/bcm6358.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+@@ -61,17 +61,16 @@
+ 			#clock-cells = <1>;
+ 		};
+ 
+-		periph_cntl: syscon@fffe0008 {
++		pll_cntl: syscon@fffe0008 {
+ 			compatible = "syscon";
+-			reg = <0xfffe0000 0x4>;
++			reg = <0xfffe0008 0x4>;
+ 			native-endian;
+-		};
+ 
+-		reboot: syscon-reboot@fffe0008 {
+-			compatible = "syscon-reboot";
+-			regmap = <&periph_cntl>;
+-			offset = <0x0>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
+ 
+ 		periph_intc: interrupt-controller@fffe000c {
+diff --git a/arch/mips/boot/dts/brcm/bcm6362.dtsi b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+index a2dbbf062cd8..1c42cbc654e4 100644
+--- a/arch/mips/boot/dts/brcm/bcm6362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+@@ -62,17 +62,16 @@
+ 			#clock-cells = <1>;
+ 		};
+ 
+-		periph_cntl: syscon@10000008 {
++		pll_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+-		};
+ 
+-		reboot: syscon-reboot@10000008 {
+-			compatible = "syscon-reboot";
+-			regmap = <&periph_cntl>;
+-			offset = <0x0>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
+ 
+ 		periph_rst: reset-controller@10000010 {
+diff --git a/arch/mips/boot/dts/brcm/bcm6368.dtsi b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+index c4eb4b67ecbd..166dfb54f9aa 100644
+--- a/arch/mips/boot/dts/brcm/bcm6368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+@@ -61,17 +61,16 @@
+ 			#clock-cells = <1>;
+ 		};
+ 
+-		periph_cntl: syscon@100000008 {
++		pll_cntl: syscon@100000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+-		};
+ 
+-		reboot: syscon-reboot@10000008 {
+-			compatible = "syscon-reboot";
+-			regmap = <&periph_cntl>;
+-			offset = <0x0>;
+-			mask = <0x1>;
++			reboot {
++				compatible = "syscon-reboot";
++				offset = <0x0>;
++				mask = <0x1>;
++			};
+ 		};
+ 
+ 		periph_rst: reset-controller@10000010 {
 -- 
-2.30.0
+2.20.1
 
