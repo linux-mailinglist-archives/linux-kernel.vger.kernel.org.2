@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C45F338672
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B0333867C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhCLHOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:14:33 -0500
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:46635 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230117AbhCLHOS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:14:18 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id Kbzxly0zJ4ywlKc01l2HU8; Fri, 12 Mar 2021 08:14:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615533257; bh=6g8+gSQAaWLcIbnVturWejzKHRu+EMHJHcj4Rrs6MQY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=SPjEccPjjcFOym3cQtnOZW1FpGn1QLaa07VmeXZIDSc0hVK1zkF4pupAXgq4FtsMm
-         4nLpLBKGC7/6stTzA+5mLABWcYlkffJFi/t6r8nd895/bTynN8dZ5+hknQdgXi+hjX
-         IRlM759PFNqrHfTSYHWlwvbAiY0mCXsYEKkc4GPmays6XxY65qSOmJO74ME+TbCCn9
-         oVHTP/hPKtujxGi2aDWrBxJKsRxpBY92iZ+6cKlIPbK8HGUYXeOmsRGoouTA9mL/RJ
-         4wRjQHX0iaX6ac7XSa6R67UXXoTwubQJnAUTNezeFvq3rqxShH5z8yBDvSSmJMFQZP
-         Sr8h0rcmI3ajg==
-Subject: Re: [PATCH v2 4/6] media: uvcvideo: set error_idx to count on EACCESS
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org
-References: <20210311221946.1319924-1-ribalda@chromium.org>
- <20210311221946.1319924-5-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <e5860193-a672-96b8-9a40-5f6d77dd4783@xs4all.nl>
-Date:   Fri, 12 Mar 2021 08:14:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S231449AbhCLHUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:20:32 -0500
+Received: from m12-17.163.com ([220.181.12.17]:47236 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231485AbhCLHUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 02:20:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=E1I51
+        7xxvK7g3rGfwB8KIhZ2f7fCT3nY+bZTzzZ3FbM=; b=BiOu+anaQsAwAPlBp9LZ7
+        xeCCYjX8TxUHzzs+WrE52Bb9a2LbU9z1R+fg+qLsFFT1I410tG0IKWpXmt9dnXj6
+        HIf8bock8fp9qnumOImtmQVy98E7CftNMBMd0ZmvOiZomh0DpYIyBXKvKxmOq2+s
+        qCxm0UHtwme/dfKQ7X0YrY=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.52.39])
+        by smtp13 (Coremail) with SMTP id EcCowAAHBo7VFUtg3tQRpg--.3254S2;
+        Fri, 12 Mar 2021 15:18:46 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     tomba@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        sebastian.reichel@collabora.com, laurent.pinchart@ideasonboard.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] drm/omap: dsi: fix unsigned expression compared with zero
+Date:   Fri, 12 Mar 2021 15:14:45 +0800
+Message-Id: <20210312071445.1721-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-In-Reply-To: <20210311221946.1319924-5-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBZzqdDzjyRDk1lRka82kKwyyuO9An12q7n1wGtk+9NL5VC9wGLf2H45S8/y6icaPwcCJufVWHCS0lvDCoUcqROC/1IkAjih+vDOSgtuxV95wk6X25he
- PJ9U4ipe9O5irnjntIxHJy6wgkadOZPgjCSpGVCTeKAD9j+uDMEMApLnwartvHWjauADM8aL9LTJvJ9pv/vpfWvHAf6J4pktJG72medV4ReKv872JvuGQt2m
- I57XOvVYB4B2yp7NWQ+NoFvGIhsJMBkmvteqBDDYdu6w82bQuFR9upsQ3Np9+SbMS4Kqx20t3spGXTMOyVopU0QszDpbWwz6wdjp5Va/5+fm90d0BuGjJiji
- /IycTNS5lenqKiRHK3eyJ5TbPMNGR343nasOW3zSNBzZpDoiLf9A9olssoUQPI7TJYLCI2NF
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAAHBo7VFUtg3tQRpg--.3254S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DCr1fKr4rGr4xtw1UKFg_yoWDCFc_CF
+        1Ivr13WrWUCF9rZr4ayay7Zry09F1SvFWrWr12qa4fA3yaqr9rJ3srCFyxXw1DCF4UtF95
+        G3WDur1fZan7GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0j0P7UUUUU==
+X-Originating-IP: [119.137.52.39]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiKxZTI1QHWs6ysAAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/03/2021 23:19, Ricardo Ribalda wrote:
-> According to the doc:
-> The, in hindsight quite poor, solution for that is to set error_idx to
-> count if the validation failed.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-I think this needs a bit more explanation. How about this:
+r is "u32" always >= 0,mipi_dsi_create_packet may return little than zero.
+so r < 0 condition is never accessible.
 
-"If an error is found when validating the list of controls passed with
-VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to indicate
-to userspace that no actual hardware was touched.
+Fixes coccicheck warnings:
+./drivers/gpu/drm/omapdrm/dss/dsi.c:2155:5-6:
+WARNING: Unsigned expression compared with zero: r < 0
 
-It would have been much nicer of course if error_idx could point to the
-control index that failed the validation, but sadly that's not how the
-API was designed."
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> 
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
->                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+index 8e11612..b31d750 100644
+--- a/drivers/gpu/drm/omapdrm/dss/dsi.c
++++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+@@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
+ 			     const struct mipi_dsi_msg *msg)
+ {
+ 	struct mipi_dsi_packet pkt;
++	int ret;
+ 	u32 r;
+ 
+-	r = mipi_dsi_create_packet(&pkt, msg);
+-	if (r < 0)
+-		return r;
++	ret = mipi_dsi_create_packet(&pkt, msg);
++	if (ret < 0)
++		return ret;
+ 
+ 	WARN_ON(!dsi_bus_is_locked(dsi));
+ 
+-- 
+1.9.1
 
-After improving the commit log you can add my:
-
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-Thanks!
-
-	Hans
-
-> ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 157310c0ca87..36eb48622d48 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1073,7 +1073,8 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
->  		ret = uvc_ctrl_get(chain, ctrl);
->  		if (ret < 0) {
->  			uvc_ctrl_rollback(handle);
-> -			ctrls->error_idx = i;
-> +			ctrls->error_idx = (ret == -EACCES) ?
-> +						ctrls->count : i;
->  			return ret;
->  		}
->  	}
-> 
 
