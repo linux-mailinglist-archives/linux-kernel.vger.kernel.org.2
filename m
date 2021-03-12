@@ -2,346 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EDB339740
+	by mail.lfdr.de (Postfix) with ESMTP id A7528339741
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234213AbhCLTPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:15:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50476 "EHLO
+        id S234248AbhCLTPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:15:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41837 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234085AbhCLTPX (ORCPT
+        by vger.kernel.org with ESMTP id S234105AbhCLTPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:15:23 -0500
+        Fri, 12 Mar 2021 14:15:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615576523;
+        s=mimecast20190719; t=1615576534;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=eV3inN1Ndh4Z4G2N3kLWtn0YeS/0t7EXTWRnvAiSTME=;
-        b=FvOdgbVNpRQlztxM2GwmsJdAIh17VikSw+Mm+bpPGKysxOaWCwW0GaQUBawRtYy0D8yTXA
-        QXXsjtKiPUGyZgg62ZPoVddcMfYmtn3OVCDvvJDp0dKpncaztlKJMMD3pDakC5TJ8YsUpq
-        Ip9ZtvLVJFkPo9DzpmEHwl/ZAfWsjNA=
+        bh=l81isJ/JzaYrzKWato7Fh4pS+w4Lv/n2lhw8isgH4q4=;
+        b=I5f2sfr+iOXaObRiFfGY4Q+tPZT2IGkinsaU69KrOh5w9OrBymOJ5eVV116qubvX6ZJVPf
+        1qT0rmiQFTFv22WPVuASicuKAUBH9IkzfvC0dnJYDVZPDvyfsMkIkCDeAFgrU9bygiGxC0
+        9O0O01HTilIZgI6w+fkFjOZGbq/9OL4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-S5mn--yoMy2e4vI_mKnhuw-1; Fri, 12 Mar 2021 14:15:19 -0500
-X-MC-Unique: S5mn--yoMy2e4vI_mKnhuw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-408-xz-Sqy0qMeKacDd8ozTofA-1; Fri, 12 Mar 2021 14:15:30 -0500
+X-MC-Unique: xz-Sqy0qMeKacDd8ozTofA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2E3F100C61B;
-        Fri, 12 Mar 2021 19:15:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E153B800D55;
+        Fri, 12 Mar 2021 19:15:28 +0000 (UTC)
 Received: from krava (unknown [10.40.192.54])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AE2A85D9CC;
-        Fri, 12 Mar 2021 19:15:15 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 20:15:14 +0100
+        by smtp.corp.redhat.com (Postfix) with SMTP id DA01660636;
+        Fri, 12 Mar 2021 19:15:26 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 20:15:25 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Jin Yao <yao.jin@linux.intel.com>
 Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com,
         Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2 07/27] perf evlist: Hybrid event uses its own cpus
-Message-ID: <YEu9wl4FcF+AoRTy@krava>
+Subject: Re: [PATCH v2 09/27] perf parse-events: Create two hybrid hardware
+ events
+Message-ID: <YEu9zbr75p+OLY2o@krava>
 References: <20210311070742.9318-1-yao.jin@linux.intel.com>
- <20210311070742.9318-8-yao.jin@linux.intel.com>
+ <20210311070742.9318-10-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311070742.9318-8-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210311070742.9318-10-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 03:07:22PM +0800, Jin Yao wrote:
-> On hybrid platform, atom events can be only enabled on atom CPUs. Core
-> events can be only enabled on core CPUs. So for a hybrid event, it can
-> be only enabled on it's own CPUs.
-> 
-> But the problem for current perf is, the cpus for evsel (via PMU sysfs)
-> have been merged to evsel_list->core.all_cpus. It might be all CPUs.
-> 
-> So we need to figure out one way to let the hybrid event only use it's
-> own CPUs.
-> 
-> The idea is to create a new evlist__invalidate_all_cpus to invalidate
-> the evsel_list->core.all_cpus then evlist__for_each_cpu returns cpu -1
-> for hybrid evsel. If cpu is -1, hybrid evsel will use it's own cpus.
+On Thu, Mar 11, 2021 at 03:07:24PM +0800, Jin Yao wrote:
 
-that's wild.. I don't understand when you say we don't have
-cpus for evsel, because they have been merged.. each evsel
-has evsel->core.own_cpus coming from pmu->cpus, right?
+SNIP
 
-why can't you just filter out cpus that are in there?
+>   cycles: 4: 800933425 1002536659 1002536659
+>   cycles: 5: 800928573 1002528386 1002528386
+>   cycles: 6: 800924347 1002520527 1002520527
+>   cycles: 7: 800922009 1002513176 1002513176
+>   cycles: 8: 800919624 1002507326 1002507326
+>   cycles: 9: 800917204 1002500663 1002500663
+>   cycles: 10: 802096579 1002494280 1002494280
+>   cycles: 11: 802093770 1002486404 1002486404
+>   cycles: 12: 803284338 1002479491 1002479491
+>   cycles: 13: 803277609 1002469777 1002469777
+>   cycles: 14: 800875902 1002458861 1002458861
+>   cycles: 15: 800873241 1002451350 1002451350
+>   cycles: 0: 800837379 1002444645 1002444645
+>   cycles: 1: 800833400 1002438505 1002438505
+>   cycles: 2: 800829291 1002433698 1002433698
+>   cycles: 3: 800824390 1002427584 1002427584
+>   cycles: 4: 800819360 1002422099 1002422099
+>   cycles: 5: 800814787 1002415845 1002415845
+>   cycles: 6: 800810125 1002410301 1002410301
+>   cycles: 7: 800791893 1002386845 1002386845
+>   cycles: 12855737722 16040169029 16040169029
+>   cycles: 6406560625 8019379522 8019379522
+> 
+>    Performance counter stats for 'system wide':
+> 
+>       12,855,737,722      cpu_core/cycles/
+>        6,406,560,625      cpu_atom/cycles/
+
+so we do that no_merge stuff for uncore pmus, why can't we do
+that in here? that'd seems like generic way
 
 jirka
-
-> 
-> We will see following code piece in patch.
-> 
-> if (cpu == -1 && !evlist->thread_mode)
->         evsel__enable_cpus(pos);
-> 
-> It lets the event be enabled on event's own cpus.
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  tools/perf/builtin-stat.c          | 37 ++++++++++++++-
->  tools/perf/util/evlist.c           | 72 ++++++++++++++++++++++++++++--
->  tools/perf/util/evlist.h           |  4 ++
->  tools/perf/util/evsel.h            |  8 ++++
->  tools/perf/util/python-ext-sources |  2 +
->  5 files changed, 117 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 2e2e4a8345ea..68ecf68699a9 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -393,6 +393,18 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu)
->  	return 0;
->  }
->  
-> +static int read_counter_cpus(struct evsel *counter, struct timespec *rs)
-> +{
-> +	int cpu, nr_cpus, err = 0;
-> +	struct perf_cpu_map *cpus = evsel__cpus(counter);
-> +
-> +	nr_cpus = cpus ? cpus->nr : 1;
-> +	for (cpu = 0; cpu < nr_cpus; cpu++)
-> +		err = read_counter_cpu(counter, rs, cpu);
-> +
-> +	return err;
-> +}
-> +
->  static int read_affinity_counters(struct timespec *rs)
->  {
->  	struct evsel *counter;
-> @@ -414,8 +426,14 @@ static int read_affinity_counters(struct timespec *rs)
->  			if (evsel__cpu_iter_skip(counter, cpu))
->  				continue;
->  			if (!counter->err) {
-> -				counter->err = read_counter_cpu(counter, rs,
-> -								counter->cpu_iter - 1);
-> +				if (cpu == -1 && !evsel_list->thread_mode) {
-> +					counter->err = read_counter_cpus(counter, rs);
-> +				} else if (evsel_list->thread_mode) {
-> +					counter->err = read_counter_cpu(counter, rs, 0);
-> +				} else {
-> +					counter->err = read_counter_cpu(counter, rs,
-> +									counter->cpu_iter - 1);
-> +				}
->  			}
->  		}
->  	}
-> @@ -781,6 +799,21 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
->  	if (group)
->  		evlist__set_leader(evsel_list);
->  
-> +	/*
-> +	 * On hybrid platform, the cpus for evsel (via PMU sysfs) have been
-> +	 * merged to evsel_list->core.all_cpus. We use evlist__invalidate_all_cpus
-> +	 * to invalidate the evsel_list->core.all_cpus then evlist__for_each_cpu
-> +	 * returns cpu -1 for hybrid evsel. If cpu is -1, hybrid evsel will
-> +	 * use it's own cpus.
-> +	 */
-> +	if (evlist__has_hybrid_events(evsel_list)) {
-> +		evlist__invalidate_all_cpus(evsel_list);
-> +		if (!target__has_cpu(&target) ||
-> +		    target__has_per_thread(&target)) {
-> +			evsel_list->thread_mode = true;
-> +		}
-> +	}
-> +
->  	if (affinity__setup(&affinity) < 0)
->  		return -1;
->  
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 882cd1f721d9..3ee12fcd0c9f 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -381,7 +381,8 @@ bool evsel__cpu_iter_skip_no_inc(struct evsel *ev, int cpu)
->  bool evsel__cpu_iter_skip(struct evsel *ev, int cpu)
->  {
->  	if (!evsel__cpu_iter_skip_no_inc(ev, cpu)) {
-> -		ev->cpu_iter++;
-> +		if (cpu != -1)
-> +			ev->cpu_iter++;
->  		return false;
->  	}
->  	return true;
-> @@ -410,6 +411,16 @@ static int evlist__is_enabled(struct evlist *evlist)
->  	return false;
->  }
->  
-> +static void evsel__disable_cpus(struct evsel *evsel)
-> +{
-> +	int cpu, nr_cpus;
-> +	struct perf_cpu_map *cpus = evsel__cpus(evsel);
-> +
-> +	nr_cpus = cpus ? cpus->nr : 1;
-> +	for (cpu = 0; cpu < nr_cpus; cpu++)
-> +		evsel__disable_cpu(evsel, cpu);
-> +}
-> +
->  static void __evlist__disable(struct evlist *evlist, char *evsel_name)
->  {
->  	struct evsel *pos;
-> @@ -436,7 +447,12 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
->  					has_imm = true;
->  				if (pos->immediate != imm)
->  					continue;
-> -				evsel__disable_cpu(pos, pos->cpu_iter - 1);
-> +				if (cpu == -1 && !evlist->thread_mode)
-> +					evsel__disable_cpus(pos);
-> +				else if (evlist->thread_mode)
-> +					evsel__disable_cpu(pos, 0);
-> +				else
-> +					evsel__disable_cpu(pos, pos->cpu_iter - 1);
->  			}
->  		}
->  		if (!has_imm)
-> @@ -472,6 +488,15 @@ void evlist__disable_evsel(struct evlist *evlist, char *evsel_name)
->  	__evlist__disable(evlist, evsel_name);
->  }
->  
-> +static void evsel__enable_cpus(struct evsel *evsel)
-> +{
-> +	int cpu, nr_cpus;
-> +	struct perf_cpu_map *cpus = evsel__cpus(evsel);
-> +
-> +	nr_cpus = cpus ? cpus->nr : 1;
-> +	for (cpu = 0; cpu < nr_cpus; cpu++)
-> +		evsel__enable_cpu(evsel, cpu);
-> +}
->  static void __evlist__enable(struct evlist *evlist, char *evsel_name)
->  {
->  	struct evsel *pos;
-> @@ -491,7 +516,12 @@ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
->  				continue;
->  			if (!evsel__is_group_leader(pos) || !pos->core.fd)
->  				continue;
-> -			evsel__enable_cpu(pos, pos->cpu_iter - 1);
-> +                        if (cpu == -1 && !evlist->thread_mode)
-> +                                evsel__enable_cpus(pos);
-> +                        else if (evlist->thread_mode)
-> +                                evsel__enable_cpu(pos, 0);
-> +                        else
-> +                                evsel__enable_cpu(pos, pos->cpu_iter - 1);
->  		}
->  	}
->  	affinity__cleanup(&affinity);
-> @@ -1274,6 +1304,16 @@ void evlist__set_selected(struct evlist *evlist, struct evsel *evsel)
->  	evlist->selected = evsel;
->  }
->  
-> +static void evsel__close_cpus(struct evsel *evsel)
-> +{
-> +	int cpu, nr_cpus;
-> +	struct perf_cpu_map *cpus = evsel__cpus(evsel);
-> +
-> +	nr_cpus = cpus ? cpus->nr : 1;
-> +	for (cpu = 0; cpu < nr_cpus; cpu++)
-> +		perf_evsel__close_cpu(&evsel->core, cpu);
-> +}
-> +
->  void evlist__close(struct evlist *evlist)
->  {
->  	struct evsel *evsel;
-> @@ -1298,7 +1338,13 @@ void evlist__close(struct evlist *evlist)
->  		evlist__for_each_entry_reverse(evlist, evsel) {
->  			if (evsel__cpu_iter_skip(evsel, cpu))
->  			    continue;
-> -			perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
-> +
-> +			if (cpu == -1 && !evlist->thread_mode)
-> +				evsel__close_cpus(evsel);
-> +			else if (evlist->thread_mode)
-> +				perf_evsel__close_cpu(&evsel->core, 0);
-> +			else
-> +				perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
->  		}
->  	}
->  	affinity__cleanup(&affinity);
-> @@ -2130,3 +2176,21 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
->  	}
->  	return NULL;
->  }
-> +
-> +bool evlist__has_hybrid_events(struct evlist *evlist)
-> +{
-> +	struct evsel *evsel;
-> +
-> +	evlist__for_each_entry(evlist, evsel) {
-> +		if (evsel__is_hybrid_event(evsel))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +void evlist__invalidate_all_cpus(struct evlist *evlist)
-> +{
-> +	perf_cpu_map__put(evlist->core.all_cpus);
-> +	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
-> +}
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index b695ffaae519..0da683511d98 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -52,6 +52,7 @@ struct evlist {
->  	struct perf_evlist core;
->  	int		 nr_groups;
->  	bool		 enabled;
-> +	bool		 thread_mode;
->  	int		 id_pos;
->  	int		 is_pos;
->  	u64		 combined_sample_type;
-> @@ -365,4 +366,7 @@ int evlist__ctlfd_ack(struct evlist *evlist);
->  #define EVLIST_DISABLED_MSG "Events disabled\n"
->  
->  struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
-> +void evlist__invalidate_all_cpus(struct evlist *evlist);
-> +
-> +bool evlist__has_hybrid_events(struct evlist *evlist);
->  #endif /* __PERF_EVLIST_H */
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 6026487353dd..69aadc52c1bd 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -7,9 +7,11 @@
->  #include <sys/types.h>
->  #include <linux/perf_event.h>
->  #include <linux/types.h>
-> +#include <string.h>
->  #include <internal/evsel.h>
->  #include <perf/evsel.h>
->  #include "symbol_conf.h"
-> +#include "pmu-hybrid.h"
->  #include <internal/cpumap.h>
->  
->  struct bpf_object;
-> @@ -435,4 +437,10 @@ struct perf_env *evsel__env(struct evsel *evsel);
->  int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
->  
->  void evsel__zero_per_pkg(struct evsel *evsel);
-> +
-> +static inline bool evsel__is_hybrid_event(struct evsel *evsel)
-> +{
-> +	return evsel->pmu_name && perf_pmu__is_hybrid(evsel->pmu_name);
-> +}
-> +
->  #endif /* __PERF_EVSEL_H */
-> diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
-> index 845dd46e3c61..d7c976671e3a 100644
-> --- a/tools/perf/util/python-ext-sources
-> +++ b/tools/perf/util/python-ext-sources
-> @@ -37,3 +37,5 @@ util/units.c
->  util/affinity.c
->  util/rwsem.c
->  util/hashmap.c
-> +util/pmu-hybrid.c
-> +util/fncache.c
-> -- 
-> 2.17.1
-> 
 
