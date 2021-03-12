@@ -2,223 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E778339717
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99A733971E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhCLTGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:06:34 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:44189 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234101AbhCLTGG (ORCPT
+        id S234161AbhCLTHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:07:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48217 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234158AbhCLTGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:06:06 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1A94F2224F;
-        Fri, 12 Mar 2021 20:06:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615575965;
+        Fri, 12 Mar 2021 14:06:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615576007;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=54WT5odVgY6G1Iibvufmnv/spHyjf85yc0gFnkvJHTs=;
-        b=kfTeiVrDdViU1Arw0rzLvj6wrF5QynbJpS5rxIguvGAUHrXtMocNsXGfyKmfGFCfJo1V7Q
-        svVGpLsksXSFnpuDwTdxgpDtUOghII5mWKK21IunUgoQR635FfOlXUMoW7l7aS+C6RjTeE
-        FyTI8Uxh7MrS7/BXdQhwLOIhBR9FN5s=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH 3/3] mtd: spi-nor: add sysfs and SFDP support
-Date:   Fri, 12 Mar 2021 20:05:48 +0100
-Message-Id: <20210312190548.6954-4-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210312190548.6954-1-michael@walle.cc>
-References: <20210312190548.6954-1-michael@walle.cc>
+        bh=pWyz36koqRQcLJypWgN3Jo6QKc24/Z5WKte5SZjr3Xs=;
+        b=KADNAK9QXxQMVHsCVspxDWKrEdtR9na6Tz5vx0nyRUiLeJSILuwdqaNf0Mm8FrKprIx8ix
+        1xSH6tZMhB88XdMrJAzGsfxUJDFzGsghD7X1TL58TkTO445/86LzxhpSNb27L8zhdDmCMP
+        zn+6PrV5RJm6rWTKqRpQIVVGUYbPwHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-OmSAVjrKPZ61QqTHc0WCxA-1; Fri, 12 Mar 2021 14:06:44 -0500
+X-MC-Unique: OmSAVjrKPZ61QqTHc0WCxA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DD55101872B;
+        Fri, 12 Mar 2021 19:06:42 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 497E660C9B;
+        Fri, 12 Mar 2021 19:06:42 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 14:06:41 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        pavel.tide@veeam.com
+Subject: Re: [PATCH v7 1/3] block: add blk_mq_is_queue_frozen()
+Message-ID: <20210312190641.GA2550@redhat.com>
+References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
+ <1615563895-28565-2-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615563895-28565-2-git-send-email-sergei.shtepa@veeam.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to dump the SFDP table. Not all flashes list their SFDP
-table contents in their datasheet. So having that is useful. It might
-also be helpful in bug reports from users.
+On Fri, Mar 12 2021 at 10:44am -0500,
+Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-The idea behind the sysfs module is also to have raw access to the SPI
-NOR flash device registers, which can also be useful for debugging.
+> blk_mq_is_queue_frozen() allow to assert that the queue is frozen.
+> 
+> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> ---
+>  block/blk-mq.c         | 13 +++++++++++++
+>  include/linux/blk-mq.h |  1 +
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index d4d7c1caa439..2f188a865024 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -161,6 +161,19 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+>  }
+>  EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
+>  
+> +bool blk_mq_is_queue_frozen(struct request_queue *q)
+> +{
+> +	bool frozen;
+> +
+> +	mutex_lock(&q->mq_freeze_lock);
+> +	frozen = percpu_ref_is_dying(&q->q_usage_counter) &&
+> +		 percpu_ref_is_zero(&q->q_usage_counter);
+> +	mutex_unlock(&q->mq_freeze_lock);
+> +
+> +	return frozen;
+> +}
+> +EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
+> +
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/Makefile |  2 +-
- drivers/mtd/spi-nor/core.c   |  5 +++
- drivers/mtd/spi-nor/core.h   |  3 ++
- drivers/mtd/spi-nor/sfdp.c   |  4 +-
- drivers/mtd/spi-nor/sfdp.h   |  2 +
- drivers/mtd/spi-nor/sysfs.c  | 73 ++++++++++++++++++++++++++++++++++++
- 6 files changed, 86 insertions(+), 3 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/sysfs.c
+This is returning a frozen state that is immediately stale.  I don't
+think any code calling this is providing the guarantees you think it
+does due to the racey nature of this state once the mutex is dropped.
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 653923896205..aff308f75987 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--spi-nor-objs			:= core.o sfdp.o
-+spi-nor-objs			:= core.o sfdp.o sysfs.o
- spi-nor-objs			+= atmel.o
- spi-nor-objs			+= catalyst.o
- spi-nor-objs			+= eon.o
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4a315cb1c4db..2eaf4ba8c0f3 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 	if (ret)
- 		return ret;
- 
-+	ret = spi_nor_sysfs_create(nor);
-+	if (ret)
-+		return ret;
-+
- 	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
- 				   data ? data->nr_parts : 0);
- }
-@@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
- 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
- 
- 	spi_nor_restore(nor);
-+	spi_nor_sysfs_remove(nor);
- 
- 	/* Clean up MTD stuff. */
- 	return mtd_device_unregister(&nor->mtd);
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 4a3f7f150b5d..43c0d6eaf679 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -478,4 +478,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
- 	return mtd->priv;
- }
- 
-+int spi_nor_sysfs_create(struct spi_nor *nor);
-+void spi_nor_sysfs_remove(struct spi_nor *nor);
-+
- #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 47634ec9b899..62e58f14c197 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -219,8 +219,8 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
-  * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
-  *          otherwise.
-  */
--static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
--					size_t len, void *buf)
-+int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
-+				 size_t len, void *buf)
- {
- 	void *dma_safe_buf;
- 	int ret;
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index 89152ae1cf3e..11ce208e0cd7 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -109,5 +109,7 @@ struct sfdp_parameter_header {
- 
- int spi_nor_parse_sfdp(struct spi_nor *nor,
- 		       struct spi_nor_flash_parameter *params);
-+int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
-+				 size_t len, void *buf);
- 
- #endif /* __LINUX_MTD_SFDP_H */
-diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-new file mode 100644
-index 000000000000..53641f964a2c
---- /dev/null
-+++ b/drivers/mtd/spi-nor/sysfs.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+#include <linux/sysfs.h>
-+
-+#include "core.h"
-+
-+static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-+			 struct bin_attribute *bin_attr, char *buf,
-+			 loff_t off, size_t count)
-+{
-+	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+	int ret;
-+
-+	ret = spi_nor_lock_and_prep(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (off >= nor->sfdp_size) {
-+		ret = 0;
-+	} else {
-+		if (off + count > nor->sfdp_size)
-+			count = nor->sfdp_size - off;
-+
-+		ret = spi_nor_read_sfdp_dma_unsafe(nor, off, count, buf);
-+		if (ret < 0)
-+			ret = -EIO;
-+		else
-+			ret = count;
-+	}
-+
-+	spi_nor_unlock_and_unprep(nor);
-+	return ret;
-+}
-+static BIN_ATTR_RO(sfdp, PAGE_SIZE);
-+
-+static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-+	&bin_attr_sfdp,
-+	NULL
-+};
-+
-+static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-+					    struct bin_attribute *attr, int n)
-+{
-+	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-+	struct spi_mem *spimem = spi_get_drvdata(spi);
-+	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+
-+	if (attr == &bin_attr_sfdp && !nor->sfdp_size)
-+		return 0;
-+
-+	return 0400;
-+}
-+
-+static struct attribute_group spi_nor_sysfs_attr_group = {
-+	.name		= NULL,
-+	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-+	.bin_attrs	= spi_nor_sysfs_bin_entries,
-+};
-+
-+int spi_nor_sysfs_create(struct spi_nor *nor)
-+{
-+	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-+}
-+
-+void spi_nor_sysfs_remove(struct spi_nor *nor)
-+{
-+	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-+}
--- 
-2.20.1
+>  /*
+>   * Guarantee no request is in use, so we can change any data structure of
+>   * the queue afterward.
+> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+> index 2c473c9b8990..6f01971abf7b 100644
+> --- a/include/linux/blk-mq.h
+> +++ b/include/linux/blk-mq.h
+> @@ -533,6 +533,7 @@ void blk_freeze_queue_start(struct request_queue *q);
+>  void blk_mq_freeze_queue_wait(struct request_queue *q);
+>  int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+>  				     unsigned long timeout);
+> +bool blk_mq_is_queue_frozen(struct request_queue *q);
+>  
+>  int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
+>  void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
+> -- 
+> 2.20.1
+> 
 
