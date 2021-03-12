@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E46338F12
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBFA338F18
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhCLNpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:45:52 -0500
-Received: from mga01.intel.com ([192.55.52.88]:13994 "EHLO mga01.intel.com"
+        id S230302AbhCLNsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:48:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231480AbhCLNp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:45:28 -0500
-IronPort-SDR: cGQVmiEC65wWGDQmF5+hvx1UJHPJFJBy0tlUHUYu8BRY+WT6D7osQY13b/ceVZXVQUsNI9/T9Y
- o3YWk3qG0Qhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="208673583"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="208673583"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:45:28 -0800
-IronPort-SDR: qvicjCZFuC+TVHHYZ4UJjxkWE+27T7+tBM7cLe1Q/cBlV+N0SPQlFSdUNETaGpHhp1uRFX4W8p
- pbPLITgikNqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="510330665"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Mar 2021 05:45:27 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 0D1F12AF; Fri, 12 Mar 2021 15:45:39 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: [PATCH v1 1/1] iio: imu: fxos8700: Drop unneeded explicit castings
-Date:   Fri, 12 Mar 2021 15:45:38 +0200
-Message-Id: <20210312134538.3759-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S230491AbhCLNr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:47:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD9264F77;
+        Fri, 12 Mar 2021 13:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615556876;
+        bh=sOBXKqeGO4Nq6TKstq0SbVu8mp+HGsMEGseeBq3jg/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QfmMSgY+xABbFrE8pXva2Z+2KoRJjF8hUO0QbnHV52jRHwqqsqBu7djvhyP1BlRy0
+         as1td4ujPDB/8qz9pur2Fp2gmJbCC7Oz2veyQS1ykZQZMlnPnJi7PtAiSo8nXYavRX
+         yzuipZUC87gUAfVZHNpqfBWdfSfBaytYgKO8hm3c+5aVI+6MjyfN+nPPIdwJikV9Nv
+         Mev3vtRCjtt9qRqWV81f0qU07Ikik8s7PmqvrTtv4R0n24H+5LZcjhxjDrFXleVGUq
+         gQohoQEfK/Byb0jI2I6oti8E92QWZBLs94uC2h4xdCvzg4H9boCjjP/z4QfVAJVGa8
+         CBKSkeQC21f8A==
+Date:   Fri, 12 Mar 2021 13:46:42 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+Message-ID: <20210312134642.GF5348@sirena.org.uk>
+References: <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <20210311161558.GG4962@sirena.org.uk>
+ <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+ <20210312113544.GB5348@sirena.org.uk>
+ <6ed28bb5330879b1919aced5174f319f@walle.cc>
+ <20210312120456.GD5348@sirena.org.uk>
+ <684332700f8be9f77348a510eb6eba22@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p8PhoBjPxaQXD0vg"
+Content-Disposition: inline
+In-Reply-To: <684332700f8be9f77348a510eb6eba22@walle.cc>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a few places the unnecessary explicit castings are being used.
-Drop them for good.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/imu/fxos8700_i2c.c | 3 +--
- drivers/iio/imu/fxos8700_spi.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+--p8PhoBjPxaQXD0vg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/iio/imu/fxos8700_i2c.c b/drivers/iio/imu/fxos8700_i2c.c
-index 3ceb76366313..40a570325b0a 100644
---- a/drivers/iio/imu/fxos8700_i2c.c
-+++ b/drivers/iio/imu/fxos8700_i2c.c
-@@ -26,8 +26,7 @@ static int fxos8700_i2c_probe(struct i2c_client *client,
- 
- 	regmap = devm_regmap_init_i2c(client, &fxos8700_regmap_config);
- 	if (IS_ERR(regmap)) {
--		dev_err(&client->dev, "Failed to register i2c regmap %d\n",
--			(int)PTR_ERR(regmap));
-+		dev_err(&client->dev, "Failed to register i2c regmap %ld\n", PTR_ERR(regmap));
- 		return PTR_ERR(regmap);
- 	}
- 
-diff --git a/drivers/iio/imu/fxos8700_spi.c b/drivers/iio/imu/fxos8700_spi.c
-index 57e7bb6444e7..27e694cce173 100644
---- a/drivers/iio/imu/fxos8700_spi.c
-+++ b/drivers/iio/imu/fxos8700_spi.c
-@@ -17,8 +17,7 @@ static int fxos8700_spi_probe(struct spi_device *spi)
- 
- 	regmap = devm_regmap_init_spi(spi, &fxos8700_regmap_config);
- 	if (IS_ERR(regmap)) {
--		dev_err(&spi->dev, "Failed to register spi regmap %d\n",
--			(int)PTR_ERR(regmap));
-+		dev_err(&spi->dev, "Failed to register spi regmap %ld\n", PTR_ERR(regmap));
- 		return PTR_ERR(regmap);
- 	}
- 
--- 
-2.30.1
+On Fri, Mar 12, 2021 at 01:30:02PM +0100, Michael Walle wrote:
 
+> The card calls set_sysclk(), which eventually ends up in the codec.
+> The codec therefore, could figure out if it needs to configure the
+> clock or if it can use its internal FLL.
+> Is that what you mean?
+
+Yes.
+
+> But the set_sysclk() of the codec isn't even called, because the
+> card itself already tries to call clk_set_rate() on the Codec's MCLK,
+> which returns with an error [0].
+
+OK, so I think we need to push this down a level so that the clock
+setting is implemented by the core/CODEC rather than by simple-card,
+with the helpers being something the CODEC can opt out of.
+
+--p8PhoBjPxaQXD0vg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLcMEACgkQJNaLcl1U
+h9Dpnwf+Ma+xUvei/ETOcavme1+SPoDJipBJaYbklI5qB5IzBS+8YxBxZpncxWkY
+6iuXFmnDpDu8X7u800I+d19Qu/DgQDDdLgq7zPV+NFZKGCscO21J4h3LF3xWk72f
+bV2rNk5tqpGg/gYw/3eyZFr9UubaP63Ubr0iEVtxMe9zEicsmVvwLrhWxgrVsjAw
+HEkX6CWSrVMdgSilAAYIUDb1usJFCd5hcyVr5zP5vOtpOnugFoV9GLd7vuT1otiV
+9LCai/C2xwF+dscvm3PlXi4+acWmS1SorHpaRRZ1w6W8CH1HZp+mWGdfTUDhz+ei
+0k5p1ojMOw4U8Yv+ZpbfnY4fvjxsUw==
+=6MCd
+-----END PGP SIGNATURE-----
+
+--p8PhoBjPxaQXD0vg--
