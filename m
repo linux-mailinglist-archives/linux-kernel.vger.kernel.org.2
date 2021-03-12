@@ -2,102 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7DE339492
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6544A339494
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 18:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhCLRTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 12:19:44 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:35891 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbhCLRT3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:19:29 -0500
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 12CHJ0Fr003425;
-        Sat, 13 Mar 2021 02:19:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 12CHJ0Fr003425
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615569541;
-        bh=GozglGRmJ4MmfZBSlP11BHzsPKe31X7+unemMC3S8jQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ckIYs/z2fF6DrYfZVam098tADF4n+CXsg8qIgRlrZV1tI5jftkOwC+n3+NLoRvDRE
-         +s/RmwUvwsHuwkxQEUojAwLlCKOnWnJbIuzp2UT1Q9Sg/+spJPHNG+k8MnjE8WH8QC
-         37hscqGvaexPinH5ntodV8zpiZz4xQBipmEwFfrnoxurmmqqeYZ9WoMsPJ3KqGsojt
-         Ga2F/2nONaMr98uFcC8ZhZPzWDg4A1199dd2hbeeCUUJMG6QRW08FmwetBl3ipdWiy
-         wg+vehhZVMOMAhOmaNLusNcTv8DzVtcLit1wXBHQkUawB7KvN0x7y2bymVw43zrDAQ
-         pWakjHsrE6ICQ==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so11377617pjb.0;
-        Fri, 12 Mar 2021 09:19:01 -0800 (PST)
-X-Gm-Message-State: AOAM5316MxNnTXVAo1/1i7OptbsCxogJ6whnXPc61hiW4iZKnsQu91VN
-        3LxU3J9qSEriq+c9CP5mioITo5QoL59Tik+jjrA=
-X-Google-Smtp-Source: ABdhPJx4kjKatvvX3YUK1AwXdNBNH+gIfE6Nz6EskjoF+x7wQaAkgMc+r8DF8Op0JCR2ruQXf1fspCsaR8ljEbfDrp0=
-X-Received: by 2002:a17:90a:fb54:: with SMTP id iq20mr10676742pjb.153.1615569540243;
- Fri, 12 Mar 2021 09:19:00 -0800 (PST)
+        id S232398AbhCLRUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 12:20:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:57724 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232850AbhCLRT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:19:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F89A1FB;
+        Fri, 12 Mar 2021 09:19:58 -0800 (PST)
+Received: from [10.57.17.106] (unknown [10.57.17.106])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 285753F7D7;
+        Fri, 12 Mar 2021 09:19:56 -0800 (PST)
+Subject: Re: [PATCH v2 5/5] thermal/drivers/cpufreq_cooling: Remove unused
+ list
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+ <20210312170316.3138-5-daniel.lezcano@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <04b7fa9e-f67d-d1d8-99a2-0548f55f1858@arm.com>
+Date:   Fri, 12 Mar 2021 17:19:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210303183333.46543-1-masahiroy@kernel.org> <20210303183333.46543-4-masahiroy@kernel.org>
- <CAKwvOdmNKKpZY38=ayM3NfU5K_27P_CqkKtLx7CbRw6_mFuxPA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmNKKpZY38=ayM3NfU5K_27P_CqkKtLx7CbRw6_mFuxPA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 13 Mar 2021 02:18:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASBQ-WOWLgLCWa1Qb74PU_HrU1jk=SeRwH+XoT_NF93AA@mail.gmail.com>
-Message-ID: <CAK7LNASBQ-WOWLgLCWa1Qb74PU_HrU1jk=SeRwH+XoT_NF93AA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] kbuild: dwarf: use AS_VERSION instead of test_dwarf5_support.sh
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210312170316.3138-5-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 5:44 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > The test code in scripts/test_dwarf5_support.sh is somewhat difficult
-> > to understand, but after all, we want to check binutils >= 2.35.2
-> >
-> > From the former discussion, the requrement for generating DRAWF v5 from
->
-> ^typos: s/requrement/requirement, s/DRAWF/DWARF
->
-> (in vim you can `:set spell` (`:set nospell` to disable), there's
-> probably a nice way to auto set this on buffer entry for a commit
-> message)
 
 
-I cannot be accustomed to vim.
+On 3/12/21 5:03 PM, Daniel Lezcano wrote:
+> There is a list with the purpose of grouping the cpufreq cooling
+> device together as described in the comments but actually it is
+> unused, the code evolved since 2012 and the list was no longer needed.
+> 
+> Delete the remaining unused list related code.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>   drivers/thermal/cpufreq_cooling.c | 13 -------------
+>   1 file changed, 13 deletions(-)
+> 
 
-I use emacs for coding, and nano editor
-for editing simple text files, and input commit log.
-
-I invoke aspell from nano (Ctrl-t, Ctrl-s), but
-I sometimes forget to do spell checking.
-
-
-
-> >
-> >  config DEBUG_INFO_DWARF5
-> >         bool "Generate DWARF Version 5 debuginfo"
-> > -       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> > -       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> > +       depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && AS_IS_GNU && AS_VERSION >= 23502) || (CC_IS_CLANG && AS_IS_LLVM)
->
-> Would this be more concise as:
-> +       depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && (AS_IS_LLVM
-> || (AS_IS_GNU && AS_VERSION >= 23502))
->
-
-Yes, this is simpler.
-I will do it in v2.
-
-Thanks.
-
-
--- 
-Best Regards
-Masahiro Yamada
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
