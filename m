@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E59A3385E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614CB3385E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhCLGaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:30:55 -0500
-Received: from mga18.intel.com ([134.134.136.126]:45510 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231544AbhCLGai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:30:38 -0500
-IronPort-SDR: ZMpMqxuXhYPozrrWPTuLRmpSG2sSNpUrEHSanUIPw3t4Sk0eGjx8O8Q/c7YjAgXHy39pu/2Jdw
- 6/sC21qterLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="176381654"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="176381654"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:30:37 -0800
-IronPort-SDR: Co3t1pgsRLHMkBiBltp/iyMwsnvZq+XrKmqVVH6NmbGcSkmcNfcKn1KISXa8+2D8dUMfYMWCRp
- yfFFdTIv10Jw==
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="410904374"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 22:30:34 -0800
-Date:   Fri, 12 Mar 2021 14:27:55 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [mm/highmem] 61b205f579:
- WARNING:at_mm/highmem.c:#__kmap_local_sched_out
-Message-ID: <20210312062755.GA5022@xsang-OptiPlex-9020>
-References: <20210304083825.GB17830@xsang-OptiPlex-9020>
- <BYAPR04MB496507720FEEF2B77FB639E186929@BYAPR04MB4965.namprd04.prod.outlook.com>
- <20210311160220.GS3014244@iweiny-DESK2.sc.intel.com>
+        id S231633AbhCLGba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231544AbhCLGbJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:31:09 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D205BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:31:08 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id a14so3784492qvj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:31:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z9Y5RvSkaW0IxENx4c2BiKmmwTuvzpC+ZpJjCrqNlZk=;
+        b=qx+X35KrcUquZKcR/arCoMyS0MeI7SN8lfFbbYbkBRpmG6fYeYw6PJrVSj+gxx0flH
+         hBND67ewe98qph+UvyR/92jqkvL3CtNvPLaUr1JLRZFeO5/gD+HqPq7S60CfpWA+u/Z9
+         rKbkq5f7+dnCKvx2K2sJfpd77Xxo3Nysu/suSzrCFu3DRui3f+vDu9BdhRQvoSemoCzc
+         H3+RGtPka5AxsA6U/4y0Ch3rX8pS/QervCdHrZzr9dLw0FiZysd2+1q0N0yFe3GcGbv+
+         AaQIOqHP+0S8Hiv+t6CZSQYXizzQsKe6XWtXbfMeZUrwsX2pHL9yKhOz1CgvSDR1JbrN
+         RhtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z9Y5RvSkaW0IxENx4c2BiKmmwTuvzpC+ZpJjCrqNlZk=;
+        b=B9IpT+Z549JNStzaZJuAU6PQTJO9JozRDXwsFUxy0f0sIl52ST49t5yYCpADKdbi83
+         KgDvCP1fXasumJx0n69hGqU1zqfeOXh4qyI5OD52uyx7GOzqTLMwBo2MT3DNuTLebXYE
+         gMbE2TdGHPQfKZJuZCXHfTgwLrO59FWOgIaMFvQDTztoYrEEap9OP+l4iy+P+ajzMiu0
+         5HXomH0eIY+KUkRUkSjCIO3w0ObEhJJGNMzoPRVsJJAg5Gp4Zjj9h/SkCLdiHtQtFQ6b
+         xZn+9qujaFTCNqrRPBL4Sqgv+BjKnTHr6mNAJF8112GEyorcaY02yWfe65h6ABx5Su6o
+         xasQ==
+X-Gm-Message-State: AOAM533tLir6/Lywjc2icMundBuhEUv9jGOfoF9KvxUG2J6FBz22/Nrd
+        OpC3yxOKug4vsnvilSJaz/7d3ABz2SIVIEKBWEzw0sCZPoviuw==
+X-Google-Smtp-Source: ABdhPJx+QjOZyf4vF6VUUW3BN7jEDVJzDltHgz5g3wbaHNAnKrmvzB3e2PXgkB7v1aPu06tuE/1zz9yYpV6bT+yAr6k=
+X-Received: by 2002:ad4:50d0:: with SMTP id e16mr11103743qvq.37.1615530667801;
+ Thu, 11 Mar 2021 22:31:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311160220.GS3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210312041246.15113-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210312041246.15113-1-qiang.zhang@windriver.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 12 Mar 2021 07:30:56 +0100
+Message-ID: <CACT4Y+ZS5ehyHrm0i-4fAX-Zk6OUN5PqGs0ZT_RC5K=fFgst5w@mail.gmail.com>
+Subject: Re: [PATCH] ARM: Fix incorrect use of smp_processor_id() by syzbot report
+To:     "Zhang, Qiang" <qiang.zhang@windriver.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ira,
+On Fri, Mar 12, 2021 at 5:13 AM <qiang.zhang@windriver.com> wrote:
+>
+> From: Zqiang <qiang.zhang@windriver.com>
+>
+> BUG: using smp_processor_id() in preemptible [00000000] code:
+> syz-executor.0/15841
+> caller is debug_smp_processor_id+0x20/0x24
+> lib/smp_processor_id.c:64
+>
+> The smp_processor_id() is used in a code segment when
+> preemption has been disabled, otherwise, when preemption
+> is enabled this pointer is usually no longer useful
+> since it may no longer point to per cpu data of the
+> current processor.
+>
+> Reported-by: syzbot <syzbot+a7ee43e564223f195c84@syzkaller.appspotmail.com>
+> Fixes: f5fe12b1eaee ("ARM: spectre-v2: harden user aborts in kernel space")
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  arch/arm/include/asm/system_misc.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm/include/asm/system_misc.h b/arch/arm/include/asm/system_misc.h
+> index 66f6a3ae68d2..61916dc7d361 100644
+> --- a/arch/arm/include/asm/system_misc.h
+> +++ b/arch/arm/include/asm/system_misc.h
+> @@ -21,8 +21,10 @@ typedef void (*harden_branch_predictor_fn_t)(void);
+>  DECLARE_PER_CPU(harden_branch_predictor_fn_t, harden_branch_predictor_fn);
+>  static inline void harden_branch_predictor(void)
+>  {
+> +       preempt_disable();
+>         harden_branch_predictor_fn_t fn = per_cpu(harden_branch_predictor_fn,
+>                                                   smp_processor_id());
+> +       preempt_enable();
+>         if (fn)
+>                 fn();
+>  }
 
-On Thu, Mar 11, 2021 at 08:02:20AM -0800, Ira Weiny wrote:
-> On Tue, Mar 09, 2021 at 08:53:04PM +0000, Chaitanya Kulkarni wrote:
-> > Ira,
-> > 
-> > On 3/4/21 00:23, kernel test robot wrote:
-> > > Greeting,
-> > >
-> > > FYI, we noticed the following commit (built with gcc-9):
-> > >
-> > > commit: 61b205f579911a11f0b576f73275eca2aed0d108 ("mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > >
-> > >
-> > > in testcase: trinity
-> > > version: trinity-static-i386-x86_64-f93256fb_2019-08-28
-> > > with following parameters:
-> > >
-> > > 	runtime: 300s
-> > >
-> > > test-description: Trinity is a linux system call fuzz tester.
-> > > test-url: http://codemonkey.org.uk/projects/trinity/
-> > >
-> > >
-> > > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> > >
-> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > Is the fix for this been posted yet ?
-> 
-> No.  I've been unable to reproduce it yet.
+Hi Qiang,
 
-just FYI
-the issue does not always happen but the rate on 61b205f579 is not low,
-while we didn't observe it happen on parent commit.
+If the CPU can change here, what if it changes right after preempt_enable()?
+Disabling preemption just around reading the callback looks like a
+no-op. Shouldn't we disable preemption at least around reading and
+calling the callback?
 
-bb90d4bc7b6a536b 61b205f579911a11f0b576f7327
----------------- ---------------------------
-       fail:runs  %reproduction    fail:runs
-           |             |             |
-           :38          16%           6:38    dmesg.EIP:__kmap_local_sched_in
-           :38          16%           6:38    dmesg.EIP:__kmap_local_sched_out
-           :38          16%           6:38    dmesg.WARNING:at_mm/highmem.c:#__kmap_local_sched_in
-           :38          16%           6:38    dmesg.WARNING:at_mm/highmem.c:#__kmap_local_sched_out
-
-also please permit me to quote our internal analysis by Zhengjun (cced)
-(Thanks a lot, Zhengjun)
-
-"the commit has the potential to cause the issue.
-It replaces " kmap_atomic" to " kmap_local_page".
-
-Most of the two API is the same, except for " kmap_atomic" disable preemption and cannot sleep.
-I check the issue happened when there is a preemption,  in FBC " kmap_local_page",
-the  preemption is enabled,  the issue may happen."
-"
-
-> 
-> Ira
-> 
-> > 
-> > (asking since I didn't see the fix and my mailer is dropping emails from
-> >  lkml).
+On the second look, the fn seems to be const after init, so maybe we
+need to use raw_smp_processor_id() instead with an explanatory
+comment?
