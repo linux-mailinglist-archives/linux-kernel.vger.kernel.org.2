@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D675C33924B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265FF339251
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhCLPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:51:00 -0500
-Received: from mail-vk1-f181.google.com ([209.85.221.181]:33783 "EHLO
-        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhCLPu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:50:28 -0500
-Received: by mail-vk1-f181.google.com with SMTP id b10so1331909vkl.0;
-        Fri, 12 Mar 2021 07:50:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jCfkIhb98hO8prK8G14q0f8cJZYCOLvGnWWBybf+4M4=;
-        b=qDjjPnm4GsWqw9arX7YS4JbnoF/uimOrXYR+F2Md6rJtXsHumdkyauGoG9vFN34U3a
-         jfjNNFWGgrBZFvvO8hB1QbFxAwsa7QG3Fglp5mXM5cGgFlz4+P6zlCl+rGDh+IGTNTBv
-         0rQOPY5hJ8cMF1rxuiWjHEzHC4QrjVujR75wNKu36h4n3bZt2Ra9MvJ8mWV02H5zp80R
-         zuvanIPriaGdTMFbabBKgdvQ7Wfi9z3iJrSHnrGA1126A0H8yaBBE0EI5o584EHdf1TW
-         T+KqbTO8bL7AzzOJqiWQ8PBVDg8WaoRh1PVo0LfkFbdWI89yf77yNtTruhx6phmYxdW7
-         jtwA==
-X-Gm-Message-State: AOAM531lwpnEFOcLsY2YI8zRB7ofbrlZhLTkSCFNb8OeKjdmR9UnxFWQ
-        JcR+XWfElrg0ODvyFYg38dJ52UFvErn81ejHLAw=
-X-Google-Smtp-Source: ABdhPJwsMcqnQfXHsxIHY91a/cjGAOuKpduZxiaHjuntYgfG+B2bSXLd5roumZI4ThaBStcLstXBt5hqmJwMf4W7HfQ=
-X-Received: by 2002:a1f:e543:: with SMTP id c64mr4486729vkh.2.1615564227436;
- Fri, 12 Mar 2021 07:50:27 -0800 (PST)
+        id S231849AbhCLPwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:52:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:56260 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232105AbhCLPvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:51:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79DA01FB;
+        Fri, 12 Mar 2021 07:51:47 -0800 (PST)
+Received: from [10.57.52.136] (unknown [10.57.52.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38D593F7D7;
+        Fri, 12 Mar 2021 07:51:43 -0800 (PST)
+Subject: Re: [RFC PATCH v2 00/11] Add support to dma_map_sg for P2PDMA
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <iweiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6b9be188-1ec7-527c-ae47-3f5b4e153758@arm.com>
+Date:   Fri, 12 Mar 2021 15:51:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20201119003829.1282810-1-atish.patra@wdc.com> <20201119003829.1282810-4-atish.patra@wdc.com>
- <CAMuHMdUjh9znKTLZ+bST6aDUFdZzvmv2SGVy=sRQ6+D=pYM9cg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUjh9znKTLZ+bST6aDUFdZzvmv2SGVy=sRQ6+D=pYM9cg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Mar 2021 16:50:16 +0100
-Message-ID: <CAMuHMdUfQCSyuHxf+TjuOGDtLMAv30x2LazvO8BQwE1=B1kzVg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] riscv: Separate memory init from paging init
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210311233142.7900-1-logang@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Atish,
+On 2021-03-11 23:31, Logan Gunthorpe wrote:
+> Hi,
+> 
+> This is a rework of the first half of my RFC for doing P2PDMA in userspace
+> with O_DIRECT[1].
+> 
+> The largest issue with that series was the gross way of flagging P2PDMA
+> SGL segments. This RFC proposes a different approach, (suggested by
+> Dan Williams[2]) which uses the third bit in the page_link field of the
+> SGL.
+> 
+> This approach is a lot less hacky but comes at the cost of adding a
+> CONFIG_64BIT dependency to CONFIG_PCI_P2PDMA and using up the last
+> scarce bit in the page_link. For our purposes, a 64BIT restriction is
+> acceptable but it's not clear if this is ok for all usecases hoping
+> to make use of P2PDMA.
+> 
+> Matthew Wilcox has already suggested (off-list) that this is the wrong
+> approach, preferring a new dma mapping operation and an SGL replacement. I
+> don't disagree that something along those lines would be a better long
+> term solution, but it involves overcoming a lot of challenges to get
+> there. Creating a new mapping operation still means adding support to more
+> than 25 dma_map_ops implementations (many of which are on obscure
+> architectures) or creating a redundant path to fallback with dma_map_sg()
+> for every driver that uses the new operation. This RFC is an approach
+> that doesn't require overcoming these blocks.
 
-On Wed, Mar 10, 2021 at 5:41 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Nov 19, 2020 at 1:40 AM Atish Patra <atish.patra@wdc.com> wrote:
-> > Currently, we perform some memory init functions in paging init. But,
-> > that will be an issue for NUMA support where DT needs to be flattened
-> > before numa initialization and memblock_present can only be called
-> > after numa initialization.
-> >
-> > Move memory initialization related functions to a separate function.
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
-> > Reviewed-by: Anup Patel <anup@brainfault.org>
-> > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> This is now commit cbd34f4bb37d62d8 in v5.12-rc1, breaking the boot on
-> Vexriscv:
->
-> [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-> [    0.000000] printk: bootconsole [sbi0] enabled
-> [    0.000000] printk: debug: ignoring loglevel setting.
-> [    0.000000] Initial ramdisk at: 0x(ptrval) (8388608 bytes)
-> [    0.000000] Unable to handle kernel paging request at virtual
-> address c8000008
+I don't really follow that argument - you're only adding support to two 
+implementations with the awkward flag, so why would using a dedicated 
+operation instead be any different? Whatever callers need to do if 
+dma_pci_p2pdma_supported() says no, they could equally do if 
+dma_map_p2p_sg() (or whatever) returns -ENXIO, no?
 
-> Note that I have "[PATCH v2 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32"[1]
-> applied, to avoid another crash (7c4fc8e3e982 = v5.11 + [1] +
-> cherry-picked commits from the riscv-for-linus-5.12-mw0 pull request).
->
-> If I revert the L1_CACHE_BYTES change, the boot continues, but I'm back
-> to the old issue fixed by [1]:
->
-> [   22.126687] Freeing initrd memory: 8192K
-> [   22.321811] workingset: timestamp_bits=30 max_order=15 bucket_order=0
-> [   29.001509] Block layer SCSI generic (bsg) driver version 0.4
-> loaded (major 253)
-> [   29.021555] io scheduler mq-deadline registered
-> [   29.033692] io scheduler kyber registered
-> [   29.141294] Unable to handle kernel paging request at virtual
-> address 69726573
+We don't try to multiplex .map_resource through .map_page, so there 
+doesn't seem to be any good reason to force that complexity on .map_sg 
+either. And having a distinct API from the outset should make it a lot 
+easier to transition to better "list of P2P memory regions" data 
+structures in future without rewriting the whole world. As it is, there 
+are potential benefits in a P2P interface which can define its own 
+behaviour - for instance if threw out the notion of segment merging it 
+could save a load of bother by just maintaining the direct correlation 
+between pages and DMA addresses.
 
-> Will have a deeper look later...
+Robin.
 
-I found the core issue, and sent a fix: "[PATCH] RISC-V: Fix
-out-of-bounds accesses in init_resources()"
-https://lore.kernel.org/linux-riscv/20210312154634.3541844-1-geert@linux-m68k.org/
-
-It works now with either value of L1_CACHE_SHIFT, so patch "[PATCH v2
-3/4] RISC-V: Fix L1_CACHE_BYTES for RV32" is no longer needed.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Any alternative ideas or feedback is welcome.
+> 
+> These patches are based on v5.12-rc2 and a git branch is available here:
+> 
+>    https://github.com/sbates130272/linux-p2pmem/  p2pdma_dma_map_ops_rfc
+> 
+> A branch with the patches from the previous RFC that add userspace
+> O_DIRECT support is available at the same URL with the name
+> "p2pdma_dma_map_ops_rfc+user" (however, none of the issues with those
+> extra patches from the feedback of the last posting have been fixed).
+> 
+> Thanks,
+> 
+> Logan
+> 
+> [1] https://lore.kernel.org/linux-block/20201106170036.18713-1-logang@deltatee.com/
+> [2] https://lore.kernel.org/linux-block/CAPcyv4ifGcrdOtUt8qr7pmFhmecGHqGVre9G0RorGczCGVECQQ@mail.gmail.com/
+> 
+> --
+> 
+> Logan Gunthorpe (11):
+>    PCI/P2PDMA: Pass gfp_mask flags to upstream_bridge_distance_warn()
+>    PCI/P2PDMA: Avoid pci_get_slot() which sleeps
+>    PCI/P2PDMA: Attempt to set map_type if it has not been set
+>    PCI/P2PDMA: Introduce pci_p2pdma_should_map_bus() and
+>      pci_p2pdma_bus_offset()
+>    lib/scatterlist: Add flag for indicating P2PDMA segments in an SGL
+>    dma-direct: Support PCI P2PDMA pages in dma-direct map_sg
+>    dma-mapping: Add flags to dma_map_ops to indicate PCI P2PDMA support
+>    iommu/dma: Support PCI P2PDMA pages in dma-iommu map_sg
+>    block: Add BLK_STS_P2PDMA
+>    nvme-pci: Check DMA ops when indicating support for PCI P2PDMA
+>    nvme-pci: Convert to using dma_map_sg for p2pdma pages
+> 
+>   block/blk-core.c            |  2 +
+>   drivers/iommu/dma-iommu.c   | 63 +++++++++++++++++++++-----
+>   drivers/nvme/host/core.c    |  3 +-
+>   drivers/nvme/host/nvme.h    |  2 +-
+>   drivers/nvme/host/pci.c     | 38 +++++++---------
+>   drivers/pci/Kconfig         |  2 +-
+>   drivers/pci/p2pdma.c        | 89 +++++++++++++++++++++++++++++++------
+>   include/linux/blk_types.h   |  7 +++
+>   include/linux/dma-map-ops.h |  3 ++
+>   include/linux/dma-mapping.h |  5 +++
+>   include/linux/pci-p2pdma.h  | 11 +++++
+>   include/linux/scatterlist.h | 49 ++++++++++++++++++--
+>   kernel/dma/direct.c         | 35 +++++++++++++--
+>   kernel/dma/mapping.c        | 21 +++++++--
+>   14 files changed, 271 insertions(+), 59 deletions(-)
+> 
+> 
+> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+> --
+> 2.20.1
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
