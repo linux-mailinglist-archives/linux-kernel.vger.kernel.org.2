@@ -2,58 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E9333976C
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4BA33976B
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 20:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbhCLT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 14:28:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59680 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233395AbhCLT2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:28:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1E268AF4D;
-        Fri, 12 Mar 2021 19:28:34 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4D393DA81D; Fri, 12 Mar 2021 20:26:34 +0100 (CET)
-Date:   Fri, 12 Mar 2021 20:26:34 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/4] fs/btrfs: Convert raid5/6 kmaps to kmap_local_page()
-Message-ID: <20210312192634.GS7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210217024826.3466046-1-ira.weiny@intel.com>
- <20210217024826.3466046-3-ira.weiny@intel.com>
+        id S233936AbhCLT25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 14:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233260AbhCLT2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 14:28:25 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27046C061574;
+        Fri, 12 Mar 2021 11:28:25 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id z5so12408686plg.3;
+        Fri, 12 Mar 2021 11:28:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xsXCUAe7GzyEFcIbzRGPi+QWjqVbRvQwSdbS7Lm1E4M=;
+        b=myFMEhn81hANx0heDy1GieIbR1tsA44TdlU0yulRozgxvyj5qQ7FTmE1fCBxSfcWE7
+         cthXXk+g9MsuaAlmFNRgv6U5/VYUVPrmCIDlaKiMBbxvP5YsmpSABPa/W5wsDpF9Al1A
+         NIUyOkqi3aP5gX7p3HcPsV1rvdcOw3ffJHZ9lHAvHil1Y+wUklRd5/6lFTorMIxR4IkC
+         jn9qXU1yP2Rh4trZX5VPSPXXcFSt44P+Rk58R/k3exJsMf6P7TX9L4sZn/QskmENj/7j
+         A4pImP9Z6TQajenglJM/VSAWR+mGoM446jHKvevW1INOeokZsIpFgTYGaUQfhnkuyySz
+         KpvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=xsXCUAe7GzyEFcIbzRGPi+QWjqVbRvQwSdbS7Lm1E4M=;
+        b=lGVUpbv+v1uqOnVQBq0Am/yDtDa7kKytlbj7XcqyChFBc1EyCIXIwdbfhvJFQtLm4A
+         DlcCCr5+dtPSWELwgxBvMw9Q1QUK38Ht8II2cAObUj3V/qJrDOewFCUDqctvqG5/z25J
+         BMBPu0VO1DTn1FLLHqwkpgnd8TJyOG7jp+EJ8aggnkoCJ7LBOedS3l1FiaAdSFrQvYEf
+         lu0rAaKjpiTfQGWRNnucQv9zGQOLcPZyv13O0HJbLSA0pmoY0ujI1Pg8Nkz83QUg8lqd
+         Y8J3+wBFTr7eK88ptrZwIKm1Nv0N8TdqldiXFfIfq5LsX3hoISyZ75xi4AKq8zSXMqg6
+         hF8w==
+X-Gm-Message-State: AOAM532XzSceOY7Cso2rYXrQ5TgrOdwpFzsSwSmlcRl/HgcFnZXbsM5Y
+        U7rl/7JPP+kTzmU9FfNXnKfGPacgPWY=
+X-Google-Smtp-Source: ABdhPJwiqRNbh75mJffl6hk0vK3fzTsi3TZRyV8aavY5U5bATh+Y6qeE+rzd9REB9mvVMlSfghGUtw==
+X-Received: by 2002:a17:902:6a87:b029:e6:6a3d:29e8 with SMTP id n7-20020a1709026a87b02900e66a3d29e8mr83679plk.10.1615577304498;
+        Fri, 12 Mar 2021 11:28:24 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:8d76:9272:43a9:a6d0])
+        by smtp.gmail.com with ESMTPSA id b9sm6020236pgn.42.2021.03.12.11.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 11:28:23 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 12 Mar 2021 11:28:21 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YEvA1dzDsFOuKdZ/@google.com>
+References: <20210306022035.11266-1-mcgrof@kernel.org>
+ <20210306022035.11266-2-mcgrof@kernel.org>
+ <YEbjom8FIclEgRYv@google.com>
+ <20210310212128.GR4332@42.do-not-panic.com>
+ <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217024826.3466046-3-ira.weiny@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210312183238.GW4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 06:48:24PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Fri, Mar 12, 2021 at 06:32:38PM +0000, Luis Chamberlain wrote:
+> On Thu, Mar 11, 2021 at 06:14:40PM -0800, Minchan Kim wrote:
+> > On Wed, Mar 10, 2021 at 09:21:28PM +0000, Luis Chamberlain wrote:
+> > > On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
+> > > > If I understand correctly, bugs you found were related to module
+> > > > unloading race while the zram are still working.
+> > > 
+> > > No, that is a simplifcation of the issue. The issue consists of
+> > > two separate issues:
+> > > 
+> > >  a) race against module unloading in light of incorrect racty use of
+> > >     cpu hotplug multistate support
+> > 
+> > 
+> > Could you add some pusedo code sequence to show the race cleary?
 > 
-> These kmaps are thread local and don't need to be atomic.  So they can use
-> the more efficient kmap_local_page().  However, the mapping of pages in
-> the stripes and the additional parity and qstripe pages are a bit
-> trickier because the unmapping must occur in the opposite order from the
-> mapping.  Furthermore, the pointer array in __raid_recover_end_io() may
-> get reordered.
+> Let us deal with each issue one at time. First, let's address
+> understanding the kernel warning can be reproduced easily by
+> triggering zram02.sh from LTP twice:
 > 
-> Convert these calls to kmap_local_page() taking care to reverse the
-> unmappings of any page arrays as well as being careful with the mappings
-> of any special pages such as the parity and qstripe pages.
+> kernel: ------------[ cut here ]------------
+> kernel: Error: Removing state 63 which has instances left.
+> kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
+> kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
+> 
+> The first patch prevents this race. This race is possible because on
+> module init we associate callbacks for CPU hotplug add / remove:
+> 
+> static int __init zram_init(void)                                               
+> {
+> 	...
+> 	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
+> 	                              zcomp_cpu_up_prepare, zcomp_cpu_dead); 
+> 	...
+> }
+> 
+> The zcomp_cpu_dead() accesses the zcom->comp, and if zcomp->comp is
+> removed and this function is called, clearly we'll be accessing some
+> random data here and can easily crash afterwards:
 
-Though there's one more allocation for the additional array, I don't see
-a simpler way to avoid it and track the array reordering at a lower
-memory cost. At least it's not in a performance critical code and the
-array size is reasonably small.
+I am trying to understand this crash. You mentioned the warning
+above but here mention crash(I understand sysfs race but this is
+different topic). What's the relation with above warning and
+crash here? You are talking the warning could change to the
+crash sometimes? 
+
+> 
+> int zcomp_cpu_dead(unsigned int cpu, struct hlist_node *node)                   
+> {
+> 	struct zcomp *comp = hlist_entry(node, struct zcomp, node);
+> 	struct zcomp_strm *zstrm;
+> 
+> 	zstrm = per_cpu_ptr(comp->stream, cpu);
+> 	zcomp_strm_free(zstrm);
+> 	return 0;
+> }
+> 
+> And zram's syfs reset_store() lets userspace call zram_reset_device()
+> which calls zcomp_destroy():
+> 
+> void zcomp_destroy(struct zcomp *comp)
+> {
+> 	cpuhp_state_remove_instance(CPUHP_ZCOMP_PREPARE, &comp->node);
+> 	free_percpu(comp->stream);
+> 	kfree(comp);
+> }
+
+Do you mean the race between module unloading and zram_reset_device?
+If I understood correctly, the approach I put in the first reply would
+prevent this problem.
+
+> 
+> > It would be great if it goes in the description, too since it's
+> > more clear to show the problme.
+> 
+> Does the above do it?
+
+Rather than that, let's have this kinds of explanation, which is
+more clear(it's a just example, not describing exact race you saw.
+You could be better to descibe it).
+
+CPU A                       CPU B
+moudle_unload
+destroy_devices           
+zram_remove_cb
+                            reset_store
+zcomp_cpu_dead
+                            zram_reset_device
+                            zcomp_destroy
+                            cpuhp_state_remove_instance
+zcomp_strm_free
+    
+> > 
+> > >  b) module unload race with sysfs attribute race on *any* driver which
+> > >     has sysfs attributes which also shares the same lock as used during
+> > >     module unload
+> > 
+> > Yub, that part I missed. Maybe, we need some wrapper to zram sysfs
+> > to get try_module_get in the warapper funnction and then call sub
+> > rountine only if it got the refcount.
+> > 
+> > zram_sysfs_wrapper(func, A, B)
+> >     if (!try_module_get(THIS_MODULE)
+> >         return -ENODEV;
+> >     ret = func(A,B);
+> >     module_put(THIS_MODULE);
+> >     return ret;
+> 
+> I'd much prefer this be resolved in kernfs later, if you look at the kernel
+> there are already some drivers which may have realized this requirement
+> the hard way. Open coding this I think makes the race / intent clearer.
+> 
+> Right now we have no semantics possible for a generic solution, but I
+> can work on one later.
+
+Yub, no problem. My point is let's have some zram sysfs wrapper to manage
+module_get/put automatically as I mentioned above so no need to deal with
+module refcount in worker functions.
