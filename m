@@ -2,143 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC52D338491
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DF5338490
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 05:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbhCLEHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Mar 2021 23:07:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:28073 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhCLEHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:07:45 -0500
-IronPort-SDR: DsISgGKhjfGMjudOrl7H6H8rHjpEWhWMEwO4Qs7rc80d9npdj0TxgTmGMznmHvq0Fgu+iNNAzV
- apiRBUKpf1Ig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="188875795"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="188875795"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 20:07:44 -0800
-IronPort-SDR: t71QttoerQbAXxs0ytBVkS2wUw1La7IPLPox+6qW4dPB2wURAPv2P5oKD74UPCk28BsBkaOYL8
- KyP/q3RoSF0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="603787380"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2021 20:07:42 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lKZ5R-00018x-Lt; Fri, 12 Mar 2021 04:07:41 +0000
-Date:   Fri, 12 Mar 2021 12:06:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jinzhou Su <Jinzhou.Su@amd.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:141:37: warning:
- Undefined behavior: Variable 'i2c_output' is used as parameter and
- destination in
-Message-ID: <202103121240.Yranw2E9-lkp@intel.com>
+        id S232079AbhCLEHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Mar 2021 23:07:19 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:53088 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhCLEHE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Mar 2021 23:07:04 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 42982891AF;
+        Fri, 12 Mar 2021 17:07:03 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615522023;
+        bh=U3faApYRT+tAxJHHsdKKCL10VQ6+BdUPKUiOv/rmBvg=;
+        h=From:To:Cc:Subject:Date;
+        b=vwaBTZhqQ86TRT1Dvn8YJ/0lk1io3SQ1uv49DCrlPp9lymwLX2zx5RFl2e7rsOvem
+         LGa2z95hm0OuFHlgfrJuPH/mbGTu6Iyx9pdosWQMIn6kjYqvrVLoTd/xT+P4Xyy2Xn
+         KjoTykPztSFJqo0OczEUUeuyJlUUyXGeyihhB4Cg1+r2ZZsM5yERvgB1Bv49wrYMFT
+         gB9qIUTEq9Ihi7oO7dUY410CYHr7aZjKfRTynnX0eBtUCFHB+2PJ5pzru95MxG/d7O
+         6RYB1O3QhZ0bQp0RRADtf2ROcshWIHdgMJ9SjPD1e/W3MH06WjmlM8aJvOrsS5fyxE
+         xPh3VzyJL1rxA==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B604ae8e70000>; Fri, 12 Mar 2021 17:07:03 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 0EA1013EEFA;
+        Fri, 12 Mar 2021 17:07:16 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 2384E284092; Fri, 12 Mar 2021 17:07:03 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     linux@roeck-us.net, jdelvare@suse.com
+Cc:     corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] hwmon: (pmbus): Fix Documentation kernel-doc warning
+Date:   Fri, 12 Mar 2021 17:06:56 +1300
+Message-Id: <20210312040656.3884-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=3snwsuHfZ-UOVdroPSwA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   28806e4d9b97865b450d72156e9ad229f2067f0b
-commit: ecaafb7b5ab6406587341d8727f237b3ee00dedf drm/amdgpu: Add secure display TA interface
-date:   8 weeks ago
-compiler: alpha-linux-gcc (GCC) 9.3.0
+Fix Documentation/hwmon/ kernel-doc warning:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Documentation/hwmon/ir36021.rst:34: WARNING: Malformed table.
+No bottom table border found.
 
-
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
-
->> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:141:37: warning: Undefined behavior: Variable 'i2c_output' is used as parameter and destination in s[n]printf(). [sprintfOverlappingData]
-        sprintf(i2c_output, "%s 0x%X", i2c_output,
-                                       ^
-
-vim +/i2c_output +141 drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
-
-    85	
-    86	static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __user *buf,
-    87			size_t size, loff_t *pos)
-    88	{
-    89		struct amdgpu_device *adev = (struct amdgpu_device *)file_inode(f)->i_private;
-    90		struct psp_context *psp = &adev->psp;
-    91		struct securedisplay_cmd *securedisplay_cmd;
-    92		struct drm_device *dev = adev_to_drm(adev);
-    93		uint32_t phy_id;
-    94		uint32_t op;
-    95		int i;
-    96		char str[64];
-    97		char i2c_output[256];
-    98		int ret;
-    99	
-   100		if (*pos || size > sizeof(str) - 1)
-   101			return -EINVAL;
-   102	
-   103		memset(str,  0, sizeof(str));
-   104		ret = copy_from_user(str, buf, size);
-   105		if (ret)
-   106			return -EFAULT;
-   107	
-   108		ret = pm_runtime_get_sync(dev->dev);
-   109		if (ret < 0) {
-   110			pm_runtime_put_autosuspend(dev->dev);
-   111			return ret;
-   112		}
-   113	
-   114		if (size < 3)
-   115			sscanf(str, "%u ", &op);
-   116		else
-   117			sscanf(str, "%u %u", &op, &phy_id);
-   118	
-   119		switch (op) {
-   120		case 1:
-   121			psp_prep_securedisplay_cmd_buf(psp, &securedisplay_cmd,
-   122				TA_SECUREDISPLAY_COMMAND__QUERY_TA);
-   123			ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__QUERY_TA);
-   124			if (!ret) {
-   125				if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS)
-   126					dev_info(adev->dev, "SECUREDISPLAY: query securedisplay TA ret is 0x%X\n",
-   127						securedisplay_cmd->securedisplay_out_message.query_ta.query_cmd_ret);
-   128				else
-   129					psp_securedisplay_parse_resp_status(psp, securedisplay_cmd->status);
-   130			}
-   131			break;
-   132		case 2:
-   133			psp_prep_securedisplay_cmd_buf(psp, &securedisplay_cmd,
-   134				TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
-   135			securedisplay_cmd->securedisplay_in_message.send_roi_crc.phy_id = phy_id;
-   136			ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
-   137			if (!ret) {
-   138				if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
-   139					memset(i2c_output,  0, sizeof(i2c_output));
-   140					for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
- > 141						sprintf(i2c_output, "%s 0x%X", i2c_output,
-   142							securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
-   143					dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
-   144				} else {
-   145					psp_securedisplay_parse_resp_status(psp, securedisplay_cmd->status);
-   146				}
-   147			}
-   148			break;
-   149		default:
-   150			dev_err(adev->dev, "Invalid input: %s\n", str);
-   151		}
-   152	
-   153		pm_runtime_mark_last_busy(dev->dev);
-   154		pm_runtime_put_autosuspend(dev->dev);
-   155	
-   156		return size;
-   157	}
-   158	
-
+Fixes: 0be9fee30ff9 ("hwmon: (pmbus) Add driver for Infineon IR36021")
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ Documentation/hwmon/ir36021.rst | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/hwmon/ir36021.rst b/Documentation/hwmon/ir3602=
+1.rst
+index 36ef8d518b81..ca3436b04e20 100644
+--- a/Documentation/hwmon/ir36021.rst
++++ b/Documentation/hwmon/ir36021.rst
+@@ -60,3 +60,4 @@ temp1_alarm             Temperature alarm
+=20
+ temp2_input             Measured other loop temperature
+ temp2_alarm             Temperature alarm
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+--=20
+2.30.2
+
