@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E894339404
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6944339407
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 17:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhCLQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 11:56:42 -0500
-Received: from mga05.intel.com ([192.55.52.43]:41916 "EHLO mga05.intel.com"
+        id S232728AbhCLQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 11:57:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232506AbhCLQ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 11:56:36 -0500
-IronPort-SDR: rfAVXrSVINwqSjKApjr0Efo3hp+Fi3ZzJb+U3YGE3HPFalidJDAzJL9QBZNdHF0jQsNNnBSpup
- 4hbZOnDdOQkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="273900514"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="273900514"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:56:35 -0800
-IronPort-SDR: cutKU5prVhwng0292vWVtBP8EBJJ+T4ZwcED7toVSBQeGb+2gIuX44RgbLOOWJZ4uVuG/rCSis
- nMlGnvaUkaeA==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="411064630"
-Received: from akharche-mobl2.ccr.corp.intel.com (HELO [10.212.135.254]) ([10.212.135.254])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 08:56:35 -0800
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 1/5] soundwire: add static port mapping support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org, vkoul@kernel.org
-Cc:     robh@kernel.org, devicetree@vger.kernel.org,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org
-References: <20210312113929.17512-1-srinivas.kandagatla@linaro.org>
- <20210312113929.17512-2-srinivas.kandagatla@linaro.org>
-Message-ID: <5869594c-dfd6-c49d-0168-1993cdeb5a43@linux.intel.com>
-Date:   Fri, 12 Mar 2021 10:56:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231331AbhCLQ5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 11:57:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 625456500F;
+        Fri, 12 Mar 2021 16:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615568229;
+        bh=SJfafrtQ5B5A3SwT7vSgIDHHYLMqHVBXm88U6i/lrz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZBHd/DIGMGGyAQ1Fyh1z65o26PZRWPBaC7HmqL2I2BJz0xpc2D2+UYR+uWE4tsBfF
+         zKsPdydcsHyw1HKBdrcdU09WvmHKT1lPsLFxQq0x37koIVDPApwPcgVE2kveptR7H0
+         Gu8Krielpjd6FDaZcfu0WRktySs+gqtoAic+1xoP/7qJWXYv9txQA72CN1rXi2U3lV
+         7StlQT3Yp/t/TOcJlVtySp/DZuikkwGIKJ4LjTgPwu4CX9j6jYIjJow80BFYaSDYED
+         eUITaKLoDEK1lW+fqO8UYxW/ayjQ+Xni3OFKmdPBIvg+g18BK0aEN390EwRVKxLmcC
+         Pux89hDB5Ihfg==
+Date:   Fri, 12 Mar 2021 18:56:45 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v22 8/8] x86/vdso: Add ENDBR64 to __vdso_sgx_enter_enclave
+Message-ID: <YEudTW1cKAQG10BG@kernel.org>
+References: <20210310220519.16811-1-yu-cheng.yu@intel.com>
+ <20210310220519.16811-9-yu-cheng.yu@intel.com>
+ <YElKjT2v628tidE/@kernel.org>
+ <8b8efe44-b79f-ce29-ee28-066f88c93840@intel.com>
+ <YEmQJjwjs8UCEO2F@kernel.org>
+ <YEnX3Zn0FXPt7pcM@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210312113929.17512-2-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEnX3Zn0FXPt7pcM@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/12/21 5:39 AM, Srinivas Kandagatla wrote:
-> Some of the SoundWire device ports are statically mapped to Controller
-> ports during design, however there is no way to expose this information
-> to the controller. Controllers like Qualcomm ones use this info to setup
-> static bandwidth parameters for those ports.
+On Thu, Mar 11, 2021 at 09:42:05AM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 05:36:06AM +0200, Jarkko Sakkinen wrote:
+> > Does it do any harm to put it there unconditionally?
 > 
-> A generic port allocation is not possible in this cases!
-> So this patch adds a new member m_port_map to struct sdw_slave to expose
-> this static map.
+> Blows up your text footprint and I$ pressure. These instructions are 4
+> bytes each.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   include/linux/soundwire/sdw.h | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index d08039d65825..b032d6ac0b39 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -614,6 +614,7 @@ struct sdw_slave_ops {
->    * @debugfs: Slave debugfs
->    * @node: node for bus list
->    * @port_ready: Port ready completion flag for each Slave port
-> + * @m_port_map: static Master port map for each Slave port0 to port14
+> Aside from that, they're a NOP, so only consume front-end resources
+> (hopefully) on older CPUs and when IBT is disabled.
 
-did you mean port1..port14?
+OK, understood, thanks for the explanation.
 
-DP0 is a special case that's not supposed to be used for audio transport 
-but rather extended control and command?
-
->    * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
->    * @dev_num_sticky: one-time static Device Number assigned by Bus
->    * @probed: boolean tracking driver state
-> @@ -645,6 +646,7 @@ struct sdw_slave {
->   #endif
->   	struct list_head node;
->   	struct completion port_ready[SDW_MAX_PORTS];
-> +	unsigned int m_port_map[SDW_MAX_PORTS];
->   	enum sdw_clk_stop_mode curr_clk_stop_mode;
->   	u16 dev_num;
->   	u16 dev_num_sticky;
-> 
+/Jarkko
