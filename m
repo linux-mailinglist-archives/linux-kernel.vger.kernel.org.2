@@ -2,71 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C915338B98
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B9B338BA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhCLLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:37:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhCLLgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:36:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB2C64FB9;
-        Fri, 12 Mar 2021 11:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615549004;
-        bh=Tnmzg1VNWRp37vPZH7WBHF69zo4cruqMAptSEKsDpE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W/fav6v6j9c1sr6Et0T7YtmGJSMg4RyEoLnMA/co9nN/OBXrOQLJrtp+gk/6s6XAE
-         hUK4HFynm6jq9pgRe/XG+RoYmhe0DCEyaEYPKpOWiUHyjuaaHTMt9tpES9moyFWDpj
-         fUiQIJuEnIHdAnbTKBywNw+n1kwnJN0L3j/RuCaCstCmY2lIXWy194pwK7tD9ApdoW
-         nYgP5ltxrab4g8LZ0bxbUwYMh0/1uPbKC9CL91Qx2ZmIaPhdWNripUKQkQ+j/DJsTZ
-         r99jsE+iw9oPJ8NdThPjsutWFWHutaEc8x/rlYS09F6qrDSrYj3icAKZJfQU4nmjjZ
-         Noe+S0gYjYxKw==
-Date:   Fri, 12 Mar 2021 12:36:41 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 06/10] softirq: Don't try waking ksoftirqd
- before it has been spawned
-Message-ID: <20210312113641.GA3646@lothringen>
-References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
- <20210304000019.22459-6-paulmck@kernel.org>
+        id S231233AbhCLLjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhCLLjf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:39:35 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EEBC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:39:35 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id y124-20020a1c32820000b029010c93864955so15599675wmy.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Evn/zUZLGvYBTlWu7fdQZVd0huhV0HPNs5LNi3oCJDE=;
+        b=IU5JejxRgCWP9izx2NuQNMXjFon/e1zPNBGN9b6gcsUixMjAhZCKhgiXRvLqqq21RB
+         nmV4BqsTIEpwGmZSIkOveN2+DyafiH//ykz+GrsRR4DDYbqQVF10LGFPXG3QEVM4J6lL
+         hk/y1BCPWQxjzUj/UdgctueDtHpCyy5NgtUZ3Ism/eG1b6A9ZVMe33qV5iL0+wtea9Pj
+         BeqdLPg4qu96Ldya2fZ7sMrEbrZDsgiFbOfTC/mg/oRNd7JYSXd6SJk1u88WEp6xDsaO
+         S9PsW1LpgLbiLkiI+H4MpLAgHIFGhReibpRQVes5D6Hv+yN1oOgy0iQrGexywRzgcqA/
+         1clQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Evn/zUZLGvYBTlWu7fdQZVd0huhV0HPNs5LNi3oCJDE=;
+        b=DAJ9ItzrnC4faRfutSgaiarGd+IlKf44BEmJTSYHG8+hyM8hvlqYbzWp042KNJh1X/
+         d0GZ9fcjUWE4PLzcqP40fyusSJQ1n8yuNQ8JRCuIeNfvshIfZW+Q0jV98oObrtfbqvzX
+         qXJuFzXCeE+lc/nyhbFZpjSTcAEsK/rCXnuHEnnydQwZfWZEcKg0KFdh0F+8692K/uaU
+         2h+kp/f9fhBIWw4e40n5T5PhV3n00geLzTwpVrzh/tUZgo2XfTSSmyt/LPqf9aqpGCVZ
+         q7iXznZJFmBWlHKK4GbGlKwL5RpsqXbGxRv4miFjGjRzAmh0D/aNMCoQDbzURHdK175p
+         rSAg==
+X-Gm-Message-State: AOAM532TJpIbGqZAdlM46d5HMORK7K/PCxozIwU4Nl33ux8R/gn4rWIH
+        IZwT+TDx+XcaNK3NxW4f30I1pebsa0UZNw==
+X-Google-Smtp-Source: ABdhPJzV8wjTRuHIFcun07Ew5LkjH6JjzByKgvZiYHIGpZ3HeFPCjuZKjFKK4qcTtalJtn6n05n2FA==
+X-Received: by 2002:a7b:c186:: with SMTP id y6mr13038265wmi.84.1615549173996;
+        Fri, 12 Mar 2021 03:39:33 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id z1sm7412458wru.95.2021.03.12.03.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 03:39:33 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org, vkoul@kernel.org
+Cc:     robh@kernel.org, devicetree@vger.kernel.org,
+        yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/5] soundwire: add static port map support
+Date:   Fri, 12 Mar 2021 11:39:24 +0000
+Message-Id: <20210312113929.17512-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304000019.22459-6-paulmck@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 04:00:15PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> If there is heavy softirq activity, the softirq system will attempt
-> to awaken ksoftirqd and will stop the traditional back-of-interrupt
-> softirq processing.  This is all well and good, but only if the
-> ksoftirqd kthreads already exist, which is not the case during early
-> boot, in which case the system hangs.
-> 
-> One reproducer is as follows:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
-> 
-> This commit therefore adds a couple of existence checks for ksoftirqd
-> and forces back-of-interrupt softirq processing when ksoftirqd does not
-> yet exist.  With this change, the above test passes.
-> 
-> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Reported-by: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> [ paulmck: Remove unneeded check per Sebastian Siewior feedback. ]
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+In some cases, SoundWire device ports are statically mapped to Controller
+ports during design, however there is no way to expose this information
+to the controller. Controllers like Qualcomm ones use this info to setup
+static bandwidth parameters for those ports.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+A generic port allocation is not possible in this cases!
+This patch adds a new member m_port_map to SoundWire device so that
+it can populate the static master port map and share it with controller
+to be able to setup correct bandwidth parameters.
+
+As a user of this feature this patchset also adds new bindings for
+wsa881x smart speaker which has 4 ports which are statically mapped
+to the 3 output and 1 input port of the controller.
+
+Tested it on DB845c and SM8250 MTP.
+
+thanks,
+srini
+
+Changes since v2:
+	- fixed dt_binding_check error and kernel test robot reported errors
+	- updated comments as suggested by Pierre
+	- updated wsa881x to populate m_ports from valid index.
+
+Srinivas Kandagatla (5):
+  soundwire: add static port mapping support
+  soundwire: qcom: update port map allocation bit mask
+  soundwire: qcom: add static port map support
+  ASoC: dt-bindings: wsa881x: add bindings for port mapping
+  ASoC: codecs: wsa881x: add static port map support
+
+ .../bindings/sound/qcom,wsa881x.yaml          |  9 ++++++
+ drivers/soundwire/qcom.c                      | 31 +++++++++++++++----
+ include/linux/soundwire/sdw.h                 |  2 ++
+ sound/soc/codecs/wsa881x.c                    |  7 +++++
+ 4 files changed, 43 insertions(+), 6 deletions(-)
+
+-- 
+2.21.0
+
