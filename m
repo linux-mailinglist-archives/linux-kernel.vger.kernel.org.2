@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C23A3398BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496223398C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbhCLU4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbhCLU4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:56:09 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFFAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:56:09 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id j12so2663467pfj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0MZ2+8nOsi7HJhoAfY0jiveT3TjLCB961VetY/jrPME=;
-        b=hv4WP0ZL+I8JtgtyKJ7f7l9KqijZvL568YYhIiCgfdKI7r+UV7zLmMfPvTUHVRXyKx
-         o4CradS9EPYHOAmodxix7Nhkt427K+WQjUbz/aEHGlWGJrr6FqqOZqGXnyS7niQgUt+J
-         EvhCpgqbDwIhDRkgPuWskwZZtUa25kw7dfEzY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0MZ2+8nOsi7HJhoAfY0jiveT3TjLCB961VetY/jrPME=;
-        b=oqDX/J9E824JGDZoC2ZczppAghdgByADWy0IVBxJ+XB0qHhd+RjJxZUd3BVFttVC7U
-         F8rMGnQjBEGdut8JOEnQVDAWCAucx1vtABFV/KP/9C3MGMC9I91KV+DJ6zgoWe/wV+Ez
-         KOC2oTthpJ+m2AqoDKc/6UTBWR6hX8gm0w+O/A8NXC++rs7qMTv21t7ThoxbmVVFK2ya
-         78JHLIP6qkvlPPMFj9Wmu3y3Partniixq/gseKKg5+fhCK6F9pnbOCfg1Rcj+miEbdDD
-         au9p9PGBfdKa3qGhM9CAbXOg1+YqKHSxDQVLc9SeyLegsOtlOq01MmMbDy7YCyx0MrAu
-         IwQg==
-X-Gm-Message-State: AOAM5316unmm8xqn1ADRrZByCnZo9CY/f41q3IqQebXXNfkNMD+xGq1c
-        +FbS8fuu+FnuXKvPHrZfFk6HMw==
-X-Google-Smtp-Source: ABdhPJzafy8BkL0OjlmboQU08y3WvQDXVi4tBbIHv5S4LxUKUq0ByUCjHSgQQd7OLwhk4XwkCkPP+g==
-X-Received: by 2002:a63:4f59:: with SMTP id p25mr13380520pgl.335.1615582569298;
-        Fri, 12 Mar 2021 12:56:09 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c25sm5919465pfo.101.2021.03.12.12.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:56:08 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] seq_file: Unconditionally use vmalloc for buffer
-Date:   Fri, 12 Mar 2021 12:55:58 -0800
-Message-Id: <20210312205558.2947488-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        id S235096AbhCLU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:57:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235131AbhCLU5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 15:57:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C09564F87;
+        Fri, 12 Mar 2021 20:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615582629;
+        bh=mkL75zFRcvY7SDVV8rIsNBThP6Ch2Zj5Sc2UsAwvmCY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=kKZvn2V5xv7vpfX93Th5HlKcyhtTFfyTOdhE+m5fKiVxM27wSYf500/9OadIahsw+
+         oEGYQIHa1AwIK5CClP76fHluAH6DgvHGmwD1Kea5H0lGK94aaa2xCgbL6GQHBkCRBy
+         fVCGSAVP/trm3ZEI5cH7YCoGdMP86GqMr+tM1r6Q+i+i6nEhMLbeEbyGFsvblGKgXb
+         xQ672JWkV5EhfxHIkbYo60ElXUtpihbb1u6Rtm7tTANTg6lC/odVOR3a1b0iFOziBY
+         eq9ls4SRmtP/ZzQ/Cqg3h/hLa//KTnib5Y9jqx7r0b4zd9zW8JIrje6QXqM4nEM/hW
+         3rwqhKzBPmI7A==
+Date:   Fri, 12 Mar 2021 14:57:07 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 02/11] PCI/P2PDMA: Avoid pci_get_slot() which
+ sleeps
+Message-ID: <20210312205707.GA2288658@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=6e23cb09e9c77602ae36025771732e214a07d5d1; i=wnTs9CQ9b8oyAQUYWk1TWb6rr60OLTnvw/rrLAiBrmk=; m=mNgWWeM/mV0t2QLIflkURb7sIrkmH0bDqAx9/NsC4HI=; p=mfyYitSAa6+tmp4ZfMy/uMq8hKV0urLrdhp8kEobIBA=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBL1V0ACgkQiXL039xtwCa3LQ/6Amd tpDEYqTBiE/cyKH5oUqsQxoRBQ19QCQ9ALOD4dXuoBkkGN2Z8c4FJjnPlpgEDPXleFKrWyxGVvQYs gzJxQAsLJ5cG0YYTFGMHHDTrWCNNCqi9+PpSZP8vZ7+HtwsHJIVWrZEGrkYLRIVVrY8sFTWpcKghS YGBi7qPuHqBiz0axrxoqgaX8KKG6wCDpgJn2yPZkwPFvv0gAKRPNdBRbgCk29gs/nc8/1/cPcXZuN fmd1JOG+7QeCK2EZ/0c2WkcYi1/tGVtJuFOeSGqmaJ+te9giO8ttPFZKSf68zxMsffb71+beLFXbx L2mplD8GK/yZZ3rDf7fl36bcIVF1EfzishGjcJEk4qMz+7WfyHCb7cLl74fcsWiv5NVjdQD8UHgdE rvgvzwZ6vo7XEipizdLTILPj7pdW+51I2RvZOreYuQxN3PY0HW4uTVb7RX/FKm4iE/E5birDDza4m Q+HGdnqsqXnni58jFh9EUwGzVeMpksHjIkPrMsy50opl3TAp1149pFv5IbpJ98FKhHpmeD9MqPbG+ EQU+zzxfuD7Tdg0Rq/LeN7/OWQdrdFh4wtU7+O1sbW/LLVyCd0tJEVGhF0FUWKTDLr+PzMLWyA16z dggneBkRh7rz6SCkRsaIXJYYYesvxRwBGxbt1E4u4BGQkdQimA5Y8fQsXpK2tkjc=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311233142.7900-3-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysfs interface to seq_file continues to be rather fragile, as seen
-with some recent exploits[1]. Move the seq_file buffer to the vmap area
-(while retaining the accounting flag), since it has guard pages that
-will catch and stop linear overflows. This seems justified given that
-seq_file already uses kvmalloc(), that allocations are normally short
-lived, and that they are not normally performance critical.
+On Thu, Mar 11, 2021 at 04:31:32PM -0700, Logan Gunthorpe wrote:
+> In order to use upstream_bridge_distance_warn() from a dma_map function,
+> it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
+> might sleep.
+> 
+> In order to avoid this, try to get the host bridge's device from
+> bus->self, and if that is not set just get the first element in the
+> list. It should be impossible for the host bridges device to go away
+> while references are held on child devices, so the first element
+> should not change and this should be safe.
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  drivers/pci/p2pdma.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index bd89437faf06..2135fe69bb07 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -311,11 +311,15 @@ static const struct pci_p2pdma_whitelist_entry {
+>  static bool __host_bridge_whitelist(struct pci_host_bridge *host,
+>  				    bool same_host_bridge)
+>  {
+> -	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
+>  	const struct pci_p2pdma_whitelist_entry *entry;
+> +	struct pci_dev *root = host->bus->self;
+>  	unsigned short vendor, device;
+>  
+>  	if (!root)
+> +		root = list_first_entry_or_null(&host->bus->devices,
+> +						struct pci_dev, bus_list);
 
-[1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
+Replacing one ugliness (assuming there is a pci_dev for the host
+bridge, and that it is at 00.0) with another (still assuming a pci_dev
+and that it is host->bus->self or the first entry).  I can't suggest
+anything better, but maybe a little comment in the code would help
+future readers.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/seq_file.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I wish we had a real way to discover this property without the
+whitelist, at least for future devices.  Was there ever any interest
+in a _DSM or similar interface for this?
 
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index cb11a34fb871..ad78577d4c2c 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -32,7 +32,7 @@ static void seq_set_overflow(struct seq_file *m)
- 
- static void *seq_buf_alloc(unsigned long size)
- {
--	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
-+	return __vmalloc(size, GFP_KERNEL_ACCOUNT);
- }
- 
- /**
-@@ -130,7 +130,7 @@ static int traverse(struct seq_file *m, loff_t offset)
- 
- Eoverflow:
- 	m->op->stop(m, p);
--	kvfree(m->buf);
-+	vfree(m->buf);
- 	m->count = 0;
- 	m->buf = seq_buf_alloc(m->size <<= 1);
- 	return !m->buf ? -ENOMEM : -EAGAIN;
-@@ -237,7 +237,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 			goto Fill;
- 		// need a bigger buffer
- 		m->op->stop(m, p);
--		kvfree(m->buf);
-+		vfree(m->buf);
- 		m->count = 0;
- 		m->buf = seq_buf_alloc(m->size <<= 1);
- 		if (!m->buf)
-@@ -349,7 +349,7 @@ EXPORT_SYMBOL(seq_lseek);
- int seq_release(struct inode *inode, struct file *file)
- {
- 	struct seq_file *m = file->private_data;
--	kvfree(m->buf);
-+	vfree(m->buf);
- 	kmem_cache_free(seq_file_cache, m);
- 	return 0;
- }
-@@ -585,7 +585,7 @@ int single_open_size(struct file *file, int (*show)(struct seq_file *, void *),
- 		return -ENOMEM;
- 	ret = single_open(file, show, data);
- 	if (ret) {
--		kvfree(buf);
-+		vfree(buf);
- 		return ret;
- 	}
- 	((struct seq_file *)file->private_data)->buf = buf;
--- 
-2.25.1
+I *am* very glad to remove a pci_get_slot() usage.
 
+> +
+> +	if (!root || root->devfn)
+>  		return false;
+>  
+>  	vendor = root->vendor;
+
+Don't you need to also remove the "pci_dev_put(root)" a few lines
+below?
