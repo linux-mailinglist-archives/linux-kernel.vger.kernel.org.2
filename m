@@ -2,243 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ED8338C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBCF338C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhCLMCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:02:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231770AbhCLMCg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:02:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615550556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qrEHj5I0bZYnneD3PLLPPSpfhRiDox4bq62WY+1YUCQ=;
-        b=FpEcBJSXz94fi+p/3/f9SH/hV/U86pbI4xKAChu2t1jhQPpV22d4F3t8WnPC+z5uhE8IyV
-        4BVTnMjjdx0ZMMMdlmMLmH9tSOX+nhDfFb/nCwTK80hgR2UY99Ol2VlZbkfGw1iD1+FR4e
-        jBHYgvzEE2AWnIJoRhP6QfqigMtXvZs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-FBr7Ld_VMlW_trAbhxSQfg-1; Fri, 12 Mar 2021 07:02:34 -0500
-X-MC-Unique: FBr7Ld_VMlW_trAbhxSQfg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C5EC1940920;
-        Fri, 12 Mar 2021 12:02:32 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 89A6C60636;
-        Fri, 12 Mar 2021 12:02:24 +0000 (UTC)
-Date:   Fri, 12 Mar 2021 13:02:21 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v4 7/9] KVM: selftests: List all hugetlb src types
- specified with page sizes
-Message-ID: <20210312120221.urbbfl7o3vocblk7@kamzik.brq.redhat.com>
-References: <20210302125751.19080-1-wangyanan55@huawei.com>
- <20210302125751.19080-8-wangyanan55@huawei.com>
+        id S230072AbhCLMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:06:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229568AbhCLMGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:06:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 470F764FD6;
+        Fri, 12 Mar 2021 12:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615550769;
+        bh=DHmyk8GUReblYUlhSMgM0JiPJvuHbVNLZgcQ4Uqew+8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZMnlJOK4+abTr5z6UYLOMd63xUlgezqJXvqxpjbY9ta+qtcZwgxxfDbPmXKjn9G/x
+         fJH3pXeWHvA3lHlndJknsq+TlkHWBGctbcZ81JOI6QsX3ZMv0nto7+QDcim7ArHJOj
+         9I2mVhq9wW7bbwMSGLddZUQCee/FnVMFe3vTv7qt+FXXGGY2F6rtrcv+V9DZqtm7t+
+         WU6H07eYP7vHhX0lFQfBr6wobUMro6CUc76cwUfvvD82C5sTLKLO/AJOmNRIeBK1fe
+         6c/mh7emCx1217+ygNXUp4FTLCvL4uNCNfu0hgYTLvLGOVAiG7NWTlatoHNVIMKJGt
+         DeotHYNFPoIhQ==
+Date:   Fri, 12 Mar 2021 12:04:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+Message-ID: <20210312120456.GD5348@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <20210311161558.GG4962@sirena.org.uk>
+ <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+ <20210312113544.GB5348@sirena.org.uk>
+ <6ed28bb5330879b1919aced5174f319f@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2Z2K0IlrPCVsbNpk"
 Content-Disposition: inline
-In-Reply-To: <20210302125751.19080-8-wangyanan55@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <6ed28bb5330879b1919aced5174f319f@walle.cc>
+X-Cookie: Lake Erie died for your sins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:57:49PM +0800, Yanan Wang wrote:
-> With VM_MEM_SRC_ANONYMOUS_HUGETLB, we currently can only use system
-> default hugetlb pages to back the testing guest memory. In order to
-> add flexibility, now list all the known hugetlb backing src types with
-> different page sizes, so that we can specify use of hugetlb pages of the
-> exact granularity that we want. And as all the known hugetlb page sizes
-> are listed, it's appropriate for all architectures.
-> 
-> Besides, the helper get_backing_src_pagesz() is added to get the
-> granularity of different backing src types(anonumous, thp, hugetlb).
-> 
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  .../testing/selftests/kvm/include/test_util.h | 18 +++++-
->  tools/testing/selftests/kvm/lib/kvm_util.c    |  2 +-
->  tools/testing/selftests/kvm/lib/test_util.c   | 59 +++++++++++++++----
->  3 files changed, 66 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index e087174eefe5..fade3130eb01 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -71,16 +71,32 @@ enum vm_mem_backing_src_type {
->  	VM_MEM_SRC_ANONYMOUS,
->  	VM_MEM_SRC_ANONYMOUS_THP,
->  	VM_MEM_SRC_ANONYMOUS_HUGETLB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16KB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_64KB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_512KB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_1MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_8MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_32MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_256MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_512MB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB,
-> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB,
-> +	NUM_SRC_TYPES,
->  };
->  
->  struct vm_mem_backing_src_alias {
->  	const char *name;
-> -	enum vm_mem_backing_src_type type;
-> +	uint32_t flag;
->  };
->  
->  bool thp_configured(void);
->  size_t get_trans_hugepagesz(void);
->  size_t get_def_hugetlb_pagesz(void);
-> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
-> +size_t get_backing_src_pagesz(uint32_t i);
->  void backing_src_help(void);
->  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
->  
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index cc22c4ab7d67..b91c8e3a7ee1 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -757,7 +757,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->  	region->mmap_start = mmap(NULL, region->mmap_size,
->  				  PROT_READ | PROT_WRITE,
->  				  MAP_PRIVATE | MAP_ANONYMOUS
-> -				  | (src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB ? MAP_HUGETLB : 0),
-> +				  | vm_mem_backing_src_alias(src_type)->flag,
->  				  -1, 0);
->  	TEST_ASSERT(region->mmap_start != MAP_FAILED,
->  		    "test_malloc failed, mmap_start: %p errno: %i",
-> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> index 80d68dbd72d2..df8a42eff1f8 100644
-> --- a/tools/testing/selftests/kvm/lib/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> @@ -11,6 +11,7 @@
->  #include <stdlib.h>
->  #include <time.h>
->  #include <sys/stat.h>
-> +#include <linux/mman.h>
->  #include "linux/kernel.h"
->  
->  #include "test_util.h"
-> @@ -112,12 +113,6 @@ void print_skip(const char *fmt, ...)
->  	puts(", skipping test");
->  }
->  
-> -const struct vm_mem_backing_src_alias backing_src_aliases[] = {
-> -	{"anonymous", VM_MEM_SRC_ANONYMOUS,},
-> -	{"anonymous_thp", VM_MEM_SRC_ANONYMOUS_THP,},
-> -	{"anonymous_hugetlb", VM_MEM_SRC_ANONYMOUS_HUGETLB,},
-> -};
-> -
->  bool thp_configured(void)
->  {
->  	int ret;
-> @@ -180,22 +175,64 @@ size_t get_def_hugetlb_pagesz(void)
->  	return 0;
->  }
->  
-> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
-> +{
-> +	static const struct vm_mem_backing_src_alias aliases[] = {
-> +		{ "anonymous",               0                            },
-> +		{ "anonymous_thp",           0                            },
-> +		{ "anonymous_hugetlb",       MAP_HUGETLB                  },
-> +		{ "anonymous_hugetlb_16kb",  MAP_HUGETLB | MAP_HUGE_16KB  },
-> +		{ "anonymous_hugetlb_64kb",  MAP_HUGETLB | MAP_HUGE_64KB  },
-> +		{ "anonymous_hugetlb_512kb", MAP_HUGETLB | MAP_HUGE_512KB },
-> +		{ "anonymous_hugetlb_1mb",   MAP_HUGETLB | MAP_HUGE_1MB   },
-> +		{ "anonymous_hugetlb_2mb",   MAP_HUGETLB | MAP_HUGE_2MB   },
-> +		{ "anonymous_hugetlb_8mb",   MAP_HUGETLB | MAP_HUGE_8MB   },
-> +		{ "anonymous_hugetlb_16mb",  MAP_HUGETLB | MAP_HUGE_16MB  },
-> +		{ "anonymous_hugetlb_32mb",  MAP_HUGETLB | MAP_HUGE_32MB  },
-> +		{ "anonymous_hugetlb_256mb", MAP_HUGETLB | MAP_HUGE_256MB },
-> +		{ "anonymous_hugetlb_512mb", MAP_HUGETLB | MAP_HUGE_512MB },
-> +		{ "anonymous_hugetlb_1gb",   MAP_HUGETLB | MAP_HUGE_1GB   },
-> +		{ "anonymous_hugetlb_2gb",   MAP_HUGETLB | MAP_HUGE_2GB   },
-> +		{ "anonymous_hugetlb_16gb",  MAP_HUGETLB | MAP_HUGE_16GB  },
-> +	};
-> +	_Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
-> +		       "Missing new backing src types?");
-> +
-> +	TEST_ASSERT(i < NUM_SRC_TYPES, "Backing src type ID %d too big", i);
-> +
-> +	return &aliases[i];
-> +}
-> +
-> +size_t get_backing_src_pagesz(uint32_t i)
-> +{
-> +	uint32_t flag = vm_mem_backing_src_alias(i)->flag;
-> +
-> +	if (i == VM_MEM_SRC_ANONYMOUS)
-> +		return getpagesize();
-> +	if (i == VM_MEM_SRC_ANONYMOUS_THP)
-> +		return get_trans_hugepagesz();
-> +	if (i == VM_MEM_SRC_ANONYMOUS_HUGETLB)
-> +		return get_def_hugetlb_pagesz();
-> +
-> +	return MAP_HUGE_PAGE_SIZE(flag);
-> +}
-> +
->  void backing_src_help(void)
->  {
->  	int i;
->  
->  	printf("Available backing src types:\n");
-> -	for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
-> -		printf("\t%s\n", backing_src_aliases[i].name);
-> +		for (i = 0; i < NUM_SRC_TYPES; i++)
-> +			printf("\t%s\n", vm_mem_backing_src_alias(i)->name);
->  }
->  
->  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name)
->  {
->  	int i;
->  
-> -	for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
-> -		if (!strcmp(type_name, backing_src_aliases[i].name))
-> -			return backing_src_aliases[i].type;
-> +	for (i = 0; i < NUM_SRC_TYPES; i++)
-> +		if (!strcmp(type_name, vm_mem_backing_src_alias(i)->name))
-> +			return i;
 
-This requires vm_mem_backing_src_alias.aliases[] to be in the same order
-as vm_mem_backing_src_type, so we should do the designated array
-initialization like in vm_guest_mode_string().
+--2Z2K0IlrPCVsbNpk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-drew
+On Fri, Mar 12, 2021 at 01:01:41PM +0100, Michael Walle wrote:
+> Am 2021-03-12 12:35, schrieb Mark Brown:
 
->  
->  	backing_src_help();
->  	TEST_FAIL("Unknown backing src type: %s", type_name);
-> -- 
-> 2.23.0
-> 
+> > If the card has a clock API clock as sysclk then set_sysclk(() should
+> > be configuring that clock.
 
+> What do you mean by "the card". The simple-audio-card itself?
+
+> Take a look at:
+> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts#L29
+
+> Does the card has a clock? IMHO the WM8904 codec has a clock, but not
+> the audio card.
+
+The clock on the CODEC, which the card configures.  The CODEC should be
+passing on the configuration to the clock API.
+
+--2Z2K0IlrPCVsbNpk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLWOcACgkQJNaLcl1U
+h9Dr4wf/RvhCgjsXMqQfCMBjIX58G+v9Cg2OPPplcaKKCYDjRg91mNXrL3E80qFQ
+HOfZJ33uxBY2xnzXmfnttbMlnRrQys2U0XPqbQXNnJTnHmJu4XqVU/j+c8QJeKJK
+DCYp/qmAvUqm3i4KDM/bbqIeNCiXHtVZ6FvLdrEL8smdJhXdMGFA24rOvNMlhCyw
+T2/y0+K/70cbhiWTrVFs4LyRnGdlIooLdErAfQ0ZoXnsid0QNObGiS0eOSjssjke
+gfwoUWcR5skL2eEzLBkWAOnJM1Am5S56kSpMaF/69BfwwINbfV7GpCZFOHbI+Zy1
+0ZPH0ScPMHaRdPcpq9ArImBAxwU+Fw==
+=mvjs
+-----END PGP SIGNATURE-----
+
+--2Z2K0IlrPCVsbNpk--
