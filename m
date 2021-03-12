@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C11338A26
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCAA338A2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhCLKa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S233332AbhCLKdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhCLKad (ORCPT
+        with ESMTP id S232384AbhCLKcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:30:33 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42A9C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:30:32 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id bf3so7212827edb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:30:32 -0800 (PST)
+        Fri, 12 Mar 2021 05:32:55 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6921EC061574;
+        Fri, 12 Mar 2021 02:32:54 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id g25so3480641wmh.0;
+        Fri, 12 Mar 2021 02:32:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XECRIur2x6+f+ush3/3hqdqZ/DZoK8/+Xw6JDZbJb1s=;
-        b=iXvvKsG0wwejL/9UQzwbegY9itSH0rJIMH9NW8E0Bd8mu9bUC7lTJQRmIh/1oKHpxT
-         g5+5j676vZ9R30LLMLRGd+VKznf5heED0LVWtUv0UjCgC+H0DO+hjbwoB2ov3Kgjjy16
-         yBxVQWDc3xO5v6h4TkWMaqzO9gNmwPJgxNTmE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CC6/sDxlGq/QTBQVFI/RVN7Ji2HwY64YYGDFhUnVtCE=;
+        b=Mz+GP4llrzoVC1uCUb6nDwmULwpEI3v9hbApCzptpvPcOTqKEhDZiMixv0t2il/eXq
+         X0nkZBnjko5SQxPc/d4O/kh3bs37kN5lPthUABorWKdfJPJVQnz5Cabv6YbRGESAsJaR
+         IVLx7k7hJmKAzDoH87yq25KQV5AyCXnqzm6PaDnWVVDo9ibmwF1JOeji9j00c9ZKqXAz
+         pOmkAbAJqsCBv+Wy+dNLLJ3NWJG5N4vWfMH6wMnV+wOEcqyPCn8FltnnYZPKEoiQsZ/2
+         3ZX6g65KfC4pxicO6jvgAVxOUyUXTLBGeR2/KNrdzDq19SZbvtRQGtdy2l3a/aIVVPij
+         1USg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XECRIur2x6+f+ush3/3hqdqZ/DZoK8/+Xw6JDZbJb1s=;
-        b=fCKBO2Rz8jX9tM9/9N/hsGa/jOKIJrvIfmQ5//xuzwcJ6LoO1fqlZpJ+IKNxZXPvd+
-         3pC7kH2h87H7bI/lhoG7Ki0j3yb2z2OLTwldt0cmoh2XWJNaHSDtPw5MuoNLEaL13U0E
-         MM4WT2z/B4NptGi4FfvZhF0RfSpmYe3xiUbeiUEMti9mbjdvDf4tz6vf/67P6DKTsHBX
-         mNncdtKJwY7ef1JDGu5m/e81nFzRGcQPJdXitoX3YICIWZxFwOmsOHf/SagMlCBl8Fki
-         tXrlrofSCxFb4WqVyuEdwWlXkGZEeY+NWfXivymtuS02BzvEdVNdnctyT8TpMvqzFaLS
-         CuUA==
-X-Gm-Message-State: AOAM531gn/0RTyNOCwkvTox95Sm8D4ivLGfh99WruMLL9lpD1HtI+g1v
-        9L/jqVf5womubxFwWN0WhuN5yw==
-X-Google-Smtp-Source: ABdhPJzrvVKFIULeVmjdc6YpmB1AKfTtEkoIb4q4Pf0o0D9KFAULkluIcOcTLoAMVPzKtGKu1hBfHA==
-X-Received: by 2002:a05:6402:35c9:: with SMTP id z9mr13277763edc.94.1615545031488;
-        Fri, 12 Mar 2021 02:30:31 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id r13sm2735729edy.3.2021.03.12.02.30.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CC6/sDxlGq/QTBQVFI/RVN7Ji2HwY64YYGDFhUnVtCE=;
+        b=sHNUKc/wFbWWLeEOj3QCFPn2sWnf/uaF97vrDhYf65u4kZLfrleZiCUq9dpbhRzRua
+         0LV6JgYypWgF8UmmRdXUQQEUm+LOuGIDSNps6ULTxWY0d6j0OF8h+zlvYjfQZvuUgKGI
+         IZDQ+g96p1g+qVEE7HUbP/h4jla/mK2/a1rIkExd1qfMEqmsfQIvCTqW2gMTLGrMa6lb
+         PlB1akiEzmpNrrGtbjV4+l5dLLNNhbYjjWpro0FDOR+SYKH2/8HJyxrF2VHrUxPhMcKE
+         Kqai+JGwG+R1gt0ygq0HwvZ1Fl5IP9OWFz6QkkSsJHbbK2S0OmLpg2Q/MHNjGTQAQ/au
+         YKpQ==
+X-Gm-Message-State: AOAM532bFeBcZeKqx79RtdVq8oRwHoPNqzWYA+9RKK5mQK8y1o4FcCR9
+        xzzRM860XpnuZRt5F/8lv1ycVuoa3gQ=
+X-Google-Smtp-Source: ABdhPJyV14kIMVP0Kg+hqjBEFlyLlvIE458ue01lu5OwKNA1ceUxsjtbiBLA/8yjQo82e+7SNgMNzQ==
+X-Received: by 2002:a1c:a74b:: with SMTP id q72mr12240723wme.158.1615545173647;
+        Fri, 12 Mar 2021 02:32:53 -0800 (PST)
+Received: from valhalla.home ([2.26.187.30])
+        by smtp.gmail.com with ESMTPSA id u2sm7411821wrp.12.2021.03.12.02.32.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 02:30:31 -0800 (PST)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] devtmpfs: actually reclaim some init memory
-Date:   Fri, 12 Mar 2021 11:30:27 +0100
-Message-Id: <20210312103027.2701413-2-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210312103027.2701413-1-linux@rasmusvillemoes.dk>
-References: <20210312103027.2701413-1-linux@rasmusvillemoes.dk>
+        Fri, 12 Mar 2021 02:32:53 -0800 (PST)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, laurent.pinchart@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        dongchun.zhu@mediatek.com, tian.shu.qiu@intel.com,
+        luzmaximilian@gmail.com, me@fabwu.ch,
+        jeanmichel.hautbois@ideasonboard.com, kitakar@gmail.com,
+        jorhand@linux.microsoft.com
+Subject: [PATCH 0/1] Add support for OV5693 Sensor
+Date:   Fri, 12 Mar 2021 10:32:38 +0000
+Message-Id: <20210312103239.279523-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently gcc seems to inline devtmpfs_setup() into devtmpfsd(), so
-its memory footprint isn't reclaimed as intended. Mark it noinline to
-make sure it gets put in .init.text.
+Hello all
 
-While here, setup_done can also be put in .init.data: After complete()
-releases the internal spinlock, the completion object is never touched
-again by that thread, and the waiting thread doesn't proceed until it
-observes ->done while holding that spinlock.
+This patch adds support for the OV5693 sensor found as the front camera in
+many Microsoft Surface devices, along with a number of similar style laptops.
+It is a heavily adapted derivative of the atomisp-ov5693 driver in staging,
+which retains most of the global register settings and some of the other
+functions from that driver, but otherwise uses the "normal" v4l2
+infrastructure.
 
-This is now the same pattern as for kthreadd_done in init/main.c:
-complete() is done in a __ref function, while the corresponding
-wait_for_completion() is in an __init function.
+There are 3 supported modes (down from 18 in the atomisp one!); 2592x1944,
+1920x1080 and 1280x720.
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/base/devtmpfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+As we're targeting libcamera, all mandatory, recommended and optional controls
+for that library (at least, at time of writing) are supported.
 
-diff --git a/drivers/base/devtmpfs.c b/drivers/base/devtmpfs.c
-index aedeb2dc1a18..8be352ab4ddb 100644
---- a/drivers/base/devtmpfs.c
-+++ b/drivers/base/devtmpfs.c
-@@ -371,7 +371,7 @@ int __init devtmpfs_mount(void)
- 	return err;
- }
- 
--static DECLARE_COMPLETION(setup_done);
-+static __initdata DECLARE_COMPLETION(setup_done);
- 
- static int handle(const char *name, umode_t mode, kuid_t uid, kgid_t gid,
- 		  struct device *dev)
-@@ -405,7 +405,7 @@ static void __noreturn devtmpfs_work_loop(void)
- 	}
- }
- 
--static int __init devtmpfs_setup(void *p)
-+static noinline int __init devtmpfs_setup(void *p)
- {
- 	int err;
- 
+Daniel Scally (1):
+  media: i2c: Add support for ov5693 sensor
+
+ MAINTAINERS                |    7 +
+ drivers/media/i2c/Kconfig  |   11 +
+ drivers/media/i2c/Makefile |    1 +
+ drivers/media/i2c/ov5693.c | 1585 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 1604 insertions(+)
+ create mode 100644 drivers/media/i2c/ov5693.c
+
 -- 
-2.29.2
+2.25.1
 
