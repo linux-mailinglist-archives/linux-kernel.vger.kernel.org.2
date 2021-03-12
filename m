@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FB13396F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC253396F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbhCLSxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:53:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhCLSxM (ORCPT
+        id S233858AbhCLS40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:56:26 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47111 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233600AbhCLS4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 13:53:12 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59085C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:53:01 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id s7so12348296plg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 10:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4lnxveEJ/0ZKlbul4AkdRbzETouaO+1JW1spiBW8ehI=;
-        b=g7ECqI3a3+o2sGXX/XLkecd+qRB7jy07detu5ysXiCWsWZRQlW36mV/mpnHpeRUV2e
-         96flARGCs1u7qPUrBPnGMKsHREUIgX1qR+ezAldlSRbnvJyrEopC9FaAcc2RFpkevMc7
-         jaIlyPRaOqgqvTnhi6X9EAHnlWs4x7BglhW6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4lnxveEJ/0ZKlbul4AkdRbzETouaO+1JW1spiBW8ehI=;
-        b=osl6i9rH6Y+wlbMKCCvNo9v0f0nRnrJDpXCJ9MAO/7dewnh7ldCzFlvDGMIXNYRrJO
-         d6I4sniYxMINu8Weal+hMKS3GphrfAygQpGWHfysAEICe/JUTSe4ez6NgIukr/3Du3JP
-         H/ooIwoxqNHPXP1ziarESVg3ZRhJ1sEkJMkey6WEiM/ep85TQyLoeGreUa9rksy3VYZn
-         QWfRO9FBClunId4sJckgQ/GMOET4iBzLrjyiPA5MAaavaWRGglJ+sVak5SE1OneZGhc7
-         a6CaBPVCrpNrXWr3iEBBI3Pk2gNhc5q2FdUHfkbpAE0HDf6cNothkfvHMaKCI/CPSxYw
-         kWQQ==
-X-Gm-Message-State: AOAM530WjOgLpNsKqd1VL/GdsRTI5m7IreB0W56xegjjZvSDsZ1bwq0e
-        aCSq99B3TkLW3COecAwb50jII072SYvlCA==
-X-Google-Smtp-Source: ABdhPJzIK3/zcsP1TXvm2aWXTGtveRpCxedeg7bNwF+dueqAOaOCNWvyJk+0QCrzytMON1/F3YT+Sg==
-X-Received: by 2002:a17:90b:4a4c:: with SMTP id lb12mr15505099pjb.133.1615575180327;
-        Fri, 12 Mar 2021 10:53:00 -0800 (PST)
-Received: from braindead.localdomain (c-71-202-115-154.hsd1.ca.comcast.net. [71.202.115.154])
-        by smtp.gmail.com with ESMTPSA id k3sm5798446pgq.21.2021.03.12.10.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 10:52:59 -0800 (PST)
-Subject: Re: [PATCH v3] Expose the bus kernel docs to the build docs.
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210307031611.GU2723601@casper.infradead.org>
- <20210308191417.4750-1-wt@penguintechs.org>
-From:   Wren Turkal <wt@penguintechs.org>
-Message-ID: <c94755bb-abde-4abb-1303-731592bec570@penguintechs.org>
-Date:   Fri, 12 Mar 2021 10:52:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 12 Mar 2021 13:56:04 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E5F8E5806DA;
+        Fri, 12 Mar 2021 13:56:03 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 12 Mar 2021 13:56:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=uq8KoorMFRJspDef7Zbl/mIHRgY
+        g65/YZRWkmwTdX8A=; b=gg4RGTOkEnH37/Cnkt1YTKGfeytFjljmcQDJtIyL6wx
+        AbbiCvABk4nWbmM2k8CaQmNQ70AdJ6aTPGVYeqL+QXKZl0r05PBj19qIV3kxRV24
+        cjx8m+xwdvLJC++NB/JTqMQIMBWjQUFNJZ4DVDjDHh1fzSCg5IRuDuYA72e189mm
+        YQiuwEzMsX4C2HiIcK8w2EkzPRWpj9jNgyRyvHuLVGMX9pUvAnwLUYtix25I6k+s
+        k5dAT+M90jiVLOGUB4DXrMNRPIaiP1UZNbJRn9qWuc8NQVeu3idmFF9tvaUCHm9k
+        a0tTWPLhoHJXclIi/Wr/ZUxmePZE2NLqxBofJ9MV5Yg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=uq8Koo
+        rMFRJspDef7Zbl/mIHRgYg65/YZRWkmwTdX8A=; b=fyerTbZpVZdjvKb7E3gALS
+        iviv1ltgHZ24LSIDnf4+GUckoBXckE81kztFF1o/EhoHd/q4fudHr7CzAKlS6Wlu
+        Sl7owsdYCa4jftL6yxpGc+JWojRp6M04RszFcN6opvRGR6ezPowOkEHXI9sI2Fcb
+        pcnlBx8vWA3Ue3+7he2RpDRS33Gv16Jq6uaq9xRW7DfEn5th9ii6pVNm0J2ZL5SB
+        s84J0VzMQttXUZ0loxqCA4lu6ewLrZQ4EHZzup6xdF0+FgbYwTEiEMF24NqU/7rS
+        Ruc2OCc2D2w8j2qAncKOZ1Zl5DPi5fLW+1aL42f6OiscbhDAF4kifO4/ahC2avvA
+        ==
+X-ME-Sender: <xms:Q7lLYBdpBv5tjDfkH6OlLAoUpsF3TdY2sZNewek0OZK4x3_osb-IEg>
+    <xme:Q7lLYDhU8VsUhVwkGm8_l7Y5P03AQUERm9imKBRLTs9UKbDsYYm0KRw2P7dC4WoPB
+    20OZxCtxzlu9cllLQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvvddguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepuedtudehffetjeejueelleduvdefteeulefhjefghedttedv
+    veefffegkedtjedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepieelrd
+    dukedurddutdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:Q7lLYJrenwZxZCtBT2KIb5wMaHg9bUCLZHGEHzARr7cUBQmpqCtzFg>
+    <xmx:Q7lLYDEb2ufQu08AOesKOWju7tES4tv26faOJ5TifGCKjUFx0dOyNA>
+    <xmx:Q7lLYDmi9W8-pRw4kyM1fW_n6ZMR4yWPTW6dTaiod6QjuwpGleIXcw>
+    <xmx:Q7lLYH-M-H0qwTYoF_yQ_4ekrJmSykIftMKo7N4w0EQy2zFmyyOXWA>
+Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D5C491080064;
+        Fri, 12 Mar 2021 13:56:01 -0500 (EST)
+Date:   Fri, 12 Mar 2021 10:56:00 -0800
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip v2 00/10] kprobes: Fix stacktrace with kretprobes
+Message-ID: <20210312185600.2fziqmye77iufrgz@maharaja.localdomain>
+References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
 MIME-Version: 1.0
-In-Reply-To: <20210308191417.4750-1-wt@penguintechs.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161553130371.1038734.7661319550287837734.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew,
+On Fri, Mar 12, 2021 at 03:41:44PM +0900, Masami Hiramatsu wrote:
+> Hello,
+> 
+> Here is the 2nd version of the series to fix the stacktrace with kretprobe.
+> 
+> The 1st series is here;
+> 
+> https://lore.kernel.org/bpf/161495873696.346821.10161501768906432924.stgit@devnote2/
+> 
+> In this version I merged the ORC unwinder fix for kretprobe which discussed in the
+> previous thread. [3/10] is updated according to the Miroslav's comment. [4/10] is
+> updated for simplify the code. [5/10]-[9/10] are discussed in the previsous tread
+> and are introduced to the series.
+> 
+> Daniel, can you also test this again? I and Josh discussed a bit different
+> method and I've implemented it on this version.
 
-I hate to bother you, but how do I know if this patch is acceptable or 
-not. I am not sure how this is tracked.
+Works great, thanks!
+
+Tested-by: Daniel Xu <dxu@dxuuu.xyz>
+
+> 
+> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> the pt_regs passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API.
+
+While this changes behavior a little bit, I don't think anyone will
+mind. I think it's more accurate now.
+
+<...>
 
 Thanks,
-wt
-
-On 3/8/21 11:14 AM, Wren Turkal wrote:
-> Before, the bus type related APIs that were defined in the
-> include/linux/device/bus.h were not referenced anywhere in the docs, so
-> I linked it to the bus types api documentation.
-> 
-> Signed-off-by: Wren Turkal <wt@penguintechs.org>
-> ---
->   Documentation/driver-api/driver-model/bus.rst | 8 ++++++++
->   Documentation/driver-api/infrastructure.rst   | 3 +--
->   2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
-> index 016b15a6e8ea..c53b01e95fd9 100644
-> --- a/Documentation/driver-api/driver-model/bus.rst
-> +++ b/Documentation/driver-api/driver-model/bus.rst
-> @@ -1,3 +1,5 @@
-> +.. _bus_types:
-> +
->   =========
->   Bus Types
->   =========
-> @@ -144,3 +146,9 @@ sysfs directory using::
->   
->   	int bus_create_file(struct bus_type *, struct bus_attribute *);
->   	void bus_remove_file(struct bus_type *, struct bus_attribute *);
-> +
-> +Functions and Structures
-> +========================
-> +
-> +.. kernel-doc:: include/linux/device/bus.h
-> +.. kernel-doc:: drivers/base/bus.c
-> diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
-> index 683bd460e222..eb2a2c9e3c0c 100644
-> --- a/Documentation/driver-api/infrastructure.rst
-> +++ b/Documentation/driver-api/infrastructure.rst
-> @@ -41,8 +41,7 @@ Device Drivers Base
->   .. kernel-doc:: drivers/base/platform.c
->      :export:
->   
-> -.. kernel-doc:: drivers/base/bus.c
-> -   :export:
-> +:ref:`bus_types`
->   
->   Device Drivers DMA Management
->   -----------------------------
-> 
-
--- 
-You're more amazing than you think! ymatyt.com
+Daniel
