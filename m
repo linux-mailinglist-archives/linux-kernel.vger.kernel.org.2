@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56B9338F1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D84A338F22
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhCLNtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:49:07 -0500
-Received: from mga06.intel.com ([134.134.136.31]:55009 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231496AbhCLNs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:48:56 -0500
-IronPort-SDR: rH11lrFQv4WxOr7qNKzqzBGG31f4evJIuhmO3slpcD4EXjfObR+NqcCPo7u5mYQQXxUN3rpop/
- hhXMoVoUUWOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="250197967"
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="250197967"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 05:48:56 -0800
-IronPort-SDR: dgyXnK8hy0kotiwv4nNM5fp2++5Jj2k26Lp5YVDGg/OT8ZAjjWEhH4PQY9CCwOPK+ORUsuNMWQ
- 2TTf/b9zyiFQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
-   d="scan'208";a="431949942"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Mar 2021 05:48:54 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 3D4582AF; Fri, 12 Mar 2021 15:49:05 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Bakker <xc-racer2@live.ca>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] iio: light: gp2ap002: Drop unneeded explicit casting
-Date:   Fri, 12 Mar 2021 15:49:03 +0200
-Message-Id: <20210312134903.4296-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S231496AbhCLNuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:50:15 -0500
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:44926 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhCLNuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:50:10 -0500
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lKiAt-0008V6-CR; Fri, 12 Mar 2021 13:49:55 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+Date:   Fri, 12 Mar 2021 13:49:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The unnecessary explicit casting is being used. Drop it for good.
+On 10/03/2021 17:16, Dmitry Vyukov wrote:
+> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>> userspace arch: riscv64
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+> 
+> +riscv maintainers
+> 
+> This is riscv64-specific.
+> I've seen similar crashes in put_user in other places. It looks like
+> put_user crashes in the user address is not mapped/protected (?).
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/light/gp2ap002.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I've been having a look, and this seems to be down to access of the
+tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+bad address to clone?
 
-diff --git a/drivers/iio/light/gp2ap002.c b/drivers/iio/light/gp2ap002.c
-index 7ba7aa59437c..d048ae257c51 100644
---- a/drivers/iio/light/gp2ap002.c
-+++ b/drivers/iio/light/gp2ap002.c
-@@ -465,8 +465,7 @@ static int gp2ap002_probe(struct i2c_client *client,
- 
- 	regmap = devm_regmap_init(dev, &gp2ap002_regmap_bus, dev, &config);
- 	if (IS_ERR(regmap)) {
--		dev_err(dev, "Failed to register i2c regmap %d\n",
--			(int)PTR_ERR(regmap));
-+		dev_err(dev, "Failed to register i2c regmap %ld\n", PTR_ERR(regmap));
- 		return PTR_ERR(regmap);
- 	}
- 	gp2ap002->map = regmap;
+ From looking at the code, the put_user() code should have set the
+relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+s2 register in the crash report) and from looking at the compiler
+output from my gcc-10, the code looks to be dong the relevant csrs
+and then csrc around the put_user
+
+So currently I do not understand how the above could have happened
+over than something re-tried the code seqeunce and ended up retrying
+the faulting instruction without the SR_SUM bit set.
+
 -- 
-2.30.1
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
+https://www.codethink.co.uk/privacy.html
