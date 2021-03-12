@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE638338ACF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAAE338AD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbhCLK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:58:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:51610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233939AbhCLK6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:58:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D072DED1;
-        Fri, 12 Mar 2021 02:58:21 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F00BE3F793;
-        Fri, 12 Mar 2021 02:58:19 -0800 (PST)
-Subject: Re: [PATCH 1/3] thermal/drivers/cpufreq_cooling: Use device name
- instead of auto-numbering
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <452c1619-fcda-d006-721a-d471389aa90a@arm.com>
-Date:   Fri, 12 Mar 2021 10:58:18 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233666AbhCLLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232920AbhCLK7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 05:59:43 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3B2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:59:43 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so15537081wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:59:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VVhsAnYTZ5uoDdHPv0Rq+cfHyo0uxX+cwVjaziX6TS0=;
+        b=qikOs3sRt3V3do4bzfm30QuBd2hEzkVlnGKj4H+OAr+JIqoS3oPynFdRtZLvfg3E2a
+         V6SpuIfIZVGZ6wxuYyMtC0XDWZz/69wjGIoKdv/JvqBD8Z4wvpnoQlwzGo9PGdYH+GAm
+         31HUCs9Bb9XeC012/uiK7qvGYkgOZzcRxCECDCrowktPUsJLBAzSLaXp4l6vKqmqenUs
+         Q/wrSricjQdRRNsOEa9o3N2Tv8C2M31WXU+h3pi9kaipFwbTELY93qfDgrAltAUsEqcP
+         YxVlzBT51Jxe4kYAdEdb0C43h7cfVGwg5sPbW6bDNfeUg8AT/k2fsjUxpQYwt+6pEnih
+         xb0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VVhsAnYTZ5uoDdHPv0Rq+cfHyo0uxX+cwVjaziX6TS0=;
+        b=HflZOIoEc42ep4uoBeSi2dliHmAAXtT0wIV4LJKAso4SWSp2A9OH+9UVEWSLcv9jMj
+         pAizLcr8QPr8r/Gafwp+ZWmo+EKa7XI3s/u43jIAb8O/3auFSZVfYmMb7lxA9I1twIRF
+         xxyXSjCzCAcvI85RYjl/grDJ5XMqMQgJ90J60kaFFJeCKFa+m/O5Rcx+oXNKNzpTLnvM
+         UvgpGh5//sT6yWMD2w5qlJwNYZHWpA/1Jg8etbm5CGdbpf6JOeudEvMYUN3z6T7Hn93u
+         sTP4SJQ3iEWMbAkePrnJtvxbrhMYTo6DXMk/8wVcxeTz0yRC7D1zSss3T/SphBOxIjuU
+         LxiQ==
+X-Gm-Message-State: AOAM532KuAKtyOW3bA4WF/fGIio9PpbgPx5/bhyQyRu/vbwgxfu6c96R
+        zQSmVvXWIUvH32eVnriBLQoCBKTuyxgItw9BB+0=
+X-Google-Smtp-Source: ABdhPJwbgKSnXfoURCE7RpTdeOI9Zab8U8DVozKfPgjtPTa6ObjVYcUsMDNe6NxvxtsA/kzr3NQt7VLBud5WR2U/dds=
+X-Received: by 2002:a1c:bc82:: with SMTP id m124mr12541876wmf.118.1615546781948;
+ Fri, 12 Mar 2021 02:59:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210310114600.27178-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
+ <20210309153455.GB4878@sirena.org.uk> <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
+ <20210312104931.GA5348@sirena.org.uk>
+In-Reply-To: <20210312104931.GA5348@sirena.org.uk>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 12 Mar 2021 12:59:29 +0200
+Message-ID: <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Fri, Mar 12, 2021 at 12:50 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Mar 12, 2021 at 10:32:54AM +0200, Daniel Baluta wrote:
+> > On Tue, Mar 9, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > > +                     if (!dai_link->platforms->of_node)
+> > > > +                             dai_link->platforms->name = component->name;
+>
+> > > Why would we prefer the node name over something explicitly configured?
+>
+> > Not sure I follow your question. I think the difference stands in the
+> > way we treat OF vs non-OF platforms.
+>
+> If an explicit name has been provided why would we override it with an
+> autogenerated one?
 
-Only minor comments.
+Wait, are you asking why the initial code:
 
-On 3/10/21 11:45 AM, Daniel Lezcano wrote:
-> Currently the naming of a cooling device is just a cooling technique
-> followed by a number. When there are multiple cooling devices using
-> the same technique, it is impossible to clearly identify the related
-> device as this one is just a number.
-> 
-> For instance:
-> 
->   thermal-cpufreq-0
->   thermal-cpufreq-1
->   etc ...
-> 
-> The 'thermal' prefix is redundant with the subsystem namespace. This
-> patch removes the 'thermal prefix and changes the number by the device
-
-missing ', after 'thermal
-
-> name. So the naming above becomes:
-> 
->   cpufreq-cpu0
->   cpufreq-cpu4
->   etc ...
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/thermal/cpufreq_cooling.c | 28 +++++++---------------------
->   1 file changed, 7 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-> index 10af3341e5ea..cf0332bbdcd3 100644
-> --- a/drivers/thermal/cpufreq_cooling.c
-> +++ b/drivers/thermal/cpufreq_cooling.c
-> @@ -13,6 +13,7 @@
->   #include <linux/cpu.h>
->   #include <linux/cpufreq.h>
->   #include <linux/cpu_cooling.h>
-> +#include <linux/device.h>
->   #include <linux/energy_model.h>
->   #include <linux/err.h>
->   #include <linux/export.h>
-
-You can now also remove the header:
-#include <linux/idr.h>
+  dai_link->platforms->name = component->name;
 
 
-other than that, LGTM
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+is there in the initial code?
