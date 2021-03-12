@@ -2,104 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DEE338863
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C8A338866
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhCLJPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S232747AbhCLJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhCLJPD (ORCPT
+        with ESMTP id S232717AbhCLJPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:15:03 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994ABC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:02 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id i61so6912898edd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:02 -0800 (PST)
+        Fri, 12 Mar 2021 04:15:48 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA24EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:47 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id l11so4375895wrp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:15:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vr0Lv80xX3Xl1L8m7N3BWIS/MyIzX8iL/K8kW4thpIU=;
-        b=CqF/Vmp9d1IQSuSoyVR1p1PonzxnRC7YVWCuT73D3c7/UoVTQwfy4d3lTqaj04mPUQ
-         w6sDy8AQC/jxvaSTTu0yKndZ7nBoRAi41EFLCvhlDfC8iVzFOPC/8fvKvRQIeAiQgh5V
-         KRZ+w8tWAPqNUkdW2da/uoIpNh1yN0K7orKRo=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uNaymeWh6w/U88+iWiJkSx0rbMj53oFGfAfvgSr6Ycs=;
+        b=ok9MAF/IrE4WyI20/akQhJ7RgA/76AiNVkV2k2colkHyEED72TGPHB/b8HzesjIV6Q
+         nqjYcXFdWuV7C7m6o0ak0NMLTf+cetxe4kP8ICwIFE0tlRkLfD2wLUutYMC1qlA/ZZDQ
+         jmm+mZRLhmvZdjpsspxWt3zZdfhs3R4StCXatGYWolpUvQJbKZxoGeANnUue1zr4D3Cl
+         edXEofelPa//rKwxUhnUzZuPjLtenOCtCXUmcfM4ZXTtAR6pzuGqT20Jjf05gUVpeROg
+         WNkBM8rZ9HHm56/WunEVpM3+RzPsSVY7+Vd4/85S0V05TA3QZADE9e+zhs96yMpvkCQ/
+         pqaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vr0Lv80xX3Xl1L8m7N3BWIS/MyIzX8iL/K8kW4thpIU=;
-        b=Iv4odufNLMLoTGFqPw/rTWkHs7xDaFjihLZJCsf8GPOhfR5mSAWd5B2RBuWWin1wtF
-         vsKsfnu3OIye8dEjN/4vf/w2udkuqTo0CahueYzsaWTP2BP8vOMB7CKAdW5JDjc6YCXp
-         Mt514DcdttoHGU/+AV63sW/znyylJT7hcj5Hk3sNxI8yTN4tFcVTnGkYY/ypyFgq3zyS
-         bahjnKMtDqU3u9sQSL5dS4FVSWnrX/48ogXRExLt6u/N/wuHyz/sccLJHKdGjreCUkyM
-         iC+MCZkP5Yqdvl+Lnks6SbMkJQPgT/YAxsRvO0/5K77fwQC/ecZSTUbyp4IoelwKkvQA
-         SUvQ==
-X-Gm-Message-State: AOAM532r23iaTc/J0CQkniDLu4KaEUCDSWOI+pNT3dHO15PmhEhHMHHf
-        NPd6YCgP9l5b7SqAjUnOibpwvw==
-X-Google-Smtp-Source: ABdhPJzojpw5MISuvwhn5uCj+GlJAixi2DNi1NCX+H/oDGcpqgnrVUfFvP7Bn2/KE8Wd2h5/no6lTw==
-X-Received: by 2002:a05:6402:57:: with SMTP id f23mr12757182edu.323.1615540501369;
-        Fri, 12 Mar 2021 01:15:01 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id rs24sm2493668ejb.75.2021.03.12.01.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Mar 2021 01:15:01 -0800 (PST)
-Subject: Re: [PATCH 14/14] MAINTAINERS: Add entry for the bitmap API
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-15-yury.norov@gmail.com>
- <YC6HoF2lhSlrYs3j@smile.fi.intel.com> <20210218153424.GA701246@yury-ThinkPad>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <d677abac-ad3e-7483-b808-4b826d3afd66@rasmusvillemoes.dk>
-Date:   Fri, 12 Mar 2021 10:15:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uNaymeWh6w/U88+iWiJkSx0rbMj53oFGfAfvgSr6Ycs=;
+        b=acAfNdsnucC8KE+lsZu5TvI5TcmnXc7+2Mib+GgxBXpZzMAYwmHjvE3SUOk8X1T+ET
+         uGNlcjCBSQ2TBOOKb3RE9Du+T1HpGHEEK7Nd5QMLf1cYJYpi7Upwca9i85OpfaGXKF1J
+         bNVH5QPUbm40tWlmA2zGAWYe27FnAdOoGX7LSXv4DDzTsUcBQdQtsPR7tSnXmJy9CVZh
+         AfJaN9QDGuLKUoEs5c8W7Jk92ohm2e2pgSE8HaWLpR/wb+qnlbyo0+fUBCJ5m55tclWp
+         ZlN1en1r+4QqFw8aaczpubwnauLiDMw6/ERjp+TwO8b3YyO4j7K4lnhfNHkh68p2kpp8
+         c2ew==
+X-Gm-Message-State: AOAM533+kZdI8QrNIWp3bpQWIrwRq9oml6koB8wJWZSoWmY+nffg3X3r
+        3H9Uvp3JeJLRzscDX8cD0tA=
+X-Google-Smtp-Source: ABdhPJyiEaSZKYzjoIJC3mpmLfRbsGSrKD5GvQivjs6DqXZ1d/jLM8KZVuv2fuf9wuMI0IHzxrzJtg==
+X-Received: by 2002:a5d:5906:: with SMTP id v6mr12919731wrd.137.1615540546591;
+        Fri, 12 Mar 2021 01:15:46 -0800 (PST)
+Received: from agape.jhs ([5.171.81.107])
+        by smtp.gmail.com with ESMTPSA id e8sm1443257wme.14.2021.03.12.01.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 01:15:46 -0800 (PST)
+Date:   Fri, 12 Mar 2021 10:15:29 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Eric Curtin <ericcurtin17@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: align comments
+Message-ID: <20210312091528.GA1577@agape.jhs>
+References: <20210310153717.GA5741@agape.jhs>
+ <YEjrEErDZTH47gto@kroah.com>
+ <20210310160946.GA6421@agape.jhs>
+ <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218153424.GA701246@yury-ThinkPad>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpvso71zHTHJBduzrX7wx=gDN9mi2CEaXskF=TaZZoL-2+V_Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 16.34, Yury Norov wrote:
-> On Thu, Feb 18, 2021 at 05:28:32PM +0200, Andy Shevchenko wrote:
->> On Wed, Feb 17, 2021 at 08:05:12PM -0800, Yury Norov wrote:
->>> Add myself as maintainer for bitmap API.
->>>
->>> I'm an author of current implementation of lib/find_bit and an
->>> active contributor to lib/bitmap. It was spotted that there's no
->>> maintainer for bitmap API. I'm willing to maintain it.
->>
->> Perhaps reviewers as well, like Rasmus, if he is okay with that, of course?
+On Wed, Mar 10, 2021 at 10:27:53PM +0000, Eric Curtin wrote:
+> Hi Fabio,
 > 
-> I'll be happy if you and Rasmus join the team. :) Guys, just let me
-> know and I'll update the patch.
->  
->> Otherwise, why not?
->> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > I am sorry, I fear I don't understand, checkpatch.sh script says the patch is ok.
+> > Where have I to add a ' ' (a blank?)?
+> >
+> > thank you,
+> >
+> > fabio
+> >
+> 
+> I'm only responding to this because this email is doing a very good job
+> of avoiding my filters somehow :) I think what Greg means is:
+> 
+> Change this:
+> 
+>  /*
+> -op_mode
+> -Set to 0 (HT pure) under the following conditions
+> -       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> -       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> -Set to 1 (HT non-member protection) if there may be non-HT STAs
+> -       in both the primary and the secondary channel
+> -Set to 2 if only HT STAs are associated in BSS,
+> -       however and at least one 20 MHz HT STA is associated
+> -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> -       (currently non-GF HT station is considered as non-HT STA also)
+> -*/
+> + *op_mode
+> + *Set to 0 (HT pure) under the following conditions
+> + *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> + *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> + *Set to 1 (HT non-member protection) if there may be non-HT STAs
+> + *      in both the primary and the secondary channel
+> + *Set to 2 if only HT STAs are associated in BSS,
+> + *      however and at least one 20 MHz HT STA is associated
+> + *Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> + *      (currently non-GF HT station is considered as non-HT STA also)
+> + */
+> 
+> to this:
+> 
+>  /*
+> -op_mode
+> -Set to 0 (HT pure) under the following conditions
+> -       - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> -       - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> -Set to 1 (HT non-member protection) if there may be non-HT STAs
+> -       in both the primary and the secondary channel
+> -Set to 2 if only HT STAs are associated in BSS,
+> -       however and at least one 20 MHz HT STA is associated
+> -Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> -       (currently non-GF HT station is considered as non-HT STA also)
+> -*/
+> + * op_mode
+> + * Set to 0 (HT pure) under the following conditions
+> + *      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+> + *      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+> + * Set to 1 (HT non-member protection) if there may be non-HT STAs
+> + *      in both the primary and the secondary channel
+> + * Set to 2 if only HT STAs are associated in BSS,
+> + *      however and at least one 20 MHz HT STA is associated
+> + * Set to 3 (HT mixed mode) when one or more non-HT STAs are associated
+> + *      (currently non-GF HT station is considered as non-HT STA also)
+> + * /
+> 
+> Like Dan said, you need a space after the '*'/
+> 
+> Is mise le meas/Regards,
+> 
+> Eric Curtin
+> 
+> Check out this charity that's close to my heart:
+> 
+> https://www.idonate.ie/fundraiser/11394438_peak-for-pat.html
+> https://www.facebook.com/Peak-for-Pat-104470678280309
+> https://www.instagram.com/peakforpat/
 
-Sure, you can add my name/email as an R: line (or whatever means
-reviewer), and consider this patch (with or without that addition) acked.
+Thank you Eric, community is the best resource ever :), hope to contribute
+soon
 
-Rasmus
+Kind regards,
+
+Fabio
+
