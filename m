@@ -2,148 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CD6338F43
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8E8338F4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhCLN60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:58:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhCLN6I (ORCPT
+        id S231640AbhCLN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:59:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231657AbhCLN7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:58:08 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835E6C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:58:08 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id g27so25812824iox.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 05:58:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NfGNxFGx/GSqQ8J+prbrVB3YoseYYdcfdmqBB1ZWsf4=;
-        b=KCVpgGaszvjmh10So7k3QGeTRqp7SjFil5pxA1T6Y6eWZaIKdoJYOOBL+T4IbWbkjo
-         UCD6o0LrAm5I5CJE9wjyA1ccZrqCeRnIopcWV31HmV1bSv+vGjsEDQU1qeASKHWc7ZbD
-         OMrENlRbdkMujDZ7uOHyjS/fAXQ/LbjN+Xt48kFu9tCuQunKi4OvE/2iFi4ft+TlDvRq
-         YGhb6hFJ8Gymj8rPMAr+qCERnnOckCHtgJiU3h/F//8LymiX+vKW0OU6fFfolII5h8/s
-         27yvKbWve/Ad7raTIzRyyY+k91G2HJolY4So7He/zevu5vm3N/HsLbiLvQyGBlGY0HsW
-         p2Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NfGNxFGx/GSqQ8J+prbrVB3YoseYYdcfdmqBB1ZWsf4=;
-        b=fhxyn48H0Pk0vCB6RmP3gnI+ex8ITZlgUEnmr1UAZTySq0azgbfmRmy77hXnAPe2d9
-         1Oc7GyMy5AJZDb3qzqztVdfMDnegzf6DOMQyGg3XCyjiZjlNh5NI1A4O81niLLqQ0afd
-         yzPZxb0Nl+z0C52BEolji5p7lPgl0o7i9/9MyxTQtt+PZC+GV2DPPN93xE3iTerKt9cR
-         OJgGAopdig6UnE+dokRJcyFznELVOiTX6YhJiw43O7e7uQB6MCE/u1TbyK9aJiGTWt/q
-         RU6s+iTQTmfHI4MMlMQYwBeA+/uHqFzerrVg+50ASINH8bb94dQfNKmCrigbdk4BWCMD
-         0o8Q==
-X-Gm-Message-State: AOAM530neoV0/fYjUXrvKjRg/bUCijrnAtV1fFagzmyk18aJqN7Swv3L
-        rFFNhMO8lQAeMN0qCbD7uT9YdX/LJI65IDPwzhQUHA==
-X-Google-Smtp-Source: ABdhPJwKSJnXvI9/NG4m48LW0+vy+lK8zsv8TIliueMw8ZAxuGgekU1/vc+Rj3Qh3ZoQ7xO+ZF+8KpfOFY+a0mjoEwA=
-X-Received: by 2002:a6b:ea04:: with SMTP id m4mr9913728ioc.160.1615557487699;
- Fri, 12 Mar 2021 05:58:07 -0800 (PST)
+        Fri, 12 Mar 2021 08:59:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615557541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZkWwYtFvqkHq9ObLbq6+N/UVWKingHbDr05c7oaciLw=;
+        b=N/lLXkjD9M2/RfZEyupgh5e0Ylgwo5d6mVkj0W2NQrXB85iWjldt1i/4P6efUTQBs0yzxS
+        pcaoFC0LV0k3b0woPoSLwXO3B/Ua7aQqaaKJW3ja2F8nAKoq1OaBG3fMQTkcwl8zZfDiSr
+        Fp2jYPAG+o6E4s3SP7cdH3zJ/9j1bj0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-XZtaKWphNDWk7l_pFVo8Og-1; Fri, 12 Mar 2021 08:58:57 -0500
+X-MC-Unique: XZtaKWphNDWk7l_pFVo8Og-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 334AB8912FC;
+        Fri, 12 Mar 2021 13:58:52 +0000 (UTC)
+Received: from krava (unknown [10.40.192.54])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 27FAD60877;
+        Fri, 12 Mar 2021 13:58:47 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 14:58:47 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 04/10] libperf: Add evsel mmap support
+Message-ID: <YEtzl5c1m7jxWkEw@krava>
+References: <20210311000837.3630499-1-robh@kernel.org>
+ <20210311000837.3630499-5-robh@kernel.org>
 MIME-Version: 1.0
-References: <20210308133146.3168995-1-raychi@google.com> <20210309185807.ka4iljasq5cmpmil@earth.universe>
-In-Reply-To: <20210309185807.ka4iljasq5cmpmil@earth.universe>
-From:   Ray Chi <raychi@google.com>
-Date:   Fri, 12 Mar 2021 21:57:56 +0800
-Message-ID: <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not enabled
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, naresh.kamboju@linaro.org,
-        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311000837.3630499-5-robh@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+On Wed, Mar 10, 2021 at 05:08:31PM -0700, Rob Herring wrote:
 
-Sorry for the late reply.
+SNIP
 
-On Wed, Mar 10, 2021 at 2:58 AM Sebastian Reichel <sre@kernel.org> wrote:
->
-> Hi,
->
-> On Mon, Mar 08, 2021 at 09:31:46PM +0800, Ray Chi wrote:
-> > Fix build error when CONFIG_POWER_SUPPLY is not enabled.
-> >
-> > The build error occurs in mips (cavium_octeon_defconfig).
-> >
-> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
-> > drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
-> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
-> > drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
-> > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
-> > drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
-> >
-> > Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Signed-off-by: Ray Chi <raychi@google.com>
-> > ---
->
-> While I'm fine with merging this after fixing up the subject, the
-> original patch for dwc3 [0] looks completly incorrect to me.
->
-> First of all it uses wrong scale (power-supply uses uA, not mA),
-> so you are charging 1000x slower than expected. Then the patchset
-> introduces a new DT property to get the power-supply device, but
-> does not update the DT binding documentation and does not Cc the
-> DT binding maintainer.
+> +
+>  static int
+>  sys_perf_event_open(struct perf_event_attr *attr,
+>  		    pid_t pid, int cpu, int group_fd,
+> @@ -137,6 +147,8 @@ void perf_evsel__free_fd(struct perf_evsel *evsel)
+>  {
+>  	xyarray__delete(evsel->fd);
+>  	evsel->fd = NULL;
+> +	xyarray__delete(evsel->mmap);
+> +	evsel->mmap = NULL;
+>  }
+>  
+>  void perf_evsel__close(struct perf_evsel *evsel)
+> @@ -156,6 +168,45 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
+>  	perf_evsel__close_fd_cpu(evsel, cpu);
+>  }
+>  
+> +int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+> +{
+> +	int ret, cpu, thread;
+> +	struct perf_mmap_param mp = {
+> +		.prot = PROT_READ | PROT_WRITE,
+> +		.mask = (pages * page_size) - 1,
+> +	};
 
-Yes, it should use uA and send this information, and I will update a
-patch to fix it and add the DT binding documentation.
+I don't mind using evsel->fd for dimensions below,
+but we need to check in here that it's defined,
+that perf_evsel__open was called
 
-> Next the property itself looks not very
-> smart to me. Usually one would use a device reference, not the
-> Linux device name.
->
-> Finally all existing devices solve this by registering a usb
-> notifier from the charger, so why are you going the other way
-> around? This is going to break once you want to use one of the
-> existing chargers with dwc3.
+jirka
 
-Only the USB controller will know USB state/speed so that I think it is
-better to send this information from the USB side.
-For example:
-For USB high speed, charging current should be limited to 500 mA in
-configured state.
-For USB super speed, charging current should be limited to 900 mA in
-configured state.
+> +
+> +	if (evsel->mmap == NULL &&
+> +	    perf_evsel__alloc_mmap(evsel, xyarray__max_x(evsel->fd), xyarray__max_y(evsel->fd)) < 0)
+> +		return -ENOMEM;
+> +
+> +	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
+> +		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+> +			int fd = FD(evsel, cpu, thread);
+> +			struct perf_mmap *map = MMAP(evsel, cpu, thread);
+> +
+> +			if (fd < 0)
+> +				continue;
+> +
+> +			perf_mmap__init(map, NULL, false, NULL);
+> +
+> +			ret = perf_mmap__mmap(map, &mp, fd, cpu);
+> +			if (ret)
+> +				return -1;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
->
-> I suggest to drop/revert the whole patchset.
->
-> [0] https://lore.kernel.org/linux-usb/20210222115149.3606776-1-raychi@google.com/
->
-> -- Sebastian
->
-> >  include/linux/power_supply.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> > index 81a55e974feb..6e776be5bfa0 100644
-> > --- a/include/linux/power_supply.h
-> > +++ b/include/linux/power_supply.h
-> > @@ -381,8 +381,14 @@ struct power_supply_battery_info {
-> >  extern struct atomic_notifier_head power_supply_notifier;
-> >  extern int power_supply_reg_notifier(struct notifier_block *nb);
-> >  extern void power_supply_unreg_notifier(struct notifier_block *nb);
-> > +#if IS_ENABLED(CONFIG_POWER_SUPPLY)
-> >  extern struct power_supply *power_supply_get_by_name(const char *name);
-> >  extern void power_supply_put(struct power_supply *psy);
-> > +#else
-> > +static inline void power_supply_put(struct power_supply *psy) {}
-> > +static inline struct power_supply *power_supply_get_by_name(const char *name)
-> > +{ return NULL; }
-> > +#endif
-> >  #ifdef CONFIG_OF
-> >  extern struct power_supply *power_supply_get_by_phandle(struct device_node *np,
-> >                                                       const char *property);
-> > --
-> > 2.30.1.766.gb4fecdf3b7-goog
-> >
+SNIP
+
