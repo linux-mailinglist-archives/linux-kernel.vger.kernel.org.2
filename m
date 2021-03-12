@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE87339801
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34715339802
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhCLUJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:09:34 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13913 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234526AbhCLUJD (ORCPT
+        id S234647AbhCLUJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:09:35 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:30578 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234351AbhCLUJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:09:03 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DxxgR6qR8zkXV3;
-        Sat, 13 Mar 2021 04:07:31 +0800 (CST)
-Received: from [127.0.0.1] (10.175.101.122) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Sat, 13 Mar 2021
- 04:08:51 +0800
-Content-Type: multipart/alternative;
-        boundary="===============4327933851809765361=="
+        Fri, 12 Mar 2021 15:09:10 -0500
+Date:   Fri, 12 Mar 2021 20:08:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615579744; bh=m5YpQ1gg9mlr+QYgTSpX4OBBI/dH4lK1uPJejw2gv10=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=mo4+o0GYaZzYe+GqN6g44ZacwsLT5284lKxGvSuEN6lodY6NVTIqGoRuFKSAfnME0
+         4x7PRjPeQbf6sUjFTva8tbaj4UyrcKm6cQHN2sFbkco5E3wGbAXJnvoMRu9V6uOJqr
+         bag0QsJXARFBa2TIJu0FKSQuurrjl1SHk09t0D63aDc038iwOaqh1FII2ZI72O1xr6
+         vaZlSMs7mMMh4j4IQ+fy+dF/NEEEmKnYZCeki1br+3uWeTL8OpSUdK6yixQSSlEv2f
+         HfpbXl7uf7id6OQG5Bl5ME620j17JRLc8qP0toPmMNY6lh9h1xoaEUxrjwSx9ZOYeb
+         T0m1Y81D/akhQ==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Guillaume Nault <gnault@redhat.com>, wenxu <wenxu@ucloud.cn>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Matteo Croce <mcroce@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net] flow_dissector: fix byteorder of dissected ICMP ID
+Message-ID: <20210312200834.370667-1-alobakin@pm.me>
 MIME-Version: 1.0
-Date:   Sat, 13 Mar 2021 04:08:51 +0800
-From:   <hulkrobot@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_4=2E19=2E181-rc1=0D=0A/ar?=
- =?utf-8?q?m64?=
-Message-ID: <b929b614-5f5a-4d1c-b609-dac368764306@DGGEMS403-HUB.china.huawei.com>
-X-Originating-IP: [10.175.101.122]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============4327933851809765361==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+flow_dissector_key_icmp::id is of type u16 (CPU byteorder),
+ICMP header has its ID field in network byteorder obviously.
+Sparse says:
 
-S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNC4xOS55CkFyY2g6
-IGFybTY0ClZlcnNpb246IDQuMTkuMTgxLXJjMQ0KQ29tbWl0OiBjMjkyYjlkZWQyMjZiYzFhZmNh
-NzA5M2UzNzE0Nzk4MTI5Y2RjZTNiDQpDb21waWxlcjogZ2NjIHZlcnNpb24gNy4zLjAgKEdDQykK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KQWxsIHRlc3RjYXNlcyBQQVNTRUQuCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRlc3RjYXNlIFJl
-c3VsdCBTdW1tYXJ5Ogp0b3RhbF9udW06IDQ2NTEKc3VjY2VlZF9udW06IDQ2NTEKZmFpbGVkX251
-bTogMAp0aW1lb3V0X251bTogMAotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0ZWQtYnk6IEh1bGsgUm9ib3QgPGh1
-bGtyb2JvdEBodWF3ZWkuY29tPg==
+net/core/flow_dissector.c:178:43: warning: restricted __be16 degrades to in=
+teger
 
---===============4327933851809765361==--
+Convert ID value to CPU byteorder when storing it into
+flow_dissector_key_icmp.
+
+Fixes: 5dec597e5cd0 ("flow_dissector: extract more ICMP information")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/core/flow_dissector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 2ef2224b3bff..a96a4f5de0ce 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -176,7 +176,7 @@ void skb_flow_get_icmp_tci(const struct sk_buff *skb,
+ =09 * avoid confusion with packets without such field
+ =09 */
+ =09if (icmp_has_id(ih->type))
+-=09=09key_icmp->id =3D ih->un.echo.id ? : 1;
++=09=09key_icmp->id =3D ih->un.echo.id ? ntohs(ih->un.echo.id) : 1;
+ =09else
+ =09=09key_icmp->id =3D 0;
+ }
+--
+2.30.2
+
+
