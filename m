@@ -2,182 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0FA339A22
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB03339A25
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235889AbhCLXqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:46:48 -0500
-Received: from mail-dm6nam10on2109.outbound.protection.outlook.com ([40.107.93.109]:52143
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235874AbhCLXqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:46:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EkYfcfgwgpGrgjXKNiRVpM1AL2LDC7kbCnWIiQS+wD5LnQKk94JUcSeIgfovi6WR64/3x2FvLmZ0TLNinYcTQuSBUuby0nautneBEmyZKVDWsh/EIzJSMLOcVs0R2ZibGrAMLYDvW28aJ1tK5eSVvXSoqzeSE/kFXBLodiW04mXHBbYUESl4xlioZ/1Hrn2L1RtAuA4sUSSuBRsIZQ0wowqHDo0D0aKighL96yxp0C//RTmBZBBlDnVxLxYJJOjw1j6sJMkP3zlAng/ykX03/xuowLYlrABCX2W4tvZlQ0rGCTM0bHVZl16RbvhiAevkzQ51kKv/nPYIknwkMpqIog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=phfrcTnzkIFjtqag+p+QaWAA9aUiPxFefARrXk8slNk=;
- b=iFBhA61zq/o5n+mNLxthyHnMsgFibeNjl8mX+CxGa49MeKSZBrMY2gqB7nRctYSSefJi6x/YzG+pwIi0oewDS1IFWxUiwSZkKRYVFAellE3kdMZmDR5BpPIj7cH7F2lPjTup7MYiVzOcTIt0VE3VNG6O02Z7Ougq4AqJS2Fykvw57XzE/SBhaFojvmodiLtmCA2DDrv3CYbgZEeeWt3IsO2KRnjEDGlefPd7YwLQvkfk5PnftCTk7AXZ6+Umo5MMxmbz8SSkB86Bz1WTz7hJWXBVffF93CA3jHuKKAeRHBay8mlFYcH2WybiENhTBrkOj8z4Eh+L6pEm2wJy5UdULA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=phfrcTnzkIFjtqag+p+QaWAA9aUiPxFefARrXk8slNk=;
- b=iI6BmsOriYIovx2GDag7HVF20N0n+iQGkJljtH2X70OUkLAKXuFYtwXsFwcJxY+fR2Fc9cXvbwwfCx02aFlH7ANvGtQ7lQXg19ekF5DufqijCBEGeos883L1oebX2MYLuW53H8+GTxmJ+PLG6jIimWkI6pixkwwWZZ0cDGiC04E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=microsoft.com;
-Received: from DM6PR21MB1340.namprd21.prod.outlook.com (2603:10b6:5:175::19)
- by DM5PR21MB1767.namprd21.prod.outlook.com (2603:10b6:4:aa::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.8; Fri, 12 Mar
- 2021 23:46:08 +0000
-Received: from DM6PR21MB1340.namprd21.prod.outlook.com
- ([fe80::488b:9500:3b0c:e41a]) by DM6PR21MB1340.namprd21.prod.outlook.com
- ([fe80::488b:9500:3b0c:e41a%7]) with mapi id 15.20.3933.031; Fri, 12 Mar 2021
- 23:46:08 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
-Cc:     haiyangz@microsoft.com, kys@microsoft.com, sthemmin@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org,
-        Shachar Raindel <shacharr@microsoft.com>
-Subject: [PATCH net-next] hv_netvsc: Add a comment clarifying batching logic
-Date:   Fri, 12 Mar 2021 15:45:27 -0800
-Message-Id: <1615592727-11140-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-Originating-IP: [13.77.154.182]
-X-ClientProxiedBy: MW4PR03CA0230.namprd03.prod.outlook.com
- (2603:10b6:303:b9::25) To DM6PR21MB1340.namprd21.prod.outlook.com
- (2603:10b6:5:175::19)
+        id S235891AbhCLXrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:47:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235895AbhCLXrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:47:41 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15642C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:47:41 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id t26so16861190pgv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 15:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bjFvm7GKsUKfRs9e/UxDco4aKi8EfcNZsKLV6pl4eOs=;
+        b=DJ7sCUKjOc5WbvYqhvNsNgc2FV/Cksy6090XmuWgRU3SVAWAux8J2qQhk8DkhTd6gW
+         0Bm75UMGlzQ9ITZJHOvUeH39Py+FHn6B0ZubvFeKCwrcSw8K7OUw7SyvEugtxpDXJRKn
+         g52E5mfgsz2Nea7VPWnLbo3Y0QUzkaCFbmnaJ/MYUR3VDPyQV+/uUkEhuhqOq7u0A0FB
+         4HD80ckZLBRY/CD1d5/zZ2IazLbxnlnIBNv3cdRWvGsY7WqEoXDrWLcolabRuEhP/t4j
+         6UoPS+Up41yjOHthZtBfbHSWOA5+w60XpojbYYj84sDWe0O8eQtymO/zaVEmPH0xvcKh
+         7gwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bjFvm7GKsUKfRs9e/UxDco4aKi8EfcNZsKLV6pl4eOs=;
+        b=jyO8FOgVssicORTXkVqe3VnQpzn1yA1K9qI7sR/IpKEpkKGrCih3KQ8o9OUrRXBvsf
+         kK7vRv5yO0I5m9ETjDNgbcP+8nZzUOzIdPCl++mi0b36ShPW/4gB8ocPEvdwuFYJydiU
+         ysyFSfw6kTm87K94HHS8nO6Ed31jfovvSA/+vWmwanSLpSJwTBNYJ1YNQh21y6hzUdw+
+         33uREBWnltM8ZCtwl+OYnHZ3aK65jbVIJlnl2MeqNTAhTGqT6a1pqNzzI4b/sfEQhONT
+         uN8PE7X4QzXowmwsr+IpnWRDzprsePBSKdBxW9yAki+G4ThNpWN6V4e/blwsOD3ZZxiu
+         Nj5w==
+X-Gm-Message-State: AOAM531DPp63bcbTO3BzcE+zQX78x/bTFsRHK7Dz97N74lU+pAIN+AQH
+        vJXRcqz9Wr1rXjIvjz4gOflBre9QVQylxGKY3EBvag==
+X-Google-Smtp-Source: ABdhPJxmSHVpfjKKFW1s79hB4r3Xbg6oEeDtCAUIL2ZzgTxPwiAGzsVT8Q4fE5cKPJwf86hKukVUbajt0VmZmcs31js=
+X-Received: by 2002:a62:ea09:0:b029:1ee:3bac:8012 with SMTP id
+ t9-20020a62ea090000b02901ee3bac8012mr551470pfh.35.1615592859872; Fri, 12 Mar
+ 2021 15:47:39 -0800 (PST)
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (13.77.154.182) by MW4PR03CA0230.namprd03.prod.outlook.com (2603:10b6:303:b9::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 23:46:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 183f3c06-a75e-4bd7-cecd-08d8e5b10205
-X-MS-TrafficTypeDiagnostic: DM5PR21MB1767:
-X-MS-Exchange-Transport-Forked: True
-X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM5PR21MB17671638BA930A39C42C7367AC6F9@DM5PR21MB1767.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1N6NHzX14qVy3AbC3RXXx19S+lBMafLw0sEd6jnvxKFtm62v9KFfNtZVQiVhYJORT9lktuQXFKLrfK6jMUAHVbgl7ZIBe+ggHZO7tjlkDbzmUX1TE5kAK015+eyPb9RKX0IXevtD6ojaaS+wPqhwWQEv16qxP0BE94+/izHCYiuGUMsXVRAGtjiVAaDWhDovPKgdVDVy4TC/zPRPKXiDfW3EAEvMOlCigzqGkRm1QKXvUHvoY4ZYc91ihjS5lRlTvmW5m/q0+fkSzX043AWhX6T5XUqpZoozsw+vLoX0ra4W+RztYj4u3S9yFb5FwOm49IKBmtfvVYP0zLfT1Y8rbT69+PO2QW/UZ/3HeTUQChuEdlJooezvldCD9EiLy1WWbMj02rqwgZ/LqD028j+Ch8h8jSH5a+UqeSataOZfeYdMhBn55BXp3vTLkRMA9WCbE0d8GpyRy0HhfBz05zFJoVe1hG3XhpQlHv9rBrzgA76E5xvAX+/Mie9q7dMnEGYPHdpizUDf0HagfsN4a6YO858g8xawMCxWQWSmvpshPSfUKplfvgjtqLpn2cT1LLd9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1340.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(396003)(376002)(66476007)(82950400001)(2616005)(6512007)(66946007)(956004)(6486002)(6506007)(4326008)(186003)(83380400001)(82960400001)(66556008)(6666004)(2906002)(36756003)(8936002)(5660300002)(316002)(16526019)(8676002)(7846003)(26005)(478600001)(10290500003)(107886003)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?d4C3P6SivISwW+mmkjvm+Tk8ljvHKP4KlpXOIET97t8pXZmnhIaeNfd4SqtQ?=
- =?us-ascii?Q?tmsfwib6gILajaRpRhJX5+/ftCuAZnCLzkR9g20jNlreUls+Tybze7TRAcoK?=
- =?us-ascii?Q?gr/Ceoe29bReN0E6dxjFjMR8ydwBONa7iBJl3W29dXtCKMMaR3EbI52EeOcd?=
- =?us-ascii?Q?0SIvcTRyhb4RRoD5d+hjSyV8gBgL6RPqoIk0ZlxXMbLNmhje8QVytpV0BNJv?=
- =?us-ascii?Q?5QfDrSbBCOMfkW8Vp8TJyeGveHZ7LS0UogMiXQHFlDSJHko2W6czwkJgG1a/?=
- =?us-ascii?Q?fmJ3UMAp+zxzY8EBgb9N6NGoq09Ngb3a+xo3oX7ciQk1KZAFIROFCcXN+LtJ?=
- =?us-ascii?Q?p3GMKn+T+tV3qLBQZ/crr3MfqmmBA+xNYbuWTnkiSA+siILkNvNY688GoL29?=
- =?us-ascii?Q?NgprL+11eMyX72QYaWSxfDdt1EkZXuyyLX5MbccdSmVdMlX5MI1wPMf2FDKp?=
- =?us-ascii?Q?nm/esZRqbqJ2zvzTukOJB8+Uzeu8HJZQ1S0qOcJ6mIa3RrkTjaopcwUa9JQ1?=
- =?us-ascii?Q?40K0Vej15CGd2YxZOIXiRaDbQvJv99j2EbxCHmI1CCmL4/2Ol5DpBcy8wxlK?=
- =?us-ascii?Q?FubAD1xtgpLLJdshE+bXvxO8PN8lNFd2bydqQUJyEHJR0CSOgAyvUFmBPTTc?=
- =?us-ascii?Q?3XsoFAJY4e0QlEPq48njtamFQzNmwlfP+YwkJAIKulC2ScmpMtkOaV0ca+0H?=
- =?us-ascii?Q?2g7Tq5MLkY5ib0vwGvcH7pMx6nhmc+I5HEK7YK1ShhU4ltsgMDkojP2ZoED5?=
- =?us-ascii?Q?CWwXaWlnXwFLbxYCWNaEGGqVqZyN/5WA+WUjpYFFoNGq2rn3pFCzsDAq6/Zp?=
- =?us-ascii?Q?AXyzVBHGSWsJ+E11phHeCabsRCS6OBNWZX18Oj8UlZmuDH/hFrKR/++HcNfV?=
- =?us-ascii?Q?wQ5s7zshKzec6z/dlHc2PgKgnRsPX0CJSzKjqfn7/JnCkuXPdCnyrXCqQIPK?=
- =?us-ascii?Q?qxTSFgyFlIxVsE6vIFvo8Z13R3iZzzfgbvVfoOlXKe7YEIHB8Nm8jkvH6kR4?=
- =?us-ascii?Q?DA0RFzcg1AFIzu9ZlFfXaRJxnBX6Az6BMC8rqoQpGqOQiCedk8wuOG2Xu9a8?=
- =?us-ascii?Q?5lpzalU2K7w4R5oPrR9Ft9kneoggWpuJAkAw/bCT0gKapNoWzcfsOPZVq19P?=
- =?us-ascii?Q?1L3f8OiHbLArp36VMeCpQzKL5OLsa0IRWL5Egj/WT7ImxaEt6rl+NzyQW4aL?=
- =?us-ascii?Q?wDEYoDvWmdaAiEJ9uI3m6MgqQQ8sG3YfxUPmIjQvXwrZbL4vD6P509MGbBjU?=
- =?us-ascii?Q?S+DqHlqt5O8WoeoIND2PFa6OUqhjCR1SrU+smvshb/kV/VbR5xWmeZML+yxX?=
- =?us-ascii?Q?AP/rZY4DuDOPzTo/ZHMXLuNV?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 183f3c06-a75e-4bd7-cecd-08d8e5b10205
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1340.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 23:46:08.2874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AiNfcJ1GXI0TKCLPgmL4veiXze46Jhg7LOvS3LLuyrfgl2FV/DPVOXDKYTpAEDRGSwK1ni4Vvb2UH/6bBXBdpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB1767
+References: <20210224085915.28751-1-natet@google.com> <YDaOw48Ug7Tgr+M6@google.com>
+In-Reply-To: <YDaOw48Ug7Tgr+M6@google.com>
+From:   Nathan Tempelman <natet@google.com>
+Date:   Fri, 12 Mar 2021 15:47:28 -0800
+Message-ID: <CAKiEG5qtTbm8dtE3pZDy_rfSfTfvhCYhDCh2DD-uh2w6xZnvcQ@mail.gmail.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steve Rutherford <srutherford@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shachar Raindel <shacharr@microsoft.com>
+On Wed, Feb 24, 2021 at 9:37 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, Feb 24, 2021, Nathan Tempelman wrote:
+> >  static bool __sev_recycle_asids(int min_asid, int max_asid)
+> >  {
+> > @@ -1124,6 +1129,10 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >       if (copy_from_user(&sev_cmd, argp, sizeof(struct kvm_sev_cmd)))
+> >               return -EFAULT;
+> >
+> > +     /* enc_context_owner handles all memory enc operations */
+> > +     if (is_mirroring_enc_context(kvm))
+> > +             return -ENOTTY;
+>
+> Is this strictly necessary?  Honest question, as I don't know the hardware/PSP
+> flows well enough to understand how asids are tied to the state managed by the
+> PSP.
+>
+> > +
+> >       mutex_lock(&kvm->lock);
+> >
+> >       switch (sev_cmd.id) {
+> > @@ -1186,6 +1195,10 @@ int svm_register_enc_region(struct kvm *kvm,
+> >       if (!sev_guest(kvm))
+> >               return -ENOTTY;
+> >
+> > +     /* If kvm is mirroring encryption context it isn't responsible for it */
+> > +     if (is_mirroring_enc_context(kvm))
+>
+> Hmm, preventing the mirror from pinning memory only works if the two VMs are in
+> the same address space (process), which isn't guaranteed/enforced by the ioctl().
+> Obviously we could check and enforce that, but do we really need to?
+>
+> Part of me thinks it would be better to treat the new ioctl() as a variant of
+> sev_guest_init(), i.e. purely make this a way to share asids.
+>
+> > +             return -ENOTTY;
+> > +
+> >       if (range->addr > ULONG_MAX || range->size > ULONG_MAX)
+> >               return -EINVAL;
+> >
+> > @@ -1252,6 +1265,10 @@ int svm_unregister_enc_region(struct kvm *kvm,
+> >       struct enc_region *region;
+> >       int ret;
+> >
+> > +     /* If kvm is mirroring encryption context it isn't responsible for it */
+> > +     if (is_mirroring_enc_context(kvm))
+> > +             return -ENOTTY;
+> > +
+> >       mutex_lock(&kvm->lock);
+> >
+> >       if (!sev_guest(kvm)) {
+> > @@ -1282,6 +1299,65 @@ int svm_unregister_enc_region(struct kvm *kvm,
+> >       return ret;
+> >  }
+> >
+> > +int svm_vm_copy_asid_to(struct kvm *kvm, unsigned int mirror_kvm_fd)
+> > +{
+> > +     struct file *mirror_kvm_file;
+> > +     struct kvm *mirror_kvm;
+> > +     struct kvm_sev_info *mirror_kvm_sev;
+>
+> What about using src and dst, e.g. src_kvm, dest_kvm_fd, dest_kvm, etc...?  For
+> my brain, the mirror terminology adds an extra layer of translation.
 
-The batching logic in netvsc_send is non-trivial, due to
-a combination of the Linux API and the underlying hypervisor
-interface. Add a comment explaining why the code is written this
-way.
+I like source, but I think I'll keep mirror. I think it captures the
+current state
+of it better--this isn't it's own full featured sev vm, in a sense
+it's a reflection of
+the source.
 
-Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- .../ethernet/microsoft/netvsc.rst             | 14 ++++++++-----
- drivers/net/hyperv/netvsc.c                   | 20 +++++++++++++++++++
- 2 files changed, 29 insertions(+), 5 deletions(-)
+Unless everyone found this confusing?
 
-diff --git a/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst b/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
-index c3f51c672a68..fc5acd427a5d 100644
---- a/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
-+++ b/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
-@@ -87,11 +87,15 @@ Receive Buffer
-   contain one or more packets. The number of receive sections may be changed
-   via ethtool Rx ring parameters.
- 
--  There is a similar send buffer which is used to aggregate packets for sending.
--  The send area is broken into chunks of 6144 bytes, each of section may
--  contain one or more packets. The send buffer is an optimization, the driver
--  will use slower method to handle very large packets or if the send buffer
--  area is exhausted.
-+  There is a similar send buffer which is used to aggregate packets
-+  for sending.  The send area is broken into chunks, typically of 6144
-+  bytes, each of section may contain one or more packets. Small
-+  packets are usually transmitted via copy to the send buffer. However,
-+  if the buffer is temporarily exhausted, or the packet to be transmitted is
-+  an LSO packet, the driver will provide the host with pointers to the data
-+  from the SKB. This attempts to achieve a balance between the overhead of
-+  data copy and the impact of remapping VM memory to be accessible by the
-+  host.
- 
- XDP support
- -----------
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index dc3f73c3b33e..dc333dceb055 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -1006,6 +1006,26 @@ static inline void move_pkt_msd(struct hv_netvsc_packet **msd_send,
- }
- 
- /* RCU already held by caller */
-+/* Batching/bouncing logic is designed to attempt to optimize
-+ * performance.
-+ *
-+ * For small, non-LSO packets we copy the packet to a send buffer
-+ * which is pre-registered with the Hyper-V side. This enables the
-+ * hypervisor to avoid remapping the aperture to access the packet
-+ * descriptor and data.
-+ *
-+ * If we already started using a buffer and the netdev is transmitting
-+ * a burst of packets, keep on copying into the buffer until it is
-+ * full or we are done collecting a burst. If there is an existing
-+ * buffer with space for the RNDIS descriptor but not the packet, copy
-+ * the RNDIS descriptor to the buffer, keeping the packet in place.
-+ *
-+ * If we do batching and send more than one packet using a single
-+ * NetVSC message, free the SKBs of the packets copied, except for the
-+ * last packet. This is done to streamline the handling of the case
-+ * where the last packet only had the RNDIS descriptor copied to the
-+ * send buffer, with the data pointers included in the NetVSC message.
-+ */
- int netvsc_send(struct net_device *ndev,
- 		struct hv_netvsc_packet *packet,
- 		struct rndis_message *rndis_msg,
--- 
-2.25.1
+>
+> > +     unsigned int asid;
+> > +     int ret;
+> > +
+> > +     if (!sev_guest(kvm))
+> > +             return -ENOTTY;
+> > +
+> > +     mutex_lock(&kvm->lock);
+> > +
+> > +     /* Mirrors of mirrors should work, but let's not get silly */
+>
+> Do we really care?
+>
+> > +     if (is_mirroring_enc_context(kvm)) {
+> > +             ret = -ENOTTY;
+> > +             goto failed;
+> > +     }
+> > +
+> > +     mirror_kvm_file = fget(mirror_kvm_fd);
+> > +     if (!kvm_is_kvm(mirror_kvm_file)) {
+> > +             ret = -EBADF;
+> > +             goto failed;
+> > +     }
+> > +
+> > +     mirror_kvm = mirror_kvm_file->private_data;
+> > +
+> > +     if (mirror_kvm == kvm || is_mirroring_enc_context(mirror_kvm)) {
+>
+> This is_mirroring_enc_context() check needs to be after mirror_kvm->lock is
+> acquired, else there's a TOCTOU race.
 
+Nice. Yeah, I've flipped it around as per Paolo's point and this problem goes
+away.
+
+>
+> I also suspect there needs to be more checks on the destination.  E.g. what
+> happens if the destination already has vCPUs that are currently running?  Though
+> on that front, sev_guest_init() also doesn't guard against this.  Feels like
+> that flow and this one should check kvm->created_vcpus.
+>
+> > +             ret = -ENOTTY;
+> > +             fput(mirror_kvm_file);
+>
+> Nit, probably worth adding a second error label to handle this fput(), e.g. in
+> case additional checks are needed in the future.  Actually, I suspect that's
+> already needed to fix the TOCTOU bug.
+>
+> > +             goto failed;
+> > +     }
+> > +
+> > +     asid = *&to_kvm_svm(kvm)->sev_info.asid;
+>
+> Don't think "*&" is necessary. :-)
+
+:')
+
+>
+> > +
+> > +     /*
+> > +      * The mirror_kvm holds an enc_context_owner ref so its asid can't
+> > +      * disappear until we're done with it
+> > +      */
+> > +     kvm_get_kvm(kvm);
+>
+> Do we really need/want to take a reference to the source 'struct kvm'?  IMO,
+> the so called mirror should never be doing operations with its source context,
+> i.e. should not have easy access to 'struct kvm'.  We already have a reference
+> to the fd, any reason not to use that to ensure liveliness of the source?
+
+I agree the mirror should never be running operations on the source. I
+don't know
+that holding the fd instead of the kvm makes that much better though, are there
+advantages to that I'm not seeing?
+
+>
+> > +
+> > +     mutex_unlock(&kvm->lock);
+> > +     mutex_lock(&mirror_kvm->lock);
+> > +
+> > +     /* Set enc_context_owner and copy its encryption context over */
+> > +     mirror_kvm_sev = &to_kvm_svm(mirror_kvm)->sev_info;
+> > +     mirror_kvm_sev->enc_context_owner = kvm;
+> > +     mirror_kvm_sev->asid = asid;
+> > +     mirror_kvm_sev->active = true;
+>
+> I would prefer a prep patch to move "INIT_LIST_HEAD(&sev->regions_list);" from
+> sev_guest_init() to when the VM is instantiated.  Shaving a few cycles in that
+> flow is meaningless, and not initializing the list of regions is odd, and will
+> cause problems if mirrors are allowed to pin memory (or do PSP commands).
+
+It seems like we can keep this a lot simpler and easier to reason about by not
+allowing mirrors to pin memory or do psp commands. That was the intent. We
+don't gain anything but complexity by allowing this to be a fully featured SEV
+VM. Unless anyone can think of a good reason we'd want to have a mirror
+vm be able to do more than this?
+
+> > @@ -5321,6 +5321,11 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+> >                       kvm->arch.bus_lock_detection_enabled = true;
+> >               r = 0;
+> >               break;
+> > +     case KVM_CAP_VM_COPY_ENC_CONTEXT_TO:
+> > +             r = -ENOTTY;
+> > +             if (kvm_x86_ops.vm_copy_enc_context_to)
+> > +                     r = kvm_x86_ops.vm_copy_enc_context_to(kvm, cap->args[0]);
+>
+> This can be a static call.
+>
+> On a related topic, does this really need to be a separate ioctl()?  TDX can't
+> share encryption contexts, everything that KVM can do for a TDX guest requires
+> the per-VM context.  Unless there is a known non-x86 use case, it might be
+> better to make this a mem_enc_op, and then it can be named SEV_SHARE_ASID or
+> something.
+
+I'd prefer to leave this as a capability in the same way the
+register_enc_region calls
+work. Moving it into mem_enc_ops means we'll have to do some messy locking
+to avoid race conditions with the second vm since kvm gets locked in enc_ops.
+Also seems wierd to me having this hack grouped in with all the PSP commands.
+If i'm the only one that thinks this is cleaner, I'll move it though.
+
+Interesting about the platform, too. If you're sure we'll never need
+to build this for
+any other platform I'll at least rename it to be amd specific. There's
+no non-sev
+scenario anyone can think of that might want to do this?
+
+
+>
+> > +             return r;
+> >       default:
+> >               r = -EINVAL;
+> >               break;
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index e126ebda36d0..18491638f070 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -637,6 +637,7 @@ void kvm_exit(void);
+> >
+> >  void kvm_get_kvm(struct kvm *kvm);
+> >  void kvm_put_kvm(struct kvm *kvm);
+> > +bool kvm_is_kvm(struct file *file);
+> >  void kvm_put_kvm_no_destroy(struct kvm *kvm);
+> >
+> >  static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
+> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > index 63f8f6e95648..5b6296772db9 100644
+> > --- a/include/uapi/linux/kvm.h
+> > +++ b/include/uapi/linux/kvm.h
+> > @@ -1077,6 +1077,7 @@ struct kvm_ppc_resize_hpt {
+> >  #define KVM_CAP_SYS_HYPERV_CPUID 191
+> >  #define KVM_CAP_DIRTY_LOG_RING 192
+> >  #define KVM_CAP_X86_BUS_LOCK_EXIT 193
+> > +#define KVM_CAP_VM_COPY_ENC_CONTEXT_TO 194
+> >
+> >  #ifdef KVM_CAP_IRQ_ROUTING
+> >
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 001b9de4e727..5f31fcda4777 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -739,6 +739,8 @@ void __weak kvm_arch_pre_destroy_vm(struct kvm *kvm)
+> >  {
+> >  }
+> >
+> > +static struct file_operations kvm_vm_fops;
+>
+> I'd probably prefer to put the helper just below kvm_vm_fops instead of adding
+> a forward declaration.  IMO it's not all that important to add the helper close
+> to kvm_get/put_kvm().
+>
+> > +
+> >  static struct kvm *kvm_create_vm(unsigned long type)
+> >  {
+> >       struct kvm *kvm = kvm_arch_alloc_vm();
+> > @@ -903,6 +905,12 @@ void kvm_put_kvm(struct kvm *kvm)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvm_put_kvm);
+> >
+> > +bool kvm_is_kvm(struct file *file)
+>
+> Heh, maybe kvm_file_is_kvm()?  or just file_is_kvm()?
+>
+> > +{
+> > +     return file && file->f_op == &kvm_vm_fops;
+> > +}
+> > +EXPORT_SYMBOL_GPL(kvm_is_kvm);
+> > +
+> >  /*
+> >   * Used to put a reference that was taken on behalf of an object associated
+> >   * with a user-visible file descriptor, e.g. a vcpu or device, if installation
+> > --
+> > 2.30.0.617.g56c4b15f3c-goog
+> >
