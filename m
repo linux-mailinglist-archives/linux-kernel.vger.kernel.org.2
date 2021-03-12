@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E4D339174
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F70A339176
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 16:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhCLPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 10:35:35 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37147 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231990AbhCLPfH (ORCPT
+        id S232459AbhCLPfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 10:35:38 -0500
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:43881 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232248AbhCLPfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:35:07 -0500
-X-UUID: 06cdab59a8b5402886656e5b92d290f3-20210312
-X-UUID: 06cdab59a8b5402886656e5b92d290f3-20210312
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 519063387; Fri, 12 Mar 2021 23:34:54 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 12 Mar 2021 23:34:52 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 12 Mar 2021 23:34:52 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <drinkcat@chromium.org>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v6 5/5] arm64: dts: mt8192: add pwrap node
-Date:   Fri, 12 Mar 2021 23:34:46 +0800
-Message-ID: <1615563286-22126-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Fri, 12 Mar 2021 10:35:17 -0500
+Received: by mail-wm1-f44.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so12479571wmj.2;
+        Fri, 12 Mar 2021 07:35:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hiZMy3cry06xjnySZkVn2oNvnH6/AnPXTBEJKfK8OlQ=;
+        b=g8SuB50I15uQyw1I+NMzuLSOq2xvALzH8iWnHRIbx+5GEhNY6GWdMuRaJzjvEDQVYx
+         FWTIphcKGzXMUoGidJVV5w13wL+uTBjHaWdE9jrp5DyfRgrTd8B91jgTkQGauwZN76Tx
+         HtczvXZuuPsRQJIPf/FSPEBgD74BLaaRvmLmTQNHkRFXClGudPn6DKt4jjUHo5LE2ldG
+         RJecP7ku7e6z+FcjWlLwEEoBda45GZXLVEXv8Cwm+FP1uXSYbIDw+laXpVAmKGO9si9z
+         sSV3VtFua1L+U8AW35YO/UMlw3znJQfApHXZe3Z0e2C/0FpbZCcFyThup0sgi0HkMrHT
+         AZPQ==
+X-Gm-Message-State: AOAM533GxJ+jHRuZdI6ocmXhE+qPC4/8itkIbY1Lrhm/ztKgIuWZ9q8n
+        mOVF2+UpaZEHdmEE2Ktnjrs=
+X-Google-Smtp-Source: ABdhPJyppRd9R80jV2myTcWaUft3WI+5NQK3H7PByCJHpSLD26X+MmLJkzN7/GwAmJhNfV/r1l9LPg==
+X-Received: by 2002:a7b:c755:: with SMTP id w21mr13986592wmk.89.1615563316030;
+        Fri, 12 Mar 2021 07:35:16 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id i17sm8195254wrp.77.2021.03.12.07.35.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 07:35:15 -0800 (PST)
+Subject: Re: [PATCH] extcon: Provide *extcon_*_notifier_all() stubs for
+ !CONFIG_EXTCON
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Timon Baetz <timon.baetz@protonmail.com>, linux-pm@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sebastian.reichel@collabora.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210312141051.blqkm2v2yx6psild@linutronix.de>
+ <CAJKOXPeXQS2pZ-siZGP+E3y1Gus5_9-ByAetUD9Mk0UH+t0OYA@mail.gmail.com>
+ <20210312145307.mkzkrbehqertfv3r@linutronix.de>
+ <29f27256-e5ca-3bbe-4b73-afeac4ff23cf@kernel.org>
+ <20210312145507.nssjwwi5qffffcpc@linutronix.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <b4738933-b6a5-8c7e-3890-ea0f64c8e18a@kernel.org>
+Date:   Fri, 12 Mar 2021 16:35:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210312145507.nssjwwi5qffffcpc@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pwrap node to SOC MT8192.
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
-changes since v5:
-- no change.
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On 12/03/2021 15:55, Sebastian Andrzej Siewior wrote:
+> On 2021-03-12 15:53:53 [+0100], Krzysztof Kozlowski wrote:
+>> Yeah, it missed the merge window...
+> 
+> Could you please send it for -rc3?
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 9757138a8bbd..fcd6b899d7f9 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -291,6 +291,18 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		pwrap: pwrap@10026000 {
-+			compatible = "mediatek,mt6873-pwrap";
-+			reg = <0 0x10026000 0 0x1000>;
-+			reg-names = "pwrap";
-+			interrupts = <GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+				 <&infracfg CLK_INFRA_PMIC_TMR>;
-+			clock-names = "spi", "wrap";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+		};
-+
- 		uart0: serial@11002000 {
- 			compatible = "mediatek,mt8192-uart",
- 				     "mediatek,mt6577-uart";
--- 
-2.18.0
+I meant, the pull missed the merge window. Chanwoo already confirmed he
+will be sending it for rc3.
+https://lore.kernel.org/lkml/6c40afc8-4ea7-aef7-73fd-8935e2bfe0dc@samsung.com/
 
+Best regards,
+Krzysztof
