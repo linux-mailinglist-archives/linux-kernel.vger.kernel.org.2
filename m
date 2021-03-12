@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1033C338A59
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB8A338A61
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhCLKh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S233189AbhCLKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbhCLKhY (ORCPT
+        with ESMTP id S233471AbhCLKjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:37:24 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1D7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:37:23 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id p24so12239034vsj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:37:23 -0800 (PST)
+        Fri, 12 Mar 2021 05:39:11 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A0FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:39:11 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id a11so3362260qto.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 02:39:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K3/Vc1Ah6eKHyLWI1pgidt8/nWh+3HJqZHQUqW0QsJY=;
-        b=e/OV4wNhRA/Hs5pdnjxqlm48AcxIBgreDOOJNjy58xe/C+lYYaCP1LvYHtxw5nNMDd
-         ALc5X7QtHJfqYjQJtkk29KbBS+sCEO+r861cukBYcKfIkwG7Ou4nlCW1n/UmnxXDl8UZ
-         Z/fv7WEl9eLwGeyto13VUunS/sfPRI2c3QsnbpFtyEdc7Gfom8B6Uyb0CQaIhkyCgJpI
-         Vsh00DPD7rj87XdaxRSYPfBsBAN7FvwewFG9kAbAybHO8w6BrDs7Q/oHkpYaTspxVr8g
-         hG55hBJ9e6DnKN6cjQsuVlY7/n4MxMQTtSF3SukeI2+Zdfpe9OF7WCVtCu8zUxSY8ajX
-         hHEQ==
+        bh=P8hB+rU3U8i3a16FibhnL4+fR0BO+F4l1PF+kFVx2sg=;
+        b=DWeWxPIXzjP6CE0lwr4Jtgy8L2p+EEJyAXBsnXEa7GHvepuYx3IzLeOE4DCWhBkDM7
+         GKbw5TcWhidwA1bPMcTP79NU0FEXwHshoXvbDLrOUAp/arl4Jc/gIwOCCPqCLMgsYScv
+         fmLHUjQUtXBTWaXenmmJtcjj6twaN/cljwm0DA+8/NoiBmLGcAHatMwzDVPjHCyaioP3
+         hBATSJ7ley0yaTBKfjCh1xoz1aCgNOd00KNGMKpUig85YgtgCkb56PEWq6OCT62H7wWq
+         9tS6R0m8EOF8sykXJ6DnT0u8+wT5pHHocgCvwVmUtQHPZMNTe5jFoOqk+X2HxF1tBAmM
+         C6zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K3/Vc1Ah6eKHyLWI1pgidt8/nWh+3HJqZHQUqW0QsJY=;
-        b=TVv8Xr8PzbdIiVT9lq1FnqymIfv7uAS7R4QD+5dVzqHoolkiBY2Bgr8QtfYArr9x4j
-         6SJkZSSrFfOSeuJfkD32LG+isINmKfPpriuvTyFs3wcPHPHMy+J1oAHKm676NY/5tUat
-         V6IdUjASfnq2CL7RP6k3jLQ/MRBslpqyI6dUeU7eiCvmISc30ycJ0Zhk1vi+uNBUSbGW
-         JPajlCtHbRRsC3C1yYpEAJtjpVkCwRneM5ltzpz56C4Po2qKuxkQTwgz6vmPTg2zxn+8
-         VIWwkLdMuaO1RpGcMUofPuxNs8+QKMe70J3mLmbP33JGVGZITk/taoCvHO1aRojQI6yd
-         CLEA==
-X-Gm-Message-State: AOAM533OXpcF8jAdSHXcJ+uvXrxBtoGju6Eu31GgcWPT0ISHNPc4lbQl
-        RiQhzn3PB8vRHZ4XwKfwan/hzSaXci3xNeTjHO2oCg==
-X-Google-Smtp-Source: ABdhPJyLTgXQd1zTmLlKpEGuucdoDu6MxM1Ifem4y53cs/Xb9ONexPA+wPxOnpJgqOBWr4/fpZSZO+YOQXGKhLX6tmk=
-X-Received: by 2002:a67:6942:: with SMTP id e63mr8188302vsc.48.1615545442849;
- Fri, 12 Mar 2021 02:37:22 -0800 (PST)
+        bh=P8hB+rU3U8i3a16FibhnL4+fR0BO+F4l1PF+kFVx2sg=;
+        b=lL+ykYoFB77lU4lF6xrAo8+PEXi7vKDP4duDPmZ1Dho3Z0JrwBYeyXOQSN0wpfkSAb
+         ms9upj4LEeN+DMnVWkby4a+gTvYa01jGEaYTIknAzziRGU3FrgNxzuQBFi95XOSbjVBZ
+         ZqN/kYDZVtYwbHxadBseLjEHiVEvI9zawxMNnzLurHJPgtf3/rHmkQRAzkfje5eftBta
+         lSbt/KGouWoBCJiZ3Pl3CGT+v1gCsWrYwc6Ss8s8b+O8fHKVAvXzxayVyrMCIg2xpqV0
+         LfxR++bbJC+aZexlxnRZ45ECAC5H0IrYSacxF7U63JpfG4lUzoootjG1TDiV4WjcOHdl
+         lznw==
+X-Gm-Message-State: AOAM531g1CMQCel/6Qc8tZhFe9M26yMtnUb3nYtDSAySEIXSoNLS3I/p
+        wbzU4s4Y3JLyLKqX9SJzxqIGxnUdJJTCZsXCvSpZWA==
+X-Google-Smtp-Source: ABdhPJwZjBClxBJU+RakNGZo7qkMpjC4fo1MzVAeR4ORlDp0sn8kkkqf28qbNAaYUoXAvoAkEDZ/HRtASeaBCyoiIgY=
+X-Received: by 2002:ac8:7318:: with SMTP id x24mr11123115qto.67.1615545549950;
+ Fri, 12 Mar 2021 02:39:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210311192105.14998-1-digetx@gmail.com> <20210311192105.14998-2-digetx@gmail.com>
- <20210312053312.zgke2mzjkqmwn67i@vireshk-i7>
-In-Reply-To: <20210312053312.zgke2mzjkqmwn67i@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 12 Mar 2021 11:36:46 +0100
-Message-ID: <CAPDyKFqrUCjTfrNqZ4gFfQS6LpoQCevGc-tv4WVOwuGhx5iiBg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/14] opp: Add devres wrapper for dev_pm_opp_set_clkname
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>
-Cc:     Qiang Yu <yuq825@gmail.com>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
+ <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+ <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
+ <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com> <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 12 Mar 2021 11:38:58 +0100
+Message-ID: <CACT4Y+aTbdE1CeUOgCKLJ3XpjazN5=yTmToXN_03M9EQ_hhayg@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 at 06:33, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Fri, Mar 12, 2021 at 11:11 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Fri, Mar 12, 2021 at 9:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > On Fri, Mar 12, 2021 at 9:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > On Thu, Mar 11, 2021 at 6:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > > a) accessing a legacy ISA/LPC port should not result in an oops,
+> > > > >     but should instead return values with all bits set. There could
+> > > > >     be a ratelimited console warning about broken drivers, but we
+> > > > >     can't assume that all drivers work correctly, as some ancient
+> > > > >     PC style drivers still rely on this.
+> > > > >     John Garry has recently worked on a related bugfix, so maybe
+> > > > >     either this is the same bug he encountered (and hasn't merged
+> > > > >     yet), or if his fix got merged there is still a remaining problem.
+> > >
+> > > > > b) It should not be possible to open /dev/ttyS3 if the device is
+> > > > >     not initialized. What is the output of 'cat /proc/tty/driver/serial'
+> > > > >     on this machine? Do you see any messages from the serial
+> > > > >     driver in the boot log?
+> > > > >     Unfortunately there are so many different ways to probe devices
+> > > > >     in the 8250 driver that I don't know where this comes from.
+> > > > >     Your config file has
+> > > > >    CONFIG_SERIAL_8250_PNP=y
+> > > > >    CONFIG_SERIAL_8250_NR_UARTS=32
+> > > > >    CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+> > > > >    CONFIG_SERIAL_8250_EXTENDED=y
+> > > > >    I guess it's probably the preconfigured uarts that somehow
+> > > > >    become probed without initialization, but it could also be
+> > > > >    an explicit device incorrectly described by qemu.
+> > > >
+> > > >
+> > > > Here is fool boot log, /proc/tty/driver/serial and the crash:
+> > > > https://gist.githubusercontent.com/dvyukov/084890d9b4aa7cd54f468e652a9b5881/raw/54c12248ff6a4885ba6c530d56b3adad59bc6187/gistfile1.txt
+> > >
+> > > Ok, so there are four 8250 ports, and none of them are initialized,
+> > > while the console is on /dev/ttyAMA0 using a different driver.
+> > >
+> > > I'm fairly sure this is a bug in the kernel then, not in qemu.
+> > >
+> > >
+> > > I also see that the PCI I/O space gets mapped to a physical address:
+> > > [    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
+> > > 0x003eff0000..0x003effffff -> 0x0000000000
+> > >
+> > > So it's probably qemu that triggers the 'synchronous external
+> > > abort' when accessing the PCI I/O space, which in turn hints
+> > > towards a bug in qemu. Presumably it only returns data from
+> > > I/O ports that are actually mapped to a device when real hardware
+> > > is supposed to return 0xffffffff when reading from unused I/O ports.
+> > > This would be separate from the work that John did, which only
+> > > fixed the kernel for accessing I/O port ranges that do not have
+> > > a corresponding MMU mapping to hardware ports.
+> >
+> > Will John's patch fix this crash w/o any changes in qemu? That would
+> > be good enough for syzbot. Otherwise we need to report the issue to
+> > qemu.
 >
-> On 11-03-21, 22:20, Dmitry Osipenko wrote:
-> > +struct opp_table *devm_pm_opp_set_clkname(struct device *dev, const char *name)
-> > +{
-> > +     struct opp_table *opp_table;
-> > +     int err;
-> > +
-> > +     opp_table = dev_pm_opp_set_clkname(dev, name);
-> > +     if (IS_ERR(opp_table))
-> > +             return opp_table;
-> > +
-> > +     err = devm_add_action_or_reset(dev, devm_pm_opp_clkname_release, opp_table);
-> > +     if (err)
-> > +             opp_table = ERR_PTR(err);
-> > +
-> > +     return opp_table;
-> > +}
+> No, this was a third issue. As far as I remember, this would result in
+> a similar problem in the case where there is no PCI bus at all, or
+> where no PCI host has an I/O port range, so the inb() from the serial
+> driver would cause a page fault. The problem you ran into happens
+> in qemu when the PCI I/O ports are mapped to hardware registers
+> that cause an exception when accessed.
 >
-> I wonder if we still need to return opp_table from here, or a simple
-> integer is fine.. The callers shouldn't be required to use the OPP
-> table directly anymore I believe and so better simplify the return
-> part of this and all other routines you are adding here..
+> If you just want to work around the problem for now, it should
+> go away if you set CONFIG_SERIAL_8250_RUNTIME_UARTS
+> to zero.
 
-Yes, please. I was thinking along the same lines, when I reviewed the
-mmc patch (patch9).
-
->
-> If there is a user which needs the opp_table, let it use the regular
-> non-devm variant.
-
-Kind regards
-Uffe
+It does not happen too often on syzbot so far, so let's try to do the
+right thing first.
+I've filed: https://bugs.launchpad.net/qemu/+bug/1918917
+with a link to this thread. To be fair, I don't fully understand what
+I am talking about, I hope I proxied your description properly.
