@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD15D3388F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5673388FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhCLJsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:48:06 -0500
+        id S233153AbhCLJsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:48:33 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbhCLJrz (ORCPT
+        with ESMTP id S232930AbhCLJr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:47:55 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51912C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:55 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id v4so1396239wrp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:55 -0800 (PST)
+        Fri, 12 Mar 2021 04:47:56 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54484C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:56 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id j2so4418446wrx.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:47:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PrQ+7ZH8hdEcqjDJ1NufGAV5+lAKZ7pUReLcSfydwew=;
-        b=mMwokNhJjxNU809LhihTYAds9RepOe5eVxyE8Z+0Ds2XHVQtNvJADEYpqs7Ff8fhgQ
-         6eEjbED6trnXLdfLDqGKqbkUXgajYwKVPGO0NfNxqZth8ytHV7tC8470j2KCMrHn3npG
-         Hn8MLrujWL0yUpgrMJFSJwkDEsnIwAVR/LG5bANdWP3ITy5lKRUGHUpTbfpKRbn9nSCn
-         zsw3GeDVaW/be8dLiUCMiXgYy/EUPsvd9w5GAoNgC/j8E5nZ2UelIXAzJrVryBrbW4/2
-         5NZDiDCXKp6/GydfiZhdn0vWnSKFTXdll6z0ODb6WFhlxw2ekYmiQCiCYViDGVa0/x39
-         7Giw==
+        bh=ernCjPMMVGuobH5cM6P0HSGWW9MWpSeDQW02LfHawZ0=;
+        b=rV7xkOsGBPIFRjGq0Dz5wZSBevytx0B/6CObs78N1+1GuTNBCsrtzBaxhQmLZcYKvb
+         +60VvIE0Tn4ZoDu+XhaL5v/ElwGTjd5q7niHw61TPEG1J27StkOX0hJfNVB2o+pReHvq
+         iokyGUoCAoyynwsJHuaW9+CJwEFoe0QUoRNtmOlVe6b2DPM9ZrdTa7BPIORlK8q6UkqH
+         8FW9VlKXtNAgsKx5MmBzrKIXkmHT7VlY8ZpQLhG0lQ3i9XoavQ/XBFW8FQSnbIAV1Hgv
+         ISyzRlJQZ33rqPLawhW9lIMILijpZMwXoF2tvWZVFiix0uXvOg+PHOtU30/DkCRvdJuI
+         gLpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PrQ+7ZH8hdEcqjDJ1NufGAV5+lAKZ7pUReLcSfydwew=;
-        b=RGuGOMO6RJyUU35Ze0jWjM53KxDQZ3AxIYhZVe9Hc4iwc7BYcFtD1dzvTJvNhfQO58
-         4LNEAUvdZXHn0VbaI25gjEKh9+U/p0hmm5HwmS3j1BLTXsLhBZNV7n/EJNdTaQ0alNG9
-         ugKyeonHYmajxJNh9BZlVcbf4ox8W3mYbTim8ynB4S6kEC4xLEP66rNpR2mkvkxIjFsc
-         QO2sGWrUeuAJhR9Va8d58LFbb9fA/tkrASWLxO0wTY1pnyRX77WrfTXC5BhTq5few+Ks
-         L6xD/74aBQbt67Kak2RY3WufBUW56A0F/GrelQ3fNF/iKSyTHKp0B7hPdxKtZ8ifVI13
-         Imbg==
-X-Gm-Message-State: AOAM5312Vb0L/Q2yf319tUgALKv77FZDEYTsqKGvrBvFQ3Dopp9f/LqG
-        cVJasMORWpAGdMcxA8GLQkgdvg==
-X-Google-Smtp-Source: ABdhPJwJxrqDbaV2u+c1ECEngaI6sJkBMUGycupvuKzIBQ3A/3nJ1G9UCu2s9XtmyFZmpwfnEA8eCw==
-X-Received: by 2002:a05:6000:245:: with SMTP id m5mr13371283wrz.284.1615542474086;
-        Fri, 12 Mar 2021 01:47:54 -0800 (PST)
+        bh=ernCjPMMVGuobH5cM6P0HSGWW9MWpSeDQW02LfHawZ0=;
+        b=JvOpKJZu3g3yCoSJbqtTlD+dXb6Neezo9oNx6QNZ1bUD86Nnp7belrMHFkiBHMTy9J
+         CdEO/y18SYfjOoJGdbiFh0VVD8jXBSPsyzp9fYYuOxFicduJWCUCpB1CFNm6gbw0NnUj
+         QlTtCNFsonMO8xriLgy3+9yEOWglFeA2/W6IO/mcQi2287cR6wZ5G5jHj3dbR/+Nak0E
+         k7mZStPnHmqfbI5KiG2e852TUpBp95AsrTJEK547Gi5jvoAfKKkA7pIU8AWjgYZGy4vg
+         C7Iu5L9pi1GMC6DWQdh8dDBx8vJoQtNRKIn7Bg5lt6+6Prz4u0Q+/g185GNfGxSyfvfl
+         45sw==
+X-Gm-Message-State: AOAM533pwTLK3/0e7Qm1U+kaMdvsihiKiJ1xsRaVs+G2+4gstt11WFYQ
+        wJTDjWnbnl46AknELApiYq0w3Q==
+X-Google-Smtp-Source: ABdhPJzVJfO3OjMFAJiQoXF9fqGRD7xpsM2ycwsfdQX3fW3ocsinr2i1s/BTouIeJhIBvj5gIACKKQ==
+X-Received: by 2002:a5d:5047:: with SMTP id h7mr13568391wrt.111.1615542475019;
+        Fri, 12 Mar 2021 01:47:55 -0800 (PST)
 Received: from dell.default ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id f7sm1539536wmq.11.2021.03.12.01.47.52
+        by smtp.gmail.com with ESMTPSA id f7sm1539536wmq.11.2021.03.12.01.47.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 01:47:53 -0800 (PST)
+        Fri, 12 Mar 2021 01:47:54 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+Cc:     linux-kernel@vger.kernel.org,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH 05/30] scsi: libfc: fc_rport: Fix incorrect naming of fc_rport_adisc_resp()
-Date:   Fri, 12 Mar 2021 09:47:13 +0000
-Message-Id: <20210312094738.2207817-6-lee.jones@linaro.org>
+        MPT-FusionLinux.pdl@avagotech.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
+Subject: [PATCH 06/30] scsi: mpt3sas: mpt3sas_transport: Fix a couple of misdocumented functions/params
+Date:   Fri, 12 Mar 2021 09:47:14 +0000
+Message-Id: <20210312094738.2207817-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210312094738.2207817-1-lee.jones@linaro.org>
 References: <20210312094738.2207817-1-lee.jones@linaro.org>
@@ -68,30 +73,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/libfc/fc_rport.c:1500: warning: expecting prototype for fc_rport_els_adisc_resp(). Prototype was for fc_rport_adisc_resp() instead
+ drivers/scsi/mpt3sas/mpt3sas_transport.c:71: warning: Function parameter or member 'phy' not described in '_transport_get_port_id_by_sas_phy'
+ drivers/scsi/mpt3sas/mpt3sas_transport.c:354: warning: Function parameter or member 'port_id' not described in '_transport_expander_report_manufacture'
+ drivers/scsi/mpt3sas/mpt3sas_transport.c:354: warning: expecting prototype for transport_expander_report_manufacture(). Prototype was for _transport_expander_report_manufacture() instead
+ drivers/scsi/mpt3sas/mpt3sas_transport.c:684: warning: Function parameter or member 'hba_port' not described in 'mpt3sas_transport_port_add'
+ drivers/scsi/mpt3sas/mpt3sas_transport.c:684: warning: Excess function parameter 'port' description in 'mpt3sas_transport_port_add'
 
-Cc: Hannes Reinecke <hare@suse.de>
+Cc: Sathya Prakash <sathya.prakash@broadcom.com>
+Cc: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Cc: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: MPT-FusionLinux.pdl@avagotech.com
+Cc: MPT-FusionLinux.pdl@broadcom.com
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/libfc/fc_rport.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_transport.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
-index 56003208d2e7c..cd0fb8ca2425d 100644
---- a/drivers/scsi/libfc/fc_rport.c
-+++ b/drivers/scsi/libfc/fc_rport.c
-@@ -1486,7 +1486,7 @@ static void fc_rport_enter_logo(struct fc_rport_priv *rdata)
- }
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_transport.c b/drivers/scsi/mpt3sas/mpt3sas_transport.c
+index 6f47082247551..0681daee6c149 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_transport.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_transport.c
+@@ -62,7 +62,7 @@
  
  /**
-- * fc_rport_els_adisc_resp() - Handler for Address Discovery (ADISC) responses
-+ * fc_rport_adisc_resp() - Handler for Address Discovery (ADISC) responses
-  * @sp:	       The sequence the ADISC response was on
-  * @fp:	       The ADISC response frame
-  * @rdata_arg: The remote port that sent the ADISC response
+  * _transport_get_port_id_by_sas_phy - get zone's port id that Phy belong to
+- * @phy - sas_phy object
++ * @phy: sas_phy object
+  *
+  * Return Port number
+  */
+@@ -339,10 +339,11 @@ struct rep_manu_reply {
+ };
+ 
+ /**
+- * transport_expander_report_manufacture - obtain SMP report_manufacture
++ * _transport_expander_report_manufacture - obtain SMP report_manufacture
+  * @ioc: per adapter object
+  * @sas_address: expander sas address
+  * @edev: the sas_expander_device object
++ * @port_id: Port ID number
+  *
+  * Fills in the sas_expander_device object when SMP port is created.
+  *
+@@ -671,7 +672,7 @@ _transport_sanity_check(struct MPT3SAS_ADAPTER *ioc, struct _sas_node *sas_node,
+  * @ioc: per adapter object
+  * @handle: handle of attached device
+  * @sas_address: sas address of parent expander or sas host
+- * @port: hba port entry
++ * @hba_port: hba port entry
+  * Context: This function will acquire ioc->sas_node_lock.
+  *
+  * Adding new port object to the sas_node->sas_port_list.
 -- 
 2.27.0
 
