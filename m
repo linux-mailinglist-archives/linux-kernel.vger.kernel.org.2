@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E663395AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B25C3395AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 19:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhCLSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 13:00:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:58424 "EHLO foss.arm.com"
+        id S232840AbhCLSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 13:00:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:58446 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231557AbhCLR7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 12:59:50 -0500
+        id S232362AbhCLR7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 12:59:53 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8C93106F;
-        Fri, 12 Mar 2021 09:59:49 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB89E1396;
+        Fri, 12 Mar 2021 09:59:52 -0800 (PST)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD88F3F7D7;
-        Fri, 12 Mar 2021 09:59:47 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF4E43F7D7;
+        Fri, 12 Mar 2021 09:59:50 -0800 (PST)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -29,9 +29,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         shameerali.kolothum.thodi@huawei.com,
         Jamie Iles <jamie@nuviainc.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: [PATCH v2 04/24] x86/resctrl: Pass the schema in info dir's private pointer
-Date:   Fri, 12 Mar 2021 17:58:29 +0000
-Message-Id: <20210312175849.8327-5-james.morse@arm.com>
+Subject: [PATCH v2 05/24] x86/resctrl: Label the resources with their configuration type
+Date:   Fri, 12 Mar 2021 17:58:30 +0000
+Message-Id: <20210312175849.8327-6-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210312175849.8327-1-james.morse@arm.com>
 References: <20210312175849.8327-1-james.morse@arm.com>
@@ -41,175 +41,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moving properties that resctrl exposes to user-space into the core
-'fs' code, (e.g. the name of the schema), means some of the functions
-that back the filesystem need the schema struct (to where the properties
-are moved), but currently take the resource.
+The names of resources are used for the schemata name presented to
+user-space. These should be part of the filesystem code that is common
+to all architectures, as otherwise different architectures could
+accidentally support different schemata.
 
-Once the CDP resources are merged, the resource doesn't reflect the
-right level of information.
+resctrl should be able to generate 'L3, L3CODE, L3DATA' from the
+architectures description of a cache at level 3 that supports CDP,
+creating two separate struct resctrl_schema for the CDP case that
+share the same resource, but differ in name and configuration type.
 
-For the info dirs that represent a control, the information needed
-is in the schema, as this is how the resource is being used. For the
-monitors, its the resource as L3CODE_MON doesn't make sense, and would
-monitor data too.
+The configuration type is needed in struct resctrl_schema to generate
+the name, and as an index into the array of per-domain staged
+configurations that is added by a later patch.
 
-This difference means the type of the private pointers varies
-between control and monitor info dirs.
+Currently the resources are different for these types, the type
+is currently encoded in the name, (and cbm_idx_offset).
 
-If the flags are RF_MON_INFO, its a struct rdt_resource. If the
-flags are RF_CTRL_INFO, its a struct resctrl_schema. Nothing in
-res_common_files[] has both flags.
+Label all the entries in rdt_resources_all[], and copy that value to
+struct resctrl_schema.
+
+Copying the value ensures there is no mismatch, but allows the filesystem
+parts of resctrl to be modified to use the schema. Once the resources are
+merged, the filesystem code can assign this value based on the schema
+being created.
 
 Reviewed-by: Jamie Iles <jamie@nuviainc.com>
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
 Changes since v1:
- * Added comment above removed for_each_alloc_enabled_rdt_resource() to hint
-   at symmetry.
+ * {cdp,conf}_type typo
+ * Added kerneldoc comment
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 38 +++++++++++++++++---------
- 1 file changed, 25 insertions(+), 13 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c     | 7 +++++++
+ arch/x86/kernel/cpu/resctrl/internal.h | 2 ++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 1 +
+ include/linux/resctrl.h                | 8 ++++++++
+ 4 files changed, 18 insertions(+)
 
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index ca43a7491fda..048c82e3baca 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -62,6 +62,7 @@ mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
+ struct rdt_hw_resource rdt_resources_all[] = {
+ 	[RDT_RESOURCE_L3] =
+ 	{
++		.conf_type			= CDP_BOTH,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L3,
+ 			.name			= "L3",
+@@ -81,6 +82,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_L3DATA] =
+ 	{
++		.conf_type			= CDP_DATA,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L3DATA,
+ 			.name			= "L3DATA",
+@@ -100,6 +102,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_L3CODE] =
+ 	{
++		.conf_type			= CDP_CODE,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L3CODE,
+ 			.name			= "L3CODE",
+@@ -119,6 +122,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_L2] =
+ 	{
++		.conf_type			= CDP_BOTH,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L2,
+ 			.name			= "L2",
+@@ -138,6 +142,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_L2DATA] =
+ 	{
++		.conf_type			= CDP_DATA,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L2DATA,
+ 			.name			= "L2DATA",
+@@ -157,6 +162,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_L2CODE] =
+ 	{
++		.conf_type			= CDP_CODE,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_L2CODE,
+ 			.name			= "L2CODE",
+@@ -176,6 +182,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+ 	},
+ 	[RDT_RESOURCE_MBA] =
+ 	{
++		.conf_type			= CDP_BOTH,
+ 		.resctrl = {
+ 			.rid			= RDT_RESOURCE_MBA,
+ 			.name			= "MB",
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 8a9da490134b..57484d2f6214 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -361,12 +361,14 @@ struct rdt_parse_data {
+ 
+ /**
+  * struct rdt_hw_resource - hw attributes of a resctrl resource
++ * @conf_type:		The type that should be used when configuring. temporary
+  * @num_closid:		Number of CLOSIDs available.
+  * @msr_base:		Base MSR address for CBMs
+  * @msr_update:		Function pointer to update QOS MSRs
+  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+  */
+ struct rdt_hw_resource {
++	enum resctrl_conf_type	conf_type;
+ 	struct rdt_resource	resctrl;
+ 	int			num_closid;
+ 	unsigned int		msr_base;
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 73a695e7096d..92b94d85c689 100644
+index 92b94d85c689..b5702238797b 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -848,7 +848,8 @@ static int rdt_last_cmd_status_show(struct kernfs_open_file *of,
- static int rdt_num_closids_show(struct kernfs_open_file *of,
- 				struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
- 	struct rdt_hw_resource *hw_res;
+@@ -2135,6 +2135,7 @@ static int schemata_list_create(void)
+ 			return -ENOMEM;
  
- 	hw_res = resctrl_to_arch_res(r);
-@@ -859,7 +860,8 @@ static int rdt_num_closids_show(struct kernfs_open_file *of,
- static int rdt_default_ctrl_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
+ 		s->res = r;
++		s->conf_type = resctrl_to_arch_res(r)->conf_type;
  
- 	seq_printf(seq, "%x\n", r->default_ctrl);
- 	return 0;
-@@ -868,7 +870,8 @@ static int rdt_default_ctrl_show(struct kernfs_open_file *of,
- static int rdt_min_cbm_bits_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
+ 		INIT_LIST_HEAD(&s->list);
+ 		list_add(&s->list, &resctrl_schema_all);
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 092ff0c13b9b..c6f749f54765 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -15,6 +15,12 @@ int proc_resctrl_show(struct seq_file *m,
  
- 	seq_printf(seq, "%u\n", r->cache.min_cbm_bits);
- 	return 0;
-@@ -877,7 +880,8 @@ static int rdt_min_cbm_bits_show(struct kernfs_open_file *of,
- static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 				   struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
+ #endif
  
- 	seq_printf(seq, "%x\n", r->cache.shareable_bits);
- 	return 0;
-@@ -900,13 +904,14 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 			      struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
- 	/*
- 	 * Use unsigned long even though only 32 bits are used to ensure
- 	 * test_bit() is used safely.
- 	 */
- 	unsigned long sw_shareable = 0, hw_shareable = 0;
- 	unsigned long exclusive = 0, pseudo_locked = 0;
-+	struct rdt_resource *r = s->res;
- 	struct rdt_domain *dom;
- 	int i, hwb, swb, excl, psl;
- 	enum rdtgrp_mode mode;
-@@ -978,7 +983,8 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- static int rdt_min_bw_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
- 
- 	seq_printf(seq, "%u\n", r->membw.min_bw);
- 	return 0;
-@@ -1009,7 +1015,8 @@ static int rdt_mon_features_show(struct kernfs_open_file *of,
- static int rdt_bw_gran_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
- 
- 	seq_printf(seq, "%u\n", r->membw.bw_gran);
- 	return 0;
-@@ -1018,7 +1025,8 @@ static int rdt_bw_gran_show(struct kernfs_open_file *of,
- static int rdt_delay_linear_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
- 
- 	seq_printf(seq, "%u\n", r->membw.delay_linear);
- 	return 0;
-@@ -1038,7 +1046,8 @@ static int max_threshold_occ_show(struct kernfs_open_file *of,
- static int rdt_thread_throttle_mode_show(struct kernfs_open_file *of,
- 					 struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r = of->kn->parent->priv;
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
- 
- 	if (r->membw.throttle_mode == THREAD_THROTTLE_PER_THREAD)
- 		seq_puts(seq, "per-thread\n");
-@@ -1771,14 +1780,14 @@ int rdtgroup_kn_mode_restore(struct rdtgroup *r, const char *name,
- 	return ret;
- }
- 
--static int rdtgroup_mkdir_info_resdir(struct rdt_resource *r, char *name,
-+static int rdtgroup_mkdir_info_resdir(void *priv, char *name,
- 				      unsigned long fflags)
- {
- 	struct kernfs_node *kn_subdir;
- 	int ret;
- 
- 	kn_subdir = kernfs_create_dir(kn_info, name,
--				      kn_info->mode, r);
-+				      kn_info->mode, priv);
- 	if (IS_ERR(kn_subdir))
- 		return PTR_ERR(kn_subdir);
- 
-@@ -1795,6 +1804,7 @@ static int rdtgroup_mkdir_info_resdir(struct rdt_resource *r, char *name,
- 
- static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
- {
-+	struct resctrl_schema *s;
- 	struct rdt_resource *r;
- 	unsigned long fflags;
- 	char name[32];
-@@ -1809,9 +1819,11 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
- 	if (ret)
- 		goto out_destroy;
- 
--	for_each_alloc_enabled_rdt_resource(r) {
-+	/* loop over enabled controls, these are all alloc_enabled */
-+	list_for_each_entry(s, &resctrl_schema_all, list) {
-+		r = s->res;
- 		fflags =  r->fflags | RF_CTRL_INFO;
--		ret = rdtgroup_mkdir_info_resdir(r, r->name, fflags);
-+		ret = rdtgroup_mkdir_info_resdir(s, r->name, fflags);
- 		if (ret)
- 			goto out_destroy;
- 	}
++enum resctrl_conf_type {
++	CDP_BOTH,
++	CDP_CODE,
++	CDP_DATA,
++};
++
+ /**
+  * struct rdt_domain - group of CPUs sharing a resctrl resource
+  * @list:		all instances of this resource
+@@ -157,10 +163,12 @@ struct rdt_resource {
+ /**
+  * struct resctrl_schema - configuration abilities of a resource presented to user-space
+  * @list:	Member of resctrl's schema list
++ * @conf_type:	Whether this entry is for code/data/both
+  * @res:	The rdt_resource for this entry
+  */
+ struct resctrl_schema {
+ 	struct list_head		list;
++	enum resctrl_conf_type		conf_type;
+ 	struct rdt_resource		*res;
+ };
+ #endif /* _RESCTRL_H */
 -- 
 2.30.0
 
