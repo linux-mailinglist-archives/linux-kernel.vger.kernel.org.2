@@ -2,157 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3163399AD
+	by mail.lfdr.de (Postfix) with ESMTP id 87FF23399AE
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhCLW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhCLW2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:28:30 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39D0C061574;
-        Fri, 12 Mar 2021 14:28:29 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4BD3B88F;
-        Fri, 12 Mar 2021 23:28:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615588108;
-        bh=/sMIq1hDnpODcSNiUzu/uMri0rA2SOMdhVlPhhDuXSc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=My/5yeehl/Xm3FtaDVr19sHyEWUHBLKePWoIyMIvvI8pMpCsQFW4UHc6d+bOBvPHu
-         AMTBepMEYH+6DMDxVNh2zcPmBY9dv6T0OCk2JLDvXd2GvMcp+OkvZ88pDkt6AN0H3r
-         KzxjuDyFGVeGO6/+WJFABcilquIIG/aXyywaDqPE=
-Date:   Sat, 13 Mar 2021 00:27:53 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v3 7/8] media: uvcvideo: Set a different name for the
- metadata entity
-Message-ID: <YEvq6TlGCL3NSqJ9@pendragon.ideasonboard.com>
-References: <20210312124830.1344255-1-ribalda@chromium.org>
- <20210312124830.1344255-8-ribalda@chromium.org>
+        id S235583AbhCLW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 17:28:56 -0500
+Received: from mail-dm6nam12on2086.outbound.protection.outlook.com ([40.107.243.86]:45152
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235575AbhCLW2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 17:28:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n4G8b9TnOCK+BLbkc/AkcKBfQr5ck7FDgNHqm6W8VHCN9Ci9FI0Vg3FgAcodjRy4e5Ho1JjOWBPs0T7xOMISZ/cbA3RpDL49OlDeNmwiEcfIvpS/AWCDWJWJIBlgNzqEIOyLp5d/EIA2jcDNM/aYr4kE4cQfEqyI4TQMxp/Hd8ak4HbXTQ72DYgcghB8YR/bK5TN2RyWypAFpnqDK+QCu1Rq8C+Y/yfgbgx6clHvjkKYZleqAZ4rc1th6KpITRldPL8t5lWgohsEwKR43qlZ6AR4lBeGdWrFV+YP9pvlf7IZvCutjk5l/0Au3dK1lr9dX4RfVAJmI9zyqZloAFVRiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lXykoo9ptugOnTaP5mdMN5PmPIG4iT2Od7rwg7Onfcw=;
+ b=dy0Ps8jgVD4OAasecZK35qbO5uaXmZBKi8f0LZ9OxO6E09fZcl1zsYySdsO6q1RDm2Jwur0oHX/jpRilVNRSO5bvKwq00AW8Xy4P/ofVyvGyZHUg7p3YGtf1/8qQ23PqlrEyMGIzFy4vfT+xgzmQsr2E2u/kqucc7les55hVSEav3XJXFL4NhM50xwtMEwO3jCVOs3oH7tjtjRms1lDpYZbzRFR1qg1tE7VKvIeCGYUYlkyQNJobPchPzhLjgP5C+1snI3YUmo0kkb4EzEUQ4EbE4NKXPXhsOIug3Bz0GQGhQGJLMAbKbF0dCul/SzJAX/eBv1ejs8Wxdtyvk/G/MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lXykoo9ptugOnTaP5mdMN5PmPIG4iT2Od7rwg7Onfcw=;
+ b=KLYs60lLxeOZvCUyNUDjd9di66VSLF+rsiP2J8aczbm4Q/A3gv1g+s1qxKuufmN1W3Ylt847SJGZOJjwwrBiS6inCXcHPOtTDbEhkc9jD00/kIa6SE/mFTwvlUgGE0a8+CiMdnr2OcQnjkz7rqlh7WXZ+LstDCUyMOomvw5GyNU=
+Received: from DM6PR12MB4732.namprd12.prod.outlook.com (2603:10b6:5:32::25) by
+ DM6PR12MB3705.namprd12.prod.outlook.com (2603:10b6:5:14a::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.31; Fri, 12 Mar 2021 22:28:33 +0000
+Received: from DM6PR12MB4732.namprd12.prod.outlook.com
+ ([fe80::45a1:94ba:f88c:92e2]) by DM6PR12MB4732.namprd12.prod.outlook.com
+ ([fe80::45a1:94ba:f88c:92e2%5]) with mapi id 15.20.3890.041; Fri, 12 Mar 2021
+ 22:28:33 +0000
+From:   "Zeng, Oak" <Oak.Zeng@amd.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Zhang, Hawking" <Hawking.Zhang@amd.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>,
+        "Ma, Le" <Le.Ma@amd.com>, "Lazar, Lijo" <Lijo.Lazar@amd.com>
+CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/amdgpu: Mark mmhub_v1_7_setup_vm_pt_regs() as static
+Thread-Topic: [PATCH] drm/amdgpu: Mark mmhub_v1_7_setup_vm_pt_regs() as static
+Thread-Index: AQHXF428baRlH6LzBEySkvDjMDhRD6qAmyMA
+Date:   Fri, 12 Mar 2021 22:28:33 +0000
+Message-ID: <ACD7D8F0-345B-4A4B-8F39-64CA119B5501@amd.com>
+References: <1615587537-28989-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1615587537-28989-1-git-send-email-jrdr.linux@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=true;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Name=Internal
+ Distribution
+ Only;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ActionId=b92d0369-a5e2-4c5f-8f3a-cbf1eee11f50;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Standard;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2021-03-12T22:27:47Z;
+user-agent: Microsoft-MacOutlook/16.46.21021202
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [165.204.54.211]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2bc64137-0e43-41a6-2093-08d8e5a62bdb
+x-ms-traffictypediagnostic: DM6PR12MB3705:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB3705713DD9A2472E3BF0D980806F9@DM6PR12MB3705.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bkrlkLC5gjQ0oQND5VAi9jh6HBgRdL/0rfLg54wHJu16egP/Pk2Pd5LyDTRYyFeks5iAOoSBu+M7qf4zFBAjW+b9vWE3X/MWrRWGy1SieUwW6sbo8MqzGfL0n5DcPLgCxtObvo7KICyo7aMFx2Y12fRYXT9tbzjGCdUDDA/T1jQ+AaDRgiwI5SgkJxPjD4IG90pP0H15o3CqQXqg5GhXmJSgQAK7b+tnUgXBQwbMyjwVgOO2r4a8dWuGXP0LqtluRUjb20+bpL51BCnf/9cQWZawQV1oIxqCyoyA+GuudE78ezAO96lWNKhOKL9GBi7yWPqpvvAeJaCLvmD/Fg/s9r1Nba38agwRKKybNTKDLGIZtLcWd26CSOiJHg4+4YckoR5Ru/b3u9YU876rI8i8GX9t638oyXGPTjR6A5NNL0F68prhwo1v/sAZrpeIJJ1w8WGsoTeqdSmMGSN756ZE4J8xwE6q168TIJJOFhTMe/1qQFjsZUjrAEDAFGN3cpMX+7v/QNPzueFeUIXxRCTK4pSIBeXPDv1iWYKDpMoJs0xRTxgeVH2Ae29pPKpc3e1XQj1bdbuhF6rhJzjVU1il2a/FTTZd5st8QXMlBDEPxy1hBQCursGcTQYPtUQR3afUhXGmfTnTFQYAakwKrlJQNQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(39860400002)(136003)(36756003)(71200400001)(2616005)(66946007)(83380400001)(64756008)(76116006)(66446008)(4326008)(2906002)(8676002)(478600001)(6636002)(33656002)(186003)(66476007)(8936002)(26005)(54906003)(921005)(110136005)(6486002)(6512007)(316002)(5660300002)(86362001)(6506007)(66556008)(91956017)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?ck94TDNzQS9PZFREUVQwWG8zaE9LbmFMOEE1a1IweFMwVzdiYnpWTVdWaERW?=
+ =?utf-8?B?K0dkUFFYc3JkbDBrYnhpQkdkMHhHOGorcmdZYllDOEZObFp0aEMvSnFFa04y?=
+ =?utf-8?B?Y1Jnd0FjMFpkSDM3UDJvOGNkZ0ZtVEdrYkRvWExDS0xsMVZTZHVaL25uTVdy?=
+ =?utf-8?B?RlgwSDFkYUVnT2xnc0xmR2IzUXFKMzNXZTVDZFF4L1ZqSnYyK1FzRGNpd0ln?=
+ =?utf-8?B?N29MR1pxQjB4V1hYYWIwYzY5ZlJjTVpPV0FxaGJwTWJvVXJIR0JhRGRCUVIv?=
+ =?utf-8?B?R1EzNzI5NkZBSDJPTjdOdTgydW12YVhTcWt3MmtBNDhwUE9wUFVJeEIrbmR2?=
+ =?utf-8?B?UzJSaU50a0V6MC93dXQzLzRiVTNOd0RrRlQ0dWZnQktXTWhWMVNxVnRQRUlX?=
+ =?utf-8?B?eFZuaGJ3dll5bU1paFlEWjdXUlRpWTFTN1lvQlhQYldPK2psaU9qbTNYUk9B?=
+ =?utf-8?B?T2ZZaWZqMG9nQVNsTHplNU5CY2kvdHZud01KODhkOWI0TW5WSGxlbkFGNnFH?=
+ =?utf-8?B?eStZU21lWHBIaXZDdGZHaEpiOURsSkc2eVZFSzFyS0RRSGVrTjlaa3NQeXBl?=
+ =?utf-8?B?UStJeE1CRHdyYlBrQ2htb0pVWHlWK2V5SFIrOTJ2YkJZSC94VnF2a01INjN1?=
+ =?utf-8?B?eUxIMUZUMjhMTnN2ZXdRUUlTNVFUcTVHL2QyK3pFNjlJRUVDbnlxWGNtbWcw?=
+ =?utf-8?B?TnZ1Y1NmTmUzY25JSjRYbWR6djArV0h3V3J1SUZUbzNpQ1EwMjhDZ2IrMFE4?=
+ =?utf-8?B?aW1LZm9GMjI2Y0hRQXBGNEUrZDh2V0RQM2RvZStsaGJOSWlUd29sZXN6bm1L?=
+ =?utf-8?B?eVlpTklWdG16QVMxUGRJOVpFWjVEdXRFKytIQWo5TTdWZXozT29TcldUMTBx?=
+ =?utf-8?B?cXJHVkJSTjQ5bk9Vd05oUWNFQ2x4RWpMa0NEUVBLSExBNnh2UENDa2Y3bC9G?=
+ =?utf-8?B?U0dFN2c5TGw2ZmR0bHlFaU1wWW14MjJ0SElKTVorVHBpeDV2c3JNcFJMT285?=
+ =?utf-8?B?Rjk4Z0o3ZWxoZGVGOVJrdzhJUHhWNjN5aGpKREZSeFJEclQ0bk1zbHdwSGVG?=
+ =?utf-8?B?emdCTStPTlN3aEVKT2JZYVJnZGhpbkU0ek53M2ZWTE1VR20wYjRoaENyczdI?=
+ =?utf-8?B?dFZHYXN2N3JyNnNVNlByMi9nMCtKVnorWTlyMmluRnVSbzZiVWRQTng3d2pH?=
+ =?utf-8?B?QVlFaUlQUlBXL1lCRFBwRktSTTZqeVJBYjd6Z0Q1Ulg4T2VWSG82Sy9YZ2dZ?=
+ =?utf-8?B?Q3ZhbGNuNWNLNU56T0ZYNlEwT1NqbDl5enhjQWhFNWQ1cjluaXM1TUlsYUIz?=
+ =?utf-8?B?TUNWSGtaZXAwVStmNHlmWXRQdmEvdjhmUEZBZm9PV3Mrb2tXeDBYa25PQ0t4?=
+ =?utf-8?B?ZStRSmtpQXA3Tyt3Z2FsMWJ6OFp6RkRQMkpoNFdXc05FUmhNSFFMdHBQeG13?=
+ =?utf-8?B?a24vZStKQ1pPREVCU0psTHR2Vjc2UHRhSyswVXhoMmc0V2pjcVZPUC9NSUtv?=
+ =?utf-8?B?Y1paZW1lUjllWVRmOC9jMUN2VFJJa283N2FBQWNDYmplM3o4UlJaLzlYMW81?=
+ =?utf-8?B?amN0REZLa3VHdytzQW13MjhaVjNuL2ZmclR6NUhucUx1WFFUTHhrVGlpazRZ?=
+ =?utf-8?B?NXVrMmJwK20rcGl0aFNpTjQycTVWUW9hN0dGc3VmNzBpRVNDOC9YMW5WTU9h?=
+ =?utf-8?B?Y3hRN2FIS2pBRVhnVU1nd3FqSUFBU29rcHFicis4bi9XZ3BmVjRQenh4emhT?=
+ =?utf-8?B?b0dJS0c0TjBNN2trNVA1M2ptZDQyUlFTQjZ0U1E3MTNqNWdQY3ZFWmZYaXQ0?=
+ =?utf-8?B?RGRhNnpDVlBhUEhGc1A1QT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B81E5E02441FDF49BF24BE4FCACF8F36@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210312124830.1344255-8-ribalda@chromium.org>
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bc64137-0e43-41a6-2093-08d8e5a62bdb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 22:28:33.4978
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nPLu0mxKys5EITK0qJEWw/W+tSRwnBj8P1HA8eZvgs/vLgcILOeOVllwYbWUHaPH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3705
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Fri, Mar 12, 2021 at 01:48:29PM +0100, Ricardo Ribalda wrote:
-> All the entities must have a unique name. And now that we are at it, we
-> append the entity->id to the name to avoid collisions on multi-chain
-> devices.
-> 
-> Fixes v4l2-compliance:
-> Media Controller ioctls:
->                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
->         test MEDIA_IOC_G_TOPOLOGY: FAIL
->                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
-> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 35873cf2773d..6c928e708615 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2154,6 +2154,18 @@ static void uvc_unregister_video(struct uvc_device *dev)
->  #endif
->  }
->  
-> +static int uvc_oterm_id(struct uvc_video_chain *chain)
-> +{
-> +	struct uvc_entity *entity;
-> +
-> +	list_for_each_entry(entity, &chain->entities, chain) {
-> +		if (UVC_ENTITY_IS_OTERM(entity))
-> +			return entity->id;
-
-It can also be an ITERM for output devices. You can drop this function
-and use stream>header.bTerminalLink below (see uvc_stream_by_id() and
-its usage in uvc_register_terms()).
-
-> +	}
-> +
-> +	return -1;
-> +}
-> +
->  int uvc_register_video_device(struct uvc_device *dev,
->  			      struct uvc_streaming *stream,
->  			      struct video_device *vdev,
-> @@ -2162,6 +2174,8 @@ int uvc_register_video_device(struct uvc_device *dev,
->  			      const struct v4l2_file_operations *fops,
->  			      const struct v4l2_ioctl_ops *ioctl_ops)
->  {
-> +	char prefix[sizeof(vdev->name) - 9];
-> +	const char *suffix;
->  	int ret;
->  
->  	/* Initialize the video buffers queue. */
-> @@ -2190,16 +2204,21 @@ int uvc_register_video_device(struct uvc_device *dev,
->  	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
->  	default:
->  		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
-> +		suffix = "video";
->  		break;
->  	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
->  		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
-> +		suffix = "out";
-
-I wonder if these two should be video-cap and video-out (or vid-cap and
-vid-out if you want to shorten them) ?
-
->  		break;
->  	case V4L2_BUF_TYPE_META_CAPTURE:
->  		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
-> +		suffix = "meta";
->  		break;
->  	}
->  
-> -	strscpy(vdev->name, dev->name, sizeof(vdev->name));
-> +	strscpy(prefix, dev->name, sizeof(prefix));
-> +	snprintf(vdev->name, sizeof(vdev->name), "%s-%d %s", prefix,
-
-The unit ID is never negative, so %u ?
-
-> +		 uvc_oterm_id(stream->chain), suffix);
-
-Truncating the device name at the beginning of the video node name isn't
-very nice :-S How about the following ?
-
-	snprintf(vdev->name, sizeof(vdev->name), "%s-%u (%s)", type_name,
-		 uvc_oterm_id(stream->chain), dev->name);
-
-with the suffix variable renamed to type_name ?
-
-Thinking some more about it, vdev->name serves two purposes in the
-driver: creating the entity name, and reporting the card name in
-querycap. The former is done in the V4L2 core, which uses vdev->name
-as-is. In this context, we con't need to add dev->name, it would be
-redundant as the media controller device already reports it. The latter
-is done in uvc_ioctl_querycap(). How about dropping dev->name from
-vdev->name, and modifying uvc_ioctl_querycap() to use dev->name instead
-of cap->card ?
-
->  
->  	/*
->  	 * Set the driver data before calling video_register_device, otherwise
-
--- 
-Regards,
-
-Laurent Pinchart
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEludGVybmFsIERpc3RyaWJ1dGlvbiBPbmx5XQ0KDQpU
+aGFuayB5b3UgSm9hcmRlciBmb3IgdGhlIGZpeC4gQnV0IHRoaXMgaGFzIGFscmVhZHkgYmVlbiBm
+aXhlZCBpbiBvdXIgQWxleCdzIGRybS1uZXh0IGJyYW5jaC4NCg0KUmVnYXJkcywNCk9haw0KDQoN
+Cg0K77u/T24gMjAyMS0wMy0xMiwgNToxOSBQTSwgIlNvdXB0aWNrIEpvYXJkZXIiIDxqcmRyLmxp
+bnV4QGdtYWlsLmNvbT4gd3JvdGU6DQoNCiAgICBLZXJuZWwgdGVzdCByb2JvdCB0aHJvd3MgYmVs
+b3cgd2FybmluZyAtPg0KDQogICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvbW1odWJfdjFf
+Ny5jOjU2OjY6IHdhcm5pbmc6IG5vIHByZXZpb3VzDQogICAgcHJvdG90eXBlIGZvciAnbW1odWJf
+djFfN19zZXR1cF92bV9wdF9yZWdzJyBbLVdtaXNzaW5nLXByb3RvdHlwZXNdDQoNCiAgICBNYXJr
+IG1taHViX3YxXzdfc2V0dXBfdm1fcHRfcmVncygpIGFzIHN0YXRpYy4NCg0KICAgIFJlcG9ydGVk
+LWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCiAgICBTaWduZWQtb2ZmLWJ5
+OiBTb3VwdGljayBKb2FyZGVyIDxqcmRyLmxpbnV4QGdtYWlsLmNvbT4NCiAgICAtLS0NCiAgICAg
+ZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvbW1odWJfdjFfNy5jIHwgMiArLQ0KICAgICAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KICAgIGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9tbWh1Yl92MV83LmMgYi9kcml2ZXJzL2dw
+dS9kcm0vYW1kL2FtZGdwdS9tbWh1Yl92MV83LmMNCiAgICBpbmRleCA0ZGYwYjczLi5hZTdkOGEx
+IDEwMDY0NA0KICAgIC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L21taHViX3YxXzcu
+Yw0KICAgICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L21taHViX3YxXzcuYw0KICAg
+IEBAIC01Myw3ICs1Myw3IEBAIHN0YXRpYyB1NjQgbW1odWJfdjFfN19nZXRfZmJfbG9jYXRpb24o
+c3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpDQogICAgIHJldHVybiBiYXNlOw0KICAgICB9DQoN
+CiAgICAtdm9pZCBtbWh1Yl92MV83X3NldHVwX3ZtX3B0X3JlZ3Moc3RydWN0IGFtZGdwdV9kZXZp
+Y2UgKmFkZXYsIHVpbnQzMl90IHZtaWQsDQogICAgK3N0YXRpYyB2b2lkIG1taHViX3YxXzdfc2V0
+dXBfdm1fcHRfcmVncyhzdHJ1Y3QgYW1kZ3B1X2RldmljZSAqYWRldiwgdWludDMyX3Qgdm1pZCwN
+CiAgICAgdWludDY0X3QgcGFnZV90YWJsZV9iYXNlKQ0KICAgICB7DQogICAgIHN0cnVjdCBhbWRn
+cHVfdm1odWIgKmh1YiA9ICZhZGV2LT52bWh1YltBTURHUFVfTU1IVUJfMF07DQogICAgLS0NCiAg
+ICAxLjkuMQ0KDQoNCg==
