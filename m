@@ -2,173 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A075B339A02
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EB7339A13
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhCLX3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:29:43 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49032 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235826AbhCLX3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:29:32 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 80732527;
-        Sat, 13 Mar 2021 00:29:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615591770;
-        bh=Hxs/Z30Yl+dz+MWqLz7+py02iWhLUYvYkDfwAwBaKkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H+vqDRMTgJ4pCCKPWPIDunRTza4ViT4oTjsowbriLgM9HU4xV/wTDhwTAlYmil/TI
-         S3BkOd5kMNT2QRAw9dCIrsMN6Ei3soy3Ga6TACSeQ8fmiesIA64vps9QUHCejnOtdv
-         h4hY5e4qEHnpFGRd649ITEfBeFPzYNc97nQDwsTI=
-Date:   Sat, 13 Mar 2021 01:28:55 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v3 7/8] media: uvcvideo: Set a different name for the
- metadata entity
-Message-ID: <YEv5N1k6CAFX9/L8@pendragon.ideasonboard.com>
-References: <20210312124830.1344255-1-ribalda@chromium.org>
- <20210312124830.1344255-8-ribalda@chromium.org>
- <YEvq6TlGCL3NSqJ9@pendragon.ideasonboard.com>
- <CAPybu_16KTsEF+BGoG6ea6hf4d-J+uwimXbUT0Bv9HO8HLhJ-Q@mail.gmail.com>
+        id S235782AbhCLX1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:27:02 -0500
+Received: from mga03.intel.com ([134.134.136.65]:32203 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235714AbhCLX0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:26:44 -0500
+IronPort-SDR: u8LFZLYjOoiNZW7+742CoaGhK+/pXfDdbz5iE/iEpXk/5nP9SLoI3x+7omdWvIq59sPzClniHD
+ HT/9F4HWMZkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188945965"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="188945965"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 15:26:42 -0800
+IronPort-SDR: I3nluUzT4Hd/AdP7XefOJa7boRCfknc6myQ7bM27dJsqE6IHBnEUS9HN1MLghAbkRRoQuN0uIU
+ YhCWpYNqhRXA==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
+   d="scan'208";a="411171890"
+Received: from fgeisler-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.5.8])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 15:26:41 -0800
+Subject: Re: [PATCH v1 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
+ triggered
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        dan.j.williams@intel.com, keith.busch@intel.com,
+        knsathya@kernel.org, Lukas Wunner <lukas@wunner.de>
+References: <20210312231416.GA2304029@bjorn-Precision-5520>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <7c64f84b-906a-7adf-901e-05492779a3a3@linux.intel.com>
+Date:   Fri, 12 Mar 2021 15:26:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPybu_16KTsEF+BGoG6ea6hf4d-J+uwimXbUT0Bv9HO8HLhJ-Q@mail.gmail.com>
+In-Reply-To: <20210312231416.GA2304029@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
 
-On Sat, Mar 13, 2021 at 12:17:50AM +0100, Ricardo Ribalda Delgado wrote:
-> On Fri, Mar 12, 2021 at 11:30 PM Laurent Pinchart wrote:
-> > On Fri, Mar 12, 2021 at 01:48:29PM +0100, Ricardo Ribalda wrote:
-> > > All the entities must have a unique name. And now that we are at it, we
-> > > append the entity->id to the name to avoid collisions on multi-chain
-> > > devices.
-> > >
-> > > Fixes v4l2-compliance:
-> > > Media Controller ioctls:
-> > >                 fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
-> > >         test MEDIA_IOC_G_TOPOLOGY: FAIL
-> > >                 fail: v4l2-test-media.cpp(394): num_data_links != num_links
-> > >       test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
-> > >
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > >  drivers/media/usb/uvc/uvc_driver.c | 21 ++++++++++++++++++++-
-> > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > index 35873cf2773d..6c928e708615 100644
-> > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > @@ -2154,6 +2154,18 @@ static void uvc_unregister_video(struct uvc_device *dev)
-> > >  #endif
-> > >  }
-> > >
-> > > +static int uvc_oterm_id(struct uvc_video_chain *chain)
-> > > +{
-> > > +     struct uvc_entity *entity;
-> > > +
-> > > +     list_for_each_entry(entity, &chain->entities, chain) {
-> > > +             if (UVC_ENTITY_IS_OTERM(entity))
-> > > +                     return entity->id;
-> >
-> > It can also be an ITERM for output devices. You can drop this function
-> > and use stream>header.bTerminalLink below (see uvc_stream_by_id() and
-> > its usage in uvc_register_terms()).
-> >
-> > > +     }
-> > > +
-> > > +     return -1;
-> > > +}
-> > > +
-> > >  int uvc_register_video_device(struct uvc_device *dev,
-> > >                             struct uvc_streaming *stream,
-> > >                             struct video_device *vdev,
-> > > @@ -2162,6 +2174,8 @@ int uvc_register_video_device(struct uvc_device *dev,
-> > >                             const struct v4l2_file_operations *fops,
-> > >                             const struct v4l2_ioctl_ops *ioctl_ops)
-> > >  {
-> > > +     char prefix[sizeof(vdev->name) - 9];
-> > > +     const char *suffix;
-> > >       int ret;
-> > >
-> > >       /* Initialize the video buffers queue. */
-> > > @@ -2190,16 +2204,21 @@ int uvc_register_video_device(struct uvc_device *dev,
-> > >       case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-> > >       default:
-> > >               vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
-> > > +             suffix = "video";
-> > >               break;
-> > >       case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-> > >               vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
-> > > +             suffix = "out";
-> >
-> > I wonder if these two should be video-cap and video-out (or vid-cap and
-> > vid-out if you want to shorten them) ?
-> >
-> > >               break;
-> > >       case V4L2_BUF_TYPE_META_CAPTURE:
-> > >               vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
-> > > +             suffix = "meta";
-> > >               break;
-> > >       }
-> > >
-> > > -     strscpy(vdev->name, dev->name, sizeof(vdev->name));
-> > > +     strscpy(prefix, dev->name, sizeof(prefix));
-> > > +     snprintf(vdev->name, sizeof(vdev->name), "%s-%d %s", prefix,
-> >
-> > The unit ID is never negative, so %u ?
-> >
-> > > +              uvc_oterm_id(stream->chain), suffix);
-> >
-> > Truncating the device name at the beginning of the video node name isn't
-> > very nice :-S How about the following ?
-> >
-> >         snprintf(vdev->name, sizeof(vdev->name), "%s-%u (%s)", type_name,
-> >                  uvc_oterm_id(stream->chain), dev->name);
-> >
-> > with the suffix variable renamed to type_name ?
-> >
-> > Thinking some more about it, vdev->name serves two purposes in the
-> > driver: creating the entity name, and reporting the card name in
-> > querycap. The former is done in the V4L2 core, which uses vdev->name
-> > as-is. In this context, we con't need to add dev->name, it would be
-> > redundant as the media controller device already reports it. The latter
-> > is done in uvc_ioctl_querycap(). How about dropping dev->name from
-> > vdev->name, and modifying uvc_ioctl_querycap() to use dev->name instead
-> > of cap->card ?
-> >
+
+On 3/12/21 3:14 PM, Bjorn Helgaas wrote:
+> On Fri, Mar 12, 2021 at 02:11:03PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+>> On 3/12/21 1:33 PM, Bjorn Helgaas wrote:
+>>> On Mon, Mar 08, 2021 at 10:34:10PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > 
-> Something like ?
-> https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/commit/?h=uvc-compliance-v4&id=d4f7363455837116268152c96bf4b78d9761ad1e
-
-I would have moved the sprintf() after the switch/case, but otherwise
-it's the idea.
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/commit/?h=uvc-compliance-v4&id=ee3916f12b30f56c03d5622ba8a599b9c610a055
-
-Looks good.
-
-> I need to work on the V4L2_CTRL_FLAG_GRABBED issue and then I will
-> send the whole v4 series that can pass all the v4l2-compliance test :)
+>>>> +bool is_dpc_reset_active(struct pci_dev *dev)
+>>>> +{
+>>>> +	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+>>>> +	u16 status;
+>>>> +
+>>>> +	if (!dev->dpc_cap)
+>>>> +		return false;
+>>>> +
+>>>> +	/*
+>>>> +	 * If DPC is owned by firmware and EDR is not supported, there is
+>>>> +	 * no race between hotplug and DPC recovery handler. So return
+>>>> +	 * false.
+>>>> +	 */
+>>>> +	if (!host->native_dpc && !IS_ENABLED(CONFIG_PCIE_EDR))
+>>>> +		return false;
+>>>> +
+>>>> +	if (atomic_read_acquire(&dev->dpc_reset_active))
+>>>> +		return true;
+>>>> +
+>>>> +	pci_read_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_STATUS, &status);
+>>>> +
+>>>> +	return !!(status & PCI_EXP_DPC_STATUS_TRIGGER);
+>>>
+>>> I know it's somewhat common in drivers/pci/, but I'm not really a
+>>> big fan of "!!".
+>> I can change it to use ternary operator.
+>> (status & PCI_EXP_DPC_STATUS_TRIGGER) ? true : false;
 > 
-> > >
-> > >       /*
-> > >        * Set the driver data before calling video_register_device, otherwise
+> Ternary isn't terrible, but what's wrong with:
+> 
+>    if (status & PCI_EXP_DPC_STATUS_TRIGGER)
+>      return true;
+>    return false;
+I am fine with above format.
+> 
+> which matches the style of the rest of the function.
+> 
+> Looking at this again, we return "true" if either dpc_reset_active or
+> PCI_EXP_DPC_STATUS_TRIGGER.  I haven't worked this all out, but that
+> pattern feels racy.  I guess the thought is that if
+> PCI_EXP_DPC_STATUS_TRIGGER is set, dpc_reset_link() will be invoked
+> soon and we don't want to interfere?
+Yes, the reason for checking dpc_reset_active before
+PCI_EXP_DPC_STATUS_TRIGGER is because, we want suppress DLLSC events
+till link comes back or it times out.
+
+137         atomic_inc_return_acquire(&pdev->dpc_reset_active);
+138
+139         pci_write_config_word(pdev, cap + PCI_EXP_DPC_STATUS,
+140                               PCI_EXP_DPC_STATUS_TRIGGER);
+141
+142         if (!pcie_wait_for_link(pdev, true)) {
+143                 pci_info(pdev, "Data Link Layer Link Active not set in 1000 msec\n");
+144                 status = PCI_ERS_RESULT_DISCONNECT;
+145         }
+146
+147         atomic_dec_return_release(&pdev->dpc_reset_active);
+
+> 
 
 -- 
-Regards,
-
-Laurent Pinchart
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
