@@ -2,194 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B03F338ED6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50CE338EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhCLNcU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Mar 2021 08:32:20 -0500
-Received: from aposti.net ([89.234.176.197]:43472 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231201AbhCLNcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:32:01 -0500
-Date:   Fri, 12 Mar 2021 13:31:45 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/6] pinctrl: Ingenic: Add support for read the pin
- configuration of X1830.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <XWYUPQ.9202CFTWWMJ6@crapouillou.net>
-In-Reply-To: <1615476112-113101-3-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615476112-113101-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231201AbhCLNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:32:50 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:53989 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhCLNc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:32:26 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 438F722238;
+        Fri, 12 Mar 2021 14:32:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615555945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QBuZP8POWp3qMMHBSO5zfPwntXaxLE+5SncR7mrkwkQ=;
+        b=fVeBkdcbfb0c7Z3025M6QUtKCnZBa2aNX05py5QmSYQTSEaWsyniqyN9M5FHUL77xqM7xq
+        FzoedG7HmpzUT5MtJ1BsZSmiUozPbYcGeQxArBa9KJzjjwsUR1CRbDuLYSTz2W1mxDlWG3
+        oNTTVz+JnDS/UK8Y6Ravou9ofFt/t6Q=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 12 Mar 2021 14:32:25 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
+ spi-cadence-quadspi
+In-Reply-To: <20210311191216.7363-1-p.yadav@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <b9450a151cce89cde47b4d6a76c74b32@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
-
-Le jeu. 11 mars 2021 à 23:21, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add X1830 support in "ingenic_pinconf_get()", so that it can read the
-> configuration of X1830 SoC correctly.
+Am 2021-03-11 20:12, schrieb Pratyush Yadav:
+> The main problem here is telling the controller where to find the
+> pattern and how to read it. This RFC uses nvmem cells which point to a
+> fixed partition containing the data to do the reads. It depends on [0]
+> and [1].
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> The obvious problem with this is it won't work when the partitions are
+> defined via command line. I don't see any good way to add nvmem cells 
+> to
+> command line partitions. I would like some help or ideas here. We don't
+> necessarily have to use nvmem either. Any way that can cleanly and
+> consistently let the controller find out where the pattern is stored is
+> good.
 
-This is a fix, so it needs a Fixes: tag, and you need to Cc 
-linux-stable.
+The NXP LS1028A SoC has a similar calibration (although there its done
+in hardware it seems) and there the datasheet mentions there are flash
+devices which supports a preamble before a read function. The preamble
+is then some kind of learning pattern. Did you see a flash which 
+actually
+supports that in the wild? I can't find any publicly available 
+datasheets
+of 8bit I/O SPI NOR flashes.
 
-> ---
-> 
-> Notes:
->     v2:
->     New patch.
-> 
->  drivers/pinctrl/pinctrl-ingenic.c | 76 
-> +++++++++++++++++++++++++++++----------
->  1 file changed, 57 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 05dfa0a..0a88aab 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -2109,31 +2109,69 @@ static int ingenic_pinconf_get(struct 
-> pinctrl_dev *pctldev,
->  	enum pin_config_param param = pinconf_to_config_param(*config);
->  	unsigned int idx = pin % PINS_PER_GPIO_CHIP;
->  	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
-> +	unsigned int bias;
->  	bool pull;
-> 
-> -	if (jzpc->info->version >= ID_JZ4770)
-> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
-> -	else
-> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-> +	if (jzpc->info->version >= ID_X1830) {
-> +		unsigned int half = PINS_PER_GPIO_CHIP / 2;
-> +		unsigned int idxh = pin % half * 2;
-> 
-> -	switch (param) {
-> -	case PIN_CONFIG_BIAS_DISABLE:
-> -		if (pull)
-> -			return -EINVAL;
-> -		break;
-> +		if (idx < half)
-> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-> +					X1830_GPIO_PEL, &bias);
-> +		else
-> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-> +					X1830_GPIO_PEH, &bias);
-> 
-> -	case PIN_CONFIG_BIAS_PULL_UP:
-> -		if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
-> -			return -EINVAL;
-> -		break;
-> +		bias = (bias >> idxh) & 3;
-
-You can do:
-
-u32 mask = GENMASK(idxh + 1, idxh);
-
-bias = FIELD_GET(mask, bias);
-
-(macros in <linux/bitfield.h>)
-
-> 
-> -	case PIN_CONFIG_BIAS_PULL_DOWN:
-> -		if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
-> -			return -EINVAL;
-> -		break;
-> +		switch (param) {
-> +		case PIN_CONFIG_BIAS_DISABLE:
-> +			if (bias)
-> +				return -EINVAL;
-> +			break;
-> 
-> -	default:
-> -		return -ENOTSUPP;
-> +		case PIN_CONFIG_BIAS_PULL_UP:
-> +			if ((bias != PIN_CONFIG_BIAS_PULL_UP) ||
-> +					!(jzpc->info->pull_ups[offt] & BIT(idx)))
-
-"bias" is a 2-bit value (because of the & 3 mask), and 
-PIN_CONFIG_BIAS_PULL_UP == 5.
-
-So this clearly won't work. You are comparing hardware values with 
-public API enums.
-
-> +				return -EINVAL;
-> +			break;
-> +
-> +		case PIN_CONFIG_BIAS_PULL_DOWN:
-> +			if ((bias != PIN_CONFIG_BIAS_PULL_DOWN) ||
-> +					!(jzpc->info->pull_downs[offt] & BIT(idx)))
-> +				return -EINVAL;
-> +			break;
-> +
-> +		default:
-> +			return -ENOTSUPP;
-> +		}
-> +
-> +	} else {
-> +		if (jzpc->info->version >= ID_JZ4770)
-> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
-> +		else
-> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-
-I think you can keep the switch outside the if/else block, if you use 
-pullup/pulldown variables.
-
-These can be initialized (in the non-X1830 case) to:
-
-pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
-pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
-
-In the X1830 case you'd initialize these variables from 'bias'.
-
-> +
-> +		switch (param) {
-> +		case PIN_CONFIG_BIAS_DISABLE:
-> +			if (pull)
-
-Here would change to if (pullup || pulldown)
-
-> +				return -EINVAL;
-> +			break;
-> +
-> +		case PIN_CONFIG_BIAS_PULL_UP:
-> +			if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
-
-if (!pullup)
-
-> +				return -EINVAL;
-> +			break;
-> +
-> +		case PIN_CONFIG_BIAS_PULL_DOWN:
-> +			if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
-
-if (!pulldown)
-
-Cheers,
--Paul
-
-> +				return -EINVAL;
-> +			break;
-> +
-> +		default:
-> +			return -ENOTSUPP;
-> +		}
->  	}
-> 
->  	*config = pinconf_to_config_packed(param, 1);
-> --
-> 2.7.4
-> 
-
-
+-michael
