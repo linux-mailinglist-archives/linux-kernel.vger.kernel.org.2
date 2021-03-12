@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC63338DB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0274338DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhCLMvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhCLMuv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 07:50:51 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A15C061574;
-        Fri, 12 Mar 2021 04:50:50 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso11021793pjb.3;
-        Fri, 12 Mar 2021 04:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pSbeanyn4dFl/9eIN82n307Zv+zzSyu6NOWLZPn9dUE=;
-        b=n43d5Y0OCI0xWLt2lVL+y9CTBOkKBlihhUkOs31u95aQsXBNaSlfoxHZv3i19rh1+8
-         AtFNCaDIITPsOrX8ngYMfnvHhpy5ZNQ5IjOSse/TUAn4rg6DXD914JeEgAPUBcUnBUtQ
-         H3i+iicGFMcrRKygoubz0pbQfpf7DwoWi0dpkKEteFEMs66eyNsPsHsdhtyjGsoz9XJ1
-         LxH7tjpK5cu+qMzCrN1e0FzaDa8cWbx/H9gy2FmopwOjMByAutdCEDc1hviNZ3wLeBPh
-         FtZrlSWvc6jJpY+NTe9V58IxZKWBOfkSglpRWnFAUBjoQ29rA8kDZmQykCK/jc4M7K9h
-         J6zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pSbeanyn4dFl/9eIN82n307Zv+zzSyu6NOWLZPn9dUE=;
-        b=rLiGGBIClFlSCplqdAUyU81YBFCX5CayZVvA5MnNfdtBRYdBkLV4DRP7QBWYGb76VB
-         6fxeI/AM1klr8u6uSIFUCNk2ZHNNEchfY+DThejxtzlz8WRYgx3rKghGKwrL2cCgQUsL
-         yC7svKxhFXVgaf9SUrJHq2XKAi2ONXxcEYeCCFjIc4HGuozJpfNuadO+1iRB0Ex6jAFa
-         VhXvERBHSI6s4OHFAVSrjMm6ep+mPgVK+NvPwclZvhdr3iEJYUH87OsAB0tu15ZZIkaP
-         14GUcQyd6PJxPDtdTImbG8Fi7nJhBpdmflm3JAfz/sxG1Bz0mqeggRkdueVMNMKb1ap6
-         YsHw==
-X-Gm-Message-State: AOAM531DV38erbsTganfTaCEr7IwU/4U3Js0AysCdMavmI3qPqnY2YQ+
-        EehWu/cnEpHGghqLPjaRnFs6PTI8gEvWNqedkMBlHqdz6o014g==
-X-Google-Smtp-Source: ABdhPJzEF/cM4WaoJJDHaw4PgutdGVqBig3iyorXR6hinT2Ph1i6yswMNcuQpuGeoS288HOm1SrSmKnHohUwh1s4UWM=
-X-Received: by 2002:a17:902:c808:b029:e6:4204:f62f with SMTP id
- u8-20020a170902c808b02900e64204f62fmr13519761plx.0.1615553450462; Fri, 12 Mar
- 2021 04:50:50 -0800 (PST)
-MIME-Version: 1.0
-References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com> <1615476112-113101-7-git-send-email-zhouyanjie@wanyeetech.com>
-In-Reply-To: <1615476112-113101-7-git-send-email-zhouyanjie@wanyeetech.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 12 Mar 2021 14:50:34 +0200
-Message-ID: <CAHp75VfMS-sfuLEyGEkc_VLKDaOc8gD+eOSxACEpDxXdvdEH5g@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] pinctrl: Ingenic: Add support for new Ingenic SoCs.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>, paul@boddie.org.uk,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S232317AbhCLMvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 07:51:19 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:15941 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231774AbhCLMuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:50:37 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DxlzH0Cdsz9ttBT;
+        Fri, 12 Mar 2021 13:50:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id xmDHT-ixZL3s; Fri, 12 Mar 2021 13:50:34 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DxlzG5Swwz9ttDF;
+        Fri, 12 Mar 2021 13:50:34 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8F388B813;
+        Fri, 12 Mar 2021 13:50:35 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id H-V_q8h3M6pm; Fri, 12 Mar 2021 13:50:35 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F5DD8B764;
+        Fri, 12 Mar 2021 13:50:35 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 57AF5675C9; Fri, 12 Mar 2021 12:50:35 +0000 (UTC)
+Message-Id: <20d52c627303d63e461797df13e6890fc04017d0.1615552867.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1615552866.git.christophe.leroy@csgroup.eu>
+References: <cover.1615552866.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 25/41] powerpc/32: Don't save thread.regs on interrupt
+ entry
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 12 Mar 2021 12:50:35 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 5:23 PM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
-<zhouyanjie@wanyeetech.com> wrote:
->
-> Add support for probing the pinctrl-ingenic driver on the JZ4730 SoC,
-> the JZ4750 SoC, the JZ4755 SoC, the JZ4775 SoC and the X2000 SoC from
-> Ingenic.
->
-> The driver of JZ4730 is derived from Paul Boddie. It is worth noting
-> that the JZ4730 is special in having two control registers (upper/lower),
-> so add code to handle the jz4730 specific register offsets and some
-> register pairs have 2 bits for each GPIO pin.
+Since commit 06d67d54741a ("powerpc: make process.c suitable for both
+32-bit and 64-bit"), thread.regs is set on task creation, no need to
+set it again and again at each interrupt entry as it never change.
 
-> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>  # on Letux400/JZ4730
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>  # for JZ4730
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>  # for JZ4730
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
+Suggested-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/entry_32.S | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Shouldn't it have the Co-developed-by tag(s)?
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index 79311d0bd09b..1e201fc4a590 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -97,10 +97,8 @@ transfer_to_handler:
+ 	stw	r2,_XER(r11)
+ 	mfspr	r12,SPRN_SPRG_THREAD
+ 	tovirt(r12, r12)
+-	beq	2f			/* if from user, fix up THREAD.regs */
++	beq	2f
+ 	addi	r2, r12, -THREAD
+-	addi	r11,r1,STACK_FRAME_OVERHEAD
+-	stw	r11,PT_REGS(r12)
+ #ifdef CONFIG_PPC_BOOK3S_32
+ 	kuep_lock r11, r12
+ #endif
+@@ -147,7 +145,6 @@ transfer_to_syscall:
+ 	/* Calling convention has r9 = orig r0, r10 = regs */
+ 	addi	r10,r1,STACK_FRAME_OVERHEAD
+ 	mr	r9,r0
+-	stw	r10,THREAD+PT_REGS(r2)
+ 	bl	system_call_exception
+ 
+ ret_from_syscall:
+-- 
+2.25.0
 
---=20
-With Best Regards,
-Andy Shevchenko
