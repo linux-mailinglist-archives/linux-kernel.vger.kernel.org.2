@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA836338EBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7AF338EBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 14:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhCLN0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 08:26:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhCLN0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:26:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC21A64F70;
-        Fri, 12 Mar 2021 13:26:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615555595;
-        bh=6+yq/fh98KG2tk+iUkCDYYsnXXXG791saZHy/yFzcic=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wahbby+XZCJwMS5jQQBs9/BOKxHu6kyOkcu+UnYfUvPzgBxyx/LOuZSFGn66VST5d
-         ybnx9T7M4RL4PTvR4GfP28uFP7o5tN/C8iXBd/7SgoHYAyy860rotxRqveSPj0tWw3
-         wXT6p2VhYAxozLI4uDT6ZdhvEb2QxONtMVtTP4ac=
-Date:   Fri, 12 Mar 2021 14:26:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     lee.jones@linaro.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        cj.chengjian@huawei.com, judy.chenhui@huawei.com,
-        zhangjinhao2@huawei.com, nixiaoming@huawei.com
-Subject: Re: [PATCH 4.4 v2 0/3] Backport patch series to update Futex from 4.9
-Message-ID: <YEtsCMXN1XeQnkI5@kroah.com>
-References: <20210311032600.2326035-1-zhengyejian1@huawei.com>
+        id S230256AbhCLN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 08:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhCLN0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 08:26:55 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B2CC061574;
+        Fri, 12 Mar 2021 05:26:55 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 3839422238;
+        Fri, 12 Mar 2021 14:26:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615555611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KcBTD7nfiYyHNct1X3UL2VExLlEbLzhpNivSjn0I+wk=;
+        b=svmemSWB+o+nVNl6REajtsf58ho2PMVwfIR7ipvPG5EzVj2hB2RF8EgQZ78GvhI1nqBuio
+        1hYjbb30eYza3JohGRszrmYEeG6vNO5Mn1sjlitt10HFidP4nvEOZA6P/tbY3WjEio45LF
+        O07ww65cJKaDHdnj/w4DBwtjYJPhmsA=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311032600.2326035-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 12 Mar 2021 14:26:50 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Tudor.Ambarus@microchip.com, nm@ti.com, kristo@kernel.org,
+        robh+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, lokeshvutla@ti.com
+Subject: Re: [RFC PATCH 0/6] spi: Add OSPI PHY calibration support for
+ spi-cadence-quadspi
+In-Reply-To: <20210312110707.lrabch4ketqyyepn@ti.com>
+References: <20210311191216.7363-1-p.yadav@ti.com>
+ <9c551f56-4c00-b41a-f051-8b7e197fbcdc@microchip.com>
+ <20210312101036.jfz2733ssv4nhfey@ti.com>
+ <676386736df5e5b22e34b0b5af91c894@walle.cc>
+ <20210312110707.lrabch4ketqyyepn@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <278f4417bad780ee610d86299e613990@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 11:25:57AM +0800, Zheng Yejian wrote:
-> Changelog for 'v2':
->   Complete commit messages with needed git commit ids as Greg and Lee suggested.
+Am 2021-03-12 12:07, schrieb Pratyush Yadav:
+> On 12/03/21 11:20AM, Michael Walle wrote:
+>> Am 2021-03-12 11:10, schrieb Pratyush Yadav:
+>> > There is usually a delay from when the flash drives the data line (IOW,
+>> > puts a data bit on it) and when the signal reaches the controller. This
+>> > delay can vary by the flash, board, silicon characteristics,
+>> > temperature, etc.
+>> 
+>> Temperature might change over time, but the calibration is only done
+>> once. I don't know how much influence the temperature actually has, 
+>> but
+>> our boards are usually operating from -40°C to +85°C. So there might 
+>> be
+>> a possible temperature difference of 125K between actual calibration 
+>> and
+>> when the flash is accessed.
 > 
-> Lee sent a patchset to update Futex for v4.9, see https://www.spinics.net/lists/stable/msg443081.html,
-> Then Xiaoming sent a follow-up patch for it, see https://lore.kernel.org/lkml/20210225093120.GD641347@dell/.
-> 
-> These 3 patches is directly picked from v4.9,
-> and they may also resolve following issues in 4.4.260 which have been reported in v4.9,
-> see https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-4.4.y&id=319f66f08de1083c1fe271261665c209009dd65a
->       > /*
->       >  * The task is on the way out. When the futex state is
->       >  * FUTEX_STATE_DEAD, we know that the task has finished
->       >  * the cleanup:
->       >  */
->       > int ret = (p->futex_state = FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
-> 
->     Here may be:
->       int ret = (p->futex_state == FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
-> 
->       > raw_spin_unlock_irq(&p->pi_lock);
->       > /*
->       >  * If the owner task is between FUTEX_STATE_EXITING and
->       >  * FUTEX_STATE_DEAD then store the task pointer and keep
->       >  * the reference on the task struct. The calling code will
->       >  * drop all locks, wait for the task to reach
->       >  * FUTEX_STATE_DEAD and then drop the refcount. This is
->       >  * required to prevent a live lock when the current task
->       >  * preempted the exiting task between the two states.
->       >  */
->       > if (ret == -EBUSY)
-> 
->     And here, the variable "ret" may only be "-ESRCH" or "-EAGAIN", but not "-EBUSY".
-> 
->       > 	*exiting = p;
->       > else
->       > 	put_task_struct(p);
-> 
-> Since 074e7d515783 ("futex: Ensure the correct return value from futex_lock_pi()") has
-> been merged in 4.4.260, I send the remain 3 patches.
-> 
-> Peter Zijlstra (1):
->   futex: Change locking rules
-> 
-> Thomas Gleixner (2):
->   futex: Cure exit race
->   futex: fix dead code in attach_to_pi_owner()
-> 
->  kernel/futex.c | 209 +++++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 177 insertions(+), 32 deletions(-)
+> The algorithm supports a temperature range of -45 C to +130 C. The
+> temperature is checked at calibration time and adjustments are made to
+> make sure the reads work over the entire temperature range [0].
 
-All now queued up, thanks.
+Ah, nice. And you need the current temperature to correlate it to the
+meassured timings, right?
 
-greg k-h
+-michael
