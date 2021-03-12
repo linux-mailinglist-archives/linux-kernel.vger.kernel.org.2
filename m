@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBF633881E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A1E338817
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhCLJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbhCLJAB (ORCPT
+        id S232375AbhCLI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:58:30 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:54957 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhCLI62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:00:01 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA8C061574;
-        Fri, 12 Mar 2021 01:00:00 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id j17so3914193qvo.13;
-        Fri, 12 Mar 2021 01:00:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qeJvLuvyZg25yI6p7wMHbe9MGq2hul0E3YQjgkwAB/g=;
-        b=rJkmAh3MXE/SCquN6xlNHA9/xiBwhcoWk3VCz+JAEQTRBpT/sEl4tOW50I5eJtu+W7
-         582uK+TTjWyUBjabS9SzdYlTSI8KxuFFNdT7/xog7M7BRcS0LOtjXZbr0/bpN1DMNulT
-         smqCgGk4owwuhsr7SLJaECcAOIJj2peACcrjD8hSGQnGjBcXAuA8htvzZ31rG62sfMY6
-         OYJEl2InPCCL18t4Mdrzgysm1K3TlKpovoyHsr36fxP5r67+b+tdoxN6PCQfE7u92TSB
-         9w/sxyj/cyy2+3MwGYQ65QNyvdaCdFBPzdPWbTvZ9OmnwF20c5ZlBmTxZojv6GMvBZfg
-         gmnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qeJvLuvyZg25yI6p7wMHbe9MGq2hul0E3YQjgkwAB/g=;
-        b=rh8iXaEu4BRD2Ct/8m65FESKr2yT1xBIfOoNSe64L1EtCwgn1u4WoAA+BPhsxp6mNI
-         g4/r2asoUkdAco6tCUORGnTON+L4m8e7DY2vTbPK4ECVM0jccwcHyt8hwpCYWioghFE8
-         2ju3Y83n9WrpFXtpj2hSjCw3T4PdRNDGhn43rTLRQYMORXsJU2pqydutLnCCIs/tGWqz
-         YfjxrOIVbEok1kh9XKDR3BvkfikN3JvsJR6EddA3wNqhwpJiFNG0xkLQTUt34VagsIIC
-         XPUCRzO3FlGM8hN640P793f/l9iY2j7QQghtdOsw1KuYytkEKLlHMbgpgSfbZ2z8Iju7
-         PPEg==
-X-Gm-Message-State: AOAM530ng59GIuEasbqiCW6rd7JnSYvnRuSL6Pscqnf1YqJ00RYftvoP
-        8ZuyfzBrQ4m+phJdffgxl2M=
-X-Google-Smtp-Source: ABdhPJxyPBHTOqXAHSrp64hj2ew/9nN1TXxtlHooUSWZiLaSmH30bWqvPn6QoZO9qyMtTgDNUOjOtg==
-X-Received: by 2002:a0c:b617:: with SMTP id f23mr11284258qve.44.1615539600160;
-        Fri, 12 Mar 2021 01:00:00 -0800 (PST)
-Received: from localhost.localdomain ([138.199.13.196])
-        by smtp.gmail.com with ESMTPSA id o1sm3515384qtq.81.2021.03.12.00.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 00:59:59 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     axboe@kernel.dk, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] ata: Trivial spelling fixes in the file pata_ns87415.c
-Date:   Fri, 12 Mar 2021 14:27:38 +0530
-Message-Id: <20210312085738.9372-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 12 Mar 2021 03:58:28 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MJV9S-1l0tqr2mls-00JnZX; Fri, 12 Mar 2021 09:58:25 +0100
+Received: by mail-ot1-f41.google.com with SMTP id n23so3197499otq.1;
+        Fri, 12 Mar 2021 00:58:25 -0800 (PST)
+X-Gm-Message-State: AOAM530PkZzpcsEQPnFctjd5G+eWcxsgDN+vpL2QvHTHgB2paMF/mS+7
+        umn13OL9KD1HWeLrOdmFpd9wEziBbEaAFp3i4iw=
+X-Google-Smtp-Source: ABdhPJwYs59n0VylMOhIElZBVkf0QrYdjO1x9NuhV8bORxTjcrcJXdCea/1IKmHztL8VndEu2T79aN56RsYQecgZr2I=
+X-Received: by 2002:a9d:6341:: with SMTP id y1mr2560459otk.210.1615539504308;
+ Fri, 12 Mar 2021 00:58:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
+In-Reply-To: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 12 Mar 2021 09:58:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
+Message-ID: <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
+Subject: Re: [PATCH v7] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:RFyjTb3yaqun4nVUoXXV5W+LErsIErLmJYY3Y7kXrAWUlL86sq8
+ NS8jaexwP6V/Q6iMD9AKDLCo5I+GYzLvfxDwYOflhdX55/syaQJioKnrKZ+l0USpDlzja/d
+ PMhvIGNv0u5uWX92eucVtqnZoZTfkcPwIUnPCZlq934QYg8G1dG2YdYKJaLVTeCfQduOg7s
+ ucfXQGKnJEf/mlGa02XSA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xskgHq0dlKc=:SZWjWYx31qMPnqLDOIhkVe
+ pl0TJSlk7dsk/psFwYStbxnYRLuW7P2nKOQvkhacj3ZYXoW3k994KhZtSSGA38B1JP0mmnM5E
+ pFO6P5tthpX4PGSnrON242AW9HOvxQwzH9zjRaKOz4TUeWXWcnCpW1FdsWtiCYsimNu6vEUIu
+ ROkL5CW6lqtHW3pF2WKgwMWwpEhwsjTYiSZkwR9g6/rDGFYc68PU04LSWFN6M7H03gzlbHFTV
+ KhzmcDh0kd50/EbnGkTLycdeUm0OBJsOskraZTi6/n8fAdenTx8axvv2+QGymZXr7OHeJ7csg
+ pBkSdD8+yVhFs7ktCHcHSiqnlQyyJqhZs0Zz9h7R5dqtOEaw/TQ520hIK3gz4JMdu28tmIcti
+ 7wm2E++H6zallzdwWsyvMMuGp5hi3yVm4pTakm2GOLTv/9iE73fkGfhjoXunh/D8/3nCtvEX2
+ Z/m2pO930gPVlM9+Aa017gXLz6P7L1ugj3ApfynDPieg3m6xviJ8v4bnZV9hB/te3FD3SpF8f
+ iLwhkuKUomywP35hLPE5dGWLJpofIzn5H32U5+L18zMmRI5mUYuxt3e6PJFlniauA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 2:33 PM Jie Deng <jie.deng@intel.com> wrote:
 
-Trivial spelling fixes.
+> +
+> +/**
+> + * struct virtio_i2c_req - the virtio I2C request structure
+> + * @out_hdr: the OUT header of the virtio I2C message
+> + * @buf: the buffer into which data is read, or from which it's written
+> + * @in_hdr: the IN header of the virtio I2C message
+> + */
+> +struct virtio_i2c_req {
+> +       struct virtio_i2c_out_hdr out_hdr;
+> +       uint8_t *buf;
+> +       struct virtio_i2c_in_hdr in_hdr;
+> +};
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/ata/pata_ns87415.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The simpler request structure clearly looks better than the previous version,
+but I think I found another problem here, at least a theoretical one:
 
-diff --git a/drivers/ata/pata_ns87415.c b/drivers/ata/pata_ns87415.c
-index 1532b2e3c672..f4949e704356 100644
---- a/drivers/ata/pata_ns87415.c
-+++ b/drivers/ata/pata_ns87415.c
-@@ -113,7 +113,7 @@ static void ns87415_set_piomode(struct ata_port *ap, struct ata_device *adev)
-  *	ns87415_bmdma_setup		-	Set up DMA
-  *	@qc: Command block
-  *
-- *	Set up for bus masterng DMA. We have to do this ourselves
-+ *	Set up for bus mastering DMA. We have to do this ourselves
-  *	rather than use the helper due to a chip erratum
-  */
+When you map the headers into the DMA address space, they should
+be in separate cache lines, to allow the DMA mapping interfaces to
+perform cache management on each one without accidentally clobbering
+another member.
 
-@@ -174,7 +174,7 @@ static void ns87415_bmdma_stop(struct ata_queued_cmd *qc)
-  *	ns87415_irq_clear		-	Clear interrupt
-  *	@ap: Channel to clear
-  *
-- *	Erratum: Due to a chip bug regisers 02 and 0A bit 1 and 2 (the
-+ *	Erratum: Due to a chip bug registers 02 and 0A bit 1 and 2 (the
-  *	error bits) are reset by writing to register 00 or 08.
-  */
+So far I think there is an assumption that virtio buffers are always
+on cache-coherent devices, but if you ever have a virtio-i2c device
+backend on a physical interconnect that is not cache coherent (e.g. a
+microcontroller that shares the memory bus), this breaks down.
 
---
-2.26.2
+You could avoid this by either allocating arrays of each type separately,
+or by marking each member that you pass to the device as
+____cacheline_aligned.
 
+      Arnd
