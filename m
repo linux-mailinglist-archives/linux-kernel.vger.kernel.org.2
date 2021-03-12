@@ -2,215 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF85338881
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0CC33888A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 10:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbhCLJXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 04:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
+        id S232822AbhCLJYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 04:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhCLJWh (ORCPT
+        with ESMTP id S232815AbhCLJXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 04:22:37 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6771AC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:22:37 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id u4so44665389lfs.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:22:37 -0800 (PST)
+        Fri, 12 Mar 2021 04:23:34 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46A9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:23:33 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so10474436pjh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 01:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oc5bTi7/1MBiAyWrb/BCqxKaS2n3HhEl1VJrsEcMc6k=;
-        b=KDFdseRP1eAOQEMh2Ks3MiJXJtEoNybe7gdJzx1f/I/PLG7U3A/Moiz1/CxbjuJp72
-         fpQqvBBkdC/hcLc3wA5TCEOTBLQ2aFBVwqDB97xSBmttxHg/ydqlbdZzR84D1tQsdnS/
-         76mH37N6q/1iS6dVN96PQqaGQEN2ckQV9xhaYowqgSr3ZxIvxDJz8j8WiV8HgEyWOqUH
-         RVq1S9eXjzn4oixocusNCm6/y08R7v8wf3TE8TRbjFbF6Ph0n578RuEXpmi1m1rvxszD
-         4WYDpUzpSr4gMYS0qyXesNgBNsnLP3EK6sYBecZmnUrFJwYRLvnAdQKzJfJDs2R7APZw
-         aFdQ==
+        bh=26qB14f5N7ohF75H9aqLLsvkoHToTEccxcW0Z7uEKNg=;
+        b=Aq9/6K3/OGRFRR7T2Vg9gTchrRkRQKbxs7ILwsSYD5WejwbSLDgRg8cVGez4VEPmdC
+         m8nvU79XBqNllKmGqYyGzkz1/jqs0txwvK/UUMtkt8ENjkT9+3eh40bDDXb6jqG4gSoZ
+         x1EHLFHZJ3duIbWIsj4mHHcbLx4jo6oX/f/DJAhX3PBwnWnuh0/yV2c4aUtuSCzxowKW
+         kN57G2QkrNGNIJd/gAkWXIw7CWiyTmoyDnLnOVf93G7SbBbQGBttzfT3guxupI9mlGd7
+         nk/L9cFS1GJT5ZHABevqF970v8uS4XeCoQlDVe30OPjm5d/fNzkJBh8bGi7JEd0X63Ks
+         Afqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oc5bTi7/1MBiAyWrb/BCqxKaS2n3HhEl1VJrsEcMc6k=;
-        b=bKCy+KKL/qwAd9eMzvF/waKjhL0+/ZVduGa1XbKuZnZ9tZIKMFao0pzHpvbK2wUQ41
-         BL7ZkN+Dg919HJV/Vf/JA8tSaU/beqcYAxChpkoXaPERIxrPn4JsyDZMEds3i1dxrAq0
-         +sqlp6yIu8UHEBFHsiefqKBKst3iWcz0zRASw8y8yQIg3ae8cCA19rgfuR+vsfHoWZpJ
-         jPTwVVnAJwbYgJenvThu4p71IpXBGw0qZWZPQeVQDsXM8uiy7UQp50jlM/nBoFWF+MrZ
-         FHc5iFYN8JxtFoLfTWKbIyfogzgYHL+Rpc+Pequ2tRTK28NeOcUyaGzuNvUuI+XzmSdo
-         JgNw==
-X-Gm-Message-State: AOAM530DVTvGQCVp7SfyxmcuwU33bYxZYbU+mpzy4dhjRUG3mR1b6pPt
-        1ymQZxhr9hz8E2ujCx/bQpdoJBI/qqO7ROsJvQaloA==
-X-Google-Smtp-Source: ABdhPJwi966hWS07LJwz9bEWS3611t5gBvrGW9dceY/bml/CRf47iE8bUw+ljH42WS1Quj2YyGgFvZuR2EaxJaPOnZE=
-X-Received: by 2002:a05:6512:243:: with SMTP id b3mr4968951lfo.529.1615540955761;
- Fri, 12 Mar 2021 01:22:35 -0800 (PST)
+        bh=26qB14f5N7ohF75H9aqLLsvkoHToTEccxcW0Z7uEKNg=;
+        b=fHWoVnNvdo+q6AciDY2Fh4YYlLlerJpUXUe+Z7hajCLj7zjPu1XsI86Wve/ceGOiU2
+         /xAe+Pbt9KahQUuKh1MrDhmpQxc3uVATnLdI9BLhPow24kDwq7arTkRlUJ4RHvgiJR6P
+         JeZObiRaejKyIK7WPYEJ3y+tlCa3uhcVkb8assuZqAy3MiExtSQEGKubnE+2h64/Ymtw
+         hZXkbNUWwuclwGUMsaIxPz0xysJNLvzfxKal7t535bnzJFfx40DaE0b+M9LsxnYjtACb
+         wymNtQ3Qk+NzbkD2piaUtiGidg2O1TUVM9UqQXpB65InkuZOUzclQ+/W5CVpIszYmFyF
+         xTZw==
+X-Gm-Message-State: AOAM530zl/yEioYMa9Lcp6TSWUaJJisxWErLqmYKR67o3mATOj4tzken
+        uiJ1GYqrBsYZ6+13WUnTD60y9kC75GXfjOMtR9GwzA==
+X-Google-Smtp-Source: ABdhPJx0DK9TvoXxbSqFH38Wn+o6fmv5Y9ZFBPATQS67rK5YLTb42JGEE+TPk0FyHD+43S3ZlQQYVTAPLo81O2rjDW8=
+X-Received: by 2002:a17:90a:f008:: with SMTP id bt8mr13547708pjb.13.1615541013335;
+ Fri, 12 Mar 2021 01:23:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
- <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
- <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
- <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st> <CACRpkdbQks5pRFNHkNLVvLHCBhh0XCv7pHYq25EVAbU60PcwsA@mail.gmail.com>
- <0a26713a-8988-1713-4358-bc62364b9e25@marcan.st> <CACRpkda9f-BNmu-CaNsghnDoOcSXvvvji=tag2Xos+tg_nNZ0w@mail.gmail.com>
- <32bdceb1-e70d-7481-96e3-a064a7108eb9@marcan.st> <CACRpkdZ_-rqGBUOxUcBPeqVkLzX=Q9pjO9M+zY20-S9tNXAE0Q@mail.gmail.com>
- <d7f8a732-7a44-f609-52dc-3ba824a3d192@marcan.st>
-In-Reply-To: <d7f8a732-7a44-f609-52dc-3ba824a3d192@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 12 Mar 2021 10:22:24 +0100
-Message-ID: <CACRpkdZmXMgAWkPDoi=_tDHuC4W2_PMa892XLLHJz27ChDLD2Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     Hector Martin <marcan@marcan.st>
-Cc:     David Howells <dhowells@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Arnd Bergmann <arnd@linaro.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
+References: <20210309100717.253-1-songmuchun@bytedance.com>
+ <20210309100717.253-4-songmuchun@bytedance.com> <YElCxDzVgBBLAQhJ@cmpxchg.org>
+In-Reply-To: <YElCxDzVgBBLAQhJ@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 12 Mar 2021 17:22:55 +0800
+Message-ID: <CAMZfGtUqTBJ56eEj5CiFbHGMMaopP9k1Tq94R+M=W6P0HF83_A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 3/4] mm: memcontrol: use obj_cgroup APIs
+ to charge kmem pages
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hector,
-
-thanks for the long and detailed answer! I learn new things
-all the time. (Maybe one day I add something too, who knows.)
-
-I hope I'm not taking too much of your time, we're having fun :)
-
-On Thu, Mar 11, 2021 at 9:02 PM Hector Martin <marcan@marcan.st> wrote:
-> On 11/03/2021 23.06, Linus Walleij wrote:
-> > Yes. And this is what mobile phone vendors typically did.
+On Thu, Mar 11, 2021 at 6:05 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Munchun,
+>
+> On Tue, Mar 09, 2021 at 06:07:16PM +0800, Muchun Song wrote:
+> > @@ -6806,11 +6823,23 @@ static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+> >  static void uncharge_batch(const struct uncharge_gather *ug)
+> >  {
+> >       unsigned long flags;
+> > +     unsigned long nr_pages;
 > >
-> > But the nature of different electrical attacks made them worried
-> > about different schemes involving cutting power and disturbing
-> > signals with different probes, so they wanted this counter
-> > implemented in hardware and that is why RPMB exists at all
-> > (IIUC).
+> > -     if (!mem_cgroup_is_root(ug->memcg)) {
+> > -             page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
+> > +     /*
+> > +      * The kmem pages can be reparented to the root memcg, in
+> > +      * order to prevent the memory counter of root memcg from
+> > +      * increasing indefinitely. We should decrease the memory
+> > +      * counter when unchange.
+> > +      */
+> > +     if (mem_cgroup_is_root(ug->memcg))
+> > +             nr_pages = ug->nr_kmem;
+> > +     else
+> > +             nr_pages = ug->nr_pages;
 >
-> No, prior to RPMB there was no such secure counter at all. The problem
-> is that non-volatile erasable storage (i.e. EEPROM/Flash) is
-> incompatible with modern SoC manufacturing processes, so there is no way
-> to embed a secure counter into the main SoC. And once your counter needs
-> to be external, there needs to be a secure communications protocol to
-> access it. This is what RPMB implements.
+> Correct or not, I find this unreadable. We're uncharging nr_kmem on
+> the root, and nr_pages against leaf groups?
 >
-> For preventing software downgrades, especially of bootloader code, this
-> can be implemented with one-time fuses embedded in the SoC, but there is
-> a limited supply of those. So this doesn't work for things like PIN
-> attempt counters. For that you need a secure external counter.
-
-Actually what we did (I was there, kind of) was to go to the flash vendors
-(IIRC first Intel) and require what is today called "fuses" in the flash
-memory.
-
-Originally this was for things like unique serial numbers set in
-production. But they could easily add some more of it for other
-use cases.
-
-This became what is known as OTP (one time programmable flash).
-The OTP was all set to 1:s when the flash was new, then what we
-did for anti-rollback was to designate some bits for software versions.
-
-To make sure the OTP readout wasn't tampered with, some additional
-hashes of the OTP was stored in the flash and MAC signed. This was
-recalculated when we changed a bit from 1->0 in the OTP to indicate
-a new firmware version.
-
-Clever, isn't it? :)
-
-I think the scheme in RPMB was based in part on the needs
-solved by that crude mechanism.
-
-(Linux MTD did actually even gain some support for OTP recently,
-it is used only from userspace AFIAK.)
-
-> RPMB isn't pointless; what I am saying is that
-> if you strip away everything but the counter functionality, you can
-> still build equivalent security guarantees. You still need the counter.
-> There is no way to get that counter without RPMB or something like it
-> (another option is e.g. to use a smartcard IC as a secure element; AIUI
-> modern Apple devices do this). Software alone doesn't work. This is why
-> I wrote that article about how the FBI cracks iPhones; that works
-> because they weren't using a secure rollback-protected storage/counter
-> chip of any kind.
-
-Yeah. Hm, actually if they had flash memory they should have
-used the OTP... But I suppose they were all on eMMC.
-
-> it helps if you forget about the read/write commands and treat
-> it as a simple counter.
-
-Yep you're right.
-
-> Once you do that, you'll realize that e.g. putting keys in RPMB doesn't
-> really make sense as a kernel primitive. The usefulness of RPMB is
-> purely in the integration of that counter (which is equivalent to
-> rollback-protected storage) with a policy system. Everything else is
-> icing on the cake; it doesn't create new use cases.
-
-OK I understand. So what you're saying is we can't develop
-anything without also developing a full policy system.
-
-> Consider this:
-(...)
-> You have now built a secure, rollback-protected Git repository, with
-> similar security properties to RPMB storage, without using RPMB storage;
-> just a counter.
-
-This example of using the RPMB to protect rollback of a git
-was really nice! I think I understood as much before but
-maybe I don't explain that well enough :/
-
-> Thus, we can conclude that the storage features of RPMB do not provide
-> additional security properties that cannot be derived from a simple counter.
-
-I agree.
-
-> * Disclaimer: please don't actually deploy this; I'm trying to make a
-> point here, it's 5AM and I'm not claiming this is a perfectly secure
-> design and I haven't missed anything. Please don't design
-> rollback-protected Git repositories without expert review. I am assuming
-> filesystem mutations only happen between operations and handwaving away
-> active attacks, which I doubt Git is designed to be robust against. A
-> scheme like this can be implemented securely with care, but not naively.
-
-It's an example all kernel developers can relate to, so the
-educational value is high!
-
-> Well, that's what I'm saying, you do need secureboot for this to make
-> sense :-)
+> It implies several things that might not be immediately obvious to the
+> reader of this function. Namely, that nr_kmem is a subset of nr_pages.
+> Or that we don't *want* to account LRU pages for the root cgroup.
 >
-> RPMB isn't useless and some systems should implement it; but there's no
-> real way for the kernel to transparently use it to improve security in
-> general (for anyone) without the user being aware. Since any security
-> benefit from RPMB must come from integration with user policy, it
-> doesn't make sense to "well, just do something else with RPMB because
-> it's better than nothing"; just doing "something" doesn't make systems
-> more secure. There needs to be a specific, practical use case that we'd
-> be trying to solve with RPMB here.
+> The old code followed a very simple pattern: the root memcg's page
+> counters aren't touched.
+>
+> This is no longer true: we modify them depending on very specific
+> circumstances. But that's too clever for the stupid uncharge_batch()
+> which is only supposed to flush a number of accumulators into their
+> corresponding page counters.
+>
+> This distinction really needs to be moved down to uncharge_page() now.
 
-As of now there are no other real world examples than TEE
-for this user policy. TPM and secure enclave exist, but they both
-have their own counters and does not need this.
+OK. I will rework the code here to make it readable.
 
-Can one realistically imagine another secure environment
-needing a RPMB counter? If not, then TEE (tee-supplicant is
-the name of the software daemon in userspace for OP-TEE,
-then some vendors have their own version of TEE)
-will ever be the only user, and then we only need to design
-for that.
+>
+> > @@ -6828,7 +6857,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+> >
+> >  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+> >  {
+> > -     unsigned long nr_pages;
+> > +     unsigned long nr_pages, nr_kmem;
+> >       struct mem_cgroup *memcg;
+> >
+> >       VM_BUG_ON_PAGE(PageLRU(page), page);
+> > @@ -6836,34 +6865,44 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+> >       if (!page_memcg_charged(page))
+> >               return;
+> >
+> > +     nr_pages = compound_nr(page);
+> >       /*
+> >        * Nobody should be changing or seriously looking at
+> > -      * page memcg at this point, we have fully exclusive
+> > -      * access to the page.
+> > +      * page memcg or objcg at this point, we have fully
+> > +      * exclusive access to the page.
+> >        */
+> > -     memcg = page_memcg_check(page);
+> > +     if (PageMemcgKmem(page)) {
+> > +             struct obj_cgroup *objcg;
+> > +
+> > +             objcg = page_objcg(page);
+> > +             memcg = obj_cgroup_memcg_get(objcg);
+> > +
+> > +             page->memcg_data = 0;
+> > +             obj_cgroup_put(objcg);
+> > +             nr_kmem = nr_pages;
+> > +     } else {
+> > +             memcg = page_memcg(page);
+> > +             page->memcg_data = 0;
+> > +             nr_kmem = 0;
+> > +     }
+>
+> Why is all this moved above the uncharge_batch() call?
 
-Yours,
-Linus Walleij
+Before calling obj_cgroup_put(), we need set page->memcg_data
+to zero. So I move "page->memcg_data = 0" to here.
+
+>
+> It separates the pointer manipulations from the refcounting, which
+> makes the code very difficult to follow.
+>
+> > +
+> >       if (ug->memcg != memcg) {
+> >               if (ug->memcg) {
+> >                       uncharge_batch(ug);
+> >                       uncharge_gather_clear(ug);
+> >               }
+> >               ug->memcg = memcg;
+> > +             ug->dummy_page = page;
+>
+> Why this change?
+
+Just like ug->memcg, we do not need to set
+ug->dummy_page in every loop.
+
+
+>
+> >               /* pairs with css_put in uncharge_batch */
+> >               css_get(&ug->memcg->css);
+> >       }
+> >
+> > -     nr_pages = compound_nr(page);
+> >       ug->nr_pages += nr_pages;
+> > +     ug->nr_kmem += nr_kmem;
+> > +     ug->pgpgout += !nr_kmem;
+>
+> Oof.
+>
+> Yes, this pgpgout line is an equivalent transformation for counting
+> LRU compound pages. But unless you already know that, it's completely
+> impossible to understand what the intent here is.
+>
+> Please avoid clever tricks like this. If you need to check whether the
+> page is kmem, test PageMemcgKmem() instead of abusing the counters as
+> boolean flags. This is supposed to be read by human beings, too.
+
+Got it.
+
+>
+> > -     if (PageMemcgKmem(page))
+> > -             ug->nr_kmem += nr_pages;
+> > -     else
+> > -             ug->pgpgout++;
+> > -
+> > -     ug->dummy_page = page;
+> > -     page->memcg_data = 0;
+> > -     css_put(&ug->memcg->css);
+> > +     css_put(&memcg->css);
+>
+> Sorry, these two functions are no longer readable after your changes.
+>
+> Please retain the following sequence as discrete steps:
+>
+> 1. look up memcg from the page
+> 2. flush existing batch if memcg changed
+> 3. add page's various counts to the current batch
+> 4. clear page->memcg and decrease the referece count to whatever it was pointing to
+
+Got it.
+
+>
+> And as per above, step 3. is where we should check whether to uncharge
+> the memcg's page counter at all:
+>
+>         if (PageMemcgKmem(page)) {
+>                 ug->nr_pages += nr_pages;
+>                 ug->nr_kmem += nr_pages;
+>         } else {
+>                 /* LRU pages aren't accounted at the root level */
+>                 if (!mem_cgroup_is_root(memcg))
+>                         ug->nr_pages += nr_pages;
+>                 ug->pgpgout++;
+>         }
+>
+> In fact, it might be a good idea to rename ug->nr_pages to
+> ug->nr_memory to highlight how it maps to the page_counter.
+
+I will rework the code in the next version. Thanks for your
+suggestions.
