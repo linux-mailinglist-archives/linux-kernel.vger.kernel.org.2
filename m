@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0923385D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DF93385DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhCLGZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:25:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        id S231527AbhCLG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhCLGZH (ORCPT
+        with ESMTP id S231640AbhCLG0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:25:07 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10403C061574;
-        Thu, 11 Mar 2021 22:25:07 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id e26so1149941pfd.9;
-        Thu, 11 Mar 2021 22:25:07 -0800 (PST)
+        Fri, 12 Mar 2021 01:26:14 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877A4C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:26:14 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id g9so1639148ilc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:26:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DbiM/HSzZZ4GI01XA3bmT/NtzjcaG6At7TJMeyRi268=;
-        b=kfnoYzxJyQsGQs930o9zjPIkVNdy8UqKB0m4fz/eL1sWabAQXHRCaevIb6Egk4HYWP
-         Y7G+sloPPvSWY50jOt036lGYJzLI0iTGffdFbNli6mAh5doJh1e5Dln/MpJfrY4Tu7lp
-         SBGiGMLwrQhlxFmbURWr3E0UzUvKhSU8cVhdQ8OjNfaVH4qpGcVhfmggdLsHLxkfRU69
-         SlQPyg0ah8dAseYuPHvGmJt+mF90Fe/PiirQEQT+BYk+xAq0s7JnFIALln6HdHYLETJ4
-         dPCmrSRkxP5BvHGk+JNt+096ocZXD9kTXCZ/lIY82TwhIOGrTmif09isqZ4zFJCuaLt1
-         vkmA==
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X0qqxn9d92aoqYJoz6Fe423j5eYy1VZ6WOqrH+BLQFc=;
+        b=WTH1Ss5QdJSCirAjYWLMEp+yc+UiudzJNNNJD/XYVANXtdKSg1/KqijdnMRh1EW4CQ
+         NM7zlpykBtbl8Unb5uM/h+iwpngfHHuYgLsBUSZFcuuF2kVLotiQO4U0vuqpQIuiLW2h
+         NwTtuJlREvXUAmcLfl1ODO905+dKyAZsRrlIC9bLpmZLndIpPjDURSZAD/GGvLwRi/2Q
+         iejTVZwUDgGOBe7Ris9P2gWZWR/8ToDIM+y63XAFivjW/HHMeZFdF1zO6SIvT6yF+MXt
+         dVzzfQQGWQSKCzmPInyxo/9fSLA6P+Ck3neNwEE0fXQFWMMIYfFDykthUcFWq4DqZpZN
+         s9Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DbiM/HSzZZ4GI01XA3bmT/NtzjcaG6At7TJMeyRi268=;
-        b=Qr5UDrzG3Pse7/TkYp4bpRoCNV36BvJKO75UT3YX6+R4M+Xo0KsAZUdE93diLK7p/h
-         j/BuP75ltM8E7HbTvoxVJGHlBijpkQw151K9Wg63LfD8p01zUTxiDKJTEdYjxJwJrObT
-         rRnD9wJa6yaD8sG/AsF6ds0XoCXSTaE+gLpG5trsvQWgGw9tO/e1xW71Ibj7BNbMV5+4
-         nQFgc2GQrv0ilPqa9tV1O8BokQgUEjIqnLfuMtZSXr+AY8NhzMZD+MLujyOwL9vAMM2g
-         DJ6x86e0d0AePuG9i1ZxxPloGb9evKtVZlGnb4iPx0KVVSZVNdN1aiAe2BH6riIKUjDP
-         g+kw==
-X-Gm-Message-State: AOAM533OXcwKvFwVif7oxT0R0vTtNcDXhRBeiy+96l1y1BDh6BgLZ0UD
-        EXzfMN4yvp4bI7exmoQJeW0=
-X-Google-Smtp-Source: ABdhPJyevqSj5NqnClRsZ57pwxDoj08fTSg/6sAIzVoEMDnSjCaUc7k9Ay3ZVDGHcDGMXWlL5klGeQ==
-X-Received: by 2002:a63:a512:: with SMTP id n18mr10488698pgf.198.1615530306718;
-        Thu, 11 Mar 2021 22:25:06 -0800 (PST)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id h6sm4048406pfb.157.2021.03.11.22.25.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Mar 2021 22:25:06 -0800 (PST)
-From:   dillon.minfei@gmail.com
-To:     robh+dt@kernel.org, alexandre.torgue@foss.st.com,
-        a.fatoum@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, vladimir.murzin@arm.com,
-        afzal.mohd.ma@gmail.com
-Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v2 8/8] pinctrl: stm32: Add STM32H750 MCU pinctrl support
-Date:   Fri, 12 Mar 2021 14:24:34 +0800
-Message-Id: <1615530274-31422-9-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615530274-31422-1-git-send-email-dillon.minfei@gmail.com>
-References: <1615530274-31422-1-git-send-email-dillon.minfei@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X0qqxn9d92aoqYJoz6Fe423j5eYy1VZ6WOqrH+BLQFc=;
+        b=DjBpIIHCzny+EQUMxu3Cy8xkk5Mb8Lgdq6vaW/ipzc3n/5NbzWrVA8crClaWD0mYgG
+         Kr3MuOHat32/pQMeHknyKaoesxTvIfEVrJvE+iqsjsdCivSLsTsMCDyusjZ8KVrqfi95
+         E5EBTyvvDZSy+4ehlQlDx6NPj72mpbijhT9jU0FMDSgE1IICrZMJ+85DnzLQ2ttOsWjr
+         B0+ObpBrJcqkm/6wDBQai4AnRIklaZpaGGcn/V8gkoSL5fdyAHd527FYinqnZsbzUM68
+         OvCPJMsrZAehfwB7pdKb5sLHNN0mo54pK6jcBAZHoZWAFrH44Ye2yDW1LBcagVYOvSU7
+         hsFQ==
+X-Gm-Message-State: AOAM533Vn/XT31/5nilD5JHujNlU8s4rWqTbm5RLIHrYHTNmK+QbPpZu
+        WroJBN6Pr8Pbide+PlJXFY8KzAP6XgJG9vhLgXiFRg==
+X-Google-Smtp-Source: ABdhPJxWWvl7xTn8efGrKNtuVUB+C0Qr7JY3SOIoAeN+1JAFAU2kz3GFa1WzrBg/QduyjnBbZKNnqP7vmPwjrcBMyvc=
+X-Received: by 2002:a92:6511:: with SMTP id z17mr1715365ilb.232.1615530374036;
+ Thu, 11 Mar 2021 22:26:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20210116170725.5245-1-dsmythies@telus.net> <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
+In-Reply-To: <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Thu, 11 Mar 2021 22:26:02 -0800
+Message-ID: <CAAYoRsVYejQRByDz78jbv5cMfd+ctT8N3YxfOBndW8FJiuk9MA@mail.gmail.com>
+Subject: Re: [PATCH] tools/power/x86/turbostat: Fix TCC offset bit mask
+To:     Len Brown <lenb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+Hi Len,
 
-This patch adds STM32H750 pinctrl and GPIO support
-since stm32h750 has the same pin alternate functions
-with stm32h743, so just reuse the stm32h743's pinctrl
-driver
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
-v2:
-- add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
-  have same pin alternate functions
-- add STM32H750 to Kconfig description
+thank you for your reply.
 
- drivers/pinctrl/stm32/Kconfig             | 2 +-
- drivers/pinctrl/stm32/pinctrl-stm32h743.c | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+On Thu, Mar 11, 2021 at 3:19 PM Len Brown <lenb@kernel.org> wrote:
+>
+> Thanks for the close read, Doug.
+>
+> This field size actually varies from system to system,
+> but the reality is that the offset is never that big, and so the
+> smaller mask is sufficient.
 
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index f36f29113370..fb1ffc94c57f 100644
---- a/drivers/pinctrl/stm32/Kconfig
-+++ b/drivers/pinctrl/stm32/Kconfig
-@@ -35,7 +35,7 @@ config PINCTRL_STM32F769
- 	select PINCTRL_STM32
- 
- config PINCTRL_STM32H743
--	bool "STMicroelectronics STM32H743 pin control" if COMPILE_TEST && !MACH_STM32H743
-+	bool "STMicroelectronics STM32H743/STM32H750 pin control" if COMPILE_TEST && !MACH_STM32H743
- 	depends on OF && HAS_IOMEM
- 	default MACH_STM32H743
- 	select PINCTRL_STM32
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32h743.c b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-index ffe7b5271506..700206c7bc11 100644
---- a/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-@@ -1966,6 +1966,9 @@ static const struct of_device_id stm32h743_pctrl_match[] = {
- 		.compatible = "st,stm32h743-pinctrl",
- 		.data = &stm32h743_match_data,
- 	},
-+	{	.compatible = "st,stm32h750-pinctrl",
-+		.data = &stm32h743_match_data,
-+	},
- 	{ }
- };
- 
--- 
-2.7.4
+Disagree.
 
+I want to use an offset of 26.
+
+> Finally, this may all be moot, because there is discussion that using
+> the offset this way is simply erroneous.
+
+Disagree.
+It works great.
+As far as I know/recall I was the only person that responded to Rui's thread
+"thermal/intel: introduce tcc cooling driver" [1]
+And, I spent quite a bit of time doing so.
+However, I agree the response seems different between the two systems
+under test, Rui's and mine.
+
+[1] https://marc.info/?l=linux-pm&m=161070345329806&w=2
+
+>  stay tuned.
+
+O.K.
+
+... Doug
+>
+> -Len
+>
+>
+> On Sat, Jan 16, 2021 at 12:07 PM Doug Smythies <doug.smythies@gmail.com> wrote:
+> >
+> > The TCC offset mask is incorrect, resulting in
+> > incorrect target temperature calculations, if
+> > the offset is big enough to exceed the mask size.
+> >
+> > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > ---
+> >  tools/power/x86/turbostat/turbostat.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+> > index 389ea5209a83..d7acdd4d16c4 100644
+> > --- a/tools/power/x86/turbostat/turbostat.c
+> > +++ b/tools/power/x86/turbostat/turbostat.c
+> > @@ -4823,7 +4823,7 @@ int read_tcc_activation_temp()
+> >
+> >         target_c = (msr >> 16) & 0xFF;
+> >
+> > -       offset_c = (msr >> 24) & 0xF;
+> > +       offset_c = (msr >> 24) & 0x3F;
+> >
+> >         tcc = target_c - offset_c;
+> >
+> > --
+> > 2.25.1
+> >
+>
+>
+> --
+> Len Brown, Intel Open Source Technology Center
