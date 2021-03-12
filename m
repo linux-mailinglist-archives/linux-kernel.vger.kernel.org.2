@@ -2,159 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D1C338715
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CED338712
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhCLIIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhCLIHh (ORCPT
+        id S232181AbhCLIHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:07:50 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:48047 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhCLIHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:07:37 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5328C061574;
-        Fri, 12 Mar 2021 00:07:36 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id w34so14291649pga.8;
-        Fri, 12 Mar 2021 00:07:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=te3KkZ/7y8l0N1gnz9fMIpGsfWHYXiKPURp+vcWCB8E=;
-        b=FihTQ2zVIfHyWNyLkfgjwMHDyPxCwUHIqC185KqAZJEdBqYjqLCb1Q/l5CK+41xDCf
-         AiNkLws86GhP4FP3Acc+xWa2+xXBenk6JZEsb9HbOcvdBcQgDSA8p3761b2pPRUhWgr+
-         nSLqprGw/+owuMqtBkPCiyjVGpguvMpen4mGlBbsGw4Yi/Crvuk+MzVCI00GfuWX1afu
-         ddFffOoJ06oXlfWpzRaLscR00h9VQdXQX3fEO9OMwiUs/wn+0XOmsjkd8FaljK1lpRVw
-         de2s8KqSdI1oMi52qdtFwwZRqieQZlojKTfkotKkvXutErd8kzYiMMrJqPic7grk6wkL
-         z4Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=te3KkZ/7y8l0N1gnz9fMIpGsfWHYXiKPURp+vcWCB8E=;
-        b=uMn0gFTD64Dxn0pLJb9cp6TmWpvDpxP8TrqfGXTfoEzaVl3Z5eS5jJJ0IgIun3B3ni
-         qph2mKNFRUBWAyclcVtL1RttpvvvvyUrDll5JsaIWehDtGHu8Xv5ddHeoneg+bqwL6Ol
-         bwdRZqw1I7i/QMy39YvNNgHpjy/1bRb1VIetScFnFyCeDBDkyTHU/BTopCllfvgmfFZt
-         a6XPOqjLdMDI+c2EsZApYvfijtUyXKOqJq896BOSTLzV7G7Cdu5PGwG9fEJrDiSuyNrs
-         gYFvOX2vhnwKPwMcU2mKdBh/+25OnBdTmpU49yL0J54DuD+NWlONs+cNo+QwR5vaoHhb
-         Gfiw==
-X-Gm-Message-State: AOAM533SGVNtK/8Ga9fOonXj70NfVswKo5S0khd5qpPJTtKDo3GTk93t
-        9GGhX422yP1ehaecrz4a3xY=
-X-Google-Smtp-Source: ABdhPJyAJm82NZ7DHwzELUMbIN2BgR52bHmEYM8VjrfkOBKeQ1wmBxxKrehZJ/MjRIv0iXyZEAOymg==
-X-Received: by 2002:a63:3544:: with SMTP id c65mr10768213pga.284.1615536456233;
-        Fri, 12 Mar 2021 00:07:36 -0800 (PST)
-Received: from z640-arch.lan ([2602:61:738f:1000::678])
-        by smtp.gmail.com with ESMTPSA id h5sm4459973pgv.87.2021.03.12.00.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 00:07:35 -0800 (PST)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sander@svanheule.net, tsbogend@alpha.franken.de, john@phrozen.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH net,v2] net: dsa: mt7530: setup core clock even in TRGMII mode
-Date:   Fri, 12 Mar 2021 00:07:03 -0800
-Message-Id: <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
-References: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 12 Mar 2021 03:07:30 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210312080729epoutp02d0087bfde0c923692f8519cdc65ae10e~riddSCsZy1066110661epoutp02k
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 08:07:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210312080729epoutp02d0087bfde0c923692f8519cdc65ae10e~riddSCsZy1066110661epoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615536449;
+        bh=86Bf6XIO4fsNd7LDhlkgx4wanBgmxWiGffBA07gCvlg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=NKy5dZXMoEVuRPjlO1mi8eMlU7/pE+LaGA411IvgV26xdzD58aWwJiKeS+ffHERl0
+         94KeJzZYkgoXtzRZLSbtrNdCJy7RdjgoX8tlv6VQ71PmalGQnCzezsrvSsaAMr1P8H
+         taTKj7M+otNFane7NY8ScBdt7zCvwPTDtXm/lg98=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210312080728epcas2p475003f4b56182a0cd515f39be304c74f~ridctig5n0693206932epcas2p4r;
+        Fri, 12 Mar 2021 08:07:28 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DxdhY5Gfbz4x9QL; Fri, 12 Mar
+        2021 08:07:25 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-6d-604b213de96c
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        34.3D.05262.D312B406; Fri, 12 Mar 2021 17:07:25 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v27 3/4] scsi: ufs: Prepare HPB read for cached sub-region
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210312080600epcms2p3f04061fbf25f2afb1588fa005541fbce@epcms2p3>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210312080724epcms2p59859f069e24aee73d4530e12f8f6f08d@epcms2p5>
+Date:   Fri, 12 Mar 2021 17:07:24 +0900
+X-CMS-MailID: 20210312080724epcms2p59859f069e24aee73d4530e12f8f6f08d
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Ta0xbVRzAPfdeeguz5vKYO1Qn7JIxmdLX1nq2UKJsGVdwrirJFD6UG7iB
+        utJ2va3PqRidxTEYJNM1HWML6Ig8M0J5RiAUcDAJm7DNwYBOYYYg47H46AhoS4tb/PY7v/N/
+        nP859wrxsEmBWKgzWDizgdXTghCi2RWnildvS82UTfeJkbu8WYC+/+IyiWY91wXINX6PRF8v
+        enC03HAxCM32xKFq92H0WWWDAJUN5WOo6JRTgH69fZ9EFT83Y+jUmo1AI+1lAlR4s1WAqn5Y
+        w9B4Uwj61nkLoC/P1BIvRjAjo6nMSHERxrQ5JkimpKIbMF3naknm84EuglmaGSOY4qZqwNxv
+        fIaxdRdimpB0fUIux2Zz5mjOkGXM1hly1HTqG9p9WqVKJo+X70Ev0NEGNo9T0/tf0cQf0Om9
+        w9HR77B6q1dpWJ6npYkJZqPVwkXnGnmLmuZM2XqTXG6S8GwebzXkSLKMeXvlMplC6Y3M1OfW
+        FdeQpmLNe8OuCZAP7C+dAMFCSO2GbTXfED4Oo1oB7Fr2slAookLhamu4T4dTKbCltCIQQsOG
+        aw7S7yVw7E4t8LGAeh6euTzl9SHCCOo4ASuGqjDfAqdWMFg58I/A30wE7bYZws9PwZYq53p2
+        MPUqHG2px/z+Wfj3xSLcz5vhrZp5coMX+s8DP0fA45NDgZhQ6PZ0BHwk7O9YDNT5BDpvPwC+
+        Q0DqJICutrEg/4YU3ii4tH4IEXUQlk/Z1j1BbYf517sDyfvhUlvfelGcioIt82W471ZwKg42
+        tEt9CKkY2DtGbIyVf2mF/D/j1BOwwLX6n28tnw5Uj4X1ngasBMQ4Hl6145Fejoe9LgC8GjzJ
+        mfi8HI5XmHY9+riNYP1D35ncCuzzi5IegAlBD4BCnI4QXZ1NyQwTZbPvf8CZjVqzVc/xPUDp
+        nbIUF2/OMnr/FINFK1cqVCrZHiVSqhSI3iLiZW5tGJXDWrgjHGfizBt5mDBYnI/ZB8vxm1tf
+        Pr2tULg8OPCdqWDHofRxl6Zy01dSdnVXcJUiWtEblXUn0m0tvZIUO/xuv1iUfVoThzzn8KGk
+        sv6SuvAY56dNA4NDZWOkvOjtoysgwXGlMbTIrvvLsdDTd0HTfv5ARkyQI33VLImq/vC10c50
+        tQyYpL9HmSKy0oOunpWkqBN/ydW5ktr6sU038LkOR/JSmlRs/zEtccfs6wcV+L1j0791flyy
+        vaXxaF/GXSccfmDd4lI3Wybdb53MOPzc9JvapCOyY4fqFnpP/EQZqmv/7GQiixe7yYm9a6qp
+        syJjeI0tzWj7Y2brnHzubvLjMdceW3i6OTaKGd0db/2onib4XFa+Ezfz7L/KpHe5cQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210312080600epcms2p3f04061fbf25f2afb1588fa005541fbce
+References: <20210312080600epcms2p3f04061fbf25f2afb1588fa005541fbce@epcms2p3>
+        <CGME20210312080600epcms2p3f04061fbf25f2afb1588fa005541fbce@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change to MIPS ralink reset logic made it so mt7530 actually
-resets the switch on platforms such as mt7621 (where bit 2 is the reset
-line for the switch). That exposed an issue where the switch would not
-function properly in TRGMII mode after a reset.
+This patch changes the read I/O to the HPB read I/O.
 
-Reconfigure core clock in TRGMII mode to fix the issue.
+If the logical address of the read I/O belongs to active sub-region, the
+HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
+command of UFS instead of modifying the existing SCSI command.
 
-Tested on Ubiquiti ER-X (MT7621) with TRGMII mode enabled.
+In the HPB version 1.0, the maximum read I/O size that can be converted to
+HPB read is 4KB.
 
-Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+The dirty map of the active sub-region prevents an incorrect HPB read that
+has stale physical page number which is updated by previous write I/O.
+
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Acked-by: Avri Altman <Avri.Altman@wdc.com>
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 ---
- drivers/net/dsa/mt7530.c | 52 +++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 27 deletions(-)
+ drivers/scsi/ufs/ufshcd.c |   2 +
+ drivers/scsi/ufs/ufshpb.c | 256 +++++++++++++++++++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h |   2 +
+ 3 files changed, 257 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index f06f5fa2f898..9871d7cff93a 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -436,34 +436,32 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
- 			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e10984fd8d47..88dd0f34fa09 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2656,6 +2656,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
  
- 	/* Setup core clock for MT7530 */
--	if (!trgint) {
--		/* Disable MT7530 core clock */
--		core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
--
--		/* Disable PLL, since phy_device has not yet been created
--		 * provided for phy_[read,write]_mmd_indirect is called, we
--		 * provide our own core_write_mmd_indirect to complete this
--		 * function.
--		 */
--		core_write_mmd_indirect(priv,
--					CORE_GSWPLL_GRP1,
--					MDIO_MMD_VEND2,
--					0);
--
--		/* Set core clock into 500Mhz */
--		core_write(priv, CORE_GSWPLL_GRP2,
--			   RG_GSWPLL_POSDIV_500M(1) |
--			   RG_GSWPLL_FBKDIV_500M(25));
-+	/* Disable MT7530 core clock */
-+	core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+ 	lrbp->req_abort_skip = false;
  
--		/* Enable PLL */
--		core_write(priv, CORE_GSWPLL_GRP1,
--			   RG_GSWPLL_EN_PRE |
--			   RG_GSWPLL_POSDIV_200M(2) |
--			   RG_GSWPLL_FBKDIV_200M(32));
--
--		/* Enable MT7530 core clock */
--		core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
--	}
-+	/* Disable PLL, since phy_device has not yet been created
-+	 * provided for phy_[read,write]_mmd_indirect is called, we
-+	 * provide our own core_write_mmd_indirect to complete this
-+	 * function.
++	ufshpb_prep(hba, lrbp);
++
+ 	ufshcd_comp_scsi_upiu(hba, lrbp);
+ 
+ 	err = ufshcd_map_sg(hba, lrbp);
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 489c8b1ac580..201dc24d55b3 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -46,6 +46,29 @@ static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
+ 	atomic_set(&hpb->hpb_state, state);
+ }
+ 
++static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
++				struct ufshpb_subregion *srgn)
++{
++	return rgn->rgn_state != HPB_RGN_INACTIVE &&
++		srgn->srgn_state == HPB_SRGN_VALID;
++}
++
++static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
++{
++	return req_op(cmd->request) == REQ_OP_READ;
++}
++
++static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
++{
++	return op_is_write(req_op(cmd->request)) ||
++	       op_is_discard(req_op(cmd->request));
++}
++
++static bool ufshpb_is_support_chunk(int transfer_len)
++{
++	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
++}
++
+ static bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -80,8 +103,8 @@ static void ufshpb_kick_map_work(struct ufshpb_lu *hpb)
+ }
+ 
+ static bool ufshpb_is_hpb_rsp_valid(struct ufs_hba *hba,
+-					 struct ufshcd_lrb *lrbp,
+-					 struct utp_hpb_rsp *rsp_field)
++				    struct ufshcd_lrb *lrbp,
++				    struct utp_hpb_rsp *rsp_field)
+ {
+ 	/* Check HPB_UPDATE_ALERT */
+ 	if (!(lrbp->ucd_rsp_ptr->header.dword_2 &
+@@ -107,6 +130,233 @@ static bool ufshpb_is_hpb_rsp_valid(struct ufs_hba *hba,
+ 	return true;
+ }
+ 
++static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				 int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int set_bit_len;
++	int bitmap_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (likely(!srgn->is_last))
++		bitmap_len = hpb->entries_per_srgn;
++	else
++		bitmap_len = hpb->last_srgn_entries;
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		set_bit_len = bitmap_len - srgn_offset;
++	else
++		set_bit_len = cnt;
++
++	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
++	    srgn->srgn_state == HPB_SRGN_VALID)
++		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= set_bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++}
++
++static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				  int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int bitmap_len;
++	int bit_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (likely(!srgn->is_last))
++		bitmap_len = hpb->entries_per_srgn;
++	else
++		bitmap_len = hpb->last_srgn_entries;
++
++	if (!ufshpb_is_valid_srgn(rgn, srgn))
++		return true;
++
++	/*
++	 * If the region state is active, mctx must be allocated.
++	 * In this case, check whether the region is evicted or
++	 * mctx allcation fail.
 +	 */
-+	core_write_mmd_indirect(priv,
-+				CORE_GSWPLL_GRP1,
-+				MDIO_MMD_VEND2,
-+				0);
++	if (unlikely(!srgn->mctx)) {
++		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
++			"no mctx in region %d subregion %d.\n",
++			srgn->rgn_idx, srgn->srgn_idx);
++		return true;
++	}
 +
-+	/* Set core clock into 500Mhz */
-+	core_write(priv, CORE_GSWPLL_GRP2,
-+		   RG_GSWPLL_POSDIV_500M(1) |
-+		   RG_GSWPLL_FBKDIV_500M(25));
++	if ((srgn_offset + cnt) > bitmap_len)
++		bit_len = bitmap_len - srgn_offset;
++	else
++		bit_len = cnt;
 +
-+	/* Enable PLL */
-+	core_write(priv, CORE_GSWPLL_GRP1,
-+		   RG_GSWPLL_EN_PRE |
-+		   RG_GSWPLL_POSDIV_200M(2) |
-+		   RG_GSWPLL_FBKDIV_200M(32));
++	if (find_next_bit(srgn->mctx->ppn_dirty,
++			  bit_len, srgn_offset) >= srgn_offset)
++		return true;
 +
-+	/* Enable MT7530 core clock */
-+	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	return false;
++}
++
++static int ufshpb_fill_ppn_from_page(struct ufshpb_lu *hpb,
++				     struct ufshpb_map_ctx *mctx, int pos,
++				     int len, u64 *ppn_buf)
++{
++	struct page *page;
++	int index, offset;
++	int copied;
++
++	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
++	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
++
++	if ((offset + len) <= (PAGE_SIZE / HPB_ENTRY_SIZE))
++		copied = len;
++	else
++		copied = (PAGE_SIZE / HPB_ENTRY_SIZE) - offset;
++
++	page = mctx->m_page[index];
++	if (unlikely(!page)) {
++		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
++			"error. cannot find page in mctx\n");
++		return -ENOMEM;
++	}
++
++	memcpy(ppn_buf, page_address(page) + (offset * HPB_ENTRY_SIZE),
++	       copied * HPB_ENTRY_SIZE);
++
++	return copied;
++}
++
++static void
++ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
++			int *srgn_idx, int *offset)
++{
++	int rgn_offset;
++
++	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
++	rgn_offset = lpn & hpb->entries_per_rgn_mask;
++	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
++	*offset = rgn_offset & hpb->entries_per_srgn_mask;
++}
++
++static void
++ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
++			    u32 lpn, u64 ppn, unsigned int transfer_len)
++{
++	unsigned char *cdb = lrbp->cmd->cmnd;
++
++	cdb[0] = UFSHPB_READ;
++
++	/* ppn value is stored as big-endian in the host memory */
++	memcpy(&cdb[6], &ppn, sizeof(u64));
++	cdb[14] = transfer_len;
++
++	lrbp->cmd->cmd_len = UFS_CDB_SIZE;
++}
++
++/*
++ * This function will set up HPB read command using host-side L2P map data.
++ * In HPB v1.0, maximum size of HPB read command is 4KB.
++ */
++void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	struct scsi_cmnd *cmd = lrbp->cmd;
++	u32 lpn;
++	u64 ppn;
++	unsigned long flags;
++	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
++	int err = 0;
++
++	hpb = ufshpb_get_hpb_data(cmd->device);
++	if (!hpb)
++		return;
++
++	if (ufshpb_get_state(hpb) == HPB_INIT)
++		return;
++
++	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
++		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
++			   "%s: ufshpb state is not PRESENT", __func__);
++		return;
++	}
++
++	if (!ufshpb_is_write_or_discard_cmd(cmd) &&
++	    !ufshpb_is_read_cmd(cmd))
++		return;
++
++	transfer_len = sectors_to_logical(cmd->device,
++					  blk_rq_sectors(cmd->request));
++	if (unlikely(!transfer_len))
++		return;
++
++	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
++	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	/* If command type is WRITE or DISCARD, set bitmap as drity */
++	if (ufshpb_is_write_or_discard_cmd(cmd)) {
++		spin_lock_irqsave(&hpb->rgn_state_lock, flags);
++		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				 transfer_len);
++		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
++		return;
++	}
++
++	if (!ufshpb_is_support_chunk(transfer_len))
++		return;
++
++	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
++	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				   transfer_len)) {
++		hpb->stats.miss_cnt++;
++		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
++		return;
++	}
++
++	err = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset, 1, &ppn);
++	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
++	if (unlikely(err < 0)) {
++		/*
++		 * In this case, the region state is active,
++		 * but the ppn table is not allocated.
++		 * Make sure that ppn table must be allocated on
++		 * active state.
++		 */
++		dev_err(hba->dev, "get ppn failed. err %d\n", err);
++		return;
++	}
++
++	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
++
++	hpb->stats.hit_cnt++;
++}
+ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+ 					     struct ufshpb_subregion *srgn)
+ {
+@@ -153,7 +403,7 @@ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+ }
  
- 	/* Setup the MT7530 TRGMII Tx Clock */
- 	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+ static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
+-				      struct ufshpb_req *map_req)
++			       struct ufshpb_req *map_req)
+ {
+ 	bio_put(map_req->bio);
+ 	blk_put_request(map_req->req);
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index dcc0ca3b8158..6e6a0252dc15 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -201,6 +201,7 @@ struct ufs_hba;
+ struct ufshcd_lrb;
+ 
+ #ifndef CONFIG_SCSI_UFS_HPB
++static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
+ static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
+ static void ufshpb_resume(struct ufs_hba *hba) {}
+ static void ufshpb_suspend(struct ufs_hba *hba) {}
+@@ -214,6 +215,7 @@ static bool ufshpb_is_allowed(struct ufs_hba *hba) { return false; }
+ static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
+ static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
+ #else
++void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
+ void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
+ void ufshpb_resume(struct ufs_hba *hba);
+ void ufshpb_suspend(struct ufs_hba *hba);
 -- 
-2.30.2
+2.25.1
 
