@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F98B33992E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C932A339935
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 22:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbhCLVjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 16:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        id S235303AbhCLVoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 16:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235328AbhCLVjF (ORCPT
+        with ESMTP id S234219AbhCLVnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 16:39:05 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E61C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:39:04 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 184so9105829ljf.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 13:39:04 -0800 (PST)
+        Fri, 12 Mar 2021 16:43:53 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70F6C061574;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id t18so5784201pjs.3;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WV6iTMu03uChDms5bBNns9hCvCHH9+fuZrgLAjE0Aog=;
-        b=OaWBFeMkfvWj37dbbxmna/HRQ67mBfE0iAhHeu5Jv//n958y/Az3eA6pRlD603C4EN
-         FP/qjW1k/HKTKh8dT+jsPmRUtQYuA6Tq2Cns+zusqmJGg4z41SotayBz1FIi4AShT1cP
-         V22LMsEOdRLrHT5LsjXKJ0nTOcrX3pOL9aE+iFw/0ZerNDdjEYxZDA7E87PcQ1iO7Omx
-         2gRPFQTKwa8CBKJjnFELi6+qlZXGWhSucyQBVGN6Vn4kp4VssSqgYnDzdIbLmUGYc2Mh
-         zEt2CsWA7HMYko2Rrsm5finRtMfcVkGG78AcyPtsed9n9PGWbkgXztBFYASL4GV6c1rp
-         P1Dw==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=THf+Q27rCE5bAqT61RxqjUfzIMw5JhYn8NNtx0p14fg=;
+        b=WiHXeodK/wol85oDmp7yWl+34nzWFLLznfcL4ts+vBP6cg2Py3p4BieaEbNbDTe6om
+         xkRVMLslLYumR2uzSl78EdTI8MsgzfYtMNPrOXE/SWeFNA4zcrufbk5yk3ZK/uytmFfk
+         wq4sgh5mkTgrYox0bpP+WB3IvJKnTO+AzctCuG9GzUbfdrwBgd3K+wLtZ4sWMjvZssa6
+         /xsIvLMuWh9TUa4OGYX6GQJx4UB3I2NJ1Ksajt1xjKmPTSMcldIl7IDIz+ZkwoVqhXAn
+         2X0O6w79P2l3F5KxyrbWoZWrXcfpRYIz7RJFUIEcJXwdBoBi0g4ZaHeHowiy4re1GO8H
+         PvEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WV6iTMu03uChDms5bBNns9hCvCHH9+fuZrgLAjE0Aog=;
-        b=jFTsh5vyhRdcOdRSBksOv7y94p5fzMn9iXjjiEOPxt3TzIoV8VB1mGZNMxLSWx/dKl
-         f5p0/wiqol0t+BtoNtRz4nuZGIOrltKBrwrEiW5QBKYK6aQNk4mDjhShymE8Dc7YJd7S
-         ZnBzM88ALmL71pLf93YBX/ktCsrBNsnnXbvwwE7v1R8OtwVPCaw7obbdBbK25qvO4ymU
-         pyhMy4wYcswGZppEAPP68wTwV0HdqqroVPR/Z1xz0HShrpn0m5RebusfSrXsLGDrH2/0
-         EYaKt7vKRM27Tdzkj647kDF6c2kx5hbUpRwrMJG2xm3dDcJhMG5Cghmoh0H7ZP+nUJiN
-         QZeA==
-X-Gm-Message-State: AOAM5300VoDEJlgE7IMUfQkRTJZ8/HDM7YswaLEJhvZ9XnzAxS2DKQO7
-        JUq8V7UWH7tV91K9F9VFJU5QVU8OXNQfjJYGfc2Ihg==
-X-Google-Smtp-Source: ABdhPJx5JJ4dw8VojLBuciUzedeSi3mLUgjg97F+b1rG9zBUK/x3eIXk0j2lYcXtz6plc0vz/GdPy1dzhfEoXQTRo7A=
-X-Received: by 2002:a2e:7d03:: with SMTP id y3mr3598813ljc.0.1615585142886;
- Fri, 12 Mar 2021 13:39:02 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=THf+Q27rCE5bAqT61RxqjUfzIMw5JhYn8NNtx0p14fg=;
+        b=LxY92C9cir5N9cLtm+aNVVwOCG+BFmbq1BrtwxzWi6qKQJ/uPvhR2KfZmMS+rwNOKA
+         M+gfZ2b8sQotAz9padBDfrdF0Y8KW0VW+nAZl88xcMgRT/StMnkwUHMpeCvOG/g9GQFB
+         tTLZvcHrA6f4V9yahRGbQulf7/JRiaCO4NK+l5SJEEUYsfcpczHa0ndaJX5lZ9eEoH7N
+         uPE3Frq2sDXr+6Gbq5dDmrwb+nRtSZIm1tp9hkgwrYrba07RAlPzIZMQUTFiYPc5lX42
+         7H41s8/srGUD6JwJseb1QOHxf2qFthicU88LYHHNXl39xtpPsB2SeFnNXSMkTeZdbHGl
+         jfcA==
+X-Gm-Message-State: AOAM531mhg0c9fEJVWiMytH+YdVnoOcD+9NiKkl3EyQgxQtaRz9cUu3f
+        GQBXI4oUufJJ4czJeWPOseVT0XkJPWZLRw==
+X-Google-Smtp-Source: ABdhPJz6w93PgiD066C/BiK3t9o/2rLknMqYdxlQkTKKQWq+fqnlBPZd4bUmpUG9Ddoh9NsZbtsVvA==
+X-Received: by 2002:a17:902:bd96:b029:e6:3d73:f90e with SMTP id q22-20020a170902bd96b02900e63d73f90emr480048pls.63.1615585432536;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
+        by smtp.gmail.com with ESMTPSA id e63sm6276094pfe.208.2021.03.12.13.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Sender: Sultan Alsawaf <sultan.kerneltoast@gmail.com>
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+X-Google-Original-From: Sultan Alsawaf
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: Use the correct fd when attaching to perf events
+Date:   Fri, 12 Mar 2021 13:43:15 -0800
+Message-Id: <20210312214316.132993-1-sultan@kerneltoast.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210312010942.1546679-1-ndesaulniers@google.com> <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 12 Mar 2021 13:38:51 -0800
-Message-ID: <CAKwvOdkNoo+7pDiiNdnciRhHB8LpVTOr7ROpDxfEnLS-Qn9dJA@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: LTO: have linker check -Wframe-larger-than
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Candle Sun <candlesea@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 9:55 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Mar 11, 2021 at 5:09 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > -Wframe-larger-than= requires stack frame information, which the
-> > frontend cannot provide. This diagnostic is emitted late during
-> > compilation once stack frame size is available.
-> >
-> > When building with LTO, the frontend simply lowers C to LLVM IR and does
-> > not have stack frame information, so it cannot emit this diagnostic.
-> > When the linker drives LTO, it restarts optimizations and lowers LLVM IR
-> > to object code. At that point, it has stack frame information but
-> > doesn't know to check for a specific max stack frame size.
-> >
-> > I consider this a bug in LLVM that we need to fix. There are some
-> > details we're working out related to LTO such as which value to use when
-> > there are multiple different values specified per TU, or how to
-> > propagate these to compiler synthesized routines properly, if at all.
-> >
-> > Until it's fixed, ensure we don't miss these. At that point we can wrap
-> > this in a compiler version guard or revert this based on the minimum
-> > support version of Clang.
-> >
-> > The error message is not generated during link:
-> >   LTO     vmlinux.o
-> > ld.lld: warning: stack size limit exceeded (8224) in foobarbaz
-> >
-> > Cc: Sami Tolvanen <samitolvanen@google.com>
-> > Reported-by: Candle Sun <candlesea@gmail.com>
-> > Suggested-by: Fangrui Song <maskray@google.com>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > LTO users might want to `make clean` or `rm -rf .thinlto-cache` to test
-> > this.
-> >
-> >  Makefile | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index f9b54da2fca0..74566b1417b8 100644
-> > --- a/Makefile
-> > +++ b/Makefile
->
-> Candle sent me a private message that we probably also want coverage
-> for kernel modules. Let me revise this and test/send a v2.
+From: Sultan Alsawaf <sultan@kerneltoast.com>
 
-False alarm, seems specific to Android's LTO support pre-5.11. I will
-fix that in Android trees.  This patch is still relevant going
-forward.
+We should be using the program fd here, not the perf event fd.
 
->
-> > @@ -910,6 +910,11 @@ CC_FLAGS_LTO       += -fvisibility=hidden
-> >
-> >  # Limit inlining across translation units to reduce binary size
-> >  KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
-> > +
-> > +# Check for frame size exceeding threshold during prolog/epilog insertion.
-> > +ifneq ($(CONFIG_FRAME_WARN),0)
-> > +KBUILD_LDFLAGS += -plugin-opt=-warn-stack-size=$(CONFIG_FRAME_WARN)
-> > +endif
-> >  endif
-> >
-> >  ifdef CONFIG_LTO
-> > --
-> > 2.31.0.rc2.261.g7f71774620-goog
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index d43cc3f29dae..3d20d57d4af5 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9538,7 +9538,7 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+ 	if (!link)
+ 		return ERR_PTR(-ENOMEM);
+ 	link->detach = &bpf_link__detach_perf_event;
+-	link->fd = pfd;
++	link->fd = prog_fd;
+ 
+ 	if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+ 		err = -errno;
 -- 
-Thanks,
-~Nick Desaulniers
+2.30.2
+
