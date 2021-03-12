@@ -2,419 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675A7339A1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0FA339A22
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhCLXoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 18:44:08 -0500
-Received: from mail-bn8nam11on2077.outbound.protection.outlook.com ([40.107.236.77]:12352
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S235889AbhCLXqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:46:48 -0500
+Received: from mail-dm6nam10on2109.outbound.protection.outlook.com ([40.107.93.109]:52143
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235863AbhCLXn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 18:43:57 -0500
+        id S235874AbhCLXqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:46:22 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R7Zz+DQ+6ELVJ2SQqHOHuOPqoFTuKMNMBXjskBKZ7eaToTfzN15kJXUgxcEuQYD39Z+f4WCs40iwIpah7kJGexS8h9mHJSmOwkSUJ+ZKl1KJjHghdAEdA87CZ+WeInnxxuvtsEui2ill8Sw4OenRsTXvaWqbJkuoYY76ZVbGIWmt27Hy78KF3USClVXBGNFnuiTDT1/2MQrYBveJxKNpwYr0l6c5yEPrtnwSjDL1PtBsSioiN01HnZlIZNv2MlYd48P/bhzsjoVsbDtC/z5IQkadaYmEDXRJ+bwoO8fNpsnvd260Rt0qPmR5nlifonKFAYh4n+/Q6DKejZwkWT09FQ==
+ b=EkYfcfgwgpGrgjXKNiRVpM1AL2LDC7kbCnWIiQS+wD5LnQKk94JUcSeIgfovi6WR64/3x2FvLmZ0TLNinYcTQuSBUuby0nautneBEmyZKVDWsh/EIzJSMLOcVs0R2ZibGrAMLYDvW28aJ1tK5eSVvXSoqzeSE/kFXBLodiW04mXHBbYUESl4xlioZ/1Hrn2L1RtAuA4sUSSuBRsIZQ0wowqHDo0D0aKighL96yxp0C//RTmBZBBlDnVxLxYJJOjw1j6sJMkP3zlAng/ykX03/xuowLYlrABCX2W4tvZlQ0rGCTM0bHVZl16RbvhiAevkzQ51kKv/nPYIknwkMpqIog==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G497oqaaIeXa5NsTqmZQU/6GONH+b1ZwhWk5QxGIUnQ=;
- b=YSQGr/L/LuikDbhCCFJejiARruZffKyXPzPy6PSxKGBV0Ma5WbF6kTGuWlbC5zjRxv+3w51+H2pfCo/bP4St5Fkd2e5XHbPITCc1wvlfad12ZhSrmycl+k5vgKDrMm7hwvNyh/qUDxlTK6iQsOe4riSWoFR7TS/LDA8tVpod8nNA/ckSuL13cpZ8z2HMtR0odKUFHux5zFdiVHM9b3gR5xRbIv9l9CWvEHx6sWgihA+BUfKBdNvocZKvtp30HLishZFOoSQHoRfiwwrsaPoDXoLb/pSdcCaEU41PMH1thK/abn1H45hsW4uwqsT0QjZxOA5u07AhIVZD1yZjTkrX5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ bh=phfrcTnzkIFjtqag+p+QaWAA9aUiPxFefARrXk8slNk=;
+ b=iFBhA61zq/o5n+mNLxthyHnMsgFibeNjl8mX+CxGa49MeKSZBrMY2gqB7nRctYSSefJi6x/YzG+pwIi0oewDS1IFWxUiwSZkKRYVFAellE3kdMZmDR5BpPIj7cH7F2lPjTup7MYiVzOcTIt0VE3VNG6O02Z7Ougq4AqJS2Fykvw57XzE/SBhaFojvmodiLtmCA2DDrv3CYbgZEeeWt3IsO2KRnjEDGlefPd7YwLQvkfk5PnftCTk7AXZ6+Umo5MMxmbz8SSkB86Bz1WTz7hJWXBVffF93CA3jHuKKAeRHBay8mlFYcH2WybiENhTBrkOj8z4Eh+L6pEm2wJy5UdULA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G497oqaaIeXa5NsTqmZQU/6GONH+b1ZwhWk5QxGIUnQ=;
- b=UlJ20yoMBSZLh2GtJgGiSGHo8xwveicLg5SmNxW0ARXbVHalio7dI0S/sAzQbsbvvoOfDsdxKQRgOfsbqln40Uh2hfPKX5IlnUI1yGoJIXkM11YrZy3pi4NXwRxGVIFI+1wsuT0iQtIsAU9oDEZ2X7IjGJNMMj5iBqn2PrTxpxM=
-Received: from CY4PR1201CA0004.namprd12.prod.outlook.com
- (2603:10b6:910:16::14) by DM6PR02MB5419.namprd02.prod.outlook.com
- (2603:10b6:5:79::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Fri, 12 Mar
- 2021 23:43:55 +0000
-Received: from CY1NAM02FT015.eop-nam02.prod.protection.outlook.com
- (2603:10b6:910:16:cafe::7c) by CY4PR1201CA0004.outlook.office365.com
- (2603:10b6:910:16::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Fri, 12 Mar 2021 23:43:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT015.mail.protection.outlook.com (10.152.75.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3912.25 via Frontend Transport; Fri, 12 Mar 2021 23:43:55 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 15:43:55 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Fri, 12 Mar 2021 15:43:55 -0800
-Envelope-to: robh@kernel.org,
- mdf@kernel.org,
- devicetree@vger.kernel.org,
- linux-fpga@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- trix@redhat.com
-Received: from [10.17.2.60] (port=45574)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1lKrRj-0002Xw-1R; Fri, 12 Mar 2021 15:43:55 -0800
-Subject: Re: [PATCH V3 XRT Alveo 15/18] fpga: xrt: clock frequence counter
- platform driver
-To:     Tom Rix <trix@redhat.com>, Lizhi Hou <lizhi.hou@xilinx.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-fpga@vger.kernel.org>, <maxz@xilinx.com>,
-        <sonal.santan@xilinx.com>, <michal.simek@xilinx.com>,
-        <stefanos@xilinx.com>, <devicetree@vger.kernel.org>,
-        <mdf@kernel.org>, <robh@kernel.org>, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-16-lizhih@xilinx.com>
- <85c34149-ccb4-31c9-4a7d-477b30effad2@redhat.com>
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-Message-ID: <4dcd1a9f-1d96-6c1e-8e70-13cbc312c7b5@xilinx.com>
-Date:   Fri, 12 Mar 2021 15:43:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+ bh=phfrcTnzkIFjtqag+p+QaWAA9aUiPxFefARrXk8slNk=;
+ b=iI6BmsOriYIovx2GDag7HVF20N0n+iQGkJljtH2X70OUkLAKXuFYtwXsFwcJxY+fR2Fc9cXvbwwfCx02aFlH7ANvGtQ7lQXg19ekF5DufqijCBEGeos883L1oebX2MYLuW53H8+GTxmJ+PLG6jIimWkI6pixkwwWZZ0cDGiC04E=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=microsoft.com;
+Received: from DM6PR21MB1340.namprd21.prod.outlook.com (2603:10b6:5:175::19)
+ by DM5PR21MB1767.namprd21.prod.outlook.com (2603:10b6:4:aa::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.8; Fri, 12 Mar
+ 2021 23:46:08 +0000
+Received: from DM6PR21MB1340.namprd21.prod.outlook.com
+ ([fe80::488b:9500:3b0c:e41a]) by DM6PR21MB1340.namprd21.prod.outlook.com
+ ([fe80::488b:9500:3b0c:e41a%7]) with mapi id 15.20.3933.031; Fri, 12 Mar 2021
+ 23:46:08 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Cc:     haiyangz@microsoft.com, kys@microsoft.com, sthemmin@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org,
+        Shachar Raindel <shacharr@microsoft.com>
+Subject: [PATCH net-next] hv_netvsc: Add a comment clarifying batching logic
+Date:   Fri, 12 Mar 2021 15:45:27 -0800
+Message-Id: <1615592727-11140-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-Originating-IP: [13.77.154.182]
+X-ClientProxiedBy: MW4PR03CA0230.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::25) To DM6PR21MB1340.namprd21.prod.outlook.com
+ (2603:10b6:5:175::19)
 MIME-Version: 1.0
-In-Reply-To: <85c34149-ccb4-31c9-4a7d-477b30effad2@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (13.77.154.182) by MW4PR03CA0230.namprd03.prod.outlook.com (2603:10b6:303:b9::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 23:46:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e39ff261-c358-4f77-0feb-08d8e5b0b313
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5419:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB54198D899DC05B790950F05FA16F9@DM6PR02MB5419.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 183f3c06-a75e-4bd7-cecd-08d8e5b10205
+X-MS-TrafficTypeDiagnostic: DM5PR21MB1767:
+X-MS-Exchange-Transport-Forked: True
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-Microsoft-Antispam-PRVS: <DM5PR21MB17671638BA930A39C42C7367AC6F9@DM5PR21MB1767.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q3URuf4bsYRFm+OfzG3WHBExYe6vUeskYC9RBSaKdErmavjaNLZB/D0bKNOlOmQa8n/JRrnF8WAXjkktLVXzykxa0DC4jGclZ+0v4Zne0InB+LbJqAD1dgOAE1jym8bWziIZ/p4V+sr5BHvpQ8/Wk5ZX8uS7QkSFCOo0K4HUt9xUVEsOnbWK1M++0M258Hku2Iplv4PjNNkmAeKpWaxJbXorTQHIBcoFfrVxWuDhZVBko8ZdpvlzH7gr5nrxo6tjSIpaFrNQptQC/dTsKyx/xjMxkQR7Ad4fV+jczLS3d2ZEOd2Eze38rqahZvGcDNpIBEzWApzSn7Ar+0fDdPrU3G9xR68ma7tFGELHaiKpzRayM+iqlyE3pC9C4z/NUGduMHZwBJXKDp8OpUapKuC8TXEETcT2ogKKO+8BGO8T3Kb9OOZehGqxsEqqLxS6zKEkUP10OrkoMO3GLZEPV7M2+LxQ8p/Mhi8szMv/kVYuRwM0ORyfwbSmOXVCmkGsOlrv/a8g/L1jHKuo6m+1b/srq6TPIx+yUOIXYtjWNRBfrXvne/Hq0E8zxCHPCGVi0KM7AOaYvJv/ZD3bONk71x8/XT37CnMh8aAOIY2VDCbe+/YoBbJ2/yMlIlobkRKylHzqIEsIQ6wd11gZxVUlZKxoUQIsmGwOf8GNSUyclRbs/aLSC0LhYZbFo9Pb7gWj7B7BXnoa33OfvWUizQVp0Wtq3jrC2TkSm5+Y4+aI2UZv/C8=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966006)(36840700001)(336012)(36756003)(83380400001)(356005)(4326008)(7636003)(107886003)(26005)(426003)(186003)(36906005)(36860700001)(5660300002)(82310400003)(2616005)(316002)(110136005)(70206006)(44832011)(70586007)(31696002)(31686004)(47076005)(8676002)(8936002)(2906002)(53546011)(54906003)(478600001)(9786002)(82740400003)(50156003)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 23:43:55.3681
+X-Microsoft-Antispam-Message-Info: 1N6NHzX14qVy3AbC3RXXx19S+lBMafLw0sEd6jnvxKFtm62v9KFfNtZVQiVhYJORT9lktuQXFKLrfK6jMUAHVbgl7ZIBe+ggHZO7tjlkDbzmUX1TE5kAK015+eyPb9RKX0IXevtD6ojaaS+wPqhwWQEv16qxP0BE94+/izHCYiuGUMsXVRAGtjiVAaDWhDovPKgdVDVy4TC/zPRPKXiDfW3EAEvMOlCigzqGkRm1QKXvUHvoY4ZYc91ihjS5lRlTvmW5m/q0+fkSzX043AWhX6T5XUqpZoozsw+vLoX0ra4W+RztYj4u3S9yFb5FwOm49IKBmtfvVYP0zLfT1Y8rbT69+PO2QW/UZ/3HeTUQChuEdlJooezvldCD9EiLy1WWbMj02rqwgZ/LqD028j+Ch8h8jSH5a+UqeSataOZfeYdMhBn55BXp3vTLkRMA9WCbE0d8GpyRy0HhfBz05zFJoVe1hG3XhpQlHv9rBrzgA76E5xvAX+/Mie9q7dMnEGYPHdpizUDf0HagfsN4a6YO858g8xawMCxWQWSmvpshPSfUKplfvgjtqLpn2cT1LLd9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1340.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(396003)(376002)(66476007)(82950400001)(2616005)(6512007)(66946007)(956004)(6486002)(6506007)(4326008)(186003)(83380400001)(82960400001)(66556008)(6666004)(2906002)(36756003)(8936002)(5660300002)(316002)(16526019)(8676002)(7846003)(26005)(478600001)(10290500003)(107886003)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?d4C3P6SivISwW+mmkjvm+Tk8ljvHKP4KlpXOIET97t8pXZmnhIaeNfd4SqtQ?=
+ =?us-ascii?Q?tmsfwib6gILajaRpRhJX5+/ftCuAZnCLzkR9g20jNlreUls+Tybze7TRAcoK?=
+ =?us-ascii?Q?gr/Ceoe29bReN0E6dxjFjMR8ydwBONa7iBJl3W29dXtCKMMaR3EbI52EeOcd?=
+ =?us-ascii?Q?0SIvcTRyhb4RRoD5d+hjSyV8gBgL6RPqoIk0ZlxXMbLNmhje8QVytpV0BNJv?=
+ =?us-ascii?Q?5QfDrSbBCOMfkW8Vp8TJyeGveHZ7LS0UogMiXQHFlDSJHko2W6czwkJgG1a/?=
+ =?us-ascii?Q?fmJ3UMAp+zxzY8EBgb9N6NGoq09Ngb3a+xo3oX7ciQk1KZAFIROFCcXN+LtJ?=
+ =?us-ascii?Q?p3GMKn+T+tV3qLBQZ/crr3MfqmmBA+xNYbuWTnkiSA+siILkNvNY688GoL29?=
+ =?us-ascii?Q?NgprL+11eMyX72QYaWSxfDdt1EkZXuyyLX5MbccdSmVdMlX5MI1wPMf2FDKp?=
+ =?us-ascii?Q?nm/esZRqbqJ2zvzTukOJB8+Uzeu8HJZQ1S0qOcJ6mIa3RrkTjaopcwUa9JQ1?=
+ =?us-ascii?Q?40K0Vej15CGd2YxZOIXiRaDbQvJv99j2EbxCHmI1CCmL4/2Ol5DpBcy8wxlK?=
+ =?us-ascii?Q?FubAD1xtgpLLJdshE+bXvxO8PN8lNFd2bydqQUJyEHJR0CSOgAyvUFmBPTTc?=
+ =?us-ascii?Q?3XsoFAJY4e0QlEPq48njtamFQzNmwlfP+YwkJAIKulC2ScmpMtkOaV0ca+0H?=
+ =?us-ascii?Q?2g7Tq5MLkY5ib0vwGvcH7pMx6nhmc+I5HEK7YK1ShhU4ltsgMDkojP2ZoED5?=
+ =?us-ascii?Q?CWwXaWlnXwFLbxYCWNaEGGqVqZyN/5WA+WUjpYFFoNGq2rn3pFCzsDAq6/Zp?=
+ =?us-ascii?Q?AXyzVBHGSWsJ+E11phHeCabsRCS6OBNWZX18Oj8UlZmuDH/hFrKR/++HcNfV?=
+ =?us-ascii?Q?wQ5s7zshKzec6z/dlHc2PgKgnRsPX0CJSzKjqfn7/JnCkuXPdCnyrXCqQIPK?=
+ =?us-ascii?Q?qxTSFgyFlIxVsE6vIFvo8Z13R3iZzzfgbvVfoOlXKe7YEIHB8Nm8jkvH6kR4?=
+ =?us-ascii?Q?DA0RFzcg1AFIzu9ZlFfXaRJxnBX6Az6BMC8rqoQpGqOQiCedk8wuOG2Xu9a8?=
+ =?us-ascii?Q?5lpzalU2K7w4R5oPrR9Ft9kneoggWpuJAkAw/bCT0gKapNoWzcfsOPZVq19P?=
+ =?us-ascii?Q?1L3f8OiHbLArp36VMeCpQzKL5OLsa0IRWL5Egj/WT7ImxaEt6rl+NzyQW4aL?=
+ =?us-ascii?Q?wDEYoDvWmdaAiEJ9uI3m6MgqQQ8sG3YfxUPmIjQvXwrZbL4vD6P509MGbBjU?=
+ =?us-ascii?Q?S+DqHlqt5O8WoeoIND2PFa6OUqhjCR1SrU+smvshb/kV/VbR5xWmeZML+yxX?=
+ =?us-ascii?Q?AP/rZY4DuDOPzTo/ZHMXLuNV?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 183f3c06-a75e-4bd7-cecd-08d8e5b10205
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1340.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 23:46:08.2874
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e39ff261-c358-4f77-0feb-08d8e5b0b313
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT015.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5419
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AiNfcJ1GXI0TKCLPgmL4veiXze46Jhg7LOvS3LLuyrfgl2FV/DPVOXDKYTpAEDRGSwK1ni4Vvb2UH/6bBXBdpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB1767
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+From: Shachar Raindel <shacharr@microsoft.com>
 
+The batching logic in netvsc_send is non-trivial, due to
+a combination of the Linux API and the underlying hypervisor
+interface. Add a comment explaining why the code is written this
+way.
 
-On 03/06/2021 07:25 AM, Tom Rix wrote:
-> On 2/17/21 10:40 PM, Lizhi Hou wrote:
->> Add clock frequence counter driver. Clock frequence counter is
->> a hardware function discovered by walking xclbin metadata. A platform
->> device node will be created for it. Other part of driver can read the
->> actual clock frequence through clock frequence counter driver.
->>
->> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
->> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
->> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
->> ---
->>   drivers/fpga/xrt/include/xleaf/clkfreq.h |  23 +++
->>   drivers/fpga/xrt/lib/xleaf/clkfreq.c     | 221 +++++++++++++++++++++++
->>   2 files changed, 244 insertions(+)
->>   create mode 100644 drivers/fpga/xrt/include/xleaf/clkfreq.h
->>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clkfreq.c
->>
->> diff --git a/drivers/fpga/xrt/include/xleaf/clkfreq.h b/drivers/fpga/xrt/include/xleaf/clkfreq.h
->> new file mode 100644
->> index 000000000000..29fc45e8a31b
->> --- /dev/null
->> +++ b/drivers/fpga/xrt/include/xleaf/clkfreq.h
->> @@ -0,0 +1,23 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Header file for XRT Clock Counter Leaf Driver
->> + *
->> + * Copyright (C) 2020-2021 Xilinx, Inc.
->> + *
->> + * Authors:
->> + *   Lizhi Hou <Lizhi.Hou@xilinx.com>
->> + */
->> +
->> +#ifndef _XRT_CLKFREQ_H_
->> +#define _XRT_CLKFREQ_H_
->> +
->> +#include "xleaf.h"
->> +
->> +/*
->> + * CLKFREQ driver IOCTL calls.
->> + */
->> +enum xrt_clkfreq_ioctl_cmd {
->> +     XRT_CLKFREQ_READ = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
->> +};
->> +
->> +#endif       /* _XRT_CLKFREQ_H_ */
->> diff --git a/drivers/fpga/xrt/lib/xleaf/clkfreq.c b/drivers/fpga/xrt/lib/xleaf/clkfreq.c
->> new file mode 100644
->> index 000000000000..2482dd2cff47
->> --- /dev/null
->> +++ b/drivers/fpga/xrt/lib/xleaf/clkfreq.c
->> @@ -0,0 +1,221 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Xilinx Alveo FPGA Clock Frequency Counter Driver
->> + *
->> + * Copyright (C) 2020-2021 Xilinx, Inc.
->> + *
->> + * Authors:
->> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
->> + */
->> +
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/delay.h>
->> +#include <linux/device.h>
->> +#include <linux/io.h>
->> +#include "metadata.h"
->> +#include "xleaf.h"
->> +#include "xleaf/clkfreq.h"
->> +
->> +#define CLKFREQ_ERR(clkfreq, fmt, arg...)   \
->> +     xrt_err((clkfreq)->pdev, fmt "\n", ##arg)
->> +#define CLKFREQ_WARN(clkfreq, fmt, arg...)  \
->> +     xrt_warn((clkfreq)->pdev, fmt "\n", ##arg)
->> +#define CLKFREQ_INFO(clkfreq, fmt, arg...)  \
->> +     xrt_info((clkfreq)->pdev, fmt "\n", ##arg)
->> +#define CLKFREQ_DBG(clkfreq, fmt, arg...)   \
->> +     xrt_dbg((clkfreq)->pdev, fmt "\n", ##arg)
->> +
->> +#define XRT_CLKFREQ          "xrt_clkfreq"
->> +
->> +#define OCL_CLKWIZ_STATUS_MASK               0xffff
->> +
->> +#define OCL_CLKWIZ_STATUS_MEASURE_START      0x1
->> +#define OCL_CLKWIZ_STATUS_MEASURE_DONE       0x2
->> +#define OCL_CLK_FREQ_COUNTER_OFFSET  0x8
->> +#define OCL_CLK_FREQ_V5_COUNTER_OFFSET       0x10
->> +#define OCL_CLK_FREQ_V5_CLK0_ENABLED 0x10000
-> Similar to earlier, OCL -> XRT_CLKFREQ
->
-> Use regmap
-Will change this.
->
->> +
->> +struct clkfreq {
->> +     struct platform_device  *pdev;
->> +     void __iomem            *clkfreq_base;
->> +     const char              *clkfreq_ep_name;
->> +     struct mutex            clkfreq_lock; /* clock counter dev lock */
->> +};
->> +
->> +static inline u32 reg_rd(struct clkfreq *clkfreq, u32 offset)
->> +{
->> +     return ioread32(clkfreq->clkfreq_base + offset);
->> +}
->> +
->> +static inline void reg_wr(struct clkfreq *clkfreq, u32 val, u32 offset)
->> +{
->> +     iowrite32(val, clkfreq->clkfreq_base + offset);
->> +}
->> +
->> +static u32 clkfreq_read(struct clkfreq *clkfreq)
->> +{
-> failure returns 0, it would be better if -EINVAL or similar was returned.
->
-> and u32 *freq added as a function parameter
-Will change this.
->
->> +     u32 freq = 0, status;
->> +     int times = 10;
-> 10 is a config parameter, should be a #define
-Sure.
->> +
->> +     mutex_lock(&clkfreq->clkfreq_lock);
->> +     reg_wr(clkfreq, OCL_CLKWIZ_STATUS_MEASURE_START, 0);
->> +     while (times != 0) {
->> +             status = reg_rd(clkfreq, 0);
->> +             if ((status & OCL_CLKWIZ_STATUS_MASK) ==
->> +                 OCL_CLKWIZ_STATUS_MEASURE_DONE)
->> +                     break;
->> +             mdelay(1);
->> +             times--;
->> +     };
->> +     if (times > 0) {
-> I do not like tristate setting, convert to if-else
-Will change this.
->> +             freq = (status & OCL_CLK_FREQ_V5_CLK0_ENABLED) ?
->> +                     reg_rd(clkfreq, OCL_CLK_FREQ_V5_COUNTER_OFFSET) :
->> +                     reg_rd(clkfreq, OCL_CLK_FREQ_COUNTER_OFFSET);
->> +     }
->> +     mutex_unlock(&clkfreq->clkfreq_lock);
->> +
->> +     return freq;
->> +}
->> +
->> +static ssize_t freq_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +     struct clkfreq *clkfreq = platform_get_drvdata(to_platform_device(dev));
->> +     u32 freq;
->> +     ssize_t count;
->> +
->> +     freq = clkfreq_read(clkfreq);
-> unchecked error
-Will add check.
->> +     count = snprintf(buf, 64, "%d\n", freq);
-> %u
-Sure.
->> +
->> +     return count;
->> +}
->> +static DEVICE_ATTR_RO(freq);
->> +
->> +static struct attribute *clkfreq_attrs[] = {
->> +     &dev_attr_freq.attr,
->> +     NULL,
->> +};
->> +
->> +static struct attribute_group clkfreq_attr_group = {
->> +     .attrs = clkfreq_attrs,
->> +};
->> +
->> +static int
->> +xrt_clkfreq_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
->> +{
->> +     struct clkfreq          *clkfreq;
->> +     int                     ret = 0;
->> +
->> +     clkfreq = platform_get_drvdata(pdev);
->> +
->> +     switch (cmd) {
->> +     case XRT_XLEAF_EVENT:
->> +             /* Does not handle any event. */
->> +             break;
->> +     case XRT_CLKFREQ_READ: {
-> brace not needed
-Will remove.
->> +             *(u32 *)arg = clkfreq_read(clkfreq);
-> Unchecked error
-Will add check.
->> +             break;
->> +     }
->> +     default:
->> +             xrt_err(pdev, "unsupported cmd %d", cmd);
->> +             return -EINVAL;
->> +     }
->> +
->> +     return ret;
->> +}
->> +
->> +static int clkfreq_remove(struct platform_device *pdev)
->> +{
->> +     struct clkfreq *clkfreq;
->> +
->> +     clkfreq = platform_get_drvdata(pdev);
->> +     if (!clkfreq) {
->> +             xrt_err(pdev, "driver data is NULL");
->> +             return -EINVAL;
->> +     }
->> +
->> +     platform_set_drvdata(pdev, NULL);
->> +     devm_kfree(&pdev->dev, clkfreq);
->> +
->> +     CLKFREQ_INFO(clkfreq, "successfully removed clkfreq subdev");
->> +     return 0;
->> +}
->> +
->> +static int clkfreq_probe(struct platform_device *pdev)
->> +{
->> +     struct clkfreq *clkfreq = NULL;
->> +     struct resource *res;
->> +     int ret;
->> +
->> +     clkfreq = devm_kzalloc(&pdev->dev, sizeof(*clkfreq), GFP_KERNEL);
->> +     if (!clkfreq)
->> +             return -ENOMEM;
->> +
->> +     platform_set_drvdata(pdev, clkfreq);
->> +     clkfreq->pdev = pdev;
->> +     mutex_init(&clkfreq->clkfreq_lock);
->> +
->> +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +     clkfreq->clkfreq_base = ioremap(res->start, res->end - res->start + 1);
->> +     if (!clkfreq->clkfreq_base) {
->> +             CLKFREQ_ERR(clkfreq, "map base %pR failed", res);
->> +             ret = -EFAULT;
->> +             goto failed;
->> +     }
->> +     clkfreq->clkfreq_ep_name = res->name;
->> +
->> +     ret = sysfs_create_group(&pdev->dev.kobj, &clkfreq_attr_group);
->> +     if (ret) {
->> +             CLKFREQ_ERR(clkfreq, "create clkfreq attrs failed: %d", ret);
->> +             goto failed;
->> +     }
->> +
->> +     CLKFREQ_INFO(clkfreq, "successfully initialized clkfreq subdev");
->> +
->> +     return 0;
->> +
->> +failed:
->> +     clkfreq_remove(pdev);
->> +     return ret;
->> +}
->> +
->> +static struct xrt_subdev_endpoints xrt_clkfreq_endpoints[] = {
->> +     {
->> +             .xse_names = (struct xrt_subdev_ep_names[]) {
->> +                     { .regmap_name = "freq_cnt" },
-> name should be closer to filename, maybe 'clock_frequency' or 'clkfreq'
-'freq_cnt' is from firmware metadata. I will add #define in metadata.h.
+Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+ .../ethernet/microsoft/netvsc.rst             | 14 ++++++++-----
+ drivers/net/hyperv/netvsc.c                   | 20 +++++++++++++++++++
+ 2 files changed, 29 insertions(+), 5 deletions(-)
 
-Thanks,
-Lizhi
->
-> Tom
->
->> +                     { NULL },
->> +             },
->> +             .xse_min_ep = 1,
->> +     },
->> +     { 0 },
->> +};
->> +
->> +static struct xrt_subdev_drvdata xrt_clkfreq_data = {
->> +     .xsd_dev_ops = {
->> +             .xsd_ioctl = xrt_clkfreq_leaf_ioctl,
->> +     },
->> +};
->> +
->> +static const struct platform_device_id xrt_clkfreq_table[] = {
->> +     { XRT_CLKFREQ, (kernel_ulong_t)&xrt_clkfreq_data },
->> +     { },
->> +};
->> +
->> +static struct platform_driver xrt_clkfreq_driver = {
->> +     .driver = {
->> +             .name = XRT_CLKFREQ,
->> +     },
->> +     .probe = clkfreq_probe,
->> +     .remove = clkfreq_remove,
->> +     .id_table = xrt_clkfreq_table,
->> +};
->> +
->> +void clkfreq_leaf_init_fini(bool init)
->> +{
->> +     if (init) {
->> +             xleaf_register_driver(XRT_SUBDEV_CLKFREQ,
->> +                                   &xrt_clkfreq_driver, xrt_clkfreq_endpoints);
->> +     } else {
->> +             xleaf_unregister_driver(XRT_SUBDEV_CLKFREQ);
->> +     }
->> +}
+diff --git a/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst b/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
+index c3f51c672a68..fc5acd427a5d 100644
+--- a/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
++++ b/Documentation/networking/device_drivers/ethernet/microsoft/netvsc.rst
+@@ -87,11 +87,15 @@ Receive Buffer
+   contain one or more packets. The number of receive sections may be changed
+   via ethtool Rx ring parameters.
+ 
+-  There is a similar send buffer which is used to aggregate packets for sending.
+-  The send area is broken into chunks of 6144 bytes, each of section may
+-  contain one or more packets. The send buffer is an optimization, the driver
+-  will use slower method to handle very large packets or if the send buffer
+-  area is exhausted.
++  There is a similar send buffer which is used to aggregate packets
++  for sending.  The send area is broken into chunks, typically of 6144
++  bytes, each of section may contain one or more packets. Small
++  packets are usually transmitted via copy to the send buffer. However,
++  if the buffer is temporarily exhausted, or the packet to be transmitted is
++  an LSO packet, the driver will provide the host with pointers to the data
++  from the SKB. This attempts to achieve a balance between the overhead of
++  data copy and the impact of remapping VM memory to be accessible by the
++  host.
+ 
+ XDP support
+ -----------
+diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+index dc3f73c3b33e..dc333dceb055 100644
+--- a/drivers/net/hyperv/netvsc.c
++++ b/drivers/net/hyperv/netvsc.c
+@@ -1006,6 +1006,26 @@ static inline void move_pkt_msd(struct hv_netvsc_packet **msd_send,
+ }
+ 
+ /* RCU already held by caller */
++/* Batching/bouncing logic is designed to attempt to optimize
++ * performance.
++ *
++ * For small, non-LSO packets we copy the packet to a send buffer
++ * which is pre-registered with the Hyper-V side. This enables the
++ * hypervisor to avoid remapping the aperture to access the packet
++ * descriptor and data.
++ *
++ * If we already started using a buffer and the netdev is transmitting
++ * a burst of packets, keep on copying into the buffer until it is
++ * full or we are done collecting a burst. If there is an existing
++ * buffer with space for the RNDIS descriptor but not the packet, copy
++ * the RNDIS descriptor to the buffer, keeping the packet in place.
++ *
++ * If we do batching and send more than one packet using a single
++ * NetVSC message, free the SKBs of the packets copied, except for the
++ * last packet. This is done to streamline the handling of the case
++ * where the last packet only had the RNDIS descriptor copied to the
++ * send buffer, with the data pointers included in the NetVSC message.
++ */
+ int netvsc_send(struct net_device *ndev,
+ 		struct hv_netvsc_packet *packet,
+ 		struct rndis_message *rndis_msg,
+-- 
+2.25.1
 
