@@ -2,127 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA1D3399D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 23:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4AF3399E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 00:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235684AbhCLW5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 17:57:11 -0500
-Received: from mga18.intel.com ([134.134.136.126]:16336 "EHLO mga18.intel.com"
+        id S235702AbhCLXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 18:02:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235677AbhCLW4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:56:47 -0500
-IronPort-SDR: DczeVKGv44WmICrRtIkZWyFqksoj9WsHdPNqRAJbvNeIVcDF3qkyzrJ29ozLOCB4IV2Q2t0Sqh
- pp+mHl0qLRiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="176489935"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="176489935"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:56:44 -0800
-IronPort-SDR: Q38jh27KqE4tjAcSh2JdKCApzxqlKmzrsB7R1RbjmQPOVJmDqNlGsqc//VP3UWfgGC6shdAV9h
- TdoXP7JhLD6A==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; 
-   d="scan'208";a="411164595"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 14:56:43 -0800
-Date:   Fri, 12 Mar 2021 14:59:04 -0800
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        jacob.jun.pan@intel.com,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <20210312145904.4071a9d6@jacob-builder>
-In-Reply-To: <YEvZ4muXqiSScQ8i@google.com>
-References: <20210302081705.1990283-1-vipinsh@google.com>
-        <20210302081705.1990283-3-vipinsh@google.com>
-        <20210303185513.27e18fce@jacob-builder>
-        <YEB8i6Chq4K/GGF6@google.com>
-        <YECfhCJtHUL9cB2L@slm.duckdns.org>
-        <20210312125821.22d9bfca@jacob-builder>
-        <YEvZ4muXqiSScQ8i@google.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235683AbhCLXCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 18:02:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6CC164F4D;
+        Fri, 12 Mar 2021 23:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615590127;
+        bh=YjpH46E5wsNV0V6as8mJ95+AjvUcvV/u/mVOZl8KRBg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UOmoNrl7OW/V8jOFswOIRyhAM8sQ5o9vYGhD/fmFRK5WLqZCmJ68tjNsEaiUsVnmw
+         vHxZmeX9O/idptY5NwkhF47YUIHbVKEylfzHlb5ahKME1hlazi2HkXY2RVDOC0Q5DS
+         orkVU42K+1JZsL9jOZwGF8qtyc1M0Vr6FArGZchcWZ+XwV7/Q6xNcV12rSd28oQeMk
+         EiPje11w5WGeR0E0jx1mG61xBtTTEq5UYhAYpyhifuCC7GXw2ui+tTCsY7GUxI2CP6
+         niSgG9YfFmSG6kFkZnXm4cneZv+2f4V8qN7aHM20rJWIdDY+8QI19EENcknga49RNi
+         jvKhV3r8FwnRg==
+From:   Mark Brown <broonie@kernel.org>
+To:     perex@perex.cz, Xiubo.Lee@gmail.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
+        alsa-devel@alsa-project.org, nicoleotsuka@gmail.com,
+        festevam@gmail.com, tiwai@suse.com
+Cc:     Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_asrc_dma: request dma channel from specific controller
+Date:   Fri, 12 Mar 2021 23:00:49 +0000
+Message-Id: <161558981190.31753.12828472795254829304.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1614935977-21638-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1614935977-21638-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vipin,
+On Fri, 5 Mar 2021 17:19:37 +0800, Shengjiu Wang wrote:
+> Request dma channel from specific dma controller instead of generic
+> dma controller list, otherwise, may get the wrong dma controller
+> if there are multi dma controllers such as i.MX8MP.
 
-On Fri, 12 Mar 2021 13:15:14 -0800, Vipin Sharma <vipinsh@google.com> wrote:
+Applied to
 
-> On Fri, Mar 12, 2021 at 12:58:21PM -0800, Jacob Pan wrote:
-> > Hi Vipin & Tejun,
-> > 
-> > Sorry for the late reply, I sent from a different email address than I
-> > intended. Please see my comments inline.
-> > 
-> > 
-> > On Thu, 4 Mar 2021 03:51:16 -0500, Tejun Heo <tj@kernel.org> wrote:
-> >   
-> > > Hello,
-> > > 
-> > > On Wed, Mar 03, 2021 at 10:22:03PM -0800, Vipin Sharma wrote:  
-> > > > > I am trying to see if IOASIDs cgroup can also fit in this misc
-> > > > > controller as yet another resource type.
-> > > > > https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
-> > > > > However, unlike sev IOASIDs need to be migrated if the process is
-> > > > > moved to another cgroup. i.e. charge the destination and uncharge
-> > > > > the source.
-> > > > > 
-> > > > > Do you think this behavior can be achieved by differentiating
-> > > > > resource types? i.e. add attach callbacks for certain types.
-> > > > > Having a single misc interface seems cleaner than creating
-> > > > > another controller.    
-> > > > 
-> > > > I think it makes sense to add support for migration for the
-> > > > resources which need it. Resources like SEV, SEV-ES will not
-> > > > participate in migration and won't stop can_attach() to succeed,
-> > > > other resources which need migration will allow or stop based on
-> > > > their limits and capacity in the destination.    
-> > >   
-> > Sounds good. Perhaps some capability/feature flags for each resource
-> > such that different behavior can be accommodated?
-> > Could you please include me in your future posting? I will rebase on
-> > yours.  
-> 
-> Hi Jacob
-> 
-> Based on Tejun's response, I will not add charge migration support in
-> misc controller.
-> 
-Sounds good. I need some confirmation on whether migration is a must have
-for VMs allocated IOASIDs.
-Our primary goal is to limit the amount of IOASIDs that VMs can allocate.
-If a VM is migrated to a different cgroup, I think we need to
-charge/uncharge the destination/source cgroup in order enforce the limit. I
-am not an expert here, any feedback would be appreciated.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> I can definitly add you in my future posting, if you still wanna use it
-> without charge migration support.
-> 
-Yes, please. I got your v3 already, so just future patches.
+Thanks!
 
-> Thanks
-> Vipin
+[1/1] ASoC: fsl_asrc_dma: request dma channel from specific controller
+      commit: ee427ea4f12672e5d7874abaa634ddee0ff2bb97
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-Jacob
+Mark
