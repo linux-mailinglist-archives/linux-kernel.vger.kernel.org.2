@@ -2,139 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64CD33874D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F1E338752
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhCLI1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:27:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45798 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhCLI1f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:27:35 -0500
-Date:   Fri, 12 Mar 2021 08:27:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615537654;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EtQUOdFp/TI7ISqO4fhhTKETyEkEd2iGeOF2ESD0ijY=;
-        b=ZdNVZL73X3wVK9NRlh+GEKPZ41ZyXfAxj1spWzIb8ap4EzRmx4n2NRWuFvIYUYbfkFy7k9
-        sIFxPhR6WSdlOqMaK8U2i3+zy8j3Rj2hHlFc6FCJudxrF40W3NGcnIndsFjfAKbvz5uj09
-        9M4hHbzavlvEYBsurogfWiyB8CNXXypYYM7oNr4EsJVAri4Twg3hqBoMtD64iA4kqMbuhL
-        CTaIL2ytjNIknMB0jK2pqgqhuFWnH9Kmy9V2IPJK27l8JfU7X9b42w9xOCJrl7tgdLlamL
-        XegxPDnCX5AmrFEmZICTdeXh2+r6y4nm6JREcxtYQlBcN+Ra0wdyGqPkI8L4Ww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615537654;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EtQUOdFp/TI7ISqO4fhhTKETyEkEd2iGeOF2ESD0ijY=;
-        b=WptMiTvpJFCPCTVRZGd7eLidrP4llzGhbcVolhsAO5LCGK4+takYZEuHBbHJgJq5NOJpMp
-        i5WO/2A5qAGPc1Dw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool,x86: Fix uaccess PUSHF/POPF validation
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YEY4rIbQYa5fnnEp@hirez.programming.kicks-ass.net>
-References: <YEY4rIbQYa5fnnEp@hirez.programming.kicks-ass.net>
+        id S232255AbhCLI2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:28:40 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:56643 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231466AbhCLI2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 03:28:20 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dxf8b39xTz9v0tW;
+        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id rGbVLOrLdM_k; Fri, 12 Mar 2021 09:28:15 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dxf8b16PLz9tyZB;
+        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 505238B80F;
+        Fri, 12 Mar 2021 09:28:15 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id q81IV4vGYKsG; Fri, 12 Mar 2021 09:28:15 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF8D18B764;
+        Fri, 12 Mar 2021 09:28:14 +0100 (CET)
+Subject: Re: [PATCH v2 25/43] powerpc/32: Replace ASM exception exit by C
+ exception exit from ppc64
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1615291471.git.christophe.leroy@csgroup.eu>
+ <a9a50f475db97fc53795dd778bc14f58029fdd55.1615291473.git.christophe.leroy@csgroup.eu>
+ <87tuphkdkz.fsf@mpe.ellerman.id.au>
+ <0296d1bc-b37e-43c8-06cf-00ec458fb74e@csgroup.eu>
+ <87r1kljmr9.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <8b2ee16c-1661-d97c-04f0-5881e53ab835@csgroup.eu>
+Date:   Fri, 12 Mar 2021 09:28:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <161553765304.398.16269370690914866894.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <87r1kljmr9.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
 
-Commit-ID:     ba08abca66d46381df60842f64f70099d5482b92
-Gitweb:        https://git.kernel.org/tip/ba08abca66d46381df60842f64f70099d5482b92
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 08 Mar 2021 15:46:04 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 12 Mar 2021 09:15:49 +01:00
 
-objtool,x86: Fix uaccess PUSHF/POPF validation
+Le 12/03/2021 à 00:26, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Le 11/03/2021 à 14:46, Michael Ellerman a écrit :
+>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>> This patch replaces the PPC32 ASM exception exit by C exception exit.
+>>>>
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>> ---
+>>>>    arch/powerpc/kernel/entry_32.S  | 481 +++++++++-----------------------
+>>>>    arch/powerpc/kernel/interrupt.c |   4 +
+>>>>    2 files changed, 132 insertions(+), 353 deletions(-)
+>>>
+>>> Bisect points to this breaking qemu mac99 for me, with pmac32_defconfig.
+>>>
+>>> I haven't had time to dig any deeper sorry.
+>>
+>> Embarrasing ...
+> 
+> Nah, these things happen.
+> 
+>> I don't get this problem on the 8xx (nohash/32) or the 83xx (book3s/32).
+>> I don't get this problem with qemu mac99 when using my klibc-based initramfs.
+>>
+>> I managed to reproduce it with the rootfs.cpio that I got some time ago from linuxppc github Wiki.
+> 
+> OK.
+> 
+> I'm using the ppc-rootfs.cpio.gz from here:
+> 
+>    https://github.com/linuxppc/ci-scripts/blob/master/root-disks/Makefile
+> 
+> And the boot script is:
+> 
+>    https://github.com/linuxppc/ci-scripts/blob/master/scripts/boot/qemu-mac99
+> 
+> I've been meaning to write docs on how to use those scripts, but haven't
+> got around to it.
+> 
+> There's nothing really special though it's just a wrapper around qemu -M mac99.
+> 
+>> I'll investigate it tomorrow.
+> 
 
-Commit ab234a260b1f ("x86/pv: Rework arch_local_irq_restore() to not
-use popf") replaced "push %reg; popf" with something like: "test
-$0x200, %reg; jz 1f; sti; 1:", which breaks the pushf/popf symmetry
-that commit ea24213d8088 ("objtool: Add UACCESS validation") relies
-on.
+Problem is the fast_interrupt_return, registers are not all saved yet on ppc32 (msr, nip, xer, ctr), 
+can't restore them all as ppc64 do.
 
-The result is:
+The problem happens only when userspace uses floating point or altivec.
 
-  drivers/gpu/drm/amd/amdgpu/si.o: warning: objtool: si_common_hw_init()+0xf36: PUSHF stack exhausted
+For the time being, I'll keep the original fast_interrupt_return.
 
-Meanwhile, commit c9c324dc22aa ("objtool: Support stack layout changes
-in alternatives") makes that we can actually use stack-ops in
-alternatives, which means we can revert 1ff865e343c2 ("x86,smap: Fix
-smap_{save,restore}() alternatives").
+I will likely send a new version of the series later today, taking into account Nick's comments.
 
-That in turn means we can limit the PUSHF/POPF handling of
-ea24213d8088 to those instructions that are in alternatives.
-
-Fixes: ab234a260b1f ("x86/pv: Rework arch_local_irq_restore() to not use popf")
-Reported-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/YEY4rIbQYa5fnnEp@hirez.programming.kicks-ass.net
----
- arch/x86/include/asm/smap.h | 10 ++++------
- tools/objtool/check.c       |  3 +++
- 2 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/include/asm/smap.h b/arch/x86/include/asm/smap.h
-index 8b58d69..0bc9b08 100644
---- a/arch/x86/include/asm/smap.h
-+++ b/arch/x86/include/asm/smap.h
-@@ -58,9 +58,8 @@ static __always_inline unsigned long smap_save(void)
- 	unsigned long flags;
- 
- 	asm volatile ("# smap_save\n\t"
--		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
--		      "pushf; pop %0; " __ASM_CLAC "\n\t"
--		      "1:"
-+		      ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC "\n\t",
-+				  X86_FEATURE_SMAP)
- 		      : "=rm" (flags) : : "memory", "cc");
- 
- 	return flags;
-@@ -69,9 +68,8 @@ static __always_inline unsigned long smap_save(void)
- static __always_inline void smap_restore(unsigned long flags)
- {
- 	asm volatile ("# smap_restore\n\t"
--		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
--		      "push %0; popf\n\t"
--		      "1:"
-+		      ALTERNATIVE("", "push %0; popf\n\t",
-+				  X86_FEATURE_SMAP)
- 		      : : "g" (flags) : "memory", "cc");
- }
- 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 068cdb4..5e5388a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2442,6 +2442,9 @@ static int handle_insn_ops(struct instruction *insn, struct insn_state *state)
- 		if (update_cfi_state(insn, &state->cfi, op))
- 			return 1;
- 
-+		if (!insn->alt_group)
-+			continue;
-+
- 		if (op->dest.type == OP_DEST_PUSHF) {
- 			if (!state->uaccess_stack) {
- 				state->uaccess_stack = 1;
+Christophe
