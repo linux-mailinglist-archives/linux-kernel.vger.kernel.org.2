@@ -2,140 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F058B3397F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0753397FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 21:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhCLUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 15:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbhCLUFv (ORCPT
+        id S234627AbhCLUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 15:07:26 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:59886 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234596AbhCLUGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:05:51 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918E8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:05:50 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id v15so5478506wrx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 12:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QGcOUOWYrtlGEtGtp6CRhZz9BsHqr4gvekeyWTQX/+U=;
-        b=qXjLpE1SzOwXL9eMZ4sVgx+Ho7QAI/X5+cU88dH2+5FstbM+imrk9OxnjbVeUcR6YI
-         rx0szxhQCI8AwDfNdyCzkSp6a+z9FHIl/SnJa9covZXzclAP8CNUjmxCgD7/534BDM6l
-         D5x0bFj0S+9CccUOvMiSnHZUhUyL4Nt9dfbwP5yvfRMnIxL7OfxWIDZJJgqN5xGHElo3
-         TzGsWFTFsxG3nrEYYJI+xiF1cTm5NaPZ7HLpKzP+u5x/paqU7X6VgvZCJ0OZpm/IBXfF
-         6pwmLJN2F3lsXuNQqTo21sTgShG48HUbToep4zwaSQVJ3Y5HPCcjdZGdYD0SEp5qRrJg
-         IczQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QGcOUOWYrtlGEtGtp6CRhZz9BsHqr4gvekeyWTQX/+U=;
-        b=QI+mCb/uSJC+cpusfI1WlMti7m6if1TobR9M/KZZPIEpUAaS4gXq4Rty4GPw6IxEiZ
-         hpYURsSzfK8eYSJXFX0cEYh6bmbRzcFFmTjAYoQybA/rj4Saah09N/B2YizB0F077HSr
-         jSkaFmFjkWhiUIPW8P8wK/B4Ibwx06U/szBweYBT33Q1R9f1zWkL9k+BnA8HLm6VM0S1
-         NBrwdLVJUB7sK3B+6W71/j1LK7YhmBKZlUiMrhXQxGlKEVWo0q4hPzNpU/B034///UNU
-         Q1H7EUWgAlyzdI2YBN5kQJKexsm8TJ7Tw2004kyIum+eb30zkh7j3xwOi02sMjnP/oJ0
-         FEGg==
-X-Gm-Message-State: AOAM530Nt3oviwz8wN04VKNQ++xAoICeZ3ROTVkaIPbFsod3Fghd8yuH
-        vv3NqYyPwq2Lvs+XWy+7nNKjf0j/uZku6n9hm0Y=
-X-Google-Smtp-Source: ABdhPJw8cRrGcaQUUVnqA8Tyww1Pzpw79qa1UHk7Y7H/248bMIaCPg9pzS91Nl7GhXEgRhZp4++izQ==
-X-Received: by 2002:adf:f04e:: with SMTP id t14mr15854532wro.100.1615579549084;
-        Fri, 12 Mar 2021 12:05:49 -0800 (PST)
-Received: from apalos.home (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
-        by smtp.gmail.com with ESMTPSA id i11sm9148238wro.53.2021.03.12.12.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:05:48 -0800 (PST)
-Date:   Fri, 12 Mar 2021 22:05:45 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        Fri, 12 Mar 2021 15:06:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=/dKXn2MTgnalq4INDTL+cUYvr798DsS+qKv7RTLo0q8=; b=da62C93BS1h63ogYf0+1s+anR6
+        jE7LGT3lzTTjYIIqb+PgW/fdS/Tx6fEntgD51NJlTprHY0a60/LT/QP4Fc5Ai6ePuzSg+5NF+L6py
+        nRbrs8LRxsjgEQ3bbreB2q1tcLRZSbwiR6N63c8IPAj25MKLjTff5d3tDmA5GNH69iLyo75HdTRQL
+        icsGfRW5L4uGM435GQLPMFZysIjMtxvto4KAjvE2O5c0vlurrQcxvNGeRxzpZnms87a0en6OmRz0y
+        4VE4+Oyatorjzq2kdC3StQcBh4Yfq+TM0mZnbCUm+7sKjhSlsjY53WT5kVLKDNyivZA8UJ6mwJmxv
+        bJOEOTPw==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lKo3U-00023x-1V; Fri, 12 Mar 2021 13:06:41 -0700
+To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Minturn Dave B <dave.b.minturn@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <iweiny@intel.com>,
         Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 7/7] net: page_pool: use alloc_pages_bulk in refill code
- path
-Message-ID: <YEvJmVrnTzKT1XAY@apalos.home>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
- <20210312154331.32229-8-mgorman@techsingularity.net>
- <CAKgT0UebK=mMwDV+UH8CqBRt0E0Koc7EB42kwgf0hYHDT_2OfQ@mail.gmail.com>
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-9-logang@deltatee.com>
+ <accd4187-7a9d-a8fc-f216-98ec24e3411a@arm.com>
+ <45701356-ee41-1ad2-0e06-ca74af87b05a@deltatee.com>
+ <76cc1c82-3cf4-92d3-992f-5c876ed30523@arm.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <6dd679b3-e38b-2c18-1990-bfc96bb4d971@deltatee.com>
+Date:   Fri, 12 Mar 2021 13:06:34 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UebK=mMwDV+UH8CqBRt0E0Koc7EB42kwgf0hYHDT_2OfQ@mail.gmail.com>
+In-Reply-To: <76cc1c82-3cf4-92d3-992f-5c876ed30523@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, hch@lst.de, andrzej.jakowski@intel.com, sbates@raithlin.com, dan.j.williams@intel.com, daniel.vetter@ffwll.ch, jason@jlekstrand.net, jgg@ziepe.ca, christian.koenig@amd.com, willy@infradead.org, iweiny@intel.com, dave.hansen@linux.intel.com, jhubbard@nvidia.com, dave.b.minturn@intel.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [RFC PATCH v2 08/11] iommu/dma: Support PCI P2PDMA pages in
+ dma-iommu map_sg
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-> 6. return last_page
-> 
-> > +       /* Remaining pages store in alloc.cache */
-> > +       list_for_each_entry_safe(page, next, &page_list, lru) {
-> > +               list_del(&page->lru);
-> > +               if ((pp_flags & PP_FLAG_DMA_MAP) &&
-> > +                   unlikely(!page_pool_dma_map(pool, page))) {
-> > +                       put_page(page);
-> > +                       continue;
-> > +               }
-> 
-> So if you added a last_page pointer what you could do is check for it
-> here and assign it to the alloc cache. If last_page is not set the
-> block would be skipped.
-> 
-> > +               if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
-> > +                       pool->alloc.cache[pool->alloc.count++] = page;
-> > +                       pool->pages_state_hold_cnt++;
-> > +                       trace_page_pool_state_hold(pool, page,
-> > +                                                  pool->pages_state_hold_cnt);
-> > +               } else {
-> > +                       put_page(page);
-> 
-> If you are just calling put_page here aren't you leaking DMA mappings?
-> Wouldn't you need to potentially unmap the page before you call
-> put_page on it?
 
-Oops, I completely missed that. Alexander is right here.
+
+On 2021-03-12 12:47 p.m., Robin Murphy wrote:
+>>>>    {
+>>>>        struct scatterlist *s, *cur = sg;
+>>>>        unsigned long seg_mask = dma_get_seg_boundary(dev);
+>>>> @@ -864,6 +865,20 @@ static int __finalise_sg(struct device *dev,
+>>>> struct scatterlist *sg, int nents,
+>>>>            sg_dma_address(s) = DMA_MAPPING_ERROR;
+>>>>            sg_dma_len(s) = 0;
+>>>>    +        if (is_pci_p2pdma_page(sg_page(s)) && !s_iova_len) {
+>>>> +            if (i > 0)
+>>>> +                cur = sg_next(cur);
+>>>> +
+>>>> +            sg_dma_address(cur) = sg_phys(s) + s->offset -
+>>>
+>>> Are you sure about that? ;)
+>>
+>> Do you see a bug? I don't follow you...
+> 
+> sg_phys() already accounts for the offset, so you're adding it twice.
+
+Ah, oops. Nice catch. I missed that.
 
 > 
-> > +               }
-> > +       }
-> > +out:
-> >         if ((pp_flags & PP_FLAG_DMA_MAP) &&
-> > -           unlikely(!page_pool_dma_map(pool, page))) {
-> > -               put_page(page);
-> > +           unlikely(!page_pool_dma_map(pool, first_page))) {
-> > +               put_page(first_page);
+>>>> +                pci_p2pdma_bus_offset(sg_page(s));
+>>>
+>>> Can the bus offset make P2P addresses overlap with regions of mem space
+>>> that we might use for regular IOVA allocation? That would be very bad...
+>>
+>> No. IOMMU drivers already disallow all PCI addresses from being used as
+>> IOVA addresses. See, for example,  dmar_init_reserved_ranges(). It would
+>> be a huge problem for a whole lot of other reasons if it didn't.
 > 
-> I would probably move this block up and make it a part of the pp_order
-> block above. Also since you are doing this in 2 spots it might make
-> sense to look at possibly making this an inline function.
-> 
-> >                 return NULL;
-> >         }
-> >
-> >         /* Track how many pages are held 'in-flight' */
-> >         pool->pages_state_hold_cnt++;
-> > -       trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
-> > +       trace_page_pool_state_hold(pool, first_page, pool->pages_state_hold_cnt);
-> >
-> >         /* When page just alloc'ed is should/must have refcnt 1. */
-> > -       return page;
-> > +       return first_page;
-> >  }
-> >
-> >  /* For using page_pool replace: alloc_pages() API calls, but provide
-> > --
-> > 2.26.2
-> >
+> I know we reserve the outbound windows (largely *because* some host 
+> bridges will consider those addresses as attempts at unsupported P2P and 
+> prevent them working), I just wanted to confirm that this bus offset is 
+> always something small that stays within the relevant window, rather 
+> than something that might make a BAR appear in a completely different 
+> place for P2P purposes. If so, that's good.
 
-Cheers
-/Ilias
+Yes, well if an IOVA overlaps with any PCI bus address there's going to 
+be some difficult brokenness because when the IOVA is used it might be 
+directed to the a PCI device and not the IOMMU. I fixed a bug like that 
+once.
+>>> I'm not really thrilled about the idea of passing zero-length segments
+>>> to iommu_map_sg(). Yes, it happens to trick the concatenation logic in
+>>> the current implementation into doing what you want, but it feels 
+>>> fragile.
+>>
+>> We're not passing zero length segments to iommu_map_sg() (or any
+>> function). This loop is just scanning to calculate the length of the
+>> required IOVA. __finalise_sg() (which is intimately tied to this loop)
+>> then needs a way to determine which segments were P2P segments. The
+>> existing code already overwrites s->length with an aligned length and
+>> stores the original length in sg_dma_len. So we're not relying on
+>> tricking any logic here.
+> 
+> Yes, we temporarily shuffle in page-aligned quantities to satisfy the 
+> needs of the iommu_map_sg() call, before unpacking things again in 
+> __finalise_sg(). It's some disgusting trickery that I'm particularly 
+> proud of. My point is that if you have a mix of both p2p and normal 
+> segments - which seems to be a case you want to support - then the 
+> length of 0 that you set to flag p2p segments here will be seen by 
+> iommu_map_sg() (as it walks the list to map the other segments) before 
+> you then use it as a key to override the DMA address in the final step. 
+> It's not a concern if you have a p2p-only list and short-circuit 
+> straight to that step (in which case all the shuffling was wasted effort 
+> anyway), but since it's not entirely clear what a segment with zero 
+> length would mean in general, it seems like a good idea to avoid passing 
+> the list across a public boundary in that state, if possible.
+
+Ok, well, I mean the iommu_map_sg() does the right thing as is without 
+changing it and IMO sg->length set to zero does make sense. Supporting 
+mixed P2P and normal segments is really the whole point of this series 
+(the current kernel supports homogeneous SGLs with a specialized path -- 
+see pci_p2pdma_unmap_sg_attrs()). But do you have an alternate solution 
+for sg->length?
+
+Logan
