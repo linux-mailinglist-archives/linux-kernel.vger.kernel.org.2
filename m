@@ -2,257 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7E33389BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB803389AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 11:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbhCLKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 05:11:56 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37692 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233039AbhCLKLV (ORCPT
+        id S232981AbhCLKJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 05:09:05 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35063 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232834AbhCLKIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 05:11:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0URdxU9N_1615543878;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URdxU9N_1615543878)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Mar 2021 18:11:18 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, rostedt@goodmis.org, eric.dumazet@gmail.com,
-        mingo@redhat.com
-Subject: [PATCH RESEND net-next] tracing: remove holes in events
-Date:   Fri, 12 Mar 2021 18:08:33 +0800
-Message-Id: <20210312100832.19760-1-tonylu@linux.alibaba.com>
+        Fri, 12 Mar 2021 05:08:46 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lKeio-00019e-Mr; Fri, 12 Mar 2021 10:08:42 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amd/pm: Fix spelling mistake "disble" -> "disable"
+Date:   Fri, 12 Mar 2021 10:08:42 +0000
+Message-Id: <20210312100842.127242-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some holes in the event definitions, spaces are wasted. Based
-on the analysis result of pahole and event format files, 22 events have
-more than one hole. To change less and fix worst, 5 events are picked
-up and fixed in this patch according the following rules.
+From: Colin Ian King <colin.king@canonical.com>
 
-Rules:
+There is a spelling mistake in an assert message. Fix it.
 
-  - try not to affect reading habit and understanding of the fields;
-  - can be completely fixed (all holes are removed);
-
-NOTES:
-
-  - changing the order of event fields breaks API compatibility,
-    programs should parse and determine the real data order, instead of
-    hard-coded the order of fields;
-  - reduce holes as much as possible when adding / modifying;
-
-Summary (#event_name #before -> #after):
-
- 1. net_dev_start_xmit
-    5 holes (10 bytes) -> 0
-
- 2. net_dev_rx_verbose_template
-    6 holes (17 bytes) -> 0
-
- 3. tcp_probe
-    3 holes (8 bytes) -> 0
-
- 4. qdisc_dequeue
-    2 holes (8 bytes) -> 0
-
- 5. rpc_xdr_alignment
-    2 holes (8 bytes) -> 0
-
-Link: https://www.spinics.net/lists/netdev/msg726308.html
-Link: https://www.spinics.net/lists/netdev/msg726451.html
-Cc: David Miller <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/trace/events/net.h    | 42 +++++++++++++++++------------------
- include/trace/events/qdisc.h  |  4 ++--
- include/trace/events/sunrpc.h |  4 ++--
- include/trace/events/tcp.h    |  2 +-
- 4 files changed, 26 insertions(+), 26 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/trace/events/net.h b/include/trace/events/net.h
-index 2399073c3afc..b1db7ab88d4b 100644
---- a/include/trace/events/net.h
-+++ b/include/trace/events/net.h
-@@ -20,18 +20,18 @@ TRACE_EVENT(net_dev_start_xmit,
- 	TP_STRUCT__entry(
- 		__string(	name,			dev->name	)
- 		__field(	u16,			queue_mapping	)
-+		__field(	u16,			protocol	)
- 		__field(	const void *,		skbaddr		)
-+		__field(	u8,			ip_summed	)
- 		__field(	bool,			vlan_tagged	)
- 		__field(	u16,			vlan_proto	)
- 		__field(	u16,			vlan_tci	)
--		__field(	u16,			protocol	)
--		__field(	u8,			ip_summed	)
-+		__field(	bool,			transport_offset_valid)
-+		__field(	u8,			tx_flags	)
- 		__field(	unsigned int,		len		)
- 		__field(	unsigned int,		data_len	)
- 		__field(	int,			network_offset	)
--		__field(	bool,			transport_offset_valid)
- 		__field(	int,			transport_offset)
--		__field(	u8,			tx_flags	)
- 		__field(	u16,			gso_size	)
- 		__field(	u16,			gso_segs	)
- 		__field(	u16,			gso_type	)
-@@ -40,19 +40,19 @@ TRACE_EVENT(net_dev_start_xmit,
- 	TP_fast_assign(
- 		__assign_str(name, dev->name);
- 		__entry->queue_mapping = skb->queue_mapping;
-+		__entry->protocol = ntohs(skb->protocol);
- 		__entry->skbaddr = skb;
-+		__entry->ip_summed = skb->ip_summed;
- 		__entry->vlan_tagged = skb_vlan_tag_present(skb);
- 		__entry->vlan_proto = ntohs(skb->vlan_proto);
- 		__entry->vlan_tci = skb_vlan_tag_get(skb);
--		__entry->protocol = ntohs(skb->protocol);
--		__entry->ip_summed = skb->ip_summed;
-+		__entry->transport_offset_valid =
-+			skb_transport_header_was_set(skb);
-+		__entry->tx_flags = skb_shinfo(skb)->tx_flags;
- 		__entry->len = skb->len;
- 		__entry->data_len = skb->data_len;
- 		__entry->network_offset = skb_network_offset(skb);
--		__entry->transport_offset_valid =
--			skb_transport_header_was_set(skb);
- 		__entry->transport_offset = skb_transport_offset(skb);
--		__entry->tx_flags = skb_shinfo(skb)->tx_flags;
- 		__entry->gso_size = skb_shinfo(skb)->gso_size;
- 		__entry->gso_segs = skb_shinfo(skb)->gso_segs;
- 		__entry->gso_type = skb_shinfo(skb)->gso_type;
-@@ -170,23 +170,23 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
- 	TP_STRUCT__entry(
- 		__string(	name,			skb->dev->name	)
- 		__field(	unsigned int,		napi_id		)
--		__field(	u16,			queue_mapping	)
- 		__field(	const void *,		skbaddr		)
-+		__field(	u16,			queue_mapping	)
-+		__field(	u8,			ip_summed	)
- 		__field(	bool,			vlan_tagged	)
- 		__field(	u16,			vlan_proto	)
- 		__field(	u16,			vlan_tci	)
- 		__field(	u16,			protocol	)
--		__field(	u8,			ip_summed	)
--		__field(	u32,			hash		)
- 		__field(	bool,			l4_hash		)
-+		__field(	bool,			mac_header_valid)
-+		__field(	int,			mac_header	)
- 		__field(	unsigned int,		len		)
- 		__field(	unsigned int,		data_len	)
- 		__field(	unsigned int,		truesize	)
--		__field(	bool,			mac_header_valid)
--		__field(	int,			mac_header	)
--		__field(	unsigned char,		nr_frags	)
-+		__field(	u32,			hash		)
- 		__field(	u16,			gso_size	)
- 		__field(	u16,			gso_type	)
-+		__field(	unsigned char,		nr_frags	)
- 	),
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+index 0d725b66fb78..7edafef095a3 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -1300,7 +1300,7 @@ static int smu7_start_dpm(struct pp_hwmgr *hwmgr)
+ 				(0 == smum_send_msg_to_smc(hwmgr,
+ 						PPSMC_MSG_PCIeDPM_Disable,
+ 						NULL)),
+-				"Failed to disble pcie DPM during DPM Start Function!",
++				"Failed to disable pcie DPM during DPM Start Function!",
+ 				return -EINVAL);
+ 	}
  
- 	TP_fast_assign(
-@@ -196,23 +196,23 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
- #else
- 		__entry->napi_id = 0;
- #endif
--		__entry->queue_mapping = skb->queue_mapping;
- 		__entry->skbaddr = skb;
-+		__entry->queue_mapping = skb->queue_mapping;
-+		__entry->ip_summed = skb->ip_summed;
- 		__entry->vlan_tagged = skb_vlan_tag_present(skb);
- 		__entry->vlan_proto = ntohs(skb->vlan_proto);
- 		__entry->vlan_tci = skb_vlan_tag_get(skb);
- 		__entry->protocol = ntohs(skb->protocol);
--		__entry->ip_summed = skb->ip_summed;
--		__entry->hash = skb->hash;
- 		__entry->l4_hash = skb->l4_hash;
-+		__entry->mac_header_valid = skb_mac_header_was_set(skb);
-+		__entry->mac_header = skb_mac_header(skb) - skb->data;
- 		__entry->len = skb->len;
- 		__entry->data_len = skb->data_len;
- 		__entry->truesize = skb->truesize;
--		__entry->mac_header_valid = skb_mac_header_was_set(skb);
--		__entry->mac_header = skb_mac_header(skb) - skb->data;
--		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
-+		__entry->hash = skb->hash;
- 		__entry->gso_size = skb_shinfo(skb)->gso_size;
- 		__entry->gso_type = skb_shinfo(skb)->gso_type;
-+		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
- 	),
- 
- 	TP_printk("dev=%s napi_id=%#x queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
-diff --git a/include/trace/events/qdisc.h b/include/trace/events/qdisc.h
-index 330d32d84485..9e7d00256785 100644
---- a/include/trace/events/qdisc.h
-+++ b/include/trace/events/qdisc.h
-@@ -22,8 +22,8 @@ TRACE_EVENT(qdisc_dequeue,
- 		__field(	struct Qdisc *,		qdisc	)
- 		__field(const	struct netdev_queue *,	txq	)
- 		__field(	int,			packets	)
--		__field(	void *,			skbaddr	)
- 		__field(	int,			ifindex	)
-+		__field(	void *,			skbaddr	)
- 		__field(	u32,			handle	)
- 		__field(	u32,			parent	)
- 		__field(	unsigned long,		txq_state)
-@@ -34,8 +34,8 @@ TRACE_EVENT(qdisc_dequeue,
- 		__entry->qdisc		= qdisc;
- 		__entry->txq		= txq;
- 		__entry->packets	= skb ? packets : 0;
--		__entry->skbaddr	= skb;
- 		__entry->ifindex	= txq->dev ? txq->dev->ifindex : 0;
-+		__entry->skbaddr	= skb;
- 		__entry->handle		= qdisc->handle;
- 		__entry->parent		= qdisc->parent;
- 		__entry->txq_state	= txq->state;
-diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
-index 036eb1f5c133..39f4fdcf4d0f 100644
---- a/include/trace/events/sunrpc.h
-+++ b/include/trace/events/sunrpc.h
-@@ -715,8 +715,8 @@ TRACE_EVENT(rpc_xdr_alignment,
- 		__field(unsigned int, task_id)
- 		__field(unsigned int, client_id)
- 		__field(int, version)
--		__field(size_t, offset)
- 		__field(unsigned int, copied)
-+		__field(size_t, offset)
- 		__field(const void *, head_base)
- 		__field(size_t, head_len)
- 		__field(const void *, tail_base)
-@@ -739,8 +739,8 @@ TRACE_EVENT(rpc_xdr_alignment,
- 		__entry->version = task->tk_client->cl_vers;
- 		__assign_str(procedure, task->tk_msg.rpc_proc->p_name)
- 
--		__entry->offset = offset;
- 		__entry->copied = copied;
-+		__entry->offset = offset;
- 		__entry->head_base = xdr->buf->head[0].iov_base,
- 		__entry->head_len = xdr->buf->head[0].iov_len,
- 		__entry->page_len = xdr->buf->page_len,
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index ba94857eea11..831abc267373 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -248,8 +248,8 @@ TRACE_EVENT(tcp_probe,
- 		__field(__u16, sport)
- 		__field(__u16, dport)
- 		__field(__u16, family)
--		__field(__u32, mark)
- 		__field(__u16, data_len)
-+		__field(__u32, mark)
- 		__field(__u32, snd_nxt)
- 		__field(__u32, snd_una)
- 		__field(__u32, snd_cwnd)
 -- 
-2.19.1.6.gb485710b
+2.30.2
 
