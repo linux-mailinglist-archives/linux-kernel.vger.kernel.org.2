@@ -2,101 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5C33385F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7121F3385F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 07:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhCLGew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 01:34:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231802AbhCLGe2 (ORCPT
+        id S231796AbhCLGeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 01:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhCLGeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:34:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615530867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R+1V19JdRYahq0X3XulqGaxRbIWtSn54ETW3FVVrlmE=;
-        b=FHrGcobMh8UxhcyXShCldgtxlLw9uMqPDSQY8yDE55ij/34SX4m1ekOzfDp97qJV8+n6Pk
-        AlXDQ5W/gjv2oOcfWE0YkNiXSzGVeokM00C3Biax/DvYE6jyH1kosLhv5/rCiVi944PgUH
-        lopWkRVxE1VeqQ4qjIY0HadLSIv8/tA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-m9UsF-HzPbOe7woipQPy0g-1; Fri, 12 Mar 2021 01:34:21 -0500
-X-MC-Unique: m9UsF-HzPbOe7woipQPy0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C31C107ACCA;
-        Fri, 12 Mar 2021 06:34:20 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-168.pek2.redhat.com [10.72.13.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C04018A77;
-        Fri, 12 Mar 2021 06:34:12 +0000 (UTC)
-Subject: Re: [PATCH 2/2] vhost-vdpa: set v->config_ctx to NULL if
- eventfd_ctx_fdget() fails
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     netdev@vger.kernel.org, Zhu Lingshan <lingshan.zhu@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210311135257.109460-1-sgarzare@redhat.com>
- <20210311135257.109460-3-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <a5eac458-eed7-df75-66ac-0a8349ad09b0@redhat.com>
-Date:   Fri, 12 Mar 2021 14:34:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Fri, 12 Mar 2021 01:34:14 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE85DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:34:13 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id c76-20020a1c9a4f0000b029010c94499aedso15101542wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Mar 2021 22:34:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1/tfClp+7Xwws1Pzo0a1sfKu9YRenK6a+xVG2qklwd4=;
+        b=HbVmTtEiViLLTmj5PsNXwihfohAn4IXar+c8rDArckbzttahoELkcZBLU3H5B53M/B
+         yl8Qsl8vmYcFYPbNLm+E/5rs/XVU4JRHK+xzL83AabloXrgBHN7x2JmIjv8WIJWn5Lsq
+         lsaS7UHui+qNtWlL1ZsDZ7/bXi/Qs0gL76SLst2hQL5e+3lvM+AatMVQRAgQeijKee10
+         K2n1ny8KYwAdg60MLTf6jwBKv2SPzfS8if6SfxlCzOHublVVFvtMyjLX9iAXb0XND6Bf
+         IT6GVVHlt4CWPXSvvX0XBMG3ls9F43VdruAt03ENP6+32alyb6S1sqAgZn9Q7yvRByZj
+         QVYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1/tfClp+7Xwws1Pzo0a1sfKu9YRenK6a+xVG2qklwd4=;
+        b=YBDL0QCm0/pLFbEjE0ZsmK2iE/bgq+nlSLE9UHeTccPNlmz/aPULDIiCA1harm1Y2z
+         9RTr1YmLHDe2kfb7j5TaIyQraNs/py2lG/TTQGHzXdOb1rvOK6VASUr06xbPFQCqf9ji
+         ezRJpOrkiKy5x81Pca2vHOcBGIeRZwxV0z5qsQvpWJnf+b6SgvlC9845JAQIO7N+9LhO
+         yJH8unzwyiJ1976OHJ3MVwPIkeyd0z8h/FC5rD+Vfo4IUmVkH95bduGR+BAQYdxU7Bts
+         ZyGwJczmEEi0naDk6hyaP9/eij5SzH8KHyCQcleZ07ivES+I0GrAFNCEtVTc93vZu1vu
+         R0Qw==
+X-Gm-Message-State: AOAM532VvCjE8xMFtHS0T4ViChJ1hQWIjzaH7QTd2W9pmj5y+iZxeh4R
+        6Nb3YfXSBoqg+CYewjERLEvqEw==
+X-Google-Smtp-Source: ABdhPJzA/b526bFotN9qw9enozEUd7huuW/LQlBGtEU+Rk9os7n745FhiM+n3ml6/wx92ZKbGriN1g==
+X-Received: by 2002:a05:600c:35c1:: with SMTP id r1mr11379120wmq.60.1615530852267;
+        Thu, 11 Mar 2021 22:34:12 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id s18sm7409255wrr.27.2021.03.11.22.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 22:34:12 -0800 (PST)
+Date:   Fri, 12 Mar 2021 06:34:09 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v4 13/34] KVM: arm64: Enable access to sanitized CPU
+ features at EL2
+Message-ID: <YEsLYX2CjNMXF9TN@google.com>
+References: <20210310175751.3320106-1-qperret@google.com>
+ <20210310175751.3320106-14-qperret@google.com>
+ <20210311193638.GE31586@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20210311135257.109460-3-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311193638.GE31586@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday 11 Mar 2021 at 19:36:39 (+0000), Will Deacon wrote:
+> On Wed, Mar 10, 2021 at 05:57:30PM +0000, Quentin Perret wrote:
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 066030717a4c..f2d8b479ff74 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -1154,6 +1154,18 @@ u64 read_sanitised_ftr_reg(u32 id)
+> >  }
+> >  EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
+> >  
+> > +int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
+> > +{
+> > +	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
+> > +
+> > +	if (!regp)
+> > +		return -EINVAL;
+> > +
+> > +	memcpy(dst, regp, sizeof(*regp));
+> 
+> Can you not just use struct assignment here?
 
-On 2021/3/11 9:52 下午, Stefano Garzarella wrote:
-> In vhost_vdpa_set_config_call() if eventfd_ctx_fdget() fails the
-> 'v->config_ctx' contains an error instead of a valid pointer.
->
-> Since we consider 'v->config_ctx' valid if it is not NULL, we should
-> set it to NULL in this case to avoid to use an invalid pointer in
-> other functions such as vhost_vdpa_config_put().
->
-> Fixes: 776f395004d8 ("vhost_vdpa: Support config interrupt in vdpa")
-> Cc: lingshan.zhu@intel.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Sure.
 
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/cache.S b/arch/arm64/kvm/hyp/nvhe/cache.S
+> > new file mode 100644
+> > index 000000000000..36cef6915428
+> > --- /dev/null
+> > +++ b/arch/arm64/kvm/hyp/nvhe/cache.S
+> > @@ -0,0 +1,13 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Code copied from arch/arm64/mm/cache.S.
+> > + */
+> > +
+> > +#include <linux/linkage.h>
+> > +#include <asm/assembler.h>
+> > +#include <asm/alternative.h>
+> > +
+> > +SYM_FUNC_START_PI(__flush_dcache_area)
+> > +	dcache_by_line_op civac, sy, x0, x1, x2, x3
+> > +	ret
+> > +SYM_FUNC_END_PI(__flush_dcache_area)
+> 
+> Separate patch for this? (or fold it into that one really near the start
+> that introduces some other PI helpers).
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Right, I guess that'll make reverts and such easier so why not.
 
+> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > index 4f2f1e3145de..84be93df52fa 100644
+> > --- a/arch/arm64/kvm/sys_regs.c
+> > +++ b/arch/arm64/kvm/sys_regs.c
+> > @@ -21,6 +21,7 @@
+> >  #include <asm/debug-monitors.h>
+> >  #include <asm/esr.h>
+> >  #include <asm/kvm_arm.h>
+> > +#include <asm/kvm_cpufeature.h>
+> >  #include <asm/kvm_emulate.h>
+> >  #include <asm/kvm_hyp.h>
+> >  #include <asm/kvm_mmu.h>
+> > @@ -2775,3 +2776,23 @@ void kvm_sys_reg_table_init(void)
+> >  	/* Clear all higher bits. */
+> >  	cache_levels &= (1 << (i*3))-1;
+> >  }
+> > +
+> > +#undef KVM_HYP_CPU_FTR_REG
+> > +#define KVM_HYP_CPU_FTR_REG(id, name) \
+> > +	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) },
+> > +struct __ftr_reg_copy_entry {
+> > +	u32			sys_id;
+> > +	struct arm64_ftr_reg	*dst;
+> > +} hyp_ftr_regs[] __initdata = {
+> > +	#include <asm/kvm_cpufeature.h>
+> > +};
+> 
+> This looks a bit elaborate to me. Why can't you just spell things out here
+> like:
+> 
+> #define KVM_HYP_CPU_FTR_REG(id, name) \
+> 	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) }
+> 
+> struct __ftr_reg_copy_entry {
+> 	u32			sys_id;
+> 	struct arm64_ftr_reg	*dst;
+> } hyp_ftr_regs[] __initdata = {
+> 	KVM_HYP_CPU_FTR_REG(SYS_CTR_EL0, arm64_ftr_reg_ctrel0),
+> 	...
+> };
+> 
+> and then have the header file be a normal, guarded header which just
+> declares these things? The id parameter to the macro isn't used there.
 
-> ---
->   drivers/vhost/vdpa.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index 00796e4ecfdf..f9ecdce5468a 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -331,8 +331,12 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
->   	if (!IS_ERR_OR_NULL(ctx))
->   		eventfd_ctx_put(ctx);
->   
-> -	if (IS_ERR(v->config_ctx))
-> -		return PTR_ERR(v->config_ctx);
-> +	if (IS_ERR(v->config_ctx)) {
-> +		long ret = PTR_ERR(v->config_ctx);
-> +
-> +		v->config_ctx = NULL;
-> +		return ret;
-> +	}
->   
->   	v->vdpa->config->set_config_cb(v->vdpa, &cb);
->   
+I just tried to reduce the boilerplate as much as possible -- in the
+current form you only need to add additional features to the header
+it'll 'just work'.
 
+Thanks,
+Quentin
