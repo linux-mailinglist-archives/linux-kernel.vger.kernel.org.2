@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7D3338FDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F0E338F53
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 15:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhCLOXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 09:23:53 -0500
-Received: from 7.mo51.mail-out.ovh.net ([46.105.33.25]:43980 "EHLO
-        7.mo51.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbhCLOX3 (ORCPT
+        id S231201AbhCLOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 09:01:40 -0500
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:36416 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhCLOBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:23:29 -0500
-X-Greylist: delayed 2985 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Mar 2021 09:23:28 EST
-Received: from mxplan5.mail.ovh.net (unknown [10.108.20.180])
-        by mo51.mail-out.ovh.net (Postfix) with ESMTPS id 4340A26B8C7;
-        Fri, 12 Mar 2021 14:33:41 +0100 (CET)
-Received: from kaod.org (37.59.142.102) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Mar
- 2021 14:33:40 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-102R004b7259aef-f689-42a7-b071-f92d816709c3,
-                    795EE61F3CDF5270877287A62BE336BF03444C93) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 86.201.91.229
-Subject: Re: [PATCH] powerpc: define the variable 'uaccess_flush' as static
-To:     He Ying <heying24@huawei.com>, <mpe@ellerman.id.au>,
-        <benh@kernel.crashing.org>, <paulus@samba.org>,
-        <npiggin@gmail.com>, <dja@axtens.net>, <akpm@linux-foundation.org>,
-        <rppt@kernel.org>, <aneesh.kumar@linux.ibm.com>
-CC:     <johnny.chenyi@huawei.com>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210312110638.178974-1-heying24@huawei.com>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <a06a0dc8-c717-da4c-c5ad-eaf56bbbd896@kaod.org>
-Date:   Fri, 12 Mar 2021 14:33:39 +0100
+        Fri, 12 Mar 2021 09:01:22 -0500
+Received: by mail-wm1-f52.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso15865511wmq.1;
+        Fri, 12 Mar 2021 06:01:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dSgPlkTo0bSewDX1VN5wr7O5veJFSznpHWcEpbI4QKM=;
+        b=H5wckEC1Syf3wGHcBxgHmkYON/e8XPwf3RV3SoH6hNyv0vXkaNxPhlziTGBNZo/rsE
+         xS10zraOqCPt0l9zWgmzMpIKMuDpwC8mjgKqcDtzi2OA8Yh+lM5YvMIq3R1KsxLH77Qd
+         KBYGk5E/3zfWF3FNVzb2xROS4crMGLQT/YxgOM0GAOZlvSJyKqgAgTT33NWcA+HRfpzt
+         PZwHEco577fhBiYJVx66LsdWoE/gKZWHDGc6e6hoqQJRUJhkrWovudBQ7QZOmZ0Dh8e6
+         1WgTriiGHB60yhrdR4rMRAcBmrMRkr1hWOURRD4kJekquLfeMtWC5kr2CnZ/UG+V+KOD
+         WI5A==
+X-Gm-Message-State: AOAM530i9uwwxRopeAg42D9dllDp727QFKyjhlHc+sjY4f+L1THf4gZN
+        fgak9I+oJg+4lN/VHqBLDQY=
+X-Google-Smtp-Source: ABdhPJwiZEetYlMeeisQXsl4kW/wbXmh4k53PtOmwkq0FytsdghJcrC1Stammny/+lC5OhGuLfZizQ==
+X-Received: by 2002:a1c:f406:: with SMTP id z6mr13529356wma.24.1615557679040;
+        Fri, 12 Mar 2021 06:01:19 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l9sm2170676wmq.2.2021.03.12.06.01.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 06:01:17 -0800 (PST)
+Subject: Re: [PATCH] cpufreq: Rudimentary typos fix in the file
+ s5pv210-cpufreq.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210312120817.12604-1-unixbhaskar@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <4c0c0738-72c3-7704-500a-28cb1a068aa1@kernel.org>
+Date:   Fri, 12 Mar 2021 15:01:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210312110638.178974-1-heying24@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210312120817.12604-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.102]
-X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 1ace6534-db93-4101-b025-eb5d269ce8cc
-X-Ovh-Tracer-Id: 7905224723001674744
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddvvddgheefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtjeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepgedvieejfedvhfduhfffueevheeludffhfdvkeehleegtddttdfhieegveeghfffnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehhvgihihhnghdvgeeshhhurgifvghirdgtohhm
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 12:06 PM, He Ying wrote:
-> The variable 'uaccess_fulsh' is not referenced outside the file. Perhaps we
-> should define it as static to avoid the warning as follows:
+On 12/03/2021 13:08, Bhaskar Chowdhury wrote:
 > 
-> arch/powerpc/kernel/setup_64.c:953:6: warning: symbol 'uaccess_flush'
-> was not declared. Should it be static?
+> s/untile/until/
+> s/souce/source/
+> s/divier/divider/
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: He Ying <heying24@huawei.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  arch/powerpc/kernel/setup_64.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/cpufreq/s5pv210-cpufreq.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
-> index 560ed8b975e7..22aca271496b 100644
-> --- a/arch/powerpc/kernel/setup_64.c
-> +++ b/arch/powerpc/kernel/setup_64.c
-> @@ -950,7 +950,7 @@ static bool no_entry_flush;
->  static bool no_uaccess_flush;
->  bool rfi_flush;
->  bool entry_flush;
-
-I think this is the case also for entry_flush. compiling with W=1 will tell you more.
-
-Thanks,
-
-C. 
-
-> -bool uaccess_flush;
-> +static bool uaccess_flush;
->  DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
->  EXPORT_SYMBOL(uaccess_flush_key);
->  
+> diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
+> index bed496cf8d24..1cfea5339beb 100644
+> --- a/drivers/cpufreq/s5pv210-cpufreq.c
+> +++ b/drivers/cpufreq/s5pv210-cpufreq.c
+> @@ -378,7 +378,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+>  		/*
+>  		 * 6. Turn on APLL
+>  		 * 6-1. Set PMS values
+> -		 * 6-2. Wait untile the PLL is locked
+> +		 * 6-2. Wait until the PLL is locked
+>  		 */
+>  		if (index == L0)
+>  			writel_relaxed(APLL_VAL_1000, S5P_APLL_CON);
+> @@ -390,7 +390,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+>  		} while (!(reg & (0x1 << 29)));
 > 
+>  		/*
+> -		 * 7. Change souce clock from SCLKMPLL(667Mhz)
+> +		 * 7. Change source clock from SCLKMPLL(667Mhz)
+>  		 * to SCLKA2M(200Mhz) in MFC_MUX and G3D MUX
+>  		 * (667/4=166)->(200/4=50)Mhz
+>  		 */
+> @@ -439,7 +439,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+>  	}
+> 
+>  	/*
+> -	 * L4 level need to change memory bus speed, hence onedram clock divier
+> +	 * L4 level need to change memory bus speed, hence onedram clock divider
 
+Also grammar fix: need/needs.
+
+Best regards,
+Krzysztof
