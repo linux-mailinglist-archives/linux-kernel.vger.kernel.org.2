@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE920338AE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2EF338AEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhCLLDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S233840AbhCLLD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:03:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233658AbhCLLCt (ORCPT
+        with ESMTP id S233672AbhCLLCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:02:49 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5410C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:48 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id f12so4550714wrx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:48 -0800 (PST)
+        Fri, 12 Mar 2021 06:02:54 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A7AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:54 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id g20so3545135wmk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:02:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qrh/baXlu1cPHqbz4NOWsoneeOTFHNvhG2DUCXoFZLU=;
-        b=MAV1jPRf0fzetiDweOTl6O+TsygFlS9dfGSulTwS4Obx5K3l18R8Ie5Vz5sfMiKI0v
-         UymAebZopAbRPdmmKCEvnGZvP2B/CkS8z9RzJ/cDqHExGK7aZatJA/Kwx7GscxdA9WYm
-         4e1sSnQ+ytdlgP1qZXCyzAX1BmZA+fq2kHhaPrH9Ak5Cf/jOk+XPUhNl7scJTlT1GOWB
-         1tEAJ88af1zPUvLA7uosjLuRXumnqrvQovdKO04cyRmFH2vBZuBZ5t6r3W/vJO0WedbP
-         PvxOWZVG07iez46MF6jAruO/S0ESEs6Ui0bp+n1X5YhR5JEV1PrvC9O1jV7M6zSdjOEN
-         mIXQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dihNwmS8eg72fB7m8NAEuzih9r4cxSiPgspyafvWSkU=;
+        b=EVuw7+TenJ9xISL4BCYhMltGJemyMiBtTLqkDq7oFLcfKFjApbRCYCRS7/6ty8/TZZ
+         NA1jPbDyU16KQpW2yr7P8fP7q9sSS3aZ2dtMpEzAWOfRLPjJNnrocjA3LajtTQi4eMA0
+         QFnSH1pWZ4OPERi4W1zrtP067BygVQ30XXHR2zbuEhP2KBIz2ymp5g373bj4pnr1FCrM
+         RQbxxXAvwUpiGzK+qEG74AQOgM0w2xhkizZMj/CXis44uDexQsNBKilLcxj89MXOpfLC
+         kP57Nh11zdStlSx+P+dSPMVVTWPh0EbPzp8+qwK2ZW9OdztSOuHsRZxrR7cfgjKNxA0S
+         1n/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qrh/baXlu1cPHqbz4NOWsoneeOTFHNvhG2DUCXoFZLU=;
-        b=Uy4qqLR5X6jaP3DljNXSsctx5ImXS37SYnnTkMs8c+RQOG+lOC7e1AaKjPADO9YVMK
-         85YAc2z4FBREKnZuWrKZuqJ3PgJdHlTYAdirKBFQggjzLw+7l1rLvldKxG6LFdpW25fz
-         MSlG81hL1DLO84lu+neYOfuTRTNAt/okFw7zeH3e9NJLHEhbNXvuCW5ZsbsStuG0nZfb
-         M1dCaBisd7aG0XECeAcBEIvBdf6i2f9Le3571y9Cqs3EpmPAm7nGFYD9KqCNnLX1h6Ag
-         4z2QAiX8WdmktrkV9pa1J9yZ/RR7PZQUyMNtRZ3n01y39btBsU9U3JSTzLtBZtvze/rz
-         +cyA==
-X-Gm-Message-State: AOAM532522lOMJV0iqEGva2y4OSVJ6N75eGZNNByRg6GTFeik/eHoSf5
-        DH0sTnPLltp1RX8HdDeacd9M3A==
-X-Google-Smtp-Source: ABdhPJwAL3EUS5XkHs59zf0axdqDTmLNzfR/B16+tMSiQtsga8uCEphOjfLEDom8Yn6MIQgfeFauDA==
-X-Received: by 2002:adf:83c2:: with SMTP id 60mr13287124wre.386.1615546967568;
-        Fri, 12 Mar 2021 03:02:47 -0800 (PST)
-Received: from dell.default ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id w131sm1761318wmb.8.2021.03.12.03.02.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dihNwmS8eg72fB7m8NAEuzih9r4cxSiPgspyafvWSkU=;
+        b=NyzACnUvShkBAtDUnT7zKMG6ATugLYW4tJOME2nr/Vn3jtvog1ir9XeEQ17Y26cmzI
+         tBy7b2jXe29kSqh8cfwH1o+htynloODOokEyixOIUwFmiYChpQPR7AyqYdotlMr22JPv
+         d9J2wXURCdgSfnQuQ+jRZ89cQxAivyR8buzMdPsE3+29n8nlllIgXO8u6qBsBiRpt3IC
+         wNOJa4cvD6jFKRnW1a9Y5at0zE11WCvo9m++32vQ07LigGpf5LswZaqLgiaQp15f/CBp
+         PJlVE7trjBVn+alVFzxtLLIwMEuH+1AnZj9R0VrGC1t9JZd08ekrWrFSUgMLtQtBjqAU
+         mzJw==
+X-Gm-Message-State: AOAM532TdK8P0ER5n4+nvovnnKWkp1s4ykqTBZIkKYMAPOIi/88MA4r9
+        ul3//JXcujPbA6Hgs05plqfkdg==
+X-Google-Smtp-Source: ABdhPJzp5NiW4hK7picdw41X37Rb1IMy0ShXi7mmGt03dC34zZfOhHkBCRveJv0mWQpHlDFrnpMfdA==
+X-Received: by 2002:a1c:730f:: with SMTP id d15mr12347734wmb.135.1615546972704;
+        Fri, 12 Mar 2021 03:02:52 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:d5de:d45f:f79c:cb62])
+        by smtp.gmail.com with ESMTPSA id j11sm7373970wro.55.2021.03.12.03.02.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 03:02:47 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        dahinds@users.sourceforge.net
-Subject: [PATCH 6/6] pcmcia: rsrc_nonstatic: Fix call-back function as reference formatting
-Date:   Fri, 12 Mar 2021 11:02:39 +0000
-Message-Id: <20210312110239.2220197-7-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210312110239.2220197-1-lee.jones@linaro.org>
-References: <20210312110239.2220197-1-lee.jones@linaro.org>
+        Fri, 12 Mar 2021 03:02:51 -0800 (PST)
+Date:   Fri, 12 Mar 2021 12:02:45 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/11] kasan: docs: update ignoring accesses section
+Message-ID: <YEtKVYVeUycUKySP@elver.google.com>
+References: <f6efb2f36fc1f40eb22df027e6bc956cac71745e.1615498565.git.andreyknvl@google.com>
+ <c0f6a95b0fa59ce0ef502f4ea11522141e3c8faf.1615498565.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0f6a95b0fa59ce0ef502f4ea11522141e3c8faf.1615498565.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Mar 11, 2021 at 10:37PM +0100, Andrey Konovalov wrote:
+[...]  
+> +Other parts of the kernel might access metadata for allocated objects. Normally,
+> +KASAN detects and reports such accesses, but in certain cases (e.g., in memory
+> +allocators) these accesses are valid. Disabling instrumentation for memory
+> +allocators files helps with accesses that happen directly in that code for
+> +software KASAN modes. But it does not help when the accesses happen indirectly
+> +(through generic function calls) or with the hardware tag-based mode that does
+> +not use compiler instrumentation.
+> +
+> +To disable KASAN reports in a certain part of the kernel code:
+> +
+> +- For software modes, add a
+> +  ``kasan_disable_current()``/``kasan_enable_current()`` critical section.
 
- drivers/pcmcia/rsrc_nonstatic.c:349: warning: Function parameter or member 'value' not described in 'do_validate_mem'
- drivers/pcmcia/rsrc_nonstatic.c:349: warning: Excess function parameter 'validate' description in 'do_validate_mem'
- drivers/pcmcia/rsrc_nonstatic.c:407: warning: Function parameter or member 'value' not described in 'do_mem_probe'
- drivers/pcmcia/rsrc_nonstatic.c:407: warning: Excess function parameter 'validate' description in 'do_mem_probe'
- drivers/pcmcia/rsrc_nonstatic.c:407: warning: Excess function parameter 'fallback' description in 'do_mem_probe'
+Should we mention function attribute __no_sanitize_address (and noinstr,
+which just applies to any kind of instrumentation) here? Perhaps with
+the note that called functions may still be instrumented, and in such
+cases would require combining with kasan_{disable,enable}_current().
 
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: dahinds@users.sourceforge.net
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/pcmcia/rsrc_nonstatic.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/pcmcia/rsrc_nonstatic.c b/drivers/pcmcia/rsrc_nonstatic.c
-index 55f9fed478eba..bb15a8bdbaab5 100644
---- a/drivers/pcmcia/rsrc_nonstatic.c
-+++ b/drivers/pcmcia/rsrc_nonstatic.c
-@@ -343,9 +343,9 @@ static int checksum(struct pcmcia_socket *s, struct resource *res,
-  */
- static int do_validate_mem(struct pcmcia_socket *s,
- 			   unsigned long base, unsigned long size,
--			   int validate (struct pcmcia_socket *s,
--					 struct resource *res,
--					 unsigned int *value))
-+			   int (*validate)(struct pcmcia_socket *s,
-+					   struct resource *res,
-+					   unsigned int *value))
- {
- 	struct socket_data *s_data = s->resource_data;
- 	struct resource *res1, *res2;
-@@ -398,12 +398,12 @@ static int do_validate_mem(struct pcmcia_socket *s,
-  * function returns the size of the usable memory area.
-  */
- static int do_mem_probe(struct pcmcia_socket *s, u_long base, u_long num,
--			int validate (struct pcmcia_socket *s,
--				      struct resource *res,
--				      unsigned int *value),
--			int fallback (struct pcmcia_socket *s,
--				      struct resource *res,
--				      unsigned int *value))
-+			int (*validate)(struct pcmcia_socket *s,
-+					struct resource *res,
-+					unsigned int *value),
-+			int (*fallback)(struct pcmcia_socket *s,
-+					struct resource *res,
-+					unsigned int *value))
- {
- 	struct socket_data *s_data = s->resource_data;
- 	u_long i, j, bad, fail, step;
--- 
-2.27.0
+> +- For tag-based modes, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``.
 
