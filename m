@@ -2,112 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB6933877F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFB3338783
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 09:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhCLIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 03:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        id S232370AbhCLIgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 03:36:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbhCLIgL (ORCPT
+        with ESMTP id S232311AbhCLIgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 03:36:11 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA22FC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:36:10 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id y1so5703202ljm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:36:10 -0800 (PST)
+        Fri, 12 Mar 2021 03:36:12 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785DCC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:36:12 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id z25so5695807lja.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 00:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=em7dfJLsuPWNoBZ5RIglWlkFRGvmQrMQ7HhOt27sGkg=;
-        b=KTwtsgfyiGwQF6XJDg2CkwPV+PNOhi0ZuS3gk4R5yeKgmlDmTeuxGyt6C5TDsrCQIS
-         89Z680OPXy4aWZd3KtXazaVSqOlOh5y6jYfcUqNH7BaoVG9BUVnzcIUaRCm25dVpi3b9
-         IZK4TyOe6TzqU63FFP33TMDkcRecrkOfjictUgiEwkB9/gUWm1hjkVi+MHWpus8WPee7
-         yCFNJk3c83FyhEjlTkaFK/aqokWlgz5cYeJ5yx7d9dvE6Qb3z4MU7+LtNF7CVEvkCGUc
-         SaSVGdKncOxbKcDcInz854nBrnZFsqjpw3bPTbbPfcbl88wtMc9n5H0oILrVA6BorOWH
-         mV7w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4qnmPLi/3vFMImNPyFJdVdAB/XfujIxJWjerLOvtJbY=;
+        b=DpaOQ5jtBc25ez9/yMdZSswDPLLKVSOxCkV+kgyNzpZn5BlWspZWIhHEIekQaRSF4S
+         jM13uLq2b5Ywg/z0+5wYjKpX187p4L/3JuAZ8YR7jxdI2ggtS3i9CnCoUIti7ZrxOk87
+         4FaKbRk+JTVT50PE4aRfGyqoGYq5bJ/Oz0xFa9rji7xZ+LfLeCHmbMIO2YcySYqFx6sW
+         TaJC5uio3XdRiRd7aJQEYr6t6S09B5Sy9/HtLamjICdkCLBew8g5aNsx1njR8EwedX8B
+         F1ldCJKFVnw1LiTVDv9/llusbqwbRBA8HbmKnaEZ1hD3qCSTf8M7ayKRBJGUXYNpWq66
+         Dftg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=em7dfJLsuPWNoBZ5RIglWlkFRGvmQrMQ7HhOt27sGkg=;
-        b=MVRx1w57iK8ssqfH/gzY4YxgOQWrt3O8mlWN0se9tA8kHVkr2RxQS4w+WDjeon/Ljc
-         9ZgN36Re+Rfybo+kgiHAFQJ2W7GwpaWxG6Z+0RJNrxquk9ultC5Xat1AKWwjjtUPn+hW
-         Fc8eA1yP3QL5glylyMvE8WNLkPfuK/j2J9ZqnjPj4JvpNRFe0lD7AO4J0+klytaoMMHP
-         fKZ2w7TIL5Zf60LS3J6xNrZkB7ze/HTTv8KuEq8zdGg+dCdYWQtQ+McjAYP+kbwa3wKs
-         xsxVQXcYMZHeY6xQF/rnP1iSItEr/Vv9yiZCBL5YZePYhAThkmQWg7VgXgVFGrojRPkT
-         xa1w==
-X-Gm-Message-State: AOAM5319hwSSrbm58Xw1rMr3AmKXmeh8oAM1H7eAk5ST0xQFRY+NWzXU
-        ySyXGRXNtKorWSQ1VkMlzPsgiA==
-X-Google-Smtp-Source: ABdhPJwudCeMpAQ/FIhQYdxteL/3mQVeO5HwZMu2xEg2lOFOrphhSNdVU9afiBQ1dWr+s+ZrgTWoRw==
-X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr1741074ljm.324.1615538169164;
-        Fri, 12 Mar 2021 00:36:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4qnmPLi/3vFMImNPyFJdVdAB/XfujIxJWjerLOvtJbY=;
+        b=Hu/xsQns64SLYg/3SUoxgxc9rmKd2+DiCasAio41FYgry/Ti2E+thrjbnYYu3HuB2T
+         /ZkIwMG3liI3u3X8KBUzxS5KWdPwaDvw5rSvrDLAsE4kSmWR58K/EdYcbYqiPkkqqAU5
+         4I/0+qq/uCaTObVrZLumOObShp14U/twe+ROcq6sQgjqPbqBxUXnTv4iQZK5xxlwq7Us
+         K+LipR8nr8EMpFNMrL62RYy2J6lSmxbehI4W36lXRfYvGl8MaBCnSC2ECz+XoEiE33tU
+         OVFidFjX6pECFFpwB3i3dpbWh8pf563fi22zMICDYuRKXnSXgxrxR/pJ48l8+6kBVekf
+         Fycg==
+X-Gm-Message-State: AOAM531Xh0UU6VEvcI8yjKUheHyJkG7H9tgUUi+513KKyMJMAlRFtxgx
+        QUFNDnh6LlyHKmb0ehYn9kVBHw==
+X-Google-Smtp-Source: ABdhPJxkyyEkVyKJMRXz0+LsUpzj5mZuXBz8hpv1LKtBC+919tio0fF30OeP309qPIrJPKGOFFEHTw==
+X-Received: by 2002:a2e:22c6:: with SMTP id i189mr1734136lji.346.1615538170960;
+        Fri, 12 Mar 2021 00:36:10 -0800 (PST)
 Received: from localhost.localdomain (c-d7cb225c.014-348-6c756e10.bbcust.telenor.se. [92.34.203.215])
-        by smtp.gmail.com with ESMTPSA id p6sm1617532lfc.71.2021.03.12.00.36.08
+        by smtp.gmail.com with ESMTPSA id p6sm1617532lfc.71.2021.03.12.00.36.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 00:36:08 -0800 (PST)
+        Fri, 12 Mar 2021 00:36:10 -0800 (PST)
 From:   Linus Walleij <linus.walleij@linaro.org>
 To:     lee.jones@linaro.org, Sebastian Reichel <sre@kernel.org>
 Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 0/4] mfd/power: Push data into power supply
-Date:   Fri, 12 Mar 2021 09:36:00 +0100
-Message-Id: <20210312083604.3708890-1-linus.walleij@linaro.org>
+Subject: [PATCH 1/4] mfd/power: ab8500: Require device tree
+Date:   Fri, 12 Mar 2021 09:36:01 +0100
+Message-Id: <20210312083604.3708890-2-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210312083604.3708890-1-linus.walleij@linaro.org>
+References: <20210312083604.3708890-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series pushes some AB8500 power supply headers down
-into the power supply subsystem so the power supply code
-becomes independent from the other AB8500 stuff.
+The core AB8500 driver and the whole platform is completely
+dependent on being probed from device tree so remove the
+non-DT probe paths.
 
-The first patch makes the code require device tree so
-that the series make sense: once all data for the power
-supply comes from device tree, it makes sense for that
-code to not require global headers for platform data
-etc.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/power/supply/Kconfig           |  2 +-
+ drivers/power/supply/ab8500_btemp.c    | 10 ++++------
+ drivers/power/supply/ab8500_charger.c  | 15 ++++++---------
+ drivers/power/supply/ab8500_fg.c       | 10 ++++------
+ drivers/power/supply/abx500_chargalg.c | 10 ++++------
+ 5 files changed, 19 insertions(+), 28 deletions(-)
 
-This is in preparation for some finalization of the AB8500
-power code, as merge strategy I think it is best if:
-
-- The power maintainer (Sebastian) provide an ACK
-
-- The MFD matinainer (Lee) merges this and provide an
-  immutable branch that the power maintainer can possibly
-  pull as a base for his tree
-
-I hope both subsystems are happy with the changes.
-
-One of the patches already has Lee's Acked-for-MFD, but I
-got a bit stressed out in the last kernel cycle. Let's
-take this stepwise, first these four patches. No hurry.
-
-Linus Walleij (4):
-  mfd/power: ab8500: Require device tree
-  mfd/power: ab8500: Push data to power supply code
-  mfd/power: ab8500: Push algorithm to power supply code
-  mfd/power: ab8500: Push data to power supply code
-
- drivers/mfd/ab8500-core.c                     |  17 +-
- drivers/power/supply/Kconfig                  |   2 +-
- .../power/supply}/ab8500-bm.h                 | 297 ++++++++++++++++--
- .../power/supply/ab8500-chargalg.h            |   6 +-
- drivers/power/supply/ab8500_bmdata.c          |   3 +-
- drivers/power/supply/ab8500_btemp.c           |  45 +--
- drivers/power/supply/ab8500_charger.c         |  27 +-
- drivers/power/supply/ab8500_fg.c              |  20 +-
- drivers/power/supply/abx500_chargalg.c        |  22 +-
- drivers/power/supply/pm2301_charger.c         |   4 +-
- include/linux/mfd/abx500.h                    | 276 ----------------
- 11 files changed, 326 insertions(+), 393 deletions(-)
- rename {include/linux/mfd/abx500 => drivers/power/supply}/ab8500-bm.h (58%)
- rename include/linux/mfd/abx500/ux500_chargalg.h => drivers/power/supply/ab8500-chargalg.h (93%)
-
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index 006b95eca673..a910571e8d4f 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -698,7 +698,7 @@ config BATTERY_GAUGE_LTC2941
+ 
+ config AB8500_BM
+ 	bool "AB8500 Battery Management Driver"
+-	depends on AB8500_CORE && AB8500_GPADC && (IIO = y)
++	depends on AB8500_CORE && AB8500_GPADC && (IIO = y) && OF
+ 	help
+ 	  Say Y to include support for AB8500 battery management.
+ 
+diff --git a/drivers/power/supply/ab8500_btemp.c b/drivers/power/supply/ab8500_btemp.c
+index 7095ea4c68d6..ca5153c82c81 100644
+--- a/drivers/power/supply/ab8500_btemp.c
++++ b/drivers/power/supply/ab8500_btemp.c
+@@ -1008,12 +1008,10 @@ static int ab8500_btemp_probe(struct platform_device *pdev)
+ 	}
+ 	di->bm = plat;
+ 
+-	if (np) {
+-		ret = ab8500_bm_of_probe(dev, np, di->bm);
+-		if (ret) {
+-			dev_err(dev, "failed to get battery information\n");
+-			return ret;
+-		}
++	ret = ab8500_bm_of_probe(dev, np, di->bm);
++	if (ret) {
++		dev_err(dev, "failed to get battery information\n");
++		return ret;
+ 	}
+ 
+ 	/* get parent data */
+diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
+index ac77c8882d17..aa573cd299e2 100644
+--- a/drivers/power/supply/ab8500_charger.c
++++ b/drivers/power/supply/ab8500_charger.c
+@@ -3360,15 +3360,12 @@ static int ab8500_charger_probe(struct platform_device *pdev)
+ 	}
+ 	di->bm = plat;
+ 
+-	if (np) {
+-		ret = ab8500_bm_of_probe(dev, np, di->bm);
+-		if (ret) {
+-			dev_err(dev, "failed to get battery information\n");
+-			return ret;
+-		}
+-		di->autopower_cfg = of_property_read_bool(np, "autopower_cfg");
+-	} else
+-		di->autopower_cfg = false;
++	ret = ab8500_bm_of_probe(dev, np, di->bm);
++	if (ret) {
++		dev_err(dev, "failed to get battery information\n");
++		return ret;
++	}
++	di->autopower_cfg = of_property_read_bool(np, "autopower_cfg");
+ 
+ 	/* get parent data */
+ 	di->dev = dev;
+diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab8500_fg.c
+index 06ff42c71f24..079e11325a81 100644
+--- a/drivers/power/supply/ab8500_fg.c
++++ b/drivers/power/supply/ab8500_fg.c
+@@ -3043,12 +3043,10 @@ static int ab8500_fg_probe(struct platform_device *pdev)
+ 	}
+ 	di->bm = plat;
+ 
+-	if (np) {
+-		ret = ab8500_bm_of_probe(dev, np, di->bm);
+-		if (ret) {
+-			dev_err(dev, "failed to get battery information\n");
+-			return ret;
+-		}
++	ret = ab8500_bm_of_probe(dev, np, di->bm);
++	if (ret) {
++		dev_err(dev, "failed to get battery information\n");
++		return ret;
+ 	}
+ 
+ 	mutex_init(&di->cc_lock);
+diff --git a/drivers/power/supply/abx500_chargalg.c b/drivers/power/supply/abx500_chargalg.c
+index a9d84d845f24..591ddd2987a3 100644
+--- a/drivers/power/supply/abx500_chargalg.c
++++ b/drivers/power/supply/abx500_chargalg.c
+@@ -1997,12 +1997,10 @@ static int abx500_chargalg_probe(struct platform_device *pdev)
+ 	}
+ 	di->bm = plat;
+ 
+-	if (np) {
+-		ret = ab8500_bm_of_probe(&pdev->dev, np, di->bm);
+-		if (ret) {
+-			dev_err(&pdev->dev, "failed to get battery information\n");
+-			return ret;
+-		}
++	ret = ab8500_bm_of_probe(&pdev->dev, np, di->bm);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to get battery information\n");
++		return ret;
+ 	}
+ 
+ 	/* get device struct and parent */
 -- 
 2.29.2
 
