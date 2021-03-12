@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099D8338B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0DF338B5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 12:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhCLLPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 06:15:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:51974 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233643AbhCLLPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:15:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23E3EED1;
-        Fri, 12 Mar 2021 03:15:38 -0800 (PST)
-Received: from [10.57.17.106] (unknown [10.57.17.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2D9B3F793;
-        Fri, 12 Mar 2021 03:15:36 -0800 (PST)
-Subject: Re: [PATCH 2/3] thermal/drivers/devfreq_cooling: Use device name
- instead of auto-numbering
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210310114600.27178-1-daniel.lezcano@linaro.org>
- <20210310114600.27178-2-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <8f17dc8b-3259-8e6a-f46b-b97495ecd550@arm.com>
-Date:   Fri, 12 Mar 2021 11:15:35 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233815AbhCLLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:17:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233692AbhCLLRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:17:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615547863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UGPDzUa5JilVZrEVbbRzUiBVPETkoDHcYduKqCj+MOo=;
+        b=b5iVaOfaYUBsZHo+EWiYYqTjrie1OlyVO3RuxJKUbiIw8z3RF1QEkHdjaJhM2Hc2jsQUIk
+        1OEhAzkb+2HHiIeUus+HoBxjTwQ9ifAp3OX+VguohP3FI0uqkNkupB95MqaeBhWJJJ5+vk
+        zXq3e4dkgXW7HQgdwJrNv9fyQcZE920=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-q5kalNEnMASwlMrnVkZ9-Q-1; Fri, 12 Mar 2021 06:17:41 -0500
+X-MC-Unique: q5kalNEnMASwlMrnVkZ9-Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12C8318460E5;
+        Fri, 12 Mar 2021 11:17:39 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 64077694CD;
+        Fri, 12 Mar 2021 11:17:29 +0000 (UTC)
+Date:   Fri, 12 Mar 2021 12:17:26 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v4 3/9] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW
+ for timing
+Message-ID: <20210312111726.6xfpc2cycab7yfld@kamzik.brq.redhat.com>
+References: <20210302125751.19080-1-wangyanan55@huawei.com>
+ <20210302125751.19080-4-wangyanan55@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210310114600.27178-2-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302125751.19080-4-wangyanan55@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/10/21 11:45 AM, Daniel Lezcano wrote:
-> Currently the naming of a cooling device is just a cooling technique
-> followed by a number. When there are multiple cooling devices using
-> the same technique, it is impossible to clearly identify the related
-> device as this one is just a number.
+On Tue, Mar 02, 2021 at 08:57:45PM +0800, Yanan Wang wrote:
+> In addition to function of CLOCK_MONOTONIC, flag CLOCK_MONOTONIC_RAW can
+> also shield possiable impact of NTP, which can provide more robustness.
 > 
-> For instance:
-> 
->   thermal-devfreq-0
->   thermal-devfreq-1
->   etc ...
-> 
-> The 'thermal' prefix is redundant with the subsystem namespace. This
-> patch removes the 'thermal prefix and changes the number by the device
-
-missing ' after 'thermal
-
-> name. So the naming above becomes:
-> 
->   devfreq-5000000.gpu
->   devfreq-1d84000.ufshc
->   etc ...
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> Reviewed-by: Ben Gardon <bgardon@google.com>
 > ---
->   drivers/thermal/devfreq_cooling.c | 21 ++++-----------------
->   1 file changed, 4 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index fed3121ff2a1..62abcffeb422 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
+>  tools/testing/selftests/kvm/demand_paging_test.c  |  8 ++++----
+>  tools/testing/selftests/kvm/dirty_log_perf_test.c | 14 +++++++-------
+>  tools/testing/selftests/kvm/lib/test_util.c       |  2 +-
+>  tools/testing/selftests/kvm/steal_time.c          |  4 ++--
+>  4 files changed, 14 insertions(+), 14 deletions(-)
+>
 
-same here, you can now remove the idr.h header
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-> @@ -25,11 +25,8 @@
->   #define HZ_PER_KHZ		1000
->   #define SCALE_ERROR_MITIGATION	100
->   
-> -static DEFINE_IDA(devfreq_ida);
-> -
->   /**
->    * struct devfreq_cooling_device - Devfreq cooling device
-> - * @id:		unique integer value corresponding to each
->    *		devfreq_cooling_device registered.
->    * @cdev:	Pointer to associated thermal cooling device.
->    * @devfreq:	Pointer to associated devfreq device.
-> @@ -51,7 +48,6 @@ static DEFINE_IDA(devfreq_ida);
->    * @em_pd:		Energy Model for the associated Devfreq device
->    */
->   struct devfreq_cooling_device {
-> -	int id;
->   	struct thermal_cooling_device *cdev;
->   	struct devfreq *devfreq;
->   	unsigned long cooling_state;
-> @@ -363,7 +359,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
->   	struct thermal_cooling_device *cdev;
->   	struct device *dev = df->dev.parent;
->   	struct devfreq_cooling_device *dfc;
-> -	char dev_name[THERMAL_NAME_LENGTH];
-> +	char name[THERMAL_NAME_LENGTH];
-
-This is probably too short (20 char) array. For example in my phone's
-devfreq dir, there are really long names:
-
----------------------------------------------------------
-redfin:/sys/class/devfreq # for f in `ls ./` ; do echo $f; cat $f/name | 
-wc -m ; done 
-
-18321000.qcom,devfreq-l3:qcom,cdsp-cdsp-l3-lat
-47
-18321000.qcom,devfreq-l3:qcom,cpu0-cpu-l3-lat
-46
-18321000.qcom,devfreq-l3:qcom,cpu6-cpu-l3-lat
-46
-18321000.qcom,devfreq-l3:qcom,cpu7-cpu-l3-lat
-46
-3d00000.qcom,kgsl-3d0
-22
-soc:qcom,cpu-cpu-llcc-bw
-25
-soc:qcom,cpu-llcc-ddr-bw
-25
-soc:qcom,cpu0-cpu-ddr-latfloor
-31
-soc:qcom,cpu0-cpu-llcc-lat
-27
-soc:qcom,cpu0-llcc-ddr-lat
-27
-soc:qcom,cpu6-cpu-ddr-latfloor
-31
-soc:qcom,cpu6-cpu-llcc-lat
-27
-soc:qcom,cpu6-llcc-ddr-lat
-27
-soc:qcom,cpu7-cpu-ddr-latfloor
-31
-soc:qcom,gpubw
-15
-soc:qcom,kgsl-busmon
-21
-soc:qcom,npu-llcc-ddr-bw
-25
-soc:qcom,npu-npu-llcc-bw
-25
-soc:qcom,npudsp-npu-ddr-bw
-27
-soc:qcom,snoc_cnoc_keepalive
-29
----------------------------------------------------------
-
-We should allocate tmp buffer for it, to not loose the meaningful part
-of that string name or end up with only the same prefix, like for the
-first 3 from top:
-
-devfreq-18321000.qco
-
-or for the GPU:
-devfreq-3d00000.qcom
-
-This is tricky area and vendors might put any non-meaningful prefix.
-
-The rest of the code looks OK, only this name construction part.
