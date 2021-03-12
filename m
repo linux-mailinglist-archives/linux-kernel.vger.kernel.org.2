@@ -2,249 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085C7338666
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F1C33866A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 08:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhCLHJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 02:09:09 -0500
-Received: from mga18.intel.com ([134.134.136.126]:48048 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231928AbhCLHI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:08:59 -0500
-IronPort-SDR: G1ba+bE5eZ7/z3tJUxDljovP3+8lgrQxUNqjekiZEdfMNL2/qJSXcrOXX6wqfqTrq2eqf5oM/L
- cY5/R+RrFn8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="176385839"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="176385839"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 23:08:59 -0800
-IronPort-SDR: kkXI+umYoTMCwy8UfK8j5GA5HLLX3JznDMO9VVopjx8ODszJpK4FN395GRqcKZsJ7Cc+Ht6lHt
- 066uR5yTwF3Q==
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="410915047"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.214.210]) ([10.254.214.210])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 23:08:56 -0800
-Subject: Re: [PATCH V3 6/6] vDPA/ifcvf: verify mandatory feature bits for vDPA
-To:     Jason Wang <jasowang@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@linux.intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-References: <20210310090052.4762-1-lingshan.zhu@intel.com>
- <20210310090052.4762-7-lingshan.zhu@intel.com>
- <3e53a5c9-c531-48ee-c9a7-907dfdacc9d1@redhat.com>
- <9c2fb3d0-2d69-20b9-589d-cc5ffc830f38@linux.intel.com>
- <4f3ef2bb-d823-d53d-3bb0-0152a3f6c9f1@redhat.com>
- <a1f346cc-c9fd-6d16-39d7-b59965a18b0a@intel.com>
- <67be60b6-bf30-de85-ed42-d9fad974f42b@redhat.com>
- <2a6e31d3-ea31-9b64-0749-1f149b656623@intel.com>
- <2111b14b-4857-34c8-82c4-72d182ca50c5@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <7405714f-c29a-6636-b01f-243af49a685c@intel.com>
-Date:   Fri, 12 Mar 2021 15:08:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230257AbhCLHJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 02:09:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhCLHJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 02:09:27 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C578C061574;
+        Thu, 11 Mar 2021 23:09:27 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id l132so23358396qke.7;
+        Thu, 11 Mar 2021 23:09:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6HyVPzfJtnZPj+FiCGLisT9CcoQVNfECVYHQyi8QH9g=;
+        b=d+AAS2QHDbfT8/U25ISrEO1ETDoQ/gW380T4r08dP44MRmjIrcjn+eAuz6/+QRFyXN
+         TxsXr4x0oKN5nFPTWwdOHLOp5JIZd3lgAKMo1HYjWpXSYml1uFciD+o+eoUpzLpC0PrQ
+         EAMDTU7vB0gSJzclhKz3DabHpVVucGMGS9hTOpa2szZk/zjaV/M0kZUCeJlEqrnhs3xX
+         ofUdzHGWzjx4rEVCYFzDTfE0fQmGfzdXVy6YtawY7FCuqbj/u0iNob1Ol0P68/moYUF5
+         8pL/s9qE7sKD8OtRPh78lFUva641ypivI/7092GBfjgxSZ5On1/tNwYSUrE/gLMAGRct
+         u9bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6HyVPzfJtnZPj+FiCGLisT9CcoQVNfECVYHQyi8QH9g=;
+        b=jOpsOumGqbdhKHNtLb7SPVgyDy22SDJCp9zFjhJmA3u4310ZssWEx39cii+D/uBygp
+         qtMKZE0RmpNGY6W4T9uBtHN3Hyd/DO8YzgHGjAeCLxPQML4AiS/pAdcjYowQdhfRGGWC
+         h9wTIWucCvfnEAsrb/YdXx1Ec3lwjUGGugWZFFP04ZzcnCR9cbJyZQ87GB7RlTALSp8i
+         pIXrka9wZxfNH4lUVD3Vmk8DBSFyF5NV5cGXAGnqVgNY13OHOXTLEGfx4SPV0L2DEuvv
+         fDvQASRTz6Zn2Sh5PkxQaxxqYZeHaro2zrUFjIHaihyztXpv3rGjaQk+7YS0lG/P/0Hc
+         W6Iw==
+X-Gm-Message-State: AOAM531YY7kWtWKdGLt2olmbJycJ0Kl2gtidsoCG5hBIN/YgZHKik9m6
+        WkXaix9EHKHsiOUlz+o2qQc=
+X-Google-Smtp-Source: ABdhPJzvbFaG7qRauO5os9ZYCRzcyMyQ5PzNB3eJcNOGuCqkGuGQ18Hy65yvQz7wTjX97dOpKzK+WQ==
+X-Received: by 2002:a05:620a:a8b:: with SMTP id v11mr10875808qkg.414.1615532966870;
+        Thu, 11 Mar 2021 23:09:26 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id j2sm3613722qkk.96.2021.03.11.23.09.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 23:09:26 -0800 (PST)
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
+ files
+From:   Frank Rowand <frowand.list@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1615354376.git.viresh.kumar@linaro.org>
+ <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7>
+ <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+Message-ID: <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
+Date:   Fri, 12 Mar 2021 01:09:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <2111b14b-4857-34c8-82c4-72d182ca50c5@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/12/2021 3:00 PM, Jason Wang wrote:
->
-> On 2021/3/12 2:40 下午, Zhu, Lingshan wrote:
+On 3/12/21 1:03 AM, Frank Rowand wrote:
+> Hi Viresh,
+> 
+> On 3/11/21 10:47 PM, Viresh Kumar wrote:
+>> On 10-03-21, 20:24, Masahiro Yamada wrote:
+>>> Even without "-I dts",
+>>>
+>>>    inform = guess_input_format(arg, "dts");
+>>>
+>>> seems to fall back to "dts" anyway,
+>>> but I guess you wanted to make this explicit, correct?
 >>
 >>
->> On 3/12/2021 1:52 PM, Jason Wang wrote:
+>>>> +# Required for of unit-test files as they can't be renamed to .dtso
 >>>
->>> On 2021/3/11 3:19 下午, Zhu, Lingshan wrote:
->>>>
->>>>
->>>> On 3/11/2021 2:20 PM, Jason Wang wrote:
->>>>>
->>>>> On 2021/3/11 12:16 下午, Zhu Lingshan wrote:
->>>>>>
->>>>>>
->>>>>> On 3/11/2021 11:20 AM, Jason Wang wrote:
->>>>>>>
->>>>>>> On 2021/3/10 5:00 下午, Zhu Lingshan wrote:
->>>>>>>> vDPA requres VIRTIO_F_ACCESS_PLATFORM as a must, this commit
->>>>>>>> examines this when set features.
->>>>>>>>
->>>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>>>>>> ---
->>>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.c | 8 ++++++++
->>>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.h | 1 +
->>>>>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
->>>>>>>>   3 files changed, 14 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c 
->>>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>>> index ea6a78791c9b..58f47fdce385 100644
->>>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
->>>>>>>> @@ -224,6 +224,14 @@ u64 ifcvf_get_features(struct ifcvf_hw *hw)
->>>>>>>>       return hw->hw_features;
->>>>>>>>   }
->>>>>>>>   +int ifcvf_verify_min_features(struct ifcvf_hw *hw)
->>>>>>>> +{
->>>>>>>> +    if (!(hw->hw_features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
->>>>>>>> +        return -EINVAL;
->>>>>>>> +
->>>>>>>> +    return 0;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>   void ifcvf_read_net_config(struct ifcvf_hw *hw, u64 offset,
->>>>>>>>                  void *dst, int length)
->>>>>>>>   {
->>>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>>> index dbb8c10aa3b1..91c5735d4dc9 100644
->>>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>>>>> @@ -123,6 +123,7 @@ void io_write64_twopart(u64 val, u32 *lo, 
->>>>>>>> u32 *hi);
->>>>>>>>   void ifcvf_reset(struct ifcvf_hw *hw);
->>>>>>>>   u64 ifcvf_get_features(struct ifcvf_hw *hw);
->>>>>>>>   u64 ifcvf_get_hw_features(struct ifcvf_hw *hw);
->>>>>>>> +int ifcvf_verify_min_features(struct ifcvf_hw *hw);
->>>>>>>>   u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
->>>>>>>>   int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num);
->>>>>>>>   struct ifcvf_adapter *vf_to_adapter(struct ifcvf_hw *hw);
->>>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>>>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> index 25fb9dfe23f0..f624f202447d 100644
->>>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>>>>> @@ -179,6 +179,11 @@ static u64 ifcvf_vdpa_get_features(struct 
->>>>>>>> vdpa_device *vdpa_dev)
->>>>>>>>   static int ifcvf_vdpa_set_features(struct vdpa_device 
->>>>>>>> *vdpa_dev, u64 features)
->>>>>>>>   {
->>>>>>>>       struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>>>>>> +    int ret;
->>>>>>>> +
->>>>>>>> +    ret = ifcvf_verify_min_features(vf);
->>>>>>>
->>>>>>>
->>>>>>> So this validate device features instead of driver which is the 
->>>>>>> one we really want to check?
->>>>>>>
->>>>>>> Thanks
->>>>>>
->>>>>> Hi Jason,
->>>>>>
->>>>>> Here we check device feature bits to make sure the device support 
->>>>>> ACCESS_PLATFORM. 
->>>>>
->>>>>
->>>>> If you want to check device features, you need to do that during 
->>>>> probe() and fail the probing if without the feature. But I think 
->>>>> you won't ship cards without ACCESS_PLATFORM.
->>>> Yes, there are no reasons ship a card without ACCESS_PLATFORM
->>>>>
->>>>>
->>>>>> In get_features(),
->>>>>> it will return a intersection of device features bit and driver 
->>>>>> supported features bits(which includes ACCESS_PLATFORM).
->>>>>> Other components like QEMU should not set features bits more than 
->>>>>> this intersection of bits. so we can make sure if this
->>>>>> ifcvf_verify_min_features() passed, both device and driver 
->>>>>> support ACCESS_PLATFORM.
->>>>>>
->>>>>> Are you suggesting check driver feature bits in 
->>>>>> ifcvf_verify_min_features() in the meantime as well?
->>>>>
->>>>>
->>>>> So it really depends on your hardware. If you hardware can always 
->>>>> offer ACCESS_PLATFORM, you just need to check driver features. 
->>>>> This is how vdpa_sim and mlx5_vdpa work.
->>>> Yes, we always support ACCESS_PLATFORM, so it is hard coded in the 
->>>> macro IFCVF_SUPPORTED_FEATURES.
+>>> If you go with *.dtso, I think you will rename
+>>> all *.dts under the drivers/ directory.
 >>>
->>>
->>> That's not what I read from the code:
->>>
->>>         features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
->> ifcvf_get_features() reads device feature bits(which should always 
->> has ACCSSS_PLATFORM) and IFCVF_SUPPORTED_FEATURES is the driver 
->> supported feature bits 
->
->
-> For "driver" you probably mean IFCVF. So there's some misunderstanding 
-> before, what I meant for "driver" is virtio driver that do feature 
-> negotaitation with the device.
->
-> I wonder what features are supported by the device but not the IFCVF 
-> driver?
->
-> Thanks
-we did not use TSO hardware feature bits in IFCVF driver for now. 
-Anyway, we will check the features bits to set in set_features than 
-hw/ifcvf driver feature bits.
-
-THanks!
->
->
->> which hard coded ACCESS_PLATFORM, so the intersection should include 
->> ACCESS_PLATFORM.
->> the intersection "features" is returned in get_features(), qemu 
->> should set features according to it.
->>>
->>>
->>>> Now we check whether device support this feature bit as a double 
->>>> conformation, are you suggesting we should check whether 
->>>> ACCESS_PLATFORM & IFCVF_SUPPORTED_FEATURES
->>>> in set_features() as well?
->>>
->>>
->>> If we know device will always offer ACCESS_PLATFORM, there's no need 
->>> to check it again. What we should check if whether driver set that, 
->>> and if it doesn't we need to fail set_features(). I think there's 
->>> little chance that IFCVF can work when IOMMU_PLATFORM is not 
->>> negotiated.
->> Agree, will check the features bit to set instead of device feature 
->> bits. Thanks!
->>>
->>>
->>>
->>>> I prefer check both device and IFCVF_SUPPORTED_FEATURES both, more 
->>>> reliable.
->>>
->>>
->>> So again, if you want to check device features, set_features() is 
->>> not the proper place. We need to fail the probe in this case.
->>>
->>> Thanks
->>>
->>>
->>>>
->>>> Thanks!
->>>>>
->>>>> Thanks
->>>>>
->>>>>
->>>>>>
->>>>>> Thanks！
->>>>>>>
->>>>>>>
->>>>>>>> +    if (ret)
->>>>>>>> +        return ret;
->>>>>>>>         vf->req_features = features;
->>>>>>>
->>>>>>> _______________________________________________
->>>>>>> Virtualization mailing list
->>>>>>> Virtualization@lists.linux-foundation.org
->>>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
->>>>>>
->>>>>
->>>>
->>>
+>>> What is blocking you from making this consistent?
 >>
->
+>> What about this patch instead ? This localizes the dts->dtbo hack to
+>> unitest's Makefile at least.
+> 
+> It is late here, so I am not going to take the time to actually try what
+> I am going to suggest.  I apologize in advance if I send you off on a
+> wild goose chase.
+> 
+> Would it work to create a .dtso file for each of the unittest overlay .dts
+> files, where the .dtso would simply #include the .dts file.  Then the corresponding
+> .dtbo files could be added to the obj-$(CONFIG_OF_OVERLAY) list.
+
+I suggested having the .dtso files include the .dts file because that is a relatively
+small and easy change to test.  What would probably make more sense is the rename
+the existing overlay .dts files to be .dtso files and then for each overlay .dtso
+file create a new .dts file that #includes the corresponding .dtso file.  This is
+more work and churn, but easier to document that the .dts files are a hack that is
+needed so that the corresponding .dtb.S files will be generated.
+
+If it works, I am fine with either approach.
+
+-Frank
+
+> 
+> I would like to avoid having the unitest-data/Makefile have different rules to
+> build objects because then the normal build rule is not being tested.
+> 
+> -Frank
+> 
+>>
+>> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+>> index a5d2d9254b2c..9f3426ec3fab 100644
+>> --- a/drivers/of/unittest-data/Makefile
+>> +++ b/drivers/of/unittest-data/Makefile
+>> @@ -86,3 +86,7 @@ static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
+>>  static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
+>>  
+>>  dtb-$(CONFIG_OF_OVERLAY) += static_test_1.dtb static_test_2.dtb
+>> +
+>> +# Required for of unittest files as they can't be renamed to .dtso
+>> +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+>> +       $(call if_changed_dep,dtc)
+>> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+>> index bc045a54a34e..77a9be055e51 100644
+>> --- a/scripts/Makefile.lib
+>> +++ b/scripts/Makefile.lib
+>> @@ -347,7 +347,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
+>>  $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+>>         $(call if_changed_dep,dtc)
+>>  
+>> -$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+>> +$(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
+>>         $(call if_changed_dep,dtc)
+>>  
+>>  overlay-y := $(addprefix $(obj)/, $(overlay-y))
+>> @@ -375,6 +375,9 @@ endef
+>>  $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+>>         $(call if_changed_rule,dtc,yaml)
+>>  
+>> +$(obj)/%.dt.yaml: $(src)/%.dtso $(DTC) $(DT_TMP_SCHEMA) FORCE
+>> +       $(call if_changed_rule,dtc,yaml)
+>> +
+>>  dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+>>  
+>>  # Bzip2
+>>
+> 
 
