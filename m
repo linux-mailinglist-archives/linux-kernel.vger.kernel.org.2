@@ -2,75 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB41338C25
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1101338C20
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Mar 2021 13:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhCLMAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 07:00:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhCLL76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:59:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 43031B02F;
-        Fri, 12 Mar 2021 11:59:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6DC20DA81D; Fri, 12 Mar 2021 12:57:57 +0100 (CET)
-Date:   Fri, 12 Mar 2021 12:57:57 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: Convert kmap/memset/kunmap to memzero_user()
-Message-ID: <20210312115757.GQ7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210309212137.2610186-1-ira.weiny@intel.com>
- <20210310155836.7d63604e28d746ef493c1882@linux-foundation.org>
- <20210311155748.GR3014244@iweiny-DESK2.sc.intel.com>
+        id S230272AbhCLL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 06:59:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230189AbhCLL7e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 06:59:34 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464ABC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:59:34 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id y1so6407330ljm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 03:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bpfFLNlEFTtLYALUbQ+wZtMSFLoEa38YGl9oGhtt8UU=;
+        b=OJ8hOSmZeHOaMypXlHqIgOHHwqUyA+0g8YG/4U7b/fYQ6g4HCAlV6X9TPzumop9vA8
+         tkoN5lRrgX8emUbeDsV/4j46mRDMg0ufRupWxDxCo9QSAX5H9bpF1UQ4rigGhUw4T0Dd
+         eZZzQ1x3g4sQCQJ3aa/h5qP/MQ6LGzMLkPyc5ywa4TX0D98YEKXuBYt40Vu2eSjc7ToW
+         BxTDuwTn0DnAk6dGmloeRM9x0nOe/ygTpeKvWOEDjth6rqt7y14En7Co6lAX3RMGh3gi
+         AjrVOE2kpaeBH7gfC2159MMgA1SUp3/irNNIJc6sH8fLV+eHgY2GESnaY4Fh7B0xl4Ad
+         LNdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bpfFLNlEFTtLYALUbQ+wZtMSFLoEa38YGl9oGhtt8UU=;
+        b=oUvUZlItZFyPcIo2vwB4OXAVoPvnqRP+J/U/mRML6nYHAzoxyF1TnoN3wjo048JO2S
+         xWgGOQR90zOQ5pXQwmZsD4GfMzlko47gTKhVplKDIGyFHd6P/Z6eMRA/GiE1aMvs3CW0
+         3Q6EyC3uLHdt9IDRWhRspiR7HGjB4+z9kHW8bHAZKHMFfBl72vob2qfGKSmrkNoMTjbT
+         YZhR8GLwNFEpHradW70CH9gPTT631/3CRuF974SdQeaSSqc1QNeb4b8aFbwIIJFTvWbk
+         cT1TzWeYEKntRnoaF9M/5Lo9HWEIHu4wcVMxbu3ItdAzsYuTbilFNLv6pOJ2JgWDNdmJ
+         AOBg==
+X-Gm-Message-State: AOAM530ndmmbOPyD+xexEtfxrMskpvFV5rpLWDNykoiNPHp3mgMuw5gK
+        /wQJcztmFxrW/zXiPhbrM5S9Gz6vmCRzDQzfptIrtg==
+X-Google-Smtp-Source: ABdhPJxBpkMW0oIMw6HcC9zHDH/L+Q4z9D32/WawBaLNPoKN8etVYWlF9S7muspZtb9FeRIPoarJptbwT8HAOnqGR3s=
+X-Received: by 2002:a2e:557:: with SMTP id 84mr2219735ljf.480.1615550372646;
+ Fri, 12 Mar 2021 03:59:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311155748.GR3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+ <20210305075131.GA15940@goby> <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
+ <CACRpkdb4RkQvDBgTMW_+7yYBsHNRyJZiT5bn04uQJgk7tKGDOA@mail.gmail.com>
+ <6c542548-cc16-af68-c755-df52bd13b209@marcan.st> <CAFA6WYOYmTgguVDwpyjnt3gLssqW48qzAkRD_nyPYg0nNhxT2A@mail.gmail.com>
+ <beca6bc8-8970-bd01-8de0-6ded1fb69be2@marcan.st> <CAFA6WYMSJxK2CjmoLJ6mdNNEfOQOMVXZPbbFRfah7KLeZNfguw@mail.gmail.com>
+ <CACRpkdZb5UMyq5qSJE==3ZnH-7fh92q_t4AnE8mPm0oFEJxqpQ@mail.gmail.com>
+ <e5d3f4b5-748e-0700-b897-393187b2bb1a@marcan.st> <CACRpkdYxMGN3N-jFt1Uw4AkBR-x=dRj6HEvDp6g+2ku7+qCLwg@mail.gmail.com>
+ <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
+In-Reply-To: <02d035ca-697d-1634-a434-a43b9c01f4a9@marcan.st>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 12 Mar 2021 17:29:20 +0530
+Message-ID: <CAFA6WYNzEofaQpEQFRG+XaWQqkEWugOW-1qEf=9J2-tje59QsA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 07:57:48AM -0800, Ira Weiny wrote:
-> On Wed, Mar 10, 2021 at 03:58:36PM -0800, Andrew Morton wrote:
-> > On Tue,  9 Mar 2021 13:21:34 -0800 ira.weiny@intel.com wrote:
-> > 
-> > > Previously this was submitted to convert to zero_user()[1].  zero_user() is not
-> > > the same as memzero_user() and in fact some zero_user() calls may be better off
-> > > as memzero_user().  Regardless it was incorrect to convert btrfs to
-> > > zero_user().
-> > > 
-> > > This series corrects this by lifting memzero_user(), converting it to
-> > > kmap_local_page(), and then using it in btrfs.
-> > 
-> > This impacts btrfs more than MM.  I suggest the btrfs developers grab
-> > it, with my
-> 
-> I thought David wanted you to take these this time?
-> 
-> "I can play the messenger again but now it seems a round of review is needed
-> and with some testing it'll be possible in some -rc. At that point you may take
-> the patches via the mm tree, unless Linus is ok with a late pull."
-> 
-> 	-- https://lore.kernel.org/lkml/20210224123049.GX1993@twin.jikos.cz/
-> 
-> But reading that again I'm not sure what he meant.
+On Fri, 12 Mar 2021 at 01:59, Hector Martin <marcan@marcan.st> wrote:
+>
+> On 11/03/2021 23.31, Linus Walleij wrote:
+> > I understand your argument, is your position such that the nature
+> > of the hardware is such that community should leave this hardware
+> > alone and not try to make use of RPMB  for say ordinary (self-installed)
+> > Linux distributions?
+>
+> It's not really that the community should leave this hardware alone, so
+> much that I think there is a very small subset of users who will be able
+> to benefit from it, and that subset will be happy with a usable
+> kernel/userspace interface and some userspace tooling for this purpose,
+> including provisioning and such.
+>
+> Consider the prerequisites for using RPMB usefully here:
+>
+> * You need (user-controlled) secureboot
 
-As Linus had some objections I was not sure it was still feasible for
-the merge window, but this is now sorted. This new patchset does further
-changes in MM and the btrfs part is a straightforward cleanup. I've
-noticed Andrew added the patches to his queue which I'd prefer so I've
-added my reviewed-by to the third patch. Thanks.
+Agree with this prerequisite since secure boot is essential to build
+initial trust in any system whether that system employs TEE, TPM,
+secure elements etc.
+
+> * You need secret key storage - so either some kind of CPU-fused key, or
+> one protected by a TPM paired with the secureboot (key sealed to PCR
+> values and such)
+> * But if you have a TPM, that can handle secure counters for you already
+> AIUI, so you don't need RPMB
+
+Does TPM provide replay protected memory to store information such as:
+- PIN retry timestamps?
+- Hash of encrypted nvme? IMO, having replay protection for user data
+on encrypted nvme is a valid use-case.
+
+> * So this means you must be running a non-TPM secureboot system
+>
+
+AFAIK, there exist such systems which provide you with a hardware
+crypto accelerator (like CAAM on i.Mx SoCs) that can protect your keys
+(in this case RPMB key) and hence can leverage RPMB for replay
+protection.
+
+> And so we're back to embedded platforms like Android phones and other
+> SoC stuff... user-controlled secureboot is already somewhat rare here,
+> and even rarer are the cases where the user controls the whole chain
+> including the TEE if any (otherwise it'll be using RPMB already); this
+> pretty much excludes all production Android phones except for a few
+> designed as completely open systems; we're left with those and a subset
+> of dev boards (e.g. the Jetson TX1 I did fuse experiments on). In the
+> end, those systems will probably end up with fairly bespoke set-ups for
+> any given device or SoC family, for using RPMB.
+>
+> But then again, if you have a full secureboot system where you control
+> the TEE level, wouldn't you want to put the RPMB shenanigans there and
+> get some semblance of secure TPM/keystore/attempt throttling
+> functionality that is robust against Linux exploits and has a smaller
+> attack surface? Systems without EL3 are rare (Apple M1 :-)) so it makes
+> more sense to do this on those that do have it. If you're paranoid
+> enough to be getting into building your own secure system with
+> anti-rollback for retry counters, you should be heading in that directly
+> anyway.
+>
+> And now Linux's RPMB code is useless because you're running the stack in
+> the secure monitor instead :-)
+>
+
+As Linus mentioned in other reply, there are limitations in order to
+put eMMC/RPMB drivers in TEE / secure monitor such as:
+- One of the design principle for a TEE is to keep its footprint as
+minimal as possible like in OP-TEE we generally try to rely on Linux
+for filesystem services, RPMB access etc. And currently we rely on a
+user-space daemon (tee-supplicant) for RPMB access which IMO isn't as
+secure as compared to direct RPMB access via kernel.
+- Most embedded systems possess a single storage device (like eMMC)
+for which the kernel needs to play an arbiter role.
+
+It looks like other TEE implementations such as Trusty on Android [1]
+and QSEE [2] have a similar interface for RPMB access.
+
+So it's definitely useful for various TEE implementations to have
+direct RPMB access via kernel. And while we are at it, I think it
+should be useful (given replay protection benefits) to provide an
+additional kernel interface to RPMB leveraging Trusted and Encrypted
+Keys subsystem.
+
+[1] https://android.googlesource.com/trusty/app/storage/
+[2] https://www.qualcomm.com/media/documents/files/guard-your-data-with-the-qualcomm-snapdragon-mobile-platform.pdf
+
+-Sumit
+
+> --
+> Hector Martin (marcan@marcan.st)
+> Public Key: https://mrcn.st/pub
