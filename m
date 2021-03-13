@@ -2,334 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCE033A161
+	by mail.lfdr.de (Postfix) with ESMTP id 79A1033A162
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbhCMVRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 16:17:54 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:43940 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234182AbhCMVRU (ORCPT
+        id S234744AbhCMVR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 16:17:56 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:55054 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234299AbhCMVRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 16:17:20 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 784EE3F0;
-        Sat, 13 Mar 2021 22:17:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615670238;
-        bh=txq0PrnVLkf3oRFtfpvV1m1PHQCD5HFy5+0K2gwVS0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zwe2g86q+hGtqUKO3vkz7lSmbWIaK/pdXTakImcPSDjkdEJ5gUKHdVkQejVId17A8
-         xcNjzGF/FsY5t1gh/BFMeDmixcxc8PUQudRONlx+DObZIDA8autPjvPf+gsXHV6eF5
-         /R0mUkEB3Bp3U+i0HzbPc0mNfTBz0iEFX+PugCJg=
-Date:   Sat, 13 Mar 2021 23:16:43 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but
- only if refclk
-Message-ID: <YE0ru4JpXfX/4Awe@pendragon.ideasonboard.com>
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
- <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
-MIME-Version: 1.0
+        Sat, 13 Mar 2021 16:17:35 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12DLGxHo068048;
+        Sat, 13 Mar 2021 21:17:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=6SdMLb1VmdPTle5M6FlXq6RK6Wv3Ww3uoj7L+fefAwM=;
+ b=Cq+T71qomYpJYpuLeeFLDEsT62XDPvjuJQAUSl6h7S/wrmgB7R5prpostAj64xD8dG17
+ Ea8whUzHshx/7O54uInCiWcBkISG58naEANbtS89qziXrvori7gCQoA2m7DUBbzcLKsb
+ xKFeYvR87ZVDLy7s9HEWXQaYtcDo+/KfIjdg5T132X1sdZEfac9gvZ3CU/Iew1ZxPyX8
+ pqN/TWxz0MmCg1aM8kpz3LsgZ9lVbBsXzlaUL/9FyzK8HqtpBdesnt61nrGSuuM2Jchi
+ hGZhvldZZViya38dL+1xBOVnFl86d6VXq+0B1jFFJPQMKBMM+JLkf/mGLg3drqdpJLz9 wA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 378p1ngx2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 13 Mar 2021 21:17:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12DL9bom009910;
+        Sat, 13 Mar 2021 21:17:26 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by userp3030.oracle.com with ESMTP id 378jgug4mx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 13 Mar 2021 21:17:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dVGEK7BTPIY8BNgvSTwRHOpL80TM3s7mKcPXgovZO7K+eoZIVAGBWdfhnp966eQv+X009hqj8vy0ufwwiK8YLBCF5RS+d9DE02WrMqoHpg7aiaMncIDBLMFzlORMhJN6Fu/1qb0mdhaw/rwnSQI8FLYmJpr3cCqClTEfBskva66my1G6RRGUlZfTQ5nq9v9EYAFBcqu/WUs6/2A0s1nxM7OkM27pZsubGR2J05aTikDW6UOr05EMf7BOb8Ld/AeA4bZDW2w3E+7g07icPml9ilDddn0Kbb51Ebo3nrfhlVjBZLDb558LW3Mds+cyaF9Tq65ZF+il/w/UBLfq6G4euA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6SdMLb1VmdPTle5M6FlXq6RK6Wv3Ww3uoj7L+fefAwM=;
+ b=EiNIhW+3oOIGPsBi+/GYSgOfs6jXQ6C1JgmmXhZ55xloCs1w/hE3J6uZIkzzUUt6SZe0pIGoD8CB6gTlVzF8ANOspcmtmS0zifjPDTKbfs+DT9Rwo0Iww04Yk/tyeVvtm5tN13ab0gct4DJLQiZtXtwZmFW9Bdy1D25mGGXev5S6jYo0L9MyzGo4y+CtRxnwRxuzudYKbbhSFMdgWPiS4/qYzUfyRHXR0CJlH6Xwojc1d3C7VtvD561+AhWX0ABsdyucBpGvznIkT4ADElZVGG5Wi8pG/V5H9C46/L7IxPF7GDOcB2UVpQnKmNipVjZIQUhoQ5GxdqoyJPM1ur+i4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6SdMLb1VmdPTle5M6FlXq6RK6Wv3Ww3uoj7L+fefAwM=;
+ b=uEyQQOeE6GqDav5LiACl4iwuME/062n4AkRHFKBLln87YNnRBfgOkWb5tunCJI3WcondCIKp0mx5iuGLEu2EQOiUKbdAlO9goQz5+ciBqiK3K3uBlnmdwmFDgDWKTJDzxuOAukrF4JTlshn5y7nOTs6j+GSWleln5ztBFj44bvY=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB4323.namprd10.prod.outlook.com (2603:10b6:a03:211::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Sat, 13 Mar
+ 2021 21:17:24 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3933.031; Sat, 13 Mar 2021
+ 21:17:24 +0000
+Subject: Re: [PATCH 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
+ truncate_op case
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210308112809.26107-1-linmiaohe@huawei.com>
+ <20210308112809.26107-6-linmiaohe@huawei.com>
+ <2baf9a1b-1c69-8168-cfd9-5b5ad45a4cc8@oracle.com>
+ <d40df812-7b02-78fd-65d4-41bbcc9d4c6d@huawei.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <9f385943-4038-f457-c742-30982b8b7d5d@oracle.com>
+Date:   Sat, 13 Mar 2021 13:17:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <d40df812-7b02-78fd-65d4-41bbcc9d4c6d@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: CO2PR04CA0182.namprd04.prod.outlook.com
+ (2603:10b6:104:5::12) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by CO2PR04CA0182.namprd04.prod.outlook.com (2603:10b6:104:5::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend Transport; Sat, 13 Mar 2021 21:17:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d65b57ed-96d8-40d8-724e-08d8e6656589
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4323:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB43232A00896C7630E74FC52DE26E9@BY5PR10MB4323.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5eBNMQNn3i3TBynNmNb1hN/mSJR4Hy567TQAxV5O+pBnpx74XCrePPabygU5CZybXdFuyhE2E+jAZL+z3Dwt4RqrocQ51dFRoHtk/8RnHzWvtoCZafVbhjT3o7ZYAB64PwcwXhBJVF+AOsNv1jl2kFQgFqutn2BYqYh06zYhCPAJKWY/UkUqJS7pAGcZ0GKgYRRiU64RevTVQANp1bXXaOa8jxoWpFQ7k8CaNGHylNyPn8eoA//JOksfVMO0G4gx9l5NUvmexIuVftNbgfBIA118Ipvdw+6vOP4OxQEXrVV62GnMAfYRXicOr0vGDzlSTUc8HA12KKDDbJru8SEj2sNfogA734pNKMdP+yG+8KxMYfUhn26F8kxyrkteBmD9gnnZPAypxHkWUlDa10Fpbc3tN3Z2aBUJv+FJDuPIHnjrO8cb4SuDdGT6Dk2lyj14QMFx+YsuTxCwWpBLeqW2c0MoytGEnKScgC24zCmrr05eKELxKHjK8QbiM54Ky+/NmRA3rYoqVcqkPohjbuYDH53AAuKSr5TcOdvLzkOtH2UL60ZnxBVlwHz10g4n3+CpW1/kL/hJApIhMVs8umji7Ifdnc+D7tVI/Vj9jh9KCDcYnmRwb5mXp1XoDA/hJ22Sor6q5YJE0yhEQ4NlU8buTA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(376002)(366004)(66476007)(66946007)(44832011)(16576012)(66556008)(83380400001)(53546011)(5660300002)(8936002)(4326008)(52116002)(956004)(8676002)(2906002)(2616005)(6486002)(31686004)(186003)(36756003)(16526019)(478600001)(86362001)(26005)(31696002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SGM3NThDYkJ0b3pSSi85Z2UrdldvRkI4NUxaSFdYSVJuMHJ5YjdESzR6Z2J2?=
+ =?utf-8?B?UG5KTzFjLzI2OVpYZDlock50WUxLelhqM1RyeXVMdStONjJIcVVjQU9OK01J?=
+ =?utf-8?B?VlA4eWdmdWFDc0h4Qk9ySGp2UkRnOHlKQVJEc2VZZ0VKYnJWeEtJampQSFVx?=
+ =?utf-8?B?OURhM3orVTA5bUw3bmFKUHVKblA3VGhncjBEcGVmNVJhYWpSWExBOVVLSDZL?=
+ =?utf-8?B?aDJGTWZ1UlR1emxUWDB5NDBRcEZ0ZWVBNzN1cVNDSmVqaHJiNWJ6WCthTUE3?=
+ =?utf-8?B?WVNTcTlLc1g4T3hKSDhRd1FQWTR1TFhIVE1BWVRnRlFhUkd2UlNCcUlWdjFq?=
+ =?utf-8?B?NHZzWnU5TmU3NjZDdFczMkl1RHU1NW15eE9ZcFZzYVQvYThudjNTUTJvblpM?=
+ =?utf-8?B?TXFZaTdCK2E3d29ONGdjS1Y3TGpUOXY0VWdDTFRHLzJQNUt0UTZVRTZpWGxZ?=
+ =?utf-8?B?T2xyekgrK2xRR2VGTFFVekdUZGIydXNJWlFqMkRackFBbDNwbHByN3BzQ2R1?=
+ =?utf-8?B?bGpFVGloSzZyME9EVk9WTVlqeWhwN3hoWG5ZS29LQjJFQWRuZkgvVXo5ck1j?=
+ =?utf-8?B?Y3BRRDgrVHF5T2t3TW13SWhPR2Y1NzE0RUJqNS8wZU1QdGJJQzRDdWYzamhs?=
+ =?utf-8?B?b2p3bVBqMlFCcE5vUzRzR3dUUUE3ZjJkZUo4Uy9CbDhEM2RwUTJVZm1qd1BU?=
+ =?utf-8?B?THpjcG0wRkh0VzlZbWFDenMyem1Td1p2Uk1XNWlJenBGWmtoVkcwVzlLTXBU?=
+ =?utf-8?B?dTVGQ3VlcWdpVUJIMzBjQ3pWbEhSSEQ3SkNmYjE2NEc1aDZ5dSs0c1hSbENs?=
+ =?utf-8?B?SU9IS0hIMHhkOU9hWjBzSU52Q0pVQTdFazB2NnUva0dGRWlBUDNpaFZpSVRj?=
+ =?utf-8?B?S3BrSWM3LzJuL1U5bVNWTDFNNXNQTkJHcHlnWERhRk9hU2ZHSi94Q0xqQjQ5?=
+ =?utf-8?B?MEliNXpEcEUwNHNESi96Y1lYUEVLWktvOVdkeXBsRjd1azdBMWVGSGdNMlRo?=
+ =?utf-8?B?WEpucDdZaWtOTXpDQ2hlTkwrM1plY1RoY29vdEpOYXMzMFRsSFYvYjU1c3F6?=
+ =?utf-8?B?QWtiT0FsZEtUYmdQaDhvSUNHZjVZUmF4Y2pFVUtWbWpzczZma2o4UVRoS1pm?=
+ =?utf-8?B?OGZLTHY4TlR3WVJlSnFkdFplTlkvdGZ4cVFHaXhMVkxEQjFmQUo4cE1NeXAx?=
+ =?utf-8?B?SXVGdXgzRTZ6VGV2NFNxNHAxSUdWWmpKMXVVZ01GdDZOT2VuMkxOVHl4Nmhz?=
+ =?utf-8?B?bnlsTGZ2R1pndmUzalZkWmNULzRDZVhWbUJQQVhCUXNyRE93QlFNYTJmLzA2?=
+ =?utf-8?B?T1U3LzM5QTZtcHBaU0ZCbVkrQVFHMEloZ283czNMemxhbElpTnU2ZGJxVDRy?=
+ =?utf-8?B?UUt2R0p6RzIwNWp2VVlrY1BtLzdYUzhsKyt6UTVZNE1MUm5jRXc0K2w5NzdL?=
+ =?utf-8?B?UXJ6d3VIa1F5cE9uWWxTWGJBRjl2Wk9Yb3BtL25zOUVkODQ1NTFHTUwyanlk?=
+ =?utf-8?B?dzU0VEJQZEh6TjhFamdKYTRkcFY4a1F0eW9jcFluZzNYRWUyQ2NMM0hoRDRB?=
+ =?utf-8?B?L2o1TVR5bmswWVFCVENLRlo0M3hSc29ueWtiVlZ2ZURZaVBueng2NndsV0I1?=
+ =?utf-8?B?NVNIRnRoUmhaZHozemFIVjRCaXBjT1lXSWQ4Q29ESXdCemhhQmN4NE1oTXF5?=
+ =?utf-8?B?ZldBbXdzblgvcmlFMmdJdG1MNTBUc1JtYjN5bGY5S25zcXpwaENhSmd1b1ZP?=
+ =?utf-8?Q?MlOLnUW4ZqSVjbiqvYukOXICkeBZVP7nTgiysw6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d65b57ed-96d8-40d8-724e-08d8e6656589
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2021 21:17:24.3622
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: klSmw0ad9TyRYMCkxuhNER4X5OfmxAqXJ3YXQb40rAKyjDDitbKJ8t2cl7ix2VcfSHA7ClPgiSuVtSFEpGCUzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4323
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9922 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103130166
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9922 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103130166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On 3/12/21 6:49 PM, Miaohe Lin wrote:
+> Hi:
+> On 2021/3/13 4:03, Mike Kravetz wrote:
+>> On 3/8/21 3:28 AM, Miaohe Lin wrote:
+>>> The fault_mutex hashing overhead can be avoided in truncate_op case because
+>>> page faults can not race with truncation in this routine. So calculate hash
+>>> for fault_mutex only in !truncate_op case to save some cpu cycles.
+>>>
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> ---
+>>>  fs/hugetlbfs/inode.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+>>> index c262566f7c5d..d81f52b87bd7 100644
+>>> --- a/fs/hugetlbfs/inode.c
+>>> +++ b/fs/hugetlbfs/inode.c
+>>> @@ -482,10 +482,9 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
+>>>  
+>>>  		for (i = 0; i < pagevec_count(&pvec); ++i) {
+>>>  			struct page *page = pvec.pages[i];
+>>> -			u32 hash;
+>>> +			u32 hash = 0;
+>>
+>> Do we need to initialize hash here?
+>> I would not bring this up normally, but the purpose of the patch is to save
+>> cpu cycles.
+> 
+> The hash is initialized here in order to avoid false positive
+> "uninitialized local variable used" warning. Or this is indeed unnecessary?
+> 
 
-Thank you for the patch.
+Of course.  In this case we know more about usage then the compiler.
+You can add:
 
-On Thu, Mar 04, 2021 at 03:52:01PM -0800, Douglas Anderson wrote:
-> In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
-> DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
-> EDID from the panel. That commit kinda worked but it had some serious
-> problems.
-> 
-> The problems all stem from the fact that userspace wants to be able to
-> read the EDID before it explicitly enables the panel. For eDP panels,
-> though, we don't actually power the panel up until the pre-enable
-> stage and the pre-enable call happens right before the enable call
-> with no way to interject in-between. For eDP panels, you can't read
-> the EDID until you power the panel. The result was that
-> ti_sn_bridge_connector_get_modes() was always failing to read the EDID
-> (falling back to what drm_panel_get_modes() returned) until _after_
-> the EDID was needed.
-> 
-> To make it concrete, on my system I saw this happen:
-> 1. We'd attach the bridge.
-> 2. Userspace would ask for the EDID (several times). We'd try but fail
->    to read the EDID over and over again and fall back to the hardcoded
->    modes.
-> 3. Userspace would decide on a mode based only on the hardcoded modes.
-> 4. Userspace would ask to turn the panel on.
-> 5. Userspace would (eventually) check the modes again (in Chrome OS
->    this happens on the handoff from the boot splash screen to the
->    browser). Now we'd read them properly and, if they were different,
->    userspace would request to change the mode.
-> 
-> The fact that userspace would always end up using the hardcoded modes
-> at first significantly decreases the benefit of the EDID
-> reading. Also: if the modes were even a tiny bit different we'd end up
-> doing a wasteful modeset and at boot.
-
-s/and at/at/ ?
-
-> As a side note: at least early EDID read failures were relatively
-> fast. Though the old ti_sn_bridge_connector_get_modes() did call
-> pm_runtime_get_sync() it didn't program the important "HPD_DISABLE"
-> bit. That meant that all the AUX transfers failed pretty quickly.
-> 
-> In any case, enough about the problem. How are we fixing it? Obviously
-> we need to power the panel on _before_ reading the EDID, but how? It
-> turns out that there's really no problem with just doing all the work
-> of our pre_enable() function right at attach time and reading the EDID
-> right away. We'll do that. It's not as easy as it sounds, though,
-> because:
-> 
-> 1. Powering the panel up and down is a pretty expensive operation. Not
->    only do we need to wait for the HPD line which seems to take up to
->    200 ms on most panels, but also most panels say that once you power
->    them off you need to wait at least 500 ms before powering them on
->    again. We really don't want to incur 700 ms of time here.
-> 
-> 2. If we happen not to have a fixed "refclk" we've got a
->    chicken-and-egg problem. We seem to need the clock setup to read
->    the EDID. Without a fixed "refclk", though, the bridge runs with
->    the MIPI pixel clock which means you've got to use a hardcoded mode
->    for the MIPI pixel clock.
-> 
-> We'll solve problem #1 above by leaving the panel powered on for a
-> little while after we read the EDID. If enough time passes and nobody
-> turns the panel on then we'll undo our work. NOTE: there are no
-> functional problems if someone turns the panel on after a long delay,
-> it just might take a little longer to turn on.
-> 
-> We'll solve problem #2 by simply _always_ using a hardcoded mode (not
-> reading the EDID) if a "refclk" wasn't provided. While it might be
-> possible to fudge something together to support this, it's my belief
-> that nobody is using this mode in real life since it's really
-> inflexible. I saw it used for some really early prototype hardware
-> that was thrown in the e-waste bin years ago when we realized how
-> inflexible it was. In any case, if someone is using this they're in no
-> worse shape than they were before the (fairly recent) commit
-> 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC").
-> 
-> NOTE: while this patch feels a bit hackish, I'm not sure there's much
-> we can do better without a more fundamental DRM API change. After
-> looking at it a bunch, it also doesn't feel as hacky to me as I first
-> thought. The things that pre-enable does are well defined and well
-> understood and there should be no problems with doing them early nor
-> with doing them before userspace requests anything.
-> 
-> Fixes: 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 98 ++++++++++++++++++++++++---
->  1 file changed, 88 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 491c9c4f32d1..af3fb4657af6 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -16,6 +16,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/workqueue.h>
->  
->  #include <asm/unaligned.h>
->  
-> @@ -130,6 +131,12 @@
->   * @ln_assign:    Value to program to the LN_ASSIGN register.
->   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
->   *
-> + * @pre_enabled_early: If true we did an early pre_enable at attach.
-> + * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
-> + *                           if a normal pre_enable never came.
-
-Could we simplify this by using the runtime PM autosuspend feature ? The
-configuration of the bridge would be moved from pre_enable to the PM
-runtime resume handler, the clk_disable_unprepare() call moved from
-post_disable to the runtime suspend handler, and the work queue replaced
-by usage of pm_runtime_put_autosuspend().
-
-> + * @pre_enable_mutex: Lock to synchronize between the pre_enable_timeout_work
-> + *                    and normal mechanisms.
-> + *
->   * @gchip:        If we expose our GPIOs, this is used.
->   * @gchip_output: A cache of whether we've set GPIOs to output.  This
->   *                serves double-duty of keeping track of the direction and
-> @@ -158,6 +165,10 @@ struct ti_sn_bridge {
->  	u8				ln_assign;
->  	u8				ln_polrs;
->  
-> +	bool				pre_enabled_early;
-> +	struct delayed_work		pre_enable_timeout_work;
-> +	struct mutex			pre_enable_mutex;
-> +
->  #if defined(CONFIG_OF_GPIO)
->  	struct gpio_chip		gchip;
->  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
-> @@ -272,12 +283,6 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->  	struct edid *edid = pdata->edid;
->  	int num, ret;
->  
-> -	if (!edid) {
-> -		pm_runtime_get_sync(pdata->dev);
-> -		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-> -		pm_runtime_put(pdata->dev);
-> -	}
-> -
->  	if (edid && drm_edid_is_valid(edid)) {
->  		ret = drm_connector_update_edid_property(connector, edid);
->  		if (!ret) {
-> @@ -412,10 +417,8 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
->  	pm_runtime_put_sync(pdata->dev);
->  }
->  
-> -static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
-> +static void __ti_sn_bridge_pre_enable(struct ti_sn_bridge *pdata)
->  {
-> -	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-> -
->  	pm_runtime_get_sync(pdata->dev);
->  
->  	/* configure bridge ref_clk */
-> @@ -443,6 +446,38 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
->  	drm_panel_prepare(pdata->panel);
->  }
->  
-> +static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
-> +{
-> +	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-> +
-> +	mutex_lock(&pdata->pre_enable_mutex);
-> +	if (pdata->pre_enabled_early)
-> +		/* Already done! Just mark that normal pre_enable happened */
-> +		pdata->pre_enabled_early = false;
-> +	else
-> +		__ti_sn_bridge_pre_enable(pdata);
-> +	mutex_unlock(&pdata->pre_enable_mutex);
-> +}
-> +
-> +static void ti_sn_bridge_cancel_early_pre_enable(struct ti_sn_bridge *pdata)
-> +{
-> +	mutex_lock(&pdata->pre_enable_mutex);
-> +	if (pdata->pre_enabled_early) {
-> +		pdata->pre_enabled_early = false;
-> +		ti_sn_bridge_post_disable(&pdata->bridge);
-> +	}
-> +	mutex_unlock(&pdata->pre_enable_mutex);
-> +}
-> +
-> +static void ti_sn_bridge_pre_enable_timeout(struct work_struct *work)
-> +{
-> +	struct delayed_work *dwork = to_delayed_work(work);
-> +	struct ti_sn_bridge *pdata = container_of(dwork, struct ti_sn_bridge,
-> +						  pre_enable_timeout_work);
-> +
-> +	ti_sn_bridge_cancel_early_pre_enable(pdata);
-> +}
-> +
->  static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  			       enum drm_bridge_attach_flags flags)
->  {
-> @@ -516,6 +551,34 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  	}
->  	pdata->dsi = dsi;
->  
-> +	/*
-> +	 * If we have a refclk then we can support dynamic EDID.
-> +	 *
-> +	 * A few notes:
-> +	 * - From trial and error it appears that we need our clock setup in
-> +	 *   order to read the EDID. If we don't have refclk then we
-> +	 *   (presumably) need the MIPI clock on, but turning that on implies
-> +	 *   knowing the pixel clock / not needing the EDID. Maybe we could
-> +	 *   futz this if necessary, but for now we won't.
-> +	 * - In order to read the EDID we need power on to the bridge and
-> +	 *   the panel (and it has to finish booting up / assert HPD). This
-> +	 *   is slow so we leave the panel powered when we're done but setup a
-> +	 *   timeout so we don't leave it on forever.
-> +	 * - The rest of Linux assumes that it can read the EDID without
-> +	 *   (explicitly) enabling the power which is why this somewhat awkward
-> +	 *   step is needed.
-> +	 */
-> +	if (pdata->refclk) {
-> +		mutex_lock(&pdata->pre_enable_mutex);
-> +
-> +		pdata->pre_enabled_early = true;
-> +		__ti_sn_bridge_pre_enable(pdata);
-> +		pdata->edid = drm_get_edid(&pdata->connector, &pdata->aux.ddc);
-> +		schedule_delayed_work(&pdata->pre_enable_timeout_work, 30 * HZ);
-> +
-> +		mutex_unlock(&pdata->pre_enable_mutex);
-> +	}
-> +
->  	return 0;
->  
->  err_dsi_attach:
-> @@ -525,6 +588,17 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  	return ret;
->  }
->  
-> +static void ti_sn_bridge_detach(struct drm_bridge *bridge)
-> +{
-> +	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-> +
-> +	cancel_delayed_work_sync(&pdata->pre_enable_timeout_work);
-> +	ti_sn_bridge_cancel_early_pre_enable(pdata);
-> +
-> +	kfree(pdata->edid);
-> +	pdata->edid = NULL;
-> +}
-> +
->  static void ti_sn_bridge_disable(struct drm_bridge *bridge)
->  {
->  	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-> @@ -863,6 +937,7 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
->  
->  static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
->  	.attach = ti_sn_bridge_attach,
-> +	.detach = ti_sn_bridge_detach,
->  	.pre_enable = ti_sn_bridge_pre_enable,
->  	.enable = ti_sn_bridge_enable,
->  	.disable = ti_sn_bridge_disable,
-> @@ -1227,6 +1302,10 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  	if (!pdata)
->  		return -ENOMEM;
->  
-> +	mutex_init(&pdata->pre_enable_mutex);
-> +	INIT_DELAYED_WORK(&pdata->pre_enable_timeout_work,
-> +			  ti_sn_bridge_pre_enable_timeout);
-> +
->  	pdata->regmap = devm_regmap_init_i2c(client,
->  					     &ti_sn_bridge_regmap_config);
->  	if (IS_ERR(pdata->regmap)) {
-> @@ -1301,7 +1380,6 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->  	if (!pdata)
->  		return -EINVAL;
->  
-> -	kfree(pdata->edid);
->  	ti_sn_debugfs_remove(pdata);
->  
->  	of_node_put(pdata->host_node);
-
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 -- 
-Regards,
-
-Laurent Pinchart
+Mike Kravetz
