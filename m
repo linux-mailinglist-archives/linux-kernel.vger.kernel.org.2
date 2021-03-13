@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319B7339EFA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 16:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AE9339F01
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhCMPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 10:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhCMPoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 10:44:06 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B31C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 07:44:06 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id o10so1100985plg.11
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 07:44:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=S9+2IFN1dv7+M9NnZ3JAWoiEoZQsQf5Cgay5lNY5ss4=;
-        b=fnHgpB/SiaeX/3oYBL7Ek++HPE2DGn/hgClmOPjp8pHIcqNYBcbZ92qozOhAFpVP+/
-         XFXdEj6GHCAn6jaz6y2ECYrQGE4KWSHJkIrTrVW63WIxPXnFypjaEhS05UozwKJwp8Kj
-         oNtdr2s2hm03PMMjOXHE1FKhTPxQBpb5S6sYFT5b3ZPhdE1r4BbFgmz+mldsHyD2hE/E
-         DGo4Qxoi3mxSuFhL6PQlVcQynFbLRZpCOwWcVCHZOiwKuRlG6yfm9f/oRDGdprhZdE+4
-         miv+C3l3B+578eq6UA2FehZ95LBZV/3+WXxtKcrMw5Q3oow5s0jZ5ySGthgrsroXwkGN
-         DK6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=S9+2IFN1dv7+M9NnZ3JAWoiEoZQsQf5Cgay5lNY5ss4=;
-        b=X2OY5hhJ30d+z4R77lQU4KdToP+CE/0gbItwWjc4S7svMwJPbe+hH4HEuh6wbfQS+7
-         PA+EQp37dbne7fopkbN4dPFHUUNqfXHCByKTrkCVy5r9I8Dgb9sxXiLYO9XWSpPODRQi
-         WqywYn+aaCcuYePaoBZAnmxxI52DKi8Ut/zucs3G7djGBzsmBIWHmteLTKcpc9VgKvXX
-         U+UZd6qJcYnMOebH/P9yZAa6nG92uUP+20MH3UAcbUD9gSF2BYkgmMe/Ws8KaXaYnAnv
-         48wLelu21BvsEZzWLlxQHAfBxd+pWJ9tfJa4laXEHmcw1+mo9Dml0ek2RKNxbVU2V39f
-         unKQ==
-X-Gm-Message-State: AOAM532nO2uzu9LwS6MefZHlSpSgD558wNrgKMfVwIjS5hognRPs2ZtE
-        8L4Cn6rgsSoc/kU8mSbhKKW51pY/4ue6s44E
-X-Google-Smtp-Source: ABdhPJzAJoemsc8BKTVt+RTiB9Y8TLWJ5WsUquHIruS9nqmNKURerImbotok1eXv27CbyNL2iN7JHQ==
-X-Received: by 2002:a17:903:30cd:b029:e6:a1fa:403b with SMTP id s13-20020a17090330cdb02900e6a1fa403bmr1709838plc.43.1615650246209;
-        Sat, 13 Mar 2021 07:44:06 -0800 (PST)
-Received: from client-VirtualBox ([223.186.9.86])
-        by smtp.gmail.com with ESMTPSA id mm12sm5687160pjb.49.2021.03.13.07.44.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 07:44:05 -0800 (PST)
-Date:   Sat, 13 Mar 2021 21:13:57 +0530
-From:   Chinmayi Shetty <chinmayishetty359@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Net: gtp: Fixed missing blank line after declaration
-Message-ID: <20210313154357.jtapnmtnkyxvjq2d@client-VirtualBox>
+        id S234015AbhCMQCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 11:02:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233868AbhCMQBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 11:01:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B59264F1E;
+        Sat, 13 Mar 2021 16:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615651310;
+        bh=HuaFV7Aup5s4tI28aR1o2B7ZXch9cKa+janu7Y/uWDY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=en7Bcj1pJwbSqsmCJ3hY0FkQ2tA65N1v8h+pQqIOAMKD9CMHRLbQSmwYKoQrJ1jUN
+         31Y+f9I9Y0cML9AR0oOayF1C6ZViKrjIdm+3Rr3lN8qLuC02UoZ8/J1B1M5aDpMkyn
+         Q3jfqUq9u8GoMPpesYwT3B++ReS2f2dgmKLb1+ZUhLwde+ItegYIxTvYK+u22Q0sHv
+         7oit2HVyPrJDRFw+4UBGXObbAOcqIbub511CUYCOPYG64MNnWw6WR6Z+nT7PRYEd0L
+         4qPKSFbwvENY9uuFOCtH8Y7ccPLRJQTN+cF/17NyiH2yChUOpoIRQo+hoamUx/YAqn
+         y32Rv0nQ7DFfg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/3] x86/sgx: Use sgx_free_epc_page() in sgx_reclaim_pages()
+Date:   Sat, 13 Mar 2021 18:01:17 +0200
+Message-Id: <20210313160119.1318533-2-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210313160119.1318533-1-jarkko@kernel.org>
+References: <20210313160119.1318533-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Chinmayi Shetty <chinmayishetty359@gmail.com>
----
- drivers/net/gtp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Replace the ad-hoc code with a sgx_free_epc_page(), in order to make sure
+that all the relevant checks and book keeping is done, while freeing a
+borrowed EPC page, and remove redundant code. EREMOVE inside
+sgx_free_epc_page() does not change the semantics, as EREMOVE to an
+uninitialize pages is a nop.
 
-diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index efe5247d8c42..79998f4394e5 100644
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -437,7 +437,7 @@ static inline void gtp1_push_header(struct sk_buff *skb, struct pdp_ctx *pctx)
- 	gtp1->length	= htons(payload_len);
- 	gtp1->tid	= htonl(pctx->u.v1.o_tei);
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+
+v4:
+* Rewrote the commit message.
+
+ arch/x86/kernel/cpu/sgx/main.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 8df81a3ed945..65004fb8a91f 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
+ {
+ 	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+ 	struct sgx_backing backing[SGX_NR_TO_SCAN];
+-	struct sgx_epc_section *section;
+ 	struct sgx_encl_page *encl_page;
+ 	struct sgx_epc_page *epc_page;
+ 	pgoff_t page_index;
+@@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
+ 		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+ 		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
  
--	/* TODO: Suppport for extension header, sequence number and N-PDU.
-+	/* TODO: Support for extension header, sequence number and N-PDU.
- 	 *	 Update the length field if any of them is available.
- 	 */
+-		section = &sgx_epc_sections[epc_page->section];
+-		spin_lock(&section->lock);
+-		list_add_tail(&epc_page->list, &section->page_list);
+-		section->free_cnt++;
+-		spin_unlock(&section->lock);
++		sgx_free_epc_page(epc_page);
+ 	}
  }
+ 
 -- 
-2.25.1
+2.30.2
 
