@@ -2,215 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97054339D52
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53938339D57
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhCMJaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:30:00 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:30934 "EHLO pegase1.c-s.fr"
+        id S233479AbhCMJbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:31:09 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:37192 "EHLO gecko.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233110AbhCMJ3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:29:37 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DyHSp14h4z9tvr3;
-        Sat, 13 Mar 2021 10:29:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zaAMf4DmfJvl; Sat, 13 Mar 2021 10:29:30 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DyHSn63HLz9tvr2;
-        Sat, 13 Mar 2021 10:29:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D50A08B769;
-        Sat, 13 Mar 2021 10:29:30 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Wc7bhFyTgWK9; Sat, 13 Mar 2021 10:29:30 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E04948B75B;
-        Sat, 13 Mar 2021 10:29:29 +0100 (CET)
-Subject: Re: [PATCH v2 4/7] CMDLINE: powerpc: convert to generic builtin
- command line
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-References: <20210309000247.2989531-5-danielwa@cisco.com>
- <c5c8b57e-7954-ec02-188a-7f85cb0af731@csgroup.eu>
- <20210309214051.GS109100@zorba>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3cabc11d-96d1-962c-ab11-43a8c6d00657@csgroup.eu>
-Date:   Sat, 13 Mar 2021 10:29:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233446AbhCMJau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 04:30:50 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12D9US2d008194
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 13 Mar 2021 10:30:28 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.115.33])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12D9PQjp011793;
+        Sat, 13 Mar 2021 10:25:26 +0100
+Date:   Sat, 13 Mar 2021 10:25:25 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        "Jim Quinlan" <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, <hdegoede@redhat.com>
+Subject: Re: [rfc, PATCH v1 0/7] PCI: introduce p2sb helper
+Message-ID: <20210313102525.425cf40d@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210309214051.GS109100@zorba>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mon, 8 Mar 2021 14:20:13 +0200
+schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
+> There are a few users and even at least one more is coming
+> that would like to utilize p2sb mechanisms like hide/unhide
+> a device from PCI configuration space.
 
-Le 09/03/2021 à 22:40, Daniel Walker a écrit :
-> On Tue, Mar 09, 2021 at 08:56:47AM +0100, Christophe Leroy wrote:
->>
->> So we are referencing a function that doesn't exist (namely prom_strlcat).
->> But it works because cmdline_add_builtin_custom() looks like a function but
->> is in fact an obscure macro that doesn't use prom_strlcat() unless
->> GENERIC_CMDLINE_NEED_STRLCAT is defined.
->>
->> IMHO that's awful for readability and code maintenance.
+Tried this for my usecase and can confirm it to work as expected.
+
+Tested-by: Henning Schild <henning.schild@siemens.com>
+
+Henning
+
+> Here is the series to deduplicate existing users and provide
+> a generic way for new comers.
 > 
-> powerpc is a special case, there's no other users like this. The reason is
-> because of all the difficulty in this prom_init.c code. A lot of the generic
-> code has similar kind of changes to work across architectures.
+> It also includes a patch to enable GPIO controllers on Apollo Lake
+> when it's used with ABL bootloader w/o ACPI support.
+> 
+> Please, comment on the approach and individual patches.
+> 
+> (Since it's cross subsystem, the PCI seems like a main one and
+>  I think it makes sense to route it thru it with immutable tag
+>  or branch provided for the others).
+> 
+> Andy Shevchenko (5):
+>   PCI: Introduce pci_bus_*() printing macros when device is not
+>     available
+>   PCI: Convert __pci_read_base() to __pci_bus_read_base()
+>   mfd: lpc_ich: Factor out lpc_ich_enable_spi_write()
+>   mfd: lpc_ich: Switch to generic pci_p2sb_bar()
+>   i2c: i801: convert to use common P2SB accessor
+> 
+> Jonathan Yong (1):
+>   PCI: New Primary to Sideband (P2SB) bridge support library
+> 
+> Tan Jui Nee (1):
+>   mfd: lpc_ich: Add support for pinctrl in non-ACPI system
+> 
+>  drivers/i2c/busses/Kconfig    |   1 +
+>  drivers/i2c/busses/i2c-i801.c |  40 +++-------
+>  drivers/mfd/Kconfig           |   1 +
+>  drivers/mfd/lpc_ich.c         | 135
+> +++++++++++++++++++++++++++++----- drivers/pci/Kconfig           |
+> 8 ++ drivers/pci/Makefile          |   1 +
+>  drivers/pci/pci-p2sb.c        |  89 ++++++++++++++++++++++
+>  drivers/pci/pci.h             |  13 +++-
+>  drivers/pci/probe.c           |  81 ++++++++++----------
+>  include/linux/pci-p2sb.h      |  28 +++++++
+>  include/linux/pci.h           |   9 +++
+>  11 files changed, 313 insertions(+), 93 deletions(-)
+>  create mode 100644 drivers/pci/pci-p2sb.c
+>  create mode 100644 include/linux/pci-p2sb.h
 > 
 
-I'd suggest the following (sorry if Thunderbird damages whitespaces, you'll get the idea anyway)
-
-
-
-diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-new file mode 100644
-index 000000000000..30b9eefc802f
---- /dev/null
-+++ b/include/linux/cmdline.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_CMDLINE_H
-+#define _LINUX_CMDLINE_H
-+
-+#ifdef CONFIG_GENERIC_CMDLINE
-+
-+#ifndef cmdline_strlcpy
-+#define cmdline_strlcpy strlcpy
-+#endif
-+#ifndef cmdline_strlcat
-+#define cmdline_strlcat strlcat
-+#endif
-+
-+static __always_inline void
-+cmdline_add_builtin_custom(char *dest, const char *src, char *tmp, unsigned long length)
-+{
-+	if (WARN_ON(sizeof(CONFIG_CMDLINE_PREPEND) > 1 &&
-+		    !IS_ENABLED(CONFIG_CMDLINE_OVERRIDE) &&
-+		    !tmp && src == dest))
-+		return;
-+
-+	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1 &&
-+	    !IS_ENABLED(CONFIG_CMDLINE_OVERRIDE) && src == dest)
-+		cmdline_strlcpy(tmp, src, length);
-+	else
-+		tmp = (char *)src;
-+
-+	cmdline_strlcpy(dest, CONFIG_CMDLINE_PREPEND " ", length);
-+	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE) && tmp)
-+		cmdline_strlcat(dest, tmp, length);
-+	cmdline_strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
-+}
-+
-+#define cmdline_add_builtin(dest, src, length) do {			\
-+	static __init char cmdline_tmp[length];				\
-+									\
-+	cmdline_add_builtin_custom(dest, src, cmdline_tmp, length);	\
-+} while (0)
-+
-+#endif /* CONFIG_GENERIC_CMDLINE */
-+
-+#endif /* _LINUX_CMDLINE_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 22946fe5ded9..aeb134f0703b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2035,6 +2035,27 @@ config PROFILING
-  config TRACEPOINTS
-  	bool
-
-+config GENERIC_CMDLINE
-+	bool
-+
-+if GENERIC_CMDLINE
-+
-+config CMDLINE_BOOL
-+	bool "Built-in kernel command line"
-+
-+config CMDLINE_APPEND
-+	string "Built-in kernel command string append" if CMDLINE_BOOL
-+	default ""
-+
-+config CMDLINE_PREPEND
-+	string "Built-in kernel command string prepend" if CMDLINE_BOOL
-+	default ""
-+
-+config CMDLINE_OVERRIDE
-+	bool "Built-in command line overrides boot loader arguments" if CMDLINE_BOOL
-+
-+endif
-+
-  endmenu		# General setup
-
-  source "arch/Kconfig"
--- 
-
-Then on powerpc you do:
-
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index 2c2f33155317..1649787c3953 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -152,7 +152,7 @@ static struct prom_t __prombss prom;
-  static unsigned long __prombss prom_entry;
-
-  static char __prombss of_stdout_device[256];
--static char __prombss prom_scratch[256];
-+static char __prombss prom_scratch[COMMAND_LINE_SIZE];
-
-  static unsigned long __prombss dt_header_start;
-  static unsigned long __prombss dt_struct_start, dt_struct_end;
-@@ -770,6 +770,12 @@ static unsigned long prom_memparse(const char *ptr, const char **retptr)
-   * Early parsing of the command line passed to the kernel, used for
-   * "mem=x" and the options that affect the iommu
-   */
-+
-+#define cmdline_strlcpy prom_strlcpy
-+#define cmdline_strlcat prom_strlcat
-+
-+#include <linux/cmdline.h>
-+
-  static void __init early_cmdline_parse(void)
-  {
-  	const char *opt;
-@@ -780,12 +786,11 @@ static void __init early_cmdline_parse(void)
-  	prom_cmd_line[0] = 0;
-  	p = prom_cmd_line;
-
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
-+	if ((long)prom.chosen > 0)
-  		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
-
--	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
--		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
--			     sizeof(prom_cmd_line));
-+	cmdline_add_builtin_custom(prom_cmd_line, (l > 0 ? p : NULL),
-+				   prom_scratch, sizeof(prom_cmd_line));
-
-  	prom_printf("command line: %s\n", prom_cmd_line);
-
--- 
-2.25.0
-
-
-
-Christophe
