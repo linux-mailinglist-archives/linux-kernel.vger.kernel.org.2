@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8464339D8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B01F339D8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhCMKWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhCMKVo (ORCPT
+        id S233369AbhCMKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 05:24:41 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48220 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhCMKYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 05:21:44 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C84BC061574;
-        Sat, 13 Mar 2021 02:21:44 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id b130so26989772qkc.10;
-        Sat, 13 Mar 2021 02:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UpX1Lg+mq54WtiAhrwBDWXYDPmqQUSFtcUwtNY+v8RQ=;
-        b=FS0YqOTWPrsR8T8rB+TOtNMqfIpKjZbMujx1QpqRgZjz+StMzp0ESXTxK/LGZVIOsP
-         9J/ID9iq3J8fZXg6Zvd+AZeFr0D4YkkTPs8aOslYrPBSny6+99XB8x6oEohV8QVCe77t
-         cUb0BW4BeNSoNY+qqwndaQGB63Hxq/SUFNI/zOzGmYw9u8iUbebYf6K0V012N05CS6MU
-         HkIJs4hs3gGUSxMlZ1Fh6L2Gc3+begGLpY1xDxOeF1bLTazwfYrTo9ed3PR2AFrzSZHL
-         aUwrIpg9owREHwMHERhVCTJp9HrkZ26YA1xMQIDqfyU3uRlaMJYeB8puRxRmsdcEjhCI
-         OInA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UpX1Lg+mq54WtiAhrwBDWXYDPmqQUSFtcUwtNY+v8RQ=;
-        b=TOs1rCxAk0veONv7kDC8O8wkAHQ/H7ZrnYpgYkq3nH+sYywMkdUlAd6Duw3fGFDmPh
-         /GNOtRjj+IktzIIg2G6TLl5rNbIHDYtAfpMukwKNzhNtwor6P6pntTZBZolsV2A6XVaN
-         UrEwsVInrEDCsmSo6G3PwW2+o5FYeIojQ48qwsQPfLt0obeMIlAG0/XBezMiClCPeHdC
-         uRxnZuhoqdYvAcwPH/apZNO3AsBtjqdVuKaYsYaDY41GNUCswBbKR7Dy03mQgqGwfLzt
-         jsJ5jRMaTDZRpZmeckDxhVII8/VDBoSasGZKRSGCIN66vv2a8+67ncUK+Febt56qMY+5
-         QFPw==
-X-Gm-Message-State: AOAM533A001jVMpWQPPx+pyTE7DGUcWHm+p3TPj28SyPvFeRWRvnZkCT
-        ohW7Ciug+1D3w+KfkbYfXTE=
-X-Google-Smtp-Source: ABdhPJzvrDsFGZRbsgl4wu3pGJt4hqTE0dedEbZoaS2lE81Ko30AmIDxkFn/Hgy8XduDR4fInx5ipQ==
-X-Received: by 2002:a37:6348:: with SMTP id x69mr16074698qkb.154.1615630903056;
-        Sat, 13 Mar 2021 02:21:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:26b6])
-        by smtp.gmail.com with ESMTPSA id r125sm6279413qkf.132.2021.03.13.02.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 02:21:42 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 13 Mar 2021 05:20:39 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Jacob Pan <jacob.jun.pan@intel.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
-References: <20210302081705.1990283-1-vipinsh@google.com>
- <20210302081705.1990283-3-vipinsh@google.com>
- <20210303185513.27e18fce@jacob-builder>
- <YEB8i6Chq4K/GGF6@google.com>
- <YECfhCJtHUL9cB2L@slm.duckdns.org>
- <20210312125821.22d9bfca@jacob-builder>
- <YEvZ4muXqiSScQ8i@google.com>
- <20210312145904.4071a9d6@jacob-builder>
+        Sat, 13 Mar 2021 05:24:33 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2BC9A1C0B85; Sat, 13 Mar 2021 11:24:31 +0100 (CET)
+Date:   Sat, 13 Mar 2021 11:24:30 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Rahul Tanwar <rtanwar@maxlinear.com>
+Cc:     Cheol Yong Kim <ckim@maxlinear.com>, Qiming Wu <qwu@maxlinear.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Hauke Mehrtens <hmehrtens@maxlinear.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: MaxLinear, please maintain your drivers was Re: [PATCH] leds:
+ lgm: fix gpiolib dependency
+Message-ID: <20210313102430.GA11435@duo.ucw.cz>
+References: <20210308153052.2353885-1-arnd@kernel.org>
+ <20210309180851.GA4669@duo.ucw.cz>
+ <20210309193910.GA7507@amd>
+ <YEgeoPqCCgTUEsSc@angband.pl>
+ <20210310072831.GA29779@amd>
+ <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
+ <9a74ce79-b7cf-dec1-a64c-d928b5712645@hauke-m.de>
+ <MN2PR19MB3486B88ADF5BE557BEE168AEAF909@MN2PR19MB3486.namprd19.prod.outlook.com>
+ <MW2PR1901MB2187816296E1B03F91EB972BD0909@MW2PR1901MB2187.namprd19.prod.outlook.com>
+ <MN2PR19MB3693B7620DABED199AA304B5B1909@MN2PR19MB3693.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
 Content-Disposition: inline
-In-Reply-To: <20210312145904.4071a9d6@jacob-builder>
+In-Reply-To: <MN2PR19MB3693B7620DABED199AA304B5B1909@MN2PR19MB3693.namprd19.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 02:59:04PM -0800, Jacob Pan wrote:
-> Our primary goal is to limit the amount of IOASIDs that VMs can allocate.
-> If a VM is migrated to a different cgroup, I think we need to
-> charge/uncharge the destination/source cgroup in order enforce the limit. I
-> am not an expert here, any feedback would be appreciated.
 
-That simply isn't a supported usage model. None of other resources will get
-tracked if you do that.
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hi!
 
--- 
-tejun
+> Sorry for the hiccup due to missing email address in the email chain duri=
+ng the ownership transition.
+>=20
+> Henceforth, I will be the maintainer for all kernel drivers/code related =
+to =E2=80=9Cformerly Intel=E2=80=99s now MaxLinear=E2=80=99s=E2=80=9D Light=
+ning Mountain SoC.
+>=20
+> Please send any Lightning Mountain SoC related issues email to Rahul Tanw=
+ar (rtanwar@maxlinear.com<mailto:rtanwar@maxlinear.com>) and I will ensure =
+that I
+> address the issues in a timely manner.
+>=20
+> I will wait for more details on your fix request for LGM LED
+> driver. Thanks.
+
+Please review/Ack arnd's change.
+
+Plus I'd like you to
+
+1) remove LEDS_BLINK Kconfig symbol
+
+2) provide useful Kconfig help text for your driver.
+
+Thank you,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEyS3gAKCRAw5/Bqldv6
+8vxmAJ9FvMs2JegMmexmr37OARnEh156dACgwi7Jk65iG7STxDC7zHVXw6Ub1sE=
+=WQa6
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
