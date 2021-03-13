@@ -2,226 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02E1339B8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DA0339B8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhCMDc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 22:32:56 -0500
-Received: from mga11.intel.com ([192.55.52.93]:2947 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231906AbhCMDcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 22:32:14 -0500
-IronPort-SDR: oCE3X6jfVWX0RCvXUiBlAFVZlKe3lHMJIARmuyFeCkJjSTtW1PSFD4I/DF+dgeKoqfy66hXbut
- salm1wLN4zkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185559804"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="185559804"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 19:32:14 -0800
-IronPort-SDR: PakDqJtC0YR+wHDSV25jeiEeuRoxVDQoQDM/nWIcO0uG6xbchEuk6YUabcz1oaBYQM4B3VFB6Q
- 6JaWl96Uv/Ig==
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="387542447"
-Received: from fgeisler-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.5.8])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 19:32:13 -0800
-From:   sathyanarayanan.kuppuswamy@linux.intel.com
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@intel.com, dan.j.williams@intel.com, kbusch@kernel.org,
-        lukas@wunner.de, sathyanarayanan.kuppuswamy@linux.intel.com,
-        knsathya@kernel.org
-Subject: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is triggered
-Date:   Fri, 12 Mar 2021 19:32:08 -0800
-Message-Id: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S233120AbhCMDdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 22:33:35 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:36994 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231392AbhCMDde (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 22:33:34 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.228])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 9CBB2400062;
+        Sat, 13 Mar 2021 11:33:31 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] soc: ti: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Sat, 13 Mar 2021 11:33:26 +0800
+Message-Id: <1615606406-2384-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZThgdSRpJSEhMT0IZVkpNSk5NS01PSkpDQkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6Nio*IT8KOVFOLxIuLhpJ
+        LSNPCy1VSlVKTUpOTUtNT0pJSUhDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUNZV1kIAVlBSk1JQzcG
+X-HM-Tid: 0a7829a5722bd991kuws9cbb2400062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Fix the following coccicheck warning:
+	WARNING:pm_sr_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
 
-When hotplug and DPC are both enabled on a Root port or
-Downstream Port, during DPC events that cause a DLLSC link
-down/up events, such events (DLLSC) must be suppressed to
-let the DPC driver own the recovery path.
-
-When DPC is present and enabled, hardware will put the port in
-containment state to allow SW to recover from the error condition
-in the seamless manner. But, during the DPC error recovery process,
-since the link is in disabled state, it will also raise the DLLSC
-event. In Linux kernel architecture, DPC events are handled by DPC
-driver and DLLSC events are handled by hotplug driver. If a hotplug
-driver is allowed to handle such DLLSC event (triggered by DPC
-containment), then we will have a race condition between error
-recovery handler (in DPC driver) and hotplug handler in recovering
-the contained port. Allowing such a race leads to a lot of stability
-issues while recovering the  device. So skip DLLSC handling in the
-hotplug driver when the PCIe port associated with the hotplug event is
-in DPC triggered state and let the DPC driver be responsible for the
-port recovery.
-
-Following is the sample dmesg log which shows the contention
-between hotplug handler and error recovery handler. In this
-case, hotplug handler won the race and error recovery
-handler reported failure.
-
-pcieport 0000:97:02.0: pciehp: Slot(4): Link Down
-pcieport 0000:97:02.0: DPC: containment event, status:0x1f01 source:0x0000
-pcieport 0000:97:02.0: DPC: unmasked uncorrectable error detected
-pcieport 0000:97:02.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
-pcieport 0000:97:02.0:   device [8086:347a] error status/mask=00004000/00100020
-pcieport 0000:97:02.0:    [14] CmpltTO                (First)
-pci 0000:98:00.0: AER: can't recover (no error_detected callback)
-pcieport 0000:97:02.0: pciehp: Slot(4): Card present
-pcieport 0000:97:02.0: DPC: Data Link Layer Link Active not set in 1000 msec
-pcieport 0000:97:02.0: AER: subordinate device reset failed
-pcieport 0000:97:02.0: AER: device recovery failed
-pci 0000:98:00.0: [8086:0953] type 00 class 0x010802
-nvme nvme1: pci function 0000:98:00.0
-nvme 0000:98:00.0: enabling device (0140 -> 0142)
-nvme nvme1: 31/0/0 default/read/poll queues
- nvme1n2: p1
-
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Raj Ashok <ashok.raj@intel.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/pci/hotplug/pciehp_hpc.c | 19 +++++++++++++++++
- drivers/pci/pci.h                |  2 ++
- drivers/pci/pcie/dpc.c           | 36 ++++++++++++++++++++++++++++++--
- include/linux/pci.h              |  1 +
- 4 files changed, 56 insertions(+), 2 deletions(-)
+ drivers/soc/ti/smartreflex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index fb3840e222ad..55da5208c7e5 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -691,6 +691,25 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
- 		goto out;
- 	}
- 
-+	/*
-+	 * If the DLLSC link up/down event is generated due to DPC containment
-+	 * in the PCIe port, skip the DLLSC event handling and let the DPC
-+	 * driver own the port recovery. Allowing both hotplug DLLSC event
-+	 * handler and DPC event trigger handler to attempt recovery on the
-+	 * same port leads to stability issues. If DPC recovery is successful,
-+	 * is_dpc_reset_active() will return false and the hotplug handler will
-+	 * not suppress the DLLSC event. If DPC recovery fails and the link is
-+	 * left in disabled state, once the user changes the faulty card, the
-+	 * hotplug handler can still handle the PRESENCE change event and bring
-+	 * the device back up.
-+	 */
-+	if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
-+		ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
-+			  slot_name(ctrl));
-+		ret = IRQ_HANDLED;
-+		goto out;
-+	}
-+
- 	/* Check Attention Button Pressed */
- 	if (events & PCI_EXP_SLTSTA_ABP) {
- 		ctrl_info(ctrl, "Slot(%s): Attention button pressed\n",
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index ef7c4661314f..cee7095483bd 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -446,10 +446,12 @@ void pci_restore_dpc_state(struct pci_dev *dev);
- void pci_dpc_init(struct pci_dev *pdev);
- void dpc_process_error(struct pci_dev *pdev);
- pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
-+bool is_dpc_reset_active(struct pci_dev *pdev);
- #else
- static inline void pci_save_dpc_state(struct pci_dev *dev) {}
- static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
- static inline void pci_dpc_init(struct pci_dev *pdev) {}
-+static inline bool is_dpc_reset_active(struct pci_dev *pdev) { return false; }
- #endif
- 
- #ifdef CONFIG_PCIEPORTBUS
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index e05aba86a317..9157d70ebe21 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -71,6 +71,33 @@ void pci_restore_dpc_state(struct pci_dev *dev)
- 	pci_write_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_CTL, *cap);
+diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
+index 5376f3d..b3c7460
+--- a/drivers/soc/ti/smartreflex.c
++++ b/drivers/soc/ti/smartreflex.c
+@@ -817,7 +817,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
+ 	return 0;
  }
  
-+bool is_dpc_reset_active(struct pci_dev *dev)
-+{
-+	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
-+	u16 status;
-+
-+	if (!dev->dpc_cap)
-+		return false;
-+
-+	/*
-+	 * If DPC is owned by firmware and EDR is not supported, there is
-+	 * no race between hotplug and DPC recovery handler. So return
-+	 * false.
-+	 */
-+	if (!host->native_dpc && !IS_ENABLED(CONFIG_PCIE_EDR))
-+		return false;
-+
-+	if (atomic_read_acquire(&dev->dpc_reset_active))
-+		return true;
-+
-+	pci_read_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_STATUS, &status);
-+
-+	if (status & PCI_EXP_DPC_STATUS_TRIGGER)
-+		return true;
-+
-+	return false;
-+}
-+
- static int dpc_wait_rp_inactive(struct pci_dev *pdev)
- {
- 	unsigned long timeout = jiffies + HZ;
-@@ -91,6 +118,7 @@ static int dpc_wait_rp_inactive(struct pci_dev *pdev)
+-DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
++DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+ 			omap_sr_autocomp_store, "%llu\n");
  
- pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
- {
-+	pci_ers_result_t status = PCI_ERS_RESULT_RECOVERED;
- 	u16 cap;
- 
- 	/*
-@@ -109,15 +137,19 @@ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
- 	if (pdev->dpc_rp_extensions && dpc_wait_rp_inactive(pdev))
- 		return PCI_ERS_RESULT_DISCONNECT;
- 
-+	atomic_inc_return_acquire(&pdev->dpc_reset_active);
-+
- 	pci_write_config_word(pdev, cap + PCI_EXP_DPC_STATUS,
- 			      PCI_EXP_DPC_STATUS_TRIGGER);
- 
- 	if (!pcie_wait_for_link(pdev, true)) {
- 		pci_info(pdev, "Data Link Layer Link Active not set in 1000 msec\n");
--		return PCI_ERS_RESULT_DISCONNECT;
-+		status = PCI_ERS_RESULT_DISCONNECT;
- 	}
- 
--	return PCI_ERS_RESULT_RECOVERED;
-+	atomic_dec_return_release(&pdev->dpc_reset_active);
-+
-+	return status;
- }
- 
- static void dpc_process_rp_pio_error(struct pci_dev *pdev)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 86c799c97b77..3314f616520d 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -479,6 +479,7 @@ struct pci_dev {
- 	u16		dpc_cap;
- 	unsigned int	dpc_rp_extensions:1;
- 	u8		dpc_rp_log_size;
-+	atomic_t	dpc_reset_active;	/* DPC trigger is active */
- #endif
- #ifdef CONFIG_PCI_ATS
- 	union {
+ static int omap_sr_probe(struct platform_device *pdev)
 -- 
-2.25.1
+2.7.4
 
