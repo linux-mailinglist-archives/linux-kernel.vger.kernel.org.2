@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80850339D1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D423F339D1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhCMIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:52:01 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47096 "EHLO mail.skyhub.de"
+        id S232702AbhCMIya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:54:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhCMIvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:51:37 -0500
-Received: from zn.tnic (p4fed3942.dip0.t-ipconnect.de [79.237.57.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 603BF1EC008F;
-        Sat, 13 Mar 2021 09:51:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615625496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=StXyIIfqkxQHxQ5eh5tIDHPBxAG+44uelUfk7AF9bs4=;
-        b=QxNPBfDwXJp2pCLJl7x8ymZD5bJttYMWExFOIJTtuT47G7HhAN1nm4XJWAw+FXsIYVA2Wy
-        bd9lNprMeSPtA4eSrxWB20QCPmHiKMJxXyyF8ykbtyhzVnmP5PnA837qX9xPpnZL6zykFM
-        5OQPDenNjIWs8G2tnTEbqNtGD5vwX/k=
-Date:   Sat, 13 Mar 2021 09:49:23 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-Message-ID: <20210313084923.GA16144@zn.tnic>
-References: <20210312113253.305040674@infradead.org>
- <20210312205914.GG22098@zn.tnic>
- <CA+icZUWSCS6vAQOXoG6nsW+Dbnogivzf+rmegCTMjz5hjE5cKQ@mail.gmail.com>
+        id S230380AbhCMIyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 03:54:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 854D164F18;
+        Sat, 13 Mar 2021 08:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615625665;
+        bh=sY82OmhyeTVt+rmWnctmosWs3YKi5+djuGVMlXHeWD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CvnvXOeAJ1QkK+8jqwJl2KUclrmhKLISPsciGwDa8j4hVvmb8T9B4fHn7qEF+2eJf
+         3bI2L6PYVEnO0oKwC9IEZWCzv+99MTxWb2JefNmohBuy63+SkYuujni5Y/dMoTtPuS
+         bvJcU4DJYFJ1pX9EHuqrpMO6oezRt/O0yxeeU60Y=
+Date:   Sat, 13 Mar 2021 09:54:21 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YEx9vSlbRY/SArbW@kroah.com>
+References: <20210312205558.2947488-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+icZUWSCS6vAQOXoG6nsW+Dbnogivzf+rmegCTMjz5hjE5cKQ@mail.gmail.com>
+In-Reply-To: <20210312205558.2947488-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 06:26:15AM +0100, Sedat Dilek wrote:
-> x86/jump_label: Mark arguments as const to satisfy asm constraints
-
-Where do I find this patch?
-
-> x86: Remove dynamic NOP selection
-> objtool,x86: Use asm/nops.h
+On Fri, Mar 12, 2021 at 12:55:58PM -0800, Kees Cook wrote:
+> The sysfs interface to seq_file continues to be rather fragile, as seen
+> with some recent exploits[1]. Move the seq_file buffer to the vmap area
+> (while retaining the accounting flag), since it has guard pages that
+> will catch and stop linear overflows. This seems justified given that
+> seq_file already uses kvmalloc(), that allocations are normally short
+> lived, and that they are not normally performance critical.
 > 
-> My benchmark was to build a Linux-kernel with LLVM/Clang v12.0.0-rc3
-> on Debian/testing AMD64.
+> [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
 > 
-> Patchset applied for a first build:
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/seq_file.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
->  Performance counter stats for 'make V=1 -j4 LLVM=1 LLVM_IAS=1
-> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-7-amd64-clang12-cfi
-> KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+> diff --git a/fs/seq_file.c b/fs/seq_file.c
+> index cb11a34fb871..ad78577d4c2c 100644
+> --- a/fs/seq_file.c
+> +++ b/fs/seq_file.c
+> @@ -32,7 +32,7 @@ static void seq_set_overflow(struct seq_file *m)
+>  
+>  static void *seq_buf_alloc(unsigned long size)
+>  {
+> -	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
+> +	return __vmalloc(size, GFP_KERNEL_ACCOUNT);
 
-There's a reason I have -s for silent in the build - printing output
-during the build creates a *lot* of variance. And you have excessive
-printing with V=1 and KBUILD_VERBOSE=1.
+Maybe a small comment here like:
+	/* use vmalloc as it has good bounds checking */
+so we know why this is being used instead of kmalloc() or anything else?
 
-Also, you need to repeat those workloads a couple of times - one is not
-enough. That's why I have --repeat 5 in there.
+Other than that, no objection from me:
 
-Also, you need --pre=/root/bin/pre-build-kernel.sh where that script is:
-
----
-#!/bin/bash
-echo $0
-
-make -s clean
-echo 3 > /proc/sys/vm/drop_caches
----
-
-so that you can avoid pagecache influence.
-
-Lemme rerun here with clang.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
