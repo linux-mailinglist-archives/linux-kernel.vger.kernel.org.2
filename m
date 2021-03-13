@@ -2,92 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EBF339D09
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4E9339D0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhCMIkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:40:05 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14328 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbhCMIj4 (ORCPT
+        id S232702AbhCMImH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:42:07 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13919 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233545AbhCMIlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:39:56 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DyGKT1s8bz8x02;
-        Sat, 13 Mar 2021 16:38:05 +0800 (CST)
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.184.135) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 13 Mar 2021 16:39:47 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [PATCH v4 6/6] KVM: arm64: GICv4.1: Give a chance to save VLPI state
-Date:   Sat, 13 Mar 2021 16:39:00 +0800
-Message-ID: <20210313083900.234-7-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-In-Reply-To: <20210313083900.234-1-lushenming@huawei.com>
-References: <20210313083900.234-1-lushenming@huawei.com>
+        Sat, 13 Mar 2021 03:41:51 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DyGN26xZZzkXfD;
+        Sat, 13 Mar 2021 16:40:18 +0800 (CST)
+Received: from [127.0.0.1] (10.175.101.122) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Sat, 13 Mar 2021
+ 16:41:38 +0800
+Content-Type: multipart/alternative;
+        boundary="===============0715709738849509664=="
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.135]
+Date:   Sat, 13 Mar 2021 16:41:38 +0800
+From:   <hulkrobot@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E10=2E24-rc1=0D=0A/arm?=
+ =?utf-8?q?64?=
+Message-ID: <22d5af38-4cb7-49ca-ba02-0f718dae012a@DGGEMS414-HUB.china.huawei.com>
+X-Originating-IP: [10.175.101.122]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before GICv4.1, we don't have direct access to the VLPI state. So
-we simply let it fail early when encountering any VLPI in saving.
+--===============0715709738849509664==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-But now we don't have to return -EACCES directly if on GICv4.1. Let’s
-change the hard code and give a chance to save the VLPI state (and
-preserve the UAPI).
+S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS4xMC55CkFyY2g6
+IGFybTY0ClZlcnNpb246IDUuMTAuMjQtcmMxDQpDb21taXQ6IGU3MjU1NTFlODJkN2RjZTkyNjcz
+YjBiZWY2NDMwZmM4ZTkwM2ZiNzINCkNvbXBpbGVyOiBnY2MgdmVyc2lvbiA3LjMuMCAoR0NDKQot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpGYWlsZWQgY2FzZXMgOgpsdHAgbXNnZ2V0MDQKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGNh
+c2UgUmVzdWx0IFN1bW1hcnk6CnRvdGFsX251bTogNDY5MwpzdWNjZWVkX251bTogNDY5MgpmYWls
+ZWRfbnVtOiAxCnRpbWVvdXRfbnVtOiAwCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRlc3RlZC1ieTogSHVsayBSb2Jv
+dCA8aHVsa3JvYm90QGh1YXdlaS5jb20+
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
----
- Documentation/virt/kvm/devices/arm-vgic-its.rst | 2 +-
- arch/arm64/kvm/vgic/vgic-its.c                  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/virt/kvm/devices/arm-vgic-its.rst b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-index 6c304fd2b1b4..d257eddbae29 100644
---- a/Documentation/virt/kvm/devices/arm-vgic-its.rst
-+++ b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-@@ -80,7 +80,7 @@ KVM_DEV_ARM_VGIC_GRP_CTRL
-     -EFAULT  Invalid guest ram access
-     -EBUSY   One or more VCPUS are running
-     -EACCES  The virtual ITS is backed by a physical GICv4 ITS, and the
--	     state is not available
-+	     state is not available without GICv4.1
-     =======  ==========================================================
- 
- KVM_DEV_ARM_VGIC_GRP_ITS_REGS
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 40cbaca81333..ec7543a9617c 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -2218,10 +2218,10 @@ static int vgic_its_save_itt(struct vgic_its *its, struct its_device *device)
- 		/*
- 		 * If an LPI carries the HW bit, this means that this
- 		 * interrupt is controlled by GICv4, and we do not
--		 * have direct access to that state. Let's simply fail
--		 * the save operation...
-+		 * have direct access to that state without GICv4.1.
-+		 * Let's simply fail the save operation...
- 		 */
--		if (ite->irq->hw)
-+		if (ite->irq->hw && !kvm_vgic_global_state.has_gicv4_1)
- 			return -EACCES;
- 
- 		ret = vgic_its_save_ite(its, device, ite, gpa, ite_esz);
--- 
-2.19.1
-
+--===============0715709738849509664==--
