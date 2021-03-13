@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762E339D59
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342F2339D6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhCMJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:33:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232974AbhCMJdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:33:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615627992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Tdndx9aurgi/5sVvvOA/y0ZDMqTihJzVHrIsQ43bJs=;
-        b=aWZpvG0XSaMOGwuVFeymW3t+XEVflfaE4zPHuCSwiZglsDZvXrYv/kdSXaNI3IuX1g1aXt
-        4cuSMkgS3rcQxWg18MTVSJ1ssqo3GUTLcMn3ha4FnwEOVo1Ysng94WNi8Xp9SXtk/EjYjm
-        f6wCPpuuJ6bpwEX9o6Kn7OlB59QCleg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-603-Q2YsiAoAPcSkrUNGkjLMkg-1; Sat, 13 Mar 2021 04:33:10 -0500
-X-MC-Unique: Q2YsiAoAPcSkrUNGkjLMkg-1
-Received: by mail-wm1-f72.google.com with SMTP id z26so6311553wml.4
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 01:33:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0Tdndx9aurgi/5sVvvOA/y0ZDMqTihJzVHrIsQ43bJs=;
-        b=Fr4FJsKhpdcbYvchPF6tyNFD2CDqefRY92SKLFIw3PzcpKXV3dkKUipNc3Nk5Ui1KL
-         MFRUQ1eUj0VRhRFJQ3MSyUnZKH0uODtieiC8JjJeWCxT2Nnl/w2eZcCEb2ayH8owAcMY
-         JV6y7SbsZhflf6y59XLNmYp1+Uf2RF8QQ1rxJOyK487J0i1NWTHFGh1u1YydQe5Fylt/
-         +oBu5hN4fx+FF1Q8FA7HxJK62kxRXDFkqOPIU9K9OF4JRqLsYpTCsKmMCUxhW17YZ0ta
-         D3ChFhueD2M43reAJJOqyFnpA2dzSKHzoTHMD/DD257J6DQAetloeh7+5T3hSY6LyqvW
-         agMg==
-X-Gm-Message-State: AOAM533sR7gqrs5wTFdavlXLQ7SN5lTN7MxnRXxsBSstYoEis8o5v212
-        FKn8l8bBEgfwU6cqDqiuGxB2b4QJrzG7zsSTl2U3gqASEl5DyaIne4y3fnAlamFNKqCekPxvqxf
-        HGV+vh6p/TkQahuFJABR70cOu
-X-Received: by 2002:adf:e412:: with SMTP id g18mr18584081wrm.159.1615627988831;
-        Sat, 13 Mar 2021 01:33:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzg3FRJBBi6VfIDfkhCbsogqZme7WQaI6CDyHC5QxwaLbcrsXWQe1OD25UKJ9/fEcTaTGceHw==
-X-Received: by 2002:adf:e412:: with SMTP id g18mr18584073wrm.159.1615627988716;
-        Sat, 13 Mar 2021 01:33:08 -0800 (PST)
-Received: from [192.168.1.124] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id u17sm3646875wmq.3.2021.03.13.01.33.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Mar 2021 01:33:07 -0800 (PST)
-Subject: Re: [PATCH] x86/kvm: Fix broken irq restoration in kvm_wait
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
- <CANRm+CwX189YE_oi5x-b6Xx4=hpcGCqzLaHjmW6bz_=Fj2N7Mw@mail.gmail.com>
- <YEo9GsUTKQRbd3HF@google.com>
- <CANRm+Cy42tM1M2vkuZk3y_-_wD-re9QxvoxWPGmyew+k1j_67w@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e363db67-598b-619a-f844-d68dfb1d041a@redhat.com>
-Date:   Sat, 13 Mar 2021 10:29:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <CANRm+Cy42tM1M2vkuZk3y_-_wD-re9QxvoxWPGmyew+k1j_67w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233053AbhCMJoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:44:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230441AbhCMJnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 04:43:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B397164F14;
+        Sat, 13 Mar 2021 09:43:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615628635;
+        bh=ymSvKKXkySAaTw1aQJH2nwYOEfn49ej0hD436KOzGgI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SpKwZx/ivwzE7HQSnOwj8SeoRatPxhdPr1nx2eUwahvYS4f2DYeKZnO+Ab4W6TLhO
+         vSl7Vufuuj8vFSdi9MVYZosTRUvH7xDO5fsQn3l4wHt55E4QVQ9OUD/JWQ7GyzDkN7
+         /EH/uYfVJhfpIdmHn+SWWYdKgdBm1kvgZtDk7vI8awzLBFITpts/K1G7ME+psbXPCU
+         BsXxDc1ViTiBas6bdMJ/ZwlF+51ZyxPZ9BhrG06s3jZ50JWbXKuJ0ya/nqsxMGVTWI
+         6pHnQLpjC7GdQObrJamifYaKhNsmEM1Zw7Z82dVmh+6qiErGIYRuEa2Kk8t0vukNWn
+         YLmbec9AeLltA==
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Subject: [PATCH] drm/mediatek: crtc: Make config-updating atomic
+Date:   Sat, 13 Mar 2021 17:43:31 +0800
+Message-Id: <20210313094331.26374-1-chunkuang.hu@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/03/21 01:57, Wanpeng Li wrote:
->> A third option would be to split the paths.  In the end, it's only the ptr/val
->> line that's shared.
-> I just sent out a formal patch for my alternative fix, I think the
-> whole logic in kvm_wait is more clear w/ my version.
-> 
+While updating config, the irq would occur and get the partial
+config, so use variable config_updating to make updating atomic.
 
-I don't know, having three "if"s in 10 lines of code is a bit daunting.
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+---
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Paolo
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index 8b0de90156c6..870f66210848 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -61,6 +61,7 @@ struct mtk_drm_crtc {
+ 
+ 	/* lock for display hardware access */
+ 	struct mutex			hw_lock;
++	bool				config_updating;
+ };
+ 
+ struct mtk_crtc_state {
+@@ -97,7 +98,7 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ {
+ 	drm_crtc_handle_vblank(&mtk_crtc->base);
+-	if (mtk_crtc->pending_needs_vblank) {
++	if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
+ 		mtk_drm_crtc_finish_page_flip(mtk_crtc);
+ 		mtk_crtc->pending_needs_vblank = false;
+ 	}
+@@ -425,7 +426,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
+ 	}
+ }
+ 
+-static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
++static void mtk_drm_crtc_update_config(struct mtk_drm_crtc *mtk_crtc,
++				       bool needs_vblank)
+ {
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	struct cmdq_pkt *cmdq_handle;
+@@ -436,6 +438,10 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
+ 	int i;
+ 
+ 	mutex_lock(&mtk_crtc->hw_lock);
++	mtk_crtc->config_updating = true;
++	if (needs_vblank)
++		mtk_crtc->pending_needs_vblank = true;
++
+ 	for (i = 0; i < mtk_crtc->layer_nr; i++) {
+ 		struct drm_plane *plane = &mtk_crtc->planes[i];
+ 		struct mtk_plane_state *plane_state;
+@@ -472,6 +478,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
+ 		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
+ 	}
+ #endif
++	mtk_crtc->config_updating = false;
+ 	mutex_unlock(&mtk_crtc->hw_lock);
+ }
+ 
+@@ -532,7 +539,7 @@ void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct drm_plane *plane,
+ 		return;
+ 
+ 	plane_helper_funcs->atomic_update(plane, new_state);
+-	mtk_drm_crtc_hw_config(mtk_crtc);
++	mtk_drm_crtc_update_config(mtk_crtc, false);
+ }
+ 
+ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -582,7 +589,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	}
+ 	mtk_crtc->pending_planes = true;
+ 
+-	mtk_drm_crtc_hw_config(mtk_crtc);
++	mtk_drm_crtc_update_config(mtk_crtc, false);
+ 	/* Wait for planes to be disabled */
+ 	drm_crtc_wait_one_vblank(crtc);
+ 
+@@ -618,14 +625,12 @@ static void mtk_drm_crtc_atomic_flush(struct drm_crtc *crtc,
+ 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+ 	int i;
+ 
+-	if (mtk_crtc->event)
+-		mtk_crtc->pending_needs_vblank = true;
+ 	if (crtc->state->color_mgmt_changed)
+ 		for (i = 0; i < mtk_crtc->ddp_comp_nr; i++) {
+ 			mtk_ddp_gamma_set(mtk_crtc->ddp_comp[i], crtc->state);
+ 			mtk_ddp_ctm_set(mtk_crtc->ddp_comp[i], crtc->state);
+ 		}
+-	mtk_drm_crtc_hw_config(mtk_crtc);
++	mtk_drm_crtc_update_config(mtk_crtc, !!mtk_crtc->event);
+ }
+ 
+ static const struct drm_crtc_funcs mtk_crtc_funcs = {
+-- 
+2.17.1
 
