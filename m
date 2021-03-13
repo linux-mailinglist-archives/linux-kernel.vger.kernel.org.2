@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4345C33A1E3
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAC433A1E4
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 00:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbhCMXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 18:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234792AbhCMXNl (ORCPT
+        id S234910AbhCMXNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 18:13:52 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41400 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234810AbhCMXNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 18:13:41 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95949C061574;
-        Sat, 13 Mar 2021 15:13:40 -0800 (PST)
+        Sat, 13 Mar 2021 18:13:47 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: shreeya)
-        with ESMTPSA id D62B81F472EA
+        with ESMTPSA id 2DA381F472EA
 From:   Shreeya Patel <shreeya.patel@collabora.com>
 To:     krisman@collabora.com, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
 Cc:     kernel@collabora.com, gustavo.padovan@collabora.com,
         andre.almeida@collabora.com,
         Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH 3/3] fs: unicode: Add utf8 module and a unicode layer
-Date:   Sun, 14 Mar 2021 04:42:13 +0530
-Message-Id: <20210313231214.383576-4-shreeya.patel@collabora.com>
+Subject: [PATCH 3/3] fs: unicode: Make UTF-8 encoding loadable
+Date:   Sun, 14 Mar 2021 04:42:14 +0530
+Message-Id: <20210313231214.383576-5-shreeya.patel@collabora.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210313231214.383576-1-shreeya.patel@collabora.com>
 References: <20210313231214.383576-1-shreeya.patel@collabora.com>
