@@ -2,90 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAD5339CD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6280A339CD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhCMINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhCMIMo (ORCPT
+        id S233437AbhCMION (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:14:13 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13161 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233407AbhCMINy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:12:44 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68D5C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 00:12:44 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id s21so6275321pjq.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 00:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QzZTCnj15hjOYCaDum7CvoHlT5xGIZI6IXf2XlaJEN0=;
-        b=e3uIugvgtounyR3VnJ4cN4Yf8+N1RJPZJW3WDFWAVU+UDRYCjOEYrjm8jhIysCNATx
-         jEfiywfm6JNZJ1E/643BJ5a+RY8aR9zI+Q6WTbXPvMRbfkTAD+5zULXfpgG6jW1uFPOm
-         Nd1FKXais17wTaLLm7d4/7+Th+aANX7KgrY6yAYtoHUM6V9xtjY2K3dPIWJ8+w7D/e8K
-         uyamm8lLseaesmvEBi2siBp1gkAXsfA3oSgb87JQL9Eij2UCQ2HBzODzAQwAmRZ6hVQs
-         5xi+fRt04FFsBpUZmPU67wLwLyEbSxDwJRoweRgnZzh9N4Xs3IUhivABncp2rrptU0H6
-         g/1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QzZTCnj15hjOYCaDum7CvoHlT5xGIZI6IXf2XlaJEN0=;
-        b=UdSp6RCN0BrcWfSEikxWhc5V1kdE1NAI3u/ihISiXz17yXzMIA0KGl5Vlv3KnKE2ZA
-         jG9s9c4pHngMntwSu22Yjtq+J7Ff6KYksJQno5iSY7iVXlBzZxCBRWFeXAQGpsin8KGv
-         JMW0B8Rdii5r7VmjDYrhxCxCZsl6nUOf4wyeT07UEd5dMCJ/EyAUAT5gxDzeOB5zOY4u
-         OYvQYQm23jPnXJjpVUiq1ZQ1wd1JIVFkCNBpgdNQj076Zc5SttvO9nYGfjlDGjHdXKxF
-         ryrolLDINFA5Da6uG49wtM5HLXuUSSC7KDKZQeAoxVp643/ygDzjtwZniWzsVn36p/Nf
-         RtGQ==
-X-Gm-Message-State: AOAM5332G3DPxgYlpz5iqKa3bxXy0Iyk0vZhQbJiixeqDvGyhDFTg1T+
-        NWXEd53GpYYlUaprV9x2ylrSvFu5mDA=
-X-Google-Smtp-Source: ABdhPJyHUQ4G+W8zpjJ7NteFhvl0yzEvyM9EMJHdx58cC0Kd4h9LA3Ao8dHLW8XwhuopV9uGnLWUKQ==
-X-Received: by 2002:a17:90a:a403:: with SMTP id y3mr2451221pjp.227.1615623163215;
-        Sat, 13 Mar 2021 00:12:43 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id l3sm7468665pfc.81.2021.03.13.00.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 00:12:42 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     linux@armlinux.org.uk
-Cc:     rppt@kernel.org, akpm@linux-foundation.org,
-        zhang.yunkai@zte.com.cn, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM:sa1100: remove duplicate include in hackkit.c
-Date:   Sat, 13 Mar 2021 00:12:35 -0800
-Message-Id: <20210313081235.363124-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sat, 13 Mar 2021 03:13:54 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DyFkr6TmYzmWKZ;
+        Sat, 13 Mar 2021 16:11:32 +0800 (CST)
+Received: from [127.0.0.1] (10.175.101.122) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Sat, 13 Mar 2021
+ 16:13:45 +0800
+Content-Type: multipart/alternative;
+        boundary="===============2445299037578624981=="
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Sat, 13 Mar 2021 16:13:45 +0800
+From:   <hulkrobot@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E10=2E24-rc1=0D=0A/x86?=
+Message-ID: <3bdb8aa7-cced-45e4-952b-69d3fd444074@DGGEMS407-HUB.china.huawei.com>
+X-Originating-IP: [10.175.101.122]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+--===============2445299037578624981==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-'linux/tty.h' included in 'hackkit.c' is duplicated.
-It is also included in the 13th line.
+S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS4xMC55CkFyY2g6
+IHg4NgpWZXJzaW9uOiA1LjEwLjI0LXJjMQ0KQ29tbWl0OiBlNzI1NTUxZTgyZDdkY2U5MjY3M2Iw
+YmVmNjQzMGZjOGU5MDNmYjcyDQpDb21waWxlcjogZ2NjIHZlcnNpb24gNy4zLjAgKEdDQykKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KRmFpbGVkIGNhc2VzIDoKbHRwIGNwdWhvdHBsdWcwMwotLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0
+Y2FzZSBSZXN1bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjkzCnN1Y2NlZWRfbnVtOiA0NjkyCmZh
+aWxlZF9udW06IDEKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGVkLWJ5OiBIdWxrIFJv
+Ym90IDxodWxrcm9ib3RAaHVhd2VpLmNvbT4=
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- arch/arm/mach-sa1100/hackkit.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm/mach-sa1100/hackkit.c b/arch/arm/mach-sa1100/hackkit.c
-index 3085f1c2e586..3fe34ee7c0ab 100644
---- a/arch/arm/mach-sa1100/hackkit.c
-+++ b/arch/arm/mach-sa1100/hackkit.c
-@@ -18,7 +18,6 @@
- #include <linux/serial_core.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/tty.h>
- #include <linux/gpio.h>
- #include <linux/leds.h>
- #include <linux/platform_device.h>
--- 
-2.25.1
-
+--===============2445299037578624981==--
