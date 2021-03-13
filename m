@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA685339ADB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E984339AE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhCMBbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 20:31:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13507 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhCMBaz (ORCPT
+        id S232709AbhCMBcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 20:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231679AbhCMBb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 20:30:55 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dy4pN09P2zjTPp;
-        Sat, 13 Mar 2021 09:29:00 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 13 Mar 2021 09:30:43 +0800
-Subject: Re: [PATCH v3 1/2] crypto: hisilicon/sec - fixes some log printing
- style
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1614838735-52668-1-git-send-email-liulongfang@huawei.com>
- <1614838735-52668-2-git-send-email-liulongfang@huawei.com>
- <20210312125918.GA12149@gondor.apana.org.au>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <14684f5f-0223-7e33-3891-0f578648d422@huawei.com>
-Date:   Sat, 13 Mar 2021 09:30:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 12 Mar 2021 20:31:26 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426A3C061574;
+        Fri, 12 Mar 2021 17:31:26 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x19so27298338ybe.0;
+        Fri, 12 Mar 2021 17:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DbE3xDkQ8HktwIoRcbeaiX7gfulPHK+RCelzbpG3B1Q=;
+        b=ercgs/VoGb+1NneYMOPK67RWCyGd9m3SluCwWbruOrP1Tj+l9ZP9SXWDSnxu9GlwZF
+         E//861xmFlN9+hM4D75juWHdYqvfkDr/aInUfIVZ3/7xzk94fGrXoMwvOxU7nh2Iu3fx
+         wP8Nvv5u6b5S/wPi9N/HpvsQF5QSRhWYdI0uFhBVelkstJQnRdFOMVTy7cHxGQ5cEUAE
+         sT6kg93RUuc3c/dsda4eM2i+xOGaXW9ErpWqxHDksPGF2Q2eHpqQodA4NNkwm99JkL6i
+         9aw4KkIFfUwaXxvkyWnxdaZcYtGG4A2KA1vzK2EGVDQMaApjWXGrKs7TqgEJTeBeE/iy
+         cz1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DbE3xDkQ8HktwIoRcbeaiX7gfulPHK+RCelzbpG3B1Q=;
+        b=bNMVJK+0+57vliMqT0dlV4FhMsOTJ3HpM9H2EPNMnJSDmhWl8FP2/31kZkk561UiFe
+         IqIZmSgorFQdoZeT++eIltkB1TlpOr7lw42qOFArRXMosnZr5gwm/8HwMNEdQsTHx+Vr
+         Oas9dkNSBy1KF4I7kB3Gnj6w0FEkPruWAYRqtO3EKm/NyS0D6lEEZGOR7Qmo/w0ts5gX
+         vxhCidGme6ia9hskjYCY5V0GZ0lr1RmACv9MGSFlxZICKDz16QO7L08bp2ATjSmt6NlG
+         IMDiOj6N854J96rGa2dWi0ljtfUYR9Kp/fllv0TbSsgzw03fKzNTJkqoPferLGRWtaSW
+         dxeA==
+X-Gm-Message-State: AOAM533mos0nAvQrKV+jFcK74Fmmbsxn1x0bW4yAU/2wYdHOW2ev4t4w
+        mtOaXy+kEGxrTBrMfL0yxGhfocUTGYmicok3j2M=
+X-Google-Smtp-Source: ABdhPJyXeoVxAmgzYIpZodsgYP9/ZjqK8xFD9rRV3LVPrn4FRaPBV/Kq2OLW+gE0m57vvPFM4MOLCcghwuBjcn32Tbo=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr22707860ybf.260.1615599085306;
+ Fri, 12 Mar 2021 17:31:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210312125918.GA12149@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+References: <20210312214316.132993-1-sultan@kerneltoast.com>
+In-Reply-To: <20210312214316.132993-1-sultan@kerneltoast.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 12 Mar 2021 17:31:14 -0800
+Message-ID: <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/12 20:59, Herbert Xu wrote:
-> On Thu, Mar 04, 2021 at 02:18:54PM +0800, Longfang Liu wrote:
->>
->> @@ -727,7 +725,7 @@ static void sec_cipher_pbuf_unmap(struct sec_ctx *ctx, struct sec_req *req,
->>  	struct aead_request *aead_req = req->aead_req.aead_req;
->>  	struct sec_cipher_req *c_req = &req->c_req;
->>  	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
->> -	struct device *dev = SEC_CTX_DEV(ctx);
->> +	struct device *dev = ctx->dev;
->>  	int copy_size, pbuf_length;
->>  	int req_id = req->req_id;
->>  
->> @@ -737,11 +735,9 @@ static void sec_cipher_pbuf_unmap(struct sec_ctx *ctx, struct sec_req *req,
->>  		copy_size = c_req->c_len;
->>  
->>  	pbuf_length = sg_copy_from_buffer(dst, sg_nents(dst),
->> -				qp_ctx->res[req_id].pbuf,
->> -				copy_size);
->> -
->> +			qp_ctx->res[req_id].pbuf, copy_size);
->>  	if (unlikely(pbuf_length != copy_size))
->> -		dev_err(dev, "copy pbuf data to dst error!\n");
->> +		dev_err(ctx->dev, "copy pbuf data to dst error!\n");
->>  }
-> 
-> This triggers an unused warning on dev.  Please fix.
-> 
-> Thanks,
-> Ok! I will check if this problem exists elsewhere.
-Thanks,
-Longfang
+On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+>
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
+>
+> We should be using the program fd here, not the perf event fd.
+
+Why? Can you elaborate on what issue you ran into with the current code?
+
+>
+> Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d43cc3f29dae..3d20d57d4af5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9538,7 +9538,7 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>         if (!link)
+>                 return ERR_PTR(-ENOMEM);
+>         link->detach = &bpf_link__detach_perf_event;
+> -       link->fd = pfd;
+> +       link->fd = prog_fd;
+>
+>         if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+>                 err = -errno;
+> --
+> 2.30.2
+>
