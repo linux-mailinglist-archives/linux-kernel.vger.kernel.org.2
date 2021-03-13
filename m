@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F273339E69
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 15:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46407339E65
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 15:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhCMODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 09:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhCMOCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 09:02:53 -0500
-X-Greylist: delayed 2658 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Mar 2021 06:02:53 PST
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE3FC061574;
-        Sat, 13 Mar 2021 06:02:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
-        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=QOTdjy1PdYeDQ1fUENDrh0RtMG0coACWNQ4YsZbgl5w=; b=DeTr+9knNkPOvtIi2OlW73HS3t
-        slxWRqQmC/Qd+tyDE8Lnj4oD+NFf5isDoaYYYhiPQ8iT/IOWEUz6DODzLTEBHd1WG9KYfSqzwFT70
-        7pdoIUdBZOPtb0r/1WZqZHRog4L3uDDlSBHRkO6SaLFE0zu6nunAVePrw4XLLmC9bJGsxaEmVvJ4N
-        zAgW5ejJ2lWOVgTIKSiBHTnLvkLbkSUT3inboIq/iEhEMGyBD8Zio1md1EU+8pQugFxwTmI5hqZ8M
-        RBYRHIUBaaivkhOJptSZm3vns90mjlM/uDY69gA+jRAsvt2mhWRHSwLv8PJUZ5sB0SenvC1WcPH1S
-        zAB6oEag==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1lL49y-0004kB-SB; Sat, 13 Mar 2021 13:18:26 +0000
-Date:   Sat, 13 Mar 2021 13:18:26 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: stmmac: Set FIFO sizes for ipq806x
-Message-ID: <20210313131826.GA17553@earth.li>
+        id S233298AbhCMOBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 09:01:45 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:33138 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233188AbhCMOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 09:01:23 -0500
+Received: from zn.tnic (p200300ec2f1971005f32d49e743e65b9.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:7100:5f32:d49e:743e:65b9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CB33F1EC008F;
+        Sat, 13 Mar 2021 15:01:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615644081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=Pp7bSRA9gM2UaHSJgzuP7xRc1SFdojzkNmSwnl8e2GI=;
+        b=rYM8ZeNHcbYFAKo9P91y6p5Vv08RA1QJON6eed2BtyHmVWFffi95YglrGwMvnYkiuQrZFp
+        7FNidBDLSJe2LEyXujEtUYoQLkZTj80ZrhnLMTr08pKqd/HLz/9clHX3a1de4wG0+4U8p8
+        6Qm7r0qghDrPR6UxKus6oOwWEyLOKT8=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tools/x86/kcpuid: Add AMD Secure Encryption leaf
+Date:   Sat, 13 Mar 2021 15:01:18 +0100
+Message-Id: <20210313140118.17010-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
-started using the TX FIFO size to verify what counts as a valid MTU
-request for the stmmac driver.  This is unset for the ipq806x variant.
-Looking at older patches for this it seems the RX + TXs buffers can be
-up to 8k, so set appropriately.
+From: Borislav Petkov <bp@suse.de>
 
-(I sent this as an RFC patch in June last year, but received no replies.
-I've been running with this on my hardware (a MikroTik RB3011) since
-then with larger MTUs to support both the internal qca8k switch and
-VLANs with no problems. Without the patch it's impossible to set the
-larger MTU required to support this.)
+Add the 0x8000001f leaf's fields.
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
+Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/arch/x86/kcpuid/cpuid.csv | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index bf3250e0e59c..749585fe6fc9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -352,6 +352,8 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	plat_dat->bsp_priv = gmac;
- 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
- 	plat_dat->multicast_filter_bins = 0;
-+	plat_dat->tx_fifo_size = 8192;
-+	plat_dat->rx_fifo_size = 8192;
- 
- 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (err)
+diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
+index f4a5b85073f4..7cb5c2189345 100644
+--- a/tools/arch/x86/kcpuid/cpuid.csv
++++ b/tools/arch/x86/kcpuid/cpuid.csv
+@@ -378,3 +378,13 @@
+ 0x80000008,    0,  EAX,    7:0, phy_adr_bits, Physical Address Bits
+ 0x80000008,    0,  EAX,   15:8, lnr_adr_bits, Linear Address Bits
+ 0x80000007,    0,  EBX,      9, wbnoinvd, WBNOINVD
++
++# 8000001F: AMD Secure Encryption
++0x8000001F,	0, EAX, 0, SME,	Secure Memory Encryption
++0x8000001F,	0, EAX, 1, SEV,	Secure Encrypted Virtualization
++0x8000001F,	0, EAX, 2, VmPgFlush, VM Page Flush MSR
++0x8000001F,	0, EAX, 3, SevEs, SEV Encrypted State
++0x8000001F,	0, EBX, 5:0, C-Bit, Page table bit number used to enable memory encryption
++0x8000001F,	0, EBX, 11:6, MemEncryptPhysAddWidth, Reduction of physical address space in bits when SME is enabled
++0x8000001F,	0, ECX, 31:0, NumEncryptedGuests, Maximum ASID value that may be used for an SEV-enabled guest
++0x8000001F,	0, EDX, 31:0, MinimumSEVASID, Minimum ASID value that must be used for an SEV-enabled, SEV-ES-disabled guest
 -- 
-2.30.1
+2.29.2
 
