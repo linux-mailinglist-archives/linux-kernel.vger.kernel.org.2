@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C00339DF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 12:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A43339DF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 12:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhCML5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 06:57:35 -0500
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:60720 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhCML5K (ORCPT
+        id S233208AbhCMLyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 06:54:23 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:49115 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhCMLyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 06:57:10 -0500
-X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 06:57:10 EST
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id 179B5540216;
-        Sat, 13 Mar 2021 19:50:18 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] umh: fix some spelling mistakes
-Date:   Sat, 13 Mar 2021 03:48:59 -0800
-Message-Id: <1615636139-4076-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTRkZTxlISR9CTEpKVkpNSk5NSE1JSkNKTExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKSkNITVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PiI6Lxw5Ej8WA1ExMzA#Ezc4
-        LiNPCRdVSlVKTUpOTUhNSUpDTk1LVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlPSUo3Bg++
-X-HM-Tid: 0a782b6c4127d995kuws179b5540216
+        Sat, 13 Mar 2021 06:54:12 -0500
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 12DBrdfe012530;
+        Sat, 13 Mar 2021 20:53:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 12DBrdfe012530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615636419;
+        bh=UsbgXShxta9Fb/uiVHXrhCHY1/IMnaOpCflVSeL+MgE=;
+        h=From:Date:Subject:To:Cc:From;
+        b=O2CGeWQV9FiH25lMWe6VKJySU4M4qK/MwfMgJtsqyqVmgiOzvHXn3aLQmV6vhXO6Y
+         zf9GcXb0pk+jiF6c8G0G92oZMs+LwO+fyeadvjaEEGDBjPRq5L4T9bBjQi/3B/7pon
+         bGaP3ytT5rBU+hq99C/kjiSEQtKnFaf2zC5trPnyOs5gOMj1xGXCgM2cDS6KF2iGMS
+         HVRjNTnk2RgwuVo21TSvxLtOdCuYTwGeaKL6HB6+8Ir+idyV01TwbsVl907Gmh4OXu
+         Y7sztd2bTW+JweyZne6nFM+hE3POhIAtIeKkspcYvgwCRTyA+TW7j0Hn2nKvd0qWiH
+         GoaVz/h5FkG0A==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id t37so6767928pga.11;
+        Sat, 13 Mar 2021 03:53:39 -0800 (PST)
+X-Gm-Message-State: AOAM5319V2FYtksRcCTcaP8lsvIRawxEATx3ZAbPelzbJwJkfY8o7Hsb
+        pHvDmIm27sGpD66P2qpeXM/1wz0v1QJUMS3iPl8=
+X-Google-Smtp-Source: ABdhPJwE3Ogz52Abg8ZsfVKn7qjTcySSnmNZ/GZvlbthwU1ctsNhqdOoDMmuaTtN7nlCe2FGBV0APb06vDDIrqNNAuI=
+X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
+ h22-20020a62b4160000b02901e4fb5a55bbmr2548330pfn.80.1615636418698; Sat, 13
+ Mar 2021 03:53:38 -0800 (PST)
+MIME-Version: 1.0
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 13 Mar 2021 20:53:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATqcLBbLVn5Ft+1-m_uC5WC=9HAx2orbopsOJnZ7SRgqQ@mail.gmail.com>
+Message-ID: <CAK7LNATqcLBbLVn5Ft+1-m_uC5WC=9HAx2orbopsOJnZ7SRgqQ@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v5.12-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some spelling mistakes, and modify the order of the parameter
-comments to be consistent with the order of the parameters passed
-to the function.
+Hi Linus,
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- kernel/umh.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Please pull Kbuild fixes.
+Thanks.
 
-diff --git a/kernel/umh.c b/kernel/umh.c
-index 3f64661..3a337a5 100644
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -336,8 +336,8 @@ static void helper_unlock(void)
-  * @argv: arg vector for process
-  * @envp: environment for process
-  * @gfp_mask: gfp mask for memory allocation
-- * @cleanup: a cleanup function
-  * @init: an init function
-+ * @cleanup: a cleanup function
-  * @data: arbitrary context sensitive data
-  *
-  * Returns either %NULL on allocation failure, or a subprocess_info
-@@ -348,7 +348,7 @@ static void helper_unlock(void)
-  * exec.  A non-zero return code causes the process to error out, exit,
-  * and return the failure to the calling process
-  *
-- * The cleanup function is just before ethe subprocess_info is about to
-+ * The cleanup function is just before the subprocess_info is about to
-  * be freed.  This can be used for freeing the argv and envp.  The
-  * Function must be runnable in either a process context or the
-  * context in which call_usermodehelper_exec is called.
-@@ -384,7 +384,7 @@ EXPORT_SYMBOL(call_usermodehelper_setup);
- 
- /**
-  * call_usermodehelper_exec - start a usermode application
-- * @sub_info: information about the subprocessa
-+ * @sub_info: information about the subprocess
-  * @wait: wait for the application to finish and return status.
-  *        when UMH_NO_WAIT don't wait at all, but you get no useful error back
-  *        when the program couldn't be exec'ed. This makes it safe to call
--- 
-2.7.4
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15=
+:
 
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v5.12-2
+
+for you to fetch changes up to bcbcf50f521843445c9ea320a0569874f88c4b7a:
+
+  kbuild: fix ld-version.sh to not be affected by locale (2021-03-13
+11:12:13 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v5.12 (2nd)
+
+ - avoid 'make image_name' invoking syncconfig
+
+ - fix a couple of bugs in scripts/dummy-tools.
+
+ - fix LLD_VENDOR and locale issues in scripts/ld-version.sh
+
+ - rebuild GCC plugins when the compiler is upgraded
+
+ - allow LTO to be enabled with KASAN_HW_TAGS
+
+ - allow LTO to be enabled without LLVM=3D1
+
+----------------------------------------------------------------
+Bernhard Rosenkr=C3=A4nzer (1):
+      kbuild: Fix ld-version.sh script if LLD was built with LLD_VENDOR
+
+Jiri Slaby (2):
+      kbuild: dummy-tools: fix inverted tests for gcc
+      kbuild: dummy-tools: support MPROFILE_KERNEL checks for ppc
+
+Masahiro Yamada (7):
+      kbuild: add image_name to no-sync-config-targets
+      kbuild: rebuild GCC plugins when the compiler is upgraded
+      kbuild: dummy-tools: adjust to scripts/cc-version.sh
+      kbuild: remove unneeded -O option to dtc
+      kbuild: remove LLVM=3D1 test from HAS_LTO_CLANG
+      kbuild: remove meaningless parameter to $(call if_changed_rule,dtc)
+      kbuild: fix ld-version.sh to not be affected by locale
+
+Sami Tolvanen (1):
+      kbuild: Allow LTO to be selected with KASAN_HW_TAGS
+
+ Makefile                         |  4 +++-
+ arch/Kconfig                     |  3 +--
+ include/linux/compiler-version.h | 14 ++++++++++++++
+ include/linux/kconfig.h          |  2 --
+ init/Kconfig                     |  8 ++++----
+ scripts/Makefile.lib             |  4 ++--
+ scripts/dummy-tools/gcc          | 18 ++++++++++++++++--
+ scripts/gcc-plugins/Makefile     |  1 +
+ scripts/ld-version.sh            | 22 ++++++++++++++--------
+ 9 files changed, 55 insertions(+), 21 deletions(-)
+ create mode 100644 include/linux/compiler-version.h
+
+--=20
+Best Regards
+Masahiro Yamada
