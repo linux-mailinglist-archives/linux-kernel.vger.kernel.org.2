@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78230339B43
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC16339B47
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhCMCcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:32:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:39329 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232878AbhCMCcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:32:21 -0500
-IronPort-SDR: ca6+EmFzLB6rn4PfFvmKGdTLSQAKAga6I11OuEQgI/uWudtxaArSF9UQ2010blewnRNoqHE33o
- pcO+kWww8SuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185556890"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="185556890"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 18:32:21 -0800
-IronPort-SDR: BWPKoNFrC0CbvFbvqC7bofsQvJCNTBhJDT+7AoC9cufX1+KLu6FM5vOz8SA4xWlBa1sCU5vqVL
- Ls62JjUfG9ug==
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="448805796"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 18:32:20 -0800
-Date:   Fri, 12 Mar 2021 18:32:20 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-Subject: Re: [RFC PATCH v2 04/11] PCI/P2PDMA: Introduce
- pci_p2pdma_should_map_bus() and pci_p2pdma_bus_offset()
-Message-ID: <20210313023220.GB3402637@iweiny-DESK2.sc.intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-5-logang@deltatee.com>
+        id S232975AbhCMCdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232878AbhCMCdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 21:33:14 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED58BC061574;
+        Fri, 12 Mar 2021 18:33:13 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id u3so27370365ybk.6;
+        Fri, 12 Mar 2021 18:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hhCFhzbiKA2mlAUj4Ovu5/MkFXN1mMvRNkUzf2/XxUc=;
+        b=CztLwOEOVFlFwk9qn8RKcouRdGHbLE/7ydkyGqDM9Bqtw2s8uUmDVIqCqkzcsYinON
+         lNiziQO56mB8lUvRXlnYx1llPePefMhlz4xYcQ6X94vyc+RdmyuWbvztda7qLL8nkA2c
+         NAuy9WwG2lIrvHMVtsrPFLzRZlDQhE8axzIZUWS3y84/KzwC9Fpzp5D1xqZKab/P910U
+         ilR8RGdwOpynwqMOjknOGjIKsEG9GqMKdQ86UHay8yu3lziNgmwFYQxRJI/0G7pRU8bi
+         GwBE8qXMfu48vF17nCTSoJpK97mcVjpPNQDWuKD+22IAOMwJU/+FLDGJf5EjIY1KJmeQ
+         IDWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hhCFhzbiKA2mlAUj4Ovu5/MkFXN1mMvRNkUzf2/XxUc=;
+        b=QfgBZsoWim+navgjHxM5U0aIX71eQVUECH+lQESJwGJ3O3XfTNVkEmZkNowgRrX5Nc
+         fg+D2iBP/WlwoxD6OT75gb0mwCLyt4UQ6OXPZY8MO0r+zrjbunF8lQDn94AE5eEoRbfa
+         4HCvb1U7Xr7eeS9H65h5CSXjqCES9WeiZO/Jvcrst2koyH2wJU81gSPJL8Hy/DJ1Rkmq
+         lcoPWiFBJ+3ZeJaYYtlXbTSNLl2VGF62BieW9yA6XwxvQQmExmixFTCWdQWp+RDaZ8zs
+         tmDFdSC22+aJTYuFhWusGuE5Y5orrpLjSqaUjSoKLDLGsloQyG228u6r6MeI2Ym6pW5s
+         Ay7Q==
+X-Gm-Message-State: AOAM530vxUljlKbVMoHumw2oNMy2yXZCKCZgM0GxCZ8jGOh+TJm/Im+Z
+        ePxb1vjEyz4HyTPjhs9evbdyurQggip+Ruw8IiY=
+X-Google-Smtp-Source: ABdhPJyng4dFKMH7ok4h7Kk/HxuGSp39pBIRK4g6fDS032zCLQotmol35wJMQPSmN9xpRfKXf5fxTe3fAGF9Zcc3hUY=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr22073648ybn.403.1615602792435;
+ Fri, 12 Mar 2021 18:33:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311233142.7900-5-logang@deltatee.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20210312214316.132993-1-sultan@kerneltoast.com>
+ <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com> <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
+In-Reply-To: <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 12 Mar 2021 18:33:01 -0800
+Message-ID: <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:31:34PM -0700, Logan Gunthorpe wrote:
-> Introduce pci_p2pdma_should_map_bus() which is meant to be called by
-            ^^^^^^^^^^^^^^^^^^^^^^^^^
-	    pci_p2pdma_dma_map_type() ???
+On Fri, Mar 12, 2021 at 6:22 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+>
+> On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
+> > On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+> > >
+> > > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> > >
+> > > We should be using the program fd here, not the perf event fd.
+> >
+> > Why? Can you elaborate on what issue you ran into with the current code?
+>
+> bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
+> uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
+> right here:
+>         if (f.file->f_op != &bpf_link_fops) {
+>                 fdput(f);
+>                 return ERR_PTR(-EINVAL);
+>         }
 
-FWIW I find this name confusing with pci_p2pdma_map_type() and looking at the
-implementation I'm not clear why pci_p2pdma_dma_map_type() needs to exist?
+kprobe/tracepoint/perf_event attachments behave like bpf_link (so
+libbpf uses user-space high-level bpf_link APIs for it), but they are
+not bpf_link-based in the kernel. So bpf_link__pin() won't work for
+such types of programs until we actually have bpf_link-backed
+attachment support in the kernel itself. I never got to implementing
+this because we already had auto-detachment properties from perf_event
+FD itself. But it would be nice to have that done as a real bpf_link
+in the kernel (with all the observability, program update,
+force-detach support).
 
-Ira
+Looking for volunteers to make this happen ;)
 
-[snip]
 
-> +
-> +/**
-> + * pci_p2pdma_dma_map_type - determine if a DMA mapping should use the
-> + *	bus address, be mapped normally or fail
-> + * @dev: device doing the DMA request
-> + * @pgmap: dev_pagemap structure for the mapping
-> + *
-> + * Returns:
-> + *    1 - if the page should be mapped with a bus address,
-> + *    0 - if the page should be mapped normally through an IOMMU mapping or
-> + *        physical address; or
-> + *   -1 - if the device should not map the pages and an error should be
-> + *        returned
-> + */
-> +int pci_p2pdma_dma_map_type(struct device *dev, struct dev_pagemap *pgmap)
-> +{
-> +	struct pci_p2pdma_pagemap *p2p_pgmap = to_p2p_pgmap(pgmap);
-> +	struct pci_dev *client;
-> +
-> +	if (!dev_is_pci(dev))
-> +		return -1;
-> +
-> +	client = to_pci_dev(dev);
-> +
-> +	switch (pci_p2pdma_map_type(p2p_pgmap->provider, client)) {
-> +	case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
-> +		return 0;
-> +	case PCI_P2PDMA_MAP_BUS_ADDR:
-> +		return 1;
-> +	default:
-> +		return -1;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(pci_p2pdma_dma_map_type);
+>
+> Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
+> and bpf_link__pin() worked.
 
-I guess the main point here is to export this to the DMA layer?
+But you were pinning the BPF program, not a BPF link. Which is not
+what should have happen.
 
-Ira
+>
+> Sultan
