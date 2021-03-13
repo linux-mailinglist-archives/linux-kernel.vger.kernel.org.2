@@ -2,76 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E36339B52
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F62339B55
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhCMCha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:37:30 -0500
-Received: from mga06.intel.com ([134.134.136.31]:47383 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233086AbhCMCg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:36:59 -0500
-IronPort-SDR: cJORzfneF+E1h6BVEedk2B31mPGAkpZmaKvhxZLRM+7QZ0kgVQRWom2LxJg/V06Maxa9TM9wrd
- 522Po48FfejA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="250281130"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="250281130"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 18:36:58 -0800
-IronPort-SDR: vWH9MrQPUopS4cxXwdJS5su75dKHztdNXjGGlH9ufjynLLu86PmrmvGK6dqQ7nNaiN1giHbb0p
- Ed7tLl9U/OgQ==
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="404614708"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 18:36:57 -0800
-Date:   Fri, 12 Mar 2021 18:36:57 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-Subject: Re: [RFC PATCH v2 07/11] dma-mapping: Add flags to dma_map_ops to
- indicate PCI P2PDMA support
-Message-ID: <20210313023657.GC3402637@iweiny-DESK2.sc.intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-8-logang@deltatee.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311233142.7900-8-logang@deltatee.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S232559AbhCMCl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:41:26 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:41842 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231392AbhCMClY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 21:41:24 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id AAB3D400105;
+        Sat, 13 Mar 2021 10:41:21 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] scsi: qla2xxx: use dma_pool_zalloc instead
+Date:   Sat, 13 Mar 2021 10:41:15 +0800
+Message-Id: <1615603275-14303-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHR9JTRkfH0pIGEoZVkpNSk5NS0hJQ0lLSktVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OC46EAw4Tz8RTFEDAklIKlE1
+        DwEKCwlVSlVKTUpOTUtISUNJSE1PVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKQklCNwY+
+X-HM-Tid: 0a782975b00ad991kuwsaab3d400105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:31:37PM -0700, Logan Gunthorpe wrote:
+use dma_pool_zalloc instead of dma_pool_alloc and memset
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/scsi/qla2xxx/qla_os.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 0743925..ac5e954
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4238,11 +4238,10 @@ qla2x00_mem_alloc(struct qla_hw_data *ha, uint16_t req_len, uint16_t rsp_len,
  
-> +int dma_pci_p2pdma_supported(struct device *dev)
-   ^^^
-  bool?
+ 	/* Get consistent memory allocated for Special Features-CB. */
+ 	if (IS_QLA27XX(ha) || IS_QLA28XX(ha)) {
+-		ha->sf_init_cb = dma_pool_alloc(ha->s_dma_pool, GFP_KERNEL,
++		ha->sf_init_cb = dma_pool_zalloc(ha->s_dma_pool, GFP_KERNEL,
+ 						&ha->sf_init_cb_dma);
+ 		if (!ha->sf_init_cb)
+ 			goto fail_sf_init_cb;
+-		memset(ha->sf_init_cb, 0, sizeof(struct init_sf_cb));
+ 		ql_dbg_pci(ql_dbg_init, ha->pdev, 0x0199,
+ 			   "sf_init_cb=%p.\n", ha->sf_init_cb);
+ 	}
+-- 
+2.7.4
 
-> +{
-> +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> +
-> +	return !ops || ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED;
-
-Is this logic correct?  I would have expected.
-
-	return (ops && ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED);
-
-Ira
