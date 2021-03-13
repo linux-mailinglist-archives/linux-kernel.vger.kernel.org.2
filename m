@@ -2,52 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1446B33A023
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A89D339FDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhCMS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 13:57:06 -0500
-Received: from aaaobpv15.800onemail.com ([192.203.239.90]:39060 "EHLO
-        aaaobpv15.800onemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbhCMS4j (ORCPT
+        id S234256AbhCMSbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 13:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234010AbhCMSak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 13:56:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=800onemail.com; s=efw;
-        h=Message-ID:Reply-To:Date:From:To:Subject:Content-Description:Content-Transfer-Encoding:MIME-Version:Content-Type; bh=jUGX9R5u4Mw9QMj7b+DR/8wphPUtKQy6vbcq0lJTv8A=;
-        b=p9V5bqDK7A+H9OaMxihkAj2lmGAZTaceAimeY65dSXTQ+G0FNhZfkiSTJaJspsTz8uHY+MrRZ+Kv+HhRYUO2fVRD1DdnnPiaR5/ZUZFFiImUZOyqhIC9/XvOT0nvgkxD4eRDr1kCqTdbdxq795XqepzVHyyJa9QdyCc5hGwT0/A=;
-Received: from aa_lb_obp.800onemail.com ([10.77.80.130] helo=aaaobrv03.800onemail.com)
-        by aaaobpv15.800onemail.com with esmtps (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.82)
-        id 1lL9R5-000ANK-NT; Sat, 13 Mar 2021 13:56:27 -0500
-Received: from AAGMBXP02.exchserver.com (aa_e2k13ca_efw_ob.800onemail.com [10.77.81.17])
-        by aaaobrv03.800onemail.com (8.14.4/8.14.4/Debian-4.1ubuntu1.1) with ESMTP id 12D232b1065520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 12 Mar 2021 21:03:03 -0500
-Received: from [69.12.85.220] (69.12.85.220) by AAGMBXP02.exchserver.com
- (10.77.144.55) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Mar
- 2021 21:02:59 -0500
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 13 Mar 2021 13:30:40 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C527AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 10:30:39 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id u6so23035534oic.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 10:30:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=esEtWy9nM436CPDJLtFWuCh5LHQvPlgdcQs641np8Pk=;
+        b=XP8on/ZWNaaJyW18QgpGYeaCi+36r7oVSc/pUeP4SS16c3fQ9g4CLgz7m6kT/1scxF
+         7FFlmVz7Hd6658q3YgnTkkt1zoILizGjH5dncQGeN69nSv8D1+f70NnEKwVRWsF5afpf
+         uyITP3x00bJJ8+DRhuNi/e2MRDtmIJ0H+Reozl4mNoPWqMTTm5Les1HzMuKcmmmIYBIf
+         NXmQiUxbRykx8iDt0fdrUIgUbluhNAwq+pKmM+oaghcECM6VtgHXrGSSzs1lFl+qEGCQ
+         0XsJNljIEBeE4ncJGmZUEiClHMkpwBPhfHqqX5JcV/MrlpaS05dRLImiuwUZECHAR4/B
+         xZQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=esEtWy9nM436CPDJLtFWuCh5LHQvPlgdcQs641np8Pk=;
+        b=KU1x7GYiKqidoFOvtuPx/hgBRY5vJtQcmqUlR+aCXgDqjrTIhzgFDV/OxVAX3Ow2QQ
+         w60OWR76q7l2AWs5ZksoQRR7azZulzsnDUdz2hGzh0LRxZ5y9MF3IkpCUGCyKJBrBW2b
+         NuYmhQNfYG44H7GqmlCzPZJMy/riO8UEb2zAzjL4O49x03cL071pVzAmYh1zP4XLiVte
+         hp6TPgkiCUNvIxqlVqBxMNRNiCwDI1ssthXf+aBKc8OfKp5howpAt1P/NOO1OMzFFnl0
+         qsPGz+z9M139SYxYMNHjDuTwo7yohr5OWZ+lktrN0edsJu4giBWVajghqvib3wUc2Js6
+         /YRg==
+X-Gm-Message-State: AOAM531O6XQ+7lSN12gZG3wzDFN/PAHzVuToOoKji7yA6fm1VKQFu27E
+        1AYmtbG89ciXqpjo4F8EOto=
+X-Google-Smtp-Source: ABdhPJxwZP7d9ngg67hP3VC+8ZmowUd6n5lBgFHup6+OYmKwdCDxbfk+DGSDChlwWie9gQbOycRUpw==
+X-Received: by 2002:aca:47c4:: with SMTP id u187mr13814265oia.136.1615660239144;
+        Sat, 13 Mar 2021 10:30:39 -0800 (PST)
+Received: from madhuleo.lan (cpe-24-27-52-237.austin.res.rr.com. [24.27.52.237])
+        by smtp.googlemail.com with ESMTPSA id f192sm2438948oig.48.2021.03.13.10.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 10:30:38 -0800 (PST)
+From:   Madhumitha Prabakaran <madhumithabiw@gmail.com>
+To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        sbrivio@redhat.com, briana.oursler@gmail.com, rapiz@foxmail.com
+Cc:     madhumithabiw@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: Fix camelcase
+Date:   Sat, 13 Mar 2021 12:30:19 -0600
+Message-Id: <20210313183019.368317-1-madhumithabiw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Good day   
-To:     Recipients@aaaobrv03.800onemail.com
-From:   Jim.Yang@aaaobrv03.800onemail.com
-Date:   Fri, 12 Mar 2021 21:02:56 -0800
-Reply-To: <jimyang975@gmail.com>
-Message-ID: <3f959852dcc9439f94f5e70da180d529@AAGMBXP02.exchserver.com>
-X-Originating-IP: [69.12.85.220]
-X-ClientProxiedBy: AAGMBXP01.exchserver.com (10.77.144.50) To
- AAGMBXP02.exchserver.com (10.77.144.55)
-X-TM-SNTS-SMTP: FAFF2DF5ED3FD5FD8E2DE5C08B63B8E8E74F60A82E10A18B1983B1D23FA103EE2000:8
-X-CRX_OSR: CRX_OSR-LOW
-X-Scanned-By: MIMEDefang 2.73 on 10.77.80.35
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am Jim Yang. I am the Operation Manager at China Citic Bank International=
-, Hong Kong. I do not know if we can work together in transferring US$48.2 =
-million from my bank to your bank account. Finally if you are interested I =
-shall provide you with more details. Please contact me with this Email:jimy=
-ang975@gmail.com
+Fix checkpatch.pl - Avoid CamelCase: <byVT3253InitTab_RFMD>
+
+Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
+---
+ drivers/staging/vt6655/baseband.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 1aa675241599..d89163299172 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -52,7 +52,7 @@
+ /*---------------------  Static Variables  --------------------------*/
+ 
+ #define CB_VT3253_INIT_FOR_RFMD 446
+-static const unsigned char byVT3253InitTab_RFMD[CB_VT3253_INIT_FOR_RFMD][2] = {
++static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] = {
+ 	{0x00, 0x30},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -2002,8 +2002,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		if (by_local_id <= REV_ID_VT3253_A1) {
+ 			for (ii = 0; ii < CB_VT3253_INIT_FOR_RFMD; ii++)
+ 				result &= bb_write_embedded(priv,
+-					byVT3253InitTab_RFMD[ii][0],
+-					byVT3253InitTab_RFMD[ii][1]);
++					by_vt3253_init_tab_rfmd[ii][0],
++					by_vt3253_init_tab_rfmd[ii][1]);
+ 
+ 		} else {
+ 			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
+-- 
+2.25.1
+
