@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DA0339B8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8235A339B91
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhCMDdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 22:33:35 -0500
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:36994 "EHLO
+        id S233158AbhCMDeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 22:34:07 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:38060 "EHLO
         mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhCMDde (ORCPT
+        with ESMTP id S233156AbhCMDdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 22:33:34 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.228])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 9CBB2400062;
-        Sat, 13 Mar 2021 11:33:31 +0800 (CST)
+        Fri, 12 Mar 2021 22:33:55 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id ABBB440012F;
+        Sat, 13 Mar 2021 11:33:53 +0800 (CST)
 From:   Wang Qing <wangqing@vivo.com>
-To:     Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] soc: ti: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Sat, 13 Mar 2021 11:33:26 +0800
-Message-Id: <1615606406-2384-1-git-send-email-wangqing@vivo.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wang Qing <wangqing@vivo.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: kernel: use DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+Date:   Sat, 13 Mar 2021 11:33:48 +0800
+Message-Id: <1615606429-2568-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZThgdSRpJSEhMT0IZVkpNSk5NS01PSkpDQkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        oVCBIfWUFZGBgZQktNQh8aGEoYVkpNSk5NS01PSEhCSkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
         FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6Nio*IT8KOVFOLxIuLhpJ
-        LSNPCy1VSlVKTUpOTUtNT0pJSUhDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUNZV1kIAVlBSk1JQzcG
-X-HM-Tid: 0a7829a5722bd991kuws9cbb2400062
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSI6Cyo5Mz8LPVEBEREhLi05
+        Lk8aCxdVSlVKTUpOTUtNT0hPSU9LVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJSk5KNwY+
+X-HM-Tid: 0a7829a5c826d991kuwsabbb440012f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-	WARNING:pm_sr_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
+debugfs_create_file_unsafe does not protect the fops handed to it
+against file removal. DEFINE_DEBUGFS_ATTRIBUTE makes the fops aware of
+the file lifetime and thus protects it against removal.
 
 Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/soc/ti/smartreflex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/spinlock_test.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
-index 5376f3d..b3c7460
---- a/drivers/soc/ti/smartreflex.c
-+++ b/drivers/soc/ti/smartreflex.c
-@@ -817,7 +817,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
+diff --git a/arch/mips/kernel/spinlock_test.c b/arch/mips/kernel/spinlock_test.c
+index ab4e3e1..90f53e0
+--- a/arch/mips/kernel/spinlock_test.c
++++ b/arch/mips/kernel/spinlock_test.c
+@@ -35,7 +35,7 @@ static int ss_get(void *data, u64 *val)
  	return 0;
  }
  
--DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
-+DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
- 			omap_sr_autocomp_store, "%llu\n");
+-DEFINE_SIMPLE_ATTRIBUTE(fops_ss, ss_get, NULL, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_ss, ss_get, NULL, "%llu\n");
  
- static int omap_sr_probe(struct platform_device *pdev)
+ 
+ 
+@@ -114,13 +114,13 @@ static int multi_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(fops_multi, multi_get, NULL, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_multi, multi_get, NULL, "%llu\n");
+ 
+ static int __init spinlock_test(void)
+ {
+-	debugfs_create_file("spin_single", S_IRUGO, mips_debugfs_dir, NULL,
++	debugfs_create_file_unsafe("spin_single", S_IRUGO, mips_debugfs_dir, NULL,
+ 			    &fops_ss);
+-	debugfs_create_file("spin_multi", S_IRUGO, mips_debugfs_dir, NULL,
++	debugfs_create_file_unsafe("spin_multi", S_IRUGO, mips_debugfs_dir, NULL,
+ 			    &fops_multi);
+ 	return 0;
+ }
 -- 
 2.7.4
 
