@@ -2,110 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC16339B47
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45647339B4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhCMCdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        id S233053AbhCMCfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbhCMCdO (ORCPT
+        with ESMTP id S232949AbhCMCfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:33:14 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED58BC061574;
-        Fri, 12 Mar 2021 18:33:13 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id u3so27370365ybk.6;
-        Fri, 12 Mar 2021 18:33:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhCFhzbiKA2mlAUj4Ovu5/MkFXN1mMvRNkUzf2/XxUc=;
-        b=CztLwOEOVFlFwk9qn8RKcouRdGHbLE/7ydkyGqDM9Bqtw2s8uUmDVIqCqkzcsYinON
-         lNiziQO56mB8lUvRXlnYx1llPePefMhlz4xYcQ6X94vyc+RdmyuWbvztda7qLL8nkA2c
-         NAuy9WwG2lIrvHMVtsrPFLzRZlDQhE8axzIZUWS3y84/KzwC9Fpzp5D1xqZKab/P910U
-         ilR8RGdwOpynwqMOjknOGjIKsEG9GqMKdQ86UHay8yu3lziNgmwFYQxRJI/0G7pRU8bi
-         GwBE8qXMfu48vF17nCTSoJpK97mcVjpPNQDWuKD+22IAOMwJU/+FLDGJf5EjIY1KJmeQ
-         IDWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhCFhzbiKA2mlAUj4Ovu5/MkFXN1mMvRNkUzf2/XxUc=;
-        b=QfgBZsoWim+navgjHxM5U0aIX71eQVUECH+lQESJwGJ3O3XfTNVkEmZkNowgRrX5Nc
-         fg+D2iBP/WlwoxD6OT75gb0mwCLyt4UQ6OXPZY8MO0r+zrjbunF8lQDn94AE5eEoRbfa
-         4HCvb1U7Xr7eeS9H65h5CSXjqCES9WeiZO/Jvcrst2koyH2wJU81gSPJL8Hy/DJ1Rkmq
-         lcoPWiFBJ+3ZeJaYYtlXbTSNLl2VGF62BieW9yA6XwxvQQmExmixFTCWdQWp+RDaZ8zs
-         tmDFdSC22+aJTYuFhWusGuE5Y5orrpLjSqaUjSoKLDLGsloQyG228u6r6MeI2Ym6pW5s
-         Ay7Q==
-X-Gm-Message-State: AOAM530vxUljlKbVMoHumw2oNMy2yXZCKCZgM0GxCZ8jGOh+TJm/Im+Z
-        ePxb1vjEyz4HyTPjhs9evbdyurQggip+Ruw8IiY=
-X-Google-Smtp-Source: ABdhPJyng4dFKMH7ok4h7Kk/HxuGSp39pBIRK4g6fDS032zCLQotmol35wJMQPSmN9xpRfKXf5fxTe3fAGF9Zcc3hUY=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr22073648ybn.403.1615602792435;
- Fri, 12 Mar 2021 18:33:12 -0800 (PST)
+        Fri, 12 Mar 2021 21:35:38 -0500
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF18DC061574;
+        Fri, 12 Mar 2021 18:35:37 -0800 (PST)
+Received: from [192.168.1.101] (abac242.neoplus.adsl.tpnet.pl [83.6.166.242])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 9588E3EE58;
+        Sat, 13 Mar 2021 03:35:35 +0100 (CET)
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sdm845: Move reserved-memory to
+ devices
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>
+References: <20210312234310.3490809-1-bjorn.andersson@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <13234328-7251-407d-8870-d409708632e3@somainline.org>
+Date:   Sat, 13 Mar 2021 03:35:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210312214316.132993-1-sultan@kerneltoast.com>
- <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com> <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
-In-Reply-To: <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 12 Mar 2021 18:33:01 -0800
-Message-ID: <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210312234310.3490809-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:22 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
->
-> On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
-> > On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> > >
-> > > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > >
-> > > We should be using the program fd here, not the perf event fd.
-> >
-> > Why? Can you elaborate on what issue you ran into with the current code?
->
-> bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
-> uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
-> right here:
->         if (f.file->f_op != &bpf_link_fops) {
->                 fdput(f);
->                 return ERR_PTR(-EINVAL);
->         }
-
-kprobe/tracepoint/perf_event attachments behave like bpf_link (so
-libbpf uses user-space high-level bpf_link APIs for it), but they are
-not bpf_link-based in the kernel. So bpf_link__pin() won't work for
-such types of programs until we actually have bpf_link-backed
-attachment support in the kernel itself. I never got to implementing
-this because we already had auto-detachment properties from perf_event
-FD itself. But it would be nice to have that done as a real bpf_link
-in the kernel (with all the observability, program update,
-force-detach support).
-
-Looking for volunteers to make this happen ;)
+Hi,
 
 
->
-> Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
-> and bpf_link__pin() worked.
+I'm not sure I can agree. Especially for regions like IPA and TZ-reserved, which seem the same on (almost?) all..
 
-But you were pinning the BPF program, not a BPF link. Which is not
-what should have happen.
 
->
-> Sultan
+Sure, the configuration for various remoteprocs *can* differ based on what the vendor decided to go with, but more often than not (especially with phones) vendors just take a MTP or CDP design, add a screen, couple of cameras and call it their own (you can tell by how similar most of them to the original reference designs in DT). While this is usually the case with lower-end (so not exactly sdm845) devices, it also kinda applies here...
+
+
+I guess for this one, we should find the lowest common denominator and keep the nodes that are in the majority of devices in 845 DTSI and only alter them if need be.. For WoA devices that may stray further away, you can just add a label to reserved-memory and /delete-node/ it, so that you can rewrite it cleanly. The proposed approach just adds a lot - A LOT - of duplication. It will REALLY bite after more people submit 845-based phones, of which there are plenty (4 Xperias, a whole lot of Xiaomis, a couple of Samsungs, LGs... need I go on?).
+
+
+Konrad
+
