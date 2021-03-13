@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B01F339D8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD03F339D8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhCMKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:24:41 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48220 "EHLO
+        id S233418AbhCMK0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 05:26:18 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48398 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhCMKYd (ORCPT
+        with ESMTP id S230349AbhCMKZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 05:24:33 -0500
+        Sat, 13 Mar 2021 05:25:47 -0500
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2BC9A1C0B85; Sat, 13 Mar 2021 11:24:31 +0100 (CET)
-Date:   Sat, 13 Mar 2021 11:24:30 +0100
+        id 6FA8B1C0B81; Sat, 13 Mar 2021 11:25:45 +0100 (CET)
+Date:   Sat, 13 Mar 2021 11:25:45 +0100
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Rahul Tanwar <rtanwar@maxlinear.com>
-Cc:     Cheol Yong Kim <ckim@maxlinear.com>, Qiming Wu <qwu@maxlinear.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Hauke Mehrtens <hmehrtens@maxlinear.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: MaxLinear, please maintain your drivers was Re: [PATCH] leds:
- lgm: fix gpiolib dependency
-Message-ID: <20210313102430.GA11435@duo.ucw.cz>
-References: <20210308153052.2353885-1-arnd@kernel.org>
- <20210309180851.GA4669@duo.ucw.cz>
- <20210309193910.GA7507@amd>
- <YEgeoPqCCgTUEsSc@angband.pl>
- <20210310072831.GA29779@amd>
- <CAK8P3a2+o8N77A_OkP+QD7ntA+M4U26k15Hh1rNN16-afcTp9g@mail.gmail.com>
- <9a74ce79-b7cf-dec1-a64c-d928b5712645@hauke-m.de>
- <MN2PR19MB3486B88ADF5BE557BEE168AEAF909@MN2PR19MB3486.namprd19.prod.outlook.com>
- <MW2PR1901MB2187816296E1B03F91EB972BD0909@MW2PR1901MB2187.namprd19.prod.outlook.com>
- <MN2PR19MB3693B7620DABED199AA304B5B1909@MN2PR19MB3693.namprd19.prod.outlook.com>
+To:     chris.chiu@canonical.com
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ACPI: video: Add missing callback back for Sony VPCEH3U1E
+Message-ID: <20210313102545.GB11435@duo.ucw.cz>
+References: <20210312032430.13664-1-chris.chiu@canonical.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+        protocol="application/pgp-signature"; boundary="1LKvkjL3sHcu1TtY"
 Content-Disposition: inline
-In-Reply-To: <MN2PR19MB3693B7620DABED199AA304B5B1909@MN2PR19MB3693.namprd19.prod.outlook.com>
+In-Reply-To: <20210312032430.13664-1-chris.chiu@canonical.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=utf-8
+--1LKvkjL3sHcu1TtY
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
-> Sorry for the hiccup due to missing email address in the email chain duri=
-ng the ownership transition.
+On Fri 2021-03-12 11:24:30, chris.chiu@canonical.com wrote:
+> From: Chris Chiu <chris.chiu@canonical.com>
 >=20
-> Henceforth, I will be the maintainer for all kernel drivers/code related =
-to =E2=80=9Cformerly Intel=E2=80=99s now MaxLinear=E2=80=99s=E2=80=9D Light=
-ning Mountain SoC.
+> The .callback of the quirk for Sony VPCEH3U1E was unintetionally
+> removed by the commit 25417185e9b5 ("ACPI: video: Add DMI quirk
+> for GIGABYTE GB-BXBT-2807"). Add it back to make sure the quirk
+> for Sony VPCEH3U1E works as expected.
 >=20
-> Please send any Lightning Mountain SoC related issues email to Rahul Tanw=
-ar (rtanwar@maxlinear.com<mailto:rtanwar@maxlinear.com>) and I will ensure =
-that I
-> address the issues in a timely manner.
->=20
-> I will wait for more details on your fix request for LGM LED
-> driver. Thanks.
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> Reported-by: Pavel Machek <pavel@ucw.cz>
 
-Please review/Ack arnd's change.
+Thanks for doing this.
 
-Plus I'd like you to
+Reviewed-by: Pavel Machek (CIP) <pavel@denx.de>
 
-1) remove LEDS_BLINK Kconfig symbol
-
-2) provide useful Kconfig help text for your driver.
-
-Thank you,
-								Pavel
+Best regards,						Pavel
 --=20
 http://www.livejournal.com/~pavelmachek
 
---gKMricLos+KVdGMg
+--1LKvkjL3sHcu1TtY
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEyS3gAKCRAw5/Bqldv6
-8vxmAJ9FvMs2JegMmexmr37OARnEh156dACgwi7Jk65iG7STxDC7zHVXw6Ub1sE=
-=WQa6
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEyTKQAKCRAw5/Bqldv6
+8iQAAJ92pk4aBTA1Dpsj2oO9tUkO/zBAoQCfRCuRYN+WqiliXsRzIzEZW3wqqr8=
+=iDmB
 -----END PGP SIGNATURE-----
 
---gKMricLos+KVdGMg--
+--1LKvkjL3sHcu1TtY--
