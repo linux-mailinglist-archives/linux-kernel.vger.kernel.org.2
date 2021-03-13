@@ -2,183 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2097339DA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A214339DA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhCMKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S233737AbhCMKno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 05:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbhCMKnK (ORCPT
+        with ESMTP id S233155AbhCMKnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 05:43:10 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987A9C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 02:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gpKEqRXdI5yimusJbW3cQ5mfFI2pPCBeX2hVEl8mWdU=; b=Jk13R6qcc+chAOd7LmRazr5mF8
-        f/HgLakyR0UMU2iUIs0D1qa7r4gim9DP7FGM23ChNDiwHuERTImnMKJ+N5hnvHkJIlyic7y/giJBI
-        rI/aRybVDZuWidQ8AhRtneX87lAJ3VGurlDufHV/N3derlSYKVRpqzXKcuY5ZPLieEJY=;
-Received: from p200300ccff380e001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff38:e00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lL1jc-0008Pd-UM; Sat, 13 Mar 2021 11:43:05 +0100
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lL1jb-0004TF-Ni; Sat, 13 Mar 2021 11:43:03 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     j.neuschaefer@gmx.net, lee.jones@linaro.org,
+        Sat, 13 Mar 2021 05:43:17 -0500
+Received: from smtp.gentoo.org (mail.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FB6C061574;
+        Sat, 13 Mar 2021 02:43:17 -0800 (PST)
+Received: by sf.home (Postfix, from userid 1000)
+        id A91465A22061; Sat, 13 Mar 2021 10:43:13 +0000 (GMT)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH v3] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Date:   Sat, 13 Mar 2021 11:42:58 +0100
-Message-Id: <20210313104258.17111-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.29.2
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>, linux-ia64@vger.kernel.org
+Subject: [PATCH] ia64: fix format strings for err_inject
+Date:   Sat, 13 Mar 2021 10:43:12 +0000
+Message-Id: <20210313104312.1548232-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the version of the EC in the Tolino Shine 2 HD
-to the supported versions. It seems not to have an RTC
-and does not ack data written to it.
-The vendor kernel happily ignores write errors, using
-I2C via userspace i2c-set also shows the error.
-So add a quirk to ignore that error.
+Fix warning with %lx / u64 mismatch:
 
-PWM can be successfully configured despite of that error.
+  arch/ia64/kernel/err_inject.c: In function 'show_resources':
+  arch/ia64/kernel/err_inject.c:62:22: warning:
+    format '%lx' expects argument of type 'long unsigned int',
+    but argument 3 has type 'u64' {aka 'long long unsigned int'}
+     62 |  return sprintf(buf, "%lx\n", name[cpu]);   \
+        |                      ^~~~~~~
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+CC: linux-ia64@vger.kernel.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 ---
-Changes in v3:
-- remove have_rtc variable
-- rename subdevices again
+ arch/ia64/kernel/err_inject.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-Changes in v2:
-- more comments about stacking regmap construction
-- fix accidential line removal
-- better naming for subdevices
- drivers/mfd/ntxec.c       | 55 ++++++++++++++++++++++++++++++++++++---
- include/linux/mfd/ntxec.h |  1 +
- 2 files changed, 53 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-index 957de2b03529..ab6860ef3e9a 100644
---- a/drivers/mfd/ntxec.c
-+++ b/drivers/mfd/ntxec.c
-@@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
- 	.priority = 128,
- };
+diff --git a/arch/ia64/kernel/err_inject.c b/arch/ia64/kernel/err_inject.c
+index 8b5b8e6bc9d9..3d48f8766d78 100644
+--- a/arch/ia64/kernel/err_inject.c
++++ b/arch/ia64/kernel/err_inject.c
+@@ -59,7 +59,7 @@ show_##name(struct device *dev, struct device_attribute *attr,	\
+ 		char *buf)						\
+ {									\
+ 	u32 cpu=dev->id;						\
+-	return sprintf(buf, "%lx\n", name[cpu]);			\
++	return sprintf(buf, "%llx\n", name[cpu]);			\
+ }
  
-+static int regmap_ignore_write(void *context,
-+			       unsigned int reg, unsigned int val)
-+
-+{
-+	struct regmap *regmap = context;
-+
-+	regmap_write(regmap, reg, val);
-+
-+	return 0;
-+}
-+
-+static int regmap_wrap_read(void *context, unsigned int reg,
-+			    unsigned int *val)
-+{
-+	struct regmap *regmap = context;
-+
-+	return regmap_read(regmap, reg, val);
-+}
-+
-+/*
-+ * Some firmware versions do not ack written data, add a wrapper. It
-+ * is used to stack another regmap on top.
-+ */
-+static const struct regmap_config regmap_config_noack = {
-+	.name = "ntxec_noack",
-+	.reg_bits = 8,
-+	.val_bits = 16,
-+	.cache_type = REGCACHE_NONE,
-+	.reg_write = regmap_ignore_write,
-+	.reg_read = regmap_wrap_read
-+};
-+
- static const struct regmap_config regmap_config = {
- 	.name = "ntxec",
- 	.reg_bits = 8,
-@@ -104,16 +136,22 @@ static const struct regmap_config regmap_config = {
- 	.val_format_endian = REGMAP_ENDIAN_BIG,
- };
+ #define store(name)							\
+@@ -86,9 +86,9 @@ store_call_start(struct device *dev, struct device_attribute *attr,
  
--static const struct mfd_cell ntxec_subdevices[] = {
-+static const struct mfd_cell ntxec_subdev[] = {
- 	{ .name = "ntxec-rtc" },
- 	{ .name = "ntxec-pwm" },
- };
+ #ifdef ERR_INJ_DEBUG
+ 	printk(KERN_DEBUG "pal_mc_err_inject for cpu%d:\n", cpu);
+-	printk(KERN_DEBUG "err_type_info=%lx,\n", err_type_info[cpu]);
+-	printk(KERN_DEBUG "err_struct_info=%lx,\n", err_struct_info[cpu]);
+-	printk(KERN_DEBUG "err_data_buffer=%lx, %lx, %lx.\n",
++	printk(KERN_DEBUG "err_type_info=%llx,\n", err_type_info[cpu]);
++	printk(KERN_DEBUG "err_struct_info=%llx,\n", err_struct_info[cpu]);
++	printk(KERN_DEBUG "err_data_buffer=%llx, %llx, %llx.\n",
+ 			  err_data_buffer[cpu].data1,
+ 			  err_data_buffer[cpu].data2,
+ 			  err_data_buffer[cpu].data3);
+@@ -117,8 +117,8 @@ store_call_start(struct device *dev, struct device_attribute *attr,
  
-+static const struct mfd_cell ntxec_subdev_no_rtc[] = {
-+	{ .name = "ntxec-pwm" },
-+};
-+
- static int ntxec_probe(struct i2c_client *client)
- {
- 	struct ntxec *ec;
- 	unsigned int version;
- 	int res;
-+	const struct mfd_cell *subdevs = ntxec_subdev;
-+	size_t n_subdevs = ARRAY_SIZE(ntxec_subdev);
- 
- 	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
- 	if (!ec)
-@@ -138,6 +176,16 @@ static int ntxec_probe(struct i2c_client *client)
- 	switch (version) {
- 	case NTXEC_VERSION_KOBO_AURA:
- 		break;
-+	case NTXEC_VERSION_TOLINO_SHINE2:
-+		subdevs = ntxec_subdev_no_rtc;
-+		n_subdevs = ARRAY_SIZE(ntxec_subdev_no_rtc);
-+		/* Another regmap stacked on top of the other */
-+		ec->regmap = devm_regmap_init(ec->dev, NULL,
-+					      ec->regmap,
-+					      &regmap_config_noack);
-+		if (IS_ERR(ec->regmap))
-+			return PTR_ERR(ec->regmap);
-+		break;
- 	default:
- 		dev_err(ec->dev,
- 			"Netronix embedded controller version %04x is not supported.\n",
-@@ -181,8 +229,9 @@ static int ntxec_probe(struct i2c_client *client)
- 
- 	i2c_set_clientdata(client, ec);
- 
--	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
--				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-+	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-+				   subdevs, n_subdevs,
-+				   NULL, 0, NULL);
- 	if (res)
- 		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
- 
-diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-index 361204d125f1..26ab3b8eb612 100644
---- a/include/linux/mfd/ntxec.h
-+++ b/include/linux/mfd/ntxec.h
-@@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
- 
- /* Known firmware versions */
- #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-+#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
- 
+ #ifdef ERR_INJ_DEBUG
+ 	printk(KERN_DEBUG "Returns: status=%d,\n", (int)status[cpu]);
+-	printk(KERN_DEBUG "capabilities=%lx,\n", capabilities[cpu]);
+-	printk(KERN_DEBUG "resources=%lx\n", resources[cpu]);
++	printk(KERN_DEBUG "capabilities=%llx,\n", capabilities[cpu]);
++	printk(KERN_DEBUG "resources=%llx\n", resources[cpu]);
  #endif
+ 	return size;
+ }
+@@ -131,7 +131,7 @@ show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+ 			char *buf)
+ {
+ 	unsigned int cpu=dev->id;
+-	return sprintf(buf, "%lx\n", phys_addr[cpu]);
++	return sprintf(buf, "%llx\n", phys_addr[cpu]);
+ }
+ 
+ static ssize_t
+@@ -145,7 +145,7 @@ store_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+ 	ret = get_user_pages_fast(virt_addr, 1, FOLL_WRITE, NULL);
+ 	if (ret<=0) {
+ #ifdef ERR_INJ_DEBUG
+-		printk("Virtual address %lx is not existing.\n",virt_addr);
++		printk("Virtual address %llx is not existing.\n", virt_addr);
+ #endif
+ 		return -EINVAL;
+ 	}
+@@ -163,7 +163,7 @@ show_err_data_buffer(struct device *dev,
+ {
+ 	unsigned int cpu=dev->id;
+ 
+-	return sprintf(buf, "%lx, %lx, %lx\n",
++	return sprintf(buf, "%llx, %llx, %llx\n",
+ 			err_data_buffer[cpu].data1,
+ 			err_data_buffer[cpu].data2,
+ 			err_data_buffer[cpu].data3);
+@@ -178,13 +178,13 @@ store_err_data_buffer(struct device *dev,
+ 	int ret;
+ 
+ #ifdef ERR_INJ_DEBUG
+-	printk("write err_data_buffer=[%lx,%lx,%lx] on cpu%d\n",
++	printk("write err_data_buffer=[%llx,%llx,%llx] on cpu%d\n",
+ 		 err_data_buffer[cpu].data1,
+ 		 err_data_buffer[cpu].data2,
+ 		 err_data_buffer[cpu].data3,
+ 		 cpu);
+ #endif
+-	ret=sscanf(buf, "%lx, %lx, %lx",
++	ret = sscanf(buf, "%llx, %llx, %llx",
+ 			&err_data_buffer[cpu].data1,
+ 			&err_data_buffer[cpu].data2,
+ 			&err_data_buffer[cpu].data3);
 -- 
-2.29.2
+2.30.2
 
