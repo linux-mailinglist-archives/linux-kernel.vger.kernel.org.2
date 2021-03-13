@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79411339E1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 14:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A43339E22
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 14:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhCMNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 08:00:42 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:59994 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230309AbhCMNAE (ORCPT
+        id S233728AbhCMNOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 08:14:10 -0500
+Received: from tartarus.angband.pl ([51.83.246.204]:38276 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229615AbhCMNNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 08:00:04 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 942A51480A0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 12:59:33 +0000 (GMT)
-Received: (qmail 5122 invoked from network); 13 Mar 2021 12:59:33 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 13 Mar 2021 12:59:33 -0000
-Date:   Sat, 13 Mar 2021 12:59:31 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 5/7] SUNRPC: Refresh rq_pages using a bulk page allocator
-Message-ID: <20210313125931.GX3697@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
- <20210312154331.32229-6-mgorman@techsingularity.net>
- <CAKgT0Uf-4CY=wU079Y87xwzz_UDm8AqGBdt_6OuVtADR8AN0hA@mail.gmail.com>
- <17DF335E-9194-4A16-B18E-668AD1362697@oracle.com>
+        Sat, 13 Mar 2021 08:13:55 -0500
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1lL3yz-00GJp4-Ak; Sat, 13 Mar 2021 14:07:05 +0100
+Date:   Sat, 13 Mar 2021 14:07:05 +0100
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        darrick.wong@oracle.com, jack@suse.cz, viro@zeniv.linux.org.uk,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, hch@lst.de
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+Message-ID: <YEy4+SPUvQkL44PQ@angband.pl>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
+ <20210310130227.GN3479805@casper.infradead.org>
+ <20210310142159.kudk7q2ogp4yqn36@fiona>
+ <20210310142643.GQ3479805@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <17DF335E-9194-4A16-B18E-668AD1362697@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210310142643.GQ3479805@casper.infradead.org>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:22:43PM +0000, Chuck Lever III wrote:
-> Mel, I can send you a tidied and tested update to this patch,
-> or you can drop the two NFSD patches and I can submit them via
-> the NFSD tree when alloc_pages_bulk() is merged.
+On Wed, Mar 10, 2021 at 02:26:43PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 10, 2021 at 08:21:59AM -0600, Goldwyn Rodrigues wrote:
+> > DAX on btrfs has been attempted[1]. Of course, we could not
 > 
+> But why?  A completeness fetish?  I don't understand why you decided
+> to do this work.
 
-Send me a tidied version anyway. I'm happy enough to include them in the
-series even if it ultimately gets merged via the NFSD tree. It'll need
-to be kept as a separate pull request to avoid delaying unrelated NFSD
-patches until Andrew merges the mm parts.
+* xfs can shapshot only single files, btrfs entire subvolumes
+* btrfs-send|receive
+* enumeration of changed parts of a file
 
+
+Meow!
 -- 
-Mel Gorman
-SUSE Labs
+⢀⣴⠾⠻⢶⣦⠀ I've read an article about how lively happy music boosts
+⣾⠁⢠⠒⠀⣿⡁ productivity.  You can read it, too, you just need the
+⢿⡄⠘⠷⠚⠋⠀ right music while doing so.  I recommend Skepticism
+⠈⠳⣄⠀⠀⠀⠀ (funeral doom metal).
