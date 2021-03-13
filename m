@@ -2,169 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4921A339FD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1446B33A023
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhCMS2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 13:28:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234010AbhCMS2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 13:28:39 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DCE864E58;
-        Sat, 13 Mar 2021 18:28:38 +0000 (UTC)
-Date:   Sat, 13 Mar 2021 18:28:32 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] iio: buffer: fix use-after-free for attached_buffers
- array
-Message-ID: <20210313182832.588ed3d5@archlinux>
-In-Reply-To: <CA+U=DsoutVL5yeV_piZLJBSkUrMwTRZurUqW=mrZ-S-=LVw2VQ@mail.gmail.com>
-References: <20210306164710.9944-1-ardeleanalex@gmail.com>
-        <20210307185444.32924-1-ardeleanalex@gmail.com>
-        <CA+U=DsoutVL5yeV_piZLJBSkUrMwTRZurUqW=mrZ-S-=LVw2VQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234382AbhCMS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 13:57:06 -0500
+Received: from aaaobpv15.800onemail.com ([192.203.239.90]:39060 "EHLO
+        aaaobpv15.800onemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234071AbhCMS4j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 13:56:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=800onemail.com; s=efw;
+        h=Message-ID:Reply-To:Date:From:To:Subject:Content-Description:Content-Transfer-Encoding:MIME-Version:Content-Type; bh=jUGX9R5u4Mw9QMj7b+DR/8wphPUtKQy6vbcq0lJTv8A=;
+        b=p9V5bqDK7A+H9OaMxihkAj2lmGAZTaceAimeY65dSXTQ+G0FNhZfkiSTJaJspsTz8uHY+MrRZ+Kv+HhRYUO2fVRD1DdnnPiaR5/ZUZFFiImUZOyqhIC9/XvOT0nvgkxD4eRDr1kCqTdbdxq795XqepzVHyyJa9QdyCc5hGwT0/A=;
+Received: from aa_lb_obp.800onemail.com ([10.77.80.130] helo=aaaobrv03.800onemail.com)
+        by aaaobpv15.800onemail.com with esmtps (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.82)
+        id 1lL9R5-000ANK-NT; Sat, 13 Mar 2021 13:56:27 -0500
+Received: from AAGMBXP02.exchserver.com (aa_e2k13ca_efw_ob.800onemail.com [10.77.81.17])
+        by aaaobrv03.800onemail.com (8.14.4/8.14.4/Debian-4.1ubuntu1.1) with ESMTP id 12D232b1065520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 12 Mar 2021 21:03:03 -0500
+Received: from [69.12.85.220] (69.12.85.220) by AAGMBXP02.exchserver.com
+ (10.77.144.55) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Mar
+ 2021 21:02:59 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Good day   
+To:     Recipients@aaaobrv03.800onemail.com
+From:   Jim.Yang@aaaobrv03.800onemail.com
+Date:   Fri, 12 Mar 2021 21:02:56 -0800
+Reply-To: <jimyang975@gmail.com>
+Message-ID: <3f959852dcc9439f94f5e70da180d529@AAGMBXP02.exchserver.com>
+X-Originating-IP: [69.12.85.220]
+X-ClientProxiedBy: AAGMBXP01.exchserver.com (10.77.144.50) To
+ AAGMBXP02.exchserver.com (10.77.144.55)
+X-TM-SNTS-SMTP: FAFF2DF5ED3FD5FD8E2DE5C08B63B8E8E74F60A82E10A18B1983B1D23FA103EE2000:8
+X-CRX_OSR: CRX_OSR-LOW
+X-Scanned-By: MIMEDefang 2.73 on 10.77.80.35
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 09:29:39 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-
-> On Sun, Mar 7, 2021 at 8:55 PM Alexandru Ardelean
-> <ardeleanalex@gmail.com> wrote:
-> >
-> > Thanks to Lars for finding this.
-> > The free of the 'attached_buffers' array should be done as late as
-> > possible. This change moves it to iio_buffers_put(), which looks like
-> > the best place for it, since it takes place right before the IIO device
-> > data is free'd.
-> > The free of this array will be handled by calling iio_device_free().
-> > The iio_buffers_put() function is renamed to iio_device_detach_buffers()
-> > since the role of this function changes a bit.
-> >
-> > It looks like this issue was ocurring on the error path of
-> > iio_buffers_alloc_sysfs_and_mask() and in
-> > iio_buffers_free_sysfs_and_mask()
-> >
-> > Added a comment in the doc-header of iio_device_attach_buffer() to
-> > mention how this will be free'd in case anyone is reading the code
-> > and becoming confused about it.
-> >
-> > Fixes: 36f3118c414d ("iio: buffer: introduce support for attaching more IIO buffers")
-> > Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-> > Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to poke at it.
-
-Thanks,
-
-Jonathan
-> > ---  
-> 
-> Forgot the changelog.
-> 
-> Changelog v1 -> v2:
-> * rename iio_buffers_put() -> iio_device_detach_buffers()
-> 
-> >  drivers/iio/iio_core.h            | 4 ++--
-> >  drivers/iio/industrialio-buffer.c | 9 +++++----
-> >  drivers/iio/industrialio-core.c   | 2 +-
-> >  3 files changed, 8 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> > index 062fe16c6c49..8f4a9b264962 100644
-> > --- a/drivers/iio/iio_core.h
-> > +++ b/drivers/iio/iio_core.h
-> > @@ -77,7 +77,7 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
-> >
-> >  void iio_disable_all_buffers(struct iio_dev *indio_dev);
-> >  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
-> > -void iio_buffers_put(struct iio_dev *indio_dev);
-> > +void iio_device_detach_buffers(struct iio_dev *indio_dev);
-> >
-> >  #else
-> >
-> > @@ -93,7 +93,7 @@ static inline void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev) {}
-> >
-> >  static inline void iio_disable_all_buffers(struct iio_dev *indio_dev) {}
-> >  static inline void iio_buffer_wakeup_poll(struct iio_dev *indio_dev) {}
-> > -static inline void iio_buffers_put(struct iio_dev *indio_dev) {}
-> > +static inline void iio_device_detach_buffers(struct iio_dev *indio_dev) {}
-> >
-> >  #endif
-> >
-> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > index 1a415e97174e..1ff7f731b044 100644
-> > --- a/drivers/iio/industrialio-buffer.c
-> > +++ b/drivers/iio/industrialio-buffer.c
-> > @@ -326,7 +326,7 @@ void iio_buffer_init(struct iio_buffer *buffer)
-> >  }
-> >  EXPORT_SYMBOL(iio_buffer_init);
-> >
-> > -void iio_buffers_put(struct iio_dev *indio_dev)
-> > +void iio_device_detach_buffers(struct iio_dev *indio_dev)
-> >  {
-> >         struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> >         struct iio_buffer *buffer;
-> > @@ -336,6 +336,8 @@ void iio_buffers_put(struct iio_dev *indio_dev)
-> >                 buffer = iio_dev_opaque->attached_buffers[i];
-> >                 iio_buffer_put(buffer);
-> >         }
-> > +
-> > +       kfree(iio_dev_opaque->attached_buffers);
-> >  }
-> >
-> >  static ssize_t iio_show_scan_index(struct device *dev,
-> > @@ -1764,7 +1766,6 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >                 buffer = iio_dev_opaque->attached_buffers[unwind_idx];
-> >                 __iio_buffer_free_sysfs_and_mask(buffer);
-> >         }
-> > -       kfree(iio_dev_opaque->attached_buffers);
-> >         return ret;
-> >  }
-> >
-> > @@ -1786,8 +1787,6 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> >                 buffer = iio_dev_opaque->attached_buffers[i];
-> >                 __iio_buffer_free_sysfs_and_mask(buffer);
-> >         }
-> > -
-> > -       kfree(iio_dev_opaque->attached_buffers);
-> >  }
-> >
-> >  /**
-> > @@ -2062,6 +2061,8 @@ static int iio_buffer_mmap(struct file *filep, struct vm_area_struct *vma)
-> >   * This function attaches a buffer to a IIO device. The buffer stays attached to
-> >   * the device until the device is freed. For legacy reasons, the first attached
-> >   * buffer will also be assigned to 'indio_dev->buffer'.
-> > + * The array allocated here, will be free'd via the iio_device_detach_buffers()
-> > + * call which is handled by the iio_device_free().
-> >   */
-> >  int iio_device_attach_buffer(struct iio_dev *indio_dev,
-> >                              struct iio_buffer *buffer)
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > index d74fbac908df..3be5f75c2846 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -1587,7 +1587,7 @@ static void iio_dev_release(struct device *device)
-> >         iio_device_unregister_eventset(indio_dev);
-> >         iio_device_unregister_sysfs(indio_dev);
-> >
-> > -       iio_buffers_put(indio_dev);
-> > +       iio_device_detach_buffers(indio_dev);
-> >
-> >         ida_simple_remove(&iio_ida, indio_dev->id);
-> >         kfree(iio_dev_opaque);
-> > --
-> > 2.25.1
-> >  
-
+I am Jim Yang. I am the Operation Manager at China Citic Bank International=
+, Hong Kong. I do not know if we can work together in transferring US$48.2 =
+million from my bank to your bank account. Finally if you are interested I =
+shall provide you with more details. Please contact me with this Email:jimy=
+ang975@gmail.com
