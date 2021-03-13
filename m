@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA4B339B37
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E265339B3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhCMCVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbhCMCU6 (ORCPT
+        id S233295AbhCMCWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:22:40 -0500
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:39042 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233414AbhCMCWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:20:58 -0500
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D20C061762;
-        Fri, 12 Mar 2021 18:20:58 -0800 (PST)
-Received: from localhost.localdomain (abac242.neoplus.adsl.tpnet.pl [83.6.166.242])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id EFD021F88F;
-        Sat, 13 Mar 2021 03:20:55 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] clk: qcom: gcc-msm8994: Add a quirk for a different SDCC configuration
-Date:   Sat, 13 Mar 2021 03:19:18 +0100
-Message-Id: <20210313021919.435332-9-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210313021919.435332-1-konrad.dybcio@somainline.org>
-References: <20210313021919.435332-1-konrad.dybcio@somainline.org>
+        Fri, 12 Mar 2021 21:22:20 -0500
+Received: by mail-pf1-f169.google.com with SMTP id 18so3084179pfo.6;
+        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bL9MisVqCy9+mMTkkT9Ym/rs2nuRRYH0hpQS2/1i2Qc=;
+        b=YAdYbG6fff0/jGTaEsRmaJxkFUQWpdEk9BoNC2qDSFyxVxYBYbbdIAkXfpKnqHTgG7
+         Ut8yRQiLkeqEJdWIE+D9/es4MO4I94Hro2bR+Ry3uK/Y5r605ALCnLYmCYw8IUN5Z6N0
+         8FHpCRd6szDB8VMY2pq+3xnlISt9lMM7lcJBdH40X7NPMVHsjp/K5agTAS17iK62D4SG
+         qe+jJYPRFLiugO2bTY//C080wuKDyiLHEbGeZ0VOlcyApuu3shfoknndB9HJjd8Qj2z/
+         si21JfrXebVy+zfpwXzHzcuSAwK+WKZ27ar/HeD20VOqp9XWZccdVREYQKDRj3tLh1sF
+         UJ1w==
+X-Gm-Message-State: AOAM532ZC/dezKIjU3S/Gz1Dip8YfNcgXa/ySf0FAVhLBeaum4BfqyIr
+        Ol/8Q77McjLhfGHAQdtFFaBXqZLRWGJokA==
+X-Google-Smtp-Source: ABdhPJwruavXBRGzE5NvtQgB4Hv0B9VsKuEoRnRdCIedurSM1Fd25BdadH3+DAG1TuTAR7pVOSTpvg==
+X-Received: by 2002:a65:4243:: with SMTP id d3mr14766300pgq.180.1615602140435;
+        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
+Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
+        by smtp.gmail.com with ESMTPSA id m5sm6768990pfd.96.2021.03.12.18.22.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
+Date:   Fri, 12 Mar 2021 18:22:17 -0800
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
+Message-ID: <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
+References: <20210312214316.132993-1-sultan@kerneltoast.com>
+ <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices come with a different SDCC clock configuration,
-account for that.
+On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
+> On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+> >
+> > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> >
+> > We should be using the program fd here, not the perf event fd.
+> 
+> Why? Can you elaborate on what issue you ran into with the current code?
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- .../bindings/clock/qcom,gcc-msm8994.yaml         |  4 ++++
- drivers/clk/qcom/gcc-msm8994.c                   | 16 ++++++++++++++++
- 2 files changed, 20 insertions(+)
+bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
+uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
+right here:
+	if (f.file->f_op != &bpf_link_fops) {
+		fdput(f);
+		return ERR_PTR(-EINVAL);
+	}
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
-index f8067fb1bbd6..9db0800a4ee4 100644
---- a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
-@@ -49,6 +49,10 @@ properties:
-     description:
-       Protected clock specifier list as per common clock binding.
- 
-+  qcom,sdcc2-clk-src-40mhz:
-+    description: SDCC2_APPS clock source runs at 40MHz.
-+    type: boolean
-+
- required:
-   - compatible
-   - reg
-diff --git a/drivers/clk/qcom/gcc-msm8994.c b/drivers/clk/qcom/gcc-msm8994.c
-index a5b9db7678d1..1fbbf5f5dee0 100644
---- a/drivers/clk/qcom/gcc-msm8994.c
-+++ b/drivers/clk/qcom/gcc-msm8994.c
-@@ -1018,6 +1018,19 @@ static struct clk_rcg2 sdcc1_apps_clk_src = {
- 	},
- };
- 
-+static struct freq_tbl ftbl_sdcc2_40mhz_apps_clk_src[] = {
-+	F(144000, P_XO, 16, 3, 25),
-+	F(400000, P_XO, 12, 1, 4),
-+	F(20000000, P_GPLL0, 15, 1, 2),
-+	F(25000000, P_GPLL0, 12, 1, 2),
-+	F(40000000, P_GPLL0, 15, 0, 0),
-+	F(50000000, P_GPLL0, 12, 0, 0),
-+	F(80000000, P_GPLL0, 7.5, 0, 0),
-+	F(100000000, P_GPLL0, 6, 0, 0),
-+	F(200000000, P_GPLL0, 3, 0, 0),
-+	{ }
-+};
-+
- static struct freq_tbl ftbl_sdcc2_4_apps_clk_src[] = {
- 	F(144000, P_XO, 16, 3, 25),
- 	F(400000, P_XO, 12, 1, 4),
-@@ -2793,6 +2806,9 @@ static int gcc_msm8994_probe(struct platform_device *pdev)
- 		blsp2_qup6_i2c_apps_clk_src.freq_tbl = ftbl_blsp1_qup_spi_apps_clk_src_8992;
- 	}
- 
-+	if (of_find_property(dev->of_node, "qcom,sdcc2-clk-src-40mhz", NULL))
-+		sdcc2_apps_clk_src.freq_tbl = ftbl_sdcc2_40mhz_apps_clk_src;
-+
- 	return qcom_cc_probe(pdev, &gcc_msm8994_desc);
- }
- 
--- 
-2.30.2
+Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
+and bpf_link__pin() worked.
 
+Sultan
