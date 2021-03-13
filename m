@@ -2,173 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7368339D2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0A4339D31
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhCMJNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:13:31 -0500
-Received: from mga05.intel.com ([192.55.52.43]:36569 "EHLO mga05.intel.com"
+        id S232431AbhCMJSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:18:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55212 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhCMJM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:12:58 -0500
-IronPort-SDR: BthGq5HEdJBXb3+xQrRxExb76DJXHKJrTHf5Bu3n4N4TYPUEd5sLkygkCnuaGZr09+scrPJNI0
- 5CrGAur+Nq3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="273971718"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="273971718"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 01:12:58 -0800
-IronPort-SDR: Jlv9SNzKcsuRJUS5zqNF2deYVPaYRDkrxlh22ghsEMYNMdNn3E+RbG5LUe02754PNBGDdWap8k
- TQLTfc7tw5cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="387592561"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 13 Mar 2021 01:12:56 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lL0KN-0001wr-VK; Sat, 13 Mar 2021 09:12:55 +0000
-Date:   Sat, 13 Mar 2021 17:12:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 013b16d0327a637f130c6697117f5bf78cc1d3dc
-Message-ID: <604c8212.MGxNdZripYpaIMoO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230309AbhCMJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 04:17:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AF3D5ABD7;
+        Sat, 13 Mar 2021 09:17:52 +0000 (UTC)
+Date:   Sat, 13 Mar 2021 10:17:51 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mmc@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rpadlpar: fix potential drc_name corruption in store
+ functions
+Message-ID: <20210313091751.GM6564@kitsune.suse.cz>
+References: <20210310223021.423155-1-tyreld@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210310223021.423155-1-tyreld@linux.ibm.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 013b16d0327a637f130c6697117f5bf78cc1d3dc  Merge branch 'x86/alternatives'
+On Wed, Mar 10, 2021 at 04:30:21PM -0600, Tyrel Datwyler wrote:
+> Both add_slot_store() and remove_slot_store() try to fix up the drc_name
+> copied from the store buffer by placing a NULL terminator at nbyte + 1
+> or in place of a '\n' if present. However, the static buffer that we
+> copy the drc_name data into is not zeored and can contain anything past
+> the n-th byte. This is problematic if a '\n' byte appears in that buffer
+> after nbytes and the string copied into the store buffer was not NULL
+> terminated to start with as the strchr() search for a '\n' byte will mark
+> this incorrectly as the end of the drc_name string resulting in a drc_name
+> string that contains garbage data after the n-th byte. The following
+> debugging shows an example of the drmgr utility writing "PHB 4543" to
+> the add_slot sysfs attribute, but add_slot_store logging a corrupted
+> string value.
+> 
+> [135823.702864] drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+> [135823.702879] add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+> 
+> Fix this by NULL terminating the string when we copy it into our static
+> buffer by coping nbytes + 1 of data from the store buffer. The code has
+Why is it OK to copy nbytes + 1 and why is it expected that the buffer
+contains a nul after the content?
 
-elapsed time: 723m
+Isn't it much saner to just nul terminate the string after copying?
 
-configs tested: 111
-configs skipped: 2
+diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
+index cdbfa5df3a51..cfbad67447da 100644
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -35,11 +35,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 		return 0;
+ 
+ 	memcpy(drc_name, buf, nbytes);
++	&drc_name[nbytes] = '\0';
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -66,11 +66,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
+ 		return 0;
+ 
+ 	memcpy(drc_name, buf, nbytes);
++	&drc_name[nbytes] = '\0';
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                             pxa_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                     pseries_defconfig
-arm                        mini2440_defconfig
-arm                        keystone_defconfig
-sh                           se7780_defconfig
-sh                   sh7724_generic_defconfig
-sh                         microdev_defconfig
-parisc                generic-64bit_defconfig
-arm                       cns3420vb_defconfig
-powerpc                      bamboo_defconfig
-sh                          lboxre2_defconfig
-sh                                  defconfig
-powerpc64                           defconfig
-arm                             mxs_defconfig
-xtensa                          iss_defconfig
-sh                            hp6xx_defconfig
-sh                     sh7710voipgw_defconfig
-sh                          kfr2r09_defconfig
-arm                      tct_hammer_defconfig
-powerpc                  storcenter_defconfig
-microblaze                      mmu_defconfig
-sh                        sh7757lcr_defconfig
-parisc                              defconfig
-arm                         s3c6400_defconfig
-m68k                             allmodconfig
-arm                      footbridge_defconfig
-h8300                    h8300h-sim_defconfig
-mips                           gcw0_defconfig
-m68k                             alldefconfig
-sh                             espt_defconfig
-powerpc                       eiger_defconfig
-arm                          simpad_defconfig
-xtensa                  cadence_csp_defconfig
-mips                        omega2p_defconfig
-powerpc                       ppc64_defconfig
-alpha                               defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                            shmin_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210312
-i386                 randconfig-a005-20210312
-i386                 randconfig-a002-20210312
-i386                 randconfig-a003-20210312
-i386                 randconfig-a004-20210312
-i386                 randconfig-a006-20210312
-x86_64               randconfig-a011-20210312
-x86_64               randconfig-a016-20210312
-x86_64               randconfig-a013-20210312
-x86_64               randconfig-a014-20210312
-x86_64               randconfig-a015-20210312
-x86_64               randconfig-a012-20210312
-i386                 randconfig-a013-20210312
-i386                 randconfig-a016-20210312
-i386                 randconfig-a011-20210312
-i386                 randconfig-a015-20210312
-i386                 randconfig-a014-20210312
-i386                 randconfig-a012-20210312
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Michal
 
-clang tested configs:
-x86_64               randconfig-a006-20210312
-x86_64               randconfig-a001-20210312
-x86_64               randconfig-a005-20210312
-x86_64               randconfig-a003-20210312
-x86_64               randconfig-a002-20210312
-x86_64               randconfig-a004-20210312
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> already made sure that nbytes is not >= MAX_DRC_NAME_LEN and the store
+> buffer is guaranteed to be zeroed beyond the nth-byte of data copied
+> from the user. Further, since the string is now NULL terminated the code
+> only needs to change '\n' to '\0' when present.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/pci/hotplug/rpadlpar_sysfs.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
+> index cdbfa5df3a51..375087921284 100644
+> --- a/drivers/pci/hotplug/rpadlpar_sysfs.c
+> +++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+> @@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
+>  	if (nbytes >= MAX_DRC_NAME_LEN)
+>  		return 0;
+>  
+> -	memcpy(drc_name, buf, nbytes);
+> +	memcpy(drc_name, buf, nbytes + 1);
+>  
+>  	end = strchr(drc_name, '\n');
+> -	if (!end)
+> -		end = &drc_name[nbytes];
+> -	*end = '\0';
+> +	if (end)
+> +		*end = '\0';
+>  
+>  	rc = dlpar_add_slot(drc_name);
+>  	if (rc)
+> @@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
+>  	if (nbytes >= MAX_DRC_NAME_LEN)
+>  		return 0;
+>  
+> -	memcpy(drc_name, buf, nbytes);
+> +	memcpy(drc_name, buf, nbytes + 1);
+>  
+>  	end = strchr(drc_name, '\n');
+> -	if (!end)
+> -		end = &drc_name[nbytes];
+> -	*end = '\0';
+> +	if (end)
+> +		*end = '\0';
+>  
+>  	rc = dlpar_remove_slot(drc_name);
+>  	if (rc)
+> -- 
+> 2.27.0
+> 
