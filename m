@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC47339CF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE14E339CFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhCMIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhCMIg4 (ORCPT
+        id S233053AbhCMIj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:39:58 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14327 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230441AbhCMIjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:36:56 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F59C061574;
-        Sat, 13 Mar 2021 00:36:56 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so11865668pjq.5;
-        Sat, 13 Mar 2021 00:36:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=pw13xvwbpJthPfgMcnDcuZFFJIMbiCHbvYOTzm2l74M=;
-        b=Mcdhxjx0gjbncyzOWAP7or1V0v/BpKOXms0V5Ogh177vCNqFuIacRJzpTMAj//N2hN
-         PoWamqZccSZE+xhn+9JyjVpwENW0odIx3FACJpzr/ni5AjraiHNr6rg/NZxw6YoxMq5/
-         BZOoINfbaDdaFQPDgJPqHVmPlHPA4cC3fzZLM8ebdJhpjP5kUmViqqbkt158cSm6c4O+
-         1JB7BKaFCvtwNh4JdP0nzse9FX7Q7uo1lVeGDvk9k18CnKn0c7axprtLlf2u7bqtBI5O
-         6It3RYTZtL05Oiko+2AJjPokYAaqZHaJhb/20hkaH3hatW/hIHbrqHvKK+sbgMMdZdEo
-         ahAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=pw13xvwbpJthPfgMcnDcuZFFJIMbiCHbvYOTzm2l74M=;
-        b=Rz/01lyzqTCBSn4/z4xhGwODF41sduwz0CWZMhekTuoaWSS9mHZ4Dz0ksiXEl/Z3wU
-         PT3Ca3RkSowXteeH/pCj3qGs8Oh2MzMd8pgf24s+qPGhD7+VIfyUXwolcezwZrcuslil
-         4rwxmcW+gH/UKPWXB0nyPUA7GaM3KbAAa77Rsgi7EX6PV+MbA6uM8fs5opIocUdmD4D9
-         UUiYvQ9d/bs2ZMPF3mbjH6s49m3zxvGsxb0vpbFvdmCcKI3T1RraVn2Y9FZJQudgvTrJ
-         qCE28hLO7jKMHrLcuGlb3u4ZTCLRNlQuQD+RL5L/8iW2n33717N9TbAooilRX+PeUNVu
-         m0iA==
-X-Gm-Message-State: AOAM530WmYehtfps35JJbZud3l3XTeISQwIBa2y7hh4q/wrhr5KBHOZO
-        dUFuMF9ZjaAsdSZzalNPOw8BPOUl19UvvGOm
-X-Google-Smtp-Source: ABdhPJyTf+tcwPOFfE3UUBqLP73lDNkOb0sSM95mXOfq4+idXr4bfYPBfS0/rS3g81e4diT7TrV35A==
-X-Received: by 2002:a17:90a:86c9:: with SMTP id y9mr2554042pjv.205.1615624615579;
-        Sat, 13 Mar 2021 00:36:55 -0800 (PST)
-Received: from localhost ([115.99.139.115])
-        by smtp.gmail.com with ESMTPSA id j188sm2187933pfd.64.2021.03.13.00.36.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 00:36:55 -0800 (PST)
-Date:   Sat, 13 Mar 2021 14:06:49 +0530
-From:   Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
-Subject: [PATCH] drivers: net: vxlan.c: Fix declaration issue
-Message-ID: <20210313083649.2scdqxdcozfpoana@sanjana-VirtualBox>
+        Sat, 13 Mar 2021 03:39:36 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DyGJz6DxKz8wxp;
+        Sat, 13 Mar 2021 16:37:39 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.184.135) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 13 Mar 2021 16:39:21 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
+        "Will Deacon" <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <lushenming@huawei.com>
+Subject: [PATCH v4 0/6] KVM: arm64: Add VLPI migration support on GICv4.1
+Date:   Sat, 13 Mar 2021 16:38:54 +0800
+Message-ID: <20210313083900.234-1-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.135]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added a blank line after structure declaration.
-This is done to maintain code uniformity.
+Hi,
 
-Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
----
- drivers/net/vxlan.c | 1 +
- 1 file changed, 1 insertion(+)
+In GICv4.1, migration has been supported except for (directly-injected)
+VLPI. And GICv4.1 Spec explicitly gives a way to get the VLPI's pending
+state (which was crucially missing in GICv4.0). So we make VLPI migration
+capable on GICv4.1 in this series.
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 666dd201c3d5..7665817f3cb6 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -3703,6 +3703,7 @@ static int vxlan_config_validate(struct net *src_net, struct vxlan_config *conf,
- #if IS_ENABLED(CONFIG_IPV6)
- 		if (use_ipv6) {
- 			struct inet6_dev *idev = __in6_dev_get(lowerdev);
-+
- 			if (idev && idev->cnf.disable_ipv6) {
- 				NL_SET_ERR_MSG(extack,
- 					       "IPv6 support disabled by administrator");
+In order to support VLPI migration, we need to save and restore all
+required configuration information and pending states of VLPIs. But
+in fact, the configuration information of VLPIs has already been saved
+(or will be reallocated on the dst host...) in vgic(kvm) migration.
+So we only have to migrate the pending states of VLPIs specially.
+
+Below is the related workflow in migration.
+
+On the save path:
+	In migration completion:
+		pause all vCPUs
+				|
+		call each VM state change handler:
+			pause other devices (just keep from sending interrupts, and
+			such as VFIO migration protocol has already realized it [1])
+					|
+			flush ITS tables into guest RAM
+					|
+			flush RDIST pending tables (also flush VLPI pending states here)
+				|
+		...
+On the resume path:
+	load each device's state:
+		restore ITS tables (include pending tables) from guest RAM
+				|
+		for other (PCI) devices (paused), if configured to have VLPIs,
+		establish the forwarding paths of their VLPIs (and transfer
+		the pending states from kvm's vgic to VPT here)
+
+We have tested this series in VFIO migration, and found some related
+issues in QEMU [2].
+
+Links:
+[1] vfio: UAPI for migration interface for device state:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a8a24f3f6e38103b77cf399c38eb54e1219d00d6
+[2] vfio: Some fixes and optimizations for VFIO migration:
+    https://patchwork.ozlabs.org/project/qemu-devel/cover/20210310030233.1133-1-lushenming@huawei.com/
+
+History:
+
+v3 -> v4
+ - Nit fixes.
+ - Add a CPU cache invalidation right after unmapping the vPE. (Patch 1)
+ - Drop the setting of PTZ altogether. (Patch 2)
+ - Bail out if spot !vgic_initialized(). (in Patch 4)
+ - Communicate the state change (clear pending_latch) via
+   vgic_queue_irq_unlock. (in Patch 5)
+
+Thanks a lot for the suggestions from Marc!
+
+v2 -> v3
+ - Add the vgic initialized check to ensure that the allocation and enabling
+   of the doorbells have already been done before unmapping the vPEs.
+ - Check all get_vlpi_state related conditions in save_pending_tables in one place.
+ - Nit fixes.
+
+v1 -> v2:
+ - Get the VLPI state from the KVM side.
+ - Nit fixes.
+
+Thanks,
+Shenming
+
+
+Marc Zyngier (1):
+  irqchip/gic-v3-its: Add a cache invalidation right after vPE unmapping
+
+Shenming Lu (4):
+  irqchip/gic-v3-its: Drop the setting of PTZ altogether
+  KVM: arm64: GICv4.1: Add function to get VLPI state
+  KVM: arm64: GICv4.1: Try to save VLPI state in save_pending_tables
+  KVM: arm64: GICv4.1: Give a chance to save VLPI state
+
+Zenghui Yu (1):
+  KVM: arm64: GICv4.1: Restore VLPI pending state to physical side
+
+ .../virt/kvm/devices/arm-vgic-its.rst         |  2 +-
+ arch/arm64/kvm/vgic/vgic-its.c                |  6 +-
+ arch/arm64/kvm/vgic/vgic-v3.c                 | 66 +++++++++++++++++--
+ arch/arm64/kvm/vgic/vgic-v4.c                 | 37 +++++++++++
+ arch/arm64/kvm/vgic/vgic.h                    |  1 +
+ drivers/irqchip/irq-gic-v3-its.c              | 21 +++++-
+ 6 files changed, 121 insertions(+), 12 deletions(-)
+
 -- 
-2.25.1
+2.19.1
 
