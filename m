@@ -2,124 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB10C339E03
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 13:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0016339E05
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 13:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhCMMLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 07:11:53 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:28314 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhCMMLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 07:11:38 -0500
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 12DCBFCX006416
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 21:11:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 12DCBFCX006416
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615637476;
-        bh=JF14MXVjNJP1v4CgLXuDskri7mZ0masa0jozJ64DhYE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MyEUGxvwnE/3xRA/aj3QnVhmp/cy8llGwTVsS/QGJOGirTlwFVpHcXXWlcEpD7q7B
-         jPd/ORnJmsKb5vahxrqdAfKkYPsm6YEH+E51/08wpfLSTHQd3J5vXIBAdHKdQHPF3S
-         Oqb0A2kJc7FWXfFA5zLA1xs06Et1pQ0Jh0joyWzg2CpYIi7Elnav8T3J/GvCdUXlYd
-         1g/uZ3yscLY8whvwzkvr98CVWBiQIIH6Inmy4nE+Fy8sNfyKFMzI3GBKD5uShIf+8M
-         WQme7ud0dKUFh9kzr6+EKmHZs6ANDkOuTBRCSaY22ev6dby2hKdhn7NvH66WI+BHeo
-         kGE25UbFmLgYw==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id d23so9941716plq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 04:11:16 -0800 (PST)
-X-Gm-Message-State: AOAM5322znkUgsEFLMtWS/Ass+wZ5vMQCyBks38qs4mX160i8wV1y20w
-        xugjlaLYFtha0JBHd7BF7dqCU7u+4P8ctTUb0v4=
-X-Google-Smtp-Source: ABdhPJxO2ZBOg17YwwsHHxay3BeeiHHFHrm18qxs3+QlP5aRturdHfgYgIyytLJq9MSGhp8LrFxIpyy3Vb3px7yDRS4=
-X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
- a9-20020a170902b589b02900e62875aa4cmr3070985pls.71.1615637475398; Sat, 13 Mar
- 2021 04:11:15 -0800 (PST)
+        id S233517AbhCMMPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 07:15:49 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:47310 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232331AbhCMMPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 07:15:48 -0500
+Received: from zn.tnic (p200300ec2f1971005e6485920b35c85a.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:7100:5e64:8592:b35:c85a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2B6451EC0324;
+        Sat, 13 Mar 2021 13:15:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615637747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IzG8S19DfCJse+qsHPZZdLfllCfuzdUKyM1gOGVGTJA=;
+        b=TFxeq+GQD69vlRaG/BgfgT4TB+Wci5Oh1LBQGfaYI0eLKZL0VD4Z4k808MS03K8Trmq8Ia
+        FXw/IJbStjnhRe9UatyoQpNEha7iaK4oUD9oT31BdUYBTbpHIl8eFwOfYMsgj10MQqeRLx
+        xt9VgMt10gVUSE6bq9cM4ohluxGGxfk=
+Date:   Sat, 13 Mar 2021 13:15:41 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
+        mhiramat@kernel.org
+Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
+Message-ID: <20210313121541.GC16144@zn.tnic>
+References: <20210312113253.305040674@infradead.org>
+ <20210312205914.GG22098@zn.tnic>
+ <CA+icZUWSCS6vAQOXoG6nsW+Dbnogivzf+rmegCTMjz5hjE5cKQ@mail.gmail.com>
+ <20210313084923.GA16144@zn.tnic>
+ <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210312151411.101942-1-masahiroy@kernel.org> <CAMo8BfL3Zx2_uYD6yJQgju90JJj5=occjsDtcXZY0E2jmqUhow@mail.gmail.com>
- <CAK7LNASb4wDk4p7Qk28nNbu0fr9kNa_PaDq-RXRzB_qiJedzQg@mail.gmail.com>
-In-Reply-To: <CAK7LNASb4wDk4p7Qk28nNbu0fr9kNa_PaDq-RXRzB_qiJedzQg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 13 Mar 2021 21:10:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT9n4OtyRHx+PyJi-1CoxHrRT8OV6nKuiqsnvSPO1jUeg@mail.gmail.com>
-Message-ID: <CAK7LNAT9n4OtyRHx+PyJi-1CoxHrRT8OV6nKuiqsnvSPO1jUeg@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: move CONFIG_CPU_*_ENDIAN defines to Kconfig
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 9:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Sat, Mar 13, 2021 at 5:57 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> >
-> > On Fri, Mar 12, 2021 at 7:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > Move the definition of CONFIG_CPU_*_ENDIAN to Kconfig, the best place
-> > > for CONFIG options.
-> > >
-> > > I slightly simplified the test code. You can use the -P option to suppress
-> > > linemarker generation. The grep command is unneeded.
-> > >
-> > >   $ echo __XTENSA_EB__ | xtensa-linux-gcc -E -
-> > >   # 1 "<stdin>"
-> > >   # 1 "<built-in>"
-> > >   # 1 "<command-line>"
-> > >   # 1 "<stdin>"
-> > >   1
-> > >
-> > >   $ echo __XTENSA_EB__ | xtensa-linux-gcc -E -P -
-> > >   1
-> > >
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> >
-> > > If I understood correctly, xtensa compilers can support either
-> > > big-endian or little-endian. We cannot change it via a command option.
-> > > Actually, it does not understand -mbig-endian or -mlittle-endian.
-> > > (Is this correct?)
-> >
-> > This is correct. The idea is that specific xtensa core has fixed endianness,
-> > but it can be either little or big. The toolchain is configured for the specific
-> > xtensa core at build time, so there's no need for a runtime endian switch.
-> >
-> > >   $ xtensa-linux-gcc   -mbig-endian  /dev/null  -c -o /dev/null
-> > >   xtensa-linux-gcc: error: unrecognized command-line option '-mbig-endian'
-> > >
-> > > I see -mbig-endian / -mlittle-endian in old GCC manual.
-> > >   https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gcc/Xtensa-Options.html
-> > > But, I cannot see them in recent gcc manuals.
-> > > So, I have no idea better than checking __XTENSA_EB__ or __XTENSA_EL__.
-> > > I just moved the logic to Kconfig from Makefile.
-> > >
-> > >
-> > >  arch/xtensa/Kconfig  | 6 ++++++
-> > >  arch/xtensa/Makefile | 9 +--------
-> > >  2 files changed, 7 insertions(+), 8 deletions(-)
-> >
-> > Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-> > Please let me know if I should take it into the xtensa tree or you will
-> > carry it in the kbuild tree.
->
->
-> Please apply it to the xtensa tree.
->
+On Sat, Mar 13, 2021 at 01:10:29PM +0100, Sedat Dilek wrote:
+> Here we go:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/patch/?id=864b435514b286c0be2a38a02f487aa28d990ef8
 
-Ah, wait.
-
-I think I can do a little more cleanups.
-
-arch/xtensa/boot/Makefile:BIG_ENDIAN        := $(shell echo
-__XTENSA_EB__ | $(CC) -E - | grep -v "\#")
-
-
-Will send v2.
+That's why I told earlier you to use tip/master - that patch is already
+in it and all you would've needed to do is to apply the two nop patches.
 
 -- 
-Best Regards
-Masahiro Yamada
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
