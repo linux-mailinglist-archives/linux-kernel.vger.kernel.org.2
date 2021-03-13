@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4873C339CAC
+	by mail.lfdr.de (Postfix) with ESMTP id BBAD3339CAD
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhCMH6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        id S233343AbhCMH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhCMH56 (ORCPT
+        with ESMTP id S231723AbhCMH57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:57:58 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7EAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:58 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id d8so32058455ybs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:58 -0800 (PST)
+        Sat, 13 Mar 2021 02:57:59 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79D0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:59 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id k68so19900263qke.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=CiMQJrfmhcT/Xw28mTP3VlU5SRPV8bRsC232LNJk7tU=;
-        b=U+bvs2P4aWZrWqfRwrXFunM/l5sWGKqRdiGQFJBSXwSH+vfw4kB3WjkPPQpoUgHwwx
-         +4KITrOtke32as1JFmSOW/QJ8GYL6J2CyqtNZysfNDnr4dUu1eafFf0OU/BN2PlR6TZw
-         u/bOTirXcAreUn8QrcDvxRKbQwugJdk2JWl2TqDc7KAmb0AodFb/pAgQnWip2QOqWta3
-         5ohqe66l196K6u9PNyDcJqEzz4CuJBMkGEAupVYjzX/HNuFZ1kLz2lz2FxSR38TqyX8I
-         aWFk3lMppRkLaWpnC4nC3SQhZcJq9YOxrujTA4BSnsEwscy7qJzgt8w9xEMiwzmAoN1g
-         Bm1Q==
+        bh=8JNiZUfBDRjXaPYBpQeMTXnhFbhlF+xtdVruxqSh3cA=;
+        b=IxvaJGLX6pUI5R+Y+pYVqc8/0gQYUuErDfxr3dMFZudBUHTyTTMgRdE0XBcCau7R3l
+         WVURZXlPOHDzjeCRAmjp2GkNmw3M99Sx/iwvc+iSD8ohg8gx7Cj3TzTxPdzUCsghnFFL
+         Hv+lIk4SezNfKgceCzGd/c+Rf6ueoDDPEzD62ZXkdDxk/uLmQc4GjBU0Knksz2+dLsVo
+         b2U0CgK0WmdW2qIHy4OyEo2nBB4jmzDFCPxxlIobZYlIAsooUXen6yoe28K/2f1TgtI5
+         p1/lftklJT4PvJibzbIlGo6vGha2wAL2lU0ks0AxI4l1lf/1Bf/PVsGVaXXW7+F/fJFj
+         Y3HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CiMQJrfmhcT/Xw28mTP3VlU5SRPV8bRsC232LNJk7tU=;
-        b=Qi2PdmMPthJWQMXSQ05Fb8upxFWwOHNAFsy8LixbQ0QGPKWVlwBzQDYwPCpG05WFP8
-         cYIfPhq3nv9++78Y1Pw7Q8oiGEv7KJ0j/sHIaRZGlWZdHWwciPpKdT9M4JVXYhn4NxhF
-         6YrPBHSTOTN7v9fuCOcPqKSOKTBYMF/eETj9XoeqtvetJVZ1i3Dqxu4TawWOlymnTTkh
-         9IQRnTz2ffdTJdBCH6iTA0UfrEDWDnESubVvzuRfmLvCt3b427gwHWXaK/i7F/60+65O
-         8gzoqIJ9gqwTfdGB3vB6HXtbmWosQ39Zy7gnpTpf0CB7afg1Gnx/4Y26GMLjtLkzeviQ
-         6K7w==
-X-Gm-Message-State: AOAM531kmbzmJE5p9rtDGXbRHYBSsGjPyFJxoBPqsQzAq6DHfRzY/is2
-        Lgnmsa+bse/YLa5M+1JDlGqGCZxMntQ=
-X-Google-Smtp-Source: ABdhPJxUTV3MKesWpiHjP1OfC2lc1y93+U3j9zDFMK1igY41oF3Fyu2enmEiwR5c1z6fz0Ykw1sgyEJETNk=
+        bh=8JNiZUfBDRjXaPYBpQeMTXnhFbhlF+xtdVruxqSh3cA=;
+        b=gAD0lTpWpuRmUv2Dlufjuw7ZklBUzo8DSa0cxSlaWPJunVm1RpqFGuQ0dz/Q5SDxC8
+         e2XkyRSyCbrJ2qPrJUA+p5trg9qCQq4i4twAOZW4+6JOmPcDhnjMZ5aZGSzfoiMIRsoT
+         4EV2Q02mcFvf2IuUgWli5WndTXndhzHNpFWCsogvzS+JWqWb6aY+e+5tJWSfWH3kCiDw
+         t8uRvv61lDKzNQeIpa/ZbY8MFF4olHkRwvO5FMf2xUfghMxRoosJSB3DdLIiwC8NEbpr
+         g7dGskt+2tbLFnNCykjqc81I4A/sSyeBg95oUKs9PNAIBgIoAQlvqOizUcVccM9r97dk
+         dPYA==
+X-Gm-Message-State: AOAM533j3NWtnjtXQODMvkwfUeiEAcpKyeqz3jm23oO6viFDFeKf35BJ
+        zE9lWSBpsopJHLabXkGrebl2ktdd2BY=
+X-Google-Smtp-Source: ABdhPJwORNu5jWRG63mEkIrwerIFX+r6WsDRo4k6jBRlD+35Q3Ytikr16dVGNSyDCuR7br75GADeWLQhEY0=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:a25:dfd1:: with SMTP id w200mr24182984ybg.362.1615622277472;
- Fri, 12 Mar 2021 23:57:57 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:34 -0700
+ (user=yuzhao job=sendgmr) by 2002:ad4:5ce8:: with SMTP id iv8mr1757086qvb.16.1615622278881;
+ Fri, 12 Mar 2021 23:57:58 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:35 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-2-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-3-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 01/14] include/linux/memcontrol.h: do not warn in
- page_memcg_rcu() if !CONFIG_MEMCG
+Subject: [PATCH v1 02/14] include/linux/nodemask.h: define next_memory_node()
+ if !CONFIG_NUMA
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -74,41 +74,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to make sure the rcu lock is held while using
-page_memcg_rcu(). But having a WARN_ON_ONCE() in page_memcg_rcu() when
-!CONFIG_MEMCG is superfluous because of the following legit use case:
-
-  memcg = lock_page_memcg(page1)
-    (rcu_read_lock() if CONFIG_MEMCG=y)
-
-  do something to page1
-
-  if (page_memcg_rcu(page2) == memcg)
-    do something to page2 too as it cannot be migrated away from the
-    memcg either.
-
-  unlock_page_memcg(page1)
-    (rcu_read_unlock() if CONFIG_MEMCG=y)
-
-This patch removes the WARN_ON_ONCE() from page_memcg_rcu() for the
-!CONFIG_MEMCG case.
+Currently next_memory_node only exists when CONFIG_NUMA=y. This patch
+defines the macro for the !CONFIG_NUMA case.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/memcontrol.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/nodemask.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e6dc793d587d..f325aeb4b4e8 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1079,7 +1079,6 @@ static inline struct mem_cgroup *page_memcg(struct page *page)
- 
- static inline struct mem_cgroup *page_memcg_rcu(struct page *page)
- {
--	WARN_ON_ONCE(!rcu_read_lock_held());
- 	return NULL;
- }
+diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
+index ac398e143c9a..89fe4e3592f9 100644
+--- a/include/linux/nodemask.h
++++ b/include/linux/nodemask.h
+@@ -486,6 +486,7 @@ static inline int num_node_state(enum node_states state)
+ #define first_online_node	0
+ #define first_memory_node	0
+ #define next_online_node(nid)	(MAX_NUMNODES)
++#define next_memory_node(nid)	(MAX_NUMNODES)
+ #define nr_node_ids		1U
+ #define nr_online_nodes		1U
  
 -- 
 2.31.0.rc2.261.g7f71774620-goog
