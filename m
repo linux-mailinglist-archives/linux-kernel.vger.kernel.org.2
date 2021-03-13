@@ -2,113 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1593339D21
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99FF339D24
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhCMI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhCMI5w (ORCPT
+        id S231938AbhCMJDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:03:34 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:57639 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhCMJDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:57:52 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F584C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 00:57:52 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id p8so57849630ejb.10
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 00:57:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NfopcM7e7FULIgFg/DNsdzygJHayYXk44PBuqsZGESI=;
-        b=BpYngydZZEENcL2xCAnFTsKhxbD50LBfPWrIDDxWPaXNjZbqsD+ThOvJuisFiQMcKW
-         UwOvr4yMiOF2mB77tWifmvCrRmVsglSPlpzcuRnqE/JxP5l5cyh5mjzSc68TkANeb786
-         zVtYcA5YhqFVf/gqZ49wGy853jfNe8YjIKDwQhwDJGkg/MEvxEQwXt+MTCrvIAg7kYzh
-         8StXv5+XcDvpZWidhgEEDB8KQGHPD7Eqhsh7e/vBXwlmNfu4aXqHVfy8QGUMpnqH//ZA
-         AUeJrHEFPxVUHZ3A2cgrnA72zYzzDMK7oobRwsMpFEw7DpP00sR/9KcZYDo0snkGvoh5
-         r8jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NfopcM7e7FULIgFg/DNsdzygJHayYXk44PBuqsZGESI=;
-        b=Zw/VStYmwiZTPDkFAXkQzZg6401+W7oz6k12+gcys4ZDxbAsQnINY88Y7DEoOmhMdi
-         bPCLqrKSAtoZWZx892SaNG+9ptbyciJfHjdHDM1C6loooO9C81kuzZj3jcROn9moKquJ
-         Kv6yZt0+z2qvF55FnlaU5dwaZdDKeplDbfFlwjVRy/+rvUhqSmMiUcQPi7UEqzN/IzM/
-         HVPGSi3leNmN34B4B21V/E5WWUBgRURY/1KAwcxh/BMq9kDujBPoMWI8EHm/SL04eVOk
-         UyVKf49WUqCRI1SthAN7XsqQiBu80FLM2hUqowxTlWYBDg80zg+XEucmCV2b1AIlgCnI
-         8XOA==
-X-Gm-Message-State: AOAM530360df9+mlf/nr1WewKsB2DbsGVb0spYgI3al6OJQtzOd+/pjw
-        +lprTOamtMD2zojHmR1umF3uq3BqKNQhWmJ4LnPWxmk5
-X-Google-Smtp-Source: ABdhPJwfVyA6oCv7ap/msM94zVIf10yLesmM8yd0mQHmMbfW8vkdxgCCs0aNFmip6W07OLiBa0mZmdCjZl3jdg9WLUE=
-X-Received: by 2002:a17:906:30da:: with SMTP id b26mr12941090ejb.376.1615625870579;
- Sat, 13 Mar 2021 00:57:50 -0800 (PST)
+        Sat, 13 Mar 2021 04:03:32 -0500
+Received: from relay13.mail.gandi.net (unknown [217.70.178.233])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 72C843AAC3B
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 08:45:34 +0000 (UTC)
+Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay13.mail.gandi.net (Postfix) with ESMTPSA id 736AF80003;
+        Sat, 13 Mar 2021 08:45:10 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nylon Chen <nylon7@andestech.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH v3 0/2] Improve KASAN_VMALLOC support 
+Date:   Sat, 13 Mar 2021 03:45:03 -0500
+Message-Id: <20210313084505.16132-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210312151411.101942-1-masahiroy@kernel.org>
-In-Reply-To: <20210312151411.101942-1-masahiroy@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Sat, 13 Mar 2021 00:57:39 -0800
-Message-ID: <CAMo8BfL3Zx2_uYD6yJQgju90JJj5=occjsDtcXZY0E2jmqUhow@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: move CONFIG_CPU_*_ENDIAN defines to Kconfig
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 7:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Move the definition of CONFIG_CPU_*_ENDIAN to Kconfig, the best place
-> for CONFIG options.
->
-> I slightly simplified the test code. You can use the -P option to suppress
-> linemarker generation. The grep command is unneeded.
->
->   $ echo __XTENSA_EB__ | xtensa-linux-gcc -E -
->   # 1 "<stdin>"
->   # 1 "<built-in>"
->   # 1 "<command-line>"
->   # 1 "<stdin>"
->   1
->
->   $ echo __XTENSA_EB__ | xtensa-linux-gcc -E -P -
->   1
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+This patchset improves KASAN vmalloc implementation by fixing an
+oversight where kernel page table was not flushed in patch 1 and by
+reworking the kernel page table PGD level population in patch 2.
 
-> If I understood correctly, xtensa compilers can support either
-> big-endian or little-endian. We cannot change it via a command option.
-> Actually, it does not understand -mbig-endian or -mlittle-endian.
-> (Is this correct?)
+Changes in v3:
+- Split into 2 patches
+- Add reviewed-by
 
-This is correct. The idea is that specific xtensa core has fixed endianness,
-but it can be either little or big. The toolchain is configured for the specific
-xtensa core at build time, so there's no need for a runtime endian switch.
+Changes in v2:
+- Quiet kernel test robot warnings about missing prototypes by declaring
+  the introduced functions as static.
 
->   $ xtensa-linux-gcc   -mbig-endian  /dev/null  -c -o /dev/null
->   xtensa-linux-gcc: error: unrecognized command-line option '-mbig-endian'
->
-> I see -mbig-endian / -mlittle-endian in old GCC manual.
->   https://gcc.gnu.org/onlinedocs/gcc-3.3.5/gcc/Xtensa-Options.html
-> But, I cannot see them in recent gcc manuals.
-> So, I have no idea better than checking __XTENSA_EB__ or __XTENSA_EL__.
-> I just moved the logic to Kconfig from Makefile.
->
->
->  arch/xtensa/Kconfig  | 6 ++++++
->  arch/xtensa/Makefile | 9 +--------
->  2 files changed, 7 insertions(+), 8 deletions(-)
+Alexandre Ghiti (2):
+  riscv: Ensure page table writes are flushed when initializing KASAN
+    vmalloc
+  riscv: Cleanup KASAN_VMALLOC support
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Please let me know if I should take it into the xtensa tree or you will
-carry it in the kbuild tree.
+ arch/riscv/mm/kasan_init.c | 61 +++++++++++++-------------------------
+ 1 file changed, 20 insertions(+), 41 deletions(-)
 
 -- 
-Thanks.
--- Max
+2.20.1
+
