@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D9D339A85
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30422339A87
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhCMAtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 19:49:13 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62339 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhCMAtA (ORCPT
+        id S232529AbhCMAva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 19:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhCMAvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 19:49:00 -0500
-Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12D0mr4I082103;
-        Sat, 13 Mar 2021 09:48:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
- Sat, 13 Mar 2021 09:48:53 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12D0mrIZ082098
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 13 Mar 2021 09:48:53 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
-Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <YEkQ4qS7tkwmjzDn@kroah.com>
- <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
- <YEoTw7CoK7Ob0YR+@kroah.com>
- <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
- <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
-Message-ID: <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
-Date:   Sat, 13 Mar 2021 09:48:52 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 12 Mar 2021 19:51:04 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA78C061574;
+        Fri, 12 Mar 2021 16:51:04 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id f12so5288865qtq.4;
+        Fri, 12 Mar 2021 16:51:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BqkOJbjc4ShDJZz4xQlPOgfRqqwngCwRaRwv5C7LuXQ=;
+        b=pB8aHpZYEVeWVXNE0CdMl7enaQE2Z1k9X+4AsTrTTtPMqaOTpwWaDh8t5xyQ111Na3
+         LgPJunAlaurkWymsl0nEcZgS516wRzj/pWuWFr2cRjNFL4daOjkjKENakf/lrwX8oR3z
+         LgMnma2I/SKBExgDOCA60AHHDx7m/V0oUpHjfA1PTdRDDuONbKN/+2CzLFj9w3o28EVe
+         Yr4SztD2eTd2RTRgK4TfeFAgZk+3wel56DjmCDcRfFIbe1XmXUoqerVRhxheHJNbyMIb
+         XlF2raohLoEoFJvEtHofGN0VzgtC5FW5gielGROWVA6UaYDKQkceQV0BSgLpVY8JBrR9
+         G+Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=BqkOJbjc4ShDJZz4xQlPOgfRqqwngCwRaRwv5C7LuXQ=;
+        b=HnxsT/MVC/L7SRwE4LJjy/RLggc9ZmCewR8VfeiMAdHdu2zKEaS5sY/j9SiNlPyfaT
+         surDO1ZKe4ajKpxwfq2YRkxjMTJ/ajnaOqRroFg0u5gVd/3XMPJk1UDiaUMFKsDwgjlt
+         6SbSUMyvFKgsL1L61oLf6ZyZmKHKZzNHnwXioJvSRno56nzRcbMFBmIX1Cb5Rjfr/B3f
+         uPYGJWYyA6/8BCcKmmK6s+liwE+iGwCss6OrlviOESgjl0id+fTv44V+cz+cFbU0uEF4
+         +dKxSc+HasGAvAtdrlFR/D6KHYyjM4YegqzB+CNGHMqRnIVeiGmFz65uDtEgS75OTtcZ
+         Y2MQ==
+X-Gm-Message-State: AOAM533hm3rNBGavrFxU5tytWbvrWr9zARqnQr1kvtGozDZztLTelSTR
+        SJJ5S/7bNdx36kJ/8D1gkGw=
+X-Google-Smtp-Source: ABdhPJz+6/l2eEuP8hrYd0JXsFKx/Rrjf+6R1/fDkPgfpueAay75ecFiHsQpZ/HCo9Sua+aQN+koww==
+X-Received: by 2002:ac8:dc5:: with SMTP id t5mr7807541qti.237.1615596663179;
+        Fri, 12 Mar 2021 16:51:03 -0800 (PST)
+Received: from Gentoo ([37.19.198.104])
+        by smtp.gmail.com with ESMTPSA id p17sm2403768qtx.71.2021.03.12.16.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 16:51:02 -0800 (PST)
+Date:   Sat, 13 Mar 2021 06:20:52 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Tom Saeger <tom.saeger@oracle.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, krzk@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH V2] cpufreq: Rudimentary typos fix in the file
+ s5pv210-cpufreq.c
+Message-ID: <YEwMbGm83aRRxnuR@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Tom Saeger <tom.saeger@oracle.com>, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, krzk@kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210312232621.2083-1-unixbhaskar@gmail.com>
+ <20210313001613.j3j66pvmfzxznw5j@brm-x62-17.us.oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="N8iabx18Syr6BGZC"
+Content-Disposition: inline
+In-Reply-To: <20210313001613.j3j66pvmfzxznw5j@brm-x62-17.us.oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/12 14:44, Tetsuo Handa wrote:
-> And what you are missing in your [PATCH 4,5,6/6] is
-> 
->   diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
->   index c4457026d5ad..3c64bd06ab53 100644
->   --- a/drivers/usb/usbip/vhci_sysfs.c
->   +++ b/drivers/usb/usbip/vhci_sysfs.c
->   @@ -423,6 +423,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
->           /* end the lock */
->   
->           wake_up_process(vdev->ud.tcp_rx);
->   +       schedule_timeout_uninterruptible(HZ); // Consider being preempted here.
->           wake_up_process(vdev->ud.tcp_tx);
->   
->           rh_port_connect(vdev, speed);
-> 
-> . wake_up_process(tcp_tx) can call vhci_shutdown_connection() before wake_up_process(tcp_tx) is called.
 
-wake_up_process(tcp_rx) can call vhci_shutdown_connection() before wake_up_process(tcp_tx) is called.
+--N8iabx18Syr6BGZC
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-> Since vhci_shutdown_connection() destroys tcp_tx thread and releases tcp_tx memory via kthread_stop_put(tcp_tx),
-> wake_up_process(tcp_tx) will access already freed memory. Your patch converted "NULL pointer dereference caused by
-> failing to call kthread_stop_put(tcp_tx)" into "use after free caused by succeeding to call kthread_stop_put(tcp_tx)".
-> 
+On 17:16 Fri 12 Mar 2021, Tom Saeger wrote:
+>On Sat, Mar 13, 2021 at 04:56:21AM +0530, Bhaskar Chowdhury wrote:
+>
+>sent a few additional typo fixes to your V1, can you add those to your patch?
+>
+>Regards,
+>
+>--Tom
 
-And note that
+Thanks, I have already sent out a V2 in public...I might make a V3 with your
+changes too...did you sent it to ???
 
-  diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-  index c4457026d5ad..0e1a81d4632c 100644
-  --- a/drivers/usb/usbip/vhci_sysfs.c
-  +++ b/drivers/usb/usbip/vhci_sysfs.c
-  @@ -422,11 +422,11 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
-          spin_unlock_irqrestore(&vhci->lock, flags);
-          /* end the lock */
-  
-  -       wake_up_process(vdev->ud.tcp_rx);
-  -       wake_up_process(vdev->ud.tcp_tx);
-  -
-          rh_port_connect(vdev, speed);
-  
-  +       wake_up_process(vdev->ud.tcp_tx);
-  +       wake_up_process(vdev->ud.tcp_rx);
-  +
-          return count;
-   }
-   static DEVICE_ATTR_WO(attach);
+--N8iabx18Syr6BGZC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-is as well not sufficient, for you are still missing
+-----BEGIN PGP SIGNATURE-----
 
-  diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-  index c4457026d5ad..c958f89a9196 100644
-  --- a/drivers/usb/usbip/vhci_sysfs.c
-  +++ b/drivers/usb/usbip/vhci_sysfs.c
-  @@ -422,11 +422,13 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
-          spin_unlock_irqrestore(&vhci->lock, flags);
-          /* end the lock */
-  
-  -       wake_up_process(vdev->ud.tcp_rx);
-  -       wake_up_process(vdev->ud.tcp_tx);
-  +       schedule_timeout_uninterruptible(HZ); // Consider being preempted here.
-  
-          rh_port_connect(vdev, speed);
-  
-  +       wake_up_process(vdev->ud.tcp_tx);
-  +       wake_up_process(vdev->ud.tcp_rx);
-  +
-          return count;
-   }
-   static DEVICE_ATTR_WO(attach);
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBMDGsACgkQsjqdtxFL
+KRUKdwgAihT47tmOIvl4J6BFocHQNdg/D+g7cwpKlBb16JKX4W9Pqnf27/4vXLTq
+IFu6qXZWmf5hkAesZJNLXmQDsGQ9/5jxTCiY5txx0xMj+nz7/1NNp1KJm3OMG8Nn
+eT31gg8Gvd9iuxutE0ZWA3GcMbRc7TrXfgOn7HRdZR5xvT/UH6+fsjVcAGQTcOCz
+C/Injb7o6Ow56d6vGLZGxYJDTeFw2TuQ5nAjgNvhuO5X/FNtmt6F5hK8OrldZ2Jt
+sCZ+J3fJsJSaNzU4OQKsaWxvjjaNUHc5Ob+gyMbHjtxRiWb0z2FsHD32NkmUF9iU
+CC7E7s5+TuNVKYnfn4305cGwAavQbQ==
+=4K+h
+-----END PGP SIGNATURE-----
 
-because vhci_port_disconnect() from detach_store() can call usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN)
-(same use after free bug regarding tcp_tx and tcp_rx) as soon as all shared states are set up and
-spinlocks are released.
-
-What you had better consider first is how to protect event_handler()/usbip_sockfd_store()/attach_store()/detach_store() functions
- from concurrent calls. Please respond to https://lkml.kernel.org/r/3dab66dc-2981-bc88-a370-4b3178dfd390@i-love.sakura.ne.jp
-before you try to make further changes.
-
+--N8iabx18Syr6BGZC--
