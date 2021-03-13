@@ -2,338 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98121339E62
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 15:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32053339E55
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 14:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhCMN6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 08:58:34 -0500
-Received: from mga04.intel.com ([192.55.52.120]:5959 "EHLO mga04.intel.com"
+        id S233605AbhCMNmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 08:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232999AbhCMN6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 08:58:07 -0500
-IronPort-SDR: gwQ3sl6htlUA/nHtgZqvPrp2UibDjwvDW8lrTmwtlsN0H1FcjTJPPmiVo7ZVKlu5G/8V4bmgSC
- XuYK2QRMwaVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9922"; a="186562583"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="186562583"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 05:58:07 -0800
-IronPort-SDR: T1Zq2z4YW15jCVrttORPG8yo8safoQ/h4rS8XY9uT6+k7fNz1d8qdubnSM/qOuMa4Ny6GvIvvm
- CXG7HkePVc2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="432217592"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Mar 2021 05:58:03 -0800
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: Intel: sof_rt5682: Add rt1015p speaker amp support
-Date:   Sat, 13 Mar 2021 21:40:38 +0800
-Message-Id: <20210313134038.5577-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232904AbhCMNm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 08:42:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D0464F18;
+        Sat, 13 Mar 2021 13:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615642947;
+        bh=ip7H+4Pr9xtsq2VzP5ynUAZnLSIHIfYDLyeXXAHZVfE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y9tINEcxOOOueLQq/BFNKiwFH39EN+uHN78fY6tRj6xA+HnSFoeNwZstsuFiEIg5N
+         oawsay3NdDaZ+9XKVJKYgPTLUGY4rOUxNULKic7ZB7+DSvar6XKsn5QnS85ShWUUZQ
+         ipLa7b8esd2U397L7TL9Rn8PCcxGzQu4kQlP3x30=
+Date:   Sat, 13 Mar 2021 14:42:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/24] 5.4.105-rc1 review
+Message-ID: <YEzBQCU/4kk8qcWr@kroah.com>
+References: <20210310132320.550932445@linuxfoundation.org>
+ <29dcd801-7f1e-ae09-9b88-ce17cb096f60@gmail.com>
+ <YEoWT85kGVYbBnKY@kroah.com>
+ <61cef8f0-c40a-c4e4-5322-9939ed21bff7@gmail.com>
+ <YEpV/FZ8mLivt0hy@kroah.com>
+ <40f06036-c6de-706b-30a0-e20de0c6ff57@gmail.com>
+ <72fd4a3f-1548-96eb-16f6-55907019afbf@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72fd4a3f-1548-96eb-16f6-55907019afbf@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds jsl_rt5682_rt1015p which supports the
-RT5682 headset codec and RT1015P speaker amplifier combination
-on JasperLake platform.
+On Fri, Mar 12, 2021 at 02:55:49PM -0800, Florian Fainelli wrote:
+> On 3/11/21 9:41 AM, Florian Fainelli wrote:
+> > On 3/11/21 9:40 AM, Greg KH wrote:
+> >> On Thu, Mar 11, 2021 at 09:23:56AM -0800, Florian Fainelli wrote:
+> >>> On 3/11/21 5:08 AM, Greg KH wrote:
+> >>>> On Wed, Mar 10, 2021 at 08:19:45PM -0800, Florian Fainelli wrote:
+> >>>>> +Alex,
+> >>>>>
+> >>>>> On 3/10/2021 5:24 AM, gregkh@linuxfoundation.org wrote:
+> >>>>>> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>
+> >>>>>> This is the start of the stable review cycle for the 5.4.105 release.
+> >>>>>> There are 24 patches in this series, all will be posted as a response
+> >>>>>> to this one.  If anyone has any issues with these being applied, please
+> >>>>>> let me know.
+> >>>>>>
+> >>>>>> Responses should be made by Fri, 12 Mar 2021 13:23:09 +0000.
+> >>>>>> Anything received after that time might be too late.
+> >>>>>>
+> >>>>>> The whole patch series can be found in one patch at:
+> >>>>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.105-rc1.gz
+> >>>>>> or in the git tree and branch at:
+> >>>>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> >>>>>> and the diffstat can be found below.
+> >>>>>>
+> >>>>>> thanks,
+> >>>>>>
+> >>>>>> greg k-h
+> >>>>>
+> >>>>> I believe you need to drop "net: dsa: add GRO support via gro_cells" as
+> >>>>> it causes the following kernel panic on a DSA-enabled platform:
+> >>>>>
+> >>>>> Configuring rgmii_2 interface
+> >>>>> [   10.170527] brcm-sf2 f0b00000.ethernet_switch rgmii_2: configuring
+> >>>>> for fixed/rgmii-txid link mode
+> >>>>> [   10.179597] 8021q: adding VLAN 0 to HW filter on device rgmii_2
+> >>>>> [   10.185608] brcm-sf2 f0b00000.ethernet_switch rgmii_2: Link is Up -
+> >>>>> 1Gbps/Full - flow control off
+> >>>>> [   10.198631] IPv6: ADDRCONF(NETDEV_CHANGE): rgmii_2: link becomes ready
+> >>>>> Configuring sit0 interface
+> >>>>> [   10.254346] 8<--- cut here ---
+> >>>>> [   10.257438] Unable to handle kernel paging request at virtual address
+> >>>>> d6df6190
+> >>>>> [   10.264685] pgd = (ptrval)
+> >>>>> [   10.267411] [d6df6190] *pgd=80000000007003, *pmd=00000000
+> >>>>> [   10.272846] Internal error: Oops: 206 [#1] SMP ARM
+> >>>>> [   10.277661] Modules linked in:
+> >>>>> [   10.280739] CPU: 0 PID: 1886 Comm: sed Not tainted
+> >>>>> 5.4.105-1.0pre-geff642e2af2b #4
+> >>>>> [   10.288337] Hardware name: Broadcom STB (Flattened Device Tree)
+> >>>>> [   10.294292] PC is at gro_cells_receive+0x90/0x11c
+> >>>>> [   10.299020] LR is at dsa_switch_rcv+0x120/0x1d4
+> >>>>> [   10.303562] pc : [<c0a57a28>]    lr : [<c0b4a65c>]    psr: 600f0113
+> >>>>> [   10.309841] sp : c1d33cd0  ip : 000003e8  fp : c1d33ce4
+> >>>>> [   10.315078] r10: c8901000  r9 : c8901000  r8 : c0b4a53c
+> >>>>> [   10.320314] r7 : c2208920  r6 : 00000000  r5 : 00000000  r4 : 00004000
+> >>>>> [   10.326855] r3 : d6df6188  r2 : c4927000  r1 : c8adc300  r0 : c22069dc
+> >>>>> [   10.333398] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM
+> >>>>> Segment user
+> >>>>> [   10.340547] Control: 30c5387d  Table: 04ac4c80  DAC: fffffffd
+> >>>>> [   10.346307] Process sed (pid: 1886, stack limit = 0x(ptrval))
+> >>>>> [   10.352066] Stack: (0xc1d33cd0 to 0xc1d34000)
+> >>>>> [   10.356434] 3cc0:                                     c8adc300
+> >>>>> c4927000 c1d33d04 c1d33ce8
+> >>>>> [   10.364631] 3ce0: c0b4a65c c0a579a4 c1d33d24 c2208920 c1d33d24
+> >>>>> 00000000 c1d33d5c c1d33d08
+> >>>>> [   10.372827] 3d00: c0a0b38c c0b4a548 c021e070 c2204cc8 00000000
+> >>>>> c89015c0 04b87700 c89015c0
+> >>>>> [   10.381023] 3d20: c2208920 c1d33d24 c1d33d24 00976ec2 04b87700
+> >>>>> c8adc300 c89015c0 00000000
+> >>>>> [   10.389218] 3d40: c1d33d74 c1d32000 00000000 c230742c c1d33dac
+> >>>>> c1d33d60 c0a0b5c0 c0a0b180
+> >>>>> [   10.397414] 3d60: 00000000 c2204cc8 00000000 c1d33d6c c1d33d6c
+> >>>>> c1d33d80 c029daf8 00976ec2
+> >>>>> [   10.405610] 3d80: 00000800 c8901540 c89015c0 c8901540 00000000
+> >>>>> 00000001 0000016c 00000162
+> >>>>> [   10.413805] 3da0: c1d33dc4 c1d33db0 c0a0b7fc c0a0b3b8 00000000
+> >>>>> c8adc300 c1d33dfc c1d33dc8
+> >>>>> [   10.422001] 3dc0: c0a0c660 c0a0b7e4 c8901540 c8adc300 c1d33dfc
+> >>>>> c1d33de0 c8901540 c8adc300
+> >>>>> [   10.430196] 3de0: 0000015e c8901000 00000001 0000016c c1d33e74
+> >>>>> c1d33e00 c083df00 c0a0c4fc
+> >>>>> [   10.438391] 3e00: 0000012c c22b0f14 c1d33e4c c1d33e18 c0fbd9b8
+> >>>>> c0fbd9cc c0fbd9e0 c0fbd98c
+> >>>>> [   10.446586] 3e20: 00000001 00000040 c8901500 00000001 00000000
+> >>>>> 00000000 00000000 00000000
+> >>>>> [   10.454780] 3e40: 00000000 00000000 c02f65a0 c8901540 00000001
+> >>>>> 00000040 c22b07e4 0000012c
+> >>>>> [   10.462975] 3e60: d1003000 fffb942f c1d33edc c1d33e78 c0a0c94c
+> >>>>> c083dafc d051ad80 c2204cc8
+> >>>>> [   10.471170] 3e80: c2204cf0 c1d32000 c22b40b0 0e4a4000 c2076d80
+> >>>>> c2203d00 c022bc70 c1d33e9c
+> >>>>> [   10.479365] 3ea0: c1d33e9c c1d33ea4 c1d33ea4 00976ec2 c02f65a0
+> >>>>> c220308c 00000003 c1d32000
+> >>>>> [   10.487561] 3ec0: c22b07e4 00000100 d1003000 00000008 c1d33f44
+> >>>>> c1d33ee0 c020238c c0a0c6cc
+> >>>>> [   10.495755] 3ee0: c1d33f14 c1d33ef0 00000001 00400000 c2203d00
+> >>>>> fffb942f c206b2e4 c2076040
+> >>>>> [   10.503950] 3f00: c2076040 0000000a c2203080 c206b358 c1d33ee0
+> >>>>> 00000004 c90c9500 ffffe000
+> >>>>> [   10.512145] 3f20: 00000000 00000000 00000001 c9019000 d1003000
+> >>>>> 00000000 c1d33f5c c1d33f48
+> >>>>> [   10.520339] 3f40: c022bc70 c0202264 c2075fbc 00000000 c1d33f84
+> >>>>> c1d33f60 c027feb4 c022bb88
+> >>>>> [   10.528535] 3f60: c226d668 c220565c d100200c c1d33fb0 d1002000
+> >>>>> d1003000 c1d33fac c1d33f88
+> >>>>> [   10.536730] 3f80: c0202214 c027fe50 b6f1e0b6 000f0030 ffffffff
+> >>>>> 30c5387d 30c5387d 00000000
+> >>>>> [   10.544924] 3fa0: 00000000 c1d33fb0 c0201d8c c02021c4 b6ec1778
+> >>>>> b6f32094 62632e73 62740000
+> >>>>> [   10.553120] 3fc0: 00172e73 00001700 b6f3293c 00000001 00000001
+> >>>>> 00000000 00000000 00000006
+> >>>>> [   10.561316] 3fe0: ffffffff bef37ac8 b6f18151 b6f1e0b6 000f0030
+> >>>>> ffffffff 00000000 00000000
+> >>>>> [   10.569508] Backtrace:
+> >>>>> [   10.571970] [<c0a57998>] (gro_cells_receive) from [<c0b4a65c>]
+> >>>>> (dsa_switch_rcv+0x120/0x1d4)
+> >>>>> [   10.580338]  r5:c4927000 r4:c8adc300
+> >>>>> [   10.583929] [<c0b4a53c>] (dsa_switch_rcv) from [<c0a0b38c>]
+> >>>>> (__netif_receive_skb_list_core+0x218/0x238)
+> >>>>> [   10.593343]  r7:00000000 r6:c1d33d24 r5:c2208920 r4:c1d33d24
+> >>>>> [   10.599017] [<c0a0b174>] (__netif_receive_skb_list_core) from
+> >>>>> [<c0a0b5c0>] (netif_receive_skb_list_internal+0x214/0x2dc)
+> >>>>> [   10.609909]  r10:c230742c r9:00000000 r8:c1d32000 r7:c1d33d74
+> >>>>> r6:00000000 r5:c89015c0
+> >>>>> [   10.617755]  r4:c8adc300
+> >>>>> [   10.620300] [<c0a0b3ac>] (netif_receive_skb_list_internal) from
+> >>>>> [<c0a0b7fc>] (gro_normal_list.part.42+0x24/0x38)
+> >>>>> [   10.630496]  r10:00000162 r9:0000016c r8:00000001 r7:00000000
+> >>>>> r6:c8901540 r5:c89015c0
+> >>>>> [   10.638342]  r4:c8901540
+> >>>>> [   10.640885] [<c0a0b7d8>] (gro_normal_list.part.42) from [<c0a0c660>]
+> >>>>> (napi_complete_done+0x170/0x1d0)
+> >>>>> [   10.650123]  r5:c8adc300 r4:00000000
+> >>>>> [   10.653712] [<c0a0c4f0>] (napi_complete_done) from [<c083df00>]
+> >>>>> (bcm_sysport_poll+0x410/0x4b4)
+> >>>>> [   10.662343]  r9:0000016c r8:00000001 r7:c8901000 r6:0000015e
+> >>>>> r5:c8adc300 r4:c8901540
+> >>>>> [   10.670104] [<c083daf0>] (bcm_sysport_poll) from [<c0a0c94c>]
+> >>>>> (net_rx_action+0x28c/0x44c)
+> >>>>> [   10.678301]  r10:fffb942f r9:d1003000 r8:0000012c r7:c22b07e4
+> >>>>> r6:00000040 r5:00000001
+> >>>>> [   10.686146]  r4:c8901540
+> >>>>> [   10.688693] [<c0a0c6c0>] (net_rx_action) from [<c020238c>]
+> >>>>> (__do_softirq+0x134/0x414)
+> >>>>> [   10.696542]  r10:00000008 r9:d1003000 r8:00000100 r7:c22b07e4
+> >>>>> r6:c1d32000 r5:00000003
+> >>>>> [   10.704387]  r4:c220308c
+> >>>>> [   10.706931] [<c0202258>] (__do_softirq) from [<c022bc70>]
+> >>>>> (irq_exit+0xf4/0x100)
+> >>>>> [   10.714257]  r10:00000000 r9:d1003000 r8:c9019000 r7:00000001
+> >>>>> r6:00000000 r5:00000000
+> >>>>> [   10.722104]  r4:ffffe000
+> >>>>> [   10.724650] [<c022bb7c>] (irq_exit) from [<c027feb4>]
+> >>>>> (__handle_domain_irq+0x70/0xc4)
+> >>>>> [   10.732497]  r5:00000000 r4:c2075fbc
+> >>>>> [   10.736083] [<c027fe44>] (__handle_domain_irq) from [<c0202214>]
+> >>>>> (gic_handle_irq+0x5c/0xa0)
+> >>>>> [   10.744453]  r9:d1003000 r8:d1002000 r7:c1d33fb0 r6:d100200c
+> >>>>> r5:c220565c r4:c226d668
+> >>>>> [   10.752215] [<c02021b8>] (gic_handle_irq) from [<c0201d8c>]
+> >>>>> (__irq_usr+0x4c/0x60)
+> >>>>> [   10.759713] Exception stack(0xc1d33fb0 to 0xc1d33ff8)
+> >>>>> [   10.764776] 3fa0:                                     b6ec1778
+> >>>>> b6f32094 62632e73 62740000
+> >>>>> [   10.772973] 3fc0: 00172e73 00001700 b6f3293c 00000001 00000001
+> >>>>> 00000000 00000000 00000006
+> >>>>> [   10.781167] 3fe0: ffffffff bef37ac8 b6f18151 b6f1e0b6 000f0030 ffffffff
+> >>>>> [   10.787797]  r9:00000000 r8:30c5387d r7:30c5387d r6:ffffffff
+> >>>>> r5:000f0030 r4:b6f1e0b6
+> >>>>> [   10.795559] Code: e30609dc e34c0220 e083300c e590c000 (e5930008)
+> >>>>> [   10.801670] ---[ end trace 97c3942fa73eff4c ]---
+> >>>>> [   10.806300] Kernel panic - not syncing: Fatal exception in interrupt
+> >>>>> [   10.812678] CPU2: stopping
+> >>>>> [   10.815403] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D
+> >>>>>  5.4.105-1.0pre-geff642e2af2b #4
+> >>>>> [   10.824641] Hardware name: Broadcom STB (Flattened Device Tree)
+> >>>>> [   10.830573] Backtrace:
+> >>>>> [   10.833036] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+> >>>>> (show_stack+0x20/0x24)
+> >>>>> [   10.840624]  r7:c22a86d0 r6:00000000 r5:600c0193 r4:c22a86d0
+> >>>>> [   10.846302] [<c020e02c>] (show_stack) from [<c0c09924>]
+> >>>>> (dump_stack+0xb8/0xe4)
+> >>>>> [   10.853546] [<c0c0986c>] (dump_stack) from [<c0212160>]
+> >>>>> (handle_IPI+0x344/0x3cc)
+> >>>>> [   10.860960]  r10:00000000 r9:c2205400 r8:00000000 r7:00000002
+> >>>>> r6:c22b0744 r5:00000004
+> >>>>> [   10.868807]  r4:c22ce308 r3:00976ec2
+> >>>>> [   10.872395] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+> >>>>> (gic_handle_irq+0x9c/0xa0)
+> >>>>> [   10.879983]  r10:00000000 r9:d1003000 r8:d1002000 r7:c9131f18
+> >>>>> r6:d100200c r5:c220565c
+> >>>>> [   10.887829]  r4:c226d668
+> >>>>> [   10.890373] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+> >>>>> (__irq_svc+0x5c/0x7c)
+> >>>>> [   10.897871] Exception stack(0xc9131f18 to 0xc9131f60)
+> >>>>> [   10.902934] 1f00:
+> >>>>>    c020a47c 00000000
+> >>>>> [   10.911131] 1f20: 0e4ca000 600c0093 c9130000 c2204cf0 c2204d34
+> >>>>> 00000004 00000000 c20757b0
+> >>>>> [   10.919327] 1f40: 00000000 c9131f74 c9130000 c9131f68 00000000
+> >>>>> c020a480 600c0013 ffffffff
+> >>>>> [   10.927523]  r9:c9130000 r8:00000000 r7:c9131f4c r6:ffffffff
+> >>>>> r5:600c0013 r4:c020a480
+> >>>>> [   10.935291] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+> >>>>> (default_idle_call+0x34/0x48)
+> >>>>> [   10.943403] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+> >>>>> (do_idle+0x1d4/0x2c0)
+> >>>>> [   10.951164] [<c0257eec>] (do_idle) from [<c0258494>]
+> >>>>> (cpu_startup_entry+0x28/0x2c)
+> >>>>> [   10.958752]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+> >>>>> r6:30c0387d r5:00000002
+> >>>>> [   10.966598]  r4:0000008a
+> >>>>> [   10.969142] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+> >>>>> (secondary_start_kernel+0x17c/0x1a0)
+> >>>>> [   10.978210] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+> >>>>> (0x20270c)
+> >>>>> [   10.985447]  r5:00000000 r4:090eaa40
+> >>>>> [   10.989032] CPU3: stopping
+> >>>>> [   10.991754] CPU: 3 PID: 0 Comm: swapper/3 Tainted: G      D
+> >>>>>  5.4.105-1.0pre-geff642e2af2b #4
+> >>>>> [   11.000992] Hardware name: Broadcom STB (Flattened Device Tree)
+> >>>>> [   11.006924] Backtrace:
+> >>>>> [   11.009384] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+> >>>>> (show_stack+0x20/0x24)
+> >>>>> [   11.016972]  r7:c22a86d0 r6:00000000 r5:600f0193 r4:c22a86d0
+> >>>>> [   11.022649] [<c020e02c>] (show_stack) from [<c0c09924>]
+> >>>>> (dump_stack+0xb8/0xe4)
+> >>>>> [   11.029892] [<c0c0986c>] (dump_stack) from [<c0212160>]
+> >>>>> (handle_IPI+0x344/0x3cc)
+> >>>>> [   11.037307]  r10:00000000 r9:c2205400 r8:00000000 r7:00000003
+> >>>>> r6:c22b0744 r5:00000004
+> >>>>> [   11.045154]  r4:c22ce308 r3:00976ec2
+> >>>>> [   11.048741] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+> >>>>> (gic_handle_irq+0x9c/0xa0)
+> >>>>> [   11.056329]  r10:00000000 r9:d1003000 r8:d1002000 r7:c9133f18
+> >>>>> r6:d100200c r5:c220565c
+> >>>>> [   11.064176]  r4:c226d668
+> >>>>> [   11.066719] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+> >>>>> (__irq_svc+0x5c/0x7c)
+> >>>>> [   11.074216] Exception stack(0xc9133f18 to 0xc9133f60)
+> >>>>> [   11.079280] 3f00:
+> >>>>>    c020a47c 00000000
+> >>>>> [   11.087476] 3f20: 0e4dd000 600f0093 c9132000 c2204cf0 c2204d34
+> >>>>> 00000008 00000000 c20757b0
+> >>>>> [   11.095671] 3f40: 00000000 c9133f74 c9132000 c9133f68 00000000
+> >>>>> c020a480 600f0013 ffffffff
+> >>>>> [   11.103867]  r9:c9132000 r8:00000000 r7:c9133f4c r6:ffffffff
+> >>>>> r5:600f0013 r4:c020a480
+> >>>>> [   11.111633] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+> >>>>> (default_idle_call+0x34/0x48)
+> >>>>> [   11.119744] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+> >>>>> (do_idle+0x1d4/0x2c0)
+> >>>>> [   11.127506] [<c0257eec>] (do_idle) from [<c0258494>]
+> >>>>> (cpu_startup_entry+0x28/0x2c)
+> >>>>> [   11.135093]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+> >>>>> r6:30c0387d r5:00000003
+> >>>>> [   11.142939]  r4:0000008a
+> >>>>> [   11.145484] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+> >>>>> (secondary_start_kernel+0x17c/0x1a0)
+> >>>>> [   11.154550] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+> >>>>> (0x20270c)
+> >>>>> [   11.161788]  r5:00000000 r4:090eaa40
+> >>>>> [   11.165372] CPU1: stopping
+> >>>>> [   11.168094] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D
+> >>>>>  5.4.105-1.0pre-geff642e2af2b #4
+> >>>>> [   11.177332] Hardware name: Broadcom STB (Flattened Device Tree)
+> >>>>> [   11.183264] Backtrace:
+> >>>>> [   11.185723] [<c020dd30>] (dump_backtrace) from [<c020e04c>]
+> >>>>> (show_stack+0x20/0x24)
+> >>>>> [   11.193311]  r7:c22a86d0 r6:00000000 r5:600c0193 r4:c22a86d0
+> >>>>> [   11.198988] [<c020e02c>] (show_stack) from [<c0c09924>]
+> >>>>> (dump_stack+0xb8/0xe4)
+> >>>>> [   11.206230] [<c0c0986c>] (dump_stack) from [<c0212160>]
+> >>>>> (handle_IPI+0x344/0x3cc)
+> >>>>> [   11.213644]  r10:00000000 r9:c2205400 r8:00000000 r7:00000001
+> >>>>> r6:c22b0744 r5:00000004
+> >>>>> [   11.221491]  r4:c22ce308 r3:00976ec2
+> >>>>> [   11.225078] [<c0211e1c>] (handle_IPI) from [<c0202254>]
+> >>>>> (gic_handle_irq+0x9c/0xa0)
+> >>>>> [   11.232666]  r10:00000000 r9:d1003000 r8:d1002000 r7:c912ff18
+> >>>>> r6:d100200c r5:c220565c
+> >>>>> [   11.240512]  r4:c226d668
+> >>>>> [   11.243054] [<c02021b8>] (gic_handle_irq) from [<c0201a3c>]
+> >>>>> (__irq_svc+0x5c/0x7c)
+> >>>>> [   11.250553] Exception stack(0xc912ff18 to 0xc912ff60)
+> >>>>> [   11.255617] ff00:
+> >>>>>    c020a47c 00000000
+> >>>>> [   11.263814] ff20: 0e4b7000 600c0093 c912e000 c2204cf0 c2204d34
+> >>>>> 00000002 00000000 c20757b0
+> >>>>> [   11.272010] ff40: 00000000 c912ff74 c912e000 c912ff68 00000000
+> >>>>> c020a480 600c0013 ffffffff
+> >>>>> [   11.280206]  r9:c912e000 r8:00000000 r7:c912ff4c r6:ffffffff
+> >>>>> r5:600c0013 r4:c020a480
+> >>>>> [   11.287970] [<c020a44c>] (arch_cpu_idle) from [<c0c1316c>]
+> >>>>> (default_idle_call+0x34/0x48)
+> >>>>> [   11.296081] [<c0c13138>] (default_idle_call) from [<c02580c0>]
+> >>>>> (do_idle+0x1d4/0x2c0)
+> >>>>> [   11.303842] [<c0257eec>] (do_idle) from [<c0258494>]
+> >>>>> (cpu_startup_entry+0x28/0x2c)
+> >>>>> [   11.311430]  r10:00000000 r9:420f00f3 r8:00007000 r7:c22ce318
+> >>>>> r6:30c0387d r5:00000001
+> >>>>> [   11.319275]  r4:0000008a
+> >>>>> [   11.321819] [<c025846c>] (cpu_startup_entry) from [<c0211644>]
+> >>>>> (secondary_start_kernel+0x17c/0x1a0)
+> >>>>> [   11.330886] [<c02114c8>] (secondary_start_kernel) from [<0020270c>]
+> >>>>> (0x20270c)
+> >>>>> [   11.338124]  r5:00000000 r4:090eaa40
+> >>>>> [   11.341729] ---[ end Kernel panic - not syncing: Fatal exception in
+> >>>>> interrupt ]---
+> >>>>>
+> >>>>> it is not marked as fixing anything so I wonder how it landed in stable?
+> >>>>
+> >>>> It was requested to be merged.
+> >>>
+> >>> OK.
+> >>>
+> >>>> Do you have the same crash on newer kernels with this commit in it (like Linus's tree?)
+> >>>
+> >>> There are no crashes with 5.10 or upstream otherwise it would have been
+> >>> noticed earlier, I have not kept track of which additional changes/fixes
+> >>> we may need but I would suggest we drop this one for now.
+> >>>
+> >>> Alexander, do you want me to test additional patches if your change
+> >>> somehow must be included in an upcoming 5.4? I thought the platform you
+> >>> are working is still not upstream, so who is going to benefit from this
+> >>> performance improvement?
+> >>
+> >> Is 4.19 also failing for you now?
+> > 
+> > I cannot easily test 4.19 without applying some additional patches
+> > bringing in various ARM SCMI changes, I would suspect the same to
+> > happen. Give me a few hours and I will see if I can give you a better
+> > answer with an actual test.
+> 
+> I have not been able to reproduce this failure since merging the
+> official v5.4.105 tag (more on that below), and 4.19 did not seem to
+> trigger the problem either after applying the necessary patches to bring
+> up the Ethernet PHY, switch and controller's clocks.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/codecs/rt1015p.c                    | 10 ++
- sound/soc/intel/boards/Kconfig                |  1 +
- sound/soc/intel/boards/sof_realtek_common.c   | 94 +++++++++++++++++++
- sound/soc/intel/boards/sof_realtek_common.h   |  8 ++
- sound/soc/intel/boards/sof_rt5682.c           | 31 +++++-
- .../intel/common/soc-acpi-intel-jsl-match.c   | 13 +++
- 6 files changed, 155 insertions(+), 2 deletions(-)
+Great, thanks for working to figure this out.
 
-diff --git a/sound/soc/codecs/rt1015p.c b/sound/soc/codecs/rt1015p.c
-index 671f2a2130fe..3a564272156b 100644
---- a/sound/soc/codecs/rt1015p.c
-+++ b/sound/soc/codecs/rt1015p.c
-@@ -4,6 +4,7 @@
- //
- // Copyright 2020 The Linux Foundation. All rights reserved.
- 
-+#include <linux/acpi.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/err.h>
-@@ -130,10 +131,19 @@ static const struct of_device_id rt1015p_device_id[] = {
- MODULE_DEVICE_TABLE(of, rt1015p_device_id);
- #endif
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id rt1015p_acpi_match[] = {
-+	{ "RTL1015", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, rt1015p_acpi_match);
-+#endif
-+
- static struct platform_driver rt1015p_platform_driver = {
- 	.driver = {
- 		.name = "rt1015p",
- 		.of_match_table = of_match_ptr(rt1015p_device_id),
-+		.acpi_match_table = ACPI_PTR(rt1015p_acpi_match),
- 	},
- 	.probe = rt1015p_platform_probe,
- };
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index d1d28129a32b..58379393b8e4 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT1015
-+	select SND_SOC_RT1015P
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-index f3cf73c620ba..4b95aa2cbff8 100644
---- a/sound/soc/intel/boards/sof_realtek_common.c
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -136,3 +136,97 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
- 	card->codec_conf = rt1011_codec_confs;
- 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
- }
-+
-+#define RT1015P_SHARE_EN_SPK	BIT(0)
-+
-+static unsigned long rt1015p_quirk;
-+
-+static const struct snd_soc_dapm_route rt1015p_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Left Speaker" },
-+	{ "Right Spk", NULL, "Right Speaker" },
-+};
-+
-+static const struct snd_soc_dapm_route rt1015p_share_en_spk_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Speaker" },
-+	{ "Right Spk", NULL, "Speaker" },
-+};
-+
-+static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
-+	{
-+		.name = RT1015P_DEV0_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+	{
-+		.name = RT1015P_DEV1_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+};
-+
-+void sof_rt1015p_set_share_en_spk(void)
-+{
-+	/* Two amps share one en pin so there is only one device in acpi
-+	 * table
-+	 */
-+	rt1015p_quirk |= RT1015P_SHARE_EN_SPK;
-+}
-+
-+static int rt1015p_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	/* reserved for debugging purpose */
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops rt1015p_ops = {
-+	.hw_params = rt1015p_hw_params,
-+};
-+
-+static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	int ret;
-+
-+	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_share_en_spk_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_share_en_spk_dapm_routes));
-+	else
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_dapm_routes));
-+	if (ret)
-+		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-+	return ret;
-+}
-+
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = rt1015p_dai_link_components;
-+	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
-+		link->num_codecs = 1;
-+	else
-+		link->num_codecs = ARRAY_SIZE(rt1015p_dai_link_components);
-+	link->init = rt1015p_init;
-+	link->ops = &rt1015p_ops;
-+}
-+
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card)
-+{
-+	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
-+		return;
-+
-+	card->codec_conf = rt1015p_codec_confs;
-+	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
-+}
-diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
-index 87cb3812b926..d7865681f2bd 100644
---- a/sound/soc/intel/boards/sof_realtek_common.h
-+++ b/sound/soc/intel/boards/sof_realtek_common.h
-@@ -21,4 +21,12 @@
- void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
- void sof_rt1011_codec_conf(struct snd_soc_card *card);
- 
-+#define RT1015P_CODEC_DAI	"HiFi"
-+#define RT1015P_DEV0_NAME	"RTL1015:00"
-+#define RT1015P_DEV1_NAME	"RTL1015:01"
-+
-+void sof_rt1015p_set_share_en_spk(void);
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card);
-+
- #endif /* __SOF_REALTEK_COMMON_H */
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 55505e207bc0..154f2ee9f406 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -45,8 +45,9 @@
- #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
- #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
- #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
--#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
--#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
-+#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
- 
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
- 			links[id].init = speaker_codec_init_lr;
- 			links[id].ops = &sof_rt1015_ops;
-+		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
-+			sof_rt1015p_dai_link(&links[id]);
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
- 			links[id].codecs = max_98373_components;
-@@ -847,10 +850,24 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
- 
-+	/* setup amp quirk if any */
-+	if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
-+		/* There may be only one device instance if two amps
-+		 * sharing one en pin
-+		 */
-+		if (!acpi_dev_present("RTL1015", "1", -1)) {
-+			dev_dbg(&pdev->dev, "Device %s not exist\n",
-+				RT1015P_DEV1_NAME);
-+			sof_rt1015p_set_share_en_spk();
-+		}
-+	}
-+
- 	if (sof_rt5682_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT)
- 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
- 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
- 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
-+	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
-+		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num);
-@@ -940,6 +957,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(1) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
-+	{
-+		.name = "jsl_rt5682_rt1015p",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015P_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{ }
- };
- 
-@@ -966,3 +992,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
- MODULE_ALIAS("platform:jsl_rt5682_max98360a");
- MODULE_ALIAS("platform:cml_rt1015_rt5682");
- MODULE_ALIAS("platform:tgl_rt1011_rt5682");
-+MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 52238db0bcb5..73fe4f89a82d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
- 	.codecs = {"10EC1015"}
- };
- 
-+static struct snd_soc_acpi_codecs rt1015p_spk = {
-+	.num_codecs = 1,
-+	.codecs = {"RTL1015"}
-+};
-+
- static struct snd_soc_acpi_codecs mx98360a_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98360A"}
-@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 		.quirk_data = &rt1015_spk,
- 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
- 	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "jsl_rt5682_rt1015p",
-+		.sof_fw_filename = "sof-jsl.ri",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &rt1015p_spk,
-+		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
-+	},
- 	{
- 		.id = "10EC5682",
- 		.drv_name = "jsl_rt5682_max98360a",
--- 
-2.17.1
+> 
+> So maybe this was just a fluke, I know our CPU frequency scaling driver
+> may be too aggressive and the boards may suffer from power distribution
+> problems leading to crashes, although I have never seen anything like
+> that before, and the call trace was pretty obvious as to what had
+> changed compared to v5.4.104 which had no such issues.
+> 
+> So I guess we are good, until we are not. It concerns me however that
+> this (latent at the time) issue was reported at Wed, 10 Mar 2021
+> 20:19:48 -0800 which is well before the deadline of Fri, 12 Mar 2021
+> 13:23:09 +0000, and yet, the v5.4.105 was announced on Thu, 11 Mar 2021
+> 05:33:31 -0800 (PST) and it went through with that patch nonetheless.
 
+It's a judgement call on my side as to when to do the release, based on
+the testing that has happened, any reports, and my knowledge of what is
+in the patches themselves.  For this patchset, all of the expected
+testers came back with no problems, except for your report.
+
+And if your report turned out to be real (the fact that it was a
+backport of an "old" patch made it much less likely to be real), I can
+always instantly revert it and push out a new release quickly for the
+tiny subset of those that have problems with this.
+
+So I took a guess based on all of this and decided it was more important
+to get the release out early, so that it can start to make its way to
+the huge majority of systems that did report testing worked fine, than
+to delay it to wait for your single system report.  Because again, if
+this turned out to be a real issue, a quick release for any affected
+systems would have been trivial to create.
+
+thanks,
+
+greg k-h
