@@ -2,134 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342F2339D6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566D9339D6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhCMJoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:44:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
+        id S233120AbhCMJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:46:20 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:37057 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230441AbhCMJnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:43:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B397164F14;
-        Sat, 13 Mar 2021 09:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615628635;
-        bh=ymSvKKXkySAaTw1aQJH2nwYOEfn49ej0hD436KOzGgI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SpKwZx/ivwzE7HQSnOwj8SeoRatPxhdPr1nx2eUwahvYS4f2DYeKZnO+Ab4W6TLhO
-         vSl7Vufuuj8vFSdi9MVYZosTRUvH7xDO5fsQn3l4wHt55E4QVQ9OUD/JWQ7GyzDkN7
-         /EH/uYfVJhfpIdmHn+SWWYdKgdBm1kvgZtDk7vI8awzLBFITpts/K1G7ME+psbXPCU
-         BsXxDc1ViTiBas6bdMJ/ZwlF+51ZyxPZ9BhrG06s3jZ50JWbXKuJ0ya/nqsxMGVTWI
-         6pHnQLpjC7GdQObrJamifYaKhNsmEM1Zw7Z82dVmh+6qiErGIYRuEa2Kk8t0vukNWn
-         YLmbec9AeLltA==
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH] drm/mediatek: crtc: Make config-updating atomic
-Date:   Sat, 13 Mar 2021 17:43:31 +0800
-Message-Id: <20210313094331.26374-1-chunkuang.hu@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S230309AbhCMJqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 04:46:18 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12D9k0DI026052
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 13 Mar 2021 10:46:00 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.115.33])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12D9jvnd007966;
+        Sat, 13 Mar 2021 10:45:58 +0100
+Date:   Sat, 13 Mar 2021 10:45:57 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, <hdegoede@redhat.com>
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+        <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While updating config, the irq would occur and get the partial
-config, so use variable config_updating to make updating atomic.
+Am Mon, 8 Mar 2021 14:20:16 +0200
+schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+> From: Jonathan Yong <jonathan.yong@intel.com>
+> 
+> There is already one and at least one more user is coming which
+> requires an access to Primary to Sideband bridge (P2SB) in order to
+> get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
+> for x86 devices.
+> 
+> Signed-off-by: Jonathan Yong <jonathan.yong@intel.com>
+> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/pci/Kconfig      |  8 ++++
+>  drivers/pci/Makefile     |  1 +
+>  drivers/pci/pci-p2sb.c   | 83
+> ++++++++++++++++++++++++++++++++++++++++ include/linux/pci-p2sb.h |
+> 28 ++++++++++++++ 4 files changed, 120 insertions(+)
+>  create mode 100644 drivers/pci/pci-p2sb.c
+>  create mode 100644 include/linux/pci-p2sb.h
+> 
+> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+> index 0c473d75e625..740e5b30d6fd 100644
+> --- a/drivers/pci/Kconfig
+> +++ b/drivers/pci/Kconfig
+> @@ -252,6 +252,14 @@ config PCIE_BUS_PEER2PEER
+>  
+>  endchoice
+>  
+> +config PCI_P2SB
+> +	bool "Primary to Sideband (P2SB) bridge access support"
+> +	depends on PCI && X86
+> +	help
+> +	  The Primary to Sideband bridge is an interface to some PCI
+> +	  devices connected through it. In particular, SPI NOR
+> +	  controller in Intel Apollo Lake SoC is one of such devices.
+> +
+>  source "drivers/pci/hotplug/Kconfig"
+>  source "drivers/pci/controller/Kconfig"
+>  source "drivers/pci/endpoint/Kconfig"
+> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> index d62c4ac4ae1b..eee8d5dda7d9 100644
+> --- a/drivers/pci/Makefile
+> +++ b/drivers/pci/Makefile
+> @@ -23,6 +23,7 @@ obj-$(CONFIG_PCI_IOV)		+= iov.o
+>  obj-$(CONFIG_PCI_BRIDGE_EMUL)	+= pci-bridge-emul.o
+>  obj-$(CONFIG_PCI_LABEL)		+= pci-label.o
+>  obj-$(CONFIG_X86_INTEL_MID)	+= pci-mid.o
+> +obj-$(CONFIG_PCI_P2SB)		+= pci-p2sb.o
+>  obj-$(CONFIG_PCI_SYSCALL)	+= syscall.o
+>  obj-$(CONFIG_PCI_STUB)		+= pci-stub.o
+>  obj-$(CONFIG_PCI_PF_STUB)	+= pci-pf-stub.o
+> diff --git a/drivers/pci/pci-p2sb.c b/drivers/pci/pci-p2sb.c
+> new file mode 100644
+> index 000000000000..68d7dad48cdb
+> --- /dev/null
+> +++ b/drivers/pci/pci-p2sb.c
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Primary to Sideband bridge (P2SB) access support
+> + *
+> + * Copyright (c) 2017, 2021 Intel Corporation.
+> + *
+> + * Authors: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> + *	    Jonathan Yong <jonathan.yong@intel.com>
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/export.h>
+> +#include <linux/pci-p2sb.h>
+> +
+> +#include <asm/cpu_device_id.h>
+> +#include <asm/intel-family.h>
+> +
+> +#include "pci.h"
+> +
+> +#define P2SBC_HIDE_BYTE			0xe1
+> +#define P2SBC_HIDE_BIT			BIT(0)
+> +
+> +static const struct x86_cpu_id p2sb_cpu_ids[] = {
+> +	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,
+> PCI_DEVFN(13, 0)),
+> +	{}
+> +};
+> +
+> +static int pci_p2sb_devfn(unsigned int *devfn)
+> +{
+> +	const struct x86_cpu_id *id;
+> +
+> +	id = x86_match_cpu(p2sb_cpu_ids);
+> +	if (!id)
+> +		return -ENODEV;
+> +
+> +	*devfn = (unsigned int)id->driver_data;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * pci_p2sb_bar - Get Primary to Sideband bridge (P2SB) device BAR
+> + * @pdev:	PCI device to get a PCI bus to communicate with
+> + * @devfn:	PCI slot and function to communicate with
+> + * @mem:	memory resource to be filled in
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 8b0de90156c6..870f66210848 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -61,6 +61,7 @@ struct mtk_drm_crtc {
- 
- 	/* lock for display hardware access */
- 	struct mutex			hw_lock;
-+	bool				config_updating;
- };
- 
- struct mtk_crtc_state {
-@@ -97,7 +98,7 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
- static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
- {
- 	drm_crtc_handle_vblank(&mtk_crtc->base);
--	if (mtk_crtc->pending_needs_vblank) {
-+	if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
- 		mtk_drm_crtc_finish_page_flip(mtk_crtc);
- 		mtk_crtc->pending_needs_vblank = false;
- 	}
-@@ -425,7 +426,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 	}
- }
- 
--static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
-+static void mtk_drm_crtc_update_config(struct mtk_drm_crtc *mtk_crtc,
-+				       bool needs_vblank)
- {
- #if IS_REACHABLE(CONFIG_MTK_CMDQ)
- 	struct cmdq_pkt *cmdq_handle;
-@@ -436,6 +438,10 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
- 	int i;
- 
- 	mutex_lock(&mtk_crtc->hw_lock);
-+	mtk_crtc->config_updating = true;
-+	if (needs_vblank)
-+		mtk_crtc->pending_needs_vblank = true;
-+
- 	for (i = 0; i < mtk_crtc->layer_nr; i++) {
- 		struct drm_plane *plane = &mtk_crtc->planes[i];
- 		struct mtk_plane_state *plane_state;
-@@ -472,6 +478,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
- 		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
- 	}
- #endif
-+	mtk_crtc->config_updating = false;
- 	mutex_unlock(&mtk_crtc->hw_lock);
- }
- 
-@@ -532,7 +539,7 @@ void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct drm_plane *plane,
- 		return;
- 
- 	plane_helper_funcs->atomic_update(plane, new_state);
--	mtk_drm_crtc_hw_config(mtk_crtc);
-+	mtk_drm_crtc_update_config(mtk_crtc, false);
- }
- 
- static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
-@@ -582,7 +589,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
- 	}
- 	mtk_crtc->pending_planes = true;
- 
--	mtk_drm_crtc_hw_config(mtk_crtc);
-+	mtk_drm_crtc_update_config(mtk_crtc, false);
- 	/* Wait for planes to be disabled */
- 	drm_crtc_wait_one_vblank(crtc);
- 
-@@ -618,14 +625,12 @@ static void mtk_drm_crtc_atomic_flush(struct drm_crtc *crtc,
- 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
- 	int i;
- 
--	if (mtk_crtc->event)
--		mtk_crtc->pending_needs_vblank = true;
- 	if (crtc->state->color_mgmt_changed)
- 		for (i = 0; i < mtk_crtc->ddp_comp_nr; i++) {
- 			mtk_ddp_gamma_set(mtk_crtc->ddp_comp[i], crtc->state);
- 			mtk_ddp_ctm_set(mtk_crtc->ddp_comp[i], crtc->state);
- 		}
--	mtk_drm_crtc_hw_config(mtk_crtc);
-+	mtk_drm_crtc_update_config(mtk_crtc, !!mtk_crtc->event);
- }
- 
- static const struct drm_crtc_funcs mtk_crtc_funcs = {
--- 
-2.17.1
+Do we really need that many arguments to it?
+
+Before i had, in a platform driver that never had its own pci_dev or bus
+
+  res->start = simatic_ipc_get_membase0(PCI_DEVFN(13, 0));
+  if (res-start == 0)
+    return -ENODEV;
+
+So helper only asked for the devfn, returned base and no dedicated
+error code.
+
+With this i need
+
+  struct pci_bus *bus = pci_find_bus(0, 0);
+  struct pci_dev *pci_dev = bus->self;
+  unsigned int magic_i_do_not_want =  PCI_DEVFN(13, 0);
+
+> + * The BIOS prevents the P2SB device from being enumerated by the PCI
+> + * subsystem, so we need to unhide and hide it back to lookup the
+> BAR.
+> + *
+> + * Caller must provide a valid pointer to @mem.
+> + *
+> + * Locking is handled by pci_rescan_remove_lock mutex.
+> + *
+> + * Return:
+> + * 0 on success or appropriate errno value on error.
+> + */
+> +int pci_p2sb_bar(struct pci_dev *pdev, unsigned int devfn, struct
+> resource *mem) +{
+> +	struct pci_bus *bus = pdev->bus;
+
+if (!pdev)
+	bus = pci_find_bus(0, 0);
+
+Or can we drop the whole arg?
+
+> +	unsigned int df;
+> +	int ret;
+> +
+> +	/* Get devfn for P2SB device itself */
+> +	ret = pci_p2sb_devfn(&df);
+> +	if (ret)
+> +		return ret;
+
+if (!devfn)
+	devfn = df;
+
+I guess that second devfn is for devices behind that bridge. So
+unhiding it might reveal several devices? But when caring about that
+p2sb do i really need to know its devfn. If so i would like to get
+
+EXPORT_SYMBOL(pci_p2sb_devfn);
+
+regards,
+Henning
+
+> +
+> +	pci_lock_rescan_remove();
+> +
+> +	/* Unhide the P2SB device */
+> +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
+> +
+> +	/* Read the first BAR of the device in question */
+> +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
+> PCI_BASE_ADDRESS_0, true); +
+> +	/* Hide the P2SB device */
+> +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE,
+> P2SBC_HIDE_BIT); +
+> +	pci_unlock_rescan_remove();
+> +
+> +	pci_bus_info(bus, devfn, "BAR: %pR\n", mem);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_p2sb_bar);
+> diff --git a/include/linux/pci-p2sb.h b/include/linux/pci-p2sb.h
+> new file mode 100644
+> index 000000000000..15dd42737c84
+> --- /dev/null
+> +++ b/include/linux/pci-p2sb.h
+> @@ -0,0 +1,28 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Primary to Sideband bridge (P2SB) access support
+> + */
+> +
+> +#ifndef _PCI_P2SB_H
+> +#define _PCI_P2SB_H
+> +
+> +#include <linux/errno.h>
+> +
+> +struct pci_dev;
+> +struct resource;
+> +
+> +#if IS_BUILTIN(CONFIG_PCI_P2SB)
+> +
+> +int pci_p2sb_bar(struct pci_dev *pdev, unsigned int devfn, struct
+> resource *mem); +
+> +#else /* CONFIG_PCI_P2SB is not set */
+> +
+> +static inline
+> +int pci_p2sb_bar(struct pci_dev *pdev, unsigned int devfn, struct
+> resource *mem) +{
+> +	return -ENODEV;
+> +}
+> +
+> +#endif /* CONFIG_PCI_P2SB */
+> +
+> +#endif /* _PCI_P2SB_H */
 
