@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F7433A107
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C07A33A10B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234526AbhCMU2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 15:28:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27020 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234535AbhCMU14 (ORCPT
+        id S234591AbhCMUaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 15:30:22 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:61042 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233635AbhCMUaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 15:27:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615667275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=npd6iH7N0eZ87v+8lRO4RqkY5NTrMAoR2uHc3q8d1l0=;
-        b=KDB3HVThf76mwOx/TwzHWtfY44I9mSpqPYvyTq6lQKLtni3BSmJ2Ao6oqfoAubesHv3IPD
-        A0FxxsFJhiu35KNuX34FnNn8FQq5EpbCu6QomxjRDdBJOMZkwrgCKUZGvxOK2epTbX/XsS
-        yQ4uswWgV0iIIGB1xrNPHTufdP0wE4A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-wfTq5RUkPb68YwdkHN7alg-1; Sat, 13 Mar 2021 15:27:53 -0500
-X-MC-Unique: wfTq5RUkPb68YwdkHN7alg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 126493EB9;
-        Sat, 13 Mar 2021 20:27:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D4CD60C5F;
-        Sat, 13 Mar 2021 20:27:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <12AAB359-A315-490E-8B94-FF947997B30E@oracle.com>
-References: <12AAB359-A315-490E-8B94-FF947997B30E@oracle.com> <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com> <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk> <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk> <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com> <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com> <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com> <2579343.1615623232@warthog.procyon.org.uk>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Sat, 13 Mar 2021 15:30:02 -0500
+Date:   Sat, 13 Mar 2021 20:29:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615667400; bh=sKq9mciRke6VPBD51VxE705FzzXLemerqlyrFNFi8+0=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=av+jDWvOqaJCjjUYzBzBNrDI7ecLUylCDLntF2aXK3wFYMTIOfaubIVR3f8AeCd3h
+         wnn6LPoAmHxlnM4T9OE3atPF1gnkA6R09cr7WjEqIRbQ7QPSNaUo0BsmUjowpMxpNM
+         d/6g6Dct7fI74auqcGnLyyZHt6ZymZTe6oiwZr4CjVimv+6ypMkrIz8PwLZ+hspS7N
+         qHjVM5OS1RFKVmUdwaERb6bA2f925j0WfdFIFRQQtKv7bj4JkKzsbDEqzc+OMcEWcM
+         sUyg3YX7vSlrFftbKHBb6mh9ZpblwNsosPEEvAXvoVhPknpaCNQDwrvn1y7ZSO9URq
+         I6t1d0/+z7neg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist keyring
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 net-next 0/3] gro: micro-optimize dev_gro_receive()
+Message-ID: <20210313202946.59729-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2625019.1615667266.1@warthog.procyon.org.uk>
-Date:   Sat, 13 Mar 2021 20:27:46 +0000
-Message-ID: <2625020.1615667266@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+This random series addresses some of suboptimal constructions used
+in the main GRO entry point.
+The main body is gro_list_prepare() simplification and pointer usage
+optimization in dev_gro_receive() itself. Being mostly cosmetic, it
+gives like +10 Mbps on my setup to both TCP and UDP (both single- and
+multi-flow).
 
-> > Can this go separately, or would it be better rolled into the existing
-> > patchset?
-> 
-> IMHO, since you have already sent a pull request and this is not available
-> yet in shim, it seems save to have it go separately.  I should have time 
-> to send something out next week to address this change.
+Since v1 [0]:
+ - drop the replacement of bucket index calculation with
+   reciprocal_scale() since it makes absolutely no sense (Eric);
+ - improve stack usage in dev_gro_receive() (Eric);
+ - reverse the order of patches to avoid changes superseding.
 
-Ok, thanks.
+[0] https://lore.kernel.org/netdev/20210312162127.239795-1-alobakin@pm.me
 
-David
+Alexander Lobakin (3):
+  gro: simplify gro_list_prepare()
+  gro: consistentify napi->gro_hash[x] access in dev_gro_receive()
+  gro: give 'hash' variable in dev_gro_receive() a less confusing name
+
+ net/core/dev.c | 40 ++++++++++++++++++----------------------
+ 1 file changed, 18 insertions(+), 22 deletions(-)
+
+--
+2.30.2
+
 
