@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318AF339B0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9D4339B21
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhCMCQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:16:20 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13888 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbhCMCQG (ORCPT
+        id S232709AbhCMCV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:21:29 -0500
+Received: from m-r1.th.seeweb.it ([5.144.164.170]:34309 "EHLO
+        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231789AbhCMCUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:16:06 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Dy5pX61dXz8xP0;
-        Sat, 13 Mar 2021 10:14:12 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 13 Mar 2021 10:15:53 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>
-Subject: [PATCH v4] perf annotate: Fix sample events lost in stdio mode
-Date:   Sat, 13 Mar 2021 10:15:40 +0800
-Message-ID: <20210313021540.219748-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        Fri, 12 Mar 2021 21:20:47 -0500
+Received: from localhost.localdomain (abac242.neoplus.adsl.tpnet.pl [83.6.166.242])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 920131F88F;
+        Sat, 13 Mar 2021 03:20:44 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
+Date:   Sat, 13 Mar 2021 03:19:10 +0100
+Message-Id: <20210313021919.435332-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hist__find_annotations function, since different hist_entry may point to same
-symbol, we free notes->src to signal already processed this symbol in stdio mode;
-when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+Add documentation for the MSM8994 GCC driver.
 
-However, there is a problem, for example, run the following command:
-
- # perf record -e branch-misses -e branch-instructions -a sleep 1
-
-perf.data file contains different types of sample event.
-
-If the same IP sample event exists in branch-misses and branch-instructions,
-this event uses the same symbol. When annotate branch-misses events, notes->src
-corresponding to this event is set to null, as a result, when annotate
-branch-instructions events, this event is skipped and no annotate is output.
-
-Solution of this patch is to remove zfree in hists__find_annotations and
-change sort order to "dso,symbol" to avoid duplicate output when different
-processes correspond to the same symbol.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- tools/perf/builtin-annotate.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ .../bindings/clock/qcom,gcc-msm8994.yaml      | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
 
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index a23ba6bb99b6..ad169e3e2e8f 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
- 		} else {
- 			hist_entry__tty_annotate(he, evsel, ann);
- 			nd = rb_next(nd);
--			/*
--			 * Since we have a hist_entry per IP for the same
--			 * symbol, free he->ms.sym->src to signal we already
--			 * processed this symbol.
--			 */
--			zfree(&notes->src->cycles_hist);
--			zfree(&notes->src);
- 		}
- 	}
- }
-@@ -624,6 +617,12 @@ int cmd_annotate(int argc, const char **argv)
- 		if (setup_sorting(annotate.session->evlist) < 0)
- 			usage_with_options(annotate_usage, options);
- 	} else {
-+		/*
-+		 * Events of different processes may correspond to the same
-+		 * symbol, we do not care about the processes in annotate,
-+		 * set sort order to avoid repeated output.
-+		 */
-+		sort_order = "dso,symbol";
- 		if (setup_sorting(NULL) < 0)
- 			usage_with_options(annotate_usage, options);
- 	}
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
+new file mode 100644
+index 000000000000..f8067fb1bbd6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/clock/qcom,gcc-msm8994.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm Global Clock & Reset Controller Binding for MSM8994
++
++description: |
++  Qualcomm global clock control module which supports the clocks, resets and
++  power domains on MSM8994 and MSM8992.
++
++  See also:
++  - dt-bindings/clock/qcom,gcc-msm8994.h
++
++maintainers:
++  - Stephen Boyd <sboyd@kernel.org>
++  - Taniya Das <tdas@codeaurora.org>
++
++properties:
++  compatible:
++    enum:
++      - qcom,gcc-msm8992
++      - qcom,gcc-msm8994
++
++  clocks:
++    items:
++      - description: XO source
++      - description: Sleep clock source
++
++  clock-names:
++    items:
++      - const: xo
++      - const: sleep
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 1
++
++  '#power-domain-cells':
++    const: 1
++
++  reg:
++    maxItems: 1
++
++  protected-clocks:
++    description:
++      Protected clock specifier list as per common clock binding.
++
++required:
++  - compatible
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++  - '#power-domain-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    clock-controller@300000 {
++      compatible = "qcom,gcc-msm8994";
++      reg = <0x300000 0x90000>;
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++      #power-domain-cells = <1>;
++      clocks = <&xo_board>, <&sleep_clk>;
++      clock-names = "xo", "sleep";
++    };
++...
 -- 
-2.30.GIT
+2.30.2
 
