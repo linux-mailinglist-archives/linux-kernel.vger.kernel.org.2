@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAD3339CAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138CB339CAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhCMH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
+        id S233389AbhCMH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbhCMH57 (ORCPT
+        with ESMTP id S232023AbhCMH6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:57:59 -0500
+        Sat, 13 Mar 2021 02:58:01 -0500
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79D0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:59 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id k68so19900263qke.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:57:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055BEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:01 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id u5so19869532qkj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=8JNiZUfBDRjXaPYBpQeMTXnhFbhlF+xtdVruxqSh3cA=;
-        b=IxvaJGLX6pUI5R+Y+pYVqc8/0gQYUuErDfxr3dMFZudBUHTyTTMgRdE0XBcCau7R3l
-         WVURZXlPOHDzjeCRAmjp2GkNmw3M99Sx/iwvc+iSD8ohg8gx7Cj3TzTxPdzUCsghnFFL
-         Hv+lIk4SezNfKgceCzGd/c+Rf6ueoDDPEzD62ZXkdDxk/uLmQc4GjBU0Knksz2+dLsVo
-         b2U0CgK0WmdW2qIHy4OyEo2nBB4jmzDFCPxxlIobZYlIAsooUXen6yoe28K/2f1TgtI5
-         p1/lftklJT4PvJibzbIlGo6vGha2wAL2lU0ks0AxI4l1lf/1Bf/PVsGVaXXW7+F/fJFj
-         Y3HQ==
+        bh=BUGHWaLOgbBXMks9MxevCFPE+HJdHu8WtN3Ad5BKa2E=;
+        b=EmtSmNZcxIc0Qq98PvQLlh/Je74+I9pGiId+AoSzt2WN66X/7gqva2AkM1Z6ZrqWlC
+         qMCo9fu+KgWIl13K9lL0hfZkSMTr33It30mFN/3/xwUcpWXiUy2ttup7BflThw89akrm
+         ipCdNg7GP9J1lKGO0+Ae8TZbHboXPO6EU2DcK5O1kt2ZE3NOFthikv0X6/opyUBdeUKR
+         Q3HhM/pgOA+vQ4UMR7hzNtEDZcmVDtrPgTwq9zDoYDV/KHqaCvxRPvrkCfwY3MbDN9Yc
+         Dm0TaDfpoFKrj/syFqJ/83hwIk0G3OPLs6DbY/I2HkHJ6cbjakxVLFDyXybDitO9MyGA
+         /tow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8JNiZUfBDRjXaPYBpQeMTXnhFbhlF+xtdVruxqSh3cA=;
-        b=gAD0lTpWpuRmUv2Dlufjuw7ZklBUzo8DSa0cxSlaWPJunVm1RpqFGuQ0dz/Q5SDxC8
-         e2XkyRSyCbrJ2qPrJUA+p5trg9qCQq4i4twAOZW4+6JOmPcDhnjMZ5aZGSzfoiMIRsoT
-         4EV2Q02mcFvf2IuUgWli5WndTXndhzHNpFWCsogvzS+JWqWb6aY+e+5tJWSfWH3kCiDw
-         t8uRvv61lDKzNQeIpa/ZbY8MFF4olHkRwvO5FMf2xUfghMxRoosJSB3DdLIiwC8NEbpr
-         g7dGskt+2tbLFnNCykjqc81I4A/sSyeBg95oUKs9PNAIBgIoAQlvqOizUcVccM9r97dk
-         dPYA==
-X-Gm-Message-State: AOAM533j3NWtnjtXQODMvkwfUeiEAcpKyeqz3jm23oO6viFDFeKf35BJ
-        zE9lWSBpsopJHLabXkGrebl2ktdd2BY=
-X-Google-Smtp-Source: ABdhPJwORNu5jWRG63mEkIrwerIFX+r6WsDRo4k6jBRlD+35Q3Ytikr16dVGNSyDCuR7br75GADeWLQhEY0=
+        bh=BUGHWaLOgbBXMks9MxevCFPE+HJdHu8WtN3Ad5BKa2E=;
+        b=tk+Szu/MRdyl1iY0zpUHO4VtD8YBAHs5CFbud9sFWZl8OIpU011Pd59sKmQkChiEw7
+         YEzG58xR4zAwc8CM8Vd7HuqKhhVUDIqumg0Ntx1KyfQ2QNYcbVSv8oAHuMLxAAembJau
+         D5EsuQjvXjKjroV/zEhusebtXIHZULBN1x9MfQwyikGwihqLhzDwXeUHx2D7JFo7i40J
+         3hvB0UCXdGNVF257C0gUQWS/r0tKshrTyX1i7tyAutY7viCISRQ6FP65DlTjV3PAmmsw
+         VHxDK47EkcJAoat+x24kFd6i44dgww1DGsDCpvBZu8P/V1m2f4keblf2wZMFsVwDhZRU
+         0b/g==
+X-Gm-Message-State: AOAM5314IBqaZ2bDNgLAPxQ3EGGAGDitVyFeUtt5HNFWNSHljmLCuPyl
+        iPCluBY4dSP0ON55Ckf7BwK1bpQBiw8=
+X-Google-Smtp-Source: ABdhPJzJJ1SnzBtj3bVJq+tnpS8mvob3Iwgd7McsgFl/pDIRa/R9w7/nQuY0bxlcdhV2mXDJvzzuC77PvVA=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:ad4:5ce8:: with SMTP id iv8mr1757086qvb.16.1615622278881;
- Fri, 12 Mar 2021 23:57:58 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:35 -0700
+ (user=yuzhao job=sendgmr) by 2002:a05:6214:4b3:: with SMTP id
+ w19mr1750690qvz.26.1615622280155; Fri, 12 Mar 2021 23:58:00 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:36 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-3-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-4-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 02/14] include/linux/nodemask.h: define next_memory_node()
- if !CONFIG_NUMA
+Subject: [PATCH v1 03/14] include/linux/huge_mm.h: define is_huge_zero_pmd()
+ if !CONFIG_TRANSPARENT_HUGEPAGE
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -74,26 +74,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently next_memory_node only exists when CONFIG_NUMA=y. This patch
-defines the macro for the !CONFIG_NUMA case.
+Currently is_huge_zero_pmd() only exists when
+CONFIG_TRANSPARENT_HUGEPAGE=y. This patch defines the function for the
+!CONFIG_TRANSPARENT_HUGEPAGE case.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/nodemask.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/huge_mm.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index ac398e143c9a..89fe4e3592f9 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -486,6 +486,7 @@ static inline int num_node_state(enum node_states state)
- #define first_online_node	0
- #define first_memory_node	0
- #define next_online_node(nid)	(MAX_NUMNODES)
-+#define next_memory_node(nid)	(MAX_NUMNODES)
- #define nr_node_ids		1U
- #define nr_online_nodes		1U
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index ba973efcd369..0ba7b3f9029c 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -443,6 +443,11 @@ static inline bool is_huge_zero_page(struct page *page)
+ 	return false;
+ }
  
++static inline bool is_huge_zero_pmd(pmd_t pmd)
++{
++	return false;
++}
++
+ static inline bool is_huge_zero_pud(pud_t pud)
+ {
+ 	return false;
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
