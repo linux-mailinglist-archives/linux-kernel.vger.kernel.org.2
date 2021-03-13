@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCB2339CB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C3F339CB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbhCMH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S233446AbhCMH6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhCMH6D (ORCPT
+        with ESMTP id S232627AbhCMH6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:58:03 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A425FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:03 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 194so31802025ybl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:03 -0800 (PST)
+        Sat, 13 Mar 2021 02:58:05 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF963C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:04 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id a16so3377560qtw.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=773qLo/LiVz4n2L5CNuvuPAbdhL5vI+dQXWkGfq22YM=;
-        b=s62F923cqY3HHxlJ4hYL4HxcRTUA1o1Vmr0HgcffuxiRKFFBC1czWP98NMUIxWHBf1
-         ZTyWeNYix1pSuyOzyeK0NFpxLIWOmX10rPMvqWp8DuHg1yJhrNIGNko3fZT0atoX3aT9
-         tvbuoR86gyhnQZ8eh7p7K/l32hNMDiL/9yg2skyWxrtzqXc2LkdkDBaiklyidpzGD9Xo
-         glkEqmmHlh+PbMf1URYMZzEcs1zoLYSWmku5OQ0gpaw9yflCHjp7u8qrrfyCRliYK3I/
-         Tc+BFkGgrB7u8ficVc0QKkIHZrZFoWgOnbQ0s8MxrT5IfVlLG0WbP3MEYNuJZFSmG8zL
-         SKVQ==
+        bh=9FOrNXENvEBq+xjcXdvWYV76Tj/52PeZfpdHZpBdeTw=;
+        b=CZNFSLn1Vr+7g91u2WdSPY2RASOoMeGVnEu8XS9ogwps7Gq+7F5umE3fWsyowJpBWD
+         /BpSgazEV0uTx/142ccxmLjj6Tc5kR7KGsb79Ptj4azaGNuJBT032A7MXAqita6Xkryl
+         6IanFkwVS4tC+SsZAZtk+kuQzdp1pO5Pnx+cXwdQzEVQmCkWjuUnjKzoEPGf4IlnkcFb
+         QOa5YU3bEwcfmAFIwkc2tWsdZ2h8rKKycxzT/zHBKI265GiGZGNofgaHIdU33DduoJGc
+         Q3y72dvencUMJG5nccrm3sqMC+9s98wb5AiyP7gwQH8cNu/oUBPDF/k1zMnv1QbL0y4q
+         Wkmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=773qLo/LiVz4n2L5CNuvuPAbdhL5vI+dQXWkGfq22YM=;
-        b=JutL0wSOtSKnXJpfp0Rn/HxX7HIFKRMSUwsEChk8vd4csU2mQte1wA+/+UuChaDIbU
-         LAbDmBYxJhnK4nlISGat+zJubGDWfCTB+UZ0ZMedNwvo4kQ6wCMcrBVBswWbPfpCjDwr
-         A4KWgVBEKj1hggrx43gbsIj1+nseOCIQxhyAyqUZPXMWyh5DbkzFwS/Ofm/k9MlAtqkm
-         kxvprFWjiL/B2UVHRa6QH0Pd81vDVjQVhL1VANnhSRBRqVhMl9CKh6LDeEXIQ/j/SUW1
-         sU5WIzhVZuh5Ce8LmXpg49O0w7XWFKmLxS65P39JtYklewPiPLasFUZmGGQIW0YkgSAb
-         ikpA==
-X-Gm-Message-State: AOAM531sNbnzQRY0viG10kk0YQk3CPKaMfG7csYITYFCtPUjz1sM9Whr
-        xig3F1mAxIB/3uXuYRA3nVADy29ViV4=
-X-Google-Smtp-Source: ABdhPJyM3uGtugEuR+BtqyW7Pcf+QxhuRuUSNVC/LK4e6LJubLVomvaz1At1w7Vl14tsop0cWxsmMMW22Kg=
+        bh=9FOrNXENvEBq+xjcXdvWYV76Tj/52PeZfpdHZpBdeTw=;
+        b=dwfL2qqtOLyHknmJLTbNquIIE99M3co4RRcjM8ZHW7E3b22r0qS7/uSdIuLxhwPvQA
+         Y3LL2jZN2S3rNEY31iqcQo0XPmDjtQwb13jd9vmVGL+LLS5tszC4uUapyiV0oPCH5uwL
+         smIUxO+PPvwuZT1NgqDpJ05pyAL6HNc5tjDAhFLsgZFN/eS2938P25wiN4+HDX1vPlLc
+         PXD85IpbqplkrTukFj4waHLj2xp8v/FPA9XzbBiYpaKEr1bL5w6oyKCxl6mnhZr0A9h6
+         m3QW2oQAPQpKG6YqSR4gB8S9wvQ5RcQOj/4jcVgdKH2lIq48/Tc9tYuJNF3HuISISSMR
+         K2Aw==
+X-Gm-Message-State: AOAM530QAe48ahNQ/TdZi8OsNzl8PRShs8X4B4mC6ejSQSSJgG9mU0dS
+        C8+Z0ZLOLiEDu/n5izcyhgbt0bjgPuM=
+X-Google-Smtp-Source: ABdhPJx3v9fo9fGIto8kHzW5LTGjVA6UTKRtTeuo4NwnDLlQop9mIBVZK8pHZLGtADbIHe5kSQ6HeS7hVrU=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:a25:d84b:: with SMTP id p72mr22707445ybg.272.1615622282832;
- Fri, 12 Mar 2021 23:58:02 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:38 -0700
+ (user=yuzhao job=sendgmr) by 2002:a0c:cb0c:: with SMTP id o12mr15467752qvk.54.1615622284101;
+ Fri, 12 Mar 2021 23:58:04 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:39 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-6-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-7-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 05/14] mm/swap.c: export activate_page()
+Subject: [PATCH v1 06/14] mm, x86: support the access bit on non-leaf PMD entries
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -73,92 +73,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export activate_page(), which is a merger between the existing
-activate_page() and __lru_cache_activate_page(),  so it can be used to
-activate pages that are already on lru or queued in lru_pvecs.lru_add.
+Some architectures support the accessed bit on non-leaf PMD entries
+(parents) in addition to leaf PTE entries (children) where pages are
+mapped, e.g., x86_64 sets the accessed bit on a parent when using it
+as part of linear-address translation [1]. Page table walkers who are
+interested in the accessed bit on children can take advantage of this:
+they do not need to search the children when the accessed bit is not
+set on a parent, given that they have previously cleared the accessed
+bit on this parent in addition to its children.
+
+[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
+     Volume 3 (October 2019), section 4.8
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/swap.h |  1 +
- mm/swap.c            | 28 +++++++++++++++-------------
- 2 files changed, 16 insertions(+), 13 deletions(-)
+ arch/Kconfig                   | 8 ++++++++
+ arch/x86/Kconfig               | 1 +
+ arch/x86/include/asm/pgtable.h | 2 +-
+ arch/x86/mm/pgtable.c          | 5 ++++-
+ include/linux/pgtable.h        | 4 ++--
+ 5 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 4cc6ec3bf0ab..de2bbbf181ba 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -344,6 +344,7 @@ extern void lru_add_drain_cpu(int cpu);
- extern void lru_add_drain_cpu_zone(struct zone *zone);
- extern void lru_add_drain_all(void);
- extern void rotate_reclaimable_page(struct page *page);
-+extern void activate_page(struct page *page);
- extern void deactivate_file_page(struct page *page);
- extern void deactivate_page(struct page *page);
- extern void mark_page_lazyfree(struct page *page);
-diff --git a/mm/swap.c b/mm/swap.c
-index 31b844d4ed94..f20ed56ebbbf 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -334,7 +334,7 @@ static bool need_activate_page_drain(int cpu)
- 	return pagevec_count(&per_cpu(lru_pvecs.activate_page, cpu)) != 0;
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 2bb30673d8e6..137446d17732 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -783,6 +783,14 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ 	bool
+ 
++config HAVE_ARCH_PARENT_PMD_YOUNG
++	bool
++	help
++	  Architectures that select this are able to set the accessed bit on
++	  non-leaf PMD entries in addition to leaf PTE entries where pages are
++	  mapped. For them, page table walkers that clear the accessed bit may
++	  stop at non-leaf PMD entries when they do not see the accessed bit.
++
+ config HAVE_ARCH_HUGE_VMAP
+ 	bool
+ 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879d398e..b5972eb82337 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -163,6 +163,7 @@ config X86
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
++	select HAVE_ARCH_PARENT_PMD_YOUNG	if X86_64
+ 	select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
+ 	select HAVE_ARCH_VMAP_STACK		if X86_64
+ 	select HAVE_ARCH_WITHIN_STACK_FRAMES
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index a02c67291cfc..a6b5cfe1fc5a 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -846,7 +846,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+ 
+ static inline int pmd_bad(pmd_t pmd)
+ {
+-	return (pmd_flags(pmd) & ~_PAGE_USER) != _KERNPG_TABLE;
++	return ((pmd_flags(pmd) | _PAGE_ACCESSED) & ~_PAGE_USER) != _KERNPG_TABLE;
  }
  
--static void activate_page(struct page *page)
-+static void activate_page_on_lru(struct page *page)
- {
- 	page = compound_head(page);
- 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
-@@ -354,7 +354,7 @@ static inline void activate_page_drain(int cpu)
- {
+ static inline unsigned long pages_to_mb(unsigned long npg)
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index f6a9e2e36642..1c27e6f43f80 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -550,7 +550,7 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
+ 	return ret;
  }
  
--static void activate_page(struct page *page)
-+static void activate_page_on_lru(struct page *page)
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
+ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pmd_t *pmdp)
  {
- 	struct lruvec *lruvec;
+@@ -562,6 +562,9 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
  
-@@ -368,11 +368,22 @@ static void activate_page(struct page *page)
+ 	return ret;
  }
++#endif
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pud_t *pudp)
+ {
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 5e772392a379..08dd9b8c055a 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -193,7 +193,7 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
  #endif
  
--static void __lru_cache_activate_page(struct page *page)
-+/*
-+ * If the page is on the LRU, queue it for activation via
-+ * lru_pvecs.activate_page. Otherwise, assume the page is on a
-+ * pagevec, mark it active and it'll be moved to the active
-+ * LRU on the next drain.
-+ */
-+void activate_page(struct page *page)
- {
- 	struct pagevec *pvec;
- 	int i;
+ #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
+ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 					    unsigned long address,
+ 					    pmd_t *pmdp)
+@@ -214,7 +214,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 	BUILD_BUG();
+ 	return 0;
+ }
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG */
+ #endif
  
-+	if (PageLRU(page)) {
-+		activate_page_on_lru(page);
-+		return;
-+	}
-+
- 	local_lock(&lru_pvecs.lock);
- 	pvec = this_cpu_ptr(&lru_pvecs.lru_add);
- 
-@@ -421,16 +432,7 @@ void mark_page_accessed(struct page *page)
- 		 * evictable page accessed has no effect.
- 		 */
- 	} else if (!PageActive(page)) {
--		/*
--		 * If the page is on the LRU, queue it for activation via
--		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
--		 * pagevec, mark it active and it'll be moved to the active
--		 * LRU on the next drain.
--		 */
--		if (PageLRU(page))
--			activate_page(page);
--		else
--			__lru_cache_activate_page(page);
-+		activate_page(page);
- 		ClearPageReferenced(page);
- 		workingset_activation(page);
- 	}
+ #ifndef __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
