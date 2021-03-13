@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55384339BF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 06:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1379339BF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 06:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhCMFJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 00:09:17 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:40324 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhCMFJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 00:09:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615612143; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=jh77CoXgc/1rFZsKFmULjbKwYNO/P0sbgk6JzcrRH2U=; b=RL6M8xaSFkEUff0D6OXxwt+s13T7ba50fqaH+qo8/w3fGcRd3w0lv4q1I6uar3HdwNJuiiHu
- gaPdq5YmuVYpHbmx7dOQ7+A1j7fP+fdZUGKux2U6mBfbqZmglfUrO/4EMgnVSJSvJyyOUbpT
- MlhgG/KHuvh4El+dBGQBtPASLa4=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 604c48e93f267701a46e3400 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Mar 2021 05:08:57
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 16912C43463; Sat, 13 Mar 2021 05:08:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.154.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3535FC433CA;
-        Sat, 13 Mar 2021 05:08:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3535FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v5 2/2] arm64: dts: qcom: Add sound node for
- sc7180-trogdor-coachz
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>
-References: <20210312160622.24165-1-srivasam@codeaurora.org>
- <20210312160622.24165-3-srivasam@codeaurora.org>
- <CAD=FV=WN9vdU-cWLr4-AODGQ7E5crJkAmv1=D23j21=KHxUCkg@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <bc3d663b-3f85-cbc1-ac22-2c8260657f0e@codeaurora.org>
-Date:   Sat, 13 Mar 2021 10:38:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231723AbhCMFKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 00:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhCMFKs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 00:10:48 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A99C061574;
+        Fri, 12 Mar 2021 21:10:48 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id x21so1939158pfa.3;
+        Fri, 12 Mar 2021 21:10:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZiHATcqAxSVuhRyTi2E5mTS4Xv1o3Mg3eeyKP3UZ5g=;
+        b=V0LnVckIlEb6217KBYOSW05AESkEojvfEcUII/Z6pX0szMiyJ14AWYcYTWmqKRNgyW
+         3+QuyBv4rbEV/DgVbMST/DLbSBUCRI46Ohluk+jzDpZlNywrZ7ZvSXOYVJT8CU0phqJa
+         DvzcHXNMFzNm+cUPBU7yvwci1Ran08HuWWvyVYqiyeo7OMmeWNvC76TcqLYyWV/kNRSI
+         iTRwlOnFjLKcDXa9EbqQV0KyILtNabSO6ppH71SEMBRM7rQ84xTanzotSexSaU9cVGrN
+         kjWeJosqxiluyOdp2OmhG1jt1bF+ai7QsI7n85E2tR5cgFqQwNGYOqDWHMxLfH3RVOax
+         sxmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZiHATcqAxSVuhRyTi2E5mTS4Xv1o3Mg3eeyKP3UZ5g=;
+        b=gITQAuBGsjgZeqzMxaEHPoneuznKKuZyAqDSdV3YaD+uPX3ztnvs2HN6rIAgcwYVlw
+         PeFVmTZDlOVEspxGW4em/XUwstVas9mtKSZsi/7xTxAzjF0o9BOA+nYAGhkFfG41GpGG
+         AVLJ2aqtcKCbvlmjGTxUHtQ6ZFvGhc5HT+qsXeOZfEZfbFUabTkpaLtENIK8TgVoHZY2
+         GdCzPcNev7hCw6MDx+OMIUuqIPMgtuTnSF4kinxBt5oTTb7D1AVT4na/oyTGSz6tfn8E
+         /E8nnBvXJodsi1yGlfRzepimmtww+alOUQvaYPZSWMMnChzSsRxvtudC/ma9N+zqbyBR
+         Y/Lw==
+X-Gm-Message-State: AOAM530bUeiLrOEv2zhEEzB7IlW+hbFYtSxI9gncLZMWyqyIPCdS23RH
+        nHIFZmJEtI3MXx7KET+zWHX+ZoVXWQ==
+X-Google-Smtp-Source: ABdhPJwwEf94/agw3SzyxHDnvwR/nCGIQ2OtwLhM46quNqQcjW29ycjh2H/lL7kY+uf03ZjkO0Dd4g==
+X-Received: by 2002:aa7:9ecf:0:b029:1f4:f737:12d6 with SMTP id r15-20020aa79ecf0000b02901f4f73712d6mr1562865pfq.8.1615612247490;
+        Fri, 12 Mar 2021 21:10:47 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id q95sm3541430pjq.20.2021.03.12.21.10.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Mar 2021 21:10:47 -0800 (PST)
+From:   lihaiwei.kernel@gmail.com
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH] KVM: clean up the unused argument
+Date:   Sat, 13 Mar 2021 13:10:32 +0800
+Message-Id: <20210313051032.4171-1-lihaiwei.kernel@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WN9vdU-cWLr4-AODGQ7E5crJkAmv1=D23j21=KHxUCkg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+From: Haiwei Li <lihaiwei@tencent.com>
 
-Thanks for your time and inputs!!!
+kvm_msr_ignored_check function never uses vcpu argument. Clean up the
+function and invokers.
 
-On 3/13/2021 2:58 AM, Doug Anderson wrote:
-> Hi,
->
-> On Fri, Mar 12, 2021 at 8:07 AM Srinivasa Rao Mandadapu
-> <srivasam@codeaurora.org> wrote:
->> This is a trgodor variant, required to have sound node variable
->> for coachz specific platform.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> index 4ad520f00485..7eaad739b6f9 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
->> @@ -89,6 +89,16 @@ &sn65dsi86_out {
->>          data-lanes = <0 1 2 3>;
->>   };
->>
->> +&sound {
->> +       compatible = "google,sc7180-coachz";
->> +       model = "sc7180-adau7002-max98357a";
->> +       audio-routing = "PDM_DAT", "DMIC";
->> +};
->> +
->> +&multimedia0_codec {
->> +       sound-dai = <&adau7002>;
->> +};
->> +
-> Much nicer! The last nit is that "multimedia0_codec" is now sorted
-> incorrectly. It starts with "m" so it shouldn't come after "s". Yes, I
-> know that this rule means that these two things are no longer next to
-> each other, but that's the rule we have right now.
->
-> If it's important for you for them to sort together, I suppose you
-> could change the label to "sound_multimedia0_codec" though that's a
-> bit of a mouthful. I'll leave it up to you whether to rename (and keep
-> the current ordering) or keep the name (and move the node).
->
->
->
-> -Doug
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+ arch/x86/kvm/x86.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-I feel it's good to keep them together by changing name as you suggested.
-
-I will change accordingly and re post it.
-
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 012d5df..27e9ee8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -271,8 +271,7 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
+  * When called, it means the previous get/set msr reached an invalid msr.
+  * Return true if we want to ignore/silent this failed msr access.
+  */
+-static bool kvm_msr_ignored_check(struct kvm_vcpu *vcpu, u32 msr,
+-				  u64 data, bool write)
++static bool kvm_msr_ignored_check(u32 msr, u64 data, bool write)
+ {
+ 	const char *op = write ? "wrmsr" : "rdmsr";
+ 
+@@ -1447,7 +1446,7 @@ static int do_get_msr_feature(struct kvm_vcpu *vcpu, unsigned index, u64 *data)
+ 	if (r == KVM_MSR_RET_INVALID) {
+ 		/* Unconditionally clear the output for simplicity */
+ 		*data = 0;
+-		if (kvm_msr_ignored_check(vcpu, index, 0, false))
++		if (kvm_msr_ignored_check(index, 0, false))
+ 			r = 0;
+ 	}
+ 
+@@ -1613,7 +1612,7 @@ static int kvm_set_msr_ignored_check(struct kvm_vcpu *vcpu,
+ 	int ret = __kvm_set_msr(vcpu, index, data, host_initiated);
+ 
+ 	if (ret == KVM_MSR_RET_INVALID)
+-		if (kvm_msr_ignored_check(vcpu, index, data, true))
++		if (kvm_msr_ignored_check(index, data, true))
+ 			ret = 0;
+ 
+ 	return ret;
+@@ -1651,7 +1650,7 @@ static int kvm_get_msr_ignored_check(struct kvm_vcpu *vcpu,
+ 	if (ret == KVM_MSR_RET_INVALID) {
+ 		/* Unconditionally clear *data for simplicity */
+ 		*data = 0;
+-		if (kvm_msr_ignored_check(vcpu, index, 0, false))
++		if (kvm_msr_ignored_check(index, 0, false))
+ 			ret = 0;
+ 	}
+ 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+1.8.3.1
 
