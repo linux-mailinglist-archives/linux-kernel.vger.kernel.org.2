@@ -2,76 +2,800 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB2B339E09
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 13:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB42F339E0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 13:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhCMMZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 07:25:43 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:21027 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhCMMY6 (ORCPT
+        id S233011AbhCMM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 07:29:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230309AbhCMM2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 07:24:58 -0500
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 12DCNhQw030190;
-        Sat, 13 Mar 2021 21:23:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 12DCNhQw030190
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615638225;
-        bh=9qrTaAv2B4VMn64mVvVgTSppSGJt8J/HF9r0PzcF7aY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oc2wi0N88ICf7XOtSNURODJ6Uv8+9N5qZeGf4itNbkaF8FXGM1vqvdSRxSkoMyIIM
-         YBJhKzJbX4JhY0+FfIod0EoUKJv1Q3vnTychnkF9ZcT28xzySguGu+8ZFZJgBhH1IA
-         yIqqmm1IyA9snchObecsjN3h9myhNyhR+MOgx1cP2cJku+ig71uJ+E0jrp3gL91JSA
-         sZzhef3j2w8VTA8XoMDgvVwAJS11+wkuOh7Frf9Vyx88TpZc+wfNnBPC8FDyeOiz5h
-         i7yATScETs4fdax+oWqJdz2D+uiJG1AMe9xL92WrznUXT4ITKkhKDZv6wbvapulJ9O
-         sCCGdOwsPNB4A==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] xtensa: remove unneeded export in boot-elf/Makefile
-Date:   Sat, 13 Mar 2021 21:23:42 +0900
-Message-Id: <20210313122342.69995-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210313122342.69995-1-masahiroy@kernel.org>
-References: <20210313122342.69995-1-masahiroy@kernel.org>
+        Sat, 13 Mar 2021 07:28:36 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148C0C061574;
+        Sat, 13 Mar 2021 04:28:35 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id 81so28592689iou.11;
+        Sat, 13 Mar 2021 04:28:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KjyjxfUclkmnLxiao5+uMsOfwjm9DDRHToIqelgpQL0=;
+        b=fa9l3KluYxdqlPNPz2JejgqtvM1qYNTtwZHbpeNIh4ZWXItPe4vl1k7lY8BtQuoIue
+         Tu4girTm6h/1iIwbCBMp0ODu42eZ1Q2bai2aq0ZswHtPUEUqy4fSrp6KE5BvSVIy26Js
+         LbIr/x69j7S8yhUHr3wivIGgM/Jr+0YdTYoaMwFONkkZdtZ0UR2gAZNPT4D3ZUg64jwx
+         JErsEU0Wly6+GC4M4Ze+Q3OCmWhgjbgBCohqMdXtp4MHw5mkxI9O6tj0DmN9DA9z4zu0
+         mmQxxiZrsJdWgCU6cCa2CGKny7504rwRt57vpP1Y8ZSN/g6evzZTJdOz+RX7Cv8eLLks
+         X5yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KjyjxfUclkmnLxiao5+uMsOfwjm9DDRHToIqelgpQL0=;
+        b=aU2JNOet/EUCpLMYRU+42F0oi1mW4LuAomyAztfbGcgNNo/fXf6kpyWiiUg+m0skNz
+         D6R+x+hRq7uayoL7w3vmp1m7v5ISMo0xQN89FfLWcLUuiE9z5TVOGE4s9bx6l69iCThR
+         Ybz4x+vavofBoUL5FF1UIuln3tZV9RYqONDlHndwhyuXV7Ia3YNZK47EI2StbG8bXJvR
+         U6aqDqpPGcKoBfAKJuN2cR3MnVzvsb+sRWqxZ1X3icKNcGm9FQEiOB3LvAdDh3668RX5
+         fa4WMeJTz7QlDGmWDHrRrTzhc6HrcELsiXbttr5SvRbcxdzvpy/GCtVNMA95WMPR9d5U
+         dT/Q==
+X-Gm-Message-State: AOAM532WGs86nIbxl3ne2eo24mUkPm1SBbWN+KG49sLg66yzvo1c+Zx+
+        n+RoeIpXUaTfY/rOM5EwdeZz9lTu66VN7g==
+X-Google-Smtp-Source: ABdhPJw0WWVyQZ0TUq4fcugguMGhvX62lM52r8nTDc1y1vyqFS5tGDPQblv0f0NO8eGJkDbfg0gOMQ==
+X-Received: by 2002:a02:a691:: with SMTP id j17mr3216797jam.14.1615638514719;
+        Sat, 13 Mar 2021 04:28:34 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:5b61:b30f:f6cc:e09a])
+        by smtp.gmail.com with ESMTPSA id b16sm4631436ilq.49.2021.03.13.04.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 04:28:34 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-clk@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4] clk: imx: Fix reparenting of UARTs not associated with stdout
+Date:   Sat, 13 Mar 2021 06:28:17 -0600
+Message-Id: <20210313122818.445228-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No one uses these as environment variables.
+Most if not all i.MX SoC's call a function which enables all UARTS.
+This is a problem for users who need to re-parent the clock source,
+because any attempt to change the parent results in an busy error
+due to the fact that the clocks have been enabled already.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+  clk: failed to reparent uart1 to sys_pll1_80m: -16
+
+Instead of pre-initializing all UARTS, scan the device tree to see
+which UART clocks are associated to stdout, and only enable those
+UART clocks if it's needed early.  This will move initialization of
+the remaining clocks until after the parenting of the clocks.
+
+When the clocks are shutdown, this mechanism will also disable any
+clocks that were pre-initialized.
+
+Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
+Suggested-by: Aisheng Dong <aisheng.dong@nxp.com>
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+
 ---
+V4:  Check if of_stdout is available before using it.
+     Re-align #ifdef to remove repeated code.
+V3:  Return a method more closely related to upstream kernel but
+     instead of passing an array of UART's, each SoC passes the max
+     number of UART clocks is has.  The imx clock driver will create
+     an array to enable on startup, and disable later.
+V2:  Attempt to port driver from vendor kernel.
+---
+ drivers/clk/imx/clk-imx25.c   | 12 +---------
+ drivers/clk/imx/clk-imx27.c   | 13 +----------
+ drivers/clk/imx/clk-imx35.c   | 10 +--------
+ drivers/clk/imx/clk-imx5.c    | 30 +++----------------------
+ drivers/clk/imx/clk-imx6q.c   | 16 +-------------
+ drivers/clk/imx/clk-imx6sl.c  | 16 +-------------
+ drivers/clk/imx/clk-imx6sll.c | 24 +-------------------
+ drivers/clk/imx/clk-imx6sx.c  | 16 +-------------
+ drivers/clk/imx/clk-imx7d.c   | 22 +------------------
+ drivers/clk/imx/clk-imx7ulp.c | 31 ++------------------------
+ drivers/clk/imx/clk-imx8mm.c  | 18 ++-------------
+ drivers/clk/imx/clk-imx8mn.c  | 18 ++-------------
+ drivers/clk/imx/clk-imx8mp.c  | 17 +--------------
+ drivers/clk/imx/clk-imx8mq.c  | 18 ++-------------
+ drivers/clk/imx/clk.c         | 41 +++++++++++++++++++++++++++--------
+ drivers/clk/imx/clk.h         |  4 ++--
+ 16 files changed, 54 insertions(+), 252 deletions(-)
 
-Changes in v2:
-  - New patch
-
- arch/xtensa/boot/boot-elf/Makefile | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
-index 47b9063f2c5d..faec2002923b 100644
---- a/arch/xtensa/boot/boot-elf/Makefile
-+++ b/arch/xtensa/boot/boot-elf/Makefile
-@@ -6,9 +6,8 @@
+diff --git a/drivers/clk/imx/clk-imx25.c b/drivers/clk/imx/clk-imx25.c
+index a66cabfbf94f..66192fe0a898 100644
+--- a/drivers/clk/imx/clk-imx25.c
++++ b/drivers/clk/imx/clk-imx25.c
+@@ -73,16 +73,6 @@ enum mx25_clks {
  
- OBJCOPY_ARGS := -O $(if $(CONFIG_CPU_BIG_ENDIAN),elf32-xtensa-be,elf32-xtensa-le)
+ static struct clk *clk[clk_max];
  
--export OBJCOPY_ARGS
--export CPPFLAGS_boot.lds += -P -C
--export KBUILD_AFLAGS += -mtext-section-literals
-+CPPFLAGS_boot.lds += -P -C
-+KBUILD_AFLAGS += -mtext-section-literals
+-static struct clk ** const uart_clks[] __initconst = {
+-	&clk[uart_ipg_per],
+-	&clk[uart1_ipg],
+-	&clk[uart2_ipg],
+-	&clk[uart3_ipg],
+-	&clk[uart4_ipg],
+-	&clk[uart5_ipg],
+-	NULL
+-};
+-
+ static int __init __mx25_clocks_init(void __iomem *ccm_base)
+ {
+ 	BUG_ON(!ccm_base);
+@@ -228,7 +218,7 @@ static int __init __mx25_clocks_init(void __iomem *ccm_base)
+ 	 */
+ 	clk_set_parent(clk[cko_sel], clk[ipg]);
  
- boot-y		:= bootstrap.o
- targets		+= $(boot-y) boot.lds
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(6);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/clk/imx/clk-imx27.c b/drivers/clk/imx/clk-imx27.c
+index 5585ded8b8c6..56a5fc402b10 100644
+--- a/drivers/clk/imx/clk-imx27.c
++++ b/drivers/clk/imx/clk-imx27.c
+@@ -49,17 +49,6 @@ static const char *ssi_sel_clks[] = { "spll_gate", "mpll", };
+ static struct clk *clk[IMX27_CLK_MAX];
+ static struct clk_onecell_data clk_data;
+ 
+-static struct clk ** const uart_clks[] __initconst = {
+-	&clk[IMX27_CLK_PER1_GATE],
+-	&clk[IMX27_CLK_UART1_IPG_GATE],
+-	&clk[IMX27_CLK_UART2_IPG_GATE],
+-	&clk[IMX27_CLK_UART3_IPG_GATE],
+-	&clk[IMX27_CLK_UART4_IPG_GATE],
+-	&clk[IMX27_CLK_UART5_IPG_GATE],
+-	&clk[IMX27_CLK_UART6_IPG_GATE],
+-	NULL
+-};
+-
+ static void __init _mx27_clocks_init(unsigned long fref)
+ {
+ 	BUG_ON(!ccm);
+@@ -176,7 +165,7 @@ static void __init _mx27_clocks_init(unsigned long fref)
+ 
+ 	clk_prepare_enable(clk[IMX27_CLK_EMI_AHB_GATE]);
+ 
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(7);
+ 
+ 	imx_print_silicon_rev("i.MX27", mx27_revision());
+ }
+diff --git a/drivers/clk/imx/clk-imx35.c b/drivers/clk/imx/clk-imx35.c
+index c1df03665c09..0fe5ac210156 100644
+--- a/drivers/clk/imx/clk-imx35.c
++++ b/drivers/clk/imx/clk-imx35.c
+@@ -82,14 +82,6 @@ enum mx35_clks {
+ 
+ static struct clk *clk[clk_max];
+ 
+-static struct clk ** const uart_clks[] __initconst = {
+-	&clk[ipg],
+-	&clk[uart1_gate],
+-	&clk[uart2_gate],
+-	&clk[uart3_gate],
+-	NULL
+-};
+-
+ static void __init _mx35_clocks_init(void)
+ {
+ 	void __iomem *base;
+@@ -243,7 +235,7 @@ static void __init _mx35_clocks_init(void)
+ 	 */
+ 	clk_prepare_enable(clk[scc_gate]);
+ 
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(4);
+ 
+ 	imx_print_silicon_rev("i.MX35", mx35_revision());
+ }
+diff --git a/drivers/clk/imx/clk-imx5.c b/drivers/clk/imx/clk-imx5.c
+index 01e079b81026..e4493846454d 100644
+--- a/drivers/clk/imx/clk-imx5.c
++++ b/drivers/clk/imx/clk-imx5.c
+@@ -128,30 +128,6 @@ static const char *ieee1588_sels[] = { "pll3_sw", "pll4_sw", "dummy" /* usbphy2_
+ static struct clk *clk[IMX5_CLK_END];
+ static struct clk_onecell_data clk_data;
+ 
+-static struct clk ** const uart_clks_mx51[] __initconst = {
+-	&clk[IMX5_CLK_UART1_IPG_GATE],
+-	&clk[IMX5_CLK_UART1_PER_GATE],
+-	&clk[IMX5_CLK_UART2_IPG_GATE],
+-	&clk[IMX5_CLK_UART2_PER_GATE],
+-	&clk[IMX5_CLK_UART3_IPG_GATE],
+-	&clk[IMX5_CLK_UART3_PER_GATE],
+-	NULL
+-};
+-
+-static struct clk ** const uart_clks_mx50_mx53[] __initconst = {
+-	&clk[IMX5_CLK_UART1_IPG_GATE],
+-	&clk[IMX5_CLK_UART1_PER_GATE],
+-	&clk[IMX5_CLK_UART2_IPG_GATE],
+-	&clk[IMX5_CLK_UART2_PER_GATE],
+-	&clk[IMX5_CLK_UART3_IPG_GATE],
+-	&clk[IMX5_CLK_UART3_PER_GATE],
+-	&clk[IMX5_CLK_UART4_IPG_GATE],
+-	&clk[IMX5_CLK_UART4_PER_GATE],
+-	&clk[IMX5_CLK_UART5_IPG_GATE],
+-	&clk[IMX5_CLK_UART5_PER_GATE],
+-	NULL
+-};
+-
+ static void __init mx5_clocks_common_init(void __iomem *ccm_base)
+ {
+ 	clk[IMX5_CLK_DUMMY]		= imx_clk_fixed("dummy", 0);
+@@ -382,7 +358,7 @@ static void __init mx50_clocks_init(struct device_node *np)
+ 	r = clk_round_rate(clk[IMX5_CLK_USBOH3_PER_GATE], 54000000);
+ 	clk_set_rate(clk[IMX5_CLK_USBOH3_PER_GATE], r);
+ 
+-	imx_register_uart_clocks(uart_clks_mx50_mx53);
++	imx_register_uart_clocks(5);
+ }
+ CLK_OF_DECLARE(imx50_ccm, "fsl,imx50-ccm", mx50_clocks_init);
+ 
+@@ -488,7 +464,7 @@ static void __init mx51_clocks_init(struct device_node *np)
+ 	val |= 1 << 23;
+ 	writel(val, MXC_CCM_CLPCR);
+ 
+-	imx_register_uart_clocks(uart_clks_mx51);
++	imx_register_uart_clocks(3);
+ }
+ CLK_OF_DECLARE(imx51_ccm, "fsl,imx51-ccm", mx51_clocks_init);
+ 
+@@ -633,6 +609,6 @@ static void __init mx53_clocks_init(struct device_node *np)
+ 	r = clk_round_rate(clk[IMX5_CLK_USBOH3_PER_GATE], 54000000);
+ 	clk_set_rate(clk[IMX5_CLK_USBOH3_PER_GATE], r);
+ 
+-	imx_register_uart_clocks(uart_clks_mx50_mx53);
++	imx_register_uart_clocks(5);
+ }
+ CLK_OF_DECLARE(imx53_ccm, "fsl,imx53-ccm", mx53_clocks_init);
+diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
+index 521d6136d22c..496900de0b0b 100644
+--- a/drivers/clk/imx/clk-imx6q.c
++++ b/drivers/clk/imx/clk-imx6q.c
+@@ -140,13 +140,6 @@ static inline int clk_on_imx6dl(void)
+ 	return of_machine_is_compatible("fsl,imx6dl");
+ }
+ 
+-static const int uart_clk_ids[] __initconst = {
+-	IMX6QDL_CLK_UART_IPG,
+-	IMX6QDL_CLK_UART_SERIAL,
+-};
+-
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1] __initdata;
+-
+ static int ldb_di_sel_by_clock_id(int clock_id)
+ {
+ 	switch (clock_id) {
+@@ -440,7 +433,6 @@ static void __init imx6q_clocks_init(struct device_node *ccm_node)
+ 	struct device_node *np;
+ 	void __iomem *anatop_base, *base;
+ 	int ret;
+-	int i;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX6QDL_CLK_END), GFP_KERNEL);
+@@ -982,12 +974,6 @@ static void __init imx6q_clocks_init(struct device_node *ccm_node)
+ 			       hws[IMX6QDL_CLK_PLL3_USB_OTG]->clk);
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(1);
+ }
+ CLK_OF_DECLARE(imx6q, "fsl,imx6q-ccm", imx6q_clocks_init);
+diff --git a/drivers/clk/imx/clk-imx6sl.c b/drivers/clk/imx/clk-imx6sl.c
+index 29eab05c9068..277365970320 100644
+--- a/drivers/clk/imx/clk-imx6sl.c
++++ b/drivers/clk/imx/clk-imx6sl.c
+@@ -179,19 +179,11 @@ void imx6sl_set_wait_clk(bool enter)
+ 		imx6sl_enable_pll_arm(false);
+ }
+ 
+-static const int uart_clk_ids[] __initconst = {
+-	IMX6SL_CLK_UART,
+-	IMX6SL_CLK_UART_SERIAL,
+-};
+-
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1] __initdata;
+-
+ static void __init imx6sl_clocks_init(struct device_node *ccm_node)
+ {
+ 	struct device_node *np;
+ 	void __iomem *base;
+ 	int ret;
+-	int i;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX6SL_CLK_END), GFP_KERNEL);
+@@ -448,12 +440,6 @@ static void __init imx6sl_clocks_init(struct device_node *ccm_node)
+ 	clk_set_parent(hws[IMX6SL_CLK_LCDIF_AXI_SEL]->clk,
+ 		       hws[IMX6SL_CLK_PLL2_PFD2]->clk);
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(2);
+ }
+ CLK_OF_DECLARE(imx6sl, "fsl,imx6sl-ccm", imx6sl_clocks_init);
+diff --git a/drivers/clk/imx/clk-imx6sll.c b/drivers/clk/imx/clk-imx6sll.c
+index 8e8288bda4d0..31d777f30039 100644
+--- a/drivers/clk/imx/clk-imx6sll.c
++++ b/drivers/clk/imx/clk-imx6sll.c
+@@ -76,26 +76,10 @@ static u32 share_count_ssi1;
+ static u32 share_count_ssi2;
+ static u32 share_count_ssi3;
+ 
+-static const int uart_clk_ids[] __initconst = {
+-	IMX6SLL_CLK_UART1_IPG,
+-	IMX6SLL_CLK_UART1_SERIAL,
+-	IMX6SLL_CLK_UART2_IPG,
+-	IMX6SLL_CLK_UART2_SERIAL,
+-	IMX6SLL_CLK_UART3_IPG,
+-	IMX6SLL_CLK_UART3_SERIAL,
+-	IMX6SLL_CLK_UART4_IPG,
+-	IMX6SLL_CLK_UART4_SERIAL,
+-	IMX6SLL_CLK_UART5_IPG,
+-	IMX6SLL_CLK_UART5_SERIAL,
+-};
+-
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1] __initdata;
+-
+ static void __init imx6sll_clocks_init(struct device_node *ccm_node)
+ {
+ 	struct device_node *np;
+ 	void __iomem *base;
+-	int i;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX6SLL_CLK_END), GFP_KERNEL);
+@@ -356,13 +340,7 @@ static void __init imx6sll_clocks_init(struct device_node *ccm_node)
+ 
+ 	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_hw_data);
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(5);
+ 
+ 	/* Lower the AHB clock rate before changing the clock source. */
+ 	clk_set_rate(hws[IMX6SLL_CLK_AHB]->clk, 99000000);
+diff --git a/drivers/clk/imx/clk-imx6sx.c b/drivers/clk/imx/clk-imx6sx.c
+index 20dcce526d07..fc1bd23d4583 100644
+--- a/drivers/clk/imx/clk-imx6sx.c
++++ b/drivers/clk/imx/clk-imx6sx.c
+@@ -117,18 +117,10 @@ static u32 share_count_ssi3;
+ static u32 share_count_sai1;
+ static u32 share_count_sai2;
+ 
+-static const int uart_clk_ids[] __initconst = {
+-	IMX6SX_CLK_UART_IPG,
+-	IMX6SX_CLK_UART_SERIAL,
+-};
+-
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1] __initdata;
+-
+ static void __init imx6sx_clocks_init(struct device_node *ccm_node)
+ {
+ 	struct device_node *np;
+ 	void __iomem *base;
+-	int i;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX6SX_CLK_CLK_END), GFP_KERNEL);
+@@ -556,12 +548,6 @@ static void __init imx6sx_clocks_init(struct device_node *ccm_node)
+ 	clk_set_parent(hws[IMX6SX_CLK_QSPI1_SEL]->clk, hws[IMX6SX_CLK_PLL2_BUS]->clk);
+ 	clk_set_parent(hws[IMX6SX_CLK_QSPI2_SEL]->clk, hws[IMX6SX_CLK_PLL2_BUS]->clk);
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(2);
+ }
+ CLK_OF_DECLARE(imx6sx, "fsl,imx6sx-ccm", imx6sx_clocks_init);
+diff --git a/drivers/clk/imx/clk-imx7d.c b/drivers/clk/imx/clk-imx7d.c
+index 22d24a6a05e7..c4e0f1c07192 100644
+--- a/drivers/clk/imx/clk-imx7d.c
++++ b/drivers/clk/imx/clk-imx7d.c
+@@ -377,23 +377,10 @@ static const char *pll_video_bypass_sel[] = { "pll_video_main", "pll_video_main_
+ static struct clk_hw **hws;
+ static struct clk_hw_onecell_data *clk_hw_data;
+ 
+-static const int uart_clk_ids[] __initconst = {
+-	IMX7D_UART1_ROOT_CLK,
+-	IMX7D_UART2_ROOT_CLK,
+-	IMX7D_UART3_ROOT_CLK,
+-	IMX7D_UART4_ROOT_CLK,
+-	IMX7D_UART5_ROOT_CLK,
+-	IMX7D_UART6_ROOT_CLK,
+-	IMX7D_UART7_ROOT_CLK,
+-};
+-
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1] __initdata;
+-
+ static void __init imx7d_clocks_init(struct device_node *ccm_node)
+ {
+ 	struct device_node *np;
+ 	void __iomem *base;
+-	int i;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX7D_CLK_END), GFP_KERNEL);
+@@ -897,14 +884,7 @@ static void __init imx7d_clocks_init(struct device_node *ccm_node)
+ 	hws[IMX7D_USB1_MAIN_480M_CLK] = imx_clk_hw_fixed_factor("pll_usb1_main_clk", "osc", 20, 1);
+ 	hws[IMX7D_USB_MAIN_480M_CLK] = imx_clk_hw_fixed_factor("pll_usb_main_clk", "osc", 20, 1);
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(7);
+ 
+ }
+ CLK_OF_DECLARE(imx7d, "fsl,imx7d-ccm", imx7d_clocks_init);
+diff --git a/drivers/clk/imx/clk-imx7ulp.c b/drivers/clk/imx/clk-imx7ulp.c
+index 634c0b6636b0..779e09105da7 100644
+--- a/drivers/clk/imx/clk-imx7ulp.c
++++ b/drivers/clk/imx/clk-imx7ulp.c
+@@ -43,19 +43,6 @@ static const struct clk_div_table ulp_div_table[] = {
+ 	{ /* sentinel */ },
+ };
+ 
+-static const int pcc2_uart_clk_ids[] __initconst = {
+-	IMX7ULP_CLK_LPUART4,
+-	IMX7ULP_CLK_LPUART5,
+-};
+-
+-static const int pcc3_uart_clk_ids[] __initconst = {
+-	IMX7ULP_CLK_LPUART6,
+-	IMX7ULP_CLK_LPUART7,
+-};
+-
+-static struct clk **pcc2_uart_clks[ARRAY_SIZE(pcc2_uart_clk_ids) + 1] __initdata;
+-static struct clk **pcc3_uart_clks[ARRAY_SIZE(pcc3_uart_clk_ids) + 1] __initdata;
+-
+ static void __init imx7ulp_clk_scg1_init(struct device_node *np)
+ {
+ 	struct clk_hw_onecell_data *clk_data;
+@@ -150,7 +137,6 @@ static void __init imx7ulp_clk_pcc2_init(struct device_node *np)
+ 	struct clk_hw_onecell_data *clk_data;
+ 	struct clk_hw **hws;
+ 	void __iomem *base;
+-	int i;
+ 
+ 	clk_data = kzalloc(struct_size(clk_data, hws, IMX7ULP_CLK_PCC2_END),
+ 			   GFP_KERNEL);
+@@ -190,13 +176,7 @@ static void __init imx7ulp_clk_pcc2_init(struct device_node *np)
+ 
+ 	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_data);
+ 
+-	for (i = 0; i < ARRAY_SIZE(pcc2_uart_clk_ids); i++) {
+-		int index = pcc2_uart_clk_ids[i];
+-
+-		pcc2_uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(pcc2_uart_clks);
++	imx_register_uart_clocks(2);
+ }
+ CLK_OF_DECLARE(imx7ulp_clk_pcc2, "fsl,imx7ulp-pcc2", imx7ulp_clk_pcc2_init);
+ 
+@@ -205,7 +185,6 @@ static void __init imx7ulp_clk_pcc3_init(struct device_node *np)
+ 	struct clk_hw_onecell_data *clk_data;
+ 	struct clk_hw **hws;
+ 	void __iomem *base;
+-	int i;
+ 
+ 	clk_data = kzalloc(struct_size(clk_data, hws, IMX7ULP_CLK_PCC3_END),
+ 			   GFP_KERNEL);
+@@ -244,13 +223,7 @@ static void __init imx7ulp_clk_pcc3_init(struct device_node *np)
+ 
+ 	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_data);
+ 
+-	for (i = 0; i < ARRAY_SIZE(pcc3_uart_clk_ids); i++) {
+-		int index = pcc3_uart_clk_ids[i];
+-
+-		pcc3_uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(pcc3_uart_clks);
++	imx_register_uart_clocks(7);
+ }
+ CLK_OF_DECLARE(imx7ulp_clk_pcc3, "fsl,imx7ulp-pcc3", imx7ulp_clk_pcc3_init);
+ 
+diff --git a/drivers/clk/imx/clk-imx8mm.c b/drivers/clk/imx/clk-imx8mm.c
+index 6a01eec36dd0..f1919fafb124 100644
+--- a/drivers/clk/imx/clk-imx8mm.c
++++ b/drivers/clk/imx/clk-imx8mm.c
+@@ -296,20 +296,12 @@ static const char * const clkout_sels[] = {"audio_pll1_out", "audio_pll2_out", "
+ static struct clk_hw_onecell_data *clk_hw_data;
+ static struct clk_hw **hws;
+ 
+-static const int uart_clk_ids[] = {
+-	IMX8MM_CLK_UART1_ROOT,
+-	IMX8MM_CLK_UART2_ROOT,
+-	IMX8MM_CLK_UART3_ROOT,
+-	IMX8MM_CLK_UART4_ROOT,
+-};
+-static struct clk **uart_hws[ARRAY_SIZE(uart_clk_ids) + 1];
+-
+ static int imx8mm_clocks_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	void __iomem *base;
+-	int ret, i;
++	int ret;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX8MM_CLK_END), GFP_KERNEL);
+@@ -634,13 +626,7 @@ static int imx8mm_clocks_probe(struct platform_device *pdev)
+ 		goto unregister_hws;
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_hws[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_hws);
++	imx_register_uart_clocks(4);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/clk/imx/clk-imx8mn.c b/drivers/clk/imx/clk-imx8mn.c
+index 324c5fd0aa04..88f6630cd472 100644
+--- a/drivers/clk/imx/clk-imx8mn.c
++++ b/drivers/clk/imx/clk-imx8mn.c
+@@ -289,20 +289,12 @@ static const char * const clkout_sels[] = {"audio_pll1_out", "audio_pll2_out", "
+ static struct clk_hw_onecell_data *clk_hw_data;
+ static struct clk_hw **hws;
+ 
+-static const int uart_clk_ids[] = {
+-	IMX8MN_CLK_UART1_ROOT,
+-	IMX8MN_CLK_UART2_ROOT,
+-	IMX8MN_CLK_UART3_ROOT,
+-	IMX8MN_CLK_UART4_ROOT,
+-};
+-static struct clk **uart_hws[ARRAY_SIZE(uart_clk_ids) + 1];
+-
+ static int imx8mn_clocks_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	void __iomem *base;
+-	int ret, i;
++	int ret;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX8MN_CLK_END), GFP_KERNEL);
+@@ -585,13 +577,7 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
+ 		goto unregister_hws;
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_hws[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_hws);
++	imx_register_uart_clocks(4);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
+index 2f4e1d674e1c..3e6557e7d559 100644
+--- a/drivers/clk/imx/clk-imx8mp.c
++++ b/drivers/clk/imx/clk-imx8mp.c
+@@ -414,20 +414,11 @@ static const char * const imx8mp_dram_core_sels[] = {"dram_pll_out", "dram_alt_r
+ static struct clk_hw **hws;
+ static struct clk_hw_onecell_data *clk_hw_data;
+ 
+-static const int uart_clk_ids[] = {
+-	IMX8MP_CLK_UART1_ROOT,
+-	IMX8MP_CLK_UART2_ROOT,
+-	IMX8MP_CLK_UART3_ROOT,
+-	IMX8MP_CLK_UART4_ROOT,
+-};
+-static struct clk **uart_clks[ARRAY_SIZE(uart_clk_ids) + 1];
+-
+ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np;
+ 	void __iomem *anatop_base, *ccm_base;
+-	int i;
+ 
+ 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mp-anatop");
+ 	anatop_base = of_iomap(np, 0);
+@@ -737,13 +728,7 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 
+ 	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_hw_data);
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_clks[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_clks);
++	imx_register_uart_clocks(4);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
+index 4dd4ae9d022b..3e1a10d3f55c 100644
+--- a/drivers/clk/imx/clk-imx8mq.c
++++ b/drivers/clk/imx/clk-imx8mq.c
+@@ -281,20 +281,12 @@ static const char * const pllout_monitor_sels[] = {"osc_25m", "osc_27m", "dummy"
+ static struct clk_hw_onecell_data *clk_hw_data;
+ static struct clk_hw **hws;
+ 
+-static const int uart_clk_ids[] = {
+-	IMX8MQ_CLK_UART1_ROOT,
+-	IMX8MQ_CLK_UART2_ROOT,
+-	IMX8MQ_CLK_UART3_ROOT,
+-	IMX8MQ_CLK_UART4_ROOT,
+-};
+-static struct clk **uart_hws[ARRAY_SIZE(uart_clk_ids) + 1];
+-
+ static int imx8mq_clocks_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	void __iomem *base;
+-	int err, i;
++	int err;
+ 
+ 	clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+ 					  IMX8MQ_CLK_END), GFP_KERNEL);
+@@ -629,13 +621,7 @@ static int imx8mq_clocks_probe(struct platform_device *pdev)
+ 		goto unregister_hws;
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(uart_clk_ids); i++) {
+-		int index = uart_clk_ids[i];
+-
+-		uart_hws[i] = &hws[index]->clk;
+-	}
+-
+-	imx_register_uart_clocks(uart_hws);
++	imx_register_uart_clocks(4);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
+index 47882c51cb85..35e41b9a4e34 100644
+--- a/drivers/clk/imx/clk.c
++++ b/drivers/clk/imx/clk.c
+@@ -147,8 +147,10 @@ void imx_cscmr1_fixup(u32 *val)
+ }
+ 
+ #ifndef MODULE
+-static int imx_keep_uart_clocks;
+-static struct clk ** const *imx_uart_clocks;
++
++static bool imx_keep_uart_clocks;
++static int imx_enabled_uart_clocks;
++static struct clk **imx_uart_clocks;
+ 
+ static int __init imx_keep_uart_clocks_param(char *str)
+ {
+@@ -161,24 +163,45 @@ __setup_param("earlycon", imx_keep_uart_earlycon,
+ __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
+ 	      imx_keep_uart_clocks_param, 0);
+ 
+-void imx_register_uart_clocks(struct clk ** const clks[])
++void imx_register_uart_clocks(unsigned int clk_count)
+ {
++	imx_enabled_uart_clocks = 0;
++
++/* i.MX boards use device trees now.  For build tests without CONFIG_OF, do nothing */
++#ifdef CONFIG_OF
+ 	if (imx_keep_uart_clocks) {
+ 		int i;
+ 
+-		imx_uart_clocks = clks;
+-		for (i = 0; imx_uart_clocks[i]; i++)
+-			clk_prepare_enable(*imx_uart_clocks[i]);
++		imx_uart_clocks = kcalloc(clk_count, sizeof(struct clk *), GFP_KERNEL);
++
++		if (!of_stdout)
++			return;
++
++		for (i = 0; i < clk_count; i++) {
++			imx_uart_clocks[imx_enabled_uart_clocks] = of_clk_get(of_stdout, i);
++
++			/* Stop if there are no more of_stdout references */
++			if (IS_ERR(imx_uart_clocks[imx_enabled_uart_clocks]))
++				return;
++
++			/* Only enable the clock if it's not NULL */
++			if (imx_uart_clocks[imx_enabled_uart_clocks])
++				clk_prepare_enable(imx_uart_clocks[imx_enabled_uart_clocks++]);
++		}
+ 	}
++#endif
+ }
+ 
+ static int __init imx_clk_disable_uart(void)
+ {
+-	if (imx_keep_uart_clocks && imx_uart_clocks) {
++	if (imx_keep_uart_clocks && imx_enabled_uart_clocks) {
+ 		int i;
+ 
+-		for (i = 0; imx_uart_clocks[i]; i++)
+-			clk_disable_unprepare(*imx_uart_clocks[i]);
++		for (i = 0; i < imx_enabled_uart_clocks; i++) {
++			clk_disable_unprepare(imx_uart_clocks[i]);
++			clk_put(imx_uart_clocks[i]);
++		};
++		kfree(imx_uart_clocks);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
+index 4f04c8287286..7571603bee23 100644
+--- a/drivers/clk/imx/clk.h
++++ b/drivers/clk/imx/clk.h
+@@ -11,9 +11,9 @@ extern spinlock_t imx_ccm_lock;
+ void imx_check_clocks(struct clk *clks[], unsigned int count);
+ void imx_check_clk_hws(struct clk_hw *clks[], unsigned int count);
+ #ifndef MODULE
+-void imx_register_uart_clocks(struct clk ** const clks[]);
++void imx_register_uart_clocks(unsigned int clk_count);
+ #else
+-static inline void imx_register_uart_clocks(struct clk ** const clks[])
++static inline void imx_register_uart_clocks(unsigned int clk_count)
+ {
+ }
+ #endif
 -- 
-2.27.0
+2.25.1
 
