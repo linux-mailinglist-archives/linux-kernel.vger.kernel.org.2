@@ -2,202 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079EC33A17F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A3E33A185
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234848AbhCMVqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 16:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
+        id S234855AbhCMVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 16:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234730AbhCMVqP (ORCPT
+        with ESMTP id S234796AbhCMVyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 16:46:15 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BDBC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 13:46:14 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id n10so18130162pgl.10
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 13:46:14 -0800 (PST)
+        Sat, 13 Mar 2021 16:54:19 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2C8C061574;
+        Sat, 13 Mar 2021 13:54:14 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id m9so29273624ybk.8;
+        Sat, 13 Mar 2021 13:54:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=Cx4a3wzdq9mvZbTnRmeobN3xjQT5VBegMUzWIc1pP08=;
-        b=ZxpJvwkRps0vZWHXIXDzrrCfXV9mY0XYbADplxOAEOcMpL7topb6hvSyMt3KocTXac
-         KBHM6rMMtIqbhc89dYKMhTcEZ7IGcqVNl7FwaZarjT0qdGmHh0OvPVTp5pXsrfpHmAGM
-         mClqxnaCWm8KZjJriSuLfnmeKGa7RieEapq4g=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GhwxGEkw8ytL79APFDFDPPxm81DmFU7dhHEQAY8fvks=;
+        b=J6v4X2zh9zr/+JhZYu1TO4VzEhA1YsHaSBACt0Sc0eVzhxQLmhXzcEky+Yq2okFras
+         3kezJaiqHbGQ9+JnLOOV1yylpNyEBytWs2Wlu5ba8BPh4Jgb3wYLWSDfig/efUSxPVdP
+         pY2XlJ+iSz8uErGCVXYSYIbiXjSpODZoh1ImEC8NDLxekhiFdLQEjSYKk82ufvWAfXtu
+         GRwnP11EBBdkh+SfdeES9EbW2HsMpV9QULfYwIyLNFoocT7AtCOL7m/D2egI73JDOoAg
+         h6xC+KK33ULwBTPvKfQf9fSSUN1pxESIUuI7ZrP6GciuxuNFcgcw/bu1RuX97/k17cWp
+         AqSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=Cx4a3wzdq9mvZbTnRmeobN3xjQT5VBegMUzWIc1pP08=;
-        b=mjhFBseoW7gWBXZudRSp8nok5lXpw+hAiPkPkLoLIPg356hd7qhBWS/PPSM8UKrCBU
-         d7UwcYX5YJ2L1aViIEpDDf5L1XU2IQ2vr8H03eQs6nkKLLu8tU2lYozDBv0Ycri6KHeC
-         4hgAI3mx+/E7uSYCbCAVilgrBcqOyxVz43WubjPkfLXNCPSq9RqXnD3wl2mLum/Am7GN
-         /CKnlbnGZjKAeLMN3NpwOKjf21pnEVS8pteQUYHf84kDNnbsWR2bbAQu68VD1S8N34is
-         P00aLXJh+vJ4kHVhDuRCjWzlNeZSNggpwIRkcVJFqDGbKHKQCN5N23R5lBrLjzxBACc2
-         4bSw==
-X-Gm-Message-State: AOAM530IKZiPYT55MDs6kpvNMDcuYrom6TPUP43fdsmFdZyKxgyqtPBq
-        5gLDfMasKEnLgLd+CPtrUP0fxg==
-X-Google-Smtp-Source: ABdhPJws5FwB+v+G5AwL2SmI7GrxBXVVuNyAd7F+xhxIRV8vGS4P+sDYmC4+jRhO9E9gKcJflhLXQA==
-X-Received: by 2002:a62:7bc4:0:b029:1f1:58ea:4010 with SMTP id w187-20020a627bc40000b02901f158ea4010mr4290400pfc.70.1615671974162;
-        Sat, 13 Mar 2021 13:46:14 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:e859:c7d5:7d7b:5ed8])
-        by smtp.gmail.com with ESMTPSA id g12sm9448366pfh.153.2021.03.13.13.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 13:46:13 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GhwxGEkw8ytL79APFDFDPPxm81DmFU7dhHEQAY8fvks=;
+        b=nXuP6RwCrDwemSoG2Q63tpjdq8MguGN4w+P3rD5G7PyPOEgoy1Q4cN9t8HF3XjCH0E
+         cokkUWNT+yYmx2lfM0l+P/bUxp+BZRloACrIiL3pCtFwGVh+AC43oeXQU5xOnoMulXnu
+         Wt2c7LagOxOz46SpUlyNiJB55S5//AfvjLyosSprt16Mp0zY2hTcIXrjEPEtL6/bhSjU
+         q98lI4mdpDfBEbC76VudGkMoh1mGzregjnnV2ca5hq7Jg8cCce79kUSEQBk+CZuuRtAk
+         lEJc6WtlMPbzIUDpx6qtOb2L2GfwN0q61/BKKW0Kzbi6nhDXNqL9WWfFD2nFiQnNPHtK
+         SDRg==
+X-Gm-Message-State: AOAM532bkT0eAQEDuA9Is+WWYAH+4fLtVgBTHSStDEemuBUaWpUo2G0e
+        nXIJX6MAvsHHwwjaEfn6AgpLjQcEVamFB5Rzdjg=
+X-Google-Smtp-Source: ABdhPJz1plNkpafFFbtDcDfYgLN5d/wG6nGryBoO1b+5biUSDjCo7b2e1ZYH0okZE90OY9uUx6k/i9EhP2TNXun5m3A=
+X-Received: by 2002:a25:ca88:: with SMTP id a130mr27494740ybg.414.1615672454155;
+ Sat, 13 Mar 2021 13:54:14 -0800 (PST)
 MIME-Version: 1.0
+References: <87tupl30kl.fsf@igel.home> <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
+ <87y2euu6lf.fsf@igel.home>
+In-Reply-To: <87y2euu6lf.fsf@igel.home>
+From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
+Date:   Sat, 13 Mar 2021 22:54:02 +0100
+Message-ID: <CANBLGcyteTgQ2BgyesrTycpVqpPeYaiUCTEEp=KmPB0TPqK_LQ@mail.gmail.com>
+Subject: Re: macb broken on HiFive Unleashed
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Claudiu.Beznea@microchip.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        ckeepax@opensource.cirrus.com, andrew@lunn.ch,
+        Willy Tarreau <w@1wt.eu>,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>, daniel@0x0f.com,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        pthombar@cadence.com, Network Development <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1615269111-25559-7-git-send-email-sibis@codeaurora.org>
-References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org> <1615269111-25559-7-git-send-email-sibis@codeaurora.org>
-Subject: Re: [PATCH 6/6] arm64: dts: qcom: sc7280: Add nodes to boot WPSS
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, mani@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sibi Sankar <sibis@codeaurora.org>
-To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
-        p.zabel@pengutronix.de, robh+dt@kernel.org
-Date:   Sat, 13 Mar 2021 13:46:12 -0800
-Message-ID: <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-03-08 21:51:51)
-> Add miscellaneous nodes to boot the Wireless Processor Subsystem on
+Hi Andreas
 
-Maybe add (WPSS) after the name so we know they're related.
+On Wed, 10 Mar 2021 at 20:55, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> On M=C3=A4r 09 2021, Claudiu.Beznea@microchip.com wrote:
+> > I don't have a SiFive HiFive Unleashed to investigate this. Can you che=
+ck
+> > if reverting commits on macb driver b/w 5.10 and 5.11 solves your issue=
+s:
+> >
+> > git log --oneline v5.10..v5.11 -- drivers/net/ethernet/cadence/
+> > 1d0d561ad1d7 net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG flag
+> > 1d608d2e0d51 Revert "macb: support the two tx descriptors on at91rm9200=
+"
+> > 700d566e8171 net: macb: add support for sama7g5 emac interface
+> > ec771de654e4 net: macb: add support for sama7g5 gem interface
+> > f4de93f03ed8 net: macb: unprepare clocks in case of failure
+> > 38493da4e6a8 net: macb: add function to disable all macb clocks
+> > daafa1d33cc9 net: macb: add capability to not set the clock rate
+> > edac63861db7 net: macb: add userio bits as platform configuration
+> > 9e6cad531c9d net: macb: Fix passing zero to 'PTR_ERR'
+> > 0012eeb370f8 net: macb: fix NULL dereference due to no pcs_config metho=
+d
+> > e4e143e26ce8 net: macb: add support for high speed interface
+>
+> Unfortunately, that didn't help.
 
-> SC7280 SoCs.
->=20
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->=20
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=3D438217
-> Depends on ipcc dt node enablement from ^^=20
->=20
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 143 +++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 143 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index 18637c369c1d..4f03c468df51 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -244,12 +251,131 @@
->                 reg =3D <0 0x80000000 0 0>;
->         };
-> =20
-> +       tcsr_mutex: hwlock {
-> +               compatible =3D "qcom,tcsr-mutex";
-> +               syscon =3D <&tcsr_mutex_regs 0 0x1000>;
-> +               #hwlock-cells =3D <1>;
-> +       };
+Sorry, for being late to test this, but I just compiled and booted
+5.11.6 and ethernet works just fine for me:
+https://esmil.dk/hfu-5.11.6.txt
 
-Is this node in the right place? I think the node above it is 'memory'?
-In which case 'hwlock' comes before 'memory' alphabetically.
+As you can see I haven't updated OpenSBI or u-boot in a while, don't
+know if that makes a difference. You can fetch the config is used
+here:
+https://esmil.dk/hfu-5.11.6.config
 
-> +
-> +       smem {
-> +               compatible =3D "qcom,smem";
-> +               memory-region =3D <&smem_mem>;
-> +               hwlocks =3D <&tcsr_mutex 3>;
-> +       };
-> +
->         firmware {
->                 scm {
->                         compatible =3D "qcom,scm-sc7280", "qcom,scm";
->                 };
->         };
-> =20
-> +       smp2p-adsp {
-> +               compatible =3D "qcom,smp2p";
-> +               qcom,smem =3D <443>, <429>;
-> +               interrupts-extended =3D <&ipcc IPCC_CLIENT_LPASS
-> +                                            IPCC_MPROC_SIGNAL_SMP2P
-> +                                            IRQ_TYPE_EDGE_RISING>;
-> +               mboxes =3D <&ipcc IPCC_CLIENT_LPASS
-> +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> +
-> +               qcom,local-pid =3D <0>;
-> +               qcom,remote-pid =3D <2>;
-> +
-> +               adsp_smp2p_out: master-kernel {
-> +                       qcom,entry-name =3D "master-kernel";
-> +                       #qcom,smem-state-cells =3D <1>;
-> +               };
-> +
-> +               adsp_smp2p_in: slave-kernel {
-> +                       qcom,entry-name =3D "slave-kernel";
-> +                       interrupt-controller;
-> +                       #interrupt-cells =3D <2>;
-> +               };
-> +       };
-> +
-> +       smp2p-cdsp {
-> +               compatible =3D "qcom,smp2p";
-> +               qcom,smem =3D <94>, <432>;
-> +               interrupts-extended =3D <&ipcc IPCC_CLIENT_CDSP
-> +                                            IPCC_MPROC_SIGNAL_SMP2P
-> +                                            IRQ_TYPE_EDGE_RISING>;
-> +               mboxes =3D <&ipcc IPCC_CLIENT_CDSP
-> +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> +
-> +               qcom,local-pid =3D <0>;
-> +               qcom,remote-pid =3D <5>;
-> +
-> +               cdsp_smp2p_out: master-kernel {
-> +                       qcom,entry-name =3D "master-kernel";
-> +                       #qcom,smem-state-cells =3D <1>;
-> +               };
-> +
-> +               cdsp_smp2p_in: slave-kernel {
-> +                       qcom,entry-name =3D "slave-kernel";
-> +                       interrupt-controller;
-> +                       #interrupt-cells =3D <2>;
-> +               };
-> +       };
-> +
-> +       smp2p-mpss {
-> +               compatible =3D "qcom,smp2p";
-> +               qcom,smem =3D <435>, <428>;
-> +               interrupts-extended =3D <&ipcc IPCC_CLIENT_MPSS
-> +                                            IPCC_MPROC_SIGNAL_SMP2P
-> +                                            IRQ_TYPE_EDGE_RISING>;
-> +               mboxes =3D <&ipcc IPCC_CLIENT_MPSS
-> +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> +
-> +               qcom,local-pid =3D <0>;
-> +               qcom,remote-pid =3D <1>;
-> +
-> +               modem_smp2p_out: master-kernel {
-> +                       qcom,entry-name =3D "master-kernel";
-> +                       #qcom,smem-state-cells =3D <1>;
-> +               };
-> +
-> +               modem_smp2p_in: slave-kernel {
-> +                       qcom,entry-name =3D "slave-kernel";
-
-Do these names need to have 'master' and 'slave' in them? We're trying
-to avoid these terms. See Documentation/process/coding-style.rst Section
-4 naming.
-
-> +                       interrupt-controller;
-> +                       #interrupt-cells =3D <2>;
-> +               };
-> +
-> +               ipa_smp2p_out: ipa-ap-to-modem {
-> +                       qcom,entry-name =3D "ipa";
-> +                       #qcom,smem-state-cells =3D <1>;
-> +               };
-> +
-> +               ipa_smp2p_in: ipa-modem-to-ap {
-> +                       qcom,entry-name =3D "ipa";
-> +                       interrupt-controller;
-> +                       #interrupt-cells =3D <2>;
-> +               };
-> +       };
-> +
+/Emil
