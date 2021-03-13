@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537EE33A1A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 23:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D79F33A1A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 23:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbhCMW26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 17:28:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        id S234890AbhCMWag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 17:30:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhCMW2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 17:28:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B439E64EC9;
-        Sat, 13 Mar 2021 22:28:46 +0000 (UTC)
+        id S232974AbhCMWaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 17:30:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D312964ECE;
+        Sat, 13 Mar 2021 22:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615674526;
-        bh=hkGtcFlmjgJ9aLvEP89qMThzrWX8g5ulPeS+tirCwK0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=NGkZcSfYD0QU1glfvKhxLqAtzWckGUH2pSN0IeCYfb6qHU8j0RK1PLm0bODtQViDa
-         4/t9M0CXMU9G72nWYnHm4wdF9fr51x7yYjG0q5FxS97SZEDy363YEpdtKYAXPg5wxv
-         T1wLomGfogUqUDt7cfjhdQ5k3GpD9ywywQF+D76CSyQNqA3S6SBhHxUtN0ioNnK0Ih
-         Kp3aLFEvNfNLAAv/ujkore9TXPLFOyWk+IpKGZhTt+ci6DJ+J8sAMJhT8vLY/xLIm9
-         F1jRuPqh3ttRT9exab7gTkv/E95Y0uiLm/x23QSUaFgnwlf4m9ClI65h9XbocCtLHq
-         KDWIQzD1VN3tA==
+        s=k20201202; t=1615674607;
+        bh=AoRl5PN34oZXShy+dJzPxdTQCQvlXfS0glTpi1y+XI8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OUMpN4qOwMxPrvIXwN9mOlVuu3D5OpyQKj//beQj5QQfwMVFeo0QKeN/bGsg8VNIm
+         8ZohVHJLqSVHpZ9dicSbPyC2l1o3UoYcZpK+ynaxjEl2d0w5VVDm82ddKXJQqsptbJ
+         rBGKqmESANtmNre0trsOt0GuW0fKimpq1UPudh9lNSlTA9OVwMWFBhOD/1rYTaCZPk
+         54Grx+vVaTfzrRCBp+fIMH6hUcz7bQSmBl8U5cUE/bko/AAmpOen2BPJD9rcQ+LjHI
+         Lkv4IWUOOJsGgmmrMeDYkApNDV1B3b3FADV1MktsItmBv1b1WXvrKNrf9cwNQICha9
+         NoKWxlzNJ2p+g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C5E6660971;
+        Sat, 13 Mar 2021 22:30:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210307170742.70949-2-paul@crapouillou.net>
-References: <20210307170742.70949-1-paul@crapouillou.net> <20210307170742.70949-2-paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] clk: Add clk_get_first_to_set_rate
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     od@zcrc.me, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Sat, 13 Mar 2021 14:28:45 -0800
-Message-ID: <161567452539.1478170.2985873696192051312@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: ipa: terminate message handler arrays
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161567460780.27846.16946733515989586689.git-patchwork-notify@kernel.org>
+Date:   Sat, 13 Mar 2021 22:30:07 +0000
+References: <20210312151249.481395-1-elder@linaro.org>
+In-Reply-To: <20210312151249.481395-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, sujitka@chromium.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Paul Cercueil (2021-03-07 09:07:41)
-> The purpose of this function is to be used along with the notifier
-> mechanism.
->=20
-> When a parent clock can see its rate externally changed at any moment,
-> and a driver needs a specific clock rate to function, it can register a
-> notifier on the parent clock, and call clk_set_rate() on the base clock
-> to adjust its frequency according to the new parent clock.
+Hello:
 
-Can the driver use the rate locking mechanism to get a certain rate
-instead of registering for notifiers and trying to react to changes?
+This patch was applied to netdev/net.git (refs/heads/master):
 
->=20
-> This works fine, until the base clock has the CLK_SET_RATE_PARENT flag
-> set. In that case, calling clk_set_rate() on the base clock will call
-> clk_set_rate() on the parent clock, which will trigger the notifier
-> again, and we're in a loop.
->=20
-> For that reason, we need to register the notifier on the parent clock of
-> the first ancestor of the base clock that will effectively modify its
-> rate when clk_set_rate() is called, which we can now obtain with
-> clk_get_first_to_set_rate().
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+On Fri, 12 Mar 2021 09:12:48 -0600 you wrote:
+> When a QMI handle is initialized, an array of message handler
+> structures is provided, defining how any received message should
+> be handled based on its type and message ID.  The QMI core code
+> traverses this array when a message arrives and calls the function
+> associated with the (type, msg_id) found in the array.
+> 
+> The array is supposed to be terminated with an empty (all zero)
+> entry though.  Without it, an unsupported message will cause
+> the QMI core code to go past the end of the array.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: ipa: terminate message handler arrays
+    https://git.kernel.org/netdev/net/c/3a9ef3e11c5d
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
