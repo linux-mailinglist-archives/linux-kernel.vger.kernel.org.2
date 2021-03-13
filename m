@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C3F339CB1
+	by mail.lfdr.de (Postfix) with ESMTP id CCA7A339CB3
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhCMH6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        id S233489AbhCMH6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbhCMH6F (ORCPT
+        with ESMTP id S232702AbhCMH6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:58:05 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF963C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:04 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id a16so3377560qtw.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:04 -0800 (PST)
+        Sat, 13 Mar 2021 02:58:06 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2FEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:06 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id j4so31727869ybt.23
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=9FOrNXENvEBq+xjcXdvWYV76Tj/52PeZfpdHZpBdeTw=;
-        b=CZNFSLn1Vr+7g91u2WdSPY2RASOoMeGVnEu8XS9ogwps7Gq+7F5umE3fWsyowJpBWD
-         /BpSgazEV0uTx/142ccxmLjj6Tc5kR7KGsb79Ptj4azaGNuJBT032A7MXAqita6Xkryl
-         6IanFkwVS4tC+SsZAZtk+kuQzdp1pO5Pnx+cXwdQzEVQmCkWjuUnjKzoEPGf4IlnkcFb
-         QOa5YU3bEwcfmAFIwkc2tWsdZ2h8rKKycxzT/zHBKI265GiGZGNofgaHIdU33DduoJGc
-         Q3y72dvencUMJG5nccrm3sqMC+9s98wb5AiyP7gwQH8cNu/oUBPDF/k1zMnv1QbL0y4q
-         Wkmw==
+        bh=sM28HXat3Ro78N+fdELj5tA2TTORYcmSJRB7y0xn668=;
+        b=TkMSfULPVVqqEs8nJoS183e8mdw8yepLBTDn2eNINUqggav0COpVRzISc3zd89NvN9
+         G1/R3rFQNbXB4Mc0QhWaGTD1Fq53asLndQ1E2i8CSZ95KHVj8MUNkswp9uk2yDDtfErk
+         Sbw+4/WN0WzNqVfegG6JQMHiPP9iXEqGFYVgSZLK8flNYafDsz7FgT4K+/4AxxZLFwj6
+         mhv5FnKYJxQDSuEX1b3S54OYObhuyWJnGpPGLfPwfJ/quLWGTNO+ZIAeb5KMAmBdnEKV
+         rF1QTgCoPPMsWsShNKe8BsfaSKCMVGiSbi90ZFx8J0HHcn4GpbXrkYUuLSCcm0F4KYI7
+         fQQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=9FOrNXENvEBq+xjcXdvWYV76Tj/52PeZfpdHZpBdeTw=;
-        b=dwfL2qqtOLyHknmJLTbNquIIE99M3co4RRcjM8ZHW7E3b22r0qS7/uSdIuLxhwPvQA
-         Y3LL2jZN2S3rNEY31iqcQo0XPmDjtQwb13jd9vmVGL+LLS5tszC4uUapyiV0oPCH5uwL
-         smIUxO+PPvwuZT1NgqDpJ05pyAL6HNc5tjDAhFLsgZFN/eS2938P25wiN4+HDX1vPlLc
-         PXD85IpbqplkrTukFj4waHLj2xp8v/FPA9XzbBiYpaKEr1bL5w6oyKCxl6mnhZr0A9h6
-         m3QW2oQAPQpKG6YqSR4gB8S9wvQ5RcQOj/4jcVgdKH2lIq48/Tc9tYuJNF3HuISISSMR
-         K2Aw==
-X-Gm-Message-State: AOAM530QAe48ahNQ/TdZi8OsNzl8PRShs8X4B4mC6ejSQSSJgG9mU0dS
-        C8+Z0ZLOLiEDu/n5izcyhgbt0bjgPuM=
-X-Google-Smtp-Source: ABdhPJx3v9fo9fGIto8kHzW5LTGjVA6UTKRtTeuo4NwnDLlQop9mIBVZK8pHZLGtADbIHe5kSQ6HeS7hVrU=
+        bh=sM28HXat3Ro78N+fdELj5tA2TTORYcmSJRB7y0xn668=;
+        b=RiLWz/T/zcexV2Bsbw7YiZb7BINvMGTgl79XdA6B/OHzniNtpaj8nGzPvt6kerrgat
+         ur0TSQPmxqyehHvbKNQ7mbs/PTvniAuwd45+Ub0Vv+9NgoF9uTsNfAK7Vd4jQHOWOvhm
+         m1E6fZ25eW7KaMDTCBmRrCvIXIblvOe8PuRRsZqiT991bZ5mnSFynpVrpRLetwouPyGk
+         pSnxWX8BcM/e6hZIrC3KPP2PeXLt4ehMvZ9h9fIeH0DezONgDMKpjc0TdLhdm0Z+EAPP
+         gLoBDsqcG45NgWLNP2KcFrcDXtjwD+f9JAiMZvrNFb7RI7F78RYvzjAuegAab8YW/u+o
+         Nkzg==
+X-Gm-Message-State: AOAM530brY8KWy4SQHMkv1r6LKzek0Cq4xuuj7kcDTW0m3zhQz3OLAJt
+        GTHrB+1mfPD6eAMjZFoSYPQ7AwnDTeo=
+X-Google-Smtp-Source: ABdhPJzZYSt4fmXD7VdJ6T+CnbKC2/TjZT+i4G4gEva1Omiq/qzC/4JrVYLGPq2Q22anUOeAEZWsql+skQ8=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:a0c:cb0c:: with SMTP id o12mr15467752qvk.54.1615622284101;
- Fri, 12 Mar 2021 23:58:04 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:39 -0700
+ (user=yuzhao job=sendgmr) by 2002:a25:2308:: with SMTP id j8mr24384456ybj.474.1615622285438;
+ Fri, 12 Mar 2021 23:58:05 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:40 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-7-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-8-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 06/14] mm, x86: support the access bit on non-leaf PMD entries
+Subject: [PATCH v1 07/14] mm/pagewalk.c: add pud_entry_post() for post-order traversals
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -73,116 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some architectures support the accessed bit on non-leaf PMD entries
-(parents) in addition to leaf PTE entries (children) where pages are
-mapped, e.g., x86_64 sets the accessed bit on a parent when using it
-as part of linear-address translation [1]. Page table walkers who are
-interested in the accessed bit on children can take advantage of this:
-they do not need to search the children when the accessed bit is not
-set on a parent, given that they have previously cleared the accessed
-bit on this parent in addition to its children.
-
-[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
-     Volume 3 (October 2019), section 4.8
+Add a new callback pud_entry_post() to struct mm_walk_ops so that page
+table walkers can visit the non-leaf PMD entries of a PUD entry after
+they have visited with the leaf PTE entries. This allows page table
+walkers who clear the accessed bit to take advantage of the last
+commit, in a similar way walk_pte_range() works for the PTE entries of
+a PMD entry: they only need to take PTL once to search all the child
+entries of a parent entry.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- arch/Kconfig                   | 8 ++++++++
- arch/x86/Kconfig               | 1 +
- arch/x86/include/asm/pgtable.h | 2 +-
- arch/x86/mm/pgtable.c          | 5 ++++-
- include/linux/pgtable.h        | 4 ++--
- 5 files changed, 16 insertions(+), 4 deletions(-)
+ include/linux/pagewalk.h | 4 ++++
+ mm/pagewalk.c            | 5 +++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 2bb30673d8e6..137446d17732 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -783,6 +783,14 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
- config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- 	bool
- 
-+config HAVE_ARCH_PARENT_PMD_YOUNG
-+	bool
-+	help
-+	  Architectures that select this are able to set the accessed bit on
-+	  non-leaf PMD entries in addition to leaf PTE entries where pages are
-+	  mapped. For them, page table walkers that clear the accessed bit may
-+	  stop at non-leaf PMD entries when they do not see the accessed bit.
+diff --git a/include/linux/pagewalk.h b/include/linux/pagewalk.h
+index b1cb6b753abb..2b68ae9d27d3 100644
+--- a/include/linux/pagewalk.h
++++ b/include/linux/pagewalk.h
+@@ -11,6 +11,8 @@ struct mm_walk;
+  * @pgd_entry:		if set, called for each non-empty PGD (top-level) entry
+  * @p4d_entry:		if set, called for each non-empty P4D entry
+  * @pud_entry:		if set, called for each non-empty PUD entry
++ * @pud_entry_post:	if set, called for each non-empty PUD entry after
++ *			pmd_entry is called, for post-order traversal.
+  * @pmd_entry:		if set, called for each non-empty PMD entry
+  *			this handler is required to be able to handle
+  *			pmd_trans_huge() pmds.  They may simply choose to
+@@ -41,6 +43,8 @@ struct mm_walk_ops {
+ 			 unsigned long next, struct mm_walk *walk);
+ 	int (*pud_entry)(pud_t *pud, unsigned long addr,
+ 			 unsigned long next, struct mm_walk *walk);
++	int (*pud_entry_post)(pud_t *pud, unsigned long addr,
++			      unsigned long next, struct mm_walk *walk);
+ 	int (*pmd_entry)(pmd_t *pmd, unsigned long addr,
+ 			 unsigned long next, struct mm_walk *walk);
+ 	int (*pte_entry)(pte_t *pte, unsigned long addr,
+diff --git a/mm/pagewalk.c b/mm/pagewalk.c
+index e81640d9f177..8ed1533f7eda 100644
+--- a/mm/pagewalk.c
++++ b/mm/pagewalk.c
+@@ -160,6 +160,11 @@ static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+ 		err = walk_pmd_range(pud, addr, next, walk);
+ 		if (err)
+ 			break;
 +
- config HAVE_ARCH_HUGE_VMAP
- 	bool
++		if (ops->pud_entry_post)
++			err = ops->pud_entry_post(pud, addr, next, walk);
++		if (err)
++			break;
+ 	} while (pud++, addr = next, addr != end);
  
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..b5972eb82337 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -163,6 +163,7 @@ config X86
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
-+	select HAVE_ARCH_PARENT_PMD_YOUNG	if X86_64
- 	select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
- 	select HAVE_ARCH_VMAP_STACK		if X86_64
- 	select HAVE_ARCH_WITHIN_STACK_FRAMES
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index a02c67291cfc..a6b5cfe1fc5a 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -846,7 +846,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- 
- static inline int pmd_bad(pmd_t pmd)
- {
--	return (pmd_flags(pmd) & ~_PAGE_USER) != _KERNPG_TABLE;
-+	return ((pmd_flags(pmd) | _PAGE_ACCESSED) & ~_PAGE_USER) != _KERNPG_TABLE;
- }
- 
- static inline unsigned long pages_to_mb(unsigned long npg)
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index f6a9e2e36642..1c27e6f43f80 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -550,7 +550,7 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
- 	return ret;
- }
- 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
- int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 			      unsigned long addr, pmd_t *pmdp)
- {
-@@ -562,6 +562,9 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 
- 	return ret;
- }
-+#endif
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- int pudp_test_and_clear_young(struct vm_area_struct *vma,
- 			      unsigned long addr, pud_t *pudp)
- {
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 5e772392a379..08dd9b8c055a 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -193,7 +193,7 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
- #endif
- 
- #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
- static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 					    unsigned long address,
- 					    pmd_t *pmdp)
-@@ -214,7 +214,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 	BUILD_BUG();
- 	return 0;
- }
--#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG */
- #endif
- 
- #ifndef __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+ 	return err;
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
