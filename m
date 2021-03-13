@@ -2,112 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D4F339ABC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA685339ADB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhCMBMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 20:12:23 -0500
-Received: from mga17.intel.com ([192.55.52.151]:65381 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhCMBLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 20:11:44 -0500
-IronPort-SDR: SLQ2Cy+O+OklBzieis2EPOEG8Itwno8ZUflYMZyKVMMiK8iQIse5/qiYHWvAHVyyWvkdM+AbxK
- IN6/BRbFUEzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="168827949"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="168827949"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 17:11:44 -0800
-IronPort-SDR: bZDopp5QSiwmzl14HiXGazeBP95hvZGyecn/3xybc+4LUf3V8ZqziUG872GFAPi/sHMasPai8G
- RNqaHBPM0URA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="448792677"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga001.jf.intel.com with ESMTP; 12 Mar 2021 17:11:43 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 17:11:43 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 17:11:42 -0800
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
- Fri, 12 Mar 2021 17:11:42 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     "lyl2019@mail.ustc.edu.cn" <lyl2019@mail.ustc.edu.cn>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: RE: [PATCH] infiniband/i40iw: Fix a use after free in
- i40iw_cm_event_handler
-Thread-Topic: RE: [PATCH] infiniband/i40iw: Fix a use after free in
- i40iw_cm_event_handler
-Thread-Index: AQHXFiSqLozaSAmrJEO2QxUkby8zNKp/oHYA//+kHnCAANtHAIAAUP6Q
-Date:   Sat, 13 Mar 2021 01:11:42 +0000
-Message-ID: <eba3dbe9bf734dc0b65b2e65aa8d5bd9@intel.com>
-References: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
- <20210311182114.GA2733907@nvidia.com>
- <1fc386d78c044d3da723fe38446edb75@intel.com>
- <43271428.d966.1782426e7a3.Coremail.lyl2019@mail.ustc.edu.cn>
-In-Reply-To: <43271428.d966.1782426e7a3.Coremail.lyl2019@mail.ustc.edu.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232311AbhCMBbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 20:31:22 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13507 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231679AbhCMBaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 20:30:55 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dy4pN09P2zjTPp;
+        Sat, 13 Mar 2021 09:29:00 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 13 Mar 2021 09:30:43 +0800
+Subject: Re: [PATCH v3 1/2] crypto: hisilicon/sec - fixes some log printing
+ style
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1614838735-52668-1-git-send-email-liulongfang@huawei.com>
+ <1614838735-52668-2-git-send-email-liulongfang@huawei.com>
+ <20210312125918.GA12149@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <14684f5f-0223-7e33-3891-0f578648d422@huawei.com>
+Date:   Sat, 13 Mar 2021 09:30:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210312125918.GA12149@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogUkU6IFtQQVRDSF0gaW5maW5pYmFuZC9pNDBpdzogRml4IGEgdXNlIGFm
-dGVyIGZyZWUgaW4NCj4gaTQwaXdfY21fZXZlbnRfaGFuZGxlcg0KPiANCj4gDQo+IA0KPiANCj4g
-PiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+ID4g5Y+R5Lu25Lq6OiAiU2FsZWVtLCBTaGlyYXoi
-IDxzaGlyYXouc2FsZWVtQGludGVsLmNvbT4NCj4gPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMTIg
-MDk6MTM6MzkgKOaYn+acn+S6lCkNCj4gPiDmlLbku7bkuro6ICJKYXNvbiBHdW50aG9ycGUiIDxq
-Z2dAbnZpZGlhLmNvbT4sICJMdiBZdW5sb25nIg0KPiA+IDxseWwyMDE5QG1haWwudXN0Yy5lZHUu
-Y24+DQo+ID4g5oqE6YCBOiAiTGF0aWYsIEZhaXNhbCIgPGZhaXNhbC5sYXRpZkBpbnRlbC5jb20+
-LCAiZGxlZGZvcmRAcmVkaGF0LmNvbSINCj4gPiA8ZGxlZGZvcmRAcmVkaGF0LmNvbT4sICJsaW51
-eC1yZG1hQHZnZXIua2VybmVsLm9yZyINCj4gPiA8bGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc+
-LCAibGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyINCj4gPiA8bGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZz4NCj4gPiDkuLvpopg6IFJFOiBbUEFUQ0hdIGluZmluaWJhbmQvaTQwaXc6IEZp
-eCBhIHVzZSBhZnRlciBmcmVlIGluDQo+ID4gaTQwaXdfY21fZXZlbnRfaGFuZGxlcg0KPiA+DQo+
-ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIXSBpbmZpbmliYW5kL2k0MGl3OiBGaXggYSB1c2UgYWZ0
-ZXIgZnJlZSBpbg0KPiA+ID4gaTQwaXdfY21fZXZlbnRfaGFuZGxlcg0KPiA+ID4NCj4gPiA+IE9u
-IFdlZCwgTWFyIDEwLCAyMDIxIGF0IDA3OjE0OjE0UE0gLTA4MDAsIEx2IFl1bmxvbmcgd3JvdGU6
-DQo+ID4gPiA+IEluIHRoZSBjYXNlIG9mIEk0MElXX0NNX0VWRU5UX0FCT1JURUQsIGk0MGl3X2V2
-ZW50X2Nvbm5lY3RfZXJyb3IoKQ0KPiA+ID4gPiBjb3VsZCBiZSBjYWxsZWQgdG8gZnJlZSB0aGUg
-ZXZlbnQtPmNtX25vZGUuIEhvd2V2ZXIsDQo+ID4gPiA+IGV2ZW50LT5jbV9ub2RlIHdpbGwgYmUg
-dXNlZCBhZnRlciBhbmQgY2F1c2UgdXNlIGFmdGVyIGZyZWUuIEl0DQo+ID4gPiA+IG5lZWRzIHRv
-IGFkZCBmbGFncyB0byBpbmZvcm0gdGhhdCBldmVudC0+Y21fbm9kZSBoYXMgYmVlbiBmcmVlZC4N
-Cj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWls
-LnVzdGMuZWR1LmNuPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9o
-dy9pNDBpdy9pNDBpd19jbS5jIHwgNSArKysrLQ0KPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+ID4NCj4gPiA+IFRoaXMgbWlnaHQgYmUg
-T0sgKHRob3VnaCBJIGRvbid0IGxpa2UgdGhlIGZyZWUgdmFyaWFibGUpLCBTaGlyYXo/Pw0KPiA+
-ID4NCj4gPg0KPiA+IEhvdyB3YXMgdGhpcyByZXByb2R1Y2VkPyBEbyB5b3UgaGF2ZSBzb21lIGNh
-bGwgdHJhY2UgbGVhZGluZyB1cCB0byB1c2UgYWZ0ZXINCj4gZnJlZT8NCj4gPg0KPiA+IFRoZSBj
-bV9ub2RlIHJlZmNudCBpcyBidW1wZWQgYXQgY3JlYXRpb24gdGltZSBhbmQgb25jZSBpbiBpNDBp
-d19yZWNlaXZlX2lscQ0KPiBiZWZvcmUgcGFja2V0IGlzIHByb2Nlc3NlZC4NCj4gPiBUaGF0IHNo
-b3VsZCBwcm90ZWN0IHRoZSBjbV9ub2RlIGZyb20gZGlzYXBwZWFyaW5nIGluIHRoZSBldmVudCBo
-YW5kbGVyIGluIHRoZQ0KPiBhYm9ydCBldmVudCBjYXNlLg0KPiA+IFRoZSBkZWMgYXQgZW5kIG9m
-IGk0MGl3X3JlY2VpdmUgaWxxIHNob3VsZCBiZSBwb2ludCB3aGVyZSB0aGUgY21fbm9kZSBpcyBm
-cmVlZA0KPiBzcGVjaWZpY2FsbHkgaW4gdGhlIGFib3J0IGNhc2UuDQo+ID4NCj4gPiBTaGlyYXoN
-Cj4gPg0KPiANCj4gVGhpcyBwcm9ibGVtIHdhcyByZXBvcnRlZCBieSBhIHBhdGgtc2Vuc2l0aXZl
-IGFuYWx5emVyIGRldmVsb3BlZCBieSBvdXIgU2VjdXJpdHkNCj4gTGFiKExvY2NzKS4NCj4gVGhl
-IGFuYWx5emVyIHJlcG9ydGVkIHRoYXQgdGhlcmUgaXMgYSBmZWFzaWJsZSBwYXRoIHRvIGZyZWUg
-ZXZlbnQtPmNtX25vZGUgYW5kIHVzZQ0KPiBpdCBhZnRlciwgYW5kIHRoYXQgaXMgd2hhdCBpIGRl
-c2NyaWJlZCBpbiB0aGUgZmlyc3QgY29tbWl0Lg0KPiANCg0KT0suIEkgZG9u4oCZdCB0aGluayB0
-aGF0IGFuIGV4dHJhIGRlYyByZWZjbnQgaW4gaXRzZWxmIGZvciB0aGUgYWJvcnQgY2FzZSBpcyBl
-bm91Z2ggZXZpZGVuY2UgdG8NCnNheSB0aGF0IHRoZSBjbV9ub2RlIGlzIGZyZWVkIGluIGk0MGl3
-X2V2ZW50X2Nvbm5lY3RfZXJyb3IuDQoNClNoaXJheg0KDQo=
+On 2021/3/12 20:59, Herbert Xu wrote:
+> On Thu, Mar 04, 2021 at 02:18:54PM +0800, Longfang Liu wrote:
+>>
+>> @@ -727,7 +725,7 @@ static void sec_cipher_pbuf_unmap(struct sec_ctx *ctx, struct sec_req *req,
+>>  	struct aead_request *aead_req = req->aead_req.aead_req;
+>>  	struct sec_cipher_req *c_req = &req->c_req;
+>>  	struct sec_qp_ctx *qp_ctx = req->qp_ctx;
+>> -	struct device *dev = SEC_CTX_DEV(ctx);
+>> +	struct device *dev = ctx->dev;
+>>  	int copy_size, pbuf_length;
+>>  	int req_id = req->req_id;
+>>  
+>> @@ -737,11 +735,9 @@ static void sec_cipher_pbuf_unmap(struct sec_ctx *ctx, struct sec_req *req,
+>>  		copy_size = c_req->c_len;
+>>  
+>>  	pbuf_length = sg_copy_from_buffer(dst, sg_nents(dst),
+>> -				qp_ctx->res[req_id].pbuf,
+>> -				copy_size);
+>> -
+>> +			qp_ctx->res[req_id].pbuf, copy_size);
+>>  	if (unlikely(pbuf_length != copy_size))
+>> -		dev_err(dev, "copy pbuf data to dst error!\n");
+>> +		dev_err(ctx->dev, "copy pbuf data to dst error!\n");
+>>  }
+> 
+> This triggers an unused warning on dev.  Please fix.
+> 
+> Thanks,
+> Ok! I will check if this problem exists elsewhere.
+Thanks,
+Longfang
