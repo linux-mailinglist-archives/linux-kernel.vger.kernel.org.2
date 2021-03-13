@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DDA33A1DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 00:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A643033A1DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 00:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhCMXKD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 13 Mar 2021 18:10:03 -0500
-Received: from aposti.net ([89.234.176.197]:37604 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231329AbhCMXJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 18:09:48 -0500
-Date:   Sat, 13 Mar 2021 23:09:23 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] clk: Add clk_get_first_to_set_rate
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ulf Hansson <ulf.hansson@linaro.org>, od@zcrc.me,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org
-Message-Id: <NBKXPQ.SZZ17JHCOG5G@crapouillou.net>
-In-Reply-To: <161567452539.1478170.2985873696192051312@swboyd.mtv.corp.google.com>
-References: <20210307170742.70949-1-paul@crapouillou.net>
-        <20210307170742.70949-2-paul@crapouillou.net>
-        <161567452539.1478170.2985873696192051312@swboyd.mtv.corp.google.com>
+        id S234773AbhCMXNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 18:13:14 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41392 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhCMXM5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 18:12:57 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 5EA611F472EA
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     krisman@collabora.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel@collabora.com, gustavo.padovan@collabora.com,
+        andre.almeida@collabora.com,
+        Shreeya Patel <shreeya.patel@collabora.com>
+Subject: [PATCH 0/3] Make UTF-8 encoding loadable
+Date:   Sun, 14 Mar 2021 04:42:10 +0530
+Message-Id: <20210313231214.383576-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence first two patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
+Last patch in the series adds the layer and utf8 module.
 
 
-Le sam. 13 mars 2021 à 14:28, Stephen Boyd <sboyd@kernel.org> a écrit 
-:
-> Quoting Paul Cercueil (2021-03-07 09:07:41)
->>  The purpose of this function is to be used along with the notifier
->>  mechanism.
->> 
->>  When a parent clock can see its rate externally changed at any 
->> moment,
->>  and a driver needs a specific clock rate to function, it can 
->> register a
->>  notifier on the parent clock, and call clk_set_rate() on the base 
->> clock
->>  to adjust its frequency according to the new parent clock.
-> 
-> Can the driver use the rate locking mechanism to get a certain rate
-> instead of registering for notifiers and trying to react to changes?
+Shreeya Patel (3):
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
 
-You mean with clk_rate_exclusive_get()? That sounds like a good idea, 
-but what would happen when a different driver calls the non-exclusive 
-clk_set_rate() on this clock (or the parent), would it return -EBUSY, 
-lock on a mutex? ...
+ fs/ext4/hash.c             |   2 +-
+ fs/ext4/namei.c            |  12 +-
+ fs/ext4/super.c            |   6 +-
+ fs/f2fs/dir.c              |  12 +-
+ fs/f2fs/super.c            |   6 +-
+ fs/libfs.c                 |   6 +-
+ fs/unicode/Kconfig         |   7 +-
+ fs/unicode/Makefile        |   5 +-
+ fs/unicode/unicode-core.c  | 112 +++++++++++++++++
+ fs/unicode/utf8-core.c     | 248 ++++++++++---------------------------
+ fs/unicode/utf8-selftest.c |   8 +-
+ fs/unicode/utf8mod.c       | 246 ++++++++++++++++++++++++++++++++++++
+ include/linux/unicode.h    |  52 +++++---
+ 13 files changed, 492 insertions(+), 230 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ create mode 100644 fs/unicode/utf8mod.c
 
-Cheers,
--Paul
-
-> 
->> 
->>  This works fine, until the base clock has the CLK_SET_RATE_PARENT 
->> flag
->>  set. In that case, calling clk_set_rate() on the base clock will 
->> call
->>  clk_set_rate() on the parent clock, which will trigger the notifier
->>  again, and we're in a loop.
->> 
->>  For that reason, we need to register the notifier on the parent 
->> clock of
->>  the first ancestor of the base clock that will effectively modify 
->> its
->>  rate when clk_set_rate() is called, which we can now obtain with
->>  clk_get_first_to_set_rate().
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
+-- 
+2.30.1
 
