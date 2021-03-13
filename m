@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784B7339B67
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FC9339B6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhCMCup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhCMCua (ORCPT
+        id S232255AbhCMCye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:54:34 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13158 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhCMCyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:50:30 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9DCC061574;
-        Fri, 12 Mar 2021 18:50:28 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id m9so27409938ybk.8;
-        Fri, 12 Mar 2021 18:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rhyPMcnHQIQmhjUZbuPpathGLF1C0v/EujW0DiDZzMY=;
-        b=l6j6Yc4RE6ZuIFQpPUxzSj/6wAmMPZhY9i1m2KkEN3J14pduSSylfBRZ5hNb7sH2Q9
-         BpRn2KU8KnN+IX/nPS6sJbrRLmn6lgCDVlAZO+TxsYqKnV+jZx4JPSjRuVng8WF4SAAq
-         2tXsGLkPdQ3/76rWCRIQEaC5V9xz905IOdEv7keShMivQ4Hv8hypfqUl7zGqf0F1rIwC
-         Kr4mUpwdJL1zwZ2AI2RzpYleCDmpwXzZtmryy7BOJfmPQ/9hHzbt4EHyY//uBy4dZcxd
-         bli6h6POmsjX9tE4G5blDxTKxWsh2X39J3WCGIfJGmx3bOX9jcI/+SGhfNev9h4Xuj0s
-         JKJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rhyPMcnHQIQmhjUZbuPpathGLF1C0v/EujW0DiDZzMY=;
-        b=boESUJYaT1vJ9Cp1Kewpt8sifyGIlJEx+hmXQcMFsoNpRTRzZc2C7jNkuOlyjv5xay
-         9ghi2AedaTv3fI/1AXI8X2IZNfEbYnvE9qP+vfRL30EJ8dib2uLZcchlYLQpbsEoI8E9
-         fhIrZUFR55ffc95UnIF3MGGXFOI6kgvc+REFU10CYLD3gE8BtiHv2xsoJarHvLW8AIOA
-         7f+HfZmQJj1iTrCx1FcbxZh8Xx88wa+6hoIUo73998C7tE0IiCs/yNaV5OiEa3Ky2JUm
-         m66SS/3m4wUnC9Xa+y89SU7wGzrHKzi0rgqwbTeXJhkJfkB5F2JuLfudBU6r60fLsUog
-         gUcg==
-X-Gm-Message-State: AOAM5304epAOGM0OShB55i6v9q+6EH1HAhlFm+MUWNp83hU8LpCHUY94
-        EIZMXS9rJALF0gZg3ZJnf9I/UvYH8gbRMG9EnGxFm6tCV8g=
-X-Google-Smtp-Source: ABdhPJy5983T76dF04EQX438ihV7W/6Ebm8MtFH5oyxF7sQDuFmUdLTOqyrrjxohw5uqKwNfHphZODm1ifbUwT2o3s0=
-X-Received: by 2002:a25:d94:: with SMTP id 142mr21883722ybn.230.1615603827962;
- Fri, 12 Mar 2021 18:50:27 -0800 (PST)
+        Fri, 12 Mar 2021 21:54:16 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dy6f34hcNzmWn8;
+        Sat, 13 Mar 2021 10:51:55 +0800 (CST)
+Received: from [10.174.179.232] (10.174.179.232) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 13 Mar 2021 10:54:08 +0800
+Subject: Re: [PATCH 4/5] mm/hugetlb: simplify the code when alloc_huge_page()
+ failed in hugetlb_no_page()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210308112809.26107-1-linmiaohe@huawei.com>
+ <20210308112809.26107-5-linmiaohe@huawei.com>
+ <987f50e0-5511-7f53-c4b9-d8878d840bb5@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <1d72e0c4-de4d-351c-2867-10981f44b7fb@huawei.com>
+Date:   Sat, 13 Mar 2021 10:54:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210312214316.132993-1-sultan@kerneltoast.com>
- <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
- <YEwh2S3n8Ufgyovr@sultan-box.localdomain> <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
- <YEwm3ikmNMB3Vlzq@sultan-box.localdomain>
-In-Reply-To: <YEwm3ikmNMB3Vlzq@sultan-box.localdomain>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 12 Mar 2021 18:50:17 -0800
-Message-ID: <CAEf4BzZkuW94jSNfEdp0VR7Z=6tfEH_wo05wyunuO+D9VXmmtA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <987f50e0-5511-7f53-c4b9-d8878d840bb5@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.232]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 6:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
->
-> On Fri, Mar 12, 2021 at 06:33:01PM -0800, Andrii Nakryiko wrote:
-> > On Fri, Mar 12, 2021 at 6:22 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> > >
-> > > On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
-> > > > On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> > > > >
-> > > > > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > > > >
-> > > > > We should be using the program fd here, not the perf event fd.
-> > > >
-> > > > Why? Can you elaborate on what issue you ran into with the current code?
-> > >
-> > > bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
-> > > uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
-> > > right here:
-> > >         if (f.file->f_op != &bpf_link_fops) {
-> > >                 fdput(f);
-> > >                 return ERR_PTR(-EINVAL);
-> > >         }
-> >
-> > kprobe/tracepoint/perf_event attachments behave like bpf_link (so
-> > libbpf uses user-space high-level bpf_link APIs for it), but they are
-> > not bpf_link-based in the kernel. So bpf_link__pin() won't work for
-> > such types of programs until we actually have bpf_link-backed
-> > attachment support in the kernel itself. I never got to implementing
-> > this because we already had auto-detachment properties from perf_event
-> > FD itself. But it would be nice to have that done as a real bpf_link
-> > in the kernel (with all the observability, program update,
-> > force-detach support).
-> >
-> > Looking for volunteers to make this happen ;)
-> >
-> >
-> > >
-> > > Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
-> > > and bpf_link__pin() worked.
-> >
-> > But you were pinning the BPF program, not a BPF link. Which is not
-> > what should have happen.
->
-> This is the code in question:
->         link = bpf_program__attach(prog);
->         // make sure `link` is valid, blah blah...
->         bpf_link__pin(link, some_path);
->
-> Are you saying that this usage is incorrect?
+On 2021/3/13 3:58, Mike Kravetz wrote:
+> On 3/8/21 3:28 AM, Miaohe Lin wrote:
+>> Rework the error handling code when alloc_huge_page() failed to remove some
+>> duplicated code and simplify the code slightly.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/hugetlb.c | 9 +++------
+>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 695603071f2c..69b8de866a24 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -4337,13 +4337,10 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+>>  			 * sure there really is no pte entry.
+>>  			 */
+>>  			ptl = huge_pte_lock(h, mm, ptep);
+>> -			if (!huge_pte_none(huge_ptep_get(ptep))) {
+>> -				ret = 0;
+>> -				spin_unlock(ptl);
+>> -				goto out;
+>> -			}
+>> +			ret = 0;
+>> +			if (huge_pte_none(huge_ptep_get(ptep)))
+>> +				ret = vmf_error(PTR_ERR(page));
+> 
+> This new code is simpler.
+> 
+> The !huge_pte_none() catches an unlikely race.  IMO, the existing code
+> made that very clear.  Would have been even more clear with an unlikely
+> modifier.  In any case, the lengthy comment above this code makes it
+> clear why the check is there.  Code changes are fine.
+> 
 
-Right, for kprobe/tracepoint/perf_event attachments it's not
-supported. cgroup, xdp, raw_tracepoint and
-fentry/fexit/fmod_ret/freplace (and a few more) attachments are
-bpf_links in the kernel, so it works for them.
+Yep, the lengthy comment above this code makes it much clear why we need the check.
+Thanks for carefully review! :)
 
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 >
-> Sultan
