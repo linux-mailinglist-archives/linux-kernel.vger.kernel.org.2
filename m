@@ -2,113 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98B0339B61
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A37339B63
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhCMCrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:47:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13157 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbhCMCrL (ORCPT
+        id S232802AbhCMCsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:48:31 -0500
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:37304 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232867AbhCMCsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:47:11 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dy6Ts6x7szlV4k;
-        Sat, 13 Mar 2021 10:44:49 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 13 Mar 2021 10:47:05 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
-        <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH RFC] net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
-Date:   Sat, 13 Mar 2021 10:47:47 +0800
-Message-ID: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 12 Mar 2021 21:48:02 -0500
+Received: by mail-lf1-f41.google.com with SMTP id n16so48437873lfb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 18:48:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YX3RbIt5YnG1YAf8+WjG5K0mJd5hi9bl0zole+0mMuc=;
+        b=BKH6dKKpzqqBFmf9mrgKTsNZ3U2DSi8YRDXLb9mcCrbKxXXADs6Z+MCt2bs2qNlJeH
+         PrbTC5zQK6u5dYD2BcVKMsDiP6pIBn9mr+dTxyv17Xw/tB/3vsJI/DMqGHBzc4YPJKUQ
+         /RBHay2yXd86i2RMiP1TgVGyns0zQ6J5czJpnTD3AmIRMdEAe+6CD8XgKQpA6ozmbrtZ
+         kHnhXmsumQgLR+6UROTS7AXxpWFdqORHmawRqYXXcSY/uStVPLkSnCh2BZhiCEjznagN
+         SnCvqlNVBOK/KqgtXbYaNDnd3rsUN0Uj/Nwi0LNPQzRhL146GLPJJ/IZYlrkTiCYC9/H
+         DeJw==
+X-Gm-Message-State: AOAM531kBc+KD/Hm16buTDsm136QtSwYRquVbomdEYzGnZPouicmS7Y5
+        Jw+D4R4/rK+eWJCVDqBHzZUK4SxmJP79DJ8pa+yQcej3
+X-Google-Smtp-Source: ABdhPJzIex04a3wUnBTIPhemzeNcqJ29L7mvR5wL+dMAN+uAH9tdDSHdYzUk9TD1ZZ41GEHgm3LxIU0qIzeP8WWmcjI=
+X-Received: by 2002:a05:6512:12c1:: with SMTP id p1mr1422124lfg.374.1615603681203;
+ Fri, 12 Mar 2021 18:48:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <20210312020257.197137-1-songliubraving@fb.com>
+ <CAM9d7che4Ott6F6SNj8aaXea+wgzDE8pVntkpGr1TCbnfWNXkw@mail.gmail.com> <4B3CF1B3-5EED-4882-BC99-AD676D4E3429@fb.com>
+In-Reply-To: <4B3CF1B3-5EED-4882-BC99-AD676D4E3429@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sat, 13 Mar 2021 11:47:51 +0900
+Message-ID: <CAM9d7cg+HD3-vLXX_rUSg1kWSZ3MGeyrQwdJoa5CgbZjeD2+GA@mail.gmail.com>
+Subject: Re: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
+To:     Song Liu <songliubraving@fb.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-flag set, but queue discipline by-pass does not work for lockless
-qdisc because skb is always enqueued to qdisc even when the qdisc
-is empty, see __dev_xmit_skb().
+On Sat, Mar 13, 2021 at 12:38 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Mar 12, 2021, at 12:36 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi,
+> >
+> > On Fri, Mar 12, 2021 at 11:03 AM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> perf uses performance monitoring counters (PMCs) to monitor system
+> >> performance. The PMCs are limited hardware resources. For example,
+> >> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
+> >>
+> >> Modern data center systems use these PMCs in many different ways:
+> >> system level monitoring, (maybe nested) container level monitoring, per
+> >> process monitoring, profiling (in sample mode), etc. In some cases,
+> >> there are more active perf_events than available hardware PMCs. To allow
+> >> all perf_events to have a chance to run, it is necessary to do expensive
+> >> time multiplexing of events.
+> >>
+> >> On the other hand, many monitoring tools count the common metrics (cycles,
+> >> instructions). It is a waste to have multiple tools create multiple
+> >> perf_events of "cycles" and occupy multiple PMCs.
+> >>
+> >> bperf tries to reduce such wastes by allowing multiple perf_events of
+> >> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
+> >> of having each perf-stat session to read its own perf_events, bperf uses
+> >> BPF programs to read the perf_events and aggregate readings to BPF maps.
+> >> Then, the perf-stat session(s) reads the values from these BPF maps.
+> >>
+> >> Please refer to the comment before the definition of bperf_ops for the
+> >> description of bperf architecture.
+> >
+> > Interesting!  Actually I thought about something similar before,
+> > but my BPF knowledge is outdated.  So I need to catch up but
+> > failed to have some time for it so far. ;-)
+> >
+> >>
+> >> bperf is off by default. To enable it, pass --use-bpf option to perf-stat.
+> >> bperf uses a BPF hashmap to share information about BPF programs and maps
+> >> used by bperf. This map is pinned to bpffs. The default address is
+> >> /sys/fs/bpf/bperf_attr_map. The user could change the address with option
+> >> --attr-map.
+> >>
+> >> ---
+> >> Known limitations:
+> >> 1. Do not support per cgroup events;
+> >> 2. Do not support monitoring of BPF program (perf-stat -b);
+> >> 3. Do not support event groups.
+> >
+> > In my case, per cgroup event counting is very important.
+> > And I'd like to do that with lots of cpus and cgroups.
+>
+> We can easily extend this approach to support cgroups events. I didn't
+> implement it to keep the first version simple.
 
-This patch calles sch_direct_xmit() to transmit the skb directly
-to the driver for empty lockless qdisc too, which aviod enqueuing
-and dequeuing operation. qdisc->empty is set to false whenever a
-skb is enqueued, and is set to true when skb dequeuing return NULL,
-see pfifo_fast_dequeue().
+OK.
 
-Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
-is false to avoid packet stuck problem.
+>
+> > So I'm working on an in-kernel solution (without BPF),
+> > I hope to share it soon.
+>
+> This is interesting! I cannot wait to see how it looks like. I spent
+> quite some time try to enable in kernel sharing (not just cgroup
+> events), but finally decided to try BPF approach.
 
-The performance for ip_forward test increases about 10% with this
-patch.
+Well I found it hard to support generic event sharing that works
+for all use cases.  So I'm focusing on the per cgroup case only.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/sch_generic.h |  7 +++++--
- net/core/dev.c            | 11 +++++++++++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+>
+> >
+> > And for event groups, it seems the current implementation
+> > cannot handle more than one event (not even in a group).
+> > That could be a serious limitation..
+>
+> It supports multiple events. Multiple events are independent, i.e.,
+> "cycles" and "instructions" would use two independent leader programs.
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 2d6eb60..6591356 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		if (!spin_trylock(&qdisc->seqlock))
- 			return false;
--		WRITE_ONCE(qdisc->empty, false);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
- 	}
-@@ -176,8 +175,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- static inline void qdisc_run_end(struct Qdisc *qdisc)
- {
- 	write_seqcount_end(&qdisc->running);
--	if (qdisc->flags & TCQ_F_NOLOCK)
-+	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		spin_unlock(&qdisc->seqlock);
-+
-+		if (unlikely(!READ_ONCE(qdisc->empty)))
-+			__netif_schedule(qdisc);
-+	}
- }
- 
- static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 2bfdd52..fa8504d 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3791,7 +3791,18 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 	qdisc_calculate_pkt_len(skb, q);
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
-+		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) && qdisc_run_begin(q)) {
-+			qdisc_bstats_cpu_update(q, skb);
-+
-+			if (sch_direct_xmit(skb, q, dev, txq, NULL, true) && !READ_ONCE(q->empty))
-+				__qdisc_run(q);
-+
-+			qdisc_run_end(q);
-+			return NET_XMIT_SUCCESS;
-+		}
-+
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-+		WRITE_ONCE(q->empty, false);
- 		qdisc_run(q);
- 
- 		if (unlikely(to_free))
--- 
-2.7.4
+OK, then do you need multiple bperf_attr_maps?  Does it work
+for an arbitrary number of events?
 
+>
+> >
+> >>
+> >> The following commands have been tested:
+> >>
+> >>   perf stat --use-bpf -e cycles -a
+> >>   perf stat --use-bpf -e cycles -C 1,3,4
+> >>   perf stat --use-bpf -e cycles -p 123
+> >>   perf stat --use-bpf -e cycles -t 100,101
+> >
+> > Hmm... so it loads both leader and follower programs if needed, right?
+> > Does it support multiple followers with different targets at the same time?
+>
+> Yes, the whole idea is to have one leader program and multiple follower
+> programs. If we only run one of these commands at a time, it will load
+> one leader and one follower. If we run multiple of them in parallel,
+> they will share the same leader program and load multiple follower
+> programs.
+>
+> I actually tested more than the commands above. The list actually means
+> we support -a, -C -p, and -t.
+>
+> Currently, this works for multiple events, and different parallel
+> perf-stat. The two commands below will work well in parallel:
+>
+>   perf stat --use-bpf -e ref-cycles,instructions -a
+>   perf stat --use-bpf -e ref-cycles,cycles -C 1,3,5
+>
+> Note the use of ref-cycles, which can only use one counter on Intel CPUs.
+> With this approach, the above two commands will not do time multiplexing
+> on ref-cycles.
+
+Awesome!
+
+Thanks,
+Namhyung
