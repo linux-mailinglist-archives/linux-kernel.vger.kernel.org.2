@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B404339F38
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A64D4339F3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234065AbhCMQt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 11:49:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233570AbhCMQtw (ORCPT
+        id S234097AbhCMQwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 11:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233570AbhCMQvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 11:49:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615654192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xWfmgenJ5fz6j3ee7IU4/fm/YAyf6aJba6DCt9PRqmo=;
-        b=edWOOQjaECliXq521NYs600TtatmCbhAGScCvEaLlehGMWfzIE7vPgil6Y3OkUQYwlg5af
-        uGq176+zKjOsoFkQXc4jGJV3qNSt3keZER3SI5143z5GQHYnq2gYCOWGJIAl76NUbNAUaG
-        VLZ2curMN4pN9l/5Z5m1pktkQQ0PRWM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-dlkZOjr3NiuUTajx998kqQ-1; Sat, 13 Mar 2021 11:49:49 -0500
-X-MC-Unique: dlkZOjr3NiuUTajx998kqQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B555801817;
-        Sat, 13 Mar 2021 16:49:47 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0AF0A620DE;
-        Sat, 13 Mar 2021 16:49:37 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat, 13 Mar 2021 17:49:47 +0100 (CET)
-Date:   Sat, 13 Mar 2021 17:49:36 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [patch V2 3/3] signal: Allow tasks to cache one sigqueue struct
-Message-ID: <20210313164935.GA2362@redhat.com>
-References: <20210311132036.228542540@linutronix.de>
- <20210311141704.424120350@linutronix.de>
- <20210312161148.GA25946@redhat.com>
- <87blbo2my0.fsf@nanos.tec.linutronix.de>
- <871rck2hze.fsf@nanos.tec.linutronix.de>
+        Sat, 13 Mar 2021 11:51:40 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3297C061574;
+        Sat, 13 Mar 2021 08:51:40 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id c16so13367543ply.0;
+        Sat, 13 Mar 2021 08:51:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=S9+2IFN1dv7+M9NnZ3JAWoiEoZQsQf5Cgay5lNY5ss4=;
+        b=BD6P9vK8aJUvG4QnoR3Puj8kvKseW+6o55j/P82M88x02I+JmcKr0kc3RGQsZ37JnF
+         TpAsEmNKWLD8YcrY1wJOrOaJth1XufxoyCEXfxwFdsxgKUKYZZtWWBJmNpnispcNGt2p
+         PqOZpRCAZAYCByrvhSWdqpYAjP8DW0Lo/GmzX+O/Ffo3uNXGi2hgeJmmx0j8E+bzFZXe
+         Ul5IFFt6mJqynovKGjmk0NFGAz3Lrw6VZE0wb6YDCFxj7HgcbaIG3sEkPOeXEVOgBYTw
+         KfU5povOAaC0mN3ZNhPy4cibPnvN0xRuGA2k4NL60Fv8NBSNN5PKWktHs3qf/X7CEPTr
+         kDag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=S9+2IFN1dv7+M9NnZ3JAWoiEoZQsQf5Cgay5lNY5ss4=;
+        b=RAmEywcLsWhFMiMt+avBKNjnHQjIrht29xc2hjrpAcddYjGE+m2pCcc29sEnl2IEdv
+         K+/kyRHaR4XLfPiVHDScwc7g6PB5EWaoQ0ctzqaJ48ixh3s1Hr2w3oJtkgiMoCTdrnjK
+         /Km7oB11rb92B0BVoN5U4A1UxN/PcQB7d/jycFrhydH9D8UtvntqHNwDZ7h0eJ2g5vDt
+         jW+X5PnTE67bqWbGiUAJ9SSjm23EDZd5hN/hjnz8uF6HWBNA6VPlO4F/LMjaRsgxBX90
+         AHt3dbB1LXvZ6cDEOOXA5LTsl8ZKNqZwC0n3RWbZRv5ohQmOsRUDnjzRwjT7XUxRTIs2
+         ZwMw==
+X-Gm-Message-State: AOAM532kyAeKpAWXaGH0DD4GgqJWYJOD/aVll5Bb2GJ5qwxxtvZP1a2t
+        xAgO19CW7fvtCRN6oFXbgkE=
+X-Google-Smtp-Source: ABdhPJyhUajGkXVqVI+2w2kKBevWnt3jZ2LBA6OEJfupov4wAmkSuPaGY7mKMoi4jniZ4t/uSUzXRQ==
+X-Received: by 2002:a17:90a:bb91:: with SMTP id v17mr4287638pjr.24.1615654300218;
+        Sat, 13 Mar 2021 08:51:40 -0800 (PST)
+Received: from client-VirtualBox ([223.186.9.86])
+        by smtp.gmail.com with ESMTPSA id a70sm8572800pfa.202.2021.03.13.08.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 08:51:39 -0800 (PST)
+Date:   Sat, 13 Mar 2021 22:21:28 +0530
+From:   Chinmayi Shetty <chinmayishetty359@gmail.com>
+To:     pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net,
+        kuba@kernel.org, osmocom-net-gprs@lists.osmocom.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bkkarthik@pesu.pes.edu
+Subject: [PATCH] Net: gtp: Fixed missing blank line after declaration
+Message-ID: <20210313165128.jc2u2pnpm3enbx2h@client-VirtualBox>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rck2hze.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12, Thomas Gleixner wrote:
->
-> On Fri, Mar 12 2021 at 20:26, Thomas Gleixner wrote:
-> > On Fri, Mar 12 2021 at 17:11, Oleg Nesterov wrote:
-> >> On 03/11, Thomas Gleixner wrote:
-> >>>
-> >>> @@ -456,7 +460,12 @@ static void __sigqueue_free(struct sigqu
-> >>>  		return;
-> >>>  	if (atomic_dec_and_test(&q->user->sigpending))
-> >>>  		free_uid(q->user);
-> >>> -	kmem_cache_free(sigqueue_cachep, q);
-> >>> +
-> >>> +	/* Cache one sigqueue per task */
-> >>> +	if (!current->sigqueue_cache)
-> >>> +		current->sigqueue_cache = q;
-> >>> +	else
-> >>> +		kmem_cache_free(sigqueue_cachep, q);
-> >>>  }
-> >>
-> >> This doesn't look right, note that __exit_signal() does
-> >> flush_sigqueue(&sig->shared_pending) at the end, after exit_task_sighand()
-> >> was already called.
-> >>
-> >> I'd suggest to not add the new exit_task_sighand() helper and simply free
-> >> current->sigqueue_cache at the end of __exit_signal().
-> >
-> > Ooops. Thanks for spotting this!
->
-> Hrm.
->
-> The task which is released is obviously not current, so even if there
-> are still sigqueues in shared_pending then they wont end up in the
-> released tasks sigqueue_cache. They can only ever end up in
-> current->sigqueue_cache.
+Signed-off-by: Chinmayi Shetty <chinmayishetty359@gmail.com>
+---
+ drivers/net/gtp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The task which is released can be "current" if this task autoreaps.
-For example, if its parent ignores SIGCHLD. In this case exit_notify()
-does release_task(current).
-
-> But that brings my memory back why I had cmpxchg() in the original
-> version. This code runs without current->sighand->siglock held.
-
-Yes, I was wrong too. This code runs without exiting_task->sighand->siglock
-and this is fine in that it can not race with send_signal(exiting_task),
-but somehow I missed the fact that it always populates current->sigqueue_cache,
-not exiting_task->sigqueue_cache.
-
-Oleg.
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index efe5247d8c42..79998f4394e5 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -437,7 +437,7 @@ static inline void gtp1_push_header(struct sk_buff *skb, struct pdp_ctx *pctx)
+ 	gtp1->length	= htons(payload_len);
+ 	gtp1->tid	= htonl(pctx->u.v1.o_tei);
+ 
+-	/* TODO: Suppport for extension header, sequence number and N-PDU.
++	/* TODO: Support for extension header, sequence number and N-PDU.
+ 	 *	 Update the length field if any of them is available.
+ 	 */
+ }
+-- 
+2.25.1
 
