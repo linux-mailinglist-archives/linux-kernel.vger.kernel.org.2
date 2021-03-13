@@ -2,224 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D3F339C87
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 08:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1701339C8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 08:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhCMHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:21:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhCMHVK (ORCPT
+        id S232880AbhCMHYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:24:32 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14326 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230309AbhCMHYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:21:10 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D54C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:21:09 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id f12so5668352qtq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:21:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7eYVjh/3MlDURi3LsFeSKFPv9Je6M1V19C4BQQN9epg=;
-        b=d6lL1ejz2bTagyNptYYPmk3n2fghwWx4oGFEGzjpYEYcRIVDuGb4FDJMMRwgEGZOdx
-         wU9n7lFKqiNDiAa3f7DGbJjMXIKDrnMFQbs0/nYPg/aHQ3jN5q8gHfv5K6THjlOW7tdX
-         bwjriZSaZNWlxWqwKSKubzxbZqsAEUczHxg5oj86tc4ixTeoKfR1G1Cj3dRmT4NoAkmt
-         lYZYe9mD2O5sbE1btTDQG5RxGNJQYE6iPIZ0lmTjjgEjI6Va15bGH1NNirZ9Shanl824
-         BCgvi14e1LI0oF0HyDZj43JLbQJyyasOurnFoSjmIpS3piEMGg6+1Hwopn/NHvkcQ0XX
-         WMUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7eYVjh/3MlDURi3LsFeSKFPv9Je6M1V19C4BQQN9epg=;
-        b=uTuutoB0Wgo+8pw8UMws9pygXonruweFgsrs/eFhnYXWnpvJG64pWl5glO94/CTeoC
-         Hv/qRe6UNsIrVZFXlQYpb6P+WnOw4+XEfcTR32nk8K+jNnzg/svW6hXEC/VYkRGqo2KU
-         X1eS8gzrH2paRa5bT73M1MzW3qziUwl3m7cgcLPYQi6/JTk36GwFyQO8fOT+hSpEV3Ox
-         QIx3qaXM8sKEK2nuMXBTafS53w9PbXZoTXF9kzQ/kxaBtH+BstPWrEWIJi/YUSlKb3+o
-         mDQAQNkWID/getc8tMHZ00eTc0iPmKd3QvejOWvIXaoTGkko7kd9yaw7/wdHCVkAiuEe
-         6pdg==
-X-Gm-Message-State: AOAM531VCGQG7R+BbeeAADw7uaXS32lPc88mFLTj2lG4X4d/z6J2j9e2
-        l1czP2VD+ezEOYdnG7a4SSv3OyouJY1j1HNVcCM19A==
-X-Google-Smtp-Source: ABdhPJyWza/nfVkxiGdXnuoW8uZ/mso96TR9jx4z2YWEDt9reiLiOYP9QPllR8xzHbdy0FrKhi4FrmysXZEP9RVnaRE=
-X-Received: by 2002:ac8:5212:: with SMTP id r18mr14848480qtn.290.1615620068524;
- Fri, 12 Mar 2021 23:21:08 -0800 (PST)
+        Sat, 13 Mar 2021 02:24:10 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DyDdy4Rx6z8ww8;
+        Sat, 13 Mar 2021 15:22:14 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 13 Mar 2021 15:23:56 +0800
+From:   Chiqijun <chiqijun@huawei.com>
+To:     <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex.williamson@redhat.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>,
+        <zengweiliang.zengweiliang@huawei.com>, <chenlizhong@huawei.com>
+Subject: [v4] PCI: Add reset quirk for Huawei Intelligent NIC virtual function
+Date:   Sat, 13 Mar 2021 15:29:33 +0800
+Message-ID: <20210313072933.2052-1-chiqijun@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <000000000000b74f1b05bd316729@google.com> <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
- <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk> <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
- <795597a1-ec87-e09e-d073-3daf10422abb@ghiti.fr> <f9318e58-5d3f-f548-3dbf-a5cb87406a94@codethink.co.uk>
-In-Reply-To: <f9318e58-5d3f-f548-3dbf-a5cb87406a94@codethink.co.uk>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 13 Mar 2021 08:20:57 +0100
-Message-ID: <CACT4Y+bYDU-4MYotLfqgkGpz487aC8xQ0dqaNLwf76d1yyF-Vw@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in schedule_tail
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     Alex Ghiti <alex@ghiti.fr>,
-        syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 9:12 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote=
-:
->
-> On 12/03/2021 16:25, Alex Ghiti wrote:
-> >
-> >
-> > Le 3/12/21 =C3=A0 10:12 AM, Dmitry Vyukov a =C3=A9crit :
-> >> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk>
-> >> wrote:
-> >>>
-> >>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
-> >>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
-> >>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
-> >>>>>
-> >>>>> Hello,
-> >>>>>
-> >>>>> syzbot found the following issue on:
-> >>>>>
-> >>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
-> >>>>> arch_dup_tas..
-> >>>>> git tree:
-> >>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >>>>> console output:
-> >>>>> https://syzkaller.appspot.com/x/log.txt?x=3D1212c6e6d00000
-> >>>>> kernel config:
-> >>>>> https://syzkaller.appspot.com/x/.config?x=3De3c595255fb2d136
-> >>>>> dashboard link:
-> >>>>> https://syzkaller.appspot.com/bug?extid=3De74b94fe601ab9552d69
-> >>>>> userspace arch: riscv64
-> >>>>>
-> >>>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>>>
-> >>>>> IMPORTANT: if you fix the issue, please add the following tag to
-> >>>>> the commit:
-> >>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
-> >>>>
-> >>>> +riscv maintainers
-> >>>>
-> >>>> This is riscv64-specific.
-> >>>> I've seen similar crashes in put_user in other places. It looks like
-> >>>> put_user crashes in the user address is not mapped/protected (?).
-> >>>
-> >>> I've been having a look, and this seems to be down to access of the
-> >>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
-> >>> bad address to clone?
-> >>>
-> >>>   From looking at the code, the put_user() code should have set the
-> >>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
-> >>> s2 register in the crash report) and from looking at the compiler
-> >>> output from my gcc-10, the code looks to be dong the relevant csrs
-> >>> and then csrc around the put_user
-> >>>
-> >>> So currently I do not understand how the above could have happened
-> >>> over than something re-tried the code seqeunce and ended up retrying
-> >>> the faulting instruction without the SR_SUM bit set.
-> >>
-> >> I would maybe blame qemu for randomly resetting SR_SUM, but it's
-> >> strange that 99% of these crashes are in schedule_tail. If it would be
-> >> qemu, then they would be more evenly distributed...
-> >>
-> >> Another observation: looking at a dozen of crash logs, in none of
-> >> these cases fuzzer was actually trying to fuzz clone with some insane
-> >> arguments. So it looks like completely normal clone's (e..g coming
-> >> from pthread_create) result in this crash.
-> >>
-> >> I also wonder why there is ret_from_exception, is it normal? I see
-> >> handle_exception disables SR_SUM:
-> >
-> > csrrc does the right thing: it cleans SR_SUM bit in status but saves th=
-e
-> > previous value that will get correctly restored.
-> >
-> > ("The CSRRC (Atomic Read and Clear Bits in CSR) instruction reads the
-> > value of the CSR, zero-extends the value to XLEN bits, and writes it to
-> > integer registerrd.  The initial value in integerregisterrs1is treated
-> > as a bit mask that specifies bit positions to be cleared in the CSR. An=
-y
-> > bitthat is high inrs1will cause the corresponding bit to be cleared in
-> > the CSR, if that CSR bit iswritable.  Other bits in the CSR are
-> > unaffected.")
->
-> I think there may also be an understanding issue on what the SR_SUM
-> bit does. I thought if it is set, M->U accesses would fault, which is
-> why it gets set early on. But from reading the uaccess code it looks
-> like the uaccess code sets it on entry and then clears on exit.
->
-> I am very confused. Is there a master reference for rv64?
->
-> https://people.eecs.berkeley.edu/~krste/papers/riscv-privileged-v1.9.pdf
-> seems to state PUM is the SR_SUM bit, and that (if set) disabled
->
-> Quote:
->   The PUM (Protect User Memory) bit modifies the privilege with which
-> S-mode loads, stores, and instruction fetches access virtual memory.
-> When PUM=3D0, translation and protection behave as normal. When PUM=3D1,
-> S-mode memory accesses to pages that are accessible by U-mode (U=3D1 in
-> Figure 4.19) will fault. PUM has no effect when executing in U-mode
->
->
-> >> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/en=
-try.S#L73
-> >>
-> >
-> > Still no luck for the moment, can't reproduce it locally, my test is
-> > maybe not that good (I created threads all day long in order to trigger
-> > the put_user of schedule_tail).
->
-> It may of course depend on memory and other stuff. I did try to see if
-> it was possible to clone() with the child_tid address being a valid but
-> not mapped page...
->
-> > Given that the path you mention works most of the time, and that the
-> > status register in the stack trace shows the SUM bit is not set whereas
-> > it is set in put_user, I'm leaning toward some race condition (maybe an
-> > interrupt that arrives at the "wrong" time) or a qemu issue as you
-> > mentioned.
->
-> I suppose this is possible. From what I read it should get to the
-> point of being there with the SUM flag cleared, so either something
-> went wrong in trying to fix the instruction up or there's some other
-> error we're missing.
->
-> > To eliminate qemu issues, do you have access to some HW ? Or to
-> > different qemu versions ?
->
-> I do have access to a Microchip Polarfire board. I just need the
-> instructions on how to setup the test-code to make it work on the
-> hardware.
+When multiple VFs do FLR at the same time, the firmware is
+processed serially, resulting in some VF FLRs being delayed more
+than 100ms, when the virtual machine restarts and the device
+driver is loaded, the firmware is doing the corresponding VF
+FLR, causing the driver to fail to load.
 
-For full syzkaller support, it would need to know how to reboot these
-boards and get access to the console.
-syzkaller has a stop-gap VM backend which just uses ssh to a physical
-machine and expects the kernel to reboot on its own after any crashes.
+To solve this problem, add host and firmware status synchronization
+during FLR.
 
-But I actually managed to reproduce it in an even simpler setup.
-Assuming you have Go 1.15 and riscv64 cross-compiler gcc installed
+Signed-off-by: Chiqijun <chiqijun@huawei.com>
+---
+v4:
+ - Addressed Bjorn's review comments
 
-$ go get -u -d github.com/google/syzkaller/...
-$ cd $GOPATH/src/github.com/google/syzkaller
-$ make stress executor TARGETARCH=3Driscv64
-$ scp bin/linux_riscv64/syz-execprog bin/linux_riscv64/syz-executor
-your_machine:/
+v3:
+ - The MSE bit in the VF configuration space is hardwired to zero,
+   remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
+   set PCI_COMMAND register.
 
-Then run ./syz-stress on the machine.
-On the first run it crashed it with some other bug, on the second run
-I got the crash in schedule_tail.
-With qemu tcg I also added -slowdown=3D10 flag to syz-stress to scale
-all timeouts, if native execution is faster, then you don't need it.
+v2:
+ - Update comments
+ - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
+   macro instead of the magic number
+---
+ drivers/pci/quirks.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3ba9e..4623125098e0 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3913,6 +3913,73 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+ 	return 0;
+ }
+ 
++#define PCI_DEVICE_ID_HINIC_VF      0x375E
++#define HINIC_VF_FLR_TYPE           0x1000
++#define HINIC_VF_FLR_CAP_BIT_SHIFT  30
++#define HINIC_VF_OP                 0xE80
++#define HINIC_VF_FLR_PROC_BIT_SHIFT 18
++#define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
++
++/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
++static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
++{
++	unsigned long timeout;
++	void __iomem *bar;
++	u32 val;
++
++	if (probe)
++		return 0;
++
++	bar = pci_iomap(pdev, 0, 0);
++	if (!bar)
++		return -ENOTTY;
++
++	/* Get and check firmware capabilities. */
++	val = be32_to_cpu(readl(bar + HINIC_VF_FLR_TYPE));
++	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
++		pci_iounmap(pdev, bar);
++		return -ENOTTY;
++	}
++
++	/*
++	 * Set the processing bit for the start of FLR, which will be cleared
++	 * by the firmware after FLR is completed.
++	 */
++	val = be32_to_cpu(readl(bar + HINIC_VF_OP));
++	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
++	writel(cpu_to_be32(val), bar + HINIC_VF_OP);
++
++	/* Perform the actual device function reset */
++	pcie_flr(pdev);
++
++	/*
++	 * The device must learn BDF after FLR in order to respond to BAR's
++	 * read request, therefore, we issue a configure write request to let
++	 * the device capture BDF.
++	 */
++	pci_write_config_word(pdev, PCI_VENDOR_ID, 0);
++
++	/* Waiting for device reset complete */
++	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
++	do {
++		val = be32_to_cpu(readl(bar + HINIC_VF_OP));
++		if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
++			goto reset_complete;
++		msleep(20);
++	} while (time_before(jiffies, timeout));
++
++	val = be32_to_cpu(readl(bar + HINIC_VF_OP));
++	if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
++		goto reset_complete;
++
++	pci_warn(pdev, "Reset dev timeout, flr ack reg: %#010x\n", val);
++
++reset_complete:
++	pci_iounmap(pdev, bar);
++
++	return 0;
++}
++
+ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+ 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+ 		 reset_intel_82599_sfp_virtfn },
+@@ -3924,6 +3991,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+ 	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+ 	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+ 		reset_chelsio_generic_dev },
++	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
++		reset_hinic_vf_dev },
+ 	{ 0 }
+ };
+ 
+-- 
+2.17.1
+
