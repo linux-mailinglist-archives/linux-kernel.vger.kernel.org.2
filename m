@@ -2,224 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0939A33A0BB
+	by mail.lfdr.de (Postfix) with ESMTP id C6FAB33A0BD
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 20:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhCMTuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 14:50:19 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:40816 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbhCMTuH (ORCPT
+        id S234694AbhCMTuv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 13 Mar 2021 14:50:51 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45803 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234702AbhCMTum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 14:50:07 -0500
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 12DJmefC018162;
-        Sun, 14 Mar 2021 04:48:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 12DJmefC018162
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615664929;
-        bh=ZuPe/bNbHJvZwK00JxrmLYSLm2hmLxZEK/PBz1r2NmI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aGllyCA3QeSLvfIGkIcViyl3OL5CeNbKdGL6LKTDMudW7lB1+ftIYgsohQvaz9OVp
-         tJf9lzH1/k/Mvdy0kuo7MFiSEKmUQoAOlNHLHFcj3wC9A38DCxgIVgawLeWwRPCQOM
-         hlOOx1wL1OJ3UkWrdgu6ZDTVVFnYWHT/QBQ+DwJe6iTxyYbKqc61oBam2poDpgYFp4
-         izKOcMmG4ltavLm3phTovBazRx7aB020wX/CvSrrq0qieUX928V58pnbGONueBZRqj
-         h0uIUPXPl0CnkfKEL54jvIHG7pvcYXw9cDwG72uiltegJzfIgBpcNMvj9gcAIUsHJU
-         8e480jtXJzUwQ==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KP Singh <kpsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
+        Sat, 13 Mar 2021 14:50:42 -0500
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1lLAHW-0001Ql-AD; Sat, 13 Mar 2021 19:50:38 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 7D85F5FEE8; Sat, 13 Mar 2021 11:50:36 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 75524A0410;
+        Sat, 13 Mar 2021 11:50:36 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jianlin Lv <Jianlin.Lv@arm.com>
+cc:     vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        kuba@kernel.org, iecedge@gmail.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 13/13] kconfig: change "modules" from sub-option to first-level attribute
-Date:   Sun, 14 Mar 2021 04:48:36 +0900
-Message-Id: <20210313194836.372585-13-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210313194836.372585-1-masahiroy@kernel.org>
-References: <20210313194836.372585-1-masahiroy@kernel.org>
+Subject: Re: [PATCH net-next] bonding: Added -ENODEV interpret for slaves option
+In-reply-to: <20210313140210.3940183-1-Jianlin.Lv@arm.com>
+References: <20210313140210.3940183-1-Jianlin.Lv@arm.com>
+Comments: In-reply-to Jianlin Lv <Jianlin.Lv@arm.com>
+   message dated "Sat, 13 Mar 2021 22:02:10 +0800."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6675.1615665036.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Sat, 13 Mar 2021 11:50:36 -0800
+Message-ID: <6676.1615665036@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now "modules" is the only member of the "option" property.
+Jianlin Lv <Jianlin.Lv@arm.com> wrote:
 
-Remove "option", and move "modules" to the top level property.
+>After upgrading the kernel, the slave interface name is changed,
+>Systemd cannot use the original configuration to create bond interface,
+>thereby losing the connection with the host.
+>
+>Adding log for ENODEV will make it easier to find out such problem lies.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+	To be clear, this specifically affects add/remove of interfaces
+to/from the bond via the "slaves" sysfs interface.
+
+	Please update your log to better describe this (that it affects
+the sysfs API only) and resubmit.
+
+	I'm sympathetic to the problem this is trying to solve, and the
+message shouldn't spam the kernel log particularly, but the commit log
+needs to more clearly describe what the problem is and how it's being
+fixed.
+
+	Thanks,
+
+	-J
+
+>Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+>---
+> drivers/net/bonding/bond_options.c | 9 +++++++++
+> 1 file changed, 9 insertions(+)
+>
+>diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+>index 77d7c38bd435..c9d3604ae129 100644
+>--- a/drivers/net/bonding/bond_options.c
+>+++ b/drivers/net/bonding/bond_options.c
+>@@ -640,6 +640,15 @@ static void bond_opt_error_interpret(struct bonding *bond,
+> 		netdev_err(bond->dev, "option %s: unable to set because the bond device is up\n",
+> 			   opt->name);
+> 		break;
+>+	case -ENODEV:
+>+		if (val && val->string) {
+>+			p = strchr(val->string, '\n');
+>+			if (p)
+>+				*p = '\0';
+>+			netdev_err(bond->dev, "option %s: interface %s does not exist!\n",
+>+				   opt->name, val->string);
+>+		}
+>+		break;
+> 	default:
+> 		break;
+> 	}
+>-- 
+>2.25.1
+>
+
 ---
-
- Documentation/kbuild/kconfig-language.rst          | 14 ++++----------
- init/Kconfig                                       |  2 +-
- scripts/kconfig/lexer.l                            |  1 -
- scripts/kconfig/lkc.h                              |  1 -
- scripts/kconfig/menu.c                             |  8 --------
- scripts/kconfig/parser.y                           |  8 +++++---
- scripts/kconfig/tests/choice/Kconfig               |  2 +-
- .../kconfig/tests/choice_value_with_m_dep/Kconfig  |  2 +-
- scripts/kconfig/tests/inter_choice/Kconfig         |  2 +-
- 9 files changed, 13 insertions(+), 27 deletions(-)
-
-diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-index 4a796c601446..98c24183d8c3 100644
---- a/Documentation/kbuild/kconfig-language.rst
-+++ b/Documentation/kbuild/kconfig-language.rst
-@@ -223,16 +223,10 @@ applicable everywhere (see syntax).
-   the indentation level, this means it ends at the first line which has
-   a smaller indentation than the first line of the help text.
- 
--- misc options: "option" <symbol>[=<value>]
--
--  Various less common options can be defined via this option syntax,
--  which can modify the behaviour of the menu entry and its config
--  symbol. These options are currently possible:
--
--  - "modules"
--    This declares the symbol to be used as the MODULES symbol, which
--    enables the third modular state for all config symbols.
--    At most one symbol may have the "modules" option set.
-+- module attribute: "modules"
-+  This declares the symbol to be used as the MODULES symbol, which
-+  enables the third modular state for all config symbols.
-+  At most one symbol may have the "modules" option set.
- 
- Menu dependencies
- -----------------
-diff --git a/init/Kconfig b/init/Kconfig
-index beb8314fdf96..5b71e1c0edb4 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2043,7 +2043,7 @@ config MODULE_SIG_FORMAT
- 
- menuconfig MODULES
- 	bool "Enable loadable module support"
--	option modules
-+	modules
- 	help
- 	  Kernel modules are small pieces of compiled code which can
- 	  be inserted in the running kernel, rather than being
-diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
-index 08c96a6ffe05..312cbad2d34d 100644
---- a/scripts/kconfig/lexer.l
-+++ b/scripts/kconfig/lexer.l
-@@ -112,7 +112,6 @@ n	[A-Za-z0-9_-]
- "menuconfig"		return T_MENUCONFIG;
- "modules"		return T_MODULES;
- "on"			return T_ON;
--"option"		return T_OPTION;
- "optional"		return T_OPTIONAL;
- "prompt"		return T_PROMPT;
- "range"			return T_RANGE;
-diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
-index c1ab05f73ca2..246eba37ca0e 100644
---- a/scripts/kconfig/lkc.h
-+++ b/scripts/kconfig/lkc.h
-@@ -105,7 +105,6 @@ void menu_add_visibility(struct expr *dep);
- struct property *menu_add_prompt(enum prop_type type, char *prompt, struct expr *dep);
- void menu_add_expr(enum prop_type type, struct expr *expr, struct expr *dep);
- void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep);
--void menu_add_option_modules(void);
- void menu_finalize(struct menu *parent);
- void menu_set_type(int type);
- 
-diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-index d50d0de55222..8b2108b74821 100644
---- a/scripts/kconfig/menu.c
-+++ b/scripts/kconfig/menu.c
-@@ -211,14 +211,6 @@ void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep)
- 	menu_add_prop(type, expr_alloc_symbol(sym), dep);
- }
- 
--void menu_add_option_modules(void)
--{
--	if (modules_sym)
--		zconf_error("symbol '%s' redefines option 'modules' already defined by symbol '%s'",
--			    current_entry->sym->name, modules_sym->name);
--	modules_sym = current_entry->sym;
--}
--
- static int menu_validate_number(struct symbol *sym, struct symbol *sym2)
- {
- 	return sym2->type == S_INT || sym2->type == S_HEX ||
-diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index 2ada169c8b5d..e46ce21a2fc4 100644
---- a/scripts/kconfig/parser.y
-+++ b/scripts/kconfig/parser.y
-@@ -69,7 +69,6 @@ static struct menu *current_menu, *current_entry;
- %token T_MODULES
- %token T_ON
- %token T_OPEN_PAREN
--%token T_OPTION
- %token T_OPTIONAL
- %token T_PLUS_EQUAL
- %token T_PROMPT
-@@ -216,9 +215,12 @@ config_option: T_RANGE symbol symbol if_expr T_EOL
- 	printd(DEBUG_PARSE, "%s:%d:range\n", zconf_curname(), zconf_lineno());
- };
- 
--config_option: T_OPTION T_MODULES T_EOL
-+config_option: T_MODULES T_EOL
- {
--	menu_add_option_modules();
-+	if (modules_sym)
-+		zconf_error("symbol '%s' redefines option 'modules' already defined by symbol '%s'",
-+			    current_entry->sym->name, modules_sym->name);
-+	modules_sym = current_entry->sym;
- };
- 
- /* choice entry */
-diff --git a/scripts/kconfig/tests/choice/Kconfig b/scripts/kconfig/tests/choice/Kconfig
-index a412205b1b0c..0930eb65e932 100644
---- a/scripts/kconfig/tests/choice/Kconfig
-+++ b/scripts/kconfig/tests/choice/Kconfig
-@@ -2,7 +2,7 @@
- 
- config MODULES
- 	bool "Enable loadable module support"
--	option modules
-+	modules
- 	default y
- 
- choice
-diff --git a/scripts/kconfig/tests/choice_value_with_m_dep/Kconfig b/scripts/kconfig/tests/choice_value_with_m_dep/Kconfig
-index 7106c26bb3a8..bd970cec07d6 100644
---- a/scripts/kconfig/tests/choice_value_with_m_dep/Kconfig
-+++ b/scripts/kconfig/tests/choice_value_with_m_dep/Kconfig
-@@ -2,7 +2,7 @@
- 
- config MODULES
- 	def_bool y
--	option modules
-+	modules
- 
- config DEP
- 	tristate
-diff --git a/scripts/kconfig/tests/inter_choice/Kconfig b/scripts/kconfig/tests/inter_choice/Kconfig
-index 5698a4018dd0..26c25f68695b 100644
---- a/scripts/kconfig/tests/inter_choice/Kconfig
-+++ b/scripts/kconfig/tests/inter_choice/Kconfig
-@@ -2,7 +2,7 @@
- 
- config MODULES
- 	def_bool y
--	option modules
-+	modules
- 
- choice
- 	prompt "Choice"
--- 
-2.27.0
-
+	-Jay Vosburgh, jay.vosburgh@canonical.com
