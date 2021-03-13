@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64EF339F13
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A8339F17
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhCMQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 11:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
+        id S234000AbhCMQYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 11:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbhCMQRF (ORCPT
+        with ESMTP id S233478AbhCMQYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 11:17:05 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0A1C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 08:17:04 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so12589352pjv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 08:17:04 -0800 (PST)
+        Sat, 13 Mar 2021 11:24:38 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BCBC061574;
+        Sat, 13 Mar 2021 08:24:38 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id u3so28716383ybk.6;
+        Sat, 13 Mar 2021 08:24:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ULnk6/AujffEHtqaXUB+Sqx1kV7oADwaFIlwS/jfgBE=;
-        b=iAtatBJ28o/OGcXOP4uyEaVQuUmWu4Xwnm1x+WCdvf82kU73a73wHIarCVvw256MGR
-         puzeNqJv/gUPslInZOCmBemSEyU04eVxJWI8t/BpKkGjNZQ2sf47FdRAehJOIDC2VzOV
-         4UlvhIWRF40sIcoJpRUqs5RdFviAU/DLnsMhcCjt70p/RYI+D1QmESnsvpX2K41+ula7
-         fSTTd4Lh0RzhV02zb4QzouKLp5wO17vnuDV2AhBCTbVtmTpt+eOYnkPsCQ03YBLVmi36
-         Pp21kv+0rDFojUW5T7zPMbmgXpdw7SPyTGXYI3ApvoW6I8RVAC0yLeRd6aZvESrQjvon
-         0nLQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aXi6zxmykvKGGuEUIknBGQuu/CrpF+OFk8aqg1g8+Js=;
+        b=Hv71HUzmf0Lv3L07Y9vPI88fr2tkUa/1JbFZGy51jjbh9n4cRQ+P6rLbvPAhZMLbg5
+         ixsUkRYdDUhei4YCiRy0287CIkP8b3Jg9TpHICyCGV2xDgcQFoYiRrPDp0LcPbNyPobt
+         e2mB8WjIyZJjUgnIK3eEg9rREEgBthIupmC5k7TJkMd1BdMNglR5MTBljFc4WnZL0Tv/
+         2A5yFWAf2SP7q2tspr8wPFHgGP1dhWKjLEJrKe1jxyEujMO/6QhrAuiX6efY9Q0tZhFG
+         jbv3PaYMyafnqAK7BZW4C9hHl2HDt27Z0jCW48yq0cRe9cKlFDPeNt9KBY4Z6kTHjtIk
+         4+5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ULnk6/AujffEHtqaXUB+Sqx1kV7oADwaFIlwS/jfgBE=;
-        b=t8kpmmKB2djyewNwME90q1whnHWKGC/jM2VuMcCkH3HRxXR0qVDyoDDnfS6Uh/1quI
-         YJEUWLroQtMNFS7FRY4b1maN5sb9eGIrhFq1eacZybHLb25/ApdFY67bPqOM3eDZXW2F
-         CtcA8fnLwW58oFZT1kz4z6jNhSyyzlshhV66T2VFbu1G73v7AE2X51IFfR5VGp8P6vJs
-         e+7qj2br0v7+yHENa7xAXyFdm4WnDB1gs0gxy8GqkGR2VUhYoUvR4+H5RqAmU2N50C2V
-         H5tVgwhs1n1wsWCW9tf/T72L0ornx0TmSqTU2hKf4jEkhMAPwuuT8I8QCfAiAZbIo10D
-         mSJg==
-X-Gm-Message-State: AOAM530BSQseV97ROWSfuS4NC5Zmg6C+a4NVyLHHA2DtYeq0i82FZ8Fn
-        19h0nndlzapQE/ZLs1Qk5yc=
-X-Google-Smtp-Source: ABdhPJwKVyYU+jP6gXOXHOeHUG1pzfSGZ4Lqk8xm/nk0yFAyUByJbcHs+PelkKs7IxCjKEfA9bIx7g==
-X-Received: by 2002:a17:902:8a91:b029:e6:3e11:b252 with SMTP id p17-20020a1709028a91b02900e63e11b252mr3818216plo.7.1615652224355;
-        Sat, 13 Mar 2021 08:17:04 -0800 (PST)
-Received: from localhost ([49.206.1.181])
-        by smtp.gmail.com with ESMTPSA id l10sm2790396pfc.125.2021.03.13.08.17.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 08:17:03 -0800 (PST)
-Date:   Sat, 13 Mar 2021 21:46:55 +0530
-From:   Abhishek C <astro.abhishek02@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
-Subject: [PATCH] drivers: android: binder.c: Fix indentation of multi-line
- comment
-Message-ID: <20210313161655.mu64qezxog4ghibq@astroabhi>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aXi6zxmykvKGGuEUIknBGQuu/CrpF+OFk8aqg1g8+Js=;
+        b=RWpJp9ontZOvRMncYQydzhgd/kmxrCW8sA2Ss7LRhtcfOdDRN05N0BMdgwxBp9lcqV
+         9RisfygBqY7VUHuBXgutd6LSgESo5NHywEPfFqyIquxFfPd60o++gNEwYxYFPqUgzt2J
+         /UBPjHmaNb1A5kaNZIqtdN9YU5HjXDwaWNIpUkzVH9RUW8JzOB2p9ByW3gi6kjp9LKzQ
+         gkPddsfWFIbCzF42F35daAAkB1Oxww0Jkh7Oi7QtNzGDLvMXoBptAcY0TuqUD9XMv06s
+         Pj9of01etDCrGKMA4YkZgIMK308rmtskcCeS8WK0OO8A1KJvBQYuWzCGyi00TOUl80Jq
+         2nWw==
+X-Gm-Message-State: AOAM533KP5HXB3hBoclYsfK8ZYpxe/wiTlfCU/uEShCW3vneppsIz5/b
+        oyTaM5gkLl9XCr50q3SQAOIr+c+Bg32n0WP3kms=
+X-Google-Smtp-Source: ABdhPJwtKc3ckDh1wM2gREfAQUcazj9bOTqT8gJ/CC1jACL5d+N8mbIM5sD/vFtR/QEb1ipgGC33qgcC6cjdF7XgPjg=
+X-Received: by 2002:a25:424f:: with SMTP id p76mr27228411yba.109.1615652676401;
+ Sat, 13 Mar 2021 08:24:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
+ <20210310130227.GN3479805@casper.infradead.org> <20210310142159.kudk7q2ogp4yqn36@fiona>
+ <20210310142643.GQ3479805@casper.infradead.org> <YEy4+SPUvQkL44PQ@angband.pl>
+In-Reply-To: <YEy4+SPUvQkL44PQ@angband.pl>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Sat, 13 Mar 2021 11:24:00 -0500
+Message-ID: <CAEg-Je-JCW5xa6w5Z9n7+UNnLju251SmqnXiReA2v41fFaXAtw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+To:     Adam Borowski <kilobyte@angband.pl>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, david <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed alignment of multi-line comment.
-Added a * for each line of the comment.
+On Sat, Mar 13, 2021 at 8:09 AM Adam Borowski <kilobyte@angband.pl> wrote:
+>
+> On Wed, Mar 10, 2021 at 02:26:43PM +0000, Matthew Wilcox wrote:
+> > On Wed, Mar 10, 2021 at 08:21:59AM -0600, Goldwyn Rodrigues wrote:
+> > > DAX on btrfs has been attempted[1]. Of course, we could not
+> >
+> > But why?  A completeness fetish?  I don't understand why you decided
+> > to do this work.
+>
+> * xfs can shapshot only single files, btrfs entire subvolumes
+> * btrfs-send|receive
+> * enumeration of changed parts of a file
+>
 
-Signed-off-by: Abhishek C <astro.abhishek02@gmail.com>
----
- drivers/android/binder.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+XFS cannot do snapshots since it lacks metadata COW. XFS reflinking is
+primarily for space efficiency.
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index c119736ca56a..700719c58147 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -4617,8 +4617,9 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	unsigned int size = _IOC_SIZE(cmd);
- 	void __user *ubuf = (void __user *)arg;
- 
--	/*pr_info("binder_ioctl: %d:%d %x %lx\n",
--			proc->pid, current->pid, cmd, arg);*/
-+	/* pr_info("binder_ioctl: %d:%d %x %lx\n",
-+	 * proc->pid, current->pid, cmd, arg);
-+	 */
- 
- 	binder_selftest_alloc(&proc->alloc);
- 
-@@ -5750,8 +5751,8 @@ static int __init binder_init(void)
- 	if (!IS_ENABLED(CONFIG_ANDROID_BINDERFS) &&
- 	    strcmp(binder_devices_param, "") != 0) {
- 		/*
--		* Copy the module_parameter string, because we don't want to
--		* tokenize it in-place.
-+		 * Copy the module_parameter string, because we don't want to
-+		 * tokenize it in-place.
- 		 */
- 		device_names = kstrdup(binder_devices_param, GFP_KERNEL);
- 		if (!device_names) {
--- 
-2.25.1
 
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
