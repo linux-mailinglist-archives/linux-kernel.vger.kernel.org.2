@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E53E339A6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79457339A78
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhCMA1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 19:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S231907AbhCMAil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 19:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhCMA0o (ORCPT
+        with ESMTP id S229968AbhCMAiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 19:26:44 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B68BC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:26:44 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d23so9463794plq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:26:44 -0800 (PST)
+        Fri, 12 Mar 2021 19:38:02 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96566C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:38:01 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id j3so10438604edp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:38:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vNRpYg3mNXhJ4EvT4QVsetlahXm7tTJ+Ei2tmIgYcGk=;
-        b=CwuBwBYEqQ0MfZY/RYslKueCBMpAtG8LOwNU5tg4QcEpihijcpdWqSNQzo7XIkAMQ4
-         0+WF9LwmesCxenPaTSRwhrlJ6tiNHdcs9EDFeYwYkIlsxY+Aq6GuzW/IPcWiNHkMV9ZC
-         s3eXk860yJTAMfSN09JR0Tlev4icJsi8QVf3hRl76DzHYCvLcx8EMZePHXT+AalyHl3b
-         47jxQXpDCPT62S3w9eOPvM1OBF4EVSArHcYP0kPHogzuTMBOvRihfXFsi2OLrAspQKVM
-         7cl7JcXUpU0GIzeQgEIaK43ro6uMdiZZ/iLoGCMVy2S8Ka52YA98xU/Y5fw3gGEJvW2b
-         Ft2A==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V55CsUmF+mr/CmKZQo4eJ9DoAvL0H9UDMjqEpaUB6P8=;
+        b=RH9RDg+D75eQrwkyEdi2sgJFftBidFQeJw2cxeSf+OKCsQ+T66mXWa2etqZaWchhv3
+         2SAMfRLrOATudtHmv4stvGgXYh4OBWw572sVy0isD1a4sbdZk1vBXiQ4uBt1WBQfvIws
+         BrKRb1E2N38QPKyOeFrUnsJTMHWv8TJeC/nQ/0GXC8kTZbA7blnT2VEKdL0ZjVgux7z6
+         Grd7Ywj1a79opu4pu5mfmT3WlL5o2Qj/PWPpcqqcTlDGf3INQws5wFAK08kgz6vOwxFB
+         zaEHeEnveJ5uNf/p9fSU/Uhf70o+D58KJLVr32cuMIeqhZatZp8jPwSRuSnxH9epV+xy
+         Uylw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vNRpYg3mNXhJ4EvT4QVsetlahXm7tTJ+Ei2tmIgYcGk=;
-        b=iKK3SnZlqlMGU2N9mJKdXs4B+L+k+NSUAxgyFhWY5PgMT4RNqGVg0uRIylffxEYsSB
-         8eYGQlXAbS3sSYBGhODd47njlUd2m2w+cDzHPX4qT0QYLS2D4Ey2s8dRZ0cL9xGbtyo/
-         WRx+zWUzvKu5e+hs1tQeWV7fIsm9hArAv+CvfwZ6MM8clvXaRxSVLqIxf1whPqnavH40
-         lnjdaxbIzUTFQAypv1pcEM1qHhCJ54C7BUd6IEhBX+ieyyQhctyQEqqeZmIqZffTnxQ8
-         Fvl9jHrpLVny4nJ9TMJi9Yk8voPLom2GMUugnxNLeMDjr2EL1+sv9O+011Sh4v+YN8gj
-         X/Bg==
-X-Gm-Message-State: AOAM530Sa59oEmXGfW5pJjhE8p33jrfOqZRMCEx7NS9KNt7DHp4oW3qs
-        EjTIu2G3ryF1FDd+KhG8HaZ3Fw==
-X-Google-Smtp-Source: ABdhPJyrDVEwyIJWQ/zoMQWV8ziBMF1idnxWF6Q8rvjlerzFXMpFvXoH3nEYW46ep6JDtJXBpoaOfA==
-X-Received: by 2002:a17:903:189:b029:e5:d7c3:a264 with SMTP id z9-20020a1709030189b02900e5d7c3a264mr1056141plg.6.1615595203624;
-        Fri, 12 Mar 2021 16:26:43 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id co20sm3409772pjb.32.2021.03.12.16.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 16:26:43 -0800 (PST)
-Date:   Fri, 12 Mar 2021 16:26:36 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "wangyanan (Y)" <wangyanan55@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 04/15] KVM: selftests: Force stronger HVA alignment (1gb)
- for hugepages
-Message-ID: <YEwGvHe+wcaEG0W8@google.com>
-References: <20210210230625.550939-1-seanjc@google.com>
- <20210210230625.550939-5-seanjc@google.com>
- <9a870968-f381-3e0b-2840-62b7c2b2e032@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V55CsUmF+mr/CmKZQo4eJ9DoAvL0H9UDMjqEpaUB6P8=;
+        b=fZ6NFmbpLsQ5fF+411Y4VvaAKdUjExddqKIwQ6TBju4FlrJgHA5mYDi5WtS5ijyMHC
+         Dc3V+ljsXzIfLGZeCV0XFadPk7uuCrZZmua1BKqbjtmnSqKQ7ZwspMY5qExQ3JA9mXWf
+         6bCfSHFbA4MLrcezrwHrCxdD4ARej7X7tCcmLpqHYAkVdgtk/daLgnmj0NRlPXuNlH+8
+         Ru/92GemqaZeVyeHjxjkCWFwkQm/kjbOIkHvsB/sJEYC3meRGEYzaXENcWAts8f90StD
+         KtsRZ4c1IM+yt8W+kygBUO5M5zKRyfkQYs6G7fCgej+x9Hy1WWUF40NZj+mLW17jGm3C
+         6OKA==
+X-Gm-Message-State: AOAM533xCwpIwO6esXwGAiw63213rzsRjWewDrKc30qqcw1IZYqxQrM5
+        HpjiHCh2/a8cbIsFpbgoaBtkqHA9GWlQwKS2ryKtgA==
+X-Google-Smtp-Source: ABdhPJxA2nrJrysU0o+ZmDC6nfvgpSHtUwP8Uj+zsAeDJef7rmoitYogvGH31sOr5WepfLemcqpL02/a0l9ZafkST+Y=
+X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr17041105edr.52.1615595880149;
+ Fri, 12 Mar 2021 16:38:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a870968-f381-3e0b-2840-62b7c2b2e032@huawei.com>
+References: <a137e4aa-22fb-5683-7d58-847408c6bf2b@linux.intel.com> <20210312231416.GA2304029@bjorn-Precision-5520>
+In-Reply-To: <20210312231416.GA2304029@bjorn-Precision-5520>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 12 Mar 2021 16:37:49 -0800
+Message-ID: <CAPcyv4jWkwbaBUtcV4B1hMaCWxEdZwzgmLSTiuepb-MQE=ZegA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] PCI: pciehp: Skip DLLSC handling if DPC is triggered
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Keith Busch <keith.busch@intel.com>, knsathya@kernel.org,
+        Lukas Wunner <lukas@wunner.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021, wangyanan (Y) wrote:
-> 
-> On 2021/2/11 7:06, Sean Christopherson wrote:
-> > Align the HVA for hugepage memslots to 1gb, as opposed to incorrectly
-> > assuming all architectures' hugepages are 512*page_size.
-> > 
-> > For x86, multiplying by 512 is correct, but only for 2mb pages, e.g.
-> > systems that support 1gb pages will never be able to use them for mapping
-> > guest memory, and thus those flows will not be exercised.
-> > 
-> > For arm64, powerpc, and s390 (and mips?), hardcoding the multiplier to
-> > 512 is either flat out wrong, or at best correct only in certain
-> > configurations.
-> > 
-> > Hardcoding the _alignment_ to 1gb is a compromise between correctness and
-> > simplicity.  Due to the myriad flavors of hugepages across architectures,
-> > attempting to enumerate the exact hugepage size is difficult, and likely
-> > requires probing the kernel.
-> > 
-> > But, there is no need for precision since a stronger alignment will not
-> > prevent creating a smaller hugepage.  For all but the most extreme cases,
-> > e.g. arm64's 16gb contiguous PMDs, aligning to 1gb is sufficient to allow
-> > KVM to back the guest with hugepages.
-> I have implemented a helper get_backing_src_pagesz() to get granularity of
-> different
-> backing src types (anonymous/thp/hugetlb) which is suitable for different
-> architectures.
-> See:
-> https://lore.kernel.org/lkml/20210225055940.18748-6-wangyanan55@huawei.com/
-> if it looks fine for you, maybe we can use the accurate page sizes for
-> GPA/HVA alignment:).
+On Fri, Mar 12, 2021 at 3:14 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Fri, Mar 12, 2021 at 02:11:03PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> > On 3/12/21 1:33 PM, Bjorn Helgaas wrote:
+> > > On Mon, Mar 08, 2021 at 10:34:10PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> > > > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+> > > > +bool is_dpc_reset_active(struct pci_dev *dev)
+> > > > +{
+> > > > + struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+> > > > + u16 status;
+> > > > +
+> > > > + if (!dev->dpc_cap)
+> > > > +         return false;
+> > > > +
+> > > > + /*
+> > > > +  * If DPC is owned by firmware and EDR is not supported, there is
+> > > > +  * no race between hotplug and DPC recovery handler. So return
+> > > > +  * false.
+> > > > +  */
+> > > > + if (!host->native_dpc && !IS_ENABLED(CONFIG_PCIE_EDR))
+> > > > +         return false;
+> > > > +
+> > > > + if (atomic_read_acquire(&dev->dpc_reset_active))
+> > > > +         return true;
+> > > > +
+> > > > + pci_read_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_STATUS, &status);
+> > > > +
+> > > > + return !!(status & PCI_EXP_DPC_STATUS_TRIGGER);
+> > >
+> > > I know it's somewhat common in drivers/pci/, but I'm not really a
+> > > big fan of "!!".
+> > I can change it to use ternary operator.
+> > (status & PCI_EXP_DPC_STATUS_TRIGGER) ? true : false;
+>
+> Ternary isn't terrible, but what's wrong with:
+>
+>   if (status & PCI_EXP_DPC_STATUS_TRIGGER)
+>     return true;
+>   return false;
 
-Works for me.  I'll probably just wait until your series is queued to send v2.
+It was the branch I was trying to get rid of by recommending !!, how about:
 
-Thanks again!
+return (status & PCI_EXP_DPC_STATUS_TRIGGER) == PCI_EXP_DPC_STATUS_TRIGGER;
+
+...just so I know the style preference for future drivers/pci/ work?
+That at least matches the pattern in the mm helpers that test pte
+bits.
+
+>
+> which matches the style of the rest of the function.
+>
+> Looking at this again, we return "true" if either dpc_reset_active or
+> PCI_EXP_DPC_STATUS_TRIGGER.  I haven't worked this all out, but that
+> pattern feels racy.  I guess the thought is that if
+> PCI_EXP_DPC_STATUS_TRIGGER is set, dpc_reset_link() will be invoked
+> soon and we don't want to interfere?
+
+Right, and when the trigger is clear then dpc_reset_active keeps
+holding off the hotplug driver until the dpc reset completes in
+polling for the link up event.
