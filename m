@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B4F339CB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AD9339CB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhCMH6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        id S233577AbhCMH6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhCMH6L (ORCPT
+        with ESMTP id S232992AbhCMH6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:58:11 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED49C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:11 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id b21so19336130qtr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:11 -0800 (PST)
+        Sat, 13 Mar 2021 02:58:13 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2926C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:12 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id b127so31851193ybc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=xqbmxYHaO3cMzT5bj/KOIzl+A4iyODs6ga8GzAKSrkE=;
-        b=aCMPh4sfMlM3e6I+5or6zJlbHk6bJJ366JgVLE0jRyU2R9ZqTAdl/pzm6yajVT6ycB
-         R3xLH3mN1h4Agtzp3ZKjLdBAoR0i0R0R6lzXQljBVIbOuqUZFY+sw3o8WmPkGc03xc2m
-         dr44s/QwksFpUKxra33PNDauwhk0aM45ZbRd238UtPStswmrshOSmIlfZiRKTC4jSk1B
-         IT5xjTbNazZfQOZvoiY7Q3k+uwbArdxbxTXjz8ad9h7O5bQfF9wGt4VgjerJbWQKhTRU
-         zgbLNXljWtIdgOpRYmaNN+huMS6V5KkWhB+tZ5LkJGhbn+JmFhmrfjMn35Xnhql3Eveu
-         q92A==
+        bh=HpM4Xhq08m+hN0lK+sEgEqrsIbbrPIT86c74gNI/u9w=;
+        b=iZooLRgVq0QKt7uS3ecgWUo9C9cGTHyr/2U5sxKCS6QXN0IgrJO3PAgtZX95WUfwcs
+         ZSAQR6gNrWG+wP3LmXgu+DSkMxuKFw0cNRjKklelEg68uDJJWokPALnGLPA4nMy8dmmL
+         gNmywFSsTBT8s8Opdpx1NmeoX3AoH+b/8wRfOXpwgaGDC+vZ82D7uiEVDdLrnbyopU8f
+         IpPsdEWG/PKjNmqr9aaxr+DYpbpcOwr48yDoUFRDhKXq2kRMLS3q9Cr2+5Aa3cOZI9gL
+         a6NMw3O/GtXpPy+iDG3kH66GA3tICHTkX1Zm9PHqXzTR/dFawFQyNro80/QMStsyVm0P
+         hUPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=xqbmxYHaO3cMzT5bj/KOIzl+A4iyODs6ga8GzAKSrkE=;
-        b=ELwP/ih5rcnRV8ilH4wHoagohM2fYPTmpUPvhQxKwiuGY8hsFrPo23R7PzwR30oiWI
-         VctwtgGSRFQFOyfcWEPNP4SMqwwIk1eu8glqg6CQWKa87rY721qEk0JRsgjewFSqdoTI
-         pKd+k+VBiLUxlIqwPjnBAqVby7cJUv4e/5BOpOxLQJJh+spTjfp7T679SBSky3ro/JqC
-         EID5nP4xORL+8LLUSfsRJn1CTWks+GWRIh0JOE/gxlIb9DhVYxCv8PRv2CA2pjIrDXjk
-         3nxSdtaSAsInb0PAzpAG4+NVKF1suSWoJNb8d7fOob5HfXhA0/1aBLU8JsYpZdHS3oQL
-         ddhw==
-X-Gm-Message-State: AOAM5319lFA9q7zjycOKH1TFLtjK6rHjUIfzRtUZRSmbTbvpAGZvBnqr
-        cx6R08ZkL0PPGp5qZ/enqEaNYC+EDX8=
-X-Google-Smtp-Source: ABdhPJx1/5VDYsBrZetaVUsn197WpRCAdLjUCneommYhd37knsedDkkTX9reu4Vy54B+q98cUeZMGTzp9xY=
+        bh=HpM4Xhq08m+hN0lK+sEgEqrsIbbrPIT86c74gNI/u9w=;
+        b=enhVyxFe4tZkU5M5CCcAvOq7XPOtrI0KR9T9RiANQFtlMzTvtrxKdJw8h9WJfPozxv
+         DODj66oaquifIDjLTzxgHvuElCPtya1VXVDoZr/k/dHc0n6u5v10BW2bAYXIVIBtZgMb
+         WwMcgh3rGt4wsE7QWUeFmRne+9VW55GHi1MtsKV2+fvK2y7UyMEoP6hy3iQbBcTxeLH0
+         F684asdtadbsGGkyGN1KvT5S9l71CJFhEI6Zz6ag4NgojHVz2zN0kv4/qzQCkWhPUHNs
+         Pqv8OmYBrbTHERb8vRmdpXAn8C+qWgQ5PHrVk8OOP3YB1/IBCCwYKqMe/Q7FeRocip4d
+         Q5vw==
+X-Gm-Message-State: AOAM532t/+vC4rNBlDPUITq8/UGTKPQERiyG/Yu/AZbe1MTxG9Izfw1X
+        ohDrQJQrlikp3FZQGyfgd8ZO5sD99kg=
+X-Google-Smtp-Source: ABdhPJyqRrRSS1bJd41QeWsraiQMIBjlJledYF/KyYHH/bW9K+768sYy2pOiqW2DerYXRlOndOy2egSD7FE=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:ad4:4581:: with SMTP id x1mr1753140qvu.9.1615622290851;
- Fri, 12 Mar 2021 23:58:10 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:44 -0700
+ (user=yuzhao job=sendgmr) by 2002:a25:1184:: with SMTP id 126mr22571060ybr.430.1615622292183;
+ Fri, 12 Mar 2021 23:58:12 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:45 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-12-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-13-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 11/14] mm: multigenerational lru: page activation
+Subject: [PATCH v1 12/14] mm: multigenerational lru: user space interface
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -73,526 +73,406 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the page fault path, we want to add pages to the per-zone lists
-index by max_seq as they cannot be evicted without going through
-the aging first. For anon pages, we rename
-lru_cache_add_inactive_or_unevictable() to lru_cache_add_page_vma()
-and add a new parameter, which is set to true in the page fault path,
-to indicate whether they should be added to the per-zone lists index
-by max_seq. For page/swap cache, since we cannot differentiate the
-page fault path from the read ahead path at the time we call
-lru_cache_add() in add_to_page_cache_lru() and
-__read_swap_cache_async(), we have to add a new function
-lru_gen_activate_page(), which is essentially activate_page(), to move
-pages to the per-zone lists indexed by max_seq at a later time.
-Hopefully we would find pages we want to activate in lru_pvecs.lru_add
-and simply set PageActive() on them without having to actually move
-them.
+Add a sysfs file /sys/kernel/mm/lru_gen/enabled so user space can
+enable and disable multigenerational lru at runtime.
 
-In the reclaim path, pages mapped around a referenced PTE may also
-have been referenced due to spatial locality. We add a new function
-lru_gen_scan_around() to scan the vicinity of such a PTE.
+Add a sysfs file /sys/kernel/mm/lru_gen/spread so user space can
+spread pages out across multiple generations. More generations make
+the background aging more aggressive.
 
-In addition, we add a new function page_is_active() to tell whether a
-page is active. We cannot use PageActive() because it is only set on
-active pages while they are not on multigenerational lru. It is
-cleared while pages are on multigenerational lru, in order to spare
-the aging the trouble of clearing it when an active generation becomes
-inactive. Internally, page_is_active() compares the generation number
-of a page with max_seq and max_seq-1, which are active generations and
-protected from the eviction. Other generations, which may or may not
-exist, are inactive.
+Add a debugfs file /sys/kernel/debug/lru_gen so user space can monitor
+multigenerational lru and trigger the aging and the eviction. This
+file has the following output:
+  memcg  memcg_id  memcg_path
+    node  node_id
+      min_gen  birth_time  anon_size  file_size
+      ...
+      max_gen  birth_time  anon_size  file_size
+
+Given a memcg and a node, "min_gen" is the oldest generation (number)
+and "max_gen" is the youngest. Birth time is in milliseconds. Anon and
+file sizes are in pages.
+
+Write "+ memcg_id node_id gen [swappiness]" to this file to account
+referenced pages to generation "max_gen" and create next generation
+"max_gen"+1. "gen" must be equal to "max_gen" in order to avoid races.
+A swap file and a non-zero swappiness value are required to scan anon
+pages. If swapping is not desired, set vm.swappiness to 0 and
+overwrite it with a non-zero "swappiness".
+
+Write "- memcg_id node_id gen [swappiness] [nr_to_reclaim]" to this
+file to evict generations less than or equal to "gen". "gen" must be
+less than "max_gen"-1 as "max_gen" and "max_gen"-1 are active
+generations and therefore protected from the eviction. "nr_to_reclaim"
+can be used to limit the number of pages to be evicted.
+
+Multiple command lines are supported, so does concatenation with
+delimiters "," and ";".
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- fs/proc/task_mmu.c        |  3 ++-
- include/linux/mm_inline.h | 52 ++++++++++++++++++++++++++++++++++++++
- include/linux/mmzone.h    |  6 +++++
- include/linux/swap.h      |  4 +--
- kernel/events/uprobes.c   |  2 +-
- mm/huge_memory.c          |  2 +-
- mm/khugepaged.c           |  2 +-
- mm/memory.c               | 14 +++++++----
- mm/migrate.c              |  2 +-
- mm/rmap.c                 |  6 +++++
- mm/swap.c                 | 26 +++++++++++--------
- mm/swapfile.c             |  2 +-
- mm/userfaultfd.c          |  2 +-
- mm/vmscan.c               | 53 ++++++++++++++++++++++++++++++++++++++-
- 14 files changed, 150 insertions(+), 26 deletions(-)
+ mm/vmscan.c | 334 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 334 insertions(+)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 3cec6fbef725..7cd173710e76 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -19,6 +19,7 @@
- #include <linux/shmem_fs.h>
- #include <linux/uaccess.h>
- #include <linux/pkeys.h>
-+#include <linux/mm_inline.h>
- 
- #include <asm/elf.h>
- #include <asm/tlb.h>
-@@ -1720,7 +1721,7 @@ static void gather_stats(struct page *page, struct numa_maps *md, int pte_dirty,
- 	if (PageSwapCache(page))
- 		md->swapcache += nr_pages;
- 
--	if (PageActive(page) || PageUnevictable(page))
-+	if (PageUnevictable(page) || page_is_active(compound_head(page), NULL))
- 		md->active += nr_pages;
- 
- 	if (PageWriteback(page))
-diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 2d306cab36bc..a1a382418fc4 100644
---- a/include/linux/mm_inline.h
-+++ b/include/linux/mm_inline.h
-@@ -116,6 +116,49 @@ static inline int page_lru_gen(struct page *page)
- 	return ((READ_ONCE(page->flags) & LRU_GEN_MASK) >> LRU_GEN_PGOFF) - 1;
- }
- 
-+/* This function works regardless whether multigenerational lru is enabled. */
-+static inline bool page_is_active(struct page *page, struct lruvec *lruvec)
-+{
-+	struct mem_cgroup *memcg;
-+	int gen = page_lru_gen(page);
-+	bool active = false;
-+
-+	VM_BUG_ON_PAGE(PageTail(page), page);
-+
-+	if (gen < 0)
-+		return PageActive(page);
-+
-+	if (lruvec) {
-+		VM_BUG_ON_PAGE(PageUnevictable(page), page);
-+		VM_BUG_ON_PAGE(PageActive(page), page);
-+		lockdep_assert_held(&lruvec->lru_lock);
-+
-+		return lru_gen_is_active(lruvec, gen);
-+	}
-+
-+	rcu_read_lock();
-+
-+	memcg = page_memcg_rcu(page);
-+	lruvec = mem_cgroup_lruvec(memcg, page_pgdat(page));
-+	active = lru_gen_is_active(lruvec, gen);
-+
-+	rcu_read_unlock();
-+
-+	return active;
-+}
-+
-+/* Activate a page from page cache or swap cache after it's mapped. */
-+static inline void lru_gen_activate_page(struct page *page, struct vm_area_struct *vma)
-+{
-+	if (!lru_gen_enabled() || PageActive(page))
-+		return;
-+
-+	if (vma->vm_flags & (VM_LOCKED | VM_SPECIAL | VM_HUGETLB))
-+		return;
-+
-+	activate_page(page);
-+}
-+
- /* Update multigenerational lru sizes in addition to active/inactive lru sizes. */
- static inline void lru_gen_update_size(struct page *page, struct lruvec *lruvec,
- 				       int old_gen, int new_gen)
-@@ -252,6 +295,15 @@ static inline bool lru_gen_enabled(void)
- 	return false;
- }
- 
-+static inline bool page_is_active(struct page *page, struct lruvec *lruvec)
-+{
-+	return PageActive(page);
-+}
-+
-+static inline void lru_gen_activate_page(struct page *page, struct vm_area_struct *vma)
-+{
-+}
-+
- static inline bool page_set_lru_gen(struct page *page, struct lruvec *lruvec, bool front)
- {
- 	return false;
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 173083bb846e..99156602cd06 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -292,6 +292,7 @@ enum lruvec_flags {
- };
- 
- struct lruvec;
-+struct page_vma_mapped_walk;
- 
- #define LRU_GEN_MASK	((BIT(LRU_GEN_WIDTH) - 1) << LRU_GEN_PGOFF)
- 
-@@ -328,6 +329,7 @@ struct lru_gen {
- 
- void lru_gen_init_lruvec(struct lruvec *lruvec);
- void lru_gen_set_state(bool enable, bool main, bool swap);
-+void lru_gen_scan_around(struct page_vma_mapped_walk *pvmw);
- 
- #else /* CONFIG_LRU_GEN */
- 
-@@ -339,6 +341,10 @@ static inline void lru_gen_set_state(bool enable, bool main, bool swap)
- {
- }
- 
-+static inline void lru_gen_scan_around(struct page_vma_mapped_walk *pvmw)
-+{
-+}
-+
- #endif /* CONFIG_LRU_GEN */
- 
- struct lruvec {
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index de2bbbf181ba..0e7532c7db22 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -350,8 +350,8 @@ extern void deactivate_page(struct page *page);
- extern void mark_page_lazyfree(struct page *page);
- extern void swap_setup(void);
- 
--extern void lru_cache_add_inactive_or_unevictable(struct page *page,
--						struct vm_area_struct *vma);
-+extern void lru_cache_add_page_vma(struct page *page, struct vm_area_struct *vma,
-+				   bool faulting);
- 
- /* linux/mm/vmscan.c */
- extern unsigned long zone_reclaimable_pages(struct zone *zone);
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6addc9780319..4e93e5602723 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -184,7 +184,7 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
- 	if (new_page) {
- 		get_page(new_page);
- 		page_add_new_anon_rmap(new_page, vma, addr, false);
--		lru_cache_add_inactive_or_unevictable(new_page, vma);
-+		lru_cache_add_page_vma(new_page, vma, false);
- 	} else
- 		/* no new page, just dec_mm_counter for old_page */
- 		dec_mm_counter(mm, MM_ANONPAGES);
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index be9bf681313c..62e14da5264e 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -637,7 +637,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 		entry = mk_huge_pmd(page, vma->vm_page_prot);
- 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
- 		page_add_new_anon_rmap(page, vma, haddr, true);
--		lru_cache_add_inactive_or_unevictable(page, vma);
-+		lru_cache_add_page_vma(page, vma, true);
- 		pgtable_trans_huge_deposit(vma->vm_mm, vmf->pmd, pgtable);
- 		set_pmd_at(vma->vm_mm, haddr, vmf->pmd, entry);
- 		update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index a7d6cb912b05..08a43910f232 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1199,7 +1199,7 @@ static void collapse_huge_page(struct mm_struct *mm,
- 	spin_lock(pmd_ptl);
- 	BUG_ON(!pmd_none(*pmd));
- 	page_add_new_anon_rmap(new_page, vma, address, true);
--	lru_cache_add_inactive_or_unevictable(new_page, vma);
-+	lru_cache_add_page_vma(new_page, vma, true);
- 	pgtable_trans_huge_deposit(mm, pmd, pgtable);
- 	set_pmd_at(mm, address, pmd, _pmd);
- 	update_mmu_cache_pmd(vma, address, pmd);
-diff --git a/mm/memory.c b/mm/memory.c
-index c8e357627318..7188607bddb9 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -73,6 +73,7 @@
- #include <linux/perf_event.h>
- #include <linux/ptrace.h>
- #include <linux/vmalloc.h>
-+#include <linux/mm_inline.h>
- 
- #include <trace/events/kmem.h>
- 
-@@ -845,7 +846,7 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
- 	copy_user_highpage(new_page, page, addr, src_vma);
- 	__SetPageUptodate(new_page);
- 	page_add_new_anon_rmap(new_page, dst_vma, addr, false);
--	lru_cache_add_inactive_or_unevictable(new_page, dst_vma);
-+	lru_cache_add_page_vma(new_page, dst_vma, false);
- 	rss[mm_counter(new_page)]++;
- 
- 	/* All done, just insert the new page copy in the child */
-@@ -2913,7 +2914,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		 */
- 		ptep_clear_flush_notify(vma, vmf->address, vmf->pte);
- 		page_add_new_anon_rmap(new_page, vma, vmf->address, false);
--		lru_cache_add_inactive_or_unevictable(new_page, vma);
-+		lru_cache_add_page_vma(new_page, vma, true);
- 		/*
- 		 * We call the notify macro here because, when using secondary
- 		 * mmu page tables (such as kvm shadow page tables), we want the
-@@ -3436,9 +3437,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	/* ksm created a completely new copy */
- 	if (unlikely(page != swapcache && swapcache)) {
- 		page_add_new_anon_rmap(page, vma, vmf->address, false);
--		lru_cache_add_inactive_or_unevictable(page, vma);
-+		lru_cache_add_page_vma(page, vma, true);
- 	} else {
- 		do_page_add_anon_rmap(page, vma, vmf->address, exclusive);
-+		lru_gen_activate_page(page, vma);
- 	}
- 
- 	swap_free(entry);
-@@ -3582,7 +3584,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 
- 	inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
- 	page_add_new_anon_rmap(page, vma, vmf->address, false);
--	lru_cache_add_inactive_or_unevictable(page, vma);
-+	lru_cache_add_page_vma(page, vma, true);
- setpte:
- 	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
- 
-@@ -3707,6 +3709,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- 
- 	add_mm_counter(vma->vm_mm, mm_counter_file(page), HPAGE_PMD_NR);
- 	page_add_file_rmap(page, true);
-+	lru_gen_activate_page(page, vma);
- 	/*
- 	 * deposit and withdraw with pmd lock held
- 	 */
-@@ -3750,10 +3753,11 @@ void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
- 	if (write && !(vma->vm_flags & VM_SHARED)) {
- 		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
- 		page_add_new_anon_rmap(page, vma, addr, false);
--		lru_cache_add_inactive_or_unevictable(page, vma);
-+		lru_cache_add_page_vma(page, vma, true);
- 	} else {
- 		inc_mm_counter_fast(vma->vm_mm, mm_counter_file(page));
- 		page_add_file_rmap(page, false);
-+		lru_gen_activate_page(page, vma);
- 	}
- 	set_pte_at(vma->vm_mm, addr, vmf->pte, entry);
- }
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 62b81d5257aa..1064b03cac33 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -3004,7 +3004,7 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
- 	inc_mm_counter(mm, MM_ANONPAGES);
- 	page_add_new_anon_rmap(page, vma, addr, false);
- 	if (!is_zone_device_page(page))
--		lru_cache_add_inactive_or_unevictable(page, vma);
-+		lru_cache_add_page_vma(page, vma, false);
- 	get_page(page);
- 
- 	if (flush) {
-diff --git a/mm/rmap.c b/mm/rmap.c
-index b0fc27e77d6d..a44f9ee74ee1 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -72,6 +72,7 @@
- #include <linux/page_idle.h>
- #include <linux/memremap.h>
- #include <linux/userfaultfd_k.h>
-+#include <linux/mm_inline.h>
- 
- #include <asm/tlbflush.h>
- 
-@@ -792,6 +793,11 @@ static bool page_referenced_one(struct page *page, struct vm_area_struct *vma,
- 		}
- 
- 		if (pvmw.pte) {
-+			/* multigenerational lru exploits spatial locality */
-+			if (lru_gen_enabled() && pte_young(*pvmw.pte)) {
-+				lru_gen_scan_around(&pvmw);
-+				referenced++;
-+			}
- 			if (ptep_clear_flush_young_notify(vma, address,
- 						pvmw.pte)) {
- 				/*
-diff --git a/mm/swap.c b/mm/swap.c
-index bd10efe00684..7aa85004b490 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -310,7 +310,7 @@ void lru_note_cost_page(struct page *page)
- 
- static void __activate_page(struct page *page, struct lruvec *lruvec)
- {
--	if (!PageActive(page) && !PageUnevictable(page)) {
-+	if (!PageUnevictable(page) && !page_is_active(page, lruvec)) {
- 		int nr_pages = thp_nr_pages(page);
- 
- 		del_page_from_lru_list(page, lruvec);
-@@ -341,7 +341,7 @@ static bool need_activate_page_drain(int cpu)
- static void activate_page_on_lru(struct page *page)
- {
- 	page = compound_head(page);
--	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
-+	if (PageLRU(page) && !PageUnevictable(page) && !page_is_active(page, NULL)) {
- 		struct pagevec *pvec;
- 
- 		local_lock(&lru_pvecs.lock);
-@@ -435,7 +435,7 @@ void mark_page_accessed(struct page *page)
- 		 * this list is never rotated or maintained, so marking an
- 		 * evictable page accessed has no effect.
- 		 */
--	} else if (!PageActive(page)) {
-+	} else if (!page_is_active(page, NULL)) {
- 		activate_page(page);
- 		ClearPageReferenced(page);
- 		workingset_activation(page);
-@@ -471,15 +471,14 @@ void lru_cache_add(struct page *page)
- EXPORT_SYMBOL(lru_cache_add);
- 
- /**
-- * lru_cache_add_inactive_or_unevictable
-+ * lru_cache_add_page_vma
-  * @page:  the page to be added to LRU
-  * @vma:   vma in which page is mapped for determining reclaimability
-  *
-- * Place @page on the inactive or unevictable LRU list, depending on its
-- * evictability.
-+ * Place @page on an LRU list, depending on its evictability.
-  */
--void lru_cache_add_inactive_or_unevictable(struct page *page,
--					 struct vm_area_struct *vma)
-+void lru_cache_add_page_vma(struct page *page, struct vm_area_struct *vma,
-+			    bool faulting)
- {
- 	bool unevictable;
- 
-@@ -496,6 +495,11 @@ void lru_cache_add_inactive_or_unevictable(struct page *page,
- 		__mod_zone_page_state(page_zone(page), NR_MLOCK, nr_pages);
- 		count_vm_events(UNEVICTABLE_PGMLOCKED, nr_pages);
- 	}
-+
-+	/* multigenerational lru uses PageActive() to track page faults */
-+	if (lru_gen_enabled() && !unevictable && faulting)
-+		SetPageActive(page);
-+
- 	lru_cache_add(page);
- }
- 
-@@ -522,7 +526,7 @@ void lru_cache_add_inactive_or_unevictable(struct page *page,
-  */
- static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
- {
--	bool active = PageActive(page);
-+	bool active = page_is_active(page, lruvec);
- 	int nr_pages = thp_nr_pages(page);
- 
- 	if (PageUnevictable(page))
-@@ -562,7 +566,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
- 
- static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
- {
--	if (PageActive(page) && !PageUnevictable(page)) {
-+	if (!PageUnevictable(page) && page_is_active(page, lruvec)) {
- 		int nr_pages = thp_nr_pages(page);
- 
- 		del_page_from_lru_list(page, lruvec);
-@@ -676,7 +680,7 @@ void deactivate_file_page(struct page *page)
-  */
- void deactivate_page(struct page *page)
- {
--	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
-+	if (PageLRU(page) && !PageUnevictable(page) && page_is_active(page, NULL)) {
- 		struct pagevec *pvec;
- 
- 		local_lock(&lru_pvecs.lock);
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index fe03cfeaa08f..c0956b3bde03 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1936,7 +1936,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
- 		page_add_anon_rmap(page, vma, addr, false);
- 	} else { /* ksm created a completely new copy */
- 		page_add_new_anon_rmap(page, vma, addr, false);
--		lru_cache_add_inactive_or_unevictable(page, vma);
-+		lru_cache_add_page_vma(page, vma, false);
- 	}
- 	swap_free(entry);
- out:
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 9a3d451402d7..e1d4cd3103b8 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -123,7 +123,7 @@ static int mcopy_atomic_pte(struct mm_struct *dst_mm,
- 
- 	inc_mm_counter(dst_mm, MM_ANONPAGES);
- 	page_add_new_anon_rmap(page, dst_vma, dst_addr, false);
--	lru_cache_add_inactive_or_unevictable(page, dst_vma);
-+	lru_cache_add_page_vma(page, dst_vma, true);
- 
- 	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
- 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index fd49a9a5d7f5..ce868d89dc53 100644
+index ce868d89dc53..b59b556e9587 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -1876,7 +1876,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		add_page_to_lru_list(page, lruvec);
- 		nr_pages = thp_nr_pages(page);
- 		nr_moved += nr_pages;
--		if (PageActive(page))
-+		if (page_is_active(page, lruvec))
- 			workingset_age_nonresident(lruvec, nr_pages);
- 	}
+@@ -51,6 +51,7 @@
+ #include <linux/psi.h>
+ #include <linux/pagewalk.h>
+ #include <linux/memory.h>
++#include <linux/debugfs.h>
  
-@@ -4688,6 +4688,57 @@ static int page_update_lru_gen(struct page *page, int new_gen)
- 	return old_gen;
+ #include <asm/tlbflush.h>
+ #include <asm/div64.h>
+@@ -5833,6 +5834,334 @@ lru_gen_online_mem(struct notifier_block *self, unsigned long action, void *arg)
+ 	return NOTIFY_DONE;
  }
  
-+void lru_gen_scan_around(struct page_vma_mapped_walk *pvmw)
++/******************************************************************************
++ *                          sysfs interface
++ ******************************************************************************/
++
++static ssize_t show_lru_gen_spread(struct kobject *kobj, struct kobj_attribute *attr,
++				   char *buf)
 +{
-+	pte_t *pte;
-+	unsigned long start, end;
-+	int old_gen, new_gen;
-+	unsigned long flags;
-+	struct lruvec *lruvec;
-+	struct mem_cgroup *memcg;
-+	struct pglist_data *pgdat = page_pgdat(pvmw->page);
-+
-+	lockdep_assert_held(pvmw->ptl);
-+	VM_BUG_ON_VMA(pvmw->address < pvmw->vma->vm_start, pvmw->vma);
-+
-+	start = max(pvmw->address & PMD_MASK, pvmw->vma->vm_start);
-+	end = pmd_addr_end(pvmw->address, pvmw->vma->vm_end);
-+	pte = pvmw->pte - ((pvmw->address - start) >> PAGE_SHIFT);
-+
-+	memcg = lock_page_memcg(pvmw->page);
-+	lruvec = lock_page_lruvec_irqsave(pvmw->page, &flags);
-+
-+	new_gen = lru_gen_from_seq(lruvec->evictable.max_seq);
-+
-+	for (; start != end; pte++, start += PAGE_SIZE) {
-+		struct page *page;
-+		unsigned long pfn = pte_pfn(*pte);
-+
-+		if (!pte_present(*pte) || !pte_young(*pte) || is_zero_pfn(pfn))
-+			continue;
-+
-+		if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
-+			continue;
-+
-+		page = compound_head(pte_page(*pte));
-+		if (page_to_nid(page) != pgdat->node_id)
-+			continue;
-+		if (page_memcg_rcu(page) != memcg)
-+			continue;
-+		/*
-+		 * We may be holding many locks. So try to finish as fast as
-+		 * possible and leave the accessed and the dirty bits to page
-+		 * table walk.
-+		 */
-+		old_gen = page_update_lru_gen(page, new_gen);
-+		if (old_gen >= 0 && old_gen != new_gen)
-+			lru_gen_update_size(page, lruvec, old_gen, new_gen);
-+	}
-+
-+	unlock_page_lruvec_irqrestore(lruvec, flags);
-+	unlock_page_memcg(pvmw->page);
++	return sprintf(buf, "%d\n", READ_ONCE(lru_gen_spread));
 +}
 +
- struct mm_walk_args {
- 	struct mem_cgroup *memcg;
- 	unsigned long max_seq;
++static ssize_t store_lru_gen_spread(struct kobject *kobj, struct kobj_attribute *attr,
++				    const char *buf, size_t len)
++{
++	int spread;
++
++	if (kstrtoint(buf, 10, &spread) || spread >= MAX_NR_GENS)
++		return -EINVAL;
++
++	WRITE_ONCE(lru_gen_spread, spread);
++
++	return len;
++}
++
++static struct kobj_attribute lru_gen_spread_attr = __ATTR(
++	spread, 0644,
++	show_lru_gen_spread, store_lru_gen_spread
++);
++
++static ssize_t show_lru_gen_enabled(struct kobject *kobj, struct kobj_attribute *attr,
++				    char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "%ld\n", lru_gen_enabled());
++}
++
++static ssize_t store_lru_gen_enabled(struct kobject *kobj, struct kobj_attribute *attr,
++				     const char *buf, size_t len)
++{
++	int enable;
++
++	if (kstrtoint(buf, 10, &enable))
++		return -EINVAL;
++
++	lru_gen_set_state(enable, true, false);
++
++	return len;
++}
++
++static struct kobj_attribute lru_gen_enabled_attr = __ATTR(
++	enabled, 0644, show_lru_gen_enabled, store_lru_gen_enabled
++);
++
++static struct attribute *lru_gen_attrs[] = {
++	&lru_gen_spread_attr.attr,
++	&lru_gen_enabled_attr.attr,
++	NULL
++};
++
++static struct attribute_group lru_gen_attr_group = {
++	.name = "lru_gen",
++	.attrs = lru_gen_attrs,
++};
++
++/******************************************************************************
++ *                          debugfs interface
++ ******************************************************************************/
++
++static void *lru_gen_seq_start(struct seq_file *m, loff_t *pos)
++{
++	struct mem_cgroup *memcg;
++	loff_t nr_to_skip = *pos;
++
++	m->private = kzalloc(PATH_MAX, GFP_KERNEL);
++	if (!m->private)
++		return ERR_PTR(-ENOMEM);
++
++	memcg = mem_cgroup_iter(NULL, NULL, NULL);
++	do {
++		int nid;
++
++		for_each_node_state(nid, N_MEMORY) {
++			if (!nr_to_skip--)
++				return mem_cgroup_lruvec(memcg, NODE_DATA(nid));
++		}
++	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)));
++
++	return NULL;
++}
++
++static void lru_gen_seq_stop(struct seq_file *m, void *v)
++{
++	if (!IS_ERR_OR_NULL(v))
++		mem_cgroup_iter_break(NULL, lruvec_memcg(v));
++
++	kfree(m->private);
++	m->private = NULL;
++}
++
++static void *lru_gen_seq_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	int nid = lruvec_pgdat(v)->node_id;
++	struct mem_cgroup *memcg = lruvec_memcg(v);
++
++	++*pos;
++
++	nid = next_memory_node(nid);
++	if (nid == MAX_NUMNODES) {
++		memcg = mem_cgroup_iter(NULL, memcg, NULL);
++		if (!memcg)
++			return NULL;
++
++		nid = first_memory_node;
++	}
++
++	return mem_cgroup_lruvec(memcg, NODE_DATA(nid));
++}
++
++static int lru_gen_seq_show(struct seq_file *m, void *v)
++{
++	unsigned long seq;
++	struct lruvec *lruvec = v;
++	int nid = lruvec_pgdat(lruvec)->node_id;
++	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
++	DEFINE_MAX_SEQ(lruvec);
++	DEFINE_MIN_SEQ(lruvec);
++
++	if (nid == first_memory_node) {
++#ifdef CONFIG_MEMCG
++		if (memcg)
++			cgroup_path(memcg->css.cgroup, m->private, PATH_MAX);
++#endif
++		seq_printf(m, "memcg %5hu %s\n",
++			   mem_cgroup_id(memcg), (char *)m->private);
++	}
++
++	seq_printf(m, "  node %4d\n", nid);
++
++	for (seq = min(min_seq[0], min_seq[1]); seq <= max_seq; seq++) {
++		int gen, file, zone;
++		unsigned int msecs;
++		long sizes[ANON_AND_FILE] = {};
++
++		gen = lru_gen_from_seq(seq);
++
++		msecs = jiffies_to_msecs(jiffies - READ_ONCE(
++				lruvec->evictable.timestamps[gen]));
++
++		for_each_type_zone(file, zone)
++			sizes[file] += READ_ONCE(
++				lruvec->evictable.sizes[gen][file][zone]);
++
++		sizes[0] = max(sizes[0], 0L);
++		sizes[1] = max(sizes[1], 0L);
++
++		seq_printf(m, "%11lu %9u %9lu %9lu\n",
++			   seq, msecs, sizes[0], sizes[1]);
++	}
++
++	return 0;
++}
++
++static const struct seq_operations lru_gen_seq_ops = {
++	.start = lru_gen_seq_start,
++	.stop = lru_gen_seq_stop,
++	.next = lru_gen_seq_next,
++	.show = lru_gen_seq_show,
++};
++
++static int lru_gen_debugfs_open(struct inode *inode, struct file *file)
++{
++	return seq_open(file, &lru_gen_seq_ops);
++}
++
++static int advance_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness)
++{
++	struct scan_control sc = {
++		.target_mem_cgroup = lruvec_memcg(lruvec),
++	};
++	DEFINE_MAX_SEQ(lruvec);
++
++	if (seq == max_seq)
++		walk_mm_list(lruvec, max_seq, &sc, swappiness);
++
++	return seq > max_seq ? -EINVAL : 0;
++}
++
++static int advance_min_seq(struct lruvec *lruvec, unsigned long seq, int swappiness,
++			   unsigned long nr_to_reclaim)
++{
++	struct blk_plug plug;
++	int err = -EINTR;
++	long nr_to_scan = LONG_MAX;
++	struct scan_control sc = {
++		.nr_to_reclaim = nr_to_reclaim,
++		.target_mem_cgroup = lruvec_memcg(lruvec),
++		.may_writepage = 1,
++		.may_unmap = 1,
++		.may_swap = 1,
++		.reclaim_idx = MAX_NR_ZONES - 1,
++		.gfp_mask = GFP_KERNEL,
++	};
++	DEFINE_MAX_SEQ(lruvec);
++
++	if (seq >= max_seq - 1)
++		return -EINVAL;
++
++	blk_start_plug(&plug);
++
++	while (!signal_pending(current)) {
++		DEFINE_MIN_SEQ(lruvec);
++
++		if (seq < min(min_seq[!swappiness], min_seq[swappiness < 200]) ||
++		    !evict_lru_gen_pages(lruvec, &sc, swappiness, &nr_to_scan)) {
++			err = 0;
++			break;
++		}
++
++		cond_resched();
++	}
++
++	blk_finish_plug(&plug);
++
++	return err;
++}
++
++static int advance_seq(char cmd, int memcg_id, int nid, unsigned long seq,
++		       int swappiness, unsigned long nr_to_reclaim)
++{
++	struct lruvec *lruvec;
++	int err = -EINVAL;
++	struct mem_cgroup *memcg = NULL;
++
++	if (!mem_cgroup_disabled()) {
++		rcu_read_lock();
++		memcg = mem_cgroup_from_id(memcg_id);
++#ifdef CONFIG_MEMCG
++		if (memcg && !css_tryget(&memcg->css))
++			memcg = NULL;
++#endif
++		rcu_read_unlock();
++
++		if (!memcg)
++			goto done;
++	}
++	if (memcg_id != mem_cgroup_id(memcg))
++		goto done;
++
++	if (nid < 0 || nid >= MAX_NUMNODES || !node_state(nid, N_MEMORY))
++		goto done;
++
++	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
++
++	if (swappiness == -1)
++		swappiness = get_swappiness(lruvec);
++	else if (swappiness > 200U)
++		goto done;
++
++	switch (cmd) {
++	case '+':
++		err = advance_max_seq(lruvec, seq, swappiness);
++		break;
++	case '-':
++		err = advance_min_seq(lruvec, seq, swappiness, nr_to_reclaim);
++		break;
++	}
++done:
++	mem_cgroup_put(memcg);
++
++	return err;
++}
++
++static ssize_t lru_gen_debugfs_write(struct file *file, const char __user *src,
++				     size_t len, loff_t *pos)
++{
++	void *buf;
++	char *cur, *next;
++	int err = 0;
++
++	buf = kvmalloc(len + 1, GFP_USER);
++	if (!buf)
++		return -ENOMEM;
++
++	if (copy_from_user(buf, src, len)) {
++		kvfree(buf);
++		return -EFAULT;
++	}
++
++	next = buf;
++	next[len] = '\0';
++
++	while ((cur = strsep(&next, ",;\n"))) {
++		int n;
++		int end;
++		char cmd;
++		int memcg_id;
++		int nid;
++		unsigned long seq;
++		int swappiness = -1;
++		unsigned long nr_to_reclaim = -1;
++
++		cur = skip_spaces(cur);
++		if (!*cur)
++			continue;
++
++		n = sscanf(cur, "%c %u %u %lu %n %u %n %lu %n", &cmd, &memcg_id, &nid,
++			   &seq, &end, &swappiness, &end, &nr_to_reclaim, &end);
++		if (n < 4 || cur[end]) {
++			err = -EINVAL;
++			break;
++		}
++
++		err = advance_seq(cmd, memcg_id, nid, seq, swappiness, nr_to_reclaim);
++		if (err)
++			break;
++	}
++
++	kvfree(buf);
++
++	return err ? : len;
++}
++
++static const struct file_operations lru_gen_debugfs_ops = {
++	.open = lru_gen_debugfs_open,
++	.read = seq_read,
++	.write = lru_gen_debugfs_write,
++	.llseek = seq_lseek,
++	.release = seq_release,
++};
++
+ /******************************************************************************
+  *                          initialization
+  ******************************************************************************/
+@@ -5873,6 +6202,11 @@ static int __init init_lru_gen(void)
+ 	if (hotplug_memory_notifier(lru_gen_online_mem, 0))
+ 		pr_err("lru_gen: failed to subscribe hotplug notifications\n");
+ 
++	if (sysfs_create_group(mm_kobj, &lru_gen_attr_group))
++		pr_err("lru_gen: failed to create sysfs group\n");
++
++	debugfs_create_file("lru_gen", 0644, NULL, NULL, &lru_gen_debugfs_ops);
++
+ 	return 0;
+ };
+ /*
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
