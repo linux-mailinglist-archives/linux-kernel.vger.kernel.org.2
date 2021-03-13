@@ -2,209 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05473339D25
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4BA339D28
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhCMJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:05:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46413 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230309AbhCMJFn (ORCPT
+        id S231597AbhCMJMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhCMJM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:05:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615626342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NchNRTSEGkiqYTAyE/uiRINWxzMLW7q/Qg9kJjYYUV8=;
-        b=IEgpW2Kl5I+OAiUrgDo6cdEID5HFrhsvy5GmXmI8vA1MdEgkPsPM7d8431PqdXKbPDaCXY
-        qQ9yOgX8Hcgv4NlS+cNa4bIIz3Bi0asY7d5CSEU9bwLzPEfhn/B6zBaIA0bYgyYi2W1NS5
-        SiLmH5j1ot+NgVms2HMxHUAXS70MQ/0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-ZF4mYy7hM4K-syHMT_M2Uw-1; Sat, 13 Mar 2021 04:05:26 -0500
-X-MC-Unique: ZF4mYy7hM4K-syHMT_M2Uw-1
-Received: by mail-ed1-f70.google.com with SMTP id r19so12464788edv.3
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 01:05:26 -0800 (PST)
+        Sat, 13 Mar 2021 04:12:28 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9080DC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 01:12:27 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id d3so49122180lfg.10
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 01:12:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QV+PrYQw9pIkwPrpEKiXnL7M8rMYsIr7iv2PYbqI9P4=;
+        b=lQvKkR5Jo7MYP5ECGFSPo4OIJDBNQRr4hzUNa6PAbl5P+8s8vpj1oz8MNyJ0GxqsJF
+         EWWnpy2if4wAV0UJy8sXJIsuJVn3Q2pTJXnhpS0xRLr+9ivo7igaxn4HC3yXXU7lQ2Gt
+         BvMUj1hq4DER7eBE6HVtvjHV8tLekqsQPFgjt5flIiL/W5mKUK1p08KaC55uwtlWTTZ6
+         L8x6Nmkq1SpFWcqCA5RAl8XjT8jZzX8rKMrX1ZbRdPsB18eML0k4PGJaNVxsSsyiMhxn
+         cwg7fE7102l9f/gqmNvtVeBzwc5cAkWrN1GBTJP9d0FAA/rHB1U7ifykiNaXZ3o3BKhJ
+         +KvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=NchNRTSEGkiqYTAyE/uiRINWxzMLW7q/Qg9kJjYYUV8=;
-        b=frIp80a1uWRy5JSfQpvnJ1c+vF3+T6AIXLgD6Vp7KatAb6x6woV9NjxSuXNzAPH5fc
-         kVdN7tOTBFoBaHxrzEpTqwEdMkzTNowg3ve4rVjM0lbPVIdDMEtcXmGSw9Db5ZLw87t6
-         8SvJRBUBJqUyFESvSHr+QN2NnE9pjfzQTu4zS1B0r8niCdEfLxeWoLU3rMkMs/eN0GkG
-         9fRYlfToV+eXrsqvQmlcdV/7P9zhXjjz5VKJ/LNAGz9mU3s7jttMrKZf1RmR95048l4B
-         Op4Ox03FvBn2yMi8qWvz2eBMs61kzuCOyGuWvkUYxN731Pt65VywNQNWvFiuz4xcIQeg
-         ZCcA==
-X-Gm-Message-State: AOAM533axGqZ67zHzh25WveECSNe8TaSIAyCEpbQAMiRSiSP7RzYS1oT
-        BVm14neJ1CESQNSnbdDmB4jpVB4SKPB7deGwMuEDNPzpzOZt3MGJH0jUCsXJGNGHAaMASLkb2uY
-        cjbzy51zwAvIY1ana6VkACt0+
-X-Received: by 2002:a05:6402:1d33:: with SMTP id dh19mr18681220edb.362.1615626325551;
-        Sat, 13 Mar 2021 01:05:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxjqpozZGLXrOMTuUlFEgJyDdDMB8J3TH5iIeMOahQvz63gH7NYmRPQkaJGZfjOHxqndDpeYg==
-X-Received: by 2002:a05:6402:1d33:: with SMTP id dh19mr18681207edb.362.1615626325366;
-        Sat, 13 Mar 2021 01:05:25 -0800 (PST)
-Received: from [192.168.3.108] (p4ff236b2.dip0.t-ipconnect.de. [79.242.54.178])
-        by smtp.gmail.com with ESMTPSA id k9sm4364576edn.68.2021.03.13.01.05.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Mar 2021 01:05:24 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail in __free_pages_core()")
-Date:   Sat, 13 Mar 2021 10:05:23 +0100
-Message-Id: <0AE49D98-171A-42B9-9CFC-9193A9BD3346@redhat.com>
-References: <MW3PR12MB4537B49678884A1EB1F75AB5F36E9@MW3PR12MB4537.namprd12.prod.outlook.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        linux-kernel@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ray" <Ray.Huang@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        George Kennedy <george.kennedy@oracle.com>
-In-Reply-To: <MW3PR12MB4537B49678884A1EB1F75AB5F36E9@MW3PR12MB4537.namprd12.prod.outlook.com>
-To:     "Liang, Liang (Leo)" <Liang.Liang@amd.com>
-X-Mailer: iPhone Mail (18D52)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QV+PrYQw9pIkwPrpEKiXnL7M8rMYsIr7iv2PYbqI9P4=;
+        b=hYK1rveFY7L5JuQ09eYy1xeXyFZLKv8Wbik9oaE7/XQeuZiROR5mwL98s7u/sRy9vX
+         rlVFOUdM1kUt/IGtRKcqUUP0VF9NovAdauxoME3uq0hKm9E9NybcIh0SLW3aFM8eePDT
+         pFhImiL3XCjLnya48AI67MQ+D4VPySojIpNm1vRH8YYNux9KZMETziBWzfEJ3UqpywUc
+         BWmCsuuXV2JHab2IqF9WP774jA0cA/lAOmUHX2mcro90R5JM/79PQ49BaQJW1rZIeykt
+         7wm0tL7syPUICnac+DHyTTlbKr1TgMYzLAbmfM1IzixNwgV1qC2Lq/OAC960MZAlcAjQ
+         5V9g==
+X-Gm-Message-State: AOAM532hJ4Qx21Cjbh8fUKoUU67Ll5wps/ghjyypAff5QKg5eaYOLwyc
+        Wf6ab0ldqZ1KynqHdfMn9/gw8055rZo=
+X-Google-Smtp-Source: ABdhPJzxOihwfIDQCaJggwsPk7CXdbAdEBca82idtcUlm4I07ZtVDd9NhRBJFTE3BrM5BbF93/m7iA==
+X-Received: by 2002:a19:45:: with SMTP id 66mr1965858lfa.163.1615626744087;
+        Sat, 13 Mar 2021 01:12:24 -0800 (PST)
+Received: from shahbazi (cable-hki-50dc98-67.dhcp.inet.fi. [80.220.152.67])
+        by smtp.gmail.com with ESMTPSA id f10sm1934989lfm.194.2021.03.13.01.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 01:12:23 -0800 (PST)
+Date:   Sat, 13 Mar 2021 11:12:21 +0200
+From:   Hassan Shahbazi <h.shahbazi.git@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     yildirim.fatih@gmail.com, ducheng2@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: tty: vt: vt.c: fix NULL dereference crash
+Message-ID: <20210313090512.GA104236@shahbazi>
+References: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
+ <YEsnYVwzRoEsbkie@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEsnYVwzRoEsbkie@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 09:33:37AM +0100, Greg KH wrote:
+> On Sun, Mar 07, 2021 at 12:56:43PM +0200, Hassan Shahbazi wrote:
+> > Fix a NULL deference crash on hiding the cursor.
+> > 
+> > Reported by: syzbot
+> > https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+> > 
+> > Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+> > ---
+> >  drivers/tty/vt/vt.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> > index 284b07224c55..8c3e83c81341 100644
+> > --- a/drivers/tty/vt/vt.c
+> > +++ b/drivers/tty/vt/vt.c
+> > @@ -904,7 +904,9 @@ static void hide_cursor(struct vc_data *vc)
+> >  	if (vc_is_sel(vc))
+> >  		clear_selection();
+> >  
+> > -	vc->vc_sw->con_cursor(vc, CM_ERASE);
+> > +	if (vc->vc_sw)
+> > +		vc->vc_sw->con_cursor(vc, CM_ERASE);
+> > +
+> >  	hide_softcursor(vc);
+> >  }
+> >  
+> > -- 
+> > 2.26.2
+> > 
+> 
+> Are you sure this actually fixes the problem?  How did you test it?  Did
+> syzbot test this?
+> 
+> I had a few reports of this patch _not_ solving the problem, so getting
+> confirmation of this would be good.
+> 
+> thanks,
+> 
+> greg k-h
 
-> Am 13.03.2021 um 05:04 schrieb Liang, Liang (Leo) <Liang.Liang@amd.com>:
->=20
-> =EF=BB=BF[AMD Public Use]
->=20
-> Hi David,
->=20
-> Which benchmark tool you prefer? Memtest86+ or else?
+Unfortunately, it seems the patch has not fixed the bug. I drop this
+patch and will continue working on a newer one.
 
-Hi Leo,
-
-I think you want something that runs under Linux natively.
-
-I=E2=80=98m planning on coding up a kernel module to walk all 4MB pages in t=
-he freelists and perform a stream benchmark individually. Then we might be a=
-ble to identify the problematic range - if there is a problematic range :) G=
-uess I=E2=80=98ll have it running by Monday and let you know.
-
-Cheers!
-
->=20
-> BRs,
-> Leo
-> -----Original Message-----
-> From: David Hildenbrand <david@redhat.com>=20
-> Sent: Saturday, March 13, 2021 12:47 AM
-> To: Liang, Liang (Leo) <Liang.Liang@amd.com>; Deucher, Alexander <Alexande=
-r.Deucher@amd.com>; linux-kernel@vger.kernel.org; amd-gfx list <amd-gfx@list=
-s.freedesktop.org>; Andrew Morton <akpm@linux-foundation.org>
-> Cc: Huang, Ray <Ray.Huang@amd.com>; Koenig, Christian <Christian.Koenig@am=
-d.com>; Mike Rapoport <rppt@linux.ibm.com>; Rafael J. Wysocki <rafael@kernel=
-.org>; George Kennedy <george.kennedy@oracle.com>
-> Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to t=
-ail in __free_pages_core()")
->=20
->> On 12.03.21 17:19, Liang, Liang (Leo) wrote:
->> [AMD Public Use]
->>=20
->> Dmesg attached.
->>=20
->=20
->=20
-> So, looks like the "real" slowdown starts once the buddy is up and running=
- (no surprise).
->=20
->=20
-> [    0.044035] Memory: 6856724K/7200304K available (14345K kernel code, 96=
-99K rwdata, 5276K rodata, 2628K init, 12104K bss, 343324K reserved, 0K cma-r=
-eserved)
-> [    0.044045] random: get_random_u64 called from __kmem_cache_create+0x33=
-/0x460 with crng_init=3D1
-> [    0.049025] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D16,=
- Nodes=3D1
-> [    0.050036] ftrace: allocating 47158 entries in 185 pages
-> [    0.097487] ftrace: allocated 185 pages with 5 groups
-> [    0.109210] rcu: Hierarchical RCU implementation.
->=20
-> vs.
->=20
-> [    0.041115] Memory: 6869396K/7200304K available (14345K kernel code, 34=
-33K rwdata, 5284K rodata, 2624K init, 6088K bss, 330652K reserved, 0K cma-re=
-served)
-> [    0.041127] random: get_random_u64 called from __kmem_cache_create+0x31=
-/0x430 with crng_init=3D1
-> [    0.041309] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D16,=
- Nodes=3D1
-> [    0.041335] ftrace: allocating 47184 entries in 185 pages
-> [    0.055719] ftrace: allocated 185 pages with 5 groups
-> [    0.055863] rcu: Hierarchical RCU implementation.
->=20
->=20
-> And it gets especially bad during ACPI table processing:
->=20
-> [    4.158303] ACPI: Added _OSI(Module Device)
-> [    4.158767] ACPI: Added _OSI(Processor Device)
-> [    4.159230] ACPI: Added _OSI(3.0 _SCP Extensions)
-> [    4.159705] ACPI: Added _OSI(Processor Aggregator Device)
-> [    4.160551] ACPI: Added _OSI(Linux-Dell-Video)
-> [    4.161359] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
-> [    4.162264] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
-> [   17.713421] ACPI: 13 ACPI AML tables successfully acquired and loaded
-> [   18.716065] ACPI: [Firmware Bug]: BIOS _OSI(Linux) query ignored
-> [   20.743828] ACPI: EC: EC started
-> [   20.744155] ACPI: EC: interrupt blocked
-> [   20.945956] ACPI: EC: EC_CMD/EC_SC=3D0x666, EC_DATA=3D0x662
-> [   20.946618] ACPI: \_SB_.PCI0.LPC0.EC0_: Boot DSDT EC used to handle tra=
-nsactions
-> [   20.947348] ACPI: Interpreter enabled
-> [   20.951278] ACPI: (supports S0 S3 S4 S5)
-> [   20.951632] ACPI: Using IOAPIC for interrupt routing
->=20
-> vs.
->=20
-> [    0.216039] ACPI: Added _OSI(Module Device)
-> [    0.216041] ACPI: Added _OSI(Processor Device)
-> [    0.216043] ACPI: Added _OSI(3.0 _SCP Extensions)
-> [    0.216044] ACPI: Added _OSI(Processor Aggregator Device)
-> [    0.216046] ACPI: Added _OSI(Linux-Dell-Video)
-> [    0.216048] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
-> [    0.216049] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
-> [    0.228259] ACPI: 13 ACPI AML tables successfully acquired and loaded
-> [    0.229527] ACPI: [Firmware Bug]: BIOS _OSI(Linux) query ignored
-> [    0.231663] ACPI: EC: EC started
-> [    0.231666] ACPI: EC: interrupt blocked
-> [    0.233664] ACPI: EC: EC_CMD/EC_SC=3D0x666, EC_DATA=3D0x662
-> [    0.233667] ACPI: \_SB_.PCI0.LPC0.EC0_: Boot DSDT EC used to handle tra=
-nsactions
-> [    0.233670] ACPI: Interpreter enabled
-> [    0.233685] ACPI: (supports S0 S3 S4 S5)
-> [    0.233687] ACPI: Using IOAPIC for interrupt routing
->=20
-> The jump from 4.1 -> 17.7 is especially bad.
->=20
-> Which might in fact indicate that this could be related to using some very=
- special slow (ACPI?) memory for ordinary purposes, interfering with actual A=
-CPI users?
->=20
-> But again, just a wild guess, because the system is extremely slow afterwa=
-rds, however, we don't have any pauses without any signs of life for that lo=
-ng.
->=20
->=20
-> It would be interesting to run a simple memory bandwidth benchmark on the f=
-ast kernel with differing sizes up to running OOM to see if there is really s=
-ome memory that is just horribly slow once allocated and used.
->=20
-> --
-> Thanks,
->=20
-> David / dhildenb
->=20
-
+Thanks for the feedback,
+Hassan Shahbazi
