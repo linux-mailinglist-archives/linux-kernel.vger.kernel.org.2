@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9B1339CAF
+	by mail.lfdr.de (Postfix) with ESMTP id ABCB2339CB0
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhCMH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233424AbhCMH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 13 Mar 2021 02:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbhCMH6C (ORCPT
+        with ESMTP id S232431AbhCMH6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:58:02 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562C3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:02 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id d137so4579263qkb.18
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:02 -0800 (PST)
+        Sat, 13 Mar 2021 02:58:03 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A425FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:03 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 194so31802025ybl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=aLRTkKE+4395hmMwkgIvoFPbmsRrSNB3cb7TyZ2ydVo=;
-        b=RbyWeK4rUqhSF6l4+WOn4bz/6l7Kc8FPXxW3gI+7y8uPJAZ1QX8cf/I1Awt1gV/SbI
-         bjnyW7mGxY1NMOZzzbS/+Pu/wZOk8PcdLyHQjU8FYS7MY3rlxWHPLiUeDkvVnQXqR/vU
-         VjFNQgX24G3KsIyOvy72WKVvMUMe73K7lMeGcaq5JwzYtlJpwJmAq7im1mo7v1rCTUgA
-         0mo4ifiQHDGxfCFwMiqlcmL9XCp3IrCMWE8XU4ROv4uXfZw0LtfhovB0FFVhgU4OaGPo
-         9xkxh+e9HnpJUWha5GVEemFT2phEp+qmiZ0b0RvdNPBXFoxHBjwLSKOp/alc26idQnA2
-         6ehw==
+        bh=773qLo/LiVz4n2L5CNuvuPAbdhL5vI+dQXWkGfq22YM=;
+        b=s62F923cqY3HHxlJ4hYL4HxcRTUA1o1Vmr0HgcffuxiRKFFBC1czWP98NMUIxWHBf1
+         ZTyWeNYix1pSuyOzyeK0NFpxLIWOmX10rPMvqWp8DuHg1yJhrNIGNko3fZT0atoX3aT9
+         tvbuoR86gyhnQZ8eh7p7K/l32hNMDiL/9yg2skyWxrtzqXc2LkdkDBaiklyidpzGD9Xo
+         glkEqmmHlh+PbMf1URYMZzEcs1zoLYSWmku5OQ0gpaw9yflCHjp7u8qrrfyCRliYK3I/
+         Tc+BFkGgrB7u8ficVc0QKkIHZrZFoWgOnbQ0s8MxrT5IfVlLG0WbP3MEYNuJZFSmG8zL
+         SKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=aLRTkKE+4395hmMwkgIvoFPbmsRrSNB3cb7TyZ2ydVo=;
-        b=sPWOPGHoVohb7G6EOihIswCUjaDOMsg/DvRB2ugPnziQk8PcjMml4kYe8yFsYiBamJ
-         ZBRsKYaIxBbegmcuF2aq6FE8IRzx6eYh8i5L6RQ83/jPcS1VVViz30AEgGo2OR0qlRtK
-         6e9I4lEcrR67MLWdkHooamn5SOvnTfgJcr7FGERX+0O/FzSxT56KcHTaEjHYnS68pxQM
-         cryChrhdy5jpPx9+EiGLdZI95GTYYHE3/TXMlABP1Dv4YEWI93zhR/ePrlm0SjEioKWR
-         PW1K3Blnn4t6EIlzyEcAxmVz7702MA3b1x1hM3iPT6B+pwdovapsNRL+JH3s67twnKUc
-         qBWQ==
-X-Gm-Message-State: AOAM532W7wUq4pmKjtVvHSPslHZDT9pB3jR1xJmNsJD9ZqrBMl8E+xpH
-        v9xzx/Rcs8diDMvgzLYOU4hfhWFObf4=
-X-Google-Smtp-Source: ABdhPJwU+Y5hioYI52CJyazw+FjQUFeKf1QbQJTSQIAKTuuIxfYVSs2ErBNlMhmNRx4/c6B7zv8sBwMBzxE=
+        bh=773qLo/LiVz4n2L5CNuvuPAbdhL5vI+dQXWkGfq22YM=;
+        b=JutL0wSOtSKnXJpfp0Rn/HxX7HIFKRMSUwsEChk8vd4csU2mQte1wA+/+UuChaDIbU
+         LAbDmBYxJhnK4nlISGat+zJubGDWfCTB+UZ0ZMedNwvo4kQ6wCMcrBVBswWbPfpCjDwr
+         A4KWgVBEKj1hggrx43gbsIj1+nseOCIQxhyAyqUZPXMWyh5DbkzFwS/Ofm/k9MlAtqkm
+         kxvprFWjiL/B2UVHRa6QH0Pd81vDVjQVhL1VANnhSRBRqVhMl9CKh6LDeEXIQ/j/SUW1
+         sU5WIzhVZuh5Ce8LmXpg49O0w7XWFKmLxS65P39JtYklewPiPLasFUZmGGQIW0YkgSAb
+         ikpA==
+X-Gm-Message-State: AOAM531sNbnzQRY0viG10kk0YQk3CPKaMfG7csYITYFCtPUjz1sM9Whr
+        xig3F1mAxIB/3uXuYRA3nVADy29ViV4=
+X-Google-Smtp-Source: ABdhPJyM3uGtugEuR+BtqyW7Pcf+QxhuRuUSNVC/LK4e6LJubLVomvaz1At1w7Vl14tsop0cWxsmMMW22Kg=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:ad4:5c87:: with SMTP id o7mr1743197qvh.31.1615622281483;
- Fri, 12 Mar 2021 23:58:01 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:37 -0700
+ (user=yuzhao job=sendgmr) by 2002:a25:d84b:: with SMTP id p72mr22707445ybg.272.1615622282832;
+ Fri, 12 Mar 2021 23:58:02 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:38 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-5-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-6-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 04/14] include/linux/cgroup.h: export cgroup_mutex
+Subject: [PATCH v1 05/14] mm/swap.c: export activate_page()
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -73,54 +73,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export cgroup_mutex so it can be used to synchronize with memcg
-allocations.
+Export activate_page(), which is a merger between the existing
+activate_page() and __lru_cache_activate_page(),  so it can be used to
+activate pages that are already on lru or queued in lru_pvecs.lru_add.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/cgroup.h | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ include/linux/swap.h |  1 +
+ mm/swap.c            | 28 +++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..bd5744360cfa 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -432,6 +432,18 @@ static inline void cgroup_put(struct cgroup *cgrp)
- 	css_put(&cgrp->self);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 4cc6ec3bf0ab..de2bbbf181ba 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -344,6 +344,7 @@ extern void lru_add_drain_cpu(int cpu);
+ extern void lru_add_drain_cpu_zone(struct zone *zone);
+ extern void lru_add_drain_all(void);
+ extern void rotate_reclaimable_page(struct page *page);
++extern void activate_page(struct page *page);
+ extern void deactivate_file_page(struct page *page);
+ extern void deactivate_page(struct page *page);
+ extern void mark_page_lazyfree(struct page *page);
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..f20ed56ebbbf 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -334,7 +334,7 @@ static bool need_activate_page_drain(int cpu)
+ 	return pagevec_count(&per_cpu(lru_pvecs.activate_page, cpu)) != 0;
  }
  
-+extern struct mutex cgroup_mutex;
+-static void activate_page(struct page *page)
++static void activate_page_on_lru(struct page *page)
+ {
+ 	page = compound_head(page);
+ 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+@@ -354,7 +354,7 @@ static inline void activate_page_drain(int cpu)
+ {
+ }
+ 
+-static void activate_page(struct page *page)
++static void activate_page_on_lru(struct page *page)
+ {
+ 	struct lruvec *lruvec;
+ 
+@@ -368,11 +368,22 @@ static void activate_page(struct page *page)
+ }
+ #endif
+ 
+-static void __lru_cache_activate_page(struct page *page)
++/*
++ * If the page is on the LRU, queue it for activation via
++ * lru_pvecs.activate_page. Otherwise, assume the page is on a
++ * pagevec, mark it active and it'll be moved to the active
++ * LRU on the next drain.
++ */
++void activate_page(struct page *page)
+ {
+ 	struct pagevec *pvec;
+ 	int i;
+ 
++	if (PageLRU(page)) {
++		activate_page_on_lru(page);
++		return;
++	}
 +
-+static inline void cgroup_lock(void)
-+{
-+	mutex_lock(&cgroup_mutex);
-+}
-+
-+static inline void cgroup_unlock(void)
-+{
-+	mutex_unlock(&cgroup_mutex);
-+}
-+
- /**
-  * task_css_set_check - obtain a task's css_set with extra access conditions
-  * @task: the task to obtain css_set for
-@@ -446,7 +458,6 @@ static inline void cgroup_put(struct cgroup *cgrp)
-  * as locks used during the cgroup_subsys::attach() methods.
-  */
- #ifdef CONFIG_PROVE_RCU
--extern struct mutex cgroup_mutex;
- extern spinlock_t css_set_lock;
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
-@@ -704,6 +715,8 @@ struct cgroup;
- static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
- static inline void css_get(struct cgroup_subsys_state *css) {}
- static inline void css_put(struct cgroup_subsys_state *css) {}
-+static inline void cgroup_lock(void) {}
-+static inline void cgroup_unlock(void) {}
- static inline int cgroup_attach_task_all(struct task_struct *from,
- 					 struct task_struct *t) { return 0; }
- static inline int cgroupstats_build(struct cgroupstats *stats,
+ 	local_lock(&lru_pvecs.lock);
+ 	pvec = this_cpu_ptr(&lru_pvecs.lru_add);
+ 
+@@ -421,16 +432,7 @@ void mark_page_accessed(struct page *page)
+ 		 * evictable page accessed has no effect.
+ 		 */
+ 	} else if (!PageActive(page)) {
+-		/*
+-		 * If the page is on the LRU, queue it for activation via
+-		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
+-		 * pagevec, mark it active and it'll be moved to the active
+-		 * LRU on the next drain.
+-		 */
+-		if (PageLRU(page))
+-			activate_page(page);
+-		else
+-			__lru_cache_activate_page(page);
++		activate_page(page);
+ 		ClearPageReferenced(page);
+ 		workingset_activation(page);
+ 	}
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
