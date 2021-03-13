@@ -2,70 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D343C339CD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ADE339CDD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhCMIOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:14:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20166 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233414AbhCMIOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:14:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615623240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HD8GasGxLOGjWEPXW1RDIOCj5Ig8QuD9ZoJ4u7PPXP0=;
-        b=hTCpdZFE+dA7WqMnLtH+WcLomsXvUUO6ShBPmLiZUpug5A+QnCsSufyv5BMz4NXYDTRDZO
-        nSXNfRewRG3NZoX8hvo2gQf97gBmp4Npv2ihYJ/aONHeEShGwfl4X3nDQN07B1B/l4CjWQ
-        7AeCnOHEdOMBbaJoYcUkE5VEDkv90Fw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-w_ZGOYuuO2OX7mnkzaBhgQ-1; Sat, 13 Mar 2021 03:13:57 -0500
-X-MC-Unique: w_ZGOYuuO2OX7mnkzaBhgQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S232974AbhCMIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:17:59 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:25927 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230309AbhCMIRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 03:17:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615623472; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=R8SK1AL94Yflrs9yNuF+m1NKXGnH4Oer/GeADnYHyao=;
+ b=DO7KJda5OcLaylhpay6kMHhOxqilT5Vl5JBnmNroX1RwTsOP1w7SajW7hzLr7x+RJ+nRyAyu
+ C1khyY1COfI/1mZDYw39WtkNTo5EJS5/r8F5ni4iBBhmEiMCu9N1wi4towqL98krcFYd5ZPu
+ XbLzVxMk+JGED//IrRb0LhZAVac=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 604c752e21031618f6837522 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Mar 2021 08:17:50
+ GMT
+Sender: sbhanu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D01AC433ED; Sat, 13 Mar 2021 08:17:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81E2A1084C83;
-        Sat, 13 Mar 2021 08:13:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C328E5C3E4;
-        Sat, 13 Mar 2021 08:13:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com>
-References: <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com> <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk> <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk> <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com> <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com> <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist keyring
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6051CC433CA;
+        Sat, 13 Mar 2021 08:17:49 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2579342.1615623232.1@warthog.procyon.org.uk>
-Date:   Sat, 13 Mar 2021 08:13:52 +0000
-Message-ID: <2579343.1615623232@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 13 Mar 2021 13:47:49 +0530
+From:   sbhanu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, sartgarg@codeaurora.org,
+        asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org
+Subject: Re: [PATCH V1] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+In-Reply-To: <b25a0793df3bc6ae841502aca1f9fc3e@codeaurora.org>
+References: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
+ <YEfUOljmaxpkxqZq@builder.lan>
+ <b25a0793df3bc6ae841502aca1f9fc3e@codeaurora.org>
+Message-ID: <bfd67fa65b0c012e06dc5691c85c1c63@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+On 2021-03-10 19:17, sbhanu@codeaurora.org wrote:
+> On 2021-03-10 01:32, Bjorn Andersson wrote:
+>> On Tue 09 Mar 13:18 CST 2021, Shaik Sajida Bhanu wrote:
+>> 
+>>> Add nodes for eMMC and SD card on sc7280.
+>>> 
+>>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+>>> 
+>>> ---
+>>> This change is depends on the below patch series:
+>>> https://lore.kernel.org/lkml/1613114930-1661-1-git-send-email-rnayak@codeaurora.org/
+>>> https://lore.kernel.org/patchwork/project/lkml/list/?series=&submitter=28035&state=&q=&archive=&delegate=
+>>> ---
+>>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  26 +++++
+>>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 170 
+>>> ++++++++++++++++++++++++++++++++
+>>>  2 files changed, 196 insertions(+)
+>>> 
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> index ac79420..6abb2aa 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> @@ -8,6 +8,7 @@
+>>>  /dts-v1/;
+>>> 
+>>>  #include "sc7280.dtsi"
+>>> +#include <dt-bindings/gpio/gpio.h>
+>>> 
+>>>  / {
+>>>  	model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
+>>> @@ -256,3 +257,28 @@
+>>>  		bias-pull-up;
+>>>  	};
+>>>  };
+>>> +
+>>> +&sdhc_1 {
+>>> +	status = "okay";
+>>> +
+>>> +	pinctrl-names = "default", "sleep";
+>>> +	pinctrl-0 = <&sdc1_on>;
+>>> +	pinctrl-1 = <&sdc1_off>;
+>>> +
+>>> +	vmmc-supply = <&vreg_l7b_2p9>;
+>>> +	vqmmc-supply = <&vreg_l19b_1p8>;
+>>> +
+>>> +};
+>>> +
+>>> +&sdhc_2 {
+>>> +	status = "okay";
+>>> +
+>>> +	pinctrl-names = "default","sleep";
+>>> +	pinctrl-0 = <&sdc2_on>;
+>>> +	pinctrl-1 = <&sdc2_off>;
+>>> +
+>>> +	vmmc-supply = <&vreg_l9c_2p9>;
+>>> +	vqmmc-supply = <&vreg_l6c_2p9>;
+>>> +
+>>> +	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
+>> 
+>> Please add these nodes above the comment that says "PINCTRL -
+>> additions..." and please include the pinctrl state for gpio 91.
+>> 
+> sure
+Hi
 
-> If MOKx will be available thru a config table in the next shim, 
-> I'll prepare a follow on patch to add this support. 
+>> "and please include the pinctrl state for gpio 91"
+sorry didn't get this
 
-Can this go separately, or would it be better rolled into the existing
-patchset?
-
-David
-
+>>> +};
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 3b86052..91fb18a 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -18,6 +18,11 @@
+>>> 
+>>>  	chosen { };
+>>> 
+>>> +	aliases {
+>>> +		mmc1 = &sdhc_1;
+>>> +		mmc2 = &sdhc_2;
+>>> +	};
+>>> +
+>>>  	clocks {
+>>>  		xo_board: xo-board {
+>>>  			compatible = "fixed-clock";
+>>> @@ -315,6 +320,69 @@
+>>>  			#power-domain-cells = <1>;
+>>>  		};
+>>> 
+>>> +		sdhc_1: sdhci@7c4000 {
+>>> +			compatible = "qcom,sdhci-msm-v5";
+>>> +			reg = <0 0x7c4000 0 0x1000>,
+>>> +					<0 0x7c5000 0 0x1000>;
+>>> +			reg-names = "hc", "cqhci";
+>>> +
+>>> +			iommus = <&apps_smmu 0xC0 0x0>;
+>>> +			interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
+>>> +					<GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
+>>> +			interrupt-names = "hc_irq", "pwr_irq";
+>>> +
+>>> +			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+>>> +					<&gcc GCC_SDCC1_AHB_CLK>,
+>>> +					<&rpmhcc RPMH_CXO_CLK>;
+>>> +			clock-names = "core", "iface", "xo";
+>>> +
+>>> +			bus-width = <8>;
+>>> +			non-removable;
+>>> +			supports-cqe;
+>>> +			no-sd;
+>>> +			no-sdio;
+>>> +
+>>> +			max-frequency = <192000000>;
+>>> +
+>>> +			qcom,dll-config = <0x0007642c>;
+>>> +			qcom,ddr-config = <0x80040868>;
+>>> +
+>>> +			mmc-ddr-1_8v;
+>>> +			mmc-hs200-1_8v;
+>>> +			mmc-hs400-1_8v;
+>>> +			mmc-hs400-enhanced-strobe;
+>>> +
+>>> +			status = "disabled";
+>>> +
+>>> +		};
+>>> +
+>>> +		sdhc_2: sdhci@8804000 {
+>>> +			compatible = "qcom,sdhci-msm-v5";
+>>> +			reg = <0 0x08804000 0 0x1000>;
+>>> +
+>>> +			iommus = <&apps_smmu 0x100 0x0>;
+>>> +			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
+>>> +					<GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
+>>> +			interrupt-names = "hc_irq", "pwr_irq";
+>>> +
+>>> +			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+>>> +					<&gcc GCC_SDCC2_AHB_CLK>,
+>>> +					<&rpmhcc RPMH_CXO_CLK>;
+>>> +			clock-names = "core", "iface", "xo";
+>>> +
+>>> +			bus-width = <4>;
+>>> +
+>>> +			no-mmc;
+>>> +			no-sdio;
+>>> +
+>>> +			max-frequency = <202000000>;
+>>> +
+>>> +			qcom,dll-config = <0x0007642c>;
+>>> +
+>>> +			status = "disabled";
+>>> +
+>>> +		};
+>>> +
+>>>  		qupv3_id_0: geniqup@9c0000 {
+>>>  			compatible = "qcom,geni-se-qup";
+>>>  			reg = <0 0x009c0000 0 0x2000>;
+>>> @@ -385,6 +453,108 @@
+>>>  				pins = "gpio46", "gpio47";
+>>>  				function = "qup13";
+>>>  			};
+>>> +
+>>> +			sdc1_on: sdc1-on {
+>>> +				pinconf-clk {
+>> 
+>> The "pinconf-" prefix does not provide any value here. Can you please
+>> drop it?
+>> 
+>> Regards,
+>> Bjorn
+> 
+> sure will drop
+>> 
+>>> +					pins = "sdc1_clk";
+>>> +					bias-disable;
+>>> +					drive-strength = <16>;
+>>> +				};
+>>> +
+>>> +				pinconf-cmd {
+>>> +					pins = "sdc1_cmd";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <10>;
+>>> +				};
+>>> +
+>>> +				pinconf-data {
+>>> +					pins = "sdc1_data";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <10>;
+>>> +				};
+>>> +
+>>> +				pinconf-rclk {
+>>> +					pins = "sdc1_rclk";
+>>> +					bias-pull-down;
+>>> +				};
+>>> +			};
+>>> +
+>>> +			sdc1_off: sdc1-off {
+>>> +				pinconf-clk {
+>>> +					pins = "sdc1_clk";
+>>> +					bias-disable;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-cmd {
+>>> +					pins = "sdc1_cmd";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-data {
+>>> +					pins = "sdc1_data";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-rclk {
+>>> +					pins = "sdc1_rclk";
+>>> +					bias-pull-down;
+>>> +				};
+>>> +			};
+>>> +
+>>> +			sdc2_on: sdc2-on {
+>>> +				pinconf-clk {
+>>> +					pins = "sdc2_clk";
+>>> +					bias-disable;
+>>> +					drive-strength = <16>;
+>>> +				};
+>>> +
+>>> +				pinconf-cmd {
+>>> +					pins = "sdc2_cmd";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <10>;
+>>> +				};
+>>> +
+>>> +				pinconf-data {
+>>> +					pins = "sdc2_data";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <10>;
+>>> +				};
+>>> +
+>>> +				pinconf-sd-cd {
+>>> +					pins = "gpio91";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +			};
+>>> +
+>>> +			sdc2_off: sdc2-off {
+>>> +				pinconf-clk {
+>>> +					pins = "sdc2_clk";
+>>> +					bias-disable;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-cmd {
+>>> +					pins = "sdc2_cmd";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-data {
+>>> +					pins = "sdc2_data";
+>>> +					bias-pull-up;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +
+>>> +				pinconf-sd-cd {
+>>> +					pins = "gpio91";
+>>> +					bias-disable;
+>>> +					drive-strength = <2>;
+>>> +				};
+>>> +			};
+>>>  		};
+>>> 
+>>>  		apps_smmu: iommu@15000000 {
+>>> --
+>>> 2.7.4
+>>> 
