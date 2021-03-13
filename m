@@ -2,147 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0A4339D31
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB07339D37
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 10:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhCMJSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 04:18:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55212 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230309AbhCMJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 04:17:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF3D5ABD7;
-        Sat, 13 Mar 2021 09:17:52 +0000 (UTC)
-Date:   Sat, 13 Mar 2021 10:17:51 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mmc@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rpadlpar: fix potential drc_name corruption in store
- functions
-Message-ID: <20210313091751.GM6564@kitsune.suse.cz>
-References: <20210310223021.423155-1-tyreld@linux.ibm.com>
+        id S232179AbhCMJZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 04:25:34 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:50447 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhCMJZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 04:25:17 -0500
+X-Originating-IP: 2.7.49.219
+Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 32F551C0003;
+        Sat, 13 Mar 2021 09:25:10 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH v2 0/3] Move kernel mapping outside the linear mapping 
+Date:   Sat, 13 Mar 2021 04:25:06 -0500
+Message-Id: <20210313092509.4918-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210310223021.423155-1-tyreld@linux.ibm.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 04:30:21PM -0600, Tyrel Datwyler wrote:
-> Both add_slot_store() and remove_slot_store() try to fix up the drc_name
-> copied from the store buffer by placing a NULL terminator at nbyte + 1
-> or in place of a '\n' if present. However, the static buffer that we
-> copy the drc_name data into is not zeored and can contain anything past
-> the n-th byte. This is problematic if a '\n' byte appears in that buffer
-> after nbytes and the string copied into the store buffer was not NULL
-> terminated to start with as the strchr() search for a '\n' byte will mark
-> this incorrectly as the end of the drc_name string resulting in a drc_name
-> string that contains garbage data after the n-th byte. The following
-> debugging shows an example of the drmgr utility writing "PHB 4543" to
-> the add_slot sysfs attribute, but add_slot_store logging a corrupted
-> string value.
-> 
-> [135823.702864] drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
-> [135823.702879] add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
-> 
-> Fix this by NULL terminating the string when we copy it into our static
-> buffer by coping nbytes + 1 of data from the store buffer. The code has
-Why is it OK to copy nbytes + 1 and why is it expected that the buffer
-contains a nul after the content?
+I decided to split sv48 support in small series to ease the review.
 
-Isn't it much saner to just nul terminate the string after copying?
+This patchset pushes the kernel mapping (modules and BPF too) to the last
+4GB of the 64bit address space, this allows to:
+- implement relocatable kernel (that will come later in another
+  patchset) that requires to move the kernel mapping out of the linear
+  mapping to avoid to copy the kernel at a different physical address.
+- have a single kernel that is not relocatable (and then that avoids the
+  performance penalty imposed by PIC kernel) for both sv39 and sv48.
 
-diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
-index cdbfa5df3a51..cfbad67447da 100644
---- a/drivers/pci/hotplug/rpadlpar_sysfs.c
-+++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
-@@ -35,11 +35,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
- 		return 0;
- 
- 	memcpy(drc_name, buf, nbytes);
-+	&drc_name[nbytes] = '\0';
- 
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_add_slot(drc_name);
- 	if (rc)
-@@ -66,11 +66,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
- 		return 0;
- 
- 	memcpy(drc_name, buf, nbytes);
-+	&drc_name[nbytes] = '\0';
- 
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_remove_slot(drc_name);
- 	if (rc)
+The first patch implements this behaviour, the second patch introduces a
+documentation that describes the virtual address space layout of the 64bit
+kernel and the last patch is taken from my sv48 series where I simply added
+the dump of the modules/kernel/BPF mapping.
 
-Thanks
+I removed the Reviewed-by on the first patch since it changed enough from
+last time and deserves a second look.
 
-Michal
+Changes in v2:
+- Fix documentation about direct mapping size which is 124GB instead
+  of 126GB.
+- Fix SPDX missing header in documentation.
+- Fix another checkpatch warning about EXPORT_SYMBOL which was not
+  directly below variable declaration.
 
-> already made sure that nbytes is not >= MAX_DRC_NAME_LEN and the store
-> buffer is guaranteed to be zeroed beyond the nth-byte of data copied
-> from the user. Further, since the string is now NULL terminated the code
-> only needs to change '\n' to '\0' when present.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/pci/hotplug/rpadlpar_sysfs.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
-> index cdbfa5df3a51..375087921284 100644
-> --- a/drivers/pci/hotplug/rpadlpar_sysfs.c
-> +++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
-> @@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
->  	if (nbytes >= MAX_DRC_NAME_LEN)
->  		return 0;
->  
-> -	memcpy(drc_name, buf, nbytes);
-> +	memcpy(drc_name, buf, nbytes + 1);
->  
->  	end = strchr(drc_name, '\n');
-> -	if (!end)
-> -		end = &drc_name[nbytes];
-> -	*end = '\0';
-> +	if (end)
-> +		*end = '\0';
->  
->  	rc = dlpar_add_slot(drc_name);
->  	if (rc)
-> @@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
->  	if (nbytes >= MAX_DRC_NAME_LEN)
->  		return 0;
->  
-> -	memcpy(drc_name, buf, nbytes);
-> +	memcpy(drc_name, buf, nbytes + 1);
->  
->  	end = strchr(drc_name, '\n');
-> -	if (!end)
-> -		end = &drc_name[nbytes];
-> -	*end = '\0';
-> +	if (end)
-> +		*end = '\0';
->  
->  	rc = dlpar_remove_slot(drc_name);
->  	if (rc)
-> -- 
-> 2.27.0
-> 
+Alexandre Ghiti (3):
+  riscv: Move kernel mapping outside of linear mapping
+  Documentation: riscv: Add documentation that describes the VM layout
+  riscv: Prepare ptdump for vm layout dynamic addresses
+
+ Documentation/riscv/index.rst       |  1 +
+ Documentation/riscv/vm-layout.rst   | 63 ++++++++++++++++++++++
+ arch/riscv/boot/loader.lds.S        |  3 +-
+ arch/riscv/include/asm/page.h       | 18 ++++++-
+ arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
+ arch/riscv/include/asm/set_memory.h |  1 +
+ arch/riscv/kernel/head.S            |  3 +-
+ arch/riscv/kernel/module.c          |  6 +--
+ arch/riscv/kernel/setup.c           |  3 ++
+ arch/riscv/kernel/vmlinux.lds.S     |  3 +-
+ arch/riscv/mm/fault.c               | 13 +++++
+ arch/riscv/mm/init.c                | 83 +++++++++++++++++++++++------
+ arch/riscv/mm/kasan_init.c          |  9 ++++
+ arch/riscv/mm/physaddr.c            |  2 +-
+ arch/riscv/mm/ptdump.c              | 67 ++++++++++++++++++-----
+ 15 files changed, 262 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/riscv/vm-layout.rst
+
+-- 
+2.20.1
+
