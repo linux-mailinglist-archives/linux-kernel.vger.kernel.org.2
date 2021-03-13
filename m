@@ -2,113 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F523339BD0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 05:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A926339BD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 05:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhCMEmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 23:42:02 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:30212 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233294AbhCMEld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 23:41:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615610493; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=JkdTNgdamw++aL3tSNR4nhc7QhgaKM6pDACDWc2KaLg=; b=ZKOEFI+ULu0TQNW905Kr5O+Y9YUHwYMxoucUyIOtqcVlDehFRKfX3AOs61PvBY1hyzxS5YP5
- e/ZCIwmuINHrEaBbT+LC4oacte5ujEPuBlwmOeyxdNadLInF5QFwAtlL0tY+rMTGDKjGgeen
- cxI+n0n3SylUBj22zoQ8NWjilpU=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 604c427a1de5dd7b998301e8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Mar 2021 04:41:30
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0DE6CC43461; Sat, 13 Mar 2021 04:41:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.154.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FFB0C433CA;
-        Sat, 13 Mar 2021 04:41:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FFB0C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v5 1/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
- link for I2S driver
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <20210312160622.24165-1-srivasam@codeaurora.org>
- <20210312160622.24165-2-srivasam@codeaurora.org>
- <CAD=FV=UmLh+RBucrcW=Y3HgD-E4g9vAEK-G4Aj0enszETwBciA@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <ecb24bcb-aa63-2865-15d9-7dc2849d4915@codeaurora.org>
-Date:   Sat, 13 Mar 2021 10:11:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232992AbhCMEw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 23:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231392AbhCMEwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 23:52:38 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE77C061574;
+        Fri, 12 Mar 2021 20:52:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=IyKSlCZ17KiihDViobh1cv3gEb1t3i+bcCJrnma1/Zk=; b=K8aaV+2aAlncJ4ybmQ/CEqJDQr
+        XxNqSAiFpxyyw8sfQZZccj/uNXUzd2mClzfMgsDlmEOgWt5gFxkGbVgrMJ06hB32EFQRYNTKSlzpj
+        G7l1kLSARbRo5Zp40blk9Or71sSNeNgOFbFx+tS1sIBC+dK+E3PdLQOp+u/cj4Gf9Hi1aBaHiIFy6
+        V29FrfKXp0saBLzN39PhnZvWAN6rYoHfzlN/8rs9aMCIUsMUsTUBVafdXoy+3z2CUM5gWAq8U/I4Q
+        jTTFxVw+tx3dtSh/TQpy4eshqiNTS9cX657uifXQg4cSilz92gMOFv1BWaZw0Ql9bW3zD7CEl2to7
+        ViyVvpLg==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKwGO-0017TD-BG; Sat, 13 Mar 2021 04:52:35 +0000
+Subject: Re: [PATCH V3] cpufreq: Rudimentary typos fix in the file
+ s5pv210-cpufreq.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, krzk@kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210313034951.13269-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <020910d9-b78d-d080-a030-c5a3954511ce@infradead.org>
+Date:   Fri, 12 Mar 2021 20:52:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=UmLh+RBucrcW=Y3HgD-E4g9vAEK-G4Aj0enszETwBciA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210313034951.13269-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On 3/12/21 7:49 PM, Bhaskar Chowdhury wrote:
+> 
+> Trivial spelling fixes throughout the file.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Changes from V2:
+>   Incoporated the findings of Tom Saeger <tom.saeger@oracle.com>
 
-Thanks for your time and inputs!!!
+    typo^^^^^^^
 
-On 3/13/2021 2:58 AM, Doug Anderson wrote:
-> Hi,
->
-> On Fri, Mar 12, 2021 at 8:06 AM Srinivasa Rao Mandadapu
-> <srivasam@codeaurora.org> wrote:
->> +               dai-link@0 {
->> +                       link-name = "MultiMedia0";
->> +                       reg = <MI2S_PRIMARY>;
->> +                       cpu {
->> +                               sound-dai = <&lpass_cpu MI2S_PRIMARY>;
->> +                       };
->> +
->> +                       multimedia0_codec: codec {
->> +                               sound-dai = <&alc5682 MI2S_PRIMARY>;
-> Please change "MI2S_PRIMARY" to "0". "MI2S_PRIMARY" is a numbering
-> system for "lpass_cpu" not for "alc5682". I'm not aware of symbolic
-> names for the alc5682's DAIs.
->
->  From digging through the code and testing, it appears that for alc5682:
-> 0 - aif1
-> 1 - aif2
->
-> Thus you could be a little more documenting by doing:
->
-> sound-dai = <&alc5682 0 /*aif1*/>;
->
-> -Doug
-Okay, I will change accordingly.
+> 
+>  drivers/cpufreq/s5pv210-cpufreq.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
+> index 69786e5bbf05..73110b005716 100644
+> --- a/drivers/cpufreq/s5pv210-cpufreq.c
+> +++ b/drivers/cpufreq/s5pv210-cpufreq.c
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+~Randy
 
