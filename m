@@ -2,462 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84161339E57
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 14:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98121339E62
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 15:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbhCMNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 08:43:31 -0500
-Received: from m12-15.163.com ([220.181.12.15]:42737 "EHLO m12-15.163.com"
+        id S233741AbhCMN6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 08:58:34 -0500
+Received: from mga04.intel.com ([192.55.52.120]:5959 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233700AbhCMNnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 08:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VrzYE
-        A1r1iXjFfjxzfrgMLNnmPFWAymNNmFvjDCadWY=; b=eezL+qgwEMYsEOA3N0gsx
-        hUh7b/47wdHslzW3AS7ejTAokLUXWBk+xmmnjAcopu5yWOcyYFmZ+E0OfjUkjHxq
-        VAUAHG26Pfg3R+01t5FNkYb6IcXSwY5xzdqt+3Uc+7Xrh9BG4LadnghSfbUeuILa
-        1eboUvMa2hNi738Fkp9/y8=
-Received: from localhost.localdomain (unknown [61.152.143.74])
-        by smtp11 (Coremail) with SMTP id D8CowADXTMIzwExgWMvMEw--.37666S4;
-        Sat, 13 Mar 2021 21:38:00 +0800 (CST)
-From:   zhou xianrong <xianrong_zhou@163.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mhocko@kernel.org, mgorman@suse.de, willy@linux.intel.com,
-        rostedt@goodmis.org, mingo@redhat.com, vbabka@suse.cz,
-        rientjes@google.com, pankaj.gupta.linux@gmail.com, bhe@redhat.com,
-        ying.huang@intel.com, iamjoonsoo.kim@lge.com, minchan@kernel.org,
-        ruxian.feng@transsion.com, kai.cheng@transsion.com,
-        zhao.xu@transsion.com, zhouxianrong@tom.com,
-        zhou xianrong <xianrong.zhou@transsion.com>
-Subject: [PATCH] kswapd: no need reclaim cma pages triggered by unmovable allocation
-Date:   Sat, 13 Mar 2021 21:37:36 +0800
-Message-Id: <20210313133736.4799-1-xianrong_zhou@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210313083109.5410-1-xianrong_zhou@163.com>
-References: <20210313083109.5410-1-xianrong_zhou@163.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowADXTMIzwExgWMvMEw--.37666S4
-X-Coremail-Antispam: 1Uf129KBjvAXoW3ZrWkJw1DAryDGF1xZw4ktFb_yoW8GFWUuo
-        WSkrsIyw1SgryjvwsY9FykJF4UXF18Ar4xZF1j9a9xC3ZxZrWrJa90kw47JFWxXF4rtF1r
-        Xr1jk3srtFs5t3Wxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUB4CGUUUUU
-X-Originating-IP: [61.152.143.74]
-X-CM-SenderInfo: h0ld02prqjs6xkrxqiywtou0bp/1tbiNhhUz1WBmKWxBwAAsq
+        id S232999AbhCMN6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 08:58:07 -0500
+IronPort-SDR: gwQ3sl6htlUA/nHtgZqvPrp2UibDjwvDW8lrTmwtlsN0H1FcjTJPPmiVo7ZVKlu5G/8V4bmgSC
+ XuYK2QRMwaVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9922"; a="186562583"
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="186562583"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 05:58:07 -0800
+IronPort-SDR: T1Zq2z4YW15jCVrttORPG8yo8safoQ/h4rS8XY9uT6+k7fNz1d8qdubnSM/qOuMa4Ny6GvIvvm
+ CXG7HkePVc2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="432217592"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Mar 2021 05:58:03 -0800
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: Intel: sof_rt5682: Add rt1015p speaker amp support
+Date:   Sat, 13 Mar 2021 21:40:38 +0800
+Message-Id: <20210313134038.5577-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhou xianrong <xianrong.zhou@transsion.com>
+This patch adds jsl_rt5682_rt1015p which supports the
+RT5682 headset codec and RT1015P speaker amplifier combination
+on JasperLake platform.
 
-For purpose of better migration cma pages are allocated after
-failure movalbe allocations and are used normally for file pages
-or anonymous pages.
-
-In reclaim path many cma pages if configurated are reclaimed
-from lru lists in kswapd mainly or direct reclaim triggered by
-unmovable or reclaimable allocations. But these reclaimed cma
-pages can not be used by original unmovable or reclaimable
-allocations. So the reclaim are unnecessary.
-
-So the unmovable or reclaimable allocations should not trigger
-reclaiming cma pages. The patch adds third factor of migratetype
-which is just like factors of zone index or order kswapd need
-consider. The modification follows codes of zone index
-consideration. And it is straightforward that skips reclaiming
-cma pages in reclaim procedure which is triggered only by
-unmovable or reclaimable allocations.
-
-This optimization can avoid ~3% unnecessary isolations from cma
-(cma isolated / total isolated) with configuration of total 100Mb
-cma pages.
-
-Signed-off-by: zhou xianrong <xianrong.zhou@transsion.com>
-Signed-off-by: feng ruxian <ruxian.feng@transsion.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- include/linux/mmzone.h        |  6 ++--
- include/trace/events/vmscan.h | 20 +++++++----
- mm/page_alloc.c               |  5 +--
- mm/vmscan.c                   | 63 +++++++++++++++++++++++++++++------
- 4 files changed, 73 insertions(+), 21 deletions(-)
+ sound/soc/codecs/rt1015p.c                    | 10 ++
+ sound/soc/intel/boards/Kconfig                |  1 +
+ sound/soc/intel/boards/sof_realtek_common.c   | 94 +++++++++++++++++++
+ sound/soc/intel/boards/sof_realtek_common.h   |  8 ++
+ sound/soc/intel/boards/sof_rt5682.c           | 31 +++++-
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 13 +++
+ 6 files changed, 155 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index b593316bff3d..7dd38d7372b9 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -301,6 +301,8 @@ struct lruvec {
- #define ISOLATE_ASYNC_MIGRATE	((__force isolate_mode_t)0x4)
- /* Isolate unevictable pages */
- #define ISOLATE_UNEVICTABLE	((__force isolate_mode_t)0x8)
-+/* Isolate none cma pages */
-+#define ISOLATE_NONCMA		((__force isolate_mode_t)0x10)
+diff --git a/sound/soc/codecs/rt1015p.c b/sound/soc/codecs/rt1015p.c
+index 671f2a2130fe..3a564272156b 100644
+--- a/sound/soc/codecs/rt1015p.c
++++ b/sound/soc/codecs/rt1015p.c
+@@ -4,6 +4,7 @@
+ //
+ // Copyright 2020 The Linux Foundation. All rights reserved.
  
- /* LRU Isolation modes. */
- typedef unsigned __bitwise isolate_mode_t;
-@@ -756,7 +758,7 @@ typedef struct pglist_data {
- 	wait_queue_head_t pfmemalloc_wait;
- 	struct task_struct *kswapd;	/* Protected by
- 					   mem_hotplug_begin/end() */
--	int kswapd_order;
-+	int kswapd_order, kswapd_migratetype;
- 	enum zone_type kswapd_highest_zoneidx;
- 
- 	int kswapd_failures;		/* Number of 'reclaimed == 0' runs */
-@@ -840,7 +842,7 @@ static inline bool pgdat_is_empty(pg_data_t *pgdat)
- 
- void build_all_zonelists(pg_data_t *pgdat);
- void wakeup_kswapd(struct zone *zone, gfp_t gfp_mask, int order,
--		   enum zone_type highest_zoneidx);
-+		   int migratetype, enum zone_type highest_zoneidx);
- bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
- 			 int highest_zoneidx, unsigned int alloc_flags,
- 			 long free_pages);
-diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
-index 2070df64958e..41bbafdfde84 100644
---- a/include/trace/events/vmscan.h
-+++ b/include/trace/events/vmscan.h
-@@ -51,37 +51,41 @@ TRACE_EVENT(mm_vmscan_kswapd_sleep,
- 
- TRACE_EVENT(mm_vmscan_kswapd_wake,
- 
--	TP_PROTO(int nid, int zid, int order),
-+	TP_PROTO(int nid, int zid, int order, int mt),
- 
--	TP_ARGS(nid, zid, order),
-+	TP_ARGS(nid, zid, order, mt),
- 
- 	TP_STRUCT__entry(
- 		__field(	int,	nid	)
- 		__field(	int,	zid	)
- 		__field(	int,	order	)
-+		__field(	int,	mt	)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->nid	= nid;
- 		__entry->zid    = zid;
- 		__entry->order	= order;
-+		__entry->mt	= mt;
- 	),
- 
--	TP_printk("nid=%d order=%d",
-+	TP_printk("nid=%d order=%d migratetype=%d",
- 		__entry->nid,
--		__entry->order)
-+		__entry->order,
-+		__entry->mt)
- );
- 
- TRACE_EVENT(mm_vmscan_wakeup_kswapd,
- 
--	TP_PROTO(int nid, int zid, int order, gfp_t gfp_flags),
-+	TP_PROTO(int nid, int zid, int order, int mt, gfp_t gfp_flags),
- 
--	TP_ARGS(nid, zid, order, gfp_flags),
-+	TP_ARGS(nid, zid, order, mt, gfp_flags),
- 
- 	TP_STRUCT__entry(
- 		__field(	int,	nid		)
- 		__field(	int,	zid		)
- 		__field(	int,	order		)
-+		__field(	int,	mt		)
- 		__field(	gfp_t,	gfp_flags	)
- 	),
- 
-@@ -89,12 +93,14 @@ TRACE_EVENT(mm_vmscan_wakeup_kswapd,
- 		__entry->nid		= nid;
- 		__entry->zid		= zid;
- 		__entry->order		= order;
-+		__entry->mt		= mt;
- 		__entry->gfp_flags	= gfp_flags;
- 	),
- 
--	TP_printk("nid=%d order=%d gfp_flags=%s",
-+	TP_printk("nid=%d order=%d migratetype=%d gfp_flags=%s",
- 		__entry->nid,
- 		__entry->order,
-+		__entry->mt,
- 		show_gfp_flags(__entry->gfp_flags))
- );
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 519a60d5b6f7..45ceb15721b8 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3517,7 +3517,7 @@ struct page *rmqueue(struct zone *preferred_zone,
- 	/* Separate test+clear to avoid unnecessary atomics */
- 	if (test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags)) {
- 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
--		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
-+		wakeup_kswapd(zone, 0, 0, migratetype, zone_idx(zone));
- 	}
- 
- 	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
-@@ -4426,11 +4426,12 @@ static void wake_all_kswapds(unsigned int order, gfp_t gfp_mask,
- 	struct zone *zone;
- 	pg_data_t *last_pgdat = NULL;
- 	enum zone_type highest_zoneidx = ac->highest_zoneidx;
-+	int migratetype = ac->migratetype;
- 
- 	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
- 					ac->nodemask) {
- 		if (last_pgdat != zone->zone_pgdat)
--			wakeup_kswapd(zone, gfp_mask, order, highest_zoneidx);
-+			wakeup_kswapd(zone, gfp_mask, order, migratetype, highest_zoneidx);
- 		last_pgdat = zone->zone_pgdat;
- 	}
- }
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b1b574ad199d..e0a482cbba15 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -99,6 +99,9 @@ struct scan_control {
- 	/* Can pages be swapped as part of reclaim? */
- 	unsigned int may_swap:1;
- 
-+	/* Can cma pages be reclaimed? */
-+	unsigned int may_cma:1;
-+
- 	/*
- 	 * Cgroups are not reclaimed below their configured memory.low,
- 	 * unless we threaten to OOM. If any cgroups are skipped due to
-@@ -286,6 +289,11 @@ static bool writeback_throttling_sane(struct scan_control *sc)
- }
++#include <linux/acpi.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+@@ -130,10 +131,19 @@ static const struct of_device_id rt1015p_device_id[] = {
+ MODULE_DEVICE_TABLE(of, rt1015p_device_id);
  #endif
  
-+static bool movable_reclaim(gfp_t gfp_mask)
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id rt1015p_acpi_match[] = {
++	{ "RTL1015", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, rt1015p_acpi_match);
++#endif
++
+ static struct platform_driver rt1015p_platform_driver = {
+ 	.driver = {
+ 		.name = "rt1015p",
+ 		.of_match_table = of_match_ptr(rt1015p_device_id),
++		.acpi_match_table = ACPI_PTR(rt1015p_acpi_match),
+ 	},
+ 	.probe = rt1015p_platform_probe,
+ };
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index d1d28129a32b..58379393b8e4 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
+ 	select SND_SOC_MAX98373_I2C
+ 	select SND_SOC_RT1011
+ 	select SND_SOC_RT1015
++	select SND_SOC_RT1015P
+ 	select SND_SOC_RT5682_I2C
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
+index f3cf73c620ba..4b95aa2cbff8 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.c
++++ b/sound/soc/intel/boards/sof_realtek_common.c
+@@ -136,3 +136,97 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
+ 	card->codec_conf = rt1011_codec_confs;
+ 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
+ }
++
++#define RT1015P_SHARE_EN_SPK	BIT(0)
++
++static unsigned long rt1015p_quirk;
++
++static const struct snd_soc_dapm_route rt1015p_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Left Speaker" },
++	{ "Right Spk", NULL, "Right Speaker" },
++};
++
++static const struct snd_soc_dapm_route rt1015p_share_en_spk_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Speaker" },
++	{ "Right Spk", NULL, "Speaker" },
++};
++
++static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
++		.name_prefix = "Left",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
++		.name_prefix = "Right",
++	},
++};
++
++static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
++	{
++		.name = RT1015P_DEV0_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++	{
++		.name = RT1015P_DEV1_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++};
++
++void sof_rt1015p_set_share_en_spk(void)
 +{
-+	return is_migrate_movable(gfp_migratetype(gfp_mask));
++	/* Two amps share one en pin so there is only one device in acpi
++	 * table
++	 */
++	rt1015p_quirk |= RT1015P_SHARE_EN_SPK;
 +}
 +
- /*
-  * This misses isolated pages which are not accounted for to save counters.
-  * As the data only determines if reclaim or compaction continues, it is
-@@ -1499,6 +1507,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 		.gfp_mask = GFP_KERNEL,
- 		.priority = DEF_PRIORITY,
- 		.may_unmap = 1,
-+		.may_cma = 1,
- 	};
- 	struct reclaim_stat stat;
- 	unsigned int nr_reclaimed;
-@@ -1593,6 +1602,9 @@ int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode)
- 	if ((mode & ISOLATE_UNMAPPED) && page_mapped(page))
- 		return ret;
- 
-+	if ((mode & ISOLATE_NONCMA) && is_migrate_cma(get_pageblock_migratetype(page)))
-+		return ret;
-+
- 	return 0;
- }
- 
-@@ -1647,7 +1659,10 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
- 	unsigned long skipped = 0;
- 	unsigned long scan, total_scan, nr_pages;
- 	LIST_HEAD(pages_skipped);
--	isolate_mode_t mode = (sc->may_unmap ? 0 : ISOLATE_UNMAPPED);
-+	isolate_mode_t mode;
-+
-+	mode = (sc->may_unmap ? 0 : ISOLATE_UNMAPPED);
-+	mode |= (sc->may_cma ? 0 : ISOLATE_NONCMA);
- 
- 	total_scan = 0;
- 	scan = 0;
-@@ -2125,6 +2140,7 @@ unsigned long reclaim_pages(struct list_head *page_list)
- 		.may_writepage = 1,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cma = 1,
- 	};
- 
- 	while (!list_empty(page_list)) {
-@@ -3253,6 +3269,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- 		.may_writepage = !laptop_mode,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cma = movable_reclaim(gfp_mask),
- 	};
- 
- 	/*
-@@ -3298,6 +3315,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.may_swap = !noswap,
-+		.may_cma = 1,
- 	};
- 
- 	WARN_ON_ONCE(!current->reclaim_state);
-@@ -3341,6 +3359,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_writepage = !laptop_mode,
- 		.may_unmap = 1,
- 		.may_swap = may_swap,
-+		.may_cma = 1,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
-@@ -3548,7 +3567,7 @@ static bool kswapd_shrink_node(pg_data_t *pgdat,
-  * or lower is eligible for reclaim until at least one usable zone is
-  * balanced.
-  */
--static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
-+static int balance_pgdat(pg_data_t *pgdat, int order, int migratetype, int highest_zoneidx)
- {
- 	int i;
- 	unsigned long nr_soft_reclaimed;
-@@ -3650,6 +3669,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
- 		 */
- 		sc.may_writepage = !laptop_mode && !nr_boost_reclaim;
- 		sc.may_swap = !nr_boost_reclaim;
-+		sc.may_cma = is_migrate_movable(migratetype);
- 
- 		/*
- 		 * Do some background aging of the anon list, to give
-@@ -3771,8 +3791,15 @@ static enum zone_type kswapd_highest_zoneidx(pg_data_t *pgdat,
- 	return curr_idx == MAX_NR_ZONES ? prev_highest_zoneidx : curr_idx;
- }
- 
-+static int kswapd_migratetype(pg_data_t *pgdat, int prev_migratetype)
++static int rt1015p_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
 +{
-+	int curr_migratetype = READ_ONCE(pgdat->kswapd_migratetype);
++	/* reserved for debugging purpose */
 +
-+	return curr_migratetype == MIGRATE_TYPES ? prev_migratetype : curr_migratetype;
++	return 0;
 +}
 +
- static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_order,
--				unsigned int highest_zoneidx)
-+				int migratetype, unsigned int highest_zoneidx)
- {
- 	long remaining = 0;
- 	DEFINE_WAIT(wait);
-@@ -3807,8 +3834,8 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
- 		remaining = schedule_timeout(HZ/10);
- 
- 		/*
--		 * If woken prematurely then reset kswapd_highest_zoneidx and
--		 * order. The values will either be from a wakeup request or
-+		 * If woken prematurely then reset kswapd_highest_zoneidx, order
-+		 * and migratetype. The values will either be from a wakeup request or
- 		 * the previous request that slept prematurely.
- 		 */
- 		if (remaining) {
-@@ -3818,6 +3845,10 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
- 
- 			if (READ_ONCE(pgdat->kswapd_order) < reclaim_order)
- 				WRITE_ONCE(pgdat->kswapd_order, reclaim_order);
++static const struct snd_soc_ops rt1015p_ops = {
++	.hw_params = rt1015p_hw_params,
++};
 +
-+			if (!is_migrate_movable(READ_ONCE(pgdat->kswapd_migratetype)))
-+				WRITE_ONCE(pgdat->kswapd_migratetype,
-+						kswapd_migratetype(pgdat, migratetype));
- 		}
- 
- 		finish_wait(&pgdat->kswapd_wait, &wait);
-@@ -3870,6 +3901,7 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
-  */
- static int kswapd(void *p)
- {
-+	int migratetype = 0;
- 	unsigned int alloc_order, reclaim_order;
- 	unsigned int highest_zoneidx = MAX_NR_ZONES - 1;
- 	pg_data_t *pgdat = (pg_data_t*)p;
-@@ -3895,23 +3927,27 @@ static int kswapd(void *p)
- 	set_freezable();
- 
- 	WRITE_ONCE(pgdat->kswapd_order, 0);
-+	WRITE_ONCE(pgdat->kswapd_migratetype, MIGRATE_TYPES);
- 	WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
- 	for ( ; ; ) {
- 		bool ret;
- 
- 		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
-+		migratetype = kswapd_migratetype(pgdat, migratetype);
- 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
- 							highest_zoneidx);
- 
- kswapd_try_sleep:
- 		kswapd_try_to_sleep(pgdat, alloc_order, reclaim_order,
--					highest_zoneidx);
-+					migratetype, highest_zoneidx);
- 
- 		/* Read the new order and highest_zoneidx */
- 		alloc_order = READ_ONCE(pgdat->kswapd_order);
-+		migratetype = kswapd_migratetype(pgdat, migratetype);
- 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
- 							highest_zoneidx);
- 		WRITE_ONCE(pgdat->kswapd_order, 0);
-+		WRITE_ONCE(pgdat->kswapd_migratetype, MIGRATE_TYPES);
- 		WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
- 
- 		ret = try_to_freeze();
-@@ -3934,8 +3970,8 @@ static int kswapd(void *p)
- 		 * request (alloc_order).
- 		 */
- 		trace_mm_vmscan_kswapd_wake(pgdat->node_id, highest_zoneidx,
--						alloc_order);
--		reclaim_order = balance_pgdat(pgdat, alloc_order,
-+						alloc_order, migratetype);
-+		reclaim_order = balance_pgdat(pgdat, alloc_order, migratetype,
- 						highest_zoneidx);
- 		if (reclaim_order < alloc_order)
- 			goto kswapd_try_sleep;
-@@ -3953,11 +3989,12 @@ static int kswapd(void *p)
-  * has failed or is not needed, still wake up kcompactd if only compaction is
-  * needed.
-  */
--void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
-+void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order, int migratetype,
- 		   enum zone_type highest_zoneidx)
- {
- 	pg_data_t *pgdat;
- 	enum zone_type curr_idx;
-+	int curr_migratetype;
- 
- 	if (!managed_zone(zone))
- 		return;
-@@ -3967,6 +4004,7 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
- 
- 	pgdat = zone->zone_pgdat;
- 	curr_idx = READ_ONCE(pgdat->kswapd_highest_zoneidx);
-+	curr_migratetype = READ_ONCE(pgdat->kswapd_migratetype);
- 
- 	if (curr_idx == MAX_NR_ZONES || curr_idx < highest_zoneidx)
- 		WRITE_ONCE(pgdat->kswapd_highest_zoneidx, highest_zoneidx);
-@@ -3974,6 +4012,9 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
- 	if (READ_ONCE(pgdat->kswapd_order) < order)
- 		WRITE_ONCE(pgdat->kswapd_order, order);
- 
-+	if (curr_migratetype == MIGRATE_TYPES || is_migrate_movable(migratetype))
-+		WRITE_ONCE(pgdat->kswapd_migratetype, migratetype);
++static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
 +
- 	if (!waitqueue_active(&pgdat->kswapd_wait))
- 		return;
++	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_share_en_spk_dapm_routes,
++					      ARRAY_SIZE(rt1015p_share_en_spk_dapm_routes));
++	else
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_dapm_routes,
++					      ARRAY_SIZE(rt1015p_dapm_routes));
++	if (ret)
++		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
++	return ret;
++}
++
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
++{
++	link->codecs = rt1015p_dai_link_components;
++	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
++		link->num_codecs = 1;
++	else
++		link->num_codecs = ARRAY_SIZE(rt1015p_dai_link_components);
++	link->init = rt1015p_init;
++	link->ops = &rt1015p_ops;
++}
++
++void sof_rt1015p_codec_conf(struct snd_soc_card *card)
++{
++	if (rt1015p_quirk & RT1015P_SHARE_EN_SPK)
++		return;
++
++	card->codec_conf = rt1015p_codec_confs;
++	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
++}
+diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
+index 87cb3812b926..d7865681f2bd 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.h
++++ b/sound/soc/intel/boards/sof_realtek_common.h
+@@ -21,4 +21,12 @@
+ void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
+ void sof_rt1011_codec_conf(struct snd_soc_card *card);
  
-@@ -3994,7 +4035,7 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
- 	}
++#define RT1015P_CODEC_DAI	"HiFi"
++#define RT1015P_DEV0_NAME	"RTL1015:00"
++#define RT1015P_DEV1_NAME	"RTL1015:01"
++
++void sof_rt1015p_set_share_en_spk(void);
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
++void sof_rt1015p_codec_conf(struct snd_soc_card *card);
++
+ #endif /* __SOF_REALTEK_COMMON_H */
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 55505e207bc0..154f2ee9f406 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -45,8 +45,9 @@
+ #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
+ #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
+ #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
+-#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
+-#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
++#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
  
- 	trace_mm_vmscan_wakeup_kswapd(pgdat->node_id, highest_zoneidx, order,
--				      gfp_flags);
-+				      migratetype, gfp_flags);
- 	wake_up_interruptible(&pgdat->kswapd_wait);
- }
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
+ 			links[id].init = speaker_codec_init_lr;
+ 			links[id].ops = &sof_rt1015_ops;
++		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
++			sof_rt1015p_dai_link(&links[id]);
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
+ 			links[id].codecs = max_98373_components;
+@@ -847,10 +850,24 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
+ 		sof_audio_card_rt5682.num_links++;
  
-@@ -4017,6 +4058,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
- 		.may_writepage = 1,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cma = 1,
- 		.hibernation_mode = 1,
- 	};
- 	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
-@@ -4176,6 +4218,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
- 		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
- 		.may_swap = 1,
-+		.may_cma = movable_reclaim(gfp_mask),
- 		.reclaim_idx = gfp_zone(gfp_mask),
- 	};
++	/* setup amp quirk if any */
++	if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
++		/* There may be only one device instance if two amps
++		 * sharing one en pin
++		 */
++		if (!acpi_dev_present("RTL1015", "1", -1)) {
++			dev_dbg(&pdev->dev, "Device %s not exist\n",
++				RT1015P_DEV1_NAME);
++			sof_rt1015p_set_share_en_spk();
++		}
++	}
++
+ 	if (sof_rt5682_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT)
+ 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
+ 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
+ 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
++	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
++		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
  
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
+ 					      dmic_be_num, hdmi_num);
+@@ -940,6 +957,15 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.name = "jsl_rt5682_rt1015p",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_MCLK_24MHZ |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1015P_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{ }
+ };
+ 
+@@ -966,3 +992,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
+ MODULE_ALIAS("platform:jsl_rt5682_max98360a");
+ MODULE_ALIAS("platform:cml_rt1015_rt5682");
+ MODULE_ALIAS("platform:tgl_rt1011_rt5682");
++MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 52238db0bcb5..73fe4f89a82d 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
+ 	.codecs = {"10EC1015"}
+ };
+ 
++static struct snd_soc_acpi_codecs rt1015p_spk = {
++	.num_codecs = 1,
++	.codecs = {"RTL1015"}
++};
++
+ static struct snd_soc_acpi_codecs mx98360a_spk = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98360A"}
+@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &rt1015_spk,
+ 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+ 	},
++	{
++		.id = "10EC5682",
++		.drv_name = "jsl_rt5682_rt1015p",
++		.sof_fw_filename = "sof-jsl.ri",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rt1015p_spk,
++		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
++	},
+ 	{
+ 		.id = "10EC5682",
+ 		.drv_name = "jsl_rt5682_max98360a",
 -- 
-2.25.1
-
+2.17.1
 
