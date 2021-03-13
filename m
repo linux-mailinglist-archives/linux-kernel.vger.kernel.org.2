@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7898A339DB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D229339DB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 12:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhCMK5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:57:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
+        id S232431AbhCMLLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 06:11:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhCMK5I (ORCPT
+        with ESMTP id S230349AbhCMLLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 05:57:08 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC173C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 02:57:08 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so11972879pjq.5
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 02:57:08 -0800 (PST)
+        Sat, 13 Mar 2021 06:11:17 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE95C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 03:11:17 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id l2so17533343pgb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 03:11:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cf9U3m1rqRNi6855v4YFmZ3jb95Xgz7XQOcp+CqCqzI=;
-        b=PUBjwR+0S5+7JzmlOfitCR38CohYfi5iywij2LBgk70A89ukEjJ5soKdlNjPuICW37
-         ed1QOHRmG7hkhGDE2KygH2X7CWb4axAEomQhroiKKcFXOPD/e8afcllVfptZW5gZSk8b
-         r1bwk9Win8shHKGJqsujWTMp6j+pFOTQ3/JzGMehHAPoC52SgHXLpPrw9TGeUw2+MNSn
-         08lojiu5ym0CiHDBt6qeF5p5R/OBlh+m/ZMawmrJ5PT+fKig5f9fjnbPrYXitB1I26io
-         E6m8HeRN4ctb2QbfX4F8ljO0txhUDqVfA0/Vw4UOuUTPusSy8nru8JUsz4UPQA98K7/r
-         abNA==
+        bh=NcvGiHbYQxROrH9TdsfaW7MsRBE3rsynjXGocCNb5Kc=;
+        b=ZKHCCL3jjt8Oh9RVyaO592Hozw7tAuJwpw0L3jRz2xmNMJQ6dC5MyPJJNzTts6t/Ay
+         PSLFmUf0+BIFk/wNs5cANujWFbSnp5GD2V1FjcUsOw32i/nGRgtH/ietEJZxZ0lJPRHg
+         cqTcakZLEl2DSCqS0JeKlhhRmvKcwycOfXBIU0BNMbdLhHbLhssgJ8QFhbL3BNsjY5AO
+         DDXb8xTJfS4iU5m/ct4XbCOvJ5eiOfBN8Cx7NyqSz86EPZVz3JezavncRpPdQHe8X3G1
+         yQlHi3Mfzz4D2QwsGfaPjiumkl8fE/WmM6Vjr1ScRMjNkxPsHh3IQXRnLCi94kl/ilUI
+         5kPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cf9U3m1rqRNi6855v4YFmZ3jb95Xgz7XQOcp+CqCqzI=;
-        b=uH8E+G2of23Z/h1qQvh1bk0UE32mJ4O1n0aXPrE5JlFP8aIrkyf1zBc5lvqenK+bpO
-         7SMlHvXKveBD2NKr7u1xgQ3kuGiOH0WZ2/8JvdYBlVbN1A6WshvF50sXimc2EjvMrXaM
-         25pn4dbYC3vZNbTNuPAE5/JTYIxSrBldHUvvWtaQwq9pHpAA9F+KmW5te9YobUHpCL6j
-         qYHlwXMfYmafYQZenKjonkFnzHt9C0t93eMkJBpHhMlRE0IgSFSlbQPg9lByQtxa9ufP
-         EauoVdpXyQVRpU8/LmK2BJMlbwZKMgE/4gxTkh35wU7OlnwEWvuNEQXDexmUZYeERFqB
-         8xag==
-X-Gm-Message-State: AOAM530SZqCKHA4qembpiKqcum4NSFJumUSyDRQprvQdrJkwcFJP2jDf
-        ZnpYgoI18lCAuvSXxvuIQm0=
-X-Google-Smtp-Source: ABdhPJwcvz1+dydUk1MLSZdM0GRFX+5VYzAwczyiV5Bjy/ejIA99Y1McMmtVppFyxy0/6zC76WkpTA==
-X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr3132095pjs.38.1615633028309;
-        Sat, 13 Mar 2021 02:57:08 -0800 (PST)
+        bh=NcvGiHbYQxROrH9TdsfaW7MsRBE3rsynjXGocCNb5Kc=;
+        b=AubOdNKnDrZE9uJ13ChQe+HHW+ZwpNVDLsP9GUKXk1cRQ2+ADvFK1BZAzS1frmoUMH
+         ESKsPEVvNHWyXLu740e/rrxpVWQDHVLTDJdGaUmFT3MvNlCb0MnYq4l1haas4N15RyZy
+         r4uUmqbdMy4AHfJb9eTsHM+iJgcaKgugoJNj1i/7ltkB4Hf62M+T3S8/rtNemCQXOG7E
+         1vXz6hW31BToFZ4usB6cbcpzauitO/t41PA59uXWcsBT84jikfVbDnlEBpjmaQSjVVOK
+         WisesLA/TVwe9o/uhjHO9IdiuZvbg/b0B6Y/c325uKXv/ZbTPaLmCjZlpWfuE7LLmwPy
+         E+sg==
+X-Gm-Message-State: AOAM530T351Jfht3YlcNoPviiGMrsgb9pK/zYUkULSw2VXpkl3EJ3Oo5
+        458OCpM+ru9q8VPeQkSEjJ8=
+X-Google-Smtp-Source: ABdhPJyOfUr3n0ClOOVIRfkgpLsTLKR1WrqMJVF5sb/o57FmCwEgnpohDoiMrE+o3ymtwgjbtzM/pw==
+X-Received: by 2002:a65:458f:: with SMTP id o15mr15299914pgq.111.1615633876967;
+        Sat, 13 Mar 2021 03:11:16 -0800 (PST)
 Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id iq6sm4929497pjb.31.2021.03.13.02.57.06
+        by smtp.gmail.com with ESMTPSA id y8sm7893193pfp.140.2021.03.13.03.11.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 02:57:07 -0800 (PST)
+        Sat, 13 Mar 2021 03:11:16 -0800 (PST)
 From:   menglong8.dong@gmail.com
 X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] mtd:rawnand: remove duplicate include in rawnand.h
-Date:   Sat, 13 Mar 2021 02:57:02 -0800
-Message-Id: <20210313105702.365878-1-zhang.yunkai@zte.com.cn>
+To:     ebiederm@xmission.com
+Cc:     gustavoars@kernel.org, viro@zeniv.linux.org.uk,
+        keescook@chromium.org, zhang.yunkai@zte.com.cn, pcc@google.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] signal: remove duplicate include in signal.h
+Date:   Sat, 13 Mar 2021 03:11:08 -0800
+Message-Id: <20210313111108.366380-1-zhang.yunkai@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,26 +66,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-'linux/mtd/nand.h' included in 'rawnand.h' is duplicated.
-It is also included in the 17th line.
+'linux/string.h' included in 'signal.h' is duplicated.
+It is also included in the 7th line.
 
 Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
- include/linux/mtd/rawnand.h | 1 -
+ include/linux/signal.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 6b3240e44310..93e8f72beba6 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -18,7 +18,6 @@
- #include <linux/mtd/flashchip.h>
- #include <linux/mtd/bbm.h>
- #include <linux/mtd/jedec.h>
--#include <linux/mtd/nand.h>
- #include <linux/mtd/onfi.h>
- #include <linux/mutex.h>
- #include <linux/of.h>
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index 205526c4003a..c371d3a3ff61 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -124,7 +124,6 @@ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
+ #define sigmask(sig)	(1UL << ((sig) - 1))
+ 
+ #ifndef __HAVE_ARCH_SIG_SETOPS
+-#include <linux/string.h>
+ 
+ #define _SIG_SET_BINOP(name, op)					\
+ static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
 -- 
 2.25.1
 
