@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C1D33A12A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7800933A127
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhCMUqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 15:46:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38302 "EHLO mail.kernel.org"
+        id S234718AbhCMUqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 15:46:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234535AbhCMUpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234593AbhCMUpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 13 Mar 2021 15:45:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C3A2B64ED0;
-        Sat, 13 Mar 2021 20:45:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 64B3364E45;
+        Sat, 13 Mar 2021 20:45:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615668339;
-        bh=cVaLyqZ5iVyFCF/YYq/v2y93OG+V4aESBIzrqITw5pg=;
+        s=k20201202; t=1615668340;
+        bh=yThW5CoVkH3bQ3zotubvgvAsGXFjejJ3H6TfeJ5BoYs=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=C3clp6BcIhs/avqhePGqVM1wlkcrbquAaLTCqaxLuKyfBR80+0qRIgcMkjQpNn/g2
-         U62bTlMR73z3Eey4upDwDRoP1yoiuRmV9HK8I5Q9ZapXsCESgicg0T3spy4zraOlV4
-         eIssP6s9xR93YEO+2dQtHXtIWSrEmmEo0CkwtWeWtOwmRCa8Xh5/hCDTjMRy5/idfL
-         cwCpYGt4q/KoYljNCKQFPMS5+DksJocPKkSVAzxebkqoMd8BCjd/58UBWEMN8023Hz
-         vz7KRSzanKFDKk11PEj4ip7lQEAj36KJafy7LrVT5jAN0alpdcREfuZR0ZJkwr8QHO
-         a+jRviwEASBdg==
+        b=X7hkcQn0WySNtDKP2XhIegYnlHxXw3NAzM5nwUJSxWm5w7RxOU46BZZOksxaKmGZs
+         xRi1K8N9zUfSQsTqK8Z1/L2iWZxE3h0JiTM0z5JBmV5SoxS8sOuhZuSbHIS4YDgEG4
+         ReNJcv01XsONW/eUzKhBPeF/krst9mpP7snJZLISaV899Yxq125rlIoKiqpauxtjtK
+         9mQkPRxwG3ouAzgTtwSTqTXhuGpQ+ddaHDff7AzXskjWCoN3+CW2U9l1aEnns9+Tu9
+         2ydJM4GtJaa1hrrXw/HQIsgoRcRSkzaKvMxV7G0OkGavnktENB5v+jDD1YfyzfbGxz
+         aL2aMeF0GFPEg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BDB9F60971;
-        Sat, 13 Mar 2021 20:45:39 +0000 (UTC)
-Subject: Re: [GIT PULL] Kbuild fixes for v5.12-rc3
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6007760971;
+        Sat, 13 Mar 2021 20:45:40 +0000 (UTC)
+Subject: Re: [GIT PULL] Char/Misc driver fixes for 5.12-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNATqcLBbLVn5Ft+1-m_uC5WC=9HAx2orbopsOJnZ7SRgqQ@mail.gmail.com>
-References: <CAK7LNATqcLBbLVn5Ft+1-m_uC5WC=9HAx2orbopsOJnZ7SRgqQ@mail.gmail.com>
+In-Reply-To: <YEzUXyQedmvwfC6n@kroah.com>
+References: <YEzUXyQedmvwfC6n@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNATqcLBbLVn5Ft+1-m_uC5WC=9HAx2orbopsOJnZ7SRgqQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.12-2
-X-PR-Tracked-Commit-Id: bcbcf50f521843445c9ea320a0569874f88c4b7a
+X-PR-Tracked-Message-Id: <YEzUXyQedmvwfC6n@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.12-rc3
+X-PR-Tracked-Commit-Id: 65527a51c66f4edfa28602643d7dd4fa366eb826
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e83bad7f77a4348277c3ebe9bea4a5b0cd6dfcb5
-Message-Id: <161566833977.19597.9555526720684258090.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Mar 2021 20:45:39 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
+X-PR-Merge-Commit-Id: 88fe49249c99de14e543c632a46248d85411ab9e
+Message-Id: <161566834038.19597.6921965081161794071.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Mar 2021 20:45:40 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Mar 2021 20:53:01 +0900:
+The pull request you sent on Sat, 13 Mar 2021 16:03:59 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.12-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.12-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e83bad7f77a4348277c3ebe9bea4a5b0cd6dfcb5
+https://git.kernel.org/torvalds/c/88fe49249c99de14e543c632a46248d85411ab9e
 
 Thank you!
 
