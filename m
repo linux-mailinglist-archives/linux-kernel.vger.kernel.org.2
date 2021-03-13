@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A4A339D93
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28451339D96
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhCMKdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:33:39 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13167 "EHLO
+        id S233635AbhCMKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 05:33:42 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13166 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbhCMKdL (ORCPT
+        with ESMTP id S233120AbhCMKdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 13 Mar 2021 05:33:11 -0500
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DyJqZ36W5zmVq7;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DyJqZ2jkXzmWM6;
         Sat, 13 Mar 2021 18:30:50 +0800 (CST)
 Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
  (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Sat, 13 Mar 2021
- 18:33:00 +0800
+ 18:33:01 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>
 CC:     <ziy@nvidia.com>, <willy@infradead.org>,
@@ -27,9 +27,9 @@ CC:     <ziy@nvidia.com>, <willy@infradead.org>,
         <rcampbell@nvidia.com>, <aneesh.kumar@linux.ibm.com>,
         <yang.shi@linux.alibaba.com>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>, <linmiaohe@huawei.com>
-Subject: [PATCH 4/6] mm/huge_memory.c: remove redundant PageCompound() check
-Date:   Sat, 13 Mar 2021 05:32:23 -0500
-Message-ID: <20210313103225.16607-6-linmiaohe@huawei.com>
+Subject: [PATCH 5/6] mm/huge_memory.c: remove unused macro TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG
+Date:   Sat, 13 Mar 2021 05:32:24 -0500
+Message-ID: <20210313103225.16607-7-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20210313103225.16607-1-linmiaohe@huawei.com>
 References: <20210313103225.16607-1-linmiaohe@huawei.com>
@@ -42,28 +42,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The !PageCompound() check limits the page must be head or tail while
-!PageHead() further limits it to page head only. So !PageHead() check
-is equivalent here.
+The commit 4958e4d86ecb ("mm: thp: remove debug_cow switch") forgot to
+remove TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG macro. Remove it here.
 
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- mm/huge_memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/huge_mm.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 26f91bf15613..c00205e7c548 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1291,7 +1291,7 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd)
- 	}
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index ba973efcd369..9626fda5efce 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -87,9 +87,6 @@ enum transparent_hugepage_flag {
+ 	TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
+ 	TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG,
+ 	TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG,
+-#ifdef CONFIG_DEBUG_VM
+-	TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG,
+-#endif
+ };
  
- 	page = pmd_page(orig_pmd);
--	VM_BUG_ON_PAGE(!PageCompound(page) || !PageHead(page), page);
-+	VM_BUG_ON_PAGE(!PageHead(page), page);
- 
- 	/* Lock page for reuse_swap_page() */
- 	if (!trylock_page(page)) {
+ struct kobject;
 -- 
 2.19.1
 
