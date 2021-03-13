@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E674339A64
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E53E339A6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 01:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbhCMARm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 19:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S229523AbhCMA1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 19:27:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhCMARZ (ORCPT
+        with ESMTP id S229968AbhCMA0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 19:17:25 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39715C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:17:25 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so11498620pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:17:25 -0800 (PST)
+        Fri, 12 Mar 2021 19:26:44 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B68BC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:26:44 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d23so9463794plq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 16:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=bNw8Nj4KXoR/ziuf+ULxcnou2kfkLDqlHRj4OHo0dSM=;
-        b=ErMS8H6GO5f8z+jriPNWifU7B3tvasc2pwvwNhvcfmGpFIWFmmD8naAHUtK2nh6TcL
-         mTMt/31FihG0jJqlunc/BmR4Wx1BL0AQm7acdBOX6ar1uIo1xlN5rdG1k2S09QBPnlkR
-         paK6cSlOHcqPsdUT14Hv/qDAVqhw0JMKAE7QueBXxs4aWFTOz/AcHHGVCoMzMBN+qs07
-         lIbIzSoM+wy+MnpyFGAWhP3TdJ3sUElTmAtzlnaeCRNhTrDMKusK4qq575oHQkkpgrmK
-         3nEVElcLzujixeu3/pDVxqCwY5noCV/2VlyyLc6YPxSHNz30f2yhn8U9FC1gMdyP54vB
-         WYTA==
+        bh=vNRpYg3mNXhJ4EvT4QVsetlahXm7tTJ+Ei2tmIgYcGk=;
+        b=CwuBwBYEqQ0MfZY/RYslKueCBMpAtG8LOwNU5tg4QcEpihijcpdWqSNQzo7XIkAMQ4
+         0+WF9LwmesCxenPaTSRwhrlJ6tiNHdcs9EDFeYwYkIlsxY+Aq6GuzW/IPcWiNHkMV9ZC
+         s3eXk860yJTAMfSN09JR0Tlev4icJsi8QVf3hRl76DzHYCvLcx8EMZePHXT+AalyHl3b
+         47jxQXpDCPT62S3w9eOPvM1OBF4EVSArHcYP0kPHogzuTMBOvRihfXFsi2OLrAspQKVM
+         7cl7JcXUpU0GIzeQgEIaK43ro6uMdiZZ/iLoGCMVy2S8Ka52YA98xU/Y5fw3gGEJvW2b
+         Ft2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bNw8Nj4KXoR/ziuf+ULxcnou2kfkLDqlHRj4OHo0dSM=;
-        b=M/CNjyzYE8a+dbwk0xHOHSnsMuB0dwiYigWCcgeXuMKxGUrmMe4ycBMo5WQH7xtzcB
-         AwvnkzIiBcLlhs4rjDLkS+34H+hEJFx4pADyMmqMsf1RIDBRPHAa0K9wgVIXHwbp/m/p
-         w39n0qeuOiDSQ/y3LCaIi4RtJXNVjcDQkt9tvA9nd91cS46T7Qt9gGnP+/tRuo06wQ5I
-         C3ZECyla2DpTA09YKjOKaMd6E7FHiWIsBfk8XPHoRvXadzfE3JMbjqxQOtdDhVLX5X+T
-         CPgFie06FEL5s9wTh0SCh7xuIX3BZt7cYqOFgEBP8JYWFpDjb2eFHzoSuyT3H285e9n7
-         gebA==
-X-Gm-Message-State: AOAM533NxDaELANoHoNldm0w4Rz8QshdG0GCDiCSL5L5EriHyfpKJlU2
-        l3fjuaArNlvNZIMaFgdgW/16uw==
-X-Google-Smtp-Source: ABdhPJw8zx2Vm18vPZwVhmoiKZBNiELL5UQWGkGDZQyzPEStGzVWqCNcQ2H+h6SC2lG2S7AL1yqttw==
-X-Received: by 2002:a17:90a:9f48:: with SMTP id q8mr843558pjv.53.1615594644508;
-        Fri, 12 Mar 2021 16:17:24 -0800 (PST)
+        bh=vNRpYg3mNXhJ4EvT4QVsetlahXm7tTJ+Ei2tmIgYcGk=;
+        b=iKK3SnZlqlMGU2N9mJKdXs4B+L+k+NSUAxgyFhWY5PgMT4RNqGVg0uRIylffxEYsSB
+         8eYGQlXAbS3sSYBGhODd47njlUd2m2w+cDzHPX4qT0QYLS2D4Ey2s8dRZ0cL9xGbtyo/
+         WRx+zWUzvKu5e+hs1tQeWV7fIsm9hArAv+CvfwZ6MM8clvXaRxSVLqIxf1whPqnavH40
+         lnjdaxbIzUTFQAypv1pcEM1qHhCJ54C7BUd6IEhBX+ieyyQhctyQEqqeZmIqZffTnxQ8
+         Fvl9jHrpLVny4nJ9TMJi9Yk8voPLom2GMUugnxNLeMDjr2EL1+sv9O+011Sh4v+YN8gj
+         X/Bg==
+X-Gm-Message-State: AOAM530Sa59oEmXGfW5pJjhE8p33jrfOqZRMCEx7NS9KNt7DHp4oW3qs
+        EjTIu2G3ryF1FDd+KhG8HaZ3Fw==
+X-Google-Smtp-Source: ABdhPJyrDVEwyIJWQ/zoMQWV8ziBMF1idnxWF6Q8rvjlerzFXMpFvXoH3nEYW46ep6JDtJXBpoaOfA==
+X-Received: by 2002:a17:903:189:b029:e5:d7c3:a264 with SMTP id z9-20020a1709030189b02900e5d7c3a264mr1056141plg.6.1615595203624;
+        Fri, 12 Mar 2021 16:26:43 -0800 (PST)
 Received: from google.com ([2620:15c:f:10:e1a6:2eeb:4e45:756])
-        by smtp.gmail.com with ESMTPSA id jt21sm3177316pjb.51.2021.03.12.16.17.23
+        by smtp.gmail.com with ESMTPSA id co20sm3409772pjb.32.2021.03.12.16.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 16:17:23 -0800 (PST)
-Date:   Fri, 12 Mar 2021 16:17:17 -0800
+        Fri, 12 Mar 2021 16:26:43 -0800 (PST)
+Date:   Fri, 12 Mar 2021 16:26:36 -0800
 From:   Sean Christopherson <seanjc@google.com>
 To:     "wangyanan (Y)" <wangyanan55@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
         Andrew Jones <drjones@redhat.com>,
         Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 03/15] KVM: selftests: Align HVA for HugeTLB-backed
- memslots
-Message-ID: <YEwEjQZZJXvNWYna@google.com>
+        Aaron Lewis <aaronlewis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 04/15] KVM: selftests: Force stronger HVA alignment (1gb)
+ for hugepages
+Message-ID: <YEwGvHe+wcaEG0W8@google.com>
 References: <20210210230625.550939-1-seanjc@google.com>
- <20210210230625.550939-4-seanjc@google.com>
- <eac3f8b1-0e5b-395f-7fd7-75409554bffc@huawei.com>
+ <20210210230625.550939-5-seanjc@google.com>
+ <9a870968-f381-3e0b-2840-62b7c2b2e032@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eac3f8b1-0e5b-395f-7fd7-75409554bffc@huawei.com>
+In-Reply-To: <9a870968-f381-3e0b-2840-62b7c2b2e032@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Feb 25, 2021, wangyanan (Y) wrote:
-> Hi Sean,
 > 
 > On 2021/2/11 7:06, Sean Christopherson wrote:
-> > Align the HVA for HugeTLB memslots, not just THP memslots.  Add an
-> > assert so any future backing types are forced to assess whether or not
-> > they need to be aligned.
+> > Align the HVA for hugepage memslots to 1gb, as opposed to incorrectly
+> > assuming all architectures' hugepages are 512*page_size.
 > > 
-> > Cc: Ben Gardon <bgardon@google.com>
-> > Cc: Yanan Wang <wangyanan55@huawei.com>
-> > Cc: Andrew Jones <drjones@redhat.com>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Cc: Aaron Lewis <aaronlewis@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   tools/testing/selftests/kvm/lib/kvm_util.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > For x86, multiplying by 512 is correct, but only for 2mb pages, e.g.
+> > systems that support 1gb pages will never be able to use them for mapping
+> > guest memory, and thus those flows will not be exercised.
 > > 
-> > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > index 584167c6dbc7..deaeb47b5a6d 100644
-> > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > @@ -731,8 +731,11 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
-> >   	alignment = 1;
-> >   #endif
-> > -	if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
-> > +	if (src_type == VM_MEM_SRC_ANONYMOUS_THP ||
-> > +	    src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB)
-> Sorry for the late reply, I just returned from vacation.
+> > For arm64, powerpc, and s390 (and mips?), hardcoding the multiplier to
+> > 512 is either flat out wrong, or at best correct only in certain
+> > configurations.
+> > 
+> > Hardcoding the _alignment_ to 1gb is a compromise between correctness and
+> > simplicity.  Due to the myriad flavors of hugepages across architectures,
+> > attempting to enumerate the exact hugepage size is difficult, and likely
+> > requires probing the kernel.
+> > 
+> > But, there is no need for precision since a stronger alignment will not
+> > prevent creating a smaller hugepage.  For all but the most extreme cases,
+> > e.g. arm64's 16gb contiguous PMDs, aligning to 1gb is sufficient to allow
+> > KVM to back the guest with hugepages.
+> I have implemented a helper get_backing_src_pagesz() to get granularity of
+> different
+> backing src types (anonymous/thp/hugetlb) which is suitable for different
+> architectures.
+> See:
+> https://lore.kernel.org/lkml/20210225055940.18748-6-wangyanan55@huawei.com/
+> if it looks fine for you, maybe we can use the accurate page sizes for
+> GPA/HVA alignment:).
 
-At least you had an excuse :-)
+Works for me.  I'll probably just wait until your series is queued to send v2.
 
-> I am not sure HVA alignment is really necessary here for hugetlb pages.
-> Different from hugetlb pages, the THP pages are dynamically allocated by
-> later madvise(), so the value of HVA returned from mmap() is host page size
-> aligned but not THP page size aligned, so we indeed have to perform
-> alignment.  But hugetlb pages are pre-allocated on systems. The following
-> test results also indicate that, with MAP_HUGETLB flag, the HVA returned from
-> mmap() is already aligned to the corresponding hugetlb page size. So maybe
-> HVAs of each hugetlb pages are aligned during allocation of them or in mmap()?
-
-Yep, I verified the generic and arch version of hugetlb_get_unmapped_area() that
-KVM supports all align the address.  PARISC64 is the only one that looks suspect,
-but it doesn't support KVM.
-
-> If so, I think we better not do this again here, because the later
-> *region->mmap_size += alignment* will cause one more hugetlb page mapped but
-> will not be used.
-
-Agreed.  I think I'll still add the assert, along with a comment calling out
-that HugetlB automatically handles alignment.
-
-Nice catch, thanks!
+Thanks again!
