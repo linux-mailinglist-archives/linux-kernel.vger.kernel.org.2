@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156A5339C45
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 06:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515AB339C3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 06:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhCMFsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 00:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbhCMFsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 00:48:01 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47028C061574;
-        Fri, 12 Mar 2021 21:48:01 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id 73so5594116qtg.13;
-        Fri, 12 Mar 2021 21:48:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jhBE4XOmy9QbuywTB4urIucmZY1A2K2OVeCfbE6T8Ns=;
-        b=Jg6HoOGdN2/xZIHDcDgzh2/S1VatjGaf+mAuc4ryH4pJZ4bBwwp/NHall3wAeLIwah
-         XyF+Zk07ozU98M2nuTt5T3QIjg/0f3EwINTR9RmYY3z6rlZpy1IP9g5IxaYuTArTblf2
-         8eFLwdABSKWcGHLD8RGgHOPHgDSvkefJykn0sRftAI0NqlrioVflr54MHhdgDHiLg+/C
-         YL9J+/F6Vk/zgn72fUBe2Oy/0EYunGwWc+QQAO1VWRfLDZ8k8+jRqXjPseJiYo9X+GTH
-         nyaD6CTX/oFY5V5qV8iIrxKme7uSd5pLxKty0wf6UaQuQg6Sf98riDO4jqDpDn3TuC2J
-         QgIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jhBE4XOmy9QbuywTB4urIucmZY1A2K2OVeCfbE6T8Ns=;
-        b=UWeSIO5ZMCf2mLZ8a7r2lnB2Ddx2g0zfJGOOHIxRgWQ7gvecaOANuKGjavWIaGtRGQ
-         KsnXIq/18ay0pYfyqL0Nn9qkOdAbSAe3gZ53AoRfZFuB7pNs3nIhgzhyrpFhgzBcpKhf
-         844iKD+sPgqYEJ8j//fH++B34UQgGZNFpf4SZefWf5GtdIBuq7Nbe2XoTBsGC3+azdln
-         TBuXhq2IC+20Itped4651aYynJny8RsF3+i50wRKoHPy6a/Wl+N1xSbR+vaEE+7utjpg
-         kHTFu5oDeThuRlJ31/ZACUIpCjZAsbIXooEmfNMXQ0EzoNMO+en0ViB2fRfsXWLM9eY1
-         fyyw==
-X-Gm-Message-State: AOAM5300lD4UYV0bksmqKPU6p8WcqreTB3V4OCT4iI13FR+z4umMhoda
-        PfZb+6JEOu0EmeHEVSLg1YM=
-X-Google-Smtp-Source: ABdhPJyZuUaLcZ6qaxwoU8eawp4JOlus36x2r3aBl4GfpOpAy6wc0PMgj+4rM8TbdBgC+gdis4Hwag==
-X-Received: by 2002:ac8:6913:: with SMTP id e19mr14949861qtr.78.1615614480609;
-        Fri, 12 Mar 2021 21:48:00 -0800 (PST)
-Received: from localhost.localdomain ([37.19.198.104])
-        by smtp.gmail.com with ESMTPSA id s6sm5533534qtn.15.2021.03.12.21.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 21:48:00 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mlindner@marvell.com, stephen@networkplumber.org,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] net: ethernet: marvell: Fixed typo in the file sky2.c
-Date:   Sat, 13 Mar 2021 11:15:36 +0530
-Message-Id: <20210313054536.1182-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S229852AbhCMFr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 00:47:27 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:39900 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231392AbhCMFrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 00:47:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615614434; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=1dwvi+xE3xmBQXIx7Nd8USPiVuc/Or0r/eT2qU83Yjs=; b=t9NjXzdbssaWZYjSDaPRKeKkzzxHe+BruMzXx0fLY+TZjreGkJVemwWoJwzvogtq0gs8Whry
+ HWT+IScyguL1NMT5lJ/iP/kyFY/3AAlXZ2urEGAAWdhtqtCotDM+63irXUiY0f4T1I9HYZoR
+ h7Y8b17avJrVXBOBF+vIwLe9rlA=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 604c51e0e3fca7d0a6df048d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Mar 2021 05:47:12
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A8332C43464; Sat, 13 Mar 2021 05:47:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 96585C433C6;
+        Sat, 13 Mar 2021 05:47:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 96585C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, dianders@chromium.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v6 0/2] Qualcomm's lpass device tree changes for I2s dai
+Date:   Sat, 13 Mar 2021 11:16:52 +0530
+Message-Id: <20210313054654.11693-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches are device tree changes to support audio over I2S.
+Changes Since v4:
+  -- Removed lpass macro in codec dai cell
+  -- Renamed multimedia dai codec alias name
+Changes Since v4:
+  -- Removed duplication of dai-link in sound node.
+  -- Replaced reg values with common dt-bindings macros in coachz dtsi
+  -- Included sc7180-lpass.h instead of qcom,lpass.h
+  -- Sound node placement change in coachz dtsi.
+Changes Since v3:
+  -- Compatible name changed as per trogdor 
+Changes Since v2:
+  -- Sound node variable is added in sc7180-trogdor-coachz.dtsi.
+  -- Audio-jack property is removed, as it may create conflicts with the boards 
+     having different codecs.
+  -- Replaced reg values with common dt-bindings macros
+Changes Since v1:
+  -- Ajith's Certification is added.
+  -- Alias name added for sound dai link node
 
-s/calclation/calculation/
+Ajit Pandey (1):
+  arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for I2S driver
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/ethernet/marvell/sky2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Srinivasa Rao Mandadapu (1):
+  arm64: dts: qcom: Add sound node for sc7180-trogdor-coachz
 
-diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
-index ebe1406c6e64..18a3db2fd337 100644
---- a/drivers/net/ethernet/marvell/sky2.c
-+++ b/drivers/net/ethernet/marvell/sky2.c
-@@ -4135,7 +4135,7 @@ static int sky2_set_coalesce(struct net_device *dev,
- /*
-  * Hardware is limited to min of 128 and max of 2048 for ring size
-  * and  rounded up to next power of two
-- * to avoid division in modulus calclation
-+ * to avoid division in modulus calculation
-  */
- static unsigned long roundup_ring_size(unsigned long pending)
- {
---
-2.26.2
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  | 10 ++++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 58 +++++++++++++++++++
+ 2 files changed, 68 insertions(+)
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
