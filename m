@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138CB339CAE
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9B1339CAF
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhCMH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 02:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
+        id S233409AbhCMH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 02:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhCMH6B (ORCPT
+        with ESMTP id S232230AbhCMH6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 02:58:01 -0500
+        Sat, 13 Mar 2021 02:58:02 -0500
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055BEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:01 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id u5so19869532qkj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562C3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:02 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id d137so4579263qkb.18
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 23:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=BUGHWaLOgbBXMks9MxevCFPE+HJdHu8WtN3Ad5BKa2E=;
-        b=EmtSmNZcxIc0Qq98PvQLlh/Je74+I9pGiId+AoSzt2WN66X/7gqva2AkM1Z6ZrqWlC
-         qMCo9fu+KgWIl13K9lL0hfZkSMTr33It30mFN/3/xwUcpWXiUy2ttup7BflThw89akrm
-         ipCdNg7GP9J1lKGO0+Ae8TZbHboXPO6EU2DcK5O1kt2ZE3NOFthikv0X6/opyUBdeUKR
-         Q3HhM/pgOA+vQ4UMR7hzNtEDZcmVDtrPgTwq9zDoYDV/KHqaCvxRPvrkCfwY3MbDN9Yc
-         Dm0TaDfpoFKrj/syFqJ/83hwIk0G3OPLs6DbY/I2HkHJ6cbjakxVLFDyXybDitO9MyGA
-         /tow==
+        bh=aLRTkKE+4395hmMwkgIvoFPbmsRrSNB3cb7TyZ2ydVo=;
+        b=RbyWeK4rUqhSF6l4+WOn4bz/6l7Kc8FPXxW3gI+7y8uPJAZ1QX8cf/I1Awt1gV/SbI
+         bjnyW7mGxY1NMOZzzbS/+Pu/wZOk8PcdLyHQjU8FYS7MY3rlxWHPLiUeDkvVnQXqR/vU
+         VjFNQgX24G3KsIyOvy72WKVvMUMe73K7lMeGcaq5JwzYtlJpwJmAq7im1mo7v1rCTUgA
+         0mo4ifiQHDGxfCFwMiqlcmL9XCp3IrCMWE8XU4ROv4uXfZw0LtfhovB0FFVhgU4OaGPo
+         9xkxh+e9HnpJUWha5GVEemFT2phEp+qmiZ0b0RvdNPBXFoxHBjwLSKOp/alc26idQnA2
+         6ehw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=BUGHWaLOgbBXMks9MxevCFPE+HJdHu8WtN3Ad5BKa2E=;
-        b=tk+Szu/MRdyl1iY0zpUHO4VtD8YBAHs5CFbud9sFWZl8OIpU011Pd59sKmQkChiEw7
-         YEzG58xR4zAwc8CM8Vd7HuqKhhVUDIqumg0Ntx1KyfQ2QNYcbVSv8oAHuMLxAAembJau
-         D5EsuQjvXjKjroV/zEhusebtXIHZULBN1x9MfQwyikGwihqLhzDwXeUHx2D7JFo7i40J
-         3hvB0UCXdGNVF257C0gUQWS/r0tKshrTyX1i7tyAutY7viCISRQ6FP65DlTjV3PAmmsw
-         VHxDK47EkcJAoat+x24kFd6i44dgww1DGsDCpvBZu8P/V1m2f4keblf2wZMFsVwDhZRU
-         0b/g==
-X-Gm-Message-State: AOAM5314IBqaZ2bDNgLAPxQ3EGGAGDitVyFeUtt5HNFWNSHljmLCuPyl
-        iPCluBY4dSP0ON55Ckf7BwK1bpQBiw8=
-X-Google-Smtp-Source: ABdhPJzJJ1SnzBtj3bVJq+tnpS8mvob3Iwgd7McsgFl/pDIRa/R9w7/nQuY0bxlcdhV2mXDJvzzuC77PvVA=
+        bh=aLRTkKE+4395hmMwkgIvoFPbmsRrSNB3cb7TyZ2ydVo=;
+        b=sPWOPGHoVohb7G6EOihIswCUjaDOMsg/DvRB2ugPnziQk8PcjMml4kYe8yFsYiBamJ
+         ZBRsKYaIxBbegmcuF2aq6FE8IRzx6eYh8i5L6RQ83/jPcS1VVViz30AEgGo2OR0qlRtK
+         6e9I4lEcrR67MLWdkHooamn5SOvnTfgJcr7FGERX+0O/FzSxT56KcHTaEjHYnS68pxQM
+         cryChrhdy5jpPx9+EiGLdZI95GTYYHE3/TXMlABP1Dv4YEWI93zhR/ePrlm0SjEioKWR
+         PW1K3Blnn4t6EIlzyEcAxmVz7702MA3b1x1hM3iPT6B+pwdovapsNRL+JH3s67twnKUc
+         qBWQ==
+X-Gm-Message-State: AOAM532W7wUq4pmKjtVvHSPslHZDT9pB3jR1xJmNsJD9ZqrBMl8E+xpH
+        v9xzx/Rcs8diDMvgzLYOU4hfhWFObf4=
+X-Google-Smtp-Source: ABdhPJwU+Y5hioYI52CJyazw+FjQUFeKf1QbQJTSQIAKTuuIxfYVSs2ErBNlMhmNRx4/c6B7zv8sBwMBzxE=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:f931:d3e4:faa0:4f74])
- (user=yuzhao job=sendgmr) by 2002:a05:6214:4b3:: with SMTP id
- w19mr1750690qvz.26.1615622280155; Fri, 12 Mar 2021 23:58:00 -0800 (PST)
-Date:   Sat, 13 Mar 2021 00:57:36 -0700
+ (user=yuzhao job=sendgmr) by 2002:ad4:5c87:: with SMTP id o7mr1743197qvh.31.1615622281483;
+ Fri, 12 Mar 2021 23:58:01 -0800 (PST)
+Date:   Sat, 13 Mar 2021 00:57:37 -0700
 In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Message-Id: <20210313075747.3781593-4-yuzhao@google.com>
+Message-Id: <20210313075747.3781593-5-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210313075747.3781593-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1 03/14] include/linux/huge_mm.h: define is_huge_zero_pmd()
- if !CONFIG_TRANSPARENT_HUGEPAGE
+Subject: [PATCH v1 04/14] include/linux/cgroup.h: export cgroup_mutex
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -74,31 +73,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently is_huge_zero_pmd() only exists when
-CONFIG_TRANSPARENT_HUGEPAGE=y. This patch defines the function for the
-!CONFIG_TRANSPARENT_HUGEPAGE case.
+Export cgroup_mutex so it can be used to synchronize with memcg
+allocations.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/huge_mm.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/cgroup.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index ba973efcd369..0ba7b3f9029c 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -443,6 +443,11 @@ static inline bool is_huge_zero_page(struct page *page)
- 	return false;
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de083e..bd5744360cfa 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -432,6 +432,18 @@ static inline void cgroup_put(struct cgroup *cgrp)
+ 	css_put(&cgrp->self);
  }
  
-+static inline bool is_huge_zero_pmd(pmd_t pmd)
++extern struct mutex cgroup_mutex;
++
++static inline void cgroup_lock(void)
 +{
-+	return false;
++	mutex_lock(&cgroup_mutex);
 +}
 +
- static inline bool is_huge_zero_pud(pud_t pud)
- {
- 	return false;
++static inline void cgroup_unlock(void)
++{
++	mutex_unlock(&cgroup_mutex);
++}
++
+ /**
+  * task_css_set_check - obtain a task's css_set with extra access conditions
+  * @task: the task to obtain css_set for
+@@ -446,7 +458,6 @@ static inline void cgroup_put(struct cgroup *cgrp)
+  * as locks used during the cgroup_subsys::attach() methods.
+  */
+ #ifdef CONFIG_PROVE_RCU
+-extern struct mutex cgroup_mutex;
+ extern spinlock_t css_set_lock;
+ #define task_css_set_check(task, __c)					\
+ 	rcu_dereference_check((task)->cgroups,				\
+@@ -704,6 +715,8 @@ struct cgroup;
+ static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
+ static inline void css_get(struct cgroup_subsys_state *css) {}
+ static inline void css_put(struct cgroup_subsys_state *css) {}
++static inline void cgroup_lock(void) {}
++static inline void cgroup_unlock(void) {}
+ static inline int cgroup_attach_task_all(struct task_struct *from,
+ 					 struct task_struct *t) { return 0; }
+ static inline int cgroupstats_build(struct cgroupstats *stats,
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
