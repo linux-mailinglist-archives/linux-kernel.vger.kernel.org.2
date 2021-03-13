@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2DB33A128
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B23833A12C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhCMUqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 15:46:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234571AbhCMUpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 15:45:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2E83E64ED7;
-        Sat, 13 Mar 2021 20:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615668340;
-        bh=qowODDckHu3luRXX8RMoBIG18gGFrKLnCMCMLnMuPew=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OGnfdTU34zP9+rY+MPLELJbfbtjJuenOOA6/PtpTF6yYxQJVjptVgMde3u4qWz/p8
-         vqOcKKzw9TkRncVkxRMQiKsgNvk8MQ1Gzro53pihs6fb+u+RDCdt0Iae4ckLKHgD5T
-         Pwq2qio6ALInmbDa7DuHHqO5vVTY9YnSm4G0i0TK8UyZ1SgJAPAO8S+IOJPufUu8tb
-         dtPxoQMNoth9AEuWebsVcyJbsQVlv/k/W3MtEq91L3utgciwCcx9R406f2KBCtIPTb
-         VzBrIp7Q+JzEx/QdRp68iXHmECHMUv/ID5Mz1/poGNS2XZl6vluG/x1474A5bl1hSl
-         41g1FszE+9FEw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2A95960A2D;
-        Sat, 13 Mar 2021 20:45:40 +0000 (UTC)
-Subject: Re: [GIT PULL] USB driver fixes for 5.12-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YEzT6kyiwo9T12Er@kroah.com>
-References: <YEzT6kyiwo9T12Er@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YEzT6kyiwo9T12Er@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc3
-X-PR-Tracked-Commit-Id: d26c00e7276fc92b18c253d69e872f6b03832bad
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5c7bdbf8827fa0a8ab13ebd78264f7f0c13cc281
-Message-Id: <161566834016.19597.14562059949098258808.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Mar 2021 20:45:40 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        id S234532AbhCMUri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 15:47:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13528 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234779AbhCMUr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 15:47:29 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DyZSL3fl4zNkct;
+        Sun, 14 Mar 2021 04:45:06 +0800 (CST)
+Received: from [127.0.0.1] (10.175.101.122) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Sun, 14 Mar 2021
+ 04:47:19 +0800
+Content-Type: multipart/alternative;
+        boundary="===============7774588665310838260=="
+MIME-Version: 1.0
+Date:   Sun, 14 Mar 2021 04:47:19 +0800
+From:   <hulkrobot@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_4=2E19=2E181-rc1=0D=0A/x8?=
+ =?utf-8?q?6?=
+Message-ID: <2723d323-c60b-4405-a4d3-7c3bf45321fc@DGGEMS414-HUB.china.huawei.com>
+X-Originating-IP: [10.175.101.122]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Mar 2021 16:02:02 +0100:
+--===============7774588665310838260==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc3
+S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNC4xOS55CkFyY2g6
+IHg4NgpWZXJzaW9uOiA0LjE5LjE4MS1yYzENCkNvbW1pdDogYTIzM2M2YjNmNmRlODhjYTYyZGE4
+ZmRlNDVmMzMwYjEwNDgyNzg1MQ0KQ29tcGlsZXI6IGdjYyB2ZXJzaW9uIDcuMy4wIChHQ0MpCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkFsbCB0ZXN0Y2FzZXMgUEFTU0VELgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0Y2FzZSBSZXN1
+bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjUxCnN1Y2NlZWRfbnVtOiA0NjUxCmZhaWxlZF9udW06
+IDAKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGVkLWJ5OiBIdWxrIFJvYm90IDxodWxr
+cm9ib3RAaHVhd2VpLmNvbT4=
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5c7bdbf8827fa0a8ab13ebd78264f7f0c13cc281
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--===============7774588665310838260==--
