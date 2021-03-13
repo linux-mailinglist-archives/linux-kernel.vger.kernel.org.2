@@ -2,312 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C23C339B7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F010339B80
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhCMDLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 22:11:53 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13526 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhCMDLN (ORCPT
+        id S232802AbhCMDMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 22:12:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhCMDMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 22:11:13 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dy71c5JbLzNlTW;
-        Sat, 13 Mar 2021 11:08:52 +0800 (CST)
-Received: from [10.174.179.232] (10.174.179.232) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 13 Mar 2021 11:11:06 +0800
-Subject: Re: [PATCH v2] hugetlb_cgroup: fix imbalanced css_get and css_put
- pair for shared mappings
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <almasrymina@google.com>, <rientjes@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210301120540.37076-1-linmiaohe@huawei.com>
- <771ee69e-61d9-b1c9-b72d-3a50d2cbe4de@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <7868ec9c-0762-2a78-2dfc-2bd07dca15f5@huawei.com>
-Date:   Sat, 13 Mar 2021 11:11:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 12 Mar 2021 22:12:00 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B9EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Mar 2021 19:12:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=3HZ6/kTS4DEqCevNiVaV+YXPpM1yzu/4v32/WHRBUS4=; b=CRtW5DqkqMcxuNSQ3zrp/Ge1tM
+        wyVCHZ30MKUdKr96OolHSWEbkyooayYXI2TRMuQfjrQkJui+vwWAgq95HaFd1BVuFUXyd8JFJR9Wl
+        W4GUOqEayZPzv5n8iHzZvfB9quIfUkFwgSjPINXioHqdF1qDxb6PmzE/h7c4+d24tmjlZt8D6heNV
+        Y9tg7sSVJERfv5rnN/HyJ5rPkcG5ACQ5AAP5q34JTN/5eT2iO1iO80FHqeVy7XLZLAG91SXD1v69g
+        pm5o6TgRzYt8F5QGdXlIIT5qAgEF2LoAwoVGkZFaHHAdwLNaxrC70Hdm7e4i9nx7GnO6uDN7Xqbw8
+        pAGI7mvQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKugy-0017Dk-KH; Sat, 13 Mar 2021 03:11:56 +0000
+Subject: Re: [PATCH] mailbox: fix various typos in comments
+To:     Tom Saeger <tom.saeger@oracle.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, trivial@kernel.org
+References: <bf837fae33814695e4dbe80e88529518061a0dd4.1615601744.git.tom.saeger@oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <39dfa78c-3fcf-1de4-a790-856423909fd7@infradead.org>
+Date:   Fri, 12 Mar 2021 19:11:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <771ee69e-61d9-b1c9-b72d-3a50d2cbe4de@oracle.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <bf837fae33814695e4dbe80e88529518061a0dd4.1615601744.git.tom.saeger@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.232]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/13 3:09, Mike Kravetz wrote:
-> On 3/1/21 4:05 AM, Miaohe Lin wrote:
->> The current implementation of hugetlb_cgroup for shared mappings could have
->> different behavior. Consider the following two scenarios:
->>
->> 1.Assume initial css reference count of hugetlb_cgroup is 1:
->>   1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
->> count is 2 associated with 1 file_region.
->>   1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
->> count is 3 associated with 2 file_region.
->>   1.3 coalesce_file_region will coalesce these two file_regions into one.
->> So css reference count is 3 associated with 1 file_region now.
->>
->> 2.Assume initial css reference count of hugetlb_cgroup is 1 again:
->>   2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
->> count is 2 associated with 1 file_region.
->>
->> Therefore, we might have one file_region while holding one or more css
->> reference counts. This inconsistency could lead to imbalanced css_get()
->> and css_put() pair. If we do css_put one by one (i.g. hole punch case),
->> scenario 2 would put one more css reference. If we do css_put all together
->> (i.g. truncate case), scenario 1 will leak one css reference.
->>
->> The imbalanced css_get() and css_put() pair would result in a non-zero
->> reference when we try to destroy the hugetlb cgroup. The hugetlb cgroup
->> directory is removed __but__ associated resource is not freed. This might
->> result in OOM or can not create a new hugetlb cgroup in a busy workload
->> ultimately.
->>
->> In order to fix this, we have to make sure that one file_region must hold
->> and only hold one css reference. So in coalesce_file_region case, we should
+On 3/12/21 6:31 PM, Tom Saeger wrote:
 > 
-> I think this would sound/read better if stated as:
-> ... one file_region must hold exactly one css reference ...
+> Fix trivial typos in mailbox driver comments.
 > 
-> This phrase is repeated in comments throughout the patch.
+> s/Intergrated/Integrated/
+> s/extenstion/extension/
+> s/atleast/at least/
+> s/commnunication/communication/
+> s/assgined/assigned/
+> s/commnunication/communication/
+> s/recevied/received/
+> s/succeded/succeeded/
+> s/implmentation/implementation/
+> s/definiation/definition/
+> s/traget/target/
+> s/wont/won't/
 > 
->> release one css reference before coalescence. Also only put css reference
->> when the entire file_region is removed.
->>
->> The last thing to note is that the caller of region_add() will only hold
->> one reference to h_cg->css for the whole contiguous reservation region.
->> But this area might be scattered when there are already some file_regions
->> reside in it. As a result, many file_regions may share only one h_cg->css
->> reference. In order to ensure that one file_region must hold and only hold
->> one h_cg->css reference, we should do css_get() for each file_region and
->> release the reference held by caller when they are done.
-> 
-> Thanks for adding this to the commit message.
-> 
->>
->> Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
->> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> Cc: stable@kernel.org
->> ---
->> v1->v2:
->> 	Fix auto build test ERROR when CGROUP_HUGETLB is disabled.
->> ---
->>  include/linux/hugetlb_cgroup.h | 15 ++++++++++--
->>  mm/hugetlb.c                   | 42 ++++++++++++++++++++++++++++++----
->>  mm/hugetlb_cgroup.c            | 11 +++++++--
->>  3 files changed, 60 insertions(+), 8 deletions(-)
-> 
-> Just a few minor nits below, all in comments.  It is not required, but
-> would be nice to update these.  Code looks good.
-> 
+> Cc: trivial@kernel.org
+> Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
 
-Many thanks for review! I will fix all this nits. Should I resend this patch or send another
-one to fix this? Just let me know which is the easiest one for you.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks again. :)
+Thanks.
 
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> 
->>
->> diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
->> index 2ad6e92f124a..0bff345c4bc6 100644
->> --- a/include/linux/hugetlb_cgroup.h
->> +++ b/include/linux/hugetlb_cgroup.h
->> @@ -113,6 +113,11 @@ static inline bool hugetlb_cgroup_disabled(void)
->>  	return !cgroup_subsys_enabled(hugetlb_cgrp_subsys);
->>  }
->>  
->> +static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
->> +{
->> +	css_put(&h_cg->css);
->> +}
->> +
->>  extern int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
->>  					struct hugetlb_cgroup **ptr);
->>  extern int hugetlb_cgroup_charge_cgroup_rsvd(int idx, unsigned long nr_pages,
->> @@ -138,7 +143,8 @@ extern void hugetlb_cgroup_uncharge_counter(struct resv_map *resv,
->>  
->>  extern void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->>  						struct file_region *rg,
->> -						unsigned long nr_pages);
->> +						unsigned long nr_pages,
->> +						bool region_del);
->>  
->>  extern void hugetlb_cgroup_file_init(void) __init;
->>  extern void hugetlb_cgroup_migrate(struct page *oldhpage,
->> @@ -147,7 +153,8 @@ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
->>  #else
->>  static inline void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->>  						       struct file_region *rg,
->> -						       unsigned long nr_pages)
->> +						       unsigned long nr_pages,
->> +						       bool region_del)
->>  {
->>  }
->>  
->> @@ -185,6 +192,10 @@ static inline bool hugetlb_cgroup_disabled(void)
->>  	return true;
->>  }
->>  
->> +static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
->> +{
->> +}
->> +
->>  static inline int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
->>  					       struct hugetlb_cgroup **ptr)
->>  {
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 8fb42c6dd74b..87db91dff47f 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -280,6 +280,18 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
->>  		nrg->reservation_counter =
->>  			&h_cg->rsvd_hugepage[hstate_index(h)];
->>  		nrg->css = &h_cg->css;
->> +		/*
->> +		 * The caller (hugetlb_reserve_pages now) will only hold one
-> 
-> This can be called from other places such as alloc_huge_page.  Correct?
-> If so, we should drop the mention of hugetlb_reserve_pages.
-> 
->> +		 * h_cg->css reference for the whole contiguous reservation
->> +		 * region. But this area might be scattered when there are
->> +		 * already some file_regions reside in it. As a result, many
->> +		 * file_regions may share only one h_cg->css reference. In
->> +		 * order to ensure that one file_region must hold and only
->> +		 * hold one h_cg->css reference, we should do css_get for
-> 
-> ... must hold exactly one ...
-> 
->> +		 * each file_region and leave the reference held by caller
->> +		 * untouched.
->> +		 */
->> +		css_get(&h_cg->css);
->>  		if (!resv->pages_per_hpage)
->>  			resv->pages_per_hpage = pages_per_huge_page(h);
->>  		/* pages_per_hpage should be the same for all entries in
->> @@ -293,6 +305,14 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
->>  #endif
->>  }
->>  
->> +static void put_uncharge_info(struct file_region *rg)
->> +{
->> +#ifdef CONFIG_CGROUP_HUGETLB
->> +	if (rg->css)
->> +		css_put(rg->css);
->> +#endif
->> +}
->> +
->>  static bool has_same_uncharge_info(struct file_region *rg,
->>  				   struct file_region *org)
->>  {
->> @@ -316,6 +336,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
->>  		prg->to = rg->to;
->>  
->>  		list_del(&rg->link);
->> +		put_uncharge_info(rg);
->>  		kfree(rg);
->>  
->>  		rg = prg;
->> @@ -327,6 +348,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
->>  		nrg->from = rg->from;
->>  
->>  		list_del(&rg->link);
->> +		put_uncharge_info(rg);
->>  		kfree(rg);
->>  	}
->>  }
->> @@ -659,7 +681,7 @@ static long region_del(struct resv_map *resv, long f, long t)
->>  
->>  			del += t - f;
->>  			hugetlb_cgroup_uncharge_file_region(
->> -				resv, rg, t - f);
->> +				resv, rg, t - f, false);
->>  
->>  			/* New entry for end of split region */
->>  			nrg->from = t;
->> @@ -680,7 +702,7 @@ static long region_del(struct resv_map *resv, long f, long t)
->>  		if (f <= rg->from && t >= rg->to) { /* Remove entire region */
->>  			del += rg->to - rg->from;
->>  			hugetlb_cgroup_uncharge_file_region(resv, rg,
->> -							    rg->to - rg->from);
->> +							    rg->to - rg->from, true);
->>  			list_del(&rg->link);
->>  			kfree(rg);
->>  			continue;
->> @@ -688,13 +710,13 @@ static long region_del(struct resv_map *resv, long f, long t)
->>  
->>  		if (f <= rg->from) {	/* Trim beginning of region */
->>  			hugetlb_cgroup_uncharge_file_region(resv, rg,
->> -							    t - rg->from);
->> +							    t - rg->from, false);
->>  
->>  			del += t - rg->from;
->>  			rg->from = t;
->>  		} else {		/* Trim end of region */
->>  			hugetlb_cgroup_uncharge_file_region(resv, rg,
->> -							    rg->to - f);
->> +							    rg->to - f, false);
->>  
->>  			del += rg->to - f;
->>  			rg->to = f;
->> @@ -5128,6 +5150,10 @@ bool hugetlb_reserve_pages(struct inode *inode,
->>  			 */
->>  			long rsv_adjust;
->>  
->> +			/*
->> +			 * hugetlb_cgroup_uncharge_cgroup_rsvd() will put the
->> +			 * reference to h_cg->css. See comment below for detail.
->> +			 */
->>  			hugetlb_cgroup_uncharge_cgroup_rsvd(
->>  				hstate_index(h),
->>  				(chg - add) * pages_per_huge_page(h), h_cg);
->> @@ -5135,6 +5161,14 @@ bool hugetlb_reserve_pages(struct inode *inode,
->>  			rsv_adjust = hugepage_subpool_put_pages(spool,
->>  								chg - add);
->>  			hugetlb_acct_memory(h, -rsv_adjust);
->> +		} else if (h_cg) {
->> +			/*
->> +			 * The file_regions will hold their own reference to
->> +			 * h_cg->css. So we should release the reference held
->> +			 * via hugetlb_cgroup_charge_cgroup_rsvd() when we are
->> +			 * done.
->> +			 */
->> +			hugetlb_cgroup_put_rsvd_cgroup(h_cg);
->>  		}
->>  	}
->>  	return true;
->> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
->> index f68b51fcda3d..8668ba87cfe4 100644
->> --- a/mm/hugetlb_cgroup.c
->> +++ b/mm/hugetlb_cgroup.c
->> @@ -391,7 +391,8 @@ void hugetlb_cgroup_uncharge_counter(struct resv_map *resv, unsigned long start,
->>  
->>  void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->>  					 struct file_region *rg,
->> -					 unsigned long nr_pages)
->> +					 unsigned long nr_pages,
->> +					 bool region_del)
->>  {
->>  	if (hugetlb_cgroup_disabled() || !resv || !rg || !nr_pages)
->>  		return;
->> @@ -400,7 +401,13 @@ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
->>  	    !resv->reservation_counter) {
->>  		page_counter_uncharge(rg->reservation_counter,
->>  				      nr_pages * resv->pages_per_hpage);
->> -		css_put(rg->css);
->> +		/*
->> +		 * Only do css_put(rg->css) when we delete the entire region
->> +		 * because one file_region must hold and only hold one rg->css
-> 
-> ... must hold exactly one ...
-> 
+> ---
+>  drivers/mailbox/Kconfig                 |  2 +-
+>  drivers/mailbox/bcm-flexrm-mailbox.c    |  4 ++--
+>  drivers/mailbox/mailbox-xgene-slimpro.c |  6 +++---
+>  drivers/mailbox/mailbox.h               |  2 +-
+>  drivers/mailbox/pcc.c                   |  2 +-
+>  drivers/mailbox/pl320-ipc.c             |  2 +-
+>  drivers/mailbox/sprd-mailbox.c          | 12 ++++++------
+>  drivers/mailbox/ti-msgmgr.c             |  2 +-
+>  8 files changed, 16 insertions(+), 16 deletions(-)
+
+
+-- 
+~Randy
 
