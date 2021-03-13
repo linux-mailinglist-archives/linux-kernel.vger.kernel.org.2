@@ -2,69 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EFC339D9E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2097339DA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 11:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbhCMKmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 05:42:38 -0500
-Received: from smtp.gentoo.org ([140.211.166.183]:49970 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230380AbhCMKm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 05:42:29 -0500
-Received: by sf.home (Postfix, from userid 1000)
-        id 34F4C5A22061; Sat, 13 Mar 2021 10:42:20 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH] ia64: fix format string for ia64-acpi-cpu-freq
-Date:   Sat, 13 Mar 2021 10:42:14 +0000
-Message-Id: <20210313104214.1548076-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.30.2
+        id S233723AbhCMKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 05:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232999AbhCMKnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 05:43:10 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987A9C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 02:43:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gpKEqRXdI5yimusJbW3cQ5mfFI2pPCBeX2hVEl8mWdU=; b=Jk13R6qcc+chAOd7LmRazr5mF8
+        f/HgLakyR0UMU2iUIs0D1qa7r4gim9DP7FGM23ChNDiwHuERTImnMKJ+N5hnvHkJIlyic7y/giJBI
+        rI/aRybVDZuWidQ8AhRtneX87lAJ3VGurlDufHV/N3derlSYKVRpqzXKcuY5ZPLieEJY=;
+Received: from p200300ccff380e001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff38:e00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lL1jc-0008Pd-UM; Sat, 13 Mar 2021 11:43:05 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lL1jb-0004TF-Ni; Sat, 13 Mar 2021 11:43:03 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     j.neuschaefer@gmx.net, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v3] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Date:   Sat, 13 Mar 2021 11:42:58 +0100
+Message-Id: <20210313104258.17111-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning with %lx / s64 mismatch:
+Add the version of the EC in the Tolino Shine 2 HD
+to the supported versions. It seems not to have an RTC
+and does not ack data written to it.
+The vendor kernel happily ignores write errors, using
+I2C via userspace i2c-set also shows the error.
+So add a quirk to ignore that error.
 
-  CC [M]  drivers/cpufreq/ia64-acpi-cpufreq.o
-    drivers/cpufreq/ia64-acpi-cpufreq.c: In function 'processor_get_pstate':
-      warning: format '%lx' expects argument of type 'long unsigned int',
-      but argument 3 has type 's64' {aka 'long long int'} [-Wformat=]
+PWM can be successfully configured despite of that error.
 
-CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC: Viresh Kumar <viresh.kumar@linaro.org>
-CC: linux-pm@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 ---
- drivers/cpufreq/ia64-acpi-cpufreq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v3:
+- remove have_rtc variable
+- rename subdevices again
 
-diff --git a/drivers/cpufreq/ia64-acpi-cpufreq.c b/drivers/cpufreq/ia64-acpi-cpufreq.c
-index 2efe7189ccc4..c6bdc455517f 100644
---- a/drivers/cpufreq/ia64-acpi-cpufreq.c
-+++ b/drivers/cpufreq/ia64-acpi-cpufreq.c
-@@ -54,7 +54,7 @@ processor_set_pstate (
- 	retval = ia64_pal_set_pstate((u64)value);
+Changes in v2:
+- more comments about stacking regmap construction
+- fix accidential line removal
+- better naming for subdevices
+ drivers/mfd/ntxec.c       | 55 ++++++++++++++++++++++++++++++++++++---
+ include/linux/mfd/ntxec.h |  1 +
+ 2 files changed, 53 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+index 957de2b03529..ab6860ef3e9a 100644
+--- a/drivers/mfd/ntxec.c
++++ b/drivers/mfd/ntxec.c
+@@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
+ 	.priority = 128,
+ };
  
- 	if (retval) {
--		pr_debug("Failed to set freq to 0x%x, with error 0x%lx\n",
-+		pr_debug("Failed to set freq to 0x%x, with error 0x%llx\n",
- 		        value, retval);
- 		return -ENODEV;
- 	}
-@@ -77,7 +77,7 @@ processor_get_pstate (
++static int regmap_ignore_write(void *context,
++			       unsigned int reg, unsigned int val)
++
++{
++	struct regmap *regmap = context;
++
++	regmap_write(regmap, reg, val);
++
++	return 0;
++}
++
++static int regmap_wrap_read(void *context, unsigned int reg,
++			    unsigned int *val)
++{
++	struct regmap *regmap = context;
++
++	return regmap_read(regmap, reg, val);
++}
++
++/*
++ * Some firmware versions do not ack written data, add a wrapper. It
++ * is used to stack another regmap on top.
++ */
++static const struct regmap_config regmap_config_noack = {
++	.name = "ntxec_noack",
++	.reg_bits = 8,
++	.val_bits = 16,
++	.cache_type = REGCACHE_NONE,
++	.reg_write = regmap_ignore_write,
++	.reg_read = regmap_wrap_read
++};
++
+ static const struct regmap_config regmap_config = {
+ 	.name = "ntxec",
+ 	.reg_bits = 8,
+@@ -104,16 +136,22 @@ static const struct regmap_config regmap_config = {
+ 	.val_format_endian = REGMAP_ENDIAN_BIG,
+ };
  
- 	if (retval)
- 		pr_debug("Failed to get current freq with "
--			"error 0x%lx, idx 0x%x\n", retval, *value);
-+			"error 0x%llx, idx 0x%x\n", retval, *value);
+-static const struct mfd_cell ntxec_subdevices[] = {
++static const struct mfd_cell ntxec_subdev[] = {
+ 	{ .name = "ntxec-rtc" },
+ 	{ .name = "ntxec-pwm" },
+ };
  
- 	return (int)retval;
- }
++static const struct mfd_cell ntxec_subdev_no_rtc[] = {
++	{ .name = "ntxec-pwm" },
++};
++
+ static int ntxec_probe(struct i2c_client *client)
+ {
+ 	struct ntxec *ec;
+ 	unsigned int version;
+ 	int res;
++	const struct mfd_cell *subdevs = ntxec_subdev;
++	size_t n_subdevs = ARRAY_SIZE(ntxec_subdev);
+ 
+ 	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+ 	if (!ec)
+@@ -138,6 +176,16 @@ static int ntxec_probe(struct i2c_client *client)
+ 	switch (version) {
+ 	case NTXEC_VERSION_KOBO_AURA:
+ 		break;
++	case NTXEC_VERSION_TOLINO_SHINE2:
++		subdevs = ntxec_subdev_no_rtc;
++		n_subdevs = ARRAY_SIZE(ntxec_subdev_no_rtc);
++		/* Another regmap stacked on top of the other */
++		ec->regmap = devm_regmap_init(ec->dev, NULL,
++					      ec->regmap,
++					      &regmap_config_noack);
++		if (IS_ERR(ec->regmap))
++			return PTR_ERR(ec->regmap);
++		break;
+ 	default:
+ 		dev_err(ec->dev,
+ 			"Netronix embedded controller version %04x is not supported.\n",
+@@ -181,8 +229,9 @@ static int ntxec_probe(struct i2c_client *client)
+ 
+ 	i2c_set_clientdata(client, ec);
+ 
+-	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
+-				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
++	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
++				   subdevs, n_subdevs,
++				   NULL, 0, NULL);
+ 	if (res)
+ 		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
+ 
+diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
+index 361204d125f1..26ab3b8eb612 100644
+--- a/include/linux/mfd/ntxec.h
++++ b/include/linux/mfd/ntxec.h
+@@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
+ 
+ /* Known firmware versions */
+ #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
++#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
+ 
+ #endif
 -- 
-2.30.2
+2.29.2
 
