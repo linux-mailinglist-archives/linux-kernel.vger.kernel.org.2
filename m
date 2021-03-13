@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D65339ECC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 16:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D28339ED3
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 16:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbhCMPIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 10:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
+        id S233934AbhCMPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 10:11:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhCMPIE (ORCPT
+        with ESMTP id S233946AbhCMPK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 10:08:04 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7662C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 07:08:01 -0800 (PST)
+        Sat, 13 Mar 2021 10:10:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29501C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 07:10:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PT2uaudT8zK/o8zFyuudxww2y2Ec8rnLtUlr+iIExYo=; b=DvzORw6uIQ4WOWLBmx8wYGGsb9
-        D9QbWGggJS47uwYIr5ZDLmQ5ulmW4jEycuTAyHlc5FmG1sO89yr6Ynm5RBlIFKVc7KJMPGQJTSmZs
-        ei5Egb6w0Cw4Q0GaSV9NBIJxsFyGbekMEy47SYVsQGe35wZwRtSfrbttq/j0I0xjyp14=;
-Received: from p200300ccff380e001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff38:e00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lL5ry-0000nW-05; Sat, 13 Mar 2021 16:07:58 +0100
-Date:   Sat, 13 Mar 2021 16:07:57 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <20210313160757.084d74d0@aktux>
-In-Reply-To: <YEyfTrTFzUaXiklf@latitude>
-References: <20210308212952.20774-1-andreas@kemnade.info>
-        <20210310095545.GC701493@dell>
-        <YEyfTrTFzUaXiklf@latitude>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2c246of4H/FX570UuJ3LPDfwjAVtlnkICmfbQ/jdFGo=; b=r2hnSlFRjuxycEmqtRHxY85ZYZ
+        fjIOXexcUZr1OI1Mj1JA5mHfqrjYePWZ6zX8UNDI26IE1ev+A+VpsyOQtLpdS7IS4GtopGtT11BOG
+        Zqr0MMiSHHrb4kqjKuEVGHKBoxOFtM3eQPuu4Nf/H/nN2YB4Sc+IZwSkduY6BrqyG1uKh+7cYbs8n
+        UvYWHm6ubpjnw36Nxq+KwwXfsDL8S4Oq1NmalTpr3jMTUTC2eVHpYjinhiy/g9h7jjP5pWMVZgJp1
+        j2Zd2xHBuTOdITb9nP3u/lrl0RvinTemdZXtIOflVIzSFAOKQdX2u9u1ao0MD7c8sgTxKTrop8/C5
+        9/qo0RYQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lL5tG-00E8iX-BJ; Sat, 13 Mar 2021 15:09:27 +0000
+Date:   Sat, 13 Mar 2021 15:09:18 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+Subject: Re: [PATCH v1 01/14] include/linux/memcontrol.h: do not warn in
+ page_memcg_rcu() if !CONFIG_MEMCG
+Message-ID: <20210313150918.GH2577561@casper.infradead.org>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-2-yuzhao@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313075747.3781593-2-yuzhao@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 12:17:34 +0100
-Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+On Sat, Mar 13, 2021 at 12:57:34AM -0700, Yu Zhao wrote:
+> We want to make sure the rcu lock is held while using
+> page_memcg_rcu(). But having a WARN_ON_ONCE() in page_memcg_rcu() when
+> !CONFIG_MEMCG is superfluous because of the following legit use case:
+> 
+>   memcg = lock_page_memcg(page1)
+>     (rcu_read_lock() if CONFIG_MEMCG=y)
+> 
+>   do something to page1
+> 
+>   if (page_memcg_rcu(page2) == memcg)
+>     do something to page2 too as it cannot be migrated away from the
+>     memcg either.
+> 
+>   unlock_page_memcg(page1)
+>     (rcu_read_unlock() if CONFIG_MEMCG=y)
+> 
+> This patch removes the WARN_ON_ONCE() from page_memcg_rcu() for the
+> !CONFIG_MEMCG case.
 
-> On Wed, Mar 10, 2021 at 09:55:45AM +0000, Lee Jones wrote:
-> > On Mon, 08 Mar 2021, Andreas Kemnade wrote: =20
-> [...]
-> > > -static const struct mfd_cell ntxec_subdevices[] =3D {
-> > > +static const struct mfd_cell ntxec_subdev[] =3D {
-> > >  	{ .name =3D "ntxec-rtc" },
-> > >  	{ .name =3D "ntxec-pwm" },
-> > >  };
-> > > =20
-> > > +static const struct mfd_cell ntxec_subdev_pwm[] =3D {
-> > > +	{ .name =3D "ntxec-pwm" },
-> > > +}; =20
-> >=20
-> > To put across what you're trying to achieve, maybe call this:
-> >=20
-> >   ntxec_subdev_no_rtc[]
-> >=20
-> > Then if other devices are added, the semantics/intent stays the same
-> > and it won't have to be renamed. =20
->=20
-> Andreas, what is the full amount of functionality this version of the EC
-> can ever provide?
->=20
-> If it's only PWM, I think ntxec_subdev_pwm fits well.
->=20
-I think it is only PWM. At least I could not see any other I2C access.
-
-> [ The next subdevice that I can foresee is battery monitoring. ]
->=20
-That is done via the RC5T619 on that device.
-
-Regards,
-Andreas
+I think this is wrong.  Usually we try to have the same locking
+environment no matter what the CONFIG options are, like with
+kmap_atomic().  I think lock_page_memcg() should disable RCU even if
+CONFIG_MEMCG=n.
