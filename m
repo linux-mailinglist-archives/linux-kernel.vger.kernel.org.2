@@ -2,81 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E265339B3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CD7339B3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 03:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhCMCWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 21:22:40 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:39042 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhCMCWU (ORCPT
+        id S233125AbhCMCXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 21:23:38 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13598 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232230AbhCMCXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:22:20 -0500
-Received: by mail-pf1-f169.google.com with SMTP id 18so3084179pfo.6;
-        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bL9MisVqCy9+mMTkkT9Ym/rs2nuRRYH0hpQS2/1i2Qc=;
-        b=YAdYbG6fff0/jGTaEsRmaJxkFUQWpdEk9BoNC2qDSFyxVxYBYbbdIAkXfpKnqHTgG7
-         Ut8yRQiLkeqEJdWIE+D9/es4MO4I94Hro2bR+Ry3uK/Y5r605ALCnLYmCYw8IUN5Z6N0
-         8FHpCRd6szDB8VMY2pq+3xnlISt9lMM7lcJBdH40X7NPMVHsjp/K5agTAS17iK62D4SG
-         qe+jJYPRFLiugO2bTY//C080wuKDyiLHEbGeZ0VOlcyApuu3shfoknndB9HJjd8Qj2z/
-         si21JfrXebVy+zfpwXzHzcuSAwK+WKZ27ar/HeD20VOqp9XWZccdVREYQKDRj3tLh1sF
-         UJ1w==
-X-Gm-Message-State: AOAM532ZC/dezKIjU3S/Gz1Dip8YfNcgXa/ySf0FAVhLBeaum4BfqyIr
-        Ol/8Q77McjLhfGHAQdtFFaBXqZLRWGJokA==
-X-Google-Smtp-Source: ABdhPJwruavXBRGzE5NvtQgB4Hv0B9VsKuEoRnRdCIedurSM1Fd25BdadH3+DAG1TuTAR7pVOSTpvg==
-X-Received: by 2002:a65:4243:: with SMTP id d3mr14766300pgq.180.1615602140435;
-        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
-Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
-        by smtp.gmail.com with ESMTPSA id m5sm6768990pfd.96.2021.03.12.18.22.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 18:22:20 -0800 (PST)
-Date:   Fri, 12 Mar 2021 18:22:17 -0800
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
-Message-ID: <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
-References: <20210312214316.132993-1-sultan@kerneltoast.com>
- <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
+        Fri, 12 Mar 2021 21:23:32 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dy5z21nwvz17KGC;
+        Sat, 13 Mar 2021 10:21:34 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 13 Mar 2021 10:23:14 +0800
+Subject: Re: [PATCH] perf annotate: Fix sample events lost in stdio mode
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>
+References: <20210306082859.179541-1-yangjihong1@huawei.com>
+ <53ff575f-1fcf-6650-76ad-a0304f6bdf15@huawei.com>
+ <CAM9d7chRZq743y1Qb24eLZ5ScXeZs0b_0dyffRcOAwuLdVag7g@mail.gmail.com>
+ <02146240-e532-1c52-0589-bfff3fbe5166@huawei.com>
+ <CAM9d7cjHAEhc-g4Fs3muwQrMV=Os5cn6NgOkf4vBeE+QK-Wu=w@mail.gmail.com>
+ <cc7811c5-2d24-29ac-5a0c-71261a699a39@huawei.com>
+ <CAM9d7ciM6bZmYepRCe_YY7mYZGbvrpwF7A_oCngM9GMoxPXS6A@mail.gmail.com>
+ <360667d9-f0cc-866c-b0b9-b37dd85a9c45@huawei.com>
+ <a48d8b4b-0a58-ea7b-c67f-81bdbc39e3e5@huawei.com>
+Message-ID: <723ddbe7-4d2d-592a-727f-5c2f46b3b8bb@huawei.com>
+Date:   Sat, 13 Mar 2021 10:23:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
+In-Reply-To: <a48d8b4b-0a58-ea7b-c67f-81bdbc39e3e5@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
-> On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> >
-> > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> >
-> > We should be using the program fd here, not the perf event fd.
+Hello,
+
+On 2021/3/13 10:00, Yang Jihong wrote:
+> Hello, Namhyung
+> On 2021/3/12 18:20, Yang Jihong wrote:
+>> Hello,
+>>
+>> On 2021/3/12 16:39, Namhyung Kim wrote:
+>>> On Fri, Mar 12, 2021 at 4:19 PM Yang Jihong <yangjihong1@huawei.com> 
+>>> wrote:
+>>>>
+>>>>
+>>>> Hello,
+>>>> On 2021/3/12 13:49, Namhyung Kim wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Fri, Mar 12, 2021 at 12:24 PM Yang Jihong 
+>>>>> <yangjihong1@huawei.com> wrote:
+>>>>>>
+>>>>>> Hello, Namhyung
+>>>>>>
+>>>>>> On 2021/3/11 22:42, Namhyung Kim wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> On Thu, Mar 11, 2021 at 5:48 PM Yang Jihong 
+>>>>>>> <yangjihong1@huawei.com> wrote:
+>>>>>>>>
+>>>>>>>> Hello,
+>>>>>>>>
+>>>>>>>> On 2021/3/6 16:28, Yang Jihong wrote:
+>>>>>>>>> In hist__find_annotations function, since have a hist_entry per 
+>>>>>>>>> IP for the same
+>>>>>>>>> symbol, we free notes->src to signal already processed this 
+>>>>>>>>> symbol in stdio mode;
+>>>>>>>>> when annotate, entry will skipped if notes->src is NULL to 
+>>>>>>>>> avoid repeated output.
+>>>>>>>
+>>>>>>> I'm not sure it's still true that we have a hist_entry per IP.
+>>>>>>> Afaik the default sort key is comm,dso,sym which means it should 
+>>>>>>> have a single
+>>>>>>> hist_entry for each symbol.  It seems like an old comment..
+>>>>>>>
+>>>>>> Emm, yes, we have a hist_entry for per IP.
+>>>>>> a member named "sym" in struct "hist_entry" points to symbol,
+>>>>>> different IP may point to the same symbol.
+>>>>>
+>>>>> Are you sure about this?  It seems like a bug then.
+>>>>>
+>>>> Yes, now each IP corresponds to a hist_entry :)
+>>>>
+>>>> Last week I found that some sample events were missing when perf
+>>>> annotate in stdio mode, so I went through the annotate code carefully.
+>>>>
+>>>> The event handling process is as follows:
+>>>> process_sample_event
+>>>>     evsel_add_sample
+>>>>       hists__add_entry
+>>>>         __hists__add_entry
+>>>>           hists__findnew_entry
+>>>>             hist_entry__new                  -> here allock new 
+>>>> hist_entry
+>>>
+>>> Yeah, so this is for a symbol.
+>>>
+>>>>
+>>>>       hist_entry__inc_addr_samples
+>>>>         symbol__inc_addr_samples
+>>>>           symbol__hists
+>>>>             annotated_source__new            -> here alloc annotate 
+>>>> soruce
+>>>>             annotated_source__alloc_histograms -> here alloc histograms
+>>>
+>>> This should be for each IP (ideally it should be per instruction).
+>>>
+>>>>
+>>>> By bugs, do you mean there's something wrong?
+>>>
+>>> No. I think we were saying about different things.  :)
+>>>
+>> OK, :)
+>>>
+>>>>>>> diff --git a/tools/perf/builtin-annotate.c 
+>>>>>>> b/tools/perf/builtin-annotate.c
+>>>>>>> index a23ba6bb99b6..a91fe45bd69f 100644
+>>>>>>> --- a/tools/perf/builtin-annotate.c
+>>>>>>> +++ b/tools/perf/builtin-annotate.c
+>>>>>>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct 
+>>>>>>> hists *hists,
+>>>>>>>                    } else {
+>>>>>>>                            hist_entry__tty_annotate(he, evsel, ann);
+>>>>>>>                            nd = rb_next(nd);
+>>>>>>> -                       /*
+>>>>>>> -                        * Since we have a hist_entry per IP for 
+>>>>>>> the same
+>>>>>>> -                        * symbol, free he->ms.sym->src to signal 
+>>>>>>> we already
+>>>>>>> -                        * processed this symbol.
+>>>>>>> -                        */
+>>>>>>> -                       zfree(&notes->src->cycles_hist);
+>>>>>>> -                       zfree(&notes->src);
+>>>>>>>                    }
+>>>>>>>            }
+>>>>>>>     }
+>>>>>>>
+>>>>>> This solution may have the following problem:
+>>>>>> For example, if two sample events are in two different processes 
+>>>>>> but in
+>>>>>> the same symbol, repeated output may occur.
+>>>>>> Therefore, a flag is required to indicate whether the symbol has been
+>>>>>> processed to avoid repeated output.
+>>>>>
+>>>>> Hmm.. ok.  Yeah we don't care about the processes here.
+>>>>> Then we should remove it from the sort key like below:
+>>>>>
+>>>>> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
+>>>>>                   if (setup_sorting(annotate.session->evlist) < 0)
+>>>>>                           usage_with_options(annotate_usage, options);
+>>>>>           } else {
+>>>>> +               sort_order = "dso,symbol";
+>>>>>                   if (setup_sorting(NULL) < 0)
+>>>>>                           usage_with_options(annotate_usage, options);
+>>>>>           }
+>>>>>
+>>>>>
+>>>> Are you referring to this solution?
+>>>> --- a/tools/perf/builtin-annotate.c
+>>>> +++ b/tools/perf/builtin-annotate.c
+>>>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists
+>>>> *hists,
+>>>>                   } else {
+>>>>                           hist_entry__tty_annotate(he, evsel, ann);
+>>>>                           nd = rb_next(nd);
+>>>> -                       /*
+>>>> -                        * Since we have a hist_entry per IP for the 
+>>>> same
+>>>> -                        * symbol, free he->ms.sym->src to signal we 
+>>>> already
+>>>> -                        * processed this symbol.
+>>>> -                        */
+>>>> -                       zfree(&notes->src->cycles_hist);
+>>>> -                       zfree(&notes->src);
+>>>>                   }
+>>>>           }
+>>>>    }
+>>>> @@ -624,6 +617,7 @@ int cmd_annotate(int argc, const char **argv)
+>>>>                   if (setup_sorting(annotate.session->evlist) < 0)
+>>>>                           usage_with_options(annotate_usage, options);
+>>>>           } else {
+>>>> +               sort_order = "dso,symbol";
+>>>>                   if (setup_sorting(NULL) < 0)
+>>>>                           usage_with_options(annotate_usage, options);
+>>>>           }
+>>>> It seems to be a better solution without adding new member.
+>>>> I just tested it and it works.
+>>>>
+>>>> If we decide to use this solution, I'll resubmit a v3 patch.
+>>>
+>>> I prefer changing the sort order (and removing the zfree and comments).
+>>>
+>> OK, I'll submit a v3 patch based on the "changing the sort order" 
+>> solution.
+>>
+> I have submitted the v3 patch, look forward to your review:
+> https://lore.kernel.org/patchwork/patch/1394619/
 > 
-> Why? Can you elaborate on what issue you ran into with the current code?
-
-bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
-uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
-right here:
-	if (f.file->f_op != &bpf_link_fops) {
-		fdput(f);
-		return ERR_PTR(-EINVAL);
-	}
-
-Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
-and bpf_link__pin() worked.
-
-Sultan
+The first line of comments in the v3 patch is not empty
+and has been modified. For details, see v4 patch:
+https://lore.kernel.org/patchwork/patch/1394623/
+Please review the new patch :)
+>> Thanks,
+>> Yang
+>>> Thanks,
+>>> Namhyung
+> Thanks,
+> Yang
+>>> .
+>>>
+Thanks,
+Yang
