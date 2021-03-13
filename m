@@ -2,103 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC21333A145
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C8433A147
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhCMVDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 16:03:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbhCMVDO (ORCPT
+        id S234719AbhCMVF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 16:05:59 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13516 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234331AbhCMVF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 16:03:14 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B20BC061574;
-        Sat, 13 Mar 2021 13:03:13 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 037903F0;
-        Sat, 13 Mar 2021 22:03:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615669389;
-        bh=rV5Y2Z8omEob0Z3FoNOxgrtXllMXoVxG3rQVVRWPfXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t3k3pH5uyovsF2U6uNPesJWnbkOocQ4DDTQI4Pt78cfTZAqls5cNw6i2mu7uPD5Qs
-         t10CJS/ZXHiAru/kpjc8i8jeOL9FovcgAmu5gq3UVQ2KDeuGAGx/yBxzwL3HGrI703
-         PEQNd3+bRwonoeWxkFLCwRU4B5LedY4W0Ak0Shgg=
-Date:   Sat, 13 Mar 2021 23:02:34 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] drm/bridge: ti-sn65dsi86: Simplify refclk handling
-Message-ID: <YE0oakt4h3urAsH1@pendragon.ideasonboard.com>
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+        Sat, 13 Mar 2021 16:05:26 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DyZsf3z1nzjTvf;
+        Sun, 14 Mar 2021 05:03:34 +0800 (CST)
+Received: from [127.0.0.1] (10.175.101.122) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Sun, 14 Mar 2021
+ 05:05:14 +0800
+Content-Type: multipart/alternative;
+        boundary="===============6624846591152263607=="
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+Date:   Sun, 14 Mar 2021 05:05:14 +0800
+From:   <hulkrobot@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E4=2E106-rc1=0D=0A/arm?=
+ =?utf-8?q?64?=
+Message-ID: <07e0f6fa-dc7e-4732-8530-d6ab59be4ac8@DGGEMS411-HUB.china.huawei.com>
+X-Originating-IP: [10.175.101.122]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas,
+--===============6624846591152263607==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-Thank you for the patch.
+S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS40LnkKQXJjaDog
+YXJtNjQKVmVyc2lvbjogNS40LjEwNi1yYzENCkNvbW1pdDogMmJjYmFlMDZiOGZiOTAzMDk3M2Vl
+OTk2ZTFiOGVkNDNmM2JmZDRhYg0KQ29tcGlsZXI6IGdjYyB2ZXJzaW9uIDcuMy4wIChHQ0MpCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkFsbCB0ZXN0Y2FzZXMgUEFTU0VELgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0Y2FzZSBSZXN1
+bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjkzCnN1Y2NlZWRfbnVtOiA0NjkzCmZhaWxlZF9udW06
+IDAKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGVkLWJ5OiBIdWxrIFJvYm90IDxodWxr
+cm9ib3RAaHVhd2VpLmNvbT4=
 
-On Thu, Mar 04, 2021 at 03:51:59PM -0800, Douglas Anderson wrote:
-> The clock framework makes it simple to deal with an optional clock.
-> You can call clk_get_optional() and if the clock isn't specified it'll
-> just return NULL without complaint. It's valid to pass NULL to
-> enable/disable/prepare/unprepare. Let's make use of this to simplify
-> things a tiny bit.
-> 
-> NOTE: this makes things look a tad bit asymmetric now since we check
-> for NULL before clk_prepare_enable() but not for
-> clk_disable_unprepare(). This seemed OK to me. We already have to
-> check for NULL in the enable case anyway so why not avoid the extra
-> call?
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index f27306c51e4d..942019842ff4 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -1261,14 +1261,9 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
->  		return ret;
->  	}
->  
-> -	pdata->refclk = devm_clk_get(pdata->dev, "refclk");
-> -	if (IS_ERR(pdata->refclk)) {
-> -		ret = PTR_ERR(pdata->refclk);
-> -		if (ret == -EPROBE_DEFER)
-> -			return ret;
-> -		DRM_DEBUG_KMS("refclk not found\n");
-> -		pdata->refclk = NULL;
-> -	}
-> +	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
-> +	if (IS_ERR(pdata->refclk))
-> +		return PTR_ERR(pdata->refclk);
->  
->  	ret = ti_sn_bridge_parse_dsi_host(pdata);
->  	if (ret)
-
--- 
-Regards,
-
-Laurent Pinchart
+--===============6624846591152263607==--
