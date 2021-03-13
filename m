@@ -2,104 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A3E33A185
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 032AC33A188
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234855AbhCMVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 16:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234796AbhCMVyT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 16:54:19 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2C8C061574;
-        Sat, 13 Mar 2021 13:54:14 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id m9so29273624ybk.8;
-        Sat, 13 Mar 2021 13:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GhwxGEkw8ytL79APFDFDPPxm81DmFU7dhHEQAY8fvks=;
-        b=J6v4X2zh9zr/+JhZYu1TO4VzEhA1YsHaSBACt0Sc0eVzhxQLmhXzcEky+Yq2okFras
-         3kezJaiqHbGQ9+JnLOOV1yylpNyEBytWs2Wlu5ba8BPh4Jgb3wYLWSDfig/efUSxPVdP
-         pY2XlJ+iSz8uErGCVXYSYIbiXjSpODZoh1ImEC8NDLxekhiFdLQEjSYKk82ufvWAfXtu
-         GRwnP11EBBdkh+SfdeES9EbW2HsMpV9QULfYwIyLNFoocT7AtCOL7m/D2egI73JDOoAg
-         h6xC+KK33ULwBTPvKfQf9fSSUN1pxESIUuI7ZrP6GciuxuNFcgcw/bu1RuX97/k17cWp
-         AqSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GhwxGEkw8ytL79APFDFDPPxm81DmFU7dhHEQAY8fvks=;
-        b=nXuP6RwCrDwemSoG2Q63tpjdq8MguGN4w+P3rD5G7PyPOEgoy1Q4cN9t8HF3XjCH0E
-         cokkUWNT+yYmx2lfM0l+P/bUxp+BZRloACrIiL3pCtFwGVh+AC43oeXQU5xOnoMulXnu
-         Wt2c7LagOxOz46SpUlyNiJB55S5//AfvjLyosSprt16Mp0zY2hTcIXrjEPEtL6/bhSjU
-         q98lI4mdpDfBEbC76VudGkMoh1mGzregjnnV2ca5hq7Jg8cCce79kUSEQBk+CZuuRtAk
-         lEJc6WtlMPbzIUDpx6qtOb2L2GfwN0q61/BKKW0Kzbi6nhDXNqL9WWfFD2nFiQnNPHtK
-         SDRg==
-X-Gm-Message-State: AOAM532bkT0eAQEDuA9Is+WWYAH+4fLtVgBTHSStDEemuBUaWpUo2G0e
-        nXIJX6MAvsHHwwjaEfn6AgpLjQcEVamFB5Rzdjg=
-X-Google-Smtp-Source: ABdhPJz1plNkpafFFbtDcDfYgLN5d/wG6nGryBoO1b+5biUSDjCo7b2e1ZYH0okZE90OY9uUx6k/i9EhP2TNXun5m3A=
-X-Received: by 2002:a25:ca88:: with SMTP id a130mr27494740ybg.414.1615672454155;
- Sat, 13 Mar 2021 13:54:14 -0800 (PST)
+        id S234811AbhCMV6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 16:58:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234182AbhCMV5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 16:57:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 919DF64DE1;
+        Sat, 13 Mar 2021 21:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615672668;
+        bh=ibgxwZyW7rbp39bHV36ZaJ/Ipg69CnJHlj1o0MvjNjc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=jDUWhyX0MJVWi+H7CSxvDWFptcdVNuvMCTKwYp/ka/auZZp7f+ZmSIu6GyPKqSgHp
+         tywbwRmQHdkihvj5Kyk/gbg5uCeIYV65F+CE9rmOH7aR9hKgQJgiXJKjTeF9pczV+i
+         iUd/wCq6xo/9rXPWaYYQf6yRHa3kO8eoLiiNZpsqGfxKTAL09MNKRVf1/g3eXcYPGi
+         xrWIyS8WK3ysdewU0arcPWlrR4M+ajkrTGCW6QpuW0CWUIdr9GVNRORGiWKQ8hanPn
+         MFh2OLscEoozgVjruQhP+ntpJFqG7QHc0cvPb4pr1baLzb3YZXS9V/iO9dwwCpS5PW
+         j3ZB9Xr+JVsHw==
+Date:   Sat, 13 Mar 2021 15:57:47 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-samsung-soc@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Oliver O'Halloran <oohall@gmail.com>
+Subject: Re: [PATCH 2/2] PCI: Revoke mappings like devmem
+Message-ID: <20210313215747.GA2394467@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <87tupl30kl.fsf@igel.home> <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
- <87y2euu6lf.fsf@igel.home>
-In-Reply-To: <87y2euu6lf.fsf@igel.home>
-From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
-Date:   Sat, 13 Mar 2021 22:54:02 +0100
-Message-ID: <CANBLGcyteTgQ2BgyesrTycpVqpPeYaiUCTEEp=KmPB0TPqK_LQ@mail.gmail.com>
-Subject: Re: macb broken on HiFive Unleashed
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Claudiu.Beznea@microchip.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        ckeepax@opensource.cirrus.com, andrew@lunn.ch,
-        Willy Tarreau <w@1wt.eu>,
-        Nicolas Ferre <Nicolas.Ferre@microchip.com>, daniel@0x0f.com,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        pthombar@cadence.com, Network Development <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204165831.2703772-3-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas
+[+cc Krzysztof, Pali, Oliver]
 
-On Wed, 10 Mar 2021 at 20:55, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> On M=C3=A4r 09 2021, Claudiu.Beznea@microchip.com wrote:
-> > I don't have a SiFive HiFive Unleashed to investigate this. Can you che=
-ck
-> > if reverting commits on macb driver b/w 5.10 and 5.11 solves your issue=
-s:
-> >
-> > git log --oneline v5.10..v5.11 -- drivers/net/ethernet/cadence/
-> > 1d0d561ad1d7 net: macb: Correct usage of MACB_CAPS_CLK_HW_CHG flag
-> > 1d608d2e0d51 Revert "macb: support the two tx descriptors on at91rm9200=
-"
-> > 700d566e8171 net: macb: add support for sama7g5 emac interface
-> > ec771de654e4 net: macb: add support for sama7g5 gem interface
-> > f4de93f03ed8 net: macb: unprepare clocks in case of failure
-> > 38493da4e6a8 net: macb: add function to disable all macb clocks
-> > daafa1d33cc9 net: macb: add capability to not set the clock rate
-> > edac63861db7 net: macb: add userio bits as platform configuration
-> > 9e6cad531c9d net: macb: Fix passing zero to 'PTR_ERR'
-> > 0012eeb370f8 net: macb: fix NULL dereference due to no pcs_config metho=
-d
-> > e4e143e26ce8 net: macb: add support for high speed interface
->
-> Unfortunately, that didn't help.
+On Thu, Feb 04, 2021 at 05:58:31PM +0100, Daniel Vetter wrote:
+> Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> the default for all driver uses.
+> 
+> Except there's two more ways to access PCI BARs: sysfs and proc mmap
+> support. Let's plug that hole.
 
-Sorry, for being late to test this, but I just compiled and booted
-5.11.6 and ethernet works just fine for me:
-https://esmil.dk/hfu-5.11.6.txt
+IIUC, the idea is that if a driver calls request_mem_region() on a PCI
+BAR, we prevent access to the BAR via sysfs.  I guess I'm OK with that
+if it's a real security improvement or something.
 
-As you can see I haven't updated OpenSBI or u-boot in a while, don't
-know if that makes a difference. You can fetch the config is used
-here:
-https://esmil.dk/hfu-5.11.6.config
+But the downside of this implementation is that it depends on
+iomem_get_mapping(), which doesn't work until after fs_initcalls,
+which means the sysfs files cannot be static attributes of devices
+added before that.  PCI devices are typically enumerated in
+subsys_initcall.
 
-/Emil
+Krzysztof is converting PCI sysfs files (config, rom, reset, vpd, etc)
+to static attributes.  This is a major improvement that could get rid
+of pci_create_sysfs_dev_files(), the late_initcall pci_sysfs_init(),
+and the "sysfs_initialized" hack.  This would fix a race reported by
+Pali [1] (thanks to Oliver for the idea [2]).
+
+EXCEPT that this revoke change means the "resource%d", "legacy_io",
+and "legacy_mem" files cannot be static attributes because of
+iomem_get_mapping().
+
+Any ideas on how to deal with this?  Having to keep the
+pci_sysfs_init() initcall just for these few files seems like the tail
+wagging the dog.
+
+[1] https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali
+[2] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwLKGXQzBfqaA@mail.gmail.com
+
+> For revoke_devmem() to work we need to link our vma into the same
+> address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> adjusted, because that's how (io_)remap_pfn_range works, but for the
+> mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
+> to adjust this at at ->open time:
+> 
+> - for sysfs this is easy, now that binary attributes support this. We
+>   just set bin_attr->mapping when mmap is supported
+> - for procfs it's a bit more tricky, since procfs pci access has only
+>   one file per device, and access to a specific resources first needs
+>   to be set up with some ioctl calls. But mmap is only supported for
+>   the same resources as sysfs exposes with mmap support, and otherwise
+>   rejected, so we can set the mapping unconditionally at open time
+>   without harm.
+> 
+> A special consideration is for arch_can_pci_mmap_io() - we need to
+> make sure that the ->f_mapping doesn't alias between ioport and iomem
+> space. There's only 2 ways in-tree to support mmap of ioports: generic
+> pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
+> architecture hand-rolling. Both approach support ioport mmap through a
+> special pfn range and not through magic pte attributes. Aliasing is
+> therefore not a problem.
+> 
+> The only difference in access checks left is that sysfs PCI mmap does
+> not check for CAP_RAWIO. I'm not really sure whether that should be
+> added or not.
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  drivers/pci/pci-sysfs.c | 4 ++++
+>  drivers/pci/proc.c      | 1 +
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 0c45b4f7b214..f8afd54ca3e1 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -942,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+>  	b->legacy_io->read = pci_read_legacy_io;
+>  	b->legacy_io->write = pci_write_legacy_io;
+>  	b->legacy_io->mmap = pci_mmap_legacy_io;
+> +	b->legacy_io->mapping = iomem_get_mapping();
+>  	pci_adjust_legacy_attr(b, pci_mmap_io);
+>  	error = device_create_bin_file(&b->dev, b->legacy_io);
+>  	if (error)
+> @@ -954,6 +955,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+>  	b->legacy_mem->size = 1024*1024;
+>  	b->legacy_mem->attr.mode = 0600;
+>  	b->legacy_mem->mmap = pci_mmap_legacy_mem;
+> +	b->legacy_io->mapping = iomem_get_mapping();
+>  	pci_adjust_legacy_attr(b, pci_mmap_mem);
+>  	error = device_create_bin_file(&b->dev, b->legacy_mem);
+>  	if (error)
+> @@ -1169,6 +1171,8 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
+>  			res_attr->mmap = pci_mmap_resource_uc;
+>  		}
+>  	}
+> +	if (res_attr->mmap)
+> +		res_attr->mapping = iomem_get_mapping();
+>  	res_attr->attr.name = res_attr_name;
+>  	res_attr->attr.mode = 0600;
+>  	res_attr->size = pci_resource_len(pdev, num);
+> diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+> index 3a2f90beb4cb..9bab07302bbf 100644
+> --- a/drivers/pci/proc.c
+> +++ b/drivers/pci/proc.c
+> @@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, struct file *file)
+>  	fpriv->write_combine = 0;
+>  
+>  	file->private_data = fpriv;
+> +	file->f_mapping = iomem_get_mapping();
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
