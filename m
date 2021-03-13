@@ -2,91 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB8333A119
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3052933A11C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 21:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhCMUhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 15:37:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36768 "EHLO mail.kernel.org"
+        id S234716AbhCMUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 15:38:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234535AbhCMUhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 15:37:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8BB664ECD;
-        Sat, 13 Mar 2021 20:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1615667836;
-        bh=a+bgrH0JujcMhS3lCPeeuyib36jjyyn038EZGI2s/IM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C1W0+23kv6UgGDUQ1g2wVzwyPM5CpFtnBx7E7McqCO3FFHqn4PAVL0En16axkIBKL
-         KauS+uwBBgVJQN+TtTQLqjkGE711ieFcpHCShJJkvAgSAGcWiILSnQbXuMfVWwcyUJ
-         ABzaE96msq+1OaGpH4JjpHn4UsTbR8G7iieio75k=
-Date:   Sat, 13 Mar 2021 12:37:16 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 09/25] mm: Add folio_index, folio_page and
- folio_contains
-Message-Id: <20210313123716.a4f9403e9f6ebbd719dac2a8@linux-foundation.org>
-In-Reply-To: <20210305041901.2396498-10-willy@infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
-        <20210305041901.2396498-10-willy@infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234697AbhCMUiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 15:38:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C1964ECD;
+        Sat, 13 Mar 2021 20:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615667889;
+        bh=y3AzkWl/QkhO0HyMix80Bdu2IWVQbZY6mwVEyUe6XEA=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=d3ZBX4+08x+8QWxRvV2Hfe0XPAinUiX+SNnw2IAbecZMWj0WHn/QxOg0LIE3BImZj
+         gHd0tYJ36DZEjZwxl2xe44uFzDm7XnrKQq8BudfC6p/qp9u5la/h+hRWJ57AuyDsLV
+         9RpSFx6bYoD7F/4kyINX7k46Or8YRKCtcJPwEQ/ZbvvsukIraemisr8HxSHb4m97H/
+         5pLSV5wP4tUImXFSRdUKRvj0mvtF1W57vEfGV+nTsLPJkwfgg/A7XvUXETslFBhmVr
+         uOFQIgOcBvKqdA6SNt2Hq+4MT4GsM2Kl5EVPyU1r+dVWZ19M58yBiezjTT9jbSSbBp
+         coM3Ib6PqfpiA==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210305003334.575831-1-linux@rasmusvillemoes.dk>
+References: <20210305003334.575831-1-linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] clk: use clk_core_enable_lock() a bit more
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Sat, 13 Mar 2021 12:38:08 -0800
+Message-ID: <161566788864.1478170.2232755793586125893@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  5 Mar 2021 04:18:45 +0000 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
-
-> folio_index() is the equivalent of page_index() for folios.  folio_page()
-> finds the page in a folio for a page cache index.  folio_contains()
-> tells you whether a folio contains a particular page cache index.
-> 
-
-copy-paste changelog into each function's covering comment?
-
+Quoting Rasmus Villemoes (2021-03-04 16:33:34)
+> Use clk_core_enable_lock() and clk_core_disable_lock() in a few places
+> rather than open-coding them.
+>=20
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 > ---
->  include/linux/pagemap.h | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index f07c03da83f6..5094b50f7680 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -447,6 +447,29 @@ static inline bool thp_contains(struct page *head, pgoff_t index)
->  	return page_index(head) == (index & ~(thp_nr_pages(head) - 1UL));
->  }
->  
-> +static inline pgoff_t folio_index(struct folio *folio)
-> +{
-> +        if (unlikely(FolioSwapCache(folio)))
-> +                return __page_file_index(&folio->page);
-> +        return folio->page.index;
-> +}
-> +
-> +static inline struct page *folio_page(struct folio *folio, pgoff_t index)
-> +{
-> +	index -= folio_index(folio);
-> +	VM_BUG_ON_FOLIO(index >= folio_nr_pages(folio), folio);
-> +	return &folio->page + index;
-> +}
 
-One would expect folio_page() to be the reverse of page_folio(), only
-it isn't anything like that.
-
-> +/* Does this folio contain this index? */
-> +static inline bool folio_contains(struct folio *folio, pgoff_t index)
-> +{
-> +	/* HugeTLBfs indexes the page cache in units of hpage_size */
-> +	if (PageHuge(&folio->page))
-> +		return folio->page.index == index;
-> +	return index - folio_index(folio) < folio_nr_pages(folio);
-> +}
-> +
->  /*
->   * Given the page we found in the page cache, return the page corresponding
->   * to this index in the file
-
+Applied to clk-next
