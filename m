@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323A0339ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E386339AE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 02:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhCMBcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 20:32:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbhCMBbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 20:31:44 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE7AC061574;
-        Fri, 12 Mar 2021 17:31:44 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id g185so26341466qkf.6;
-        Fri, 12 Mar 2021 17:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AcdWXT4DUSERFdCyIHni/dU5TOl337k8AbBTDnppu4s=;
-        b=d3VqIfDTLnYkueX6Rid21rbGUxSKtoqSU5Zo+j9YBtKoKrQ0OHsZG8EWKCDYlS14ld
-         ibBtT5zzl1hpz4SBX00VrqbMtFAV4dK4kXneYrJQL7p17FHFt+UVIFWT2MWv329RcG4v
-         l6+BzqHKLCQ0R7Cq5A8QMS1cjfmyNw3bB+txAmeR0WQ9PmoGFxqHe4H6j9bHJGeDWLKh
-         k6o8K/9Y3cVeRJy8xspI7Yi26gUyOgETwO52OTBqYNih2uFAeai4m8EMzfdsFJu0Suf1
-         ElLKt+JWz8VFZqIa+Kb7imAYbXvAqNerZigkEv2B5CK8jLZ+0Ur2LkaOxAAhOOAN+/fH
-         eXBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AcdWXT4DUSERFdCyIHni/dU5TOl337k8AbBTDnppu4s=;
-        b=nJOBb+PojT28r0Ke5mimiWpUbpTx8roS2HUqrAZ1ckMDIwy+22L/DEVTDBIYTrEFrO
-         VpgGvi8ywyhOfDs/n9tGOm9SJ3B6mT+6qjv/r23gDYPqNuuFlO+o6Fno/EybMVSwgtWS
-         km7US1NFnlp/FlH9cGWmzXE2Wi/4jXtpav9zhbt7baiwEBLQiPmGdLLnHT5M51dtKYqK
-         Lmnp82dfYOl6U+KsHoLDAdrUxA1QlcEZsFtP/Qr2lfLUg7/W2VI3xvBSmrWrdox3GqzL
-         b79BJx4asop/V9Ij8aJIRa7uIHA2i4rck5Ta9w79+D77yMdlouf92nLr+S+K9stkhTB4
-         yAFw==
-X-Gm-Message-State: AOAM532Qof49+Rd+cRxvoN1AouJcmbLz3H6ygOYK/keNglikS+cGItSv
-        DlDg9cVp0OMh6E+1RIPE9zV0UjHFxOqdoO86nQ==
-X-Google-Smtp-Source: ABdhPJyUHUiomSU45S++Qo5fCAi6av+Az3AajTeL4LdcuKjyjSt61H9/LYxnHeeLrSWshd4MAWMHlTGclwn+Efs58Yc=
-X-Received: by 2002:a37:8185:: with SMTP id c127mr15396870qkd.275.1615599103512;
- Fri, 12 Mar 2021 17:31:43 -0800 (PST)
+        id S232867AbhCMBjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 20:39:19 -0500
+Received: from mga07.intel.com ([134.134.136.100]:51336 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhCMBi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Mar 2021 20:38:58 -0500
+IronPort-SDR: FYdUZRc4UYH9eFwNznXLdpQsbOFGfrY91cZSp8F386l+M0xFucCAPC5wn4Sal0B0VuMP4wT2bX
+ yiC5V/3Y5TcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="252929088"
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="252929088"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 17:38:57 -0800
+IronPort-SDR: WX0p9R69J0SqVVtAjuI1NyCDa3GoAa0N7h3vw3KXR0KEY1AUvz5NjcbA4fhWSGyck6WC+6RtZ6
+ ly3N0e+cpIbQ==
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="404606308"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 17:38:56 -0800
+Date:   Fri, 12 Mar 2021 17:38:56 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 04/11] PCI/P2PDMA: Introduce
+ pci_p2pdma_should_map_bus() and pci_p2pdma_bus_offset()
+Message-ID: <20210313013856.GA3402637@iweiny-DESK2.sc.intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-5-logang@deltatee.com>
 MIME-Version: 1.0
-References: <20210303020946.26083-1-lihaiwei.kernel@gmail.com>
- <03239d81-df56-a6c9-c79d-c14d22f62705@gmail.com> <YEgH11nNwdCkF5kT@google.com>
- <CAB5KdOZkdXsLup+58On=LZ6eG4jYdcaK2NCt9U0Q-qy_6dQrfw@mail.gmail.com> <YEwOM3aTeUjVim/i@google.com>
-In-Reply-To: <YEwOM3aTeUjVim/i@google.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Date:   Sat, 13 Mar 2021 09:31:17 +0800
-Message-ID: <CAB5KdObBa2oiPZpHx_S6V+=TFqb_zet=7tdaqU0y3cVJk2UZuQ@mail.gmail.com>
-Subject: Re: [PATCH] kvm: lapic: add module parameters for LAPIC_TIMER_ADVANCE_ADJUST_MAX/MIN
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311233142.7900-5-logang@deltatee.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 8:58 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Mar 10, 2021, Haiwei Li wrote:
-> > On Wed, Mar 10, 2021 at 7:42 AM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Wed, Mar 03, 2021, Haiwei Li wrote:
-> > > > On 21/3/3 10:09, lihaiwei.kernel@gmail.com wrote:
-> > > > > From: Haiwei Li <lihaiwei@tencent.com>
-> > > > >
-> > > > > In my test environment, advance_expire_delta is frequently greater than
-> > > > > the fixed LAPIC_TIMER_ADVANCE_ADJUST_MAX. And this will hinder the
-> > > > > adjustment.
-> > > >
-> > > > Supplementary details:
-> > > >
-> > > > I have tried to backport timer related features to our production
-> > > > kernel.
-> > > >
-> > > > After completed, i found that advance_expire_delta is frequently greater
-> > > > than the fixed value. It's necessary to trun the fixed to dynamically
-> > > > values.
-> > >
-> > > Does this reproduce on an upstream kernel?  If so...
-> > >
-> > >   1. How much over the 10k cycle limit is the delta?
-> > >   2. Any idea what causes the large delta?  E.g. is there something that can
-> > >      and/or should be fixed elsewhere?
-> > >   3. Is it platform/CPU specific?
-> >
-> > Hi, Sean
-> >
-> > I have traced the flow on our production kernel and it frequently consumes more
-> > than 10K cycles from sched_out to sched_in.
-> > So two scenarios tested on Cascade lake Server(96 pcpu), v5.11 kernel.
-> >
-> > 1. only cyclictest in guest(88 vcpu and bound with isolated pcpus, w/o mwait
-> > exposed, adaptive advance lapic timer is default -1). The ratio of occurrences:
-> >
-> > greater_than_10k/total: 29/2060, 1.41%
-> >
-> > 2. cyclictest in guest(88 vcpu and not bound, w/o mwait exposed, adaptive
-> > advance lapic timer is default -1) and stress in host(no isolate). The ratio of
-> > occurrences:
-> >
-> > greater_than_10k/total: 122381/1017363, 12.03%
->
-> Hmm, I'm inclined to say this is working as intended.  If the vCPU isn't affined
-> and/or it's getting preempted, then large spikes are expected, and not adjusting
-> in reaction to those spikes is desirable.  E.g. adjusting by 20k cycles because
-> the timer happened to expire while a vCPU was preempted will cause KVM to busy
-> wait for quite a long time if the next timer runs without interference, and then
-> KVM will thrash the advancement.
->
-> And I don't really see the point in pushing the max adjustment beyond 10k.  The
-> max _advancement_ is 5000ns, which means that even with a blazing fast 5.0ghz
-> system, a max adjustment of 1250 (10k/ 8, the step divisor) should get KVM to
-> the 25000 cycle advancement limit relatively quickly.  Since KVM resets to the
-> initial 1000ns advancement when it would exceed the 5000ns max, I suspect that
-> raising the max adjustment much beyond 10k cycles would quickly push a vCPU to
-> the max, cause it to reset, and rinse and repeat.
->
-> Note, we definitely don't want to raise the 5000ns max, as waiting with IRQs
-> disabled for any longer than that will likely cause system instability.
+On Thu, Mar 11, 2021 at 04:31:34PM -0700, Logan Gunthorpe wrote:
+> Introduce pci_p2pdma_should_map_bus() which is meant to be called by
+> DMA map functions to determine how to map a given p2pdma page.
+> 
+> pci_p2pdma_bus_offset() is also added to allow callers to get the bus
+> offset if they need to map the bus address.
+> 
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  drivers/pci/p2pdma.c       | 50 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/pci-p2pdma.h | 11 +++++++++
+>  2 files changed, 61 insertions(+)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 7f6836732bce..66d16b7eb668 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -912,6 +912,56 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+>  }
+>  EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
+>  
+> +/**
+> + * pci_p2pdma_bus_offset - returns the bus offset for a given page
+> + * @page: page to get the offset for
+> + *
+> + * Must be passed a PCI p2pdma page.
+> + */
+> +u64 pci_p2pdma_bus_offset(struct page *page)
+> +{
+> +	struct pci_p2pdma_pagemap *p2p_pgmap = to_p2p_pgmap(page->pgmap);
+> +
+> +	WARN_ON(!is_pci_p2pdma_page(page));
 
-I see. Thanks for your explanation.
+Shouldn't this check be before the to_p2p_pgmap() call?  And I've been told not
+to introduce WARN_ON's.  Should this be?
 
---
-Haiwei Li
+	if (!is_pci_p2pdma_page(page))
+		return -1;
+
+???
+
+Ira
