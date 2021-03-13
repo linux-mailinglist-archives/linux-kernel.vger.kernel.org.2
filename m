@@ -2,56 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6280A339CD7
+	by mail.lfdr.de (Postfix) with ESMTP id D343C339CD8
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 09:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhCMION (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 03:14:13 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13161 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhCMINy (ORCPT
+        id S233464AbhCMIOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 03:14:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20166 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233414AbhCMIOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 03:13:54 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DyFkr6TmYzmWKZ;
-        Sat, 13 Mar 2021 16:11:32 +0800 (CST)
-Received: from [127.0.0.1] (10.175.101.122) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Sat, 13 Mar 2021
- 16:13:45 +0800
-Content-Type: multipart/alternative;
-        boundary="===============2445299037578624981=="
+        Sat, 13 Mar 2021 03:14:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615623240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HD8GasGxLOGjWEPXW1RDIOCj5Ig8QuD9ZoJ4u7PPXP0=;
+        b=hTCpdZFE+dA7WqMnLtH+WcLomsXvUUO6ShBPmLiZUpug5A+QnCsSufyv5BMz4NXYDTRDZO
+        nSXNfRewRG3NZoX8hvo2gQf97gBmp4Npv2ihYJ/aONHeEShGwfl4X3nDQN07B1B/l4CjWQ
+        7AeCnOHEdOMBbaJoYcUkE5VEDkv90Fw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-w_ZGOYuuO2OX7mnkzaBhgQ-1; Sat, 13 Mar 2021 03:13:57 -0500
+X-MC-Unique: w_ZGOYuuO2OX7mnkzaBhgQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81E2A1084C83;
+        Sat, 13 Mar 2021 08:13:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C328E5C3E4;
+        Sat, 13 Mar 2021 08:13:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com>
+References: <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com> <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk> <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk> <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com> <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com> <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com,
+        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist keyring
 MIME-Version: 1.0
-Date:   Sat, 13 Mar 2021 16:13:45 +0800
-From:   <hulkrobot@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E10=2E24-rc1=0D=0A/x86?=
-Message-ID: <3bdb8aa7-cced-45e4-952b-69d3fd444074@DGGEMS407-HUB.china.huawei.com>
-X-Originating-IP: [10.175.101.122]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2579342.1615623232.1@warthog.procyon.org.uk>
+Date:   Sat, 13 Mar 2021 08:13:52 +0000
+Message-ID: <2579343.1615623232@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============2445299037578624981==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Eric Snowberg <eric.snowberg@oracle.com> wrote:
 
-S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS4xMC55CkFyY2g6
-IHg4NgpWZXJzaW9uOiA1LjEwLjI0LXJjMQ0KQ29tbWl0OiBlNzI1NTUxZTgyZDdkY2U5MjY3M2Iw
-YmVmNjQzMGZjOGU5MDNmYjcyDQpDb21waWxlcjogZ2NjIHZlcnNpb24gNy4zLjAgKEdDQykKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KRmFpbGVkIGNhc2VzIDoKbHRwIGNwdWhvdHBsdWcwMwotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0
-Y2FzZSBSZXN1bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjkzCnN1Y2NlZWRfbnVtOiA0NjkyCmZh
-aWxlZF9udW06IDEKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGVkLWJ5OiBIdWxrIFJv
-Ym90IDxodWxrcm9ib3RAaHVhd2VpLmNvbT4=
+> If MOKx will be available thru a config table in the next shim, 
+> I'll prepare a follow on patch to add this support. 
 
---===============2445299037578624981==--
+Can this go separately, or would it be better rolled into the existing
+patchset?
+
+David
+
