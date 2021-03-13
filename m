@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B94C33A00F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DF333A012
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhCMSsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 13:48:12 -0500
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:42223 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhCMSrg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 13:47:36 -0500
-Received: by mail-vs1-f49.google.com with SMTP id v123so14279236vsv.9;
-        Sat, 13 Mar 2021 10:47:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V4OlbTaZsfRr8m4U6wSFd2NjZwjTvfpq70Z7sr9ivb8=;
-        b=TlkyQeb7WVUjXry9Dj1yNgMClsyO8BzfTsKdf7pYK+BAsShxPqzuQI0Z8imQXj6WAi
-         armIRNRNovz5Jsz+ss8fk2ZPSdIz27jl+bIPWsGSzpKi1zw8jtM8Wbu0AIJBoNOyib3j
-         8HEctNSwN0QWXp7dg/ggmC5JjoAIy/vIEsd2khk5QyzNwp5KXJR/ev8rFNr7Uz5KX+Qd
-         TrgTRtkQ+N1TFCQLriHRU/p11PuU64QHefSWxRDjxi4poN8OOWwH9nGy7nO4bued3vaT
-         0UehzwixhK2WHnaiVhxzb4WkK0ZT3IGVtV/XW1U3UDpYSvEqXx5hS4Vv/ilbtP0oHaKE
-         zu2w==
-X-Gm-Message-State: AOAM531XHze5ULFUQzflcwt50Z2EYFqR5dDM6PAQbx4747rIGT1t9Zv8
-        /JQv/XUhYZWbVWG4v/sEToOl8beDcZw9aftf0SY=
-X-Google-Smtp-Source: ABdhPJzwoWPysyHbwdlp9M+VJu77QpQG1me8NmKxbmEsPbO2YahFUoj0nXRcbp3PfDd1aIU7blraldCc9ki67Z807fM=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr2019352vsd.18.1615661255965;
- Sat, 13 Mar 2021 10:47:35 -0800 (PST)
+        id S234287AbhCMSuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 13:50:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233635AbhCMSt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 13:49:57 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 637FB64ECE;
+        Sat, 13 Mar 2021 18:49:56 +0000 (UTC)
+Date:   Sat, 13 Mar 2021 18:49:52 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        manivannanece23@gmail.com, linux@deviqon.com
+Subject: Re: [PATCH] iio: temperature: tmp007: use device-managed functions
+ in probe
+Message-ID: <20210313184952.671b01b1@archlinux>
+In-Reply-To: <20210310093800.45822-1-aardelean@deviqon.com>
+References: <20210310093800.45822-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210302053059.1049035-1-drew@beagleboard.org>
- <20210302053059.1049035-3-drew@beagleboard.org> <349b09f8-fe99-d0d4-dd11-c288bf66cb4d@metux.net>
- <YEyFyQ0TF5u/WS9X@piout.net>
-In-Reply-To: <YEyFyQ0TF5u/WS9X@piout.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 13 Mar 2021 19:47:24 +0100
-Message-ID: <CAMuHMdWzEQAOgy7_e_6RcQjP6z0n9LQA6R2LBs1nXMZeAYywvQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/4] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On Wed, 10 Mar 2021 11:38:00 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-On Sat, Mar 13, 2021 at 10:28 AM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 12/03/2021 14:57:54+0100, Enrico Weigelt, metux IT consult wrote:
-> > On 02.03.21 06:30, Drew Fustini wrote:
-> > > Add "pinmux-select" to debugfs which will activate a pin function for a
-> > > given pin group:
-> > >
-> > >    echo "<group-name function-name>" > pinmux-select
-> > >
-> > > The write operation pinmux_select() handles this by checking that the
-> > > names map to valid selectors and then calling ops->set_mux().
-> >
-> > I've already been playing with similar idea, but for external muxes.
-> > For example, some boards have multiple SIM slots that can be switched
-> > via some gpio pin.
-> >
-> > Not sure whether traditional pinmux would be a good match for that.
->
-> If you want to be able to use both, then I guess gpio-mux is what you
-> are looking for. Obviously, it will also require support in the bus
-> core. On what bus are those SIMs? (I guess the answer will be UART and
-> then unfortunately UARTs are not represented as busses).
+> This change converts the driver to use device-managed functions in the
+> probe function. The power-down call is handled now via a
+> devm_add_action_or_reset() hook, and then devm_iio_device_register() can be
+> used to register the IIO device.
+> 
+> The final aim here would be for IIO to export only the device-managed
+> functions of it's API. That's a long way to go and this a small step in
+> that direction.
+I'm not sure it makes sense in all cases!  However this particular one
+is clear cut.
 
-We do have support for devices connected to UARTs.
-See patternProperties in Documentation/devicetree/bindings/serial/serial.yaml.
-Or do you mean something different?
+Applied to the togreg branch of iio.git and pushed out as testing.
+Manivannan, I won't be pushing this out as a non rebasing tree for
+a few days if you want to take a look.
 
-Gr{oetje,eeting}s,
+thanks,
 
-                        Geert
+Jonathan
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/iio/temperature/tmp007.c | 36 +++++++++++++-------------------
+>  1 file changed, 15 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/iio/temperature/tmp007.c b/drivers/iio/temperature/tmp007.c
+> index ad2b35c65548..b422371a4674 100644
+> --- a/drivers/iio/temperature/tmp007.c
+> +++ b/drivers/iio/temperature/tmp007.c
+> @@ -439,6 +439,13 @@ static bool tmp007_identify(struct i2c_client *client)
+>  	return (manf_id == TMP007_MANUFACTURER_MAGIC && dev_id == TMP007_DEVICE_MAGIC);
+>  }
+>  
+> +static void tmp007_powerdown_action_cb(void *priv)
+> +{
+> +	struct tmp007_data *data = priv;
+> +
+> +	tmp007_powerdown(data);
+> +}
+> +
+>  static int tmp007_probe(struct i2c_client *client,
+>  			const struct i2c_device_id *tmp007_id)
+>  {
+> @@ -489,6 +496,10 @@ static int tmp007_probe(struct i2c_client *client,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	ret = devm_add_action_or_reset(&client->dev, tmp007_powerdown_action_cb, data);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/*
+>  	 * Only the following flags can activate ALERT pin. Data conversion/validity flags
+>  	 * flags can still be polled for getting temperature data
+> @@ -502,7 +513,7 @@ static int tmp007_probe(struct i2c_client *client,
+>  
+>  	ret = i2c_smbus_read_word_swapped(data->client, TMP007_STATUS_MASK);
+>  	if (ret < 0)
+> -		goto error_powerdown;
+> +		return ret;
+>  
+>  	data->status_mask = ret;
+>  	data->status_mask |= (TMP007_STATUS_OHF | TMP007_STATUS_OLF
+> @@ -510,7 +521,7 @@ static int tmp007_probe(struct i2c_client *client,
+>  
+>  	ret = i2c_smbus_write_word_swapped(data->client, TMP007_STATUS_MASK, data->status_mask);
+>  	if (ret < 0)
+> -		goto error_powerdown;
+> +		return ret;
+>  
+>  	if (client->irq) {
+>  		ret = devm_request_threaded_irq(&client->dev, client->irq,
+> @@ -519,27 +530,11 @@ static int tmp007_probe(struct i2c_client *client,
+>  				tmp007_id->name, indio_dev);
+>  		if (ret) {
+>  			dev_err(&client->dev, "irq request error %d\n", -ret);
+> -			goto error_powerdown;
+> +			return ret;
+>  		}
+>  	}
+>  
+> -	return iio_device_register(indio_dev);
+> -
+> -error_powerdown:
+> -	tmp007_powerdown(data);
+> -
+> -	return ret;
+> -}
+> -
+> -static int tmp007_remove(struct i2c_client *client)
+> -{
+> -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> -	struct tmp007_data *data = iio_priv(indio_dev);
+> -
+> -	iio_device_unregister(indio_dev);
+> -	tmp007_powerdown(data);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(&client->dev, indio_dev);
+>  }
+>  
+>  #ifdef CONFIG_PM_SLEEP
+> @@ -582,7 +577,6 @@ static struct i2c_driver tmp007_driver = {
+>  		.pm	= &tmp007_pm_ops,
+>  	},
+>  	.probe		= tmp007_probe,
+> -	.remove		= tmp007_remove,
+>  	.id_table	= tmp007_id,
+>  };
+>  module_i2c_driver(tmp007_driver);
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
