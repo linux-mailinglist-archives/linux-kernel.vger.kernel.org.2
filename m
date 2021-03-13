@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8A8339F17
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1541339F20
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 17:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhCMQYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 11:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S233988AbhCMQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 11:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhCMQYi (ORCPT
+        with ESMTP id S233570AbhCMQgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 11:24:38 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BCBC061574;
-        Sat, 13 Mar 2021 08:24:38 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id u3so28716383ybk.6;
-        Sat, 13 Mar 2021 08:24:38 -0800 (PST)
+        Sat, 13 Mar 2021 11:36:45 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D84C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 08:36:45 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso9984844pjb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 08:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aXi6zxmykvKGGuEUIknBGQuu/CrpF+OFk8aqg1g8+Js=;
-        b=Hv71HUzmf0Lv3L07Y9vPI88fr2tkUa/1JbFZGy51jjbh9n4cRQ+P6rLbvPAhZMLbg5
-         ixsUkRYdDUhei4YCiRy0287CIkP8b3Jg9TpHICyCGV2xDgcQFoYiRrPDp0LcPbNyPobt
-         e2mB8WjIyZJjUgnIK3eEg9rREEgBthIupmC5k7TJkMd1BdMNglR5MTBljFc4WnZL0Tv/
-         2A5yFWAf2SP7q2tspr8wPFHgGP1dhWKjLEJrKe1jxyEujMO/6QhrAuiX6efY9Q0tZhFG
-         jbv3PaYMyafnqAK7BZW4C9hHl2HDt27Z0jCW48yq0cRe9cKlFDPeNt9KBY4Z6kTHjtIk
-         4+5Q==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=f/ATcZDgkpa69P3OCF6HCVINJhil+2RUrXNv8f9zA+k=;
+        b=BISTZwpWpzDorRYdwWsudjSDVsnv0cvr7roJ9xg7jQyRR+rkzMPUoyS4QqddE4pPNt
+         l2KgWSxiPZMdqi2PHDqcJUSy+lmpK6GcbPfLO6z81nsEV38lR8rqOlVh0XtvgiHKTlaB
+         JSKjXm3v05+rlgTP3gxnr0EhUX1lvF+sybMKCx7hIpHTlSJ9faoDcqg52PBrUB/6KPn0
+         w6THmLrkLo+fPf3z7Vqhey6uvZ0gHn+AsLZMpGkRp2Jnv7JiXB3C5pqxJD75dqAPbLS7
+         AplHlGqA1tuwEh0SPHenDhTEOXjdaCXFkNG1AeeZ+u4roLvdlYkTxG5UkDbA09xE9I2I
+         089w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aXi6zxmykvKGGuEUIknBGQuu/CrpF+OFk8aqg1g8+Js=;
-        b=RWpJp9ontZOvRMncYQydzhgd/kmxrCW8sA2Ss7LRhtcfOdDRN05N0BMdgwxBp9lcqV
-         9RisfygBqY7VUHuBXgutd6LSgESo5NHywEPfFqyIquxFfPd60o++gNEwYxYFPqUgzt2J
-         /UBPjHmaNb1A5kaNZIqtdN9YU5HjXDwaWNIpUkzVH9RUW8JzOB2p9ByW3gi6kjp9LKzQ
-         gkPddsfWFIbCzF42F35daAAkB1Oxww0Jkh7Oi7QtNzGDLvMXoBptAcY0TuqUD9XMv06s
-         Pj9of01etDCrGKMA4YkZgIMK308rmtskcCeS8WK0OO8A1KJvBQYuWzCGyi00TOUl80Jq
-         2nWw==
-X-Gm-Message-State: AOAM533KP5HXB3hBoclYsfK8ZYpxe/wiTlfCU/uEShCW3vneppsIz5/b
-        oyTaM5gkLl9XCr50q3SQAOIr+c+Bg32n0WP3kms=
-X-Google-Smtp-Source: ABdhPJwtKc3ckDh1wM2gREfAQUcazj9bOTqT8gJ/CC1jACL5d+N8mbIM5sD/vFtR/QEb1ipgGC33qgcC6cjdF7XgPjg=
-X-Received: by 2002:a25:424f:: with SMTP id p76mr27228411yba.109.1615652676401;
- Sat, 13 Mar 2021 08:24:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=f/ATcZDgkpa69P3OCF6HCVINJhil+2RUrXNv8f9zA+k=;
+        b=NFuLEY4J3hEG+R1g85TRNVkAvhlfDudY6AhC0NBeWeSF5WIrIeYpCCzbB+RLFygErm
+         kMCOGKRQ+h6/D2r8w42mU0z9pdTZ6dQ/j5sGW/bS1MuWj3nto7fCjhOFFkYB83nFys11
+         TbiXTwEbjcBkph6jsNzHoImYN85CyQWfrkEs50x5FBRebrl+UoXuvgMpDafkJoQva2/j
+         nYvwPOo8gBiTjI/wtOzznQnkKtpJ7Oi5oa8eJwQmi07sF83qtmoMMsNYRNkyaDurbrUF
+         /7HAtNrlCGl96bK4+6g9tXVDB/orjh8BTAX8TurVYA0uwjNQ4bGDHAlZ/ZYTV+5/UNha
+         HNTw==
+X-Gm-Message-State: AOAM530XLBRsxgvcKOkItpWgbOKHMnq+yOFpklgiApjtiW3yY7eB61Vd
+        IEnj/JvdcfvgM28jHqFk7SsRGm8Mo2/eqSp9
+X-Google-Smtp-Source: ABdhPJyp5Cfo2IeSGYAHMWfG44hpCWGLBdA/oiD7BM9sGH4JSnkuudGFYRWmKbyA3dAI6AtJq5TzTQ==
+X-Received: by 2002:a17:902:ee06:b029:e4:ba18:3726 with SMTP id z6-20020a170902ee06b02900e4ba183726mr3869011plb.17.1615653405036;
+        Sat, 13 Mar 2021 08:36:45 -0800 (PST)
+Received: from client-VirtualBox ([223.186.9.86])
+        by smtp.gmail.com with ESMTPSA id v14sm5930740pju.19.2021.03.13.08.36.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 08:36:44 -0800 (PST)
+Date:   Sat, 13 Mar 2021 22:06:35 +0530
+From:   Chinmayi Shetty <chinmayishetty359@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] Bio: Fixed the code indentation by using tabs
+Message-ID: <20210313163635.hisfsmzoxaeoyf73@client-VirtualBox>
 MIME-Version: 1.0
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
- <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
- <20210310130227.GN3479805@casper.infradead.org> <20210310142159.kudk7q2ogp4yqn36@fiona>
- <20210310142643.GQ3479805@casper.infradead.org> <YEy4+SPUvQkL44PQ@angband.pl>
-In-Reply-To: <YEy4+SPUvQkL44PQ@angband.pl>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Sat, 13 Mar 2021 11:24:00 -0500
-Message-ID: <CAEg-Je-JCW5xa6w5Z9n7+UNnLju251SmqnXiReA2v41fFaXAtw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
-To:     Adam Borowski <kilobyte@angband.pl>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 8:09 AM Adam Borowski <kilobyte@angband.pl> wrote:
->
-> On Wed, Mar 10, 2021 at 02:26:43PM +0000, Matthew Wilcox wrote:
-> > On Wed, Mar 10, 2021 at 08:21:59AM -0600, Goldwyn Rodrigues wrote:
-> > > DAX on btrfs has been attempted[1]. Of course, we could not
-> >
-> > But why?  A completeness fetish?  I don't understand why you decided
-> > to do this work.
->
-> * xfs can shapshot only single files, btrfs entire subvolumes
-> * btrfs-send|receive
-> * enumeration of changed parts of a file
->
+Fixed coding style issue
 
-XFS cannot do snapshots since it lacks metadata COW. XFS reflinking is
-primarily for space efficiency.
+Signed-off-by: Chinmayi Shetty <chinmayishetty359@gmail.com>
+---
+ block/bio.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
+diff --git a/block/bio.c b/block/bio.c
+index a1c4d2900c7a..7c1354f7065c 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -501,6 +501,7 @@ void zero_fill_bio_iter(struct bio *bio, struct bvec_iter start)
+ 
+ 	__bio_for_each_segment(bv, bio, iter, start) {
+ 		char *data = bvec_kmap_irq(&bv, &flags);
++
+ 		memset(data, 0, bv.bv_len);
+ 		flush_dcache_page(bv.bv_page);
+ 		bvec_kunmap_irq(data, &flags);
+@@ -616,15 +617,15 @@ void bio_put(struct bio *bio)
+ EXPORT_SYMBOL(bio_put);
+ 
+ /**
+- * 	__bio_clone_fast - clone a bio that shares the original bio's biovec
+- * 	@bio: destination bio
+- * 	@bio_src: bio to clone
++ *	__bio_clone_fast - clone a bio that shares the original bio's biovec
++ *	@bio: destination bio
++ *	@bio_src: bio to clone
+  *
+  *	Clone a &bio. Caller will own the returned bio, but not
+  *	the actual data it points to. Reference count of returned
+- * 	bio will be one.
++ *	bio will be one.
+  *
+- * 	Caller must ensure that @bio_src is not freed before @bio.
++ *	Caller must ensure that @bio_src is not freed before @bio.
+  */
+ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+ {
+@@ -657,7 +658,7 @@ EXPORT_SYMBOL(__bio_clone_fast);
+  *	@gfp_mask: allocation priority
+  *	@bs: bio_set to allocate from
+  *
+- * 	Like __bio_clone_fast, only also allocates the returned bio
++ *	Like __bio_clone_fast, only also allocates the returned bio
+  */
+ struct bio *bio_clone_fast(struct bio *bio, gfp_t gfp_mask, struct bio_set *bs)
+ {
+@@ -1009,7 +1010,7 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+ 				put_page(page);
+ 		} else {
+ 			if (WARN_ON_ONCE(bio_full(bio, len)))
+-                                return -EINVAL;
++				return -EINVAL;
+ 			__bio_add_page(bio, page, len, offset);
+ 		}
+ 		offset = 0;
+-- 
+2.25.1
 
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
