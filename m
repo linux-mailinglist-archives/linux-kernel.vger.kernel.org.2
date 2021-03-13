@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D076A339B83
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969F0339B86
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 04:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhCMDRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Mar 2021 22:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S232904AbhCMDZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Mar 2021 22:25:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhCMDQv (ORCPT
+        with ESMTP id S229959AbhCMDZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Mar 2021 22:16:51 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D975C061574;
-        Fri, 12 Mar 2021 19:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ztltson60rrlbqyTdf4YRzaWyJJxJi/PgKBFk0gDvpk=; b=w8O+uZCJaIZZwLEBOiFEF+W9hF
-        YMicVSCmu4ldqZJ34JItiX6hxSakwt22WebXWJqMeYI9Ld7leZxVJxKO8AWgnyYxlVGhb2MEEkxBQ
-        qWFBQ2/QrLOSTc8QlWco+ygDyLOO8NkDu0Zd+NhbZJSFZw8OdLs3cfeKwGi0rJ2GPHoodaJAUBTA5
-        4dq/V331uNupHCcFXppnQYyvZ0WiVqpdJ7U/W+8NR0gpD7N6rs7lKsFPN2l1f67jfG+eTh3qw4gDp
-        TzUgRSoDPl5lmQDc1XkjJ+cyrUGvF7DX2A+hYfI9S6603vgWeFY00E2fnpJxlCCh/WJPOWOoAynzu
-        m27aFFoA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lKulg-0017Et-K7; Sat, 13 Mar 2021 03:16:45 +0000
-Subject: Re: [PATCH] ACPI: fix various typos in comments
-To:     Tom Saeger <tom.saeger@oracle.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, trivial@kernel.org
-References: <fa193b3c9e346ff3fc157b54802c29b25f79c402.1615597995.git.tom.saeger@oracle.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5320781b-6328-0dc0-3a2b-02955e688b18@infradead.org>
-Date:   Fri, 12 Mar 2021 19:16:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 12 Mar 2021 22:25:32 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B91C061574;
+        Fri, 12 Mar 2021 19:25:32 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id v14so4407198ilj.11;
+        Fri, 12 Mar 2021 19:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EkbWvvawOZqv47KK5IQlHKelnnTkdOV4/2jDdv1VKWs=;
+        b=oChx00d/dOfZCF5MvE/GxN+89t/pUJ93l0w03dUe/bwP0ZTdzwHrihLPyACvgzziN+
+         kf4Mjz1hOceAhMpKoA8lAqW2DecYDIhFjbQqbCZZa+Xpfo2aPi+X9RNFclMtMIzHjJcn
+         jzP1jCEbYL+ymBVuz8vjdKxRg310xaiRK7X+IlEWHhTYcuIo8LLIQYKYP6g7Ix9Dx7pW
+         5Z3pIEJhjJlTZIfNovlYfKViGxxh3pCJczU8RDa1z0BcMjA5UU4XNM3Wt3ySMAoVK4Ps
+         Okv0rMjCVIZkdFC7ewkludCVVYUz7JLE3lckxfRm+UN4cWBRI71JR6asJnpTVtcNaN1m
+         Aqpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EkbWvvawOZqv47KK5IQlHKelnnTkdOV4/2jDdv1VKWs=;
+        b=c4BtBobk8ei0kOvWiJhdgzJvSQYSmfSEqU1ACR9+EPRuIQRnO8IvrVy00JNxZ0Cxjz
+         pZHIP+BLXQKKF/95FdS4UsSvMDAhwNHHh+iwev3hRmvWnrO/c9/bEs/qi1HnMI36p3AZ
+         J3bzVkWvb9bIRRWvxMtA1PXiP8DLryHv++d3B/swy0TJJbuapJG99uwi1sC7SJh03c8e
+         vRJRpnxxNo2MbFYYfynBGzIlchLiG4GVO6j3yIOM9ST0vWDCEZ4q20gxIILsqH+QON/3
+         EBcTgVZgq2zPjKa2mMWGKWyNFKZmXhAlK5JgHBkEO7o2X1/4BKAoMPOHJ9uKk4PEHPSW
+         cXRg==
+X-Gm-Message-State: AOAM531ixwCQz7Q15fS8/Mo7nwXfx4WPLQ+pw+FqnngBetXu2I6sEBm6
+        ZfuBrYGeEb2oIDtryN1UwAw=
+X-Google-Smtp-Source: ABdhPJyO3owciWGFItb+L6559F1y22YE84vWPYb/MCixtNov78PCLOv/0p7+zLN1cRAT+8RXNQVZoA==
+X-Received: by 2002:a92:c5cf:: with SMTP id s15mr5103376ilt.149.1615605931735;
+        Fri, 12 Mar 2021 19:25:31 -0800 (PST)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id a5sm3959013ilk.14.2021.03.12.19.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 19:25:31 -0800 (PST)
+From:   Tianling Shen <cnsztl@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        David Bauer <mail@david-bauer.net>,
+        Tianling Shen <cnsztl@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Sat, 13 Mar 2021 11:25:14 +0800
+Message-Id: <20210313032515.12590-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <fa193b3c9e346ff3fc157b54802c29b25f79c402.1615597995.git.tom.saeger@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 5:55 PM, Tom Saeger wrote:
-> Fix trivial ACPI driver comment typos.
-> 
-> s/notifcations/notifications/
-> s/Ajust/Adjust/
-> s/preform/perform/
-> s/atrributes/attributes/
-> s/Souce/Source/
-> s/Evalutes/Evaluates/
-> s/Evalutes/Evaluates/
-> s/specifiy/specify/
-> s/promixity/proximity/
-> s/presuambly/presumably/
-> s/Evalute/Evaluate/
-> s/specificed/specified/
-> s/rountine/routine/
-> s/previosuly/previously/
-> 
-> Change comment referencing pcc_send_cmd to send_pcc_cmd.
-> 
-> Cc: trivial@kernel.org
-> Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
-> ---
->  drivers/acpi/ac.c                     |  2 +-
->  drivers/acpi/acpi_video.c             |  4 ++--
->  drivers/acpi/apei/erst.c              |  2 +-
->  drivers/acpi/apei/hest.c              |  2 +-
->  drivers/acpi/cppc_acpi.c              | 10 +++++-----
->  drivers/acpi/numa/hmat.c              |  2 +-
->  drivers/acpi/pmic/intel_pmic_chtcrc.c |  2 +-
->  drivers/acpi/power.c                  |  2 +-
->  drivers/acpi/processor_perflib.c      |  2 +-
->  drivers/acpi/resource.c               |  2 +-
->  drivers/acpi/scan.c                   |  2 +-
->  11 files changed, 16 insertions(+), 16 deletions(-)
+Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Changes in v2:
+- Disable display for NanoPi R4S (reference commit: 74532de460ec)
+- Light "sys" LED on NanoPi R4S (reference commit: 833821eeab91)
 
-Thanks.
+Changes in v3:
+- Dropped non-existent node `display_subsystem`
 
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index c3036f95c7bc..4a6f772c1043 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -134,6 +134,7 @@ properties:
+               - friendlyarm,nanopi-m4
+               - friendlyarm,nanopi-m4b
+               - friendlyarm,nanopi-neo4
++              - friendlyarm,nanopi-r4s
+           - const: rockchip,rk3399
+ 
+       - description: GeekBuying GeekBox
 -- 
-~Randy
+2.17.1
 
