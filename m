@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56204339F5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 18:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45829339F61
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 18:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhCMRJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 12:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbhCMRJO (ORCPT
+        id S234144AbhCMRK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 12:10:59 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:45015 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234071AbhCMRKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 12:09:14 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA209C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 09:09:13 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id 30so8798383ple.4
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 09:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=4YoSdm1oq7pZ9SWUTs03pmy+FFIeYuVC1lSLrRDUq4w=;
-        b=ftewZ6K9iUD3STYN/SU7C1A0FCs62SUCfBdji1Gtk+8coioBGaAU3s5wBEr9Swz/RB
-         MRazdECi64Pf2/Acy2anpZWREuopXCwAJfRJKtyN5le3aRdZssQvcC2koUByUKuDiMFP
-         xRT0RTZKCO1AhfJaWZJeNWkJ5by+rfKabscHC3DabAD3lPqwZi02Nx2/nWHpL79BVZpO
-         orXgGJIyXO/dP+bF4iQ6SrUs4MuIFQ0Deu9/Mi09DMO2BDOhXIhyermEqd702oF4FsWS
-         hnqBcEWofTXKYlK1T3gS7JqJ4mbOFpYCYahv/Jd+x12XVpuZRxuc51Dt20oU4ht3qKMf
-         3jFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=4YoSdm1oq7pZ9SWUTs03pmy+FFIeYuVC1lSLrRDUq4w=;
-        b=UyyX8orKCIvQbqxu6VMA+77E+f+xjw6ton5IVXOpZ1B50QnEHFgjJXLXY15upY1E3T
-         NUfwKkowPMftIzQYOQolqG+RRRBlNuBv3s6U/9T6SXSBMBNmsyKKG5o+dHH50bdnczjy
-         /WQSPzCbHXxQYMiOtwGcszF6QDFPrdNkeE2NMmufaWbJ49b/I5ahDMbP5B19w2ld8MSa
-         CWn7pFuNpQ12XS63sNzrmzB6crSJfwNNR4Q9S6xnN7QSgRDANkG0Il1sPDjnzMd9mNYu
-         A6fHlvy8kNBwW1dBTxPpVOto67ycOZiuzqLnX7e7Uno6iW3GL6RGSC6WK+Kamfgtpic+
-         s/Dg==
-X-Gm-Message-State: AOAM532Pi8ZSfrEKUyg8HNbrtUblLi6qNdpA2bCQLNNqQ2PYbj9gnTSx
-        LgP+UB4zQyvFnkUF1t7YgqG6ug2piESpI368Eeg=
-X-Google-Smtp-Source: ABdhPJxOBpDhEHvJtTGFQ8QbWt+WCvpvnUpkjk0B1kGNLSz5s5k92k3Lm6hRwyHFwP5kDGJedFBH9CKgFBOffArVQAE=
-X-Received: by 2002:a17:90a:5898:: with SMTP id j24mr4451758pji.110.1615655352685;
- Sat, 13 Mar 2021 09:09:12 -0800 (PST)
+        Sat, 13 Mar 2021 12:10:36 -0500
+Received: from [192.168.100.1] ([82.142.6.26]) by mrelayeu.kundenserver.de
+ (mreue106 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1M9W78-1lOPZa2VAy-005Wlq; Sat, 13 Mar 2021 18:10:30 +0100
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+References: <20210309224313.956065-1-laurent@vivier.eu>
+ <20210311104414-mutt-send-email-mst@kernel.org>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH] virtio-mmio: read[wl]()/write[wl] are already
+ little-endian
+Message-ID: <a8a0b68c-d36d-c675-3c6d-d4fca996fdfd@vivier.eu>
+Date:   Sat, 13 Mar 2021 18:10:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Sender: oueadmark@gmail.com
-Received: by 2002:a05:6a10:990a:0:0:0:0 with HTTP; Sat, 13 Mar 2021 09:09:12
- -0800 (PST)
-From:   "Mr. Dabire Basole" <mrdabirebasole@gmail.com>
-Date:   Sat, 13 Mar 2021 17:09:12 +0000
-X-Google-Sender-Auth: GHrXoWOkfHVilzcjUKa-wGzkufM
-Message-ID: <CABwXF_-ECCrxB6WA1QBKpsSYsF9A28ubJVJLDc1A1KG-i2fPJQ@mail.gmail.com>
-Subject: TREAT AND REPLY URGENTLY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210311104414-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:G08HK1guKjHRwbQpgdUdeh/SBJgQzzMRgVbO7cqqd82ltaiH3Ty
+ 04xGxzPbJiJSs0gI6xlVwqlwrsz1JGZyv8+LgKSvG+HiRAVlqHJl7ggO4bmlBnudrFf96YM
+ qWIAL5/KCkQVsxHwj2zjP3v2VZLt2/bZ52suFTcJ4eOhoT7rcq0NagNM8++8ssSOCnqVHfF
+ kpvHegM4Eo2GqxuVk/C1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3M2gSXfPJ+Y=:hBaGSLJpV9DMK9DMzLOgj1
+ Vu3HNh2RX5AG66JzNXwCaSepr+2Z6qlsc0lKT++u860IpP5nU2hAw97OpUZfdKzaSmHoaAqWo
+ 4NywPr/9z1Ah5Bam2KljbgaIukCMDvaiGjgWBVTLaX42kH7eKnOGG5HRTRY3L1IL3AMMLpomh
+ DZxdb0g8Bu5bB6yDFImjt/9WD5hXTQibeTPVDMaiICCNhnRbdvXwDRki++OEdNNHr4ImUz4eg
+ v7NRa3l3otsDDLGr9JV/AVwpMVid1mfJix2HpqH9wUZk+apewK6daIMnhB8yR90h5+yf84DSv
+ sJ1sX0R/qfN56mrS/5I7jDVScpUYQcXttlpwbZDp5g+a5KLnJlLcEwvoQZAectimr0lNLASE8
+ zZGvfTiC/JjTTblXHwhQ4AmaA8r6Kz7Feme3i9NHhNF2s84/huAM5rwGMSA8THDS0D7+Wd8cJ
+ KTP5VB1Z8A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Le 11/03/2021 à 16:44, Michael S. Tsirkin a écrit :
+> On Tue, Mar 09, 2021 at 11:43:13PM +0100, Laurent Vivier wrote:
+>> read[wl]()/write[wl] already access memory in little-endian mode.
+> 
+> But then they convert it to CPU right? We just convert it back ...
 
-Greetings!
+In fact the problem is in QEMU.
 
-How are you with your family today? I hope both of you are in good
-health decently, I know that this message might meet you in utmost
-surprise as we never know each other before. I am Mr. Dabire Basole a
-banker by profession, I need your urgent assist in transferring the
-sum of $10.5 Million U.S Dollars into your account. It is 100% risk
-free and under this achievement you are entitled to receive 40% of the
-total cash. More details will be sent to you on confirmation of your interest.
-Please if you are real interest on my proposer, just providing me your
-following information details such as:
+On a big-endian guest, the readw() returns a byte-swapped value, This means QEMU doesn't provide a
+little-endian value.
 
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:................ .....
-(6)YOUR COUNTRY:.....................
+I found in QEMU virtio_mmio_read() provides a value with byte-swapped bytes.
 
-Yours sincerely,
+The problem comes from virtio_config_readX() functions that read the value using ldX_p accessors.
 
-Mr.  Dabire Basole.
+Is it normal not to use the modern variant here if we are not in legacy mode?
+
+I think we should have something like this in virtio_mmio_read (and write):
+
+--- a/hw/virtio/virtio-mmio.c
++++ b/hw/virtio/virtio-mmio.c
+@@ -112,15 +112,28 @@ static uint64_t virtio_mmio_read(void *opaque, hwaddr offset, unsigned size)
+
+     if (offset >= VIRTIO_MMIO_CONFIG) {
+         offset -= VIRTIO_MMIO_CONFIG;
+-        switch (size) {
+-        case 1:
+-            return virtio_config_readb(vdev, offset);
+-        case 2:
+-            return virtio_config_readw(vdev, offset);
+-        case 4:
+-            return virtio_config_readl(vdev, offset);
+-        default:
+-            abort();
++        if (proxy->legacy) {
++            switch (size) {
++            case 1:
++                return virtio_config_readb(vdev, offset);
++            case 2:
++                return virtio_config_readw(vdev, offset);
++            case 4:
++                return virtio_config_readl(vdev, offset);
++            default:
++                abort();
++            }
++        } else {
++            switch (size) {
++            case 1:
++                return virtio_config_modern_readb(vdev, offset);
++            case 2:
++                return virtio_config_modern_readw(vdev, offset);
++            case 4:
++                return virtio_config_modern_readl(vdev, offset);
++            default:
++                abort();
++            }
+         }
+     }
+     if (size != 4) {
+
+And we need the same thing in virtio_pci_config_read() (and write).
+
+And this could explain why it works with virtio-pci and not with virtio-mmio with the big-endian guest:
+
+with virtio-pci the bytes are swapped twice (once in virtio-mmio and then in virtio-pci), so they
+are restored to the initial value, whereas with direct virtio-mmio they are swapped only once.
+
+Thanks,
+Laurent
