@@ -2,54 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AE633A141
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC21333A145
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 22:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhCMVCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 16:02:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234618AbhCMVCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 16:02:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2711464EBA;
-        Sat, 13 Mar 2021 21:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615669331;
-        bh=bJ4fC5N4kRq5JnTLxvgigPAtw16sqVxl057n2xWw1EA=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Fx9oLpbtoQpX02+9wXjhBAX7KqnDOfGq6KAl6XelUJImalt/aG5kUm29+C9OYgP/9
-         +LRDvqGAixL2hehR264ZxgRxIIlF2sR9B0RDp0wTJFOcZVOCxH7THvS/jtC5CliXMD
-         1VKjM8Bre3q1npWHXDv6Nm/FWeMptn8rXNgVZ7wheqaLMT/rZlDvxFfPhUxLEc3V5l
-         8TaXQ29oNmoAggQdI9N+kVQ3ceqfFlNd5NfA4dUbEzgbok08pCrLqJz5SMmk+3Pl5H
-         FEpdsRIA8AzOqyeNP9/0hoDU2RcH8sMAOq+9ueYozhYt7FoEhQbdm5/XZr6mxtHxZO
-         eSfQymwOsu84A==
-Content-Type: text/plain; charset="utf-8"
+        id S234712AbhCMVDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 16:03:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234618AbhCMVDO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 16:03:14 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B20BC061574;
+        Sat, 13 Mar 2021 13:03:13 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 037903F0;
+        Sat, 13 Mar 2021 22:03:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615669389;
+        bh=rV5Y2Z8omEob0Z3FoNOxgrtXllMXoVxG3rQVVRWPfXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t3k3pH5uyovsF2U6uNPesJWnbkOocQ4DDTQI4Pt78cfTZAqls5cNw6i2mu7uPD5Qs
+         t10CJS/ZXHiAru/kpjc8i8jeOL9FovcgAmu5gq3UVQ2KDeuGAGx/yBxzwL3HGrI703
+         PEQNd3+bRwonoeWxkFLCwRU4B5LedY4W0Ak0Shgg=
+Date:   Sat, 13 Mar 2021 23:02:34 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm/bridge: ti-sn65dsi86: Simplify refclk handling
+Message-ID: <YE0oakt4h3urAsH1@pendragon.ideasonboard.com>
+References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210313053222.14706-1-unixbhaskar@gmail.com>
-References: <20210313053222.14706-1-unixbhaskar@gmail.com>
-Subject: Re: [PATCH] clk: at91: Trivial typo fixes in the file sama7g5.c
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     rdunlap@infradead.org
-To:     alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        eugen.hristev@microchip.com, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ludovic.desroches@microchip.com, mturquette@baylibre.com,
-        nicolas.ferre@microchip.com, tudor.ambarus@microchip.com,
-        unixbhaskar@gmail.com
-Date:   Sat, 13 Mar 2021 13:02:09 -0800
-Message-ID: <161566932979.1478170.6086685504198317708@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bhaskar Chowdhury (2021-03-12 21:32:22)
->=20
-> s/critial/critical/  ......two different places
-> s/parrent/parent/
->=20
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
+Hi Douglas,
 
-Applied to clk-next
+Thank you for the patch.
+
+On Thu, Mar 04, 2021 at 03:51:59PM -0800, Douglas Anderson wrote:
+> The clock framework makes it simple to deal with an optional clock.
+> You can call clk_get_optional() and if the clock isn't specified it'll
+> just return NULL without complaint. It's valid to pass NULL to
+> enable/disable/prepare/unprepare. Let's make use of this to simplify
+> things a tiny bit.
+> 
+> NOTE: this makes things look a tad bit asymmetric now since we check
+> for NULL before clk_prepare_enable() but not for
+> clk_disable_unprepare(). This seemed OK to me. We already have to
+> check for NULL in the enable case anyway so why not avoid the extra
+> call?
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index f27306c51e4d..942019842ff4 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1261,14 +1261,9 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> -	pdata->refclk = devm_clk_get(pdata->dev, "refclk");
+> -	if (IS_ERR(pdata->refclk)) {
+> -		ret = PTR_ERR(pdata->refclk);
+> -		if (ret == -EPROBE_DEFER)
+> -			return ret;
+> -		DRM_DEBUG_KMS("refclk not found\n");
+> -		pdata->refclk = NULL;
+> -	}
+> +	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
+> +	if (IS_ERR(pdata->refclk))
+> +		return PTR_ERR(pdata->refclk);
+>  
+>  	ret = ti_sn_bridge_parse_dsi_host(pdata);
+>  	if (ret)
+
+-- 
+Regards,
+
+Laurent Pinchart
