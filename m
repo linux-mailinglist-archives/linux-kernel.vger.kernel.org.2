@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DBF33A444
+	by mail.lfdr.de (Postfix) with ESMTP id 540A533A445
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhCNKtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S235210AbhCNKt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235160AbhCNKsy (ORCPT
+        with ESMTP id S235181AbhCNKs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:48:54 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DBEC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:53 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id 30so9358641ple.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:53 -0700 (PDT)
+        Sun, 14 Mar 2021 06:48:57 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838B6C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:56 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z2so4166930wrl.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=26KkwIgjg/uTfsjc8TtIq14TTjHPyD1v2KRrAGEx6No=;
-        b=L0YG7sqgOD82dycT3zb43+3bV+4KcOUWGTYw3FD9lPQ7CwC30nHoczsu3LpOj1TiBu
-         JRmcoezM/701NrahsQsRaqrsxuSFdrmL6Eiuk0Jqg65EHojUFsVKZymhArhYONrem+oZ
-         h3vO/08P/Pxvq8PtFewkf6W6qlgUO5uOQnLFHIsCWl7KVWvm22qluaPEDOOBONK+9QWx
-         Gt6Xz6fULIqu4q2F+f7tmmaerwEmAXMR/dxZXKwsdoyDgasK8RlHNTwt9yk7GV0Cebaz
-         ExU74N7DH2P+La4UvXp+kPrpOVl+Nmf8AFdK7qWKZisN2ugsI8caQzaQi91K6dk2tT8F
-         1VaQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A3yM0E2XIIeHhpwSsShTH8f57YtVpUZzWbcZcvUk0cc=;
+        b=pdx2zG07Ivkui/nQ7jBCP+23ASSB2fnCc+vt+2JsM1t2Vgl/TWPbh5allOMrITOLVP
+         C7VGHUxbIg42pGUQsCbtZux7kOIFOZUsMaf6AoczHbdOkWhKxQ7NEL30VAzeTtq9v/yG
+         BHbVFl37j6bCV9zAtqRE8ieUzeQEFZXYM3rDoHRUSo+xxHEnZGmLsOpZKf4bfAF++Pvq
+         +gEiVSKe377nsa6Lr3DxGO/YU4Esl9qnLTd4Xt5T4+o0dBwhT0VtkU9NW/o8gk7C8LZP
+         0S/LiHEjpOmJI/4BIsk6oFPxrBEOqyv/DQfydenSSqBoC1ySgw22J9/5FvX1z975ogqc
+         Dwcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=26KkwIgjg/uTfsjc8TtIq14TTjHPyD1v2KRrAGEx6No=;
-        b=ogWK65X82BSXSBs7TApgaixQL3N/F6CgZIBVkMlrm+HK2ygR77BRZopTnagTvX9Z4o
-         bnqpHRP9oY03ztw2XKGvv9wCTrhGJi7Xq63bvYuT5/G1edRUXhTA9RLMeO1EBmEPsTnO
-         4tQst22JqxX/tH1zhMUkF9GW6xq8CjPKOb7UFci1J2cvT21Ospe5fgjDM01JezFwpBYK
-         QShZn4Hmg4rc7Snf0/s/JeoF9aQn16vf3DhjJpVJIdlrs2n88Nnu83qVbpsmYi//F6Sp
-         dx7xXn5+/Zm/yIxVCKJDnCFqVITWgbdkre2ivhOyoNTeYKqawdOh8YC4+L8QzVDn75Ip
-         wpcg==
-X-Gm-Message-State: AOAM532iryhP/CNn+pFV6NToPxB4EeD0wPlolX103kV/EuDC4qdGfX1t
-        HzkrWMS21/iQyb6zWPpixL7vCDiV31aJiue8H2U=
-X-Google-Smtp-Source: ABdhPJwcOKC0tTgmO4LyBTenkqIATxChoULkVUiJEBgBseTebqQ9KZw1DqjyWO76dd6R1sdnM0dc3bg0FXk5EzMMC0Y=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr6915981plq.17.1615718932920; Sun, 14 Mar
- 2021 03:48:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A3yM0E2XIIeHhpwSsShTH8f57YtVpUZzWbcZcvUk0cc=;
+        b=VZAytpi+E+ge/YgleLGsdBxNBJvzwSmy9OgdcdmHrweMEaEDJ7Ehmht3h+pnypglVI
+         YYXbbYYmdEf9gpbpPSg5DJwgBR8X4qX626LV6xEhdSXscxgmLafi91vlUgTUrWOeU1X7
+         G7+yHX70sjWWERiviq6QsGioXzFGasBXLaCfS4p3QwgrhbgqA8l9VpD22LsIz5d+OayN
+         wICybSBXE/zJq8+ZxCaaTHDDi6aToGmdO8/dBJpMAgKy4RYldwtUPVLLYac+YeW7bY/j
+         oR75wxNAeX1wrREDCsd6wbl4LRZ5F9gyljp3uy0/mes2iJmRVSVNTOvpmHSfRgKY6Kx9
+         5s1w==
+X-Gm-Message-State: AOAM533K+sXzRK0QLpTE6m37QDvFWC0kbeEGYpWEZIhD8Are2fY+Sls1
+        +IN+6PtiM8Xz8XIqaLE7kzvamw==
+X-Google-Smtp-Source: ABdhPJxO8AnD0OFEBp/F/EJSgQl90d9XEpEQ5+VL6JbW6iyuR3wYJ0lz4RCYVItN/ay1Czl6qu1e+g==
+X-Received: by 2002:adf:ded1:: with SMTP id i17mr22900596wrn.349.1615718935094;
+        Sun, 14 Mar 2021 03:48:55 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1ed:80a3:b8d6:f6d3? ([2a01:e34:ed2f:f020:1ed:80a3:b8d6:f6d3])
+        by smtp.googlemail.com with ESMTPSA id f14sm9019461wmf.7.2021.03.14.03.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Mar 2021 03:48:54 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] thermal/drivers/core: Use a char pointer for the
+ cooling device name
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com, Jiri Pirko <jiri@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:MELLANOX ETHERNET SWITCH DRIVERS" <netdev@vger.kernel.org>
+References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+ <YE3dMM7tqk5BbD/l@shredder.lan>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f4d7d072-2c4f-2d9d-8628-0c8c83b76f4d@linaro.org>
+Date:   Sun, 14 Mar 2021 11:48:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210314074434.164868-1-nick.desaulniers@gmail.com> <20210314080613.190663-1-nick.desaulniers@gmail.com>
-In-Reply-To: <20210314080613.190663-1-nick.desaulniers@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 14 Mar 2021 12:48:36 +0200
-Message-ID: <CAHp75Vdy083+5K=4sViwg8uNJ1_6agECYbjMSFEGXX9VTO85WQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Skylake: skl-topology: fix -frame-larger-than
-To:     Nick Desaulniers <nick.desaulniers@gmail.com>
-Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        amadeuszx.slawinski@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        guennadi.liakhovetski@linux.intel.com,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mateusz.gorski@linux.intel.com, Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YE3dMM7tqk5BbD/l@shredder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 10:08 AM Nick Desaulniers
-<nick.desaulniers@gmail.com> wrote:
->
-> Fixes:
-> sound/soc/intel/skylake/skl-topology.c:3613:13: warning: stack frame
-> size of 1304 bytes in function 'skl_tplg_complete'
-> [-Wframe-larger-than=]
->
-> struct snd_ctl_elem_value is 1224 bytes in my configuration.
->
-> Heap allocate it, then free it within the current frame.
->
-> Signed-off-by: Nick Desaulniers <nick.desaulniers@gmail.com>
-> ---
-> Changes V1 -> V2: rebased on mainline.
->
->  sound/soc/intel/skylake/skl-topology.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index b824086203b9..566d07b4b523 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -3613,10 +3613,15 @@ static int skl_manifest_load(struct snd_soc_component *cmpnt, int index,
->  static void skl_tplg_complete(struct snd_soc_component *component)
->  {
->         struct snd_soc_dobj *dobj;
-> -       struct snd_soc_acpi_mach *mach =
-> -               dev_get_platdata(component->card->dev);
-> +       struct snd_soc_acpi_mach *mach;
-> +       struct snd_ctl_elem_value *val;
->         int i;
->
-> +       val = kzalloc(sizeof(*val), GFP_KERNEL);
-> +       if (!val)
-> +               return;
-> +
-> +       mach = dev_get_platdata(component->card->dev);
->         list_for_each_entry(dobj, &component->dobj_list, list) {
->                 struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
->                 struct soc_enum *se;
-> @@ -3632,14 +3637,13 @@ static void skl_tplg_complete(struct snd_soc_component *component)
->                 sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
->
->                 for (i = 0; i < se->items; i++) {
-> -                       struct snd_ctl_elem_value val = {};
+
+Hi Ido,
+
+On 14/03/2021 10:53, Ido Schimmel wrote:
+> On Fri, Mar 12, 2021 at 06:03:12PM +0100, Daniel Lezcano wrote:
+>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>> index 996c038f83a4..9ef8090eb645 100644
+>> --- a/drivers/thermal/thermal_core.c
+>> +++ b/drivers/thermal/thermal_core.c
+>> @@ -960,10 +960,7 @@ __thermal_cooling_device_register(struct device_node *np,
+
+[ ... ]
+
+>>  /**
+>> @@ -1172,6 +1177,7 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
+>>  	device_del(&cdev->device);
+>>  	thermal_cooling_device_destroy_sysfs(cdev);
+>>  	put_device(&cdev->device);
+>> +	kfree(cdev->type);
+>>  }
+>>  EXPORT_SYMBOL_GPL(thermal_cooling_device_unregister);
+> 
+> I'm getting the following user-after-free with this patch [1]. Fixed by:
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 9ef8090eb645..c8d4010940ef 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -1176,8 +1176,8 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
+>         ida_simple_remove(&thermal_cdev_ida, cdev->id);
+>         device_del(&cdev->device);
+>         thermal_cooling_device_destroy_sysfs(cdev);
+> -       put_device(&cdev->device);
+>         kfree(cdev->type);
+> +       put_device(&cdev->device);
+
+Indeed 'thermal_release' frees the cdev pointer and is called by
+put_device, then kfree use the pointer right after.
+
+Thanks for the fix
+
+  -- Daniel
 
 
-Shouldn't you use rather kmalloc() + memset(). Otherwise I don't see
-how possible this won't be garbage on the second iteration of the
-outer loop.
-
-> -
->                         if (strstr(texts[i], chan_text)) {
-> -                               val.value.enumerated.item[0] = i;
-> -                               kcontrol->put(kcontrol, &val);
-> +                               val->value.enumerated.item[0] = i;
-> +                               kcontrol->put(kcontrol, val);
->                         }
->                 }
->         }
-> +       kfree(val);
->  }
->
->  static struct snd_soc_tplg_ops skl_tplg_ops  = {
->
-> base-commit: 88fe49249c99de14e543c632a46248d85411ab9e
-> --
-> 2.25.1
->
 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
