@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3A633A588
+	by mail.lfdr.de (Postfix) with ESMTP id 9D22A33A589
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhCNPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        id S234128AbhCNPpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233103AbhCNPpW (ORCPT
+        with ESMTP id S233560AbhCNPpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:45:22 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB783C061574;
-        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id j18so4452819wra.2;
-        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
+        Sun, 14 Mar 2021 11:45:23 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5528C061762;
+        Sun, 14 Mar 2021 08:45:22 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id j18so4452830wra.2;
+        Sun, 14 Mar 2021 08:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PclIFcC2nS7Q4VorzCLkkkTGpzHU2Eq5kWVCvmuDhyI=;
-        b=qAuWjcuklA/Y8Y441HfQKMy13BZlI5RX7assgoGjGpvXvlph3m7P5heS9rbqB5KQ/1
-         pcjs6BAnCmJkatVXbT/DQ0liLAVUnBe0RfsvOeZI2iHG/HeOhuj852q1W+v3RNVYVBYW
-         DFs9CDGu8jmEMnDwhjvQNRgdizpir1MEtdIxdybciDkUECp0AcWzCWpcu6q5OmxAAd7Y
-         /lxCVi2MQKGF6YL5me0QlN1PSMMRB/QPOVXGHSxiT2bq/4p8mqbexgro0sFANTclYYMt
-         myrNB6vzAqnmujVSpLVAeQYmeRR15+Ex7Ru19rZ7ezd1lPHe1Vk1/A9KJ7kOQqjCmLRh
-         8IDQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eNVjcoR01FRpoFa6dcxhxiG3Pm0KTDWnEWsUfy39F9k=;
+        b=S807ZZouwwXiXTG9Ad2UTbCgVHcjn+TJkKy79koNKTWXToOcN5pCugUwW2KqtIKlPp
+         /EsL6mXU035kVSJRt93PADxI6okFbFjSjYYwnFdgO8ynIqU4cIrMYVXlAKzoYmz0fTpV
+         PxOo+suXTtWMLnTdBpzlTlTkBI4VDiTphXnG0+mLH7xmdI1TNblny2RSJntcYASg8Kl+
+         CI7YQijzu0ULHEMZbYGst8nCY+4b6cs+qyqXn4MTTf1+OfS4AvskmTnTHojroPqwcYJA
+         kqwdm02weAlrnqaA0Y5aHY7YmiILqznrJSEe/bZDn45smGLMrb9Lic3ULsOZynMmqbCw
+         7yUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PclIFcC2nS7Q4VorzCLkkkTGpzHU2Eq5kWVCvmuDhyI=;
-        b=d5FaSeRodLr6hQdseJwibswYv79c6OyNaMWkqv+4HOotQMnlPhvGPx03CWYI3BSEKc
-         7errVYpieNtrYyAvkpHa5TRoYRPjzItnSFkqJYJYWYjMOjiZiH5VH6PsnhPEnhqOyKfN
-         FGnCRhfFEq1HMCz/JBEbRmylZbDLxp4lIJ77qSFpd8BFQ+cobNFvwxL/n9LqunIBIWno
-         09iXjidjG8hP7TVlmAo3ie9UrsPT8vGeGOfkuBDAqjAtGtgcwK+RPUH+15z4pXHIIW2Q
-         oJMzARDqYFHGHyJK3WFVfLailYlB9c0VbSE9S8Q+N1AosUrDGlXf2EAZHEVH+CH0Zp8R
-         ttPA==
-X-Gm-Message-State: AOAM533Y7jkdLMkbn3MZLuHtiNlKRD3h5/NF6BKr/O+g84tp9ULzS4hr
-        W/SsahTqOrtiuBC9S3e94WpGPiDdv6Q=
-X-Google-Smtp-Source: ABdhPJwO1WyF3LJh32pYsIZEBoThmnPXPXjd76LixRiKKFWmeUv7A9UyngwsIPvIbamr5I/6VCpOYA==
-X-Received: by 2002:adf:90c2:: with SMTP id i60mr23481723wri.75.1615736720372;
-        Sun, 14 Mar 2021 08:45:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eNVjcoR01FRpoFa6dcxhxiG3Pm0KTDWnEWsUfy39F9k=;
+        b=N18YfwII7HhVWGBqYQXpIgapDmqk5MJ7B0SB26/RjTHRRWI4JV1RbCM0bT2HAy6J9B
+         +JBaPgOmzrWo4NhhnhVEDaGfKL42pxt5LHFJKMxLDCEbFPTnA6WV19JO4DtPTOkhQ30S
+         jngaIw7mA7Ion/xt96gFxsgL+q0kGB9HOagq2HIR4g0LN7Y+XEK5+DXOT/4Hrj4N1jJe
+         +SwG0QV07xsrDp+pa4WNZf7yVNTZdzqjhgX/vtra/Atbxt+nOk76uFyCkFwMHlTWTBEX
+         zXIEYKfqc0hUUifBSMoeUmbFdEgxYuIkY6ytydPd5Tbd4imRh5VNM+R4rej1s/7+630s
+         cjJg==
+X-Gm-Message-State: AOAM532fpE/XyEAXuQnp3h06fGm4tBHFP3a9RLQitfqckM2Jnl1tY+/g
+        VfmQ5/6ZMk/UoJHBtbAlutE=
+X-Google-Smtp-Source: ABdhPJwBV24pahHUbzEGPiCqN4pR8i0eptAX4fnHzjRjhlfAqP+aMc5WU7Bvqptcvr1lzzuVbjG9SQ==
+X-Received: by 2002:adf:ef4a:: with SMTP id c10mr23063976wrp.427.1615736721372;
+        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.19
+        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 08:45:19 -0700 (PDT)
+        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,103 +57,96 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC drivers
-Date:   Sun, 14 Mar 2021 18:44:42 +0300
-Message-Id: <20210314154459.15375-1-digetx@gmail.com>
+Subject: [PATCH v5 01/17] ASoC: tegra20: ac97: Add reset control
+Date:   Sun, 14 Mar 2021 18:44:43 +0300
+Message-Id: <20210314154459.15375-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
+References: <20210314154459.15375-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Tegra20 AC97 driver doesn't manage the AC97 controller reset, relying on
+implicit deassertion of the reset by tegra-clk driver, which needs to be
+fixed since this behaviour is unacceptable by other Tegra drivers. Add
+explicit reset control to the Tegra20 AC97 driver.
 
-This series adds missing hardware reset controls to I2S and AC97 drivers,
-corrects runtime PM usage and drivers probe/remove order. Currently drivers
-happen to work properly because reset is implicitly deasserted by tegra-clk
-driver, but clk driver shouldn't touch the resets and we need to fix it
-because this breaks other Tegra drivers. Previously we fixed the resets of
-the AHUB and HDMI codec drivers, but turned out that we missed the I2C and
-AC97 drivers.
+Note that AC97 reset was always specified in Tegra20 device-tree, hence
+DTB ABI changes aren't required.
 
-Thanks to Paul Fertser for testing the pending clk patches and finding
-that audio got broken on Tegra20 AC100 netbook because of the missing I2S
-reset.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/tegra20_ac97.c | 21 +++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-Changelog:
-
-v5: - After taking another look at the drivers I noticed couple more
-      things that could be improved. These new patches correct runtime PM
-      and probe/remove order of the drivers:
-
-        ASoC: tegra20: spdif: Correct driver removal order
-        ASoC: tegra20: spdif: Remove handing of disabled runtime PM
-        ASoC: tegra20: i2s: Add system level suspend-resume callbacks
-        ASoC: tegra20: i2s: Correct driver removal order
-        ASoC: tegra20: i2s: Use devm_clk_get()
-        ASoC: tegra20: i2s: Remove handing of disabled runtime PM
-        ASoC: tegra30: i2s: Correct driver removal order
-        ASoC: tegra30: i2s: Use devm_clk_get()
-        ASoC: tegra30: i2s: Remove handing of disabled runtime PM
-        ASoC: tegra30: ahub: Reset global variable
-        ASoC: tegra30: ahub: Correct suspend-resume callbacks
-        ASoC: tegra30: ahub: Remove handing of disabled runtime PM
-
-v4: - Added missing prototype for reset_control_bulk_put().
-
-v3: - Fixed reset stubs for !CONFIG_RESET_CONTROLLER.
-
-v2: - After some more testing I found that I2S control logic doesn't require
-      I2S clock to be enabled for resetting. Hence it's fine to have I2S to
-      be reset by parent AHUB driver, so I dropped "tegra30: i2s: Add reset
-      control" patch.
-
-    - While I was double-checking resets on Tegra30, I found that that
-      Tegra30 I2S driver has a broken runtime PM which doesn't restore
-      hardware state on resume and it's lost after AHUB RPM-resume.
-      Thus, added this new patch "tegra30: i2s: Restore hardware state
-      on runtime PM resume".
-
-    - Added new patches which switch AHUB driver to use reset-bulk API.
-      I took the RFC patch from Philipp Zabel, fixed it and added
-      devm_reset_control_bulk_optional_get_exclusive_released() that
-      will be useful for further Tegra GPU patches. This is a minor
-      improvement which makes code cleaner.
-
-Dmitry Osipenko (16):
-  ASoC: tegra20: ac97: Add reset control
-  ASoC: tegra20: i2s: Add reset control
-  ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
-  ASoC: tegra30: ahub: Switch to use reset-bulk API
-  ASoC: tegra20: spdif: Correct driver removal order
-  ASoC: tegra20: spdif: Remove handing of disabled runtime PM
-  ASoC: tegra20: i2s: Add system level suspend-resume callbacks
-  ASoC: tegra20: i2s: Correct driver removal order
-  ASoC: tegra20: i2s: Use devm_clk_get()
-  ASoC: tegra20: i2s: Remove handing of disabled runtime PM
-  ASoC: tegra30: i2s: Correct driver removal order
-  ASoC: tegra30: i2s: Use devm_clk_get()
-  ASoC: tegra30: i2s: Remove handing of disabled runtime PM
-  ASoC: tegra30: ahub: Reset global variable
-  ASoC: tegra30: ahub: Correct suspend-resume callbacks
-  ASoC: tegra30: ahub: Remove handing of disabled runtime PM
-
-Philipp Zabel (1):
-  reset: Add reset_control_bulk API
-
- drivers/reset/core.c            | 215 ++++++++++++++++++++++
- include/linux/reset.h           | 315 ++++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_ac97.c  |  21 +++
- sound/soc/tegra/tegra20_ac97.h  |   1 +
- sound/soc/tegra/tegra20_i2s.c   |  60 +++---
- sound/soc/tegra/tegra20_i2s.h   |   1 +
- sound/soc/tegra/tegra20_spdif.c |  16 +-
- sound/soc/tegra/tegra30_ahub.c  | 168 ++++++-----------
- sound/soc/tegra/tegra30_ahub.h  |   5 +-
- sound/soc/tegra/tegra30_i2s.c   |  65 ++-----
- 10 files changed, 667 insertions(+), 200 deletions(-)
-
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index 06c728ae17ed..c454a34c15c4 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -21,6 +21,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -313,6 +314,12 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ac97);
+ 
++	ac97->reset = devm_reset_control_get_exclusive(&pdev->dev, "ac97");
++	if (IS_ERR(ac97->reset)) {
++		dev_err(&pdev->dev, "Can't retrieve ac97 reset\n");
++		return PTR_ERR(ac97->reset);
++	}
++
+ 	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(ac97->clk_ac97)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ac97 clock\n");
+@@ -364,12 +371,26 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	ac97->playback_dma_data.maxburst = 4;
+ 
++	ret = reset_control_assert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to assert AC'97 reset: %d\n", ret);
++		goto err_clk_put;
++	}
++
+ 	ret = clk_prepare_enable(ac97->clk_ac97);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
+ 		goto err_clk_put;
+ 	}
+ 
++	usleep_range(10, 100);
++
++	ret = reset_control_deassert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to deassert AC'97 reset: %d\n", ret);
++		goto err_clk_disable_unprepare;
++	}
++
+ 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
+diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
+index e467cd1ff2ca..870ea09ff301 100644
+--- a/sound/soc/tegra/tegra20_ac97.h
++++ b/sound/soc/tegra/tegra20_ac97.h
+@@ -78,6 +78,7 @@ struct tegra20_ac97 {
+ 	struct clk *clk_ac97;
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
++	struct reset_control *reset;
+ 	struct regmap *regmap;
+ 	int reset_gpio;
+ 	int sync_gpio;
 -- 
 2.30.2
 
