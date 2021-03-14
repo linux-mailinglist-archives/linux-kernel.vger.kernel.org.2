@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA65133A882
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CBA33A886
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhCNWYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 18:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
+        id S229639AbhCNW1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 18:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhCNWYi (ORCPT
+        with ESMTP id S229484AbhCNW1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 18:24:38 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6CDC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:24:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id q25so53919732lfc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:24:37 -0700 (PDT)
+        Sun, 14 Mar 2021 18:27:31 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9175CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:27:30 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d3so53868543lfg.10
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:27:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Vuviw/xeXz4M9EOE7r6Ns6IR0sHJQAyhHidVziz3nr8=;
-        b=L7hYglNZ7R0mQvHawJF+BD9zW+OiyrLD/ZZHQ2ZfzJc52myghki1+D+5anfrAyjB8l
-         YQVJGp/8lwRMpEphDwrhBnsoJQZs1TWtTXoAr33hhm0PM58Y1EN3M5tk/qH0w7NKBa4c
-         sf/A1WhR9uY5TKlehYAYAbLcWCKCEFDcYH6TMFf4wzDW9ZxCToTg3YPfoZoh4ZpEclsW
-         ZE08pzWhyUq3Ryfy3TWrShl+MOgul3qjiyRdX6KS+Yd5cVGEvYaMrhjscOC78nmPA9Tx
-         ermJz51rVhMzCtLfgH1xTzKQu3o2xF3xJQ6gDHvU7f3Mymo7jk7OdEWEsI3v8vAblrXd
-         UccQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=B69M3JrCEK0ya5ntUI5LNlXrDKtrw/fgg/okJWI4ryk=;
+        b=dkoNba7KerQRJQcdc97z/uuWckglfnP1GOLcQlHwIFSehdohiKA9jrA320k3Dws9kx
+         0W2df5bj6OlU1TE3c1RKxml6QUhgN1i3Tv+OWyjnXDekZ4aa8Sj5842/uwcYjonuIdNJ
+         PsKLr3v69sTzA8HOrpAuEQfd0ItIPXxlo1EO4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Vuviw/xeXz4M9EOE7r6Ns6IR0sHJQAyhHidVziz3nr8=;
-        b=A0JL6nZ3GiLro/ojjK6NMhGlwKSCbabqjX6YgJ4Qa/HWLKawPdaA7HURTW6MnGWmOQ
-         pe3wuVVmm1aBEvkJkzIyEq3zDZjdNlgYYYdbLiCCSRneGukSbqF5TjjBl9ZUzhFteRm1
-         jlUiggDz1/9BsuvJElfEbLrR8lKKVRwudZSYYorUZKM1Fq4DVCLne8eQ5vJBDVIz0kaz
-         y0XtyDwEk1hmkwzOPGUCcNZjFGbsMXaSO/d5wzR7AzgSvH/Z05hUZ/q71yVRhsdfvswt
-         UHQBnIxH2iGm7Zq4r7UwldsY6v/OFZDzhJaO02vQhvqfE/4fv/jYP3kFv6A4Yito+Kzg
-         gB4Q==
-X-Gm-Message-State: AOAM530O0D3X4zH76VpilObBoz3qTs9LUuMK90Ud+74t84B+y8LqWted
-        Lc8Z3hsY2YyLXs424Hfa8IVv7v2mF3k=
-X-Google-Smtp-Source: ABdhPJyXUaOKepQ3fiY1O4MxB0pcidubxyVLTZHMCrpmgcMjnG5Y1Xmi+lPUXOFaBtWOxWsFfogtKA==
-X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr6256833lfu.534.1615760676318;
-        Sun, 14 Mar 2021 15:24:36 -0700 (PDT)
-Received: from grain.localdomain ([5.18.171.94])
-        by smtp.gmail.com with ESMTPSA id b80sm2446942lfd.209.2021.03.14.15.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 15:24:35 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 5302E5601D9; Mon, 15 Mar 2021 01:24:34 +0300 (MSK)
-Date:   Mon, 15 Mar 2021 01:24:34 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Security Officers <security@kernel.org>
-Subject: Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack leak
-Message-ID: <YE6NIraVjV1kSfkx@grain>
-References: <YE53QiJuxsCUeoiu@localhost.localdomain>
- <CAHk-=wgMm=PG3uxfpmYpkX-GaDAR09pej=t3nD6hHDNCYCyaRQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=B69M3JrCEK0ya5ntUI5LNlXrDKtrw/fgg/okJWI4ryk=;
+        b=e9ObgJOaz39eWEHDmMyyFwvh3H6eXgh2OWr7DtUor/aPz0HC0F1B46vRXVR5TAzOC+
+         kiNb6PiC+jDOTxNYAxvRMsTJpaEILEhj6bLExp/1DHsxzgS4bQCCAjvEA8OAZ3vV+/0C
+         HQIDnR8RbfcShINxXG2ef5BHqkodfKUNz1AD7riFRpxpeMI7TU+sgP0Y1fr3z2vmNkGN
+         ILWrhVndKwW7Fg2dR7iNKkpZIFS8Zkj7Hhd4KoRTiID0tmSUsvfMuUeGvxVyBwHWAD6C
+         fpsyz8LCLsCLYNsR2CXQY8Ub7GZKggOXEHlPIodkv3kHzZnvaN2Wvy0KUJMnIbiShBX7
+         RB9A==
+X-Gm-Message-State: AOAM533dI3WWhguuxhLdyUDW1rDO8a9ErJp/Ores3ZcuceObkpQf1+2+
+        dKTC0GVexHmrP/YbQ+STuKIFLqLXENxnEg==
+X-Google-Smtp-Source: ABdhPJxIVLWus0n1VaddGKLrF7uu/6zOhrDQxci0QpyOZErKRgwPnxQLfSOJRmKF0wSSTfBuxQPKMw==
+X-Received: by 2002:a05:6512:1195:: with SMTP id g21mr5880911lfr.512.1615760848077;
+        Sun, 14 Mar 2021 15:27:28 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id n205sm2452399lfd.297.2021.03.14.15.27.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Mar 2021 15:27:27 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id n16so53979557lfb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:27:27 -0700 (PDT)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr5867589lfu.40.1615760847110;
+ Sun, 14 Mar 2021 15:27:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgMm=PG3uxfpmYpkX-GaDAR09pej=t3nD6hHDNCYCyaRQ@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <CAHk-=wgAr4Z2deEQs+5L6bJb68FouwBZUSURh+m-47TBnEsGZg@mail.gmail.com>
+In-Reply-To: <CAHk-=wgAr4Z2deEQs+5L6bJb68FouwBZUSURh+m-47TBnEsGZg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 14 Mar 2021 15:27:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiHX0SBy_RhbgkWETc_pxi8Gr7kmU72QE3jkRJieHuEPw@mail.gmail.com>
+Message-ID: <CAHk-=wiHX0SBy_RhbgkWETc_pxi8Gr7kmU72QE3jkRJieHuEPw@mail.gmail.com>
+Subject: Re: Linux 5.12-rc3
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 02:40:05PM -0700, Linus Torvalds wrote:
-> Applied directly, since I'm just about to tag rc3 and was just looking
-> that there were no last-minute pull requests.
-> 
-> Andrew, no need to pick it up into your queue.
-> 
-> Side note: I think we should return -EINVAL more aggressively: right
-> now we fill up potentially all of user_auxv[] and return success, but
-> we will have always cleared that last auxv pointer pair.
-> 
-> So we actually return "success" even when the user supplies us with
-> more data than we then really accept.
+On Sun, Mar 14, 2021 at 3:00 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> So rc3 is pretty big this time around, [..]
 
-Yes, this is somehow weird and probably we should start complaining
-if last two elements in the user array is not AT_NULL but I fear
-this might break backward compatibility? Dunno if someone relies
-on kernel to setup last two entries unconditionally.
+Oh, and I had planned to mention the historical note that goes along
+with today's date, but then entirely forgot.
 
-> 
-> IOW, tightening that up might be worth it (maybe actually check that
-> they are valid user pointers at the same time).
-> 
-> That's a separate issue, and I can't find it in myself to care (and
-> nobody has ever complained), but I thought I'd mention it.
+Some people think today is =CF=80-day because of odd US date formatting.
+But as any true kernel geek knows, March 14 is actually much more
+important than that. It's the anniversary of the Linux 1.0 release
+announcement.
+
+No, it's not some nice round number this year - the 1.0 release
+happened in 1994, 27 years ago today.
+
+And it's arguably a much less interesting release than the _first_
+Linux kernel release of 0.01, which _will_ have a nice round age of 30
+years later this year.
+
+But still. I should have remembered to mention that minor historical
+significance of this date in the rc3 announcement.
+
+           Linus
