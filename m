@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943B033A5B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52A433A5B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhCNPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
+        id S234464AbhCNPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234118AbhCNPpe (ORCPT
+        with ESMTP id S234124AbhCNPpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Mar 2021 11:45:34 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331EFC061574;
-        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id b18so7437977wrn.6;
-        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6572AC061762;
+        Sun, 14 Mar 2021 08:45:34 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so18057004wmi.3;
+        Sun, 14 Mar 2021 08:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QpHXgChknEzhzYi4Q8rqZSYE4y3Oym7aFx47bTQjCRA=;
-        b=bRLNLTABvbDYFY599i2T//8iHkJMDYKj6tzFPHL5SRb7AcALZZ0tKjQ5HdxlWBKjWt
-         SyQ8A7RJU2hkiRLLJtJhOPzsDbpsLT/2dkHYZfviDM5OBmhMUumILoFGotrAY8soWdmY
-         iKzKwqaZgmgpZsx5W23qofLLZaie4fRDfIg01+S70kAdvLXNbGAfhkNN4dnyZehpkVYV
-         nF8qR7+vHHQikU6mecPKMNDN5E/JQVnRhgn2B8c8Njs9BsUUJIR9PewiDzSTy3aUCMn2
-         1hmnjgAZXcjogfiAAxxCg4d3gfteOrRJuowIVdRkdmpzvi3bDsxpD9bUkaEDeAgVzEbc
-         CMyg==
+        bh=JzwcPFMRL4SCj5tKsLwkCgmRXrfYV7RwVK3lOrEUoZY=;
+        b=PqY8pspjct7c05jJSezcs85mAeuYf73dp7Szi5jnqSaTZRKSiZUNhYfMKdF5y1XvR4
+         1youylwgU7aKIKRwIaJZyVOy7D7iOhp9YJHv8G7f1MsDhqkyhoNufh2qPNYtG9W1QV/x
+         wTI6qZ8jUTyG0YGS+t2oedPd0Fw8jcBzeXi2uAzLZbFDYJsc5gROXXAv+6V0DRhTUfCc
+         DE7Xz0bv9xUfThPlljFe7FMU9HUbO8DKBaDv+7Z2B21uRMPg2oD3HM2QRUVSeGRkyWts
+         ibSxsGUX3q8o+4XtW/IikvjhDDEoOL0WHVYmTMoxIERpIs0ZPx5cRYKc6DACFm24dgs+
+         KYmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QpHXgChknEzhzYi4Q8rqZSYE4y3Oym7aFx47bTQjCRA=;
-        b=m2voiihnyFHnZ3991Yk1dxm/+MqXOQFz4FLaSOqJV4tFbCnW5N5nqvFA4muOYDPhkU
-         9Ikm1o51D5jFRYfnSV5Q1PiPSluE/FD0LHtFmYjuF+eOI8afJt7oIbI8I72Zx+d1yceB
-         I9ysTR85JpUpo5ivfvEToTzGiWSjnMykn9knEohWYYKNXSvqSPepirZDviJQpx99PJqx
-         bcSEXxhwPNeKStxVSfDJqQDPBYqY7+xHswkp0aDb+HJrhbLKVgdq0xtl4nqG8TOgHXQz
-         OYcEzUeCloC/oa4kFCf2BUunn6du8hH+C0k/+TYZi5bmKGqoV8/T5XBVbRWVLrmVX7GI
-         /sOw==
-X-Gm-Message-State: AOAM533pbvPL9Qfb8pXOvpTm+KujV/n18pNE7oCX1VHxwqVfoH+XLteU
-        TpIy0d/W5WYdrHidckq/SYM=
-X-Google-Smtp-Source: ABdhPJyd0+Gt/PLPpYiHZG8ky3XiLj8yZZzNOhE6OO/1QCc4KEUkdkf0+qyy74cpcV5yufuKG140NA==
-X-Received: by 2002:a5d:4b50:: with SMTP id w16mr22810754wrs.34.1615736731999;
-        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
+        bh=JzwcPFMRL4SCj5tKsLwkCgmRXrfYV7RwVK3lOrEUoZY=;
+        b=SbJtXSJm9DLL3W+VJe07D+zcGJ7bT7R/t2CXZMao1aYxhkgZkDss9UxyPS6N68Up95
+         xnQDDVwNMTmQhrMnToWg72HOinJ+Vz/Uu1zwHgXqgxWqUa9ucMFXXs2S4TROlZ9W8D7b
+         IzYq5X6i89RCbicKRNbmNEJszw8QMD5ToG7KjnQeg23lfehZ+tHkZL+tZnHJVFF9YN0z
+         1L9ufWgADZDd8iG0GqUJrHfwNEQ08LUXEv+UAr9SVAvVvqRYO8spimk+So43Hi2Jl1/h
+         wPoGX5df3e+IitQR0uZTZtsNffuonMHTQICO5IhIi20x6pxQuH1ERTDWa72OUQTk49Za
+         W0yg==
+X-Gm-Message-State: AOAM5303CgKoUh0bbMRLEPwvT3aMs5J/e5Ad8ZM0BudBdaCbgaYvRKGw
+        ed/Bxc2x+6RoFLuVk4k/bnI=
+X-Google-Smtp-Source: ABdhPJxAdO+J40W47Rep4O6fTXvR5JrD5THBQUw12KxSOR5d5ay1lUZWilaKKcsQK0emtmamSDHRtg==
+X-Received: by 2002:a05:600c:608:: with SMTP id o8mr22841970wmm.42.1615736733234;
+        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.30
+        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
+        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 11/17] ASoC: tegra20: i2s: Remove handing of disabled runtime PM
-Date:   Sun, 14 Mar 2021 18:44:53 +0300
-Message-Id: <20210314154459.15375-12-digetx@gmail.com>
+Subject: [PATCH v5 12/17] ASoC: tegra30: i2s: Correct driver removal order
+Date:   Sun, 14 Mar 2021 18:44:54 +0300
+Message-Id: <20210314154459.15375-13-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
 References: <20210314154459.15375-1-digetx@gmail.com>
@@ -69,61 +69,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Runtime PM is always available on Tegra since commit 40b2bb1b132a
-("ARM: tegra: enforce PM requirement"), hence there is no need to
-handle the case of a disabled RPM by Tegra drivers. Remove handing
-of a disabled runtime PM from Tegra20 I2S driver.
+Tegra30 I2S driver has a wrong driver removal order, which should be
+opposite to the registration order, but it's not. In particular the
+runtime PM is disabled in a wrong order. Fix the order.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ sound/soc/tegra/tegra30_i2s.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index fe569198b17a..1b27f81c10fe 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -401,18 +401,13 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	i2s->playback_dma_data.maxburst = 4;
- 
- 	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev)) {
--		ret = tegra20_i2s_runtime_resume(&pdev->dev);
--		if (ret)
--			goto err_pm_disable;
--	}
- 
- 	ret = snd_soc_register_component(&pdev->dev, &tegra20_i2s_component,
- 					 &i2s->dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
--		goto err_suspend;
-+		goto err_pm_disable;
- 	}
- 
- 	ret = tegra_pcm_platform_register(&pdev->dev);
-@@ -425,9 +420,6 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 
- err_unregister_component:
- 	snd_soc_unregister_component(&pdev->dev);
--err_suspend:
--	if (!pm_runtime_status_suspended(&pdev->dev))
--		tegra20_i2s_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- err:
-@@ -438,10 +430,7 @@ static int tegra20_i2s_platform_remove(struct platform_device *pdev)
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 614b67be1dd9..31e08c5c1405 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -544,10 +544,6 @@ static int tegra30_i2s_platform_remove(struct platform_device *pdev)
  {
+ 	struct tegra30_i2s *i2s = dev_get_drvdata(&pdev->dev);
+ 
+-	pm_runtime_disable(&pdev->dev);
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra30_i2s_runtime_suspend(&pdev->dev);
+-
  	tegra_pcm_platform_unregister(&pdev->dev);
  	snd_soc_unregister_component(&pdev->dev);
--
- 	pm_runtime_disable(&pdev->dev);
--	if (!pm_runtime_status_suspended(&pdev->dev))
--		tegra20_i2s_runtime_suspend(&pdev->dev);
+ 
+@@ -557,6 +553,10 @@ static int tegra30_i2s_platform_remove(struct platform_device *pdev)
+ 	tegra30_ahub_unset_rx_cif_source(i2s->playback_i2s_cif);
+ 	tegra30_ahub_free_tx_fifo(i2s->playback_fifo_cif);
+ 
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		tegra30_i2s_runtime_suspend(&pdev->dev);
++
+ 	clk_put(i2s->clk_i2s);
  
  	return 0;
- }
 -- 
 2.30.2
 
