@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918F433A2C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FE633A2C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbhCNFLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 00:11:05 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:41636 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhCNFKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 00:10:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615698637; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0NoYkl/FuNu+r0+wsVoEHAF2YmV2p15GFH0+t+rZiNg=;
- b=n5hPPVSrEgmudPic5bfqe09tigCkA/T9lZXqdsPufKVLeYA2z/zmQayCov4oT6kR3+GfuesV
- jNIyXu/L9FdMbyVvVttn54h/KOtl0RKU7EWdj3rWolrOCdJGdstf5Lvlf5z3OuSgwDkp6kdn
- PJ/3D+0OXr3VRD+hTMySCAELTwk=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 604d9ac85d70193f88dfb2a5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 05:10:32
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AA79AC43464; Sun, 14 Mar 2021 05:10:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8987C433C6;
-        Sun, 14 Mar 2021 05:10:31 +0000 (UTC)
+        id S234276AbhCNFLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 00:11:42 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:60917 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232854AbhCNFLb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 00:11:31 -0500
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 12E5BEOk012841;
+        Sun, 14 Mar 2021 14:11:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12E5BEOk012841
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615698675;
+        bh=MruVtPwUcls26B+Ziu0aaXEtzSZ7hGy9dYXMkXU8rDY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Kc02TqJfoG9iiTBl1f2KS1d4MjS9H33VKjUST4Jwkbj4GnZp/PX0ZCiBr+DWJW+eI
+         0/6JKvaQRdaA5lwumnR1WG8MLVcE6ZAhNFiEo3rRcTdcrXejePBeJ1LJyWSObMyAAT
+         2/8KMFe2ErqxeMrkKxHn+TdsGJqvEnLsGOYXAv0saSOC2pIc/eW6inmPB8ZhAt808X
+         xErxhq2hRmh9tvYsArh8PDrssQzPDl0d+EDs1uMnfeAxavqgIgf0Pm69XqvIlvAnKF
+         Ekm1Xpp/cTMnL24DF0Hf2N5wov3ICRpi0LLQGJUUv56D/sewpuDujg+4FWxsK/cmTb
+         Q7DX/+OqbxTdQ==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso13057457pjb.3;
+        Sat, 13 Mar 2021 21:11:14 -0800 (PST)
+X-Gm-Message-State: AOAM532mRqxb6shjhLWfnY6NDmQkFeUh6+ABIp+EkeQIZLToZrQ240dL
+        uf8HmDxxMsOOni4nYetTV0Tv0aqiDQwdO1DSTWE=
+X-Google-Smtp-Source: ABdhPJyFZGhOncAg7Noju7UzseBN6p8Q/OprsF+AiFDFOCywavy1PSblGzVXdVdfv8fayEJGEDwa8jUf00PZgBBD2js=
+X-Received: by 2002:a17:90a:fb54:: with SMTP id iq20mr6228331pjb.153.1615698673916;
+ Sat, 13 Mar 2021 21:11:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 13 Mar 2021 21:10:31 -0800
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, willy@infradead.org, mhocko@suse.com,
-        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
-        Minchan Kim <minchan.kim@gmail.com>
-Subject: Re: [PATCH v3 2/3] mm: disable LRU pagevec during the migration
- temporarily
-In-Reply-To: <623d54ccbd5324bff22ad1389eae38f4@codeaurora.org>
-References: <20210310161429.399432-1-minchan@kernel.org>
- <20210310161429.399432-2-minchan@kernel.org>
- <623d54ccbd5324bff22ad1389eae38f4@codeaurora.org>
-Message-ID: <a0f4abd8540cddc744061e1210ac6e77@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAK7LNAQYMKqixm8dVbbMvgt+=MEROSg-JG_kHS8T+xmrgeLABg@mail.gmail.com>
+ <20210312032712.GB27924@1wt.eu>
+In-Reply-To: <20210312032712.GB27924@1wt.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 14 Mar 2021 14:10:36 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASEHi6e4AyqDvCH_94DQ6AVWeS8yw0Sz4nHdaB=CMVAtQ@mail.gmail.com>
+Message-ID: <CAK7LNASEHi6e4AyqDvCH_94DQ6AVWeS8yw0Sz4nHdaB=CMVAtQ@mail.gmail.com>
+Subject: Re: Why is the bit size different between a syscall and its wrapper?
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 14:41, Chris Goldsworthy wrote:
-> On 2021-03-10 08:14, Minchan Kim wrote:
->> LRU pagevec holds refcount of pages until the pagevec are drained.
->> It could prevent migration since the refcount of the page is greater
->> than the expection in migration logic. To mitigate the issue,
->> callers of migrate_pages drains LRU pagevec via migrate_prep or
->> lru_add_drain_all before migrate_pages call.
->> 
->> However, it's not enough because pages coming into pagevec after the
->> draining call still could stay at the pagevec so it could keep
->> preventing page migration. Since some callers of migrate_pages have
->> retrial logic with LRU draining, the page would migrate at next trail
->> but it is still fragile in that it doesn't close the fundamental race
->> between upcoming LRU pages into pagvec and migration so the migration
->> failure could cause contiguous memory allocation failure in the end.
->> 
->> To close the race, this patch disables lru caches(i.e, pagevec)
->> during ongoing migration until migrate is done.
->> 
->> Since it's really hard to reproduce, I measured how many times
->> migrate_pages retried with force mode(it is about a fallback to a
->> sync migration) with below debug code.
->> 
->> int migrate_pages(struct list_head *from, new_page_t get_new_page,
->> 			..
->> 			..
->> 
->> if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
->>        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), 
->> rc);
->>        dump_page(page, "fail to migrate");
->> }
->> 
->> The test was repeating android apps launching with cma allocation
->> in background every five seconds. Total cma allocation count was
->> about 500 during the testing. With this patch, the dump_page count
->> was reduced from 400 to 30.
->> 
->> The new interface is also useful for memory hotplug which currently
->> drains lru pcp caches after each migration failure. This is rather
->> suboptimal as it has to disrupt others running during the operation.
->> With the new interface the operation happens only once. This is also 
->> in
->> line with pcp allocator cache which are disabled for the offlining as
->> well.
->> 
->> Signed-off-by: Minchan Kim <minchan@kernel.org>
->> ---
-> 
-> Hi Minchan,
-> 
-> This all looks good to me - feel free to add a Reviewed-by from me.
-> 
-> Thanks,
-> 
-> Chris.
-Should have added:
+Willy,
 
-Reviewed-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Thanks for the explanation.
+
+On Fri, Mar 12, 2021 at 12:27 PM Willy Tarreau <w@1wt.eu> wrote:
+>
+> On Fri, Mar 12, 2021 at 11:48:11AM +0900, Masahiro Yamada wrote:
+> > Hi.
+> >
+> > I think I am missing something, but
+> > is there any particular reason to
+> > use a different bit size between
+> > a syscall and its userspace wrapper?
+> >
+> >
+> >
+> > For example, for the unshare syscall,
+> >
+> > unshare(2) says the parameter is int.
+> >
+> >
+> > SYNOPSIS
+> >        #define _GNU_SOURCE
+> >        #include <sched.h>
+> >
+> >        int unshare(int flags);
+> >
+> >
+> >
+> >
+> > In the kernel, it is unsigned long.
+> >
+> >
+> > SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
+> > {
+> >         return ksys_unshare(unshare_flags);
+> > }
+>
+> The syscalls must have a well defined interface for a given architecture.
+> Thus in practice the ABI will define that arg1 goes into this register,
+> arg2 into this one etc, regardless of their type (plenty of them are
+> pointers for example). The long is the size of a register so it can carry
+> any of the types we care about. So by defining each syscall as a function
+> taking 1 to 6 fixed-size arguments you can implement about all syscalls.
+>
+> Regarding the libc, it has to offer an interface which is compatible with
+> the standard definition of the syscalls as defined by POSIX or as commonly
+> found on other OSes, and this regardless of the platform.
+>
+> For example look at recv(), it takes an int, a pointer, a size_t and an
+> int. It requires to be defined like this for portability, but at the OS
+> level all these will typically be passed as a register each.
+>
+
+You are right.
+Functions in POSIX such as 'recv' should be portable with other OSes.
+For the syscall ABI level, we have more freedom to choose
+parameter types more convenient for the kernel.
+
+IIUC, 'unshare' seems to be Linux-specific, and
+I think "other OSes" do not exist.
+
+
+
+Using types that have the same width as registers
+avoids the ambiguity about the upper 32-bits
+in 64-bit registers anyway. This is a benefit.
+
+Historically, it caused a issue:
+https://nvd.nist.gov/vuln/detail/CVE-2009-0029
+
+We do not need to be worried since
+commit 1a94bc34768e463a93cb3751819709ab0ea80a01.
+All parameters are properly sign-extended by
+forcibly casting to (long).
+
+
+--
+Best Regards
+Masahiro Yamada
