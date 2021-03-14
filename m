@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13F333A8A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744A433A8A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbhCNWvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 18:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S229540AbhCNWxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 18:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhCNWvF (ORCPT
+        with ESMTP id S229459AbhCNWxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 18:51:05 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFFDC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:51:05 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id a9so29982076qkn.13
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yxi1lydKMWjN82a7Fd+FpDe2Rj0hmb6QP6tPPhMWVIw=;
-        b=lYAu15rjfEJlPLMbYe3ofGtugJSP4S3UHE+XQ2ROBsoJg4LQfHnizFixBc5YdoamTs
-         uhTOQr08O9J9XTN08NKAjSmAIF+fnn6HLff+3l7TV4BYtlks6BMGA3SxGeJQrVvvtLI8
-         YxQcz9zg+FA5ffcB/ehtLoT5A7se3VNKwTmkLsADvwUcu+HwrsTGSQx4j6EqgDoi8baT
-         SdF21ARoje6bfWMFzg80oNj3JevhLX5lcXv1Hbz46SwVcnXvhs296sqLFKYxNyFWjj8i
-         tztGUs6Ua4BJoSizUkVBoH4xDDG8oM5Gxms2Tq0W4Bdae10a8wEGsbKDfoz2QKuPLTTC
-         egTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yxi1lydKMWjN82a7Fd+FpDe2Rj0hmb6QP6tPPhMWVIw=;
-        b=QUMDGdbgyAlvq77eraK1MmQD9Wyc0RVK9FluwKlVmswY3FTPQSOgxS68qoScGzN3oo
-         4+noHtMbWq8lTn0O8YbUlTZrwdFpUiWb7K6Mc40Aij2uOFglCyzK+d3G3l7cbQ/38I4A
-         XHQGea9hDo1MqUEgaaqC2OI6kI7skmQUZ849fkDphIaeNz2LMqrEs8190FEhXd6/WpAX
-         rNHpLvjY2H1AMZk7ryTOWybD18iWqPIXZLolx5CUUdda+gvtX6FRaP4CMwPVqpM1BjLh
-         MpkC8RM8B27u/tnt8hAQraXOF3gWTNybCp1Uewa8rSchPs0iUMx1UQ3dAz6b/aBwI0Io
-         2Ezg==
-X-Gm-Message-State: AOAM533NjKIBF5wDqa2CsM8TPpRKTiHl8brCeXRzg57t19e5Fu07dYSb
-        ZaUSgMaXW7ubvht1VlQbrdnaP8RQ83llIQ==
-X-Google-Smtp-Source: ABdhPJzGlY7vE2KKLHORP80o9phIQwX6iO8oRBseQCWbHWCL9pXUzz43G1ePZqigVxoExad+Y65zZw==
-X-Received: by 2002:ae9:d60a:: with SMTP id r10mr22025057qkk.411.1615762264070;
-        Sun, 14 Mar 2021 15:51:04 -0700 (PDT)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id l129sm10803181qkd.76.2021.03.14.15.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 15:51:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 14 Mar 2021 18:51:02 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Sun, 14 Mar 2021 18:53:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EDAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=A0OezzK32+IGjKBiA324CA3NskKswq6TgwFHq4vAqF8=; b=aEp6MWbOmqGVvlG0u2hf6+NaMl
+        Sv10jZkYI/dk7hQ5OIg5Wk1aiQTyIDTSr5mg+qtD7tLG/837fWSHUN6hhi3FqHVHMUBDO1mBd6nQb
+        O5c5ggX9enZQLtbICYRWgFMduJ61jHQ3G7BmEOsHpoQm/jxEHyDOcxkTFaCa/baMNIjelrJKqDqJ1
+        cxaY78mu9xEjPJouhGMOmQhY6zZ94sNF6W9TVmcWjNHkLL4lCppQr16xQdt+ct50dKcnt6IqgQ54j
+        hZK6DnEdCP9PXfJX/929SrczT7GhXZV2EqWtgIaLk7DDjEWZFRNb4pncbQxmHv2rzlwvGtj/VN0Ng
+        hXiHggTA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLZZf-00Gm6m-Us; Sun, 14 Mar 2021 22:51:07 +0000
+Date:   Sun, 14 Mar 2021 22:51:03 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org,
+        Alex Shi <alex.shi@linux.alibaba.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Michal Hocko <mhocko@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH] vmscan: retry without cache trim mode if nothing scanned
-Message-ID: <YE6TVtA2EuagQAtj@slm.duckdns.org>
-References: <20210311004449.1170308-1-ying.huang@intel.com>
- <CALvZod7QNEXdKCJ3H3eoZKsRj5jtOESkmHm1dTC-ZjSBAcW7ng@mail.gmail.com>
- <87v99yvzq8.fsf@yhuang-dev.intel.com>
- <CALvZod6HC-oDQJgQxh=sJi91y0_SK2xuMMW35aac0YURjbPEOQ@mail.gmail.com>
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+Subject: Re: [PATCH v1 06/14] mm, x86: support the access bit on non-leaf PMD
+ entries
+Message-ID: <20210314225103.GQ2577561@casper.infradead.org>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-7-yuzhao@google.com>
+ <74C83FFE-DC78-40CD-B6BE-00614DC8F125@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod6HC-oDQJgQxh=sJi91y0_SK2xuMMW35aac0YURjbPEOQ@mail.gmail.com>
+In-Reply-To: <74C83FFE-DC78-40CD-B6BE-00614DC8F125@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Sun, Mar 14, 2021 at 01:58:33PM -0700, Shakeel Butt wrote:
-> > If my understanding were correct, what Tejun suggested is to add a fast
-> > read interface to rstat to be used in hot path.  And its accuracy is
-> > similar as that of traditional per-CPU counter.  But if we can regularly
-> > update the lruvec rstat with something like vmstat_update(), that should
-> > be OK for the issue described in this patch.
-> >
+On Sun, Mar 14, 2021 at 06:12:42PM -0400, Zi Yan wrote:
+> On 13 Mar 2021, at 2:57, Yu Zhao wrote:
 > 
-> This is also my understanding. Tejun, please correct us if we misunderstood you.
+> > Some architectures support the accessed bit on non-leaf PMD entries
+> > (parents) in addition to leaf PTE entries (children) where pages are
+> > mapped, e.g., x86_64 sets the accessed bit on a parent when using it
+> > as part of linear-address translation [1]. Page table walkers who are
+> > interested in the accessed bit on children can take advantage of this:
+> > they do not need to search the children when the accessed bit is not
+> > set on a parent, given that they have previously cleared the accessed
+> > bit on this parent in addition to its children.
+> >
+> > [1]: Intel 64 and IA-32 Architectures Software Developer's Manual
+> >      Volume 3 (October 2019), section 4.8
+> 
+> Just curious. Does this also apply to non-leaf PUD entries? Do you
+> mind sharing which sentence from the manual gives the information?
 
-Yeah, that was what I had on mind. Instead of always flushing on read, have
-a variant where flushing is explicit and trigger that periodically (or
-whichever way appropriate).
+The first few sentences from 4.8:
 
-Thanks.
+: For any paging-structure entry that is used during linear-address
+: translation, bit 5 is the accessed flag. For paging-structure
+: entries that map a page (as opposed to referencing another paging
+: structure), bit 6 is the dirty flag. These flags are provided for
+: use by memory-management software to manage the transfer of pages and
+: paging structures into and out of physical memory.
 
--- 
-tejun
+: Whenever the processor uses a paging-structure entry as part of
+: linear-address translation, it sets the accessed flag in that entry
+: (if it is not already set).
+
+The way they differentiate between the A and D bits makes it clear to
+me that the A bit is set at each level of the tree, but the D bit is
+only set on leaf entries.
