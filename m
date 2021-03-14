@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6226733A4D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 13:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298D433A4D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 13:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhCNMor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 08:44:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41902 "EHLO mx2.suse.de"
+        id S235443AbhCNMpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 08:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235393AbhCNMoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 08:44:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12614AC17;
-        Sun, 14 Mar 2021 12:44:14 +0000 (UTC)
-Date:   Sun, 14 Mar 2021 13:44:11 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] perf/urgent for v5.12-rc3
-Message-ID: <20210314124411.GC27191@zn.tnic>
+        id S235438AbhCNMoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 08:44:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB03964EE2;
+        Sun, 14 Mar 2021 12:44:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615725886;
+        bh=S2lNUzFkQg/ukExFJRH46e5SvDEvpLzcqaKUvYvAyX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DOdiUW3sa6eMnD4hirleRWzU5MlTsVOo1zdRQ2rAtZKzkpyIVkrTRa4g3Rsz/MB5k
+         BwcONK11OQgNw4dzvd8M3Q8Kb6U+Ew/VbDMQjXk8nMMs62NWrMs+RqVkw7JgKUnGy2
+         UOQu0hpOdPItWBMSA7MBRzwBokJ45nw5m5Za5YOY=
+Date:   Sun, 14 Mar 2021 13:44:43 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fatih Yildirim <yildirim.fatih@gmail.com>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] net: rds: rds_send_probe memory leak
+Message-ID: <YE4FO01xILz98/K6@kroah.com>
+References: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
+ <YE3K+zeWnJ/hVpQS@kroah.com>
+ <b1b796b48a75b3ef3d6cebac89b0be45c5bf4611.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b1b796b48a75b3ef3d6cebac89b0be45c5bf4611.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Mar 14, 2021 at 03:19:05PM +0300, Fatih Yildirim wrote:
+> On Sun, 2021-03-14 at 09:36 +0100, Greg KH wrote:
+> > On Sun, Mar 14, 2021 at 11:23:10AM +0300, Fatih Yildirim wrote:
+> > > Hi Santosh,
+> > > 
+> > > I've been working on a memory leak bug reported by syzbot.
+> > > https://syzkaller.appspot.com/bug?id=39b72114839a6dbd66c1d2104522698a813f9ae2
+> > > 
+> > > It seems that memory allocated in rds_send_probe function is not
+> > > freed.
+> > > 
+> > > Let me share my observations.
+> > > rds_message is allocated at the beginning of rds_send_probe
+> > > function.
+> > > Then it is added to cp_send_queue list of rds_conn_path and
+> > > refcount
+> > > is increased by one.
+> > > Next, in rds_send_xmit function it is moved from cp_send_queue list
+> > > to
+> > > cp_retrans list, and again refcount is increased by one.
+> > > Finally in rds_loop_xmit function refcount is increased by one.
+> > > So, total refcount is 4.
+> > > However, rds_message_put is called three times, in rds_send_probe,
+> > > rds_send_remove_from_sock and rds_send_xmit functions. It seems
+> > > that
+> > > one more rds_message_put is needed.
+> > > Would you please check and share your comments on this issue?
+> > 
+> > Do you have a proposed patch that syzbot can test to verify if this
+> > is
+> > correct or not?
+> > 
+> > thanks,
+> > 
+> > gre gk-h
+> 
+> Hi Greg,
+> 
+> Actually, using the .config and the C reproducer, syzbot reports the
+> memory leak in rds_send_probe function. Also by enabling
+> CONFIG_RDS_DEBUG=y, the debug messages indicates the similar as I
+> mentioned above. To give an example, below is the RDS_DEBUG messages.
+> Allocated address 000000008a7476e5 has initial ref_count 1. Then there
+> are three rds_message_addref calls for the same address making the
+> refcount 4, but only three rds_message_put calls which leave the
+> address still allocated.
+> 
+> [   60.570681] rds_message_addref(): addref rm 000000008a7476e5 ref 1
+> [   60.570707] rds_message_put(): put rm 000000008a7476e5 ref 2
+> [   60.570845] rds_message_addref(): addref rm 000000008a7476e5 ref 1
+> [   60.570870] rds_message_addref(): addref rm 000000008a7476e5 ref 2
+> [   60.570960] rds_message_put(): put rm 000000008a7476e5 ref 3
+> [   60.570995] rds_message_put(): put rm 000000008a7476e5 ref 2
+> 
 
-please pull there perf urgent fixes for v5.12-rc3.
+Ok, so the next step is to try your proposed change to see if it works
+or not.  What prevents you from doign that?
 
-Thx.
+No need to ask people if your analysis of an issue is true or not, no
+maintainer or developer usually has the time to deal with that.  We much
+rather would like to see patches of things you have tested to resolve
+issues.
 
----
+thanks,
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.12-rc3
-
-for you to fetch changes up to c8e2fe13d1d1f3a02842b7b909d4e4846a4b6a2c:
-
-  x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case (2021-03-10 16:45:09 +0100)
-
-----------------------------------------------------------------
-- Make sure PMU internal buffers are flushed for per-CPU events too and
-  properly handle PID/TID for large PEBS.
-
-- Handle the case properly when there's no PMU and therefore return an
-  empty list of perf MSRs for VMX to switch instead of reading random
-  garbage from the stack.
-
-----------------------------------------------------------------
-Kan Liang (2):
-      perf/core: Flush PMU internal buffers for per-CPU events
-      perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large PEBS and LBR
-
-Sean Christopherson (1):
-      x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case
-
- arch/x86/events/core.c       | 15 ++++++---------
- arch/x86/events/intel/core.c |  5 ++++-
- arch/x86/kvm/vmx/vmx.c       |  2 +-
- include/linux/perf_event.h   |  2 ++
- kernel/events/core.c         | 42 ++++++++++++++++++++++++++++++++++++++----
- 5 files changed, 51 insertions(+), 15 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+greg k-h
