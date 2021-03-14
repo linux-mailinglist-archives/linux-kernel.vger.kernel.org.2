@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E782633A254
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A6533A258
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhCNCKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 21:10:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhCNCKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 21:10:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3A52864EDC;
-        Sun, 14 Mar 2021 02:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615687808;
-        bh=ViSUvwFz8dZsSC/xLMKQlypmn/cz7whpRd8DW1ygRoU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tyQeyAgGvm1EjOs2YXizdSG7f1DXxDi/4Y8d4GM/6c9bpuoJb2gURotQL+jcuhxsn
-         WIZ2Xyta3Fx3VngsXcl1WbyCrx3r78MYNsfakH4Z3+QSIc/KtPr1gRcsFkFl2kPt10
-         HWSnCKK8vgWMXEVLNnkt76Kf6sZDwWDdkqF3gWjXQj8PpdFy1yq70MRA262/tSVYHG
-         9sxtVNF1wjDLnoSNgKaK+xGASLG0M189P5uBxhzMJY4JOPa/9/2yDLgKM8ZzvjUS4B
-         mv9cLa4pURDopODBwT6U2QdwjARxEF67WYt3gbQ7nT0rArNelf3MMrwqAbOe1Gim+t
-         HHsdg2H7JcaYw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2BAEC60A5C;
-        Sun, 14 Mar 2021 02:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233723AbhCNCQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 21:16:23 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45190 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231597AbhCNCPv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 21:15:51 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0320E55C;
+        Sun, 14 Mar 2021 03:15:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615688150;
+        bh=DKsxYktuuGnusRXJGBQqTLHN0r6C6x8dBcI2xv+gbos=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pHZm8riY74l8W/JQpcFEYe4VWPBYb0NL+62WF/W5j5QFq89rRy2pRwspPS8FAKb4J
+         IQIq1kOlo4eQUT43Px638X5Qa0Jdm+dh52yD7ZS3KFuhyJgn/di4uG+rlJvdAQkdYs
+         DvJ/a2dxMDfmW9eIb3nDkaXc2UfSoII0crFFJNjo=
+Date:   Sun, 14 Mar 2021 04:15:14 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     angkery <angkery@163.com>
+Cc:     tomba@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        sebastian.reichel@collabora.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: Re: [PATCH] drm/omap: dsi: fix unsigned expression compared with zero
+Message-ID: <YE1xsg0gm0nNR8hy@pendragon.ideasonboard.com>
+References: <20210312071445.1721-1-angkery@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] drivers: net: vxlan.c: Fix declaration issue
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161568780817.10930.7181255867706244302.git-patchwork-notify@kernel.org>
-Date:   Sun, 14 Mar 2021 02:10:08 +0000
-References: <20210313083649.2scdqxdcozfpoana@sanjana-VirtualBox>
-In-Reply-To: <20210313083649.2scdqxdcozfpoana@sanjana-VirtualBox>
-To:     Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210312071445.1721-1-angkery@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Junlin,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Thank you for the patch.
 
-On Sat, 13 Mar 2021 14:06:49 +0530 you wrote:
-> Added a blank line after structure declaration.
-> This is done to maintain code uniformity.
+On Fri, Mar 12, 2021 at 03:14:45PM +0800, angkery wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
 > 
-> Signed-off-by: Sanjana Srinidhi <sanjanasrinidhi1810@gmail.com>
+> r is "u32" always >= 0,mipi_dsi_create_packet may return little than zero.
+> so r < 0 condition is never accessible.
+> 
+> Fixes coccicheck warnings:
+> ./drivers/gpu/drm/omapdrm/dss/dsi.c:2155:5-6:
+> WARNING: Unsigned expression compared with zero: r < 0
+> 
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Tomi, will you take this in your tree ?
+
 > ---
->  drivers/net/vxlan.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index 8e11612..b31d750 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
+>  			     const struct mipi_dsi_msg *msg)
+>  {
+>  	struct mipi_dsi_packet pkt;
+> +	int ret;
+>  	u32 r;
+>  
+> -	r = mipi_dsi_create_packet(&pkt, msg);
+> -	if (r < 0)
+> -		return r;
+> +	ret = mipi_dsi_create_packet(&pkt, msg);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	WARN_ON(!dsi_bus_is_locked(dsi));
+>  
 
-Here is the summary with links:
-  - drivers: net: vxlan.c: Fix declaration issue
-    https://git.kernel.org/netdev/net-next/c/6fadbdd6dd32
+-- 
+Regards,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Laurent Pinchart
