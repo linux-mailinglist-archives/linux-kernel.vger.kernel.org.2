@@ -2,156 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9611333A3E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8E033A3E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235022AbhCNJ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 05:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbhCNJ3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 05:29:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60ED2C061574;
-        Sun, 14 Mar 2021 01:29:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cJLxS0cKtxz/yWIdGGPLjrB05uBAS6vzMsJcT1fhpJI=; b=pMazN/6mo7fShBGqzeBn+DuTpk
-        9BSTTFQOzPxgPqWRjj9PHehQe2B6KVceoktHco4MA0IWV52RWkBLByYjwvb95zlHEfaDOc9AIa6TN
-        8VCzRuScXBb635KoNwhi0iO7jcnk1UB5RQjE+FxEhNtRJAtpn24K/JSRRHDoffwVtCb/NBfdX3zdp
-        QB1YThZhLxlPPfZAtk33BkF14AwjjPcWJ3erRssI6xIq2B4uuTbZTulUNGFdDJgmKh+u5lR4/juz9
-        FYcmp+Rcafsv61I3Z7WQ/v3QlkWqQIFgE2ONWnKPIBV3q+rhMU6p+3n5FJiMDPLX4CWzE3wUUd3ar
-        mlTDF+9w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLN2t-00Fqgg-Df; Sun, 14 Mar 2021 09:28:30 +0000
-Date:   Sun, 14 Mar 2021 09:28:23 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        pavel.tide@veeam.com
-Subject: Re: [PATCH v7 2/3] block: add bdev_interposer
-Message-ID: <20210314092823.GB3773360@infradead.org>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
- <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
+        id S235057AbhCNJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 05:30:47 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:53841 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235042AbhCNJal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 05:30:41 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 082832400FD
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 10:30:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1615714235; bh=hQWhrB/mZj5TP8DMPRbiEZJHp2QFDNDBNO2mZjMmB2E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sD9p8JKHIi4f3n7r7hg4pFd8dM6hwqr/Q8BfMkvDBugWkOU/0G0UgRZhYNEAx/06w
+         HhOxigZz+JJ8ddrsLAQP9Tby3+wy47tzReED1BLQNmh63qzLFdKklwUhnGsiFNiQ2R
+         4ExJ1jEuMMUr5F97oUZgNa88OeWllv463syyMlSjYYLnbteljMk6VSRll12fn2KaCc
+         xCIhdo8yzlw/fO4lm4iywK3mDYeUP+Iedh3lmDiX9WnIkU6hbaIodg14noAsXZ2OH3
+         uQC+13eEU8tsLxn8It7csU0eOKFln+bFhOk2Qrs/cyyg7gD8p0whT+ObczQiH80dpU
+         RH1tVl7cDYVqw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4DyvRY2DCFz6tmP;
+        Sun, 14 Mar 2021 10:30:33 +0100 (CET)
+Date:   Sun, 14 Mar 2021 10:30:31 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH v7 0/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <cover.1615713499.git.wilken.gottwalt@posteo.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 06:44:54PM +0300, Sergei Shtepa wrote:
-> bdev_interposer allows to redirect bio requests to another devices.
+Most of the Allwinner sun6i compatible devices contain a spinlock unit
+which can be used to sync access to devices shared between the ARM cores
+and the embedded companion core. According to the datasheets at least 32
+spinlocks are supported. The implementation supports 32, 64, 128 and 256
+spinlock setups, but there is no known SoC yet, which implements more
+than 32 spinlocks.
 
-I think this warrants a somewhat more detailed description.
+This driver adds support for this hardware spinlock unit to Linux
+including all 4 possible setups. The driver reports the found setup via
+debugfs. It can be build as a builtin and normal module by using the
+HWSPINLOCK_SUN8I symbol.
 
-The code itself looks pretty good to me now, a bunch of nitpicks and
-a question below:
+This driver is the first step to enable hwspinlock support in Linux, but
+also requires support in the firmware of the companion core. This patch
+provides the driver and binding documentation but is not yet included
+into the sunxi files. Also not every sunxi seem to have support for this
+hardware, but it can be found in sun6i, sun8i, sun9i and sun50i devices.
 
-> +static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
-> +{
-> +	blk_qc_t ret = BLK_QC_T_NONE;
-> +	struct bio_list bio_list[2] = { };
-> +	struct gendisk *orig_disk;
-> +
-> +	if (current->bio_list) {
-> +		bio_list_add(&current->bio_list[0], bio);
-> +		return BLK_QC_T_NONE;
-> +	}
+The spinlock hardware has two ways to figure out if a lock is taken. The
+lock can simply be readi, or bits of a 32bit wide status register can be
+checked. The status register only supports the first 32 locks and may
+not cover bigger spinlock setups. Therefore reading/writing a specific
+spinlock is used in the driver for checking the status of a lock.
 
-I don't think this case can ever happen:
+The status register is now free for debugging/testing purposes and can
+completely bypass the Linux hwspinlock ABI. This status register will be
+used in some additional kernel modules to test the hwspinlock driver.
 
- - current->bio_list != NULL means a ->submit_bio or blk_mq_submit_bio
-   is active.  But if this device is being interposed this means the
-   interposer recurses into itself, which should never happen.  So
-   I think we'll want a WARN_ON_ONCE here as a debug check instead.
+Testing the driver.
 
-> +
-> +	orig_disk = bio->bi_bdev->bd_disk;
-> +	if (unlikely(bio_queue_enter(bio)))
-> +		return BLK_QC_T_NONE;
-> +
-> +	current->bio_list = bio_list;
-> +
-> +	do {
-> +		struct block_device *interposer = bio->bi_bdev->bd_interposer;
-> +
-> +		if (unlikely(!interposer)) {
-> +			/* interposer was removed */
-> +			bio_list_add(&current->bio_list[0], bio);
-> +			break;
-> +		}
-> +		/* assign bio to interposer device */
-> +		bio_set_dev(bio, interposer);
-> +		bio_set_flag(bio, BIO_INTERPOSED);
+To run all tests it is necessary to take locks on the companion core and
+show on the Linux side that the locks were taken by an external event.
+This can be achived by using an Allwinner SoC which includes an OpenRisc
+companion core and can use the free crust firmware. For this the crust
+firmware needs to be changed to take and release spinlocks (a simple
+MMIO operation on the hwlock registers), which is currently not
+supported by the current crust firmware. The necessary crust fork can
+be found here https://github.com/wgottwalt/crust (hwspinlock branch).
+It is also necessary to build u-boot with support for this crust/SCP
+firmware. This u-boot fork can be found here
+https://github.com/crust-firmware/u-boot (crust branch).
 
-Reassigning the bi_bdev here means the original source is lost by the
-time we reach the interposer.  This initially seemed a little limiting,
-but I guess the interposer driver can just record that information
-locally, so we should be fine.  The big upside of this is that no
-extra argument to submit_bio_checks, which means less changes to the
-normal fast path, so if this works for everyone that is a nice
-improvement over my draft.
+To test this driver it is also necessary to pick a device that is fully
+supported by the crust firmware. For this the H5 based Friendlyarm
+NanoPi NEO2 was used. It is fully supported by u-boot (and the fork),
+the crust firmware (via H5 target) and current Linux kernels. In the
+crust fork it is necessary to go into debug menu of "make nconfig" and
+select the hwspinlock test loop. This debug option enables a loop that
+goes through the first 32 spinlocks. It takes/releases a lock one after
+another using the timeout functions (and hw timers) of the crust
+firmware. A timeout can be set in the debug menu.
 
-> +
-> +		if (!submit_bio_checks(bio))
-> +			break;
-> +		/*
-> +		 * Because the current->bio_list is initialized,
-> +		 * the submit_bio callback will always return BLK_QC_T_NONE.
-> +		 */
-> +		interposer->bd_disk->fops->submit_bio(bio);
-> +	} while (false);
+Test 1:
 
-I find the do { ... } while (false) idiom here a little strange.  Normal
-kernel style would be a goto done instead of the breaks.
+This test was done using a mainline u-boot and a crust enabled u-boot.
+For this a simple second kernel module was used, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test.
 
-> +int bdev_interposer_attach(struct block_device *original,
-> +			   struct block_device *interposer)
+Using mainline u-boot it shows that the Linux side correctly takes a
+lock, tries to recursively take a lock again (which does not happen) and
+releases a lock. This is done for all 32 locks several times.
 
-A kerneldoc comment for bdev_interposer_attach (and
-bdev_interposer_detach) would be nice to explain the API a little more.
+# modprobe sun6i_hwspinlock_test
+[  472.182172] [init]--- SUN6I HWSPINLOCK DRIVER TEST ---
+[  472.187491] [run ]--- testing locks 0 to 31 ---
+[  472.192058] [test] testing lock 0
+[  472.195371] [test]+++ attempt #0 succeded
+[  472.199394] [test]+++ attempt #1 succeded
+[  472.203411] [test]+++ attempt #2 succeded
+[  472.207433] [test] testing lock 1
+[  472.210755] [test]+++ attempt #0 succeded
+...
+[  472.665684] [test]+++ attempt #2 succeded
+[  472.669704] [test] testing lock 31
+[  472.673117] [test]+++ attempt #0 succeded
+[  472.677137] [test]+++ attempt #1 succeded
+[  472.681152] [test]+++ attempt #2 succeded
 
-> +{
-> +	int ret = 0;
-> +
-> +	if (WARN_ON(((!original) || (!interposer))))
-> +		return -EINVAL;
+If the same test is done with the hwspinlock loop enabled crust firmware
+and the crust enabled u-boot fork, the Linux test kernel module hits the
+one lock taken by the crust firmware.
 
-No need for the inner two levels of braces.
+# modprobe sun6i_hwspinlock_test
+...
+[  945.871840] [test]+++ attempt #1 succeded
+[  945.875854] [test]+++ attempt #2 succeded
+[  945.879875] [test] testing lock 18
+[  945.883273] [test]+++ attempt #0 succeded
+[  945.887293] [test]+++ attempt #1 succeded
+[  945.891310] [test]+++ attempt #2 succeded
+[  945.895329] [test] testing lock 19
+[  945.898738] [test] taking lock attempt #0 failed (-16)
+[  945.903886] [run ]--- testing specific lock 19 failed (-14) ---
+[  945.909811] [test] testing lock 20
+[  945.913224] [test]+++ attempt #0 succeded
+[  945.917245] [test]+++ attempt #1 succeded
+[  945.921265] [test]+++ attempt #2 succeded
+[  945.925281] [test] testing lock 21
+[  945.928694] [test]+++ attempt #0 succeded
+[  945.932709] [test]+++ attempt #1 succeded
+...
 
-> +	 * interposer should be simple, no a multi-queue device
-> +	 */
-> +	if (!interposer->bd_disk->fops->submit_bio)
+Test 2:
 
-Please use queue_is_mq() instead.
+This is a more complex test which uses the status register to bypass the
+Linux hwspinlock ABI. For this to work a slightly modified driver is
+used. It can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/modified.
+This modified driver splits the 4K memory range into two and leaves the
+status register untouched. It can now be used by another test kernel
+module, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test2.
+It is also necessary to change the device tree entries to get both
+kernel modules working in parallel.
 
-> +	if (bdev_has_interposer(original))
-> +		ret = -EBUSY;
-> +	else {
-> +		original->bd_interposer = bdgrab(interposer);
+hwspinlock-mod@1c18000 {
+        compatible = "allwinner,sun6i-a31-hwspinlock-mod";
+        reg = <0x01c18000 0x4 0x01c18100 0x400>;
+        clocks = <&ccu CLK_BUS_SPINLOCK>;
+        clock-names = "ahb";
+        resets = <&ccu RST_BUS_SPINLOCK>;
+        reset-names = "ahb";
+        status = "okay";
+};
 
-Just thinking out a loud:  what happens if the interposed device
-goes away?  Shouldn't we at very least also make sure this
-gabs another refererence on bdev as well?
+hwspinlock-stat@1c18010 {
+        compatible = "allwinner,sun6i-a31-hwspinlock-stat";
+        reg = <0x01c18010 0x4>;
+        status = "okay";
+};
 
-> +struct bdev_interposer;
+The extended test kernel module supports four different modes to test
+the hwspinlocks. Two of them are sufficient to show the spinlock
+mechanism working.
 
-Not needed any more.
+Test 2 Mode 1:
 
-> +static inline bool bdev_has_interposer(struct block_device *bdev)
-> +{
-> +	return (bdev->bd_interposer != NULL);
-> +};
+This test reads and prints the status register continuously. The crust
+firmware and the test are set to a hwspinlock timeout of one second. The
+test kernel module code runs a bit slower because of more code executed
+and all the printing. Because of that you can see how one lock is missed
+completely between entry 8 and 9.
 
-No need for the braces.
+# modprobe sun6i_hwspinlock_test2 mode=1 loops=10
+[  179.611838] [init]--- SUN6I HWSPINLOCK DRIVER ENHANCED TEST ---
+[  179.618114] [sreg] 10000000_00000000_00000000_00000000
+[  180.643989] [sreg] 01000000_00000000_00000000_00000000
+[  181.668006] [sreg] 00100000_00000000_00000000_00000000
+[  182.691985] [sreg] 00010000_00000000_00000000_00000000
+[  183.715985] [sreg] 00001000_00000000_00000000_00000000
+[  184.739987] [sreg] 00000100_00000000_00000000_00000000
+[  185.763986] [sreg] 00000010_00000000_00000000_00000000
+[  186.787985] [sreg] 00000001_00000000_00000000_00000000
+[  187.811985] [sreg] 00000000_01000000_00000000_00000000
+[  188.835985] [sreg] 00000000_00100000_00000000_00000000
+
+Test 2 Mode 3:
+
+This test combines the Linux hwspinlock ABI approach from the first test
+and the status register access. The "after" reads show the locks taken
+by both sides until the Linux hwspinlock driver tries to take the lock
+taken by the crust firmware.
+
+# modprobe sun6i_hwspinlock_test2 mode=3
+[  454.734821] [init]--- SUN6I HWSPINLOCK DRIVER ENHANCED TEST ---
+...
+[  455.897153] [test]+++ attempt #1 succeded
+[  455.901178] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.907372] [sreg] after take 00000000_00000000_00000000_01100000
+[  455.913478] [sreg] after recursive take 00000000_00000000_00000000_01100000
+[  455.920455] [sreg] after untake 00000000_00000000_00000000_00100000
+[  455.926721] [test]+++ attempt #2 succeded
+[  455.930741] [test] testing lock 26
+[  455.934157] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.940345] [test] taking lock attempt #0 failed (-16)
+[  455.945492] [run ]--- testing specific lock 26 failed (-14) ---
+[  455.951419] [test] testing lock 27
+[  455.954836] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.961034] [sreg] after take 00000000_00000000_00000000_00110000
+[  455.967135] [sreg] after recursive take 00000000_00000000_00000000_00110000
+[  455.974109] [sreg] after untake 00000000_00000000_00000000_00100000
+[  455.980375] [test]+++ attempt #0 succeded
+[  455.984400] [sreg] before take 00000000_00000000_00000000_00100000
+
+This patch adds:
+- hwspinlock driver sun6i_hwspinlock
+- updates makefiles
+- hwspinlock dt bindings documentation
+- updates MAINTAINERS
+
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Changes in v7:
+  - changed probe to use to devm_* and devm_add_action_* functions
+  - changed dt documentation to the name of the compatible string
+
+Changes in v6:
+  - fixed formating and name issues in dt documentation
+  - changed probe/remove function to use classic functions to better handle
+    failure situations
+
+Changes in v5:
+  - changed symbols to earliest known supported SoC (A31)
+  - simplified dt documentation
+  - fixed several types
+  - updated test description
+  - changed init back to classic probe/remove callbacks
+
+Changes in v4:
+  - changed binding from sun8i-hwspinlock to sun8i-a33-hwspinlock
+  - fixed several issues in the dt documentation
+  - further simplified driver
+  - fixed an add_action_and_reset_* function issue
+  - fixed some typos
+
+Changes in v3:
+  - moved test description to cover letter
+  - changed name and symbols from sunxi to sun8i
+  - improved driver description
+  - further simplified driver
+  - fully switched to devm_* and devm_add_action_* functions
+
+Changes in v2:
+  - redone coverletter
+  - fixed ranges in the device tree description
+  - added suggestions from Bjorn Andersson and Maxime Ripard to the driver
+  - provided better driver and test description
+
+Wilken Gottwalt (2):
+  dt-bindings: hwlock: add sun6i_hwspinlock
+  hwspinlock: add sun6i hardware spinlock support
+
+ .../allwinner,sun6i-a31-hwspinlock.yaml       |  45 ++++
+ MAINTAINERS                                   |   6 +
+ drivers/hwspinlock/Kconfig                    |   9 +
+ drivers/hwspinlock/Makefile                   |   1 +
+ drivers/hwspinlock/sun6i_hwspinlock.c         | 210 ++++++++++++++++++
+ 5 files changed, 271 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+ create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
+
+-- 
+2.30.2
+
