@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30E833A456
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675C333A458
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbhCNLHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 07:07:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58807 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbhCNLHO (ORCPT
+        id S235257AbhCNLIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 07:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235203AbhCNLIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 07:07:14 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lLOaX-0003bz-Hc
-        for linux-kernel@vger.kernel.org; Sun, 14 Mar 2021 11:07:13 +0000
-Received: by mail-wr1-f72.google.com with SMTP id h5so13609212wrr.17
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 04:07:13 -0700 (PDT)
+        Sun, 14 Mar 2021 07:08:05 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DA8C061574;
+        Sun, 14 Mar 2021 04:08:04 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e7so6750758ile.7;
+        Sun, 14 Mar 2021 04:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2gJVCiOzZRSOU8yuw0xGh2d/ty3OmRn7TDCBELtPRw=;
+        b=PUBewag3El8v206Nhk0atvmek2BUNWAPufAsSR2oFncOGGqfyNv7vAEsE508yviQfA
+         n5FGHWLw0byj3iMYTL4/2+GP7CfPDWHGQNgY/XmlQ88CNaGlm6tPK+fyKFaHe84+3Fn0
+         dWpe4RqrQondbTZ9U7FHy0RAXu1QD+zWeDL352Vc0/j+vswzAj1OoZ6Gea8lrLg+qybq
+         J/PHZzVjafdO3woIfsLANMVipxpYsbmoCdX8jwP7ihawUg9gp6d2dFbxMk+Ywmjp5pvq
+         eLdPgW8sN3EiSG2XRnks4Jj+81N457OrzYREhZzOGnSS6Kn6nRvm5Ruxad159ceO0Xre
+         /CYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=desAQUCBU+zk3j65WJVheqv1L6ClQWpP83WB06G6huw=;
-        b=JKhlvcuzyY9uZ5j+bfKZxnofSRtEBMWnm0YLYbJ8tqYR1gVbGdq/TrSOJgIkshli5v
-         8QABBTDHvePmhY1+JIrw9oHXWku2qqLOk6wLUIdY5qXLY2kenbGyHeFrxrP1ql9/++t/
-         Gi2I9fSkeWPmQSXtd16Dbs1hAStnQjVx71cjeEHMsBK2HMe4m0dov8+xdtucYBrKj+vN
-         fdle36jPle5OvNQcsTbM17wQQfaL5BEriw6uoB7ZoDMPJgxb3GkmrE1/mlute6Pv00PN
-         bhSxu2/WdztKycbDcjuiUkAW8JD+zmjLWBAgqBxBNk7Dv5t17T3M0jSVX1gt8lRurUWD
-         2qLQ==
-X-Gm-Message-State: AOAM533XgdXVNcYUxvqzJIB1IlBT0w7fsjge+W3q2TuVoJsGrTTIGrJH
-        PKfGD3RpeA3/m+HXe46A9dmfx2bM4Bg3R6ouG3HelHYMdFA2D0KeAZTgJp+VnYmXen5Sj/eZlU9
-        aXz0lTpIJX/jBSA+A00YuSdSeBzRZGhNzCOla2X3gag==
-X-Received: by 2002:a7b:c3cd:: with SMTP id t13mr21143089wmj.109.1615720033281;
-        Sun, 14 Mar 2021 04:07:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCWlO6Nk+CjKaMs9pBlAihe7fu/ifUQCH9+BlOaK3FPlf512l0IOYp7EGhenlp1xqS5EPflQ==
-X-Received: by 2002:a7b:c3cd:: with SMTP id t13mr21143078wmj.109.1615720033059;
-        Sun, 14 Mar 2021 04:07:13 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id u4sm16014550wrm.24.2021.03.14.04.07.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 04:07:12 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH v2] clk: socfpga: fix iomem pointer cast on 64-bit
-Date:   Sun, 14 Mar 2021 12:07:09 +0100
-Message-Id: <20210314110709.32599-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2gJVCiOzZRSOU8yuw0xGh2d/ty3OmRn7TDCBELtPRw=;
+        b=nJDKemH65HGwU4BNSemrpJ57vlC4j8eXTtzpPFMQkMb61vyjUbWYemP7hK3guH0FKj
+         GM3CucMuURKHKF2C9cwMdMtoVJ/ShfChvT2645Nbd4Vxsre5yoMBvS+ylmR7O9rWEhV3
+         Pq/DoxCm5xWF00dUNvmlszNL+NNSvIDWVxwNzlJXMKhuxIVR/7M5CW53tfjhZvbPnOXQ
+         G2GyBAB3mYJi5d0L8azSP1ziFSztIl6rrgDUZUogPcEQCOlPIigiQDEWM808ptZwAtzw
+         oXfImKN1uakUdRAtvJhZ0WnpUhlKLdlRgVOvP/uJAIVjzkc/0gRLG0a7nWaNEX9iBL0z
+         UH/A==
+X-Gm-Message-State: AOAM5331ZyRb3daqCW1c/nzS0qN3xHHcaFmo1Opjwv7w+QO8es59Ztit
+        PWY2z9G/FYWI+wnf8fUUIJrt6oINdZP1Zg+8aVc=
+X-Google-Smtp-Source: ABdhPJwybSdTGkZm7YJAMqXFYWPwEvQytGccmmznnyQod+aeJmwsGhJLE6r6AFZtaZndTOAAbR+HVZRPbgBmZFCrWfQ=
+X-Received: by 2002:a92:3652:: with SMTP id d18mr8662777ilf.100.1615720083436;
+ Sun, 14 Mar 2021 04:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210314093356.10609-1-dmugil2000@gmail.com>
+In-Reply-To: <20210314093356.10609-1-dmugil2000@gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sun, 14 Mar 2021 13:07:52 +0200
+Message-ID: <CA+U=DspBephozOheNQYBX9jG6bdwm4FeOTF_9tEggOWNvTQ32Q@mail.gmail.com>
+Subject: Re: [PATCH] iio:dac:max517: Use devm_iio_device_register()
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointers should be cast with uintptr_t instead of integer.  This fixes
-warning when compile testing on ARM64:
+On Sun, Mar 14, 2021 at 11:34 AM Mugilraj Dhavachelvan
+<dmugil2000@gmail.com> wrote:
+>
+> Use devm_iio_device_register() to avoid remove function and
+> drop explicit call to iio_device_unregister().
+>
+> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+> ---
+>  drivers/iio/dac/max517.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
+> index 7e01838ef4d0..5f72f126162d 100644
+> --- a/drivers/iio/dac/max517.c
+> +++ b/drivers/iio/dac/max517.c
+> @@ -189,13 +189,7 @@ static int max517_probe(struct i2c_client *client,
+>                         data->vref_mv[chan] = platform_data->vref_mv[chan];
+>         }
+>
+> -       return iio_device_register(indio_dev);
+> -}
+> -
 
-  drivers/clk/socfpga/clk-gate.c: In function ‘socfpga_clk_recalc_rate’:
-  drivers/clk/socfpga/clk-gate.c:102:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+In this case you can also remove the line with
+     i2c_set_clientdata(client, indio_dev);
 
-Fixes: b7cec13f082f ("clk: socfpga: Look for the GPIO_DB_CLK by its offset")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+A lot of times, when functions like i2c_get_clientdata() get removed,
+the i2c_set_clientdata() function becomes useless.
+i.e. it stores some data that will never be used in the lifetime of the driver.
 
----
+It isn't always the case that you can do that; so, some care must be
+taken to avoid special cases.
+But in this case, you can remove the i2c_set_clientdata() call.
 
-Changes since v1:
-1. Add Fixes and Ack.
-2. Use uintptr_t (Stephen Boyd).
----
- drivers/clk/socfpga/clk-gate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/socfpga/clk-gate.c b/drivers/clk/socfpga/clk-gate.c
-index 43ecd507bf83..cf94a12459ea 100644
---- a/drivers/clk/socfpga/clk-gate.c
-+++ b/drivers/clk/socfpga/clk-gate.c
-@@ -99,7 +99,7 @@ static unsigned long socfpga_clk_recalc_rate(struct clk_hw *hwclk,
- 		val = readl(socfpgaclk->div_reg) >> socfpgaclk->shift;
- 		val &= GENMASK(socfpgaclk->width - 1, 0);
- 		/* Check for GPIO_DB_CLK by its offset */
--		if ((int) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
-+		if ((uintptr_t) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
- 			div = val + 1;
- 		else
- 			div = (1 << val);
--- 
-2.25.1
-
+> -static int max517_remove(struct i2c_client *client)
+> -{
+> -       iio_device_unregister(i2c_get_clientdata(client));
+> -       return 0;
+> +       return devm_iio_device_register(&client->dev, indio_dev);
+>  }
+>
+>  static const struct i2c_device_id max517_id[] = {
+> @@ -214,7 +208,6 @@ static struct i2c_driver max517_driver = {
+>                 .pm     = &max517_pm_ops,
+>         },
+>         .probe          = max517_probe,
+> -       .remove         = max517_remove,
+>         .id_table       = max517_id,
+>  };
+>  module_i2c_driver(max517_driver);
+> --
+> 2.25.1
+>
