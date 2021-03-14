@@ -2,104 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D526B33A3F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E3233A3F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhCNJef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 05:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbhCNJec (ORCPT
+        id S234955AbhCNJkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 05:40:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14334 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhCNJjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 05:34:32 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE024C061574;
-        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id s21so4787897pfm.1;
-        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=50Yu8kRAczurx9Iye9QEQJW7J2f9sj2gmPo3j4z9tyQ=;
-        b=pJRbLGYF4Vd+nSlRRISnYYfYuKYhZLUhXYlM0/lL1eDFVz/5F8S2ynx+/nrCSS5+Ik
-         aLIoreIrFBczGNwajQTojh8+2JG+/8aCqvZc0Ug/XAO/QvnIHF8sTxQkdb3wq0bUwfNp
-         siwpOScKVUSLZpOChd4mbmqyMfAC7ZSiZLowPjgTDTpVasfvy/BnKoribPw2GPYGsB1G
-         zcNdk0+QQfFpboON6fO9E/OpLbYOnZ7piBl3/94Vpb3X39eQkDdbIAJHjHffIfCZhMaT
-         n03y2ilHgHnu+YgOXVHDQocFeqdHSeOAraSNg1ljcOk6qVeaBzA2BRy3FUJFxeLrDR4S
-         lXlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=50Yu8kRAczurx9Iye9QEQJW7J2f9sj2gmPo3j4z9tyQ=;
-        b=LVLFaWrsmu35czE70/tghcSk2fERmP7ejVrDaWXZoNqXW7wMmLJXXcvMvlDoaHOJNd
-         j9ovCV/9SgUuu1uaTq2lcQDIxZQQKN9wOFr7DZtin+3EaqSf/gQq9qdh/ogwzcUiJjA7
-         TRzw0GR3m53hYX644oxGD0gvH0S3bleEZGrACziN4Bcm+cD/gGmu0Da7t/BaH620vJBl
-         x1WK89EFbtrJgHgpZLELOZfv9hDCV63+HBqnV8HuP2iiNFssjGZOAwF3tRPB42uYTjmT
-         UonyHQlndR5sAuuR1JMXZ+t01zCCyvSysSZkesvcv+fmAgHP/PJ8ATOFPl71b/Voc56M
-         v0ew==
-X-Gm-Message-State: AOAM5333wzcM0lSCqIkWVvg8FZTD477xjcr3NeugXs/e5ZJBI4yttrXE
-        8XbDqOzV3pxWumc+WICFIbE=
-X-Google-Smtp-Source: ABdhPJxne6eIRAhDeCEZ9HqFnB32LSvHWJiFLNNsOlsCQC8pnuqhKVy10mRfKB6rhlVlBTb9RwuiZg==
-X-Received: by 2002:a63:520e:: with SMTP id g14mr18653079pgb.350.1615714471119;
-        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
-Received: from localhost.localdomain ([2409:4072:61a:47fe:52e6:571b:e80a:141e])
-        by smtp.googlemail.com with ESMTPSA id s15sm10274722pfe.108.2021.03.14.01.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 01:34:30 -0800 (PST)
-From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-To:     ardeleanalex@gmail.com, Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio:dac:max517: Use devm_iio_device_register()
-Date:   Sun, 14 Mar 2021 15:03:56 +0530
-Message-Id: <20210314093356.10609-1-dmugil2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 14 Mar 2021 05:39:55 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DyvcB2gTQz8xxx;
+        Sun, 14 Mar 2021 17:38:02 +0800 (CST)
+Received: from [127.0.0.1] (10.175.101.122) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Sun, 14 Mar 2021
+ 17:39:46 +0800
+Content-Type: multipart/alternative;
+        boundary="===============1893819979828052429=="
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Sun, 14 Mar 2021 17:39:46 +0800
+From:   <hulkrobot@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E4=2E106-rc1=0D=0A/x86?=
+Message-ID: <13b72a54-3650-4837-8579-62e8c9765fdd@DGGEMS402-HUB.china.huawei.com>
+X-Originating-IP: [10.175.101.122]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_iio_device_register() to avoid remove function and 
-drop explicit call to iio_device_unregister().
+--===============1893819979828052429==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
----
- drivers/iio/dac/max517.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS40LnkKQXJjaDog
+eDg2ClZlcnNpb246IDUuNC4xMDYtcmMxDQpDb21taXQ6IDJiY2JhZTA2YjhmYjkwMzA5NzNlZTk5
+NmUxYjhlZDQzZjNiZmQ0YWINCkNvbXBpbGVyOiBnY2MgdmVyc2lvbiA3LjMuMCAoR0NDKQotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpBbGwgdGVzdGNhc2VzIFBBU1NFRC4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGNhc2UgUmVzdWx0
+IFN1bW1hcnk6CnRvdGFsX251bTogNDY5MwpzdWNjZWVkX251bTogNDY5MwpmYWlsZWRfbnVtOiAw
+CnRpbWVvdXRfbnVtOiAwCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRlc3RlZC1ieTogSHVsayBSb2JvdCA8aHVsa3Jv
+Ym90QGh1YXdlaS5jb20+
 
-diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
-index 7e01838ef4d0..5f72f126162d 100644
---- a/drivers/iio/dac/max517.c
-+++ b/drivers/iio/dac/max517.c
-@@ -189,13 +189,7 @@ static int max517_probe(struct i2c_client *client,
- 			data->vref_mv[chan] = platform_data->vref_mv[chan];
- 	}
- 
--	return iio_device_register(indio_dev);
--}
--
--static int max517_remove(struct i2c_client *client)
--{
--	iio_device_unregister(i2c_get_clientdata(client));
--	return 0;
-+	return devm_iio_device_register(&client->dev, indio_dev);
- }
- 
- static const struct i2c_device_id max517_id[] = {
-@@ -214,7 +208,6 @@ static struct i2c_driver max517_driver = {
- 		.pm	= &max517_pm_ops,
- 	},
- 	.probe		= max517_probe,
--	.remove		= max517_remove,
- 	.id_table	= max517_id,
- };
- module_i2c_driver(max517_driver);
--- 
-2.25.1
-
+--===============1893819979828052429==--
