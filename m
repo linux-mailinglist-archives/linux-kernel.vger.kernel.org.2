@@ -2,190 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ECC33A021
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CC9339FF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Mar 2021 19:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhCMSzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 13:55:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234329AbhCMSy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 13:54:58 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 523AE64E54;
-        Sat, 13 Mar 2021 18:54:56 +0000 (UTC)
-Date:   Sat, 13 Mar 2021 18:54:53 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Michael.Hennerich@analog.com,
-        gregkh@linuxfoundation.org, linux@deviqon.com
-Subject: Re: [PATCH] staging: iio: ad9834: convert to device-managed
- functions in probe
-Message-ID: <20210313185453.76f2518c@archlinux>
-In-Reply-To: <20210310095131.47476-1-aardelean@deviqon.com>
-References: <20210310095131.47476-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234339AbhCMSgS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 13 Mar 2021 13:36:18 -0500
+Received: from smtp.econet.co.zw ([77.246.51.158]:65277 "EHLO
+        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234286AbhCMSf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 13:35:58 -0500
+X-Greylist: delayed 472 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 13:35:46 EST
+IronPort-SDR: 2VH7uDjPUxuRF84kGIuoHHaISSCuqZi+ufUVCFmh+/0u/DCFCtj5VFDT1b4h9dNnVvA6flspH+
+ 3h9rw6M4gXRTOO/x00E/RP0IaZ5bJ/VFJjak29BaaBMRsZ8SomhBLF6NshxP1CgwykLJQtbFhT
+ f57yb5yFlreJnhCu99okX5fHlhFOs37BIGqeR55agFxRF7WOiDsNKvGtFuzjle44yqE/60PUcB
+ eSRuIQK9gCbtZaBXI6W4OKIxrnCmM+n1gcMJCNZUjbl9kcbsSMLo+94gqXFyBTYwkpasFfSfmL
+ xM0=
+IronPort-HdrOrdr: A9a23:z3onBKxoaNoCa6u/wVCbKrPwgr1zdoIgy1knxilNYDZSddGVkN
+ 3roe8S0gX6hC1UdHYrn92BP6foewK+ybde544NMbC+GDT3oWfAFuFfxKbr3jGIIUPD38FH06
+ MIScRDIfnRKXQ/ssrg+gm/FL8boeWv1Kyzn+/RwzNMYGhRGsddxjx0AAqaDUF6LTMubfFSKL
+ Om6tNDt36cfx0sA/iTPXUZQ/PF4+TCiZOOW29/Ozcc9AKMgTm0gYSULzGk2H4lIkpy6IZn1V
+ Lgmwz9opy5s/ehygLNvlWjiqh+qZ/EwttHCNfksLlwFhzcziKpYIhGfpHqhkFTnMifrG8wkN
+ /WowoxVv4DiU/sQg==
+X-IronPort-AV: E=Sophos;i="5.81,245,1610402400"; 
+   d="scan'208";a="3444522"
+Received: from unknown (HELO WVALE-MB-SVR-05.econetzw.local) ([192.168.101.173])
+  by ironportLAN.econet.co.zw with ESMTP; 13 Mar 2021 20:27:52 +0200
+Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.184) by
+ WVALE-MB-SVR-05.econetzw.local (192.168.101.173) with Microsoft SMTP Server
+ (TLS) id 15.0.1473.3; Sat, 13 Mar 2021 20:27:48 +0200
+Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
+ (10.10.11.230) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Sat, 13 Mar 2021 20:27:59 +0200
+Reply-To: <r19772744@daum.net>
+From:   "Reem E. A" <chawora@econet.co.zw>
+Subject: Re:
+Date:   Sat, 13 Mar 2021 18:27:46 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <96f8ff6fe77b4507830ab5cf78a93340@WVALE-CAS-SVR-9.econetzw.local>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 11:51:31 +0200
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+Hello,
 
-> This change converts the driver to use device-managed functions in the
-> probe function. For the clock and regulator disable, some
-> devm_add_action_or_reset() calls are required, and then
-> devm_iio_device_register() function can be used register the IIO device.
-> 
-> The final aim here would be for IIO to export only the device-managed
-> functions of it's API. That's a long way to go and this a small step in
-> that direction.
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (2) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home on their behalf and
+for our "Mutual Benefits".
 
-I tweaked this a little to drop st->reg as it's no longer used.
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Turkish Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-allow the autobuilders to poke randomly at it.
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+reem.alhashimi@yandex.com
 
-Thanks,
+Regards,
+Ms. Reem.
+This mail was sent through Econet Wireless, a Global telecoms leader.
 
-Jonathan
+DISCLAIMER
 
-> ---
->  drivers/staging/iio/frequency/ad9834.c | 64 +++++++++++++-------------
->  1 file changed, 31 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/staging/iio/frequency/ad9834.c b/drivers/staging/iio/frequency/ad9834.c
-> index 262c3590e64e..b063cfd0e0e1 100644
-> --- a/drivers/staging/iio/frequency/ad9834.c
-> +++ b/drivers/staging/iio/frequency/ad9834.c
-> @@ -390,6 +390,20 @@ static const struct iio_info ad9833_info = {
->  	.attrs = &ad9833_attribute_group,
->  };
->  
-> +static void ad9834_disable_reg(void *data)
-> +{
-> +	struct regulator *reg = data;
-> +
-> +	regulator_disable(reg);
-> +}
-> +
-> +static void ad9834_disable_clk(void *data)
-> +{
-> +	struct clk *clk = data;
-> +
-> +	clk_disable_unprepare(clk);
-> +}
-> +
->  static int ad9834_probe(struct spi_device *spi)
->  {
->  	struct ad9834_state *st;
-> @@ -407,26 +421,33 @@ static int ad9834_probe(struct spi_device *spi)
->  		return ret;
->  	}
->  
-> +	ret = devm_add_action_or_reset(&spi->dev, ad9834_disable_reg, reg);
-> +	if (ret)
-> +		return ret;
-> +
->  	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
->  	if (!indio_dev) {
->  		ret = -ENOMEM;
-> -		goto error_disable_reg;
-> +		return ret;
->  	}
-> -	spi_set_drvdata(spi, indio_dev);
->  	st = iio_priv(indio_dev);
->  	mutex_init(&st->lock);
->  	st->mclk = devm_clk_get(&spi->dev, NULL);
->  	if (IS_ERR(st->mclk)) {
->  		ret = PTR_ERR(st->mclk);
-> -		goto error_disable_reg;
-> +		return ret;
->  	}
->  
->  	ret = clk_prepare_enable(st->mclk);
->  	if (ret) {
->  		dev_err(&spi->dev, "Failed to enable master clock\n");
-> -		goto error_disable_reg;
-> +		return ret;
->  	}
->  
-> +	ret = devm_add_action_or_reset(&spi->dev, ad9834_disable_clk, st->mclk);
-> +	if (ret)
-> +		return ret;
-> +
->  	st->spi = spi;
->  	st->devid = spi_get_device_id(spi)->driver_data;
->  	st->reg = reg;
-> @@ -470,48 +491,26 @@ static int ad9834_probe(struct spi_device *spi)
->  	ret = spi_sync(st->spi, &st->msg);
->  	if (ret) {
->  		dev_err(&spi->dev, "device init failed\n");
-> -		goto error_clock_unprepare;
-> +		return ret;
->  	}
->  
->  	ret = ad9834_write_frequency(st, AD9834_REG_FREQ0, 1000000);
->  	if (ret)
-> -		goto error_clock_unprepare;
-> +		return ret;
->  
->  	ret = ad9834_write_frequency(st, AD9834_REG_FREQ1, 5000000);
->  	if (ret)
-> -		goto error_clock_unprepare;
-> +		return ret;
->  
->  	ret = ad9834_write_phase(st, AD9834_REG_PHASE0, 512);
->  	if (ret)
-> -		goto error_clock_unprepare;
-> +		return ret;
->  
->  	ret = ad9834_write_phase(st, AD9834_REG_PHASE1, 1024);
->  	if (ret)
-> -		goto error_clock_unprepare;
-> -
-> -	ret = iio_device_register(indio_dev);
-> -	if (ret)
-> -		goto error_clock_unprepare;
-> -
-> -	return 0;
-> -error_clock_unprepare:
-> -	clk_disable_unprepare(st->mclk);
-> -error_disable_reg:
-> -	regulator_disable(reg);
-> -
-> -	return ret;
-> -}
-> -
-> -static int ad9834_remove(struct spi_device *spi)
-> -{
-> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> -	struct ad9834_state *st = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	clk_disable_unprepare(st->mclk);
-> -	regulator_disable(st->reg);
-> +		return ret;
->  
-> -	return 0;
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->  
->  static const struct spi_device_id ad9834_id[] = {
-> @@ -539,7 +538,6 @@ static struct spi_driver ad9834_driver = {
->  		.of_match_table = ad9834_of_match
->  	},
->  	.probe		= ad9834_probe,
-> -	.remove		= ad9834_remove,
->  	.id_table	= ad9834_id,
->  };
->  module_spi_driver(ad9834_driver);
+The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
+WORK ISN'T A PLACE
+IT'S WHAT WE DO
+________________________________
 
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
+
+<mailto:>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
+
+www.econet.co.zw<https://www.econet.co.zw>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
