@@ -2,106 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BD433A7A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 20:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628A033A7BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhCNTTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 15:19:23 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:13572 "EHLO m42-2.mailgun.net"
+        id S234086AbhCNUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 16:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233143AbhCNTTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 15:19:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615749549; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lt4SGILbDHmJknFf4AtHkv1eM2Vns6KY4vPfJygmwIA=;
- b=BXKk2cZWL1Bw7xiKWnkC/D7Sflb5snCx80nqkS15XOjnOgJQLfrJwkpgbzh1WnKYeMSQx9MD
- H8nWLyrAfA6/DU+7ipJF0yicCsouYWPRGLbo51LVZSK9FxaslsWPp1jaqj0xJ2LeAqn3r/ty
- btRNr8zGWs8i6Bh50CM6PDq3/zs=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 604e61a91de5dd7b99f9751f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 19:19:05
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CB402C43464; Sun, 14 Mar 2021 19:19:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15F03C433C6;
-        Sun, 14 Mar 2021 19:19:04 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 00:49:03 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     schowdhu@codeaurora.org, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        sibis@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        vkoul@kernel.org
-Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data
- Capture and Compare unit(DCC)
-In-Reply-To: <YEpGf7kQS53pByqC@builder.lan>
-References: <cover.1615393454.git.schowdhu@codeaurora.org>
- <48556129a02c9f7cd0b31b2e8ee0f168e6d211b7.1615393454.git.schowdhu@codeaurora.org>
- <YElUCaBUOx7hEuIh@builder.lan>
- <7c189355ca6c472b05151673d27481c3@codeaurora.org>
- <YEpGf7kQS53pByqC@builder.lan>
-Message-ID: <d7af44c2f9be4b50136b61ca39a814eb@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S233634AbhCNUBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 16:01:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E40DE64EB0;
+        Sun, 14 Mar 2021 20:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615752103;
+        bh=qEY4KPv1FWfeCeJsaHspGiIahwMh3VNtau7jhcQ52fo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=GZRNGqtbJ5EeJvjxSF4N2kmvCHxlOiojavtiUKwhLnIyOwNtVpf2r1XM1JxUm4vpQ
+         YfAFSDuiSXr6EPMC9uvhnEfRTelHnC6EKN+qx4UhEWv8VwwbGJFqFqj3aXljKzeSML
+         T0lQoOUBs+7uJAd2j0ZeuTgnl1HheSmmOMq+cs2tVStj1RRqtFaO7XAaq0wWkOWer+
+         cqvRUeQYUhU4HNb4CAwZyNLXbz4m4kszSNxEOvnOUsg4hkvdgWzrg1IkTC63NmVB8J
+         zIZJY1E/uk9cQTPEiDRTFZv97kpntWeu5tevMZ3UbpcVOp+NUi/CW+LfVF0E9Wyo/f
+         DExtoSH5PdlcA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CD28F60A45;
+        Sun, 14 Mar 2021 20:01:43 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-3 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87tupe3utv.fsf@mpe.ellerman.id.au>
+References: <87tupe3utv.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87tupe3utv.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-3
+X-PR-Tracked-Commit-Id: 0b736881c8f1a6cd912f7a9162b9e097b28c1c30
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c3c7579f5e3b4826d32af0521e53d5d565ed5a73
+Message-Id: <161575210377.6248.6875830079837121926.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Mar 2021 20:01:43 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, npiggin@gmail.com,
+        naveen.n.rao@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        dja@axtens.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 22:04, Bjorn Andersson wrote:
-> On Thu 11 Mar 04:06 CST 2021, schowdhu@codeaurora.org wrote:
-> 
->> On 2021-03-11 04:49, Bjorn Andersson wrote:
->> > On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
->> >
->> > > The DCC is a DMA Engine designed to capture and store data
->> > > during system crash or software triggers. The DCC operates
->> > > based on link list entries which provides it with data and
->> > > addresses and the function it needs to perform. These
->> > > functions are read, write and loop. Added the basic driver
->> > > in this patch which contains a probe method which instantiates
->> > > the resources needed by the driver. DCC has it's own SRAM which
->> > > needs to be instantiated at probe time as well.
->> > >
->> >
->> > So to summarize, the DCC will upon a crash copy the configured region
->> > into the dcc-ram, where it can be retrieved either by dumping the memory
->> > over USB or from sysfs on the next boot?
->> 
->> Replied by Sai
->> 
-> 
-> Thanks Souradeep and Sai, I'm definitely interested in learning more
-> about what the hardware block can do and how we can use it.
-> 
+The pull request you sent on Sun, 14 Mar 2021 21:15:08 +1100:
 
-Thanks Bjorn, hopefully example in the other thread provides some good
-view of the capability of DCC. Please let us know if you need any more
-details.
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-3
 
-Thanks,
-Sai
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c3c7579f5e3b4826d32af0521e53d5d565ed5a73
+
+Thank you!
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
