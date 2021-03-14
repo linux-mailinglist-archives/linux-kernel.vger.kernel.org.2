@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3107633A44B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B54933A450
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhCNLDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 07:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        id S235106AbhCNLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 07:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbhCNLCr (ORCPT
+        with ESMTP id S235203AbhCNLD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 07:02:47 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6460AC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 04:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Hb/R5EmTCWcC7fN5ruuEXux4idHLiI2Ik4ejDDOKvw8=; b=hwqlbyL7rzkVrCvNNhFzRAh5bH
-        hqRBcsVK/3aj3BF88MbgwbuS1GyL2iFquky5u3Ilu5Y+WPTVCH72YX4XUETh96dVlYYGYO5o3jNwA
-        LTTD0ukaG8H5i+7NRHfrBDKl/eePr3vJVVGs6tkuZb6gA2LK3IeV5b6GfIRht+qRWTT0=;
-Received: from p200300ccff4d09001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff4d:900:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lLOWA-0003bA-H9; Sun, 14 Mar 2021 12:02:42 +0100
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lLOW9-0001Ls-9U; Sun, 14 Mar 2021 12:02:41 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH] mfd: rn5t618: Do not cache various USB related registers
-Date:   Sun, 14 Mar 2021 12:02:36 +0100
-Message-Id: <20210314110236.5149-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.29.2
+        Sun, 14 Mar 2021 07:03:56 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44509C061763
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 04:03:56 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id n79so28994750qke.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 04:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZLrP4l4H65pb8M2x3DmR+dro99lUOubfCFMxCcIwSs8=;
+        b=aqFQ0r0ajDoxAzsNxpA6vK0Zdj3ovoLhw+/jMkUZTnXEBFuxuFhCDIVChyina/YdNL
+         TiaChHRMrS2bq6ra3/XwlhKAi448hL+T1ODNfJ9v536uUtYf6IVUoVavpUIjrXILA0aQ
+         EXE5As5UjV1qrO0Du4u9rcqqtisZ5WumTKmyt4G85Y7rU3m2iEuTiPwyno8gVaViFGW1
+         ohQO7ehjYfrWMXVZwOiQfcUyiy56ZWJ+BV0GlxiMD7RFjQFo0jjnzjra3WZ0yO3WmyCP
+         wjcshkgQEmEb2OyJmoUhnxUvF48KQt/9Xg5P6UtdJIksT1m727NGOrsTKH6u9a5ucfWx
+         9WDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZLrP4l4H65pb8M2x3DmR+dro99lUOubfCFMxCcIwSs8=;
+        b=cOUIscet16metPy0OzDK6KWvxm3T7OQJupB1lWHDuybhqXBTLgj29fRPWRvUr5Brub
+         2u7Qz1Ttk/vGrHu4TkI5X0WhkSYVdhuEQiRojuhuM68gd4e76hkZej8aNFeR1CItP0sa
+         egpdN21dUhaohAihcSK/2X6fTL8L4HqI8tczm9xQVxfjY0PTRfDRjrShbOQThuQQEUQW
+         vUtj2Q1iR6uhFZmRqZ71il5xQ5rZf2e+R4Ro6zSA65s+kMwpQ5yWZDEMvYRAVCC+9IBz
+         kF/0lroTfJSrPAkHw8lDH0yG+yX2EWPze1GGbeoQSw+IBZ4DO1216wWrAOAET6FFzzyj
+         0SCA==
+X-Gm-Message-State: AOAM5303q6TM8pf/gzh5IGNO6ra8NzGkpy8PYzZDJ6mt5URWgue7j46X
+        mw67dUD0IuolxmXJEpFM1eDKQUj9Hpuwib+W4Xo4Ng==
+X-Google-Smtp-Source: ABdhPJwEegFcOLhpznys7nGUJ8jy4+601fJsOcZDpPR+EdJcnLdnSVL+p2u/yEUr6V/fvF+FJ96hAtYrDtqWf6oc7wU=
+X-Received: by 2002:a37:4743:: with SMTP id u64mr20614742qka.350.1615719834825;
+ Sun, 14 Mar 2021 04:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+References: <00000000000096cdaa05bd32d46f@google.com> <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
+ <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 14 Mar 2021 12:03:43 +0100
+Message-ID: <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
+To:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These register get reset to their OTP defaults after USB plugging.
-And while at it, also add a missing register for detecting the
-charger type.
+On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > On Wed, Mar 10, 2021 at 7:28 PM syzbot
+> > <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
+> > > userspace arch: riscv64
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
+> >
+> > +riscv maintainers
+> >
+> > Another case of put_user crashing.
+>
+> There are 58 crashes in sock_ioctl already. Somehow there is a very
+> significant skew towards crashing with this "user memory without
+> uaccess routines" in schedule_tail and sock_ioctl of all places in the
+> kernel that use put_user... This looks very strange... Any ideas
+> what's special about these 2 locations?
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- drivers/mfd/rn5t618.c       | 3 +++
- include/linux/mfd/rn5t618.h | 1 +
- 2 files changed, 4 insertions(+)
+I could imagine if such a crash happens after a previous stack
+overflow and now task data structures are corrupted. But f_getown does
+not look like a function that consumes way more than other kernel
+syscalls...
 
-diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
-index dc452df1f1bf..6ed04e6dbc78 100644
---- a/drivers/mfd/rn5t618.c
-+++ b/drivers/mfd/rn5t618.c
-@@ -45,8 +45,11 @@ static bool rn5t618_volatile_reg(struct device *dev, unsigned int reg)
- 	case RN5T618_INTMON:
- 	case RN5T618_RTC_CTRL1 ... RN5T618_RTC_CTRL2:
- 	case RN5T618_RTC_SECONDS ... RN5T618_RTC_YEAR:
-+	case RN5T618_CHGCTL1:
-+	case RN5T618_REGISET1 ... RN5T618_REGISET2:
- 	case RN5T618_CHGSTATE:
- 	case RN5T618_CHGCTRL_IRR ... RN5T618_CHGERR_MONI:
-+	case RN5T618_GCHGDET:
- 	case RN5T618_CONTROL ... RN5T618_CC_AVEREG0:
- 		return true;
- 	default:
-diff --git a/include/linux/mfd/rn5t618.h b/include/linux/mfd/rn5t618.h
-index fba0df13d9a8..8aa0bda1af4f 100644
---- a/include/linux/mfd/rn5t618.h
-+++ b/include/linux/mfd/rn5t618.h
-@@ -188,6 +188,7 @@
- #define RN5T618_CHGOSCSCORESET3		0xd7
- #define RN5T618_CHGOSCFREQSET1		0xd8
- #define RN5T618_CHGOSCFREQSET2		0xd9
-+#define RN5T618_GCHGDET			0xda
- #define RN5T618_CONTROL			0xe0
- #define RN5T618_SOC			0xe1
- #define RN5T618_RE_CAP_H		0xe2
--- 
-2.29.2
 
+
+> > > Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000020000300
+> > > Oops [#1]
+> > > Modules linked in:
+> > > CPU: 1 PID: 4488 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+> > > Hardware name: riscv-virtio,qemu (DT)
+> > > epc : sock_ioctl+0x424/0x6ac net/socket.c:1124
+> > >  ra : sock_ioctl+0x424/0x6ac net/socket.c:1124
+> > > epc : ffffffe002aeeb3e ra : ffffffe002aeeb3e sp : ffffffe023867da0
+> > >  gp : ffffffe005d25378 tp : ffffffe007e116c0 t0 : 0000000000000000
+> > >  t1 : 0000000000000001 t2 : 0000003fb8035e44 s0 : ffffffe023867e30
+> > >  s1 : 0000000000040000 a0 : 0000000000000000 a1 : 0000000000000007
+> > >  a2 : 1ffffffc00fc22d8 a3 : ffffffe003bc1d02 a4 : 0000000000000000
+> > >  a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+> > >  s2 : 0000000000000000 s3 : 0000000000008902 s4 : 0000000020000300
+> > >  s5 : ffffffe005d2b0d0 s6 : ffffffe010facfc0 s7 : ffffffe008e00000
+> > >  s8 : 0000000000008903 s9 : ffffffe010fad080 s10: 0000000000000000
+> > >  s11: 0000000000020000 t3 : 982de389919f6300 t4 : ffffffc401175688
+> > >  t5 : ffffffc401175691 t6 : 0000000000000007
+> > > status: 0000000000000120 badaddr: 0000000020000300 cause: 000000000000000f
+> > > Call Trace:
+> > > [<ffffffe002aeeb3e>] sock_ioctl+0x424/0x6ac net/socket.c:1124
+> > > [<ffffffe0003fdb6a>] vfs_ioctl fs/ioctl.c:48 [inline]
+> > > [<ffffffe0003fdb6a>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+> > > [<ffffffe0003fdb6a>] sys_ioctl+0x5c2/0xd56 fs/ioctl.c:739
+> > > [<ffffffe000005562>] ret_from_syscall+0x0/0x2
+> > > Dumping ftrace buffer:
+> > >    (ftrace buffer empty)
+> > > ---[ end trace a5f91e70f37b907b ]---
+> > >
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
