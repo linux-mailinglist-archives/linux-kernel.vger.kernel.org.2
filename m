@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78B533A266
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C7A33A268
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhCNCa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 21:30:56 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:45256 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbhCNCan (ORCPT
+        id S234131AbhCNCb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 21:31:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233906AbhCNCbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 21:30:43 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02C1A55C;
-        Sun, 14 Mar 2021 03:30:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615689042;
-        bh=ibheVfpzm+JE73D5nVjhfA/XFmhnMvmRbtXmyfTRNJk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iDKnyLByxnc+cu3aOpqUV3Jdvti1BSI1I7mvH/zau/rooHUY+NeSQLF+SQYgElm9p
-         yOeWXK3alybNmqHy3DipT033C5gL9yy13SovOnpdbzDK/035eSvAWF7QWVet+UvUO0
-         TBB0rfZOD7YXure8ouUFaAuHrjhZ78xBLzpuZbUQ=
-Date:   Sun, 14 Mar 2021 04:30:06 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-api@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peter.chen@kernel.org,
-        kurahul@cadence.com
-Subject: Re: [PATCH 2/2] usb: webcam: Invalid size of Processing Unit
- Descriptor
-Message-ID: <YE11Lk3XXbB1B+aD@pendragon.ideasonboard.com>
-References: <20210308102735.9251-1-pawell@gli-login.cadence.com>
- <20210308102735.9251-2-pawell@gli-login.cadence.com>
+        Sat, 13 Mar 2021 21:31:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BF8C061574;
+        Sat, 13 Mar 2021 18:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EnE50NkSknnpue15HbJ3Qi37ZMK01SdHagRrgb71jbQ=; b=RDqSNWQOJC9ALFwiP8EzZw1Fny
+        m3YZL6xxDoiMlJGN5E2sZyaQRBn9fJsIzYKR6tN+gXo0nqmELhdF/L5OD9UamPloc4J4vel9S6xRM
+        EXq4ETP03jM5h+ICgwNm1EqvBr0wnKgbU5NxJlR0W+00ruNU0Lc+rrFS+S8spYKJCPo/8g4WUEKUf
+        TejesuB3jUJtfc7Ani/rLlkAceaaeCXGF3JV2f7VlZiUFELUl+rbqBgZRBUW4F4fTxUkEkLVmM8sV
+        KqYSmVLCtJRKJpNbL8rLRdm3ayBw8Ud4bWnsPVo2DDuQcB2v7r/brxNG5giPsbFXQo0D6W7jBJ3ut
+        XTP3Cmeg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLGWf-00FPfH-UA; Sun, 14 Mar 2021 02:30:45 +0000
+Date:   Sun, 14 Mar 2021 02:30:41 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 00/25] Page folios
+Message-ID: <20210314023041.GM2577561@casper.infradead.org>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308102735.9251-2-pawell@gli-login.cadence.com>
+In-Reply-To: <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
-
-Thank you for the patch.
-
-On Mon, Mar 08, 2021 at 11:27:35AM +0100, Pawel Laszczak wrote:
-> From: Pawel Laszczak <pawell@cadence.com>
+On Sat, Mar 13, 2021 at 12:36:58PM -0800, Andrew Morton wrote:
+> On Fri,  5 Mar 2021 04:18:36 +0000 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 > 
-> According with USB Device Class Definition for Video Device the
-> Processing Unit Descriptor bLength should be 12 (10 + bmControlSize),
-> but it has 11.
+> > Our type system does not currently distinguish between tail pages and
+> > head or single pages.  This is a problem because we call compound_head()
+> > multiple times (and the compiler cannot optimise it out), bloating the
+> > kernel.  It also makes programming hard as it is often unclear whether
+> > a function operates on an individual page, or an entire compound page.
+> > 
+> > This patch series introduces the struct folio, which is a type that
+> > represents an entire compound page.  This initial set reduces the kernel
+> > size by approximately 6kB, although its real purpose is adding
+> > infrastructure to enable further use of the folio.
 > 
-> Invalid length caused that Processing Unit Descriptor Test Video form
-> CV tool failed. To fix this issue patch adds bmVideoStandards into
-> uvc_processing_unit_descriptor structure.
-
-The bmVideoStandards field was added in UVC 1.1, it wasn't part of UVC
-1.0a. The commit message should explain this.
-
-This change looks good to me, but could you also update
-drivers/usb/gadget/legacy/webcam.c and
-drivers/usb/gadget/function/f_uvc.c to explicitly set this field to 0 ?
-
-With that,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> ---
->  include/uapi/linux/usb/video.h | 1 +
->  1 file changed, 1 insertion(+)
+> Geeze it's a lot of noise.  More things to remember and we'll forever
+> have a mismash of `page' and `folio' and code everywhere converting
+> from one to the other.  Ongoing addition of folio
+> accessors/manipulators to overlay the existing page
+> accessors/manipulators, etc.
 > 
-> diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
-> index d854cb19c42c..2a54e8fdd341 100644
-> --- a/include/uapi/linux/usb/video.h
-> +++ b/include/uapi/linux/usb/video.h
-> @@ -302,6 +302,7 @@ struct uvc_processing_unit_descriptor {
->  	__u8   bControlSize;
->  	__u8   bmControls[2];
->  	__u8   iProcessing;
-> +	__u8   bmVideoStandards;
->  } __attribute__((__packed__));
->  
->  #define UVC_DT_PROCESSING_UNIT_SIZE(n)			(9+(n))
+> It's unclear to me that it's all really worth it.  What feedback have
+> you seen from others?
 
--- 
-Regards,
+Mmm.  The thing is, the alternative is ongoing bugs.  And inefficiencies.
+Today, we have code everywhere converting from tail pages to head pages
+-- we just don't notice it because it's all wrapped up in macros.  I
+have over 10kB in text size reductions in my tree (yes, it's a monster
+series of patches), almost all from removing those conversions.  And
+it's far from done.
 
-Laurent Pinchart
+And these conversions are all in hot paths, like handling page faults
+and read().  For example:
+
+filemap_fault                               1980    1289    -691
+
+it's two-thirds the size it was!  Surely that's not all in the hot path,
+but still it's going to have some kind of effect.
+
+As well, we have code today that _looks_ right but is buggy.  Take a
+look at vfs_dedupe_file_range_compare().  There's nothing wrong with
+it at first glance, until you realise that vfs_dedupe_get_page() might
+return a tail page, and you can't look at page->mapping for a tail page.
+Nor page->index, so vfs_lock_two_pages() is also broken.
+
+As far as feedback, I really want more.  Particularly from filesystem
+people.  I don't think a lot of them realise yet that I'm going to change
+15 of the 22 address_space_ops to work with folios instead of pages.
+Individual filesystems can keep working with pages, of course, until
+they enable the "use multipage folios" bit.
