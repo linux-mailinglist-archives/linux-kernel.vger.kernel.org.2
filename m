@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A9233A2A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB34E33A2AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhCNEdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 23:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhCNEdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 23:33:15 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57878C061574;
-        Sat, 13 Mar 2021 20:33:14 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id b130so28588669qkc.10;
-        Sat, 13 Mar 2021 20:33:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GSDyMIHvfICnzMowC3kdAgz3ihnvPdnoV84yIK3Yoig=;
-        b=FlFPiML708pbhmfkgDJv6E+VVKxyqP9FmDznY1d5kfsDbRvxLDs4FDvuhOPnIXWENv
-         0OOS9io335+d8tW0i1S+rJDxs7zLpa6oQcxuQhhxSPed81JRER7/Ztx1D1x8iEMqAu5d
-         C4zkS7rmV5pY0AfIXTj8smY3G7ArPa3yd6ZUKL1rWCq4d6rnp34xJMxmOMLsKbH/3BTj
-         nCE7EEGG1gaq2r28YIfUcwEd+PVYpbLV7JehdiMRtuF8xyC3h4pH4E+TKn69u8jArmqf
-         ezusogsTeAf1BkaYIju47G4hytNAwtrDPKkjY8m4IPcGKblNFKxNnbW1wXR6DcbsN39N
-         b/+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GSDyMIHvfICnzMowC3kdAgz3ihnvPdnoV84yIK3Yoig=;
-        b=DoKrnvdob7BYn7jzAm90+jns7jLngcK9u6I4Whm3R59S6Y9EW5j48FDPWJloHqLs9M
-         ZfFJHZlXRSCQtzkLmyeV3xznPVpFCkgt1oXX/N+AnhttHGY7nUmS7p4u3Z9XNjYI7LFM
-         Nyeo6ISD1vKO4SIr3EmiH5WMQqtpioA+E2jrvaRzRBn77/W568rIuhhvR0QzlE8bupS/
-         dAxlT2+g3Vm6NvRaMU9J1tZpiOSFiSEKEUUYaAB2GG8H5a0z4AvEnKhRjmqHNhOpzhOB
-         JkKz/v/m6z05fQ4BrnY8rrRxyOIc7Y0WNo+GqYSffTmLgRemvdu4lQJC6wRhvhCKIBjV
-         ZoLA==
-X-Gm-Message-State: AOAM532swn7r3bLiFrCPHnwLaNlwJENdZG1eMiLtDtsBjGTb8EjBDyCb
-        Y1g2OC7alLaIyZgaHKCWh4g=
-X-Google-Smtp-Source: ABdhPJyjsi6FJ+CFAbUneWRYN6gBrSJqx5rJqtEjXn7nnlZ3wV0wRhSwzBTDiMigKyzqSXCVLMLpzQ==
-X-Received: by 2002:a05:620a:10a7:: with SMTP id h7mr19008403qkk.402.1615696393404;
-        Sat, 13 Mar 2021 20:33:13 -0800 (PST)
-Received: from localhost.localdomain ([37.19.198.30])
-        by smtp.gmail.com with ESMTPSA id a14sm7397459qtw.80.2021.03.13.20.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 20:33:12 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net, corbet@lwn.net,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] docs: kbuild: Fix a typo in the file Kconfig.recursion-issue-02
-Date:   Sun, 14 Mar 2021 10:00:44 +0530
-Message-Id: <20210314043044.15926-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S234673AbhCNEg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 23:36:58 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55596 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234142AbhCNEgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 23:36:48 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lLIUS-00AngM-UY; Sun, 14 Mar 2021 05:36:32 +0100
+Date:   Sun, 14 Mar 2021 05:36:32 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] net: ethernet: actions: Add Actions Semi Owl
+ Ethernet MAC driver
+Message-ID: <YE2S0MW62lVF/psk@lunn.ch>
+References: <cover.1615423279.git.cristian.ciocaltea@gmail.com>
+ <158d63db7d17d87b01f723433e0ddc1fa24377a8.1615423279.git.cristian.ciocaltea@gmail.com>
+ <YEwO33TR7ENHuMaY@lunn.ch>
+ <20210314011324.GA991090@BV030612LT>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210314011324.GA991090@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > > +	if (phy->interface != PHY_INTERFACE_MODE_RMII) {
+> > > +		netdev_err(netdev, "unsupported phy mode: %s\n",
+> > > +			   phy_modes(phy->interface));
+> > > +		phy_disconnect(phy);
+> > > +		netdev->phydev = NULL;
+> > > +		return -EINVAL;
+> > > +	}
+> > 
+> > It looks like the MAC only supports symmetric pause. So you should
+> > call phy_set_sym_pause() to let the PHY know this.
+> 
+> I did not find any reference related to the supported pause types,
+> is this normally dependant on the PHY interface mode?
 
-s/sematics/semantics/
+There is a MAC / PHY split there. The PHY is responsible for the
+negotiation for what each end can do. But it is the MAC which actually
+implements pause. The MAC needs to listen to pause frames and not send
+out data frames when the link peer indicates pause. And the MAC needs
+to send a pause frames when its receive buffers are full. The code you
+have in this MAC driver seems to indicate the MAC only supports
+symmetric pause. Hence you need to configure the PHY to only auto-neg
+symmetric pause.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Documentation/kbuild/Kconfig.recursion-issue-02 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > +	ret = crypto_skcipher_encrypt(req);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "failed to encrypt S/N: %d\n", ret);
+> > > +		goto err_free_tfm;
+> > > +	}
+> > > +
+> > > +	netdev->dev_addr[0] = 0xF4;
+> > > +	netdev->dev_addr[1] = 0x4E;
+> > > +	netdev->dev_addr[2] = 0xFD;
+> > 
+> > 0xF4 has the locally administered bit 0. So this is a true OUI. Who
+> > does it belong to? Ah!
+> > 
+> > F4:4E:FD Actions Semiconductor Co.,Ltd.(Cayman Islands)
+> > 
+> > Which makes sense. But is there any sort of agreement this is allowed?
+> > It is going to cause problems if they are giving out these MAC
+> > addresses in a controlled way.
+> 
+> Unfortunately this is another undocumented logic taken from the vendor
+> code. I have already disabled it from being built by default, although,
+> personally, I prefer to have it enabled in order to get a stable MAC
+> address instead of using a randomly generated one or manually providing
+> it via DT.
+> 
+> Just for clarification, I did not have any agreement or preliminary
+> discussion with the vendor. This is just a personal initiative to
+> improve the Owl SoC support in the mainline kernel.
+> 
+> > Maybe it would be better to set bit 1 of byte 0? And then you can use
+> > 5 bytes from enc_sn, not just 4.
+> 
+> I included the MAC generation feature in the driver to be fully
+> compatible with the original implementation, but I'm open for changes
+> if it raises concerns and compatibility is less important.
 
-diff --git a/Documentation/kbuild/Kconfig.recursion-issue-02 b/Documentation/kbuild/Kconfig.recursion-issue-02
-index df245fd7670d..0034eb494d11 100644
---- a/Documentation/kbuild/Kconfig.recursion-issue-02
-+++ b/Documentation/kbuild/Kconfig.recursion-issue-02
-@@ -6,7 +6,7 @@
- # make KBUILD_KCONFIG=Documentation/kbuild/Kconfig.recursion-issue-02 allnoconfig
- #
- # The recursive limitations with Kconfig has some non intuitive implications on
--# kconfig sematics which are documented here. One known practical implication
-+# kconfig semantics which are documented here. One known practical implication
- # of the recursive limitation is that drivers cannot negate features from other
- # drivers if they share a common core requirement and use disjoint semantics to
- # annotate those requirements, ie, some drivers use "depends on" while others
---
-2.26.2
+This is not a simple question to answer. If the vendor driver does
+this, then the vendor can never assign MAC addresses in a controlled
+way, unless they have a good idea how the algorithm turns serial
+numbers into MAC addresses, and they can avoid MAC addresses for
+serial numbers already issued.
 
+But should the Linux kernel do the same? If all you want is a stable
+MAC address, my personal preference would be to set the locally
+administered bit, and fill the other 5 bytes from the hash
+algorithm. You then have a stable MAC addresses, but you clearly
+indicate it is not guaranteed to by globally unique, and you do not
+need to worry about what the vendor is doing.
+
+> > Otherwise, this look a new clean driver.
+> 
+> Well, I tried to do my best, given my limited experience as a self-taught
+> kernel developer. Hopefully reviewing my code will not cause too many
+> headaches! :)
+
+This is actually above average for a self-taught kernel
+developer. Well done.
+
+	   Andrew
