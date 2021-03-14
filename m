@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7CB33A612
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB03F33A616
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhCNQRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 12:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S233954AbhCNQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 12:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhCNQR0 (ORCPT
+        with ESMTP id S229870AbhCNQdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 12:17:26 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C094C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 09:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=h3oKT2DIWMi/3UOnem0PmyfrJuvNhkM34vsZ5Qcbs8I=; b=aaJt/VQm3LY5XSCT8IZoqz6Dfu
-        RHGD6IcX8kOz4lYEBQzKW4vqCWhl54QfBJZc9YSopxtB289Mz+vP4k/TtDE7uKtCSOpaamIDgWdl4
-        J3H9wB23k/bWDyfxP7ATLI6a2NWh+nr14Fsm51QhmRLKaXavPYq9c7JFOuflxxb+e9H+sjk9GmEpQ
-        iJCDlH2ynfGFS5JMDOP3i3E/sIipk5T9KcQr7AC9Z2PwsYKjQMgdIYnxXAzYthOStEnVY5MWCPmM8
-        XySCxYCSylV8VdUCjv0wf8OaEiaimRs/D9Hx8sj6U5xD7XqIupipP+irq5s+uUddNVb0unAyV7Vcb
-        DbiHgJOQ==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLTQf-001DPd-Ni; Sun, 14 Mar 2021 16:17:22 +0000
-Subject: Re: [PATCH] soc: fsl: guts: fix comment syntax in file
-To:     Aditya Srivastava <yashsri421@gmail.com>, leoyang.li@nxp.com
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210314072828.9270-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1cab34f0-dcd1-b8ff-6bab-38ff9adc94b5@infradead.org>
-Date:   Sun, 14 Mar 2021 09:17:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 14 Mar 2021 12:33:43 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD1FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 09:33:43 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id e26so5107838pfd.9
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 09:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pqh8uRAc9wSSWjuXVMjvvDEKhTxEPbk8XqKk0z5UyJU=;
+        b=k/oOQXEJcr3OC19xDkDQjmCRoeFafxUsokEk0VCuhReTrth5vTp+rNKVGOYKRVBM/p
+         r726SbB42OUlI2RqNhOFgr6RZkIENttrdjSjUrteSQEGjXjkK/Tye2Q7OekvuDz1v7XV
+         P2JLBRjIsoFJwSaRdZJgKy+W2e2nm4eb4m5KQR4T7xLLb2sVK8lO84InLAuTC8qlLLgd
+         hFwySqLZOh6YtNid2LcaXfaF4I70qFOVJNEGI8usn7lQMmLr8tneBVXHoeMySbTXwDc2
+         CNqOQTN9lzyOrHbxE6L+2rNvS/VaSuBJ37JsTZmh5N5ZTGU55Bvxic0NO2O5TkO3Kvmh
+         UHQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pqh8uRAc9wSSWjuXVMjvvDEKhTxEPbk8XqKk0z5UyJU=;
+        b=VWNXUmHzddpPBUoAT4yVY142gnxtee2KfH/MCgC53rznOcEIpZ6BKTLwwVwuYrVZay
+         PP2P/qE4w21o3ZKiY6iSQ0XiOLE19IGuqqijfvFx/Y68GNQZI5a+p1M5KeXK25QGpR7I
+         tFmYMmI06HhqmBV3LsS/dkkX65+fZ74snvJZaiabvtlGrY5TWFrc/Tdu+83kGe//0mSN
+         MR1TdICUNNhht7vqdb1wvva2FyVJvRG4kwWfpsj2YQekJ0A79SJK/DFq6Foqd2uSxJK0
+         jx8Bo6QNm9urxXt1Ob2hm7fKB5oTiunSn087JBSiPuAv4Jxw5rclSxX9TMyILhB9njHs
+         XprA==
+X-Gm-Message-State: AOAM532KSwATWSPT2gBsWnAnqMacIp6bmScs5gZqCx62ntkEW5vkzrxr
+        ZgkWEyewuGW1pIp/+okNa9oiTFnb8KFnJcS+
+X-Google-Smtp-Source: ABdhPJx3vPymGqhG6ZgMzyeA1zNIj216/lWGiLKAV5ovWyQ9G8lw6cW9WcAcblB1SA3OrTB/I1MGNQ==
+X-Received: by 2002:aa7:8f04:0:b029:1f7:d71b:6a51 with SMTP id x4-20020aa78f040000b02901f7d71b6a51mr7114176pfr.4.1615739622611;
+        Sun, 14 Mar 2021 09:33:42 -0700 (PDT)
+Received: from ubuntu.localdomain ([182.156.244.6])
+        by smtp.gmail.com with ESMTPSA id y20sm11217914pfo.210.2021.03.14.09.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 09:33:42 -0700 (PDT)
+From:   Anupama K Patil <anupamakpatil123@gmail.com>
+Cc:     anupamakpatil123@gmail.com, bkkarthik@pesu.pes.edu,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: tee: optee: removed repeated words in comments
+Date:   Sun, 14 Mar 2021 09:18:50 -0700
+Message-Id: <20210314161854.4541-1-anupamakpatil123@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210314072828.9270-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/13/21 11:28 PM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for kernel-doc comments.
-> There are certain comments in include/linux/fsl/guts.h which follows this
-> syntax, but the content inside does not comply with kernel-doc.
-> 
-> E.g., opening comment for "Freecale 85xx and 86xx Global Utilties
-> register set" follows kernel-doc syntax(i.e., '/**'), but the content
-> inside does not comply with any kernel-doc specification (function,
-> struct, etc).
-> 
-> This causes unwelcomed warning from kernel-doc:
-> "warning: expecting prototype for Freecale 85xx and 86xx Global Utilties register set(). Prototype was for __FSL_GUTS_H__() instead"
-> 
-> Replace all such comment occurrences with general comment format,
-> i.e. '/*' to pervent kernel-doc from parsing these.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+the word "the" is repeated in the file core.c
+so it has been removed. Likewise the word "of"
+is repeated in optee_smc.h and have removed it.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
+---
+ drivers/tee/optee/core.c      | 2 +-
+ drivers/tee/optee/optee_smc.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
-
-> ---
-> * Applies perfectly on next-20210312
-> 
->  include/linux/fsl/guts.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/fsl/guts.h b/include/linux/fsl/guts.h
-> index 0ac27b233f12..fdb55ca47a4f 100644
-> --- a/include/linux/fsl/guts.h
-> +++ b/include/linux/fsl/guts.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-or-later */
-> -/**
-> +/*
->   * Freecale 85xx and 86xx Global Utilties register set
->   *
->   * Authors: Jeff Brown
-> @@ -14,7 +14,7 @@
->  #include <linux/types.h>
->  #include <linux/io.h>
->  
-> -/**
-> +/*
->   * Global Utility Registers.
->   *
->   * Not all registers defined in this structure are available on all chips, so
-> 
-
-
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index cf4718c6d35d..2ccb091cd643 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -422,7 +422,7 @@ static bool optee_msg_exchange_capabilities(optee_invoke_fn *invoke_fn,
+ 
+ 	/*
+ 	 * TODO This isn't enough to tell if it's UP system (from kernel
+-	 * point of view) or not, is_smp() returns the the information
++	 * point of view) or not, is_smp() returns the information
+ 	 * needed, but can't be called directly from here.
+ 	 */
+ 	if (!IS_ENABLED(CONFIG_SMP) || nr_cpu_ids == 1)
+diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
+index 80eb763a8a80..49e8e027dc5b 100644
+--- a/drivers/tee/optee/optee_smc.h
++++ b/drivers/tee/optee/optee_smc.h
+@@ -162,7 +162,7 @@ struct optee_smc_call_get_os_revision_result {
+  * Have config return register usage:
+  * a0	OPTEE_SMC_RETURN_OK
+  * a1	Physical address of start of SHM
+- * a2	Size of of SHM
++ * a2	Size of SHM
+  * a3	Cache settings of memory, as defined by the
+  *	OPTEE_SMC_SHM_* values above
+  * a4-7	Preserved
 -- 
-~Randy
+2.25.1
 
