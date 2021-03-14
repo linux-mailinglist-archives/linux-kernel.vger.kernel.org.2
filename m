@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F4033A419
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F7F33A41A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhCNKNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:13:00 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:44369 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhCNKM3 (ORCPT
+        id S235127AbhCNKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:14:37 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:40379 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhCNKOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:12:29 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8F3943E8EC;
-        Sun, 14 Mar 2021 11:12:15 +0100 (CET)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Obeida Shamoun <oshmoun100@googlemail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] backlight: qcom-wled: Use sink_addr for sync toggle
-Date:   Sun, 14 Mar 2021 11:11:10 +0100
-Message-Id: <20210314101110.48024-1-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.30.2
+        Sun, 14 Mar 2021 06:14:17 -0400
+Received: by mail-il1-f200.google.com with SMTP id j7so22056754ilu.7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:14:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WafNR8e0K5yPQ32bCZ5pMiDA8TEADdUHeTC/5LuPOzg=;
+        b=PJHmU6733pqec/qBOsdxLp6Edw9A/MFUXq8okS/ZZtN3vcjF9082hde6NWpuPUShyN
+         XOVqem2cHuyjckuOVYdfQLhXxmUgCU2SUkgE+ygGtKvypzY+LMJnBcmmJdPjKytGSgj+
+         uVkCFnYtlnm04Rgnbr7hiQUZxI5KMtxcRZ/I2hHh+xO3H7S7xO08JcBaaYEGfrJnfcwd
+         AFv3oa22JwUJjqwEFpKthFUD0QBCweU+q8jzSwP/bHbxZSC1/nZVYFo77D7LkHeCmD5W
+         Hl8n7sTEdHKpqVP81wRJY0SfElGGNaO8wzKwiMhvMsHpP3EgnUvHpm5MlEphMV2ndesv
+         Lu8Q==
+X-Gm-Message-State: AOAM5330+a2Rq4XmntEVT6FJywHgVCN57MeqAOqg6i2+IS3ho8orMtQJ
+        pjjrdXaud4PSTaA9HmL8kfk1HPBayJNUeSiH5zYXxy37FdQ7
+X-Google-Smtp-Source: ABdhPJxVWhSpp8/s18ez/4uIHDbB0TIe2B/4JN0BufoW60aKG78vXVD76RCJ1PkIEMoRsY1KqByvMG9q/rYe4hmBqh29YIdFFyVY
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9510:: with SMTP id d16mr4350495iom.81.1615716857325;
+ Sun, 14 Mar 2021 03:14:17 -0700 (PDT)
+Date:   Sun, 14 Mar 2021 03:14:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000056b18b05bd7c6511@google.com>
+Subject: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
+From:   syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>
+To:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, maz@kernel.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Obeida Shamoun <oshmoun100@googlemail.com>
+Hello,
 
-WLED3_SINK_REG_SYNC is, as the name implies, a sink register offset.
-Therefore, use the sink address as base instead of the ctrl address.
+syzbot found the following issue on:
 
-This fixes the sync toggle on wled4, which can be observed by the fact
-that adjusting brightness now works.
+HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
+dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
+userspace arch: riscv64
 
-It has no effect on wled3 because sink and ctrl base addresses are the
-same.  This allows adjusting the brightness without having to disable
-then reenable the module.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Signed-off-by: Obeida Shamoun <oshmoun100@googlemail.com>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
+Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
+
+CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+Hardware name: riscv-virtio,qemu (DT)
+Workqueue: events nsim_dev_trap_report_work
+Call Trace:
+[<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
+
+Allocated by task 76347056:
+(stack is not available)
+
+Last potentially related work creation:
+
+
 ---
- drivers/video/backlight/qcom-wled.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index 091f07e7c145..fc8b443d10fd 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -336,13 +336,13 @@ static int wled3_sync_toggle(struct wled *wled)
- 	unsigned int mask = GENMASK(wled->max_string_count - 1, 0);
- 
- 	rc = regmap_update_bits(wled->regmap,
--				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-+				wled->sink_addr + WLED3_SINK_REG_SYNC,
- 				mask, mask);
- 	if (rc < 0)
- 		return rc;
- 
- 	rc = regmap_update_bits(wled->regmap,
--				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-+				wled->sink_addr + WLED3_SINK_REG_SYNC,
- 				mask, WLED3_SINK_REG_SYNC_CLEAR);
- 
- 	return rc;
--- 
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
