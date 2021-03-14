@@ -2,675 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C332633A8A6
+	by mail.lfdr.de (Postfix) with ESMTP id 5283833A8A5
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCNWss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 18:48:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229518AbhCNWsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 18:48:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615762107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=doF31vnHavlwglGxMdqxeyGDqAXgeWXIcTPVFrzO8uo=;
-        b=Y7+LmrMrK9jD9L+CmnJltwUAthHeR8xbTg6KOJYGDaN9JOImmtQoxnHPIqbugApqxozRKP
-        Te0sZhfPx0Hy+wE8G9ZEaXujDFm/Z2NVzjFwWQf4zkFDOplmRaakuDHDMxZ13CRNCmHM5h
-        TG5M2ZObLjk7b5l/8vjOKBXaTpZqOJw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-lA5cYC-NODGNKDjj96A2hw-1; Sun, 14 Mar 2021 18:48:15 -0400
-X-MC-Unique: lA5cYC-NODGNKDjj96A2hw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4541F8189C6;
-        Sun, 14 Mar 2021 22:48:14 +0000 (UTC)
-Received: from krava (unknown [10.40.192.102])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8F52D6E519;
-        Sun, 14 Mar 2021 22:48:12 +0000 (UTC)
-Date:   Sun, 14 Mar 2021 23:48:11 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
-        acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org
-Subject: Re: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
-Message-ID: <YE6Sq78CRmr/JsHl@krava>
-References: <20210312020257.197137-1-songliubraving@fb.com>
+        id S229523AbhCNWsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 18:48:46 -0400
+Received: from mail-bn8nam12on2058.outbound.protection.outlook.com ([40.107.237.58]:12056
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhCNWse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 18:48:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TwbPe3I88SURc1gL4Yra2U0VDLOh+ULEYyGW4e9ytqzO70JTfYrA1c8fTiRynig1Qwj1ZM+3w1hymq7HxaEy2o5vYUD8EOI3C2cmyEN78BcJrRhnRTmij3y5I3RvAICM/NWS2mvW6AERA68BksYZ+nNeErM5y8PPfCXdzssp2c6fDKZmEOMcNxnouj7lMEdJ1ldzkR1gdWggUTtV42zHV7UbN8uXQkJ2pTf63SqceM2ajs1Ak0ivuLtLXQeQ3jBZhE0m8h5pSMZxoGcH257rQ5TBw51uLrCfFh8hQO6Zofkh4sIe1lGKF+Z1xqUx8sAxjc00Xhi3F2ETnc6L6RwMCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D0X6rOH50bYM10Ua3RFwDWUoVU9xNzhc1VeqCwvXWpw=;
+ b=QcWiOniv6Jz2bvPOfkVIb5+SB/bMgvBYw3feG5oxuaVUUkYlJt5p2Ob6aZEBgJtT60zUUoxX7eKxCudyfRvg1OhCeco1uMJsgcVLX4WDPmDBHvzmbNdR1DkDzUOf1cwxiHNz/qY4Q+oQ6lBSMhav1+bdn/m9cbTZynlir1a+5QN8qOhmw0beoeGUQp3fDAove0catU0JmuuaO5tQeSe2XBt7H5i5/NboHlH2Ol7KdPLhvn5U3rxUAiDZKNRoorIhATyFjPKmM3PwWJYKBgklQZv6EHKzyjadQRg4r4NtKz2q+/s1AeWUtvDen44MADWGUMlG5LsnaU1EXog9Qd8R2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D0X6rOH50bYM10Ua3RFwDWUoVU9xNzhc1VeqCwvXWpw=;
+ b=MdCXi5OZ9nHzsrdXg9zs5CFCTIGk1WT22uwkVPp98MQuvx3C1Q4LDq7FqLQhNX7K7QDIS+SS7hn0tq5F/v3dSth9TK6ai1B+A3axz9wFndsetEpf6PigL3P1i6XsOpj81sVvmCsF8SJEi6gOBux4L+qtHkXu8ZajW/nT7Mfd4N4adFLsMe3uDeCibwq7G9TIZIQYAjjNrzpHsHKZU3w+pbAnGtEu4DaIUlPrKkFMr1/TmqicrYi5ahcUDnJf+zf5ApIa635gFHHNn0j2ML2lq2am93IAcXckYcF2AUIsiPeyC+iFFuxPzCU0sbuBgFA0VUBSVjPW1/b6mq/sJmZxIA==
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
+ by MN2PR12MB4014.namprd12.prod.outlook.com (2603:10b6:208:16d::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Sun, 14 Mar
+ 2021 22:48:26 +0000
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60]) by MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60%7]) with mapi id 15.20.3933.032; Sun, 14 Mar 2021
+ 22:48:26 +0000
+From:   "Zi Yan" <ziy@nvidia.com>
+To:     "Yu Zhao" <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, "Alex Shi" <alex.shi@linux.alibaba.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Hillf Danton" <hdanton@sina.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Joonsoo Kim" <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Mel Gorman" <mgorman@suse.de>, "Michal Hocko" <mhocko@suse.com>,
+        "Roman Gushchin" <guro@fb.com>, "Vlastimil Babka" <vbabka@suse.cz>,
+        "Wei Yang" <richard.weiyang@linux.alibaba.com>,
+        "Yang Shi" <shy828301@gmail.com>,
+        "Ying Huang" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 00/14] Multigenerational LRU
+Date:   Sun, 14 Mar 2021 18:48:17 -0400
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <B2FE37C5-85B7-43AC-B6B2-43660E13FDFF@nvidia.com>
+In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_A66144AE-3E39-441C-BAD5-5A2B1AC101B8_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [216.228.112.21]
+X-ClientProxiedBy: BL0PR05CA0004.namprd05.prod.outlook.com
+ (2603:10b6:208:91::14) To MN2PR12MB3823.namprd12.prod.outlook.com
+ (2603:10b6:208:168::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312020257.197137-1-songliubraving@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.54.46] (216.228.112.21) by BL0PR05CA0004.namprd05.prod.outlook.com (2603:10b6:208:91::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.11 via Frontend Transport; Sun, 14 Mar 2021 22:48:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40df103b-7c46-4945-fdee-08d8e73b475a
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4014:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB40140233A0A86B84EF0521B3C26D9@MN2PR12MB4014.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yiPEcDuttLj4DPHtjQh/0gaVh85MX8ybwdZCQpBwLHyLQpBRI3SI7MoQnrOHiX8pFI2jkk4qD6duahsbr5mHIvepsQ1pjYrxZM134CWmaAOWa61GhvSrZcn4RBhm9y8f1uK93lS6jgNhbWQ0QEnud1TwmQYTGJLSywEYcoIv/fNk9J3NeOCyfstuJTgmpezh3t5gw+1mZ0Krbgh7c3oFJ5UEst8OSwwXJWl9PJqt22LP2wEVM9YwFP9c6n9skp4j91SEc37NkZFlB85PzXfcGZzv7iVDziIWIND+k2Qk3xdpzqyTkV5GUqRx1uw75GnUtLvxlU7MXVjKXCLUAmx7lTsOzKP9Go6hcw4AUg+mTbOP2/Mbp35h5aEuQOEQGwChmKilJ/VWTjCwaNz9bUU/tkCvB47s5Ms4OKWipxjRjP/n2YJghofBq1LDxRDATeiiruHyvIF6yrHI4yvkpMxf6uH/dc8TyEWTnpC1bU0NaWCh1ow9X8lP3nkL7pJ4Q7k0QLIb4KJOlXxhNgnz5xx66ztFLvgCDaISZXVCr7EDA9ze8kTaN18OLae7f+Qir9SqTn6gT5LJMDWNgWUGoiDHjVwBxl37xWmqIMr+O9siSFITiAL1y3JvXW/5u4X9UKiVJdJo5SlHgIJHOhFSUTy5h+TQxXK9w+2op2N624aX5TWwXlnp27VNc+ocYNUla1xalDxLe1jmgWyzXyQFM+WHCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(39860400002)(396003)(346002)(33964004)(53546011)(8676002)(8936002)(66476007)(6486002)(33656002)(6666004)(7416002)(478600001)(6916009)(86362001)(83380400001)(2616005)(956004)(36756003)(316002)(66574015)(16576012)(186003)(5660300002)(235185007)(26005)(66946007)(16526019)(4326008)(54906003)(2906002)(66556008)(966005)(45980500001)(72826003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bzNyNExCL09DQllvR1c4ZnVoajNzV09VenlYMG5uWUdlbkJhaS9kaVBTMHUx?=
+ =?utf-8?B?dk85NFB5R2thb0kxbkJxYTZydG1ZaUtZaUhRSGNlU1dYU0ZkcklXUXV1TnNr?=
+ =?utf-8?B?Y3pnVFJWTzJjQUxjK1ErelJqOHBlSzc5N1BBYmp4VTBXdDFIRnk1Qm14eW4v?=
+ =?utf-8?B?RFNTREhYKzNTdUQ5dTNNeExVKytuOFRrZFBSRGZkS0hXUzRJbFFyN0hHL1BQ?=
+ =?utf-8?B?cGppTmNFVjEzSXVZNUp4L1RSemlKblpmdGhXK1lrWklFQnZXTGFwRlYrems5?=
+ =?utf-8?B?N2crNGpORGFCSzBsblVGd0hXYnU3REZreE9qMUxKVHdsb3lLYTJQOVROOElw?=
+ =?utf-8?B?VEthaXhqZnBrbVFBWnNuUWhaMzdCWmh0UXBUeEtvVVl6V3NaRGppd3F1YVJk?=
+ =?utf-8?B?YTF6M0FKeTZ0eW5temUyYVJGZktvTmROckhwM2crMm1WNEN1VlErb2hJZklD?=
+ =?utf-8?B?OWVzemhRMUNiMEtYU0RvbU5JWHdoZEgyM3B3OUdtcC85TEx6SDAxbURRc0hO?=
+ =?utf-8?B?Znp4WEU2MGs5MTdqZmI4OWxScmNOSUxGSWRlZjV2dGgxNXlCekdReDNZOXlK?=
+ =?utf-8?B?WDdwUThIYnAxZ3ZEMkZhRW1iWWt4K29RRXl5SWJrc2Y0ZEhsYVB1N1A0QTFz?=
+ =?utf-8?B?c3V2MStqZzcwS053b1RYQlI2U21PL3p5Sk4veXFnYWNsdVJBWnVleFdBQlJY?=
+ =?utf-8?B?ZW5vMUxtRHRUV1VxS1FHTGpkaXRZcWxvSVBaQTBiUnRoT3ZBNVVJTlhmcWV3?=
+ =?utf-8?B?SUdkeVk0ZWphQUtGSWFJMExIeG5WT1FFaEZJeVBsL2I5NUx1anlkTTk1bTQ1?=
+ =?utf-8?B?Z1lDdGpxaTJtWllNOEptclRLOXYvRVVCVnNOTmlreVFiUkptaUdRRnM5Lys4?=
+ =?utf-8?B?cGdkelR1SEZXVThyT3BLN3YzRzNRb0tYK3N0ZVRzdFU5ZWVFclZYSG1hM2tE?=
+ =?utf-8?B?aVlTeDZJa2Y4ZlRlL2cvandrNStwc1lhVnlnVlBLVWZpaXBHdksvNFg1SU5U?=
+ =?utf-8?B?UU9TUkIwOFh1R0VlWEcxdTh4YTdtTjdRR3F4MlhVSFlBT2pnZzlTc25rMis0?=
+ =?utf-8?B?U3pGVHI5TXhJbU5YWnBjMTFVUXVJdkllMFI2MGd0bk9VWkNBNGpMMGZvMmlR?=
+ =?utf-8?B?QmM5U04zOHNQZnhkNFY1a0UzamxraE0zTDF6QVcvZEZFNk9DTjR2c2RxNi8v?=
+ =?utf-8?B?bVJFMXlXTHh6VDh6Qml3WndMeFdjajNrZ2lhU0FLbVJOMldiOXRmWjJvRk9Q?=
+ =?utf-8?B?alpzREtRQVRWK2ZUSEZvbTdUTHRuZW9RWXo1MldQaE8rWngrVkJrejUzdy9K?=
+ =?utf-8?B?Y0UrYWw4Tk93SjJ4Y3BsNjc5dkZnYW9rN3o5L1Y4RDRGY2o2NGgrVk1GTURK?=
+ =?utf-8?B?VVFRYndxUCtUditYRVRXaGFqVmZDQkNTRUI4YWhWS0VIZjZFVmt1ejUwSlpZ?=
+ =?utf-8?B?d2ZWaFlPT0NFSzFHM0VIeG1tdnRmeXEzUDhlRERib0c5eDlsYXphVVFPRE5q?=
+ =?utf-8?B?UE9EeEhLeitRcFFodG9sUVZYbTFXVDZXQUdPWjVBNjRtRGZHUjNlNWkxRWZS?=
+ =?utf-8?B?QmlWdGl1Q0UzckI4SXAzNUV5VXEzOTgvMzlDWmJ3NXpFdGR6QklBbUJQSC95?=
+ =?utf-8?B?bjI3ckpiUDlycTBlUlpVbytyci9EeFNhTE1rWFNlZEUrdUZOVmZ2eXdGbVo2?=
+ =?utf-8?B?N1lrL2ZrL2RlLzlWTmd4akwrNnlMbTdLRWliTGhld0xzQ212ZzFXWXNYTC84?=
+ =?utf-8?Q?9jWxar8PMFdgT/H6/HVcxrV67gX4b4C8Uk4ABSS?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40df103b-7c46-4945-fdee-08d8e73b475a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2021 22:48:26.1336
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kqGjn6n64+lRYwZCLeJ9N3lBF0kUH4deUm3FsengAz4rDYNN5kaJ3YbR/xH5JPPZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4014
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 06:02:57PM -0800, Song Liu wrote:
-> perf uses performance monitoring counters (PMCs) to monitor system
-> performance. The PMCs are limited hardware resources. For example,
-> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
-> 
-> Modern data center systems use these PMCs in many different ways:
-> system level monitoring, (maybe nested) container level monitoring, per
-> process monitoring, profiling (in sample mode), etc. In some cases,
-> there are more active perf_events than available hardware PMCs. To allow
-> all perf_events to have a chance to run, it is necessary to do expensive
-> time multiplexing of events.
-> 
-> On the other hand, many monitoring tools count the common metrics (cycles,
-> instructions). It is a waste to have multiple tools create multiple
-> perf_events of "cycles" and occupy multiple PMCs.
-> 
-> bperf tries to reduce such wastes by allowing multiple perf_events of
-> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
-> of having each perf-stat session to read its own perf_events, bperf uses
-> BPF programs to read the perf_events and aggregate readings to BPF maps.
-> Then, the perf-stat session(s) reads the values from these BPF maps.
-> 
-> Please refer to the comment before the definition of bperf_ops for the
-> description of bperf architecture.
-> 
-> bperf is off by default. To enable it, pass --use-bpf option to perf-stat.
-> bperf uses a BPF hashmap to share information about BPF programs and maps
-> used by bperf. This map is pinned to bpffs. The default address is
-> /sys/fs/bpf/bperf_attr_map. The user could change the address with option
-> --attr-map.
-> 
-> ---
-> Known limitations:
-> 1. Do not support per cgroup events;
+--=_MailMate_A66144AE-3E39-441C-BAD5-5A2B1AC101B8_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-isn't that another filter via bpf_get_current_cgroup_id ?
+On 13 Mar 2021, at 2:57, Yu Zhao wrote:
 
-> 2. Do not support monitoring of BPF program (perf-stat -b);
+> TLDR
+> =3D=3D=3D=3D
+> The current page reclaim is too expensive in terms of CPU usage and
+> often making poor choices about what to evict. We would like to offer
+> a performant, versatile and straightforward augment.
+>
+> Repo
+> =3D=3D=3D=3D
+> git fetch https://linux-mm.googlesource.com/page-reclaim refs/changes/0=
+1/1101/1
+>
+> Gerrit https://linux-mm-review.googlesource.com/c/page-reclaim/+/1101
+>
+> Background
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> DRAM is a major factor in total cost of ownership, and improving
+> memory overcommit brings a high return on investment. Over the past
+> decade of research and experimentation in memory overcommit, we
+> observed a distinct trend across millions of servers and clients: the
+> size of page cache has been decreasing because of the growing
+> popularity of cloud storage. Nowadays anon pages account for more than
+> 90% of our memory consumption and page cache contains mostly
+> executable pages.
+>
+> Problems
+> =3D=3D=3D=3D=3D=3D=3D=3D
+> Notion of the active/inactive
+> -----------------------------
+> For servers equipped with hundreds of gigabytes of memory, the
+> granularity of the active/inactive is too coarse to be useful for job
+> scheduling. And false active/inactive rates are relatively high. In
+> addition, scans of largely varying numbers of pages are unpredictable
+> because inactive_is_low() is based on magic numbers.
+>
+> For phones and laptops, the eviction is biased toward file pages
+> because the selection has to resort to heuristics as direct
+> comparisons between anon and file types are infeasible. On Android and
+> Chrome OS, executable pages are frequently evicted despite the fact
+> that there are many less recently used anon pages. This causes "janks"
+> (slow UI rendering) and negatively impacts user experience.
+>
+> For systems with multiple nodes and/or memcgs, it is impossible to
+> compare lruvecs based on the notion of the active/inactive.
+>
+> Incremental scans via the rmap
+> ------------------------------
+> Each incremental scan picks up at where the last scan left off and
+> stops after it has found a handful of unreferenced pages. For most of
+> the systems running cloud workloads, incremental scans lose the
+> advantage under sustained memory pressure due to high ratios of the
+> number of scanned pages to the number of reclaimed pages. In our case,
+> the average ratio of pgscan to pgsteal is about 7.
+>
+> On top of that, the rmap has poor memory locality due to its complex
+> data structures. The combined effects typically result in a high
+> amount of CPU usage in the reclaim path. For example, with zram, a
+> typical kswapd profile on v5.11 looks like:
+>   31.03%  page_vma_mapped_walk
+>   25.59%  lzo1x_1_do_compress
+>    4.63%  do_raw_spin_lock
+>    3.89%  vma_interval_tree_iter_next
+>    3.33%  vma_interval_tree_subtree_search
+>
+> And with real swap, it looks like:
+>   45.16%  page_vma_mapped_walk
+>    7.61%  do_raw_spin_lock
+>    5.69%  vma_interval_tree_iter_next
+>    4.91%  vma_interval_tree_subtree_search
+>    3.71%  page_referenced_one
+>
+> Solutions
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Notion of generation numbers
+> ----------------------------
+> The notion of generation numbers introduces a quantitative approach to
+> memory overcommit. A larger number of pages can be spread out across
+> configurable generations, and thus they have relatively low false
+> active/inactive rates. Each generation includes all pages that have
+> been referenced since the last generation.
+>
+> Given an lruvec, scans and the selections between anon and file types
+> are all based on generation numbers, which are simple and yet
+> effective. For different lruvecs, comparisons are still possible based
+> on birth times of generations.
+>
+> Differential scans via page tables
+> ----------------------------------
+> Each differential scan discovers all pages that have been referenced
+> since the last scan. Specifically, it walks the mm_struct list
+> associated with an lruvec to scan page tables of processes that have
+> been scheduled since the last scan. The cost of each differential scan
+> is roughly proportional to the number of referenced pages it
+> discovers. Unless address spaces are extremely sparse, page tables
+> usually have better memory locality than the rmap. The end result is
+> generally a significant reduction in CPU usage, for most of the
+> systems running cloud workloads.
+>
+> On Chrome OS, our real-world benchmark that browses popular websites
+> in multiple tabs demonstrates 51% less CPU usage from kswapd and 52%
+> (full) less PSI on v5.11. And kswapd profile looks like:
+>   49.36%  lzo1x_1_do_compress
+>    4.54%  page_vma_mapped_walk
+>    4.45%  memset_erms
+>    3.47%  walk_pte_range
+>    2.88%  zram_bvec_rw
 
-we'd need to call the leadr on fentry/fexit of the monitored bpf
-program, right?
+Is this profile from a system with this patchset applied or not?
+Do you mind sharing some profiling data with before and after applying
+the patchset? So it would be easier to see the improvement brought by
+this patchset.
 
-> 3. Do not support event groups.
+>
+> In addition, direct reclaim latency is reduced by 22% at 99th
+> percentile and the number of refaults is reduced 7%. These metrics are
+> important to phones and laptops as they are correlated to user
+> experience.
+>
+> Workflow
+> =3D=3D=3D=3D=3D=3D=3D=3D
+> Evictable pages are divided into multiple generations for each lruvec.
+> The youngest generation number is stored in lruvec->evictable.max_seq
+> for both anon and file types as they are aged on an equal footing. The
+> oldest generation numbers are stored in lruvec->evictable.min_seq[2]
+> separately for anon and file types as clean file pages can be evicted
+> regardless of may_swap or may_writepage. Generation numbers are
+> truncated into ilog2(MAX_NR_GENS)+1 bits in order to fit into
+> page->flags. The sliding window technique is used to prevent truncated
+> generation numbers from overlapping. Each truncated generation number
+> is an index to
+> lruvec->evictable.lists[MAX_NR_GENS][ANON_AND_FILE][MAX_NR_ZONES].
+> Evictable pages are added to the per-zone lists indexed by max_seq or
+> min_seq[2] (modulo MAX_NR_GENS), depending on whether they are being
+> faulted in or read ahead. The workflow comprises two conceptually
+> independent functions: the aging and the eviction.
+>
+> Aging
+> -----
+> The aging produces young generations. Given an lruvec, the aging scans
+> page tables for referenced pages of this lruvec. Upon finding one, the
+> aging updates its generation number to max_seq. After each round of
+> scan, the aging increments max_seq. The aging maintains either a
+> system-wide mm_struct list or per-memcg mm_struct lists and tracks
+> whether an mm_struct is being used on any CPUs or has been used since
+> the last scan. Multiple threads can concurrently work on the same
+> mm_struct list, and each of them will be given a different mm_struct
+> belonging to a process that has been scheduled since the last scan.
+>
+> Eviction
+> --------
+> The eviction consumes old generations. Given an lruvec, the eviction
+> scans the pages on the per-zone lists indexed by either of min_seq[2].
+> It selects a type according to the values of min_seq[2] and
+> swappiness. During a scan, the eviction either sorts or isolates a
+> page, depending on whether the aging has updated its generation
+> number. When it finds all the per-zone lists are empty, the eviction
+> increments min_seq[2] indexed by this selected type. The eviction
+> triggers the aging when both of min_seq[2] reaches max_seq-1, assuming
+> both anon and file types are reclaimable.
+>
+> Use cases
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> On Android, our most advanced simulation that generates memory
+> pressure from realistic user behavior shows 18% fewer low-memory
+> kills, which in turn reduces cold starts by 16%.
+>
+> On Borg, a similar approach enables us to identify jobs that
+> underutilize their memory and downsize them considerably without
+> compromising any of our service level indicators.
+>
+> On Chrome OS, our field telemetry reports 96% fewer low-memory tab
+> discards and 59% fewer OOM kills from fully-utilized devices and no UX
+> regressions from underutilized devices.
+>
+> For other use cases include working set estimation, proactive reclaim,
+> far memory tiering and NUMA-aware job scheduling, please refer to the
+> documentation included in this series and the following references.
 
-I guess for group support you'll need to load 'leaders' for each group member
+Are there any performance numbers for specific application (before and
+after applying the patches) you can show to demonstrate the improvement?
 
-> 
-> The following commands have been tested:
-> 
->    perf stat --use-bpf -e cycles -a
->    perf stat --use-bpf -e cycles -C 1,3,4
->    perf stat --use-bpf -e cycles -p 123
->    perf stat --use-bpf -e cycles -t 100,101
+Thanks.
 
-works good with that file you sent.. I'll check/test more,
-so far some quick comments below
+>
+> References
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> 1. Long-term SLOs for reclaimed cloud computing resources
+>   https://research.google/pubs/pub43017/
+> 2. Profiling a warehouse-scale computer
+>   https://research.google/pubs/pub44271/
+> 3. Evaluation of NUMA-Aware Scheduling in Warehouse-Scale Clusters
+>   https://research.google/pubs/pub48329/
+> 4. Software-defined far memory in warehouse-scale computers
+>   https://research.google/pubs/pub48551/
+> 5. Borg: the Next Generation
+>   https://research.google/pubs/pub49065/
+>
 
-thanks,
-jirka
 
+=E2=80=94
+Best Regards,
+Yan Zi
 
+--=_MailMate_A66144AE-3E39-441C-BAD5-5A2B1AC101B8_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-SNIP
+-----BEGIN PGP SIGNATURE-----
 
-> @@ -1146,6 +1156,10 @@ static struct option stat_options[] = {
->  #ifdef HAVE_BPF_SKEL
->  	OPT_STRING('b', "bpf-prog", &target.bpf_str, "bpf-prog-id",
->  		   "stat events on existing bpf program id"),
-> +	OPT_BOOLEAN(0, "use-bpf", &target.use_bpf,
-> +		    "use bpf program to count events"),
-> +	OPT_STRING(0, "attr-map", &target.attr_map, "attr-map-path",
-> +		   "path to perf_event_attr map"),
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmBOkrEPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKWAYP/3Sqj049dw2rOlKwOUcKi0FCBcQ+AHV3Thpm
+Pl73Q4d/dKO4X8+d/PeioTOf/Jr15H2LiIW7gojVJ1r3eJwPhmocW2yuGbmD0VCo
+DjyLxLqTdIHTLWIlS07TnAYtbeXikAbDxc4Od3TR1gPBMn+bwT+re7do18hLmE4F
+HvhaQKF0AKI4cHF0QyJCiml9C4ZYiFZRae+1ZFFoJcpFYjsE3fYNnrdkdZi4Ic4R
+YRH3Xh28X3jhP6I4iIxHw0AHA7KGPFawHvMgfpMVJ/m+2q5FOeuCkH0OUDkjDyoB
+z4pa5nRGRhzdPIIWoqEyXgN0fI3G/J/YJFWVDmlRL9lzXuK2LjvEgbCyvkoTegHL
+60QP3gY8+ujyRfKIpHIvtrJuZ099jQFlm1SPA4wbFEBXCMUyoiN86EzD63PMQdVm
+1hIF6tZ1Id6wcv0+QtIdsPzfT3LZaE5pOneXRbcbZtuCheml8JL26TLm8nJO9mQN
+dBHRd9SnWNHoxlx9awZZGpBkfGbIMEEuMf+Wzajpcgfzzk3pX3Km9ZZCi+aCVO6B
+dP83Zt+1l4XDINx7jxXqtMfJjPjPoZxySAlaSVmDvPg2qqFqjFpVTBD4Z+IQawDa
+5tSh2lNFzJpdFsfsMFEK75tyOD4OttmshbnEoovWgIA0tltEF91BYKBLxIAH/QwI
+wyH8JQcT
+=AXYl
+-----END PGP SIGNATURE-----
 
-what's the point of allowing another name? just debug purpose?
-
-SNIP
-
-> + * bperf uses a hashmap, the attr_map, to track all the leader programs.
-> + * The hashmap is pinned in bpffs. flock() on this file is used to ensure
-> + * no concurrent access to the attr_map.  The key of attr_map is struct
-> + * perf_event_attr, and the value is struct bperf_attr_map_entry.
-> + *
-> + * struct bperf_attr_map_entry contains two __u32 IDs, bpf_link of the
-> + * leader prog, and the diff_map. Each perf-stat session holds a reference
-> + * to the bpf_link to make sure the leader prog is attached to sched_switch
-> + * tracepoint.
-> + *
-> + * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-> + * does not hold any references to the leader program. Once all perf-stat
-> + * sessions of these events exit, the leader prog, its maps, and the
-> + * perf_events will be freed.
-> + */
-> +struct bperf_attr_map_entry {
-> +	__u32 link_id;
-> +	__u32 diff_map_id;
-> +};
-> +
-> +#define DEFAULT_ATTR_MAP_PATH "/sys/fs/bpf/bperf_attr_map"
-
-we should make that with sysfs__mountpoint
-
-SNIP
-
-> +static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
-> +				       struct bperf_attr_map_entry *entry)
-> +{
-> +	struct bperf_leader_bpf *skel = NULL;
-> +	struct perf_cpu_map *all_cpus;
-> +	int link_fd, diff_map_fd, err;
-> +	struct bpf_link *link = NULL;
-> +
-> +	skel = bperf_leader_bpf__open();
-> +	if (!skel) {
-> +		pr_err("Failed to open leader skeleton\n");
-> +		return -1;
-> +	}
-> +
-> +	bpf_map__resize(skel->maps.events, libbpf_num_possible_cpus());
-> +	err = bperf_leader_bpf__load(skel);
-> +	if (err) {
-> +		pr_err("Failed to load leader skeleton\n");
-> +		goto out;
-> +	}
-> +
-> +	err = -1;
-> +	link = bpf_program__attach(skel->progs.on_switch);
-> +	if (!link) {
-> +		pr_err("Failed to attach leader program\n");
-> +		goto out;
-> +	}
-> +
-> +	all_cpus = perf_cpu_map__new(NULL);
-> +	if (!all_cpus) {
-> +		pr_err("Failed to open cpu_map for all cpus\n");
-> +		goto out;
-> +	}
-> +
-> +	link_fd = bpf_link__fd(link);
-> +	diff_map_fd = bpf_map__fd(skel->maps.diff_readings);
-> +	entry->link_id = bpf_link_get_id(link_fd);
-> +	entry->diff_map_id = bpf_map_get_id(diff_map_fd);
-> +	err = bpf_map_update_elem(attr_map_fd, &evsel->core.attr, entry, BPF_ANY);
-> +	assert(err == 0);
-> +
-> +	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry->link_id);
-> +	assert(evsel->bperf_leader_link_fd >= 0);
-> +
-> +	/* save leader_skel for install_pe */
-
-please add to the comment: ', which is called within following evsel__open_per_cpu call'
-or something like that.. 
-
-SNIP
-
-> +static int bperf_sync_counters(struct evsel *evsel)
-> +{
-> +	struct perf_cpu_map *all_cpus = perf_cpu_map__new(NULL);
-> +	int num_cpu, i, cpu;
-> +
-> +	if (!all_cpus)
-> +		return -1;
-> +
-> +	num_cpu = all_cpus->nr;
-> +	for (i = 0; i < num_cpu; i++) {
-> +		cpu = all_cpus->map[i];
-> +		bperf_trigger_reading(evsel->bperf_leader_prog_fd, cpu);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int bperf__enable(struct evsel *evsel)
-> +{
-> +	struct bperf_follower_bpf *skel = evsel->follower_skel;
-> +	__u32 num_cpu_bpf = libbpf_num_possible_cpus();
-
-we have cpu__max_cpu for that
-
-> +	struct bpf_perf_event_value values[num_cpu_bpf];
-> +	int err, i, entry_cnt;
-> +
-> +	err = bperf_follower_bpf__attach(evsel->follower_skel);
-> +	if (err)
-> +		return -1;
-
-could we attach it in load callback and have the some map
-value be checked in follower program and 'if value != 0'
-it would let the program to continue.. I used/saw this
-in few bcc programs
-
-> +
-> +	/*
-> +	 * Attahcing the skeleton takes non-trivial time (0.2s+ on a kernel
-> +	 * with some debug options enabled). This shows as a longer first
-> +	 * interval:
-> +	 *
-> +	 * # perf stat -e cycles -a -I 1000
-> +	 * #           time             counts unit events
-> +	 *      1.267634674     26,259,166,523      cycles
-> +	 *      2.271637827     22,550,822,286      cycles
-> +	 *      3.275406553     22,852,583,744      cycles
-> +	 *
-> +	 * Fix this by zeroing accum_readings after attaching the program.
-> +	 */
-> +	bperf_sync_counters(evsel);
-> +	entry_cnt = bpf_map__max_entries(skel->maps.accum_readings);
-> +	memset(values, 0, sizeof(struct bpf_perf_event_value) * num_cpu_bpf);
-> +
-> +	for (i = 0; i < entry_cnt; i++) {
-> +		bpf_map_update_elem(bpf_map__fd(skel->maps.accum_readings),
-> +				    &i, values, BPF_ANY);
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int bperf__read(struct evsel *evsel)
-> +{
-> +	struct bperf_follower_bpf *skel = evsel->follower_skel;
-> +	__u32 num_cpu_bpf = libbpf_num_possible_cpus();
-> +	struct bpf_perf_event_value values[num_cpu_bpf];
-> +	static struct perf_cpu_map *all_cpus;
-> +	int reading_map_fd, err = 0;
-> +	__u32 i, j, num_cpu;
-> +
-> +	if (!all_cpus) {
-> +		all_cpus = perf_cpu_map__new(NULL);
-> +		if (!all_cpus)
-> +			return -1;
-> +	}
-> +
-> +	bperf_sync_counters(evsel);
-> +	reading_map_fd = bpf_map__fd(skel->maps.accum_readings);
-> +
-> +	for (i = 0; i < bpf_map__max_entries(skel->maps.accum_readings); i++) {
-> +		__u32 cpu;
-> +
-> +		err = bpf_map_lookup_elem(reading_map_fd, &i, values);
-> +		if (err)
-> +			goto out;
-> +		switch (evsel->follower_skel->bss->type) {
-> +		case BPERF_FILTER_GLOBAL:
-> +			assert(i == 0);
-> +
-> +			num_cpu = all_cpus->nr;
-> +			for (j = 0; j < num_cpu; j++) {
-> +				cpu = all_cpus->map[j];
-> +				perf_counts(evsel->counts, cpu, 0)->val = values[cpu].counter;
-> +				perf_counts(evsel->counts, cpu, 0)->ena = values[cpu].enabled;
-> +				perf_counts(evsel->counts, cpu, 0)->run = values[cpu].running;
-> +			}
-> +			break;
-> +		case BPERF_FILTER_CPU:
-> +			cpu = evsel->core.cpus->map[i];
-> +			perf_counts(evsel->counts, i, 0)->val = values[cpu].counter;
-> +			perf_counts(evsel->counts, i, 0)->ena = values[cpu].enabled;
-> +			perf_counts(evsel->counts, i, 0)->run = values[cpu].running;
-> +			break;
-> +		case BPERF_FILTER_PID:
-> +		case BPERF_FILTER_TGID:
-> +			perf_counts(evsel->counts, 0, i)->val = 0;
-> +			perf_counts(evsel->counts, 0, i)->ena = 0;
-> +			perf_counts(evsel->counts, 0, i)->run = 0;
-> +
-> +			for (cpu = 0; cpu < num_cpu_bpf; cpu++) {
-> +				perf_counts(evsel->counts, 0, i)->val += values[cpu].counter;
-> +				perf_counts(evsel->counts, 0, i)->ena += values[cpu].enabled;
-> +				perf_counts(evsel->counts, 0, i)->run += values[cpu].running;
-> +			}
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +out:
-> +	return err;
-> +}
-> +
-> +static int bperf__destroy(struct evsel *evsel)
-> +{
-> +	bperf_follower_bpf__destroy(evsel->follower_skel);
-> +	close(evsel->bperf_leader_prog_fd);
-> +	close(evsel->bperf_leader_link_fd);
-> +	return 0;
-> +}
-> +
-> +/*
-> + * bperf: share hardware PMCs with BPF
-> + *
-> + * perf uses performance monitoring counters (PMC) to monitor system
-> + * performance. The PMCs are limited hardware resources. For example,
-> + * Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
-> + *
-> + * Modern data center systems use these PMCs in many different ways:
-> + * system level monitoring, (maybe nested) container level monitoring, per
-> + * process monitoring, profiling (in sample mode), etc. In some cases,
-> + * there are more active perf_events than available hardware PMCs. To allow
-> + * all perf_events to have a chance to run, it is necessary to do expensive
-> + * time multiplexing of events.
-> + *
-> + * On the other hand, many monitoring tools count the common metrics
-> + * (cycles, instructions). It is a waste to have multiple tools create
-> + * multiple perf_events of "cycles" and occupy multiple PMCs.
-> + *
-> + * bperf tries to reduce such wastes by allowing multiple perf_events of
-> + * "cycles" or "instructions" (at different scopes) to share PMUs. Instead
-> + * of having each perf-stat session to read its own perf_events, bperf uses
-> + * BPF programs to read the perf_events and aggregate readings to BPF maps.
-> + * Then, the perf-stat session(s) reads the values from these BPF maps.
-> + *
-> + *                                ||
-> + *       shared progs and maps <- || -> per session progs and maps
-> + *                                ||
-> + *   ---------------              ||
-> + *   | perf_events |              ||
-> + *   ---------------       fexit  ||      -----------------
-> + *          |             --------||----> | follower prog |
-> + *       --------------- /        || ---  -----------------
-> + * cs -> | leader prog |/         ||/        |         |
-> + *   --> ---------------         /||  --------------  ------------------
-> + *  /       |         |         / ||  | filter map |  | accum_readings |
-> + * /  ------------  ------------  ||  --------------  ------------------
-> + * |  | prev map |  | diff map |  ||                        |
-> + * |  ------------  ------------  ||                        |
-> + *  \                             ||                        |
-> + * = \ ==================================================== | ============
-> + *    \                                                    /   user space
-> + *     \                                                  /
-> + *      \                                                /
-> + *    BPF_PROG_TEST_RUN                    BPF_MAP_LOOKUP_ELEM
-> + *        \                                            /
-> + *         \                                          /
-> + *          \------  perf-stat ----------------------/
-> + *
-> + * The figure above shows the architecture of bperf. Note that the figure
-> + * is divided into 3 regions: shared progs and maps (top left), per session
-> + * progs and maps (top right), and user space (bottom).
-> + *
-> + * The leader prog is triggered on each context switch (cs). The leader
-> + * prog reads perf_events and stores the difference (current_reading -
-> + * previous_reading) to the diff map. For the same metric, e.g. "cycles",
-> + * multiple perf-stat sessions share the same leader prog.
-> + *
-> + * Each perf-stat session creates a follower prog as fexit program to the
-> + * leader prog. It is possible to attach up to BPF_MAX_TRAMP_PROGS (38)
-> + * follower progs to the same leader prog. The follower prog checks current
-> + * task and processor ID to decide whether to add the value from the diff
-> + * map to its accumulated reading map (accum_readings).
-> + *
-> + * Finally, perf-stat user space reads the value from accum_reading map.
-> + *
-> + * Besides context switch, it is also necessary to trigger the leader prog
-> + * before perf-stat reads the value. Otherwise, the accum_reading map may
-> + * not have the latest reading from the perf_events. This is achieved by
-> + * triggering the event via sys_bpf(BPF_PROG_TEST_RUN) to each CPU.
-> + *
-> + * Comment before the definition of struct bperf_attr_map_entry describes
-> + * how different sessions of perf-stat share information about the leader
-> + * prog.
-> + */
-> +
-> +struct bpf_counter_ops bperf_ops = {
-> +	.load       = bperf__load,
-> +	.enable     = bperf__enable,
-> +	.read       = bperf__read,
-> +	.install_pe = bperf__install_pe,
-> +	.destroy    = bperf__destroy,
-> +};
-> +
-> +static inline bool bpf_counter_skip(struct evsel *evsel)
-> +{
-> +	return list_empty(&evsel->bpf_counter_list) &&
-> +		evsel->follower_skel == NULL;
-> +}
-> +
->  int bpf_counter__install_pe(struct evsel *evsel, int cpu, int fd)
->  {
-> -	if (list_empty(&evsel->bpf_counter_list))
-> +	if (bpf_counter_skip(evsel))
->  		return 0;
->  	return evsel->bpf_counter_ops->install_pe(evsel, cpu, fd);
->  }
->  
->  int bpf_counter__load(struct evsel *evsel, struct target *target)
->  {
-> -	if (target__has_bpf(target))
-> +	if (target->bpf_str)
->  		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
-> +	else if (target->use_bpf)
-> +		evsel->bpf_counter_ops = &bperf_ops;
->  
->  	if (evsel->bpf_counter_ops)
->  		return evsel->bpf_counter_ops->load(evsel, target);
-> @@ -293,21 +835,21 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
->  
->  int bpf_counter__enable(struct evsel *evsel)
->  {
-> -	if (list_empty(&evsel->bpf_counter_list))
-> +	if (bpf_counter_skip(evsel))
->  		return 0;
->  	return evsel->bpf_counter_ops->enable(evsel);
->  }
->  
->  int bpf_counter__read(struct evsel *evsel)
->  {
-> -	if (list_empty(&evsel->bpf_counter_list))
-> +	if (bpf_counter_skip(evsel))
->  		return -EAGAIN;
->  	return evsel->bpf_counter_ops->read(evsel);
->  }
->  
->  void bpf_counter__destroy(struct evsel *evsel)
->  {
-> -	if (list_empty(&evsel->bpf_counter_list))
-> +	if (bpf_counter_skip(evsel))
->  		return;
->  	evsel->bpf_counter_ops->destroy(evsel);
->  	evsel->bpf_counter_ops = NULL;
-> diff --git a/tools/perf/util/bpf_skel/bperf.h b/tools/perf/util/bpf_skel/bperf.h
-> new file mode 100644
-> index 0000000000000..186a5551ddb9d
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/bperf.h
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +// Copyright (c) 2021 Facebook
-> +
-> +#ifndef __BPERF_STAT_H
-> +#define __BPERF_STAT_H
-> +
-> +typedef struct {
-> +	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> +	__uint(key_size, sizeof(__u32));
-> +	__uint(value_size, sizeof(struct bpf_perf_event_value));
-> +	__uint(max_entries, 1);
-> +} reading_map;
-> +
-> +#endif /* __BPERF_STAT_H */
-> diff --git a/tools/perf/util/bpf_skel/bperf_follower.bpf.c b/tools/perf/util/bpf_skel/bperf_follower.bpf.c
-> new file mode 100644
-> index 0000000000000..7535d9557ab9a
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/bperf_follower.bpf.c
-> @@ -0,0 +1,65 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +// Copyright (c) 2021 Facebook
-> +#include <linux/bpf.h>
-> +#include <linux/perf_event.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bperf.h"
-> +#include "bperf_u.h"
-> +
-> +reading_map diff_readings SEC(".maps");
-> +reading_map accum_readings SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(key_size, sizeof(__u32));
-> +	__uint(value_size, sizeof(__u32));
-> +} filter SEC(".maps");
-> +
-> +enum bperf_filter_type type = 0;
-> +
-> +SEC("fexit/XXX")
-> +int BPF_PROG(fexit_XXX)
-> +{
-> +	struct bpf_perf_event_value *diff_val, *accum_val;
-> +	__u32 filter_key, zero = 0;
-> +	__u32 *accum_key;
-> +
-> +	switch (type) {
-> +	case BPERF_FILTER_GLOBAL:
-> +		accum_key = &zero;
-> +		goto do_add;
-> +	case BPERF_FILTER_CPU:
-> +		filter_key = bpf_get_smp_processor_id();
-> +		break;
-> +	case BPERF_FILTER_PID:
-> +		filter_key = bpf_get_current_pid_tgid() & 0xffffffff;
-> +		break;
-> +	case BPERF_FILTER_TGID:
-> +		filter_key = bpf_get_current_pid_tgid() >> 32;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	accum_key = bpf_map_lookup_elem(&filter, &filter_key);
-> +	if (!accum_key)
-> +		return 0;
-> +
-> +do_add:
-> +	diff_val = bpf_map_lookup_elem(&diff_readings, &zero);
-> +	if (!diff_val)
-> +		return 0;
-> +
-> +	accum_val = bpf_map_lookup_elem(&accum_readings, accum_key);
-> +	if (!accum_val)
-> +		return 0;
-> +
-> +	accum_val->counter += diff_val->counter;
-> +	accum_val->enabled += diff_val->enabled;
-> +	accum_val->running += diff_val->running;
-> +
-> +	return 0;
-> +}
-> +
-> +char LICENSE[] SEC("license") = "Dual BSD/GPL";
-> diff --git a/tools/perf/util/bpf_skel/bperf_leader.bpf.c b/tools/perf/util/bpf_skel/bperf_leader.bpf.c
-> new file mode 100644
-> index 0000000000000..4f70d1459e86c
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/bperf_leader.bpf.c
-> @@ -0,0 +1,46 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +// Copyright (c) 2021 Facebook
-> +#include <linux/bpf.h>
-> +#include <linux/perf_event.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bperf.h"
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +	__uint(key_size, sizeof(__u32));
-> +	__uint(value_size, sizeof(int));
-> +	__uint(map_flags, BPF_F_PRESERVE_ELEMS);
-> +} events SEC(".maps");
-> +
-> +reading_map prev_readings SEC(".maps");
-> +reading_map diff_readings SEC(".maps");
-> +
-> +SEC("raw_tp/sched_switch")
-> +int BPF_PROG(on_switch)
-> +{
-> +	struct bpf_perf_event_value val, *prev_val, *diff_val;
-> +	__u32 key = bpf_get_smp_processor_id();
-> +	__u32 zero = 0;
-> +	long err;
-> +
-> +	prev_val = bpf_map_lookup_elem(&prev_readings, &zero);
-> +	if (!prev_val)
-> +		return 0;
-> +
-> +	diff_val = bpf_map_lookup_elem(&diff_readings, &zero);
-> +	if (!diff_val)
-> +		return 0;
-> +
-> +	err = bpf_perf_event_read_value(&events, key, &val, sizeof(val));
-> +	if (err)
-> +		return 0;
-> +
-> +	diff_val->counter = val.counter - prev_val->counter;
-> +	diff_val->enabled = val.enabled - prev_val->enabled;
-> +	diff_val->running = val.running - prev_val->running;
-> +	*prev_val = val;
-> +	return 0;
-> +}
-> +
-> +char LICENSE[] SEC("license") = "Dual BSD/GPL";
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 6026487353dd8..dd4f56f9cfdf5 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -20,6 +20,8 @@ union perf_event;
->  struct bpf_counter_ops;
->  struct target;
->  struct hashmap;
-> +struct bperf_leader_bpf;
-> +struct bperf_follower_bpf;
->  
->  typedef int (evsel__sb_cb_t)(union perf_event *event, void *data);
->  
-> @@ -130,8 +132,24 @@ struct evsel {
->  	 * See also evsel__has_callchain().
->  	 */
->  	__u64			synth_sample_type;
-> -	struct list_head	bpf_counter_list;
-> +
-> +	/*
-> +	 * bpf_counter_ops serves two use cases:
-> +	 *   1. perf-stat -b          counting events used byBPF programs
-> +	 *   2. perf-stat --use-bpf   use BPF programs to aggregate counts
-> +	 */
->  	struct bpf_counter_ops	*bpf_counter_ops;
-> +
-> +	/* for perf-stat -b */
-> +	struct list_head	bpf_counter_list;
-> +
-> +	/* for perf-stat --use-bpf */
-> +	int			bperf_leader_prog_fd;
-> +	int			bperf_leader_link_fd;
-> +	union {
-> +		struct bperf_leader_bpf *leader_skel;
-> +		struct bperf_follower_bpf *follower_skel;
-> +	};
->  };
->  
->  struct perf_missing_features {
-> diff --git a/tools/perf/util/target.h b/tools/perf/util/target.h
-> index f132c6c2eef81..1bce3eb28ef25 100644
-> --- a/tools/perf/util/target.h
-> +++ b/tools/perf/util/target.h
-> @@ -16,6 +16,8 @@ struct target {
->  	bool	     uses_mmap;
->  	bool	     default_per_cpu;
->  	bool	     per_thread;
-> +	bool	     use_bpf;
-> +	const char   *attr_map;
->  };
->  
->  enum target_errno {
-> @@ -66,7 +68,7 @@ static inline bool target__has_cpu(struct target *target)
->  
->  static inline bool target__has_bpf(struct target *target)
->  {
-> -	return target->bpf_str;
-> +	return target->bpf_str || target->use_bpf;
->  }
->  
->  static inline bool target__none(struct target *target)
-> -- 
-> 2.24.1
-> 
-
+--=_MailMate_A66144AE-3E39-441C-BAD5-5A2B1AC101B8_=--
