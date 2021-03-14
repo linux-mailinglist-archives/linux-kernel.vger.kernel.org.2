@@ -2,59 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A913C33A3DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9611333A3E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhCNJ2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 05:28:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13517 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbhCNJ1p (ORCPT
+        id S235022AbhCNJ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 05:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhCNJ3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 05:27:45 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DyvL775WFzrVR2;
-        Sun, 14 Mar 2021 17:25:51 +0800 (CST)
-Received: from [127.0.0.1] (10.175.101.122) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Sun, 14 Mar 2021
- 17:27:33 +0800
-Content-Type: multipart/alternative;
-        boundary="===============4284728990643118512=="
+        Sun, 14 Mar 2021 05:29:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60ED2C061574;
+        Sun, 14 Mar 2021 01:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cJLxS0cKtxz/yWIdGGPLjrB05uBAS6vzMsJcT1fhpJI=; b=pMazN/6mo7fShBGqzeBn+DuTpk
+        9BSTTFQOzPxgPqWRjj9PHehQe2B6KVceoktHco4MA0IWV52RWkBLByYjwvb95zlHEfaDOc9AIa6TN
+        8VCzRuScXBb635KoNwhi0iO7jcnk1UB5RQjE+FxEhNtRJAtpn24K/JSRRHDoffwVtCb/NBfdX3zdp
+        QB1YThZhLxlPPfZAtk33BkF14AwjjPcWJ3erRssI6xIq2B4uuTbZTulUNGFdDJgmKh+u5lR4/juz9
+        FYcmp+Rcafsv61I3Z7WQ/v3QlkWqQIFgE2ONWnKPIBV3q+rhMU6p+3n5FJiMDPLX4CWzE3wUUd3ar
+        mlTDF+9w==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLN2t-00Fqgg-Df; Sun, 14 Mar 2021 09:28:30 +0000
+Date:   Sun, 14 Mar 2021 09:28:23 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        pavel.tide@veeam.com
+Subject: Re: [PATCH v7 2/3] block: add bdev_interposer
+Message-ID: <20210314092823.GB3773360@infradead.org>
+References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
+ <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Date:   Sun, 14 Mar 2021 17:27:33 +0800
-From:   <hulkrobot@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_5=2E10=2E24-rc1=0D=0A/arm?=
- =?utf-8?q?64?=
-Message-ID: <26aacc8a-eb17-43ff-a8c9-4ae3bd26b6ae@DGGEMS402-HUB.china.huawei.com>
-X-Originating-IP: [10.175.101.122]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============4284728990643118512==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+On Fri, Mar 12, 2021 at 06:44:54PM +0300, Sergei Shtepa wrote:
+> bdev_interposer allows to redirect bio requests to another devices.
 
-S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNS4xMC55CkFyY2g6
-IGFybTY0ClZlcnNpb246IDUuMTAuMjQtcmMxDQpDb21taXQ6IDc0OTZkYmQwMmIyNzMxNjI3NWUw
-OTdhNGU1MmNlYmNkMmNhNWE1YzANCkNvbXBpbGVyOiBnY2MgdmVyc2lvbiA3LjMuMCAoR0NDKQot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpGYWlsZWQgY2FzZXMgOgpsdHAgdGVzdF9yb2JpbmQyOQpsdHAgdGVzdF9yb2Jp
-bmQzMApsdHAgdGVzdF9yb2JpbmQzMQpsdHAgdGVzdF9yb2JpbmQzMgpsdHAgdGVzdF9yb2JpbmQz
-MwpsdHAgdGVzdF9yb2JpbmQzNApsdHAgdGVzdF9yb2JpbmQzNgpsdHAgdGVzdF9yb2JpbmQzNwot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpUZXN0Y2FzZSBSZXN1bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjkzCnN1Y2Nl
-ZWRfbnVtOiA0Njg1CmZhaWxlZF9udW06IDgKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVz
-dGVkLWJ5OiBIdWxrIFJvYm90IDxodWxrcm9ib3RAaHVhd2VpLmNvbT4=
+I think this warrants a somewhat more detailed description.
 
---===============4284728990643118512==--
+The code itself looks pretty good to me now, a bunch of nitpicks and
+a question below:
+
+> +static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
+> +{
+> +	blk_qc_t ret = BLK_QC_T_NONE;
+> +	struct bio_list bio_list[2] = { };
+> +	struct gendisk *orig_disk;
+> +
+> +	if (current->bio_list) {
+> +		bio_list_add(&current->bio_list[0], bio);
+> +		return BLK_QC_T_NONE;
+> +	}
+
+I don't think this case can ever happen:
+
+ - current->bio_list != NULL means a ->submit_bio or blk_mq_submit_bio
+   is active.  But if this device is being interposed this means the
+   interposer recurses into itself, which should never happen.  So
+   I think we'll want a WARN_ON_ONCE here as a debug check instead.
+
+> +
+> +	orig_disk = bio->bi_bdev->bd_disk;
+> +	if (unlikely(bio_queue_enter(bio)))
+> +		return BLK_QC_T_NONE;
+> +
+> +	current->bio_list = bio_list;
+> +
+> +	do {
+> +		struct block_device *interposer = bio->bi_bdev->bd_interposer;
+> +
+> +		if (unlikely(!interposer)) {
+> +			/* interposer was removed */
+> +			bio_list_add(&current->bio_list[0], bio);
+> +			break;
+> +		}
+> +		/* assign bio to interposer device */
+> +		bio_set_dev(bio, interposer);
+> +		bio_set_flag(bio, BIO_INTERPOSED);
+
+Reassigning the bi_bdev here means the original source is lost by the
+time we reach the interposer.  This initially seemed a little limiting,
+but I guess the interposer driver can just record that information
+locally, so we should be fine.  The big upside of this is that no
+extra argument to submit_bio_checks, which means less changes to the
+normal fast path, so if this works for everyone that is a nice
+improvement over my draft.
+
+> +
+> +		if (!submit_bio_checks(bio))
+> +			break;
+> +		/*
+> +		 * Because the current->bio_list is initialized,
+> +		 * the submit_bio callback will always return BLK_QC_T_NONE.
+> +		 */
+> +		interposer->bd_disk->fops->submit_bio(bio);
+> +	} while (false);
+
+I find the do { ... } while (false) idiom here a little strange.  Normal
+kernel style would be a goto done instead of the breaks.
+
+> +int bdev_interposer_attach(struct block_device *original,
+> +			   struct block_device *interposer)
+
+A kerneldoc comment for bdev_interposer_attach (and
+bdev_interposer_detach) would be nice to explain the API a little more.
+
+> +{
+> +	int ret = 0;
+> +
+> +	if (WARN_ON(((!original) || (!interposer))))
+> +		return -EINVAL;
+
+No need for the inner two levels of braces.
+
+> +	 * interposer should be simple, no a multi-queue device
+> +	 */
+> +	if (!interposer->bd_disk->fops->submit_bio)
+
+Please use queue_is_mq() instead.
+
+> +	if (bdev_has_interposer(original))
+> +		ret = -EBUSY;
+> +	else {
+> +		original->bd_interposer = bdgrab(interposer);
+
+Just thinking out a loud:  what happens if the interposed device
+goes away?  Shouldn't we at very least also make sure this
+gabs another refererence on bdev as well?
+
+> +struct bdev_interposer;
+
+Not needed any more.
+
+> +static inline bool bdev_has_interposer(struct block_device *bdev)
+> +{
+> +	return (bdev->bd_interposer != NULL);
+> +};
+
+No need for the braces.
