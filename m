@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2DD33A55B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DDC33A55F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhCNPOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:14:23 -0400
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:50403 "EHLO
+        id S233802AbhCNPRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:17:03 -0400
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:45434 "EHLO
         libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233831AbhCNPN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:13:58 -0400
+        id S231892AbhCNPQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 11:16:35 -0400
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id LSRAlDnJYtpGHLSRHlAQKh; Sun, 14 Mar 2021 16:13:56 +0100
+        id LSTmlDnzqtpGHLSTplAQtq; Sun, 14 Mar 2021 16:16:33 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1615734836; bh=4LiH4eemN3AT+2Fo6A4+E/U5d16NklG/3kjcvEQGKGU=;
+        t=1615734994; bh=wnjplnLdFDkHsfAUHmWTFQwLX0oNy1/Ru7raheFYmvw=;
         h=From;
-        b=t9Eq2PKQKBiBLh2ig7HS/WcQrqc3uvMCq8a6A1Fnp3rNMNl3VuRrQOd7mQxhMe6Gt
-         ZcE4HpkdC8YFDLOTn0p0uQK2lHwHjjr3gzHh36brolIvhLPOPle0aRdZiyonJVqX+W
-         os9AeRLJdIWzUoSm+exeHc0ZKQulYJNpwCoY2phSOlgCSmEGXoeNe3iun/W/snrDMg
-         ziA2d48zrqsa5tAngVe4ZTNU1hrm+cRT93wlJUHzSrQZ5FNFTqGPJl2qc6aacK9Lwe
-         ayNFRztSDGwR9FT/aNGck7lQJTa5r/HSl3Z2MJ56HctqqUkmTiQuYcJ/gdbKu4BSkz
-         YZjwNLc8Nkjmg==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=604e2834 cx=a_exe
+        b=T5iYKy4Qdw1yFbqjt2iWO9y8qEAx/Ivi1TjhMj4g8oFErjLOs2uvZaBJGav5+37AE
+         X8FDB7hRPLWhIhz34wxxvS8wdpptvbjqbe13yxqPOb8c/98K9v++m7S363IOBWpNUH
+         RU5k97fQkQxmGFhqBERRAkNv25PxLvejBySEv+CLE7KCpwG31n9IrV1uZYUNq4FXtW
+         mKekY2HpG2HsR+aipOnFTfC/wZfSsFfqyoiG5bfFU/IqL8DVko6RxyH9cSsmNGBu8v
+         MSOuD+xMmCgx9D8k3y/fRzPFXU17V/1tf+yHdmGsBA46XB6kJlbaB9ITctYfrpaNi9
+         J/Y16YR6Jv6Ig==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=604e28d2 cx=a_exe
  a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=lnTs3XerFxmm0CipDzYA:9
+ a=hN1Y6PlX_eMEyabRrE4A:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dario Binacchi <dariobin@libero.it>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/tilcdc: fix LCD pixel clock setting
-Date:   Sun, 14 Mar 2021 16:13:41 +0100
-Message-Id: <20210314151342.23404-1-dariobin@libero.it>
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [RESEND PATCH] ARM: dts: am33xx-l4: fix tscadc@0 node indentation
+Date:   Sun, 14 Mar 2021 16:16:28 +0100
+Message-Id: <20210314151629.23921-1-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfJ3IOLksAOLKMHBjJUHJ8C33pm/tpWwf2AZBxwcvuuq3NfmiHoveW4kSWQc6lg7BFBbuqPbMy9EiQt+foLbvWoOhA40cle8b86JjJ8xgDlIdjjxl8sIr
- hA0U8jU6QONZidr86fvMlUzzVTQXNZ92Lwj1rV/HiE0F8aoqJT95yLnyUPTHJXK2DFtQwJTJQFR2KWfCSuHxrnZQj3mKQ4PHc92OArrEssUhiJ0gIsv8HQYf
- mbnw01iu2UzHltnfZI06QjUZvMHVj1d7yqcNmtnk4JBSzYgdoFfmj78aW8TwWGOf8rx3f9S/wY9EqaIRRYULsUZFQYfoCxYTu71UOAfxo6acWjeFXuGoyZ3a
- YO1OJfSshi3AnkvEL3jmqaZRdX+hOCfnqAf/gGubrxdEFqnWtQeh+wBgYQsdfJg78e+4HrYA
+X-CMAE-Envelope: MS4xfPsAJ64dxFd6GoGwuXh/hzuC6FohTjpOmOEZznpnv2nVI8hiAFZNIWDQZ2vCYjxxONpwZrv6RnSFFDZ7FFcsit0MIBGaKfuZux0SJb80Fa4dNlPt05RN
+ rvJXXaDKkoCkO40aZDbC+3SZTuHuUHPw76UcDlXOLSw6TsuubqjBRYbiHLh23Dq6evDcD1+ldL3fd3/iC75AozqRVmp7CUUy12jmrSGoBMgyxTuj4MLLqtrS
+ aM/2wbbreAHk2WvlCp1tsSdNjNbAQaKz87AVy0E2wEsTnvLV2kPWG7Yg/KoBFOrZA0MYUgUJZa7B6V1F27cR6fFlzTw+aEPd7tnZHmQpYwom0ijTm8xa328Y
+ 2vovDzklLkd9F9g7z1nkmp/PDviLO4PfSgC7YbtssaA6k8RPAvvU8Myhb7yPcogPbgywKJauNzUqhEi7+/lc2qLw7KTOfg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported by TI spruh73x RM, the LCD pixel clock (LCD_PCLK) frequency
-is obtained by dividing LCD_CLK, the LCD controller reference clock,
-for CLKDIV:
-
-LCD_PCLK = LCD_CLK / CLKDIV
-
-where CLKDIV must be greater than 1.
-
-Therefore LCD_CLK must be set to 'req_rate * CLKDIV' instead of req_rate
-and the real LCD_CLK rate must be compared with 'req_rate * CLKDIV' and
-not with req_rate.
-Passing req_rate instead of 'req_rate * CLKDIV' to the tilcdc_pclk_diff
-routine caused it to fail even if LCD_CLK was properly set.
+Fix the broken indentation of tscadc@0 node.
 
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
 ---
 
- drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/am33xx-l4.dtsi | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-index 30213708fc99..02f56c9a5da5 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-@@ -203,7 +203,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
- 	struct drm_device *dev = crtc->dev;
- 	struct tilcdc_drm_private *priv = dev->dev_private;
- 	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
--	unsigned long clk_rate, real_rate, req_rate;
-+	unsigned long clk_rate, real_rate, req_rate, clk_div_rate;
- 	unsigned int clkdiv;
- 	int ret;
+diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+index 1fb22088caeb..039a9ab4c7ea 100644
+--- a/arch/arm/boot/dts/am33xx-l4.dtsi
++++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+@@ -259,22 +259,22 @@
+ 			ranges = <0x00000000 0x0000d000 0x00001000>,
+ 				 <0x00001000 0x0000e000 0x00001000>;
  
-@@ -211,10 +211,11 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+-				tscadc: tscadc@0 {
+-					compatible = "ti,am3359-tscadc";
+-					reg = <0x0 0x1000>;
+-					interrupts = <16>;
+-					status = "disabled";
+-					dmas = <&edma 53 0>, <&edma 57 0>;
+-					dma-names = "fifo0", "fifo1";
++			tscadc: tscadc@0 {
++				compatible = "ti,am3359-tscadc";
++				reg = <0x0 0x1000>;
++				interrupts = <16>;
++				status = "disabled";
++				dmas = <&edma 53 0>, <&edma 57 0>;
++				dma-names = "fifo0", "fifo1";
  
- 	/* mode.clock is in KHz, set_rate wants parameter in Hz */
- 	req_rate = crtc->mode.clock * 1000;
--
--	ret = clk_set_rate(priv->clk, req_rate * clkdiv);
-+	/* LCD clock divisor input rate */
-+	clk_div_rate = req_rate * clkdiv;
-+	ret = clk_set_rate(priv->clk, clk_div_rate);
- 	clk_rate = clk_get_rate(priv->clk);
--	if (ret < 0 || tilcdc_pclk_diff(req_rate, clk_rate) > 5) {
-+	if (ret < 0 || tilcdc_pclk_diff(clk_div_rate, clk_rate) > 5) {
- 		/*
- 		 * If we fail to set the clock rate (some architectures don't
- 		 * use the common clock framework yet and may not implement
+-					tsc {
+-						compatible = "ti,am3359-tsc";
+-					};
+-					am335x_adc: adc {
+-						#io-channel-cells = <1>;
+-						compatible = "ti,am3359-adc";
+-					};
++				tsc {
++					compatible = "ti,am3359-tsc";
++				};
++				am335x_adc: adc {
++					#io-channel-cells = <1>;
++					compatible = "ti,am3359-adc";
+ 				};
++			};
+ 		};
+ 
+ 		target-module@10000 {			/* 0x44e10000, ap 22 0c.0 */
 -- 
 2.17.1
 
