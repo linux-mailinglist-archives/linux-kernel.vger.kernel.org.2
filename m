@@ -2,129 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540A533A445
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A956A33A449
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhCNKt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbhCNKs5 (ORCPT
+        id S235160AbhCNK7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:59:22 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:50960 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhCNK6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:48:57 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838B6C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:56 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id z2so4166930wrl.5
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A3yM0E2XIIeHhpwSsShTH8f57YtVpUZzWbcZcvUk0cc=;
-        b=pdx2zG07Ivkui/nQ7jBCP+23ASSB2fnCc+vt+2JsM1t2Vgl/TWPbh5allOMrITOLVP
-         C7VGHUxbIg42pGUQsCbtZux7kOIFOZUsMaf6AoczHbdOkWhKxQ7NEL30VAzeTtq9v/yG
-         BHbVFl37j6bCV9zAtqRE8ieUzeQEFZXYM3rDoHRUSo+xxHEnZGmLsOpZKf4bfAF++Pvq
-         +gEiVSKe377nsa6Lr3DxGO/YU4Esl9qnLTd4Xt5T4+o0dBwhT0VtkU9NW/o8gk7C8LZP
-         0S/LiHEjpOmJI/4BIsk6oFPxrBEOqyv/DQfydenSSqBoC1ySgw22J9/5FvX1z975ogqc
-         Dwcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A3yM0E2XIIeHhpwSsShTH8f57YtVpUZzWbcZcvUk0cc=;
-        b=VZAytpi+E+ge/YgleLGsdBxNBJvzwSmy9OgdcdmHrweMEaEDJ7Ehmht3h+pnypglVI
-         YYXbbYYmdEf9gpbpPSg5DJwgBR8X4qX626LV6xEhdSXscxgmLafi91vlUgTUrWOeU1X7
-         G7+yHX70sjWWERiviq6QsGioXzFGasBXLaCfS4p3QwgrhbgqA8l9VpD22LsIz5d+OayN
-         wICybSBXE/zJq8+ZxCaaTHDDi6aToGmdO8/dBJpMAgKy4RYldwtUPVLLYac+YeW7bY/j
-         oR75wxNAeX1wrREDCsd6wbl4LRZ5F9gyljp3uy0/mes2iJmRVSVNTOvpmHSfRgKY6Kx9
-         5s1w==
-X-Gm-Message-State: AOAM533K+sXzRK0QLpTE6m37QDvFWC0kbeEGYpWEZIhD8Are2fY+Sls1
-        +IN+6PtiM8Xz8XIqaLE7kzvamw==
-X-Google-Smtp-Source: ABdhPJxO8AnD0OFEBp/F/EJSgQl90d9XEpEQ5+VL6JbW6iyuR3wYJ0lz4RCYVItN/ay1Czl6qu1e+g==
-X-Received: by 2002:adf:ded1:: with SMTP id i17mr22900596wrn.349.1615718935094;
-        Sun, 14 Mar 2021 03:48:55 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1ed:80a3:b8d6:f6d3? ([2a01:e34:ed2f:f020:1ed:80a3:b8d6:f6d3])
-        by smtp.googlemail.com with ESMTPSA id f14sm9019461wmf.7.2021.03.14.03.48.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Mar 2021 03:48:54 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] thermal/drivers/core: Use a char pointer for the
- cooling device name
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, Jiri Pirko <jiri@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:MELLANOX ETHERNET SWITCH DRIVERS" <netdev@vger.kernel.org>
-References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
- <YE3dMM7tqk5BbD/l@shredder.lan>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f4d7d072-2c4f-2d9d-8628-0c8c83b76f4d@linaro.org>
-Date:   Sun, 14 Mar 2021 11:48:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 14 Mar 2021 06:58:36 -0400
+X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Mar 2021 06:58:36 EDT
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id B2E5463135;
+        Sun, 14 Mar 2021 11:52:58 +0100 (CET)
+Date:   Sun, 14 Mar 2021 11:53:01 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     David R <david@unsolicited.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Subject: Re: Panic after upgrading to 5.11.6 stable
+Message-ID: <20210314105301.GA27784@salvia>
+References: <dfd0563b-91da-87ab-0cfa-c1b99c659212@unsolicited.net>
 MIME-Version: 1.0
-In-Reply-To: <YE3dMM7tqk5BbD/l@shredder.lan>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <dfd0563b-91da-87ab-0cfa-c1b99c659212@unsolicited.net>
+User-Agent: Mozilla/5.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Ido,
-
-On 14/03/2021 10:53, Ido Schimmel wrote:
-> On Fri, Mar 12, 2021 at 06:03:12PM +0100, Daniel Lezcano wrote:
->> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->> index 996c038f83a4..9ef8090eb645 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -960,10 +960,7 @@ __thermal_cooling_device_register(struct device_node *np,
-
-[ ... ]
-
->>  /**
->> @@ -1172,6 +1177,7 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
->>  	device_del(&cdev->device);
->>  	thermal_cooling_device_destroy_sysfs(cdev);
->>  	put_device(&cdev->device);
->> +	kfree(cdev->type);
->>  }
->>  EXPORT_SYMBOL_GPL(thermal_cooling_device_unregister);
+On Sun, Mar 14, 2021 at 10:30:55AM +0000, David R wrote:
+> I attempted to upgrade my home server to 5.11 today. The system panics
+> soon after boot with the following :-
 > 
-> I'm getting the following user-after-free with this patch [1]. Fixed by:
+> In iptables by the looks of the stack.
 > 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 9ef8090eb645..c8d4010940ef 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1176,8 +1176,8 @@ void thermal_cooling_device_unregister(struct thermal_cooling_device *cdev)
->         ida_simple_remove(&thermal_cdev_ida, cdev->id);
->         device_del(&cdev->device);
->         thermal_cooling_device_destroy_sysfs(cdev);
-> -       put_device(&cdev->device);
->         kfree(cdev->type);
-> +       put_device(&cdev->device);
+> 5.10.23 works fine.
+> 
+> Can provide config (and boot logs from 5.10.23) if required.
 
-Indeed 'thermal_release' frees the cdev pointer and is called by
-put_device, then kfree use the pointer right after.
+Please have a look at:
 
-Thanks for the fix
-
-  -- Daniel
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+https://bugzilla.kernel.org/show_bug.cgi?id=211911
