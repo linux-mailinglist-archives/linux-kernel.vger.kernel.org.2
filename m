@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF7133A246
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 02:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E4A33A249
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhCNB7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 20:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231205AbhCNB65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 20:58:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B27AA64EBD;
-        Sun, 14 Mar 2021 01:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615687137;
-        bh=WHo+lvcZLl9wZV9beuG7CsnjZiWaxGG3Oam9mA1tSOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VDy7/pFnKH6AjK0+XbWJWcRvb7ikHCMF91LWazstYgOYC5OZNm7S+5wS8j2ZUCn8d
-         Ui/Wrd4SvHHwzmDJPLg+fCKboofjzhUy4rvk7/oPyQTLNI0Z/McFRco3Cb/ka7o1cP
-         bYI1D31fgmMl19OUSskw+8mlgM7YyeMu8i2YC0WH/ZN+hO09y3nFtQddElPLyf5dS4
-         sl9GR/C6qWV1klll5QQOtz78OmSXSuQkRkgmm92MsRPrDWtPFCVw8uNb8CzYqk2/IO
-         19Lrb7ubeWa4mqIiuPIRnIIKkJ/IefMdZ82c9ReS1hDa5h13G7pM1/8e7T4SVUXNn5
-         veHW/y9+UJOaQ==
-Date:   Sun, 14 Mar 2021 09:58:46 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-api@vger.kernel.org, laurent.pinchart@ideasonboard.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kurahul@cadence.com
-Subject: Re: [PATCH 1/2] usb: gadget: uvc: Updating bcdUVC field to 0x0110
-Message-ID: <20210314015846.GB17526@b29397-desktop>
-References: <20210308102735.9251-1-pawell@gli-login.cadence.com>
+        id S231205AbhCNCAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 21:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233594AbhCNCAF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 21:00:05 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A2FC061574;
+        Sat, 13 Mar 2021 18:00:05 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id q5so5680927pgk.5;
+        Sat, 13 Mar 2021 18:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qs2UgpNHrs9qIOZOqKSGGqFmmr2tm9Rf+HF/JQPX6rg=;
+        b=JCANjpJP+PSwE6nrZCgLfG3qg7hPxPu7DbwxIQaDZt6QwRdc5nCYjCsoWGwtP1nHjN
+         DwHK78zzo0uKy2y71O2YeKHGMHtHivAvry5Ci45KJKMF+Y5sbLmnvzNZo2gAvVPEMUwl
+         U9brCTm0M5h7qzmQEK0cz+iELqKbOii8x0xr9BDHLSC+ptdXxLhLuRSILTUrJJ5QIoPy
+         5jR6kL2f5hNVgVYFUDmqGEVOP6iTNkSntTlN0dqaLo/6Xzo5qQBnSWsKstt4mDfaPQ8M
+         xjM7c6598kE4VR89Dg9jWgWXpK9eVqCjnNYcK4xyVeZgDWREdzuO7nPs/2qBjLfqDong
+         0lNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qs2UgpNHrs9qIOZOqKSGGqFmmr2tm9Rf+HF/JQPX6rg=;
+        b=FWRdTvk09Yg90Bz0YCd0ovvOUwfl+TjhWG5rMeEA3E/hsyz+JT//iSjXgddwKrrbtm
+         k8RiwdYPkYhykjSIeUnZVFXEuYuw5vmXQ0cyQcTRn+IkhNT2duaczqozbQaGrylbYisG
+         2GoMuvhKnyskzJS/HxvlsS2A/2/9unTF7ImmOn09EPePmgfaAajPm9F5pwZqY2bkJkqU
+         Q2ISTUlPHw9sZewl3xV3WLXhy4gZ35BRD419lRbhr+OjdiNDFKWpuynXVvqTG8gdLfq1
+         Bswi36jhKQJT0mbvaGyEp4lTBvxoOZlJaEs+WGoAyGQE1IvhCvdAP93xEtGgQm7rPZ2V
+         IIVw==
+X-Gm-Message-State: AOAM531iKmnqaNbkv6P4NJX1BL4BkGLTvaQokZpXKw3Q+h+TX+9oVOqz
+        XRrFUPE0l5NpTPEnDbKva59N3LUwxBsl+/ZA/wraLE2T
+X-Google-Smtp-Source: ABdhPJwtzByi22xHUluOzkCy53Fqneo/9ax19XO3BoAWTJrwEhm8ACoDiyZsi/Z/2rZk3NOoAFbDhNBhbB3FsdS/Sdg=
+X-Received: by 2002:a62:e10f:0:b029:1f5:42b6:7113 with SMTP id
+ q15-20020a62e10f0000b02901f542b67113mr4929157pfh.63.1615687204977; Sat, 13
+ Mar 2021 18:00:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308102735.9251-1-pawell@gli-login.cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210311072311.2969-1-xie.he.0141@gmail.com>
+In-Reply-To: <20210311072311.2969-1-xie.he.0141@gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sat, 13 Mar 2021 17:59:54 -0800
+Message-ID: <CAJht_ENT6E4pekdTJ8YKntKdH94e-1H6Tf6iBr-=Vbxj5rCs+A@mail.gmail.com>
+Subject: Re: [PATCH net] net: lapbether: Prevent racing when checking whether
+ the netif is running
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-08 11:27:34, Pawel Laszczak wrote:
-> From: Pawel Laszczak <pawell@cadence.com>
-> 
-> Command Verifier during UVC Descriptor Tests (Class Video Control
-> Interface Descriptor Test Video) compleins about:
+Hi Martin,
 
-%s/compleins/complains
-
-> 
-> Video Control Interface Header bcdUVC is 0x0100. USB Video Class
-> specification 1.0 has been replaced by 1.1 specification
-> (UVC: 6.2.26) Class Video Control Interface Descriptor bcdUVC is not 1.1
-
-What does this (UVC: 6.2.26) mean? There are only 4 chapters for this
-spec, Am I something wrong?
-
-> 
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> ---
->  drivers/usb/gadget/function/uvc_configfs.c | 2 +-
->  drivers/usb/gadget/legacy/webcam.c         | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/function/uvc_configfs.c b/drivers/usb/gadget/function/uvc_configfs.c
-> index 00fb58e50a15..cd28dec837dd 100644
-> --- a/drivers/usb/gadget/function/uvc_configfs.c
-> +++ b/drivers/usb/gadget/function/uvc_configfs.c
-> @@ -231,7 +231,7 @@ static struct config_item *uvcg_control_header_make(struct config_group *group,
->  	h->desc.bLength			= UVC_DT_HEADER_SIZE(1);
->  	h->desc.bDescriptorType		= USB_DT_CS_INTERFACE;
->  	h->desc.bDescriptorSubType	= UVC_VC_HEADER;
-> -	h->desc.bcdUVC			= cpu_to_le16(0x0100);
-> +	h->desc.bcdUVC			= cpu_to_le16(0x0110);
->  	h->desc.dwClockFrequency	= cpu_to_le32(48000000);
->  
->  	config_item_init_type_name(&h->item, name, &uvcg_control_header_type);
-> diff --git a/drivers/usb/gadget/legacy/webcam.c b/drivers/usb/gadget/legacy/webcam.c
-> index a9f8eb8e1c76..3a61de4bb2b1 100644
-> --- a/drivers/usb/gadget/legacy/webcam.c
-> +++ b/drivers/usb/gadget/legacy/webcam.c
-> @@ -90,7 +90,7 @@ static const struct UVC_HEADER_DESCRIPTOR(1) uvc_control_header = {
->  	.bLength		= UVC_DT_HEADER_SIZE(1),
->  	.bDescriptorType	= USB_DT_CS_INTERFACE,
->  	.bDescriptorSubType	= UVC_VC_HEADER,
-> -	.bcdUVC			= cpu_to_le16(0x0100),
-> +	.bcdUVC			= cpu_to_le16(0x0110),
->  	.wTotalLength		= 0, /* dynamic */
->  	.dwClockFrequency	= cpu_to_le32(48000000),
->  	.bInCollection		= 0, /* dynamic */
-> -- 
-> 2.25.1
-> 
-
--- 
-
-Thanks,
-Peter Chen
-
+Could you ack? Thanks!
