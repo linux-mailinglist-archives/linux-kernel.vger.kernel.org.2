@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15B933A3F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C5133A3F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhCNJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 05:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhCNJki (ORCPT
+        id S235043AbhCNJpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 05:45:10 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41242 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhCNJos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 05:40:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1ADC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 01:40:37 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lLNEb-0000iR-MW; Sun, 14 Mar 2021 10:40:29 +0100
-Subject: Re: [PATCH V4] clk: imx: Fix reparenting of UARTs not associated with
- stdout
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
-Cc:     Aisheng Dong <aisheng.dong@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Abel Vesa <abel.vesa@nxp.com>, Stephen Boyd <sboyd@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        aford@beaconembedded.com, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Jerome Brunet <jbrunet@baylibre.com>
-References: <20210313122818.445228-1-aford173@gmail.com>
- <e754a185-4aa2-295a-37a8-dd0c7ebc289f@pengutronix.de>
-Message-ID: <0361ab5b-a26e-7631-9bae-8909715f6354@pengutronix.de>
-Date:   Sun, 14 Mar 2021 10:40:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 14 Mar 2021 05:44:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7B9C91C0B76; Sun, 14 Mar 2021 10:44:47 +0100 (CET)
+Date:   Sun, 14 Mar 2021 10:44:47 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     min.li.xe@renesas.com
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] mfd: Add Renesas Synchronization Management
+ Unit (SMU) support
+Message-ID: <20210314094447.GA32368@duo.ucw.cz>
+References: <1615653747-9372-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <e754a185-4aa2-295a-37a8-dd0c7ebc289f@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <1615653747-9372-1-git-send-email-min.li.xe@renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.03.21 16:16, Ahmad Fatoum wrote:
->> +/* i.MX boards use device trees now.  For build tests without CONFIG_OF, do nothing */
->> +#ifdef CONFIG_OF
->>  	if (imx_keep_uart_clocks) {
->>  		int i;
->>  
->> -		imx_uart_clocks = clks;
->> -		for (i = 0; imx_uart_clocks[i]; i++)
->> -			clk_prepare_enable(*imx_uart_clocks[i]);
->> +		imx_uart_clocks = kcalloc(clk_count, sizeof(struct clk *), GFP_KERNEL);
->> +
->> +		if (!of_stdout)
->> +			return;
-> 
-> Memory leak. Just do if (imx_keep_uart_clocks && of_stdout)
 
-Please dismiss. I overlooked that you free it in a later initcall.
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>  static int __init imx_clk_disable_uart(void)
->>  {
->> -	if (imx_keep_uart_clocks && imx_uart_clocks) {
->> +	if (imx_keep_uart_clocks && imx_enabled_uart_clocks) {
->>  		int i;
->>  
->> -		for (i = 0; imx_uart_clocks[i]; i++)
->> -			clk_disable_unprepare(*imx_uart_clocks[i]);
->> +		for (i = 0; i < imx_enabled_uart_clocks; i++) {
->> +			clk_disable_unprepare(imx_uart_clocks[i]);
->> +			clk_put(imx_uart_clocks[i]);
->> +		};
->> +		kfree(imx_uart_clocks);
->>  	}
+Hi!
+On Sat 2021-03-13 11:42:27, min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
+>=20
+> Add support for ClockMatrix(TM) and 82P33xxx families of timing
+> and synchronization devices. The access interface can be either
+> SPI or I2C. Currently, it will create 2 types of MFD devices,
+> which are to be used by the corresponding rsmu character device
+> driver and the PTP hardware clock driver, respectively.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+> @@ -2131,7 +2158,7 @@ config RAVE_SP_CORE
+>  	  device found on several devices in RAVE line of hardware.
+> =20
+>  config SGI_MFD_IOC3
+> -	bool "SGI IOC3 core driver"
+> +	tristate "SGI IOC3 core driver"
+>  	depends on PCI && MIPS && 64BIT
+>  	select MFD_CORE
+>  	help
+
+This probably should not be here.
+
+BR,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYE3bDwAKCRAw5/Bqldv6
+8t15AJ41wGk/Ub4HG7LkeDjq/v99mVRLkgCcDbhxiwnqLsG5iPuTk2VXHVFn+z4=
+=JUd3
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
