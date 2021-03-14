@@ -2,302 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7AE33A790
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 20:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A139F33A792
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 20:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbhCNS7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 14:59:30 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:10106 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCNS7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 14:59:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615748360; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=E/D1ab7qq8kF771WiUwOqh2b/1XgluuhzHizoAkutQU=; b=XZ+qB7ydIHt3iWubDDEkK1iKlCz39jkZ3HpoqYipo8yQKtbikmNbNDPqUu6v1yP3vnob382N
- JmaUVcTLKI1j9YSrPCZdfdS5up08aWtwGcGIDhQ/ayIYutShA1G8SlNRpG6mid7irZbE4nTb
- YX0iCY5AKuG2xsouaEJwcQVWNN8=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 604e5d056dc1045b7d86d07a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 18:59:17
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 369B9C43462; Sun, 14 Mar 2021 18:59:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3994AC433CA;
-        Sun, 14 Mar 2021 18:59:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3994AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rnayak@codeaurora.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, schowdhu@codeaurora.org,
-        sibis@codeaurora.org, vkoul@kernel.org
-Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data Capture and Compare unit(DCC)
-Date:   Mon, 15 Mar 2021 00:29:01 +0530
-Message-Id: <20210314185901.15151-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <YEpF1JO4CAd2pb0m@builder.lan>
-References: <YEpF1JO4CAd2pb0m@builder.lan>
+        id S233761AbhCNTAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 15:00:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30088 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233389AbhCNTAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 15:00:17 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12EIj1KF115094;
+        Sun, 14 Mar 2021 15:00:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=f16MiEbctRaM0zTifjfSRrk84brFs+UDrg5JRN0XZ6c=;
+ b=be/KXiBJcKhGOWCQuVxsXF2KbHR0B+8gsReCmbzpiMqnRoiaHfCnwCkBKCoJih0xxp5N
+ l2+56ZD1HyKo19dwcQp2FddjyWnnSQkpX6JkxhK5fCLfJEMyYZKuPflf2HR1L8mRbvbi
+ LHSbIFtNkU/YBb4uLdMRUzECGs4kyjOnW3mgssoiDMQO9SJIBKL1BWYANX03G350Tl7v
+ bv0RyMTgORtPH0qxWDhUjT92eQrrVOHpAkIdSPCif3TIHGVU+fEjixfPZuwJIghegv5h
+ 3Au/CzlplhBuNAd7CkRhcFPNoUqvxWbR2IvN/GoT4amQS7QbT8sFcbrb2bC5Q//61XGE 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 379r1p05sw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Mar 2021 15:00:04 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12EJ03id008980;
+        Sun, 14 Mar 2021 15:00:03 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 379r1p05r5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Mar 2021 15:00:03 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12EIw8HD020073;
+        Sun, 14 Mar 2021 19:00:01 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 378n18h50g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Mar 2021 19:00:00 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12EIxgNb35848672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 14 Mar 2021 18:59:42 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B103A4040;
+        Sun, 14 Mar 2021 18:59:58 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E8D7A404D;
+        Sun, 14 Mar 2021 18:59:54 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.23.212])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 14 Mar 2021 18:59:54 +0000 (GMT)
+Date:   Sun, 14 Mar 2021 20:59:51 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <YE5dJ6U3nPWsXY4D@linux.ibm.com>
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+ <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com>
+ <CAJZ5v0gC+60n0-UkMw8h5JPBc6grQtD1ambSOCAHV2HLm886yQ@mail.gmail.com>
+ <CAJZ5v0g_ztenDY-ER6A0fKD-ZHhLfF3zQdRYYxQb5jSXudd8xQ@mail.gmail.com>
+ <e8593eae-40b8-bc9a-78db-529d28d2be88@redhat.com>
+ <YEkgP0G94uQBGDa9@linux.ibm.com>
+ <0d05364c-4881-d78a-9721-bd15f5eb822b@redhat.com>
+ <CAJZ5v0jOpNJrOt5xn-1YkSB9Q15NZS2cxmsGKAU945YNbs+hOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jOpNJrOt5xn-1YkSB9Q15NZS2cxmsGKAU945YNbs+hOw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-14_10:2021-03-12,2021-03-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103140143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-11 22:01, Bjorn Andersson wrote:
-> On Thu 11 Mar 00:19 CST 2021, Sai Prakash Ranjan wrote:
+On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+> > >
+> > > There is some care that should be taken to make sure we get the order
+> > > right, but I don't see a fundamental issue here.
 > 
->> Hi Bjorn,
->>
->> On 2021-03-11 04:49, Bjorn Andersson wrote:
->> > On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
->> >
->> > > The DCC is a DMA Engine designed to capture and store data
->> > > during system crash or software triggers. The DCC operates
->> > > based on link list entries which provides it with data and
->> > > addresses and the function it needs to perform. These
->> > > functions are read, write and loop. Added the basic driver
->> > > in this patch which contains a probe method which instantiates
->> > > the resources needed by the driver. DCC has it's own SRAM which
->> > > needs to be instantiated at probe time as well.
->> > >
->> >
->> > So to summarize, the DCC will upon a crash copy the configured region
->> > into the dcc-ram, where it can be retrieved either by dumping the memory
->> > over USB or from sysfs on the next boot?
->> >
->>
->> Not just the next boot, but also for the current boot via /dev/dcc_sram,
->> more below.
->>
+> Me neither.
 > 
-> Interesting!
+> > > If I understand correctly, Rafael's concern is about changing the parts of
+> > > ACPICA that should be OS agnostic, so I think we just need another place to
+> > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
 > 
->> > > Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
->> > > ---
->> > >  drivers/soc/qcom/Kconfig  |   8 +
->> > >  drivers/soc/qcom/Makefile |   1 +
->> > >  drivers/soc/qcom/dcc.c    | 388
->> > > ++++++++++++++++++++++++++++++++++++++++++++++
->> > >  3 files changed, 397 insertions(+)
->> > >  create mode 100644 drivers/soc/qcom/dcc.c
->> > >
->>
->> <snip>...
->>
->> >
->> > How about implementing this using pstore instead of exposing it through
->> > a custom /dev/dcc_sram (if I read the code correclty)
->> >
->>
->> Using pstore is definitely a good suggestion, we have been thinking of
->> adding it as a separate change once the basic support for DCC gets in.
->> But pstore ram backend again depends on warm reboot which is present only
->> in chrome compute platforms but android platforms do not officially support
->> warm reboot. Pstore with block devices as a backend would be ideal but it
->> is still a work in progress to use mmc as the backend [1].
->>
+> Something like this.
 > 
-> I was under the impression that we can have multiple pstore
-> implementations active, so we would have ramoops and dcc presented
-> side by side after such restart. Perhaps that's a misunderstanding on my
-> part?
+> There is also the problem that memblock_reserve() needs to be called
+> for all of the tables early enough, which will require some reordering
+> of the early init code.
 > 
-
-If you mean pstore backends(persistent ram and block device) as the
-implementations, then yes they can separately coexist, but blk device
-as the backend is not fully ready and ramoops only guarantees traces
-if the DDR contents are retained i.e., on warm reboot.
-
-In case of ramoops, we currently have console-ramoops, dmesg-ramoops,
-ftrace-ramoops, pmsg-ramoops. We cannot add dcc-ramoops directly like
-this as DCC is very platform specific(and QTI specific).
-
-I wanted to add something like device-ramoops/misc-ramoops where the
-device drivers could register with pstore and provide some useful debug
-information but the size of ramoops reserved is usually very small and
-is divided among all of these. So even if lets say we add DCC today and
-later on multiple devices which are present in the same SoC, then the
-reserved memory will not be enough and its not easy to properly divide
-the memory regions to these devices within device-ramoops, there needs
-to be some sort of dynamic reservation as the device probes, so its
-currently on hold.
-
-One other reason is the firmware being smart, such as depthcharge [1]
-which deletes the ramoops DT node when it loads Kernel+DTB image and
-adds its own ramoops node with the size it prefers(which is small) and
-so we would need a firmware side change as well to accomodate dcc-ramoops.
-
-Given so many dependencies for pstore ramoops, making it as a primary way
-to get DCC trace logs doesn't seem right, we can add it as an addon feature.
-
-[1] https://chromium.googlesource.com/chromiumos/platform/depthcharge/+/refs/heads/main/src/boot/ramoops.c#41
-
->> Now the other reason as to why we need this dev interface in addition to
->> pstore,
->>
->>  * Pstore contents are retrieved on the next boot, but DCC SRAM contents
->>    can be collected via dev interface for the current boot via SW trigger.
->>    Lets say we have some non-fatal errors in one of the subsystems and we
->>    want to analyze the register values, it becomes as simple as configuring
->>    that region, trigger dcc and collect the sram contents and parse it.
->>
->>    echo "addr" > /sys/bus/platform/devices/***.dcc/config
->>    echo  1 > /sys/bus/platform/devices/***.dcc/trigger
->>    cat /dev/dcc_sram > dcc_sram.bin
->>    python dcc_parser.py -s dcc_sram.bin --v2 -o output/
->>
->> We don't have to reboot at all for SW triggers. This is very useful and
->> widely used internally.
->>
->> Is the custom /dev/dcc_sram not recommended because of the dependency on
->> the userspace component being not available openly? If so, we already have
->> the dcc parser upstream which we use to extract the sram contents [2].
->>
+> > > Since the reservation should be done early in x86::setup_arch() (and
+> > > probably in arm64::setup_arch()) we might just have a function that parses
+> > > table headers and reserves them, similarly to how we parse the tables
+> > > during KASLR setup.
 > 
-> My concern is that we come up with a custom chardev implementation for
-> something that already exists or should exist in a more generic form.
->
+> Right.
 
-Sorry if I misunderstood this comment, but DCC is part of QDSS(Qualcomm Debug
-SubSystem) and is specific to QTI. We have Coresight TMC ETR/ETF exposing
-similar dev interfaces which is somewhat similar to DCC in the sense that ETF
-has its own internal RAM and DCC has the internal SRAM but they are 2 different
-hardware IPs. Even in case of ETF, we can collect the live trace on the target
-via dev interface and then decode it or collect ramdumps in case of fatal crashes
-and then extract trace binary and decode it. So looks like such dev interface
-already exists for other hardwares and works pretty well for the specific usecases.
+I've looked at it a bit more and we do something like the patch below that
+nearly duplicates acpi_tb_parse_root_table() which is not very nice.
+Besides, reserving ACPI tables early and then calling acpi_table_init()
+(and acpi_tb_parse_root_table() again would mean doing the dance with
+early_memremap() twice for no good reason.
 
-> 
-> In the runtime sequence above, why don't you have trigger just generate
-> a devcoredump? But perhaps the answer is that we want a unified
-> interface between the restart and runtime use cases?
->
+I believe the most effective way to deal with this would be to have a
+function that does parsing, reservation and installs the tables supplied by
+the firmware which can be called really early and then another function
+that overrides tables if needed a some later point.
 
-Yes, in case of restart i.e., warm reboot since DCC SRAM contents are
-retained, we can use the dev interface itself on the next reboot to
-collect dcc logs if the memory is not zeroed out which I think current
-driver code does which needs to be fixed.
+--------------------------------------------------------------
 
-> 
-> It would be nice to have some more details of how I can use this and how
-> to operate the sysfs interface to achieve that, would you be able to
-> elaborate on this?
-> 
-
-Agreed, this needs more documentation. I will give one real world example on
-SC7180 SoC based board where this could have been used, Souradeep can add more
-and document it in cover letter for the next version of the patchset.
-
-Example: (Addresses configured here are just examples and not related to actual
-timestamp clks)
-
-On SC7180, there was a coresight timestamp issue where it would occasionally
-be all 0 instead of proper timestamp values.
-
-Proper timestamp:
-Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
-
-Zero timestamp:
-Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
-
-Now this is a non-fatal issue and doesn't need a system reset, but still needs
-to be rootcaused and fixed for those who do care about coresight etm traces.
-Since this is a timestamp issue, we would be looking for any timestamp related
-clocks and such.
-
-So we get all the clk register details from IP documentation and configure it
-via DCC config syfs node. Before that we set the current linked list.
-
-/* Set the current linked list */
-echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
-
-/* Program the linked list with the addresses */
-echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
-echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
-echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
-echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
-..... and so on for other timestamp related clk registers
-
-/* Other way of specifying is in "addr len" pair, in below case it
-specifies to capture 4 words starting 0x10C004 */
-
-echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
-
-/* Enable DCC */
-echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
-
-/* Run the timestamp test for working case */
-
-/* Send SW trigger */
-echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
-
-/* Read SRAM */
-cat /dev/dcc_sram > dcc_sram1.bin
-
-/* Run the timestamp test for non-working case */
-
-/* Send SW trigger */
-echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
-
-/* Read SRAM */
-cat /dev/dcc_sram > dcc_sram2.bin
-
-Get the parser from [1] and checkout the latest branch.
-
-/* Parse the SRAM bin */
-python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
-python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
-
-Sample parsed output of dcc_sram1.bin:
-
-localhost ~ # cat dcc_captured_data.xml 
-<?xml version="1.0" encoding="utf-8"?>
-<hwioDump version="1">
-        <timestamp>03/14/21</timestamp>
-        <generator>Linux DCC Parser</generator>
-        <chip name="None" version="None">
-                <register address="0x0010c004" value="0x80000000" />
-                <register address="0x0010c008" value="0x00000008" />
-                <register address="0x0010c00c" value="0x80004220" />
-                <register address="0x0010c010" value="0x80000000" />
-        </chip>
-        <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
-</hwioDump>
-
-Now compare the parsed output for dcc_sram1.bin and dcc_sram2.bin, we will
-find that one of these register values in working case and non-working case
-is different which when cross checked with IP doc would give us the idea
-of what is going wrong with the timestamp clks and would help to debug further.
-
-[1] https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
-
-PS: We didn't use DCC to debug this coresight timestamp issue but could have
-used it and this example demonstrates the capability of DCC and I ran with
-these above with actual timestamp clk registers and it works as demonstrated
-here, so it's a working example.
-
-Thanks,
-Sai
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index d883176ef2ce..48bcb1c355ad 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -910,6 +910,8 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	parse_early_param();
+ 
++	acpi_reserve_tables();
++
+ 	if (efi_enabled(EFI_BOOT))
+ 		efi_memblock_x86_reserve_range();
+ #ifdef CONFIG_MEMORY_HOTPLUG
+diff --git a/drivers/acpi/acpica/actables.h b/drivers/acpi/acpica/actables.h
+index e2d0046799a2..6cb5bcf3fb49 100644
+--- a/drivers/acpi/acpica/actables.h
++++ b/drivers/acpi/acpica/actables.h
+@@ -133,6 +133,9 @@ void
+ acpi_tb_install_table_with_override(struct acpi_table_desc *new_table_desc,
+ 				    u8 override, u32 *table_index);
+ 
++acpi_physical_address
++acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size);
++
+ acpi_status acpi_tb_parse_root_table(acpi_physical_address rsdp_address);
+ 
+ acpi_status
+diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
+index 4b9b329a5a92..2ad3c08915d4 100644
+--- a/drivers/acpi/acpica/tbutils.c
++++ b/drivers/acpi/acpica/tbutils.c
+@@ -14,10 +14,6 @@
+ #define _COMPONENT          ACPI_TABLES
+ ACPI_MODULE_NAME("tbutils")
+ 
+-/* Local prototypes */
+-static acpi_physical_address
+-acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size);
+-
+ #if (!ACPI_REDUCED_HARDWARE)
+ /*******************************************************************************
+  *
+@@ -162,7 +158,7 @@ struct acpi_table_header *acpi_tb_copy_dsdt(u32 table_index)
+  *
+  ******************************************************************************/
+ 
+-static acpi_physical_address
++acpi_physical_address
+ acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size)
+ {
+ 	u64 address64;
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index e48690a006a4..e4b721bada04 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -23,6 +23,9 @@
+ #include <linux/security.h>
+ #include "internal.h"
+ 
++#include "acpica/aclocal.h"
++#include "acpica/actables.h"
++
+ #ifdef CONFIG_ACPI_CUSTOM_DSDT
+ #include CONFIG_ACPI_CUSTOM_DSDT_FILE
+ #endif
+@@ -809,6 +812,107 @@ int __init acpi_table_init(void)
+ 	return 0;
+ }
+ 
++void __init acpi_reserve_tables(void)
++{
++	u32 i, table_count, table_entry_size, length;
++	acpi_physical_address rsdp_address, address;
++	struct acpi_table_header *table, *hdr;
++	struct acpi_table_rsdp *rsdp;
++	u8 *table_entry;
++
++	rsdp_address = acpi_os_get_root_pointer();
++	if (!rsdp_address) {
++		pr_debug("%s: no rsdp_address\n", __func__);
++		return;
++	}
++
++	/* Map the entire RSDP and extract the address of the RSDT or XSDT */
++	rsdp = acpi_os_map_memory(rsdp_address, sizeof(struct acpi_table_rsdp));
++	if (!rsdp) {
++		pr_debug("%s: can't map rsdp\n", __func__);
++		return;
++	}
++
++	memblock_reserve(rsdp_address, sizeof(struct acpi_table_rsdp));
++
++	/* Use XSDT if present and not overridden. Otherwise, use RSDT */
++	if ((rsdp->revision > 1) &&
++	    rsdp->xsdt_physical_address && !acpi_gbl_do_not_use_xsdt) {
++		address = (acpi_physical_address)rsdp->xsdt_physical_address;
++		table_entry_size = ACPI_XSDT_ENTRY_SIZE;
++	} else {
++		address = (acpi_physical_address)rsdp->rsdt_physical_address;
++		table_entry_size = ACPI_RSDT_ENTRY_SIZE;
++	}
++
++	/*
++	 * It is not possible to map more than one entry in some environments,
++	 * so unmap the RSDP here before mapping other tables
++	 */
++	acpi_os_unmap_memory(rsdp, sizeof(struct acpi_table_rsdp));
++
++	/* Map the RSDT/XSDT table header to get the full table length */
++
++	table = acpi_os_map_memory(address, sizeof(struct acpi_table_header));
++	if (!table) {
++		pr_debug("%s: can't map [RX]SDT header\n", __func__);
++		return;
++	}
++
++	/*
++	 * Validate length of the table, and map entire table.
++	 * Minimum length table must contain at least one entry.
++	 */
++	length = table->length;
++	acpi_os_unmap_memory(table, sizeof(struct acpi_table_header));
++
++	if (length < (sizeof(struct acpi_table_header) + table_entry_size)) {
++		pr_debug("Invalid table length 0x%X in RSDT/XSDT", length);
++		return;
++	}
++
++	memblock_reserve(address, length);
++
++	table = acpi_os_map_memory(address, length);
++	if (!table) {
++		pr_debug("%s: can't map [RX]SDT table\n", __func__);
++		return;
++	}
++
++	/* Get the number of entries and pointer to first entry */
++	table_count = (u32)((table->length - sizeof(struct acpi_table_header)) /
++			    table_entry_size);
++	table_entry = ACPI_ADD_PTR(u8, table, sizeof(struct acpi_table_header));
++
++	/* reserve tables pointed from the RSDT/XSDT */
++	for (i = 0; i < table_count; i++, table_entry += table_entry_size) {
++
++		/* Get the table physical address (32-bit for RSDT, 64-bit for XSDT) */
++
++		address =
++		    acpi_tb_get_root_table_entry(table_entry, table_entry_size);
++
++		/* Skip NULL entries in RSDT/XSDT */
++
++		if (!address)
++			continue;
++
++		hdr = acpi_os_map_memory(address, sizeof(struct acpi_table_header));
++		if (!hdr) {
++			pr_debug("%s: can't map %d header\n", __func__, i);
++			continue;
++		}
++
++		memblock_reserve(address, hdr->length);
++
++		/* FIXME: parse FADT and reserve embedded there tables */
++
++		acpi_os_unmap_memory(hdr, sizeof(struct acpi_table_header));
++	}
++
++	acpi_os_unmap_memory(table, length);
++}
++
+ static int __init acpi_parse_apic_instance(char *str)
+ {
+ 	if (!str)
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 9f432411e988..d8688e4b6726 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -226,6 +226,8 @@ void acpi_boot_table_init (void);
+ int acpi_mps_check (void);
+ int acpi_numa_init (void);
+ 
++void acpi_reserve_tables(void);
++
+ int acpi_table_init (void);
+ int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
+ int __init acpi_table_parse_entries(char *id, unsigned long table_size,
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Sincerely yours,
+Mike.
