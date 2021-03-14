@@ -2,194 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480D233A45A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38E133A462
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhCNLIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 07:08:50 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52593 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhCNLIP (ORCPT
+        id S234362AbhCNLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 07:11:30 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:11791 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234904AbhCNLLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 07:08:15 -0400
-Received: by mail-io1-f72.google.com with SMTP id v5so19830980ioq.19
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 04:08:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=LaictTX5V5YWajK3UC2MhCvWWWbTxgBXC6jz+KlPajY=;
-        b=jLQa7gOTxCN/usyFjqAubmwiZVXPReTmp2ZHkQANKPv7PooATFFiFTE+oymogcLpcL
-         nUC5opTF05gzQHOj2ADp+NlT5RQ9zZB4fmYURXt80PX1B2+4OWhO2/ZUZGANiPWROD/p
-         nKNConO3CtGSMnO6ce0GT7skwo0pSTe/nzyHZSl0wt3sHVOe7guJVOz+ZJABMHDQ/Ai2
-         Hehq231YY5VZYwekApD9l86U+c3XwFv53PngcY58JpvapV3scSxiNEDw7TnaR0Twguri
-         /R3yQmhQymGviGIYeUrb6Yv3a41/fq91OFWJzzWNPGOCc2YbWHguPqrkihUmswBngZ2i
-         HmAw==
-X-Gm-Message-State: AOAM531G55aVXFXi2+u4pSF2cksWtyZ8EQo1i51Z7Hl7SH1mGbQOZtvg
-        fndtq1DdIuNGAfmmhcBJTIM2tYdsPlYGDMiXDpyyCumbJuuN
-X-Google-Smtp-Source: ABdhPJxQaqYn9qQamJFWL1Xa7J4WQdX9CFPHnbR13AQExG9jc1GbxRlOjdLdCnIhYuNQo3Cezf7VnjWFjXCFXbjAM3kYpKTG8Hjg
+        Sun, 14 Mar 2021 07:11:00 -0400
+Date:   Sun, 14 Mar 2021 11:10:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615720257; bh=8pljKco6S41xC6hA1KN72x2WWC8GcMpq0scMzGiuX40=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=HYkJKo65cP0jCYvfrRvkUzRvVskjy8BBls/otbbBiOFEUnKYmV5O9CtcJEbdpJ6y6
+         +3Df0LiBqx4VKoLPkgTeMSiTU6tefwCx4d93Cm19JpGofDjhiT3NDqmDxUwRN0srzu
+         qbDaDtIrGP2KPuO2Xd1SwrJ9dJieNcbacpInw/NgQ4pS+1CEenAH9iVwwXE2Cnjx5k
+         XOwgylygpo8aZHyScxotXbodEpnXzx7D9T5HczNU/wlOHLOtRKUXCIlbctKzZrflpg
+         VZhA8ByrreRkzG584KiYUvDIpVKXDut3xEW3XNmMF1xjLTwMJcqh5TUMiCeV5eEK9v
+         zxw9WkQ7KHWFA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        Wang Qing <wangqing@vivo.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v3 net-next 0/6] skbuff: micro-optimize flow dissection
+Message-ID: <20210314111027.7657-1-alobakin@pm.me>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9510:: with SMTP id d16mr4422246iom.81.1615720095142;
- Sun, 14 Mar 2021 04:08:15 -0700 (PDT)
-Date:   Sun, 14 Mar 2021 04:08:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053da9405bd7d2644@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
-From:   syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This little number makes all of the flow dissection functions take
+raw input data pointer as const (1-5) and shuffles the branches in
+__skb_header_pointer() according to their hit probability.
 
-syzbot found the following issue on:
+The result is +20 Mbps per flow/core with one Flow Dissector pass
+per packet. This affects RPS (with software hashing), drivers that
+use eth_get_headlen() on their Rx path and so on.
 
-HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
-dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
+From v2 [1]:
+ - reword some commit messages as a potential fix for NIPA;
+ - no functional changes.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+From v1 [0]:
+ - rebase on top of the latest net-next. This was super-weird, but
+   I double-checked that the series applies with no conflicts, and
+   then on Patchwork it didn't;
+ - no other changes.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com
+[0] https://lore.kernel.org/netdev/20210312194538.337504-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210313113645.5949-1-alobakin@pm.me
 
-==================================================================
-BUG: KASAN: use-after-free in bdev_nr_sectors include/linux/genhd.h:266 [inline]
-BUG: KASAN: use-after-free in disk_part_iter_next+0x49d/0x530 block/genhd.c:207
-Read of size 8 at addr ffff88804b0022e8 by task systemd-udevd/9804
+Alexander Lobakin (6):
+  flow_dissector: constify bpf_flow_dissector's data pointers
+  skbuff: make __skb_header_pointer()'s data argument const
+  flow_dissector: constify raw input data argument
+  linux/etherdevice.h: misc trailing whitespace cleanup
+  ethernet: constify eth_get_headlen()'s data argument
+  skbuff: micro-optimize {,__}skb_header_pointer()
 
-CPU: 1 PID: 9804 Comm: systemd-udevd Not tainted 5.12.0-rc1-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- bdev_nr_sectors include/linux/genhd.h:266 [inline]
- disk_part_iter_next+0x49d/0x530 block/genhd.c:207
- blk_drop_partitions+0x10a/0x180 block/partitions/core.c:543
- bdev_disk_changed+0x238/0x430 fs/block_dev.c:1237
- __loop_clr_fd+0x7c7/0xff0 drivers/block/loop.c:1271
- lo_release+0x1ac/0x1f0 drivers/block/loop.c:1923
- __blkdev_put+0x54e/0x800 fs/block_dev.c:1579
- blkdev_put+0x92/0x580 fs/block_dev.c:1632
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f8141652270
-Code: 73 01 c3 48 8b 0d 38 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 59 c1 20 00 00 75 10 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ee fb ff ff 48 89 04 24
-RSP: 002b:00007ffe05d67588 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000007 RCX: 00007f8141652270
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000007
-RBP: 00007f814250c710 R08: 000055e767969790 R09: 000055e767968300
-R10: 00007f814250c8c0 R11: 0000000000000246 R12: 0000000000000000
-R13: 000055e767979eb0 R14: 0000000000000003 R15: 000000000000000e
+ include/linux/etherdevice.h  |  4 ++--
+ include/linux/skbuff.h       | 26 +++++++++++------------
+ include/net/flow_dissector.h |  6 +++---
+ net/core/flow_dissector.c    | 41 +++++++++++++++++++-----------------
+ net/ethernet/eth.c           |  2 +-
+ 5 files changed, 40 insertions(+), 39 deletions(-)
 
-Allocated by task 9582:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- __kasan_slab_alloc+0x73/0x90 mm/kasan/common.c:460
- kasan_slab_alloc include/linux/kasan.h:223 [inline]
- slab_post_alloc_hook mm/slab.h:516 [inline]
- slab_alloc mm/slab.c:3325 [inline]
- kmem_cache_alloc+0x1c3/0x4f0 mm/slab.c:3502
- bdev_alloc_inode+0x18/0x80 fs/block_dev.c:786
- alloc_inode+0x61/0x230 fs/inode.c:234
- new_inode_pseudo fs/inode.c:928 [inline]
- new_inode+0x27/0x2f0 fs/inode.c:957
- bdev_alloc+0x20/0x2f0 fs/block_dev.c:876
- add_partition+0x1ab/0x8a0 block/partitions/core.c:348
- bdev_add_partition+0xb6/0x130 block/partitions/core.c:451
- blkpg_do_ioctl+0x2d0/0x340 block/ioctl.c:43
- blkpg_ioctl block/ioctl.c:60 [inline]
- blkdev_ioctl+0x577/0x6d0 block/ioctl.c:548
- block_ioctl+0xf9/0x140 fs/block_dev.c:1658
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 8676:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xc7/0x100 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- __cache_free mm/slab.c:3440 [inline]
- kmem_cache_free+0x6f/0x1d0 mm/slab.c:3733
- i_callback+0x3f/0x70 fs/inode.c:223
- rcu_do_batch kernel/rcu/tree.c:2559 [inline]
- rcu_core+0x722/0x1280 kernel/rcu/tree.c:2794
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xa4/0xd0 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3039 [inline]
- call_rcu+0xb1/0x700 kernel/rcu/tree.c:3114
- destroy_inode+0x129/0x1b0 fs/inode.c:289
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x57e/0x810 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
- disk_part_iter_exit block/genhd.c:236 [inline]
- disk_part_iter_next+0x9a/0x530 block/genhd.c:203
- blk_drop_partitions+0x10a/0x180 block/partitions/core.c:543
- bdev_disk_changed+0x238/0x430 fs/block_dev.c:1237
- loop_reread_partitions+0x29/0x50 drivers/block/loop.c:655
- loop_set_status+0x704/0x1050 drivers/block/loop.c:1418
- loop_set_status64 drivers/block/loop.c:1538 [inline]
- lo_ioctl+0x4ca/0x1620 drivers/block/loop.c:1706
- blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:583
- block_ioctl+0xf9/0x140 fs/block_dev.c:1658
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88804b0022c0
- which belongs to the cache bdev_cache of size 2792
-The buggy address is located 40 bytes inside of
- 2792-byte region [ffff88804b0022c0, ffff88804b002da8)
-The buggy address belongs to the page:
-page:00000000708f9251 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88804b002fff pfn:0x4b002
-flags: 0x4fff00000000200(slab)
-raw: 04fff00000000200 ffffea00010ecd48 ffffea00012c2fc8 ffff888010b95700
-raw: ffff88804b002fff ffff88804b0022c0 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88804b002180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88804b002200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88804b002280: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-                                                          ^
- ffff88804b002300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804b002380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+--
+2.30.2
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
