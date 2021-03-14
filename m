@@ -2,224 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D40533A48A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAF633A492
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 12:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhCNLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 07:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhCNLVI (ORCPT
+        id S235222AbhCNLix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 07:38:53 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:50455 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhCNLij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 07:21:08 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEB9C061574;
-        Sun, 14 Mar 2021 04:21:07 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id s21so7324481pjq.1;
-        Sun, 14 Mar 2021 04:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PPVao1AHhEvdFq9PUk1U5Ula5rKqEXhakDYfJk3USYw=;
-        b=jN5Ph6okeJzmxcfgrkWZCOiJqQ+apMPw5qBNEIb+2pJhWddRWQr4loM/yMWyAt4s8I
-         2+LTO5Qa56CzgbXjneAGe45KpjROK8mTAmWEf4lV7ZwwMP3LDq+R91ZCWnRXno3Np6mU
-         vz8Xn7mw3gqo3FvrGjOMPqZWrM/KfGXSvKLfmoAVKQYbDs9x+mq8AzKUmL+jdw1ozic0
-         EJadfT/NflcY4mEuxR/h8hngbFFc7exxEyU+HnWhzWKElupKXUzmikJ+nAk253fig/F1
-         kA+iTjxdc9Qn0QNsWBdlo9eqOyLY9w6M5PfULtdbRShciOylBpj8HMa50d0qBT/q/M8K
-         np5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PPVao1AHhEvdFq9PUk1U5Ula5rKqEXhakDYfJk3USYw=;
-        b=SqBQcPayoX7xvEGPo/ears7PoxG8NNFk+pgQPx+LokD3jTILpHqLHknh4TGy4Wlybq
-         82Z4QBcP6Z142Sna+oc0I5LnMRTzpv7ENx1aT6boflB80vigq3PT4hhN0f6/oHrhc16e
-         BR1BJUwAeuGl5XcAviSSjjQDacSJxZdOBq9Jf6r8mI67kj4TZn2xxW5fEV3b6u7V9oXJ
-         UgvFJHeqmsP+OEZkuqRa0xlc+QHaByJK45C0BP4CVAcn7COwg0z3+4sl6Lp4Zs7EWOgn
-         xTdPYWOcqTyL72O3itrRiiXMrFy4aWSfX5LDnXu8Xe4YGxjmdBiyrhrQZe4T1Xa+grc0
-         VaHA==
-X-Gm-Message-State: AOAM530hT8J1U6FE2rYWhaa9X5MQ7rtxJp/iAgD4sxnVZWXioiQQikut
-        Zufyz1LPenof3C5RybwzzSDtpnTm+3E=
-X-Google-Smtp-Source: ABdhPJxX62N7vN6YZHADEIQkobDUyl4zF+Ij1TCDd2Qoq+wSvBwNUts9N67aLcAh7BMsZOB885ClWw==
-X-Received: by 2002:a17:902:c154:b029:e5:e7cf:9627 with SMTP id 20-20020a170902c154b02900e5e7cf9627mr6533477plj.68.1615720867238;
-        Sun, 14 Mar 2021 04:21:07 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:352e:895f:60e:9463])
-        by smtp.gmail.com with ESMTPSA id x19sm10268860pfc.152.2021.03.14.04.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 04:21:06 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Martin Schiller <ms@dev.tdt.de>, Krzysztof Halasa <khc@pm.waw.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net v2] net: hdlc_x25: Prevent racing between "x25_close" and "x25_xmit"/"x25_rx"
-Date:   Sun, 14 Mar 2021 04:21:01 -0700
-Message-Id: <20210314112103.45242-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 14 Mar 2021 07:38:39 -0400
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12EBcWlM046996;
+        Sun, 14 Mar 2021 20:38:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Sun, 14 Mar 2021 20:38:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12EBcQxF046623
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 14 Mar 2021 20:38:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+ <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+ <YEoTw7CoK7Ob0YR+@kroah.com>
+ <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
+ <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
+ <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
+Message-ID: <9e089560-388a-a82d-4841-8092578b9d5d@i-love.sakura.ne.jp>
+Date:   Sun, 14 Mar 2021 20:38:22 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"x25_close" is called by "hdlc_close" in "hdlc.c", which is called by
-hardware drivers' "ndo_stop" function.
-"x25_xmit" is called by "hdlc_start_xmit" in "hdlc.c", which is hardware
-drivers' "ndo_start_xmit" function.
-"x25_rx" is called by "hdlc_rcv" in "hdlc.c", which receives HDLC frames
-from "net/core/dev.c".
+On 2021/03/13 9:48, Tetsuo Handa wrote:
+> On 2021/03/12 14:44, Tetsuo Handa wrote:
+>> And what you are missing in your [PATCH 4,5,6/6] is
+>>
+>>   diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+>>   index c4457026d5ad..3c64bd06ab53 100644
+>>   --- a/drivers/usb/usbip/vhci_sysfs.c
+>>   +++ b/drivers/usb/usbip/vhci_sysfs.c
+>>   @@ -423,6 +423,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>>           /* end the lock */
+>>   
+>>           wake_up_process(vdev->ud.tcp_rx);
+>>   +       schedule_timeout_uninterruptible(HZ); // Consider being preempted here.
+>>           wake_up_process(vdev->ud.tcp_tx);
+>>   
+>>           rh_port_connect(vdev, speed);
+>>
+>> . wake_up_process(tcp_tx) can call vhci_shutdown_connection() before wake_up_process(tcp_tx) is called.
+> 
+> wake_up_process(tcp_rx) can call vhci_shutdown_connection() before wake_up_process(tcp_tx) is called.
+> 
+>> Since vhci_shutdown_connection() destroys tcp_tx thread and releases tcp_tx memory via kthread_stop_put(tcp_tx),
+>> wake_up_process(tcp_tx) will access already freed memory. Your patch converted "NULL pointer dereference caused by
+>> failing to call kthread_stop_put(tcp_tx)" into "use after free caused by succeeding to call kthread_stop_put(tcp_tx)".
+>>
+> 
+> And note that
+> 
+>   diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+>   index c4457026d5ad..0e1a81d4632c 100644
+>   --- a/drivers/usb/usbip/vhci_sysfs.c
+>   +++ b/drivers/usb/usbip/vhci_sysfs.c
+>   @@ -422,11 +422,11 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>           spin_unlock_irqrestore(&vhci->lock, flags);
+>           /* end the lock */
+>   
+>   -       wake_up_process(vdev->ud.tcp_rx);
+>   -       wake_up_process(vdev->ud.tcp_tx);
+>   -
+>           rh_port_connect(vdev, speed);
+>   
+>   +       wake_up_process(vdev->ud.tcp_tx);
+>   +       wake_up_process(vdev->ud.tcp_rx);
+>   +
+>           return count;
+>    }
+>    static DEVICE_ATTR_WO(attach);
+> 
+> is as well not sufficient, for you are still missing
 
-"x25_close" races with "x25_xmit" and "x25_rx" because their callers race.
+Well, since tx thread can as well call usbip_event_add(USBIP_EH_SHUTDOWN), reversing
+the order of wake_up_process(tcp_tx) and wake_up_process(tcp_rx) will not help.
 
-However, we need to ensure that the LAPB APIs called in "x25_xmit" and
-"x25_rx" are called before "lapb_unregister" is called in "x25_close".
+> 
+>   diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+>   index c4457026d5ad..c958f89a9196 100644
+>   --- a/drivers/usb/usbip/vhci_sysfs.c
+>   +++ b/drivers/usb/usbip/vhci_sysfs.c
+>   @@ -422,11 +422,13 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>           spin_unlock_irqrestore(&vhci->lock, flags);
+>           /* end the lock */
+>   
+>   -       wake_up_process(vdev->ud.tcp_rx);
+>   -       wake_up_process(vdev->ud.tcp_tx);
+>   +       schedule_timeout_uninterruptible(HZ); // Consider being preempted here.
+>   
+>           rh_port_connect(vdev, speed);
+>   
+>   +       wake_up_process(vdev->ud.tcp_tx);
+>   +       wake_up_process(vdev->ud.tcp_rx);
+>   +
+>           return count;
+>    }
+>    static DEVICE_ATTR_WO(attach);
+> 
+> because vhci_port_disconnect() from detach_store() can call usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN)
+> (same use after free bug regarding tcp_tx and tcp_rx) as soon as all shared states are set up and
+> spinlocks are released.
+> 
+> What you had better consider first is how to protect event_handler()/usbip_sockfd_store()/attach_store()/detach_store() functions
+>  from concurrent calls. Please respond to https://lkml.kernel.org/r/3dab66dc-2981-bc88-a370-4b3178dfd390@i-love.sakura.ne.jp
+> before you try to make further changes.
+> 
 
-This patch adds locking to ensure when "x25_xmit" and "x25_rx" are doing
-their work, "lapb_unregister" is not yet called in "x25_close".
+After all, I believe that there is no choice but introduce a mutex for serialization.
 
-Reasons for not solving the racing between "x25_close" and "x25_xmit" by
-calling "netif_tx_disable" in "x25_close":
-1. We still need to solve the racing between "x25_close" and "x25_rx";
-2. The design of the HDLC subsystem assumes the HDLC hardware drivers
-have full control over the TX queue, and the HDLC protocol drivers (like
-this driver) have no control. Controlling the queue here in the protocol
-driver may interfere with hardware drivers' control of the queue.
+Greg, please pick up https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/commit/?h=usbip_test&id=f345de0d2e51a20a2a1c30fc22fa1527670d2095
+and below patch.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+From e0579aa776e4a3568c06f767c193d2204b64679d Mon Sep 17 00:00:00 2001
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date: Sun, 14 Mar 2021 20:24:16 +0900
+Subject: [PATCH v5] usb: usbip: serialize attach/detach operations
+
+The root problem syzbot has found [1] is that usbip module is not using
+serialization between attach/detach operations and event_handler().
+This results in the following race windows.
+
+  (1) two userspace processes can perform attach operation on the same
+      device by writing the same content to the same attach interface
+      file
+
+  (2) one userspace process can perform detach operation on a device by
+      writing to detach interface file while the other userspace process
+      is performing attach operation on that device by writing to attach
+      interface file
+
+  (3) event_handler() kernel workqueue thread can perform detach operation
+      on a device while some userspace process is still performing attach
+      operation on that device
+
+What syzbot is reporting is (3), and what commits 46613c9dfa964c0c,
+718ad9693e365612 and 9380afd6df70e24e did not take into account is
+
+  As soon as one side of {tx,rx} kernel threads starts from attach
+  operation, that kernel thread is allowed to call
+  usbip_event_add(USBIP_EH_SHUTDOWN) which in turn allows event_handler()
+  to call kthread_stop_put() on both {tx,rx} kernel threads via
+  ud->eh_ops.shutdown(ud), before the other side of {tx,rx} kernel threads
+  starts from attach operation.
+
+which will be reported as either NULL pointer dereference or use-after-free
+bug on the other side of {tx,rx} kernel threads.
+
+Since this race window cannot be closed without introducing serialization,
+this patch introduces usbip_event_mutex for serializing attach/detach
+operations and event_handler().
+
+[1] https://syzkaller.appspot.com/bug?extid=95ce4b142579611ef0a9
+
+Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 46613c9dfa964c0c ("usbip: fix vudc usbip_sockfd_store races leading to gpf")
+Fixes: 718ad9693e365612 ("usbip: fix vhci_hcd attach_store() races leading to gpf")
+Fixes: 9380afd6df70e24e ("usbip: fix stub_dev usbip_sockfd_store() races leading to gpf")
 ---
+ drivers/usb/usbip/stub_dev.c     | 15 +++++++++++++--
+ drivers/usb/usbip/usbip_common.h |  2 ++
+ drivers/usb/usbip/usbip_event.c  | 15 +++++++++++++++
+ drivers/usb/usbip/vhci_sysfs.c   | 30 ++++++++++++++++++++++++++----
+ drivers/usb/usbip/vudc_sysfs.c   | 16 +++++++++++++---
+ 5 files changed, 69 insertions(+), 9 deletions(-)
 
-Change from v1:
-Added a "Fixes" tag.
-
----
- drivers/net/wan/hdlc_x25.c | 42 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index 4aaa6388b9ee..5a6a945f6c81 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -23,6 +23,8 @@
- 
- struct x25_state {
- 	x25_hdlc_proto settings;
-+	bool up;
-+	spinlock_t up_lock; /* Protects "up" */
- };
- 
- static int x25_ioctl(struct net_device *dev, struct ifreq *ifr);
-@@ -104,6 +106,8 @@ static void x25_data_transmit(struct net_device *dev, struct sk_buff *skb)
- 
- static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
+diff --git a/drivers/usb/usbip/stub_dev.c b/drivers/usb/usbip/stub_dev.c
+index 8f1de1fbbeed..79ebc9795b4a 100644
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -39,8 +39,8 @@ static DEVICE_ATTR_RO(usbip_status);
+  * is used to transfer usbip requests by kernel threads. -1 is a magic number
+  * by which usbip connection is finished.
+  */
+-static ssize_t usbip_sockfd_store(struct device *dev, struct device_attribute *attr,
+-			    const char *buf, size_t count)
++static ssize_t __usbip_sockfd_store(struct device *dev, struct device_attribute *attr,
++				    const char *buf, size_t count)
  {
-+	hdlc_device *hdlc = dev_to_hdlc(dev);
-+	struct x25_state *x25st = state(hdlc);
- 	int result;
- 
- 	/* There should be a pseudo header of 1 byte added by upper layers.
-@@ -114,11 +118,19 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
- 		return NETDEV_TX_OK;
- 	}
- 
-+	spin_lock_bh(&x25st->up_lock);
-+	if (!x25st->up) {
-+		spin_unlock_bh(&x25st->up_lock);
-+		kfree_skb(skb);
-+		return NETDEV_TX_OK;
-+	}
-+
- 	switch (skb->data[0]) {
- 	case X25_IFACE_DATA:	/* Data to be transmitted */
- 		skb_pull(skb, 1);
- 		if ((result = lapb_data_request(dev, skb)) != LAPB_OK)
- 			dev_kfree_skb(skb);
-+		spin_unlock_bh(&x25st->up_lock);
- 		return NETDEV_TX_OK;
- 
- 	case X25_IFACE_CONNECT:
-@@ -147,6 +159,7 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
- 		break;
- 	}
- 
-+	spin_unlock_bh(&x25st->up_lock);
- 	dev_kfree_skb(skb);
- 	return NETDEV_TX_OK;
+ 	struct stub_device *sdev = dev_get_drvdata(dev);
+ 	int sockfd = 0;
+@@ -132,6 +132,17 @@ static ssize_t usbip_sockfd_store(struct device *dev, struct device_attribute *a
+ 	spin_unlock_irq(&sdev->ud.lock);
+ 	return -EINVAL;
  }
-@@ -164,6 +177,7 @@ static int x25_open(struct net_device *dev)
- 		.data_transmit = x25_data_transmit,
- 	};
- 	hdlc_device *hdlc = dev_to_hdlc(dev);
-+	struct x25_state *x25st = state(hdlc);
- 	struct lapb_parms_struct params;
- 	int result;
- 
-@@ -190,6 +204,10 @@ static int x25_open(struct net_device *dev)
- 	if (result != LAPB_OK)
- 		return -EINVAL;
- 
-+	spin_lock_bh(&x25st->up_lock);
-+	x25st->up = true;
-+	spin_unlock_bh(&x25st->up_lock);
++static ssize_t usbip_sockfd_store(struct device *dev, struct device_attribute *attr,
++				  const char *buf, size_t count)
++{
++	ssize_t ret = usbip_event_lock_killable();
 +
- 	return 0;
++	if (ret)
++		return ret;
++	ret = __usbip_sockfd_store(dev, attr, buf, count);
++	usbip_event_unlock();
++	return ret;
++}
+ static DEVICE_ATTR_WO(usbip_sockfd);
+ 
+ static struct attribute *usbip_attrs[] = {
+diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+index d60ce17d3dd2..ad7de3773e06 100644
+--- a/drivers/usb/usbip/usbip_common.h
++++ b/drivers/usb/usbip/usbip_common.h
+@@ -326,6 +326,8 @@ void usbip_stop_eh(struct usbip_device *ud);
+ void usbip_event_add(struct usbip_device *ud, unsigned long event);
+ int usbip_event_happened(struct usbip_device *ud);
+ int usbip_in_eh(struct task_struct *task);
++int usbip_event_lock_killable(void);
++void usbip_event_unlock(void);
+ 
+ static inline int interface_to_busnum(struct usb_interface *interface)
+ {
+diff --git a/drivers/usb/usbip/usbip_event.c b/drivers/usb/usbip/usbip_event.c
+index 5d88917c9631..e05b858f346d 100644
+--- a/drivers/usb/usbip/usbip_event.c
++++ b/drivers/usb/usbip/usbip_event.c
+@@ -58,6 +58,19 @@ static struct usbip_device *get_event(void)
  }
  
-@@ -197,6 +215,13 @@ static int x25_open(struct net_device *dev)
- 
- static void x25_close(struct net_device *dev)
- {
-+	hdlc_device *hdlc = dev_to_hdlc(dev);
-+	struct x25_state *x25st = state(hdlc);
+ static struct task_struct *worker_context;
++static DEFINE_MUTEX(usbip_event_mutex);
 +
-+	spin_lock_bh(&x25st->up_lock);
-+	x25st->up = false;
-+	spin_unlock_bh(&x25st->up_lock);
++int usbip_event_lock_killable(void)
++{
++	return mutex_lock_killable(&usbip_event_mutex);
++}
++EXPORT_SYMBOL_GPL(usbip_event_lock_killable);
 +
- 	lapb_unregister(dev);
- }
++void usbip_event_unlock(void)
++{
++	mutex_unlock(&usbip_event_mutex);
++}
++EXPORT_SYMBOL_GPL(usbip_event_unlock);
  
-@@ -205,15 +230,28 @@ static void x25_close(struct net_device *dev)
- static int x25_rx(struct sk_buff *skb)
+ static void event_handler(struct work_struct *work)
  {
- 	struct net_device *dev = skb->dev;
-+	hdlc_device *hdlc = dev_to_hdlc(dev);
-+	struct x25_state *x25st = state(hdlc);
- 
- 	if ((skb = skb_share_check(skb, GFP_ATOMIC)) == NULL) {
- 		dev->stats.rx_dropped++;
- 		return NET_RX_DROP;
+@@ -68,6 +81,7 @@ static void event_handler(struct work_struct *work)
  	}
  
--	if (lapb_data_received(dev, skb) == LAPB_OK)
-+	spin_lock_bh(&x25st->up_lock);
-+	if (!x25st->up) {
-+		spin_unlock_bh(&x25st->up_lock);
-+		kfree_skb(skb);
-+		dev->stats.rx_dropped++;
-+		return NET_RX_DROP;
-+	}
+ 	while ((ud = get_event()) != NULL) {
++		mutex_lock(&usbip_event_mutex);
+ 		usbip_dbg_eh("pending event %lx\n", ud->event);
+ 
+ 		/*
+@@ -91,6 +105,7 @@ static void event_handler(struct work_struct *work)
+ 			unset_event(ud, USBIP_EH_UNUSABLE);
+ 		}
+ 
++		mutex_unlock(&usbip_event_mutex);
+ 		wake_up(&ud->eh_waitq);
+ 	}
+ }
+diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+index c4b4256e5dad..d06087e4e29b 100644
+--- a/drivers/usb/usbip/vhci_sysfs.c
++++ b/drivers/usb/usbip/vhci_sysfs.c
+@@ -225,8 +225,8 @@ static int valid_port(__u32 *pdev_nr, __u32 *rhport)
+ 	return 1;
+ }
+ 
+-static ssize_t detach_store(struct device *dev, struct device_attribute *attr,
+-			    const char *buf, size_t count)
++static ssize_t __detach_store(struct device *dev, struct device_attribute *attr,
++			      const char *buf, size_t count)
+ {
+ 	__u32 port = 0, pdev_nr = 0, rhport = 0;
+ 	struct usb_hcd *hcd;
+@@ -263,6 +263,17 @@ static ssize_t detach_store(struct device *dev, struct device_attribute *attr,
+ 
+ 	return count;
+ }
++static ssize_t detach_store(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	ssize_t ret = usbip_event_lock_killable();
 +
-+	if (lapb_data_received(dev, skb) == LAPB_OK) {
-+		spin_unlock_bh(&x25st->up_lock);
- 		return NET_RX_SUCCESS;
-+	}
++	if (ret)
++		return ret;
++	ret = __detach_store(dev, attr, buf, count);
++	usbip_event_unlock();
++	return ret;
++}
+ static DEVICE_ATTR_WO(detach);
  
-+	spin_unlock_bh(&x25st->up_lock);
- 	dev->stats.rx_errors++;
- 	dev_kfree_skb_any(skb);
- 	return NET_RX_DROP;
-@@ -298,6 +336,8 @@ static int x25_ioctl(struct net_device *dev, struct ifreq *ifr)
- 			return result;
+ static int valid_args(__u32 *pdev_nr, __u32 *rhport,
+@@ -300,8 +311,8 @@ static int valid_args(__u32 *pdev_nr, __u32 *rhport,
+  *
+  * write() returns 0 on success, else negative errno.
+  */
+-static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+-			    const char *buf, size_t count)
++static ssize_t __attach_store(struct device *dev, struct device_attribute *attr,
++			      const char *buf, size_t count)
+ {
+ 	struct socket *socket;
+ 	int sockfd = 0;
+@@ -425,6 +436,17 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
  
- 		memcpy(&state(hdlc)->settings, &new_settings, size);
-+		state(hdlc)->up = false;
-+		spin_lock_init(&state(hdlc)->up_lock);
+ 	return count;
+ }
++static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	ssize_t ret = usbip_event_lock_killable();
++
++	if (ret)
++		return ret;
++	ret = __attach_store(dev, attr, buf, count);
++	usbip_event_unlock();
++	return ret;
++}
+ static DEVICE_ATTR_WO(attach);
  
- 		/* There's no header_ops so hard_header_len should be 0. */
- 		dev->hard_header_len = 0;
+ #define MAX_STATUS_NAME 16
+diff --git a/drivers/usb/usbip/vudc_sysfs.c b/drivers/usb/usbip/vudc_sysfs.c
+index a3ec39fc6177..3e3e4ef298d2 100644
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -90,9 +90,8 @@ static ssize_t dev_desc_read(struct file *file, struct kobject *kobj,
+ }
+ static BIN_ATTR_RO(dev_desc, sizeof(struct usb_device_descriptor));
+ 
+-static ssize_t usbip_sockfd_store(struct device *dev,
+-				  struct device_attribute *attr,
+-				  const char *in, size_t count)
++static ssize_t __usbip_sockfd_store(struct device *dev, struct device_attribute *attr,
++				    const char *in, size_t count)
+ {
+ 	struct vudc *udc = (struct vudc *) dev_get_drvdata(dev);
+ 	int rv;
+@@ -219,6 +218,17 @@ static ssize_t usbip_sockfd_store(struct device *dev,
+ 
+ 	return ret;
+ }
++static ssize_t usbip_sockfd_store(struct device *dev, struct device_attribute *attr,
++				  const char *in, size_t count)
++{
++	ssize_t ret = usbip_event_lock_killable();
++
++	if (ret)
++		return ret;
++	ret = __usbip_sockfd_store(dev, attr, in, count);
++	usbip_event_unlock();
++	return ret;
++}
+ static DEVICE_ATTR_WO(usbip_sockfd);
+ 
+ static ssize_t usbip_status_show(struct device *dev,
 -- 
-2.27.0
-
+2.18.4
