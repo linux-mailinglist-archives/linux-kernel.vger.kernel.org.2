@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EDB33A37E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0200833A382
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhCNIWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 04:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
+        id S234969AbhCNIXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 04:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234609AbhCNIV4 (ORCPT
+        with ESMTP id S231597AbhCNIXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 04:21:56 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4789C061763
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 00:21:56 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so13170759pjv.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 00:21:56 -0800 (PST)
+        Sun, 14 Mar 2021 04:23:13 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677D1C061574;
+        Sun, 14 Mar 2021 00:23:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id c10so61085828ejx.9;
+        Sun, 14 Mar 2021 00:23:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F7t5K6FQXwh1AvOAKrcjxJNmhozmlop1jrckC1EZ5MY=;
-        b=uJBxXfBYuYuOyW+AQhAvtgzqhiuH4OIi9AB3CTF7gMF52wmijJ7NBiTJbv1blSxJwc
-         OmlflovO4PiSMnIAmh60kpFvuoysCIuK7QShQ/XBl2FJwZmMiWhygyP/xdHYOEC2/tEf
-         1lLR7w8NhLmAKGwxEn6isD1Ph1ZSXHwj9MpvFUcIa/m7slYvUjvdHDEwDT/VGErlBdNr
-         ph1GTP96fkWsZ7g+4wAwJ6UfWKXZ+5wfpLPzyxPwIfqROoxUVw82iB/3d5R61En2Cpa+
-         NcUTDw5ZP4dnDWTmK/V4MrJe6sVYrr1Uwkvp7HAUG4wG5WvN3L3Yu6Fc13OpS3LS6bw7
-         tlpA==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=HEGwvNj8hmctDu6Y38pjXgmnmgSAbCOwl+eKGB6BT7Q=;
+        b=RdLk0ZGQksxI2qNvYW7NMxAFT6zQ527v6R5E47ewr9400SYRWWlG3YZATM8d2ftmBG
+         BGt7ax+FT2fm5djbbtMQ2Bd+LwKWNSWHHDwpfwZ5tYnA5InDFT+AzeS+dsPyjEHllYGh
+         nABziG+E2ALGjH00WUh3izIyJDcQ9sDS4i55tbU9yULVKiXHmBXZl+cSsVeoQQst5MzS
+         0MN//bfodurvqR9CaSAJz3iMtx/IK7fh2OGzpLnZCPtj0IgeqKilV3NrhpTxqwictoWu
+         F2Nk9A6hBPGxIOIgh2soY8j/fYPS9pOs0IxJj+sb14bJOyGWU+D+XsJpoLDBykjr681e
+         /7fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F7t5K6FQXwh1AvOAKrcjxJNmhozmlop1jrckC1EZ5MY=;
-        b=W5HnZZMolFS9O738F8dbs6M9r/cPlqmGDEtSyX6in/yFXsYa3CLXrmkQt34NwTkmJ1
-         YfjIIhVKHvtLWrGBkXl9SNGWzft0UvOdWZSk13wQzaETBz66Zq3u49bfHsdU7rRIiDv2
-         oeOCxGWuUANdqqtvBnztHXEvJlAtFW6vN84XdNKqdPGXguHtPCOeXlk90Sld+S5ojYr7
-         PmjMuJX48AeMUXk27SDsaMTYuAPpjjS+kgoeuChDXZlMXXUKVLaqMxK2SWz8zHq8HyMa
-         PmW0r3LO8bbtOy7YJwgwu0hAkDERXB6yDorf2fA5V2F4Ud3x2AIhIa2DzuJzIOQD2Hu9
-         p7jA==
-X-Gm-Message-State: AOAM5330aiwFt5Y9UrsBikmdTBpR2Sh0tnpeqRZkPEBo5mnlGOVDdFRt
-        5jFgOnEtaU2SN1f3wR+3ykGoR4C/CAG66UQKkeoISg==
-X-Google-Smtp-Source: ABdhPJxv+W9HT+9fyyp/Do5HvczoqOvvPhNyTLOAvGmvL7geCSdoqZ1QAxsz95mOWtBGftCeKpM/K996tx2H9qONpAY=
-X-Received: by 2002:a17:902:b210:b029:e6:33b4:cd9e with SMTP id
- t16-20020a170902b210b02900e633b4cd9emr6006219plr.67.1615710115931; Sun, 14
- Mar 2021 00:21:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210311111727.8433-1-colin.king@canonical.com>
-In-Reply-To: <20210311111727.8433-1-colin.king@canonical.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Sun, 14 Mar 2021 09:21:19 +0100
-Message-ID: <CAMZdPi_GWq8RsoQ6nN3W4hivc4UK+Kkru7C7S-CViyKLmjqOGw@mail.gmail.com>
-Subject: Re: [PATCH][next] bus: mhi: core: remove redundant initialization of
- variables state and ee
-To:     Colin King <colin.king@canonical.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=HEGwvNj8hmctDu6Y38pjXgmnmgSAbCOwl+eKGB6BT7Q=;
+        b=O8Yj4jlUSd6f4QY154xcgEiurCQAYWWb5SpOhbv7iYH+Yt0/WuEJg0D0j0SpzyM94d
+         u+cdtSm3PR5dBfCvgIC9BPmqcgA8j+3mayHceHuPq4TdCcBXkIOaRYicZHyBGCYbgDR2
+         PGJRrSJ/yyb05ptQN7sTCog51vAOakP+xDC0HIi4LFEChkiW92NrPu2AdVijSMdypJq1
+         y0E4E+XqbZtMOrukjSIvdB40LBNH4RPnvZdAXN1bEBz5GuwCYYjUqkpzZQo1P6UmBjAJ
+         xPqi+7qm/09CCEVX/TEHZAdm6seS9mPb+1P3QScI0Ew2ijizbkztpcspBDoh0dlJFv+G
+         W0Fg==
+X-Gm-Message-State: AOAM533s91ayg/dbKbherbQdiYOihw2N4kZ7T1umy0S1BFDxbDkuhHdt
+        iP8F+XwMyoBz+I1ImgcsQHk=
+X-Google-Smtp-Source: ABdhPJw+5BFp7onDqRrzndi0rN0+ztojC7b/WXytbaVDBwPlBjYtONmumZdf6kXT8dYNs+tRCyUhIQ==
+X-Received: by 2002:a17:906:1c13:: with SMTP id k19mr17848112ejg.457.1615710192163;
+        Sun, 14 Mar 2021 00:23:12 -0800 (PST)
+Received: from TRWS9215 ([88.245.22.54])
+        by smtp.gmail.com with ESMTPSA id gz20sm5516205ejc.25.2021.03.14.00.23.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 00:23:11 -0800 (PST)
+Message-ID: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
+Subject: [BUG] net: rds: rds_send_probe memory leak
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
+Cc:     gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 14 Mar 2021 11:23:10 +0300
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 12:18, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variables state and ee are being initialized with values that
-> are never read and are being updated later with a new values. The
-> initializations are redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Hi Santosh,
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+I've been working on a memory leak bug reported by syzbot.
+https://syzkaller.appspot.com/bug?id=39b72114839a6dbd66c1d2104522698a813f9ae2
 
-> ---
->  drivers/bus/mhi/core/main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 2c61dfd01353..3faf8bade520 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -428,9 +428,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
->  {
->         struct mhi_controller *mhi_cntrl = priv;
->         struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> -       enum mhi_state state = MHI_STATE_MAX;
-> +       enum mhi_state state;
->         enum mhi_pm_state pm_state = 0;
-> -       enum mhi_ee_type ee = MHI_EE_MAX;
-> +       enum mhi_ee_type ee;
->
->         write_lock_irq(&mhi_cntrl->pm_lock);
->         if (!MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
-> --
-> 2.30.2
->
+It seems that memory allocated in rds_send_probe function is not freed.
+
+Let me share my observations.
+rds_message is allocated at the beginning of rds_send_probe function.
+Then it is added to cp_send_queue list of rds_conn_path and refcount
+is increased by one.
+Next, in rds_send_xmit function it is moved from cp_send_queue list to
+cp_retrans list, and again refcount is increased by one.
+Finally in rds_loop_xmit function refcount is increased by one.
+So, total refcount is 4.
+However, rds_message_put is called three times, in rds_send_probe,
+rds_send_remove_from_sock and rds_send_xmit functions. It seems that
+one more rds_message_put is needed.
+Would you please check and share your comments on this issue?
+
+Thanks,
+Fatih
+
+
