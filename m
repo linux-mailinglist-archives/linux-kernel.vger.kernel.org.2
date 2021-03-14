@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321F133A5DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847D333A5E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhCNP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:59:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47166 "EHLO mail.kernel.org"
+        id S234087AbhCNQAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 12:00:44 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7144 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhCNP65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:58:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 042C564E90;
-        Sun, 14 Mar 2021 15:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615737537;
-        bh=Sl5zKSz6DCXoZBp5sX4nIbRnrLvpJOkHRmeqZ8B3s2E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0LWcWBI1fKxj5mEoH+7G4P9NuncVrToqkZtkzTMxW0z8ueh4WYzpTZz4L0kQfwAfj
-         xegV7QHvPiiDiipNs9MV1KwMJnTZ6f9K1ECLQdnQSFvGxIL5dxhtmbBzqaLnI3HgJs
-         m0HpkSnOobgWKiXA3eIUFU+95MJ+pz6HER4fQCMg=
-Date:   Sun, 14 Mar 2021 16:58:54 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Madhumitha Prabakaran <madhumithabiw@gmail.com>
-Cc:     forest@alittletooquiet.net, sbrivio@redhat.com,
-        briana.oursler@gmail.com, rapiz@foxmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vt6655: Fix camelcase
-Message-ID: <YE4yvuP+oVuXme4j@kroah.com>
-References: <20210313183019.368317-1-madhumithabiw@gmail.com>
+        id S233954AbhCNQAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 12:00:24 -0400
+IronPort-SDR: QX1qUo1jcsLHFJqVRXIiL3iwEXcLBWgsfoSKWe8DnMeCR5kEv/SBfhRvBtA4pc0zpYmxLynTzB
+ 3Oa1f9EWEN2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="188360673"
+X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
+   d="scan'208";a="188360673"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 09:00:24 -0700
+IronPort-SDR: DuMjBQcR2N5j/obQBCYBrcVYHJUINWmRCEXd5PJzZgipP2vcDnBzAlN8JK8JmjMHQsHe9rYwzX
+ /A3mrFyeyI8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
+   d="scan'208";a="439530579"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Mar 2021 09:00:21 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH v4 00/11] KVM: x86/pmu: Guest Architectural LBR Enabling
+Date:   Sun, 14 Mar 2021 23:52:13 +0800
+Message-Id: <20210314155225.206661-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210313183019.368317-1-madhumithabiw@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 12:30:19PM -0600, Madhumitha Prabakaran wrote:
-> Fix checkpatch.pl - Avoid CamelCase: <byVT3253InitTab_RFMD>
-> 
-> Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
-> ---
->  drivers/staging/vt6655/baseband.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-> index 1aa675241599..d89163299172 100644
-> --- a/drivers/staging/vt6655/baseband.c
-> +++ b/drivers/staging/vt6655/baseband.c
-> @@ -52,7 +52,7 @@
->  /*---------------------  Static Variables  --------------------------*/
->  
->  #define CB_VT3253_INIT_FOR_RFMD 446
-> -static const unsigned char byVT3253InitTab_RFMD[CB_VT3253_INIT_FOR_RFMD][2] = {
-> +static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] = {
->  	{0x00, 0x30},
->  	{0x01, 0x00},
->  	{0x02, 0x00},
-> @@ -2002,8 +2002,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
->  		if (by_local_id <= REV_ID_VT3253_A1) {
->  			for (ii = 0; ii < CB_VT3253_INIT_FOR_RFMD; ii++)
->  				result &= bb_write_embedded(priv,
-> -					byVT3253InitTab_RFMD[ii][0],
-> -					byVT3253InitTab_RFMD[ii][1]);
-> +					by_vt3253_init_tab_rfmd[ii][0],
-> +					by_vt3253_init_tab_rfmd[ii][1]);
->  
->  		} else {
->  			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
-> -- 
-> 2.25.1
+Hi geniuses,
 
-Hi,
+Please help review the new version of Arch LBR enabling patch set.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+The Architectural Last Branch Records (LBRs) is publiced
+in the 319433-040 release of Intel Architecture Instruction
+Set Extensions and Future Features Programming Reference[0].
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+The main advantages for the Arch LBR users are [1]:
+- Faster context switching due to XSAVES support and faster reset of
+  LBR MSRs via the new DEPTH MSR
+- Faster LBR read for a non-PEBS event due to XSAVES support, which
+  lowers the overhead of the NMI handler.
+- Linux kernel can support the LBR features without knowing the model
+  number of the current CPU.
 
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
+It's based on the kvm/queue tree plus two commits from kvm/intel tree:
+- 'fea4ab260645 ("KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS")'
+- '0ccd14126cb2 ("KVM: x86: Report XSS as an MSR to be saved if there are supported features")'
 
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
+Please check more details in each commit and feel free to comment.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+[0] https://software.intel.com/content/www/us/en/develop/download/
+intel-architecture-instruction-set-extensions-and-future-features-programming-reference.html
+[1] https://lore.kernel.org/lkml/1593780569-62993-1-git-send-email-kan.liang@linux.intel.com/
 
-thanks,
+---
+v3->v4 Changelog:
+- Add one more host patch to reuse ARCH_LBR_CTL_MASK;
+- Add reserve_lbr_buffers() instead of using GFP_ATOMIC;
+- Fia a bug in the arch_lbr_depth_is_valid();
+- Add LBR_CTL_EN to unify DEBUGCTLMSR_LBR and ARCH_LBR_CTL_LBREN;
+- Add vmx->host_lbrctlmsr to save/restore host values;
+- Add KVM_SUPPORTED_XSS to refactoring supported_xss;
+- Clear Arch_LBR ans its XSS bit if it's not supported;
+- Add negative testing to the related kvm-unit-tests;
+- Refine code and commit messages;
 
-greg k-h's patch email bot
+Previous:
+https://lore.kernel.org/kvm/20210303135756.1546253-1-like.xu@linux.intel.com/
+
+Like Xu (11):
+  perf/x86/intel: Fix the comment about guest LBR support on KVM
+  perf/x86/lbr: Simplify the exposure check for the LBR_INFO registers
+  perf/x86/lbr: Skip checking for the existence of LBR_TOS for Arch LBR
+  perf/x86/lbr: Move cpuc->lbr_xsave allocation out of sleeping region
+  perf/x86: Move ARCH_LBR_CTL_MASK definition to include/asm/msr-index.h
+  KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for Arch LBR
+  KVM: vmx/pmu: Add MSR_ARCH_LBR_CTL emulation for Arch LBR
+  KVM: vmx/pmu: Add Arch LBR emulation and its VMCS field
+  KVM: x86: Expose Architectural LBR CPUID leaf
+  KVM: x86: Refine the matching and clearing logic for supported_xss
+  KVM: x86: Add XSAVE Support for Architectural LBRs
+
+ arch/x86/events/core.c           |   8 ++-
+ arch/x86/events/intel/bts.c      |   2 +-
+ arch/x86/events/intel/core.c     |   6 +-
+ arch/x86/events/intel/lbr.c      |  28 +++++----
+ arch/x86/events/perf_event.h     |   8 ++-
+ arch/x86/include/asm/msr-index.h |   1 +
+ arch/x86/include/asm/vmx.h       |   4 ++
+ arch/x86/kvm/cpuid.c             |  25 +++++++-
+ arch/x86/kvm/vmx/capabilities.h  |  25 +++++---
+ arch/x86/kvm/vmx/pmu_intel.c     | 103 ++++++++++++++++++++++++++++---
+ arch/x86/kvm/vmx/vmx.c           |  50 +++++++++++++--
+ arch/x86/kvm/vmx/vmx.h           |   4 ++
+ arch/x86/kvm/x86.c               |   6 +-
+ 13 files changed, 227 insertions(+), 43 deletions(-)
+
+-- 
+2.29.2
+
