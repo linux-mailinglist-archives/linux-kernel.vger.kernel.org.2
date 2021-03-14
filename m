@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D047F33A547
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6838633A54A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhCNPIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
+        id S233672AbhCNPKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhCNPID (ORCPT
+        with ESMTP id S229870AbhCNPJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:08:03 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D4CC061574;
-        Sun, 14 Mar 2021 08:08:03 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id r20so13236309ljk.4;
-        Sun, 14 Mar 2021 08:08:03 -0700 (PDT)
+        Sun, 14 Mar 2021 11:09:31 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043F8C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 08:09:31 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id mm21so62013830ejb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 08:09:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YjwVPGG1TuIQpkOeAPKMAg0iJbl4yQQEvHJkwwGm/zs=;
-        b=oOUoZZ/Ftj5AKYuSEuFtvp2R7V9haC6Q6AApMAJ7kT+Ka0WnH+RHT4XBENNPkQACfC
-         jQWfSyfSROMGt0hqgDIDlBASdgjvXkJi6xtcn81/7+11aF19fAwsBgWdXFDKC4T+hHW1
-         +HLuYw3AG+38L61qb1gvUNT/dInOrD36+oBeIizrJU66Iw2wwJEapodKxmK0vxjAR7yj
-         VcD6k1Pgp+Qurp96EWEsZwa269R5Mb4XJ27GYPC4Ix9RVcVXpzRUBTAKN/CbQYfzBLiT
-         57w9L51cbBifCKcaVGqxmbFiT8P9wY1ns+UY9y7ZVlKu+iWmnAg59M3MECIfCiTJrZd4
-         ndsg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KfDq+xbpQTSxBagga+kuMHQuw6M5WXdS6DbeFFRtt9c=;
+        b=FQhyGsAK4SFajSgHlzfV9CAyyxvCAW4V1dsdO30YZyFHlw/yct1W5z/p1MBkNvrxAZ
+         NNB5Bj9mysZyufHgin0lh+0P75dpsKxS1/YqqS5evVdE1Uy27VZ98KnlsOkVpFKESzPm
+         gIG+xAWs+8coznHKd4t/bOXjQMBJGiaG4vUzsg0EpEYJW8T3GNqr6sWtdb0bkDwEiTUX
+         BYzDrVzcCWsc49PTzO1JKrivqoMGzdtG7NB8WatynCVA+rcEwMIbu56jgoi1ZLszpry4
+         WApMfLDumbtWpwMgcgauba5BJiklW4t3uf0GWyNFi92Z0eCcHim6iick4bZLyT6bjYRU
+         RreA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YjwVPGG1TuIQpkOeAPKMAg0iJbl4yQQEvHJkwwGm/zs=;
-        b=RLI4nEr7TNV+9lIJzFw5LxGA4tZAyZ03Jh5CfXrX/kIQwjTvzNX4UnQmdTHSk2B8oH
-         liNwrqTTZ6/MseE9RvW3n4tyje2h0IG4ki8tDdmgIjnxrao0Lm6PM+zqv7wOkMV/m/TO
-         tHAHPQbc5kuFLhJpn3aTrnNG9C4yANq7ROp1UtQjfdJ5ZAsd/uhkvQ23gIB/UpIImUyw
-         hqLxYnNIX+nG9/n8/f3/x9JqVUrCQK2pSMbHvvEIe6bSCr+0e2bHO+9J/M66BW/3J4bh
-         fnupLN+gOIX2z4WT6E+u/gkvitJdPkCBwLKj8lEZ+1O4WXm8CJT1/rznlvYGiNbByC8i
-         ZYrQ==
-X-Gm-Message-State: AOAM530UdJM+bO4xMoswa97QdqqdH7Cyfq/dvPONdDYX16OOYYX78ZT8
-        39GsB3YPxgzxY53tBdSPrTROvyD/D9o=
-X-Google-Smtp-Source: ABdhPJzKmUYhZwRbEOYZqjIAuBLd/RAfVxfAYGihj1XoiEQDNo3KThVc2Ppt+njIF0Wld4sCJNcszQ==
-X-Received: by 2002:a2e:9bcd:: with SMTP id w13mr8003309ljj.43.1615734481520;
-        Sun, 14 Mar 2021 08:08:01 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id m20sm2635562ljj.93.2021.03.14.08.08.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Mar 2021 08:08:01 -0700 (PDT)
-Subject: Re: [PATCH v3] iommu/tegra-smmu: Add pagetable mappings to debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210314080653.29374-1-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e1d3eef7-3d7e-b26d-79d2-f87969ac11f8@gmail.com>
-Date:   Sun, 14 Mar 2021 18:08:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KfDq+xbpQTSxBagga+kuMHQuw6M5WXdS6DbeFFRtt9c=;
+        b=rH2kQ2BYp+wTEvHGS1dHTkfUfz3IxkiJkQLGJJaG2KLOiMynUgOnlfnUieDLNl70v1
+         Q/zaSRuX1vWd2yLIFQRQ/fBYQ9q/o5py3b4OZbg2WAKaeV05IY4FBLkb2xRpm76RXwKv
+         AXPUelShmneMuJHF4OyfthfI74d+iggt4OKZF73GlBqK6oXq2EFpofDI9xKg3un6q2jO
+         criDjLrK+15Qwi7oMTaN6oTfXsv9tEmgBRBcyA+5Hgq9eVJzN14kT5rtHh3gSREkFPq7
+         /UIvSiwDU7eSHbAVG2wGILft16NEEfC5AUxRPGVo8aXtQF/NeWi/4XoT4lThcpCzGnge
+         NBfA==
+X-Gm-Message-State: AOAM532l9buKXucpsHJucrpDr/z1zOPS+HiiisRPgbde8BrArx17xa7r
+        qVIAZMTx2Sr5Vd3ubLwlDzw5C0xEBGQk+f7BkDA8FpfQ
+X-Google-Smtp-Source: ABdhPJzs1bhEzBrZnwMHWi78g+ReQod68AsTpJHEHiQt4sjFzigmdJrrVp0FLKqq5+NUYQjZ+pOBq0CoEw0F3MFHbGw=
+X-Received: by 2002:a17:906:30da:: with SMTP id b26mr18950811ejb.376.1615734569776;
+ Sun, 14 Mar 2021 08:09:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210314080653.29374-1-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210301153656.363839-1-masahiroy@kernel.org>
+In-Reply-To: <20210301153656.363839-1-masahiroy@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sun, 14 Mar 2021 08:09:18 -0700
+Message-ID: <CAMo8BfJALr7=QjYzx4jBq=DWXn8WsVwudygpAAh9eN6wk0qLJw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] xtensa: stop filling syscall array with sys_ni_syscall
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.03.2021 11:06, Nicolin Chen пишет:
-> +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> +		struct page *pt_page;
-> +		u32 *addr;
-> +		int i;
+On Mon, Mar 1, 2021 at 7:37 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> arch/xtensa/kernel/syscalls/syscalltbl.sh fills missing syscall numbers
+> with sys_ni_syscall.
+>
+> So, the generated arch/xtensa/include/generated/asm/syscall_table.h
+> has no hole.
+>
+> Hence, the line:
+>
+>   [0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
+>
+> is meaningless.
+>
+> The number of generated __SYSCALL() macros is the same as __NR_syscalls
+> (this is 442 as of v5.11).
+>
+> Hence, the array size, [__NR_syscalls] is unneeded.
+>
+> The designated initializer, '[nr] =', is also unneeded.
+>
+> This file does not need to know __NR_syscalls. Drop the unneeded
+> <asm/unistd.h> include directive.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/xtensa/kernel/syscall.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 
-unsigned int
+Thanks. I've applied the whole series to my xtensa tree.
 
-and then printf specifiers also should be %u
+-- 
+Thanks.
+-- Max
