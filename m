@@ -2,215 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCD633A5F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7CB33A612
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234746AbhCNQCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 12:02:03 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7174 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234204AbhCNQA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 12:00:59 -0400
-IronPort-SDR: 9tOJP9ZjFj851vNfqCLTlKRQQbKySFl5/ZZoF4xS5KrDayVdZG5izXHpURYf9pqGKajSXlzFh6
- at/f76iHmg6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="188360768"
-X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
-   d="scan'208";a="188360768"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 09:00:59 -0700
-IronPort-SDR: FNMvPAvA+DKd0ZQmS4Cd+TtQTo84gtyvQf+j2PfXugx6KgwKs+fI8J2kpf8eWToFruM+FnzpZw
- YvGHTwjTfF4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
-   d="scan'208";a="439530752"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Mar 2021 09:00:56 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH v2] x86: Update guest LBR tests for Architectural LBR
-Date:   Sun, 14 Mar 2021 23:52:25 +0800
-Message-Id: <20210314155225.206661-13-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210314155225.206661-1-like.xu@linux.intel.com>
-References: <20210314155225.206661-1-like.xu@linux.intel.com>
+        id S233143AbhCNQRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 12:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhCNQR0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 12:17:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C094C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 09:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=h3oKT2DIWMi/3UOnem0PmyfrJuvNhkM34vsZ5Qcbs8I=; b=aaJt/VQm3LY5XSCT8IZoqz6Dfu
+        RHGD6IcX8kOz4lYEBQzKW4vqCWhl54QfBJZc9YSopxtB289Mz+vP4k/TtDE7uKtCSOpaamIDgWdl4
+        J3H9wB23k/bWDyfxP7ATLI6a2NWh+nr14Fsm51QhmRLKaXavPYq9c7JFOuflxxb+e9H+sjk9GmEpQ
+        iJCDlH2ynfGFS5JMDOP3i3E/sIipk5T9KcQr7AC9Z2PwsYKjQMgdIYnxXAzYthOStEnVY5MWCPmM8
+        XySCxYCSylV8VdUCjv0wf8OaEiaimRs/D9Hx8sj6U5xD7XqIupipP+irq5s+uUddNVb0unAyV7Vcb
+        DbiHgJOQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLTQf-001DPd-Ni; Sun, 14 Mar 2021 16:17:22 +0000
+Subject: Re: [PATCH] soc: fsl: guts: fix comment syntax in file
+To:     Aditya Srivastava <yashsri421@gmail.com>, leoyang.li@nxp.com
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210314072828.9270-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1cab34f0-dcd1-b8ff-6bab-38ff9adc94b5@infradead.org>
+Date:   Sun, 14 Mar 2021 09:17:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210314072828.9270-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unit-test is intended to test the basic KVM's support for
-Architectural LBRs which is a Architectural performance monitor
-unit (PMU) feature on Intel processors including negative testing
-on the MSR LBR_DEPTH values.
+On 3/13/21 11:28 PM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for kernel-doc comments.
+> There are certain comments in include/linux/fsl/guts.h which follows this
+> syntax, but the content inside does not comply with kernel-doc.
+> 
+> E.g., opening comment for "Freecale 85xx and 86xx Global Utilties
+> register set" follows kernel-doc syntax(i.e., '/**'), but the content
+> inside does not comply with any kernel-doc specification (function,
+> struct, etc).
+> 
+> This causes unwelcomed warning from kernel-doc:
+> "warning: expecting prototype for Freecale 85xx and 86xx Global Utilties register set(). Prototype was for __FSL_GUTS_H__() instead"
+> 
+> Replace all such comment occurrences with general comment format,
+> i.e. '/*' to pervent kernel-doc from parsing these.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-If the LBR bit is set to 1 in the MSR_ARCH_LBR_CTL, the processor
-will record a running trace of the most recent branches guest
-taken in the LBR entries for guest to read.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- x86/pmu_lbr.c | 88 +++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 79 insertions(+), 9 deletions(-)
+Thanks.
 
-diff --git a/x86/pmu_lbr.c b/x86/pmu_lbr.c
-index 3bd9e9f..8cde208 100644
---- a/x86/pmu_lbr.c
-+++ b/x86/pmu_lbr.c
-@@ -6,6 +6,7 @@
- #define MAX_NUM_LBR_ENTRY	  32
- #define DEBUGCTLMSR_LBR	  (1UL <<  0)
- #define PMU_CAP_LBR_FMT	  0x3f
-+#define KVM_ARCH_LBR_CTL_MASK	  0x7f000f
- 
- #define MSR_LBR_NHM_FROM	0x00000680
- #define MSR_LBR_NHM_TO		0x000006c0
-@@ -13,6 +14,10 @@
- #define MSR_LBR_CORE_TO	0x00000060
- #define MSR_LBR_TOS		0x000001c9
- #define MSR_LBR_SELECT		0x000001c8
-+#define MSR_ARCH_LBR_CTL	0x000014ce
-+#define MSR_ARCH_LBR_DEPTH	0x000014cf
-+#define MSR_ARCH_LBR_FROM_0	0x00001500
-+#define MSR_ARCH_LBR_TO_0	0x00001600
- 
- volatile int count;
- 
-@@ -61,11 +66,26 @@ static bool test_init_lbr_from_exception(u64 index)
- 	return test_for_exception(GP_VECTOR, init_lbr, &index);
- }
- 
-+static void change_archlbr_depth(void *depth)
-+{
-+	wrmsr(MSR_ARCH_LBR_DEPTH, *(u64 *)depth);
-+}
-+
-+static bool test_change_archlbr_depth_from_exception(u64 depth)
-+{
-+	return test_for_exception(GP_VECTOR, change_archlbr_depth, &depth);
-+}
-+
- int main(int ac, char **av)
- {
- 	struct cpuid id = cpuid(10);
-+	struct cpuid id_7 = cpuid(7);
-+	struct cpuid id_1c;
- 	u64 perf_cap;
- 	int max, i;
-+	bool arch_lbr = false;
-+	u32 ctl_msr = MSR_IA32_DEBUGCTLMSR;
-+	u64 ctl_value = DEBUGCTLMSR_LBR;
- 
- 	setup_vm();
- 	perf_cap = rdmsr(MSR_IA32_PERF_CAPABILITIES);
-@@ -80,8 +100,19 @@ int main(int ac, char **av)
- 		return report_summary();
- 	}
- 
-+	if (id_7.d & (1UL << 19)) {
-+		arch_lbr = true;
-+		ctl_msr = MSR_ARCH_LBR_CTL;
-+		/* DEPTH defaults to the maximum number of LBRs entries. */
-+		max = rdmsr(MSR_ARCH_LBR_DEPTH) - 1;
-+		ctl_value = KVM_ARCH_LBR_CTL_MASK;
-+	}
-+
- 	printf("PMU version:		 %d\n", eax.split.version_id);
--	printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	if (!arch_lbr)
-+		printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	else
-+		printf("Architectural LBR depth:		 %d\n", max + 1);
- 
- 	/* Look for LBR from and to MSRs */
- 	lbr_from = MSR_LBR_CORE_FROM;
-@@ -90,32 +121,71 @@ int main(int ac, char **av)
- 		lbr_from = MSR_LBR_NHM_FROM;
- 		lbr_to = MSR_LBR_NHM_TO;
- 	}
-+	if (test_init_lbr_from_exception(0)) {
-+		lbr_from = MSR_ARCH_LBR_FROM_0;
-+		lbr_to = MSR_ARCH_LBR_TO_0;
-+	}
- 
- 	if (test_init_lbr_from_exception(0)) {
- 		printf("LBR on this platform is not supported!\n");
- 		return report_summary();
- 	}
- 
--	wrmsr(MSR_LBR_SELECT, 0);
--	wrmsr(MSR_LBR_TOS, 0);
--	for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
--		if (test_init_lbr_from_exception(max))
--			break;
-+	if (arch_lbr) {
-+		/*
-+		 * On processors that support Architectural LBRs,
-+		 * IA32_PERF_CAPABILITIES.LBR_FMT will have the value 03FH.
-+		 */
-+		report(0x3f == (perf_cap & PMU_CAP_LBR_FMT), "The guest LBR_FMT value is good.");
- 	}
- 
-+	/* Reset the guest LBR entries. */
-+	if (arch_lbr) {
-+		/* On a software write to IA32_LBR_DEPTH, all LBR entries are reset to 0.*/
-+		wrmsr(MSR_ARCH_LBR_DEPTH, max + 1);
-+	} else {
-+		wrmsr(MSR_LBR_SELECT, 0);
-+		wrmsr(MSR_LBR_TOS, 0);
-+		for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
-+			if (test_init_lbr_from_exception(max))
-+				break;
-+		}
-+	}
- 	report(max > 0, "The number of guest LBR entries is good.");
- 
-+	/* Check the guest LBR entries are initialized. */
-+	for (i = 0; i < max; ++i) {
-+		if (rdmsr(lbr_to + i) || rdmsr(lbr_from + i))
-+			break;
-+	}
-+	report(i == max, "The guest LBR initialized FROM_IP/TO_IP values are good.");
-+
- 	/* Do some branch instructions. */
--	wrmsr(MSR_IA32_DEBUGCTLMSR, DEBUGCTLMSR_LBR);
-+	wrmsr(ctl_msr, ctl_value);
- 	lbr_test();
--	wrmsr(MSR_IA32_DEBUGCTLMSR, 0);
-+	wrmsr(ctl_msr, 0);
- 
--	report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	/* Check if the guest LBR has recorded some branches. */
-+	if (!arch_lbr) {
-+		report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	}
- 	for (i = 0; i < max; ++i) {
- 		if (!rdmsr(lbr_to + i) || !rdmsr(lbr_from + i))
- 			break;
- 	}
- 	report(i == max, "The guest LBR FROM_IP/TO_IP values are good.");
- 
-+	if (!arch_lbr)
-+		return report_summary();
-+
-+	/* Negative testing on the LBR_DEPTH MSR values */
-+	id_1c = cpuid(0x1c);
-+	for (i = 0; i < 8; i++) {
-+		if (id_1c.a & (1UL << i))
-+			continue;
-+		report(test_change_archlbr_depth_from_exception(8*(i+1)) == 1,
-+			"Negative test: guest LBR depth %d is unsupported.", 8*(i+1));
-+	}
-+
- 	return report_summary();
- }
+> ---
+> * Applies perfectly on next-20210312
+> 
+>  include/linux/fsl/guts.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/fsl/guts.h b/include/linux/fsl/guts.h
+> index 0ac27b233f12..fdb55ca47a4f 100644
+> --- a/include/linux/fsl/guts.h
+> +++ b/include/linux/fsl/guts.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0-or-later */
+> -/**
+> +/*
+>   * Freecale 85xx and 86xx Global Utilties register set
+>   *
+>   * Authors: Jeff Brown
+> @@ -14,7 +14,7 @@
+>  #include <linux/types.h>
+>  #include <linux/io.h>
+>  
+> -/**
+> +/*
+>   * Global Utility Registers.
+>   *
+>   * Not all registers defined in this structure are available on all chips, so
+> 
+
+
 -- 
-2.29.2
+~Randy
 
