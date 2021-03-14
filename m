@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D57133A41F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCFA33A424
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbhCNKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:15:44 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:26530 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbhCNKPR (ORCPT
+        id S235186AbhCNKT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:19:28 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:37238 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235126AbhCNKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:15:17 -0400
-Date:   Sun, 14 Mar 2021 10:15:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615716915; bh=bM7cn3Afzu5HwMEmA8LHq+iVZuDxZxEEQbnZuhdZvEg=;
-        h=Date:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=jpFMl4hp7PYW0YfoBbb27jcEpamNRG53Kbe0U4P2zNXtu+ZXg4SYVY5cMuyC+d0Hn
-         V28lFAHmNlil0dmG4Z1dDYZggrLQpnNsWqRSRCBKEFBdDMVfIrEDaT79OzsUEUyHNd
-         RVZ6sE83S0YPfPROa9KrfykjYGmNqzQIS6FstZTSYR9ufeNuJcPKk//7GfNDWbBmSl
-         7nNb9EOCDNOCpfI+HiVZglkkQOAylsmb//HzrFHW/aTb2mcIoEa+XOYenZH/w3+YFJ
-         8hiSEYw7zShjXaIgNe4u7UipqQ4QT/Y1UNl0s+//0XNgxY+1weKsbVWeeqNLqXR2YO
-         fHCM1UpjZ+8SQ==
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        jonathan.lemon@gmail.com, edumazet@google.com, willemb@google.com,
-        haokexin@gmail.com, pablo@netfilter.org, jakub@cloudflare.com,
-        elver@google.com, decui@microsoft.com, vladimir.oltean@nxp.com,
-        lariel@mellanox.com, wangqing@vivo.com, dcaratti@redhat.com,
-        gnault@redhat.com, eranbe@nvidia.com, mchehab+huawei@kernel.org,
-        ktkhai@virtuozzo.com, bgolaszewski@baylibre.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 net-next 0/6] skbuff: micro-optimize flow dissection
-Message-ID: <20210314101452.2482-1-alobakin@pm.me>
-In-Reply-To: <20210313.181000.1671061556553245861.davem@davemloft.net>
-References: <20210313113645.5949-1-alobakin@pm.me> <20210313.181000.1671061556553245861.davem@davemloft.net>
+        Sun, 14 Mar 2021 06:19:07 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12EAIqRf000371;
+        Sun, 14 Mar 2021 05:18:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=UyEKzuzXX6Bk054SMR2fNK/9VqqSA0lao6vxZ6vCYfU=;
+ b=HOmxilYKKnz5YElDny6N5x27VXkSYKzOSoyMYCwGrIoOc3IMfidZPmndZEoe/2jvntF5
+ sOshVujfRt4fkLzRJKz1eBqn1eUWfpwLvE88TtmHFX1qVTBidBPnl4CL5Tv9qbmUkQmD
+ GmKr5ReOcIVkmlLyfh+FkgIbs+nX/nm9Z2ZB1lx9irMsT1aq23dcyRc3BvR6pQLQofsC
+ 4ss2wLcDNd69Qgca1NtGD9xU1kWWTomP85LBupC48bvLcVc2F/HYFcKIyI0GBmugAbuy
+ 1J5KvigLfHr6w8ZpAuoAkhexU6b7G5UzwrOnrDD3uID422etgKCB9YfcYoHVgiB7dNNU 0A== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 378tpv161p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 14 Mar 2021 05:18:52 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sun, 14 Mar
+ 2021 10:18:51 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Sun, 14 Mar 2021 10:18:51 +0000
+Received: from [198.90.238.45] (unknown [198.90.238.45])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BA1711CB;
+        Sun, 14 Mar 2021 10:18:51 +0000 (UTC)
+Subject: Re: [PATCH v1 0/4] ALSA: hda/cirrus: Make CS8409 driver more generic
+ by using fixups
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
+ <s5h1rcirv2a.wl-tiwai@suse.de>
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Message-ID: <0e3a2304-7945-0d80-91cc-b6b551f7c3f4@opensource.cirrus.com>
+Date:   Sun, 14 Mar 2021 10:18:49 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.0 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <s5h1rcirv2a.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=555 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103140076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Miller <davem@davemloft.net>
-Date: Sat, 13 Mar 2021 18:10:00 -0800 (PST)
+On 14/03/2021 8:36 am, Takashi Iwai wrote:
+> On Sat, 13 Mar 2021 12:34:06 +0100,
+> Vitaly Rodionov wrote:
+>> This series of patches will address comments by Pierre-Louis Bossart,
+>> cleans up patch_cirrus.c source, reducing checkpatch.pl warnings from 19 to 0,
+>> fixing an issue reported by Canonical: BugLink: https://bugs.launchpad.net/bugs/1918378,
+>> and makes the CS8409 patch more generic by using fixups.
+>>
+>> Stefan Binding (4):
+>>    ALSA: hda/cirrus: Add error handling into CS8409 I2C functions
+>>    ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
+>>    ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control name
+>>    ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
+> Is this the same content as the series you've already submitted in
+> 20210312184452.3288-1-vitalyr@opensource.cirrus.com ?
 
-> None of these apply to net-next as per the patchwork automated checks.  A=
-ny idea why?
+Hi Takashi,
 
-No unfortunately. That'why I sent a follow-up mail. All of them
-successfully apply to pure net-next on my machine.
-Can it be a Git version conflict? I use 2.30.2, but also tried 2.30.1
-and the latest development snapshot, and in either case they got
-applied with no problems.
-
-I could have more clue if NIPA provided more detailed log, but didn't
-find any. And apply_patches stage doesn't seem to be present on NIPA
-GitHub repo, so I couldn't reproduce it 1:1.
-
-I can try again on Monday, not sure if it will help.
-I also sent another series yesterday, and it has 15 green lights on
-Patchwork, so this problem seems to take place only with this
-particular series.
-
-> Thanks.
+Yes, this is second version of same series, where we have fixed warnings 
+from 0-day bot.
 
 Thanks,
-Al
+
+Vitaly
+
+>
+>
+> thanks,
+>
+> Takashi
+
 
