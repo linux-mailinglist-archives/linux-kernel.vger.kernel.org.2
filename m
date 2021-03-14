@@ -2,313 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3218033A6D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC6033A6DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhCNQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 12:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S234416AbhCNQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 12:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbhCNQoB (ORCPT
+        with ESMTP id S234055AbhCNQsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 12:44:01 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6798C061763;
-        Sun, 14 Mar 2021 09:44:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id a18so7457167wrc.13;
-        Sun, 14 Mar 2021 09:44:00 -0700 (PDT)
+        Sun, 14 Mar 2021 12:48:19 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99FBC061574;
+        Sun, 14 Mar 2021 09:48:18 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id m22so53162239lfg.5;
+        Sun, 14 Mar 2021 09:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3gDYkhk6/tbeNprlEIjGuI8i5dmAoV3NqfyHMWMcCm8=;
-        b=rSVwropash0scW3EyYDUlKWjQWMAEe6okVSvBH7Syie81WNOzo8ur/+9c/4xhbbvp5
-         xOJgHcr1QcbREYyXWi+CT399nNfTBl07Fv6HHz0BwsTSzIaWX9JFxhE4mzymh7liv/+2
-         9WOYeH7/x9PccAYjmxfk9gvU9JkisIsx3g58hipSQ9SWWiIdvnT5pyXPVY3HSLY5BDYJ
-         9HOhQ9VxWpyz6CKGp+bSz0Ioac5UcMGTN6aqk/KtgB0WrvUAQuyBbrs81f5H2hYwOMUW
-         mIfiIQUB93K2iVBxEjbEuqvNa0Hz9plPcXltO5iYiEKzVvZBX95IeJ2Meu+fr1Yx5rqb
-         VHZQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aOr012S5+S+c/Y9KC/ckdyVd30LgXDmuDZz9LPig/KE=;
+        b=dRSfhk212idAeRc2iQWfm6IuTkje7IPXhJ7SCt20uGlkahy9TTk/t8odPQpiPHg4r2
+         WwTCUORQpPT+UK7frBYM8G1n0QNYWP4ORLXW0K0o+waXjMZG0/4Ffm2x4/SIl4UtfbDv
+         G3bSCLciVeG36iiFcrq01iwbZFg+k+0H8uomb6qF/urn/9yYKg3gs/BKrUqEbYgo5ORP
+         vI6e0LKAehq+Vx3OPlx8nkA8oTcwppFtQ8kgA9/+YDfPE0gc/dXwakIPmVhJ7yEivUZE
+         1Hbc5auPazB7G8zkKBmIr7M1o2TNYaB17F8n1d0h0ls4GVqexGxiJzdJHJ2/VboUrM0w
+         Kq5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3gDYkhk6/tbeNprlEIjGuI8i5dmAoV3NqfyHMWMcCm8=;
-        b=ozIgZSAkjzZZ5sIPIy7JJsH80NYnxSF8Ipc9QVdnwmsvhMlRl0ppM3t6OLh2DgDyDx
-         ZijfzJWnYOprVMXoLFDAN8q3ezeLKtcWLUXZP5fL1gUf/Np3hVsrfeLUkIFM/qZWlLLL
-         1ignx/MH+8HFdz4N56MAuqgKK5FuMZuU3xLfSO036zmP8ypwj+/v9ElqxYatc62uQjzP
-         AWOiM85/H6meGRDCp29voGJ1oQ0R6AtOIyhCPUrkN+tppCiSA0dLP+knJmntD/PaFYsE
-         wYQhQmPK9ghobC/q1lFGaMEJNRHfOeNQiSpm8Xi7lxoVMMKu2+Ith2xzMGXpHP/WHJKs
-         YFdA==
-X-Gm-Message-State: AOAM531j7GhMjUxZVS7OmmN2Ekp8s5X8ZV7zD9YPEp8kqT6S+TCuY9We
-        7Zk4xODwoK6bWCS7S7wwjO8=
-X-Google-Smtp-Source: ABdhPJza5OotSgubLmWC58X7VYOfw5MHhvfDGBkHL7RZUzYXZpSwV/ya40bFQaMzAQ4s7RmKqg3HcQ==
-X-Received: by 2002:adf:8b0d:: with SMTP id n13mr24043069wra.94.1615740239165;
-        Sun, 14 Mar 2021 09:43:59 -0700 (PDT)
-Received: from skynet.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id a12sm15146071wrx.5.2021.03.14.09.43.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aOr012S5+S+c/Y9KC/ckdyVd30LgXDmuDZz9LPig/KE=;
+        b=LlLUPaYTcPQXwqvNGdc0LOwO2MgLAJHKfT0appViEglBNziHM/z2kTEVj/EwEML3kl
+         ybFzj5jPmNtEz8UpgXB+ec7/Qdd3xQRRpaHERronIN4LzYwpprGy//ygvfIpd6oan0pM
+         kwkPWeN7/aWqcvUSiItXmdGGkSZHBeA8BkU2nLLl1Xlk1BKCymY2Y2b009yZVdajmQjB
+         0ff3HVHCWQPg1eR4j7LshAOmSyg15QShNfVlwWFEqqJNqQjPSBEm4nRtlGZ0h/yjuptt
+         Bo7KivxXICemP17XWAmoN0+d7H+59Ta6L1mVou9WCeSOyc1PQzDjAOuqxjw4TsID5WOb
+         miqg==
+X-Gm-Message-State: AOAM531VHJ9PWB+gn249gGBWbIRTiGn7MuE6MEwoJo6MkJTwNfjN/zy1
+        SWGBBwm+mqZQLqP0h9vMlzc=
+X-Google-Smtp-Source: ABdhPJw/rCyYFaQzMXxZBjSvAIBjgWaBfvsAys0OKCd7gOn11onyTiB6HIWvmvDYrX8YJV36mIwTNA==
+X-Received: by 2002:a05:6512:3184:: with SMTP id i4mr5820273lfe.314.1615740497422;
+        Sun, 14 Mar 2021 09:48:17 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id a3sm2387993lfr.55.2021.03.14.09.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 09:43:58 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Sun, 14 Mar 2021 09:48:17 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Fertser <fercerpav@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v2 6/6] mips: bmips: bcm63268: populate device tree nodes
-Date:   Sun, 14 Mar 2021 17:43:51 +0100
-Message-Id: <20210314164351.24665-7-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210314164351.24665-1-noltari@gmail.com>
-References: <20210314164351.24665-1-noltari@gmail.com>
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] NVIDIA Tegra core power domain driver and OPP helper
+Date:   Sun, 14 Mar 2021 19:48:04 +0300
+Message-Id: <20210314164810.26317-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Rename periph_clk to periph_osc.
-- Rename clkctl to periph_clk.
-- Move syscon-reboot to subnode.
-- Add hsspi-osc clock.
-- Add watchdog.
-- Add HS SPI controller
-- Add NAND controller.
-- Add USBH PHY.
+Hello,
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: add missing patch
+This series adds Core power domain driver for NVIDIA Tegra SoCs and a
+common OPP helper which initializes OPP table specifically for Tegra
+drivers. The patches depend on the ongoing series [1] which adds
+resource-managed OPP API.
 
- arch/mips/boot/dts/brcm/bcm63268.dtsi | 130 +++++++++++++++++++++++---
- 1 file changed, 116 insertions(+), 14 deletions(-)
+[1] https://patchwork.kernel.org/project/linux-pm/list/?series=447801
 
-diff --git a/arch/mips/boot/dts/brcm/bcm63268.dtsi b/arch/mips/boot/dts/brcm/bcm63268.dtsi
-index 052d2032d4e4..c3ce49ec675f 100644
---- a/arch/mips/boot/dts/brcm/bcm63268.dtsi
-+++ b/arch/mips/boot/dts/brcm/bcm63268.dtsi
-@@ -29,16 +29,29 @@
- 	};
- 
- 	clocks {
--		periph_clk: periph-clk {
-+		periph_osc: periph-osc {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
- 			clock-frequency = <50000000>;
-+			clock-output-names = "periph";
-+		};
-+
-+		hsspi_osc: hsspi-osc {
-+			compatible = "fixed-clock";
-+
-+			#clock-cells = <0>;
-+
-+			clock-frequency = <400000000>;
-+			clock-output-names = "hsspi_osc";
- 		};
- 	};
- 
- 	aliases {
-+		nflash = &nflash;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
-+		spi0 = &lsspi;
-+		spi1 = &hsspi;
- 	};
- 
- 	cpu_intc: interrupt-controller {
-@@ -56,23 +69,22 @@
- 		compatible = "simple-bus";
- 		ranges;
- 
--		clkctl: clock-controller@10000004 {
-+		periph_clk: clock-controller@10000004 {
- 			compatible = "brcm,bcm63268-clocks";
- 			reg = <0x10000004 0x4>;
- 			#clock-cells = <1>;
- 		};
- 
--		periph_cntl: syscon@10000008 {
-+		pll_cntl: syscon@10000008 {
- 			compatible = "syscon";
- 			reg = <0x10000008 0x4>;
- 			native-endian;
--		};
- 
--		reboot: syscon-reboot@10000008 {
--			compatible = "syscon-reboot";
--			regmap = <&periph_cntl>;
--			offset = <0x0>;
--			mask = <0x1>;
-+			reboot {
-+				compatible = "syscon-reboot";
-+				offset = <0x0>;
-+				mask = <0x1>;
-+			};
- 		};
- 
- 		periph_rst: reset-controller@10000010 {
-@@ -93,6 +105,16 @@
- 			interrupts = <2>, <3>;
- 		};
- 
-+		wdt: watchdog@1000009c {
-+			compatible = "brcm,bcm7038-wdt";
-+			reg = <0x1000009c 0xc>;
-+
-+			clocks = <&periph_osc>;
-+			clock-names = "refclk";
-+
-+			timeout-sec = <30>;
-+		};
-+
- 		uart0: serial@10000180 {
- 			compatible = "brcm,bcm6345-uart";
- 			reg = <0x10000180 0x18>;
-@@ -100,12 +122,34 @@
- 			interrupt-parent = <&periph_intc>;
- 			interrupts = <5>;
- 
--			clocks = <&periph_clk>;
-+			clocks = <&periph_osc>;
- 			clock-names = "refclk";
- 
- 			status = "disabled";
- 		};
- 
-+		nflash: nand@10000200 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcm6368",
-+				     "brcm,brcmnand-v4.0",
-+				     "brcm,brcmnand";
-+			reg = <0x10000200 0x180>,
-+			      <0x10000600 0x200>,
-+			      <0x100000b0 0x10>;
-+			reg-names = "nand",
-+				    "nand-cache",
-+				    "nand-int-base";
-+
-+			interrupt-parent = <&periph_intc>;
-+			interrupts = <50>;
-+
-+			clocks = <&periph_clk BCM63268_CLK_NAND>;
-+			clock-names = "nand";
-+
-+			status = "disabled";
-+		};
-+
- 		uart1: serial@100001a0 {
- 			compatible = "brcm,bcm6345-uart";
- 			reg = <0x100001a0 0x18>;
-@@ -113,17 +157,44 @@
- 			interrupt-parent = <&periph_intc>;
- 			interrupts = <34>;
- 
--			clocks = <&periph_clk>;
-+			clocks = <&periph_osc>;
- 			clock-names = "refclk";
- 
- 			status = "disabled";
- 		};
- 
--		leds0: led-controller@10001900 {
-+		lsspi: spi@10000800 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			compatible = "brcm,bcm6328-leds";
--			reg = <0x10001900 0x24>;
-+			compatible = "brcm,bcm6358-spi";
-+			reg = <0x10000800 0x70c>;
-+
-+			interrupt-parent = <&periph_intc>;
-+			interrupts = <80>;
-+
-+			clocks = <&periph_clk BCM63268_CLK_SPI>;
-+			clock-names = "spi";
-+
-+			resets = <&periph_rst BCM63268_RST_SPI>;
-+
-+			status = "disabled";
-+		};
-+
-+		hsspi: spi@10001000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,bcm6328-hsspi";
-+			reg = <0x10001000 0x600>;
-+
-+			interrupt-parent = <&periph_intc>;
-+			interrupts = <6>;
-+
-+			clocks = <&periph_clk BCM63268_CLK_HSSPI>,
-+				 <&hsspi_osc>;
-+			clock-names = "hsspi",
-+				      "pll";
-+
-+			resets = <&periph_rst BCM63268_RST_SPI>;
- 
- 			status = "disabled";
- 		};
-@@ -134,6 +205,15 @@
- 			#power-domain-cells = <1>;
- 		};
- 
-+		leds0: led-controller@10001900 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,bcm6328-leds";
-+			reg = <0x10001900 0x24>;
-+
-+			status = "disabled";
-+		};
-+
- 		ehci: usb@10002500 {
- 			compatible = "brcm,bcm63268-ehci", "generic-ehci";
- 			reg = <0x10002500 0x100>;
-@@ -142,6 +222,9 @@
- 			interrupt-parent = <&periph_intc>;
- 			interrupts = <10>;
- 
-+			phys = <&usbh 0>;
-+			phy-names = "usb";
-+
- 			status = "disabled";
- 		};
- 
-@@ -154,6 +237,25 @@
- 			interrupt-parent = <&periph_intc>;
- 			interrupts = <9>;
- 
-+			phys = <&usbh 0>;
-+			phy-names = "usb";
-+
-+			status = "disabled";
-+		};
-+
-+		usbh: usb-phy@10002700 {
-+			compatible = "brcm,bcm63268-usbh-phy";
-+			reg = <0x10002700 0x38>;
-+			#phy-cells = <1>;
-+
-+			clocks = <&periph_clk BCM63268_CLK_USBH>;
-+			clock-names = "usbh";
-+
-+			power-domains = <&periph_pwr BCM63268_POWER_DOMAIN_USBH>;
-+
-+			resets = <&periph_rst BCM63268_RST_USBH>;
-+			reset-names = "usbh";
-+
- 			status = "disabled";
- 		};
- 	};
+NVIDIA Tegra SoCs have a dedicated "Core" power domain to which
+majority of SoC peripherals belong. The core domain is connected to
+a dedicated voltage rail, which is exposed as a voltage regulator to
+the Linux kernel. Adding support for power management (i.e. voltage
+scaling) of the Core domain allows to significantly improve power
+consumption of the Tegra chip.
+
+In particular this PM work solves the overheating problem on Tegra30
+devices. It allows Ouya Tegra30 game console to run at 40C during system
+idle in oppose to going over 60C. Matt Merhar collected temperature stats
+on his Ouya [2] which show a very significant improvement.
+
+[2] https://imgur.com/a/z4NDWqk
+
+Changelog:
+
+v4: - Rebased on top of a new version of the OPP patches [1].
+
+    - Fixed new DT binding warning which was reported by the bot for v3.
+
+v3: - This series is a continuation of [3][4]. I factored out and grouped
+      these soc/tegra patches since they have a common dependency on the
+      OPP API patches [1] and the rest of PM patches depend on this series.
+
+      [3] https://lore.kernel.org/lkml/20201217180638.22748-1-digetx@gmail.com/
+      [4] https://lore.kernel.org/linux-pm/20210121191410.13781-1-digetx@gmail.com/
+
+    - Added locking around regulators syncing, which was previously done by
+      the OPP core, but then we (me and Viresh) figured out that it will be
+      better to do it within the PD driver.
+
+    - The Core-PD driver now restores the boot voltage level before
+      shutdown/reboot, which may help some devices not to hang on reboot,
+      like Nexus 7 for example.
+
+    - Added r-b from Ulf Hansson to "regulators: Support Core domain state
+      syncing" patch, which he gave to v2.
+
+    - It should be cleaner to add the Core OPP tables and power domain to
+      the device-trees once all drivers will get the PM support, so this
+      series adds the driver and the binding for now.
+
+    - Added t-b from Paul Fertser, who tested the complete patchset on his
+      AC100 netbook and helped to spot compatibility problem with older DTBs
+      in the patch that will add PM support to the GPU driver.
+
+    - The DT binding now follows the power-domain spec, which was suggested
+      by Krzysztof Kozlowski in his comment to v2.
+
+
+Dmitry Osipenko (6):
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+  soc/tegra: Add CONFIG_SOC_TEGRA_COMMON and select PM_OPP by default
+  dt-bindings: power: tegra: Add binding for core power domain
+  soc/tegra: Introduce core power domain driver
+  soc/tegra: regulators: Support Core domain state syncing
+  soc/tegra: pmc: Link children power domains to the parent domain
+
+ .../power/nvidia,tegra20-core-domain.yaml     |  51 ++++++
+ drivers/soc/tegra/Kconfig                     |  19 +++
+ drivers/soc/tegra/Makefile                    |   1 +
+ drivers/soc/tegra/common.c                    | 137 ++++++++++++++++
+ drivers/soc/tegra/core-power-domain.c         | 153 ++++++++++++++++++
+ drivers/soc/tegra/pmc.c                       |  16 ++
+ drivers/soc/tegra/regulators-tegra20.c        |  19 ++-
+ drivers/soc/tegra/regulators-tegra30.c        |  18 ++-
+ include/soc/tegra/common.h                    |  36 +++++
+ 9 files changed, 448 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
+ create mode 100644 drivers/soc/tegra/core-power-domain.c
+
 -- 
-2.20.1
+2.30.2
 
