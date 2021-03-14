@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5084E33A8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 00:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5913C33A8BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 00:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbhCNXQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 19:16:55 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:51836 "EHLO mx1.riseup.net"
+        id S229584AbhCNXWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 19:22:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:41829 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCNXQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 19:16:17 -0400
-Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4DzFmK1bpqzDr6T;
-        Sun, 14 Mar 2021 16:16:17 -0700 (PDT)
-X-Riseup-User-ID: 2BA932BD4AD7061A7967E835CA3D4C1B2276A99E66A3DC7B1CD18DB2797B0CB8
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews2.riseup.net (Postfix) with ESMTPSA id 4DzFmJ30plz1y6k;
-        Sun, 14 Mar 2021 16:16:16 -0700 (PDT)
-From:   Jim Newsome <jnewsome@torproject.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, Jim Newsome <jnewsome@torproject.org>
-Subject: [PATCH v7] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Date:   Sun, 14 Mar 2021 18:15:44 -0500
-Message-Id: <20210314231544.9379-1-jnewsome@torproject.org>
+        id S229469AbhCNXWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 19:22:12 -0400
+IronPort-SDR: SAjVEcX/6ZetsvYPxagzag+BKz8nTAivNPDBj13reeKOX8GfTehAz4zxgBpmFhzSqvppaldbNO
+ aVMNlsDbWHEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="188377584"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="188377584"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 16:22:04 -0700
+IronPort-SDR: AWlq910Obb2IxrIuYWRhaxiVuzGnxGH21UbWid3C0rB3W0XnApXXzkxuFp+G67/R4YursDMbK/
+ VFiN4faswqIw==
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="411653633"
+Received: from ngollapu-mobl1.amr.corp.intel.com (HELO [10.251.17.151]) ([10.251.17.151])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 16:22:04 -0700
+Subject: Re: [PATCH v1 06/14] mm, x86: support the access bit on non-leaf PMD
+ entries
+To:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-7-yuzhao@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ce818341-ed33-cd8c-5c06-65147f510c4d@intel.com>
+Date:   Sun, 14 Mar 2021 16:22:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210313075747.3781593-7-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a special-case when waiting on a pid (via waitpid,
-waitid, wait4, etc) to avoid doing an O(n) scan of children and tracees,
-and instead do an O(1) lookup. This improves performance when waiting on
-a pid from a thread group with many children and/or tracees.
+On 3/12/21 11:57 PM, Yu Zhao wrote:
+> Some architectures support the accessed bit on non-leaf PMD entries
+> (parents) in addition to leaf PTE entries (children) where pages are
+> mapped, e.g., x86_64 sets the accessed bit on a parent when using it
+> as part of linear-address translation [1]. Page table walkers who are
+> interested in the accessed bit on children can take advantage of this:
+> they do not need to search the children when the accessed bit is not
+> set on a parent, given that they have previously cleared the accessed
+> bit on this parent in addition to its children.
 
-Time to fork and then call waitpid on the child, from a task that
-already has N children [1]:
+I'd like to hear a *LOT* more about how this is going to be used.
 
-N    | Before  | After
------|---------|------
-1    | 74 us   | 74 us
-20   | 72 us   | 75 us
-100  | 83 us   | 77 us
-500  | 99 us   | 74 us
-1000 | 179 us  | 75 us
-5000 | 804 us  | 79 us
-8000 | 1268 us | 78 us
-
-[1]: https://lkml.org/lkml/2021/3/12/1567
-
-This can make a substantial performance improvement for applications
-with a thread that has many children or tracees and frequently needs to
-wait on them. Tools that use ptrace to intercept syscalls for a large
-number of processes are likely to fall into this category. In particular
-this patch was developed while building a ptrace-based second generation
-of the Shadow emulator [2], for which it allows us to avoid quadratic
-scaling (without having to use a workaround that introduces a ~40%
-performance penalty) [3]. Other examples of tools that fall into this
-category which this patch may help include User Mode Linux [4] and
-DetTrace [5].
-
-[2]: https://shadow.github.io/
-[3]: https://github.com/shadow/shadow/issues/1134#issuecomment-798992292
-[4]: https://en.wikipedia.org/wiki/User-mode_Linux
-[5]: https://github.com/dettrace/dettrace
-
-Signed-off-by: James Newsome <jnewsome@torproject.org>
----
-
-v5: https://lkml.org/lkml/2021/3/12/1134
-v6 accidentally dropped a commit in the rebase + squash.
-
-Since v5:
-* Switched back to explicitly looking up by tgid and then pid.
-* Added further motivation and context in the patch description.
-
- kernel/exit.c | 67 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 57 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e35e69a..65809fac3038 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1439,9 +1439,48 @@ void __wake_up_parent(struct task_struct *p, struct task_struct *parent)
- 			   TASK_INTERRUPTIBLE, p);
- }
- 
-+static bool is_effectively_child(struct wait_opts *wo, bool ptrace,
-+				 struct task_struct *target)
-+{
-+	struct task_struct *parent =
-+		!ptrace ? target->real_parent : target->parent;
-+
-+	return current == parent || (!(wo->wo_flags & __WNOTHREAD) &&
-+				     same_thread_group(current, parent));
-+}
-+
-+/*
-+ * Optimization for waiting on PIDTYPE_PID. No need to iterate through child
-+ * and tracee lists to find the target task.
-+ */
-+static int do_wait_pid(struct wait_opts *wo)
-+{
-+	bool ptrace;
-+	struct task_struct *target;
-+	int retval;
-+
-+	ptrace = false;
-+	target = pid_task(wo->wo_pid, PIDTYPE_TGID);
-+	if (target && is_effectively_child(wo, ptrace, target)) {
-+		retval = wait_consider_task(wo, ptrace, target);
-+		if (retval)
-+			return retval;
-+	}
-+
-+	ptrace = true;
-+	target = pid_task(wo->wo_pid, PIDTYPE_PID);
-+	if (target && target->ptrace &&
-+	    is_effectively_child(wo, ptrace, target)) {
-+		retval = wait_consider_task(wo, ptrace, target);
-+		if (retval)
-+			return retval;
-+	}
-+
-+	return 0;
-+}
-+
- static long do_wait(struct wait_opts *wo)
- {
--	struct task_struct *tsk;
- 	int retval;
- 
- 	trace_sched_process_wait(wo->wo_pid);
-@@ -1463,19 +1502,27 @@ static long do_wait(struct wait_opts *wo)
- 
- 	set_current_state(TASK_INTERRUPTIBLE);
- 	read_lock(&tasklist_lock);
--	tsk = current;
--	do {
--		retval = do_wait_thread(wo, tsk);
--		if (retval)
--			goto end;
- 
--		retval = ptrace_do_wait(wo, tsk);
-+	if (wo->wo_type == PIDTYPE_PID) {
-+		retval = do_wait_pid(wo);
- 		if (retval)
- 			goto end;
-+	} else {
-+		struct task_struct *tsk = current;
-+
-+		do {
-+			retval = do_wait_thread(wo, tsk);
-+			if (retval)
-+				goto end;
- 
--		if (wo->wo_flags & __WNOTHREAD)
--			break;
--	} while_each_thread(current, tsk);
-+			retval = ptrace_do_wait(wo, tsk);
-+			if (retval)
-+				goto end;
-+
-+			if (wo->wo_flags & __WNOTHREAD)
-+				break;
-+		} while_each_thread(current, tsk);
-+	}
- 	read_unlock(&tasklist_lock);
- 
- notask:
--- 
-2.30.1
-
+The one part of this which is entirely missing is the interaction with
+the TLB and mid-level paging structure caches.  The CPU is pretty
+aggressive about setting no-leaf accessed bits when TLB entries are
+created.  This *looks* to be depending on that behavior, but it would be
+nice to spell it out explicitly.
