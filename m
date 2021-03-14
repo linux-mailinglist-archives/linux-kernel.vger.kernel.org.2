@@ -2,209 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF33C33A88F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617DB33A895
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCNWcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 18:32:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60960 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229658AbhCNWcU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 18:32:20 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12EM4GQ0012031;
-        Sun, 14 Mar 2021 18:32:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bMYUf3tPZFWdirmjnTyN0au4/D2kRROPwGdA+rqqfdU=;
- b=TEpncx+odWV9X5oMS9ArcFXbvTMeYMx4F5WdjZ11KGH7onYQunvsX6fcKFJEUcHwZ+jS
- BNLWKUk7O8fQWatSF1GHHUANqr8XtFEUOXSzkc2l4AGQT+/Z5xXvkPSPPpx8/dNRlqrK
- jSIAdlLi/PEaoMDCZrCXG2DXk/AeaWIz5zdHgHYsIxBixFaTEWgZGt9RFmtfHLh7WQNQ
- vFflz4/YOqJOgKSIABSiRnW8Z4qbq9AN/X/pJcOzFhIlMUN7Zx426BvLSykmdff2pnQj
- m/bd85W3uQFyvKO8ON7lBrPDXsesxkcuZd1KPQXx1HK8q5f2lwqp2P95/800u75573wc tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379swxsb5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 18:32:12 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12EM4dL6012561;
-        Sun, 14 Mar 2021 18:32:11 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379swxsb5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 18:32:11 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12EMVurl016371;
-        Sun, 14 Mar 2021 22:32:10 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 378n19dttt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 22:32:10 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12EMW9Zb15860146
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 14 Mar 2021 22:32:09 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DE42BE053;
-        Sun, 14 Mar 2021 22:32:09 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D3F8BE051;
-        Sun, 14 Mar 2021 22:32:08 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun, 14 Mar 2021 22:32:07 +0000 (GMT)
-Subject: Re: [PATCH] rpadlpar: fix potential drc_name corruption in store
- functions
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mmc@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210310223021.423155-1-tyreld@linux.ibm.com>
- <20210313091751.GM6564@kitsune.suse.cz>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <a67af978-1c47-c66b-47f0-3d754da738f9@linux.ibm.com>
-Date:   Sun, 14 Mar 2021 15:32:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S229692AbhCNWfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 18:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhCNWfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 18:35:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74B4D64E4B;
+        Sun, 14 Mar 2021 22:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615761315;
+        bh=12OnKRkqX5g64yW9uY5bUVtXvUIalcP4i5GFus8Oivc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eD7u1/Qn9juB8atWruFF01HUuJ7SKzOAevrW0X4nK/PimPg+JP/aNnNky3EMZqwrM
+         e4p3/aS07aOjjNnP10UKR+a32mPgAAujk8i3CpMZ2kIZWklIr3NmBl93djkXZa+VqB
+         BHrJL0yVxMkBw/tDV7TBArdLzLN4P/Be2fGTTS5jQdBaLx7zvDp7glN80JwfbQ5KN6
+         FryfRYJ1w0bnmT9t9T5940LpsiSBr8OGTrppukxodg0JmKgRBBtxu2EUjvCd+nmjHI
+         V3zMbBpQGN9NT3lG+BTrz9HVu+Fx0kW7yVYrwufDb8510L8L0pxq9m9VypeF5gxYWy
+         ZuXP6rfblTkMQ==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 6FEC73C0C96; Sun, 14 Mar 2021 23:35:13 +0100 (CET)
+Date:   Sun, 14 Mar 2021 23:35:13 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Ray Chi <raychi@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, naresh.kamboju@linaro.org,
+        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not
+ enabled
+Message-ID: <20210314223513.tznvhuq7phxxvjfo@earth.universe>
+References: <20210308133146.3168995-1-raychi@google.com>
+ <20210309185807.ka4iljasq5cmpmil@earth.universe>
+ <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210313091751.GM6564@kitsune.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-14_13:2021-03-12,2021-03-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 mlxscore=0 adultscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103140170
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="r6xtjzuk4er6qt7g"
+Content-Disposition: inline
+In-Reply-To: <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/13/21 1:17 AM, Michal Suchánek wrote:
-> On Wed, Mar 10, 2021 at 04:30:21PM -0600, Tyrel Datwyler wrote:
->> Both add_slot_store() and remove_slot_store() try to fix up the drc_name
->> copied from the store buffer by placing a NULL terminator at nbyte + 1
->> or in place of a '\n' if present. However, the static buffer that we
->> copy the drc_name data into is not zeored and can contain anything past
->> the n-th byte. This is problematic if a '\n' byte appears in that buffer
->> after nbytes and the string copied into the store buffer was not NULL
->> terminated to start with as the strchr() search for a '\n' byte will mark
->> this incorrectly as the end of the drc_name string resulting in a drc_name
->> string that contains garbage data after the n-th byte. The following
->> debugging shows an example of the drmgr utility writing "PHB 4543" to
->> the add_slot sysfs attribute, but add_slot_store logging a corrupted
->> string value.
->>
->> [135823.702864] drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
->> [135823.702879] add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
->>
->> Fix this by NULL terminating the string when we copy it into our static
->> buffer by coping nbytes + 1 of data from the store buffer. The code has
-> Why is it OK to copy nbytes + 1 and why is it expected that the buffer
-> contains a nul after the content?
 
-It is my understanding that the store function buffer is allocated as a
-zeroed-page which the kernel copies up to at most (PAGE_SIZE - 1) of user data
-into. Anything after nbytes would therefore be zeroed.
+--r6xtjzuk4er6qt7g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Isn't it much saner to just nul terminate the string after copying?
+Hi,
 
-At the cost of an extra line of code, sure.
+On Fri, Mar 12, 2021 at 09:57:56PM +0800, Ray Chi wrote:
+> > While I'm fine with merging this after fixing up the subject, the
+> > original patch for dwc3 [0] looks completly incorrect to me.
+> >
+> > First of all it uses wrong scale (power-supply uses uA, not mA),
+> > so you are charging 1000x slower than expected. Then the patchset
+> > introduces a new DT property to get the power-supply device, but
+> > does not update the DT binding documentation and does not Cc the
+> > DT binding maintainer.
+>=20
+> Yes, it should use uA and send this information, and I will update a
+> patch to fix it and add the DT binding documentation.
 
--Tyrel
+Considering your programming is off by a factor 1000 I wonder how
+this patchset has been tested.
 
-> 
-> diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
-> index cdbfa5df3a51..cfbad67447da 100644
-> --- a/drivers/pci/hotplug/rpadlpar_sysfs.c
-> +++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
-> @@ -35,11 +35,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
->  		return 0;
->  
->  	memcpy(drc_name, buf, nbytes);
-> +	&drc_name[nbytes] = '\0';
->  
->  	end = strchr(drc_name, '\n');
-> -	if (!end)
-> -		end = &drc_name[nbytes];
-> -	*end = '\0';
-> +	if (end)
-> +		*end = '\0';
->  
->  	rc = dlpar_add_slot(drc_name);
->  	if (rc)
-> @@ -66,11 +66,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
->  		return 0;
->  
->  	memcpy(drc_name, buf, nbytes);
-> +	&drc_name[nbytes] = '\0';
->  
->  	end = strchr(drc_name, '\n');
-> -	if (!end)
-> -		end = &drc_name[nbytes];
-> -	*end = '\0';
-> +	if (end)
-> +		*end = '\0';
->  
->  	rc = dlpar_remove_slot(drc_name);
->  	if (rc)
-> 
-> Thanks
-> 
-> Michal
-> 
->> already made sure that nbytes is not >= MAX_DRC_NAME_LEN and the store
->> buffer is guaranteed to be zeroed beyond the nth-byte of data copied
->> from the user. Further, since the string is now NULL terminated the code
->> only needs to change '\n' to '\0' when present.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/pci/hotplug/rpadlpar_sysfs.c | 14 ++++++--------
->>  1 file changed, 6 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/pci/hotplug/rpadlpar_sysfs.c b/drivers/pci/hotplug/rpadlpar_sysfs.c
->> index cdbfa5df3a51..375087921284 100644
->> --- a/drivers/pci/hotplug/rpadlpar_sysfs.c
->> +++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
->> @@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kobject *kobj, struct kobj_attribute *attr,
->>  	if (nbytes >= MAX_DRC_NAME_LEN)
->>  		return 0;
->>  
->> -	memcpy(drc_name, buf, nbytes);
->> +	memcpy(drc_name, buf, nbytes + 1);
->>  
->>  	end = strchr(drc_name, '\n');
->> -	if (!end)
->> -		end = &drc_name[nbytes];
->> -	*end = '\0';
->> +	if (end)
->> +		*end = '\0';
->>  
->>  	rc = dlpar_add_slot(drc_name);
->>  	if (rc)
->> @@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct kobject *kobj,
->>  	if (nbytes >= MAX_DRC_NAME_LEN)
->>  		return 0;
->>  
->> -	memcpy(drc_name, buf, nbytes);
->> +	memcpy(drc_name, buf, nbytes + 1);
->>  
->>  	end = strchr(drc_name, '\n');
->> -	if (!end)
->> -		end = &drc_name[nbytes];
->> -	*end = '\0';
->> +	if (end)
->> +		*end = '\0';
->>  
->>  	rc = dlpar_remove_slot(drc_name);
->>  	if (rc)
->> -- 
->> 2.27.0
->>
+> > Next the property itself looks not very
+> > smart to me. Usually one would use a device reference, not the
+> > Linux device name.
+> >
+> > Finally all existing devices solve this by registering a usb
+> > notifier from the charger, so why are you going the other way
+> > around? This is going to break once you want to use one of the
+> > existing chargers with dwc3.
+>=20
+> Only the USB controller will know USB state/speed so that I think
+> it is better to send this information from the USB side. For
+> example: For USB high speed, charging current should be limited to
+> 500 mA in configured state.  For USB super speed, charging current
+> should be limited to 900 mA in configured state.
 
+usb_register_notifier registers a callback to receive information
+=66rom the USB subsystem. Then power-supply drivers can query specific
+info, e.g. call usb_phy_get_charger_current(). This is already being
+done by some power-supply drivers, so using one of those
+power-supply charger drivers in combination with dwc3 will now result
+in potentially racy behaviour as far as I can see.
+
+> > I suggest to drop/revert the whole patchset.
+
+-- Sebastian
+
+--r6xtjzuk4er6qt7g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBOj5MACgkQ2O7X88g7
++ppi5RAApUHg055QRJZ6hx9Eogf6zuWpbYCUC+z5bJ6WB7c9Nt4AsyAGH9GK2GvZ
+phHQyxlB1Vx/AMGyOunitrkAh3qx0OZoLTJlxyY2SwTeMfVM1DIcr2s7VE//jotU
+hCK0r79bYCx74aLwFVRYRKnnSlQjT/GJcs+Tx36pNdg52/Ius/tXQW/kP8DhhrHS
+rL0xANsxf5TTsb5Hsv+ZCeQdYf5Ctt0ms+T3kPyHpAWcgyLP7puMhYDSb/ijkB18
+pDnlpgKCG1xBPRNbSvKtoTVILYC+/BQWGn0venJn1lcjznX8JhoAD2gttQdqZWQK
+8DvmOtIFUJQZz92UH1l9GBIPWqWJxSiIvewJwN0348WwTrQS9f+28fngMK0iYAWl
+kBTwou5QJspoG+ydFv1VW/mdPVSBek8+T1kf2Jo+5aCrsu7XzdQc9Vrd0VaHvje9
+DsrMiQDUz6Z4J9FIuzPERrGVBwVky7j1FjrK/WVuAI4Q/G3OtkLBqWEPFX+U361S
+8zWUwZvbUmpHAwLadR7/Pw+9VX3dGyxR02y0uaIkXpug/oBx1dPeRMuCgqFBwrU1
+iS/ggl82GiHt7f705DGz6jwZf8lGpHVDSGThA6WOF8OhYTNxtp/ZmSXgQTitoJ9j
+fsbaPue/oDCAtFv6NRzRoqnSJ5PTVusVK3LDuJwrAANNsOrCNCE=
+=E8+B
+-----END PGP SIGNATURE-----
+
+--r6xtjzuk4er6qt7g--
