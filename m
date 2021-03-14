@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C5533A7CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFA433A7D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhCNUSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 16:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S234158AbhCNUS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 16:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbhCNUSG (ORCPT
+        with ESMTP id S234085AbhCNUS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 16:18:06 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD11C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 13:18:06 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f226300e8f2914ee59d30a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f22:6300:e8f2:914e:e59d:30a8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9D28F1EC0118;
-        Sun, 14 Mar 2021 21:18:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615753084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=kqK+Mu2Ypm8wBbJ3qyhwX7QHCTfi8akC5xDaegGKBuM=;
-        b=AKJCzcl6ks0j5qJEWz8bOsq0PVehAhZrRA0XRMkx9/fs2B4tzUDcX0oOW5pRAlkNKkjKuG
-        v7bzd01+xykyIEuEPWLW9vyiDf+kJlqMHGEpVtLS+QvyvtcG+ulgIzenY37Y5S2A53UY0R
-        dNTv721pa69sZQAiplYssjkjH3YLBgc=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <Yazen.Ghannam@amd.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/mce/inject: Add IPID for injection too
-Date:   Sun, 14 Mar 2021 21:18:06 +0100
-Message-Id: <20210314201806.12798-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 14 Mar 2021 16:18:28 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D123C061574;
+        Sun, 14 Mar 2021 13:18:28 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id r16so3987621pfh.10;
+        Sun, 14 Mar 2021 13:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2KWRxAevKiF/nnG0NBxKJ90p3c03jicsIIQLN81D4+4=;
+        b=dlSZJM5E6KEIz/mQPWyAmpVaYyjY3Rvy8gwGV7saPomtCAC9wAxu23SSOTxQM+POld
+         ApylWsy7XPCz/TjtLEzCQv9zfE9jW1h/lTmg/uIErdsFFSy2YpnQd8u+mkdYtpS4wACw
+         0wMYw4qwMosyOfd3IGfJNYdLTrEdOZ3c3EDofPW8xb8VkyFpreYce8+qX8JENLEV9qp7
+         hqkQDfZUABRmzYeUiIcSWaRs3ro97zRhkuFP3iDFS7oyiEtO9UIFW6+eFCm/MPPIP4ig
+         mDiCcMq4XJJ9ybVwuOlPMGYhLj/tPjwInHbp+6mIVJ8pWp7zw8RQlvk55VfZkkOY8/cx
+         uQAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2KWRxAevKiF/nnG0NBxKJ90p3c03jicsIIQLN81D4+4=;
+        b=rcQ8hvBNAjZ9TQUx4MNCltMCAsIvOz04lV8RjGM2XQwEFq1DhOTKAljiO2APAS1Idk
+         UVsXS/s9DxfWrQ5oIPHDlXKc8Z8lV4J/IYmat4PfZhn9TZYV99idZpSzd505NbfzCK6L
+         GrWkt/IeI2O1c6+W6QiEXe0SC4+nywoJ+15dOX/Ij6V9sDiO67U06RK2zBMRhS/hGibv
+         s/EY4dk24olNdzWmj91NKRmYgIy7b4kYqFsXWC3jIBoohjwNLpfkim0Hif4p3/46njml
+         pwuzZetH7btYfd5k3Yfs3u7zYhbDJh976HQlMNVNvh6Dtk5XKbM9qXGTWseVHcbLmEYx
+         JJMw==
+X-Gm-Message-State: AOAM533OPnBcl9jyOS3jQSyAov1zlgocETlKH9JKzcDaITymyqUSqb/2
+        HiRiupMOATswYN87F8JC9SJS930DqZ3gfg==
+X-Google-Smtp-Source: ABdhPJy4ATZPIIwNAbFc1z03hT4a4prxYKmXxZ6RJ/mIp0hm+z5kHuivT2nYjXm2XQv/addtA2M5KQ==
+X-Received: by 2002:a63:2c8f:: with SMTP id s137mr4061238pgs.51.1615753108099;
+        Sun, 14 Mar 2021 13:18:28 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:acdc:a5a5:c438:c1e3])
+        by smtp.googlemail.com with ESMTPSA id n10sm10943793pgk.91.2021.03.14.13.18.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 13:18:27 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     siva8118@gmail.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        amitkarwar@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/10] rsi: fix comment syntax in file headers
+Date:   Mon, 15 Mar 2021 01:48:08 +0530
+Message-Id: <20210314201818.27380-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are files in drivers/net/wireless/rsi which follow this syntax in
+their file headers, i.e. start with '/**' like comments, which causes
+unexpected warnings from kernel-doc.
 
-Add an injection file in order to specify IPID too when injecting an
-error, for example, for using the machinery to decode MCEs from other
-machines.
+E.g., running scripts/kernel-doc -none on drivers/net/wireless/rsi/rsi_coex.h
+causes this warning:
+"warning: wrong kernel-doc identifier on line:
+ * Copyright (c) 2018 Redpine Signals Inc."
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/cpu/mce/inject.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Similarly for other files too.
 
-diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index 7b360731fc2d..4e86d97f9653 100644
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -74,6 +74,7 @@ MCE_INJECT_SET(status);
- MCE_INJECT_SET(misc);
- MCE_INJECT_SET(addr);
- MCE_INJECT_SET(synd);
-+MCE_INJECT_SET(ipid);
- 
- #define MCE_INJECT_GET(reg)						\
- static int inj_##reg##_get(void *data, u64 *val)			\
-@@ -88,11 +89,13 @@ MCE_INJECT_GET(status);
- MCE_INJECT_GET(misc);
- MCE_INJECT_GET(addr);
- MCE_INJECT_GET(synd);
-+MCE_INJECT_GET(ipid);
- 
- DEFINE_SIMPLE_ATTRIBUTE(status_fops, inj_status_get, inj_status_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(misc_fops, inj_misc_get, inj_misc_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(addr_fops, inj_addr_get, inj_addr_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(synd_fops, inj_synd_get, inj_synd_set, "%llx\n");
-+DEFINE_SIMPLE_ATTRIBUTE(ipid_fops, inj_ipid_get, inj_ipid_set, "%llx\n");
- 
- static void setup_inj_struct(struct mce *m)
- {
-@@ -629,6 +632,8 @@ static const char readme_msg[] =
- "\t    is present in hardware. \n"
- "\t  - \"th\": Trigger APIC interrupt for Threshold errors. Causes threshold \n"
- "\t    APIC interrupt handler to handle the error. \n"
-+"\n"
-+"ipid:\t IPID (AMD-specific)\n"
- "\n";
- 
- static ssize_t
-@@ -652,6 +657,7 @@ static struct dfs_node {
- 	{ .name = "misc",	.fops = &misc_fops,   .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "addr",	.fops = &addr_fops,   .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "synd",	.fops = &synd_fops,   .perm = S_IRUSR | S_IWUSR },
-+	{ .name = "ipid",	.fops = &ipid_fops,   .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "bank",	.fops = &bank_fops,   .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "flags",	.fops = &flags_fops,  .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "cpu",	.fops = &extcpu_fops, .perm = S_IRUSR | S_IWUSR },
+Provide a simple fix by replacing the kernel-doc like comment syntax with
+general format, i.e. "/*", to prevent kernel-doc from parsing it.
+
+* The patch series applies perfectly on next-20210312
+
+Aditya Srivastava (10):
+  rsi: rsi_boot_params: fix file header comment syntax
+  rsi: rsi_coex: fix file header comment syntax
+  rsi: rsi_ps: fix file header comment syntax
+  rsi: rsi_common: fix file header comment syntax
+  rsi: rsi_mgmt: fix file header comment syntax
+  rsi: rsi_main: fix file header comment syntax
+  rsi: rsi_hal: fix file header comment syntax
+  rsi: rsi_debugfs: fix file header comment syntax
+  rsi: rsi_sdio: fix file header comment syntax
+  rsi: rsi_usb: fix file header comment syntax
+
+ drivers/net/wireless/rsi/rsi_boot_params.h | 2 +-
+ drivers/net/wireless/rsi/rsi_coex.h        | 2 +-
+ drivers/net/wireless/rsi/rsi_common.h      | 2 +-
+ drivers/net/wireless/rsi/rsi_debugfs.h     | 2 +-
+ drivers/net/wireless/rsi/rsi_hal.h         | 2 +-
+ drivers/net/wireless/rsi/rsi_main.h        | 2 +-
+ drivers/net/wireless/rsi/rsi_mgmt.h        | 2 +-
+ drivers/net/wireless/rsi/rsi_ps.h          | 2 +-
+ drivers/net/wireless/rsi/rsi_sdio.h        | 2 +-
+ drivers/net/wireless/rsi/rsi_usb.h         | 2 +-
+ 10 files changed, 10 insertions(+), 10 deletions(-)
+
 -- 
-2.29.2
+2.17.1
 
