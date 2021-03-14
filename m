@@ -2,372 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFE033A3EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D526B33A3F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 10:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhCNJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 05:31:24 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:43123 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235060AbhCNJbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 05:31:17 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id E10D516005C
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 10:31:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1615714275; bh=GOttChRB/ikvr38d4gX2V5d/PakigoLLIyDyYhv/jAU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZYGUBgf5Cv40pg1RrYbwkqp7QeaMcVKRYqrRRYyvxHXKhfvwQsXgcz1nq09pSO/CL
-         k+dDiBGeMrdfgdgP1mjmw3LTVWKu2dkk0+PGGQxgSi779bnbUaI0bMzDEoUBnxQ7Iu
-         fMk7a11CL/eiVRekgmJFId6OJWeeKbaV3OR23atfkJtLAcAtBGFrDyTuKmXXAgq3kc
-         /qoORsn88/Q2zRzscDdvkLaVQzrQyXgU3Net3DijDGrqYRLDgBdx/IZZ7YBkAGBThA
-         PxXdTTvoiyOM+xKXGjPco+ng+jf4YtIh314QPPvC7fw21CeBrMZuTLLISRAG4HglOK
-         +5vlkwIR1w4jQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4DyvSL5B8mz6tmZ;
-        Sun, 14 Mar 2021 10:31:14 +0100 (CET)
-Date:   Sun, 14 Mar 2021 10:31:13 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: [PATCH v7 2/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <bfd2b97307c2321b15c09683f4bd5e1fcc792f13.1615713499.git.wilken.gottwalt@posteo.net>
-References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+        id S235008AbhCNJef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 05:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhCNJec (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 05:34:32 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE024C061574;
+        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id s21so4787897pfm.1;
+        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=50Yu8kRAczurx9Iye9QEQJW7J2f9sj2gmPo3j4z9tyQ=;
+        b=pJRbLGYF4Vd+nSlRRISnYYfYuKYhZLUhXYlM0/lL1eDFVz/5F8S2ynx+/nrCSS5+Ik
+         aLIoreIrFBczGNwajQTojh8+2JG+/8aCqvZc0Ug/XAO/QvnIHF8sTxQkdb3wq0bUwfNp
+         siwpOScKVUSLZpOChd4mbmqyMfAC7ZSiZLowPjgTDTpVasfvy/BnKoribPw2GPYGsB1G
+         zcNdk0+QQfFpboON6fO9E/OpLbYOnZ7piBl3/94Vpb3X39eQkDdbIAJHjHffIfCZhMaT
+         n03y2ilHgHnu+YgOXVHDQocFeqdHSeOAraSNg1ljcOk6qVeaBzA2BRy3FUJFxeLrDR4S
+         lXlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=50Yu8kRAczurx9Iye9QEQJW7J2f9sj2gmPo3j4z9tyQ=;
+        b=LVLFaWrsmu35czE70/tghcSk2fERmP7ejVrDaWXZoNqXW7wMmLJXXcvMvlDoaHOJNd
+         j9ovCV/9SgUuu1uaTq2lcQDIxZQQKN9wOFr7DZtin+3EaqSf/gQq9qdh/ogwzcUiJjA7
+         TRzw0GR3m53hYX644oxGD0gvH0S3bleEZGrACziN4Bcm+cD/gGmu0Da7t/BaH620vJBl
+         x1WK89EFbtrJgHgpZLELOZfv9hDCV63+HBqnV8HuP2iiNFssjGZOAwF3tRPB42uYTjmT
+         UonyHQlndR5sAuuR1JMXZ+t01zCCyvSysSZkesvcv+fmAgHP/PJ8ATOFPl71b/Voc56M
+         v0ew==
+X-Gm-Message-State: AOAM5333wzcM0lSCqIkWVvg8FZTD477xjcr3NeugXs/e5ZJBI4yttrXE
+        8XbDqOzV3pxWumc+WICFIbE=
+X-Google-Smtp-Source: ABdhPJxne6eIRAhDeCEZ9HqFnB32LSvHWJiFLNNsOlsCQC8pnuqhKVy10mRfKB6rhlVlBTb9RwuiZg==
+X-Received: by 2002:a63:520e:: with SMTP id g14mr18653079pgb.350.1615714471119;
+        Sun, 14 Mar 2021 01:34:31 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:61a:47fe:52e6:571b:e80a:141e])
+        by smtp.googlemail.com with ESMTPSA id s15sm10274722pfe.108.2021.03.14.01.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 01:34:30 -0800 (PST)
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+To:     ardeleanalex@gmail.com, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio:dac:max517: Use devm_iio_device_register()
+Date:   Sun, 14 Mar 2021 15:03:56 +0530
+Message-Id: <20210314093356.10609-1-dmugil2000@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
-most of the sun6i compatible SoCs.
+Use devm_iio_device_register() to avoid remove function and 
+drop explicit call to iio_device_unregister().
 
-This unit provides at least 32 spinlocks in hardware. The implementation
-supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-reading a register and released by writing a 0 to it. This driver
-supports all 4 spinlock setups, but for now only the first setup (32
-locks) seem to exist in available devices. This spinlock unit is shared
-between all ARM cores and the embedded companion core. All of them can
-take/release a lock with a single cycle operation. It can be used to
-sync access to devices shared by the ARM cores and the companion core.
-
-There are two ways to check if a lock is taken. The first way is to read
-a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-is returned, the caller has to try again. Which means the lock is taken.
-The second way is to read a 32bit wide status register where every bit
-represents one of the 32 first locks. According to the datasheets this
-status register supports only the 32 first locks. This is the reason the
-first way (lock read/write) approach is used to be able to cover all 256
-locks in future devices. The driver also reports the amount of supported
-locks via debugfs.
-
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
 ---
-Changes in v7:
-  - changed probe to use to devm_* and devm_add_action_* function
+ drivers/iio/dac/max517.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-Changes in v6:
-  - changed probe/remove function to use classic functions to better
-    handle failure situations
-
-Changes in v5:
-  - changed symbols to the earliest known supported SoC (sun6i/a31)
-  - changed init back to classic probe/remove callbacks
-
-Changes in v4:
-  - further simplified driver
-  - fixed an add_action_and_reset_ function issue
-  - changed bindings from sun8i-hwspinlock to sun8i-a33-hwspinlock
-
-Changes in v3:
-  - moved test description to cover letter
-  - changed name and symbols from sunxi to sun8i
-  - improved driver description
-  - further simplified driver
-  - fully switched to devm_* and devm_add_action_* functions
-
-Changes in v2:
-  - added suggestions from Bjorn Andersson and Maxime Ripard
-  - provided better driver and test description
----
- MAINTAINERS                           |   6 +
- drivers/hwspinlock/Kconfig            |   9 ++
- drivers/hwspinlock/Makefile           |   1 +
- drivers/hwspinlock/sun6i_hwspinlock.c | 210 ++++++++++++++++++++++++++
- 4 files changed, 226 insertions(+)
- create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..d5821c52c502 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -734,6 +734,12 @@ L:	linux-crypto@vger.kernel.org
- S:	Maintained
- F:	drivers/crypto/allwinner/
+diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
+index 7e01838ef4d0..5f72f126162d 100644
+--- a/drivers/iio/dac/max517.c
++++ b/drivers/iio/dac/max517.c
+@@ -189,13 +189,7 @@ static int max517_probe(struct i2c_client *client,
+ 			data->vref_mv[chan] = platform_data->vref_mv[chan];
+ 	}
  
-+ALLWINNER HARDWARE SPINLOCK SUPPORT
-+M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
-+F:	drivers/hwspinlock/sun6i_hwspinlock.c
-+
- ALLWINNER THERMAL DRIVER
- M:	Vasily Khoruzhick <anarsoul@gmail.com>
- M:	Yangtao Li <tiny.windzz@gmail.com>
-diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-index 32cd26352f38..56ecc1aa3166 100644
---- a/drivers/hwspinlock/Kconfig
-+++ b/drivers/hwspinlock/Kconfig
-@@ -55,6 +55,15 @@ config HWSPINLOCK_STM32
+-	return iio_device_register(indio_dev);
+-}
+-
+-static int max517_remove(struct i2c_client *client)
+-{
+-	iio_device_unregister(i2c_get_clientdata(client));
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
  
- 	  If unsure, say N.
- 
-+config HWSPINLOCK_SUN6I
-+	tristate "SUN6I Hardware Spinlock device"
-+	depends on ARCH_SUNXI || COMPILE_TEST
-+	help
-+	  Say y here to support the SUN6I Hardware Spinlock device which can be
-+	  found in most of the sun6i compatible Allwinner SoCs.
-+
-+	  If unsure, say N.
-+
- config HSEM_U8500
- 	tristate "STE Hardware Semaphore functionality"
- 	depends on ARCH_U8500 || COMPILE_TEST
-diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
-index ed053e3f02be..83ec4f03decc 100644
---- a/drivers/hwspinlock/Makefile
-+++ b/drivers/hwspinlock/Makefile
-@@ -9,4 +9,5 @@ obj-$(CONFIG_HWSPINLOCK_QCOM)		+= qcom_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
- obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
-+obj-$(CONFIG_HWSPINLOCK_SUN6I)		+= sun6i_hwspinlock.o
- obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
-diff --git a/drivers/hwspinlock/sun6i_hwspinlock.c b/drivers/hwspinlock/sun6i_hwspinlock.c
-new file mode 100644
-index 000000000000..c2d314588046
---- /dev/null
-+++ b/drivers/hwspinlock/sun6i_hwspinlock.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * sun6i_hwspinlock.c - hardware spinlock driver for sun6i compatible Allwinner SoCs
-+ * Copyright (C) 2020 Wilken Gottwalt <wilken.gottwalt@posteo.net>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/debugfs.h>
-+#include <linux/errno.h>
-+#include <linux/hwspinlock.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/reset.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#include "hwspinlock_internal.h"
-+
-+#define DRIVER_NAME		"sun6i_hwspinlock"
-+
-+#define SPINLOCK_BASE_ID	0 /* there is only one hwspinlock device per SoC */
-+#define SPINLOCK_SYSSTATUS_REG	0x0000
-+#define SPINLOCK_LOCK_REGN	0x0100
-+#define SPINLOCK_NOTTAKEN	0
-+
-+struct sun6i_hwspinlock_data {
-+	struct hwspinlock_device *bank;
-+	struct reset_control *reset;
-+	struct clk *ahb_clk;
-+	struct dentry *debugfs;
-+	int nlocks;
-+};
-+
-+#ifdef CONFIG_DEBUG_FS
-+
-+static int hwlocks_supported_show(struct seq_file *seqf, void *unused)
-+{
-+	struct sun6i_hwspinlock_data *priv = seqf->private;
-+
-+	seq_printf(seqf, "%d\n", priv->nlocks);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(hwlocks_supported);
-+
-+static void sun6i_hwspinlock_debugfs_init(struct sun6i_hwspinlock_data *priv)
-+{
-+	priv->debugfs = debugfs_create_dir(DRIVER_NAME, NULL);
-+	debugfs_create_file("supported", 0444, priv->debugfs, priv, &hwlocks_supported_fops);
-+}
-+
-+#else
-+
-+static void sun6i_hwspinlock_debugfs_init(struct sun6i_hwspinlock_data *priv)
-+{
-+}
-+
-+#endif
-+
-+static int sun6i_hwspinlock_trylock(struct hwspinlock *lock)
-+{
-+	void __iomem *lock_addr = lock->priv;
-+
-+	return (readl(lock_addr) == SPINLOCK_NOTTAKEN);
-+}
-+
-+static void sun6i_hwspinlock_unlock(struct hwspinlock *lock)
-+{
-+	void __iomem *lock_addr = lock->priv;
-+
-+	writel(SPINLOCK_NOTTAKEN, lock_addr);
-+}
-+
-+static const struct hwspinlock_ops sun6i_hwspinlock_ops = {
-+	.trylock	= sun6i_hwspinlock_trylock,
-+	.unlock		= sun6i_hwspinlock_unlock,
-+};
-+
-+static void sun6i_hwspinlock_disable(void *data)
-+{
-+	struct sun6i_hwspinlock_data *priv = data;
-+
-+	debugfs_remove_recursive(priv->debugfs);
-+	clk_disable_unprepare(priv->ahb_clk);
-+	reset_control_assert(priv->reset);
-+}
-+
-+static int sun6i_hwspinlock_probe(struct platform_device *pdev)
-+{
-+	struct sun6i_hwspinlock_data *priv;
-+	struct hwspinlock *hwlock;
-+	void __iomem *io_base;
-+	u32 num_banks;
-+	int err, i;
-+
-+	io_base = devm_platform_ioremap_resource(pdev, SPINLOCK_BASE_ID);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->ahb_clk = devm_clk_get(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->ahb_clk)) {
-+		err = PTR_ERR(priv->ahb_clk);
-+		dev_err(&pdev->dev, "unable to get AHB clock (%d)\n", err);
-+		return err;
-+	}
-+
-+	priv->reset = devm_reset_control_get(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(priv->reset),
-+				     "unable to get reset control\n");
-+
-+	err = reset_control_deassert(priv->reset);
-+	if (err) {
-+		dev_err(&pdev->dev, "deassert reset control failure (%d)\n", err);
-+		return err;
-+	}
-+
-+	err = clk_prepare_enable(priv->ahb_clk);
-+	if (err) {
-+		dev_err(&pdev->dev, "unable to prepare AHB clk (%d)\n", err);
-+		goto clk_fail;
-+	}
-+
-+	/*
-+	 * bit 28 and 29 represents the hwspinlock setup
-+	 *
-+	 * every datasheet (A64, A80, A83T, H3, H5, H6 ...) says the default value is 0x1 and 0x1
-+	 * to 0x4 represent 32, 64, 128 and 256 locks
-+	 * but later datasheets (H5, H6) say 00, 01, 10, 11 represent 32, 64, 128 and 256 locks,
-+	 * but that would mean H5 and H6 have 64 locks, while their datasheets talk about 32 locks
-+	 * all the time, not a single mentioning of 64 locks
-+	 * the 0x4 value is also not representable by 2 bits alone, so some datasheets are not
-+	 * correct
-+	 * one thing have all in common, default value of the sysstatus register is 0x10000000,
-+	 * which results in bit 28 being set
-+	 * this is the reason 0x1 is considered being 32 locks and bit 30 is taken into account
-+	 * verified on H2+ (datasheet 0x1 = 32 locks) and H5 (datasheet 01 = 64 locks)
-+	 */
-+	num_banks = readl(io_base + SPINLOCK_SYSSTATUS_REG) >> 28;
-+	switch (num_banks) {
-+	case 1 ... 4:
-+		priv->nlocks = 1 << (4 + num_banks);
-+		break;
-+	default:
-+		err = -EINVAL;
-+		dev_err(&pdev->dev, "unsupported hwspinlock setup (%d)\n", num_banks);
-+		goto bank_fail;
-+	}
-+
-+	priv->bank = devm_kzalloc(&pdev->dev, struct_size(priv->bank, lock, priv->nlocks),
-+				  GFP_KERNEL);
-+	if (!priv->bank) {
-+		err = -ENOMEM;
-+		goto bank_fail;
-+	}
-+
-+	for (i = 0; i < priv->nlocks; ++i) {
-+		hwlock = &priv->bank->lock[i];
-+		hwlock->priv = io_base + SPINLOCK_LOCK_REGN + sizeof(u32) * i;
-+	}
-+
-+	/* failure of debugfs is considered non-fatal */
-+	sun6i_hwspinlock_debugfs_init(priv);
-+	if (IS_ERR(priv->debugfs))
-+		priv->debugfs = NULL;
-+
-+	err = devm_add_action_or_reset(&pdev->dev, sun6i_hwspinlock_disable, priv);
-+	if (err) {
-+		dev_err(&pdev->dev, "failed to add hwspinlock disable action\n");
-+		goto bank_fail;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return devm_hwspin_lock_register(&pdev->dev, priv->bank, &sun6i_hwspinlock_ops,
-+					 SPINLOCK_BASE_ID, priv->nlocks);
-+
-+bank_fail:
-+	clk_disable_unprepare(priv->ahb_clk);
-+clk_fail:
-+	reset_control_assert(priv->reset);
-+
-+	return err;
-+}
-+
-+static const struct of_device_id sun6i_hwspinlock_ids[] = {
-+	{ .compatible = "allwinner,sun6i-a31-hwspinlock", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, sun6i_hwspinlock_ids);
-+
-+static struct platform_driver sun6i_hwspinlock_driver = {
-+	.probe	= sun6i_hwspinlock_probe,
-+	.driver	= {
-+		.name		= DRIVER_NAME,
-+		.of_match_table	= sun6i_hwspinlock_ids,
-+	},
-+};
-+module_platform_driver(sun6i_hwspinlock_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("SUN6I hardware spinlock driver");
-+MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
+ static const struct i2c_device_id max517_id[] = {
+@@ -214,7 +208,6 @@ static struct i2c_driver max517_driver = {
+ 		.pm	= &max517_pm_ops,
+ 	},
+ 	.probe		= max517_probe,
+-	.remove		= max517_remove,
+ 	.id_table	= max517_id,
+ };
+ module_i2c_driver(max517_driver);
 -- 
-2.30.2
+2.25.1
 
