@@ -2,89 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506F533A33A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 07:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7853533A33D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 07:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhCNFc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 00:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhCNFbp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 00:31:45 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D791C061574;
-        Sat, 13 Mar 2021 21:31:45 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id r14so6999349qtt.7;
-        Sat, 13 Mar 2021 21:31:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pt2qdmEDjVSEplThpxjXlBTKYUfK3U6l0UtYEmF5juA=;
-        b=LH7DgidSNjqwOPZ+7U0UkXVMWk8qgATc9lVh/wu6WFPKqMU5XZIgiUA5Cc0G+qlr67
-         PjAU4SMmyNqT6jUE1w91Ih6z9PQSOp7Ufok2PbM4QXlTCVlMSgGYJv62neC6Fvi4SL9v
-         CEvOgtJvTaXDG6EIWJJYSJCIR5QOL+8Zie4wwOUDXwJgslyrgHqSXiwMJyQTcjoHbi9L
-         wn22Aiw8B7IlT+TMdT5vvWx7We4voyyilyDpQkK2xR3M4BKNQLOKo6oS0WHoAK+Yi8ko
-         Ki/cDbmbcTfGfitPLrT+2PO4/0f5Q3ST+xlSpaBqM2jeRJfpYscuDUfb4XatdyO8P9Vd
-         KJgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pt2qdmEDjVSEplThpxjXlBTKYUfK3U6l0UtYEmF5juA=;
-        b=cMH78blmSRK5L0pmMKplKtkiMvXIohINtfWG1qlgPGyAwTH61uh/gFukflWSp6OQ7f
-         sLxn6qs7bu7xjoa23JXDeIoGbfGrjtdiZ1Eracxg4vKiZkDfvItd07BnHB/srZmaQSrF
-         4J/2VUTd4r0VUHd8T0y9pC9MFg4xC3F6b6XoMeDZgTSjoLyS+9bGHDtMC+DWPMclJjLS
-         c2RZk9Gcr7iaNZ4strAekzPNR1HMBvSrQfKkY+KZ7IV9/7L8/3wwkjtGPNq76AS2XRKe
-         G3uSwcl469c2F2mZ7+URF1R2guD7XcSQsTXHrXhL/R/iyT0Ui2ap9iZSMKsHfMxW0Rk8
-         F4Rw==
-X-Gm-Message-State: AOAM533mK0Odyk/yWiDFcamkdxpTOYcb06aj1kTZvt63lnDryX0GCn1c
-        6qJ24NhXYm1hIHyDKB42eB8=
-X-Google-Smtp-Source: ABdhPJx4xEdu1pcTey9WTXS+ph+qH+nrmlxv7BzqERauCq5YGrPqJQqKhrCVCozDakqpm59ea4AfxQ==
-X-Received: by 2002:ac8:d85:: with SMTP id s5mr18246201qti.390.1615699904167;
-        Sat, 13 Mar 2021 21:31:44 -0800 (PST)
-Received: from localhost.localdomain ([37.19.198.30])
-        by smtp.gmail.com with ESMTPSA id d24sm8425145qkl.49.2021.03.13.21.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 21:31:43 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com,
-        kevin.tian@intel.com, akpm@linux-foundation.org, peterx@redhat.com,
-        giovanni.cabiddu@intel.com, walken@google.com, jannh@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] vfio: pci: Spello fix in the file vfio_pci.c
-Date:   Sun, 14 Mar 2021 10:59:25 +0530
-Message-Id: <20210314052925.3560-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S233656AbhCNFvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 00:51:20 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:46095 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232645AbhCNFvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 00:51:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615701062; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=wAThHURuQOx7nkPEUGK2dOThw52EswUwEWvEcNsQV88=; b=Ea0gdhlpivPoeQp1VEfqjWRip5OYldXS+MNTqye8YEGWM2MFqSkQxs/aWBcMayx78KBc2P6l
+ +BtzwQKZHieAWm5LtmnG9PrRRRFuosfjxa16tOWo4oOQsCmvexp2tA/RDpC3mdylaTqpJTL2
+ 3yh9FkwfnSMMzY+/jWTAjJpsSR4=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 604da43ee2200c0a0d6e381a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 05:50:53
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7BE7C433CA; Sun, 14 Mar 2021 05:50:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.24] (unknown [49.37.152.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E882FC433CA;
+        Sun, 14 Mar 2021 05:50:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E882FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v6 1/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
+ link for I2S driver
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        dianders@chromium.org, judyhsiao@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org
+Cc:     Ajit Pandey <ajitp@codeaurora.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <20210313054654.11693-1-srivasam@codeaurora.org>
+ <20210313054654.11693-2-srivasam@codeaurora.org>
+ <161566899554.1478170.1265435102634351195@swboyd.mtv.corp.google.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <0f4bc153-edca-ca9d-a5ab-df765e992d7f@codeaurora.org>
+Date:   Sun, 14 Mar 2021 11:20:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <161566899554.1478170.1265435102634351195@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
-s/permision/permission/
+Thanks for Your Time and Inputs!!!
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/vfio/pci/vfio_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 3/14/2021 2:26 AM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2021-03-12 21:46:53)
+>> From: Ajit Pandey <ajitp@codeaurora.org>
+>>
+>> Add dai link for supporting lpass I2S driver, which is used
+>> for audio capture and playback.
+>> Add lpass-cpu node with  pin controls and i2s primary
+> Why two spaces before 'pin'?
+>
+>> and secondary dai-links
+> Please end sentence with a period.
+>
+>> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+>> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 58 ++++++++++++++++++++
+>>   1 file changed, 58 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> index 436582279dad..3a24383247db 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+>> @@ -283,6 +284,42 @@ keyboard_backlight: keyboard-backlight {
+>>                          max-brightness = <1023>;
+>>                  };
+>>          };
+>> +
+>> +       sound: sound {
+>> +               compatible = "google,sc7180-trogdor";
+>> +               model = "sc7180-rt5682-max98357a-1mic";
+>> +
+>> +               audio-routing =
+>> +                       "Headphone Jack", "HPOL",
+>> +                       "Headphone Jack", "HPOR";
+>> +
+>> +               #address-cells = <1>;
+>> +               #size-cells = <0>;
+>> +
+>> +               dai-link@0 {
+>> +                       link-name = "MultiMedia0";
+>> +                       reg = <MI2S_PRIMARY>;
+>> +                       cpu {
+>> +                               sound-dai = <&lpass_cpu MI2S_PRIMARY>;
+>> +                       };
+>> +
+>> +                       sound_multimedia0_codec: codec {
+>> +                               sound-dai = <&alc5682 0 /*aif1*/>;
+> Nitpick, add a space for comment
+>
+>                                 sound-dai = <&alc5682 0 /* aif1 */>;
+Okay. Will re post with Fix.
+>
+>> +                       };
+>> +               };
+>> +
+>> +               dai-link@1 {
+>> +                       link-name = "MultiMedia1";
+>> +                       reg = <MI2S_SECONDARY>;
+>> +                       cpu {
+>> +                               sound-dai = <&lpass_cpu MI2S_SECONDARY>;
+>> +                       };
+>> +
+>> +                       sound_multimedia1_codec: codec {
+>> +                               sound-dai = <&max98357a>;
+>> +                       };
+>> +               };
+>> +       };
+>>   };
+>>   
+>>   &qfprom {
+>> @@ -720,6 +757,27 @@ &ipa {
+>>          modem-init;
+>>   };
+>>   
+>> +&lpass_cpu {
+>> +       status = "okay";
+>> +
+>> +       pinctrl-names = "default";
+>> +       pinctrl-0 = <&sec_mi2s_active &pri_mi2s_active &pri_mi2s_mclk_active>;
+> Super nitpick: I prefer this style
+>
+> 	pinctrl-0 = <&sec_mi2s_active>, <&pri_mi2s_active>, <&pri_mi2s_mclk_active>;
+>
+> It's effectively the same but the brackets help us see that these are
+> the end of the phandle specifier instead of having to figure out that
+> the first phandle isn't specifying the second phandle as an argument.
+Okay. Will change accordingly.
+>
+>> +
+>> +       #address-cells = <1>;
+>> +       #size-cells = <0>;
+>> +
+>> +       mi2s-primary@0 {
+> Should the node name just be mi2s instead of mi2s-primary? We have reg
+> property so I think 'mi2s' should be sufficient to differentiate.
+Okay. I will change it as mi2s@0 instead of mi2s-primary@0
+>
+>> +               reg = <MI2S_PRIMARY>;
+>> +               qcom,playback-sd-lines = <1>;
+>> +               qcom,capture-sd-lines = <0>;
+>> +       };
+>> +
+>> +       mi2s-secondary@1 {
+>> +               reg = <MI2S_SECONDARY>;
+>> +               qcom,playback-sd-lines = <0>;
+>> +       };
+>> +};
+>> +
+>>   &mdp {
+>>          status = "okay";
+>>   };
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 706de3ef94bb..62f137692a4f 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -2411,7 +2411,7 @@ static int __init vfio_pci_init(void)
- {
- 	int ret;
-
--	/* Allocate shared config space permision data used by all devices */
-+	/* Allocate shared config space permission data used by all devices */
- 	ret = vfio_pci_init_perm_bits();
- 	if (ret)
- 		return ret;
---
-2.26.2
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
