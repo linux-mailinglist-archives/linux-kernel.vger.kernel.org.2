@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C04C33A263
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78B533A266
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhCNC3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 21:29:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231497AbhCNC3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 21:29:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A28A64E62;
-        Sun, 14 Mar 2021 02:29:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615688960;
-        bh=mt760bIfNdFduP4gxeD2h1k3Vjred890jDgDdCPGWbU=;
+        id S233897AbhCNCa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 21:30:56 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45256 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233441AbhCNCan (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 21:30:43 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02C1A55C;
+        Sun, 14 Mar 2021 03:30:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615689042;
+        bh=ibheVfpzm+JE73D5nVjhfA/XFmhnMvmRbtXmyfTRNJk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eCyT1ewNJq3FoqH4CWB/FKvn0cDgTHXq9uoU8QZhJ0d1vBvvvHei6gcYpwYR4wDfp
-         eMsDtVerSGEseO7wQwXhrYZahe7SC83ved2Mi9vZ6k51/WLGptCaWVxS27qxrOFvBE
-         0O37DDYHhH8XwwjmGgKkWVXNX8b9We1i7fzNuqdxclHWSsIccn+MDdc4adMWoN/WWN
-         hCvD+6eKJpeLYQ0PRkMj8EP82SH7EHj8DxsFE9NKoShc1jzFw8H5Na5fA8y7l6fEP/
-         3zP6o39MOMPI7cJHPKJdV2ZSlUF+rxAQJqJz8Swbp2/vfAefjLob/9JmOeaWA7YJcj
-         YDnlxkhAfceCQ==
-Date:   Sun, 14 Mar 2021 10:29:14 +0800
-From:   Peter Chen <peter.chen@kernel.org>
+        b=iDKnyLByxnc+cu3aOpqUV3Jdvti1BSI1I7mvH/zau/rooHUY+NeSQLF+SQYgElm9p
+         yOeWXK3alybNmqHy3DipT033C5gL9yy13SovOnpdbzDK/035eSvAWF7QWVet+UvUO0
+         TBB0rfZOD7YXure8ouUFaAuHrjhZ78xBLzpuZbUQ=
+Date:   Sun, 14 Mar 2021 04:30:06 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     balbi@kernel.org, laurent.pinchart@ideasonboard.com,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kurahul@cadence.com
-Subject: Re: [PATCH v2] usb: gadget: uvc: add bInterval checking for HS mode
-Message-ID: <20210314022914.GC17526@b29397-desktop>
-References: <20210308125338.4824-1-pawell@gli-login.cadence.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-api@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peter.chen@kernel.org,
+        kurahul@cadence.com
+Subject: Re: [PATCH 2/2] usb: webcam: Invalid size of Processing Unit
+ Descriptor
+Message-ID: <YE11Lk3XXbB1B+aD@pendragon.ideasonboard.com>
+References: <20210308102735.9251-1-pawell@gli-login.cadence.com>
+ <20210308102735.9251-2-pawell@gli-login.cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308125338.4824-1-pawell@gli-login.cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210308102735.9251-2-pawell@gli-login.cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-08 13:53:38, Pawel Laszczak wrote:
+Hi Pawel,
+
+Thank you for the patch.
+
+On Mon, Mar 08, 2021 at 11:27:35AM +0100, Pawel Laszczak wrote:
 > From: Pawel Laszczak <pawell@cadence.com>
 > 
-> Patch adds extra checking for bInterval passed by configfs.
-> The 5.6.4 chapter of USB Specification (rev. 2.0) say:
-> "A high-bandwidth endpoint must specify a period of 1x125 µs
-> (i.e., a bInterval value of 1)."
+> According with USB Device Class Definition for Video Device the
+> Processing Unit Descriptor bLength should be 12 (10 + bmControlSize),
+> but it has 11.
 > 
-> The issue was observed during testing UVC class on CV.
-> I treat this change as improvement because we can control
-> bInterval by configfs.
-> 
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> 
-> ---
-> Changlog:
-> v2:
-> - removed duplicated assignment
-> 
->  drivers/usb/gadget/function/f_uvc.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-> index 44b4352a2676..ed77a126a74f 100644
-> --- a/drivers/usb/gadget/function/f_uvc.c
-> +++ b/drivers/usb/gadget/function/f_uvc.c
-> @@ -633,7 +633,12 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
->  
->  	uvc_hs_streaming_ep.wMaxPacketSize =
->  		cpu_to_le16(max_packet_size | ((max_packet_mult - 1) << 11));
-> -	uvc_hs_streaming_ep.bInterval = opts->streaming_interval;
-> +
-> +	/* A high-bandwidth endpoint must specify a bInterval value of 1 */
-> +	if (max_packet_mult > 1)
-> +		uvc_hs_streaming_ep.bInterval = 1;
-> +	else
-> +		uvc_hs_streaming_ep.bInterval = opts->streaming_interval;
->  
->  	uvc_ss_streaming_ep.wMaxPacketSize = cpu_to_le16(max_packet_size);
->  	uvc_ss_streaming_ep.bInterval = opts->streaming_interval;
-> -- 
-> 2.25.1
-> 
+> Invalid length caused that Processing Unit Descriptor Test Video form
+> CV tool failed. To fix this issue patch adds bmVideoStandards into
+> uvc_processing_unit_descriptor structure.
 
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
+The bmVideoStandards field was added in UVC 1.1, it wasn't part of UVC
+1.0a. The commit message should explain this.
+
+This change looks good to me, but could you also update
+drivers/usb/gadget/legacy/webcam.c and
+drivers/usb/gadget/function/f_uvc.c to explicitly set this field to 0 ?
+
+With that,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> ---
+>  include/uapi/linux/usb/video.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
+> index d854cb19c42c..2a54e8fdd341 100644
+> --- a/include/uapi/linux/usb/video.h
+> +++ b/include/uapi/linux/usb/video.h
+> @@ -302,6 +302,7 @@ struct uvc_processing_unit_descriptor {
+>  	__u8   bControlSize;
+>  	__u8   bmControls[2];
+>  	__u8   iProcessing;
+> +	__u8   bmVideoStandards;
+>  } __attribute__((__packed__));
+>  
+>  #define UVC_DT_PROCESSING_UNIT_SIZE(n)			(9+(n))
 
 -- 
+Regards,
 
-Thanks,
-Peter Chen
-
+Laurent Pinchart
