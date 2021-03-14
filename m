@@ -2,57 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2808033A707
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF38633A70A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 17:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhCNQyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 12:54:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13603 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhCNQyR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 12:54:17 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dz5FJ2X6bz160Dk;
-        Mon, 15 Mar 2021 00:52:20 +0800 (CST)
-Received: from [127.0.0.1] (10.175.101.122) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Mon, 15 Mar 2021
- 00:54:03 +0800
-Content-Type: multipart/alternative;
-        boundary="===============8873805853179784533=="
+        id S233927AbhCNQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 12:55:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229870AbhCNQzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 12:55:09 -0400
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C9CA64DE1;
+        Sun, 14 Mar 2021 16:55:07 +0000 (UTC)
+Date:   Sun, 14 Mar 2021 16:55:04 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v8 0/2] add support for GPIO or IRQ based event counter
+Message-ID: <20210314165504.536d9ba6@archlinux>
+In-Reply-To: <20210301080401.22190-1-o.rempel@pengutronix.de>
+References: <20210301080401.22190-1-o.rempel@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date:   Mon, 15 Mar 2021 00:54:03 +0800
-From:   <hulkrobot@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-Subject: =?utf-8?q?=5Blinux-stable-rc_CI=5D_Test_report_for_4=2E14=2E226-rc1=0D=0A/x8?=
- =?utf-8?q?6?=
-Message-ID: <4c5a00d7-9d8c-40ae-98e5-1d139c9c81fc@DGGEMS413-HUB.china.huawei.com>
-X-Originating-IP: [10.175.101.122]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============8873805853179784533==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+On Mon,  1 Mar 2021 09:03:59 +0100
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-S2VybmVsIHJlcG86IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
-Z2l0L3N0YWJsZS9saW51eC1zdGFibGUtcmMuZ2l0CkJyYW5jaDogbGludXgtNC4xNC55CkFyY2g6
-IHg4NgpWZXJzaW9uOiA0LjE0LjIyNi1yYzENCkNvbW1pdDogMjFkZGRjMTQ3OTcwZWQ0NGM1NGU5
-NWM1OWFhNGM5ZDk1NjgzNzMzZA0KQ29tcGlsZXI6IGdjYyB2ZXJzaW9uIDcuMy4wIChHQ0MpCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkFsbCB0ZXN0Y2FzZXMgUEFTU0VELgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUZXN0Y2FzZSBSZXN1
-bHQgU3VtbWFyeToKdG90YWxfbnVtOiA0NjM5CnN1Y2NlZWRfbnVtOiA0NjM5CmZhaWxlZF9udW06
-IDAKdGltZW91dF9udW06IDAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGVzdGVkLWJ5OiBIdWxrIFJvYm90IDxodWxr
-cm9ib3RAaHVhd2VpLmNvbT4=
+> changes v8:
+> - use use enum index instead of enum value for the counter function
+> - register signal unconditionally and return error is signal revel is
+>   read 
+> 
+> changes v7:
+> - make most of structs dynamically allocatable to assign IRQ based
+>   description to the signal
+> - assign dev name instead for driver name to the IRQ
+> 
+> changes v6:
+> - rename it to interrupt-counter
+> - driver fixes
+> - device tree fixes
+> 
+> changes v5:
+> - rename it to event counter, since it support different event sources
+> - make it work with gpio-only or irq-only configuration
+> - update yaml binding
+> 
+> changes v4:
+> - use IRQ_NOAUTOEN to not enable IRQ by default
+> - rename gpio_ from name pattern and make this driver work any IRQ
+>   source.
+> 
+> changes v3:
+> - convert counter to atomic_t
+> 
+> changes v2:
+> - add commas
+> - avoid possible unhandled interrupts in the enable path
+> - do not use of_ specific gpio functions
+> 
+> Add support for GPIO based pulse counter. For now it can only count
+> pulses. With counter char device support, we will be able to attach
+> timestamps and measure actual pulse frequency.
+> 
+> Never the less, it is better to mainline this driver now (before chardev
+> patches go mainline), to provide developers additional use case for the counter
+> framework with chardev support.
+> 
+> Oleksij Rempel (2):
+>   dt-bindings: counter: add interrupt-counter binding
+>   counter: add IRQ or GPIO based counter
 
---===============8873805853179784533==--
+Series applied to the togreg branch of iio.git and pushed out as testing.
+
+thanks,
+
+Jonathan
+
+> 
+>  .../bindings/counter/interrupt-counter.yaml   |  62 +++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/counter/Kconfig                       |  10 +
+>  drivers/counter/Makefile                      |   1 +
+>  drivers/counter/interrupt-cnt.c               | 244 ++++++++++++++++++
+>  5 files changed, 324 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/counter/interrupt-counter.yaml
+>  create mode 100644 drivers/counter/interrupt-cnt.c
+> 
+
