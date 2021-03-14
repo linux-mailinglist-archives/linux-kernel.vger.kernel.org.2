@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFBE33A2BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918F433A2C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhCNFJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 00:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhCNFJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 00:09:23 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DEDC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 21:09:22 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id z190so28625003qka.9
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 21:09:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OIER2FStt2RnHoMWp+ZnilVL13UULLynSzYONsk5UYs=;
-        b=m4314wVnFUSddEXyAUnKlKbwcRJyVf0L8Be15jre9bklG3xdmk90K62fLO54LQZml3
-         JMneNnxeVDE8jrik/vd3d8WWshOLkvFWMFM+bEW08Btmi2l4ssGcgVeSgiowaPK1TBi8
-         z1mMBpeFfBawURI+nGM7Lr/XV/tJNtS/Z+QMzLmVmd8ikTINCYiK2KbkL1mfX3KVMdJN
-         YsNRckvg0+kD5II83fljPLZij4kFSnOD6dpNxkHC0jzpmF9KgZdzOKlJAfiNfQYYgft7
-         JT9gYlUoY/i7tKJgcLnzvrpRt2p6/tqUpCv1OR/Igz9dFJSzWP/QTp6Cccd8AJfIuJSf
-         a0jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OIER2FStt2RnHoMWp+ZnilVL13UULLynSzYONsk5UYs=;
-        b=d8N4wnpCsS4EUG6iEKZusROlNGW2zXIojwaOD5dwHfXRMKJzyyRNMVD/dvvkCUktlW
-         4GNtsBlPHht7QktGTP8zIn4ZRE7XXL/od0zRACUdNXB55S3Qg608aqLu32EQkres3ZOV
-         rT/Bkp1FdEFA/MECNstE83z47xW/MfYlu2jY4q0AUdSi/z0EZBz7K/IVRAH7R6IoeDCg
-         TLAD1XTiLCtkYaUAKOr9eUWkvxBft0Szz8MNOnNYtGNLWflURY3AOfVeSF539eW24H8x
-         QsxS8lw9uIcyfMJvjDNy/D2/Pic6SKztqSNbf2UG9nkY/ldjFlaD25CVzLJMRtC15xmB
-         7mdQ==
-X-Gm-Message-State: AOAM531wZkemIfdcpV18iO0USayel9rhM+Q8eo68JnGdqk2X1HpR8FH3
-        aPKOd7nIJAyrL7+r6Qkf4EE=
-X-Google-Smtp-Source: ABdhPJyOEy7K6cYSgkG/nj8Cu6eUDAeKYquaZMcuyqx1t2/C3iqx6E/Pe55bd9Z7X3L/WbbEwq1wDg==
-X-Received: by 2002:a37:a0d1:: with SMTP id j200mr19632951qke.426.1615698561948;
-        Sat, 13 Mar 2021 21:09:21 -0800 (PST)
-Received: from localhost.localdomain ([37.19.198.30])
-        by smtp.gmail.com with ESMTPSA id m21sm8186364qka.28.2021.03.13.21.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 21:09:21 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] kernel: trace: A typo fix in the file trace_event_perf.c
-Date:   Sun, 14 Mar 2021 10:36:56 +0530
-Message-Id: <20210314050656.9402-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S232864AbhCNFLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 00:11:05 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:41636 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229514AbhCNFKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 00:10:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615698637; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=0NoYkl/FuNu+r0+wsVoEHAF2YmV2p15GFH0+t+rZiNg=;
+ b=n5hPPVSrEgmudPic5bfqe09tigCkA/T9lZXqdsPufKVLeYA2z/zmQayCov4oT6kR3+GfuesV
+ jNIyXu/L9FdMbyVvVttn54h/KOtl0RKU7EWdj3rWolrOCdJGdstf5Lvlf5z3OuSgwDkp6kdn
+ PJ/3D+0OXr3VRD+hTMySCAELTwk=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 604d9ac85d70193f88dfb2a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 05:10:32
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA79AC43464; Sun, 14 Mar 2021 05:10:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8987C433C6;
+        Sun, 14 Mar 2021 05:10:31 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 13 Mar 2021 21:10:31 -0800
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, willy@infradead.org, mhocko@suse.com,
+        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        Minchan Kim <minchan.kim@gmail.com>
+Subject: Re: [PATCH v3 2/3] mm: disable LRU pagevec during the migration
+ temporarily
+In-Reply-To: <623d54ccbd5324bff22ad1389eae38f4@codeaurora.org>
+References: <20210310161429.399432-1-minchan@kernel.org>
+ <20210310161429.399432-2-minchan@kernel.org>
+ <623d54ccbd5324bff22ad1389eae38f4@codeaurora.org>
+Message-ID: <a0f4abd8540cddc744061e1210ac6e77@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-11 14:41, Chris Goldsworthy wrote:
+> On 2021-03-10 08:14, Minchan Kim wrote:
+>> LRU pagevec holds refcount of pages until the pagevec are drained.
+>> It could prevent migration since the refcount of the page is greater
+>> than the expection in migration logic. To mitigate the issue,
+>> callers of migrate_pages drains LRU pagevec via migrate_prep or
+>> lru_add_drain_all before migrate_pages call.
+>> 
+>> However, it's not enough because pages coming into pagevec after the
+>> draining call still could stay at the pagevec so it could keep
+>> preventing page migration. Since some callers of migrate_pages have
+>> retrial logic with LRU draining, the page would migrate at next trail
+>> but it is still fragile in that it doesn't close the fundamental race
+>> between upcoming LRU pages into pagvec and migration so the migration
+>> failure could cause contiguous memory allocation failure in the end.
+>> 
+>> To close the race, this patch disables lru caches(i.e, pagevec)
+>> during ongoing migration until migrate is done.
+>> 
+>> Since it's really hard to reproduce, I measured how many times
+>> migrate_pages retried with force mode(it is about a fallback to a
+>> sync migration) with below debug code.
+>> 
+>> int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>> 			..
+>> 			..
+>> 
+>> if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+>>        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), 
+>> rc);
+>>        dump_page(page, "fail to migrate");
+>> }
+>> 
+>> The test was repeating android apps launching with cma allocation
+>> in background every five seconds. Total cma allocation count was
+>> about 500 during the testing. With this patch, the dump_page count
+>> was reduced from 400 to 30.
+>> 
+>> The new interface is also useful for memory hotplug which currently
+>> drains lru pcp caches after each migration failure. This is rather
+>> suboptimal as it has to disrupt others running during the operation.
+>> With the new interface the operation happens only once. This is also 
+>> in
+>> line with pcp allocator cache which are disabled for the offlining as
+>> well.
+>> 
+>> Signed-off-by: Minchan Kim <minchan@kernel.org>
+>> ---
+> 
+> Hi Minchan,
+> 
+> This all looks good to me - feel free to add a Reviewed-by from me.
+> 
+> Thanks,
+> 
+> Chris.
+Should have added:
 
-s/suprises/surprises/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- kernel/trace/trace_event_perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index a71181655958..d1eac45b79d2 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -16,7 +16,7 @@ static char __percpu *perf_trace_buf[PERF_NR_CONTEXTS];
-
- /*
-  * Force it to be aligned to unsigned long to avoid misaligned accesses
-- * suprises
-+ * surprises
-  */
- typedef typeof(unsigned long [PERF_MAX_TRACE_SIZE / sizeof(unsigned long)])
- 	perf_trace_t;
---
-2.26.2
-
+Reviewed-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
