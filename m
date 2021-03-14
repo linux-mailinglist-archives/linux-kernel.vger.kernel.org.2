@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEFA33A39A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F1733A39E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhCNIgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 04:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41798 "EHLO mail.kernel.org"
+        id S235001AbhCNIgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 04:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231597AbhCNIfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 04:35:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5923264EBE;
-        Sun, 14 Mar 2021 08:35:30 +0000 (UTC)
+        id S234806AbhCNIgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 04:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B615F64EBE;
+        Sun, 14 Mar 2021 08:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615710931;
-        bh=3WtodJc3soLmQ9CqzHPdNBhJrEKF+Kgty8caa746n4A=;
+        s=korg; t=1615710975;
+        bh=ZS6V5nnNAhbzXMkBCECzzKS2KrJq8/t/D+B+J+8wv8A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OLygglqo6bNd1UptwpYzp71gwsCEzci5o2/8NO0DmFclo7T0xe8ZDMzM4aRkyPzKK
-         yKKUs0ySN/hwS1MKxAcNXWLH9HW1PxgFnd+AKAg/Icn6TqQUbUD1K4YvIUcLtEB8YT
-         CROUH3EhtuSAwt93ViOTYIqmxiqCyIxQyS+ilHYQ=
-Date:   Sun, 14 Mar 2021 09:35:26 +0100
+        b=VIUWbuYQ+4ZngiJMa1TKSbhSQKKquEkuecHoNiXxa9p2V+DUm+uVtRjk168NhwyZg
+         NfCsSFq0zkbZFYUETd2S7KvLmU8tet3ZxYlttg7cFpVKxti2ByCXl+p8zORoTzQ0zB
+         mu1zIOT7XWCwK9gqpr2VWSSknBSuM6seUgvD15Lk=
+Date:   Sun, 14 Mar 2021 09:36:11 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Selvakumar E <selvakumar16197@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: octeon-usb: fixed precedence issue
-Message-ID: <YE3KzgnHyxdpMGZv@kroah.com>
-References: <20210313173247.8676-1-selvakumar16197@gmail.com>
- <YE28Uzs6ZhHopk8J@kroah.com>
- <CAD=cR88u5o58NaL=z6NtMc2=N-hesKkFC8tkP3PJ4fu1Oaf-ZQ@mail.gmail.com>
+To:     Fatih Yildirim <yildirim.fatih@gmail.com>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] net: rds: rds_send_probe memory leak
+Message-ID: <YE3K+zeWnJ/hVpQS@kroah.com>
+References: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=cR88u5o58NaL=z6NtMc2=N-hesKkFC8tkP3PJ4fu1Oaf-ZQ@mail.gmail.com>
+In-Reply-To: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Sun, Mar 14, 2021 at 11:23:10AM +0300, Fatih Yildirim wrote:
+> Hi Santosh,
+> 
+> I've been working on a memory leak bug reported by syzbot.
+> https://syzkaller.appspot.com/bug?id=39b72114839a6dbd66c1d2104522698a813f9ae2
+> 
+> It seems that memory allocated in rds_send_probe function is not freed.
+> 
+> Let me share my observations.
+> rds_message is allocated at the beginning of rds_send_probe function.
+> Then it is added to cp_send_queue list of rds_conn_path and refcount
+> is increased by one.
+> Next, in rds_send_xmit function it is moved from cp_send_queue list to
+> cp_retrans list, and again refcount is increased by one.
+> Finally in rds_loop_xmit function refcount is increased by one.
+> So, total refcount is 4.
+> However, rds_message_put is called three times, in rds_send_probe,
+> rds_send_remove_from_sock and rds_send_xmit functions. It seems that
+> one more rds_message_put is needed.
+> Would you please check and share your comments on this issue?
 
-A: No.
-Q: Should I include quotations after my reply?
-
-http://daringfireball.net/2007/07/on_top
-
-On Sun, Mar 14, 2021 at 01:34:23PM +0530, Selvakumar E wrote:
-> Hi Greg
->             I changed the line because of the checkpatch.pl warned for
-> precedence issue.
-
-But I fail to see how this:
-
-> > > +#define CVMX_USBCXREG1((reg), bid) \
-
-Does anything here at all.
-
-What am I missing?
+Do you have a proposed patch that syzbot can test to verify if this is
+correct or not?
 
 thanks,
 
-greg k-h
+gre gk-h
