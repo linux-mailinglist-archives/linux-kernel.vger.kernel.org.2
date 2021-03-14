@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB34E33A2AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2999633A2B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhCNEg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 23:36:58 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:55596 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234142AbhCNEgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 23:36:48 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lLIUS-00AngM-UY; Sun, 14 Mar 2021 05:36:32 +0100
-Date:   Sun, 14 Mar 2021 05:36:32 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] net: ethernet: actions: Add Actions Semi Owl
- Ethernet MAC driver
-Message-ID: <YE2S0MW62lVF/psk@lunn.ch>
-References: <cover.1615423279.git.cristian.ciocaltea@gmail.com>
- <158d63db7d17d87b01f723433e0ddc1fa24377a8.1615423279.git.cristian.ciocaltea@gmail.com>
- <YEwO33TR7ENHuMaY@lunn.ch>
- <20210314011324.GA991090@BV030612LT>
+        id S234872AbhCNEp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 23:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232974AbhCNEpf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 23:45:35 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5DAC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:45:34 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id x9so6967474qto.8
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:45:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uoe5TNNaDysbUQasfNAqY0hOSuNv/3CSSDD6bzJQ5fI=;
+        b=WRjAdYjdxjs92mVp66j7D7szHl3IbeBRjO+ofLvwzD64sD9QZXZeZ+pSXF8O3MRGbb
+         OwveQBhhxwxPv0tAA2vKfzZ+NdQxwrGNwEay93SQFFjGfCfxgh0JMYoFNa4lEQDgAbn9
+         pDAqLIHPk9lqkyjQzEHW5mnW8PsX/afur8eptyiKNLL4n48BQ5sgvaCBW84e4zbFUV8h
+         nvRV89nzfsIihF9mw2cmPdegTAp4DGB9SRxrG6UNlL1bp9EDUqoVoCdA0TPLs5X5SGP2
+         D6YPugWoiJZR0RbsuwQyTSaC3ydtk+eOFv7Jv8QB7vO7mzD4962JS8YuEsGuUNY2/Gzj
+         2lCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uoe5TNNaDysbUQasfNAqY0hOSuNv/3CSSDD6bzJQ5fI=;
+        b=hAG7c5n6FdFHrbmP2s2n1a1ecRYyRRpKpYtKJbI993Dc0XoEKWsqbyIxXTMYodFS0G
+         hMqllCZ9lcyzTh/pvd21zWmc0ayEhH6PhbVBbNI+aQ/RUo2/gq1CsKLWNpMORqWXjsIy
+         e3ETWJnW33SkD9tyuNr8I7ZIRceB66e2/mLaOnek0HEp0/MJTXHxujDb6qcV/JiXBr7w
+         CxA26P6piKD2mdVOBGflNzAPdGabc10d8C+yhcNbonfWoGOq5cfvoykp4eb7y6wtxDk9
+         fy12Bopmbff535LQ4oD43kw5XbOTAeaLbx3AAJptCh/+GVSKse6DmTnJM2Ow37h/2oDv
+         eAZQ==
+X-Gm-Message-State: AOAM532vwZ+L+p/bHT6XDzVijFLEWeb370DXfg3uIPilEGDISg6Okltj
+        ZMbn8Jmi8DpqhI5VMPW0zuw=
+X-Google-Smtp-Source: ABdhPJy2CqupncRenrFBI7C8/dOxkolIyk5MmQG0y9rTuawAaMe1sJkMeoqec5OQ01ETtylsnBEshQ==
+X-Received: by 2002:ac8:149a:: with SMTP id l26mr17763644qtj.210.1615697133669;
+        Sat, 13 Mar 2021 20:45:33 -0800 (PST)
+Received: from localhost.localdomain ([37.19.198.30])
+        by smtp.gmail.com with ESMTPSA id f27sm8005836qkh.118.2021.03.13.20.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 20:45:33 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        chris@chris-wilson.co.uk, tvrtko.ursulin@intel.com,
+        mika.kuoppala@linux.intel.com, maarten.lankhorst@linux.intel.com,
+        unixbhaskar@gmail.com, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] gpu: drm: i915: gt: Rudimentary typo fix in the file intel_timeline.c
+Date:   Sun, 14 Mar 2021 10:13:03 +0530
+Message-Id: <20210314044303.9220-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210314011324.GA991090@BV030612LT>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +	if (phy->interface != PHY_INTERFACE_MODE_RMII) {
-> > > +		netdev_err(netdev, "unsupported phy mode: %s\n",
-> > > +			   phy_modes(phy->interface));
-> > > +		phy_disconnect(phy);
-> > > +		netdev->phydev = NULL;
-> > > +		return -EINVAL;
-> > > +	}
-> > 
-> > It looks like the MAC only supports symmetric pause. So you should
-> > call phy_set_sym_pause() to let the PHY know this.
-> 
-> I did not find any reference related to the supported pause types,
-> is this normally dependant on the PHY interface mode?
 
-There is a MAC / PHY split there. The PHY is responsible for the
-negotiation for what each end can do. But it is the MAC which actually
-implements pause. The MAC needs to listen to pause frames and not send
-out data frames when the link peer indicates pause. And the MAC needs
-to send a pause frames when its receive buffers are full. The code you
-have in this MAC driver seems to indicate the MAC only supports
-symmetric pause. Hence you need to configure the PHY to only auto-neg
-symmetric pause.
+s/bariers/barriers/
 
-> > > +	ret = crypto_skcipher_encrypt(req);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "failed to encrypt S/N: %d\n", ret);
-> > > +		goto err_free_tfm;
-> > > +	}
-> > > +
-> > > +	netdev->dev_addr[0] = 0xF4;
-> > > +	netdev->dev_addr[1] = 0x4E;
-> > > +	netdev->dev_addr[2] = 0xFD;
-> > 
-> > 0xF4 has the locally administered bit 0. So this is a true OUI. Who
-> > does it belong to? Ah!
-> > 
-> > F4:4E:FD Actions Semiconductor Co.,Ltd.(Cayman Islands)
-> > 
-> > Which makes sense. But is there any sort of agreement this is allowed?
-> > It is going to cause problems if they are giving out these MAC
-> > addresses in a controlled way.
-> 
-> Unfortunately this is another undocumented logic taken from the vendor
-> code. I have already disabled it from being built by default, although,
-> personally, I prefer to have it enabled in order to get a stable MAC
-> address instead of using a randomly generated one or manually providing
-> it via DT.
-> 
-> Just for clarification, I did not have any agreement or preliminary
-> discussion with the vendor. This is just a personal initiative to
-> improve the Owl SoC support in the mainline kernel.
-> 
-> > Maybe it would be better to set bit 1 of byte 0? And then you can use
-> > 5 bytes from enc_sn, not just 4.
-> 
-> I included the MAC generation feature in the driver to be fully
-> compatible with the original implementation, but I'm open for changes
-> if it raises concerns and compatibility is less important.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/i915/gt/intel_timeline.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is not a simple question to answer. If the vendor driver does
-this, then the vendor can never assign MAC addresses in a controlled
-way, unless they have a good idea how the algorithm turns serial
-numbers into MAC addresses, and they can avoid MAC addresses for
-serial numbers already issued.
+diff --git a/drivers/gpu/drm/i915/gt/intel_timeline.c b/drivers/gpu/drm/i915/gt/intel_timeline.c
+index 8015964043eb..2b921c1796dc 100644
+--- a/drivers/gpu/drm/i915/gt/intel_timeline.c
++++ b/drivers/gpu/drm/i915/gt/intel_timeline.c
+@@ -416,7 +416,7 @@ void intel_timeline_exit(struct intel_timeline *tl)
+ 	spin_unlock(&timelines->lock);
 
-But should the Linux kernel do the same? If all you want is a stable
-MAC address, my personal preference would be to set the locally
-administered bit, and fill the other 5 bytes from the hash
-algorithm. You then have a stable MAC addresses, but you clearly
-indicate it is not guaranteed to by globally unique, and you do not
-need to worry about what the vendor is doing.
+ 	/*
+-	 * Since this timeline is idle, all bariers upon which we were waiting
++	 * Since this timeline is idle, all barriers upon which we were waiting
+ 	 * must also be complete and so we can discard the last used barriers
+ 	 * without loss of information.
+ 	 */
+--
+2.26.2
 
-> > Otherwise, this look a new clean driver.
-> 
-> Well, I tried to do my best, given my limited experience as a self-taught
-> kernel developer. Hopefully reviewing my code will not cause too many
-> headaches! :)
-
-This is actually above average for a self-taught kernel
-developer. Well done.
-
-	   Andrew
