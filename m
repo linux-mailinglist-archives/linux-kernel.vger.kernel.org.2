@@ -2,83 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9FB33A580
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3A633A588
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhCNPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230342AbhCNPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:40:42 -0400
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CCF364E89;
-        Sun, 14 Mar 2021 15:40:37 +0000 (UTC)
-Date:   Sun, 14 Mar 2021 15:40:33 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jyoti Bhayana <jbhayana@google.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>,
-        Guru Nagarajan <gurunagarajan@google.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210314154033.3facf1a2@archlinux>
-In-Reply-To: <CA+=V6c0a8z9+gkD_M6KNviN-VActtmpTgkuCBn-sgC4Fm2C6QA@mail.gmail.com>
-References: <20210309231259.78050-1-jbhayana@google.com>
-        <20210309231259.78050-2-jbhayana@google.com>
-        <20210311210844.34371d8d@archlinux>
-        <20210312121639.00001c31@Huawei.com>
-        <20210312133101.GG30179@e120937-lin>
-        <CA+=V6c0boA1Q+k4rM0NOcK4ek_FYU7omEWhvMowqACH_t44sAQ@mail.gmail.com>
-        <20210313171107.4c8215e7@archlinux>
-        <CA+=V6c0a8z9+gkD_M6KNviN-VActtmpTgkuCBn-sgC4Fm2C6QA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234097AbhCNPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233103AbhCNPpW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 11:45:22 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB783C061574;
+        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id j18so4452819wra.2;
+        Sun, 14 Mar 2021 08:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PclIFcC2nS7Q4VorzCLkkkTGpzHU2Eq5kWVCvmuDhyI=;
+        b=qAuWjcuklA/Y8Y441HfQKMy13BZlI5RX7assgoGjGpvXvlph3m7P5heS9rbqB5KQ/1
+         pcjs6BAnCmJkatVXbT/DQ0liLAVUnBe0RfsvOeZI2iHG/HeOhuj852q1W+v3RNVYVBYW
+         DFs9CDGu8jmEMnDwhjvQNRgdizpir1MEtdIxdybciDkUECp0AcWzCWpcu6q5OmxAAd7Y
+         /lxCVi2MQKGF6YL5me0QlN1PSMMRB/QPOVXGHSxiT2bq/4p8mqbexgro0sFANTclYYMt
+         myrNB6vzAqnmujVSpLVAeQYmeRR15+Ex7Ru19rZ7ezd1lPHe1Vk1/A9KJ7kOQqjCmLRh
+         8IDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PclIFcC2nS7Q4VorzCLkkkTGpzHU2Eq5kWVCvmuDhyI=;
+        b=d5FaSeRodLr6hQdseJwibswYv79c6OyNaMWkqv+4HOotQMnlPhvGPx03CWYI3BSEKc
+         7errVYpieNtrYyAvkpHa5TRoYRPjzItnSFkqJYJYWYjMOjiZiH5VH6PsnhPEnhqOyKfN
+         FGnCRhfFEq1HMCz/JBEbRmylZbDLxp4lIJ77qSFpd8BFQ+cobNFvwxL/n9LqunIBIWno
+         09iXjidjG8hP7TVlmAo3ie9UrsPT8vGeGOfkuBDAqjAtGtgcwK+RPUH+15z4pXHIIW2Q
+         oJMzARDqYFHGHyJK3WFVfLailYlB9c0VbSE9S8Q+N1AosUrDGlXf2EAZHEVH+CH0Zp8R
+         ttPA==
+X-Gm-Message-State: AOAM533Y7jkdLMkbn3MZLuHtiNlKRD3h5/NF6BKr/O+g84tp9ULzS4hr
+        W/SsahTqOrtiuBC9S3e94WpGPiDdv6Q=
+X-Google-Smtp-Source: ABdhPJwO1WyF3LJh32pYsIZEBoThmnPXPXjd76LixRiKKFWmeUv7A9UyngwsIPvIbamr5I/6VCpOYA==
+X-Received: by 2002:adf:90c2:: with SMTP id i60mr23481723wri.75.1615736720372;
+        Sun, 14 Mar 2021 08:45:20 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 08:45:19 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Fertser <fercerpav@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC drivers
+Date:   Sun, 14 Mar 2021 18:44:42 +0300
+Message-Id: <20210314154459.15375-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 11:55:39 -0800
-Jyoti Bhayana <jbhayana@google.com> wrote:
+Hi,
 
-> Hi Jonathan,
-> 
-> I still see the old version 6 in ib-iio-scmi-5.12-rc2-take2 as well.
+This series adds missing hardware reset controls to I2S and AC97 drivers,
+corrects runtime PM usage and drivers probe/remove order. Currently drivers
+happen to work properly because reset is implicitly deasserted by tegra-clk
+driver, but clk driver shouldn't touch the resets and we need to fix it
+because this breaks other Tegra drivers. Previously we fixed the resets of
+the AHUB and HDMI codec drivers, but turned out that we missed the I2C and
+AC97 drivers.
 
-OK. I'm completely confused as to what is going with my local tree.
-I have the right patch in the history but it didn't end up in the final
-pushed out version.  Fat finger mess-up I guess and too many similarly named
-branches and the fact I didn't check the final result closely enough.
+Thanks to Paul Fertser for testing the pending clk patches and finding
+that audio got broken on Tegra20 AC100 netbook because of the missing I2S
+reset.
 
-There is now an ib-iio-scmi-5.12-rc2-take3 branch
+Changelog:
 
-This time it definitely has your patch from the 9th of March with no
-instances of long long in it.
+v5: - After taking another look at the drivers I noticed couple more
+      things that could be improved. These new patches correct runtime PM
+      and probe/remove order of the drivers:
 
-Sorry I messed this one up (again!)
+        ASoC: tegra20: spdif: Correct driver removal order
+        ASoC: tegra20: spdif: Remove handing of disabled runtime PM
+        ASoC: tegra20: i2s: Add system level suspend-resume callbacks
+        ASoC: tegra20: i2s: Correct driver removal order
+        ASoC: tegra20: i2s: Use devm_clk_get()
+        ASoC: tegra20: i2s: Remove handing of disabled runtime PM
+        ASoC: tegra30: i2s: Correct driver removal order
+        ASoC: tegra30: i2s: Use devm_clk_get()
+        ASoC: tegra30: i2s: Remove handing of disabled runtime PM
+        ASoC: tegra30: ahub: Reset global variable
+        ASoC: tegra30: ahub: Correct suspend-resume callbacks
+        ASoC: tegra30: ahub: Remove handing of disabled runtime PM
 
-Jonathan
+v4: - Added missing prototype for reset_control_bulk_put().
 
-> 
-> Thanks,
-> Jyoti
+v3: - Fixed reset stubs for !CONFIG_RESET_CONTROLLER.
+
+v2: - After some more testing I found that I2S control logic doesn't require
+      I2S clock to be enabled for resetting. Hence it's fine to have I2S to
+      be reset by parent AHUB driver, so I dropped "tegra30: i2s: Add reset
+      control" patch.
+
+    - While I was double-checking resets on Tegra30, I found that that
+      Tegra30 I2S driver has a broken runtime PM which doesn't restore
+      hardware state on resume and it's lost after AHUB RPM-resume.
+      Thus, added this new patch "tegra30: i2s: Restore hardware state
+      on runtime PM resume".
+
+    - Added new patches which switch AHUB driver to use reset-bulk API.
+      I took the RFC patch from Philipp Zabel, fixed it and added
+      devm_reset_control_bulk_optional_get_exclusive_released() that
+      will be useful for further Tegra GPU patches. This is a minor
+      improvement which makes code cleaner.
+
+Dmitry Osipenko (16):
+  ASoC: tegra20: ac97: Add reset control
+  ASoC: tegra20: i2s: Add reset control
+  ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
+  ASoC: tegra30: ahub: Switch to use reset-bulk API
+  ASoC: tegra20: spdif: Correct driver removal order
+  ASoC: tegra20: spdif: Remove handing of disabled runtime PM
+  ASoC: tegra20: i2s: Add system level suspend-resume callbacks
+  ASoC: tegra20: i2s: Correct driver removal order
+  ASoC: tegra20: i2s: Use devm_clk_get()
+  ASoC: tegra20: i2s: Remove handing of disabled runtime PM
+  ASoC: tegra30: i2s: Correct driver removal order
+  ASoC: tegra30: i2s: Use devm_clk_get()
+  ASoC: tegra30: i2s: Remove handing of disabled runtime PM
+  ASoC: tegra30: ahub: Reset global variable
+  ASoC: tegra30: ahub: Correct suspend-resume callbacks
+  ASoC: tegra30: ahub: Remove handing of disabled runtime PM
+
+Philipp Zabel (1):
+  reset: Add reset_control_bulk API
+
+ drivers/reset/core.c            | 215 ++++++++++++++++++++++
+ include/linux/reset.h           | 315 ++++++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.c  |  21 +++
+ sound/soc/tegra/tegra20_ac97.h  |   1 +
+ sound/soc/tegra/tegra20_i2s.c   |  60 +++---
+ sound/soc/tegra/tegra20_i2s.h   |   1 +
+ sound/soc/tegra/tegra20_spdif.c |  16 +-
+ sound/soc/tegra/tegra30_ahub.c  | 168 ++++++-----------
+ sound/soc/tegra/tegra30_ahub.h  |   5 +-
+ sound/soc/tegra/tegra30_i2s.c   |  65 ++-----
+ 10 files changed, 667 insertions(+), 200 deletions(-)
+
+-- 
+2.30.2
 
