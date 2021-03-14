@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689D133A356
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 07:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5442533A359
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 07:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhCNGQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 01:16:57 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:49004 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbhCNGQX (ORCPT
+        id S234068AbhCNGVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 01:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhCNGVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 01:16:23 -0500
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 12E6Fqg8003265;
-        Sun, 14 Mar 2021 15:15:53 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 12E6Fqg8003265
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615702553;
-        bh=utDJTVaXCeHTwLB1yYXftme23M7v9E/X8L8DxsEMQsI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tmOiWE2dx3Jql7hOGHc7woxKGvOnJfInpOKiDLSxVg0J9P3dSz2EJA9DNuudDXmCA
-         RARsuo+0XcnapClt74XP+DWoELK7KbNnj7khnKJZTWq5vDrmJYB2N5P8knZPmVJ2lR
-         lpGXUJn+/Cox2L4EcT/GLoAvGyjTC2tF0S46/XYAbyPXDtHgfQW8ynTlDlnePq5Vxm
-         F2cvjBmP2mKRdgzj6mPODekXZ6sk8ZpJDOyLGV95IEjeo3P2RN4I4cXG4lwEejkamC
-         XPsH5nul8+CAk216KkyirhhI0WgBnnmygAQgDtYQONAwse4tZeapqyBuUaD5Zpwoz4
-         yb3j+Fvd7JRvg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: replace sed with $(subst ) or $(patsubst )
-Date:   Sun, 14 Mar 2021 15:15:50 +0900
-Message-Id: <20210314061550.401458-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sun, 14 Mar 2021 01:21:35 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103B6C061574;
+        Sat, 13 Mar 2021 22:21:35 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so12723942pjh.1;
+        Sat, 13 Mar 2021 22:21:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rph+DllBJw5pxzAmfhUhmv7C1Vvgzgzf1YgbvK7mPSA=;
+        b=UIsHzdDDF5FSXYG8V2EMtj8alAO+hy8IdATaWB69OR5lYtvjpNfeqTqB8VP1bOH52H
+         1z3WFEXuD5l+OBHCtsa4aguBPGV2J5POOi+0XyfkvzffXPh9chlisvE6MRdQBGo5jO1o
+         ZvbWuXiDcJz/3+2eIca2wzd79bS1LuOKMAKy25W+h1TQHbgZp71onO/lR18KLhr/Jkn2
+         GvsJFmAAseWRqjZ9+5lxIuaqRNFDivrzLoYJOfETG0440qJ/Ew5Fb30m5+9hAO/4r5kC
+         EWKHM06+zRSLyjn7QtVKet7qvHtiY1vy8iQGVNzRkcN66zXpZs8Jlnj9JqK78H3JbIsE
+         s1bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rph+DllBJw5pxzAmfhUhmv7C1Vvgzgzf1YgbvK7mPSA=;
+        b=ojYxy+oI22yFiF/V7twqBqJz0LNXF6Jlnqai2QFEIWlfaBCh10OAFh+oBfnujzNAj1
+         k5W5QaS9BFHwsQwCqxDTIS7odMsHcyZf+tH7vtmNkTWRzA2TTpIO5oFeJyDx9nHVHVbV
+         bFUHsmBDDezLx4oJVGZHMKMpEQntZ/OV230z+X0AEbfFiVbbRhI+toXxxCUU9j6yeE9c
+         WGaQ3QUiVtzpdEJRRuwfGvxGlLr5Aq3rrQyKaXRB5UwxoKqZlNrCU6nPtDeHLnDdFQw5
+         sCwIAPpnEkdJiaDSiKzt23g6jJRMdaW+9/2HRi9EQZ77m6euBYpy2BdgWS3pHmVdbshZ
+         ylUg==
+X-Gm-Message-State: AOAM5330KKw8L1mdIVl5s8muXB9XSNDb/EQ/4dCX0kVyMvUm4N4adCHE
+        gC2RlpO+xeb/V1wJqa8EZo4gkGPAVzD1irKmlZ0=
+X-Google-Smtp-Source: ABdhPJzxmKJ9gj6/4m2mHd6/zI3LRbuXXa/oaGtebd9YoH3GxSS0dQ6fmaLQOM3cCdns+P/RmCnABaTj1cgNjzNbqyM=
+X-Received: by 2002:a17:90a:31cf:: with SMTP id j15mr6502039pjf.41.1615702894701;
+ Sat, 13 Mar 2021 22:21:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210313034112.eqa7zxtes2ruklqj@pallavi> <161566957437.1478170.3351022111021245800@swboyd.mtv.corp.google.com>
+In-Reply-To: <161566957437.1478170.3351022111021245800@swboyd.mtv.corp.google.com>
+From:   Pallavi Prabhu <rpallaviprabhu@gmail.com>
+Date:   Sun, 14 Mar 2021 11:51:21 +0530
+Message-ID: <CA+aYaU8XfQbnbtSa9RRW6LYwC9nE1oJ6T0tvbJJnhrWyezDrTg@mail.gmail.com>
+Subject: Re: [PATCH] clk: clk.c: Fixed statics initialized to 0
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For simple text replacement, it is better to use a built-in function
-instead of sed if possible. You can save one process forking.
-
-I do not mean to replace all sed invocations because GNU Make itself
-does not support regular expression (unless you use guile).
-
-I just replaced simple ones.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Documentation/devicetree/bindings/Makefile | 2 +-
- Makefile                                   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 780e5618ec0a..ac446c62fbc3 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -48,7 +48,7 @@ define rule_chkdt
- 	$(call cmd,mk_schema)
- endef
- 
--DT_DOCS = $(shell $(find_cmd) | sed -e 's|^$(srctree)/||')
-+DT_DOCS = $(patsubst $(srctree)/%,%,$(shell $(find_cmd)))
- 
- override DTC_FLAGS := \
- 	-Wno-avoid_unnecessary_addr_size \
-diff --git a/Makefile b/Makefile
-index 70fc39e6b677..0be138adae74 100644
---- a/Makefile
-+++ b/Makefile
-@@ -574,7 +574,7 @@ endif
- # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
- # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
- # and from include/config/auto.conf.cmd to detect the compiler upgrade.
--CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
-+CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
- 
- ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
- ifneq ($(CROSS_COMPILE),)
--- 
-2.27.0
-
+On Sun, 14 Mar 2021 at 02:36, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Pallavi Prabhu (2021-03-12 19:41:12)
+> > Uninitialized static variable from 0, as statics get auto-initialized to 0 during execution.
+> > Signed-off-by: Pallavi Prabhu <rpallaviprabhu@gmail.com>
+>
+> Need a newline between signed-off-by line and commit text. Also please
+> wrap the commit text at 80 or 78 characters or so.
+>
+> > ---
+> >  drivers/clk/clk.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> > index 5052541a0986..763ad2c960bd 100644
+> > --- a/drivers/clk/clk.c
+> > +++ b/drivers/clk/clk.c
+> > @@ -2931,7 +2931,7 @@ EXPORT_SYMBOL_GPL(clk_is_match);
+> >  #include <linux/debugfs.h>
+> >
+> >  static struct dentry *rootdir;
+> > -static int inited = 0;
+> > +static int inited;
+>
+> I think it's being explicit; although it is the same. Is this noticed by
+> some static checker or something? I'd like to ignore this patch if
+> possible.
+The Static variable initialized to 0 was noticed by the checkpatch.
+This error message was corrected.
+Would you want me to send a v2 with the proper commit text?
