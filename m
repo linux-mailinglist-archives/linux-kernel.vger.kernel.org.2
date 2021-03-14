@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F8B33A41E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D57133A41F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbhCNKPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235130AbhCNKPQ (ORCPT
+        id S235184AbhCNKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:15:44 -0400
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:26530 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235138AbhCNKPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:15:16 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C473FC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 03:15:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DywR55JLDz9sR4;
-        Sun, 14 Mar 2021 21:15:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615716913;
-        bh=0SkYKg3e/bTwVIj0KE4qNxeEN3LksLwwY2JrTS849kY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mIZCIYvZhqBEr7mnwkzsOaUHKtqdJFJwjgWIP1Tt3yqBSyzUz5sgkE2kYFi9O/p7Q
-         QZtWahGrDllyd3p2i/g/KnH2/SGKA0D9VtMROJJvhGl0tdIUhEZsQcl2dVZGjj7omA
-         cOz8O7cSGnzdS8no05EnR9HtyaYne9ktwPvrN/gfmjHuq+z5i7MX7Sg9Em56AIrXW2
-         QltUTbjNO44aJBXcAyKKipFZCLBv88D/ba8gvMabvTCRlWzpYaAxzsjszXQXGAupZw
-         siILgIqW9fnRCeB3nPgN3qUY1U2ZjvTGW/IE4i3+TXWieBmuopHEr7K67Xo3DjUsnv
-         7D9Kfshyeq3yg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     christophe.leroy@csgroup.eu, dja@axtens.net,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        naveen.n.rao@linux.vnet.ibm.com, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-3 tag
-Date:   Sun, 14 Mar 2021 21:15:08 +1100
-Message-ID: <87tupe3utv.fsf@mpe.ellerman.id.au>
+        Sun, 14 Mar 2021 06:15:17 -0400
+Date:   Sun, 14 Mar 2021 10:15:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615716915; bh=bM7cn3Afzu5HwMEmA8LHq+iVZuDxZxEEQbnZuhdZvEg=;
+        h=Date:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=jpFMl4hp7PYW0YfoBbb27jcEpamNRG53Kbe0U4P2zNXtu+ZXg4SYVY5cMuyC+d0Hn
+         V28lFAHmNlil0dmG4Z1dDYZggrLQpnNsWqRSRCBKEFBdDMVfIrEDaT79OzsUEUyHNd
+         RVZ6sE83S0YPfPROa9KrfykjYGmNqzQIS6FstZTSYR9ufeNuJcPKk//7GfNDWbBmSl
+         7nNb9EOCDNOCpfI+HiVZglkkQOAylsmb//HzrFHW/aTb2mcIoEa+XOYenZH/w3+YFJ
+         8hiSEYw7zShjXaIgNe4u7UipqQ4QT/Y1UNl0s+//0XNgxY+1weKsbVWeeqNLqXR2YO
+         fHCM1UpjZ+8SQ==
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        jonathan.lemon@gmail.com, edumazet@google.com, willemb@google.com,
+        haokexin@gmail.com, pablo@netfilter.org, jakub@cloudflare.com,
+        elver@google.com, decui@microsoft.com, vladimir.oltean@nxp.com,
+        lariel@mellanox.com, wangqing@vivo.com, dcaratti@redhat.com,
+        gnault@redhat.com, eranbe@nvidia.com, mchehab+huawei@kernel.org,
+        ktkhai@virtuozzo.com, bgolaszewski@baylibre.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 net-next 0/6] skbuff: micro-optimize flow dissection
+Message-ID: <20210314101452.2482-1-alobakin@pm.me>
+In-Reply-To: <20210313.181000.1671061556553245861.davem@davemloft.net>
+References: <20210313113645.5949-1-alobakin@pm.me> <20210313.181000.1671061556553245861.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.0 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+From: David Miller <davem@davemloft.net>
+Date: Sat, 13 Mar 2021 18:10:00 -0800 (PST)
 
-Hi Linus,
+> None of these apply to net-next as per the patchwork automated checks.  A=
+ny idea why?
 
-Please pull some more powerpc fixes for 5.12:
+No unfortunately. That'why I sent a follow-up mail. All of them
+successfully apply to pure net-next on my machine.
+Can it be a Git version conflict? I use 2.30.2, but also tried 2.30.1
+and the latest development snapshot, and in either case they got
+applied with no problems.
 
-The following changes since commit fbda7904302499dd7ffc073a3c84eb7c9275db0a:
+I could have more clue if NIPA provided more detailed log, but didn't
+find any. And apply_patches stage doesn't seem to be present on NIPA
+GitHub repo, so I couldn't reproduce it 1:1.
 
-  Merge tag 'powerpc-5.12-2' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux (2021-03-07 13:24:44 -0800)
+I can try again on Monday, not sure if it will help.
+I also sent another series yesterday, and it has 15 green lights on
+Patchwork, so this problem seems to take place only with this
+particular series.
 
-are available in the git repository at:
+> Thanks.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-3
+Thanks,
+Al
 
-for you to fetch changes up to 0b736881c8f1a6cd912f7a9162b9e097b28c1c30:
-
-  powerpc/traps: unrecoverable_exception() is not an interrupt handler (2021-03-12 11:02:12 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.12 #3
-
-Fix wrong instruction encoding for lis in ppc_function_entry(), which could
-potentially lead to missed kprobes.
-
-Fix SET_FULL_REGS on 32-bit and 64e, which prevented ptrace of non-volatile GPRs
-immediately after exec.
-
-Clean up a missed SRR specifier in the recent interrupt rework.
-
-Don't treat unrecoverable_exception() as an interrupt handler, it's called from
-other handlers so shouldn't do the interrupt entry/exit accounting itself.
-
-Fix build errors caused by missing declaration of [en/dis]able_kernel_vsx().
-
-Thanks to Christophe Leroy, Daniel Axtens, Geert Uytterhoeven, Jiri Olsa, Naveen
-N. Rao, Nicholas Piggin.
-
-- ------------------------------------------------------------------
-Christophe Leroy (2):
-      powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
-      powerpc/traps: unrecoverable_exception() is not an interrupt handler
-
-Daniel Axtens (1):
-      powerpc/64s/exception: Clean up a missed SRR specifier
-
-Michael Ellerman (1):
-      powerpc/64s: Use symbolic macros for function entry encoding
-
-Naveen N. Rao (1):
-      powerpc/64s: Fix instruction encoding for lis in ppc_function_entry()
-
-Nicholas Piggin (1):
-      powerpc: Fix inverted SET_FULL_REGS bitop
-
-
- arch/powerpc/include/asm/code-patching.h |  7 ++++---
- arch/powerpc/include/asm/interrupt.h     |  3 ++-
- arch/powerpc/include/asm/ptrace.h        |  4 ++--
- arch/powerpc/include/asm/switch_to.h     | 10 ++++++++++
- arch/powerpc/kernel/exceptions-64s.S     |  2 +-
- arch/powerpc/kernel/interrupt.c          |  1 -
- arch/powerpc/kernel/traps.c              |  2 +-
- 7 files changed, 20 insertions(+), 9 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmBN4hAACgkQUevqPMjh
-pYADeQ//SfFd0biPa2ZroIqshVWDwY+CW+lHt0NIMiAcyaAS6VXOhgV27kFM4K72
-bPgwQ4x4pa3ZoUiHD2Otp0EHYyFWPleY+8Jz9Sl6QBmySQ1ZllFppg92DiTP8RdF
-ZItidFbP6+i8gvnoLkVyGCVzZky4x6Om34+r2emNr2Ju6SEw1ok/LFQUjxEmOGpV
-+hCLXENPH76KP3dvLVklOtLJStFY7XFzuS0/c9yM33WgFVdYArGx/Wy6365Mg+wy
-bg74oZmfU3IRpSNkErwkWSHTVLPQOq1wQUbFKXhMGvAp82C793ExSoGy/0EELlGW
-fjgQMyNlGc0IhJAf6JeN18wgOwx5uBfbzEX5GTMu3A+WacQqod0kPeWx7FOZan6U
-5ikNwyeg//dHUokbscfqvHhEL4Wp4REVO8d1smLQk7ycLpw4/6saYd9GC1HXE2r4
-xJrPCYAtBn2lZl5ra6InO+zyac40fVP1oac7gJWaDkYmOmSQ1gghCjQpGfQGRO8H
-fEnnfR5aqtgeYRnE53rb7BRTjgxsMXo4kLI2T2W10i3ezm/KmUhD9M3D0Ov/5nTv
-DoqTZWhs6yEx2cgvIc4IBgUZb+R7QIbPa/zcq4DIBNsTUJRwbvDfK+8e/abnTGkR
-/RfOqMA8z28h8UFR6tPojPgxG/0dp9WqGB7ryCWpdNCSiYrheIk=
-=WdJ7
------END PGP SIGNATURE-----
