@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C7A33A268
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654F333A26B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 03:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhCNCb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 21:31:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        id S234150AbhCNClL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 21:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233906AbhCNCbG (ORCPT
+        with ESMTP id S231597AbhCNClK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 21:31:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BF8C061574;
-        Sat, 13 Mar 2021 18:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EnE50NkSknnpue15HbJ3Qi37ZMK01SdHagRrgb71jbQ=; b=RDqSNWQOJC9ALFwiP8EzZw1Fny
-        m3YZL6xxDoiMlJGN5E2sZyaQRBn9fJsIzYKR6tN+gXo0nqmELhdF/L5OD9UamPloc4J4vel9S6xRM
-        EXq4ETP03jM5h+ICgwNm1EqvBr0wnKgbU5NxJlR0W+00ruNU0Lc+rrFS+S8spYKJCPo/8g4WUEKUf
-        TejesuB3jUJtfc7Ani/rLlkAceaaeCXGF3JV2f7VlZiUFELUl+rbqBgZRBUW4F4fTxUkEkLVmM8sV
-        KqYSmVLCtJRKJpNbL8rLRdm3ayBw8Ud4bWnsPVo2DDuQcB2v7r/brxNG5giPsbFXQo0D6W7jBJ3ut
-        XTP3Cmeg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLGWf-00FPfH-UA; Sun, 14 Mar 2021 02:30:45 +0000
-Date:   Sun, 14 Mar 2021 02:30:41 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 00/25] Page folios
-Message-ID: <20210314023041.GM2577561@casper.infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
+        Sat, 13 Mar 2021 21:41:10 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE7BC061574;
+        Sat, 13 Mar 2021 18:41:09 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4099455C;
+        Sun, 14 Mar 2021 03:41:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615689668;
+        bh=WwUFKLT2ILP5xEgeIIFfNCe2ECsETBynuMHcIOfQuDM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oY86x0apFBG+KREZaYavKIMz7BjKbaMm2G2EhL3oQnkiVdIaVNLt2CKqhhMHxngra
+         3tQFcMJ14YaIzXyFUcmnfd3pN8ksx1RgMId+HNq2KELF2ZgblYhPN1Pk7HR+538Psw
+         Tvxhr/hL6ho9s8Q0m+8JFbrInZUJgFTFHoOJd+kY=
+Date:   Sun, 14 Mar 2021 04:40:32 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peter.chen@kernel.org, kurahul@cadence.com
+Subject: Re: [PATCH v2] usb: gadget: uvc: add bInterval checking for HS mode
+Message-ID: <YE13oOd2aWHSCYR8@pendragon.ideasonboard.com>
+References: <20210308125338.4824-1-pawell@gli-login.cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308125338.4824-1-pawell@gli-login.cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 12:36:58PM -0800, Andrew Morton wrote:
-> On Fri,  5 Mar 2021 04:18:36 +0000 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+Hi Pawel,
+
+Thank you for the patch.
+
+On Mon, Mar 08, 2021 at 01:53:38PM +0100, Pawel Laszczak wrote:
+> From: Pawel Laszczak <pawell@cadence.com>
 > 
-> > Our type system does not currently distinguish between tail pages and
-> > head or single pages.  This is a problem because we call compound_head()
-> > multiple times (and the compiler cannot optimise it out), bloating the
-> > kernel.  It also makes programming hard as it is often unclear whether
-> > a function operates on an individual page, or an entire compound page.
-> > 
-> > This patch series introduces the struct folio, which is a type that
-> > represents an entire compound page.  This initial set reduces the kernel
-> > size by approximately 6kB, although its real purpose is adding
-> > infrastructure to enable further use of the folio.
+> Patch adds extra checking for bInterval passed by configfs.
+> The 5.6.4 chapter of USB Specification (rev. 2.0) say:
+> "A high-bandwidth endpoint must specify a period of 1x125 µs
+> (i.e., a bInterval value of 1)."
 > 
-> Geeze it's a lot of noise.  More things to remember and we'll forever
-> have a mismash of `page' and `folio' and code everywhere converting
-> from one to the other.  Ongoing addition of folio
-> accessors/manipulators to overlay the existing page
-> accessors/manipulators, etc.
+> The issue was observed during testing UVC class on CV.
+> I treat this change as improvement because we can control
+> bInterval by configfs.
 > 
-> It's unclear to me that it's all really worth it.  What feedback have
-> you seen from others?
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 
-Mmm.  The thing is, the alternative is ongoing bugs.  And inefficiencies.
-Today, we have code everywhere converting from tail pages to head pages
--- we just don't notice it because it's all wrapped up in macros.  I
-have over 10kB in text size reductions in my tree (yes, it's a monster
-series of patches), almost all from removing those conversions.  And
-it's far from done.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-And these conversions are all in hot paths, like handling page faults
-and read().  For example:
+Felipe, could you take this patch in your tree ?
 
-filemap_fault                               1980    1289    -691
+> ---
+> Changlog:
+> v2:
+> - removed duplicated assignment
+> 
+>  drivers/usb/gadget/function/f_uvc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+> index 44b4352a2676..ed77a126a74f 100644
+> --- a/drivers/usb/gadget/function/f_uvc.c
+> +++ b/drivers/usb/gadget/function/f_uvc.c
+> @@ -633,7 +633,12 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
+>  
+>  	uvc_hs_streaming_ep.wMaxPacketSize =
+>  		cpu_to_le16(max_packet_size | ((max_packet_mult - 1) << 11));
+> -	uvc_hs_streaming_ep.bInterval = opts->streaming_interval;
+> +
+> +	/* A high-bandwidth endpoint must specify a bInterval value of 1 */
+> +	if (max_packet_mult > 1)
+> +		uvc_hs_streaming_ep.bInterval = 1;
+> +	else
+> +		uvc_hs_streaming_ep.bInterval = opts->streaming_interval;
+>  
+>  	uvc_ss_streaming_ep.wMaxPacketSize = cpu_to_le16(max_packet_size);
+>  	uvc_ss_streaming_ep.bInterval = opts->streaming_interval;
 
-it's two-thirds the size it was!  Surely that's not all in the hot path,
-but still it's going to have some kind of effect.
+-- 
+Regards,
 
-As well, we have code today that _looks_ right but is buggy.  Take a
-look at vfs_dedupe_file_range_compare().  There's nothing wrong with
-it at first glance, until you realise that vfs_dedupe_get_page() might
-return a tail page, and you can't look at page->mapping for a tail page.
-Nor page->index, so vfs_lock_two_pages() is also broken.
-
-As far as feedback, I really want more.  Particularly from filesystem
-people.  I don't think a lot of them realise yet that I'm going to change
-15 of the 22 address_space_ops to work with folios instead of pages.
-Individual filesystems can keep working with pages, of course, until
-they enable the "use multipage folios" bit.
+Laurent Pinchart
