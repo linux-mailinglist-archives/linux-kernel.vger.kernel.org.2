@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0AC33A8D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 00:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E4D33A8D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 00:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhCNXeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 19:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56596 "EHLO mail.kernel.org"
+        id S229705AbhCNXeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 19:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhCNXdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 19:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0190364E86;
-        Sun, 14 Mar 2021 23:33:34 +0000 (UTC)
+        id S229636AbhCNXdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 19:33:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18CA464E87;
+        Sun, 14 Mar 2021 23:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615764816;
-        bh=Sb/aUOEVrGZsj+WwC31AWifEfTb5okFWSJJBDazvLWM=;
+        s=k20201202; t=1615764818;
+        bh=p+OvM6cie0qKQc+LIUuhfUzqA36ufYyQPLO73t0gzik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p8X8+nqsqw3JfWwp699qB+lHkbMabIqGvdJeOa5nuVwh/jwA7jE6Ch/7ySN6gEjY5
-         3gLG+M74VYgoeN4uUOuVaydTi5hbhy4rkIUzLoHO3N3nxqGMMLRKcUwP1PKEVsvfPI
-         ZU+hvNi9npXXQ+eqxenxZsCNpZuNiJBVNq3kBl5SpV2G9ecEnZfpxovZ3815tu9UF5
-         gis0mNTn47sgx6DK+wdKF1crbA99YXRd1/TO5zGFxMOGa4zOc6vpWejIu/XKMPc2+N
-         8b/kIU4I11skDc6E6mALf1yuCghY7jnfrb7fQMbj4j+kK9AX9EtesoHbfUwNpZuvTd
-         2ROg1Zm/OW74w==
+        b=fPgXTYCzqM4a6K7sWlMCn+e2ClGBUFDx9R3DVzYsJI3kkx4WQ9CTdOL4MIaqcL2UE
+         VPbuUj0r37ECiNlAZkveEHUxbjynmYxcxhqXPLzVf0Ngd3fqaHaKu0CJw8E0vjoBgu
+         jOPy1ws/Pi7f73G0Tky3T0ZMbdaXag7EzdRcMofnp8BAoEWpo/TIcf/y/fYEP2M5tX
+         Kij42ZYVDCUULnTRZwp1feySZjLShJoCLBnmLr3v8gikKSfUJJwlaWuRdE9GqRSqmA
+         5i4+ki+II70EcGxlWhKTsNour1xm8dZaivwEeIH9gjxNT9kb0X2BqqJPqbCXu2nwN0
+         h2wWIoKfri+Sg==
 From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
 To:     Jassi Brar <jassisinghbrar@gmail.com>,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -32,9 +32,9 @@ Cc:     Houlong Wei <houlong.wei@mediatek.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH 2/3] mailbox: mtk-cmdq: Use mailbox rx_callback
-Date:   Mon, 15 Mar 2021 07:33:22 +0800
-Message-Id: <20210314233323.23377-3-chunkuang.hu@kernel.org>
+Subject: [PATCH 3/3] mailbox: mtk-cmdq: Add struct cmdq_pkt in struct cmdq_cb_data
+Date:   Mon, 15 Mar 2021 07:33:23 +0800
+Message-Id: <20210314233323.23377-4-chunkuang.hu@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210314233323.23377-1-chunkuang.hu@kernel.org>
 References: <20210314233323.23377-1-chunkuang.hu@kernel.org>
@@ -42,11 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rx_callback is a standard mailbox callback mechanism and could cover the
-function of proprietary cmdq_task_cb, so use the standard one instead of
-the proprietary one. But the client driver has already used cmdq_task_cb,
-so keep cmdq_task_cb until all client driver use rx_callback instead of
-cmdq_task_cb.
+Current client use 'struct cmdq_pkt' as callback data, so
+change 'void *data' to 'struct cmdq_pkt *pkt'. Keep data
+until client use pkt instead of data.
 
 Cc: Jassi Brar <jassisinghbrar@gmail.com>
 Cc: Matthias Brugger <matthias.bgg@gmail.com>
@@ -58,43 +56,42 @@ Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 ---
- drivers/mailbox/mtk-cmdq-mailbox.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/mailbox/mtk-cmdq-mailbox.c       | 2 ++
+ include/linux/mailbox/mtk-cmdq-mailbox.h | 1 +
+ 2 files changed, 3 insertions(+)
 
 diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 3d37c1cd40f1..ef59e2234f22 100644
+index ef59e2234f22..99a9e0787501 100644
 --- a/drivers/mailbox/mtk-cmdq-mailbox.c
 +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -188,7 +188,10 @@ static void cmdq_task_exec_done(struct cmdq_task *task, int sta)
+@@ -188,6 +188,7 @@ static void cmdq_task_exec_done(struct cmdq_task *task, int sta)
  	WARN_ON(cb->cb == (cmdq_async_flush_cb)NULL);
  	data.sta = sta;
  	data.data = cb->data;
--	cb->cb(data);
-+	if (cb->cb)
-+		cb->cb(data);
-+
-+	mbox_chan_received_data(task->thread->chan, &data);
++	data.pkt = task->pkt;
+ 	if (cb->cb)
+ 		cb->cb(data);
  
- 	list_del(&task->list_entry);
- }
-@@ -451,12 +454,13 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
- 
- 	list_for_each_entry_safe(task, tmp, &thread->task_busy_list,
+@@ -456,6 +457,7 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
  				 list_entry) {
-+		data.sta = -ECONNABORTED;
-+		data.data = cb->data;
+ 		data.sta = -ECONNABORTED;
+ 		data.data = cb->data;
++		data.pkt = task->pkt;
  		cb = &task->pkt->async_cb;
--		if (cb->cb) {
--			data.sta = -ECONNABORTED;
--			data.data = cb->data;
-+		if (cb->cb)
+ 		if (cb->cb)
  			cb->cb(data);
--		}
-+
-+		mbox_chan_received_data(task->thread->chan, &data);
- 		list_del(&task->list_entry);
- 		kfree(task);
- 	}
+diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
+index 2f7d9a37d611..44365aab043c 100644
+--- a/include/linux/mailbox/mtk-cmdq-mailbox.h
++++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
+@@ -68,6 +68,7 @@ enum cmdq_code {
+ struct cmdq_cb_data {
+ 	int			sta;
+ 	void			*data;
++	struct cmdq_pkt		*pkt;
+ };
+ 
+ typedef void (*cmdq_async_flush_cb)(struct cmdq_cb_data data);
 -- 
 2.17.1
 
