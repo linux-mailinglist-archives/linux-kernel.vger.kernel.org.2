@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE8733A57F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8C733A57E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhCNPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
+        id S233959AbhCNPlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhCNPk1 (ORCPT
+        with ESMTP id S231329AbhCNPk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Mar 2021 11:40:27 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC72C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 08:40:26 -0700 (PDT)
-Date:   Sun, 14 Mar 2021 15:39:59 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15293C061763
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 08:40:27 -0700 (PDT)
+Date:   Sun, 14 Mar 2021 15:40:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615736424;
+        s=2020; t=1615736425;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fBWtJ3/zh17WXSqRXsAN0QX0t8Vh86b7wicEAgC33UE=;
-        b=2/hPkSxLdPbkuxd+62o3YdKdKXM+DwIz6lJGgVLDZCodRzoWk4S9tASslOIsHXwbtg6M/X
-        ebmYrJCHbZzqiEx96/OmoOF9gk5KRJjTMszmUi9ZJKfD8/Vw9VbWSiZjVx5xwuJXnFeSgO
-        utH9vNW8HKwMhQB26/jAVdwtT5PR8gsMIMdUrTUJSRQzaK+1Qbou8ivSYl8Mb+g8ephYsE
-        F4g2byP79zuiIKV8HSqoCP5knDtqQlX+/ZBc5QWjNfWmGtIHH1QnyHo/mnGMHbxsHaLpwv
-        Lh0zklEkm0vL9N05RBlOYcUXN1OOdtNf/CHSa7K+at/aZCo0BIxgFy5uSkgBgw==
+        bh=gw6rWjgDnhbJeVIOYBamwczulfJC9kPc+PAUZ0cGRzE=;
+        b=nHsdy3JlyZ0Ds/ScbUolpLSXnUp4tdyw8aao7r8lKCFwcPzGlRSQEjZj0b1Teu5mC+51qa
+        BsxucAtUoLuKhiflbJxXJOkcrLDNmKtc3bgUdbSk5ly0LS0gJv2LQGzs4eC20lbL3+aqsI
+        gCp8sGhMGhNPka3kRqwUdSiphvjyE8/5S9Wm5Fyox/4+68bCZSowHlTbPh79qNz+e3X34l
+        X08nz+S5eL5dADW2xJDK3aDnUYVmMVLkvSm/FygXz0sjgNjHc8lBdhgMNQkNT7sijF1tUT
+        stHRBYfJ4VRCMOI93pIPPKGFKkvq5/B1tBfaQ4nCRt6DG8plDw9IAMs+OMDjyA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615736424;
+        s=2020e; t=1615736425;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fBWtJ3/zh17WXSqRXsAN0QX0t8Vh86b7wicEAgC33UE=;
-        b=RgrOKYdUTIXmF+Oiyh69O4fgorPouV5m1saJicqPKL9jhkUzrgffRmuYX6uogz+efkv+iU
-        hR1j7G2r7lK9IyBQ==
+        bh=gw6rWjgDnhbJeVIOYBamwczulfJC9kPc+PAUZ0cGRzE=;
+        b=Ok8kHtaXDtNktcE5Zbl1tXqGibXr4OvMGkOIq2XeySO6SMBZLYS6hay4tcE9lfa681M+Sq
+        qJsIswafk99do+CA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] sched/urgent for v5.12-rc3
+Subject: [GIT pull] timers/urgent for v5.12-rc3
 References: <161573639668.27979.17827928369874291298.tglx@nanos>
-Message-ID: <161573639909.27979.13628967413376263524.tglx@nanos>
+Message-ID: <161573640030.27979.11632442807067871943.tglx@nanos>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,327 +49,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest sched/urgent branch from:
+please pull the latest timers/urgent branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2021-03-14
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2021-03-14
 
-up to:  ce29ddc47b91: sched/membarrier: fix missing local execution of ipi_sync_rq_state()
+up to:  46eb1701c046: hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
 
 
-A set of scheduler updates:
-
-  - Prevent a NULL pointer dereference in the migration_stop_cpu()
-    mechanims
-
-  - Prevent self concurrency of affine_move_task()
-
-  - Small fixes and cleanups related to task migration/affinity setting
-
-  - Ensure that sync_runqueues_membarrier_state() is invoked on the current
-    CPU when it is in the cpu mask
-
+A single fix in for hrtimers to prevent an interrupt storm caused by the
+lack of reevaluation of the timers which expire in softirq context under
+certain circumstances, e.g. when the clock was set.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Mathieu Desnoyers (1):
-      sched/membarrier: fix missing local execution of ipi_sync_rq_state()
-
-Peter Zijlstra (6):
-      sched: Fix migration_cpu_stop() requeueing
-      sched: Simplify migration_cpu_stop()
-      sched: Collate affine_move_task() stoppers
-      sched: Optimize migration_cpu_stop()
-      sched: Fix affine_move_task() self-concurrency
-      sched: Simplify set_affinity_pending refcounts
+Anna-Maria Behnsen (1):
+      hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
 
 
- kernel/sched/core.c       | 126 +++++++++++++++++++++++-----------------------
- kernel/sched/membarrier.c |   4 +-
- 2 files changed, 63 insertions(+), 67 deletions(-)
+ kernel/time/hrtimer.c | 60 +++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca2bb629595f..98191218d891 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1862,8 +1862,13 @@ struct migration_arg {
- 	struct set_affinity_pending	*pending;
- };
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 743c852e10f2..788b9d137de4 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -546,8 +546,11 @@ static ktime_t __hrtimer_next_event_base(struct hrtimer_cpu_base *cpu_base,
+ }
  
-+/*
-+ * @refs: number of wait_for_completion()
-+ * @stop_pending: is @stop_work in use
-+ */
- struct set_affinity_pending {
- 	refcount_t		refs;
-+	unsigned int		stop_pending;
- 	struct completion	done;
- 	struct cpu_stop_work	stop_work;
- 	struct migration_arg	arg;
-@@ -1898,8 +1903,8 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
-  */
- static int migration_cpu_stop(void *data)
- {
--	struct set_affinity_pending *pending;
- 	struct migration_arg *arg = data;
-+	struct set_affinity_pending *pending = arg->pending;
- 	struct task_struct *p = arg->task;
- 	int dest_cpu = arg->dest_cpu;
- 	struct rq *rq = this_rq();
-@@ -1921,7 +1926,6 @@ static int migration_cpu_stop(void *data)
- 	raw_spin_lock(&p->pi_lock);
- 	rq_lock(rq, &rf);
+ /*
+- * Recomputes cpu_base::*next_timer and returns the earliest expires_next but
+- * does not set cpu_base::*expires_next, that is done by hrtimer_reprogram.
++ * Recomputes cpu_base::*next_timer and returns the earliest expires_next
++ * but does not set cpu_base::*expires_next, that is done by
++ * hrtimer[_force]_reprogram and hrtimer_interrupt only. When updating
++ * cpu_base::*expires_next right away, reprogramming logic would no longer
++ * work.
+  *
+  * When a softirq is pending, we can ignore the HRTIMER_ACTIVE_SOFT bases,
+  * those timers will get run whenever the softirq gets handled, at the end of
+@@ -588,6 +591,37 @@ __hrtimer_get_next_event(struct hrtimer_cpu_base *cpu_base, unsigned int active_
+ 	return expires_next;
+ }
  
--	pending = p->migration_pending;
- 	/*
- 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
- 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
-@@ -1932,21 +1936,14 @@ static int migration_cpu_stop(void *data)
- 			goto out;
- 
- 		if (pending) {
--			p->migration_pending = NULL;
-+			if (p->migration_pending == pending)
-+				p->migration_pending = NULL;
- 			complete = true;
- 		}
- 
--		/* migrate_enable() --  we must not race against SCA */
- 		if (dest_cpu < 0) {
--			/*
--			 * When this was migrate_enable() but we no longer
--			 * have a @pending, a concurrent SCA 'fixed' things
--			 * and we should be valid again. Nothing to do.
--			 */
--			if (!pending) {
--				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
-+			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
- 				goto out;
--			}
- 
- 			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
- 		}
-@@ -1956,7 +1953,14 @@ static int migration_cpu_stop(void *data)
- 		else
- 			p->wake_cpu = dest_cpu;
- 
--	} else if (dest_cpu < 0 || pending) {
-+		/*
-+		 * XXX __migrate_task() can fail, at which point we might end
-+		 * up running on a dodgy CPU, AFAICT this can only happen
-+		 * during CPU hotplug, at which point we'll get pushed out
-+		 * anyway, so it's probably not a big deal.
-+		 */
++static ktime_t hrtimer_update_next_event(struct hrtimer_cpu_base *cpu_base)
++{
++	ktime_t expires_next, soft = KTIME_MAX;
 +
-+	} else if (pending) {
- 		/*
- 		 * This happens when we get migrated between migrate_enable()'s
- 		 * preempt_enable() and scheduling the stopper task. At that
-@@ -1971,43 +1975,32 @@ static int migration_cpu_stop(void *data)
- 		 * ->pi_lock, so the allowed mask is stable - if it got
- 		 * somewhere allowed, we're done.
- 		 */
--		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
--			p->migration_pending = NULL;
-+		if (cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-+			if (p->migration_pending == pending)
-+				p->migration_pending = NULL;
- 			complete = true;
- 			goto out;
- 		}
++	/*
++	 * If the soft interrupt has already been activated, ignore the
++	 * soft bases. They will be handled in the already raised soft
++	 * interrupt.
++	 */
++	if (!cpu_base->softirq_activated) {
++		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
++		/*
++		 * Update the soft expiry time. clock_settime() might have
++		 * affected it.
++		 */
++		cpu_base->softirq_expires_next = soft;
++	}
++
++	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
++	/*
++	 * If a softirq timer is expiring first, update cpu_base->next_timer
++	 * and program the hardware with the soft expiry time.
++	 */
++	if (expires_next > soft) {
++		cpu_base->next_timer = cpu_base->softirq_next_timer;
++		expires_next = soft;
++	}
++
++	return expires_next;
++}
++
+ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
+ {
+ 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
+@@ -628,23 +662,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ {
+ 	ktime_t expires_next;
  
+-	/*
+-	 * Find the current next expiration time.
+-	 */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
+-
+-	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
 -		/*
--		 * When this was migrate_enable() but we no longer have an
--		 * @pending, a concurrent SCA 'fixed' things and we should be
--		 * valid again. Nothing to do.
+-		 * When the softirq is activated, hrtimer has to be
+-		 * programmed with the first hard hrtimer because soft
+-		 * timer interrupt could occur too late.
 -		 */
--		if (!pending) {
--			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
--			goto out;
--		}
--
- 		/*
- 		 * When migrate_enable() hits a rq mis-match we can't reliably
- 		 * determine is_migration_disabled() and so have to chase after
- 		 * it.
- 		 */
-+		WARN_ON_ONCE(!pending->stop_pending);
- 		task_rq_unlock(rq, p, &rf);
- 		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
- 				    &pending->arg, &pending->stop_work);
- 		return 0;
- 	}
- out:
-+	if (pending)
-+		pending->stop_pending = false;
- 	task_rq_unlock(rq, p, &rf);
- 
- 	if (complete)
- 		complete_all(&pending->done);
- 
--	/* For pending->{arg,stop_work} */
--	pending = arg->pending;
--	if (pending && refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
--
- 	return 0;
- }
- 
-@@ -2194,11 +2187,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			    int dest_cpu, unsigned int flags)
- {
- 	struct set_affinity_pending my_pending = { }, *pending = NULL;
--	struct migration_arg arg = {
--		.task = p,
--		.dest_cpu = dest_cpu,
--	};
--	bool complete = false;
-+	bool stop_pending, complete = false;
- 
- 	/* Can the task run on the task's current CPU? If so, we're done */
- 	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
-@@ -2210,12 +2199,16 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			push_task = get_task_struct(p);
- 		}
- 
-+		/*
-+		 * If there are pending waiters, but no pending stop_work,
-+		 * then complete now.
-+		 */
- 		pending = p->migration_pending;
--		if (pending) {
--			refcount_inc(&pending->refs);
-+		if (pending && !pending->stop_pending) {
- 			p->migration_pending = NULL;
- 			complete = true;
- 		}
-+
- 		task_rq_unlock(rq, p, rf);
- 
- 		if (push_task) {
-@@ -2224,7 +2217,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		}
- 
- 		if (complete)
--			goto do_complete;
-+			complete_all(&pending->done);
- 
- 		return 0;
- 	}
-@@ -2235,6 +2228,12 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			/* Install the request */
- 			refcount_set(&my_pending.refs, 1);
- 			init_completion(&my_pending.done);
-+			my_pending.arg = (struct migration_arg) {
-+				.task = p,
-+				.dest_cpu = -1,		/* any */
-+				.pending = &my_pending,
-+			};
-+
- 			p->migration_pending = &my_pending;
- 		} else {
- 			pending = p->migration_pending;
-@@ -2259,45 +2258,41 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		return -EINVAL;
- 	}
- 
--	if (flags & SCA_MIGRATE_ENABLE) {
--
--		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
--		p->migration_flags &= ~MDF_PUSH;
--		task_rq_unlock(rq, p, rf);
--
--		pending->arg = (struct migration_arg) {
--			.task = p,
--			.dest_cpu = -1,
--			.pending = pending,
--		};
--
--		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
--				    &pending->arg, &pending->stop_work);
--
--		return 0;
+-		if (cpu_base->softirq_activated)
+-			expires_next = __hrtimer_get_next_event(cpu_base,
+-								HRTIMER_ACTIVE_HARD);
+-		else
+-			cpu_base->softirq_expires_next = expires_next;
 -	}
--
- 	if (task_running(rq, p) || p->state == TASK_WAKING) {
- 		/*
--		 * Lessen races (and headaches) by delegating
--		 * is_migration_disabled(p) checks to the stopper, which will
--		 * run on the same CPU as said p.
-+		 * MIGRATE_ENABLE gets here because 'p == current', but for
-+		 * anything else we cannot do is_migration_disabled(), punt
-+		 * and have the stopper function handle it all race-free.
- 		 */
-+		stop_pending = pending->stop_pending;
-+		if (!stop_pending)
-+			pending->stop_pending = true;
-+
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			p->migration_flags &= ~MDF_PUSH;
-+
- 		task_rq_unlock(rq, p, rf);
--		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
++	expires_next = hrtimer_update_next_event(cpu_base);
  
-+		if (!stop_pending) {
-+			stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-+					    &pending->arg, &pending->stop_work);
-+		}
-+
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			return 0;
- 	} else {
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+@@ -1644,8 +1662,8 @@ void hrtimer_interrupt(struct clock_event_device *dev)
  
- 		if (!is_migration_disabled(p)) {
- 			if (task_on_rq_queued(p))
- 				rq = move_queued_task(rq, rf, p, dest_cpu);
+ 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
  
--			p->migration_pending = NULL;
--			complete = true;
-+			if (!pending->stop_pending) {
-+				p->migration_pending = NULL;
-+				complete = true;
-+			}
- 		}
- 		task_rq_unlock(rq, p, rf);
- 
--do_complete:
- 		if (complete)
- 			complete_all(&pending->done);
- 	}
-@@ -2305,7 +2300,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 	wait_for_completion(&pending->done);
- 
- 	if (refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
-+		wake_up_var(&pending->refs); /* No UaF, just an address */
- 
+-	/* Reevaluate the clock bases for the next expiry */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
++	/* Reevaluate the clock bases for the [soft] next expiry */
++	expires_next = hrtimer_update_next_event(cpu_base);
  	/*
- 	 * Block the original owner of &pending until all subsequent callers
-@@ -2313,6 +2308,9 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 	 */
- 	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
- 
-+	/* ARGH */
-+	WARN_ON_ONCE(my_pending.stop_pending);
-+
- 	return 0;
- }
- 
-diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index acdae625c636..b5add64d9698 100644
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -471,9 +471,7 @@ static int sync_runqueues_membarrier_state(struct mm_struct *mm)
- 	}
- 	rcu_read_unlock();
- 
--	preempt_disable();
--	smp_call_function_many(tmpmask, ipi_sync_rq_state, mm, 1);
--	preempt_enable();
-+	on_each_cpu_mask(tmpmask, ipi_sync_rq_state, mm, true);
- 
- 	free_cpumask_var(tmpmask);
- 	cpus_read_unlock();
+ 	 * Store the new expiry value so the migration code can verify
+ 	 * against it.
 
