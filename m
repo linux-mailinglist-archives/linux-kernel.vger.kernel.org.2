@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A180C33A4A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 13:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A714C33A4A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 13:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhCNMHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 08:07:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36818 "EHLO mx2.suse.de"
+        id S235307AbhCNMKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 08:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235248AbhCNMHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 08:07:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D853CABD7;
-        Sun, 14 Mar 2021 12:07:28 +0000 (UTC)
-Date:   Sun, 14 Mar 2021 13:07:26 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v5.12-rc3
-Message-ID: <20210314120726.GA27191@zn.tnic>
+        id S235029AbhCNMJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 08:09:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB4E064EBE;
+        Sun, 14 Mar 2021 12:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615723770;
+        bh=IgS6KBqy76gAu5ZRvkKGi/mcLf4n7juzSR1j6hNwxBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z4wFUT5auwReUPkrHk4bKLfEFE433mTTUyav4QDiS9bVPnMA/KDvYWvJypVmmBGjF
+         pUmwPDw3hcUpcC3hKInb29TKQojNIuQZMRGRmoq+9Sg2iUtqUvzDnYqe97ZNubqL1C
+         WKY9jptRqv5ZqRPFvewW/hj8G1vV8lpOTc1B0Gs+8KD8MDb+4hfXEVh7m+IcSm04Rq
+         tOY0zIbOYvfGjn2iCP1WgUG2oftKcLOgjd9EBhFRXHglouFL82Iw1LqlF8HSLt45rh
+         hC54LTEixqJEX2eCeLEz2j8xxXEawznmDiatS1fu01kNt9r32imSSX+qm3L1lA7JJ6
+         j5PelUpfkRFPQ==
+Date:   Sun, 14 Mar 2021 14:09:26 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     ameynarkhede03@gmail.com
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        raphael.norwitz@nutanix.com
+Subject: Re: [PATCH 0/4] Expose and manage PCI device reset
+Message-ID: <YE389lAqjJSeTolM@unreal>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210312173452.3855-1-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Mar 12, 2021 at 11:04:48PM +0530, ameynarkhede03@gmail.com wrote:
+> From: Amey Narkhede <ameynarkhede03@gmail.com>
+>
+> PCI and PCIe devices may support a number of possible reset mechanisms
+> for example Function Level Reset (FLR) provided via Advanced Feature or
+> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+> Currently the PCI subsystem creates a policy prioritizing these reset methods
+> which provides neither visibility nor control to userspace.
+>
+> Expose the reset methods available per device to userspace, via sysfs
+> and allow an administrative user or device owner to have ability to
+> manage per device reset method priorities or exclusions.
+> This feature aims to allow greater control of a device for use cases
+> as device assignment, where specific device or platform issues may
+> interact poorly with a given reset method, and for which device specific
+> quirks have not been developed.
 
-please pull the accumulated x86/urgent pile for v5.12-rc3.
+Sorry, are we talking about specific devices/flows/applications that
+must have this functionality or about theoretical use case?
 
-Thx.
-
----
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.12_rc3
-
-for you to fetch changes up to bffe30dd9f1f3b2608a87ac909a224d6be472485:
-
-  x86/sev-es: Use __copy_from_user_inatomic() (2021-03-09 12:37:54 +0100)
-
-----------------------------------------------------------------
-- A couple of SEV-ES fixes and robustifications: verify usermode stack
-pointer in NMI is not coming from the syscall gap, correctly track IRQ
-states in the #VC handler and access user insn bytes atomically in same
-handler as latter cannot sleep.
-
-- Balance 32-bit fast syscall exit path to do the proper work on exit
-and thus not confuse audit and ptrace frameworks.
-
-- Two fixes for the ORC unwinder going "off the rails" into KASAN
-redzones and when ORC data is missing.
-
-----------------------------------------------------------------
-Andy Lutomirski (1):
-      x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
-
-Joerg Roedel (4):
-      x86/sev-es: Introduce ip_within_syscall_gap() helper
-      x86/sev-es: Check regs->sp is trusted before adjusting #VC IST stack
-      x86/sev-es: Correctly track IRQ states in runtime #VC handler
-      x86/sev-es: Use __copy_from_user_inatomic()
-
-Josh Poimboeuf (2):
-      x86/unwind/orc: Disable KASAN checking in the ORC unwinder, part 2
-      x86/unwind/orc: Silence warnings caused by missing ORC data
-
- arch/x86/entry/common.c          |  3 +-
- arch/x86/entry/entry_64_compat.S |  2 ++
- arch/x86/include/asm/insn-eval.h |  2 ++
- arch/x86/include/asm/proto.h     |  1 +
- arch/x86/include/asm/ptrace.h    | 15 +++++++++
- arch/x86/kernel/sev-es.c         | 22 +++++++++++---
- arch/x86/kernel/traps.c          |  3 +-
- arch/x86/kernel/unwind_orc.c     | 14 ++++-----
- arch/x86/lib/insn-eval.c         | 66 +++++++++++++++++++++++++++++++---------
- 9 files changed, 99 insertions(+), 29 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Thanks
