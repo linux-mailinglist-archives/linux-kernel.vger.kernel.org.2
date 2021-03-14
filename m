@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230DB33A72A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 18:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B02633A73B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 18:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhCNRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 13:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S233897AbhCNR5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 13:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbhCNRjH (ORCPT
+        with ESMTP id S231205AbhCNR5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 13:39:07 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04F6C061574;
-        Sun, 14 Mar 2021 10:39:06 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id e18so4540120wrt.6;
-        Sun, 14 Mar 2021 10:39:06 -0700 (PDT)
+        Sun, 14 Mar 2021 13:57:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E5AC061574;
+        Sun, 14 Mar 2021 10:57:37 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id z5so14192829plg.3;
+        Sun, 14 Mar 2021 10:57:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=hNWBwhuI0AHRidi+s+MGosFzATRCjrsmhXasCqbT4Qs=;
-        b=iVXLmI/61VGGXXeP4l0wjwakPsQAXIZnV48xiGf+O2mXJsGnlzi/V40Yi0KsMkiHzf
-         XFbOW+NmlFo+3RwefqGTOXojiqBp8jCQDEn6ubJ7beJfxrv8s0Ue/PEACfZOoX2cVn9R
-         3vS3/wcrNeR13F/Eq2BwW7D0RaGCt1fazTAEjCY55ygfmWETNdopYxDQt9gDORsmmpdQ
-         pzeeR5RF0Xj4LP658ogLnxjTovVT2phOOF6tgM1ReHv7Eo++SQsOV6pTWREI2T1WVE7j
-         E+Jr2a3tXWunMQyTrTH6jyrWdeFCccCeD6wiV8aUBwMR11wNtdnoLBGISx+u1h2dt7tn
-         rwEw==
+        bh=tRe63mOXEOy6zxRX1QNNRKDXtHVES7uBXxIwluuNQG8=;
+        b=SS0baeye3CdXT4p0PYnRzOQAfhfM0O3kOh/QNfVnl/F0zHq/HEpVxK2Wk5erpMt7Cg
+         WcjF67M4exWEDkPEFPhUthpF2ZBZdi4HU/GfrZ1BYKrm5lvcFDRwY8g5NqO5Xe0nFSCf
+         1GTuG6w+dNbZNtgrRtLHFi1sJe7iFjKvGCIbR4V9N8/a+lfXNgMYIP/VlJZXlD4A3cGQ
+         nv0I9/OtvIuYwXJb3RducmUmMQvAuFWc7oduearsCnWXUCsIWsaL1YkmqfzfInEhwEYm
+         64UbYRBbDzLhn3JDcTFdCphbTw3Ne/CnMCEanO8CROJJJcjJVcBAkpOg+xzP0drPIrDV
+         lGiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hNWBwhuI0AHRidi+s+MGosFzATRCjrsmhXasCqbT4Qs=;
-        b=a6a2u+qvo7vLijGuUZmjjYYum8X0IGu04HCLKh+/LsUW7fCir32/Z58brymQhvEKkp
-         o1h5R3lPN0y5Uy6O9dCL2ooY0XMMHyauK2JHNwcjt/VfcIv1lfSqqxISOCy4nI1kgbBK
-         Fy1USV/plQj+lzR/cYd/uaHXVICSOmC4ze+gQ+vVuW+h4Ex9n7e2KelENfpviKZfm3Nd
-         z5NXLjyN3qIDu8EC8MZCEvl08HzTFScliXDdBB8E1GS58XLLY2TKTBssBUHT4jLA+C2c
-         ur6TlWabyZO9UF9L17ESWOC9P515VfF0T6d6WjEsSWYReVTSCXD7m8swiVAIxfz6/2gw
-         7wDQ==
-X-Gm-Message-State: AOAM530Rz2Vd3A8bEBSIcktYiVL9y7/jOSwmVQzrbjXBiyBo/htKQWmw
-        A+dSGrvmCYj6eH2ebTpS3jg=
-X-Google-Smtp-Source: ABdhPJxQjMUriIN2tpZfCxlT3J2V/hpCqxd4Ris5EcHo5BpayhIvf0qnrKnU613nLBekw1JXmCQ5LQ==
-X-Received: by 2002:adf:9f54:: with SMTP id f20mr23912737wrg.362.1615743545258;
-        Sun, 14 Mar 2021 10:39:05 -0700 (PDT)
-Received: from localhost.localdomain (228-193-142-46.pool.kielnet.net. [46.142.193.228])
-        by smtp.gmail.com with ESMTPSA id u63sm9935158wmg.24.2021.03.14.10.39.03
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tRe63mOXEOy6zxRX1QNNRKDXtHVES7uBXxIwluuNQG8=;
+        b=aZLsrSd4V+g9B1HbTVWv9Im3azwe9eRG8M8o3m+3HOOiS7WZuSZwXXluHHqZPKqqeH
+         8+Y5qgEWa1IvVyZQTlYF4RdRy1qozTnIHm166cHNq2Wt0/8V4BwMOMLrd5VTTis0QosW
+         t/FUS16TrDlsPwIqAkbmganSbnv7ioUJbKR3HpS/+SnlBn7bHMiUzRwxUOfjf0aNwpwj
+         7w37jW4GG+YNHSIoXCpMMVfy4N60Qq1jFiioIVfAaLMA9pEwU1a7boksfXfKvTllgWIj
+         LtU3F60SkAITNJnxAEAdF5Rr1l6g63J4DrPxwJo59HD+ukT4SdwwKMKcAPpy1RdysE4X
+         Ay4Q==
+X-Gm-Message-State: AOAM530aUK/EDCzUEluIkJiDEGgkn9jHD0eH7GxFhNLK+4qCXFSgjKQd
+        V1zXfdYs7uYihHUM5/TYqmU=
+X-Google-Smtp-Source: ABdhPJwEAKsPBH7kn2azStwrrC4zVXziImkWLBmxhWQX1WGjnEH+r9FKIJnDuTflsqQPJwHRpFohBA==
+X-Received: by 2002:a17:902:7b83:b029:e5:d4f4:fc4a with SMTP id w3-20020a1709027b83b02900e5d4f4fc4amr7810329pll.0.1615744656931;
+        Sun, 14 Mar 2021 10:57:36 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:89b:3eb5:22db:84eb:67de:24b5])
+        by smtp.googlemail.com with ESMTPSA id x7sm8177670pjr.7.2021.03.14.10.57.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 10:39:04 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-Cc:     Pedro Tammela <pctammela@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] libbpf: avoid inline hint definition from 'linux/stddef.h'
-Date:   Sun, 14 Mar 2021 18:38:38 +0100
-Message-Id: <20210314173839.457768-1-pctammela@gmail.com>
+        Sun, 14 Mar 2021 10:57:36 -0700 (PDT)
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+To:     ardeleanalex@gmail.com, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio:dac:max517.c: Use devm_iio_device_register()
+Date:   Sun, 14 Mar 2021 23:27:09 +0530
+Message-Id: <20210314175709.34301-1-dmugil2000@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210314093356.10609-1-dmugil2000@gmail.com>
+References: <20210314093356.10609-1-dmugil2000@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux headers might pull 'linux/stddef.h' which defines
-'__always_inline' as the following:
+Use devm_iio_device_register() to avoid remove function and
+drop explicit call to iio_device_unregister().
 
-   #ifndef __always_inline
-   #define __always_inline __inline__
-   #endif
+Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
 
-This becomes an issue if the program picks up the 'linux/stddef.h'
-definition as the macro now just hints inline to clang.
-
-This change now enforces the proper definition for BPF programs
-regardless of the include order.
-
-Signed-off-by: Pedro Tammela <pctammela@gmail.com>
+changes v1->v2:
+	-As sugested by Alexandru removed i2c_set_clientdata() because the stored
+	 data will be never used.
 ---
- tools/lib/bpf/bpf_helpers.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/iio/dac/max517.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index ae6c975e0b87..5fa483c0b508 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -29,9 +29,12 @@
-  */
- #define SEC(NAME) __attribute__((section(NAME), used))
+diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
+index 7e01838ef4d0..00f0062a0298 100644
+--- a/drivers/iio/dac/max517.c
++++ b/drivers/iio/dac/max517.c
+@@ -153,7 +153,6 @@ static int max517_probe(struct i2c_client *client,
+ 	if (!indio_dev)
+ 		return -ENOMEM;
+ 	data = iio_priv(indio_dev);
+-	i2c_set_clientdata(client, indio_dev);
+ 	data->client = client;
  
--#ifndef __always_inline
-+/*
-+ * Avoid 'linux/stddef.h' definition of '__always_inline'.
-+ */
-+#undef __always_inline
- #define __always_inline inline __attribute__((always_inline))
--#endif
-+
- #ifndef __noinline
- #define __noinline __attribute__((noinline))
- #endif
+ 	/* establish that the iio_dev is a child of the i2c device */
+@@ -189,13 +188,7 @@ static int max517_probe(struct i2c_client *client,
+ 			data->vref_mv[chan] = platform_data->vref_mv[chan];
+ 	}
+ 
+-	return iio_device_register(indio_dev);
+-}
+-
+-static int max517_remove(struct i2c_client *client)
+-{
+-	iio_device_unregister(i2c_get_clientdata(client));
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ static const struct i2c_device_id max517_id[] = {
+@@ -214,7 +207,6 @@ static struct i2c_driver max517_driver = {
+ 		.pm	= &max517_pm_ops,
+ 	},
+ 	.probe		= max517_probe,
+-	.remove		= max517_remove,
+ 	.id_table	= max517_id,
+ };
+ module_i2c_driver(max517_driver);
 -- 
 2.25.1
 
