@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88F233A7C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6177833A7C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhCNUQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 16:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbhCNUPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 16:15:44 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A77C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 13:15:44 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id r20so13806565ljk.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 13:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xma/bdvmmFMw2PLCFGEbKiEv/Ght4XSeyenvew7tC5o=;
-        b=ILomUDLlMdcL3V4idIDb3hHq1VHX4UjziMkU+JOhFQl+GGLYZaFz6MAE8pYdSHSvh7
-         0X4rd9bbhTAPfgQFaJpMIDpXlloxfgwIISem86ylOBnmidljeHk9wUYPual72KuFLdey
-         koiM1TycGECxWQL/Nx9WfD3yRXljDE1s2jkaY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xma/bdvmmFMw2PLCFGEbKiEv/Ght4XSeyenvew7tC5o=;
-        b=Llpr7/uzvzViLTrlKOFmhhzrnRjOrFX8uX678N+nOYDBIdyzlAoQuVGEzkqCLHKFQp
-         p7qOeUP3/jhJCv/2Tx28MOKtrIz7O0Sxs9axJWJ+uHkq6yhijuyga4X0HXoyS3hPxj82
-         /K1EaR9DqUfIO1jYFEVUTBGjjxJFtS08sUWw1+weHRPpb9Kj5kHeRaga7BGZD/2VMAQ2
-         ktgyPTPxNxTXduT8SiKrEixJfrLOEMR0hE+GdW6B8fgFAD48PAXy3mSI7H8ikMczH5Za
-         PxRoVtddhpDwqy+QxY1OobcRLB5HZQbrPW+67UQIouKGxX1mahZ4R66nxINke1t2TS/e
-         bnvw==
-X-Gm-Message-State: AOAM5336tXt3JOPgT+EVYC4HyKuG55GPa8Z6szXQG29tc31EhUNTcSlB
-        BywPcceOYTAeDxtXFX8jRCFogZcOak/mOA==
-X-Google-Smtp-Source: ABdhPJzg9m6laMX8jUIBJYoO9UzEaFvaa7C+sR/BnDur4yn0zj0FM+n/A5pjVQ0sHn2G0tiyZWWbyQ==
-X-Received: by 2002:a2e:8e6e:: with SMTP id t14mr8387059ljk.23.1615752942394;
-        Sun, 14 Mar 2021 13:15:42 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id y23sm2736352ljm.53.2021.03.14.13.15.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Mar 2021 13:15:41 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id t18so5889485lfl.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 13:15:41 -0700 (PDT)
-X-Received: by 2002:ac2:58fc:: with SMTP id v28mr5686514lfo.201.1615752941402;
- Sun, 14 Mar 2021 13:15:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <161573639668.27979.17827928369874291298.tglx@nanos>
-In-Reply-To: <161573639668.27979.17827928369874291298.tglx@nanos>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Mar 2021 13:15:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
-Message-ID: <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
-Subject: Re: [GIT pull] locking/urgent for v5.12-rc3
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233999AbhCNURx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 16:17:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:29413 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230441AbhCNURd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 16:17:33 -0400
+IronPort-SDR: yfopMLkq3yCrhRJiWgJOTz4Rg/o4GPI+iGmODlcp68s/oryxhf08LShQGePxTp2GVcj7fM2h5h
+ N8TnGWkHHzVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="253026618"
+X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
+   d="scan'208";a="253026618"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 13:17:32 -0700
+IronPort-SDR: UKg6vP2QaPF9ZOgY1ASKSPGUfhWXxvU9Btffdz5bnN7cCbQjV75xvA49XW6dH5qy0ARtWSewr3
+ UhHCUiF6YCaQ==
+X-IronPort-AV: E=Sophos;i="5.81,248,1610438400"; 
+   d="scan'208";a="411627303"
+Received: from km-skylake-client-platform.sc.intel.com ([172.25.103.115])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 13:17:31 -0700
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     baolu.lu@linux.intel.com, dwmw2@infradead.org, joro@8bytes.org,
+        will@kernel.org, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, ravi.v.shankar@intel.com, yian.chen@intel.com,
+        sohil.mehta@intel.com, Kyung Min Park <kyung.min.park@intel.com>
+Subject: [PATCH] iommu/vt-d: Disable SVM when ATS/PRI/PASID are not enabled in the device
+Date:   Sun, 14 Mar 2021 13:15:34 -0700
+Message-Id: <20210314201534.918-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 8:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->  - A fix for the static_call mechanism so it handles unaligned
->    addresses correctly.
+Currently, the Intel VT-d supports Shared Virtual Memory (SVM) only when
+IO page fault is supported. Otherwise, shared memory pages can not be
+swapped out and need to be pinned. The device needs the Address Translation
+Service (ATS), Page Request Interface (PRI) and Process Address Space
+Identifier (PASID) capabilities to be enabled to support IO page fault.
 
-I'm not disputing the fix in any way, but why weren't the relocation
-info and function start addresses mutually aligned?
+Disable SVM when ATS, PRI and PASID are not enabled in the device.
 
-Are we perhaps missing some .align directive somewhere?
+Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+---
+ drivers/iommu/intel/iommu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Or am I missing something?
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index ee0932307d64..956a02eb40b4 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -5380,6 +5380,9 @@ intel_iommu_dev_enable_feat(struct device *dev, enum iommu_dev_features feat)
+ 		if (!info)
+ 			return -EINVAL;
+ 
++		if (!info->pasid_enabled || !info->pri_enabled || !info->ats_enabled)
++			return -EINVAL;
++
+ 		if (info->iommu->flags & VTD_FLAG_SVM_CAPABLE)
+ 			return 0;
+ 	}
+-- 
+2.17.1
 
-             Linus
