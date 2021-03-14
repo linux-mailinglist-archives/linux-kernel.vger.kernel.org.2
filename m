@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065D133A509
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 14:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBEE33A50E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 14:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhCNNjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 09:39:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCNNjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 09:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2A3564EB0;
-        Sun, 14 Mar 2021 13:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615729153;
-        bh=sdiXA0KYYraSLxE7VTLkLPUIZscWPeTDAs76unz0GVo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=twhIaG7RGEkbwO6aZxPg9sYO+9SKKT12JzR1ECfY8v9xuApKGnMeBFaGa7L8gD0o6
-         /9gQ0nilkD6eS22mzi1NSq6oFtDHSflfTRAkd27Ugns9pPuAgrbJ3wcpLD52UCLLyb
-         DKh1ZCd635riMTlPluUrU1UGXdVcsel5HslL3zRHYAVEzBqEwvBVsAwqYMed13EyMX
-         zS62I1Ki65mkSOLrUM/PCn5gR4j/cwHl5nJR6xh/X2GDZCOuMx0E3od2p/Ix5v58bO
-         JPQApYmgl0O6rBXf+4ofkkvwTNWMBRPNVBsIeFcXwzoSDFa3JxS0FlLzuaYd3/NY0P
-         kWPuncMtjlnWg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>
-Subject: [PATCH rdma-next 0/2] Spring cleanup
-Date:   Sun, 14 Mar 2021 15:39:06 +0200
-Message-Id: <20210314133908.291945-1-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S233462AbhCNNwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 09:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhCNNwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 09:52:12 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D9CC061574;
+        Sun, 14 Mar 2021 06:52:11 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so12978539pjb.0;
+        Sun, 14 Mar 2021 06:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CCgIEQ81bN3gdLTd6W5YPoUfE3OhXje1SGJt8c8ddN0=;
+        b=aqTSnJoXtxWSyQza6WXHVFLBo9yRlCd7mbDTOtI/p3wmGTFOvS6rozfZNIk+L0PxVY
+         l+zzhVe0bDoO05CvLRZ0fMp6PXO4rl3Q52/nHn+RwznQvon4B9VDU1/KMojXl5wQ6Y1Q
+         5j6MTBwlJpx6P7dekKFW3DAG/UpKoPJZe90oTWt0zLTHXOzmbzr7Gqb8IDe+DMmbiwQw
+         0XYAR9T0iFPQfvEzYcWNGaofy7ww22cSjaf9/VWP11r2LlzeWMlLmzcDMoSgny7UVFOT
+         d45DPR3vGJqcZgrFEaXfUszZQ55LR1oWJTaq3H+Q2DXFs6Tag20/k1Vx2/ZmtMi4qeS3
+         SCow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CCgIEQ81bN3gdLTd6W5YPoUfE3OhXje1SGJt8c8ddN0=;
+        b=J2UOJJ1ZWtEaeP7HXjFQE45ykiRrQrdSp8GoBLt2FvPpB8P5IadsSWB5Kz5mcEzASk
+         P/EQSvus7nx4sqCKor+XBrD4PWA/nxUfKU1H1nlnrja0W6ZJk0/O5FrrQXoWAsxy4r6t
+         VSbLxPcFTk3YKjwdYzJ95f2aXsY4DgHTIV+LNvzTZEf/ICM7tVstmLsTKpKD2RpJxfa1
+         pDEgaT511L8WleaQHPvjUcEkCFpD75THjXPQh4FUtMwTLE6OYKpgTU64z+lKzw0URl5x
+         p9cj4lig26UQPcFEnChuu45007+A38J3B9udJpMTLcP7Ehsx3nIH5h6kJuRJ62R0ktZE
+         Penw==
+X-Gm-Message-State: AOAM533J2Yck5CqyShN+XgxPml4Pv2eNVYmlqN01sqb4dPbsaOSU1j9d
+        w7vPK1NZ7fJbT7pHaAM76PG09NfsxYHimuZ8w/k=
+X-Google-Smtp-Source: ABdhPJzVr7K4rkypGimFWj/sP+7C/wSx1N34KxV58PdrKcvUjvvTfG76hPewKzCfookjOr+bd6XfBN8fn7e11i0p4Z8=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr8340601pjb.129.1615729930974;
+ Sun, 14 Mar 2021 06:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210312065855.37072-1-ran.wang_1@nxp.com>
+In-Reply-To: <20210312065855.37072-1-ran.wang_1@nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 14 Mar 2021 15:51:54 +0200
+Message-ID: <CAHp75VeZyfVEQ6tDnfm2-vZggg=CnG7idwihvykSgJOvjd_=tA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mpc8xxx: Add ACPI support
+To:     Ran Wang <ran.wang_1@nxp.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, Mar 12, 2021 at 8:53 AM Ran Wang <ran.wang_1@nxp.com> wrote:
 
-Bunch of cleanup in RDMA subsystem.
+First of all, please add me to the Cc list for the next version of the patch.
 
-Leon Romanovsky (2):
-  RDMA: Fix kernel-doc compilation warnings
-  RDMA: Delete not-used static inline functions
+> Current implementation only supports DT, now add ACPI support.
+>
+> Note that compared to device of 'fsl,qoriq-gpio', LS1028A and
 
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h        | 11 ------
- drivers/infiniband/hw/cxgb4/t4.h              | 33 -----------------
- drivers/infiniband/hw/hfi1/chip.c             |  4 +--
- drivers/infiniband/hw/hfi1/chip.h             |  5 ---
- drivers/infiniband/hw/hfi1/driver.c           |  2 +-
- drivers/infiniband/hw/hfi1/exp_rcv.c          |  6 ++--
- drivers/infiniband/hw/hfi1/hfi.h              |  6 ----
- drivers/infiniband/hw/hfi1/init.c             |  3 +-
- drivers/infiniband/hw/hfi1/msix.c             | 12 +++----
- drivers/infiniband/hw/hfi1/netdev_rx.c        |  2 +-
- drivers/infiniband/hw/hfi1/sdma.c             |  2 +-
- drivers/infiniband/hw/hfi1/verbs_txreq.h      |  5 ---
- drivers/infiniband/hw/i40iw/i40iw.h           |  9 -----
- drivers/infiniband/hw/i40iw/i40iw_cm.c        |  4 +--
- drivers/infiniband/hw/i40iw/i40iw_hmc.c       |  4 +--
- drivers/infiniband/hw/i40iw/i40iw_main.c      |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_osdep.h     | 22 ------------
- drivers/infiniband/hw/i40iw/i40iw_puda.c      |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_utils.c     |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  4 +--
- drivers/infiniband/hw/i40iw/i40iw_virtchnl.c  |  2 +-
- drivers/infiniband/hw/qib/qib.h               | 26 --------------
- drivers/infiniband/hw/qib/qib_common.h        |  7 ----
- drivers/infiniband/hw/qib/qib_file_ops.c      |  5 +--
- drivers/infiniband/hw/qib/qib_iba6120.c       |  2 +-
- drivers/infiniband/hw/qib/qib_iba7220.c       |  4 +--
- drivers/infiniband/hw/qib/qib_iba7322.c       |  4 +--
- drivers/infiniband/hw/qib/qib_init.c          |  2 +-
- drivers/infiniband/hw/vmw_pvrdma/pvrdma.h     | 10 ------
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |  2 +-
- .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   | 35 -------------------
- drivers/infiniband/sw/siw/iwarp.h             | 13 -------
- drivers/infiniband/sw/siw/siw_mem.h           |  5 ---
- 33 files changed, 36 insertions(+), 221 deletions(-)
+to devices
 
---
-2.30.2
+> LS1088A's GPIO have no extra programming, so simplify related checking.
 
+...
+
+> +#include <linux/acpi.h>
+
+Nope, you rather need property.h and mod_devicetable.h.
+
+...
+
+> +       if (pdev->dev.of_node) {
+> +               devtype = of_device_get_match_data(&pdev->dev);
+> +       } else {
+> +               acpi_id = acpi_match_device(pdev->dev.driver->acpi_match_table,
+> +                                               &pdev->dev);
+> +               if (acpi_id)
+> +                       devtype = (struct mpc8xxx_gpio_devtype *) acpi_id->driver_data;
+> +       }
+
+No, please use device_get_match_data() instead of the entire conditional block.
+
+
+> +       if (pdev->dev.of_node) {
+> +               if (of_device_is_compatible(np, "fsl,qoriq-gpio"))
+> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
+> +       } else {
+> +               if (acpi_match_device(pdev->dev.driver->acpi_match_table,
+> +                                       &pdev->dev))
+> +                       gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
+> +       }
+
+Yeah, no need to call acpi_match_device() here.
+Instead use stuff from OF, like
+
+if (of_device_is_compatible() || !(IS_ERR_OR_NULL(fwnode) ||
+is_of_node(fwnode)))
+(check the logic)
+
+...
+
+> +#ifdef CONFIG_ACPI
+
+No ugly ifdeffery, please.
+
+> +static const struct acpi_device_id gpio_acpi_ids[] = {
+> +       {"NXP0031",},
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, gpio_acpi_ids);
+> +#endif
+> +
+>  static struct platform_driver mpc8xxx_plat_driver = {
+>         .probe          = mpc8xxx_probe,
+>         .remove         = mpc8xxx_remove,
+>         .driver         = {
+>                 .name = "gpio-mpc8xxx",
+>                 .of_match_table = mpc8xxx_gpio_ids,
+
+> +               .acpi_match_table = ACPI_PTR(gpio_acpi_ids),
+
+Drop ACPI_PTR().
+
+>         },
+>  };
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
