@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCC333A38F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A20233A390
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 09:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhCNIaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 04:30:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50114 "EHLO mx2.suse.de"
+        id S234971AbhCNIbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 04:31:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50354 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234756AbhCNIaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 04:30:23 -0400
+        id S234756AbhCNIbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 04:31:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85547AB8C;
-        Sun, 14 Mar 2021 08:30:22 +0000 (UTC)
-Date:   Sun, 14 Mar 2021 09:30:22 +0100
-Message-ID: <s5h7dmarvc1.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 3375CAC2D;
+        Sun, 14 Mar 2021 08:30:59 +0000 (UTC)
+Date:   Sun, 14 Mar 2021 09:30:59 +0100
+Message-ID: <s5h5z1urvb0.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc:     alsa-devel@alsa-project.org, broonie@kernel.org,
@@ -84,26 +84,3 @@ Reviewed-by: Takashi Iwai <tiwai@suse.de>
 thanks,
 
 Takashi
-
-
-> ---
->  sound/soc/codecs/cx2072x.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-> index 8ab22815c2c9..d2d004654c9b 100644
-> --- a/sound/soc/codecs/cx2072x.c
-> +++ b/sound/soc/codecs/cx2072x.c
-> @@ -827,9 +827,6 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
->  	}
->  	regdbt2.r.i2s_bclk_invert = is_bclk_inv;
->  
-> -	reg1.r.rx_data_one_line = 1;
-> -	reg1.r.tx_data_one_line = 1;
-> -
->  	/* Configures the BCLK output */
->  	bclk_rate = cx2072x->sample_rate * frame_len;
->  	reg5.r.i2s_pcm_clk_div_chan_en = 0;
-> -- 
-> 2.25.1
-> 
