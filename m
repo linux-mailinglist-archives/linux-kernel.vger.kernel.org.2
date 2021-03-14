@@ -2,807 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2B533A537
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 15:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA6E33A53A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 15:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhCNOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 10:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S233554AbhCNOth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 10:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhCNOqk (ORCPT
+        with ESMTP id S229837AbhCNOtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 10:46:40 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04958C061574;
-        Sun, 14 Mar 2021 07:46:39 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: shreeya)
-        with ESMTPSA id 5D4CA1F40C05
-Subject: Re: [PATCH 3/3] fs: unicode: Add utf8 module and a unicode layer
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com, gustavo.padovan@collabora.com,
-        andre.almeida@collabora.com
-References: <20210313231214.383576-1-shreeya.patel@collabora.com>
- <20210313231214.383576-4-shreeya.patel@collabora.com>
- <8735wymrm5.fsf@collabora.com>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <e4013ca4-db2f-8b29-a5b2-6d100a6a5059@collabora.com>
-Date:   Sun, 14 Mar 2021 20:16:30 +0530
+        Sun, 14 Mar 2021 10:49:22 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B52C061574;
+        Sun, 14 Mar 2021 07:49:21 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id f16so13183353ljm.1;
+        Sun, 14 Mar 2021 07:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tWgDrwjuSGHNr/Jwi4GNVEPVMpjAbqpRkbs/GJ+MEPw=;
+        b=s3+h8c0kkDIz8lWxVLVL/gCuzG0UgVW75WfNZGRKWgGfRHtDKM25SEziXtgiCYtulD
+         0ZqwZjvV03mx1ind0ki5nvjnpbSBToInPtRzJtbZhCZguznTGxVmuw0LvtRKtXIyNmjv
+         oqku7lIHvgQXOh2GhbcqEhlr3Sr8/sqeY6dGX9bDWM4TfjU2+AgH/5dmBTjictVQlM+s
+         6dLSZyqdCpAkf/6YYM6YDEK5bnrTc/jiDFcntk+lfUafdQwBHYE4CU2dfZTK7vAgrhbt
+         vqhr6bSlBhlWfgz11RbheNjY2caAQ+CFLiQLoGdh/NUHfEcVa//vTpZMO5EqDwTo8lDp
+         k+og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tWgDrwjuSGHNr/Jwi4GNVEPVMpjAbqpRkbs/GJ+MEPw=;
+        b=pZyDMpQlM9ct+J57uCJG7dIagS+T3TEFyFiTZREOsGb7GcRnncqDb+8/Cjv/LMBuYE
+         lsxY1X3JEp4J2kwpXAeG4Ohow5pUzoeby577SEjjzHJUFellvk0FRiadPYIhdMVZCgY/
+         EWPjX4icu1ElRZYzpV84uAFI+SLBy7Kj/JyEJPX0JSV+Da8B8Q7k8nTcPOF3/34m/yoh
+         t4qCmEcCEBPphJvleRooOTDMxk9FJd2FEsFmr3yq6exB2Ev+2WclK39OgWoF79Ra9qNx
+         GKwfoQG6qC61rsWMHtQCY5RF3/EZywxIDcMKgoae1mDyrAVLzcw/7aTzst11cD7B1Z3w
+         zsZQ==
+X-Gm-Message-State: AOAM530JkMAoe6WI3LKHJos1xmJqmnQDX5ARc/0bvGlvQ70A+6tPSOS4
+        4PqmPF9dfh5xseTzqMq7E1ff7WEPmYE=
+X-Google-Smtp-Source: ABdhPJxRv3E0IJazNsp4AGTTrrYy9SXTRGCiTHMhtI8ONJu3xtHaxWulEkofg7WGfhR+lu7J0+brOw==
+X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr8142435ljj.116.1615733359705;
+        Sun, 14 Mar 2021 07:49:19 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id z14sm2643171ljk.33.2021.03.14.07.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Mar 2021 07:49:19 -0700 (PDT)
+Subject: Re: [PATCH v3] iommu/tegra-smmu: Add pagetable mappings to debugfs
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        thierry.reding@gmail.com, will@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210314080653.29374-1-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <3392a4a9-b3f1-9c90-3de2-008241a98270@gmail.com>
+Date:   Sun, 14 Mar 2021 17:49:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <8735wymrm5.fsf@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210314080653.29374-1-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+14.03.2021 11:06, Nicolin Chen пишет:
+> This patch dumps all active mapping entries from pagetable
+> to a debugfs directory named "mappings".
+> 
+> Ataching an example:
+> 
+> SWGROUP: hc
+> ASID: 0
+> reg: 0x250
+> PTB_ASID: 0xe0080004
+> as->pd_dma: 0x80004000
+> {
+>         [1023] 0xf008000b (1)
+>         {
+>                 PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
+>                 [#1023, #1023] | 0x5  | 0x0000000111a8d000 | 0x00000000fffff000 | 0x1000
+>         }
+> }
+> Total PDE count: 1
+> Total PTE count: 1
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+> Changelog
+> v3:
+>  * Fixed PHYS and IOVA print formats
+>  * Changed variables to unsigned int type
+>  * Changed the table outputs to be compact
+> v2: https://lkml.org/lkml/2021/3/9/1382
+>  * Expanded mutex range to the entire function
+>  * Added as->lock to protect pagetable walkthrough
+>  * Replaced devm_kzalloc with devm_kcalloc for group_debug
+>  * Added "PTE RANGE" and "SIZE" columns to group contiguous mappings
+>  * Dropped as->count check; added WARN_ON when as->count mismatches pd[pd_index]
+> v1: https://lkml.org/lkml/2020/9/26/70
+> 
+>  drivers/iommu/tegra-smmu.c | 175 +++++++++++++++++++++++++++++++++++--
+>  1 file changed, 170 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 97eb62f667d2..269737d51ad4 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -19,6 +19,11 @@
+>  #include <soc/tegra/ahb.h>
+>  #include <soc/tegra/mc.h>
+>  
+> +struct tegra_smmu_group_debug {
+> +	const struct tegra_smmu_swgroup *group;
+> +	void *priv;
+> +};
+> +
+>  struct tegra_smmu_group {
+>  	struct list_head list;
+>  	struct tegra_smmu *smmu;
+> @@ -47,6 +52,8 @@ struct tegra_smmu {
+>  	struct dentry *debugfs;
+>  
+>  	struct iommu_device iommu;	/* IOMMU Core code handle */
+> +
+> +	struct tegra_smmu_group_debug *group_debug;
+>  };
+>  
+>  struct tegra_smmu_as {
+> @@ -152,6 +159,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
+>  
+>  #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
+>  				 SMMU_PDE_NONSECURE)
+> +#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
+> +				 SMMU_PTE_NONSECURE)
+> +#define SMMU_PTE_ATTR_SHIFT	(29)
+>  
+>  static unsigned int iova_pd_index(unsigned long iova)
+>  {
+> @@ -163,6 +173,12 @@ static unsigned int iova_pt_index(unsigned long iova)
+>  	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
+>  }
+>  
+> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
+> +{
+> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
+> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
+> +}
+> +
+>  static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
+>  {
+>  	addr >>= 12;
+> @@ -334,7 +350,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
+>  }
+>  
+>  static const struct tegra_smmu_swgroup *
+> -tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+> +tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
+>  {
+>  	const struct tegra_smmu_swgroup *group = NULL;
+>  	unsigned int i;
+> @@ -342,6 +358,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+>  	for (i = 0; i < smmu->soc->num_swgroups; i++) {
+>  		if (smmu->soc->swgroups[i].swgroup == swgroup) {
+>  			group = &smmu->soc->swgroups[i];
+> +			if (index)
+> +				*index = i;
+>  			break;
+>  		}
+>  	}
+> @@ -350,19 +368,22 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+>  }
+>  
+>  static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
+> -			      unsigned int asid)
+> +			      struct tegra_smmu_as *as)
+>  {
+>  	const struct tegra_smmu_swgroup *group;
+> +	unsigned int asid = as->id;
+>  	unsigned int i;
+>  	u32 value;
+>  
+> -	group = tegra_smmu_find_swgroup(smmu, swgroup);
+> +	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
+>  	if (group) {
+>  		value = smmu_readl(smmu, group->reg);
+>  		value &= ~SMMU_ASID_MASK;
+>  		value |= SMMU_ASID_VALUE(asid);
+>  		value |= SMMU_ASID_ENABLE;
+>  		smmu_writel(smmu, value, group->reg);
+> +		if (smmu->group_debug)
+> +			smmu->group_debug[i].priv = as;
+>  	} else {
+>  		pr_warn("%s group from swgroup %u not found\n", __func__,
+>  				swgroup);
+> @@ -389,13 +410,15 @@ static void tegra_smmu_disable(struct tegra_smmu *smmu, unsigned int swgroup,
+>  	unsigned int i;
+>  	u32 value;
+>  
+> -	group = tegra_smmu_find_swgroup(smmu, swgroup);
+> +	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
+>  	if (group) {
+>  		value = smmu_readl(smmu, group->reg);
+>  		value &= ~SMMU_ASID_MASK;
+>  		value |= SMMU_ASID_VALUE(asid);
+>  		value &= ~SMMU_ASID_ENABLE;
+>  		smmu_writel(smmu, value, group->reg);
+> +		if (smmu->group_debug)
+> +			smmu->group_debug[i].priv = NULL;
+>  	}
+>  
+>  	for (i = 0; i < smmu->soc->num_clients; i++) {
+> @@ -499,7 +522,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>  		if (err)
+>  			goto disable;
+>  
+> -		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
+> +		tegra_smmu_enable(smmu, fwspec->ids[index], as);
+>  	}
+>  
+>  	if (index == 0)
+> @@ -1058,8 +1081,135 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
+>  
+>  DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+>  
+> +static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+> +{
+> +	struct tegra_smmu_group_debug *group_debug = s->private;
+> +	const struct tegra_smmu_swgroup *group;
+> +	struct tegra_smmu_as *as;
+> +	struct tegra_smmu *smmu;
+> +	unsigned int pd_index;
+> +	unsigned int pt_index;
+> +	unsigned long flags;
+> +	u64 pte_count = 0;
+> +	u32 pde_count = 0;
+> +	u32 val, ptb_reg;
+> +	u32 *pd;
+> +
+> +	if (!group_debug || !group_debug->priv || !group_debug->group)
+> +		return 0;
+> +
+> +	group = group_debug->group;
+> +	as = group_debug->priv;
+> +	smmu = as->smmu;
+> +
+> +	mutex_lock(&smmu->lock);
+> +
+> +	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
+> +	if (!val)
+> +		goto unlock;
+> +
+> +	pd = page_address(as->pd);
+> +	if (!pd)
+> +		goto unlock;
+> +
+> +	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n", group->name, as->id, group->reg);
+> +
+> +	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
+> +	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
+> +
+> +	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
+> +	seq_puts(s, "{\n");
+> +
+> +	spin_lock_irqsave(&as->lock, flags);
+> +
+> +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
+> +		struct page *pt_page;
+> +		u32 *addr;
+> +		int i;
+> +
+> +		/* An empty PDE should not have a pte use count */
+> +		WARN_ON_ONCE(!pd[pd_index] ^ !as->count[pd_index]);
+> +
+> +		/* Skip this empty PDE */
+> +		if (!pd[pd_index])
+> +			continue;
+> +
+> +		pde_count++;
+> +		pte_count += as->count[pd_index];
+> +		seq_printf(s, "\t[%d] 0x%x (%d)\n", pd_index, pd[pd_index], as->count[pd_index]);
+> +		pt_page = as->pts[pd_index];
+> +		addr = page_address(pt_page);
+> +
+> +		seq_puts(s, "\t{\n");
+> +		seq_printf(s, "\t\t%-14s | %-4s | %-10s%8s | %-10s%8s | %-11s\n",
+> +			   "PTE RANGE", "ATTR", "PHYS", sizeof(phys_addr_t) > 4 ? " " : "",
+> +			   "IOVA", sizeof(unsigned long) > 4 ? " " : "", "SIZE");
+> +		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
+> +			size_t size = SMMU_SIZE_PT;
+> +			unsigned long iova;
+> +			phys_addr_t pa;
+> +
+> +			i = 1;
+> +
+> +			if (!addr[pt_index])
+> +				continue;
+> +
+> +			iova = pd_pt_index_iova(pd_index, pt_index);
+> +			pa = SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR);
+> +
+> +			/* Check contiguous mappings and increase size */
+> +			while (pt_index + i < SMMU_NUM_PTE) {
+> +				phys_addr_t next_pa;
+> +				u64 next_iova;
+> +
+> +				if (!addr[pt_index + i])
+> +					break;
+> +
+> +				next_iova = pd_pt_index_iova(pd_index, pt_index + i);
+> +				next_pa = SMMU_PFN_PHYS(addr[pt_index + i] & ~SMMU_PTE_ATTR);
+> +
+> +				/* Break at the end of a linear mapping */
+> +				if ((next_iova - iova != SMMU_SIZE_PT * i) ||
+> +				    (next_pa - pa != SMMU_SIZE_PT * i))
+> +					break;
+> +
+> +				i++;
+> +			}
+> +
+> +			seq_printf(s, "\t\t[#%-4d, #%-4d] | 0x%-2x | %pa | %pad | 0x%-9lx\n",
+> +				   pt_index, pt_index + i - 1,
+> +				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
+> +				   &pa, &iova, size * i);
 
-On 14/03/21 7:19 am, Gabriel Krisman Bertazi wrote:
-> Shreeya Patel <shreeya.patel@collabora.com> writes:
->
->> utf8data.h_shipped has a large database table which is an auto-generated
->> decodification trie for the unicode normalization functions.
->> It is not necessary to carry this large table in the kernel hence make
->> UTF-8 encoding loadable by converting it into a module.
->> Also, modify the file called unicode-core which will act as a layer for
->> unicode subsystem. It will load the UTF-8 module and access it's functions
->> whenever any filesystem that needs unicode is mounted.
->>
->> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> Hi Shreeya,
-Hi Gabriel,
->
->> ---
->>   fs/unicode/Kconfig        |   7 +-
->>   fs/unicode/Makefile       |   5 +-
->>   fs/unicode/unicode-core.c | 201 ++++++-------------------------
->>   fs/unicode/utf8-core.c    | 112 +++++++++++++++++
->>   fs/unicode/utf8mod.c      | 246 ++++++++++++++++++++++++++++++++++++++
->>   include/linux/unicode.h   |  20 ++++
->>   6 files changed, 427 insertions(+), 164 deletions(-)
->>   create mode 100644 fs/unicode/utf8-core.c
->>   create mode 100644 fs/unicode/utf8mod.c
->>
->> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
->> index 2c27b9a5cd6c..33a27deef729 100644
->> --- a/fs/unicode/Kconfig
->> +++ b/fs/unicode/Kconfig
->> @@ -8,7 +8,12 @@ config UNICODE
->>   	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->>   	  support.
->>   
->> +config UNICODE_UTF8
->> +	tristate "UTF-8 module"
->> +	depends on UNICODE
->> +	default m
->> +
->>   config UNICODE_NORMALIZATION_SELFTEST
->>   	tristate "Test UTF-8 normalization support"
->> -	depends on UNICODE
->> +	depends on UNICODE_UTF8
->>   	default n
->> diff --git a/fs/unicode/Makefile b/fs/unicode/Makefile
->> index fbf9a629ed0d..9dbb04194b32 100644
->> --- a/fs/unicode/Makefile
->> +++ b/fs/unicode/Makefile
->> @@ -1,11 +1,14 @@
->>   # SPDX-License-Identifier: GPL-2.0
->>   
->>   obj-$(CONFIG_UNICODE) += unicode.o
->> +obj-$(CONFIG_UNICODE_UTF8) += utf8.o
->>   obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
->>   
->> -unicode-y := utf8-norm.o unicode-core.o
->> +unicode-y := unicode-core.o
->> +utf8-y := utf8mod.o utf8-norm.o
->>   
->>   $(obj)/utf8-norm.o: $(obj)/utf8data.h
->> +$(obj)/utf8mod.o: $(obj)/utf8-norm.o
->>   
->>   # In the normal build, the checked-in utf8data.h is just shipped.
->>   #
->> diff --git a/fs/unicode/unicode-core.c b/fs/unicode/unicode-core.c
->> index d5f09e022ac5..b832341f1e7b 100644
->> --- a/fs/unicode/unicode-core.c
->> +++ b/fs/unicode/unicode-core.c
->> @@ -7,70 +7,29 @@
->>   #include <linux/errno.h>
->>   #include <linux/unicode.h>
->>   #include <linux/stringhash.h>
->> +#include <linux/delay.h>
->>   
->> -#include "utf8n.h"
->> +struct unicode_ops *utf8_ops;
->> +
->> +static int unicode_load_module(void);
-> This is unnecessary
->>   
->>   int unicode_validate(const struct unicode_map *um, const struct qstr *str)
->>   {
->> -	const struct utf8data *data = utf8nfdi(um->version);
->> -
->> -	if (utf8nlen(data, str->name, str->len) < 0)
->> -		return -1;
->> -	return 0;
->> +	return utf8_ops->validate(um, str);
->>   }
->>   EXPORT_SYMBOL(unicode_validate);
->>   
->>   int unicode_strncmp(const struct unicode_map *um,
->>   		    const struct qstr *s1, const struct qstr *s2)
->>   {
->> -	const struct utf8data *data = utf8nfdi(um->version);
->> -	struct utf8cursor cur1, cur2;
->> -	int c1, c2;
->> -
->> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> -		return -EINVAL;
->> -
->> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
->> -		return -EINVAL;
->> -
->> -	do {
->> -		c1 = utf8byte(&cur1);
->> -		c2 = utf8byte(&cur2);
->> -
->> -		if (c1 < 0 || c2 < 0)
->> -			return -EINVAL;
->> -		if (c1 != c2)
->> -			return 1;
->> -	} while (c1);
->> -
->> -	return 0;
->> +	return utf8_ops->strncmp(um, s1, s2);
->>   }
-> I think these would go on a header file and  inlined.
->
->>   EXPORT_SYMBOL(unicode_strncmp);
->>   
->>   int unicode_strncasecmp(const struct unicode_map *um,
->>   			const struct qstr *s1, const struct qstr *s2)
->>   {
->> -	const struct utf8data *data = utf8nfdicf(um->version);
->> -	struct utf8cursor cur1, cur2;
->> -	int c1, c2;
->> -
->> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> -		return -EINVAL;
->> -
->> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
->> -		return -EINVAL;
->> -
->> -	do {
->> -		c1 = utf8byte(&cur1);
->> -		c2 = utf8byte(&cur2);
->> -
->> -		if (c1 < 0 || c2 < 0)
->> -			return -EINVAL;
->> -		if (c1 != c2)
->> -			return 1;
->> -	} while (c1);
->> -
->> -	return 0;
->> +	return utf8_ops->strncasecmp(um, s1, s2);
->>   }
->>   EXPORT_SYMBOL(unicode_strncasecmp);
->>   
->> @@ -81,155 +40,73 @@ int unicode_strncasecmp_folded(const struct unicode_map *um,
->>   			       const struct qstr *cf,
->>   			       const struct qstr *s1)
->>   {
->> -	const struct utf8data *data = utf8nfdicf(um->version);
->> -	struct utf8cursor cur1;
->> -	int c1, c2;
->> -	int i = 0;
->> -
->> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> -		return -EINVAL;
->> -
->> -	do {
->> -		c1 = utf8byte(&cur1);
->> -		c2 = cf->name[i++];
->> -		if (c1 < 0)
->> -			return -EINVAL;
->> -		if (c1 != c2)
->> -			return 1;
->> -	} while (c1);
->> -
->> -	return 0;
->> +	return utf8_ops->strncasecmp_folded(um, cf, s1);
->>   }
->>   EXPORT_SYMBOL(unicode_strncasecmp_folded);
->>   
->>   int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
->>   		     unsigned char *dest, size_t dlen)
->>   {
->> -	const struct utf8data *data = utf8nfdicf(um->version);
->> -	struct utf8cursor cur;
->> -	size_t nlen = 0;
->> -
->> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> -		return -EINVAL;
->> -
->> -	for (nlen = 0; nlen < dlen; nlen++) {
->> -		int c = utf8byte(&cur);
->> -
->> -		dest[nlen] = c;
->> -		if (!c)
->> -			return nlen;
->> -		if (c == -1)
->> -			break;
->> -	}
->> -	return -EINVAL;
->> +	return utf8_ops->casefold(um, str, dest, dlen);
->>   }
->>   EXPORT_SYMBOL(unicode_casefold);
->>   
->>   int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
->>   			  struct qstr *str)
->>   {
->> -	const struct utf8data *data = utf8nfdicf(um->version);
->> -	struct utf8cursor cur;
->> -	int c;
->> -	unsigned long hash = init_name_hash(salt);
->> -
->> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> -		return -EINVAL;
->> -
->> -	while ((c = utf8byte(&cur))) {
->> -		if (c < 0)
->> -			return -EINVAL;
->> -		hash = partial_name_hash((unsigned char)c, hash);
->> -	}
->> -	str->hash = end_name_hash(hash);
->> -	return 0;
->> +	return utf8_ops->casefold_hash(um, salt, str);
->>   }
->>   EXPORT_SYMBOL(unicode_casefold_hash);
->>   
->>   int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
->>   		      unsigned char *dest, size_t dlen)
->>   {
->> -	const struct utf8data *data = utf8nfdi(um->version);
->> -	struct utf8cursor cur;
->> -	ssize_t nlen = 0;
->> +	return utf8_ops->normalize(um, str, dest, dlen);
->> +}
->> +EXPORT_SYMBOL(unicode_normalize);
->>   
->> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> -		return -EINVAL;
->> +struct unicode_map *unicode_load(const char *version)
->> +{
->> +	int ret = unicode_load_module();
->>   
->> -	for (nlen = 0; nlen < dlen; nlen++) {
->> -		int c = utf8byte(&cur);
->> +	if (ret)
->> +		return ERR_PTR(ret);
->>   
->> -		dest[nlen] = c;
->> -		if (!c)
->> -			return nlen;
->> -		if (c == -1)
->> -			break;
->> -	}
->> -	return -EINVAL;
->> +	else
->> +		return utf8_ops->load(version);
->>   }
->> -EXPORT_SYMBOL(unicode_normalize);
->> +EXPORT_SYMBOL(unicode_load);
->>   
->> -static int unicode_parse_version(const char *version, unsigned int *maj,
->> -				 unsigned int *min, unsigned int *rev)
->> +void unicode_unload(struct unicode_map *um)
->>   {
->> -	substring_t args[3];
->> -	char version_string[12];
->> -	static const struct match_token token[] = {
->> -		{1, "%d.%d.%d"},
->> -		{0, NULL}
->> -	};
->> +	kfree(um);
->> +}
->> +EXPORT_SYMBOL(unicode_unload);
->>   
->> -	strncpy(version_string, version, sizeof(version_string));
->> +static int unicode_load_module(void)
->> +{
->> +	int ret = request_module("utf8");
->>   
->> -	if (match_token(version_string, token, args) != 1)
->> -		return -EINVAL;
->> +	msleep(100);
-> I think I misunderstood when you mentioned you did this msleep.  It was
-> ok to debug the issue you were observing, but it is not a solution.
-> Setting an arbitrary amount of time will either waste time, or you can
-> still fail if things take longer than expected.  There are mechanisms to
-> load and wait on a module.  See how fs/nls/nls_base.c do exactly this.
->
->> -	if (match_int(&args[0], maj) || match_int(&args[1], min) ||
->> -	    match_int(&args[2], rev))
->> -		return -EINVAL;
->> +	if (ret) {
->> +		pr_err("Failed to load UTF-8 module\n");
->> +		return ret;
->> +	}
->>   
->>   	return 0;
->>   }
->>   
->> -struct unicode_map *unicode_load(const char *version)
->> +void unicode_register(struct unicode_ops *ops)
->>   {
->> -	struct unicode_map *um = NULL;
->> -	int unicode_version;
->> -
->> -	if (version) {
->> -		unsigned int maj, min, rev;
->> -
->> -		if (unicode_parse_version(version, &maj, &min, &rev) < 0)
->> -			return ERR_PTR(-EINVAL);
->> -
->> -		if (!utf8version_is_supported(maj, min, rev))
->> -			return ERR_PTR(-EINVAL);
->> -
->> -		unicode_version = UNICODE_AGE(maj, min, rev);
->> -	} else {
->> -		unicode_version = utf8version_latest();
->> -		printk(KERN_WARNING"UTF-8 version not specified. "
->> -		       "Assuming latest supported version (%d.%d.%d).",
->> -		       (unicode_version >> 16) & 0xff,
->> -		       (unicode_version >> 8) & 0xff,
->> -		       (unicode_version & 0xff));
->> -	}
->> -
->> -	um = kzalloc(sizeof(struct unicode_map), GFP_KERNEL);
->> -	if (!um)
->> -		return ERR_PTR(-ENOMEM);
->> -
->> -	um->charset = "UTF-8";
->> -	um->version = unicode_version;
->> -
->> -	return um;
->> +	utf8_ops = ops;
->>   }
->> -EXPORT_SYMBOL(unicode_load);
->> +EXPORT_SYMBOL(unicode_register);
->>   
->> -void unicode_unload(struct unicode_map *um)
->> +void unicode_unregister(void)
->>   {
->> -	kfree(um);
->> +	utf8_ops = NULL;
->>   }
->> -EXPORT_SYMBOL(unicode_unload);
->> +EXPORT_SYMBOL(unicode_unregister);
->>   
->>   MODULE_LICENSE("GPL v2");
->> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
->> new file mode 100644
->> index 000000000000..009faa68330c
->> --- /dev/null
->> +++ b/fs/unicode/utf8-core.c
->> @@ -0,0 +1,112 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#include <linux/module.h>
->> +#include <linux/kernel.h>
->> +#include <linux/string.h>
->> +#include <linux/slab.h>
->> +#include <linux/parser.h>
->> +#include <linux/errno.h>
->> +#include <linux/unicode.h>
->> +#include <linux/stringhash.h>
->> +#include <linux/delay.h>
->> +
->> +struct unicode_ops *utf8_ops;
->> +
->> +static int unicode_load_module(void);
->> +
->> +int unicode_validate(const struct unicode_map *um, const struct qstr *str)
->> +{
->> +	return utf8_ops->validate(um, str);
->> +}
->> +EXPORT_SYMBOL(unicode_validate);
->> +
->> +int unicode_strncmp(const struct unicode_map *um,
->> +		    const struct qstr *s1, const struct qstr *s2)
->> +{
->> +	return utf8_ops->strncmp(um, s1, s2);
->> +}
->> +EXPORT_SYMBOL(unicode_strncmp);
-> I'm confused now.  Isn't this redefining unicode_strncmp ?  It was
-> defined in unicode_core.c on the hunk above and now it is redefined on
-> utf8_core.c.  There is something odd here.
-sorry, I think I messed up patches while using git send-email and that 
-is why you might see
-two copies of the last patch. Let me resend the series and then it might 
-make sense. One question
-though, why would unicode_strncmp go into the header file?
->
->> +
->> +int unicode_strncasecmp(const struct unicode_map *um,
->> +			const struct qstr *s1, const struct qstr *s2)
->> +{
->> +	return utf8_ops->strncasecmp(um, s1, s2);
->> +}
->> +EXPORT_SYMBOL(unicode_strncasecmp);
->> +
->> +/* String cf is expected to be a valid UTF-8 casefolded
->> + * string.
->> + */
->> +int unicode_strncasecmp_folded(const struct unicode_map *um,
->> +			       const struct qstr *cf,
->> +			       const struct qstr *s1)
->> +{
->> +	return utf8_ops->strncasecmp_folded(um, cf, s1);
->> +}
->> +EXPORT_SYMBOL(unicode_strncasecmp_folded);
->> +
->> +int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
->> +		     unsigned char *dest, size_t dlen)
->> +{
->> +	return utf8_ops->casefold(um, str, dest, dlen);
->> +}
->> +EXPORT_SYMBOL(unicode_casefold);
->> +
->> +int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
->> +			  struct qstr *str)
->> +{
->> +	return utf8_ops->casefold_hash(um, salt, str);
->> +}
->> +EXPORT_SYMBOL(unicode_casefold_hash);
->> +
->> +int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
->> +		      unsigned char *dest, size_t dlen)
->> +{
->> +	return utf8_ops->normalize(um, str, dest, dlen);
->> +}
->> +EXPORT_SYMBOL(unicode_normalize);
->> +
->> +struct unicode_map *unicode_load(const char *version)
->> +{
->> +	int ret = unicode_load_module();
->> +
->> +	if (ret)
->> +		return ERR_PTR(ret);
->> +
->> +	else
->> +		return utf8_ops->load(version);
->> +}
->> +EXPORT_SYMBOL(unicode_load);
->> +
->> +void unicode_unload(struct unicode_map *um)
->> +{
->> +	kfree(um);
->> +}
->> +EXPORT_SYMBOL(unicode_unload);
->> +
->> +void unicode_register(struct unicode_ops *ops)
->> +{
->> +	utf8_ops = ops;
->> +}
->> +EXPORT_SYMBOL(unicode_register);
->> +
->> +void unicode_unregister(void)
->> +{
->> +	utf8_ops = NULL;
->> +}
->> +EXPORT_SYMBOL(unicode_unregister);
->> +
->> +static int unicode_load_module(void)
->> +{
->> +	int ret = request_module("utf8");
->> +
->> +	msleep(100);
->> +
->> +	if (ret) {
->> +		pr_err("Failed to load UTF-8 module\n");
->> +		return ret;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/fs/unicode/utf8mod.c b/fs/unicode/utf8mod.c
->> new file mode 100644
->> index 000000000000..8eaeeb27255c
->> --- /dev/null
->> +++ b/fs/unicode/utf8mod.c
->> @@ -0,0 +1,246 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#include <linux/module.h>
->> +#include <linux/kernel.h>
->> +#include <linux/string.h>
->> +#include <linux/slab.h>
->> +#include <linux/parser.h>
->> +#include <linux/errno.h>
->> +#include <linux/unicode.h>
->> +#include <linux/stringhash.h>
->> +
->> +#include "utf8n.h"
->> +
->> +static int utf8_validate(const struct unicode_map *um, const struct qstr *str)
->> +{
->> +	const struct utf8data *data = utf8nfdi(um->version);
->> +
->> +	if (utf8nlen(data, str->name, str->len) < 0)
->> +		return -1;
->> +	return 0;
->> +}
->> +
->> +static int utf8_strncmp(const struct unicode_map *um,
->> +			const struct qstr *s1, const struct qstr *s2)
->> +{
->> +	const struct utf8data *data = utf8nfdi(um->version);
->> +	struct utf8cursor cur1, cur2;
->> +	int c1, c2;
->> +
->> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> +		return -EINVAL;
->> +
->> +	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
->> +		return -EINVAL;
->> +
->> +	do {
->> +		c1 = utf8byte(&cur1);
->> +		c2 = utf8byte(&cur2);
->> +
->> +		if (c1 < 0 || c2 < 0)
->> +			return -EINVAL;
->> +		if (c1 != c2)
->> +			return 1;
->> +	} while (c1);
->> +
->> +	return 0;
->> +}
->> +
->> +static int utf8_strncasecmp(const struct unicode_map *um,
->> +			    const struct qstr *s1, const struct qstr *s2)
->> +{
->> +	const struct utf8data *data = utf8nfdicf(um->version);
->> +	struct utf8cursor cur1, cur2;
->> +	int c1, c2;
->> +
->> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> +		return -EINVAL;
->> +
->> +	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
->> +		return -EINVAL;
->> +
->> +	do {
->> +		c1 = utf8byte(&cur1);
->> +		c2 = utf8byte(&cur2);
->> +
->> +		if (c1 < 0 || c2 < 0)
->> +			return -EINVAL;
->> +		if (c1 != c2)
->> +			return 1;
->> +	} while (c1);
->> +
->> +	return 0;
->> +}
->> +
->> +/* String cf is expected to be a valid UTF-8 casefolded
->> + * string.
->> + */
->> +static int utf8_strncasecmp_folded(const struct unicode_map *um,
->> +				   const struct qstr *cf,
->> +				   const struct qstr *s1)
->> +{
->> +	const struct utf8data *data = utf8nfdicf(um->version);
->> +	struct utf8cursor cur1;
->> +	int c1, c2;
->> +	int i = 0;
->> +
->> +	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
->> +		return -EINVAL;
->> +
->> +	do {
->> +		c1 = utf8byte(&cur1);
->> +		c2 = cf->name[i++];
->> +		if (c1 < 0)
->> +			return -EINVAL;
->> +		if (c1 != c2)
->> +			return 1;
->> +	} while (c1);
->> +
->> +	return 0;
->> +}
->> +
->> +static int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
->> +			 unsigned char *dest, size_t dlen)
->> +{
->> +	const struct utf8data *data = utf8nfdicf(um->version);
->> +	struct utf8cursor cur;
->> +	size_t nlen = 0;
->> +
->> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> +		return -EINVAL;
->> +
->> +	for (nlen = 0; nlen < dlen; nlen++) {
->> +		int c = utf8byte(&cur);
->> +
->> +		dest[nlen] = c;
->> +		if (!c)
->> +			return nlen;
->> +		if (c == -1)
->> +			break;
->> +	}
->> +	return -EINVAL;
->> +}
->> +
->> +static int utf8_casefold_hash(const struct unicode_map *um, const void *salt,
->> +			      struct qstr *str)
->> +{
->> +	const struct utf8data *data = utf8nfdicf(um->version);
->> +	struct utf8cursor cur;
->> +	int c;
->> +	unsigned long hash = init_name_hash(salt);
->> +
->> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> +		return -EINVAL;
->> +
->> +	while ((c = utf8byte(&cur))) {
->> +		if (c < 0)
->> +			return -EINVAL;
->> +		hash = partial_name_hash((unsigned char)c, hash);
->> +	}
->> +	str->hash = end_name_hash(hash);
->> +	return 0;
->> +}
->> +
->> +static int utf8_normalize(const struct unicode_map *um, const struct qstr *str,
->> +			  unsigned char *dest, size_t dlen)
->> +{
->> +	const struct utf8data *data = utf8nfdi(um->version);
->> +	struct utf8cursor cur;
->> +	ssize_t nlen = 0;
->> +
->> +	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
->> +		return -EINVAL;
->> +
->> +	for (nlen = 0; nlen < dlen; nlen++) {
->> +		int c = utf8byte(&cur);
->> +
->> +		dest[nlen] = c;
->> +		if (!c)
->> +			return nlen;
->> +		if (c == -1)
->> +			break;
->> +	}
->> +	return -EINVAL;
->> +}
->> +
->> +static int utf8_parse_version(const char *version, unsigned int *maj,
->> +			      unsigned int *min, unsigned int *rev)
->> +{
->> +	substring_t args[3];
->> +	char version_string[12];
->> +	static const struct match_token token[] = {
->> +		{1, "%d.%d.%d"},
->> +		{0, NULL}
->> +	};
->> +
->> +	strncpy(version_string, version, sizeof(version_string));
->> +
->> +	if (match_token(version_string, token, args) != 1)
->> +		return -EINVAL;
->> +
->> +	if (match_int(&args[0], maj) || match_int(&args[1], min) ||
->> +	    match_int(&args[2], rev))
->> +		return -EINVAL;
->> +
->> +	return 0;
->> +}
->> +
->> +static struct unicode_map *utf8_load(const char *version)
->> +{
->> +	struct unicode_map *um = NULL;
->> +	int unicode_version;
->> +
->> +	if (version) {
->> +		unsigned int maj, min, rev;
->> +
->> +		if (utf8_parse_version(version, &maj, &min, &rev) < 0)
->> +			return ERR_PTR(-EINVAL);
->> +
->> +		if (!utf8version_is_supported(maj, min, rev))
->> +			return ERR_PTR(-EINVAL);
->> +
->> +		unicode_version = UNICODE_AGE(maj, min, rev);
->> +	} else {
->> +		unicode_version = utf8version_latest();
->> +		printk(KERN_WARNING"UTF-8 version not specified. "
->> +		       "Assuming latest supported version (%d.%d.%d).",
->> +		       (unicode_version >> 16) & 0xff,
->> +		       (unicode_version >> 8) & 0xff,
->> +		       (unicode_version & 0xff));
->> +	}
->> +
->> +	um = kzalloc(sizeof(struct unicode_map), GFP_KERNEL);
->> +	if (!um)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	um->charset = "UTF-8";
->> +	um->version = unicode_version;
->> +
->> +	return um;
->> +}
->> +
->> +static struct unicode_ops ops = {
->> +	.validate = utf8_validate,
->> +	.strncmp = utf8_strncmp,
->> +	.strncasecmp = utf8_strncasecmp,
->> +	.strncasecmp_folded = utf8_strncasecmp_folded,
->> +	.casefold = utf8_casefold,
->> +	.casefold_hash = utf8_casefold_hash,
->> +	.normalize = utf8_normalize,
->> +	.load = utf8_load,
->> +};
->> +
->> +static int __init utf8_init(void)
->> +{
->> +	unicode_register(&ops);
->> +	return 0;
->> +}
->> +
->> +static void __exit utf8_exit(void)
->> +{
->> +	unicode_unregister();
->> +}
->> +
->> +module_init(utf8_init);
->> +module_exit(utf8_exit);
->> +
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/include/linux/unicode.h b/include/linux/unicode.h
->> index de23f9ee720b..b0d59069e438 100644
->> --- a/include/linux/unicode.h
->> +++ b/include/linux/unicode.h
->> @@ -10,6 +10,23 @@ struct unicode_map {
->>   	int version;
->>   };
->>   
->> +struct unicode_ops {
->> +	int (*validate)(const struct unicode_map *um, const struct qstr *str);
->> +	int (*strncmp)(const struct unicode_map *um, const struct qstr *s1,
->> +		       const struct qstr *s2);
->> +	int (*strncasecmp)(const struct unicode_map *um, const struct qstr *s1,
->> +			   const struct qstr *s2);
->> +	int (*strncasecmp_folded)(const struct unicode_map *um, const struct qstr *cf,
->> +				  const struct qstr *s1);
->> +	int (*normalize)(const struct unicode_map *um, const struct qstr *str,
->> +			 unsigned char *dest, size_t dlen);
->> +	int (*casefold)(const struct unicode_map *um, const struct qstr *str,
->> +			unsigned char *dest, size_t dlen);
->> +	int (*casefold_hash)(const struct unicode_map *um, const void *salt,
->> +			     struct qstr *str);
->> +	struct unicode_map* (*load)(const char *version);
->> +};
-> Also, make sure you run checkpatch.pl on the patch series before
-> submitting.
-I ran checkpatch.pl over the patch, but it seems there were some 
-previously existing warnings
-which are not introduced due to any change made in this patch series.
-I am not sure if I am supposed to resolve those warnings in this patch 
-series.
+The formatting is still incorrect:
 
->> +
->>   int unicode_validate(const struct unicode_map *um, const struct qstr *str);
->>   
->>   int unicode_strncmp(const struct unicode_map *um,
->> @@ -33,4 +50,7 @@ int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
->>   struct unicode_map *unicode_load(const char *version);
->>   void unicode_unload(struct unicode_map *um);
->>   
->> +void unicode_register(struct unicode_ops *ops);
->> +void unicode_unregister(void);
->> +
->>   #endif /* _LINUX_UNICODE_H */
+drivers/iommu/tegra-smmu.c: In function ‘tegra_smmu_mappings_show’:
+drivers/iommu/tegra-smmu.c:1119:50: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘dma_addr_t’ {aka ‘unsigned int’} [-Wformat=]
+ 1119 |  seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
+      |                                               ~~~^              ~~~~~~~~~~
+      |                                                  |                |
+      |                                                  |                dma_addr_t {aka unsigned int}
+      |                                                  long long unsigned int
+      |                                               %x
+drivers/iommu/tegra-smmu.c:1178:68: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 8 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
+ 1178 |    seq_printf(s, "\t\t[#%-4d, #%-4d] | 0x%-2x | %pa | %pad | 0x%-9lx\n",
+      |                                                                ~~~~^
+      |                                                                    |
+      |                                                                    long unsigned int
+      |                                                                %-9x
+......
+ 1181 |        &pa, &iova, size * i);
+      |                    ~~~~~~~~                                         
+      |                         |
+      |                         size_t {aka unsigned int}
+
+
+
+I fixed it up like this:
+
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index daf74e26f14e..dbf2d4003132 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -1111,12 +1111,14 @@ static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+ 	if (!pd)
+ 		goto unlock;
+ 
+-	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n", group->name, as->id, group->reg);
++	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n",
++		   group->name, as->id, group->reg);
+ 
+ 	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
+ 	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
+ 
+-	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
++	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: %pad\n",
++		   ptb_reg, &as->pd_dma);
+ 	seq_puts(s, "{\n");
+ 
+ 	spin_lock_irqsave(&as->lock, flags);
+@@ -1135,17 +1137,20 @@ static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+ 
+ 		pde_count++;
+ 		pte_count += as->count[pd_index];
+-		seq_printf(s, "\t[%d] 0x%x (%d)\n", pd_index, pd[pd_index], as->count[pd_index]);
++		seq_printf(s, "\t[%d] 0x%x (%d)\n",
++			   pd_index, pd[pd_index], as->count[pd_index]);
+ 		pt_page = as->pts[pd_index];
+ 		addr = page_address(pt_page);
+ 
+ 		seq_puts(s, "\t{\n");
+-		seq_printf(s, "\t\t%-14s | %-4s | %-10s%8s | %-10s%8s | %-11s\n",
+-			   "PTE RANGE", "ATTR", "PHYS", sizeof(phys_addr_t) > 4 ? " " : "",
+-			   "IOVA", sizeof(unsigned long) > 4 ? " " : "", "SIZE");
++		seq_printf(s, "\t\t%-14s | %-4s | %-10s%s | %-10s%s | %-11s\n",
++			   "PTE RANGE", "ATTR",
++			   "PHYS", sizeof(phys_addr_t) > 4 ? "        " : "",
++			   "IOVA", sizeof(dma_addr_t)  > 4 ? "        " : "",
++			   "SIZE");
+ 		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
+ 			size_t size = SMMU_SIZE_PT;
+-			unsigned long iova;
++			dma_addr_t iova;
+ 			phys_addr_t pa;
+ 
+ 			i = 1;
+@@ -1158,8 +1163,8 @@ static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+ 
+ 			/* Check contiguous mappings and increase size */
+ 			while (pt_index + i < SMMU_NUM_PTE) {
++				dma_addr_t next_iova;
+ 				phys_addr_t next_pa;
+-				u64 next_iova;
+ 
+ 				if (!addr[pt_index + i])
+ 					break;
+@@ -1175,7 +1180,7 @@ static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
+ 				i++;
+ 			}
+ 
+-			seq_printf(s, "\t\t[#%-4d, #%-4d] | 0x%-2x | %pa | %pad | 0x%-9lx\n",
++			seq_printf(s, "\t\t[#%-4d, #%-4d] | 0x%-2x | %pa | %pad | 0x%-9zx\n",
+ 				   pt_index, pt_index + i - 1,
+ 				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
+ 				   &pa, &iova, size * i);
+
