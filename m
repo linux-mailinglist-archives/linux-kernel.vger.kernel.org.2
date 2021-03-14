@@ -2,217 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1794533A2C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366FC33A2CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 06:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhCNFLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 00:11:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232854AbhCNFKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 00:10:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E111C64E33;
-        Sun, 14 Mar 2021 05:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615698654;
-        bh=sHT4pNllXwbmu1pa2C2GAmEhwcyj5rsbGVi7SDbrN2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DGkHqWOMHfR8VzS5/F8lpqsBeEPuRLo/mBa58u4TZaBDDbUN5fTN9d0dVFIuYyU/L
-         1zsLqSGzRLA8zQNshWLI6wNncn1JNy/nna26G/bCDYXANhLjBR3rxkCZ4ZGuYnN/aL
-         vhW7aLuU8CtS0cMG1T7tKewAF83uzEENZVuotYkwOojpQ8g+qXiEM7KiWA0po11Zio
-         DLeC2Qn+AUXcxfBGwXlVrPVjUMBpq1TuIXwXHjqAEZD/w0wEeeAQhpxFVljWHlRpCb
-         voEvH8GvLHlpPM8kvx7yV+vZ/KpAXpMgqsbKz6mvEA1o5HlQYqFcGN1h9RVQDB0dcT
-         RgkNrtp3gv+UA==
-Date:   Sun, 14 Mar 2021 13:10:48 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Sanket Parmar <sparmar@cadence.com>
-Cc:     pawell@cadence.com, a-govindraju@ti.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kurahul@cadence.com,
-        gregkh@linuxfoundation.org, kishon@ti.com
-Subject: Re: [PATCH 2/2] usb: cdns3: Optimize DMA request buffer allocation
-Message-ID: <20210314051048.GA30122@b29397-desktop>
-References: <1615267180-9289-1-git-send-email-sparmar@cadence.com>
- <1615267180-9289-2-git-send-email-sparmar@cadence.com>
+        id S232431AbhCNFV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 00:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhCNFVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 00:21:49 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78703C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 21:21:48 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id c6so6982823qtc.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 21:21:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uZ8gA0l8bgFNybFsmoII2WWhDw/3OIQuhwpuA/ILOrE=;
+        b=A51uAe/KW2kHodP+64FzZs/ft3d0/xbdP6JW923HvG7xr+JUyH3hVTAYTif2JGYU7M
+         8+s+BndnuZJeDY3yf5DmDfxEyiqN6wGJXqg8dlwqum8Ib5sv36jJWNSF9aVOLEu7v05Y
+         dFEgKeqPLWyQwTvOHaD4vTK18XBunUoVKWuGVA7XPo8IELfQTdJJosPxO8aIToMPA6Dz
+         6OPnbLbwbjY5I9ZPrgYGB3Vz8B5/QDEep9wKTVhyfj0FcmdyiSpmv3FmToHOLO5RA98A
+         9Vjb5niBzWctqZaI5gHzwQ2bdqKL/hQoOPPzVq85nD+T0bpBse1/ieYzJi6cCYEGt0qT
+         VmlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uZ8gA0l8bgFNybFsmoII2WWhDw/3OIQuhwpuA/ILOrE=;
+        b=Tpn5DsX4FzbSPUWD5Ne0QS1SfDXhV9izmpLa7GbrsMK/erxeffG0QlzNcsyOcfy0F/
+         dNh1qZpDQA9xUcysqu1cCg82pQ3eeHuk9mWY1Z1lNhUAxat+PqRLDEZXbEIfiwZuSgyx
+         2oubDW3GROSqyEMWq1fnTbnfcH8h3han/jlevy+vZy6zr+qcUeSFB9MWXMR8QkPtd2LX
+         zf6Du2dkfSf3fsEIK8OvZ8bxqTFABRt9aw+LXQp7x/YD46pX0Rv861Rb7oxvT7CcusIT
+         W6/zB0I6Xwo9SPX395/b3bYD82f94ubmIZ/ByGc6UfdR6yhuuHK7ZRWOVdwARtwCRwpq
+         fMfw==
+X-Gm-Message-State: AOAM531ScsGEJi08YmYKwCPO310NpN+shqF4+IJC74klv2u/wowwmytI
+        ZBn2q4Ovu6J8XT86AIR55rcEreq0uk6qbZhd
+X-Google-Smtp-Source: ABdhPJzF71+ZuhXNoLR9rshlgYVuuSD8HwsNbRjpZv5TBF7oOBr6ttInFYCyb1ZZYHvfKeQlhwuBQw==
+X-Received: by 2002:ac8:4e51:: with SMTP id e17mr16438105qtw.204.1615699307642;
+        Sat, 13 Mar 2021 21:21:47 -0800 (PST)
+Received: from localhost.localdomain ([37.19.198.30])
+        by smtp.gmail.com with ESMTPSA id 131sm8725594qkl.74.2021.03.13.21.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 21:21:46 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     ysato@users.sourceforge.jp, unixbhaskar@gmail.com,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] h8300: kernel: Spelling fix in the file irq.c
+Date:   Sun, 14 Mar 2021 10:49:31 +0530
+Message-Id: <20210314051931.6378-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615267180-9289-2-git-send-email-sparmar@cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-09 06:19:40, Sanket Parmar wrote:
-> dma_alloc_coherent() might fail on the platform with a small DMA region.
-> 
-> To avoid such failure in cdns3_prepare_aligned_request_buf(),
-> dma_alloc_coherent() is replaced with kmalloc and dma_map API to
-> allocate aligned request buffer of dynamic length.
-> 
-> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
 
-The comment with the 1st patch, it is not a bug-fix.
+s/writerble/writeable/
 
-> Reported-by: Aswath Govindraju <a-govindraju@ti.com>
-> Signed-off-by: Sanket Parmar <sparmar@cadence.com>
-> ---
->  drivers/usb/cdns3/cdns3-gadget.c |   73 +++++++++++++++++++++++++------------
->  drivers/usb/cdns3/cdns3-gadget.h |    2 +
->  2 files changed, 51 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> index 5f51215..b4955ce 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.c
-> +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> @@ -818,10 +818,26 @@ void cdns3_gadget_giveback(struct cdns3_endpoint *priv_ep,
->  	usb_gadget_unmap_request_by_dev(priv_dev->sysdev, request,
->  					priv_ep->dir);
->  
-> -	if ((priv_req->flags & REQUEST_UNALIGNED) &&
-> -	    priv_ep->dir == USB_DIR_OUT && !request->status)
-> -		memcpy(request->buf, priv_req->aligned_buf->buf,
-> -		       request->length);
-> +	if ((priv_req->flags & REQUEST_UNALIGNED) && priv_req->aligned_buf) {
-> +		struct cdns3_aligned_buf *buf;
-> +
-> +		buf = priv_req->aligned_buf;
-> +		dma_unmap_single(priv_dev->sysdev, buf->dma, buf->size,
-> +			buf->dir);
-> +		priv_req->flags &= ~REQUEST_UNALIGNED;
-> +
-> +		if (priv_ep->dir == USB_DIR_OUT && !request->status) {
-> +			memcpy(request->buf, priv_req->aligned_buf->buf,
-> +			       request->length);
-> +		}
-> +
-> +		trace_cdns3_free_aligned_request(priv_req);
-> +		priv_req->aligned_buf->in_use = 0;
-> +		queue_work(system_freezable_wq,
-> +			   &priv_dev->aligned_buf_wq);
-> +		priv_req->aligned_buf = NULL;
-> +
-> +	}
->  
->  	priv_req->flags &= ~(REQUEST_PENDING | REQUEST_UNALIGNED);
->  	/* All TRBs have finished, clear the counter */
-> @@ -883,8 +899,7 @@ static void cdns3_free_aligned_request_buf(struct work_struct *work)
->  			 * interrupts.
->  			 */
->  			spin_unlock_irqrestore(&priv_dev->lock, flags);
-> -			dma_free_coherent(priv_dev->sysdev, buf->size,
-> -					  buf->buf, buf->dma);
-> +			kfree(buf->buf);
->  			kfree(buf);
->  			spin_lock_irqsave(&priv_dev->lock, flags);
->  		}
-> @@ -910,27 +925,16 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  		if (!buf)
->  			return -ENOMEM;
->  
-> -		buf->size = priv_req->request.length;
-> +		buf->size = usb_endpoint_dir_out(priv_ep->endpoint.desc) ?
-> +				usb_ep_align(&(priv_ep->endpoint), priv_req->request.length)
-> +				: priv_req->request.length;
->  
-> -		buf->buf = dma_alloc_coherent(priv_dev->sysdev,
-> -					      buf->size,
-> -					      &buf->dma,
-> -					      GFP_ATOMIC);
-> +		buf->buf = kmalloc(buf->size, GFP_ATOMIC);
->  		if (!buf->buf) {
->  			kfree(buf);
->  			return -ENOMEM;
->  		}
->  
-> -		if (priv_req->aligned_buf) {
-> -			trace_cdns3_free_aligned_request(priv_req);
-> -			priv_req->aligned_buf->in_use = 0;
-> -			queue_work(system_freezable_wq,
-> -				   &priv_dev->aligned_buf_wq);
-> -		}
-> -
-> -		buf->in_use = 1;
-> -		priv_req->aligned_buf = buf;
-> -
->  		list_add_tail(&buf->list,
->  			      &priv_dev->aligned_buf_list);
->  	}
-> @@ -940,6 +944,27 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  		       priv_req->request.length);
->  	}
->  
-> +	if (priv_req->aligned_buf) {
-> +		trace_cdns3_free_aligned_request(priv_req);
-> +		priv_req->aligned_buf->in_use = 0;
-> +		queue_work(system_freezable_wq,
-> +			   &priv_dev->aligned_buf_wq);
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/h8300/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-@Pawel, do you remember when this condition is met?
+diff --git a/arch/h8300/kernel/irq.c b/arch/h8300/kernel/irq.c
+index 834e4d7b1bcf..4afa13db6774 100644
+--- a/arch/h8300/kernel/irq.c
++++ b/arch/h8300/kernel/irq.c
+@@ -43,7 +43,7 @@ static unsigned long __init *get_vector_address(void)
+ 	/* ramvector base address */
+ 	base -= EXT_IRQ0*4;
 
-> +	}
-> +
-> +	buf->dir =  priv_ep->dir ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-> +	buf->in_use = 1;
-> +	priv_req->aligned_buf = buf;
-> +
-> +	buf->dma = dma_map_single(priv_dev->sysdev, buf->buf, buf->size,
-> +				buf->dir);
-> +
-> +	if (dma_mapping_error(priv_dev->sysdev, buf->dma)) {
-> +		dev_err(priv_dev->dev, "Failed to map buffer\n");
-> +		kfree(buf->buf);
-> +		kfree(buf);
-> +		return -EFAULT;
-> +	}
-> +
->  	priv_req->flags |= REQUEST_UNALIGNED;
->  	trace_cdns3_prepare_aligned_request(priv_req);
->  
-> @@ -3088,11 +3113,11 @@ static void cdns3_gadget_exit(struct cdns *cdns)
->  		struct cdns3_aligned_buf *buf;
->  
->  		buf = cdns3_next_align_buf(&priv_dev->aligned_buf_list);
-> -		dma_free_coherent(priv_dev->sysdev, buf->size,
-> -				  buf->buf,
-> -				  buf->dma);
-> +		dma_unmap_single(priv_dev->sysdev, buf->dma, buf->size,
-> +			buf->dir);
-
-It only needs to DMA unmap after DMA has completed, this buf will not be
-used, otherwise, the kfree below will cause issue.
-
->  
->  		list_del(&buf->list);
-> +		kfree(buf->buf);
->  		kfree(buf);
->  	}
->  
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.h b/drivers/usb/cdns3/cdns3-gadget.h
-> index ecf9b91..c5660f2 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.h
-> +++ b/drivers/usb/cdns3/cdns3-gadget.h
-> @@ -12,6 +12,7 @@
->  #ifndef __LINUX_CDNS3_GADGET
->  #define __LINUX_CDNS3_GADGET
->  #include <linux/usb/gadget.h>
-> +#include <linux/dma-direction.h>
->  
->  /*
->   * USBSS-DEV register interface.
-> @@ -1205,6 +1206,7 @@ struct cdns3_aligned_buf {
->  	void			*buf;
->  	dma_addr_t		dma;
->  	u32			size;
-> +	enum dma_data_direction dir;
->  	unsigned		in_use:1;
->  	struct list_head	list;
->  };
-> -- 
-> 1.7.1
-> 
-
--- 
-
-Thanks,
-Peter Chen
+-	/* writerble? */
++	/* writeable? */
+ 	tmp = ~(*(volatile unsigned long *)base);
+ 	(*(volatile unsigned long *)base) = tmp;
+ 	if ((*(volatile unsigned long *)base) != tmp)
+--
+2.26.2
 
