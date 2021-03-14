@@ -2,159 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF30433A1F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 00:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAF333A1FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 01:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhCMXrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 18:47:39 -0500
-Received: from mga07.intel.com ([134.134.136.100]:52902 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234788AbhCMXrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 18:47:16 -0500
-IronPort-SDR: B02n8+RR+EZJFwOQFOo+5K9lGnG3vQ1+5Yfn9Gi182/nYw+j++0Djdj1+G5NU344nfFykTebVz
- 24BjklL66ACg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9922"; a="252977897"
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="252977897"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 15:47:14 -0800
-IronPort-SDR: 7S5sUAVc0oiQwsZGtnHbuJ8zaqklA/NgR5dGQrq1RJaOJV5UXtVcjJir7YmdR4kiDAYaOVJn9b
- WMB9Bb+dh5VQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
-   d="scan'208";a="601004541"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Mar 2021 15:47:12 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lLDyS-0002Jd-4Q; Sat, 13 Mar 2021 23:47:12 +0000
-Date:   Sun, 14 Mar 2021 07:46:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- f34bf80037a1e8a00b948cbd5fac8e9d3c9b0b0f
-Message-ID: <604d4ed0.e/i+URIOG+8iu2F3%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234840AbhCNAEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 19:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231756AbhCNAEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Mar 2021 19:04:00 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3ABC061574;
+        Sat, 13 Mar 2021 16:03:59 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id b16so335794eds.7;
+        Sat, 13 Mar 2021 16:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+sdgvbEQGyNWXo7W7KrCvgk2Jg2tqMHsAEXb4oYjxyQ=;
+        b=YUlbivLofXyFGrfW5gTFC46tc6EZhLkpDE+XUCqNktcWlMS2WwsyMqcQSS17UO4tzV
+         GWx+P/GmyHQ5lrH+/KBEry6JGKQKsyoPudi/QjH+N9XGvVuvq96mHrTUFJ0+lZpaBh0M
+         woBCI1Jj/KCRg2P61dQUC/X0mGkRwa5dVUZuWaNgZPwgqbc5aF4rNnCtNLOVQX/zzQzG
+         skGgH4VyrqErmCnzXiVMOTXb8ezHrzMVrcyyUIVcYBHJUAco/l2mSr4BLSEM3CEL4Ko+
+         8qTvJqm/GgQ6Ncp6carV58QlfwahS7ifJW21cuDt61nrKFqkpeVyeyNYK6u9sCQU4kH9
+         EoEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+sdgvbEQGyNWXo7W7KrCvgk2Jg2tqMHsAEXb4oYjxyQ=;
+        b=a+uPY7ewGEmv1p074zMtAXse9gUoEpQt9gmMaNJ7MneifwX4y9qzeItS4tPQk3yPFe
+         CQIFAUz2L0FncnrD1U0ATO3/dYa7D+eL2E2odxMB8I0WvMMu4MKX6UXwXgIos3cUfF8X
+         6+18++KOsPneoVF8nj4072sra6vNeEDJP7KGKWL2rKMlpMVj3x+qJ4sCm6nH2bX7mxXI
+         8UnfWBjkVLjRoOYJyZdp/LkiuEFU0U9bpqsAWTEcDvLl7fuVgHsq1Y45ZeN0t8Js9XOX
+         UQPhMx9uH9E745SuIKslP7eifTUnf8Zd4MKT00p4U8ASxM1KdA3D8XVZQGyWhUI96Lfj
+         3dTg==
+X-Gm-Message-State: AOAM533Clvbn8VOfESGUppP0kkKYMgVDwRfjkfdXjF896Xpi7Ni4NPB9
+        fEGuDV9BcUI6bhXT9TfMfEA=
+X-Google-Smtp-Source: ABdhPJyJKciEY/ldNFvc1upyj3vN5iOyIzKZuNaLsaGtc8UnQzNalHdqtL/9VQRuCzNBdbgsT9pG2Q==
+X-Received: by 2002:a05:6402:32d:: with SMTP id q13mr22327202edw.17.1615680233077;
+        Sat, 13 Mar 2021 16:03:53 -0800 (PST)
+Received: from skbuf ([188.25.219.167])
+        by smtp.gmail.com with ESMTPSA id q12sm4706342ejd.51.2021.03.13.16.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Mar 2021 16:03:52 -0800 (PST)
+Date:   Sun, 14 Mar 2021 02:03:50 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andriin@fb.com, edumazet@google.com,
+        weiwan@google.com, cong.wang@bytedance.com, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, pabeni@redhat.com
+Subject: Re: [PATCH RFC] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+Message-ID: <20210314000350.2mrhvprsi77qwqdi@skbuf>
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: f34bf80037a1e8a00b948cbd5fac8e9d3c9b0b0f  Merge branch 'linus'
+Hi Yunsheng,
 
-elapsed time: 722m
+On Sat, Mar 13, 2021 at 10:47:47AM +0800, Yunsheng Lin wrote:
+> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
+> flag set, but queue discipline by-pass does not work for lockless
+> qdisc because skb is always enqueued to qdisc even when the qdisc
+> is empty, see __dev_xmit_skb().
+> 
+> This patch calles sch_direct_xmit() to transmit the skb directly
+> to the driver for empty lockless qdisc too, which aviod enqueuing
+> and dequeuing operation. qdisc->empty is set to false whenever a
+> skb is enqueued, and is set to true when skb dequeuing return NULL,
+> see pfifo_fast_dequeue().
+> 
+> Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
+> is false to avoid packet stuck problem.
+> 
+> The performance for ip_forward test increases about 10% with this
+> patch.
+> 
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
 
-configs tested: 97
-configs skipped: 2
+I can confirm the ~10% IP forwarding throughput improvement brought by
+this patch, but as you might be aware, there was a previous attempt to
+add qdisc bypass to pfifo_fast by Paolo Abeni:
+https://lore.kernel.org/netdev/661cc33a-5f65-2769-cc1a-65791cb4b131@pengutronix.de/
+It was reverted because TX reordering was observed with SocketCAN
+(although, presumably it should also be seen with Ethernet and such).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+In fact I have a setup with two NXP LS1028A-RDB boards (which use the
+drivers/net/can/flexcan.c driver and the pfifo_fast qdisc):
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7751_defconfig
-mips                        maltaup_defconfig
-sh                   sh7770_generic_defconfig
-riscv                               defconfig
-sh                        edosk7705_defconfig
-arc                          axs103_defconfig
-sh                                  defconfig
-powerpc64                           defconfig
-arm                             mxs_defconfig
-xtensa                          iss_defconfig
-sh                            hp6xx_defconfig
-sh                     sh7710voipgw_defconfig
-sh                           se7705_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                       cns3420vb_defconfig
-arm                        mini2440_defconfig
-arm                         s3c2410_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                         microdev_defconfig
-mips                        omega2p_defconfig
-powerpc                       ppc64_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                            shmin_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210313
-i386                 randconfig-a005-20210313
-i386                 randconfig-a002-20210313
-i386                 randconfig-a003-20210313
-i386                 randconfig-a004-20210313
-i386                 randconfig-a006-20210313
-i386                 randconfig-a013-20210313
-i386                 randconfig-a016-20210313
-i386                 randconfig-a011-20210313
-i386                 randconfig-a015-20210313
-i386                 randconfig-a014-20210313
-i386                 randconfig-a012-20210313
-x86_64               randconfig-a006-20210313
-x86_64               randconfig-a001-20210313
-x86_64               randconfig-a005-20210313
-x86_64               randconfig-a003-20210313
-x86_64               randconfig-a002-20210313
-x86_64               randconfig-a004-20210313
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+ +-----------+                      +-----------+
+ |           |                      |           |
+ | Generator |                      |     DUT   |
+ |           |--------------------->|           |
+ | canfdtest |           reflector  | canfdtest |
+ |           |<---------------------|           |
+ |    can1   |                      |    can0   |
+ |           |                      |           |
+ +-----------+                      +-----------+
 
-clang tested configs:
-x86_64               randconfig-a011-20210313
-x86_64               randconfig-a016-20210313
-x86_64               randconfig-a013-20210313
-x86_64               randconfig-a014-20210313
-x86_64               randconfig-a015-20210313
-x86_64               randconfig-a012-20210313
+where reordering happens in the TX side of the DUT and is noticed in the
+RX side of the generator. The test frames are classic CAN, not CAN FD.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I was able to run the canfdtest described above successfully for several
+hours (10 million CAN frames) on the current net-next (HEAD at commit
+34bb97512641 ("net: fddi: skfp: Mundane typo fixes throughout the file
+smt.h")) with no reordering.
+
+Then, after applying your patch, I am seeing TX reordering within a few
+minutes (less than 100K frames sent), therefore this reintroduces the
+bug due to which Paolo's patch was reverted.
+
+Sadly I am not knowledgeable enough to give you any hints as to what is
+going wrong, but in case you have any ideas for debug, I would be glad
+to test them out on my boards.
