@@ -2,190 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4530B33A74D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 19:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8525C33A755
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 19:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhCNSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 14:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S234049AbhCNSMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 14:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhCNSKh (ORCPT
+        with ESMTP id S234074AbhCNSME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 14:10:37 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A212FC061574;
-        Sun, 14 Mar 2021 11:10:36 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id g185so29605597qkf.6;
-        Sun, 14 Mar 2021 11:10:36 -0700 (PDT)
+        Sun, 14 Mar 2021 14:12:04 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9CFC061762
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 11:12:03 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id u3so30943382ybk.6
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 11:12:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zlRw+oTFLFxMJ39e8LJf1R9F2JNzpiEd+xBypwAOROU=;
-        b=Cgw6Dj47t0K42UZuFek8uwO3X8YstxAqaVJkRyU4EDFqfxXzrltfQdWa+6lRv1ocSI
-         WBPSZeLTTEl42aEgQ4iyPjPxu2Dlr+gY+lDEoiB9clN0dBUIGsUKT9JStrJcLDtlTrpR
-         R1VNmQd3l9P+aRdD5n7W2HWH2SlUqODB7gcwRJ6kfdwBfulPWSLiIf5o4jYnVdaLY5VT
-         j1f9VHgPg1OcAXBG7alGlZGugcSvXuTME6WHWdQQXeRzfOvckOAKcUbS7UFiprkL4gAv
-         +obM80FxdND+tRvLsw7P6lIlWk1r1FcPnIx7eLWku2piO70k+JzxaJmiz0kEHExewmhC
-         rW2A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JiLjT7F7TLvwfttlWWQnjBXTcWSnJNejV4NEk/U2uNU=;
+        b=Vs3SmhWd41w0G49v8KGBNDlaN1RnC6zNyvAS8my3/4CXGn34b4H6i44jK1dR6/LNCw
+         0hG/4OwXHBerfP3TinAVCyAMcDV/7g3f3IcIhUpgW4Y6hYZ3azWf1ORfl5qKai2RUIIH
+         /HvpBpBh84RsJWtCc1eQIGB3ttf7p2wXenf/MSi5QwyIhBQ9SWODlKO6SXCm0bJDIBE3
+         u7rStFhPidZq8wB8K9PxTN15m+ul+yN+yn4gTtMKAxzk5s9aqtmh1wrTg/6fETuxwHw/
+         Wt5kWqnSB9yvc4l7cCz6gJUkgW0btQu4OkyZxFElKPYNQSj/pdFQ711xc7zeL07nV9S+
+         A80A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zlRw+oTFLFxMJ39e8LJf1R9F2JNzpiEd+xBypwAOROU=;
-        b=NT1WGZo7ZnqoMzuuKB/3Kue1sHxI6LEi0tlDiOAfOAuJw4i5PjyK8n8dJ6KBORkmA+
-         0OlY278BpdbvgoCRhcuRSBlla1CaCvTLS1ebiHbWpOeY760eHBpPjfpv1bM23+GV5s4x
-         v59+zgr9mnwoT+5FdcrLbuqbNbHx2CdsbcP3HXvQ8O6DztIbwwnWG2SPFjLnazyuHs9w
-         BFZ3MBBPFe/f2JdpCjOC/zTM0WDhRTq3aeuSySNBfWj47U1IJqNGqsBGUndg0ScyZ2t8
-         o7M1dbZrcz1G+6F9txl42a8BrsoRt6EzqAQ7QXKS74eC+2fdu8MtjhqTRWS/6yn8S1GX
-         MuTg==
-X-Gm-Message-State: AOAM533ur3I5V6Qz3P5Nh5r5sy55FEaP/BxQCJvKq/RZRnqqzXySOWvL
-        J7li+3V8zTX8I1+Qm8hPpX4=
-X-Google-Smtp-Source: ABdhPJyt5W3i5jwljqEb8u5d5KzlELJQxuHG421a7/rUoeqK119HCRT03oRV4ie6mFSMBMOxpJu+Cw==
-X-Received: by 2002:a37:a603:: with SMTP id p3mr21671722qke.362.1615745435658;
-        Sun, 14 Mar 2021 11:10:35 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:4c0:b220:fc67:f404])
-        by smtp.googlemail.com with ESMTPSA id 75sm9854279qkj.134.2021.03.14.11.10.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 11:10:35 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH] net: arcnet: com20020 fix error handling
-Date:   Sun, 14 Mar 2021 14:08:36 -0400
-Message-Id: <20210314180836.3105727-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JiLjT7F7TLvwfttlWWQnjBXTcWSnJNejV4NEk/U2uNU=;
+        b=ZkTSYi5LEoO/3HqPYe0FCH6FtFvpluMCZbehbFI2+YP4YPbosZSvtcUSV1cN+6BlTW
+         mS7PwxqCtRJOi4yQBpCOgSPK30ZrQ0FiUOlzJ1khapWOAMBJ6DrfL/yZXM1BlNPF7ez6
+         iqCUdhd90WCpvq47Lot31PFUqI55IDOPyAk9g++CpyHf6dnX6cH3gRtFlzSYjXJFrz/L
+         M3l64XkvbOcq4WrJyqvcya62wihnBn3T0DfbWQQUWohYQSnMuuvsK7HiqFL5rHq+5Y5Y
+         yEbrdmZUuO2MXyxuaQM8+ni6o+C2pc8lQR4kOW5u2nwmw0eD3QOm3QJYSmi2iRYemaoW
+         Dt2A==
+X-Gm-Message-State: AOAM530BS+m2KH3YGgGLC7JzZgfugOjRGAJb9tS9x7Nz96wXs+ju4zE/
+        fToqwOo+46mZl3LXA5a55nI0JS6GPtsvcL+/iqd6PKPacNw=
+X-Google-Smtp-Source: ABdhPJyK7TD9OEpDYsns/BB949SqcXV5VtqVsGvY2LYwRN674CC8N0nqN8/Ap1rojQY0Qfa0XAEMFTgNBJ7+6szurDc=
+X-Received: by 2002:a25:ca42:: with SMTP id a63mr32518347ybg.318.1615745522312;
+ Sun, 14 Mar 2021 11:12:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <BN6PR2001MB1796C76ECAD9DE4807A72F43D96D9@BN6PR2001MB1796.namprd20.prod.outlook.com>
+In-Reply-To: <BN6PR2001MB1796C76ECAD9DE4807A72F43D96D9@BN6PR2001MB1796.namprd20.prod.outlook.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Sun, 14 Mar 2021 23:41:26 +0530
+Message-ID: <CAMi1Hd3pP8BL7T5XHkh5e3a8c9X5aTdY4hES5-Zc9x5Uu7fNqA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add audio support
+To:     Joel Selvaraj <jo@jsfamily.in>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two issues when handling error case in com20020pci_probe()
+On Sun, 14 Mar 2021 at 22:32, Joel Selvaraj <jo@jsfamily.in> wrote:
+>
+> This patch adds audio support for Xiaomi Poco F1 phone. Phone's primary
+> Mic and 3.5mm Headphone jack are handled through the SDM845 sound card
+> and WCD9340 codec.
+>
 
-1. priv might be not initialized yet when calling com20020pci_remove()
-from com20020pci_probe(), since the priv is set at the very last but it
-can jump to error handling in the middle and priv remains NULL.
-2. memory leak - the net device is allocated in alloc_arcdev but not
-properly released if error happens in the middle of the big for loop
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
-[    1.529110] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[    1.531447] RIP: 0010:com20020pci_remove+0x15/0x60 [com20020_pci]
-[    1.536805] Call Trace:
-[    1.536939]  com20020pci_probe+0x3f2/0x48c [com20020_pci]
-[    1.537226]  local_pci_probe+0x48/0x80
-[    1.539918]  com20020pci_init+0x3f/0x1000 [com20020_pci]
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/arcnet/com20020-pci.c | 34 +++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/arcnet/com20020-pci.c b/drivers/net/arcnet/com20020-pci.c
-index 8bdc44b7e09a..3c8f665c1558 100644
---- a/drivers/net/arcnet/com20020-pci.c
-+++ b/drivers/net/arcnet/com20020-pci.c
-@@ -127,6 +127,8 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 	int i, ioaddr, ret;
- 	struct resource *r;
- 
-+	ret = 0;
-+
- 	if (pci_enable_device(pdev))
- 		return -EIO;
- 
-@@ -139,6 +141,8 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 	priv->ci = ci;
- 	mm = &ci->misc_map;
- 
-+	pci_set_drvdata(pdev, priv);
-+
- 	INIT_LIST_HEAD(&priv->list_dev);
- 
- 	if (mm->size) {
-@@ -161,7 +165,7 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 		dev = alloc_arcdev(device);
- 		if (!dev) {
- 			ret = -ENOMEM;
--			goto out_port;
-+			break;
- 		}
- 		dev->dev_port = i;
- 
-@@ -178,7 +182,7 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 			pr_err("IO region %xh-%xh already allocated\n",
- 			       ioaddr, ioaddr + cm->size - 1);
- 			ret = -EBUSY;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		/* Dummy access after Reset
-@@ -216,18 +220,18 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 		if (arcnet_inb(ioaddr, COM20020_REG_R_STATUS) == 0xFF) {
- 			pr_err("IO address %Xh is empty!\n", ioaddr);
- 			ret = -EIO;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 		if (com20020_check(dev)) {
- 			ret = -EIO;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		card = devm_kzalloc(&pdev->dev, sizeof(struct com20020_dev),
- 				    GFP_KERNEL);
- 		if (!card) {
- 			ret = -ENOMEM;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		card->index = i;
-@@ -253,29 +257,29 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 
- 		ret = devm_led_classdev_register(&pdev->dev, &card->tx_led);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		ret = devm_led_classdev_register(&pdev->dev, &card->recon_led);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		dev_set_drvdata(&dev->dev, card);
- 
- 		ret = com20020_found(dev, IRQF_SHARED);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		devm_arcnet_led_init(dev, dev->dev_id, i);
- 
- 		list_add(&card->list, &priv->list_dev);
--	}
-+		continue;
- 
--	pci_set_drvdata(pdev, priv);
--
--	return 0;
--
--out_port:
--	com20020pci_remove(pdev);
-+err_free_arcdev:
-+		free_arcdev(dev);
-+		break;
-+	}
-+	if (ret)
-+		com20020pci_remove(pdev);
- 	return ret;
- }
- 
--- 
-2.25.1
-
+> Signed-off-by: Joel Selvaraj <jo@jsfamily.in>
+> ---
+>  .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 117 ++++++++++++++++++
+>  1 file changed, 117 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
+> index 86cbae63eaf7..5b5786595cdb 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
+> @@ -5,6 +5,8 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include <dt-bindings/sound/qcom,q6afe.h>
+> +#include <dt-bindings/sound/qcom,q6asm.h>
+>  #include "sdm845.dtsi"
+>  #include "pm8998.dtsi"
+>  #include "pmi8998.dtsi"
+> @@ -240,6 +242,28 @@ resin {
+>         };
+>  };
+>
+> +/* QUAT I2S Uses 1 I2S SD Line for audio on TAS2559/60 amplifiers */
+> +&q6afedai {
+> +       qi2s@22 {
+> +               reg = <22>;
+> +               qcom,sd-lines = <0>;
+> +       };
+> +};
+> +
+> +&q6asmdai {
+> +       dai@0 {
+> +               reg = <0>;
+> +       };
+> +
+> +       dai@1 {
+> +               reg = <1>;
+> +       };
+> +
+> +       dai@2 {
+> +               reg = <2>;
+> +       };
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+> @@ -257,6 +281,73 @@ &sdhc_2 {
+>         cd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
+>  };
+>
+> +&sound {
+> +       compatible = "qcom,db845c-sndcard";
+> +       pinctrl-0 = <&quat_mi2s_active
+> +                       &quat_mi2s_sd0_active>;
+> +       pinctrl-names = "default";
+> +       model = "Xiaomi Poco F1";
+> +       audio-routing =
+> +               "RX_BIAS", "MCLK",
+> +               "AMIC1", "MIC BIAS1",
+> +               "AMIC2", "MIC BIAS2",
+> +               "AMIC3", "MIC BIAS3",
+> +               "MM_DL1",  "MultiMedia1 Playback",
+> +               "MM_DL2",  "MultiMedia2 Playback",
+> +               "MultiMedia3 Capture", "MM_UL3";
+> +
+> +       mm1-dai-link {
+> +               link-name = "MultiMedia1";
+> +               cpu {
+> +                       sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
+> +               };
+> +       };
+> +
+> +       mm2-dai-link {
+> +               link-name = "MultiMedia2";
+> +               cpu {
+> +                       sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
+> +               };
+> +       };
+> +
+> +       mm3-dai-link {
+> +               link-name = "MultiMedia3";
+> +               cpu {
+> +                       sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
+> +               };
+> +       };
+> +
+> +       slim-dai-link {
+> +               link-name = "SLIM Playback";
+> +               cpu {
+> +                       sound-dai = <&q6afedai SLIMBUS_0_RX>;
+> +               };
+> +
+> +               platform {
+> +                       sound-dai = <&q6routing>;
+> +               };
+> +
+> +               codec {
+> +                       sound-dai =  <&wcd9340 0>;
+> +               };
+> +       };
+> +
+> +       slimcap-dai-link {
+> +               link-name = "SLIM Capture";
+> +               cpu {
+> +                       sound-dai = <&q6afedai SLIMBUS_0_TX>;
+> +               };
+> +
+> +               platform {
+> +                       sound-dai = <&q6routing>;
+> +               };
+> +
+> +               codec {
+> +                       sound-dai = <&wcd9340 1>;
+> +               };
+> +       };
+> +};
+> +
+>  &tlmm {
+>         gpio-reserved-ranges = <0 4>, <81 4>;
+>
+> @@ -285,6 +376,15 @@ sdc2_card_det_n: sd-card-det-n {
+>                 function = "gpio";
+>                 bias-pull-up;
+>         };
+> +
+> +       wcd_intr_default: wcd_intr_default {
+> +               pins = <54>;
+> +               function = "gpio";
+> +
+> +               input-enable;
+> +               bias-pull-down;
+> +               drive-strength = <2>;
+> +       };
+>  };
+>
+>  &uart6 {
+> @@ -345,6 +445,23 @@ &usb_1_qmpphy {
+>         vdda-pll-supply = <&vreg_l1a_0p875>;
+>  };
+>
+> +&wcd9340{
+> +       pinctrl-0 = <&wcd_intr_default>;
+> +       pinctrl-names = "default";
+> +       clock-names = "extclk";
+> +       clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
+> +       reset-gpios = <&tlmm 64 0>;
+> +       vdd-buck-supply = <&vreg_s4a_1p8>;
+> +       vdd-buck-sido-supply = <&vreg_s4a_1p8>;
+> +       vdd-tx-supply = <&vreg_s4a_1p8>;
+> +       vdd-rx-supply = <&vreg_s4a_1p8>;
+> +       vdd-io-supply = <&vreg_s4a_1p8>;
+> +       qcom,micbias1-microvolt = <2700000>;
+> +       qcom,micbias2-microvolt = <1800000>;
+> +       qcom,micbias3-microvolt = <2700000>;
+> +       qcom,micbias4-microvolt = <2700000>;
+> +};
+> +
+>  &wifi {
+>         status = "okay";
+>
+> --
+> 2.25.1
+>
