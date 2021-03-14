@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590D933A5B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943B033A5B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbhCNPqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        id S234481AbhCNPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbhCNPpc (ORCPT
+        with ESMTP id S234118AbhCNPpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:45:32 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10DAC061762;
-        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so18052673wmj.1;
-        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
+        Sun, 14 Mar 2021 11:45:34 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331EFC061574;
+        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id b18so7437977wrn.6;
+        Sun, 14 Mar 2021 08:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uwOwpk83R+cdKaOIdKgxM+y8AmMlhEg4nEbu82oea8Y=;
-        b=FricUU/Zao/xfxzFKTc/T0yHKvS5FKBGmCGggEL+kCVwYG10h72X7XZDuRwAeTS8ip
-         5F49BIStvN+EtFtHbcAWlS4gZAB1quwkgVHafSXe2mKDqSTnF/U9UPj27kcKuW49WYwY
-         8c+6lqTeuZJfDkrSIIUb4eeqbPQu44Z3d1cqOk/pODSIXib2UHUCO0/7ApureugiyYnT
-         Q3An7Ku5jD4618Z1DIF3m3sxdxKiQTE3D7qZF+8Mxv+X/3NGj3eZQzF1pPS+uc0+IdKp
-         3feJFt+mpxCi3ZsYL7HFBiYYPTHAA7ewSEDHvjis31OEfWaAZXLqy9NbGgWqAwbTvniW
-         gX5g==
+        bh=QpHXgChknEzhzYi4Q8rqZSYE4y3Oym7aFx47bTQjCRA=;
+        b=bRLNLTABvbDYFY599i2T//8iHkJMDYKj6tzFPHL5SRb7AcALZZ0tKjQ5HdxlWBKjWt
+         SyQ8A7RJU2hkiRLLJtJhOPzsDbpsLT/2dkHYZfviDM5OBmhMUumILoFGotrAY8soWdmY
+         iKzKwqaZgmgpZsx5W23qofLLZaie4fRDfIg01+S70kAdvLXNbGAfhkNN4dnyZehpkVYV
+         nF8qR7+vHHQikU6mecPKMNDN5E/JQVnRhgn2B8c8Njs9BsUUJIR9PewiDzSTy3aUCMn2
+         1hmnjgAZXcjogfiAAxxCg4d3gfteOrRJuowIVdRkdmpzvi3bDsxpD9bUkaEDeAgVzEbc
+         CMyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uwOwpk83R+cdKaOIdKgxM+y8AmMlhEg4nEbu82oea8Y=;
-        b=ccD7AqJsz4/AUt7vjgad1bX1+Hh7J+C4JPpow3Vt5bNNDuQsztqC/l09+ihnmIKbBQ
-         BLbH1Saoo+CTKHTpQt+DrS0cjVH2CL+Ms59st+0Ajzd34ZAcuILXEg+2fDcFupGgs3Sy
-         sR6EfmhXZyvgLmWjwAzffRQiSkrKspHG9VmFMTBuQU1CMxPKUQs+PAfxneq/WAge/JeQ
-         uxZYdkiKR23Yb/vwXp0/G1v/lZqmFZE+R8lsfnbn7spOJhbAybr4OShLIxvhuLA2OT1m
-         819AZ5oPKcCoJmSEKQS2vsfCUOMZaNkiPsG2v/mnQ8StnLnBANEA9UmR8878/OXEcIMs
-         H3yg==
-X-Gm-Message-State: AOAM533cDF4HLu7dLQJ04oUfck8C4Lp9Scuihh4K5419UFUuzCLUss4O
-        GjViKiHuBukw9HUxWTzNlKc=
-X-Google-Smtp-Source: ABdhPJz5OaywGExFLiRmwwnO3hyEECgOoB4oHGxY5YtIYXgA3PAkWwqN8R9YoMcN8/QUH/w8/RFJAA==
-X-Received: by 2002:a05:600c:22cd:: with SMTP id 13mr21770353wmg.90.1615736730659;
-        Sun, 14 Mar 2021 08:45:30 -0700 (PDT)
+        bh=QpHXgChknEzhzYi4Q8rqZSYE4y3Oym7aFx47bTQjCRA=;
+        b=m2voiihnyFHnZ3991Yk1dxm/+MqXOQFz4FLaSOqJV4tFbCnW5N5nqvFA4muOYDPhkU
+         9Ikm1o51D5jFRYfnSV5Q1PiPSluE/FD0LHtFmYjuF+eOI8afJt7oIbI8I72Zx+d1yceB
+         I9ysTR85JpUpo5ivfvEToTzGiWSjnMykn9knEohWYYKNXSvqSPepirZDviJQpx99PJqx
+         bcSEXxhwPNeKStxVSfDJqQDPBYqY7+xHswkp0aDb+HJrhbLKVgdq0xtl4nqG8TOgHXQz
+         OYcEzUeCloC/oa4kFCf2BUunn6du8hH+C0k/+TYZi5bmKGqoV8/T5XBVbRWVLrmVX7GI
+         /sOw==
+X-Gm-Message-State: AOAM533pbvPL9Qfb8pXOvpTm+KujV/n18pNE7oCX1VHxwqVfoH+XLteU
+        TpIy0d/W5WYdrHidckq/SYM=
+X-Google-Smtp-Source: ABdhPJyd0+Gt/PLPpYiHZG8ky3XiLj8yZZzNOhE6OO/1QCc4KEUkdkf0+qyy74cpcV5yufuKG140NA==
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr22810754wrs.34.1615736731999;
+        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.29
+        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 08:45:30 -0700 (PDT)
+        Sun, 14 Mar 2021 08:45:31 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 10/17] ASoC: tegra20: i2s: Use devm_clk_get()
-Date:   Sun, 14 Mar 2021 18:44:52 +0300
-Message-Id: <20210314154459.15375-11-digetx@gmail.com>
+Subject: [PATCH v5 11/17] ASoC: tegra20: i2s: Remove handing of disabled runtime PM
+Date:   Sun, 14 Mar 2021 18:44:53 +0300
+Message-Id: <20210314154459.15375-12-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
 References: <20210314154459.15375-1-digetx@gmail.com>
@@ -69,70 +69,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use resource-managed variant of clk_get() to simplify code.
+Runtime PM is always available on Tegra since commit 40b2bb1b132a
+("ARM: tegra: enforce PM requirement"), hence there is no need to
+handle the case of a disabled RPM by Tegra drivers. Remove handing
+of a disabled runtime PM from Tegra20 I2S driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/tegra/tegra20_i2s.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 0f2bdc2e8598..fe569198b17a 100644
+index fe569198b17a..1b27f81c10fe 100644
 --- a/sound/soc/tegra/tegra20_i2s.c
 +++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -370,7 +370,7 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2s->reset);
+@@ -401,18 +401,13 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
+ 	i2s->playback_dma_data.maxburst = 4;
+ 
+ 	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = tegra20_i2s_runtime_resume(&pdev->dev);
+-		if (ret)
+-			goto err_pm_disable;
+-	}
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &tegra20_i2s_component,
+ 					 &i2s->dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+ 		ret = -ENOMEM;
+-		goto err_suspend;
++		goto err_pm_disable;
  	}
  
--	i2s->clk_i2s = clk_get(&pdev->dev, NULL);
-+	i2s->clk_i2s = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(i2s->clk_i2s)) {
- 		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
- 		ret = PTR_ERR(i2s->clk_i2s);
-@@ -381,7 +381,7 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	regs = devm_ioremap_resource(&pdev->dev, mem);
- 	if (IS_ERR(regs)) {
- 		ret = PTR_ERR(regs);
--		goto err_clk_put;
-+		goto err;
- 	}
+ 	ret = tegra_pcm_platform_register(&pdev->dev);
+@@ -425,9 +420,6 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
  
- 	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-@@ -389,7 +389,7 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	if (IS_ERR(i2s->regmap)) {
- 		dev_err(&pdev->dev, "regmap init failed\n");
- 		ret = PTR_ERR(i2s->regmap);
--		goto err_clk_put;
-+		goto err;
- 	}
- 
- 	i2s->capture_dma_data.addr = mem->start + TEGRA20_I2S_FIFO2;
-@@ -430,16 +430,12 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 		tegra20_i2s_runtime_suspend(&pdev->dev);
+ err_unregister_component:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_suspend:
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra20_i2s_runtime_suspend(&pdev->dev);
  err_pm_disable:
  	pm_runtime_disable(&pdev->dev);
--err_clk_put:
--	clk_put(i2s->clk_i2s);
  err:
- 	return ret;
- }
- 
- static int tegra20_i2s_platform_remove(struct platform_device *pdev)
+@@ -438,10 +430,7 @@ static int tegra20_i2s_platform_remove(struct platform_device *pdev)
  {
--	struct tegra20_i2s *i2s = dev_get_drvdata(&pdev->dev);
--
  	tegra_pcm_platform_unregister(&pdev->dev);
  	snd_soc_unregister_component(&pdev->dev);
- 
-@@ -447,8 +443,6 @@ static int tegra20_i2s_platform_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_i2s_runtime_suspend(&pdev->dev);
- 
--	clk_put(i2s->clk_i2s);
 -
+ 	pm_runtime_disable(&pdev->dev);
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra20_i2s_runtime_suspend(&pdev->dev);
+ 
  	return 0;
  }
- 
 -- 
 2.30.2
 
