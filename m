@@ -2,219 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1737333A29B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A5F33A29D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 05:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhCNERA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Mar 2021 23:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        id S234820AbhCNEUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Mar 2021 23:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhCNEQn (ORCPT
+        with ESMTP id S232974AbhCNETz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Mar 2021 23:16:43 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF9CC061763
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:16:43 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id j22so5541802otp.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:16:43 -0800 (PST)
+        Sat, 13 Mar 2021 23:19:55 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928EFC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:19:55 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so2194237ool.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Mar 2021 20:19:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UVJggSuVQwIjnEYAiqMXk1oXh8toVv2eEkeULAIZFBk=;
-        b=OPrHhWMHN4CrOK1eZV3Y6VeTCOxxeWhIJTOHrJvPIyxdXSsXPB/NwE8vwlAe+eBIzK
-         pJkn/DrOqhvldlBuw+pDHcZjVOW3r9CYUTFJUzGm+uwVNuvgIHfXZEZKJ3VVeIwpQg0z
-         bjnt3PJRW1osw1KEW5dUqXZ2kaDg46fOe4hDpGp5o3mJ+RuynaAFhIsHALYBHwGcGUMJ
-         O7p2CmrJwyxDOrjJtWqIBy3AOFHfyxZbJR+JeycIJzaneYOOxwXamoOjMm+TN93NlkmB
-         qCvZYcGnmoLcjDDz3RvAXL9T665S+4M+abn+8JqmT4YJhGfA9rnJM1/9jP89qaU6PmE3
-         WElQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=kixZrJkwNjUoR8zMK2p//jPoJv3zOuB8QGV2eNGzAyA=;
+        b=v8QVnTHZHCVWu9EH2kSatOoL53oTW7ZGKHoZ66e5Ivw5EVDSh/cz1sn2AhTU/gUDhW
+         RLNjWTnAGGDqNT+aIpfk/crGQH+y69nX1r5+EyH2fMWNvsTSrhIj52eP/3EfwxA9lGB0
+         6zL9lGl6a/qCEQ2Gey41NP4+ugxL8UXWFHhVX2v2TmnXcWSD9Znhd0Q8cp3CjjWmoWla
+         0kBv5dcqXlhGR9tgfg7d+u86Crv2T2c+xXV90ieVsMHJY44jtHXs5UaRCOQueJYYmqao
+         nGgm1Bd83/ZasItTp62QhhY++J/Mx5AeNaQUa26Kms5rOSIg1jblEfgu/n9dUP7fG3dJ
+         OIsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UVJggSuVQwIjnEYAiqMXk1oXh8toVv2eEkeULAIZFBk=;
-        b=tvltSXK8lvbpd7v1QX3znjmfwUqKH/+bnwazrpxeVQQB/zlEUFCJabxYbHi1hUqj95
-         fwPgsABXfaG4PFTiROxEMIOS/0bwXSSYxXnI8aN/73kK3eUmfSwT9bqXLPLnEALirxQA
-         5JQ/VaBniyuODtbq+98QWHYtPlNRgfK/mg8m9RwUMFWbnsPyEOGwyN1P9N6gQ3bO3bPy
-         sFMHJS4c8Ou1uN7o60gD1BQfXyFeqPADeesPUrNX8ULmqmWyVdRJohKn2RHzcbnDXpjm
-         exsci1SsUFUbrD2YDE02iKcy58oqz/wdEEMLYqeuNR3WOD5SG7GA56WIyWwvEIKqO7cY
-         4RMg==
-X-Gm-Message-State: AOAM533NPZS0bHwS8VZ9d9B4O4Ko52dofNvw6bhUA4skr5YOQjKhMCw2
-        Jh3yeCn2RFmJcEMQb+Mju32lkWxzN21dKw==
-X-Google-Smtp-Source: ABdhPJzl6OAxMKKKHFAGhrwdF8uYjqyObOWNdP9tJqPNy2zF5TffI2unBLghZATf60ukU0YxcgOeCA==
-X-Received: by 2002:a9d:5191:: with SMTP id y17mr9327284otg.332.1615695401970;
-        Sat, 13 Mar 2021 20:16:41 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 3sm4775170ood.46.2021.03.13.20.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Mar 2021 20:16:41 -0800 (PST)
-Date:   Sat, 13 Mar 2021 22:16:39 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, agross@kernel.org, mani@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] arm64: dts: qcom: sc7280: Add nodes to boot WPSS
-Message-ID: <YE2OJz1pI81Uj8DA@builder.lan>
-References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
- <1615269111-25559-7-git-send-email-sibis@codeaurora.org>
- <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=kixZrJkwNjUoR8zMK2p//jPoJv3zOuB8QGV2eNGzAyA=;
+        b=NRKKV+QB7wX6rhQMw5ZMzAOP+DO6OTE4ksXopLiih2k6a009c71AtCINsdqQ7VTUiK
+         Jy7UZLQsbu8cv6xifFewJqc9S/tsC4AQ1wbIJP/7bmQphkN50BRSVx3QYozXms6IhFAX
+         nBHihzPAS39rb3EZv6MhSVlB2z4jsJdld7EdD5Ei9YfauMX4YTxrSNdhWTEScgiHuxgV
+         24S1iuXjM6GuPPfoxm50BRerYAQBtm1ldw7k53Rr66fmwcj0LU0D1btIXMVSLKh5nmws
+         MIUY+iIJXV8zeRfwCiVkvd0zb7YYd/CCm2X137NU5PwXOVL5K1Gu1SvXYp93iw/NdrFL
+         lokQ==
+X-Gm-Message-State: AOAM532nEVekLDagxjA/mPgziWzXSs0zMtw4PaG4YffeJtWphdG/ji0f
+        38UfS8X3+GNTsyfMyeXZCTkgAw==
+X-Google-Smtp-Source: ABdhPJwcGvDEC+R1bqzuQPSx98+QkM3mYsVg4BQUjFxh2JMgLz9PzOsjvi0InQqiac1WKpfn+f8ybA==
+X-Received: by 2002:a4a:45d5:: with SMTP id y204mr8994074ooa.33.1615695594687;
+        Sat, 13 Mar 2021 20:19:54 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n22sm4284425oie.32.2021.03.13.20.19.52
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sat, 13 Mar 2021 20:19:54 -0800 (PST)
+Date:   Sat, 13 Mar 2021 20:19:38 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Brian Geffon <bgeffon@google.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+In-Reply-To: <20210303175235.3308220-1-bgeffon@google.com>
+Message-ID: <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 13 Mar 15:46 CST 2021, Stephen Boyd wrote:
+On Wed, 3 Mar 2021, Brian Geffon wrote:
 
-> Quoting Sibi Sankar (2021-03-08 21:51:51)
-> > Add miscellaneous nodes to boot the Wireless Processor Subsystem on
+> Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This change
+> will widen the support to include shmem mappings. The primary use case
+> is to support MREMAP_DONTUNMAP on mappings which may have been created from
+> a memfd.
 > 
-> Maybe add (WPSS) after the name so we know they're related.
+> Lokesh Gidra who works on the Android JVM, provided an explanation of how such
+> a feature will improve Android JVM garbage collection:
+> "Android is developing a new garbage collector (GC), based on userfaultfd. The
+> garbage collector will use userfaultfd (uffd) on the java heap during compaction.
+> On accessing any uncompacted page, the application threads will find it missing,
+> at which point the thread will create the compacted page and then use UFFDIO_COPY
+> ioctl to get it mapped and then resume execution. Before starting this compaction,
+> in a stop-the-world pause the heap will be mremap(MREMAP_DONTUNMAP) so that the
+> java heap is ready to receive UFFD_EVENT_PAGEFAULT events after resuming execution.
 > 
-> > SC7280 SoCs.
-> > 
-> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > ---
-> > 
-> > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=438217
-> > Depends on ipcc dt node enablement from ^^ 
-> > 
-> >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 143 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 143 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > index 18637c369c1d..4f03c468df51 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > @@ -244,12 +251,131 @@
-> >                 reg = <0 0x80000000 0 0>;
-> >         };
-> >  
-> > +       tcsr_mutex: hwlock {
-> > +               compatible = "qcom,tcsr-mutex";
-> > +               syscon = <&tcsr_mutex_regs 0 0x1000>;
-> > +               #hwlock-cells = <1>;
-> > +       };
+> To speedup mremap operations, pagetable movement was optimized by moving PUD entries
+> instead of PTE entries [1]. It was necessary as mremap of even modest sized memory
+> ranges also took several milliseconds, and stopping the application for that long
+> isn't acceptable in response-time sensitive cases. With UFFDIO_CONTINUE feature [2],
+> it will be even more efficient to implement this GC, particularly the 'non-moveable'
+> portions of the heap. It will also help in reducing the need to copy (UFFDIO_COPY)
+> the pages. However, for this to work, the java heap has to be on a 'shared' vma.
+> Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this patch will
+> enable using UFFDIO_CONTINUE for the new userfaultfd-based heap compaction."
 > 
-> Is this node in the right place? I think the node above it is 'memory'?
-> In which case 'hwlock' comes before 'memory' alphabetically.
+> [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+> [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
+> ---
+>  mm/mremap.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index ec8f840399ed..6934d199da54 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -653,8 +653,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+>  		return ERR_PTR(-EINVAL);
+>  	}
+>  
+> -	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+> -			vma->vm_flags & VM_SHARED))
+> +	if (flags & MREMAP_DONTUNMAP && !(vma_is_anonymous(vma) || vma_is_shmem(vma)))
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	if (is_vm_hugetlb_page(vma))
+> -- 
 
-Thanks for spotting this, as it's no longer acceptable to have a
-standalone "syscon" node I was asked to rewrite the binding for this a
-few months ago. So the tcsr_mutex should now be represented with a reg
-under /soc.
+Yet something to improve...
 
-> > +
-> > +       smem {
-> > +               compatible = "qcom,smem";
-> > +               memory-region = <&smem_mem>;
-> > +               hwlocks = <&tcsr_mutex 3>;
-> > +       };
-> > +
-> >         firmware {
-> >                 scm {
-> >                         compatible = "qcom,scm-sc7280", "qcom,scm";
-> >                 };
-> >         };
-> >  
-> > +       smp2p-adsp {
-> > +               compatible = "qcom,smp2p";
-> > +               qcom,smem = <443>, <429>;
-> > +               interrupts-extended = <&ipcc IPCC_CLIENT_LPASS
-> > +                                            IPCC_MPROC_SIGNAL_SMP2P
-> > +                                            IRQ_TYPE_EDGE_RISING>;
-> > +               mboxes = <&ipcc IPCC_CLIENT_LPASS
-> > +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> > +
-> > +               qcom,local-pid = <0>;
-> > +               qcom,remote-pid = <2>;
-> > +
-> > +               adsp_smp2p_out: master-kernel {
-> > +                       qcom,entry-name = "master-kernel";
-> > +                       #qcom,smem-state-cells = <1>;
-> > +               };
-> > +
-> > +               adsp_smp2p_in: slave-kernel {
-> > +                       qcom,entry-name = "slave-kernel";
-> > +                       interrupt-controller;
-> > +                       #interrupt-cells = <2>;
-> > +               };
-> > +       };
-> > +
-> > +       smp2p-cdsp {
-> > +               compatible = "qcom,smp2p";
-> > +               qcom,smem = <94>, <432>;
-> > +               interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
-> > +                                            IPCC_MPROC_SIGNAL_SMP2P
-> > +                                            IRQ_TYPE_EDGE_RISING>;
-> > +               mboxes = <&ipcc IPCC_CLIENT_CDSP
-> > +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> > +
-> > +               qcom,local-pid = <0>;
-> > +               qcom,remote-pid = <5>;
-> > +
-> > +               cdsp_smp2p_out: master-kernel {
-> > +                       qcom,entry-name = "master-kernel";
-> > +                       #qcom,smem-state-cells = <1>;
-> > +               };
-> > +
-> > +               cdsp_smp2p_in: slave-kernel {
-> > +                       qcom,entry-name = "slave-kernel";
-> > +                       interrupt-controller;
-> > +                       #interrupt-cells = <2>;
-> > +               };
-> > +       };
-> > +
-> > +       smp2p-mpss {
-> > +               compatible = "qcom,smp2p";
-> > +               qcom,smem = <435>, <428>;
-> > +               interrupts-extended = <&ipcc IPCC_CLIENT_MPSS
-> > +                                            IPCC_MPROC_SIGNAL_SMP2P
-> > +                                            IRQ_TYPE_EDGE_RISING>;
-> > +               mboxes = <&ipcc IPCC_CLIENT_MPSS
-> > +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> > +
-> > +               qcom,local-pid = <0>;
-> > +               qcom,remote-pid = <1>;
-> > +
-> > +               modem_smp2p_out: master-kernel {
-> > +                       qcom,entry-name = "master-kernel";
-> > +                       #qcom,smem-state-cells = <1>;
-> > +               };
-> > +
-> > +               modem_smp2p_in: slave-kernel {
-> > +                       qcom,entry-name = "slave-kernel";
-> 
-> Do these names need to have 'master' and 'slave' in them? We're trying
-> to avoid these terms. See Documentation/process/coding-style.rst Section
-> 4 naming.
-> 
+Thanks for extending MREMAP_DONTUNMAP to shmem, but I think this patch
+goes in the wrong direction, complicating when it should be generalizing:
+the mremap syscall is about rearranging the user's virtual address space,
+and is not specific to the underlying anonymous or shmem or file object
+(though so far you have only been interested in anonymous, and now shmem).
 
-They need to match the naming in the firmware, but I would welcome a
-future change to something in line with the coding style and simply more
-descriptive.
+A better patch would say:
+ 
+-	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+-			vma->vm_flags & VM_SHARED))
++	if ((flags & MREMAP_DONTUNMAP) &&
++	    (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+ 		return ERR_PTR(-EINVAL);
 
-Regards,
-Bjorn
+VM_DONTEXPAND is what has long been used on special mappings, to prevent
+surprises from mremap changing the size of the mapping: MREMAP_DONTUNMAP
+introduced a different way of expanding the mapping, so VM_DONTEXPAND
+still seems a reasonable name (I've thrown in VM_PFNMAP there because
+it's in the VM_DONTEXPAND test lower down: for safety I guess, and best
+if both behave the same - though one says -EINVAL and the other -EFAULT).
 
-> > +                       interrupt-controller;
-> > +                       #interrupt-cells = <2>;
-> > +               };
-> > +
-> > +               ipa_smp2p_out: ipa-ap-to-modem {
-> > +                       qcom,entry-name = "ipa";
-> > +                       #qcom,smem-state-cells = <1>;
-> > +               };
-> > +
-> > +               ipa_smp2p_in: ipa-modem-to-ap {
-> > +                       qcom,entry-name = "ipa";
-> > +                       interrupt-controller;
-> > +                       #interrupt-cells = <2>;
-> > +               };
-> > +       };
-> > +
+With that VM_DONTEXPAND check in, Dmitry's commit cd544fd1dc92
+("mremap: don't allow MREMAP_DONTUNMAP on special_mappings and aio")
+can still be reverted (as you agreed on 28th December), even though
+vma_is_anonymous() will no longer protect it.
+
+Was there an mremap(2) man page update for MREMAP_DONTUNMAP?
+Whether or not there was before, it ought to get one now.
+
+Thanks,
+Hugh
