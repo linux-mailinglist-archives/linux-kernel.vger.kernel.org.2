@@ -2,106 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1551833A808
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DFF33A7FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 21:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhCNUlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 16:41:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13529 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234514AbhCNUl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 16:41:27 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzBGv4TN1zNmXh;
-        Mon, 15 Mar 2021 04:39:03 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.202.142) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 15 Mar 2021 04:41:14 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <akpm@linux-foundation.org>, <jan.kiszka@siemens.com>,
-        <kbingham@kernel.org>
-CC:     <corbet@lwn.net>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@openeuler.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [RESEND PATCH v2 2/2] scripts/gdb: add lx_current support for arm64
-Date:   Mon, 15 Mar 2021 09:34:44 +1300
-Message-ID: <20210314203444.15188-3-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20210314203444.15188-1-song.bao.hua@hisilicon.com>
-References: <20210314203444.15188-1-song.bao.hua@hisilicon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.142]
-X-CFilter-Loop: Reflected
+        id S234296AbhCNUi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 16:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234071AbhCNUir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 16:38:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5326664EBE;
+        Sun, 14 Mar 2021 20:38:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615754327;
+        bh=EhwO2rtCKjPVJ+o0up8E/BbIrO3799p8r2B/4fuE1S0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=YhdOEIhGZLgWOQ1QBI1GddAa0M0auIUnGHvCKMBMyPxErx4/a1M9Tv8ocCg5njiBE
+         hcCZyc4JeXgc0ffGRN8hrIXuvwNNsKA4EfPEPRc/lKzoD4tG9G2HWHcUhvkJ2wTTZh
+         Uprsbqhs3zeDGFR9M//7JqzFPUEgKHMPxEtL9qRSUQulVrpXLkJ/xIHb4FYrory+uE
+         ukXoYE9IYVTZSWqj8OHAl8TwMuL0DISETAEiGf0b8KpopRwvZC+yPk5yfU+w0CFhq1
+         WAsL5NZe3giynxjXxix54UJXOofwFl2vh2RnHJFymmoTfK7xSTHfIG/5+VZSnqHl6V
+         Xcs73rDMVlIlg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4E92D609C5;
+        Sun, 14 Mar 2021 20:38:47 +0000 (UTC)
+Subject: Re: [GIT pull] objtool/urgent for v5.12-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <161573639789.27979.3143475584511547992.tglx@nanos>
+References: <161573639668.27979.17827928369874291298.tglx@nanos> <161573639789.27979.3143475584511547992.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <161573639789.27979.3143475584511547992.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2021-03-14
+X-PR-Tracked-Commit-Id: ba08abca66d46381df60842f64f70099d5482b92
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 19469d2adab9a94e3c1713b7a12a67f9c59c1161
+Message-Id: <161575432731.20317.7358122867720918809.pr-tracker-bot@kernel.org>
+Date:   Sun, 14 Mar 2021 20:38:47 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm64 uses SP_EL0 to save the current task_struct address. While running
-in EL0, SP_EL0 is clobbered by userspace. So if the upper bit is not 1
-(not TTBR1), the current address is invalid. This patch checks the upper
-bit of SP_EL0, if the upper bit is 1, lx_current() of arm64 will return
-the derefrence of current task. Otherwise, lx_current() will tell users
-they are running in userspace(EL0).
+The pull request you sent on Sun, 14 Mar 2021 15:39:57 -0000:
 
-While arm64 is running in EL0, it is actually pointless to print current
-task as the memory of kernel space is not accessible in EL0.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2021-03-14
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/dev-tools/gdb-kernel-debugging.rst |  2 +-
- scripts/gdb/linux/cpus.py                        | 13 +++++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/19469d2adab9a94e3c1713b7a12a67f9c59c1161
 
-diff --git a/Documentation/dev-tools/gdb-kernel-debugging.rst b/Documentation/dev-tools/gdb-kernel-debugging.rst
-index 1586901b683c..8e0f1fe8d17a 100644
---- a/Documentation/dev-tools/gdb-kernel-debugging.rst
-+++ b/Documentation/dev-tools/gdb-kernel-debugging.rst
-@@ -114,7 +114,7 @@ Examples of using the Linux-provided gdb helpers
-     [     0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
-     ....
- 
--- Examine fields of the current task struct(supported by x86 only)::
-+- Examine fields of the current task struct(supported by x86 and arm64 only)::
- 
-     (gdb) p $lx_current().pid
-     $1 = 4998
-diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
-index f382762509d3..15fc4626d236 100644
---- a/scripts/gdb/linux/cpus.py
-+++ b/scripts/gdb/linux/cpus.py
-@@ -16,6 +16,9 @@ import gdb
- from linux import tasks, utils
- 
- 
-+task_type = utils.CachedType("struct task_struct")
-+
-+
- MAX_CPUS = 4096
- 
- 
-@@ -157,9 +160,19 @@ Note that VAR has to be quoted as string."""
- PerCpu()
- 
- def get_current_task(cpu):
-+    task_ptr_type = task_type.get_type().pointer()
-+
-     if utils.is_target_arch("x86"):
-          var_ptr = gdb.parse_and_eval("&current_task")
-          return per_cpu(var_ptr, cpu).dereference()
-+    elif utils.is_target_arch("aarch64"):
-+         current_task_addr = gdb.parse_and_eval("$SP_EL0")
-+         if((current_task_addr >> 63) != 0):
-+             current_task = current_task_addr.cast(task_ptr_type)
-+             return current_task.dereference()
-+         else:
-+             raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
-+                                "while running in userspace(EL0)")
-     else:
-         raise gdb.GdbError("Sorry, obtaining the current task is not yet "
-                            "supported with this arch")
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
