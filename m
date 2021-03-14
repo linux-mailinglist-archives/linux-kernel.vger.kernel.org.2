@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5371933A87E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B4833A881
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 23:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCNWS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 18:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
+        id S229606AbhCNWXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 18:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhCNWSb (ORCPT
+        with ESMTP id S229488AbhCNWWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 18:18:31 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81494C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:18:31 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id v9so53947113lfa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 15:18:31 -0700 (PDT)
+        Sun, 14 Mar 2021 18:22:46 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F196EC061574;
+        Sun, 14 Mar 2021 15:22:45 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id x10so29985511qkm.8;
+        Sun, 14 Mar 2021 15:22:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bRZlvg5CYiIyLzMVWaD21PsrnUKpNjmztmF2D3AXb9s=;
-        b=T57p5g76assY0/wLTfwohhX/YIpkeBG+zU067GIfZmHO34Lv5KxSEl+TGTdsqJz9fG
-         2AVDjssGL59STbfp7jLkRRLs+R5RHxLeukLsY7xhyZWzaS5DwnidP6Qb8NJZeJKn7bpI
-         V/S47bCRebSgPpVmrgOYexuI8ayzKhVeGVRyAfmt/rOZ0BUykbRc8w9vGJTGUCUD9D2j
-         TKBYpzDs9aswpLKAJe7kyll+18/IZGI4nVkxM+r+3BBrEZZTk+0xVLpaD3p+ds+h01q4
-         HS/PBp8wcxAG6iFH41v6bxB5hsGV1KfrP0SV80zayywDn4B3xe/VF3dkXnpxQ1m9l9Ns
-         xOVg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7B7xY3igOoJbuW3KheyCp4L18Qf+vEsDSRa9Nks3Dls=;
+        b=cMZcYJiVipvWRlxXGEF2f2LSvPl1ZC7b1Cn+UGHLVs84KguZVKajFPzyEqNNGxPZUi
+         R4R0m8MoC0VcgMInjtz3Mwcxa4EAvNdNv8Lw2AHnHm3hRURhK/WyM8OjXZrJy7fOteC3
+         tDYkUToTZ7RF6Ie9OCgSNk9W96FYtm3lUUwCDbGtUJts7SWbVVBxc5o8Zlv0GAnJk9rA
+         KQ88EvkFh9VZYRrdQ1v4Qj1H709O728XNGRN2FS67PSxKrfay/i955KkIa8qZohp3dOX
+         5PsQ1W5IMbcgq0l+Gs0POGeScnvCcJJP+jHQGMyLtLUTPhy+Fe15Ezp/q6Yh9Hy/4XxI
+         u5SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bRZlvg5CYiIyLzMVWaD21PsrnUKpNjmztmF2D3AXb9s=;
-        b=T0Rq1v43PQmHe+RmIRZPFYJVDlf3Jy0bjQDarJVbZfLgWIg3TBgiLj02xeYBGZpzmX
-         i6we9L0DuXfBVcs+ILc9Q0uzXP6mZ6FgXnDGMdHasJ2p3ehQzcMIyYo9Regq/qeTXSIr
-         7UplO6YWZbyvHKAqAXOzdjHbnAMAaeH1O31YiBhu+Tk2P5x66EwCnk2skPFvj7x9GaCJ
-         jUjO6aa7QyXYTLxKhmjvMG6utC17YPLrB7u024IYjfE+7er8se3M7StP0EtLB83HOBAE
-         I5WuVl5eCAGeSWFH88LW9/qIN/8XOVrDQdaOPqMdesTvkNAYtGxDD6tKgcOTTjlFAQlu
-         qwIg==
-X-Gm-Message-State: AOAM531p4oFRy58iIG2iESafrAbZFHCSM7mEg+BdlRx0yI6BnyzoBXkB
-        xiAnD5NxhZx55KVhdpFuStU=
-X-Google-Smtp-Source: ABdhPJwrYRFA8yv0MViVAYfhde3SweDTEMzlXVFvy1TcsHx3xKN4QxNysalSBzkS9LRQ/inoC20Kkg==
-X-Received: by 2002:a19:ac43:: with SMTP id r3mr6317023lfc.470.1615760309885;
-        Sun, 14 Mar 2021 15:18:29 -0700 (PDT)
-Received: from grain.localdomain ([5.18.171.94])
-        by smtp.gmail.com with ESMTPSA id e9sm2749314ljj.52.2021.03.14.15.18.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7B7xY3igOoJbuW3KheyCp4L18Qf+vEsDSRa9Nks3Dls=;
+        b=df2NZxG5L0ZgZtrvH/93OUIllOMM1hQW2UYmuuyeYFHfvlLARuft4+cFVLb8X7dcGz
+         GJzTGwEdjHmKdQuJqJR2EHWJ2+sAfz5h6cyl9d3ZfTdVWqj6b4TX10lc/IPqKy9YVQwY
+         OLQkQ4LIMTevlI8AcJxgdJEwXNIjZCh7u+1T1lF4+C4qtg4EhBPQ+8ed+HnycJz4JM80
+         0oQc9IsGfXj4fiM03DIATx4W93g5e0ogETdpw0nB5zkwdNPr/UMOYZRnRkcvTSDzpRYf
+         Lnz8qoFByChGcxplFP5vYDO70dkfS+vxWRZeg35mHkGLo5o7e/xWrQzudEtoyODsRAR8
+         aeGw==
+X-Gm-Message-State: AOAM533XIM1qq3VvHPunF9aQ6VHlqZeRtUofrxtpuWiI5ES0on5LGcXp
+        E4z6GFQVVr2m7JfMc8+uzas=
+X-Google-Smtp-Source: ABdhPJxbNsxlq8BOlKgoIMRCEg8x1jLDfzsdEjKYKxJlpj+BrPFV2gPIiUDMRmNrLpFiIfqOjMMDrw==
+X-Received: by 2002:a05:620a:210a:: with SMTP id l10mr22171571qkl.398.1615760565142;
+        Sun, 14 Mar 2021 15:22:45 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.37.247])
+        by smtp.gmail.com with ESMTPSA id g7sm9778981qti.20.2021.03.14.15.22.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 15:18:28 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 076E15601D9; Mon, 15 Mar 2021 01:18:27 +0300 (MSK)
-Date:   Mon, 15 Mar 2021 01:18:27 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        security@kernel.org
-Subject: Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack leak
-Message-ID: <YE6LswIxL1N+8AS4@grain>
-References: <YE53QiJuxsCUeoiu@localhost.localdomain>
+        Sun, 14 Mar 2021 15:22:44 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     netanel@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        saeedb@amazon.com, davem@davemloft.net, kuba@kernel.org,
+        shayagr@amazon.com, sameehj@amazon.com, unixbhaskar@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] ethernet: amazon: ena: A typo fix in the file ena_com.h
+Date:   Mon, 15 Mar 2021 03:52:21 +0530
+Message-Id: <20210314222221.3996408-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE53QiJuxsCUeoiu@localhost.localdomain>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 11:51:14PM +0300, Alexey Dobriyan wrote:
-> 	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
-> 
-> will copy 1 byte from userspace to (quite big) on-stack array
-> and then stash everything to mm->saved_auxv.
-> AT_NULL terminator will be inserted at the very end.
-> 
-> /proc/*/auxv handler will find that AT_NULL terminator
-> and copy original stack contents to userspace.
-> 
-> This devious scheme requires CAP_SYS_RESOURCE.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
 
-Thanks for catching up, Alexey!
+Mundane typo fix.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/net/ethernet/amazon/ena/ena_com.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/amazon/ena/ena_com.h b/drivers/net/ethernet/amazon/ena/ena_com.h
+index 343caf41e709..73b03ce59412 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_com.h
++++ b/drivers/net/ethernet/amazon/ena/ena_com.h
+@@ -124,7 +124,7 @@ struct ena_com_io_cq {
+
+ 	/* holds the number of cdesc of the current packet */
+ 	u16 cur_rx_pkt_cdesc_count;
+-	/* save the firt cdesc idx of the current packet */
++	/* save the first cdesc idx of the current packet */
+ 	u16 cur_rx_pkt_cdesc_start_idx;
+
+ 	u16 q_depth;
+--
+2.30.2
+
