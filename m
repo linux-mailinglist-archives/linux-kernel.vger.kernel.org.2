@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D535D33A5AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EE133A5AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 16:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhCNPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 11:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S234421AbhCNPqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 11:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbhCNPp2 (ORCPT
+        with ESMTP id S234091AbhCNPpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 11:45:28 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D36C061574;
-        Sun, 14 Mar 2021 08:45:27 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j7so4450026wrd.1;
-        Sun, 14 Mar 2021 08:45:27 -0700 (PDT)
+        Sun, 14 Mar 2021 11:45:30 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034E0C061762;
+        Sun, 14 Mar 2021 08:45:29 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id a18so7413074wrc.13;
+        Sun, 14 Mar 2021 08:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/RPbfN09KLR8+OBhXwBaCOg2Gccjzu39uZXtdRMFwFs=;
-        b=neiMlt4aIX9NcGRwB/ENW/+akFv1X4d1TxYysbGr4NzZLk8oYx98BAFtcEYdaJCY9F
-         sqRjDeHMpQGAHxLXOP7yc6UrkgZy4msdycmGA4XP0aPnNLgbd4FXRcJVEry6RXFuXaKk
-         oAIPqJETL11VPZF2UBZ7cqcbr8dWbHrJb2kuXrD/ZKVYGI6FfsqP34B1X2ati2S3XLSr
-         0Wtia/5TigctUVouMiPPNyLEPvX3pyJCYmcx256a/CpmNVWesjc3pxJJVDn1gDryaAPU
-         TP9hH1wzCB0FD24SBIIyiJPCCN3SzmoiyTDLHF6ikb+9kzSGpD8CnUjI78v09z1TEK9v
-         kzaA==
+        bh=iCLWBBqHBwluoiOOJDI5uMrTVFtzy0ArpO4aAlC/nzc=;
+        b=R2KJrX5jiM5ZduJ6elrOV/mm2ZzDVmxC9t9WAmsRmyga5VvtJVcz7HJGwSvAta+XII
+         6o96r06jdZIFr1GjOIpus/TyOPmcBH4HkvO5OMzu9klUJ817u3lRezSilzmZL8uamtEE
+         pO5PNFObIb9A595AWwP6spAQfX44z+LhnrPHjI4f+XZsGR3mHb86yD4U9Q6RKzaqIHeU
+         GeTWbF4lvo5Z8eHueZTtBdjOONkmtODi202CTD+BRhIUJpU2cce+Tk8AeCjZGSpwTNFd
+         rCSZy8nPJ7X2FhsOpX/QhgOFNQtiqGjKmrsN/EEAz4/C6XligZMICxE6zJTLfHqhpskf
+         BA7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/RPbfN09KLR8+OBhXwBaCOg2Gccjzu39uZXtdRMFwFs=;
-        b=ZU4Ysq62MKzZ9Qv6lbJ/wv9PIj4YxeuBCS31aBniMVwWmT5knNX+fgsP37fQDWSSDR
-         k2REZGe3sbGpPZvFUiAmQZ5G/6GBL953nwb9oEtVdIF4LAZDxmMMCI0Qin2y4WpCcdOh
-         IeNGOVpbr+gigbgX/tg4Mu8RmQzrgUY7h4p+3YVxJQEyB+85VemEuqlQrrp8/FsfF1oN
-         NSODxrS26jQ9HmN4PFSRxnWdm1ZrCXSfHadWKlj5Qb+yJbnq+eGmE4UQkdPM9rtNHhJ2
-         NgaqGiHtw0BH/n2PBNwPh6gOay7+DYwbkRw25m9mBthajkuuPpuAhY13wtsiWJAk7Dph
-         lapA==
-X-Gm-Message-State: AOAM5339pOeF5vqY45SrH+7ZC0TOJBzFKHdfgdQN6b/JayYheUUIdRgw
-        FW0uuItPRwnMBH1+/wIIC8I=
-X-Google-Smtp-Source: ABdhPJznbYoJP8rsmrWHGlDJ1JSSCuHBF0G1oJW1BSqcpXmNzWSGGJ5YBiDocMB3+D9Gtky4r6LvkQ==
-X-Received: by 2002:a5d:698e:: with SMTP id g14mr23119177wru.127.1615736726655;
-        Sun, 14 Mar 2021 08:45:26 -0700 (PDT)
+        bh=iCLWBBqHBwluoiOOJDI5uMrTVFtzy0ArpO4aAlC/nzc=;
+        b=j3MV2f2Oi9UX2QKKj3RkH5jWY88a1beIazZ8qI/5zXD/23ORHTsoRhK5MktysKvbwN
+         lqTNyK4NMUBz+kiFVmN6GKfaGhRVVkgLW8xixcrJqeQ5YajKZ948Y1d84pW7WARuVLIF
+         PBVnDu5Ii+3H4y1wJc7Su6LGawsVG2JaDxKHi/5LBx1aINUJkrpCC7JGCRIBcSwYKxb+
+         r6itJOsfiA46uwAbhPlfP46yGqfV307/HugTBvrqNI8scujfly9jmSTfEJfmj3gO8HXy
+         MFVnEgVQJ0te8itrY+47BTrA4xsMaOI6JMuDwc4Mod/7v3X+qxQRBbc4SG3dH1XK2nY2
+         D7gQ==
+X-Gm-Message-State: AOAM530o4oShfYvOc/JDxDCm3x9Z8MJu016TRLI5grOwx+OjLSBE48MF
+        gVR5LrFyWvW7eLRNI09AOrQ=
+X-Google-Smtp-Source: ABdhPJzrCmAwXQXLkCinKkRoszXsLepF9evCyigdVm6SFGYqK4jTQojMCwnap9KNm9463wv78u6a7g==
+X-Received: by 2002:adf:9bce:: with SMTP id e14mr24516002wrc.29.1615736727677;
+        Sun, 14 Mar 2021 08:45:27 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.25
+        by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 08:45:26 -0700 (PDT)
+        Sun, 14 Mar 2021 08:45:27 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 06/17] ASoC: tegra20: spdif: Correct driver removal order
-Date:   Sun, 14 Mar 2021 18:44:48 +0300
-Message-Id: <20210314154459.15375-7-digetx@gmail.com>
+Subject: [PATCH v5 07/17] ASoC: tegra20: spdif: Remove handing of disabled runtime PM
+Date:   Sun, 14 Mar 2021 18:44:49 +0300
+Message-Id: <20210314154459.15375-8-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
 References: <20210314154459.15375-1-digetx@gmail.com>
@@ -69,36 +69,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra20 SPDIF driver has a wrong driver removal order, which should be
-opposite to the registration order, but it's not. In particular the
-runtime PM is disabled in a wrong order. Fix the order.
+Runtime PM is always available on Tegra since commit 40b2bb1b132a
+("ARM: tegra: enforce PM requirement"), hence there is no need to
+handle the case of a disabled RPM by Tegra drivers. Remove handing
+of a disabled runtime PM from Tegra20 SPDIF driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/tegra/tegra20_spdif.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 5839833e23a0..e48d332506a0 100644
+index e48d332506a0..7b597ee63cb5 100644
 --- a/sound/soc/tegra/tegra20_spdif.c
 +++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -329,13 +329,13 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+@@ -294,18 +294,13 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	spdif->playback_dma_data.slave_id = dmareq->start;
  
- static int tegra20_spdif_platform_remove(struct platform_device *pdev)
- {
-+	tegra_pcm_platform_unregister(&pdev->dev);
-+	snd_soc_unregister_component(&pdev->dev);
-+
+ 	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = tegra20_spdif_runtime_resume(&pdev->dev);
+-		if (ret)
+-			goto err_pm_disable;
+-	}
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
+ 					 &tegra20_spdif_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+ 		ret = -ENOMEM;
+-		goto err_suspend;
++		goto err_pm_disable;
+ 	}
+ 
+ 	ret = tegra_pcm_platform_register(&pdev->dev);
+@@ -318,9 +313,6 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 
+ err_unregister_component:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_suspend:
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra20_spdif_runtime_suspend(&pdev->dev);
+ err_pm_disable:
  	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
  
--	tegra_pcm_platform_unregister(&pdev->dev);
--	snd_soc_unregister_component(&pdev->dev);
--
+@@ -333,8 +325,6 @@ static int tegra20_spdif_platform_remove(struct platform_device *pdev)
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra20_spdif_runtime_suspend(&pdev->dev);
+ 
  	return 0;
  }
- 
 -- 
 2.30.2
 
