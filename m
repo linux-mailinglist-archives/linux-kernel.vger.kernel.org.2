@@ -2,234 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9F533A4EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 14:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC06F33A4EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 14:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235464AbhCNM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 08:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235248AbhCNM7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 08:59:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A33E664EE5;
-        Sun, 14 Mar 2021 12:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615726761;
-        bh=n7skvh3YQT3MOdPxXlmLDOAzrMJZwdMdvWRlerV3rWQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lx0t166i22wPEKNDGPZLw9vS3s8jG57Rw3z0v1uCw6wviHRfLeyWwpRHHC14Aoc12
-         sha8IHFFalrimRIOhtCEHWjNm2h5EX0yu4K056ON809EkXCDV5Om1krR8M4g8QqOwI
-         au9j8W3zg5fu3G07X1/7a+3NPgL6jvbLgXKAA1mbgNDR2X1dF1tsoVx0M/NII/Z/cN
-         07SHHuVmIQ8aH6IC+cTPfu5VmQgwsflpOsdTWhLK/7X6SR5lPTJkn+X6ZqwfnX3pve
-         2Hbg9IuDmu/45K3sTAUk/y4M064A4osUxX3CLN9WpT6Me/VNk4FtC4jCPAj29+HZhC
-         oQ8gQ0tbeKP6g==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 4/4] habanalabs: support dynamic PLL numbering
-Date:   Sun, 14 Mar 2021 14:59:12 +0200
-Message-Id: <20210314125912.9306-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210314125912.9306-1-ogabbay@kernel.org>
-References: <20210314125912.9306-1-ogabbay@kernel.org>
+        id S235393AbhCNNFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 09:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235460AbhCNNFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 09:05:25 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E98C061574;
+        Sun, 14 Mar 2021 06:05:25 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id si25so6074054ejb.1;
+        Sun, 14 Mar 2021 06:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=2UqgEhkkriIfIz0QLCQzC66SqvUBn0IjNxWs+rZzdjk=;
+        b=FNnIgE7to+L+jyYIV7nObsiwMZrEL40TE3XJCVE05+Ssq7didpgX3WdOMupFAs6iTX
+         R0nzG84vO5i5qV7KMypb1VKKaExElhCPfGIdIQO5kyh9rkZICWLCqxlGFedNB2MsB5Ot
+         KJlFwcPwTx2o1HxXP+/wYj7AXW9QTaULMF8v3FOqspLWiIWHCaIK9V19efvfC5SMAEsc
+         Xe2aOjP7UM6wmJ511+cUDKdjqBydsmOJmNA9lIpG8v0N+y5qNY7mPq08X5BbI5vSrUBt
+         sXI+7XLF7tvqOQ/O8jIf6CXFrp3x9Un6oEjfas6JN+gAtjMdQy0ccRYHuNdSx90XOGWo
+         jnHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=2UqgEhkkriIfIz0QLCQzC66SqvUBn0IjNxWs+rZzdjk=;
+        b=jRkVYFV4+YgE0fkVPdb5sCl2QjzJGX5y+JZZNoNpZhhsHLGogblerTum26NCibIZxZ
+         xbdxEQHwxH11oskXTzxlMGL1BWzvaWwgZ5NMCjee3nzD6P9dhOe3o8yhwxfrFaVy15a4
+         +vyBcAbdZSuPxPAj81ffcaYpglu5Efod6jf2MJkj49KR9qhq9q2bKTS2DBqrtUaDvOxE
+         FdZJjudMo8GUSOJxSogDhob10Jwp/xXwkA7iITql8YKAZDGWztJ+E92K4kGiy3fNVCuc
+         V4KfnZwLAkZ/y2tjbsDAkAN3BJEIIJIWrULiwb9ddAdmfIU8hkmqyotBI1E0MmOsbq2w
+         uanw==
+X-Gm-Message-State: AOAM532KOTyiV709ghUKiu+eTcuOxbBo9EAVnTYULjks8TuDYaCGuZcX
+        JPBiMI4L+hY33xbwadSm9PI=
+X-Google-Smtp-Source: ABdhPJzYhl+GE7DDYpGg5PhZaozD/mp3kztV7ZlfITNOP/wNV9rjeYKjTajlP7Qw7/4uwBQMOzI1ug==
+X-Received: by 2002:a17:906:3849:: with SMTP id w9mr18819720ejc.7.1615727124033;
+        Sun, 14 Mar 2021 06:05:24 -0700 (PDT)
+Received: from TRWS9215 ([88.245.22.54])
+        by smtp.gmail.com with ESMTPSA id u13sm5900762ejn.59.2021.03.14.06.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 06:05:23 -0700 (PDT)
+Message-ID: <7fa4fa81235635266e7b83e2c2d5020691079f9c.camel@gmail.com>
+Subject: Re: [BUG] net: rds: rds_send_probe memory leak
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Date:   Sun, 14 Mar 2021 16:05:21 +0300
+In-Reply-To: <YE4FO01xILz98/K6@kroah.com>
+References: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
+         <YE3K+zeWnJ/hVpQS@kroah.com>
+         <b1b796b48a75b3ef3d6cebac89b0be45c5bf4611.camel@gmail.com>
+         <YE4FO01xILz98/K6@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+On Sun, 2021-03-14 at 13:44 +0100, Greg KH wrote:
+> On Sun, Mar 14, 2021 at 03:19:05PM +0300, Fatih Yildirim wrote:
+> > On Sun, 2021-03-14 at 09:36 +0100, Greg KH wrote:
+> > > On Sun, Mar 14, 2021 at 11:23:10AM +0300, Fatih Yildirim wrote:
+> > > > Hi Santosh,
+> > > > 
+> > > > I've been working on a memory leak bug reported by syzbot.
+> > > > https://syzkaller.appspot.com/bug?id=39b72114839a6dbd66c1d2104522698a813f9ae2
+> > > > 
+> > > > It seems that memory allocated in rds_send_probe function is
+> > > > not
+> > > > freed.
+> > > > 
+> > > > Let me share my observations.
+> > > > rds_message is allocated at the beginning of rds_send_probe
+> > > > function.
+> > > > Then it is added to cp_send_queue list of rds_conn_path and
+> > > > refcount
+> > > > is increased by one.
+> > > > Next, in rds_send_xmit function it is moved from cp_send_queue
+> > > > list
+> > > > to
+> > > > cp_retrans list, and again refcount is increased by one.
+> > > > Finally in rds_loop_xmit function refcount is increased by one.
+> > > > So, total refcount is 4.
+> > > > However, rds_message_put is called three times, in
+> > > > rds_send_probe,
+> > > > rds_send_remove_from_sock and rds_send_xmit functions. It seems
+> > > > that
+> > > > one more rds_message_put is needed.
+> > > > Would you please check and share your comments on this issue?
+> > > 
+> > > Do you have a proposed patch that syzbot can test to verify if
+> > > this
+> > > is
+> > > correct or not?
+> > > 
+> > > thanks,
+> > > 
+> > > gre gk-h
+> > 
+> > Hi Greg,
+> > 
+> > Actually, using the .config and the C reproducer, syzbot reports
+> > the
+> > memory leak in rds_send_probe function. Also by enabling
+> > CONFIG_RDS_DEBUG=y, the debug messages indicates the similar as I
+> > mentioned above. To give an example, below is the RDS_DEBUG
+> > messages.
+> > Allocated address 000000008a7476e5 has initial ref_count 1. Then
+> > there
+> > are three rds_message_addref calls for the same address making the
+> > refcount 4, but only three rds_message_put calls which leave the
+> > address still allocated.
+> > 
+> > [   60.570681] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 1
+> > [   60.570707] rds_message_put(): put rm 000000008a7476e5 ref 2
+> > [   60.570845] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 1
+> > [   60.570870] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 2
+> > [   60.570960] rds_message_put(): put rm 000000008a7476e5 ref 3
+> > [   60.570995] rds_message_put(): put rm 000000008a7476e5 ref 2
+> > 
+> 
+> Ok, so the next step is to try your proposed change to see if it
+> works
+> or not.  What prevents you from doign that?
+> 
+> No need to ask people if your analysis of an issue is true or not, no
+> maintainer or developer usually has the time to deal with that.  We
+> much
+> rather would like to see patches of things you have tested to resolve
+> issues.
+> 
+> thanks,
+> 
+> greg k-h
 
-As part of the effort remove hard-coded assumptions from the F/W-driver
-communication, introduce support for dynamic pll numbering.
+Hi Greg,
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/firmware_if.c  | 22 +++++++++-
- drivers/misc/habanalabs/common/habanalabs.h   |  2 +-
- .../misc/habanalabs/include/common/cpucp_if.h | 41 +++++++++++++++++++
- .../habanalabs/include/gaudi/gaudi_fw_if.h    | 14 -------
- .../misc/habanalabs/include/goya/goya_fw_if.h | 11 -----
- 5 files changed, 62 insertions(+), 28 deletions(-)
+I also would like to come with a patch to resolve the issue as well.
+But couldn't figure out so far. I just would like to have a review or a
+suggestion from an expert in order to move forward.
+Anyway, I'm still working on it and hope to find a solution.
+Will appreciate any comment, suggestion on the issue.
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 2a58edaf984a..8843e040c660 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -539,18 +539,36 @@ int hl_fw_cpucp_total_energy_get(struct hl_device *hdev, u64 *total_energy)
- 	return rc;
- }
- 
--int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, u16 pll_index,
-+int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, enum pll_index pll_index,
- 		u16 *pll_freq_arr)
- {
-+	struct asic_fixed_properties *prop = &hdev->asic_prop;
-+	u8 pll_byte, pll_bit_off;
- 	struct cpucp_packet pkt;
- 	u64 result;
- 	int rc;
- 
-+	if (pll_index >= PLL_MAX) {
-+		dev_err(hdev->dev, "PLL index %d is out of range\n",
-+								pll_index);
-+		return -EINVAL;
-+	}
-+
-+	/* PLL map is a u8 array */
-+	pll_byte = prop->cpucp_info.pll_map[pll_index >> 3];
-+	pll_bit_off = pll_index & 0x7;
-+
-+	if (!(pll_byte & BIT(pll_bit_off))) {
-+		dev_err(hdev->dev, "PLL index %d is not supported\n",
-+								pll_index);
-+		return -EINVAL;
-+	}
-+
- 	memset(&pkt, 0, sizeof(pkt));
- 
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PLL_INFO_GET <<
- 				CPUCP_PKT_CTL_OPCODE_SHIFT);
--	pkt.pll_type = __cpu_to_le16(pll_index);
-+	pkt.pll_type = __cpu_to_le16((u16)pll_index);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
- 			HL_CPUCP_INFO_TIMEOUT_USEC, &result);
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 2dcefd6485e5..5f930cb5e33d 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -2379,7 +2379,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 		struct hl_info_pci_counters *counters);
- int hl_fw_cpucp_total_energy_get(struct hl_device *hdev,
- 			u64 *total_energy);
--int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, u16 pll_index,
-+int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, enum pll_index pll_index,
- 		u16 *pll_freq_arr);
- int hl_fw_cpucp_power_get(struct hl_device *hdev, u64 *power);
- int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
-diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
-index 6ba480a316ce..e745c78dd8fd 100644
---- a/drivers/misc/habanalabs/include/common/cpucp_if.h
-+++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
-@@ -28,6 +28,9 @@
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_SHIFT		6
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_MASK		0x000007C0
- 
-+#define PLL_MAP_MAX_BITS	128
-+#define PLL_MAP_LEN		(PLL_MAP_MAX_BITS / 8)
-+
- /*
-  * info of the pkt queue pointers in the first async occurrence
-  */
-@@ -473,6 +476,42 @@ enum cpucp_pll_type_attributes {
- 	cpucp_pll_pci,
- };
- 
-+/*
-+ * PLL enumeration table used for all ASICs and future SW versions.
-+ * For future ASIC-LKD compatibility, we can only add new enumerations.
-+ * at the end of the table.
-+ * Changing the order of entries or removing entries is not allowed.
-+ */
-+enum pll_index {
-+	CPU_PLL = 0,
-+	PCI_PLL = 1,
-+	NIC_PLL = 2,
-+	DMA_PLL = 3,
-+	MESH_PLL = 4,
-+	MME_PLL = 5,
-+	TPC_PLL = 6,
-+	IF_PLL = 7,
-+	SRAM_PLL = 8,
-+	NS_DCORE_PLL = 9,
-+	MESH_DCORE_PLL = 10,
-+	HBM_PLL = 11,
-+	TPC_DCORE_PLL = 12,
-+	VIDEO_DCORE_PLL = 13,
-+	SRAM_DCORE_PLL = 14,
-+	NIC_PHY_DCORE_PLL = 15,
-+	MSS_DCORE_PLL = 16,
-+	DMA_DCORE_PLL = 17,
-+	SIF_PLL = 18,
-+	DDR_PLL = 19,
-+	VID_PLL = 20,
-+	BANK_PLL = 21,
-+	MMU_PLL = 22,
-+	IC_PLL = 23,
-+	MC_PLL = 24,
-+	EMMC_PLL = 25,
-+	PLL_MAX
-+};
-+
- /* Event Queue Packets */
- 
- struct eq_generic_event {
-@@ -547,6 +586,7 @@ struct cpucp_security_info {
-  * @dram_size: available DRAM size.
-  * @card_name: card name that will be displayed in HWMON subsystem on the host
-  * @sec_info: security information
-+ * @pll_map: Bit map of supported PLLs for current ASIC version.
-  */
- struct cpucp_info {
- 	struct cpucp_sensor sensors[CPUCP_MAX_SENSORS];
-@@ -568,6 +608,7 @@ struct cpucp_info {
- 	__u8 pad[7];
- 	struct cpucp_security_info sec_info;
- 	__le32 reserved6;
-+	uint8_t pll_map[PLL_MAP_LEN];
- };
- 
- struct cpucp_mac_addr {
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-index 25acd9e87e20..a9f51f9f9e92 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-@@ -20,20 +20,6 @@
- #define UBOOT_FW_OFFSET			0x100000	/* 1MB in SRAM */
- #define LINUX_FW_OFFSET			0x800000	/* 8MB in HBM */
- 
--enum gaudi_pll_index {
--	CPU_PLL = 0,
--	PCI_PLL,
--	SRAM_PLL,
--	HBM_PLL,
--	NIC_PLL,
--	DMA_PLL,
--	MESH_PLL,
--	MME_PLL,
--	TPC_PLL,
--	IF_PLL,
--	PLL_MAX
--};
--
- enum gaudi_nic_axi_error {
- 	RXB,
- 	RXE,
-diff --git a/drivers/misc/habanalabs/include/goya/goya_fw_if.h b/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-index daf8d8cd14be..bc05f86c73ac 100644
---- a/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-+++ b/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-@@ -15,17 +15,6 @@
- #define UBOOT_FW_OFFSET		0x100000		/* 1MB in SRAM */
- #define LINUX_FW_OFFSET		0x800000		/* 8MB in DDR */
- 
--enum goya_pll_index {
--	CPU_PLL = 0,
--	IC_PLL,
--	MC_PLL,
--	MME_PLL,
--	PCI_PLL,
--	EMMC_PLL,
--	TPC_PLL,
--	PLL_MAX
--};
--
- #define GOYA_PLL_FREQ_LOW		50000000 /* 50 MHz */
- 
- #endif /* GOYA_FW_IF_H */
--- 
-2.25.1
+Thanks,
+Fatih
+
 
