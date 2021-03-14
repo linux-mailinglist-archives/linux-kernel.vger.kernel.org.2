@@ -2,201 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF9633A78C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 19:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7AE33A790
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 20:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhCNS5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 14:57:12 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:11910 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229870AbhCNS5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 14:57:04 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12EIt5Fp008860;
-        Sun, 14 Mar 2021 11:56:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=mzVYqpCGxXPQ75k7h36vNzkS/ZIXBS4jCp1tiJCTMlk=;
- b=o7HE7u/T5U7/8DojLiH/28upSWuKlltT7kcI+biUOBVUXy/tRs2qjdMw6/162yBkQcfS
- a8bHRlHzNakbRK2OejoXN49jjsIhxm40x211kUn/H29cpf67DjXDggSoMN0hWPgH3Ll6
- H+aKjCKAdB94/IAed0J4TXmBCEzhdia1a1hzfhpT/CN4bX2+yeFwIMCekkPd4R5WyJ+m
- Yq4OoPM49Zm3hy9EpkVlN+Txqv0C+awr5kyZZX7yXJLf5oV3hkXvoNbUJ9oAKVu1UcRA
- gHdXVhYV3ZuqntuCJucHQDJ3GOswsduAgrsm5BRY/N/U82iZl7/dxyuS4DcnOOTqbtvI 0A== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 378sv2br6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 11:56:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/jcZhU8yRsVaLuaOke9QUd5B+zS2kQjgrbnYSC8AqHkMEMCHjOfbOonYeBu65nFWdzA75pdHUj/XYc8VTSSP3Or+g8VayuX9lAetK5XAXo+ZH0IhB91UZFb5Fu5d7WAefN6fjCcZAAhsM8cutGq4fGFc8hH0L7UpJGxME5+u9m2P7ZNtQw+QAET6YefFz+aTxEcXivRRxORoR2SR208C1CcZRbaUxQoqLjXWbdBnYosS45HdqgNtGG8Cn2eOzLTMPcmjd+nSwc/n1kcAJICbUYAP+VL3lUd6qGczY5M2yMDf8Ijg04rprIh+ymh66KN85rYdZxfvHOfHDQvlZjTag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mzVYqpCGxXPQ75k7h36vNzkS/ZIXBS4jCp1tiJCTMlk=;
- b=jqzwtCVjb83awhAAabe6BhEFV3ntB7F/N7M69x7ZtQgw3/sGgiYh+SN9vW6v7K72xJoN9CZCuNKN3XUtaxiHB5G63WQJFtIwhx592hsGx0fYJj8+Rh7sX03riZ8ZiTiLHFJDsna8xban/nq25wTz7O0TDm3DB2REDY5nQU0fyVXJE9o6bDyvsClhOGb6k2dzInzjhue1j6hdFeownqeh6/Pk860vv8Gsn7zUY1piy4ypOmaenL1lveseWY88Qxx34NTnVTRgVVe/ZOjuql6WepD/SSfaVmyKVOkEtuY3AonKweQjNbryWUJO6K0ftOSYu0QcRduYGE238NR61J9Oaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mzVYqpCGxXPQ75k7h36vNzkS/ZIXBS4jCp1tiJCTMlk=;
- b=j2no2uRJSxbqr1+JxO4ojkZpTAoWAouNoFUtlgRKTpcp2uNFth8jAjaQGIJKGOmaMXE9ka5wvzdtPDk2X3id8429HcAaHXN4eZYGgOsOmIU/9E/VEff1A2Ppk1+d2zGIpLsNkaYzht+wOw6emKb+AQjfnyPdWXsyioi5bJvqE8s=
-Received: from CO2PR07MB2503.namprd07.prod.outlook.com (2603:10b6:100:1::19)
- by MW4PR07MB8569.namprd07.prod.outlook.com (2603:10b6:303:be::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Sun, 14 Mar
- 2021 18:56:53 +0000
-Received: from CO2PR07MB2503.namprd07.prod.outlook.com
- ([fe80::d8d9:e81c:18a:33e5]) by CO2PR07MB2503.namprd07.prod.outlook.com
- ([fe80::d8d9:e81c:18a:33e5%11]) with mapi id 15.20.3890.038; Sun, 14 Mar 2021
- 18:56:53 +0000
-From:   Athani Nadeem Ladkhan <nadeem@cadence.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-Subject: RE: [PATCH 1/2] dt-bindings:pci: Set LTSSM Detect.Quiet state delay.
-Thread-Topic: [PATCH 1/2] dt-bindings:pci: Set LTSSM Detect.Quiet state delay.
-Thread-Index: AQHXFLZJyCgoB7DiFUmLsc9uEE8eZ6p73hUAgAf9yyA=
-Date:   Sun, 14 Mar 2021 18:56:53 +0000
-Message-ID: <CO2PR07MB25034C1F1ACD54CDC3D465B6D86D9@CO2PR07MB2503.namprd07.prod.outlook.com>
-References: <20210309073142.13219-1-nadeem@cadence.com>
- <20210309073142.13219-2-nadeem@cadence.com>
- <CAL_JsqJf1JHNEygoSPOqFocXL4F4M7p-MB-UxOp=D--NKnvTZw@mail.gmail.com>
-In-Reply-To: <CAL_JsqJf1JHNEygoSPOqFocXL4F4M7p-MB-UxOp=D--NKnvTZw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbmFkZWVtXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctMDQ5MjJiMmYtODRmNy0xMWViLWFlOTgtZDQ4MWQ3OWExZmRlXGFtZS10ZXN0XDA0OTIyYjMwLTg0ZjctMTFlYi1hZTk4LWQ0ODFkNzlhMWZkZWJvZHkudHh0IiBzej0iMzEwOSIgdD0iMTMyNjAyMjE4MTA5Njc3NTI2IiBoPSJCcDhFbUViTEdwMmVVcjJZZS84cHVZK21HK3M9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
-x-originating-ip: [59.145.174.78]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a33beed3-3f9e-4637-cba0-08d8e71aeed9
-x-ms-traffictypediagnostic: MW4PR07MB8569:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR07MB856905FBB141D7508F9C5258D86D9@MW4PR07MB8569.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UX4RZcQ6QlCLvI/3Ez2TDznm6BiP8dFdrownq3xo//VpH+wzdg2zY/oUE+1pMKIBKg4UHxijnL8VimhYHoLETqLXox4bNoP38bijtEcI6ReTkZgqxT65VJfyMIYg1H/dp0CpjXUvB6FerRho9XnHwysb5a3l8HZKV2bC4zC77Am4dYRuMoIF7qhjj0sMfg1ki4lWwX7PUHikSS/g4Cs0ye/lDfcXfgsma5vOhHC7bVd5K21QMe31to6s8h3ogPGczr4RcNF1wtut7wXD7uC7JiximOvQmkJ6QfZAMFDaqWNrl2pdg9/SvoxTCRozdI8ozfKrSzmgXcg/RFMu6er0Iy33tOdkpu2ohuFWanE2MfcGBn0RJUifp5W9OUSQFas+w8ggjohWJUUrplcwuLJF9EDMCHVWItn+FIFjqjFoJoGGUlbvhP9fCYKNr5gnhXYBqVrNt5vily+t7YGEFrGAJSBlXkd7DCS+c3xoK500fYAupgSuIAoN7PO8Cu/R8BVccRdceEspV1MkBXC8wyvp4VavjnCqIWWqUMgeobZ1ne7I470zzbRInuWu8GxxjYwP8tGEl3roq6FtxC8nxUIEw1vV8yIcE+4r5nLA7e8r5i0z+89D4SG6O5xu1zN8fetw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO2PR07MB2503.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(36092001)(71200400001)(33656002)(8936002)(7696005)(6506007)(53546011)(54906003)(4326008)(86362001)(2906002)(5660300002)(8676002)(186003)(55016002)(9686003)(107886003)(478600001)(52536014)(83380400001)(26005)(66556008)(76116006)(64756008)(316002)(66446008)(66946007)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?bXFkQjZXdkR2UFpTUE1uYjVLYTZtcUhaTy9QUkVzWlZZcHdzOWZiM1dGc3VR?=
- =?utf-8?B?SmxuTlYrc1MrVUQ2b0phbURQT2NzRWtkWmMvTTYyZGp3Z3dpcjN2WWRjWVBZ?=
- =?utf-8?B?SytuLzI1M0FFdXlhUXcvN1BBT1RyTWlnNWNqL2VyOGZrU01hMmVIYi9IZHdU?=
- =?utf-8?B?MnJjMnRabDN0UWJBS2diVVREbG1LM3ZtcTJ3bnc1QjJPeGdVNXNVc3lTYkdv?=
- =?utf-8?B?alV0TEF1a2pEQ3B4L2dwZzdaL1B4RzBQaGZtSU1mZU5oWlFqT0ZmUjRWU3Vy?=
- =?utf-8?B?MUpqL2RlZGpDMUp4Y2VjYzd6Z2J2ZzFnMkpNcUlLczlKckRXY21yai9KNTJC?=
- =?utf-8?B?aXg5RUljZDd6VlVwUUZEYStRMU9aWUVCcGc0b244ajEySmkxc3FxZGVISWZ1?=
- =?utf-8?B?THJHa012Y3dCY2xOS0E4L2MyelFYTGdSd2ZTTDN5Rm1xQzMrYVFzT2dTSGdp?=
- =?utf-8?B?akcvOXFTRjFQM0dFQWdPN1Y2ZXFRUG9td3RNVUFkRkxkL3hsK0NOQTZNSUZo?=
- =?utf-8?B?RmRNVjZRdGZDL1E0TlJvcWN6TU5sZUtyeGg5WFpYL2l6UTZCM3kwUVJQMjJD?=
- =?utf-8?B?N3hqVENqVjVmWFNMT0ZVZjlQMnhmNzVScy80OVRVRXJRTUszZFhzNmdCUmtZ?=
- =?utf-8?B?OE9KRmFhYVZGem1VdFI4ZW5KckZrVTR5Rm1JZktuQUlPdXBYanFTb2JBWlBV?=
- =?utf-8?B?NDErMUhGSG1MWGcrVkppTytDUHNpVHRaUWQ1aXJ4RXpiNDh0Tk5hZ2sycFhC?=
- =?utf-8?B?cEFUNlg0dWpsMHFHMy9MY2JuY1BqR215MmVpdklGN0RjZG9CV1ZNL0Q2bFdw?=
- =?utf-8?B?WXo5NHdDMExHODFWeVlKTVFhTDBMVm9XY2Y5WVBURU9kT3l3SW92SVlJUkZD?=
- =?utf-8?B?Um5MeEtqcEJWYk1nQXZjdnZvbml5UFBFM1JiZ1c1a0E3L005ZzNCRGVVSUZU?=
- =?utf-8?B?cUx0NjBJUFVDOXk4RXBnWjkrMzNPOUtCVEpCMFNob2hXRjdhUTFLdTl6T3J5?=
- =?utf-8?B?UXNEcXpxNGJMQWtzZm1yeVc4LzBjeklxdmFMUWxya0lwZlJ2M2FZMWhSNDkx?=
- =?utf-8?B?aUNrcmVqQmhmbEx5cEg3d21hVld1TzNqMXhCNWhxYWlxKzAwNHRCdVBYQklT?=
- =?utf-8?B?bjEyUGFWa1gwM2h1TjhiaHVYM0tYT3o0VFRrV0svY2pQaStFMElOcGRScWl1?=
- =?utf-8?B?eE5GLzg4SUxVVzZoQ3JVY0o3Q3BOQnY4eitEUUxRWjgvOHpLSGk3U1dyZGov?=
- =?utf-8?B?SDh2TTd3ZVIwSHVTbHNkU0dhWjNraDQwK0U0ZDlJc3Bxb1IvalhORU1Sc2JF?=
- =?utf-8?B?NWRMelE2Q1pHbEVUWGhubGdJQnMyV0MvdVFnZkQ2RVdaS1BlQWxrYTF4RWsz?=
- =?utf-8?B?aGlkSGN1RUI4Q2ROZlBuNm84WGZPNUkvYTJpWnBXaitCVmo3eXdldDBuWVFT?=
- =?utf-8?B?REpxUHAyZVZBVFRkbUtBa2t0Y3hOZmJJYmRQOGpvUWc1NGNPbGJTaHFRbXFC?=
- =?utf-8?B?ZnBHbFBmT2pYT1VLZTZIZnBkRnRISzMvaTZKSnpBVW1xeXpsSXYwWTZ5K3kv?=
- =?utf-8?B?V0M4QUo4MVJvbXNIN1d3M2g5azJ1MUNGUmJ3R09TTVNWaWs3N3Q3YUxqWTZ5?=
- =?utf-8?B?aEhVTXRnbWlQUXhlUzNhbFRySkhSVUdVQ3dGQzVwaW9IWjdKeVNXYmhkMjlt?=
- =?utf-8?B?MTlMN3dJYUVmZVdVV2ttaHUydWREWFdWcHpoNFV3VzZUeFpEdVdQYUxGNjZZ?=
- =?utf-8?Q?UxwJrobkN8oRJ1vUoNtkSkZ21F2xkt8wrh7sLCy?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233685AbhCNS7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 14:59:30 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:10106 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229870AbhCNS7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 14:59:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615748360; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=E/D1ab7qq8kF771WiUwOqh2b/1XgluuhzHizoAkutQU=; b=XZ+qB7ydIHt3iWubDDEkK1iKlCz39jkZ3HpoqYipo8yQKtbikmNbNDPqUu6v1yP3vnob382N
+ JmaUVcTLKI1j9YSrPCZdfdS5up08aWtwGcGIDhQ/ayIYutShA1G8SlNRpG6mid7irZbE4nTb
+ YX0iCY5AKuG2xsouaEJwcQVWNN8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 604e5d056dc1045b7d86d07a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 14 Mar 2021 18:59:17
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 369B9C43462; Sun, 14 Mar 2021 18:59:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3994AC433CA;
+        Sun, 14 Mar 2021 18:59:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3994AC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rnayak@codeaurora.org, robh+dt@kernel.org,
+        saiprakash.ranjan@codeaurora.org, schowdhu@codeaurora.org,
+        sibis@codeaurora.org, vkoul@kernel.org
+Subject: Re: [PATCH V1 2/6] soc: qcom: dcc: Add driver support for Data Capture and Compare unit(DCC)
+Date:   Mon, 15 Mar 2021 00:29:01 +0530
+Message-Id: <20210314185901.15151-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <YEpF1JO4CAd2pb0m@builder.lan>
+References: <YEpF1JO4CAd2pb0m@builder.lan>
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO2PR07MB2503.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a33beed3-3f9e-4637-cba0-08d8e71aeed9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2021 18:56:53.4182
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kz2N+UqWjMkmF17PyzzoObJ4SydZjsLRhKqgcmtByeo+I+FHsdr6GsnShxeU+AlrBCiiPPakwvTXeOZKUjr60vUpK12Bjd6l4fGs+e7lrXs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR07MB8569
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-14_10:2021-03-12,2021-03-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 impostorscore=0 spamscore=0
- adultscore=0 malwarescore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103140145
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJvYiBIZXJy
-aW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDksIDIwMjEg
-MTA6MTcgUE0NCj4gVG86IEF0aGFuaSBOYWRlZW0gTGFka2hhbiA8bmFkZWVtQGNhZGVuY2UuY29t
-Pg0KPiBDYzogVG9tIEpvc2VwaCA8dGpvc2VwaEBjYWRlbmNlLmNvbT47IEJqb3JuIEhlbGdhYXMN
-Cj4gPGJoZWxnYWFzQGdvb2dsZS5jb20+OyBQQ0kgPGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc+
-Ow0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZzsgTG9yZW56byBQaWVyYWxpc2kNCj4gPGxvcmVuem8ucGllcmFsaXNpQGFybS5jb20+OyBL
-aXNob24gVmlqYXkgQWJyYWhhbSBJIDxraXNob25AdGkuY29tPjsNCj4gTWlsaW5kIFBhcmFiIDxt
-cGFyYWJAY2FkZW5jZS5jb20+OyBTd2FwbmlsIEthc2hpbmF0aCBKYWtoYWRlDQo+IDxzamFraGFk
-ZUBjYWRlbmNlLmNvbT47IFBhcnNodXJhbSBSYWp1IFRob21iYXJlDQo+IDxwdGhvbWJhckBjYWRl
-bmNlLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzJdIGR0LWJpbmRpbmdzOnBjaTogU2V0
-IExUU1NNIERldGVjdC5RdWlldCBzdGF0ZSBkZWxheS4NCj4gDQo+IEVYVEVSTkFMIE1BSUwNCj4g
-DQo+IA0KPiBPbiBUdWUsIE1hciA5LCAyMDIxIGF0IDEyOjMxIEFNIE5hZGVlbSBBdGhhbmkgPG5h
-ZGVlbUBjYWRlbmNlLmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiBUaGUgcGFyYW1ldGVyIGRldGVj
-dC1xdWlldC1taW4tZGVsYXkgY2FuIGJlIHVzZWQgdG8gcHJvZ3JhbSB0aGUNCj4gPiBtaW5pbXVt
-IHRpbWUgdGhhdCBMVFNTTSB3YWl0cyBvbiBlbnRlcmluZyBEZXRlY3QuUXVpZXQgc3RhdGUuDQo+
-ID4gMDAgOiAwdXMgbWluaW11bSB3YWl0IHRpbWUgaW4gRGV0ZWN0LlF1aWV0IHN0YXRlLg0KPiA+
-IDAxIDogMTAwdXMgbWluaW11bSB3YWl0IHRpbWUgaW4gRGV0ZWN0LlF1aWV0IHN0YXRlLg0KPiA+
-IDEwIDogMTAwMHVzIG1pbmltdW0gd2FpdCB0aW1lIGluIERldGVjdC5RdWlldCBzdGF0ZS4NCj4g
-PiAxMSA6IDIwMDB1cyBtaW5pbXVtIHdhaXQgdGltZSBpbiBEZXRlY3QuUXVpZXQgc3RhdGUuDQo+
-IA0KPiBXaGF0IGRldGVybWluZXMgdGhpcyBzZXR0aW5nPyBJcyBpdCBwZXIgYm9hcmQgb3IgU29D
-PyBJcyB0aGlzIGEgc3RhbmRhcmQgUENJDQo+IHRpbWluZyB0aGluZz8gV2h5IGRvZXMgdGhpcyBu
-ZWVkIHRvIGJlIHR1bmVkIHBlciBwbGF0Zm9ybT8NClRoZSBwY2llIHNwZWMuIHNheXMgdGhpcyBk
-ZWxheSB0byBiZSBiZXR3ZWVuIDAgdG8gMW1zLg0KVGhlIGRlZmF1bHQgMCB2YWx1ZSB3b3JrcyBp
-biBtb3N0IGNhc2VzLg0KSG93ZXZlciBpdCBoYXMgYmVlbiBmb3VuZCB0aGF0IHNvbWUgU09DIG1h
-eSByZXF1aXJlIHRoaXMgZGVsYXkgdG8gYmUgZ3JlYXRlciB0aGFuIDAuDQpUaGlzIGhhcyBiZWVu
-IHByb3ZlZCBieSBhbiBpbnRlcm5hbCBzaW11bGF0aW9uIGV4cGVyaW1lbnRzLg0KSGVuY2UgcHJv
-dmlkaW5nIHRoaXMgZmVhdHVyZSBpbiBkZXZpY2UgdHJlZSBmb3IgcmVxdWlyZWQgU09DJ3MuDQo+
-IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE5hZGVlbSBBdGhhbmkgPG5hZGVlbUBjYWRlbmNlLmNvbT4N
-Cj4gPiAtLS0NCj4gPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL2NkbnMsY2Rucy1wY2ll
-LWhvc3QueWFtbCAgICAgICAgfCAxMw0KPiArKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFu
-Z2VkLCAxMyBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0DQo+ID4gYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL2NkbnMsY2Rucy1wY2llLWhvc3QueWFtbA0K
-PiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9jZG5zLGNkbnMtcGNp
-ZS1ob3N0LnlhbWwNCj4gPiBpbmRleCAyOTNiOGVjMzE4YmMuLmExZDU2ZTBiZTQxOSAxMDA2NDQN
-Cj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL2NkbnMsY2Ru
-cy1wY2llLWhvc3QueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9wY2kvY2RucyxjZG5zLXBjaWUtaG9zdC55YW1sDQo+ID4gQEAgLTI3LDYgKzI3LDE4IEBA
-IHByb3BlcnRpZXM6DQo+ID4NCj4gPiAgICBtc2ktcGFyZW50OiB0cnVlDQo+ID4NCj4gPiArICBk
-ZXRlY3QtcXVpZXQtbWluLWRlbGF5Og0KPiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAg
-IExUU1NNIERldGVjdC5RdWlldCBzdGF0ZSBtaW5pbXVtIGRlbGF5Lg0KPiA+ICsgICAgICAwMCA6
-IDB1cyBtaW5pbXVtIHdhaXQgdGltZQ0KPiA+ICsgICAgICAwMSA6IDEwMHVzIG1pbmltdW0gd2Fp
-dCB0aW1lDQo+ID4gKyAgICAgIDEwIDogMTAwMHVzIG1pbmltdW0gd2FpdCB0aW1lDQo+ID4gKyAg
-ICAgIDExIDogMjAwMHVzIG1pbmltdW0gd2FpdCB0aW1lDQo+ID4gKyAgICAkcmVmOiAvc2NoZW1h
-cy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCj4gPiArICAgIG1pbmltdW06IDANCj4g
-PiArICAgIG1heGltdW06IDMNCj4gPiArICAgIGRlZmF1bHQ6IDANCj4gPiArDQo+ID4gIHJlcXVp
-cmVkOg0KPiA+ICAgIC0gcmVnDQo+ID4gICAgLSByZWctbmFtZXMNCj4gPiBAQCAtNDgsNiArNjAs
-NyBAQCBleGFtcGxlczoNCj4gPiAgICAgICAgICAgICAgbGludXgscGNpLWRvbWFpbiA9IDwwPjsN
-Cj4gPiAgICAgICAgICAgICAgdmVuZG9yLWlkID0gPDB4MTdjZD47DQo+ID4gICAgICAgICAgICAg
-IGRldmljZS1pZCA9IDwweDAyMDA+Ow0KPiA+ICsgICAgICAgICAgICBkZXRlY3QtcXVpZXQtbWlu
-LWRlbGF5ID0gPDA+Ow0KPiA+DQo+ID4gICAgICAgICAgICAgIHJlZyA9IDwweDAgMHhmYjAwMDAw
-MCAgMHgwIDB4MDEwMDAwMDA+LA0KPiA+ICAgICAgICAgICAgICAgICAgICA8MHgwIDB4NDEwMDAw
-MDAgIDB4MCAweDAwMDAxMDAwPjsNCj4gPiAtLQ0KPiA+IDIuMTUuMA0KPiA+DQo=
+On 2021-03-11 22:01, Bjorn Andersson wrote:
+> On Thu 11 Mar 00:19 CST 2021, Sai Prakash Ranjan wrote:
+> 
+>> Hi Bjorn,
+>>
+>> On 2021-03-11 04:49, Bjorn Andersson wrote:
+>> > On Wed 10 Mar 10:46 CST 2021, Souradeep Chowdhury wrote:
+>> >
+>> > > The DCC is a DMA Engine designed to capture and store data
+>> > > during system crash or software triggers. The DCC operates
+>> > > based on link list entries which provides it with data and
+>> > > addresses and the function it needs to perform. These
+>> > > functions are read, write and loop. Added the basic driver
+>> > > in this patch which contains a probe method which instantiates
+>> > > the resources needed by the driver. DCC has it's own SRAM which
+>> > > needs to be instantiated at probe time as well.
+>> > >
+>> >
+>> > So to summarize, the DCC will upon a crash copy the configured region
+>> > into the dcc-ram, where it can be retrieved either by dumping the memory
+>> > over USB or from sysfs on the next boot?
+>> >
+>>
+>> Not just the next boot, but also for the current boot via /dev/dcc_sram,
+>> more below.
+>>
+> 
+> Interesting!
+> 
+>> > > Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> > > ---
+>> > >  drivers/soc/qcom/Kconfig  |   8 +
+>> > >  drivers/soc/qcom/Makefile |   1 +
+>> > >  drivers/soc/qcom/dcc.c    | 388
+>> > > ++++++++++++++++++++++++++++++++++++++++++++++
+>> > >  3 files changed, 397 insertions(+)
+>> > >  create mode 100644 drivers/soc/qcom/dcc.c
+>> > >
+>>
+>> <snip>...
+>>
+>> >
+>> > How about implementing this using pstore instead of exposing it through
+>> > a custom /dev/dcc_sram (if I read the code correclty)
+>> >
+>>
+>> Using pstore is definitely a good suggestion, we have been thinking of
+>> adding it as a separate change once the basic support for DCC gets in.
+>> But pstore ram backend again depends on warm reboot which is present only
+>> in chrome compute platforms but android platforms do not officially support
+>> warm reboot. Pstore with block devices as a backend would be ideal but it
+>> is still a work in progress to use mmc as the backend [1].
+>>
+> 
+> I was under the impression that we can have multiple pstore
+> implementations active, so we would have ramoops and dcc presented
+> side by side after such restart. Perhaps that's a misunderstanding on my
+> part?
+> 
+
+If you mean pstore backends(persistent ram and block device) as the
+implementations, then yes they can separately coexist, but blk device
+as the backend is not fully ready and ramoops only guarantees traces
+if the DDR contents are retained i.e., on warm reboot.
+
+In case of ramoops, we currently have console-ramoops, dmesg-ramoops,
+ftrace-ramoops, pmsg-ramoops. We cannot add dcc-ramoops directly like
+this as DCC is very platform specific(and QTI specific).
+
+I wanted to add something like device-ramoops/misc-ramoops where the
+device drivers could register with pstore and provide some useful debug
+information but the size of ramoops reserved is usually very small and
+is divided among all of these. So even if lets say we add DCC today and
+later on multiple devices which are present in the same SoC, then the
+reserved memory will not be enough and its not easy to properly divide
+the memory regions to these devices within device-ramoops, there needs
+to be some sort of dynamic reservation as the device probes, so its
+currently on hold.
+
+One other reason is the firmware being smart, such as depthcharge [1]
+which deletes the ramoops DT node when it loads Kernel+DTB image and
+adds its own ramoops node with the size it prefers(which is small) and
+so we would need a firmware side change as well to accomodate dcc-ramoops.
+
+Given so many dependencies for pstore ramoops, making it as a primary way
+to get DCC trace logs doesn't seem right, we can add it as an addon feature.
+
+[1] https://chromium.googlesource.com/chromiumos/platform/depthcharge/+/refs/heads/main/src/boot/ramoops.c#41
+
+>> Now the other reason as to why we need this dev interface in addition to
+>> pstore,
+>>
+>>  * Pstore contents are retrieved on the next boot, but DCC SRAM contents
+>>    can be collected via dev interface for the current boot via SW trigger.
+>>    Lets say we have some non-fatal errors in one of the subsystems and we
+>>    want to analyze the register values, it becomes as simple as configuring
+>>    that region, trigger dcc and collect the sram contents and parse it.
+>>
+>>    echo "addr" > /sys/bus/platform/devices/***.dcc/config
+>>    echo  1 > /sys/bus/platform/devices/***.dcc/trigger
+>>    cat /dev/dcc_sram > dcc_sram.bin
+>>    python dcc_parser.py -s dcc_sram.bin --v2 -o output/
+>>
+>> We don't have to reboot at all for SW triggers. This is very useful and
+>> widely used internally.
+>>
+>> Is the custom /dev/dcc_sram not recommended because of the dependency on
+>> the userspace component being not available openly? If so, we already have
+>> the dcc parser upstream which we use to extract the sram contents [2].
+>>
+> 
+> My concern is that we come up with a custom chardev implementation for
+> something that already exists or should exist in a more generic form.
+>
+
+Sorry if I misunderstood this comment, but DCC is part of QDSS(Qualcomm Debug
+SubSystem) and is specific to QTI. We have Coresight TMC ETR/ETF exposing
+similar dev interfaces which is somewhat similar to DCC in the sense that ETF
+has its own internal RAM and DCC has the internal SRAM but they are 2 different
+hardware IPs. Even in case of ETF, we can collect the live trace on the target
+via dev interface and then decode it or collect ramdumps in case of fatal crashes
+and then extract trace binary and decode it. So looks like such dev interface
+already exists for other hardwares and works pretty well for the specific usecases.
+
+> 
+> In the runtime sequence above, why don't you have trigger just generate
+> a devcoredump? But perhaps the answer is that we want a unified
+> interface between the restart and runtime use cases?
+>
+
+Yes, in case of restart i.e., warm reboot since DCC SRAM contents are
+retained, we can use the dev interface itself on the next reboot to
+collect dcc logs if the memory is not zeroed out which I think current
+driver code does which needs to be fixed.
+
+> 
+> It would be nice to have some more details of how I can use this and how
+> to operate the sysfs interface to achieve that, would you be able to
+> elaborate on this?
+> 
+
+Agreed, this needs more documentation. I will give one real world example on
+SC7180 SoC based board where this could have been used, Souradeep can add more
+and document it in cover letter for the next version of the patchset.
+
+Example: (Addresses configured here are just examples and not related to actual
+timestamp clks)
+
+On SC7180, there was a coresight timestamp issue where it would occasionally
+be all 0 instead of proper timestamp values.
+
+Proper timestamp:
+Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
+
+Zero timestamp:
+Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+
+Now this is a non-fatal issue and doesn't need a system reset, but still needs
+to be rootcaused and fixed for those who do care about coresight etm traces.
+Since this is a timestamp issue, we would be looking for any timestamp related
+clocks and such.
+
+So we get all the clk register details from IP documentation and configure it
+via DCC config syfs node. Before that we set the current linked list.
+
+/* Set the current linked list */
+echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+
+/* Program the linked list with the addresses */
+echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+..... and so on for other timestamp related clk registers
+
+/* Other way of specifying is in "addr len" pair, in below case it
+specifies to capture 4 words starting 0x10C004 */
+
+echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+
+/* Enable DCC */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+
+/* Run the timestamp test for working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram1.bin
+
+/* Run the timestamp test for non-working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram2.bin
+
+Get the parser from [1] and checkout the latest branch.
+
+/* Parse the SRAM bin */
+python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+
+Sample parsed output of dcc_sram1.bin:
+
+localhost ~ # cat dcc_captured_data.xml 
+<?xml version="1.0" encoding="utf-8"?>
+<hwioDump version="1">
+        <timestamp>03/14/21</timestamp>
+        <generator>Linux DCC Parser</generator>
+        <chip name="None" version="None">
+                <register address="0x0010c004" value="0x80000000" />
+                <register address="0x0010c008" value="0x00000008" />
+                <register address="0x0010c00c" value="0x80004220" />
+                <register address="0x0010c010" value="0x80000000" />
+        </chip>
+        <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+</hwioDump>
+
+Now compare the parsed output for dcc_sram1.bin and dcc_sram2.bin, we will
+find that one of these register values in working case and non-working case
+is different which when cross checked with IP doc would give us the idea
+of what is going wrong with the timestamp clks and would help to debug further.
+
+[1] https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+
+PS: We didn't use DCC to debug this coresight timestamp issue but could have
+used it and this example demonstrates the capability of DCC and I ran with
+these above with actual timestamp clk registers and it works as demonstrated
+here, so it's a working example.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
