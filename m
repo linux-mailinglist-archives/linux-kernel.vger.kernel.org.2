@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCFA33A424
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE4833A42C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Mar 2021 11:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhCNKT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 06:19:28 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:37238 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235126AbhCNKTH (ORCPT
+        id S235119AbhCNKbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 06:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhCNKa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:19:07 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12EAIqRf000371;
-        Sun, 14 Mar 2021 05:18:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=UyEKzuzXX6Bk054SMR2fNK/9VqqSA0lao6vxZ6vCYfU=;
- b=HOmxilYKKnz5YElDny6N5x27VXkSYKzOSoyMYCwGrIoOc3IMfidZPmndZEoe/2jvntF5
- sOshVujfRt4fkLzRJKz1eBqn1eUWfpwLvE88TtmHFX1qVTBidBPnl4CL5Tv9qbmUkQmD
- GmKr5ReOcIVkmlLyfh+FkgIbs+nX/nm9Z2ZB1lx9irMsT1aq23dcyRc3BvR6pQLQofsC
- 4ss2wLcDNd69Qgca1NtGD9xU1kWWTomP85LBupC48bvLcVc2F/HYFcKIyI0GBmugAbuy
- 1J5KvigLfHr6w8ZpAuoAkhexU6b7G5UzwrOnrDD3uID422etgKCB9YfcYoHVgiB7dNNU 0A== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 378tpv161p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 14 Mar 2021 05:18:52 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sun, 14 Mar
- 2021 10:18:51 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sun, 14 Mar 2021 10:18:51 +0000
-Received: from [198.90.238.45] (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BA1711CB;
-        Sun, 14 Mar 2021 10:18:51 +0000 (UTC)
-Subject: Re: [PATCH v1 0/4] ALSA: hda/cirrus: Make CS8409 driver more generic
- by using fixups
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
- <s5h1rcirv2a.wl-tiwai@suse.de>
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Message-ID: <0e3a2304-7945-0d80-91cc-b6b551f7c3f4@opensource.cirrus.com>
-Date:   Sun, 14 Mar 2021 10:18:49 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sun, 14 Mar 2021 06:30:58 -0400
+Received: from mail.unsolicited.net (mail.unsolicited.net [IPv6:2001:8b0:15df::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9835FC061762;
+        Sun, 14 Mar 2021 03:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=unsolicited.net; s=one; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=VbLJtxGS3B4dn2fUXqIjNF/Q4gmvt7mVXeDAG9s+7Uw=; b=k7wMP3l5xboEDpi7M0QCJwv6kk
+        UJlMPrr/JBboI53czgVJEpByLaA4nCYbaO3toB3nazUDcG942Tw9DSljwCz5KuwSSxaH3IYqpxM2p
+        9iJ8DNvEWGN4nDWFsGwzK+309f9is5h2ff2HNcYuhAm46bMP0zwLmr8hLlHDjuCyvyLw/utPhd/5O
+        KN9lcgqPJU90qf4HmcwNW+0QehpzRlByPslAYmGGCRqPpdbEt/xgPH8tT+mTZRfz1NIT+ZDKX6C+9
+        zP3+hIKW1vHtFQB8c6xkPF4ys2TgSh0GorOgx0TwjEASsAkxQ6cFVOpIUnIVrQytVkQK97ySc2YSr
+        3EHwEq7w==;
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+From:   David R <david@unsolicited.net>
+Subject: Panic after upgrading to 5.11.6 stable
+Autocrypt: addr=david@unsolicited.net; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <dfd0563b-91da-87ab-0cfa-c1b99c659212@unsolicited.net>
+Date:   Sun, 14 Mar 2021 10:30:55 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <s5h1rcirv2a.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 malwarescore=0
- priorityscore=1501 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 phishscore=0 mlxlogscore=555 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103140076
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/03/2021 8:36 am, Takashi Iwai wrote:
-> On Sat, 13 Mar 2021 12:34:06 +0100,
-> Vitaly Rodionov wrote:
->> This series of patches will address comments by Pierre-Louis Bossart,
->> cleans up patch_cirrus.c source, reducing checkpatch.pl warnings from 19 to 0,
->> fixing an issue reported by Canonical: BugLink: https://bugs.launchpad.net/bugs/1918378,
->> and makes the CS8409 patch more generic by using fixups.
->>
->> Stefan Binding (4):
->>    ALSA: hda/cirrus: Add error handling into CS8409 I2C functions
->>    ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
->>    ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control name
->>    ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
-> Is this the same content as the series you've already submitted in
-> 20210312184452.3288-1-vitalyr@opensource.cirrus.com ?
-
-Hi Takashi,
-
-Yes, this is second version of same series, where we have fixed warnings 
-from 0-day bot.
-
-Thanks,
-
-Vitaly
-
->
->
-> thanks,
->
-> Takashi
+I attempted to upgrade my home server to 5.11 today. The system panics
+soon after boot with the following :-
 
 
+
+In iptables by the looks of the stack.
+
+5.10.23 works fine.
+
+Can provide config (and boot logs from 5.10.23) if required.
+
+Cheers
+David
