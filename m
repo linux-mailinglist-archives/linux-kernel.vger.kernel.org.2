@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC5533BFC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0D33BFEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhCOPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:32:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:5241 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232793AbhCOPcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:32:14 -0400
-IronPort-SDR: mjwp7xOpTr0jK5nG0ii5deEU4Aul8gcGZo4s51S0JXcxD65t/BZ0Hw0OkjS3Xz6u6B2HdEozLo
- cnXW5S5UuSkg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="188466643"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="188466643"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 08:32:14 -0700
-IronPort-SDR: P9k0Zu1em/slh/Vz8PXHSsk9pinyZZzyhknTEKvwEIvc/z0vqPmDw0Qy/t4KIHpUX2aEBo5ZS7
- Cner+rNUoyNA==
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="601463686"
-Received: from lguadamu-mobl1.amr.corp.intel.com (HELO [10.213.176.188]) ([10.213.176.188])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 08:32:14 -0700
-Subject: Re: [PATCH v4 1/3] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S231974AbhCOPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231142AbhCOPeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 11:34:22 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF57C06174A;
+        Mon, 15 Mar 2021 08:34:22 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d23so12278587plq.2;
+        Mon, 15 Mar 2021 08:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gYbVLatmMXxxm3XlETOvCj+hkAugf9rbLUg+H5BCo3U=;
+        b=MF4CRoTe3dDmLPYiOBeMZOx1Sy5eseHTJvatZ+mZ+uFDf4Z5/yso9pMRYDVseq7TDP
+         HKzs4D03mAVFFByBMuLtF5t/nLqdWWfsZ1hTd5NdM6x43L12LrpIIHbTMol9b4pZVHip
+         zUI3D+FaKjgzZzQEhrIwqw1jo/2CZIqv6JSTXY3sCb7SAY2MgFbRT0CfT1UlkUWKufzF
+         3b3MOFym590Mgu91nwWLRVORE/ffCWZ93hD/5tyej1Ckh0rw7kFjSCmvHXseVD471g7R
+         BYjVoOUql4vGxU63yczfxdOLy8YQ6t+/KRm5DLaQuMisPOTCeYoMVal1KGC/NfCNsceK
+         BDXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gYbVLatmMXxxm3XlETOvCj+hkAugf9rbLUg+H5BCo3U=;
+        b=QxyzGgBrVsQmuIlq7wOFDOPChzKr0Q/n4k8EAHxfnoA0pE1zg/nu9mEMeAMiBLLoMz
+         +XEb2e9vywACoE0zvrl452WlU/YQC9ye1mD98g8OrQytr3ZFOqynQjBjD0ultZgPtzNH
+         VCafjEhHMO3Lj48UOFKNH8lEiE3vCi3AXh4IwbGVgMHiNYnt+jP2LSTNCzqcwTmpo/sY
+         xHai1oRtKDVgXiVC2aHiS8Ybcw3EKkJ1YC7EP0EBvJRdBbvk7pS4eMVcPet1am+tr3VG
+         HF9xLgbQhMzVUyiYABXdozVVbsu3erme8ISiof9a7h09SD4L1DWOMIYhhgOhuU3S3v/L
+         LX3g==
+X-Gm-Message-State: AOAM532P/u1XXTOaLG6PucYJEChjC01pxgvFQBM+pef2zBewUBI+Yt3X
+        wHqncM9Ojf7rmx+2CDM6+fk=
+X-Google-Smtp-Source: ABdhPJydMcDOyQiRvk8pT7CZYe4fPeW+E03bNJx47yzQFeHejuDjdTI/aXKoRevhK0j3mQMrMuOvWA==
+X-Received: by 2002:a17:902:d893:b029:e6:7a98:6919 with SMTP id b19-20020a170902d893b02900e67a986919mr12138229plz.58.1615822462251;
+        Mon, 15 Mar 2021 08:34:22 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id a20sm14731673pfl.97.2021.03.15.08.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 08:34:21 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 21:03:41 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     alex.williamson@redhat.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, raphael.norwitz@nutanix.com,
         linux-kernel@vger.kernel.org
-References: <20210313160119.1318533-1-jarkko@kernel.org>
- <20210313160119.1318533-2-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ab40db7a-234e-b28e-c235-0c720d2d6a5f@intel.com>
-Date:   Mon, 15 Mar 2021 08:32:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210315153341.miip637z35mwv7fv@archlinux>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312173452.3855-5-ameynarkhede03@gmail.com>
+ <20210314235545.girtrazsdxtrqo2q@pali>
+ <20210315134323.llz2o7yhezwgealp@archlinux>
+ <20210315135226.avwmnhkfsgof6ihw@pali>
+ <20210315083409.08b1359b@x1.home.shazbot.org>
+ <YE94InPHLWmOaH/b@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20210313160119.1318533-2-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YE94InPHLWmOaH/b@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/13/21 8:01 AM, Jarkko Sakkinen wrote:
-> Replace the ad-hoc code with a sgx_free_epc_page(), in order to make sure
-> that all the relevant checks and book keeping is done, while freeing a
-> borrowed EPC page, and remove redundant code. EREMOVE inside
-> sgx_free_epc_page() does not change the semantics, as EREMOVE to an
-> uninitialize pages is a nop.
+On 21/03/15 05:07PM, Leon Romanovsky wrote:
+> On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
+> > On Mon, 15 Mar 2021 14:52:26 +0100
+> > Pali Rohár <pali@kernel.org> wrote:
+> >
+> > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > warm reset respectively.
+> > >
+> > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > > type of reset, which is currently implemented only for PCIe hot plug
+> > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > kernel and therefore drivers do not export this type of reset via any
+> > > kernel function (yet).
+> >
+> > Warm reset is beyond the scope of this series, but could be implemented
+> > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > defined here.  Note that with this series the resets available through
+> > pci_reset_function() and the per device reset attribute is sysfs remain
+> > exactly the same as they are currently.  The bus and slot reset
+> > methods used here are limited to devices where only a single function is
+> > affected by the reset, therefore it is not like the patch you proposed
+> > which performed a reset irrespective of the downstream devices.  This
+> > series only enables selection of the existing methods.  Thanks,
+>
+> Alex,
+>
+> I asked the patch author here [1], but didn't get any response, maybe
+> you can answer me. What is the use case scenario for this functionality?
+>
+> Thanks
+>
+> [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal
+>
+Sorry for not responding immediately. There were some buggy wifi cards
+which needed FLR explicitly not sure if that behavior is fixed in
+drivers. Also there is use a case at Nutanix but the engineer who
+is involved is on PTO that is why I did not respond immediately as
+I don't know the details yet.
 
-  ^ uninitialized
-
-I know this is a short patch, but this changelog still falls a bit short
-for me.
-
-Why is this patch a part of _this_ series?  What *problem* does it
-solve, related to this series?
-
-It would also be nice to remind me why the EREMOVE is redundant.  Why
-didn't we need one before?  What put the page in the uninitialized
-state?  Is EREMOVE guaranteed to do nothing?  How expensive is it?
-
-
-
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 8df81a3ed945..65004fb8a91f 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
->  {
->  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
->  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> -	struct sgx_epc_section *section;
->  	struct sgx_encl_page *encl_page;
->  	struct sgx_epc_page *epc_page;
->  	pgoff_t page_index;
-> @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
->  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
->  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
->  
-> -		section = &sgx_epc_sections[epc_page->section];
-> -		spin_lock(&section->lock);
-> -		list_add_tail(&epc_page->list, &section->page_list);
-> -		section->free_cnt++;
-> -		spin_unlock(&section->lock);
-> +		sgx_free_epc_page(epc_page);
->  	}
->  }
->  
-> 
-
+Thanks,
+Amey
