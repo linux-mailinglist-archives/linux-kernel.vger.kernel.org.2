@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B546033AB90
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02F933AB93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhCOGYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 02:24:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54566 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhCOGYG (ORCPT
+        id S229933AbhCOGZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 02:25:37 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:39652 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhCOGZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 02:24:06 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12F6Nisw111892;
-        Mon, 15 Mar 2021 01:23:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615789424;
-        bh=+xpVIqXBMlQSCgMDub+F48I456GSb3TAm140SRUSPpE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=I2U9/tFAjwr4SGj3+eW0Wkh1QHAjSnSho3Vv0eeXT3RQLHhdKuD16sSw6qNT7ddcr
-         XClmfYTOOmQZi4q/KpmoUGFD7A3vndZof6Jg7WYC2nP2zRs3QCOx+L4aKjH8kWZilj
-         DB64b3VJT2n9eWU9x0uVwi9xLneuby5K2b2zrjv0=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12F6NiBl045707
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 15 Mar 2021 01:23:44 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
- Mar 2021 01:23:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 15 Mar 2021 01:23:43 -0500
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12F6NfFt122635;
-        Mon, 15 Mar 2021 01:23:42 -0500
-Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
- out of the core
-To:     <Tudor.Ambarus@microchip.com>, <p.yadav@ti.com>, <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-5-tudor.ambarus@microchip.com>
- <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
- <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
-Date:   Mon, 15 Mar 2021 11:53:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 15 Mar 2021 02:25:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615789518; x=1647325518;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=O+FmMMaqc9xAOeMmwyghT8YhOnNX8N7qYqYTwq/coSE=;
+  b=FjN/bTo8A0aDYS2p4MeQl424XguObctpd4mGG2xQCbM8e8bLWLFi+p9K
+   k2KOgoMoT7EEuiNYQJXu1zNXDypE+7JFLG4Ez+JnkOBRkrQmCZcXoaQ0P
+   d22LecKgV+yrcDYzhWPUeh2Voy4AGMnGxfOph+d7ga7xJ+AzkjPzTLzyz
+   hNMiDMAWZeF1AUTppi8aSY7C65TOMXivqc0A0REMwwktjLqnmcuArqfkY
+   FmwOcyVIQ7t+iwQwkpwB+7amXkzDlynrffA3AnnDuwYr2MJywkkbO4NZQ
+   vMUzwwDiAiwMu0BF0mvbE95vqd+ei7j6NgQ2D/lRLnDY6jtc8Vnu0vjP3
+   Q==;
+IronPort-SDR: Yr38vcY2kWvsYdFY91dEu1esAxnn2Xzpk2/yZHF90rQYBqtDAh6/YNKTVtvc1Uq5Vod11Ep/Q2
+ m75YGgy1Bw1d9xcGCeot9+6KpM4/+suv8VagbeJojBPtVDcVdKmVVYzwfnqfJy4lPY3AG1eX61
+ yTBxcJTbCgolGWh4+BqE5lAVFz2REcp9Z+l/XPP2S2WMPtVaztWnyztJFlbiXOFNeQQbWbNRL9
+ uTyzT+kdXajcF0sFrEmz1hZyUyl5/iV5udEmK87OU9ufceBjKoBIji8iDy9S/SLMA2ganmJy2S
+ rdU=
+X-IronPort-AV: E=Sophos;i="5.81,249,1610434800"; 
+   d="scan'208";a="113209632"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Mar 2021 23:25:18 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 14 Mar 2021 23:25:17 -0700
+Received: from CHE-LT-I21427U.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sun, 14 Mar 2021 23:25:13 -0700
+Message-ID: <a5ae36fda31281e0aa2f94e374158f46338ea1bb.camel@microchip.com>
+Subject: Re: [PATCH net-next 3/8] net: dsa: microchip: add DSA support for
+ microchip lan937x
+From:   Prasanna Vengateshan Varadharajan 
+        <prasanna.vengateshan@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <olteanv@gmail.com>, <netdev@vger.kernel.org>,
+        <robh+dt@kernel.org>, <kuba@kernel.org>,
+        <vivien.didelot@gmail.com>, <f.fainelli@gmail.com>,
+        <davem@davemloft.net>, <UNGLinuxDriver@microchip.com>,
+        <Woojung.Huh@microchip.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Date:   Mon, 15 Mar 2021 11:55:11 +0530
+In-Reply-To: <YB1HrTfUvgXbcsTr@lunn.ch>
+References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
+         <20210128064112.372883-4-prasanna.vengateshan@microchip.com>
+         <YBNf715MJ9OfaXfV@lunn.ch>
+         <b565944e72a0af12dec0430bd819eb6b755d84b4.camel@microchip.com>
+         <YB1HrTfUvgXbcsTr@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-02-05 at 14:27 +0100, Andrew Lunn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
+> 
+> > > > +bool lan937x_is_internal_tx_phy_port(struct ksz_device *dev,
+> > > > int
+> > > > port)
+> > > > +{
+> > > > +     /* Check if the port is internal tx phy port */
+> > > 
+> > > What is an internal TX phy port? Is it actually a conventional t2
+> > > Fast
+> > > Ethernet port, as opposed to a t1 port?
+> > This is 100 Base-Tx phy which is compliant with
+> > 802.3/802.3u standards. Two of the SKUs have both T1 and TX
+> > integrated
+> > Phys as mentioned in the patch intro mail.
+> 
+> I don't think we have a good name for a conventional fast Ethernet.
+> But since we call the other T1, since it has a single pair, maybe use
+> T2, since Fast Ethernet uses 2 pair. I would also suggest a comment
+> near this code explaining what T1 and T2 mean.
+This is compliant with 802.3u (100 Base-Tx) as i mentioned above. So
+naming it as "T2" would not match. Can we name it as "100BTX" instead
+of Tx? Thanks.
 
 
-On 3/9/21 12:58 PM, Tudor.Ambarus@microchip.com wrote:
-> On 3/8/21 7:28 PM, Vignesh Raghavendra wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 3/6/21 3:20 PM, Tudor Ambarus wrote:
->>> It makes the core file a bit smaller and provides better separation
->>> between the Software Write Protection features and the core logic.
->>> All the next generic software write protection features (e.g. Individual
->>> Block Protection) will reside in swp.c.
->>>
->>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>> ---
->>>  drivers/mtd/spi-nor/Makefile |   2 +-
->>>  drivers/mtd/spi-nor/core.c   | 407 +---------------------------------
->>>  drivers/mtd/spi-nor/core.h   |   4 +
->>>  drivers/mtd/spi-nor/swp.c    | 419 +++++++++++++++++++++++++++++++++++
->>
->> Hmmm, name swp.c does not seem intuitive to me. How about expanding it a
->> bit:
->>
->> soft-wr-protect.c or software-write-protect.c ?
->>
-> 
-> I thought about the SWP configs that we have.
-> 
-> How about keeping swp.c and rename configs to:
-> s/MTD_SPI_NOR_SWP_DISABLE/MTD_SPI_NOR_DISABLE_BOOT_SWP
-> s/MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE/MTD_SPI_DISABLE_BOOT_SWP_ON_VOLATILE
-> s/MTD_SPI_NOR_SWP_KEEP/MTD_SPI_NOR_KEEP_BOOT_SWP
-> 
-> The renamed configs should better indicate that the software write protection
-> is disabled just at boot time, while the locking support is still enabled.
-> Otherwise one may think that with a MTD_SPI_NOR_SWP_DISABLE, all the
-> software write protection features are stripped/not available.
-> 
-
-I am not a fan of renaming Kconfig options as it breaks make
-olddefconfig flow which many developers rely on.
-
-Regards
-Vignesh
