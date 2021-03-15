@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B8933C68F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442D833C695
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhCOTKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:10:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhCOTKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:10:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615835412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gBh9rZ1pe0Dw23aY7I0BceM5dAfPMfFrVDEvEe02JBQ=;
-        b=LtTDSfiEFPCuY2dr1iPNxVN3WP7R4nJ6QBfYlBO9dIEx3AZD7DORPVEpyqSZwxaNBD67ho
-        thqQwRLsCImAVaMVNPEnBPxDviIafWx0by0BLCZeyNCaYS1XjGqT0/nwMs8kOH0kUWCam7
-        aDMSyE7WKRGcejD1r5ZNrf11mumaWEc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 126BDAE8F;
-        Mon, 15 Mar 2021 19:10:12 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 20:10:09 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
-Message-ID: <YE+xEbwUoRj+snTY@blackbook>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <YETLqGIw1GekWdYK@slm.duckdns.org>
- <YEpoS90X19Z2QOro@blackbook>
- <YEupplaAWU1i0G6B@google.com>
+        id S231423AbhCOTNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhCOTND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:13:03 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46371C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:13:01 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r3so50453854lfc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ETITyohOMGTA5c4SIeM+KSc+vnY0j80+gbmDYG75nz8=;
+        b=eUXS+eYjf+Yk/kl3W0OvWXfvjkkqHNRrjwdTH5TwORbKwcYVFwXMs9SmogjPXwISOy
+         yvExM7tfpgvqw52fRnOOZ6TV1JmLafFLHrtyyX6WiqdPFAHBille72a5D4sWCa/Tx+yH
+         tg9SxqVJrMSQftrhwh2aK0lNjc9j0s0vIvTU8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ETITyohOMGTA5c4SIeM+KSc+vnY0j80+gbmDYG75nz8=;
+        b=RicZs/U26uQpjCGijYh7YF1P42l6psQyCVd6DeABnw2HSgbdgE19FY7fuz53qIDjOK
+         pOM3V2IulZ7N27hoh3TmQwvMzjAfT0T/r1azvKZsvdA5VqfJK95GG0nEpBScfNekA1v0
+         DPfcj1YeZ4IOfJ/eTAy5c7K1XBGLEYPGbr+refamgiL5DPQ1qZ/LnTduTUpb2QIIHZeg
+         Gr3UeYcXofsmiV1g8RVJZW/9PmOCRf8z7hdSl+NADg9sVKS0TDEMW0BOzbsazsC1Qit/
+         gcM0lVF81SFV3ZQyvwYo8TcPZyOScqH1LfvW+AP7OzyBaa+ytZxERdy3j/4QQnKwXPWr
+         vJGA==
+X-Gm-Message-State: AOAM533II1ALHUE+HoWNFB1rIz7aDdCivcxMnYtxHwiAm6EZZJcpiqLo
+        few3LJLHH4uqTBROykvs7+nMzhl008J/1w==
+X-Google-Smtp-Source: ABdhPJyMa4TKsho887Y1Ye2jNO5JQK1/cIGISBCzmGsYnGf1fYKqLaUp2xhce1UrHwqGjPbs47oJig==
+X-Received: by 2002:a05:6512:ce:: with SMTP id c14mr9002595lfp.64.1615835579256;
+        Mon, 15 Mar 2021 12:12:59 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id 197sm2992299ljf.70.2021.03.15.12.12.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 12:12:58 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 18so58579063lff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:12:57 -0700 (PDT)
+X-Received: by 2002:a19:ed03:: with SMTP id y3mr8614258lfy.377.1615835577584;
+ Mon, 15 Mar 2021 12:12:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WauBitk+7AKZVUrp"
-Content-Disposition: inline
-In-Reply-To: <YEupplaAWU1i0G6B@google.com>
+References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
+ <202103120329.VU4uJ0yZ-lkp@intel.com> <CAHk-=whmwEJ-4tGamqOCw4BDJ-yjYrLRYxaFq5YurVc-XXO+hg@mail.gmail.com>
+ <db88186a-d6af-33c9-f1fb-10b673b8fdd6@intel.com> <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
+ <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com>
+In-Reply-To: <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 15 Mar 2021 12:12:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
+Message-ID: <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
+Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size mismatch
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Mar 14, 2021 at 7:32 PM Rong Chen <rong.a.chen@intel.com> wrote:
+>
+> It can be reproduced with '-a' option in dash:
 
---WauBitk+7AKZVUrp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh, ok. That kind of explains it.
 
-On Fri, Mar 12, 2021 at 09:49:26AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> I will add some more information in the cover letter of the next version.
-Thanks.
+'dash' is trash. Please somebody make a bug report.
 
-> Each one coming up with their own interaction is a duplicate effort
-> when they all need similar thing.
-Could this be expressed as a new BPF hook (when allocating/freeing such
-a resource unit)?
+>      $ a="!"
+>      $ [ "$a" = ".size" ]
+>      $ [ "$a" = ".size" -a "$b" = ".LPBX0," ]
+>      sh: 2: [: =: unexpected operator
 
-The decision could be made based on the configured limit or even some
-other predicate.
+This is 100% a dash bug. There is no question what-so-ever about it.
+This is not some kind of "POSIX is ambiguous", or "the handling of
+'-a' is complicated".
 
-(I saw this proposed already but I haven't seen some more reasoning
-whether it's worse/better. IMO, BPF hooks are "cheaper" than full-blown
-controllers, though it's still new user API.)
+It's simply just that dash is buggy.
 
+>  While dash supports most uses of the -a and -o options, they have
+> very confusing semantics even in bash and are best avoided.
 
-> As per my understanding this is the only for way for loadable modules
-> (kvm-amd in this case) to access Kernel APIs. Let me know if there is a
-> better way to do it.
-I understood the symbols are exported for such modularized builds.
-However, making them non-GPL exposes them to any out-of-tree modules,
-although, the resource types are supposed to stay hardcoded in the misc
-controller. So my point was to make them EXPORT_SYMBOL_GPL to mark
-they're just a means of implementing the modularized builds and not an
-API. (But they'd remain API for out-of-tree GPL modules anyway, so take
-this reasoning of mine with a grain of salt.)
+No, they have perfectly sane semantics in bash, and in POSIX.
 
-Michal
+See
 
---WauBitk+7AKZVUrp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+     https://pubs.opengroup.org/onlinepubs/9699919799/utilities/test.html
 
------BEGIN PGP SIGNATURE-----
+and there is absolutely zero question that bash does this correctly,
+and dash does not.
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPsQ0ACgkQia1+riC5
-qSh1cQ/9GddlgkcRcRP9oxFJbsVUxhnntwF8wqSof5oSUCBDSWP5Hz7M3P05aFrI
-5VTcopKswg9sI+xO2rMiZb2guzOsy4soqTHRj6emRwbs09Pmtb9uEPrg3nbTZsAR
-jUHnNRkhPB7LVMhyVRH4wmZRcD1mq0HiJLkzQNaPVG8D3XG0ge6xVr6+doCc2Ev6
-UTrbbtcdBXmZX8hnLutMYu+QWNWQJyWJjii1nJKwby1v6heb10/fN40Ai1DQiOrR
-l21qKqxrzUjzpJUOv7Rek/FHvKf1u6HcIEI8H1wx/tMdbptH7IMH6fAtRSDpzbnl
-rPzovNq6h6r49VwFPKAaY0kx8u0Yv+IUME2GrjpmuxO+O3dvDJiaQeltisxlfWLn
-/Cn236Hzs3aGAHHqqLDJXoxarCmdbFbLL5KjLfK8onoUuNkKf9jmZ2puG04Lgin6
-iuvW2VEwUeKDXGxly0+JmzbRatQlvjfltDf7QlHx5zZxbGXYXVDFaz0AKx2hS6h+
-XeoV5ko/poc6htsxJWdygD+DXl8y0c9JJlQsLHhBr5JPszYaw3BegCedwvZdF4ph
-5QczC/tm0JiKqlb9tNIJ/kv2qIC97DbLt0Q0wv3idoAAZ9iTCwOSwRIdA79txnm4
-brb1x019FyJQXQbSL9pP2saG0dbJ7PYgNHp//N/zFMahETXHkq4=
-=lJqH
------END PGP SIGNATURE-----
+But yes, it seems to be easy to work around, but still - could some
+Ubuntu person please open a bug report on dash?
 
---WauBitk+7AKZVUrp--
+               Linus
