@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248D733B07C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD45433B086
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhCOK67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhCOK60 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:58:26 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F485C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:58:26 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id g185so31114200qkf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=t7xy6zeaJAsJPXI+1JuOYJP82SO0w/hyJQujyPzx7sQ=;
-        b=GiIzTz2riciYNs5yRUZ+/7oI/l4i+oi8y8XyI3p+Q+PjIebZwSqYdW0caUNDK5wL1A
-         Wd7hsznl76jhobiS2CiUIC6mVq4cTjYsXs1y24NGsJ5Ka0h6UB3zb8wccWDSbyx8AY7Z
-         kCbQh1Sxxcgh9d08nP3EkXiO6QWU+2PwtBvr8ngC84quW6+wc6pjMInGaCPgcpmcF5Hl
-         ywSgYNjjL+JsKGlytcvhPsGax0vc4pg+5U1yi+A1aF7+/7C4tlBsk0lhHwOtVXwmqvlk
-         ckG9nuJYnaH8NijRbMJvmw5tVPcsA3E3Zo9UDNkxaHXpIIRNV3czJcNoJmTg5OsfJg3O
-         AVWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=t7xy6zeaJAsJPXI+1JuOYJP82SO0w/hyJQujyPzx7sQ=;
-        b=P+eHgAWCIb5x6OKJNMwpYcwgC7C0regrQTty0tMEHzqF/i8dtrSgW8L7kOpoQJyav1
-         dfm5ogy4LBxK9RJ44JVAmXOesCjaG0jrfMjeftCg4ahk9zmxGcivUSbm6MG5Db8Dhmpp
-         SOK99OGO1yGsCYtZy7wHeftbi4tEW9pd4caand7mpQsB4/2XFznaTMMiSxRotbuUj7Yl
-         IW9gs5ZAV7AGFQwNWa9sQXsmGG1pfG4I+wtO0EqdZvfrXntoOzupydb8TsNitO1Rf1nT
-         ra/aThCLkahV02zH2Nt3nbboIfwIG1gP3twyQrDZmdjJHQUaEkXoT/O0fHWk1QWcOua3
-         qNYQ==
-X-Gm-Message-State: AOAM5325oLpx5OCGzXiuySyme4lDxqlsqTeyzU16SmBhnWtCeCe7lAn5
-        jK+F+7XE53TytRZDC5jnj0dmI3xCtOsVeQ80CQ4x3Q==
-X-Google-Smtp-Source: ABdhPJyt24kW0t7rN9C+7UBuhpQqczNrqgYCLw5B+a95p6Kl4fSlHXEmRbDixvPpdKWR6Vywg2O6wcZfrVVgj5nJLOU=
-X-Received: by 2002:a37:a7cb:: with SMTP id q194mr723540qke.350.1615805905482;
- Mon, 15 Mar 2021 03:58:25 -0700 (PDT)
+        id S229634AbhCOLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:01:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33626 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhCOLAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:00:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E05AAAE3C;
+        Mon, 15 Mar 2021 11:00:41 +0000 (UTC)
+Subject: Re: [PATCH v4 1/4] mm,page_alloc: Bail out earlier on -ENOMEM in
+ alloc_contig_migrate_range
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210310150853.13541-1-osalvador@suse.de>
+ <20210310150853.13541-2-osalvador@suse.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <bd60e2e2-3683-69a4-a922-20a446bac61f@suse.cz>
+Date:   Mon, 15 Mar 2021 12:00:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 15 Mar 2021 11:58:14 +0100
-Message-ID: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
-Subject: NULL deref in integrity_inode_get
-To:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210310150853.13541-2-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 3/10/21 4:08 PM, Oscar Salvador wrote:
+> Currently, __alloc_contig_migrate_range can generate -EINTR, -ENOMEM or -EBUSY,
+> and report them down the chain.
+> The problem is that when migrate_pages() reports -ENOMEM, we keep going till we
+> exhaust all the try-attempts (5 at the moment) instead of bailing out.
+> 
+> migrate_pages bails out right away on -ENOMEM because it is considered a fatal
+> error. Do the same here instead of keep going and retrying.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-I am trying to boot 5.12-rc3 with this config:
-https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-in qemu:
-qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
-max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
-wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
- -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
-   -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
-nic,model=virtio-net-pci   -object
-memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
-  -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
-root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
-panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
-vm_pid -m 2G -cpu host
+> ---
+>  mm/page_alloc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 3e4b29ee2b1e..94467f1b85ff 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8484,7 +8484,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  			}
+>  			tries = 0;
+>  		} else if (++tries == 5) {
+> -			ret = ret < 0 ? ret : -EBUSY;
+> +			ret = -EBUSY;
+>  			break;
+>  		}
+>  
+> @@ -8494,6 +8494,12 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  
+>  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+>  				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+> +		/*
+> +		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
+> +		 * to retry again over this error, so do the same here.
+> +		 */
+> +		if (ret == -ENOMEM)
+> +			break;
+>  	}
+>  	if (ret < 0) {
+>  		putback_movable_pages(&cc->migratepages);
+> 
 
-But it crashes on NULL deref in integrity_inode_get during boot:
-
-Run /sbin/init as init process
-BUG: kernel NULL pointer dereference, address: 000000000000001c
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
-Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
-3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
-1c 4cf
-RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
-RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
-R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
-R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
-FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
- process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
- ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
- security_bprm_check+0x7d/0xa0 security/security.c:845
- search_binary_handler fs/exec.c:1708 [inline]
- exec_binprm fs/exec.c:1761 [inline]
- bprm_execve fs/exec.c:1830 [inline]
- bprm_execve+0x764/0x19a0 fs/exec.c:1792
- kernel_execve+0x370/0x460 fs/exec.c:1973
- try_to_run_init_process+0x14/0x4e init/main.c:1366
- kernel_init+0x11d/0x1b8 init/main.c:1477
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
-CR2: 000000000000001c
----[ end trace 22d601a500de7d79 ]---
