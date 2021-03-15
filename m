@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF57833AC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10EA33AC11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCOHLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:11:16 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:52287 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhCOHKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:10:54 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DzSHw1tckz1qs3c;
-        Mon, 15 Mar 2021 08:10:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DzSHv67yPz1qqkP;
-        Mon, 15 Mar 2021 08:10:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id Pda42FF0npmN; Mon, 15 Mar 2021 08:10:47 +0100 (CET)
-X-Auth-Info: OHnDdbf9d0DEjw0wRgXAhlgaJLFD8ApsXDJzxnwTNiE=
-Received: from [192.168.1.107] (82-131-155-123.pool.digikabel.hu [82.131.155.123])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 15 Mar 2021 08:10:47 +0100 (CET)
-Reply-To: hs@denx.de
-Subject: Re: [PATCH v2 0/4] enable flexspi support on imx8mp
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alice Guo <alice.guo@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>, Li Jun <jun.li@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Teresa Remmet <t.remmet@phytec.de>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-References: <20210309053116.1486347-1-hs@denx.de>
- <20210315064731.GL11246@dragon>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <2c1e4c70-7616-85b3-bfa6-faf81dd72877@denx.de>
-Date:   Mon, 15 Mar 2021 08:10:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210315064731.GL11246@dragon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S230063AbhCOHMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:12:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44005 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhCOHMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:12:45 -0400
+IronPort-SDR: Fkm8yRu0NqpSJT5XOu3E1vQT/OFES5HKdKzvBC1JUBNxPTVUoAU1QGGAdSVBiLa1yUGcG1Awlq
+ qHU/+LbNqzBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="250412051"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="250412051"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 00:12:43 -0700
+IronPort-SDR: wmmKrUp01QfEm37nbP7Fnmn3SPZZPjpbOddpGqS18vjjleOpRRiR2Tix7BL1UMGF/3bsFqKxFi
+ eG698GUGE5UA==
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="388012988"
+Received: from avaldezb-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.229.198])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 00:12:39 -0700
+Date:   Mon, 15 Mar 2021 20:12:36 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-Id: <20210315201236.de3cd9389f853a418ec53e86@intel.com>
+In-Reply-To: <YEyX4V7BcS3MZNzp@kernel.org>
+References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
+        <20210311020142.125722-1-kai.huang@intel.com>
+        <YEvbcrTZyiUAxZAu@google.com>
+        <YEyX4V7BcS3MZNzp@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Shawn,
-
-On 15.03.21 07:47, Shawn Guo wrote:
-> On Tue, Mar 09, 2021 at 06:31:12AM +0100, Heiko Schocher wrote:
->>
->> This series enables support for the SPI NOR on the
->> imx8mp based phyboard-pollux-rdk board.
->>
->> Patches new in v2:
->> "spi: fspi: enable fspi driver for on imx8mp"
->> which adds own compatible entry for imx8mp
->>
->> and seperate in own patch the documentation entry in
->> patch "dt-bindings: spi: add compatible entry for imx8mp in FlexSPI controller"
->> as checkpatch says:
->>
->> warning: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
->>
->>
->> Changes in v2:
->> - work in comments from Marco
->>   add own compatible entry for imx8mp
->> - work in comments from Marco
->>   - add own compatible entry "nxp,imx8mp-fspi"
->>   - reworked order of properties as Marco mentioned
->> - work in comments from Marco and Teresa
->>   - rename node into "'som_flash: flash@0 { }"
->>   - compatible is now first entry
->>   - removed #size-cells and #address-cells
->>     as no child node. If bootloader adds them bootloader
->>     can add them too.
->>
->> Heiko Schocher (4):
->>   spi: fspi: enable fspi driver for on imx8mp
->>   dt-bindings: spi: add compatible entry for imx8mp in FlexSPI
->>     controller
->>   arm64: dts: imx8mp: add flexspi node
->>   arm64: imx8mp: imx8mp-phycore-som enable spi nor
+On Sat, 13 Mar 2021 12:45:53 +0200 Jarkko Sakkinen wrote:
+> On Fri, Mar 12, 2021 at 01:21:54PM -0800, Sean Christopherson wrote:
+> > On Thu, Mar 11, 2021, Kai Huang wrote:
+> > > From: Jarkko Sakkinen <jarkko@kernel.org>
+> > > 
+> > > EREMOVE takes a page and removes any association between that page and
+> > > an enclave.  It must be run on a page before it can be added into
+> > > another enclave.  Currently, EREMOVE is run as part of pages being freed
+> > > into the SGX page allocator.  It is not expected to fail.
+> > > 
+> > > KVM does not track how guest pages are used, which means that SGX
+> > > virtualization use of EREMOVE might fail.
+> > > 
+> > > Break out the EREMOVE call from the SGX page allocator.  This will allow
+> > > the SGX virtualization code to use the allocator directly.  (SGX/KVM
+> > > will also introduce a more permissive EREMOVE helper).
+> > > 
+> > > Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
+> > > more specific that it is used to free EPC page assigned to one enclave.
+> > > Print an error message when EREMOVE fails to explicitly call out EPC
+> > > page is leaked, and requires machine reboot to get leaked pages back.
+> > > 
+> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > Co-developed-by: Kai Huang <kai.huang@intel.com>
+> > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > ---
+> > > v2->v3:
+> > > 
+> > >  - Fixed bug during copy/paste which results in SECS page and va pages are not
+> > >    correctly freed in sgx_encl_release() (sorry for the mistake).
+> > >  - Added Jarkko's Acked-by.
+> > 
+> > That Acked-by should either be dropped or moved above Co-developed-by to make
+> > checkpatch happy.
+> > 
+> > Reviewed-by: Sean Christopherson <seanjc@google.com>
 > 
-> Two DTS patch look good.  Ping me when driver and bindings changes are
-> accepted.
+> Oops, my bad. Yup, ack should be removed.
+> 
+> /Jarkko
 
-Thanks!
+Hi Jarkko,
 
-Hmm.. I have not splitted this series into 2 series... should I do
-this now?
+Your reply of your concern of this patch to the cover-letter
 
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+https://lore.kernel.org/lkml/YEkJXu262YDa8ZaK@kernel.org/
+
+reminds me to do more sanity check of whether removing EREMOVE in
+sgx_free_epc_page() will impact other code path or not, and I think
+sgx_encl_release() is not the only place should be changed:
+
+- sgx_encl_shrink() needs to call sgx_encl_free_epc_page(), since when this is
+called, the VA page can be already valid -- there are other failures can
+trigger sgx_encl_shrink().
+
+- sgx_encl_add_page() should call sgx_encl_free_epc_page() in "err_out_free:"
+label, since the EPC page can be already valid when error happened, i.e. when
+EEXTEND fails.
+
+Other places should be OK per my check, but I'd prefer to just replacing all
+sgx_free_epc_page() call sites in driver with sgx_encl_free_epc_page(), with
+one exception: sgx_alloc_va_page(), which calls sgx_free_epc_page() when EPA
+fails, in which case EREMOVE is not required for sure.
+
+Your idea, please?
+
+Btw, introducing a driver wrapper of sgx_free_epc_page() does make sense to me,
+because virtualization has a counterpart in sgx/virt.c too.
