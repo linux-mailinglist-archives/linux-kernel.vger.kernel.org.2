@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4D833B925
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7039F33BA81
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhCOOFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:05:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
+        id S234064AbhCOOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:09:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231986AbhCON52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 877D564EF0;
-        Mon, 15 Mar 2021 13:57:26 +0000 (UTC)
+        id S231494AbhCON6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9148864F1A;
+        Mon, 15 Mar 2021 13:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816647;
-        bh=83Xs0tMceLlpSnIvlu0A0942S6gOOumlqNnRQalz+6s=;
+        s=korg; t=1615816683;
+        bh=1O7DPwMACBX9Y6FQA21+rcoyO3J9Vp+pOkkJNgitLWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQk/zFK+a0SQWTZk3Fr/Dk1ixzV7QyPSH/hPUh8JCaCbjJU8ZCyGwaMHjJ/0KurX4
-         YeV9p14ESUgslCDaRa9lu3NGqdPVyMrBnfU+yoSuJnSdO5ipveImBsLZ6eyFvm78fK
-         2BbxMIHj2gLFazhKWSPLER5PJtr9Ae7naqyl77RM=
+        b=gQbuPEWhBHqVNZ0XnIcm3LLhXSxEkczZeGJqbJ/AplYASYickUeMmjON+NwCK8Xqr
+         KxHbf8TaqALl3HHpu+xhQa06+n1ub6aLHw7jI1cne3rZPVO7ouRg8C4jj5tFdUaFvH
+         afIu+HUoGCsDk/IqCd2wsvlhrNPBAJ3qVC3DGmyg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 032/290] cifs: return proper error code in statfs(2)
+        stable@vger.kernel.org,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Daniele Palmas <dnlplm@gmail.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 062/306] net: usb: qmi_wwan: allow qmimux add/del with master up
 Date:   Mon, 15 Mar 2021 14:52:05 +0100
-Message-Id: <20210315135543.007898513@linuxfoundation.org>
+Message-Id: <20210315135509.747732429@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit 14302ee3301b3a77b331cc14efb95bf7184c73cc upstream.
+commit 6c59cff38e66584ae3ac6c2f0cbd8d039c710ba7 upstream.
 
-In cifs_statfs(), if server->ops->queryfs is not NULL, then we should
-use its return value rather than always returning 0.  Instead, use rc
-variable as it is properly set to 0 in case there is no
-server->ops->queryfs.
+There's no reason for preventing the creation and removal
+of qmimux network interfaces when the underlying interface
+is up.
 
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+This makes qmi_wwan mux implementation more similar to the
+rmnet one, simplifying userspace management of the same
+logical interfaces.
+
+Fixes: c6adf77953bc ("net: usb: qmi_wwan: add qmap mux protocol support")
+Reported-by: Aleksander Morgado <aleksander@aleksander.es>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/cifsfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/qmi_wwan.c |   14 --------------
+ 1 file changed, 14 deletions(-)
 
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -286,7 +286,7 @@ cifs_statfs(struct dentry *dentry, struc
- 		rc = server->ops->queryfs(xid, tcon, cifs_sb, buf);
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -396,13 +396,6 @@ static ssize_t add_mux_store(struct devi
+ 		goto err;
+ 	}
  
- 	free_xid(xid);
--	return 0;
-+	return rc;
- }
+-	/* we don't want to modify a running netdev */
+-	if (netif_running(dev->net)) {
+-		netdev_err(dev->net, "Cannot change a running device\n");
+-		ret = -EBUSY;
+-		goto err;
+-	}
+-
+ 	ret = qmimux_register_device(dev->net, mux_id);
+ 	if (!ret) {
+ 		info->flags |= QMI_WWAN_FLAG_MUX;
+@@ -432,13 +425,6 @@ static ssize_t del_mux_store(struct devi
+ 	if (!rtnl_trylock())
+ 		return restart_syscall();
  
- static long cifs_fallocate(struct file *file, int mode, loff_t off, loff_t len)
+-	/* we don't want to modify a running netdev */
+-	if (netif_running(dev->net)) {
+-		netdev_err(dev->net, "Cannot change a running device\n");
+-		ret = -EBUSY;
+-		goto err;
+-	}
+-
+ 	del_dev = qmimux_find_dev(dev, mux_id);
+ 	if (!del_dev) {
+ 		netdev_err(dev->net, "mux_id not present\n");
 
 
