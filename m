@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3134633BC55
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC98733BD56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhCOOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:24:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S236065AbhCOOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhCON7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35FA964F13;
-        Mon, 15 Mar 2021 13:59:07 +0000 (UTC)
+        id S233404AbhCOOBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B6A164F0D;
+        Mon, 15 Mar 2021 14:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816748;
-        bh=ks+NMZU2/LAZXxCFiim3GlUgldnetiPx30oQ4PA5Sj0=;
+        s=korg; t=1615816872;
+        bh=NHI2zy8EIbXBo9+j9AzgGaNPZECXDU4lEsxTgk8kLpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DH4HfDRC7zdLPSXjUOF6yqeoBd6pD1YicWNrKxTQRq1mbNzDOGzlvJ2V9SXrJ1ZgN
-         CtPr7GaS6Dh9DVYJ4F7d/YMfux9hbPh+pd/CqvqW/56um60LAsIYy09oHKbHgKopOi
-         G49Xk8Am7IccDVM3L3En9QpwJLjZhRQFqzuclocQ=
+        b=LuFMhMBERgysL0+jSkkccriCoUJL2IixorV3qLKubd2J5qC49hbBBx982lybUWcCS
+         /HaLIg/I46/RFLdndkotWgL55XKQQqDUDY37v1rhK+maVzlha6p9RgWlCjttxbLrh/
+         A9PBjU29sflTcUz5EIOyEQTZhOBkiGzDGSAWCuK0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Steven J. Magnani" <magnani@ieee.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 043/120] udf: fix silent AED tagLocation corruption
-Date:   Mon, 15 Mar 2021 14:56:34 +0100
-Message-Id: <20210315135721.405719273@linuxfoundation.org>
+        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 163/168] nvme: release namespace head reference on error
+Date:   Mon, 15 Mar 2021 14:56:35 +0100
+Message-Id: <20210315135555.717916076@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +42,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Steven J. Magnani <magnani@ieee.org>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 63c9e47a1642fc817654a1bc18a6ec4bbcc0f056 ]
+commit ac262508daa88fb12c5dc53cf30bde163f9f26c9 upstream.
 
-When extending a file, udf_do_extend_file() may enter following empty
-indirect extent. At the end of udf_do_extend_file() we revert prev_epos
-to point to the last written extent. However if we end up not adding any
-further extent in udf_do_extend_file(), the reverting points prev_epos
-into the header area of the AED and following updates of the extents
-(in udf_update_extents()) will corrupt the header.
+If a namespace identification does not match the subsystem's head for
+that NSID, release the reference that was taken when the matching head
+was initially found.
 
-Make sure that we do not follow indirect extent if we are not going to
-add any more extents so that returning back to the last written extent
-works correctly.
-
-Link: https://lore.kernel.org/r/20210107234116.6190-2-magnani@ieee.org
-Signed-off-by: Steven J. Magnani <magnani@ieee.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/udf/inode.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/nvme/host/core.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-index 3bf89a633836..f5500d2a3879 100644
---- a/fs/udf/inode.c
-+++ b/fs/udf/inode.c
-@@ -540,11 +540,14 @@ static int udf_do_extend_file(struct inode *inode,
- 
- 		udf_write_aext(inode, last_pos, &last_ext->extLocation,
- 				last_ext->extLength, 1);
-+
- 		/*
--		 * We've rewritten the last extent but there may be empty
--		 * indirect extent after it - enter it.
-+		 * We've rewritten the last extent. If we are going to add
-+		 * more extents, we may need to enter possible following
-+		 * empty indirect extent.
- 		 */
--		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
-+		if (new_block_bytes || prealloc_len)
-+			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -3467,6 +3467,7 @@ static int nvme_init_ns_head(struct nvme
+ 				"IDs don't match for shared namespace %d\n",
+ 					nsid);
+ 			ret = -EINVAL;
++			nvme_put_ns_head(head);
+ 			goto out_unlock;
+ 		}
  	}
- 
- 	/* Managed to do everything necessary? */
--- 
-2.30.1
-
 
 
