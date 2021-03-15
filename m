@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FF233B5C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CD933B5AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhCONzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56198 "EHLO mail.kernel.org"
+        id S231646AbhCONzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230119AbhCONxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E2DB64EED;
-        Mon, 15 Mar 2021 13:53:35 +0000 (UTC)
+        id S230397AbhCONxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 629E864EED;
+        Mon, 15 Mar 2021 13:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816416;
-        bh=dZGEMZoksXRebch1qg0CmWzJNv7xDqqYd7RJtpOWILA=;
+        s=korg; t=1615816410;
+        bh=fMYAKscp76BEE9yJ1mi0gaBA1vR3XUchtT17NBJHxl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0CiNAM98ZPcxC+KKvZ95KUW9udOGbhsJP5m7BC/ks2YdBCyFXfnmXTRrQc5IKfZ7
-         YlsEbjNuxSwIslpztXRzEXE9RQQonUDuSSwx0fqdb4z0TPt4eJ7z6sGt6ImMWRDcy6
-         bLYLSmBP2rgrKeP/KsmhwE6h6fWEfoapelnFIfc4=
+        b=zHAv4qF6TxvZM/H5FUfKsXkBSnrgrP6HBblKylyOzwT0pM0/Ww1R+AkxvdDo0Ltp1
+         GBSTzIpV0bk965EO6wRICCX38aeGiYzkELFYcRAWylPtwoeHfdbQpECMMJT+nCd0k/
+         /G2390id8hT5zLT4em6SdZZGawImiRtd0rugWFwU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Allen Pais <allen.pais@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 4.4 31/75] libertas: fix a potential NULL pointer dereference
-Date:   Mon, 15 Mar 2021 14:51:45 +0100
-Message-Id: <20210315135209.276935972@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 23/78] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Mon, 15 Mar 2021 14:51:46 +0100
+Message-Id: <20210315135212.822938168@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +42,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Allen Pais <allen.pais@oracle.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit 7da413a18583baaf35dd4a8eb414fa410367d7f2 upstream.
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-alloc_workqueue is not checked for errors and as a result,
-a potential NULL dereference could occur.
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-Signed-off-by: Allen Pais <allen.pais@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-[krzk: backport applied to different path - without marvell subdir]
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/libertas/if_sdio.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/libertas/if_sdio.c
-+++ b/drivers/net/wireless/libertas/if_sdio.c
-@@ -1229,6 +1229,10 @@ static int if_sdio_probe(struct sdio_fun
- 
- 	spin_lock_init(&card->lock);
- 	card->workqueue = create_workqueue("libertas_sdio");
-+	if (unlikely(!card->workqueue)) {
-+		ret = -ENOMEM;
-+		goto err_queue;
-+	}
- 	INIT_WORK(&card->packet_worker, if_sdio_host_to_card_worker);
- 	init_waitqueue_head(&card->pwron_waitq);
- 
-@@ -1282,6 +1286,7 @@ err_activate_card:
- 	lbs_remove_card(priv);
- free:
- 	destroy_workqueue(card->workqueue);
-+err_queue:
- 	while (card->packets) {
- 		packet = card->packets;
- 		card->packets = card->packets->next;
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index cba8e56cd63d..54eb8fe95212 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -727,7 +727,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+ {
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
+-- 
+2.30.1
+
 
 
