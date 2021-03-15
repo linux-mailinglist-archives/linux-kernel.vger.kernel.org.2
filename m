@@ -2,164 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B56533C66A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E61233C66F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhCOTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:08:11 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21303 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbhCOTH4 (ORCPT
+        id S233122AbhCOTIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233086AbhCOTIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:07:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1615835255; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=HAkH51heumbQwdNzsjPdBupsUuBZUhiZBqEOPY9qjCTw0h+jT6qDKTSl5cPPyG9mfzGKEzm9envje0R/hXnWr2zeNVOt2kIT/H1IMfEJqYOEO8Eycu9QZ4RypLZo/y+5iRbyP/B+RBoqe3atbwH2efqHbaHNfxw8QRBcpO5QtD4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1615835255; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=qXkPKXLIdi3YS2QxskiB00F5rS0qkdSxQYzMcJTjnMo=; 
-        b=VskweQsyJ0O92QukL95je+EvRd84ESYR5M1oeDmMdFr0gYywAJP2jep1VQ5xQnqsLVMu0JQ7mI/uGRCv+x99rt/94FsmQeTZ7uqlg74pDPWGwFiteH0H8+M5AvrdXfUAVnvIOWIGYTj7rA8MrDhhe3b3vCzjHlSNSRY5I/oR6oY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1615835255;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=qXkPKXLIdi3YS2QxskiB00F5rS0qkdSxQYzMcJTjnMo=;
-        b=ZePJWn+dogfxbUGEc8UgaRZdlIKn2mO6hobca/LZYecW6nM2vzotDxQpe/9Gxf//
-        d+WJ4E2nPmcAwjDeFyTu3QRo+fEx+sW6euZHBvKeRP3lAtIo5rQH42gLxzBABZAJ2iq
-        QfE+YdK30/JEhdcD20QzMMI3pX2fJXz2QNFH8+pk=
-Received: from localhost.localdomain (106.51.111.227 [106.51.111.227]) by mx.zohomail.com
-        with SMTPS id 1615835252947113.0549001989333; Mon, 15 Mar 2021 12:07:32 -0700 (PDT)
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     shaggy@kernel.org
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, hdanton@sina.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com
-Message-ID: <20210315190727.21576-1-mail@anirudhrb.com>
-Subject: [PATCH] jfs: fix use-after-free in lbmIODone
-Date:   Tue, 16 Mar 2021 00:37:27 +0530
-X-Mailer: git-send-email 2.26.2
+        Mon, 15 Mar 2021 15:08:06 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64F9C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:08:05 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id j20-20020a4ad6d40000b02901b66fe8acd6so3541824oot.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ngZJachN56urU9J2HoprS9NstFT2AikTUj407DJYrCY=;
+        b=npAFfzz9TJLpBYK5CrDhSAxue1/IJAjgTUEjuVkizNr7mm/lWYXrZOFHsbl6LoD1XM
+         S4Tjetf929rB+fVIwdJ6IX6h9RzRzdRY4yqzilc2sG1ToIMMuKDV/pp2BFw/no9V75q9
+         igVz5RNNPFLg0gw9x3NKF+T39gwWi/MfXo+kfmm0IYhUqLB25Ufpz/Eqb6luJADRCIY8
+         ESG9Iq2yEHaoCdpNB3b76DwuGMG/qBtIExTNlBM5hHrMzv1itm36QZuLMFg0d0iJOxEm
+         USu4D7peVnf6LU4yk0PzO9FkkrUs1KaNlLqsYUBv31dgqQFzdZN/YdB5ifRt6gr2JMPN
+         uWtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ngZJachN56urU9J2HoprS9NstFT2AikTUj407DJYrCY=;
+        b=qBUcXEhvQbezNB6sed0yTCTFzxB5x1+JMRxBwMTye1+qnNQaYP8NJ7KXibu3Wso9NK
+         IoXkCO9LgUd4Y7nSUw4l2vslfVWFM/9U1bXh91FDEraHKF08o3l81CTJaKNIKyvCjgy/
+         ANbNnekCw3BA9YXLs0kLhkH+OmyD6QVyy37IRbdeE4a+CQHvlL57D04xoQOUcOlswZBH
+         g6CHS3wkqns7333hlncoeqf67kIdAZowFB2RnvMe9/LyAfSEY5WOqh6T5Kx+Aj8dTqSm
+         u85oOEE94xoynKj2MaXbP3PqOy+zpkcL7cqDvNmlJ+E1cjy7uKQt7xwLT5ZvCl7z3M4/
+         LRLA==
+X-Gm-Message-State: AOAM531ASCi891TeQHjRlNl5CVRK9PXcSQ9FiWfYDe6MQkEB3yBfJtM3
+        Y3S4QAHtViQ5o3Q6xPLzXe6s2Ag4YwigWROl7i+SHA==
+X-Google-Smtp-Source: ABdhPJy/f+pt0WWw9QpskOGeSossTUBuih5lw/4CXpn5yxCz2AQTKeYgPQPhMRjL+SgaSTvh8jLqPbWMEzchh/2E6uQ=
+X-Received: by 2002:a05:6820:129:: with SMTP id i9mr400221ood.80.1615835285169;
+ Mon, 15 Mar 2021 12:08:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoMailClient: External
-Content-Type: text/plain; charset=utf8
+References: <20210310163024.393578-1-caleb@connolly.tech> <20210310163024.393578-3-caleb@connolly.tech>
+In-Reply-To: <20210310163024.393578-3-caleb@connolly.tech>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Tue, 16 Mar 2021 00:37:54 +0530
+Message-ID: <CAH=2Ntyd6Ud=2dt_Pa0gNQcCOLaVRp6ZF3yA5O+ZxqV1m64Spw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8150: add iommus to qups
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix use-after-free by waiting for ongoing IO to complete before freeing
-lbufs in lbmLogShutdown. Add a counter in struct jfs_log to keep track
-of the number of in-flight IO operations and a wait queue to wait on for
-the IO operations to complete.
+Hello Caleb,
 
-Reported-by: syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
----
- fs/jfs/jfs_logmgr.c | 17 ++++++++++++++---
- fs/jfs/jfs_logmgr.h |  2 ++
- 2 files changed, 16 insertions(+), 3 deletions(-)
+Thanks for the patch. Some nitpicks inline:
 
-diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-index 9330eff210e0..82d20c4687aa 100644
---- a/fs/jfs/jfs_logmgr.c
-+++ b/fs/jfs/jfs_logmgr.c
-@@ -1815,6 +1815,8 @@ static int lbmLogInit(struct jfs_log * log)
- =09 */
- =09init_waitqueue_head(&log->free_wait);
-=20
-+=09init_waitqueue_head(&log->io_waitq);
-+
- =09log->lbuf_free =3D NULL;
-=20
- =09for (i =3D 0; i < LOGPAGES;) {
-@@ -1864,6 +1866,7 @@ static void lbmLogShutdown(struct jfs_log * log)
- =09struct lbuf *lbuf;
-=20
- =09jfs_info("lbmLogShutdown: log:0x%p", log);
-+=09wait_event(log->io_waitq, !atomic_read(&log->io_inflight));
-=20
- =09lbuf =3D log->lbuf_free;
- =09while (lbuf) {
-@@ -1990,6 +1993,8 @@ static int lbmRead(struct jfs_log * log, int pn, stru=
-ct lbuf ** bpp)
- =09bio->bi_end_io =3D lbmIODone;
- =09bio->bi_private =3D bp;
- =09bio->bi_opf =3D REQ_OP_READ;
-+
-+=09atomic_inc(&log->io_inflight);
- =09/*check if journaling to disk has been disabled*/
- =09if (log->no_integrity) {
- =09=09bio->bi_iter.bi_size =3D 0;
-@@ -2135,6 +2140,7 @@ static void lbmStartIO(struct lbuf * bp)
- =09bio->bi_private =3D bp;
- =09bio->bi_opf =3D REQ_OP_WRITE | REQ_SYNC;
-=20
-+=09atomic_inc(&log->io_inflight);
- =09/* check if journaling to disk has been disabled */
- =09if (log->no_integrity) {
- =09=09bio->bi_iter.bi_size =3D 0;
-@@ -2200,6 +2206,8 @@ static void lbmIODone(struct bio *bio)
-=20
- =09bio_put(bio);
-=20
-+=09log =3D bp->l_log;
-+
- =09/*
- =09 *=09pagein completion
- =09 */
-@@ -2211,7 +2219,7 @@ static void lbmIODone(struct bio *bio)
- =09=09/* wakeup I/O initiator */
- =09=09LCACHE_WAKEUP(&bp->l_ioevent);
-=20
--=09=09return;
-+=09=09goto out;
- =09}
-=20
- =09/*
-@@ -2230,13 +2238,12 @@ static void lbmIODone(struct bio *bio)
- =09INCREMENT(lmStat.pagedone);
-=20
- =09/* update committed lsn */
--=09log =3D bp->l_log;
- =09log->clsn =3D (bp->l_pn << L2LOGPSIZE) + bp->l_ceor;
-=20
- =09if (bp->l_flag & lbmDIRECT) {
- =09=09LCACHE_WAKEUP(&bp->l_ioevent);
- =09=09LCACHE_UNLOCK(flags);
--=09=09return;
-+=09=09goto out;
- =09}
-=20
- =09tail =3D log->wqueue;
-@@ -2315,6 +2322,10 @@ static void lbmIODone(struct bio *bio)
-=20
- =09=09LCACHE_UNLOCK(flags);=09/* unlock+enable */
- =09}
-+
-+out:
-+=09if (atomic_dec_and_test(&log->io_inflight))
-+=09=09wake_up(&log->io_waitq);
- }
-=20
- int jfsIOWait(void *arg)
-diff --git a/fs/jfs/jfs_logmgr.h b/fs/jfs/jfs_logmgr.h
-index 805877ce5020..3e92fe251f28 100644
---- a/fs/jfs/jfs_logmgr.h
-+++ b/fs/jfs/jfs_logmgr.h
-@@ -400,6 +400,8 @@ struct jfs_log {
- =09uuid_t uuid;=09=09/* 16: 128-bit uuid of log device */
-=20
- =09int no_integrity;=09/* 3: flag to disable journaling to disk */
-+=09atomic_t io_inflight;
-+=09wait_queue_head_t io_waitq;
- };
-=20
- /*
---=20
-2.26.2
+On Wed, 10 Mar 2021 at 22:02, Caleb Connolly <caleb@connolly.tech> wrote:
+>
+> Hook up the SMMU for doing DMA over i2c. Some peripherals like
+> touchscreens easily exceed 32-bytes per transfer, causing errors and
+> lockups without this.
+>
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+> Fixes i2c on the OnePlus 7, without this touching the screen with more
+> than 4 fingers causes the device to lock up and reboot.
+> ---
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> index 03e05d98daf2..543417d74216 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> @@ -583,6 +583,7 @@ qupv3_id_0: geniqup@8c0000 {
+>                         clock-names = "m-ahb", "s-ahb";
+>                         clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
+>                                  <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
+> +                       iommus = <&apps_smmu 0xc3 0x0>;
 
+I think we also need to add the new iommu property to the binding documentation?
+<https://github.com/torvalds/linux/blob/master/Documentation/devicetree/bindings/soc/qcom/qcom%2Cgeni-se.yaml>
 
+Thanks,
+Bhupesh
+
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> @@ -595,6 +596,7 @@ qupv3_id_1: geniqup@ac0000 {
+>                         clock-names = "m-ahb", "s-ahb";
+>                         clocks = <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
+>                                  <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
+> +                       iommus = <&apps_smmu 0x603 0x0>;
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> @@ -617,6 +619,7 @@ qupv3_id_2: geniqup@cc0000 {
+>                         clock-names = "m-ahb", "s-ahb";
+>                         clocks = <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
+>                                  <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
+> +                       iommus = <&apps_smmu 0x7a3 0x0>;
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> --
+> 2.29.2
+>
+>
