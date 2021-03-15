@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC1733B753
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB9733B749
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhCOOAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:00:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59342 "EHLO mail.kernel.org"
+        id S232829AbhCON77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhCONzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4DD664EF0;
-        Mon, 15 Mar 2021 13:55:03 +0000 (UTC)
+        id S231688AbhCONzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:55:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E05A364EEA;
+        Mon, 15 Mar 2021 13:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816505;
-        bh=hm+F9/ytjl8jY3HhLNOg3aaXlrtafAjGslkFqjsSGIA=;
+        s=korg; t=1615816507;
+        bh=mv27LCwdDZOWIaBSxTY+8ayXZk6Pjruno9oLhiR9TU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ixyd2dxRc0Et6cjmEDAIMMsA9hl/02MDp/dpxPOZqYNdhg48QlktBlKOS+YTboiH/
-         VTnUyj0Wc+NUNJ8ctPQL1nPoKAct7DvpOlZBf7R66nGARZJLhNNKIi9JxT4Xs6aDwS
-         hw/kOxmSu5gQAF1j8wu4JBFp+NroYjueVd8U3tXY=
+        b=XmmeDF2N+clxXbd/N6iekx+wOr25VGUHu5L6SFJj2owyAkL3mvdEOu2JhpDuJBJ8Q
+         Kh4D6sv9TOqratEz15XKuBNUCAcWMvcSV0bw5tRfk2T/iBwO/Cpgll0fi6NPBOgqmg
+         DcKgVUgSu7rlZ1jucPp0iR+r0wUURBuFUyPl15FE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Julien Grall <julien@xen.org>,
         Juergen Gross <jgross@suse.com>,
         Julien Grall <jgrall@amazon.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 4.9 76/78] xen/events: reset affinity of 2-level event when tearing it down
-Date:   Mon, 15 Mar 2021 14:52:39 +0100
-Message-Id: <20210315135214.551270817@linuxfoundation.org>
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>
+Subject: [PATCH 4.9 77/78] xen/events: dont unmask an event channel when an eoi is pending
+Date:   Mon, 15 Mar 2021 14:52:40 +0100
+Message-Id: <20210315135214.582957668@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -45,106 +46,366 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Juergen Gross <jgross@suse.com>
 
-commit 9e77d96b8e2724ed00380189f7b0ded61113b39f upstream.
+commit 25da4618af240fbec6112401498301a6f2bc9702 upstream.
 
-When creating a new event channel with 2-level events the affinity
-needs to be reset initially in order to avoid using an old affinity
-from earlier usage of the event channel port. So when tearing an event
-channel down reset all affinity bits.
+An event channel should be kept masked when an eoi is pending for it.
+When being migrated to another cpu it might be unmasked, though.
 
-The same applies to the affinity when onlining a vcpu: all old
-affinity settings for this vcpu must be reset. As percpu events get
-initialized before the percpu event channel hook is called,
-resetting of the affinities happens after offlining a vcpu (this is
-working, as initial percpu memory is zeroed out).
+In order to avoid this keep three different flags for each event channel
+to be able to distinguish "normal" masking/unmasking from eoi related
+masking/unmasking and temporary masking. The event channel should only
+be able to generate an interrupt if all flags are cleared.
 
 Cc: stable@vger.kernel.org
+Fixes: 54c9de89895e ("xen/events: add a new "late EOI" evtchn framework")
 Reported-by: Julien Grall <julien@xen.org>
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Reviewed-by: Julien Grall <jgrall@amazon.com>
-Link: https://lore.kernel.org/r/20210306161833.4552-2-jgross@suse.com
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Tested-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+Link: https://lore.kernel.org/r/20210306161833.4552-3-jgross@suse.com
+
+[boris -- corrected Fixed tag format]
+
 Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/events/events_2l.c       |   15 +++++++++++++++
- drivers/xen/events/events_base.c     |    1 +
- drivers/xen/events/events_internal.h |    8 ++++++++
- 3 files changed, 24 insertions(+)
+ drivers/xen/events/events_2l.c       |    7 --
+ drivers/xen/events/events_base.c     |  108 ++++++++++++++++++++++++++---------
+ drivers/xen/events/events_fifo.c     |    7 --
+ drivers/xen/events/events_internal.h |   13 +---
+ 4 files changed, 87 insertions(+), 48 deletions(-)
 
 --- a/drivers/xen/events/events_2l.c
 +++ b/drivers/xen/events/events_2l.c
-@@ -46,6 +46,11 @@ static unsigned evtchn_2l_max_channels(v
- 	return EVTCHN_2L_NR_CHANNELS;
+@@ -75,12 +75,6 @@ static bool evtchn_2l_is_pending(unsigne
+ 	return sync_test_bit(port, BM(&s->evtchn_pending[0]));
  }
  
-+static void evtchn_2l_remove(evtchn_port_t evtchn, unsigned int cpu)
-+{
-+	clear_bit(evtchn, BM(per_cpu(cpu_evtchn_mask, cpu)));
-+}
-+
- static void evtchn_2l_bind_to_cpu(struct irq_info *info, unsigned cpu)
+-static bool evtchn_2l_test_and_set_mask(unsigned port)
+-{
+-	struct shared_info *s = HYPERVISOR_shared_info;
+-	return sync_test_and_set_bit(port, BM(&s->evtchn_mask[0]));
+-}
+-
+ static void evtchn_2l_mask(unsigned port)
  {
- 	clear_bit(info->evtchn, BM(per_cpu(cpu_evtchn_mask, info->cpu)));
-@@ -353,9 +358,18 @@ static void evtchn_2l_resume(void)
- 				EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
- }
- 
-+static int evtchn_2l_percpu_deinit(unsigned int cpu)
-+{
-+	memset(per_cpu(cpu_evtchn_mask, cpu), 0, sizeof(xen_ulong_t) *
-+			EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
-+
-+	return 0;
-+}
-+
- static const struct evtchn_ops evtchn_ops_2l = {
- 	.max_channels      = evtchn_2l_max_channels,
- 	.nr_channels       = evtchn_2l_max_channels,
-+	.remove            = evtchn_2l_remove,
- 	.bind_to_cpu       = evtchn_2l_bind_to_cpu,
+ 	struct shared_info *s = HYPERVISOR_shared_info;
+@@ -374,7 +368,6 @@ static const struct evtchn_ops evtchn_op
  	.clear_pending     = evtchn_2l_clear_pending,
  	.set_pending       = evtchn_2l_set_pending,
-@@ -365,6 +379,7 @@ static const struct evtchn_ops evtchn_op
+ 	.is_pending        = evtchn_2l_is_pending,
+-	.test_and_set_mask = evtchn_2l_test_and_set_mask,
+ 	.mask              = evtchn_2l_mask,
  	.unmask            = evtchn_2l_unmask,
  	.handle_events     = evtchn_2l_handle_events,
- 	.resume	           = evtchn_2l_resume,
-+	.percpu_deinit     = evtchn_2l_percpu_deinit,
- };
- 
- void __init xen_evtchn_2l_init(void)
 --- a/drivers/xen/events/events_base.c
 +++ b/drivers/xen/events/events_base.c
-@@ -286,6 +286,7 @@ static int xen_irq_info_pirq_setup(unsig
- static void xen_irq_info_cleanup(struct irq_info *info)
- {
- 	set_evtchn_to_irq(info->evtchn, -1);
-+	xen_evtchn_port_remove(info->evtchn, info->cpu);
- 	info->evtchn = 0;
+@@ -99,6 +99,7 @@ static DEFINE_RWLOCK(evtchn_rwlock);
+  *   evtchn_rwlock
+  *     IRQ-desc lock
+  *       percpu eoi_list_lock
++ *         irq_info->lock
+  */
+ 
+ static LIST_HEAD(xen_irq_list_head);
+@@ -220,6 +221,8 @@ static int xen_irq_info_common_setup(str
+ 	info->irq = irq;
+ 	info->evtchn = evtchn;
+ 	info->cpu = cpu;
++	info->mask_reason = EVT_MASK_REASON_EXPLICIT;
++	spin_lock_init(&info->lock);
+ 
+ 	ret = set_evtchn_to_irq(evtchn, irq);
+ 	if (ret < 0)
+@@ -367,6 +370,34 @@ unsigned int cpu_from_evtchn(unsigned in
+ 	return ret;
  }
  
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -67,6 +67,7 @@ struct evtchn_ops {
- 	unsigned (*nr_channels)(void);
- 
- 	int (*setup)(struct irq_info *info);
-+	void (*remove)(evtchn_port_t port, unsigned int cpu);
- 	void (*bind_to_cpu)(struct irq_info *info, unsigned cpu);
- 
- 	void (*clear_pending)(unsigned port);
-@@ -109,6 +110,13 @@ static inline int xen_evtchn_port_setup(
- 	return 0;
- }
- 
-+static inline void xen_evtchn_port_remove(evtchn_port_t evtchn,
-+					  unsigned int cpu)
++static void do_mask(struct irq_info *info, u8 reason)
 +{
-+	if (evtchn_ops->remove)
-+		evtchn_ops->remove(evtchn, cpu);
++	unsigned long flags;
++
++	spin_lock_irqsave(&info->lock, flags);
++
++	if (!info->mask_reason)
++		mask_evtchn(info->evtchn);
++
++	info->mask_reason |= reason;
++
++	spin_unlock_irqrestore(&info->lock, flags);
 +}
 +
- static inline void xen_evtchn_port_bind_to_cpu(struct irq_info *info,
- 					       unsigned cpu)
++static void do_unmask(struct irq_info *info, u8 reason)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&info->lock, flags);
++
++	info->mask_reason &= ~reason;
++
++	if (!info->mask_reason)
++		unmask_evtchn(info->evtchn);
++
++	spin_unlock_irqrestore(&info->lock, flags);
++}
++
+ #ifdef CONFIG_X86
+ static bool pirq_check_eoi_map(unsigned irq)
  {
+@@ -502,7 +533,7 @@ static void xen_irq_lateeoi_locked(struc
+ 	}
+ 
+ 	info->eoi_time = 0;
+-	unmask_evtchn(evtchn);
++	do_unmask(info, EVT_MASK_REASON_EOI_PENDING);
+ }
+ 
+ static void xen_irq_lateeoi_worker(struct work_struct *work)
+@@ -689,7 +720,8 @@ static void pirq_query_unmask(int irq)
+ 
+ static void eoi_pirq(struct irq_data *data)
+ {
+-	int evtchn = evtchn_from_irq(data->irq);
++	struct irq_info *info = info_for_irq(data->irq);
++	int evtchn = info ? info->evtchn : 0;
+ 	struct physdev_eoi eoi = { .irq = pirq_from_irq(data->irq) };
+ 	int rc = 0;
+ 
+@@ -698,14 +730,13 @@ static void eoi_pirq(struct irq_data *da
+ 
+ 	if (unlikely(irqd_is_setaffinity_pending(data)) &&
+ 	    likely(!irqd_irq_disabled(data))) {
+-		int masked = test_and_set_mask(evtchn);
++		do_mask(info, EVT_MASK_REASON_TEMPORARY);
+ 
+ 		clear_evtchn(evtchn);
+ 
+ 		irq_move_masked_irq(data);
+ 
+-		if (!masked)
+-			unmask_evtchn(evtchn);
++		do_unmask(info, EVT_MASK_REASON_TEMPORARY);
+ 	} else
+ 		clear_evtchn(evtchn);
+ 
+@@ -758,7 +789,8 @@ static unsigned int __startup_pirq(unsig
+ 		goto err;
+ 
+ out:
+-	unmask_evtchn(evtchn);
++	do_unmask(info, EVT_MASK_REASON_EXPLICIT);
++
+ 	eoi_pirq(irq_get_irq_data(irq));
+ 
+ 	return 0;
+@@ -785,7 +817,7 @@ static void shutdown_pirq(struct irq_dat
+ 	if (!VALID_EVTCHN(evtchn))
+ 		return;
+ 
+-	mask_evtchn(evtchn);
++	do_mask(info, EVT_MASK_REASON_EXPLICIT);
+ 	xen_evtchn_close(evtchn);
+ 	xen_irq_info_cleanup(info);
+ }
+@@ -1648,8 +1680,8 @@ void rebind_evtchn_irq(int evtchn, int i
+ static int rebind_irq_to_cpu(unsigned irq, unsigned tcpu)
+ {
+ 	struct evtchn_bind_vcpu bind_vcpu;
+-	int evtchn = evtchn_from_irq(irq);
+-	int masked;
++	struct irq_info *info = info_for_irq(irq);
++	int evtchn = info ? info->evtchn : 0;
+ 
+ 	if (!VALID_EVTCHN(evtchn))
+ 		return -1;
+@@ -1665,7 +1697,7 @@ static int rebind_irq_to_cpu(unsigned ir
+ 	 * Mask the event while changing the VCPU binding to prevent
+ 	 * it being delivered on an unexpected VCPU.
+ 	 */
+-	masked = test_and_set_mask(evtchn);
++	do_mask(info, EVT_MASK_REASON_TEMPORARY);
+ 
+ 	/*
+ 	 * If this fails, it usually just indicates that we're dealing with a
+@@ -1675,8 +1707,7 @@ static int rebind_irq_to_cpu(unsigned ir
+ 	if (HYPERVISOR_event_channel_op(EVTCHNOP_bind_vcpu, &bind_vcpu) >= 0)
+ 		bind_evtchn_to_cpu(evtchn, tcpu);
+ 
+-	if (!masked)
+-		unmask_evtchn(evtchn);
++	do_unmask(info, EVT_MASK_REASON_TEMPORARY);
+ 
+ 	return 0;
+ }
+@@ -1691,37 +1722,39 @@ static int set_affinity_irq(struct irq_d
+ 
+ static void enable_dynirq(struct irq_data *data)
+ {
+-	int evtchn = evtchn_from_irq(data->irq);
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
+ 
+ 	if (VALID_EVTCHN(evtchn))
+-		unmask_evtchn(evtchn);
++		do_unmask(info, EVT_MASK_REASON_EXPLICIT);
+ }
+ 
+ static void disable_dynirq(struct irq_data *data)
+ {
+-	int evtchn = evtchn_from_irq(data->irq);
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
+ 
+ 	if (VALID_EVTCHN(evtchn))
+-		mask_evtchn(evtchn);
++		do_mask(info, EVT_MASK_REASON_EXPLICIT);
+ }
+ 
+ static void ack_dynirq(struct irq_data *data)
+ {
+-	int evtchn = evtchn_from_irq(data->irq);
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
+ 
+ 	if (!VALID_EVTCHN(evtchn))
+ 		return;
+ 
+ 	if (unlikely(irqd_is_setaffinity_pending(data)) &&
+ 	    likely(!irqd_irq_disabled(data))) {
+-		int masked = test_and_set_mask(evtchn);
++		do_mask(info, EVT_MASK_REASON_TEMPORARY);
+ 
+ 		clear_evtchn(evtchn);
+ 
+ 		irq_move_masked_irq(data);
+ 
+-		if (!masked)
+-			unmask_evtchn(evtchn);
++		do_unmask(info, EVT_MASK_REASON_TEMPORARY);
+ 	} else
+ 		clear_evtchn(evtchn);
+ }
+@@ -1732,18 +1765,39 @@ static void mask_ack_dynirq(struct irq_d
+ 	ack_dynirq(data);
+ }
+ 
++static void lateeoi_ack_dynirq(struct irq_data *data)
++{
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
++
++	if (VALID_EVTCHN(evtchn)) {
++		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
++		clear_evtchn(evtchn);
++	}
++}
++
++static void lateeoi_mask_ack_dynirq(struct irq_data *data)
++{
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
++
++	if (VALID_EVTCHN(evtchn)) {
++		do_mask(info, EVT_MASK_REASON_EXPLICIT);
++		clear_evtchn(evtchn);
++	}
++}
++
+ static int retrigger_dynirq(struct irq_data *data)
+ {
+-	unsigned int evtchn = evtchn_from_irq(data->irq);
+-	int masked;
++	struct irq_info *info = info_for_irq(data->irq);
++	evtchn_port_t evtchn = info ? info->evtchn : 0;
+ 
+ 	if (!VALID_EVTCHN(evtchn))
+ 		return 0;
+ 
+-	masked = test_and_set_mask(evtchn);
++	do_mask(info, EVT_MASK_REASON_TEMPORARY);
+ 	set_evtchn(evtchn);
+-	if (!masked)
+-		unmask_evtchn(evtchn);
++	do_unmask(info, EVT_MASK_REASON_TEMPORARY);
+ 
+ 	return 1;
+ }
+@@ -1950,8 +2004,8 @@ static struct irq_chip xen_lateeoi_chip
+ 	.irq_mask		= disable_dynirq,
+ 	.irq_unmask		= enable_dynirq,
+ 
+-	.irq_ack		= mask_ack_dynirq,
+-	.irq_mask_ack		= mask_ack_dynirq,
++	.irq_ack		= lateeoi_ack_dynirq,
++	.irq_mask_ack		= lateeoi_mask_ack_dynirq,
+ 
+ 	.irq_set_affinity	= set_affinity_irq,
+ 	.irq_retrigger		= retrigger_dynirq,
+--- a/drivers/xen/events/events_fifo.c
++++ b/drivers/xen/events/events_fifo.c
+@@ -209,12 +209,6 @@ static bool evtchn_fifo_is_pending(unsig
+ 	return sync_test_bit(EVTCHN_FIFO_BIT(PENDING, word), BM(word));
+ }
+ 
+-static bool evtchn_fifo_test_and_set_mask(unsigned port)
+-{
+-	event_word_t *word = event_word_from_port(port);
+-	return sync_test_and_set_bit(EVTCHN_FIFO_BIT(MASKED, word), BM(word));
+-}
+-
+ static void evtchn_fifo_mask(unsigned port)
+ {
+ 	event_word_t *word = event_word_from_port(port);
+@@ -421,7 +415,6 @@ static const struct evtchn_ops evtchn_op
+ 	.clear_pending     = evtchn_fifo_clear_pending,
+ 	.set_pending       = evtchn_fifo_set_pending,
+ 	.is_pending        = evtchn_fifo_is_pending,
+-	.test_and_set_mask = evtchn_fifo_test_and_set_mask,
+ 	.mask              = evtchn_fifo_mask,
+ 	.unmask            = evtchn_fifo_unmask,
+ 	.handle_events     = evtchn_fifo_handle_events,
+--- a/drivers/xen/events/events_internal.h
++++ b/drivers/xen/events/events_internal.h
+@@ -35,13 +35,18 @@ struct irq_info {
+ 	struct list_head eoi_list;
+ 	short refcnt;
+ 	short spurious_cnt;
+-	enum xen_irq_type type;	/* type */
++	short type;		/* type */
++	u8 mask_reason;		/* Why is event channel masked */
++#define EVT_MASK_REASON_EXPLICIT	0x01
++#define EVT_MASK_REASON_TEMPORARY	0x02
++#define EVT_MASK_REASON_EOI_PENDING	0x04
+ 	unsigned irq;
+ 	unsigned int evtchn;	/* event channel */
+ 	unsigned short cpu;	/* cpu bound */
+ 	unsigned short eoi_cpu;	/* EOI must happen on this cpu */
+ 	unsigned int irq_epoch;	/* If eoi_cpu valid: irq_epoch of event */
+ 	u64 eoi_time;		/* Time in jiffies when to EOI. */
++	spinlock_t lock;
+ 
+ 	union {
+ 		unsigned short virq;
+@@ -73,7 +78,6 @@ struct evtchn_ops {
+ 	void (*clear_pending)(unsigned port);
+ 	void (*set_pending)(unsigned port);
+ 	bool (*is_pending)(unsigned port);
+-	bool (*test_and_set_mask)(unsigned port);
+ 	void (*mask)(unsigned port);
+ 	void (*unmask)(unsigned port);
+ 
+@@ -138,11 +142,6 @@ static inline bool test_evtchn(unsigned
+ 	return evtchn_ops->is_pending(port);
+ }
+ 
+-static inline bool test_and_set_mask(unsigned port)
+-{
+-	return evtchn_ops->test_and_set_mask(port);
+-}
+-
+ static inline void mask_evtchn(unsigned port)
+ {
+ 	return evtchn_ops->mask(port);
 
 
