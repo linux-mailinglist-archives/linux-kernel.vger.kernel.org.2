@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6000C33B6E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780C433B6E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhCON7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        id S232540AbhCON7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231343AbhCONyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0247A64F15;
-        Mon, 15 Mar 2021 13:54:39 +0000 (UTC)
+        id S231224AbhCONyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E946964F33;
+        Mon, 15 Mar 2021 13:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816481;
-        bh=HOKIkv+gvghKcylRb81dDRRBZ2lhLoU1FFhNFxvpk6o=;
+        s=korg; t=1615816483;
+        bh=RQtF6aHqWz8EBVznGslYSQ6SzT6WihpDLg7h8pkNDpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kvsmlU/GLAHCMN22ksGb4efdPi4ViPd/+Z4A/xIGAeXz9hf5zCBK9G1mvh92oYuiT
-         QyGjXkzjDyN/xBYCZABeL3EwUN/DWy+H5RJb1fGvj/ZImz4G4EhyH6sHPO6q+LWHP0
-         PkSuxNase4br1pHd9+pak3MDYv3xtqAo+dbXI9kU=
+        b=xf38cCiPJO2RHcNI0/ipWZnFFCbRKAMFLOZIk20pRZtwPe8OOW/Hp6sYScq1FTM0V
+         rZ6ogHtbEd8jCcpx9y2J6RMPQAMM1kgTv9ItwM7greiGPsdByNDnccPtR86bts1cvH
+         CcCKwWz2eXlX9QXq+XDZne+cG8PymOejY4m2XOjE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Yadav <arvind.yadav.cs@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 4.4 69/75] media: hdpvr: Fix an error handling path in hdpvr_probe()
-Date:   Mon, 15 Mar 2021 14:52:23 +0100
-Message-Id: <20210315135210.517552146@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>
+Subject: [PATCH 4.4 70/75] KVM: arm64: Fix exclusive limit for IPA size
+Date:   Mon, 15 Mar 2021 14:52:24 +0100
+Message-Id: <20210315135210.547754615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
 References: <20210315135208.252034256@linuxfoundation.org>
@@ -44,120 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit c0f71bbb810237a38734607ca4599632f7f5d47f upstream.
+Commit 262b003d059c6671601a19057e9fe1a5e7f23722 upstream.
 
-Here, hdpvr_register_videodev() is responsible for setup and
-register a video device. Also defining and initializing a worker.
-hdpvr_register_videodev() is calling by hdpvr_probe at last.
-So no need to flush any work here.
-Unregister v4l2, free buffers and memory. If hdpvr_probe() will fail.
+When registering a memslot, we check the size and location of that
+memslot against the IPA size to ensure that we can provide guest
+access to the whole of the memory.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Reported-by: Andrey Konovalov <andreyknvl@google.com>
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-[krzk: backport to v4.4, still using single thread workqueue which
-       is drained/destroyed now in proper step so it cannot be NULL]
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Unfortunately, this check rejects memslot that end-up at the exact
+limit of the addressing capability for a given IPA size. For example,
+it refuses the creation of a 2GB memslot at 0x8000000 with a 32bit
+IPA space.
+
+Fix it by relaxing the check to accept a memslot reaching the
+limit of the IPA space.
+
+Fixes: c3058d5da222 ("arm/arm64: KVM: Ensure memslots are within KVM_PHYS_SIZE")
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org # 4.4, 4.9
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+Link: https://lore.kernel.org/r/20210311100016.3830038-3-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/media/usb/hdpvr/hdpvr-core.c |   33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ arch/arm/kvm/mmu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/hdpvr/hdpvr-core.c
-+++ b/drivers/media/usb/hdpvr/hdpvr-core.c
-@@ -297,7 +297,7 @@ static int hdpvr_probe(struct usb_interf
- 	/* register v4l2_device early so it can be used for printks */
- 	if (v4l2_device_register(&interface->dev, &dev->v4l2_dev)) {
- 		dev_err(&interface->dev, "v4l2_device_register failed\n");
--		goto error;
-+		goto error_free_dev;
- 	}
- 
- 	mutex_init(&dev->io_mutex);
-@@ -306,7 +306,7 @@ static int hdpvr_probe(struct usb_interf
- 	dev->usbc_buf = kmalloc(64, GFP_KERNEL);
- 	if (!dev->usbc_buf) {
- 		v4l2_err(&dev->v4l2_dev, "Out of memory\n");
--		goto error;
-+		goto error_v4l2_unregister;
- 	}
- 
- 	init_waitqueue_head(&dev->wait_buffer);
-@@ -314,7 +314,7 @@ static int hdpvr_probe(struct usb_interf
- 
- 	dev->workqueue = create_singlethread_workqueue("hdpvr_buffer");
- 	if (!dev->workqueue)
--		goto error;
-+		goto err_free_usbc;
- 
- 	dev->options = hdpvr_default_options;
- 
-@@ -348,13 +348,13 @@ static int hdpvr_probe(struct usb_interf
- 	}
- 	if (!dev->bulk_in_endpointAddr) {
- 		v4l2_err(&dev->v4l2_dev, "Could not find bulk-in endpoint\n");
--		goto error;
-+		goto error_put_usb;
- 	}
- 
- 	/* init the device */
- 	if (hdpvr_device_init(dev)) {
- 		v4l2_err(&dev->v4l2_dev, "device init failed\n");
--		goto error;
-+		goto error_put_usb;
- 	}
- 
- 	mutex_lock(&dev->io_mutex);
-@@ -362,7 +362,7 @@ static int hdpvr_probe(struct usb_interf
- 		mutex_unlock(&dev->io_mutex);
- 		v4l2_err(&dev->v4l2_dev,
- 			 "allocating transfer buffers failed\n");
--		goto error;
-+		goto error_put_usb;
- 	}
- 	mutex_unlock(&dev->io_mutex);
- 
-@@ -370,7 +370,7 @@ static int hdpvr_probe(struct usb_interf
- 	retval = hdpvr_register_i2c_adapter(dev);
- 	if (retval < 0) {
- 		v4l2_err(&dev->v4l2_dev, "i2c adapter register failed\n");
--		goto error;
-+		goto error_free_buffers;
- 	}
- 
- 	client = hdpvr_register_ir_rx_i2c(dev);
-@@ -412,15 +412,20 @@ static int hdpvr_probe(struct usb_interf
- reg_fail:
- #if IS_ENABLED(CONFIG_I2C)
- 	i2c_del_adapter(&dev->i2c_adapter);
-+error_free_buffers:
- #endif
-+	hdpvr_free_buffers(dev);
-+error_put_usb:
-+	usb_put_dev(dev->udev);
-+	/* Destroy single thread */
-+	destroy_workqueue(dev->workqueue);
-+err_free_usbc:
-+	kfree(dev->usbc_buf);
-+error_v4l2_unregister:
-+	v4l2_device_unregister(&dev->v4l2_dev);
-+error_free_dev:
-+	kfree(dev);
- error:
--	if (dev) {
--		/* Destroy single thread */
--		if (dev->workqueue)
--			destroy_workqueue(dev->workqueue);
--		/* this frees allocated memory */
--		hdpvr_delete(dev);
--	}
- 	return retval;
- }
+--- a/arch/arm/kvm/mmu.c
++++ b/arch/arm/kvm/mmu.c
+@@ -1789,7 +1789,7 @@ int kvm_arch_prepare_memory_region(struc
+ 	 * Prevent userspace from creating a memory region outside of the IPA
+ 	 * space addressable by the KVM guest IPA space.
+ 	 */
+-	if (memslot->base_gfn + memslot->npages >=
++	if (memslot->base_gfn + memslot->npages >
+ 	    (KVM_PHYS_SIZE >> PAGE_SHIFT))
+ 		return -EFAULT;
  
 
 
