@@ -2,129 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B2733ABBB
+	by mail.lfdr.de (Postfix) with ESMTP id BD33833ABBD
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhCOGlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 02:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhCOGkz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 02:40:55 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14513C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:40:55 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so1469230pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lDgFJiFzkALDNWJm7eIQALO66wKkLjr8e5CGYouyH9Q=;
-        b=vxg3eiHaUzzokoIRbIOsTMbEDkyQd3FqU57/Q43Ck+dCgIf1WAnjGb9NyCrTRt7CJD
-         uk+aUyIgyk0GnD8jHUpNRo5uDGZ3LgBNHGNF4S7um9zWitOmiIw8K/fldSleJQfqbXwB
-         JUfSDmdDzqrOMdygefJ03PYQGYk1aBmUeeO1AwmFeZDktkjsVdRMs2Dt1WI03oSZhS8E
-         i5FrDTPoiWyusj1hhRGLCFBB9CQVxxjJ6B694Z97o9FqJkHsUBsCpyhliw5YL6pDsHsj
-         d9Gl0A12fDh8g641TA85wMtCPFUDUtxyGfmKcHh//3TyLLXNZSUUmES+aVql8g/7o5zJ
-         mCDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lDgFJiFzkALDNWJm7eIQALO66wKkLjr8e5CGYouyH9Q=;
-        b=qDWkABukB6ui7piTu4D3o38c5LQ3cuAvAFr0wUgI1IhdmWo6UqTxH1MD5Kn6FOEjas
-         F7vCfHQZdFFpNZ8Do26luXpu/WnzWfPGkKUCpysC+0U83jb9q2LNPMPRmXuy2JehAEyP
-         OPBadO6IQTjLPXLSoYX7C4vSBBFh5P7TRzMPimZooAJkvLIEy3ZyeLnrX1dSTbvgejoi
-         b/lxJktXyZC8uS/vl7a7E1+Qtl/iTCJprDkduvpAzH5+e78VjbLzlVfdT5Fd7A9cv7vh
-         LWcgjphcx9nhIiCXjenILR+ZsFV9MCiR97vNznOsPm/dZueQxS6qSLkK9Oo0d11m0H7G
-         s2nQ==
-X-Gm-Message-State: AOAM532RU4wKNsYGkAQRu/ML/2DsK/Ynak7qOS26ahGxVW6Duw054+TQ
-        g8uGzvbbiQ4wqcoiZuubKgVcPQ==
-X-Google-Smtp-Source: ABdhPJyawDJzg6z4jlQ27AM7B9mQihetA2HK15PDd5+BUmBZxGxIWePelSfFNIpbbtmMwPVuFK17Wg==
-X-Received: by 2002:a17:902:c382:b029:e4:7015:b646 with SMTP id g2-20020a170902c382b02900e47015b646mr10771208plg.83.1615790454561;
-        Sun, 14 Mar 2021 23:40:54 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id g2sm12134089pfi.28.2021.03.14.23.40.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Mar 2021 23:40:53 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:10:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
- files
-Message-ID: <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
-References: <cover.1615354376.git.viresh.kumar@linaro.org>
- <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
- <20210312044712.srmqfuie7fae55pb@vireshk-i7>
- <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
- <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
- <20210312071325.zosmlttse4ym7sit@vireshk-i7>
- <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
- <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+        id S230134AbhCOGl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 02:41:26 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:42269 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230078AbhCOGlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 02:41:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615790460; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Eh+zXNDaC2MynIN0OjXzWVKeG6TXNvkytir5AC33S4Y=;
+ b=LSWMoiSBeSZoZPq9Vq2e8CjIO1pDJl69Ch69bwo7Nzn9sqe+0stJcvcyITTTuA7RVdkzFG4u
+ WXOO8WYG8vu/qBlPLzjArHXE3HNrpwHlM94sCr9P6LqhmuL3raSN5h2OmntIhr/gSbIFwdAP
+ 9kYe8CYna4zl8J4xK4KYf7vmmH8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 604f017be2200c0a0df39d4a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 06:40:59
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E911BC4346D; Mon, 15 Mar 2021 06:40:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6FF3EC43467;
+        Mon, 15 Mar 2021 06:40:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 14:40:56 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+In-Reply-To: <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-7-avri.altman@wdc.com>
+ <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
+Message-ID: <8b4e8dc1fd91f52a191d681b7096ef48@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-03-21, 20:16, Frank Rowand wrote:
-> On 3/12/21 11:11 PM, Frank Rowand wrote:
-> > On 3/12/21 1:13 AM, Viresh Kumar wrote:
-> >> On 12-03-21, 01:09, Frank Rowand wrote:
-> >>> I suggested having the .dtso files include the .dts file because that is a relatively
-> >>> small and easy change to test.  What would probably make more sense is the rename
-> >>> the existing overlay .dts files to be .dtso files and then for each overlay .dtso
-> >>> file create a new .dts file that #includes the corresponding .dtso file.  This is
-> >>> more work and churn, but easier to document that the .dts files are a hack that is
-> >>> needed so that the corresponding .dtb.S files will be generated.
-> >>
-> >> What about creating links instead then ?
-> >>
-> > 
-> > I don't really like the idea of using links here.
-> > 
-> > Maybe it is best to make the changes needed to allow the unittest
-> > overlays to be .dtso instead of .dts.
-> > 
-> > Off the top of my head:
-> > 
-> >   scripts/Makefile.lib:
-> >      The rule for %.dtb.S invokes cmd_dt_S_dtb, which puts the
-> >      overlay data in section .dtb.init.rodata, with a label
-> >      pointing to the beginning of the overlay __dtb_XXX_begin and
-> >      a label pointing to the end of the overlay __dtb_XXX_end,
-> >      for the overlay named XXX.  I _think_ that you could simply
-> >      add a corresponding rule for %.dtbo.S using a new command
-> >      cmd_dt_S_dtbo (the same as cmd_dt_S_dtb, except use labels
-> >      __dtbo_XXX_begin and __dtbo_XXX_end).
+On 2021-03-15 09:34, Can Guo wrote:
+> On 2021-03-02 21:24, Avri Altman wrote:
+>> The spec does not define what is the host's recommended response when
+>> the device send hpb dev reset response (oper 0x2).
+>> 
+>> We will update all active hpb regions: mark them and do that on the 
+>> next
+>> read.
+>> 
+>> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+>> ---
+>>  drivers/scsi/ufs/ufshpb.c | 47 
+>> ++++++++++++++++++++++++++++++++++++---
+>>  drivers/scsi/ufs/ufshpb.h |  2 ++
+>>  2 files changed, 46 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>> index 0744feb4d484..0034fa03fdc6 100644
+>> --- a/drivers/scsi/ufs/ufshpb.c
+>> +++ b/drivers/scsi/ufs/ufshpb.c
+>> @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct
+>> ufshcd_lrb *lrbp)
+>>  		if (rgn->reads == ACTIVATION_THRESHOLD)
+>>  			activate = true;
+>>  		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+>> -		if (activate) {
+>> +		if (activate ||
+>> +		    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
+>>  			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+>>  			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
+>>  			hpb->stats.rb_active_cnt++;
+>> @@ -1480,6 +1481,20 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
+>> struct ufshcd_lrb *lrbp)
+>>  	case HPB_RSP_DEV_RESET:
+>>  		dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>  			 "UFS device lost HPB information during PM.\n");
+>> +
+>> +		if (hpb->is_hcm) {
+>> +			struct scsi_device *sdev;
+>                         bool need_reset = false;
+>> +
+>> +			__shost_for_each_device(sdev, hba->host) {
+>> +				struct ufshpb_lu *h = sdev->hostdata;
+>> +
+>> +				if (!h)
+>> +					continue;
+>> +
+>> +				need_reset = true;
+>> +			}
 > 
-> If you do the above, please put it in drivers/of/unittest-data/Makefile
-> instead of scripts/Makefile.lib because it is unittest.c specific and
-> not meant to be anywhere else in the kernel.
+>                         if (need_reset)
+>                             schedule_work(&hpb->ufshpb_lun_reset_work);
+> 
+> At last, scheduling only one reset work shall be enough, otherwise 
+> multiple
+> reset work can be flying in parallel, so maybe above changes?
 
-What about doing this then in unittest's Makefile instead (which I
-already suggested earlier), that will make everything work just fine
-without any other changes ?
+Forget about this one, I misunderstood it - reset work is for each 
+ufshpb_lu...
 
-+# Required for of unittest files as they can't be renamed to .dtso
-+$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-+       $(call if_changed_dep,dtc)
+Regards,
+Can Guo.
 
--- 
-viresh
+> 
+>> +		}
+>> +
+>>  		break;
+>>  	default:
+>>  		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+>> @@ -1594,6 +1609,25 @@ static void
+>> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+>>  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>>  }
+>> 
+>> +static void ufshpb_reset_work_handler(struct work_struct *work)
+>> +{
+>> +	struct ufshpb_lu *hpb;
+> 
+>         struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
+> ufshpb_lun_reset_work);
+> 
+>> +	struct victim_select_info *lru_info;
+> 
+>         struct victim_select_info *lru_info = &hpb->lru_info;
+> 
+> This can save some lines.
+> 
+> Thanks,
+> Can Guo.
+> 
+>> +	struct ufshpb_region *rgn;
+>> +	unsigned long flags;
+>> +
+>> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> +
+>> +	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
+>> +		set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
+>> +
+>> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+>> +}
+>> +
+>>  static void ufshpb_normalization_work_handler(struct work_struct 
+>> *work)
+>>  {
+>>  	struct ufshpb_lu *hpb;
+>> @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
+>> ufs_hba *hba, struct ufshpb_lu *hpb)
+>>  		} else {
+>>  			rgn->rgn_state = HPB_RGN_INACTIVE;
+>>  		}
+>> +
+>> +		rgn->rgn_flags = 0;
+>>  	}
+>> 
+>>  	return 0;
+>> @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+>> *hba, struct ufshpb_lu *hpb)
+>>  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
+>> 
+>>  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+>> -	if (hpb->is_hcm)
+>> +	if (hpb->is_hcm) {
+>>  		INIT_WORK(&hpb->ufshpb_normalization_work,
+>>  			  ufshpb_normalization_work_handler);
+>> +		INIT_WORK(&hpb->ufshpb_lun_reset_work,
+>> +			  ufshpb_reset_work_handler);
+>> +	}
+>> 
+>>  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+>>  			  sizeof(struct ufshpb_req), 0, 0, NULL);
+>> @@ -2114,8 +2153,10 @@ static void ufshpb_discard_rsp_lists(struct
+>> ufshpb_lu *hpb)
+>> 
+>>  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>>  {
+>> -	if (hpb->is_hcm)
+>> +	if (hpb->is_hcm) {
+>> +		cancel_work_sync(&hpb->ufshpb_lun_reset_work);
+>>  		cancel_work_sync(&hpb->ufshpb_normalization_work);
+>> +	}
+>>  	cancel_work_sync(&hpb->map_work);
+>>  }
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>> index 84598a317897..37c1b0ea0c0a 100644
+>> --- a/drivers/scsi/ufs/ufshpb.h
+>> +++ b/drivers/scsi/ufs/ufshpb.h
+>> @@ -121,6 +121,7 @@ struct ufshpb_region {
+>>  	struct list_head list_lru_rgn;
+>>  	unsigned long rgn_flags;
+>>  #define RGN_FLAG_DIRTY 0
+>> +#define RGN_FLAG_UPDATE 1
+>> 
+>>  	/* region reads - for host mode */
+>>  	spinlock_t rgn_lock;
+>> @@ -217,6 +218,7 @@ struct ufshpb_lu {
+>>  	/* for selecting victim */
+>>  	struct victim_select_info lru_info;
+>>  	struct work_struct ufshpb_normalization_work;
+>> +	struct work_struct ufshpb_lun_reset_work;
+>> 
+>>  	/* pinned region information */
+>>  	u32 lu_pinned_start;
