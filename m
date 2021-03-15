@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C347533BBE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B240333BBE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236395AbhCOOMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S236162AbhCOOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232493AbhCON67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CD7664EEC;
-        Mon, 15 Mar 2021 13:58:40 +0000 (UTC)
+        id S231475AbhCON6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DA164F13;
+        Mon, 15 Mar 2021 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816721;
-        bh=THw6yf0bfiJSFbYMutcyFRFhwf/AapyQAcjRb1E+Izo=;
+        s=korg; t=1615816705;
+        bh=1Y5FO9BvAPAx2ArE/6bv6jyWdZ4YW6aGlxWmcnfu9lM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srGy4Dg3fMGFObdzgdwlVUwF1cqcSKaKQGA2Ltjzkl2SJ72w+82QKB/oWY+R7+FvD
-         dFiXSeeq/4r4YGFzM0tEzcOLBkdme+PLrsM1XI+gXugCXpyxt9CmnYYbNVTvV1PyFk
-         KOaWKjpGAFG1LS0tRY8lNa3XnrcxB3yW+r2LkhiY=
+        b=wkfdEbXj6VklzzXPKdyn1g9eqnepi55RWozfl6ucNx8mkINGZmfSceoif47YB6+QV
+         UW5wf7EkeausjoM7ugBwrmpLQjSdx5wbhlbrK/AseVwngGLTZWAFw/t6RECd6qoL4h
+         jzL6VNsLZjB1vyRlh/PJbgeqy5X3rTQ3Vp8LkFsY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 085/306] selftests: forwarding: Fix race condition in mirror installation
-Date:   Mon, 15 Mar 2021 14:52:28 +0100
-Message-Id: <20210315135510.524224335@linuxfoundation.org>
+Subject: [PATCH 5.10 066/290] net: stmmac: stop each tx channel independently
+Date:   Mon, 15 Mar 2021 14:52:39 +0100
+Message-Id: <20210315135544.139777380@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +41,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Danielle Ratson <danieller@nvidia.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-commit edcbf5137f093b5502f5f6b97cce3cbadbde27aa upstream.
+commit a3e860a83397bf761ec1128a3f0ba186445992c6 upstream.
 
-When mirroring to a gretap in hardware the device expects to be
-programmed with the egress port and all the encapsulating headers. This
-requires the driver to resolve the path the packet will take in the
-software data path and program the device accordingly.
+If clear GMAC_CONFIG_TE bit, it would stop all tx channels, but users
+may only want to stop specific tx channel.
 
-If the path cannot be resolved (in this case because of an unresolved
-neighbor), then mirror installation fails until the path is resolved.
-This results in a race that causes the test to sometimes fail.
-
-Fix this by setting the neighbor's state to permanent, so that it is
-always valid.
-
-Fixes: b5b029399fa6d ("selftests: forwarding: mirror_gre_bridge_1d_vlan: Add STP test")
-Signed-off-by: Danielle Ratson <danieller@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Fixes: 48863ce5940f ("stmmac: add DMA support for GMAC 4.xx")
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
-+++ b/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
-@@ -86,11 +86,20 @@ test_ip6gretap()
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+@@ -53,10 +53,6 @@ void dwmac4_dma_stop_tx(void __iomem *io
  
- test_gretap_stp()
- {
-+	# Sometimes after mirror installation, the neighbor's state is not valid.
-+	# The reason is that there is no SW datapath activity related to the
-+	# neighbor for the remote GRE address. Therefore whether the corresponding
-+	# neighbor will be valid is a matter of luck, and the test is thus racy.
-+	# Set the neighbor's state to permanent, so it would be always valid.
-+	ip neigh replace 192.0.2.130 lladdr $(mac_get $h3) \
-+		nud permanent dev br2
- 	full_test_span_gre_stp gt4 $swp3.555 "mirror to gretap"
+ 	value &= ~DMA_CONTROL_ST;
+ 	writel(value, ioaddr + DMA_CHAN_TX_CONTROL(chan));
+-
+-	value = readl(ioaddr + GMAC_CONFIG);
+-	value &= ~GMAC_CONFIG_TE;
+-	writel(value, ioaddr + GMAC_CONFIG);
  }
  
- test_ip6gretap_stp()
- {
-+	ip neigh replace 2001:db8:2::2 lladdr $(mac_get $h3) \
-+		nud permanent dev br2
- 	full_test_span_gre_stp gt6 $swp3.555 "mirror to ip6gretap"
- }
- 
+ void dwmac4_dma_start_rx(void __iomem *ioaddr, u32 chan)
 
 
