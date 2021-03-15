@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F3133B94F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 516D333B9A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbhCOOFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:05:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
+        id S234911AbhCOOGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232029AbhCON5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC9B64EF9;
-        Mon, 15 Mar 2021 13:57:34 +0000 (UTC)
+        id S232036AbhCON5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1ED364EEE;
+        Mon, 15 Mar 2021 13:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816656;
-        bh=x/IlDJ8JHbbMUkHRvRPdn/2xOomMcPYzXEQhNmMiNiw=;
+        s=korg; t=1615816658;
+        bh=ob/5UBIdqefGaH8gWQxFUNVoOaqfG+WizVmhBsqMYtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vjGoIPJIsdiU6VizT5eIpLJBMKfGJalpSB/RH68pMPX3+35L4UUy1G/Ujn6MT92EJ
-         YeIrbY70fPhnJrdiOsy0KVK1Mg1q3+pwGo9A0BjRyrdjXq2tEWz+gqX86rc9kEHyiv
-         DBHx4ywF2jlBIkDBI3k0FOLn7rFB7WxblFA9eCYM=
+        b=VigCAVSXd7jBR2bb9JE96BToLOWT5KvrnpC/oj/Q8bcBoAKAdiyfrl+IhNxwz2nbU
+         HAgDR5WgsaIzpm4JgjJxxJ+l6Y8m1HcOdG33JEKjf8LjBPR9DCgUBDLLjJ26CLn6Lr
+         asrJe/qcJYUvONHCagbzEFt6C3eNonQmRAxyPbQI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        stable@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 045/306] sh_eth: fix TRSCER mask for SH771x
-Date:   Mon, 15 Mar 2021 14:51:48 +0100
-Message-Id: <20210315135509.171912878@linuxfoundation.org>
+Subject: [PATCH 5.11 046/306] net: enetc: dont overwrite the RSS indirection table when initializing
+Date:   Mon, 15 Mar 2021 14:51:49 +0100
+Message-Id: <20210315135509.204811334@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,36 +43,145 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 8c91bc3d44dfef8284af384877fbe61117e8b7d1 upstream.
+commit c646d10dda2dcde82c6ce5a474522621ab2b8b19 upstream.
 
-According  to  the SH7710, SH7712, SH7713 Group User's Manual: Hardware,
-Rev. 3.00, the TRSCER register actually has only bit 7 valid (and named
-differently), with all the other bits reserved. Apparently, this was not
-the case with some early revisions of the manual as we have the other
-bits declared (and set) in the original driver.  Follow the suit and add
-the explicit sh_eth_cpu_data::trscer_err_mask initializer for SH771x...
+After the blamed patch, all RX traffic gets hashed to CPU 0 because the
+hashing indirection table set up in:
 
-Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+enetc_pf_probe
+-> enetc_alloc_si_resources
+   -> enetc_configure_si
+      -> enetc_setup_default_rss_table
+
+is overwritten later in:
+
+enetc_pf_probe
+-> enetc_init_port_rss_memory
+
+which zero-initializes the entire port RSS table in order to avoid ECC errors.
+
+The trouble really is that enetc_init_port_rss_memory really neads
+enetc_alloc_si_resources to be called, because it depends upon
+enetc_alloc_cbdr and enetc_setup_cbdr. But that whole enetc_configure_si
+thing could have been better thought out, it has nothing to do in a
+function called "alloc_si_resources", especially since its counterpart,
+"free_si_resources", does nothing to unwind the configuration of the SI.
+
+The point is, we need to pull out enetc_configure_si out of
+enetc_alloc_resources, and move it after enetc_init_port_rss_memory.
+This allows us to set up the default RSS indirection table after
+initializing the memory.
+
+Fixes: 07bf34a50e32 ("net: enetc: initialize the RFS and RSS memories")
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/renesas/sh_eth.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/freescale/enetc/enetc.c    |   11 +++--------
+ drivers/net/ethernet/freescale/enetc/enetc.h    |    1 +
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c |    7 +++++++
+ drivers/net/ethernet/freescale/enetc/enetc_vf.c |    7 +++++++
+ 4 files changed, 18 insertions(+), 8 deletions(-)
 
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -1089,6 +1089,9 @@ static struct sh_eth_cpu_data sh771x_dat
- 			  EESIPR_CEEFIP | EESIPR_CELFIP |
- 			  EESIPR_RRFIP | EESIPR_RTLFIP | EESIPR_RTSFIP |
- 			  EESIPR_PREIP | EESIPR_CERFIP,
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1058,13 +1058,12 @@ static int enetc_setup_default_rss_table
+ 	return 0;
+ }
+ 
+-static int enetc_configure_si(struct enetc_ndev_priv *priv)
++int enetc_configure_si(struct enetc_ndev_priv *priv)
+ {
+ 	struct enetc_si *si = priv->si;
+ 	struct enetc_hw *hw = &si->hw;
+ 	int err;
+ 
+-	enetc_setup_cbdr(hw, &si->cbd_ring);
+ 	/* set SI cache attributes */
+ 	enetc_wr(hw, ENETC_SICAR0,
+ 		 ENETC_SICAR_RD_COHERENT | ENETC_SICAR_WR_COHERENT);
+@@ -1112,6 +1111,8 @@ int enetc_alloc_si_resources(struct enet
+ 	if (err)
+ 		return err;
+ 
++	enetc_setup_cbdr(&si->hw, &si->cbd_ring);
 +
-+	.trscer_err_mask = DESC_I_RINT8,
+ 	priv->cls_rules = kcalloc(si->num_fs_entries, sizeof(*priv->cls_rules),
+ 				  GFP_KERNEL);
+ 	if (!priv->cls_rules) {
+@@ -1119,14 +1120,8 @@ int enetc_alloc_si_resources(struct enet
+ 		goto err_alloc_cls;
+ 	}
+ 
+-	err = enetc_configure_si(priv);
+-	if (err)
+-		goto err_config_si;
+-
+ 	return 0;
+ 
+-err_config_si:
+-	kfree(priv->cls_rules);
+ err_alloc_cls:
+ 	enetc_clear_cbdr(&si->hw);
+ 	enetc_free_cbdr(priv->dev, &si->cbd_ring);
+--- a/drivers/net/ethernet/freescale/enetc/enetc.h
++++ b/drivers/net/ethernet/freescale/enetc/enetc.h
+@@ -292,6 +292,7 @@ void enetc_get_si_caps(struct enetc_si *
+ void enetc_init_si_rings_params(struct enetc_ndev_priv *priv);
+ int enetc_alloc_si_resources(struct enetc_ndev_priv *priv);
+ void enetc_free_si_resources(struct enetc_ndev_priv *priv);
++int enetc_configure_si(struct enetc_ndev_priv *priv);
+ 
+ int enetc_open(struct net_device *ndev);
+ int enetc_close(struct net_device *ndev);
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -1108,6 +1108,12 @@ static int enetc_pf_probe(struct pci_dev
+ 		goto err_init_port_rss;
+ 	}
+ 
++	err = enetc_configure_si(priv);
++	if (err) {
++		dev_err(&pdev->dev, "Failed to configure SI\n");
++		goto err_config_si;
++	}
 +
- 	.tsu		= 1,
- 	.dual_port	= 1,
- };
+ 	err = enetc_alloc_msix(priv);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "MSIX alloc failed\n");
+@@ -1136,6 +1142,7 @@ err_phylink_create:
+ 	enetc_mdiobus_destroy(pf);
+ err_mdiobus_create:
+ 	enetc_free_msix(priv);
++err_config_si:
+ err_init_port_rss:
+ err_init_port_rfs:
+ err_alloc_msix:
+--- a/drivers/net/ethernet/freescale/enetc/enetc_vf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_vf.c
+@@ -171,6 +171,12 @@ static int enetc_vf_probe(struct pci_dev
+ 		goto err_alloc_si_res;
+ 	}
+ 
++	err = enetc_configure_si(priv);
++	if (err) {
++		dev_err(&pdev->dev, "Failed to configure SI\n");
++		goto err_config_si;
++	}
++
+ 	err = enetc_alloc_msix(priv);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "MSIX alloc failed\n");
+@@ -187,6 +193,7 @@ static int enetc_vf_probe(struct pci_dev
+ 
+ err_reg_netdev:
+ 	enetc_free_msix(priv);
++err_config_si:
+ err_alloc_msix:
+ 	enetc_free_si_resources(priv);
+ err_alloc_si_res:
 
 
