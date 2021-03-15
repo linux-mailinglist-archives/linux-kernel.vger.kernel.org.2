@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B8533C89B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3887E33C89D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhCOVjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:39:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30829 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233131AbhCOVjn (ORCPT
+        id S233131AbhCOVkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:40:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34678 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233291AbhCOVj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:39:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615844382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qkdqntrkesd0zsgt86ODqpue66pp2ATokoiM4RMTzrY=;
-        b=NvgtQrDmcJyfJMNU3KYSyE4hGsbmiCrw3ozf8fUO+lwYPc07y8i46qrYfwdUaxHJSNF3d3
-        pplk3G//HavPEP1+W491yo2nipqIJVocsZyoAetRhnp3vzwIcw93ZZ9lT83jOIO0kVvOoj
-        58K0z5i9zxdp0yzqkBz4zEor5HfPu2s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-Sj3oSMX9MzyFVnnvkG8hOQ-1; Mon, 15 Mar 2021 17:39:39 -0400
-X-MC-Unique: Sj3oSMX9MzyFVnnvkG8hOQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C52CF87A83A;
-        Mon, 15 Mar 2021 21:39:37 +0000 (UTC)
-Received: from localhost (unknown [10.10.110.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A83145C3E6;
-        Mon, 15 Mar 2021 21:39:34 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 14:39:33 -0700 (PDT)
-Message-Id: <20210315.143933.939938434416308507.davem@redhat.com>
-To:     cristian.ciocaltea@gmail.com
-Cc:     andrew@lunn.ch, kuba@kernel.org, robh+dt@kernel.org,
-        afaerber@suse.de, mani@kernel.org, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] net: ethernet: actions: Add Actions Semi Owl
- Ethernet MAC driver
-From:   David Miller <davem@redhat.com>
-In-Reply-To: <a93430bc30d7e733184a2fa3ab5c66180a76d379.1615807292.git.cristian.ciocaltea@gmail.com>
-References: <cover.1615807292.git.cristian.ciocaltea@gmail.com>
-        <a93430bc30d7e733184a2fa3ab5c66180a76d379.1615807292.git.cristian.ciocaltea@gmail.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Mon, 15 Mar 2021 17:39:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 710361C0B80; Mon, 15 Mar 2021 22:39:54 +0100 (CET)
+Date:   Mon, 15 Mar 2021 22:39:53 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/290] 5.10.24-rc1 review
+Message-ID: <20210315213953.GB4269@amd>
+References: <20210315135541.921894249@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="CUfgB8w4ZwR/yMy5"
+Content-Disposition: inline
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Date: Mon, 15 Mar 2021 13:29:17 +0200
 
-> +
-> +#define DEFAULT_MSG_ENABLE (NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK)
-> +static int debug = -1;
-> +module_param(debug, int, 0);
-> +MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
+--CUfgB8w4ZwR/yMy5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Module parameters are strongly discouraged in networking drivers, pplease delete this
-ad just pass the default to netif_mdg_init(), thanks!
+Hi!
 
+> This is the start of the stable review cycle for the 5.10.24 release.
+> There are 290 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any kernel problems here: (Renesas boards
+are still unavailable)
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+							=09
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--CUfgB8w4ZwR/yMy5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBP1CkACgkQMOfwapXb+vIKVACgmJ7Z1RBwPqv8trb5Jex/2OOT
+vO8AnA+N0X7WeE9QauQKX58HRCpACf6a
+=gm/P
+-----END PGP SIGNATURE-----
+
+--CUfgB8w4ZwR/yMy5--
