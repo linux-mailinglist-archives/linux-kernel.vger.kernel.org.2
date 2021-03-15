@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5045C33AD76
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF8D33AD73
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhCOIbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:31:31 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:44035 "EHLO m42-2.mailgun.net"
+        id S229599AbhCOIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhCOIbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:31:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615797060; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Ci6S2U/9V2fhFK9n1GscxocWUYLkBqUN9SmqC6qYi10=;
- b=AEK2D5N5J7f/TTH5iu/2wr+mydgxhEM1INIiTlwybHmTRN5p6vRMlAyn/Z5Hj+tOS7q3LQJM
- /C2mMaQdJ9MZxGLFo+zDz2bM2afPAPeKIQhyWAtTicSq6ToQv0boZ4VxHnzOtYkJZzuFhPAb
- 8drZNedHwC+zxsm1ejdJNao9/Ik=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 604f1b271de5dd7b99d7d97d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:30:31
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DBB7CC433C6; Mon, 15 Mar 2021 08:30:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S229494AbhCOIaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:30:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD3A0C433CA;
-        Mon, 15 Mar 2021 08:30:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2795A64E89;
+        Mon, 15 Mar 2021 08:30:55 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lLicn-001bcl-2Z; Mon, 15 Mar 2021 08:30:53 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
+Content-Type: text/plain; charset=UTF-8;
  format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 16:30:29 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 04/10] scsi: ufshpb: Make eviction depends on region's
- reads
-In-Reply-To: <20210302132503.224670-5-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-5-avri.altman@wdc.com>
-Message-ID: <7cf2ce1235075c2925561d180b1bd233@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 15 Mar 2021 08:30:52 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v4 5/6] KVM: arm64: GICv4.1: Restore VLPI pending state to
+ physical side
+In-Reply-To: <20210313083900.234-6-lushenming@huawei.com>
+References: <20210313083900.234-1-lushenming@huawei.com>
+ <20210313083900.234-6-lushenming@huawei.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <d9047922808df340feca2f257cfb8a3d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:24, Avri Altman wrote:
-> In host mode, eviction is considered an extreme measure.
-> verify that the entering region has enough reads, and the exiting
-> region has much less reads.
+On 2021-03-13 08:38, Shenming Lu wrote:
+> From: Zenghui Yu <yuzenghui@huawei.com>
 > 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> When setting the forwarding path of a VLPI (switch to the HW mode),
+> we can also transfer the pending state from irq->pending_latch to
+> VPT (especially in migration, the pending states of VLPIs are restored
+> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
+> a VLPI to pending.
+> 
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> Signed-off-by: Shenming Lu <lushenming@huawei.com>
 > ---
->  drivers/scsi/ufs/ufshpb.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
+>  arch/arm64/kvm/vgic/vgic-v4.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index a8f8d13af21a..6f4fd22eaf2f 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -17,6 +17,7 @@
->  #include "../sd.h"
+> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
+> b/arch/arm64/kvm/vgic/vgic-v4.c
+> index ac029ba3d337..3b82ab80c2f3 100644
+> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+> @@ -449,6 +449,24 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, 
+> int virq,
+>  	irq->host_irq	= virq;
+>  	atomic_inc(&map.vpe->vlpi_count);
 > 
->  #define ACTIVATION_THRESHOLD 4 /* 4 IOs */
-> +#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 6) /* 256 IOs */
-> 
->  /* memory management */
->  static struct kmem_cache *ufshpb_mctx_cache;
-> @@ -1050,6 +1051,13 @@ static struct ufshpb_region
-> *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
->  		if (ufshpb_check_srgns_issue_state(hpb, rgn))
->  			continue;
-> 
+> +	/* Transfer pending state */
+> +	if (irq->pending_latch) {
+> +		unsigned long flags;
+> +
+> +		ret = irq_set_irqchip_state(irq->host_irq,
+> +					    IRQCHIP_STATE_PENDING,
+> +					    irq->pending_latch);
+> +		WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+> +
 > +		/*
-> +		 * in host control mode, verify that the exiting region
-> +		 * has less reads
+> +		 * Clear pending_latch and communicate this state
+> +		 * change via vgic_queue_irq_unlock.
 > +		 */
-> +		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
-> +			continue;
+> +		raw_spin_lock_irqsave(&irq->irq_lock, flags);
+> +		irq->pending_latch = false;
+> +		vgic_queue_irq_unlock(kvm, irq, flags);
+> +	}
 > +
->  		victim_rgn = rgn;
->  		break;
->  	}
-> @@ -1235,7 +1243,7 @@ static int ufshpb_issue_map_req(struct ufshpb_lu 
-> *hpb,
-> 
->  static int ufshpb_add_region(struct ufshpb_lu *hpb, struct 
-> ufshpb_region *rgn)
->  {
-> -	struct ufshpb_region *victim_rgn;
-> +	struct ufshpb_region *victim_rgn = NULL;
->  	struct victim_select_info *lru_info = &hpb->lru_info;
->  	unsigned long flags;
->  	int ret = 0;
-> @@ -1263,6 +1271,16 @@ static int ufshpb_add_region(struct ufshpb_lu
-> *hpb, struct ufshpb_region *rgn)
->  			 * because the device could detect this region
->  			 * by not issuing HPB_READ
->  			 */
-> +
-> +			/*
-> +			 * in host control mode, verify that the entering
-> +			 * region has enough reads
-> +			 */
+>  out:
+>  	mutex_unlock(&its->its_lock);
+>  	return ret;
 
-Maybe merge the new comments with the original comments above?
+The read side of the pending state isn't locked, but the write side is.
+I'd rather you lock the whole sequence for peace of mind.
 
 Thanks,
-Can Guo.
 
-> +			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
-> +				ret = -EACCES;
-> +				goto out;
-> +			}
-> +
->  			victim_rgn = ufshpb_victim_lru_info(hpb);
->  			if (!victim_rgn) {
->  				dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+         M.
+-- 
+Jazz is not dead. It just smells funny...
