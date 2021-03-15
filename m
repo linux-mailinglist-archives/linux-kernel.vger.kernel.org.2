@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E96D33B910
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FAD33B91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhCOOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:05:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
+        id S232708AbhCOOF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231954AbhCON5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 204D764EF3;
-        Mon, 15 Mar 2021 13:57:20 +0000 (UTC)
+        id S231964AbhCON5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D531964F26;
+        Mon, 15 Mar 2021 13:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816642;
-        bh=aneOWmOOWmIl8hRLCnsyajJWidVl5RoYKKE83iHcykw=;
+        s=korg; t=1615816644;
+        bh=c0d2jQS6BFUIMLZ+8dVKgguyF42abj0GKOvlSsKcxUM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiPQccQ8AxTJpdboYgs3aGlpFQQK3eiFYJ7Esn3/YaLM1SiZ2bqwdRr9aXY8fxeua
-         iKELuuIPz4zuEDlg7/wlrpN/gCy9XqorJxWi0Lu0AHcPBNWkhyRUyoEwkWN/OlHvyb
-         RqKG5Td53Rq1I3KC8WejKsvK4tLJwF+u2ZQtfN4A=
+        b=eLsklG7E3ORJPQG8A+PHJBxlD36HOXWmB3noRi77qYZtdmUP8g8gl0SubW86vDr6P
+         x0JSZEhbIYcczKP0++V5BZWotbNgire+6Wxj7rnnY2d8GO2iZDaXS16u1oKNlnhDs4
+         Tl0oshCTYotCTp5/sWZX8WabAD7p9Tsz7rLN6huM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.11 037/306] mt76: dma: do not report truncated frames to mac80211
-Date:   Mon, 15 Mar 2021 14:51:40 +0100
-Message-Id: <20210315135508.893642039@linuxfoundation.org>
+        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+        Johan Hovold <johan@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.11 038/306] gpio: fix gpio-device list corruption
+Date:   Mon, 15 Mar 2021 14:51:41 +0100
+Message-Id: <20210315135508.925911883@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,57 +42,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit d0bd52c591a1070c54dc428e926660eb4f981099 upstream.
+commit cf25ef6b631c6fc6c0435fc91eba8734cca20511 upstream.
 
-Commit b102f0c522cf6 ("mt76: fix array overflow on receiving too many
-fragments for a packet") fixes a possible OOB access but it introduces a
-memory leak since the pending frame is not released to page_frag_cache
-if the frag array of skb_shared_info is full. Commit 93a1d4791c10
-("mt76: dma: fix a possible memory leak in mt76_add_fragment()") fixes
-the issue but does not free the truncated skb that is forwarded to
-mac80211 layer. Fix the leftover issue discarding even truncated skbs.
+Make sure to hold the gpio_lock when removing the gpio device from the
+gpio_devices list (when dropping the last reference) to avoid corrupting
+the list when there are concurrent accesses.
 
-Fixes: 93a1d4791c10 ("mt76: dma: fix a possible memory leak in mt76_add_fragment()")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/a03166fcc8214644333c68674a781836e0f57576.1612697217.git.lorenzo@kernel.org
+Fixes: ff2b13592299 ("gpio: make the gpiochip a real device")
+Cc: stable@vger.kernel.org      # 4.6
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+[ johan: adjust context to 5.11 ]
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/mediatek/mt76/dma.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/gpio/gpiolib.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/wireless/mediatek/mt76/dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/dma.c
-@@ -511,13 +511,13 @@ mt76_add_fragment(struct mt76_dev *dev,
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -469,8 +469,12 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid
+ static void gpiodevice_release(struct device *dev)
  {
- 	struct sk_buff *skb = q->rx_head;
- 	struct skb_shared_info *shinfo = skb_shinfo(skb);
-+	int nr_frags = shinfo->nr_frags;
+ 	struct gpio_device *gdev = dev_get_drvdata(dev);
++	unsigned long flags;
  
--	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
-+	if (nr_frags < ARRAY_SIZE(shinfo->frags)) {
- 		struct page *page = virt_to_head_page(data);
- 		int offset = data - page_address(page) + q->buf_offset;
- 
--		skb_add_rx_frag(skb, shinfo->nr_frags, page, offset, len,
--				q->buf_size);
-+		skb_add_rx_frag(skb, nr_frags, page, offset, len, q->buf_size);
- 	} else {
- 		skb_free_frag(data);
- 	}
-@@ -526,7 +526,10 @@ mt76_add_fragment(struct mt76_dev *dev,
- 		return;
- 
- 	q->rx_head = NULL;
--	dev->drv->rx_skb(dev, q - dev->q_rx, skb);
-+	if (nr_frags < ARRAY_SIZE(shinfo->frags))
-+		dev->drv->rx_skb(dev, q - dev->q_rx, skb);
-+	else
-+		dev_kfree_skb(skb);
- }
- 
- static int
++	spin_lock_irqsave(&gpio_lock, flags);
+ 	list_del(&gdev->list);
++	spin_unlock_irqrestore(&gpio_lock, flags);
++
+ 	ida_free(&gpio_ida, gdev->id);
+ 	kfree_const(gdev->label);
+ 	kfree(gdev->descs);
 
 
