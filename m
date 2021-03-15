@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416DF33AC5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8121B33ACCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhCOHgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
+        id S231136AbhCOHwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:52:53 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:49092 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhCOHgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D7264DAF;
-        Mon, 15 Mar 2021 07:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615793773;
-        bh=D528rbfLh8zZTCX5u9fbw/DucSrt77tO+DqrXHDn2V0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dO1mcP97ftKFPgeb+DhHYDSMl3wP2m9IFi9wQaJY92FA8J6kLfRItewVib2a0LMLp
-         RXl+EWsucIUkZAa0s/bkOPJ8WbTPadWsSSv1a7c8d8TZYGLvdWGu48N7BoN2XWKKu1
-         DUQTzr9zXRGs28SRw6Pi8AHbjpytILixMDEkgji8=
-Date:   Mon, 15 Mar 2021 08:36:10 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Alexandre Demers <alexandre.f.demers@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        usbip-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2] docs: usbip: Fix major fields and descriptions in
- protocol
-Message-ID: <YE8Oan2BmSuKR4/p@kroah.com>
-References: <YE6/HQoxkraowTI7@Sun>
- <YE78SRefRe1trldP@Sun>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE78SRefRe1trldP@Sun>
+        id S230180AbhCOHwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:52:40 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D915D2030E0;
+        Mon, 15 Mar 2021 08:52:38 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B98022030E2;
+        Mon, 15 Mar 2021 08:52:34 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A41564029F;
+        Mon, 15 Mar 2021 08:52:29 +0100 (CET)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     abel.vesa@nxp.com, shawnguo@kernel.org, ping.bai@nxp.com
+Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] clk: imx8mp: Remove the none exist pcie clocks
+Date:   Mon, 15 Mar 2021 15:39:24 +0800
+Message-Id: <1615793965-1422-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:18:49PM +0800, Hongren Zheng (Zenithal) wrote:
-> The old document for usbip protocol is misleading and hard to read:
->   * Some fields in header are incorrect
->   * Explanation of some fields are unclear or even wrong
->   * Padding of header (namely all headers have the same length) is
->     not explicitly point out, which is crucial for stream protocol like
->     TCP
-> 
-> These fixes are made through reading usbip kernel drivers and userland
-> codes. Also I have implemented one usbip server.
-> 
-> Major changes:
->   * Document the correct field as described in the codebase.
->   * Document the padding in usbip headers. This is crucial for TCP
->     stream hence these padding should be explicitly point out.
->     In code these padding are implemented by a union of all headers.
->   * Fix two FIXME related to usbip unlink and Document the behavior
->     of unlink in different situation.
->   * Clarify some field with more accurate explanation, like those
->     fields associated with URB. Some constraints are extracted from
->     code.
->   * Delete specific transfer_flag doc in usbip as it should be
->     documented by the URB part.
->   * Add data captured from wire as example
-> 
-> Also some changes suggested by a previous patch in
-> https://lore.kernel.org/linux-usb/20180128071514.9107-1-alexandre.f.demers@gmail.com/
-> is adopted in this patch.
-> 
-> Co-developed-by: Alexandre Demers <alexandre.f.demers@gmail.com>
-> Signed-off-by: Hongren Zheng (Zenithal) <i@zenithal.me>
-> ---
->  Documentation/usb/usbip_protocol.rst | 290 +++++++++++++++------------
->  1 file changed, 159 insertions(+), 131 deletions(-)
+In the i.MX8MP PCIe design, the PCIe PHY REF clock comes from external
+OSC or internal system PLL. It is configured in the IOMUX_GPR14 register
+directly, and can't be contolled by CCM at all.
+Remove the PCIE PHY clock from clock driver to clean up codes.
+There is only one PCIe in i.MX8MP, remove the none exist second PCIe
+related clocks.
+Remove the none exsits clocks IDs together.
 
-What changed from v1?  Always list that here below the --- line.
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
+---
+ drivers/clk/imx/clk-imx8mp.c             | 15 ---------------
+ include/dt-bindings/clock/imx8mp-clock.h |  3 ---
+ 2 files changed, 18 deletions(-)
 
-> 
-> diff --git a/Documentation/usb/usbip_protocol.rst b/Documentation/usb/usbip_protocol.rst
-> index 988c832166cd..a15d9c1254e2 100644
-> --- a/Documentation/usb/usbip_protocol.rst
-> +++ b/Documentation/usb/usbip_protocol.rst
-> @@ -5,8 +5,14 @@ USB/IP protocol
->  PRELIMINARY DRAFT, MAY CONTAIN MISTAKES!
->  28 Jun 2011
->  
-> +Update: Fix major fields in protocol
-> +14 Mar 2021
+diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
+index 2f4e1d674e1c..afbeb6bf1909 100644
+--- a/drivers/clk/imx/clk-imx8mp.c
++++ b/drivers/clk/imx/clk-imx8mp.c
+@@ -152,10 +152,6 @@ static const char * const imx8mp_can2_sels[] = {"osc_24m", "sys_pll2_200m", "sys
+ 						"sys_pll1_160m", "sys_pll1_800m", "sys_pll3_out",
+ 						"sys_pll2_250m", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						    "clk_ext1", "clk_ext2", "clk_ext3",
+-						    "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_pcie_aux_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 						    "sys_pll3_out", "sys_pll2_100m", "sys_pll1_80m",
+ 						    "sys_pll1_160m", "sys_pll1_200m", };
+@@ -380,14 +376,6 @@ static const char * const imx8mp_memrepair_sels[] = {"osc_24m", "sys_pll2_100m",
+ 							"sys_pll1_800m", "sys_pll2_1000m", "sys_pll3_out",
+ 							"clk_ext3", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie2_ctrl_sels[] = {"osc_24m", "sys_pll2_250m", "sys_pll2_200m",
+-						      "sys_pll1_266m", "sys_pll1_800m", "sys_pll2_500m",
+-						      "sys_pll2_333m", "sys_pll3_out", };
+-
+-static const char * const imx8mp_pcie2_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						     "clk_ext1", "clk_ext2", "clk_ext3",
+-						     "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_media_mipi_test_byte_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 								"sys_pll3_out", "sys_pll2_100m",
+ 								"sys_pll1_80m", "sys_pll1_160m",
+@@ -585,7 +573,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
+ 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
+ 	hws[IMX8MP_CLK_CAN2] = imx8m_clk_hw_composite("can2", imx8mp_can2_sels, ccm_base + 0xa280);
+-	hws[IMX8MP_CLK_PCIE_PHY] = imx8m_clk_hw_composite("pcie_phy", imx8mp_pcie_phy_sels, ccm_base + 0xa380);
+ 	hws[IMX8MP_CLK_PCIE_AUX] = imx8m_clk_hw_composite("pcie_aux", imx8mp_pcie_aux_sels, ccm_base + 0xa400);
+ 	hws[IMX8MP_CLK_I2C5] = imx8m_clk_hw_composite("i2c5", imx8mp_i2c5_sels, ccm_base + 0xa480);
+ 	hws[IMX8MP_CLK_I2C6] = imx8m_clk_hw_composite("i2c6", imx8mp_i2c6_sels, ccm_base + 0xa500);
+@@ -643,8 +630,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_MEDIA_CAM2_PIX] = imx8m_clk_hw_composite("media_cam2_pix", imx8mp_media_cam2_pix_sels, ccm_base + 0xbe80);
+ 	hws[IMX8MP_CLK_MEDIA_LDB] = imx8m_clk_hw_composite("media_ldb", imx8mp_media_ldb_sels, ccm_base + 0xbf00);
+ 	hws[IMX8MP_CLK_MEMREPAIR] = imx8m_clk_hw_composite_critical("mem_repair", imx8mp_memrepair_sels, ccm_base + 0xbf80);
+-	hws[IMX8MP_CLK_PCIE2_CTRL] = imx8m_clk_hw_composite("pcie2_ctrl", imx8mp_pcie2_ctrl_sels, ccm_base + 0xc000);
+-	hws[IMX8MP_CLK_PCIE2_PHY] = imx8m_clk_hw_composite("pcie2_phy", imx8mp_pcie2_phy_sels, ccm_base + 0xc080);
+ 	hws[IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE] = imx8m_clk_hw_composite("media_mipi_test_byte", imx8mp_media_mipi_test_byte_sels, ccm_base + 0xc100);
+ 	hws[IMX8MP_CLK_ECSPI3] = imx8m_clk_hw_composite("ecspi3", imx8mp_ecspi3_sels, ccm_base + 0xc180);
+ 	hws[IMX8MP_CLK_PDM] = imx8m_clk_hw_composite("pdm", imx8mp_pdm_sels, ccm_base + 0xc200);
+diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
+index e8d68fbb6e3f..43927a1b9e94 100644
+--- a/include/dt-bindings/clock/imx8mp-clock.h
++++ b/include/dt-bindings/clock/imx8mp-clock.h
+@@ -125,7 +125,6 @@
+ #define IMX8MP_CLK_CAN1				116
+ #define IMX8MP_CLK_CAN2				117
+ #define IMX8MP_CLK_MEMREPAIR			118
+-#define IMX8MP_CLK_PCIE_PHY			119
+ #define IMX8MP_CLK_PCIE_AUX			120
+ #define IMX8MP_CLK_I2C5				121
+ #define IMX8MP_CLK_I2C6				122
+@@ -182,8 +181,6 @@
+ #define IMX8MP_CLK_MEDIA_CAM2_PIX		173
+ #define IMX8MP_CLK_MEDIA_LDB			174
+ #define IMX8MP_CLK_MEDIA_MIPI_CSI2_ESC		175
+-#define IMX8MP_CLK_PCIE2_CTRL			176
+-#define IMX8MP_CLK_PCIE2_PHY			177
+ #define IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE		178
+ #define IMX8MP_CLK_ECSPI3			179
+ #define IMX8MP_CLK_PDM				180
+-- 
+2.17.1
 
-This does not belong here, the git changelog shows this information.
-
-The original date above can be removed as well if you want.  And if the
-mistakes are all fixed now, that line can be dropped too :)
-
-thanks,
-
-greg k-h
