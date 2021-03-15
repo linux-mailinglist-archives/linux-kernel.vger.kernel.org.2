@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F6833C7BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E841B33C7C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhCOU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:29:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:7438 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhCOU3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:29:46 -0400
-IronPort-SDR: UhLtDNZakrkvN3kTsnBeuT9FYmAtoAY0K3VfyebZOJK1XHBQLvBMTSvIFhVjoat3hneY5+xcI8
- /GYlMoGa96hQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="185791527"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="185791527"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 13:29:40 -0700
-IronPort-SDR: fJlSFF/jMAW3MKohasZ5YkaWC928WhK8kiNMs07KePISXp94IARFGccS7xhZ2WOuiUhVk0Yajj
- FAUFPfbJHywg==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="371748883"
-Received: from vamcfadd-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.129.148])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 13:29:36 -0700
-Date:   Tue, 16 Mar 2021 09:29:34 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-Id: <20210316092934.d4dd7f2e65f507c3856341bc@intel.com>
-In-Reply-To: <YE9e5JAP3agUByXr@kernel.org>
-References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
-        <20210311020142.125722-1-kai.huang@intel.com>
-        <YEvbcrTZyiUAxZAu@google.com>
-        <YEyX4V7BcS3MZNzp@kernel.org>
-        <20210315201236.de3cd9389f853a418ec53e86@intel.com>
-        <YE9elQfTZHo/9TJI@kernel.org>
-        <YE9e5JAP3agUByXr@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232271AbhCOUca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231899AbhCOUcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 16:32:14 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8C6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:32:12 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id u7so10119960qtq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:32:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h2ls2+uQXDv8BpiLhF8FqA6hSrXbISTdm9YVC3CFyBI=;
+        b=NQkFyzbcqkBAqXKfDSY3JuEJR6crZshUOu6rzrEW0jsngl9EWtEH1RBMVVvCwjc6Ok
+         q7rx5p5Av34yZ1bbeLphUDbwXPMMGbqNZ1KuUnWI+G8WdFMZFNJDlIBb8m1NXAXRfL0P
+         hBWjbNt4w0IsbjfgXCV5/qUoBq4haMlKWj8IE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h2ls2+uQXDv8BpiLhF8FqA6hSrXbISTdm9YVC3CFyBI=;
+        b=VEyke6umEf3khd1bYN9DGs+hGjk23/6ZCMs/Hifm72XiwKStQy934VTvWedVAd2aqR
+         1wZxgjlQI3SWQBzXv3lP5cKWWcmpk2fqej82s/6HPYh3F2L1Dw/FYMp/0Q3KbHdFi5+o
+         K2jndD8xI1V5Qscj5J07P1nPhakqw+sEG6TgApdhVOAoy7l7fLJnMROv64YjTjh5mCv8
+         vQq5vlOyOMBc1P6vDiQWtoDVWs1ADZ5Dk/Mb1KmX0GBVTgvsHK6HzlECVacWJW2eSQAy
+         8ubnqW4mcbkBCxzMsCOpRoXgnMkFKhlAHgrQBTP+dZ37omBjpA073f4PkAnA0rjC6c84
+         2nRQ==
+X-Gm-Message-State: AOAM5326MTd4eH7xS08VVgL/AqWeYTqBIX9uZgh+EaWLUoACd8YMWH9x
+        KhCXDdHVo6AUrIS0Fx5yW+W5xebZajgDUA==
+X-Google-Smtp-Source: ABdhPJzoEqPvgFJiC+Fca0ARZfrdHAveSmrVEoYJ7r15B8vyyjXTblVf9vmbBLGn05Or+qUCb3cl+A==
+X-Received: by 2002:a05:622a:15cb:: with SMTP id d11mr4382233qty.230.1615840326967;
+        Mon, 15 Mar 2021 13:32:06 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id a19sm13568513qkl.126.2021.03.15.13.32.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 13:32:06 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 133so34566956ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:32:06 -0700 (PDT)
+X-Received: by 2002:a25:dc4d:: with SMTP id y74mr2030271ybe.79.1615840325780;
+ Mon, 15 Mar 2021 13:32:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210315132256.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+In-Reply-To: <20210315132256.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 15 Mar 2021 13:31:53 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Uj+uFUrFxi_96KuzeBtFY_dQTLOfr74vzztCHsy_oivg@mail.gmail.com>
+Message-ID: <CAD=FV=Uj+uFUrFxi_96KuzeBtFY_dQTLOfr74vzztCHsy_oivg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: Add "dmic_clk_en" for sc7180-trogdor-coachz
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 15:19:32 +0200 Jarkko Sakkinen wrote:
-> On Mon, Mar 15, 2021 at 03:18:16PM +0200, Jarkko Sakkinen wrote:
-> > On Mon, Mar 15, 2021 at 08:12:36PM +1300, Kai Huang wrote:
-> > > On Sat, 13 Mar 2021 12:45:53 +0200 Jarkko Sakkinen wrote:
-> > > > On Fri, Mar 12, 2021 at 01:21:54PM -0800, Sean Christopherson wrote:
-> > > > > On Thu, Mar 11, 2021, Kai Huang wrote:
-> > > > > > From: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > > 
-> > > > > > EREMOVE takes a page and removes any association between that page and
-> > > > > > an enclave.  It must be run on a page before it can be added into
-> > > > > > another enclave.  Currently, EREMOVE is run as part of pages being freed
-> > > > > > into the SGX page allocator.  It is not expected to fail.
-> > > > > > 
-> > > > > > KVM does not track how guest pages are used, which means that SGX
-> > > > > > virtualization use of EREMOVE might fail.
-> > > > > > 
-> > > > > > Break out the EREMOVE call from the SGX page allocator.  This will allow
-> > > > > > the SGX virtualization code to use the allocator directly.  (SGX/KVM
-> > > > > > will also introduce a more permissive EREMOVE helper).
-> > > > > > 
-> > > > > > Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
-> > > > > > more specific that it is used to free EPC page assigned to one enclave.
-> > > > > > Print an error message when EREMOVE fails to explicitly call out EPC
-> > > > > > page is leaked, and requires machine reboot to get leaked pages back.
-> > > > > > 
-> > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > > > > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > > > > > ---
-> > > > > > v2->v3:
-> > > > > > 
-> > > > > >  - Fixed bug during copy/paste which results in SECS page and va pages are not
-> > > > > >    correctly freed in sgx_encl_release() (sorry for the mistake).
-> > > > > >  - Added Jarkko's Acked-by.
-> > > > > 
-> > > > > That Acked-by should either be dropped or moved above Co-developed-by to make
-> > > > > checkpatch happy.
-> > > > > 
-> > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > > 
-> > > > Oops, my bad. Yup, ack should be removed.
-> > > > 
-> > > > /Jarkko
-> > > 
-> > > Hi Jarkko,
-> > > 
-> > > Your reply of your concern of this patch to the cover-letter
-> > > 
-> > > https://lore.kernel.org/lkml/YEkJXu262YDa8ZaK@kernel.org/
-> > > 
-> > > reminds me to do more sanity check of whether removing EREMOVE in
-> > > sgx_free_epc_page() will impact other code path or not, and I think
-> > > sgx_encl_release() is not the only place should be changed:
-> > > 
-> > > - sgx_encl_shrink() needs to call sgx_encl_free_epc_page(), since when this is
-> > > called, the VA page can be already valid -- there are other failures can
-> > > trigger sgx_encl_shrink().
-> > 
-> > You right about this, good catch.
-> > 
-> > Shrink needs to always do EREMOVE as grow has done EPA, which changes
-> > EPC page state.
-> > 
-> > > - sgx_encl_add_page() should call sgx_encl_free_epc_page() in "err_out_free:"
-> > > label, since the EPC page can be already valid when error happened, i.e. when
-> > > EEXTEND fails.
-> > 
-> > Yes, correct, good work!
-> > 
-> > > Other places should be OK per my check, but I'd prefer to just replacing all
-> > > sgx_free_epc_page() call sites in driver with sgx_encl_free_epc_page(), with
-> > > one exception: sgx_alloc_va_page(), which calls sgx_free_epc_page() when EPA
-> > > fails, in which case EREMOVE is not required for sure.
-> > 
-> > I would not unless they require it.
-> > 
-> > > Your idea, please?
-> > > 
-> > > Btw, introducing a driver wrapper of sgx_free_epc_page() does make sense to me,
-> > > because virtualization has a counterpart in sgx/virt.c too.
-> > 
-> > It does make sense to use sgx_free_epc_page() everywhere where it's
-> > the right thing to call and here's why.
-> > 
-> > If there is some unrelated regression that causes EPC page not get
-> > uninitialized when it actually should, doing extra EREMOVE could mask
-> > those bugs. I.e. it can postpone a failure, which can make a bug harder
-> > to backtrace.
-> > 
-> 
-> I.e. even though it is true that for correctly working code extra EREMOVE
-> is nil functionality, it could change semantics for buggy code.
+Hi,
 
-Thanks for feedback. Sorry I am not sure if I understand you. So if we don't
-want to bring functionality change, we need to replace sgx_free_epc_page() in
-all call sites with sgx_encl_free_epc_page(). To me for this patch only, it's
-better not to bring any functional change, so I intend to replace all (I now
-consider even leaving sgx_alloc_va_page() out is not good idea in *this*
-patch). 
+On Mon, Mar 15, 2021 at 1:23 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> This was present downstream. Add upstream too.
+>
+> Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Cc: Ajit Pandey <ajitp@codeaurora.org>
+> Cc: Judy Hsiao <judyhsiao@chromium.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> This applies atop the patch ("arm64: dts: qcom: Add sound node for
+> sc7180-trogdor-coachz") [1].
+>
+> NOTE: downstream this property was present in each of the board
+> revisions. There's actually no longer any reason for this and I'll
+> shortly post a downstream patch to fix this.
+>
+> [1] https://lore.kernel.org/r/20210313054654.11693-3-srivasam@codeaurora.org/
+>
+>  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi     | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 
-Or do you just want to replace sgx_free_epc_page() with
-sgx_encl_free_epc_page() in sgx_encl_shrink() and sgx_encl_add_page(), as I
-pointed above? In this way there will be functional change in this patch, and
-we need to explicitly explain  why leaving others out is OK in commit message.
+Argh, I just realized that upstream actually has this in -r1 but not
+in -r2. So confusing! I'll send a quick v2. Sorry for the spam.
 
-To me I prefer the former.
-
-
+-Doug
