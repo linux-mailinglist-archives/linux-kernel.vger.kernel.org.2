@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954EF33BC41
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5207733BCDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238863AbhCOOXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S235248AbhCOO3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232004AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 678B164EF8;
-        Mon, 15 Mar 2021 13:59:41 +0000 (UTC)
+        id S230252AbhCOOAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 084D164F73;
+        Mon, 15 Mar 2021 14:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816782;
-        bh=ca9is0KLqZQ0AXDogzM4vcSMEYL0KYPeNKI74cKrKiU=;
+        s=korg; t=1615816830;
+        bh=ZGHqpYg9bmFhxcT4Y1kLePiSwzu/r6PtAwOwk3qAU0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GJ5BL85wPlmbu8j4aUNncTl5cfoWm9pZzJ1uU9U/Xa/93j/atOJpE/sDjUYuyO2v0
-         b1o2e6V1D7sKN0NsQRojUC2LQBqJmkOHeLR2ZwN7FBUNA5+qio7lcivTW6CbqL0Egt
-         5M8Ka8oQdJxBLJVJEvZj7kql5aFWM0PW/kaQoH8c=
+        b=JxmiH3n91unamiZfaiH8aRqoh5O+QBgiU8ZAmYnFA4LO0qCL5a1sCQnGxXWimK3y3
+         oF7kc5tygxPSrZPx10xuA4iHG25UaDPtjFF41y3tL9EBz8Fj12Ma/mnjo2NCSHHUjb
+         lsMoCBLcAseOgrPCC4X3Ov+kLjMNou3gmMir8ua4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Karan Singhal <karan.singhal@acuitybrands.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 58/95] USB: serial: cp210x: add ID for Acuity Brands nLight Air Adapter
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.19 097/120] staging: comedi: addi_apci_1500: Fix endian problem for command sample
 Date:   Mon, 15 Mar 2021 14:57:28 +0100
-Message-Id: <20210315135742.179920857@linuxfoundation.org>
+Message-Id: <20210315135723.153210369@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,31 +40,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Karan Singhal <karan.singhal@acuitybrands.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit ca667a33207daeaf9c62b106815728718def60ec upstream.
+commit ac0bbf55ed3be75fde1f8907e91ecd2fd589bde3 upstream.
 
-IDs of nLight Air Adapter, Acuity Brands, Inc.:
-vid: 10c4
-pid: 88d8
+The digital input subdevice supports Comedi asynchronous commands that
+read interrupt status information.  This uses 16-bit Comedi samples (of
+which only the bottom 8 bits contain status information).  However, the
+interrupt handler is calling `comedi_buf_write_samples()` with the
+address of a 32-bit variable `unsigned int status`.  On a bigendian
+machine, this will copy 2 bytes from the wrong end of the variable.  Fix
+it by changing the type of the variable to `unsigned short`.
 
-Signed-off-by: Karan Singhal <karan.singhal@acuitybrands.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
+Cc: <stable@vger.kernel.org> #4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-3-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/comedi/drivers/addi_apci_1500.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -149,6 +149,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x10C4, 0x8857) },	/* CEL EM357 ZigBee USB Stick */
- 	{ USB_DEVICE(0x10C4, 0x88A4) }, /* MMB Networks ZigBee USB Device */
- 	{ USB_DEVICE(0x10C4, 0x88A5) }, /* Planet Innovation Ingeni ZigBee USB Device */
-+	{ USB_DEVICE(0x10C4, 0x88D8) }, /* Acuity Brands nLight Air Adapter */
- 	{ USB_DEVICE(0x10C4, 0x88FB) }, /* CESINEL MEDCAL STII Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8938) }, /* CESINEL MEDCAL S II Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8946) }, /* Ketra N1 Wireless Interface */
+--- a/drivers/staging/comedi/drivers/addi_apci_1500.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
+@@ -208,7 +208,7 @@ static irqreturn_t apci1500_interrupt(in
+ 	struct comedi_device *dev = d;
+ 	struct apci1500_private *devpriv = dev->private;
+ 	struct comedi_subdevice *s = dev->read_subdev;
+-	unsigned int status = 0;
++	unsigned short status = 0;
+ 	unsigned int val;
+ 
+ 	val = inl(devpriv->amcc + AMCC_OP_REG_INTCSR);
+@@ -238,14 +238,14 @@ static irqreturn_t apci1500_interrupt(in
+ 	 *
+ 	 *    Mask     Meaning
+ 	 * ----------  ------------------------------------------
+-	 * 0x00000001  Event 1 has occurred
+-	 * 0x00000010  Event 2 has occurred
+-	 * 0x00000100  Counter/timer 1 has run down (not implemented)
+-	 * 0x00001000  Counter/timer 2 has run down (not implemented)
+-	 * 0x00010000  Counter 3 has run down (not implemented)
+-	 * 0x00100000  Watchdog has run down (not implemented)
+-	 * 0x01000000  Voltage error
+-	 * 0x10000000  Short-circuit error
++	 * 0b00000001  Event 1 has occurred
++	 * 0b00000010  Event 2 has occurred
++	 * 0b00000100  Counter/timer 1 has run down (not implemented)
++	 * 0b00001000  Counter/timer 2 has run down (not implemented)
++	 * 0b00010000  Counter 3 has run down (not implemented)
++	 * 0b00100000  Watchdog has run down (not implemented)
++	 * 0b01000000  Voltage error
++	 * 0b10000000  Short-circuit error
+ 	 */
+ 	comedi_buf_write_samples(s, &status, 1);
+ 	comedi_handle_events(dev, s);
 
 
