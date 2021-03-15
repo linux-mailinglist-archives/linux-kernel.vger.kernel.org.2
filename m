@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FC033BE08
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C853733BDF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237968AbhCOOmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
+        id S237148AbhCOOku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234106AbhCOOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDC364EFC;
-        Mon, 15 Mar 2021 14:02:54 +0000 (UTC)
+        id S233908AbhCOOCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A04CA64E83;
+        Mon, 15 Mar 2021 14:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816976;
-        bh=7Ed7Lo0sYVxjRJyJpTL+BGzpiKR79N2IVWEzt+StavU=;
+        s=korg; t=1615816956;
+        bh=UnvoTaee++uQmgZBcbDloBQf3a1K2DhIcoEylFd3FLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwZtuiafGHOsNooNKIdClYsF6tSNKAHKg82QIDMxht9SG/XkqyXYxKj3YFDOJL+fi
-         Ixu+3wmpJrCniAY1QMHlfy87uvTAIqY+OQdTrAhoZPdAhWDaWzzfv+omRrUGzB4b7q
-         djSG1oY2qAGP8i5riu770EncqRlMTRFdfmcntZgo=
+        b=QD75g8Xpux1j7MjKJG1R6Y604kCiYQU939qNnUxnbVBpp2ads8iU+KFXFj6x9BXE1
+         st1c5xlaa0eU9T/oZjszZRHfDo5Dl7qd2pE7PaHo4fxfIhr7opiE5JoyT+w/rb7S6o
+         crL1hcAG1gwPQKrwN64gdbm3lf2kXyfiHAG4nPgg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jordan Niethe <jniethe5@gmail.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 240/306] powerpc/sstep: Fix VSX instruction emulation
-Date:   Mon, 15 Mar 2021 14:55:03 +0100
-Message-Id: <20210315135515.759710381@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 211/290] xhci: Fix repeated xhci wake after suspend due to uncleared internal wake state
+Date:   Mon, 15 Mar 2021 14:55:04 +0100
+Message-Id: <20210315135549.072829721@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,94 +42,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jordan Niethe <jniethe5@gmail.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 5c88a17e15795226b56d83f579cbb9b7a4864f79 ]
+commit d26c00e7276fc92b18c253d69e872f6b03832bad upstream.
 
-Commit af99da74333b ("powerpc/sstep: Support VSX vector paired storage
-access instructions") added loading and storing 32 word long data into
-adjacent VSRs. However the calculation used to determine if two VSRs
-needed to be loaded/stored inadvertently prevented the load/storing
-taking place for instructions with a data length less than 16 words.
+If port terminations are detected in suspend, but link never reaches U0
+then xHCI may have an internal uncleared wake state that will cause an
+immediate wake after suspend.
 
-This causes the emulation to not function correctly, which can be seen
-by the alignment_handler selftest:
+This wake state is normally cleared when driver clears the PORT_CSC bit,
+which is set after a device is enabled and in U0.
 
-$ ./alignment_handler
-[snip]
-test: test_alignment_handler_vsx_207
-tags: git_version:powerpc-5.12-1-0-g82d2c16b350f
-VSX: 2.07B
-        Doing lxsspx:   PASSED
-        Doing lxsiwax:  FAILED: Wrong Data
-        Doing lxsiwzx:  PASSED
-        Doing stxsspx:  PASSED
-        Doing stxsiwx:  PASSED
-failure: test_alignment_handler_vsx_207
-test: test_alignment_handler_vsx_300
-tags: git_version:powerpc-5.12-1-0-g82d2c16b350f
-VSX: 3.00B
-        Doing lxsd:     PASSED
-        Doing lxsibzx:  PASSED
-        Doing lxsihzx:  PASSED
-        Doing lxssp:    FAILED: Wrong Data
-        Doing lxv:      PASSED
-        Doing lxvb16x:  PASSED
-        Doing lxvh8x:   PASSED
-        Doing lxvx:     PASSED
-        Doing lxvwsx:   FAILED: Wrong Data
-        Doing lxvl:     PASSED
-        Doing lxvll:    PASSED
-        Doing stxsd:    PASSED
-        Doing stxsibx:  PASSED
-        Doing stxsihx:  PASSED
-        Doing stxssp:   PASSED
-        Doing stxv:     PASSED
-        Doing stxvb16x: PASSED
-        Doing stxvh8x:  PASSED
-        Doing stxvx:    PASSED
-        Doing stxvl:    PASSED
-        Doing stxvll:   PASSED
-failure: test_alignment_handler_vsx_300
-[snip]
+Write 1 to clear PORT_CSC for ports that don't have anything connected
+when suspending. This makes sure any pending internal wake states in
+xHCI are cleared.
 
-Fix this by making sure all VSX instruction emulation correctly
-load/store from the VSRs.
-
-Fixes: af99da74333b ("powerpc/sstep: Support VSX vector paired storage access instructions")
-Signed-off-by: Jordan Niethe <jniethe5@gmail.com>
-Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210225031946.1458206-1-jniethe5@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210311115353.2137560-5-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/lib/sstep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c |   62 +++++++++++++++++++++++-------------------------
+ 1 file changed, 30 insertions(+), 32 deletions(-)
 
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index bb5c20d4ca91..c6aebc149d14 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -904,7 +904,7 @@ static nokprobe_inline int do_vsx_load(struct instruction_op *op,
- 	if (!address_ok(regs, ea, size) || copy_mem_in(mem, ea, size, regs))
- 		return -EFAULT;
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -883,44 +883,42 @@ static void xhci_clear_command_ring(stru
+ 	xhci_set_cmd_ring_deq(xhci);
+ }
  
--	nr_vsx_regs = size / sizeof(__vector128);
-+	nr_vsx_regs = max(1ul, size / sizeof(__vector128));
- 	emulate_vsx_load(op, buf, mem, cross_endian);
- 	preempt_disable();
- 	if (reg < 32) {
-@@ -951,7 +951,7 @@ static nokprobe_inline int do_vsx_store(struct instruction_op *op,
- 	if (!address_ok(regs, ea, size))
- 		return -EFAULT;
+-static void xhci_disable_port_wake_on_bits(struct xhci_hcd *xhci)
++/*
++ * Disable port wake bits if do_wakeup is not set.
++ *
++ * Also clear a possible internal port wake state left hanging for ports that
++ * detected termination but never successfully enumerated (trained to 0U).
++ * Internal wake causes immediate xHCI wake after suspend. PORT_CSC write done
++ * at enumeration clears this wake, force one here as well for unconnected ports
++ */
++
++static void xhci_disable_hub_port_wake(struct xhci_hcd *xhci,
++				       struct xhci_hub *rhub,
++				       bool do_wakeup)
+ {
+-	struct xhci_port **ports;
+-	int port_index;
+ 	unsigned long flags;
+ 	u32 t1, t2, portsc;
++	int i;
  
--	nr_vsx_regs = size / sizeof(__vector128);
-+	nr_vsx_regs = max(1ul, size / sizeof(__vector128));
- 	preempt_disable();
- 	if (reg < 32) {
- 		/* FP regs + extensions */
--- 
-2.30.1
-
+ 	spin_lock_irqsave(&xhci->lock, flags);
+ 
+-	/* disable usb3 ports Wake bits */
+-	port_index = xhci->usb3_rhub.num_ports;
+-	ports = xhci->usb3_rhub.ports;
+-	while (port_index--) {
+-		t1 = readl(ports[port_index]->addr);
+-		portsc = t1;
+-		t1 = xhci_port_state_to_neutral(t1);
+-		t2 = t1 & ~PORT_WAKE_BITS;
+-		if (t1 != t2) {
+-			writel(t2, ports[port_index]->addr);
+-			xhci_dbg(xhci, "disable wake bits port %d-%d, portsc: 0x%x, write: 0x%x\n",
+-				 xhci->usb3_rhub.hcd->self.busnum,
+-				 port_index + 1, portsc, t2);
+-		}
+-	}
++	for (i = 0; i < rhub->num_ports; i++) {
++		portsc = readl(rhub->ports[i]->addr);
++		t1 = xhci_port_state_to_neutral(portsc);
++		t2 = t1;
++
++		/* clear wake bits if do_wake is not set */
++		if (!do_wakeup)
++			t2 &= ~PORT_WAKE_BITS;
++
++		/* Don't touch csc bit if connected or connect change is set */
++		if (!(portsc & (PORT_CSC | PORT_CONNECT)))
++			t2 |= PORT_CSC;
+ 
+-	/* disable usb2 ports Wake bits */
+-	port_index = xhci->usb2_rhub.num_ports;
+-	ports = xhci->usb2_rhub.ports;
+-	while (port_index--) {
+-		t1 = readl(ports[port_index]->addr);
+-		portsc = t1;
+-		t1 = xhci_port_state_to_neutral(t1);
+-		t2 = t1 & ~PORT_WAKE_BITS;
+ 		if (t1 != t2) {
+-			writel(t2, ports[port_index]->addr);
+-			xhci_dbg(xhci, "disable wake bits port %d-%d, portsc: 0x%x, write: 0x%x\n",
+-				 xhci->usb2_rhub.hcd->self.busnum,
+-				 port_index + 1, portsc, t2);
++			writel(t2, rhub->ports[i]->addr);
++			xhci_dbg(xhci, "config port %d-%d wake bits, portsc: 0x%x, write: 0x%x\n",
++				 rhub->hcd->self.busnum, i + 1, portsc, t2);
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&xhci->lock, flags);
+@@ -983,8 +981,8 @@ int xhci_suspend(struct xhci_hcd *xhci,
+ 		return -EINVAL;
+ 
+ 	/* Clear root port wake on bits if wakeup not allowed. */
+-	if (!do_wakeup)
+-		xhci_disable_port_wake_on_bits(xhci);
++	xhci_disable_hub_port_wake(xhci, &xhci->usb3_rhub, do_wakeup);
++	xhci_disable_hub_port_wake(xhci, &xhci->usb2_rhub, do_wakeup);
+ 
+ 	if (!HCD_HW_ACCESSIBLE(hcd))
+ 		return 0;
 
 
