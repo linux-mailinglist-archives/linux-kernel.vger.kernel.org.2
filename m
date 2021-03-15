@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D3233A9AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B18333A9B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhCOCmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 22:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCOCmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 22:42:00 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4252C061574;
-        Sun, 14 Mar 2021 19:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=rEfmK87HgUM3vC3FZ5xGyuF/KxJ7ferAtU0I7fgBHZY=; b=1p23JgggqbnsvT4MJOHHtgZyjy
-        I6j2ZZ2K2SP434SbaoFutPYOUcgZIR5suLJDDVarpFV+rCw1T+EkSXr1P92Palp0nK9+T02OWPPoq
-        y4zzbVy1yLHD5lz1aMeq/ijPvAJHjGKl3txa1EgL4Ok1QptvwzH9t49L2/0Ax8bW+wI8qpZtE9JZ9
-        pIPB8toCuxgzDvuN9nh6YgnP4LSvKAS5E4R5+ccbDSrRHv4ZLAUq0fM+LkEyao1B2f+N5Szwsi7Mb
-        3PQBOnqbWaOQtwMvJ/NDSQb2Bijp+FnXGJGIaj90Xk1rfFOg0CbImko6xufmR/HZHaXCnLTH2cfPc
-        qk3LAdRw==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLdAv-001FT1-65; Mon, 15 Mar 2021 02:41:53 +0000
-Subject: Re: [PATCH] net: ethernet: intel: igb: Typo fix in the file
- igb_main.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20210315014847.1021209-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d397b00d-ec55-2216-3b69-776d664b4c3d@infradead.org>
-Date:   Sun, 14 Mar 2021 19:41:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229766AbhCOCtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 22:49:06 -0400
+Received: from ozlabs.org ([203.11.71.1]:58383 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhCOCs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 22:48:29 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DzLT65XnBz9sVb;
+        Mon, 15 Mar 2021 13:48:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1615776507;
+        bh=2a8puDRnJdmt99D4SSF44flRITbs7zaSkUZNQ2VTCp8=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=IdQMPHQwM59Ri7P80RhRw4Zayj0FB5q5co0sV+gfV4xQlCfaaUT7f1V0BEOkcHOL9
+         T49xv028jzVSKLqYia3oX7BddaZcaPmibtGQ4Sqo5i2H4o/21rPIW/y07dD6j0LvxP
+         zbl0XDQR6O/RFaM3y9jnrGaqJQN/C4ywl+8H7uyLJ3kaXnlDRIMdftSwdCtbkPpSQ6
+         ov7oaaIHVipgznzOO6rquTVYoJQzbAC0LF+AG5ryjVsHWgQCi+SQutZVr3rMgCgvAF
+         gI4j5fmHRisGXspk8rUe9rIxhOlfi9wFfv3NYoVR+Pz0E4cs8jBtfF0HLqtRf+5Q7n
+         m2sCnYeP7Fmuw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org, oss@buserror.net,
+        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the
+ file head_fsl_booke.S
+In-Reply-To: <f8dc3cbe-54f4-1da1-b14f-4735d28aad13@infradead.org>
+References: <20210314220436.3417083-1-unixbhaskar@gmail.com>
+ <f8dc3cbe-54f4-1da1-b14f-4735d28aad13@infradead.org>
+Date:   Mon, 15 Mar 2021 13:48:25 +1100
+Message-ID: <87r1kh3zeu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210315014847.1021209-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/14/21 6:48 PM, Bhaskar Chowdhury wrote:
-> 
-> s/structue/structure/
-> 
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Randy Dunlap <rdunlap@infradead.org> writes:
+> On 3/14/21 3:04 PM, Bhaskar Chowdhury wrote:
+>> 
+>> Trivial spelling fixes throughout the file.
+>> 
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  arch/powerpc/kernel/head_fsl_booke.S | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+>> index fdd4d274c245..c6fcfca0b0d7 100644
+>> --- a/arch/powerpc/kernel/head_fsl_booke.S
+>> +++ b/arch/powerpc/kernel/head_fsl_booke.S
+>> @@ -403,7 +403,7 @@ interrupt_base:
+>>  	EXCEPTION(0x2900, AP_UNAVAIL, AuxillaryProcessorUnavailable, \
+>>  		  unknown_exception, EXC_XFER_STD)
+>> 
+>> -	/* Decrementer Interrupt */
+>> +	/* Decremented Interrupt */
+>
+> No, the comment matches the macro (or whatever that is).
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Right. I dropped this hunk. Please update your script or whatever to not
+"correct" that spelling.
 
-> ---
->  drivers/net/ethernet/intel/igb/igb_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-> index 03f78fdb0dcd..afc8ab9046a5 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -3115,7 +3115,7 @@ static s32 igb_init_i2c(struct igb_adapter *adapter)
->  		return 0;
-> 
->  	/* Initialize the i2c bus which is controlled by the registers.
-> -	 * This bus will use the i2c_algo_bit structue that implements
-> +	 * This bus will use the i2c_algo_bit structure that implements
->  	 * the protocol through toggling of the 4 bits in the register.
->  	 */
->  	adapter->i2c_adap.owner = THIS_MODULE;
-> --
-
-
--- 
-~Randy
-
+cheers
