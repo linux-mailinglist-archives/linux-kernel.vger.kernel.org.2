@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C15433A98B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E809933A98C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCOCGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 22:06:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2600 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhCOCGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 22:06:38 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DzKTN656BzWLZW;
-        Mon, 15 Mar 2021 10:03:36 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 15 Mar 2021 10:06:35 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Mon, 15 Mar 2021 10:06:34 +0800
-Subject: Re: [RFC PATCH v4 2/9] tools headers: Add a macro to get HUGETLB page
- sizes for mmap
-To:     Andrew Jones <drjones@redhat.com>
-CC:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Ben Gardon" <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <yuzenghui@huawei.com>
-References: <20210302125751.19080-1-wangyanan55@huawei.com>
- <20210302125751.19080-3-wangyanan55@huawei.com>
- <20210312111456.ukxss6uxu3frqmiu@kamzik.brq.redhat.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <84b12a41-a922-4a5a-8861-d2c310cdaa66@huawei.com>
-Date:   Mon, 15 Mar 2021 10:06:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S229494AbhCOCMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 22:12:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:27275 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhCOCML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 22:12:11 -0400
+IronPort-SDR: zXOzwZbtZh7ysEAGddk8QIl/MjOAGT2ApoY+E+x7WJcO1njgFuTmOxouDbAOKNOBDy3ci8hMLI
+ rZDk0JG4jbmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="253041985"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="253041985"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 19:12:10 -0700
+IronPort-SDR: LY+1dle2mbvLHjWDvQ2ADI6xg+6nEUEY46E963JUKjP9vApxX0h82+ab/+xEKI7VfDgVf0728G
+ rurd7KqVdP1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="373280366"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga006.jf.intel.com with ESMTP; 14 Mar 2021 19:12:09 -0700
+Date:   Mon, 15 Mar 2021 10:12:08 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tools/x86/kcpuid: Add AMD Secure Encryption leaf
+Message-ID: <20210315021208.GA49151@shbuild999.sh.intel.com>
+References: <20210313140118.17010-1-bp@alien8.de>
+ <20210314003527.GJ16144@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210312111456.ukxss6uxu3frqmiu@kamzik.brq.redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210314003527.GJ16144@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Mar 14, 2021 at 01:35:27AM +0100, Borislav Petkov wrote:
+> On Sat, Mar 13, 2021 at 03:01:18PM +0100, Borislav Petkov wrote:
+ 
+> Yeah, I guess we should keep the bit names in lowercase, for simplicity.
+> 
+> ---
+> From: Borislav Petkov <bp@suse.de>
+> Date: Sat, 13 Mar 2021 14:56:16 +0100
+> Subject: [PATCH] tools/x86/kcpuid: Add AMD Secure Encryption leaf
+> 
+> Add the 0x8000001f leaf's fields.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-On 2021/3/12 19:14, Andrew Jones wrote:
-> On Tue, Mar 02, 2021 at 08:57:44PM +0800, Yanan Wang wrote:
->> We know that if a system supports multiple hugetlb page sizes,
->> the desired hugetlb page size can be specified in bits [26:31]
->> of the flag arguments. The value in these 6 bits will be the
->> shift of each hugetlb page size.
->>
->> So add a macro to get the page size shift and then calculate the
->> corresponding hugetlb page size, using flag x.
->>
->> Cc: Ben Gardon <bgardon@google.com>
->> Cc: Ingo Molnar <mingo@kernel.org>
->> Cc: Adrian Hunter <adrian.hunter@intel.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Suggested-by: Ben Gardon <bgardon@google.com>
->> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->> Reviewed-by: Ben Gardon <bgardon@google.com>
->> ---
->>   include/uapi/linux/mman.h       | 2 ++
->>   tools/include/uapi/linux/mman.h | 2 ++
->>   2 files changed, 4 insertions(+)
->>
->> diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
->> index f55bc680b5b0..8bd41128a0ee 100644
->> --- a/include/uapi/linux/mman.h
->> +++ b/include/uapi/linux/mman.h
->> @@ -41,4 +41,6 @@
->>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->>   
->> +#define MAP_HUGE_PAGE_SIZE(x) (1 << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
-> Needs to be '1ULL' to avoid shift overflow when given MAP_HUGE_16GB.
-Thanks, drew. Will fix it.
-> Thanks,
-> drew
->
->> +
->>   #endif /* _UAPI_LINUX_MMAN_H */
->> diff --git a/tools/include/uapi/linux/mman.h b/tools/include/uapi/linux/mman.h
->> index f55bc680b5b0..8bd41128a0ee 100644
->> --- a/tools/include/uapi/linux/mman.h
->> +++ b/tools/include/uapi/linux/mman.h
->> @@ -41,4 +41,6 @@
->>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->>   
->> +#define MAP_HUGE_PAGE_SIZE(x) (1 << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
->> +
->>   #endif /* _UAPI_LINUX_MMAN_H */
->> -- 
->> 2.23.0
->>
-> .
+Acked-by: Feng Tang <feng.tang@intel.com>
+
+Thanks!
+
+> ---
+>  tools/arch/x86/kcpuid/cpuid.csv | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
+> index f4a5b85073f4..dd94c07421a8 100644
+> --- a/tools/arch/x86/kcpuid/cpuid.csv
+> +++ b/tools/arch/x86/kcpuid/cpuid.csv
+> @@ -378,3 +378,13 @@
+>  0x80000008,    0,  EAX,    7:0, phy_adr_bits, Physical Address Bits
+>  0x80000008,    0,  EAX,   15:8, lnr_adr_bits, Linear Address Bits
+>  0x80000007,    0,  EBX,      9, wbnoinvd, WBNOINVD
+> +
+> +# 8000001F: AMD Secure Encryption
+> +0x8000001F,	0, EAX, 0, sme,	Secure Memory Encryption
+> +0x8000001F,	0, EAX, 1, sev,	Secure Encrypted Virtualization
+> +0x8000001F,	0, EAX, 2, vmpgflush, VM Page Flush MSR
+> +0x8000001F,	0, EAX, 3, seves, SEV Encrypted State
+> +0x8000001F,	0, EBX, 5:0, c-bit, Page table bit number used to enable memory encryption
+> +0x8000001F,	0, EBX, 11:6, mem_encrypt_physaddr_width, Reduction of physical address space in bits with SME enabled
+> +0x8000001F,	0, ECX, 31:0, num_encrypted_guests, Maximum ASID value that may be used for an SEV-enabled guest
+> +0x8000001F,	0, EDX, 31:0, minimum_sev_asid, Minimum ASID value that must be used for an SEV-enabled, SEV-ES-disabled guest
+> -- 
+> 2.29.2
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
