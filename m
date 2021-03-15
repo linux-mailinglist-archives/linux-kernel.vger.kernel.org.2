@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E982033B5DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B315433B74C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhCONzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbhCONxp (ORCPT
+        id S232853AbhCOOAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:00:01 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:58629 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231682AbhCONzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:45 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD413C06174A;
-        Mon, 15 Mar 2021 06:53:44 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o14so4935993wrm.11;
-        Mon, 15 Mar 2021 06:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KemkAeTk9mClNID9MgBdrRYEwF+T4PnONTX4FkH/70I=;
-        b=qoSAOlqrAj9XEHIc0K6JNP3xbYE+MHYuUt/DZXU8OfxLiDXi+ykQxo0iRFSVKvV7V2
-         2xM7uUGt6JsJA/t6BYmP9hnOg0C/subYpR+QcY/K+vMO2DnHDY3Mw/OlzTC9Rva4x6VK
-         goQEaRIzKODbaKZ4T+up/rIygksvJeH9n2lxj4eIaKp0WZIlgBvcO8X8ugZjudipa6Bp
-         nNzkUGRKGVrbEGiefC/Ld3Te1bqiaV93DucVq7LWTgKOEIDhvdwfCe8w8Fb6pTxunmfi
-         rwLCo/9ecPsL01/jA69kcfQZJ5oZ+rM3/qCWomZbkDEUL024bLGP2iarnfmxP14o9ADQ
-         3hTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KemkAeTk9mClNID9MgBdrRYEwF+T4PnONTX4FkH/70I=;
-        b=VacmUFMoLlQqzO5x4+aFtXoErBkmiCa/+4S198aQJJ5BLKtLy2Xehs1wRZU39cLQ7Y
-         pfUAtmkgU/n8RcEFvdG888gtmeaTMGTpkOzuHDh42dLL9+CA3ERd0Jz93zSVzA7Zriwk
-         EKNn6vJDnPuZHonplYzlcs6ZtEFEP1WEx4FVqEiJkJgfoe7Xp1RAz6TlHe0PL/+rkajH
-         XWvE1rG/GYPHdHsr3bJqj2eikMuJ6ulRbb4+nT6vcutTudMVDFzGZ6bluVcplMvR+2UE
-         yS0a6QZ1osShAU6LLVl1Fs1RRLFU9s6SaZTSl6RoD7YhetAIXE5EnCatMqB4nz1IfgyD
-         p05g==
-X-Gm-Message-State: AOAM532nyh49IWchwV7dGKUmqNUavNIJY1FC1SK+HVn7pj0KzPw73hnP
-        kQLiq3img8puyMCTyD+r3A0izUuHxFDHLRdt
-X-Google-Smtp-Source: ABdhPJz+W7YQKBZ8lm0cd1BD2niB34IG9sKd5goLv4Z0PkSKSHfnhmmggy9l4gPrPgDNdY3qLRHriA==
-X-Received: by 2002:a5d:4dd2:: with SMTP id f18mr27363586wru.366.1615816423518;
-        Mon, 15 Mar 2021 06:53:43 -0700 (PDT)
-Received: from macbook-pro-alvaro.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id p27sm13091334wmi.12.2021.03.15.06.53.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Mar 2021 06:53:43 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20210308115705.18c0acd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Date:   Mon, 15 Mar 2021 14:53:39 +0100
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CA6D1162-FB0E-4899-8172-DB49CC522EB9@gmail.com>
-References: <20210308184102.3921-1-noltari@gmail.com>
- <20210308184102.3921-3-noltari@gmail.com>
- <20210308115705.18c0acd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Mon, 15 Mar 2021 09:55:08 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 15 Mar 2021 06:55:07 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 15 Mar 2021 06:55:06 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Mar 2021 19:24:34 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 5A44C49BC; Mon, 15 Mar 2021 19:24:33 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, David Collins <collinsd@codeaurora.org>,
+        satya priya <skakit@codeaurora.org>
+Subject: [PATCH V2 2/5] regulator: qcom-rpmh: Add PM7325/PMR735A regulator support
+Date:   Mon, 15 Mar 2021 19:24:11 +0530
+Message-Id: <1615816454-1733-3-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+Add support for PM7325/PMR735A regulators. This ensures
+that consumers are able to modify the physical state of PMIC
+regulators.
 
-> El 8 mar 2021, a las 20:57, Jakub Kicinski <kuba@kernel.org> =
-escribi=C3=B3:
->=20
-> On Mon,  8 Mar 2021 19:41:02 +0100 =C3=81lvaro Fern=C3=A1ndez Rojas =
-wrote:
->> This controller is present on BCM6318, BCM6328, BCM6362, BCM6368 and =
-BCM63268
->> SoCs.
->>=20
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->=20
-> make[2]: *** Deleting file 'Module.symvers'
-> ERROR: modpost: missing MODULE_LICENSE() in =
-drivers/net/mdio/mdio-mux-bcm6368.o
-> make[2]: *** [Module.symvers] Error 1
-> make[1]: *** [modules] Error 2
-> make: *** [__sub-make] Error 2
-> make[2]: *** Deleting file 'Module.symvers=E2=80=99
+Signed-off-by: satya priya <skakit@codeaurora.org>
+---
+Changes in V2:
+ - No change.
 
-Ok, I=E2=80=99ll add the following in v2:
-MODULE_AUTHOR("=C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>");
-MODULE_DESCRIPTION("BCM6368 mdiomux bus controller driver");
-MODULE_LICENSE("GPL v2");
+ drivers/regulator/qcom-rpmh-regulator.c | 53 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+index 9471890..3509523 100644
+--- a/drivers/regulator/qcom-rpmh-regulator.c
++++ b/drivers/regulator/qcom-rpmh-regulator.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-// Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
++// Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
+ 
+ #define pr_fmt(fmt) "%s: " fmt, __func__
+ 
+@@ -1042,6 +1042,49 @@ static const struct rpmh_vreg_init_data pmx55_vreg_data[] = {
+ 	{},
+ };
+ 
++static const struct rpmh_vreg_init_data pm7325_vreg_data[] = {
++	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps510, "vdd-s1"),
++	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps520, "vdd-s2"),
++	RPMH_VREG("smps3",  "smp%s3",  &pmic5_ftsmps520, "vdd-s3"),
++	RPMH_VREG("smps4",  "smp%s4",  &pmic5_ftsmps520, "vdd-s4"),
++	RPMH_VREG("smps5",  "smp%s5",  &pmic5_ftsmps520, "vdd-s5"),
++	RPMH_VREG("smps6",  "smp%s6",  &pmic5_ftsmps520, "vdd-s6"),
++	RPMH_VREG("smps7",  "smp%s7",  &pmic5_ftsmps520, "vdd-s7"),
++	RPMH_VREG("smps8",  "smp%s8",  &pmic5_hfsmps510, "vdd-s8"),
++	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo,      "vdd-l1-l4-l12-l15"),
++	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_pldo,      "vdd-l2-l7"),
++	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_nldo,      "vdd-l3"),
++	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l1-l4-l12-l15"),
++	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_nldo,      "vdd-l5"),
++	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_nldo,      "vdd-l6-l9-l10"),
++	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l2-l7"),
++	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_nldo,      "vdd-l8"),
++	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_nldo,      "vdd-l6-l9-l10"),
++	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo,      "vdd-l6-l9-l10"),
++	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
++	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_nldo,      "vdd-l1-l4-l12-l15"),
++	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_nldo,      "vdd-l13"),
++	RPMH_VREG("ldo14",  "ldo%s14", &pmic5_nldo,      "vdd-l14-l16"),
++	RPMH_VREG("ldo15",  "ldo%s15", &pmic5_nldo,      "vdd-l1-l4-l12-l15"),
++	RPMH_VREG("ldo16",  "ldo%s16", &pmic5_nldo,      "vdd-l14-l16"),
++	RPMH_VREG("ldo17",  "ldo%s17", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
++	RPMH_VREG("ldo18",  "ldo%s18", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
++	RPMH_VREG("ldo19",  "ldo%s19", &pmic5_pldo_lv,   "vdd-l11-l17-l18-l19"),
++};
++
++static const struct rpmh_vreg_init_data pmr735a_vreg_data[] = {
++	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps520, "vdd-s1"),
++	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps520, "vdd-s2"),
++	RPMH_VREG("smps3",  "smp%s3",  &pmic5_hfsmps510, "vdd-s3"),
++	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo,      "vdd-l1-l2"),
++	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_nldo,      "vdd-l1-l2"),
++	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_nldo,      "vdd-l3"),
++	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_pldo_lv,   "vdd-l4"),
++	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_nldo,      "vdd-l5-l6"),
++	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_nldo,      "vdd-l5-l6"),
++	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l7-bob"),
++};
++
+ static int rpmh_regulator_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -1136,6 +1179,14 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
+ 		.compatible = "qcom,pmx55-rpmh-regulators",
+ 		.data = pmx55_vreg_data,
+ 	},
++	{
++		.compatible = "qcom,pm7325-rpmh-regulators",
++		.data = pm7325_vreg_data,
++	},
++	{
++		.compatible = "qcom,pmr735a-rpmh-regulators",
++		.data = pmr735a_vreg_data,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, rpmh_regulator_match_table);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
