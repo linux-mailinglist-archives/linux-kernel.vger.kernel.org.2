@@ -2,125 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8BB33BED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F6733BEDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234634AbhCOOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbhCOOYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:24:53 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AA5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:24:50 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id z8so16446594ljm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ycRI+EUL60Frat+dcTTqOlzXPNrC+V8NzgLq8y0+t0=;
-        b=sbKOxNDEJsVSdxm5LxIMPOnKlwOt3XHq338W+CG1BuSo2dt43yu8WrmJ+ALvS5vtLD
-         3UWrK69oAfrZXp5dSc2X6qFKpbZcioFNDOkBf18KB6o4FYAmVgapzXH36XCdDBcnmoW/
-         ssg5LW/sbZIOcNdUm/Gi7DByCwnX15wmx4FjFzl5agHjP4jZ15LZrP+8RA0grOn0/BqH
-         4GuaEP5JOYouofhpFS+mtuSMlDFBy1MLIsiJux8tIvtLDjaYfdhMZSCtGvpwFoF8Evr9
-         wKiwislkFgFygZ+Oz4xZzP4a+i56XxmpuT2+217Fpb8zEMrwVV/ZLK2jbKEu2lpT+mr2
-         w5sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ycRI+EUL60Frat+dcTTqOlzXPNrC+V8NzgLq8y0+t0=;
-        b=nEKpLr0l3CsV296spVKDeK46XY4YuCzUJK5fPZmDeSSkzHl3g0yLF+47KQY55RjohW
-         48/xqTUgLrzSBAiZSBsW+/WRh52A8ONSCNFRnSci9+/fZhpnsmzWlGlF9WYLlSUm4BBG
-         zni16fmJBZo/72def+UvQjzKyhft2Rfi+wTlFtL8fSOSP2wEYU0pRtLwZVVsHTg6StJF
-         gsWx8GWa+F7OSqoZ/4Rt1mHDfyh8AOjNidAxCxEfYcmdm2uEWVEwTJEyyWuLJjnraPUj
-         ZoaHjlqoY0jATQYcBIQUG0JG6GxwNtKfUSSOiWC2syobsF/8jycYyji5HQxbrvo/4P7w
-         OPtQ==
-X-Gm-Message-State: AOAM531TmmXzZHk+jeAyvFcLNAAB4M+EamScgDyRZy5ewaYr4OXUpLdI
-        Ojokg3ceN8hTMeGFHSkOdN0EDlOvNvN1V/wm22ZyaA==
-X-Google-Smtp-Source: ABdhPJxubPRm39mWekDQAH5iPq/iEp5fTgksQ+xD6c8nJD5fBg9o5wTwWFuOJunp/za59AYSXAQSrk6/0DXUpgPPtEs=
-X-Received: by 2002:a05:651c:282:: with SMTP id b2mr10303034ljo.176.1615818289488;
- Mon, 15 Mar 2021 07:24:49 -0700 (PDT)
+        id S239309AbhCOOu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:50:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231644AbhCOO0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:26:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591B764FF9;
+        Mon, 15 Mar 2021 14:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615818410;
+        bh=jAs0nXJym2Mi0R0qV76FK5EUuMU+K5jr65qJca1NBmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=02fIKgYvHZsKRARQ/8yQhfyCndxzs8bQm1LFl0auRaeQ940jx6ISBz++DXEpzCnVG
+         yJlZ7+1Q8KxblN9HnRVTjLf92zUBXbNgi0zTVmSjk0lLr5ipNk+h3gCL8uEkxymx5R
+         zJ7wix8QioqS4WLLwa1bgil6gUs1vDqQoMjNFuuQ=
+Date:   Mon, 15 Mar 2021 15:26:48 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] usbip: tools: add options and examples in man
+ page related to device mode
+Message-ID: <YE9uqOqPf3SNsIgc@kroah.com>
+References: <YE9Vyrs+Z8MusjDM@Sun>
+ <YE9Wo8QZ/0XU8Mzq@Sun>
+ <YE9dbrWjL5DZ8Hm8@Sun>
 MIME-Version: 1.0
-References: <20210311120527.167870-1-valentin.schneider@arm.com> <20210311120527.167870-5-valentin.schneider@arm.com>
-In-Reply-To: <20210311120527.167870-5-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 15 Mar 2021 15:24:36 +0100
-Message-ID: <CAKfTPtCdT4Depo4BX4bT4tsYLxDRcfwx+znKpt7MU5GSTwEtDg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] sched/fair: Introduce a CPU capacity comparison helper
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE9dbrWjL5DZ8Hm8@Sun>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 at 13:05, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> During load-balance, groups classified as group_misfit_task are filtered
-> out if they do not pass
->
->   group_smaller_max_cpu_capacity(<candidate group>, <local group>);
->
-> which itself employs fits_capacity() to compare the sgc->max_capacity of
-> both groups.
->
-> Due to the underlying margin, fits_capacity(X, 1024) will return false for
-> any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-> {261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-> CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-> higher capacity due to the aforementioned margin.
->
-> One may argue the 20% margin of fits_capacity() is excessive in the advent
-> of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-> is that fits_capacity() is meant to compare a utilization value to a
-> capacity value, whereas here it is being used to compare two capacity
-> values. As CPU capacity and task utilization have different dynamics, a
-> sensible approach here would be to add a new helper dedicated to comparing
-> CPU capacities.
->
-> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/fair.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index db892f6e222f..ddb2ab3edf6d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
->   */
->  #define fits_capacity(cap, max)        ((cap) * 1280 < (max) * 1024)
->
-> +/*
-> + * The margin used when comparing CPU capacities.
-> + * is 'cap1' noticeably greater than 'cap2'
-> + *
-> + * (default: ~5%)
-> + */
-> +#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
+On Mon, Mar 15, 2021 at 09:13:18PM +0800, Hongren Zheng (Zenithal) wrote:
+> The commit e0546fd8b748b19d8edd1550530da8ebad6e4b31 implemented device
+> mode for user space tools, however the corresponding options are not
+> documented in man page.
+> 
+> This commit documents the options and provides examples on device mode.
+> 
+> PATCH v2:
+> Add signed-off-by line
 
-defined but not used.
+This needs to go below the --- line, as the Documentation asks for.
+Please fix it up and try it again.
 
-Should be merged with next patch which start to use it
+> Signed-off-by: "Hongren Zheng (Zenithal)" <i@zenithal.me>
 
->  #endif
->
->  #ifdef CONFIG_CFS_BANDWIDTH
-> --
-> 2.25.1
->
+Do you sign legal documents with "(Zenithal)"?
+
+thanks,
+
+greg k-h
