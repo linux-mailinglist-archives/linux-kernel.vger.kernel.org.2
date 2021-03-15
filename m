@@ -2,168 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B6633C1A1
+	by mail.lfdr.de (Postfix) with ESMTP id A05B533C1A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhCOQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhCOQXm (ORCPT
+        id S232933AbhCOQYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:24:06 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:40403 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232375AbhCOQXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 12:23:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5154C06174A;
-        Mon, 15 Mar 2021 09:23:41 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id e7so57857252lft.2;
-        Mon, 15 Mar 2021 09:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qaNMP0alddEd7JtTl8zS7eqKdx15H1y0B//YrDmf5gY=;
-        b=LPWDZEv6rFVCaqvd1m66r/0dCJ9+wI1htfwLgUiweWo4tBsrQS/Clt/YfyYSgWds0j
-         pLF3RXqCPu7lfYFiAU4YcwGKr82Bko8tz48NmEpPJmKLzNAOXyxR3fcM2tuqVvTXnyL2
-         eraOHdXKq+S1rztoBhLn66mglA8ev18HI+HfueBneYeHL1Il/+ulzqVSeFfSOc3oykzW
-         voyajZhA03rPkzuV69doQwzdLCR5+1DUjaY5uSAaBsYYzm/U478f4hdLvz5HUcWgTbf+
-         PJOiv2cCiapdgcwqIOXeuJmKFamorucxMBNInCeMt+Fy1HZci6gfNYsJ6hkvf4VZ5g4o
-         lD9Q==
+Received: by mail-il1-f174.google.com with SMTP id e7so9891095ile.7;
+        Mon, 15 Mar 2021 09:23:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qaNMP0alddEd7JtTl8zS7eqKdx15H1y0B//YrDmf5gY=;
-        b=PuWzO7NuhVmhk2wjZLirQODYiq9H7Fiq5TJnabfsbi8cl5ujtodH4ybJCRm9SW2kUo
-         dX6dp6+wDWOi45qHvGfvuF8e401JPgTdT8w7GaKfkoZ1xh9HKcCCdFI1MzIDZrMnvMzQ
-         wOYNxP/MQuWk+LRAr3XPljVCSgssiaRKlbP8yGvWg/MUQcm+dr8KP0K2CtIbP3HHQZ9E
-         i9k/YPHWuVaWuS3/4DJq3Eb7cBabFwXUz+2duGpHzVWW/td28VIJo9sa+SD9nwTzX3jq
-         G6wEPC1RTvSzNlIRwJHvd6AnC8qwyZJtPcQGfVJlFZIzKR5PAOXXjuMdOcqENcx9YlrH
-         eyCA==
-X-Gm-Message-State: AOAM533WIGKwTB4gO/DGzznFKEJV3YlUlJ7zxb09Tt4m/bNleJTlISuI
-        H8hjvYQYbAAyNpLz9800PIo=
-X-Google-Smtp-Source: ABdhPJwrRgvcueCrrRfFRNvh6SNhQrQLTbWu4vNI/52vmnCHyrzJ41jNBtioVGBVOFSq1oTgBldG4A==
-X-Received: by 2002:ac2:43a3:: with SMTP id t3mr8229109lfl.340.1615825420417;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HgwqlBmuUehNrsPso/cPfGiCGc8t+4arPnqvft1WhQ0=;
+        b=tlFS4gjWHSFFGEcXGnkvMMYt0OI/0H84r70+0W0TfFXKr2nhJfcV3K6yu5mxrH2BZi
+         mUc4OFWvwFpsc6BgHIguZIMmh2ZRrx1FuiN3WdKkfymk2n9GCL478tc5LedFY7TrmN13
+         68D2Zmho3lKEK51iTDVKZFVpGIT+5jNAKNh2uSrDp8XBYBuUxVmosw9G6640RiJJ1D3E
+         zqtYQLfq2F+nZtEisENRjDy5D3k4cp5iGpjYOeTqPW+vCm8GlrnthgqElHiPD/l0oRq1
+         AdwVcCkFqyFCSG4iDI8rT2Z/QWRjDkw3MiefqNz0EFA5+ZN+NZYab1YIzx8kgoti0V2g
+         mWug==
+X-Gm-Message-State: AOAM533oX7t6br9qUU9tebGGaaS+joMCm7uo+KZNmJ1yURjEoqxh3oPK
+        JyeNDtghp+c+NacHje89Hg==
+X-Google-Smtp-Source: ABdhPJwDAcpD05CHoQUAKE09TR1uWqtzl//CAmUKHIvFTBJMPDTDR0bhhtMfk58tO6VZivbHAbXuhA==
+X-Received: by 2002:a92:c641:: with SMTP id 1mr357910ill.94.1615825421671;
+        Mon, 15 Mar 2021 09:23:41 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o13sm7121497iob.17.2021.03.15.09.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Mar 2021 09:23:40 -0700 (PDT)
-Received: from [192.168.1.39] (88-114-223-25.elisa-laajakaista.fi. [88.114.223.25])
-        by smtp.gmail.com with ESMTPSA id e15sm2986504ljg.54.2021.03.15.09.23.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 09:23:39 -0700 (PDT)
-Subject: Re: [PATCH v4] mm/vmalloc: randomize vmalloc() allocations
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20210309135757.5406-1-toiwoton@gmail.com>
- <20210314172312.GA2085@pc638.lan>
- <ba975607-9493-c78c-bbd8-6a85573114d1@gmail.com>
- <20210315153510.GA1865@pc638.lan>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <4649f69d-b7cd-d1a6-26e0-9b8bf3b17df5@gmail.com>
-Date:   Mon, 15 Mar 2021 18:23:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Received: (nullmailer pid 977577 invoked by uid 1000);
+        Mon, 15 Mar 2021 16:23:38 -0000
+Date:   Mon, 15 Mar 2021 10:23:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: arm: Convert nuvoton,npcm750 binding to
+ YAML
+Message-ID: <20210315162338.GA973222@robh.at.kernel.org>
+References: <20210313175321.2515675-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-In-Reply-To: <20210315153510.GA1865@pc638.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210313175321.2515675-1-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.3.2021 17.35, Uladzislau Rezki wrote:
->> On 14.3.2021 19.23, Uladzislau Rezki wrote:
->>> Also, using vmaloc test driver i can trigger a kernel BUG:
->>>
->>> <snip>
->>> [   24.627577] kernel BUG at mm/vmalloc.c:1272!
->>
->> It seems that most tests indeed fail. Perhaps the vmalloc subsystem isn't
->> very robust in face of fragmented virtual memory. What could be done to fix
->> that?
->>
-> Your patch is broken in context of checking "vend" when you try to
-> allocate next time after first attempt. Passed "vend" is different
-> there comparing what is checked later to figure out if an allocation
-> failed or not:
+On Sat, Mar 13, 2021 at 06:53:20PM +0100, Jonathan Neuschäfer wrote:
+> The general trend is to have devicetree bindings in YAML format, to
+> allow automatic validation of bindings and devicetrees.
 > 
-> <snip>
->      if (unlikely(addr == vend))
->          goto overflow;
-> <snip>
+> Convert the NPCM SoC family's binding to YAML before it accumulates more
+> entries.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+> 
+> If someone else wants to be listed as the maintainer, please let me
+> know.
+> 
+> 
+> v3:
+> - In this version, I removed the nuvoton,npcm750-evb compatible string
+>   again. I had previously introduced it to simplify the binding a little
+>   bit, but Tomer Maimon suggested to keep /compatible of
+>   nuvoton-npcm750-evb.dts as-is (i.e. only use "nuvoton,npcm750", no
+>   board-specific string).
+>   Because of this change, I am not including Rob Herring's R-b tag.
 
-
-Thanks, I'll fix that.
+I think you should add nuvoton,npcm750-evb. Not so much for that board, 
+but to ensure any additional boards get a board specific compatible.
 
 > 
->>
->> In this patch, I could retry __alloc_vmap_area() with the whole region after
->> failure of both [random, vend] and [vstart, random] but I'm not sure that
->> would help much. Worth a try of course.
->>
-> There is no need in your second [vstart, random]. If a first bigger range
-> has not been successful, the smaller one will never be success anyway. The
-> best way to go here is to repeat with real [vsart:vend], if it still fails
-> on a real range, then it will not be possible to accomplish an allocation
-> request with given parameters.
+> v2:
+> - https://lore.kernel.org/lkml/20210116010907.3475405-1-j.neuschaefer@gmx.net/
+>   https://lore.kernel.org/lkml/20210303154622.3018839-1-j.neuschaefer@gmx.net/
+> - Fix indentation to satisfy yamllint
+> - Fix $schema line
+> ---
+>  .../devicetree/bindings/arm/npcm/npcm.txt     |  6 ------
+>  .../devicetree/bindings/arm/npcm/npcm.yaml    | 20 +++++++++++++++++++
+>  2 files changed, 20 insertions(+), 6 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.yaml
 > 
->>
->> By the way, some of the tests in test_vmalloc.c don't check for vmalloc()
->> failure, for example in full_fit_alloc_test().
->>
-> Where?
-
-Something like this:
-
-diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-index 5cf2fe9aab9e..27e5db9a96b4 100644
---- a/lib/test_vmalloc.c
-+++ b/lib/test_vmalloc.c
-@@ -182,9 +182,14 @@ static int long_busy_list_alloc_test(void)
-         if (!ptr)
-                 return rv;
-
--       for (i = 0; i < 15000; i++)
-+       for (i = 0; i < 15000; i++) {
-                 ptr[i] = vmalloc(1 * PAGE_SIZE);
-
-+               if (!ptr[i])
-+                       goto leave;
-+       }
-+
-+
-         for (i = 0; i < test_loop_count; i++) {
-                 ptr_1 = vmalloc(100 * PAGE_SIZE);
-                 if (!ptr_1)
-@@ -236,7 +241,11 @@ static int full_fit_alloc_test(void)
-
-         for (i = 0; i < junk_length; i++) {
-                 ptr[i] = vmalloc(1 * PAGE_SIZE);
-+               if (!ptr[i])
-+                       goto error;
-                 junk_ptr[i] = vmalloc(1 * PAGE_SIZE);
-+               if (!junk_ptr[i])
-+                       goto error;
-         }
-
-         for (i = 0; i < junk_length; i++)
-@@ -256,8 +265,10 @@ static int full_fit_alloc_test(void)
-         rv = 0;
-
-  error:
--       for (i = 0; i < junk_length; i++)
-+       for (i = 0; i < junk_length; i++) {
-                 vfree(ptr[i]);
-+               vfree(junk_ptr[i]);
-+       }
-
-         vfree(ptr);
-         vfree(junk_ptr);
-
--Topi
+> diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.txt b/Documentation/devicetree/bindings/arm/npcm/npcm.txt
+> deleted file mode 100644
+> index 2d87d9ecea85b..0000000000000
+> --- a/Documentation/devicetree/bindings/arm/npcm/npcm.txt
+> +++ /dev/null
+> @@ -1,6 +0,0 @@
+> -NPCM Platforms Device Tree Bindings
+> ------------------------------------
+> -NPCM750 SoC
+> -Required root node properties:
+> -	- compatible = "nuvoton,npcm750";
+> -
+> diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.yaml b/Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+> new file mode 100644
+> index 0000000000000..8cca0396a5d59
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+> @@ -0,0 +1,20 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/npcm/npcm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NPCM Platforms Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +      - description: NPCM750 development board
+> +        const: nuvoton,npcm750
+> +
+> +additionalProperties: true
+> --
+> 2.30.1
+> 
