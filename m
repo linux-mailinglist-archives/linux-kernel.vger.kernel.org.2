@@ -2,37 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36A533BC02
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7E933BE6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237858AbhCOOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S239300AbhCOOq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232908AbhCOOAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EA0D64EF5;
-        Mon, 15 Mar 2021 13:59:54 +0000 (UTC)
+        id S234622AbhCOOEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 445A864E83;
+        Mon, 15 Mar 2021 14:04:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816795;
-        bh=dsjSFKzKR3YF5jmpTtzlvZTNpdzIkImLzudkGKV3LFs=;
+        s=korg; t=1615817071;
+        bh=aD9FFcm63Hj9Nhu8p+dI7qWaGC5qGSu94P5UNIjpjdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nDv97tBvNTdTJSMugbvn+5ip9F7GwbaBbivfsnygAtM5s+DJk84WYsEnDkvDqnbCD
-         ID7vGT9ZvZkKDd2diYjKwUKhOwewu4vApSXycN0LZiR1cq1WirG5G7A5GyqAL4s34E
-         eqmr5cQS+Tujus19s90OJUoOuUmsoMTTNzkJW/qY=
+        b=jrOTBncntcbe9KS6IgcgH9gu7o1K6opLAn6h1KKV2q/RY12mo90Zx/UeOORvhBhaC
+         jh4u04x1lFVc+XHwpOSOylou5h2T8xShZc7q3VtHrwelR7++niylwPOZPXx3qZR3qQ
+         Ov3yZaKuKmr32gR4cPsihV1jiqbEnqG559+zdzms=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 115/168] USB: serial: io_edgeport: fix memory leak in edge_startup
-Date:   Mon, 15 Mar 2021 14:55:47 +0100
-Message-Id: <20210315135554.138659127@linuxfoundation.org>
+        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 285/306] kasan: fix KASAN_STACK dependency for HW_TAGS
+Date:   Mon, 15 Mar 2021 14:55:48 +0100
+Message-Id: <20210315135517.316445703@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +53,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Andrey Konovalov <andreyknvl@google.com>
 
-commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
+commit d9b571c885a8974fbb7d4ee639dbc643fd000f9e upstream.
 
-sysbot found memory leak in edge_startup().
-The problem was that when an error was received from the usb_submit_urb(),
-nothing was cleaned up.
+There's a runtime failure when running HW_TAGS-enabled kernel built with
+GCC on hardware that doesn't support MTE.  GCC-built kernels always have
+CONFIG_KASAN_STACK enabled, even though stack instrumentation isn't
+supported by HW_TAGS.  Having that config enabled causes KASAN to issue
+MTE-only instructions to unpoison kernel stacks, which causes the failure.
 
-Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
-Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fix the issue by disallowing CONFIG_KASAN_STACK when HW_TAGS is used.
+
+(The commit that introduced CONFIG_KASAN_HW_TAGS specified proper
+ dependency for CONFIG_KASAN_STACK_ENABLE but not for CONFIG_KASAN_STACK.)
+
+Link: https://lkml.kernel.org/r/59e75426241dbb5611277758c8d4d6f5f9298dac.1615215441.git.andreyknvl@google.com
+Fixes: 6a63a63ff1ac ("kasan: introduce CONFIG_KASAN_HW_TAGS")
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <stable@vger.kernel.org>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Kevin Brodsky <kevin.brodsky@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ lib/Kconfig.kasan |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/io_edgeport.c
-+++ b/drivers/usb/serial/io_edgeport.c
-@@ -3003,26 +3003,32 @@ static int edge_startup(struct usb_seria
- 				response = -ENODEV;
- 			}
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -156,6 +156,7 @@ config KASAN_STACK_ENABLE
  
--			usb_free_urb(edge_serial->interrupt_read_urb);
--			kfree(edge_serial->interrupt_in_buffer);
--
--			usb_free_urb(edge_serial->read_urb);
--			kfree(edge_serial->bulk_in_buffer);
--
--			kfree(edge_serial);
--
--			return response;
-+			goto error;
- 		}
- 
- 		/* start interrupt read for this edgeport this interrupt will
- 		 * continue as long as the edgeport is connected */
- 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
- 								GFP_KERNEL);
--		if (response)
-+		if (response) {
- 			dev_err(ddev, "%s - Error %d submitting control urb\n",
- 				__func__, response);
-+
-+			goto error;
-+		}
- 	}
- 	return response;
-+
-+error:
-+	usb_free_urb(edge_serial->interrupt_read_urb);
-+	kfree(edge_serial->interrupt_in_buffer);
-+
-+	usb_free_urb(edge_serial->read_urb);
-+	kfree(edge_serial->bulk_in_buffer);
-+
-+	kfree(edge_serial);
-+
-+	return response;
- }
- 
+ config KASAN_STACK
+ 	int
++	depends on KASAN_GENERIC || KASAN_SW_TAGS
+ 	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+ 	default 0
  
 
 
