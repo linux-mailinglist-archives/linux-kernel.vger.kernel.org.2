@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6BD33B935
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F9333BA40
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhCOOFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:05:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
+        id S235237AbhCOOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231904AbhCON5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB72D64F05;
-        Mon, 15 Mar 2021 13:57:31 +0000 (UTC)
+        id S231272AbhCON6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A5D64F23;
+        Mon, 15 Mar 2021 13:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816653;
-        bh=rzT91xFi5CSgXz3amxkHUuCpim2XmCzSMYdvJbcna9s=;
+        s=korg; t=1615816690;
+        bh=HHA26jaEx0TVIHhjA6y4M+tOOuCMpp/jBGSy2ZKii+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fq17ApAWspDrXVqXoxDOfD27u+aJze5sHXnLi9GhNMypO0HNjE61x9udCjPP+FZyR
-         7IbHvr2ty25gyYLq+smSIwnOUEQ65K9ZR4uk8qqCyf5Jbtc130hdb/O/5hsAV9WjOa
-         d4mO2c6XKl30DK3v6x4GTkBgzSZa3kNS0rwNfD6U=
+        b=qC5GjrRNzQ/LYTuk8SUYX5LcEE7q39g1frbdLB//PUnJagZI5J+uRqBU4W1+L4bQp
+         xVs+24nt2R9A7Qiam6t+q7zPM1iQulqyKFSX/ljQFmVgkHWWwiHD/cy8PnOfx9kCC+
+         nqhCt/4do356yJLk6U/Yw1fxuRZZ+osb954S0Pro=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Wong Vee Khee <vee.khee.wong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 035/290] net: dsa: tag_rtl4_a: fix egress tags
-Date:   Mon, 15 Mar 2021 14:52:08 +0100
-Message-Id: <20210315135543.109508081@linuxfoundation.org>
+Subject: [PATCH 5.11 066/306] stmmac: intel: Fixes clock registration error seen for multiple interfaces
+Date:   Mon, 15 Mar 2021 14:52:09 +0100
+Message-Id: <20210315135509.872037958@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +43,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Wong Vee Khee <vee.khee.wong@intel.com>
 
-commit 9eb8bc593a5eed167dac2029abef343854c5ba75 upstream.
+commit 8eb37ab7cc045ec6305a6a1a9c32374695a1a977 upstream.
 
-Commit 86dd9868b878 has several issues, but was accepted too soon
-before anyone could take a look.
+Issue seen when enumerating multiple Intel mGbE interfaces in EHL.
 
-- Double free. dsa_slave_xmit() will free the skb if the xmit function
-  returns NULL, but the skb is already freed by eth_skb_pad(). Use
-  __skb_put_padto() to avoid that.
-- Unnecessary allocation. It has been done by DSA core since commit
-  a3b0b6479700.
-- A u16 pointer points to skb data. It should be __be16 for network
-  byte order.
-- Typo in comments. "numer" -> "number".
+[    6.898141] intel-eth-pci 0000:00:1d.2: enabling device (0000 -> 0002)
+[    6.900971] intel-eth-pci 0000:00:1d.2: Fail to register stmmac-clk
+[    6.906434] intel-eth-pci 0000:00:1d.2: User ID: 0x51, Synopsys ID: 0x52
 
-Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+We fix it by making the clock name to be unique following the format
+of stmmac-pci_name(pci_dev) so that we can differentiate the clock for
+these Intel mGbE interfaces in EHL platform as follow:
+
+  /sys/kernel/debug/clk/stmmac-0000:00:1d.1
+  /sys/kernel/debug/clk/stmmac-0000:00:1d.2
+  /sys/kernel/debug/clk/stmmac-0000:00:1e.4
+
+Fixes: 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to contain all Intel platform")
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/tag_rtl4_a.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/net/dsa/tag_rtl4_a.c
-+++ b/net/dsa/tag_rtl4_a.c
-@@ -35,14 +35,12 @@ static struct sk_buff *rtl4a_tag_xmit(st
- 				      struct net_device *dev)
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -233,6 +233,7 @@ static void common_default_data(struct p
+ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 				  struct plat_stmmacenet_data *plat)
  {
- 	struct dsa_port *dp = dsa_slave_to_port(dev);
-+	__be16 *p;
- 	u8 *tag;
--	u16 *p;
- 	u16 out;
++	char clk_name[20];
+ 	int ret;
+ 	int i;
  
- 	/* Pad out to at least 60 bytes */
--	if (unlikely(eth_skb_pad(skb)))
--		return NULL;
--	if (skb_cow_head(skb, RTL4_A_HDR_LEN) < 0)
-+	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
- 		return NULL;
+@@ -300,8 +301,10 @@ static int intel_mgbe_common_data(struct
+ 	plat->eee_usecs_rate = plat->clk_ptp_rate;
  
- 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
-@@ -53,13 +51,13 @@ static struct sk_buff *rtl4a_tag_xmit(st
- 	tag = skb->data + 2 * ETH_ALEN;
+ 	/* Set system clock */
++	sprintf(clk_name, "%s-%s", "stmmac", pci_name(pdev));
++
+ 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
+-						   "stmmac-clk", NULL, 0,
++						   clk_name, NULL, 0,
+ 						   plat->clk_ptp_rate);
  
- 	/* Set Ethertype */
--	p = (u16 *)tag;
-+	p = (__be16 *)tag;
- 	*p = htons(RTL4_A_ETHERTYPE);
- 
- 	out = (RTL4_A_PROTOCOL_RTL8366RB << 12) | (2 << 8);
--	/* The lower bits is the port numer */
-+	/* The lower bits is the port number */
- 	out |= (u8)dp->index;
--	p = (u16 *)(tag + 2);
-+	p = (__be16 *)(tag + 2);
- 	*p = htons(out);
- 
- 	return skb;
+ 	if (IS_ERR(plat->stmmac_clk)) {
 
 
