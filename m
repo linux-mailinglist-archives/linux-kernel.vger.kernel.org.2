@@ -2,96 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F1833B1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ACE33B1E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhCOL6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:58:54 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:43794 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhCOL6X (ORCPT
+        id S230490AbhCOL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhCOL5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:58:23 -0400
-Received: by mail-il1-f198.google.com with SMTP id d15so8078744ila.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:58:23 -0700 (PDT)
+        Mon, 15 Mar 2021 07:57:00 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9CFC061763
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:57:00 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so19266238wmd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yev+AXBqBGQDoXLDGZvdwqzLRoGYBMa84ajRYLADAlY=;
+        b=GKC+39P/+pAeKRKWUcuMCwME3qJHyZGlsL9yqmqZtqu8kkztx6r1WhHmqTEvmVr6TZ
+         bgUHfi9WX4zcZ5UzwzqLfAjWbya6i5SdVTaM4HkMx9QSFtba/d1QAm7zkI++XA5oL2x6
+         EjxinYlQjGbo8yeoieAaNG06T6BV7YJ0sQDoFCZlwU5/5mc8VzeJ0fATfGfnEt/P/gIZ
+         RO53T3kNHCq8UmCcNapXnAHD/M1FVJF+Z3O9Cfbr19z+ygfq/1OgvYU16mIFQ3xE9yVq
+         1DxhtlDlhIDn/UgecK53C6qRJCw0siuxA/HYbM12zJjX73B/zG9+rPG71VgVPhCyss7N
+         Gdzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zVew5zknVz/SDYTOBAB5XP8NCWN9xTo8o8UbGi8sA2Y=;
-        b=jtfFyCr8yb2N6SgOT0fDTBG0KItRw6fCO8fbR8Ps0C3VlAiY+wBFJDxziK+nS7HZ5S
-         zJblP6HMV1d4EMPjaIMLslN3ulzvp7EVH5DbIVKBp2NUY7G6YssN4FqXz8cT/NIDAcuG
-         qFS7TuBFLYqWUiDdY0f+8xuZQ8++O4IHz4gWZlNWzS16kBJD2tVJ3K5VYPUwqcH7QVG6
-         aSiUdR30suyukr/p62awyG/BYgEg1oh3rayaTeLTNwY3+E+4004YSLHUaEj+JBtEK2rp
-         6Qb0ad2DUs4+2v0E25ccXJJfDnDVK6d3Uz0N8C+NpHO5AZNB2KVsGSjnh0GqtQr7Rh6D
-         s1+A==
-X-Gm-Message-State: AOAM5336l+w2gmGSvC3OGzv905xpBdV2JkWKwW2+HQq1lfuo2Eqc0PGr
-        EVnCBbTMFAUBbIyOklhHcS5HnFH5q7KuviomsJz5/DrpQHU3
-X-Google-Smtp-Source: ABdhPJzt6U2UiQnm1uR2O7jvWXd0cbIOd5v9irKsEuRD094wi1MXX7Y929i2+qhLbT7Ly0Q9gjCtVw2Ut9CMBwmgYbzYYgNT2L/C
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yev+AXBqBGQDoXLDGZvdwqzLRoGYBMa84ajRYLADAlY=;
+        b=f+3z/+TFxlc1W4g69rck1FQ/ORXicwOj1zg6LhXlS949c+EaGI/qc3QtlzD9AH69Pr
+         Ty0jy1cb8ipMkMv1/5cEHVIi3Lk+rqxJpyjkYg4fdmlNcNBgH54y1aMJfzXQXjJQ51Mk
+         kbfRYJP6ivNn+2lwsW8AtYz/vhunlLLCb11dMPyrYk1hhjZ8L3vJ+yPQR8y2W/AlF5uk
+         L8B4DKpQUkBKTLuPXcDJyiogvLxvMRi8WALxq3UXEOg7YPCijM3CwdXpEku3sSyLe5pT
+         ni47o+c2r06JBLSQ9TsqIr4b4hYFU5iAdUcNVvO2MCgsOK8CQXlnUY5zJno3nGHvXtTs
+         QyLA==
+X-Gm-Message-State: AOAM5301SMCfhEQzT4WMnlYEW7t26YmjdlaTVloxF8tK0cXolIX/CLMk
+        aI49jkSNFWgCOswoQq4xg984Qg==
+X-Google-Smtp-Source: ABdhPJxT6sZ4Kyu6Ea72eRUbWYWp7uYlahgXPf1kv/Lqw9O1aIRHSWEgLHAU7/0c59NW+hlMQHpP0g==
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr10685689wmq.97.1615809418800;
+        Mon, 15 Mar 2021 04:56:58 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id l15sm18325308wru.38.2021.03.15.04.56.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 04:56:58 -0700 (PDT)
+Subject: Re: [PATCH 2/5] wcn36xx: Allow firmware name to be overridden by DT
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <20210312003318.3273536-3-bjorn.andersson@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Message-ID: <a462bb9f-657d-6543-1f93-95c7f360a2e6@linaro.org>
+Date:   Mon, 15 Mar 2021 11:58:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:102f:: with SMTP id n15mr9113881jan.28.1615809502681;
- Mon, 15 Mar 2021 04:58:22 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 04:58:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e9e0705bd91f762@google.com>
-Subject: [syzbot] WARNING in __percpu_ref_exit (2)
-From:   syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210312003318.3273536-3-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 12/03/2021 00:33, Bjorn Andersson wrote:
+> The WLAN NV firmware blob differs between platforms, and possibly
+> devices, so add support in the wcn36xx driver for reading the path of
+> this file from DT in order to allow these files to live in a generic
+> file system (or linux-firmware).
+> 
+> For some reason the parent (wcnss_ctrl) also needs to upload this blob,
+> so rather than specifying the same information in both nodes wcn36xx
+> reads the string from the parent's of_node.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> This patch can be applied independently of the others, but relates to the
+> acceptance of the addition to the DT binding (in patch 1/5). So my suggestion
+> is that this one goes through the ath tree and the others through the Qualcomm
+> SoC tree.
+> 
+>   drivers/net/wireless/ath/wcn36xx/main.c    | 7 +++++++
+>   drivers/net/wireless/ath/wcn36xx/smd.c     | 4 ++--
+>   drivers/net/wireless/ath/wcn36xx/wcn36xx.h | 1 +
+>   3 files changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+> index afb4877eaad8..87b5c0ff16c0 100644
+> --- a/drivers/net/wireless/ath/wcn36xx/main.c
+> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
+> @@ -1407,6 +1407,13 @@ static int wcn36xx_probe(struct platform_device *pdev)
+>   		goto out_wq;
+>   	}
+>   
+> +	wcn->nv_file = WLAN_NV_FILE;
+> +	ret = of_property_read_string(wcn->dev->parent->of_node, "firmware-name", &wcn->nv_file);
+> +	if (ret < 0 && ret != -EINVAL) {
+> +		wcn36xx_err("failed to read \"firmware-name\" property\n");
+> +		goto out_wq;
+> +	}
+> +
+>   	wcn->smd_channel = qcom_wcnss_open_channel(wcnss, "WLAN_CTRL", wcn36xx_smd_rsp_process, hw);
+>   	if (IS_ERR(wcn->smd_channel)) {
+>   		wcn36xx_err("failed to open WLAN_CTRL channel\n");
+> diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+> index d0c3a1557e8d..7b928f988068 100644
+> --- a/drivers/net/wireless/ath/wcn36xx/smd.c
+> +++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+> @@ -514,10 +514,10 @@ int wcn36xx_smd_load_nv(struct wcn36xx *wcn)
+>   	u16 fm_offset = 0;
+>   
+>   	if (!wcn->nv) {
+> -		ret = request_firmware(&wcn->nv, WLAN_NV_FILE, wcn->dev);
+> +		ret = request_firmware(&wcn->nv, wcn->nv_file, wcn->dev);
+>   		if (ret) {
+>   			wcn36xx_err("Failed to load nv file %s: %d\n",
+> -				      WLAN_NV_FILE, ret);
+> +				    wcn->nv_file, ret);
+>   			goto out;
+>   		}
+>   	}
+> diff --git a/drivers/net/wireless/ath/wcn36xx/wcn36xx.h b/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+> index 71fa9992b118..5977af2116e3 100644
+> --- a/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+> +++ b/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+> @@ -185,6 +185,7 @@ struct wcn36xx {
+>   	struct device		*dev;
+>   	struct list_head	vif_list;
+>   
+> +	const char		*nv_file;
+>   	const struct firmware	*nv;
+>   
+>   	u8			fw_revision;
+> 
 
-syzbot found the following issue on:
-
-HEAD commit:    75013c6c Merge tag 'perf_urgent_for_v5.12-rc3' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=174df32ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=844457676c06b88c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 53 at lib/percpu-refcount.c:113 __percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
-Modules linked in:
-CPU: 1 PID: 53 Comm: kworker/u4:2 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-RIP: 0010:__percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
-Code: fd 49 8d 7c 24 10 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 61 49 83 7c 24 10 00 74 07 e8 28 42 ac fd <0f> 0b e8 21 42 ac fd 48 89 ef e8 e9 fa da fd 48 89 da 48 b8 00 00
-RSP: 0018:ffffc90000f1fb78 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88805c976000 RCX: 0000000000000000
-RDX: ffff888011839bc0 RSI: ffffffff83c76be8 RDI: ffff88802b2a9010
-RBP: 0000607f46077778 R08: 0000000000000000 R09: ffffffff8fab0967
-R10: ffffffff83c76b88 R11: 0000000000000009 R12: ffff88802b2a9000
-R13: 0000000000000001 R14: ffff88802b2a9000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000085a0004 CR3: 000000001896a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- percpu_ref_exit+0x3b/0x140 lib/percpu-refcount.c:134
- io_ring_ctx_free fs/io_uring.c:8419 [inline]
- io_ring_exit_work+0x599/0xcf0 fs/io_uring.c:8565
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
