@@ -2,133 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0624633C3DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5250C33C3E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235851AbhCOROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:14:16 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:37314 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhCOROB (ORCPT
+        id S235472AbhCORPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234597AbhCOROv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:14:01 -0400
-Received: by mail-io1-f54.google.com with SMTP id y20so15854357iot.4;
-        Mon, 15 Mar 2021 10:14:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iFQlGUPMwfnpBCqbpSRGkYh/7C2oaLwfautQirfFp7M=;
-        b=pudu/QMZCjnInZnPiSyISnkrMhT7v6V9a2kUN6uiOu+fkblkomsisT3zUDkNZAnCH/
-         Tlu9b+/0Lvbz4KKues8sVhulhGg4BxNDrdmij32w9sfNxb11zKDEFopwI6nk1Tw66hKf
-         VHoED6ffQLj+kCAz8kVCN+1NlCCaPLXghwSMITM57vkREVE3Xs4cX0APBjsiSbrGdK8q
-         067mOB0nDEvNWKZbjsWektA750Pbv7Q0dGrER5/UlWHoEnHXhCeY6D2gEuyD4eh9zM0d
-         cEqWuviGNYp3dGYDNu9DrachtwaRoo9GXPfZ4leJkX9rnPo21+sPnRALMJ6xzb3W+vWw
-         ex6g==
-X-Gm-Message-State: AOAM531z1njY1J0gwqNBijAv2C23WFpgMcbJ4nDwXDY9JHEiwXe/swEX
-        gjikPLkNmDIbeGCnumTseSto9K8mUQ==
-X-Google-Smtp-Source: ABdhPJybHmYcrgjGA8sZJsjU3Vw+8gF5icFgDP64gDoqeaSzp6mjU+fJJj15xeY3CTGq96COYxgfIA==
-X-Received: by 2002:a02:cc1a:: with SMTP id n26mr10519485jap.21.1615828440953;
-        Mon, 15 Mar 2021 10:14:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id h128sm7358623ioa.32.2021.03.15.10.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 10:14:00 -0700 (PDT)
-Received: (nullmailer pid 1063744 invoked by uid 1000);
-        Mon, 15 Mar 2021 17:13:57 -0000
-Date:   Mon, 15 Mar 2021 11:13:57 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Masahiro Yamada <masahiroy@kernel.org>, anmar.oueja@linaro.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Bill Mills <bill.mills@linaro.org>
-Subject: Re: [PATCH V11 0/5] dt: Add fdtoverlay rule and statically build
- unittest
-Message-ID: <20210315171357.GA1063052@robh.at.kernel.org>
-References: <cover.1615354376.git.viresh.kumar@linaro.org>
+        Mon, 15 Mar 2021 13:14:51 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C70C06174A;
+        Mon, 15 Mar 2021 10:14:51 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0CA00316;
+        Mon, 15 Mar 2021 18:14:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615828489;
+        bh=t/2I4AQe8JLwQ6fZZPyNFzyesR2yTWenGNed0G0YKUo=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EsgXRxU/hNLLwogP6T416+yKGMkYC7B60UwOGFecPtFbjG5IDHCKwSXTINdNChNFm
+         P4WXfXYessZ23RiKtOLRSSqiq27R6pQcmxj8VB9vgwsOJLc6MgKp/tXnl5TBGvUr3d
+         vV/luvB27IFTc2PvR1yuTT7V9L3c97MGAoB27paA=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2 09/18] media: i2c: max9271: Introduce wake_up()
+ function
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-10-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <13e3e14f-db77-28d9-e1e7-8e54f9ab75b5@ideasonboard.com>
+Date:   Mon, 15 Mar 2021 17:14:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615354376.git.viresh.kumar@linaro.org>
+In-Reply-To: <20210315131512.133720-10-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 11:05:28 +0530, Viresh Kumar wrote:
-> Hi,
+On 15/03/2021 13:15, Jacopo Mondi wrote:
+> The MAX9271 chip manual prescribes a delay of 5 milliseconds
+> after the chip exists from low power state.
 > 
-> This patchset adds a generic rule for applying overlays using fdtoverlay
-> tool and then updates unittests to get built statically using the same.
+> Add a new function to the max9271 library driver that wakes up the chip
+> with a dummy i2c transaction and implements the correct delay of 5
+> milliseconds after the chip exits from low power state.
 > 
-> V10->V11:
-> - Update patch 4/5 to fix checkpatch warning on spaces and tabs.
-> - Added Acked-by from Masahiro for patch 2/5.
+> Use the newly introduced function in the rdacm20 and rdacm21 camera
+> drivers. The former was not respecting the required delay while the
+> latter was waiting for a too-short timeout.
 > 
-> V9->V10:
-> - Add a new patch to allow .dtso files.
-> - Update 2/5 to be more efficient and also generate symbols for base
->   files automatically.
-> - No need to add lines like DTC_FLAGS_foo_base += -@ in patch 5/5.
-> - Add Ack by Masahiro for 1/5.
+> Do not handle the initial i2c address configuration in the library
+> driver function as the camera module drivers control address
+> reprogramming.
+
+I still think that the MAX9271_DEFAULT_ADDR belongs in the max9271
+library, but this patch is functionally good to me, and correcting those
+delays is certainly a good thing to fix here.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9271.c | 7 +++++++
+>  drivers/media/i2c/max9271.h | 9 +++++++++
+>  drivers/media/i2c/rdacm20.c | 2 +-
+>  drivers/media/i2c/rdacm21.c | 3 +--
+>  4 files changed, 18 insertions(+), 3 deletions(-)
 > 
-> V8->V9:
-> - Added some comment in patch 3/4 based on Frank's suggestions.
-> 
-> V7->V8:
-> - Patch 1 is new.
-> - Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
->   foo.dtb.
-> - Use multi_depend instead of .SECONDEXPANSION.
-> - Use dtb-y for unittest instead of overlay-y.
-> - Rename the commented dtb filess in unittest Makefile as .dtbo.
-> - Improved Makefile code (I am learning a lot every day :)
-> 
-> V6->V7:
-> - Dropped the first 4 patches, already merged.
-> - Patch 1/3 is new, suggested by Rob and slightly modified by me.
-> - Adapt Patch 3/3 to the new rule and name the overlay dtbs as .dtbo.
-> 
-> --
-> Viresh
-> 
-> Rob Herring (1):
->   kbuild: Add generic rule to apply fdtoverlay
-> 
-> Viresh Kumar (4):
->   kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
->   kbuild: Allow .dtso format for overlay source files
->   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
->   of: unittest: Statically apply overlays using fdtoverlay
-> 
->  drivers/of/unittest-data/Makefile             | 48 ++++++++++
->  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
->  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
->  drivers/of/unittest-data/static_base_1.dts    |  4 +
->  drivers/of/unittest-data/static_base_2.dts    |  4 +
->  drivers/of/unittest-data/testcases.dts        | 23 ++---
->  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
->  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
->  scripts/Makefile.lib                          | 40 ++++++--
->  9 files changed, 218 insertions(+), 112 deletions(-)
->  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->  create mode 100644 drivers/of/unittest-data/static_base_1.dts
->  create mode 100644 drivers/of/unittest-data/static_base_2.dts
->  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
-> 
-> 
-> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> --
-> 2.25.0.rc1.19.g042ed3e048af
-> 
-> 
+> diff --git a/drivers/media/i2c/max9271.c b/drivers/media/i2c/max9271.c
+> index 2c7dc7fb9846..f7bfe7266763 100644
+> --- a/drivers/media/i2c/max9271.c
+> +++ b/drivers/media/i2c/max9271.c
+> @@ -80,6 +80,13 @@ static int max9271_pclk_detect(struct max9271_device *dev)
+>  	return -EIO;
+>  }
+>  
+> +void max9271_wake_up(struct max9271_device *dev)
+> +{
+> +	i2c_smbus_read_byte(dev->client);
+> +	usleep_range(5000, 8000);
+> +}
+> +EXPORT_SYMBOL_GPL(max9271_wake_up);
+> +
+>  int max9271_set_serial_link(struct max9271_device *dev, bool enable)
+>  {
+>  	int ret;
+> diff --git a/drivers/media/i2c/max9271.h b/drivers/media/i2c/max9271.h
+> index d78fb21441e9..dc5e4e70ba6f 100644
+> --- a/drivers/media/i2c/max9271.h
+> +++ b/drivers/media/i2c/max9271.h
+> @@ -85,6 +85,15 @@ struct max9271_device {
+>  	struct i2c_client *client;
+>  };
+>  
+> +/**
+> + * max9271_wake_up() - Wake up the serializer by issuing an i2c transaction
+> + * @dev: The max9271 device
+> + *
+> + * This function shall be called before any other interaction with the
+> + * serializer.
+> + */
+> +void max9271_wake_up(struct max9271_device *dev);
+> +
+>  /**
+>   * max9271_set_serial_link() - Enable/disable serial link
+>   * @dev: The max9271 device
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index b9aaa0f7db42..2265ef7c65d4 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -459,7 +459,7 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  
+>  	/* Verify communication with the MAX9271: ping to wakeup. */
+>  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer.client);
+> +	max9271_wake_up(&dev->serializer);
+>  
+>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+>  	ret = max9271_set_serial_link(&dev->serializer, false);
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index 179d107f494c..7bce55adfd7c 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -452,8 +452,7 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
+>  
+>  	/* Verify communication with the MAX9271: ping to wakeup. */
+>  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer.client);
+> -	usleep_range(3000, 5000);
+> +	max9271_wake_up(&dev->serializer);
+>  
+>  	/* Enable reverse channel and disable the serial link. */
+>  	ret = max9271_set_serial_link(&dev->serializer, false);
 > 
 
-Applied patches 1,2,4,5, thanks!
