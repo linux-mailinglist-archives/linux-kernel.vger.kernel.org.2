@@ -2,87 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B137B33B2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C082D33B309
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCOMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:43:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33270 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhCOMnW (ORCPT
+        id S229942AbhCOMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhCOMob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:43:22 -0400
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lLmZ7-0004i3-2O
-        for linux-kernel@vger.kernel.org; Mon, 15 Mar 2021 12:43:21 +0000
-Received: by mail-wr1-f71.google.com with SMTP id e29so15042345wra.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:43:21 -0700 (PDT)
+        Mon, 15 Mar 2021 08:44:31 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB58C061574;
+        Mon, 15 Mar 2021 05:44:31 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z13so33154586iox.8;
+        Mon, 15 Mar 2021 05:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PqmxvVJwI/DC3vsvSzca8s/AHwB4m2xICIwZ6sXZyZA=;
+        b=qQ8TdP8rw4nL6NdxZ/bxsRw98/djVs7nkFBeS71s6oq++6xtBhUnLO1WKvA/bZCoH5
+         8QaAy0WXEKHV8dXowndJRs3HKKVjurnTPR/zsR2l4E7hs+cLzc1pZONxZOjPiOpwq423
+         zZ7oBnBTsc8W+AEbLVONOEIzlBIMaoQdHpSk+qsARV4/IXNkm3Ov5LluVjWueipa6GLJ
+         Lkq28s6g/IAfq+1Jama52uObsN6hArq4tgrDwdORjto60rpoo4HC/fIJBqDP+g7FdzKQ
+         kLRNgS8fUOJ0v6E26yhr/Z9DzUKXqUOyCfYO1kTzZ9qFburUlXSQFXdltzEfxHsTISfo
+         rwyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rxaIjR1J//5PkyRZXm0+xJCkI6bQEZtH1ohc21euivs=;
-        b=Ms+j8J0WGPF96MN/ohaZRTK1yf9KetJ1nLIjE28ucklK5cQnHEYPUPOxPiJ2J8obcf
-         P7ej+AkWleN1BkCDVDrwNk+1GsuOGDogwl10yEMaFTEANuH7I6HskuRtsnpaAAPyJjt8
-         a1KwXsJCvopHj8jwUB3vCjtD6CEdmkCl0t6d32Y/JWeKQFzmZ/Rg63X9SpEKdAIR1a4U
-         5Z1MFPBP4q82TGWl6SaEVxKJoa0eFr1WX2oew7jetjCGzcIsxuNyOoWhvijzRqtp/y6l
-         feur03R0fDbjl4w5PlYLBN2QvaXYyrA4V1BtjTW/ecLbWLFMttnMKtoQWl4xXC8ANULq
-         xr1w==
-X-Gm-Message-State: AOAM533ikqtS18CO0Par5YPZ05SuwDCYhdv4U3WWt1JKTEQ8EgBcypTt
-        f6ch9k4AfBYIahoNjZ+kdPMNYhRkr/nJ6O0Vcu7MRWe3ohHBUAGDsmIWHNRGF7AhKu2VBpt0ZoT
-        qwKyBe9ngbysk4IOscgf564MSKdUeX2NJK67dgt7uhg==
-X-Received: by 2002:a05:6000:1546:: with SMTP id 6mr27051363wry.398.1615812200828;
-        Mon, 15 Mar 2021 05:43:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx19SoVoAAQrYf7moALON3Fv15zBfY8pJOsEEAAhFpyMpxvBF4bD3zbUHBRa65h38JIQJV97g==
-X-Received: by 2002:a05:6000:1546:: with SMTP id 6mr27051353wry.398.1615812200719;
-        Mon, 15 Mar 2021 05:43:20 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id r10sm14410094wmh.45.2021.03.15.05.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:43:20 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 3/3] arm64: dts: exynos: white-space cleanups
-Date:   Mon, 15 Mar 2021 13:43:13 +0100
-Message-Id: <20210315124313.114842-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315124313.114842-1-krzysztof.kozlowski@canonical.com>
-References: <20210315124313.114842-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PqmxvVJwI/DC3vsvSzca8s/AHwB4m2xICIwZ6sXZyZA=;
+        b=Vujh1Wjh9R06ekrtfUzM0IRWSwcDCgdrPTnoqOKBV0MNTULGIj1LKG1bZE44vJNOfd
+         LjJjnGM3dG6f8ny2fcLRRstTGsgQR4AxTGOekOkSsPBtL43addPBqSah6pARpm00EApG
+         8GEdYVsoSLl4seFJJv22TGt/B6OZGPBv5N29iNtwiPgfTudGGDKoL+4z63PfaBydQ6Ap
+         MYO8ajrKERmTmVquCoFl1d0C8dLpDTzifPaQgGWKM8dtEVJ05pTSvIa09sZ13g+p7iOo
+         WPb3muHnheqTrYur9cjQxYBQAnFFBEo57UnmMN6IoVMMqxryZMGu1X/8mZj9w3cvLLon
+         8nPQ==
+X-Gm-Message-State: AOAM533CxGEcvTFn6oJM8yeGu8KRMvyHckzZA1U7otgaObrebeZV1vrr
+        g9By5cjNAsrjpVW15iArquqoNg3zavQtS9IU5SDkQVWkmKM=
+X-Google-Smtp-Source: ABdhPJxa+9TJBDqlEawiezq+UM0bj90iaSfZ+0GXcIkB2o1X7Yxuex1+GznbQaevJ/wVMMatjmsFTuumQqftlDwnWcA=
+X-Received: by 2002:a5e:a519:: with SMTP id 25mr6717361iog.3.1615812270447;
+ Mon, 15 Mar 2021 05:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1591709203-12106-1-git-send-email-dillon.minfei@gmail.com> <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Mon, 15 Mar 2021 20:43:54 +0800
+Message-ID: <CAL9mu0LJPnxA0JSmV3mogvPA5xRRYCO_4=P7pqpAO7R=YaJX5g@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        p.zabel@pengutronix.de, pierre-yves.mordret@st.com,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Alexandre TORGUE <Alexandre.torgue@foss.st.com>,
+        pierre-yves.mordret@foss.st.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-i2c@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixup white-space issue:
+Hi All,
 
-  WARNING: please, no spaces at the start of a line
+Just a gentle ping.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards.
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-index 413cac63a1cb..773d9abe3a44 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-@@ -1002,7 +1002,7 @@ events {
- 		ppmu_event0_d1_general: ppmu-event0-d1-general {
- 		       event-name = "ppmu-event0-d1-general";
- 	       };
--       };
-+	};
- };
- 
- &pinctrl_alive {
--- 
-2.25.1
-
+On Tue, Jun 9, 2020 at 9:27 PM <dillon.minfei@gmail.com> wrote:
+>
+> From: dillon min <dillon.minfei@gmail.com>
+>
+> as stm32f429's internal flash is 2Mbytes and compiled kernel
+> image bigger than 2Mbytes, so we have to load kernel image
+> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
+>
+> based on above context, as you knows kernel running on external
+> sdram is more slower than internal flash. besides, we need read 4
+> bytes to get touch screen xyz(x, y, pressure) coordinate data in
+> stmpe811 interrupt.
+>
+> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
+> in xip mode, have to adjust 'STOP/START bit set position' from last
+> two bytes to last one bytes. else, will get i2c timeout in reading
+> touch screen coordinate.
+>
+> to not take side effect, introduce IIC_LAST_BYTE_POS to support xip
+> kernel or has mmu platform.
+>
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>
+> V4: indroduce 'IIC_LAST_BYTE_POS' to compatible with xipkernel boot
+>
+>  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
+> index d6a69dfcac3f..97cf42ae7fa0 100644
+> --- a/drivers/i2c/busses/i2c-stm32f4.c
+> +++ b/drivers/i2c/busses/i2c-stm32f4.c
+> @@ -93,6 +93,12 @@
+>  #define STM32F4_I2C_MAX_FREQ           46U
+>  #define HZ_TO_MHZ                      1000000
+>
+> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
+> +#define IIC_LAST_BYTE_POS 1
+> +#else
+> +#define IIC_LAST_BYTE_POS 2
+> +#endif
+> +
+>  /**
+>   * struct stm32f4_i2c_msg - client specific data
+>   * @addr: 8-bit slave addr, including r/w bit
+> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>         int i;
+>
+>         switch (msg->count) {
+> -       case 2:
+> +       case IIC_LAST_BYTE_POS:
+>                 /*
+>                  * In order to correctly send the Stop or Repeated Start
+>                  * condition on the I2C bus, the STOP/START bit has to be set
+> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>                 else
+>                         stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
+>
+> -               for (i = 2; i > 0; i--)
+> +               for (i = IIC_LAST_BYTE_POS; i > 0; i--)
+>                         stm32f4_i2c_read_msg(i2c_dev);
+>
+>                 reg = i2c_dev->base + STM32F4_I2C_CR2;
+> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>
+>                 complete(&i2c_dev->complete);
+>                 break;
+> -       case 3:
+> +       case (IIC_LAST_BYTE_POS+1):
+>                 /*
+>                  * In order to correctly generate the NACK pulse after the last
+>                  * received data byte, we have to enable NACK before reading N-2
+> --
+> 2.7.4
+>
