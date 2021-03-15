@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E90C33C025
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E6133C027
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhCOPjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:39:19 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:47371 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231319AbhCOPi7 (ORCPT
+        id S231365AbhCOPjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:39:47 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:54458 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231582AbhCOPj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:38:59 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 9AC5531BF;
-        Mon, 15 Mar 2021 11:38:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 15 Mar 2021 11:38:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=KihjirBI0y2LCr9iPZsXu9dfFf8
-        pbunm60I1vrevuGE=; b=re504VI5VPqIrJR8MMi+srNDk0IjO6ubqKasJEe3ORm
-        1EHe4TOIo8fgpTaRMZdSSjGQYrOuZdKUVIfz8x2f4vhzqrrd/DXOjYZi4tISrt9L
-        Nvg2SkUa+S0FPaqszG3PtYRZq9gSCUMt+e0x9xdBBF0baPS8dm9QKb5fFrhqa7MM
-        mP8XuefQd93CfkdiEt8DFLiallTTDWoxIAjrDGJVvhhMID8FceM6X8ndAdqnFBb5
-        rspt6atvo/6TmbQpNAGsYdp/Gp8RMfNM30FOeEfEL7kaZjecSndE7GJCB/PZjYYs
-        g+rjfocrpO53Vk2bvue0A5ipVcn6wsoRFHFsiTQ4mgQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Kihjir
-        BI0y2LCr9iPZsXu9dfFf8pbunm60I1vrevuGE=; b=MQzAFq+qdcJDVtzBc9yMnC
-        OOzx4GRjNXvILqXZRSMa4UDbzZP1MfKn7DZhgK+ck8RkQf44ZjA8+DyzXBhPLC/n
-        jTGH8nja5u1YZZj61JvofysltT1r5Ebn6O6MVSj2zyNfSnCKSCaEEZsO0Cc0m7zT
-        mMUB/qneGeh+lAu2e1+KgF3T3mm0WgsaLKB86K5PtVNu7c0ssv1CStYqVtNjn3eY
-        J5GnwbGSCgQUp+IH/RsZPvddmwzWNgUnOKlzjXJxnUl+K4cJTtIU4pRziCGGPfdP
-        epq2ChLSEQ3HgeOCK1wS60tnChwb7Ptu9l5vqHE7GKyZ67YKQ8TsMsvoYXJ78dKg
-        ==
-X-ME-Sender: <xms:kH9PYA_YrGTzMsQpo2uHZf6DjP1X2ZuMXhl7WlIMXqjI93pJLRQwSQ>
-    <xme:kH9PYIuUf5-eKXm6xWVvSHvN0SmQOIaiMKDAVFfgftbX8G5vQz-9BkL2TyTI18kBh
-    Fvwyxmq72YUjFJ6w74>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:kH9PYGB5S_rg0ds1IlQt0YnIxjHR6w0PUBDgesUJTJq0TKkB9A36QQ>
-    <xmx:kH9PYAdaksqpqpJyfe0DKhXNivzlHQLqs-jAy-1_H-qJapG88uYfAQ>
-    <xmx:kH9PYFNj6gmyv9F3-sg-GMxgYzCji5pUpfn_3o9PPbuRZTXniMrV9A>
-    <xmx:kn9PYI1cSOLStsJL3JxyhNbj_no9Pn3_1N1QORaPjjlWM0gAIM9Tkw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 947471080063;
-        Mon, 15 Mar 2021 11:38:56 -0400 (EDT)
-Date:   Mon, 15 Mar 2021 16:38:54 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Cc:     thierry.reding@gmail.com,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        wens@csie.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] pwm: sunxi: Add Allwinner SoC PWM controller
- driver
-Message-ID: <20210315153854.3p6d2uarwzcatk2b@gilmour>
-References: <20210302123737.1867-1-fengzheng923@gmail.com>
- <20210304160747.pblbugvgsa2oueqi@gilmour>
- <CAE=m61_X7YAZ_X5ZiWY4g04Mfk+AY0-TrvDsXmVk73kq0LPWCA@mail.gmail.com>
+        Mon, 15 Mar 2021 11:39:27 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FFFx3k008868;
+        Mon, 15 Mar 2021 10:39:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=0A7AcxMf6UOqUDVa39Cytpo/grM8iUnprLulx9C6ZM4=;
+ b=SMSM1Mxvu7Kmi0nvpLeLKc/0rAWiPU+B2tkFjgmIsutlBdJtm5qtZCbs5lFKdxqaQYcU
+ XYbkPsSCcvXe+g/2Dum8L7QhZKrhNh1HVrEGmeBDnYj1VPGggVMlCy7rGg4SjkbVZFzs
+ n0YBSEM3oUf261Zosc6E/wbmH7fnG25DtWeHZQ+91yYkgYWnL2S08QfReML0rzzccGOW
+ 7MzyPEwGdutv8vDHDFntXwkKSZ6CU/6oavVCsi9xZJE/7BS1cet9tZMH4Vq6j+uRRTGn
+ LZnjb0NIAHMrvXP3QgrXkeUJoy0aQcNbxWw5r98m12WlYd7HSJLsPRSpDcGek/32DVwX 6Q== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3790bs26xd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 15 Mar 2021 10:39:18 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
+ 2021 15:39:16 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Mon, 15 Mar 2021 15:39:16 +0000
+Received: from [198.90.238.45] (unknown [198.90.238.45])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C234E11D6;
+        Mon, 15 Mar 2021 15:39:14 +0000 (UTC)
+Subject: Re: [PATCH v1 4/4] ALSA: hda/cirrus: Make CS8409 driver more generic
+ by using fixups.
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
+ <20210313113410.90088-5-vitalyr@opensource.cirrus.com>
+ <s5hsg4wrh3v.wl-tiwai@suse.de>
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Message-ID: <9dc404d3-9824-ab8a-7b7d-816aa05a5986@opensource.cirrus.com>
+Date:   Mon, 15 Mar 2021 15:39:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2lo5rsjkxxw57v4h"
-Content-Disposition: inline
-In-Reply-To: <CAE=m61_X7YAZ_X5ZiWY4g04Mfk+AY0-TrvDsXmVk73kq0LPWCA@mail.gmail.com>
+In-Reply-To: <s5hsg4wrh3v.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103150110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/03/2021 7:49 am, Takashi Iwai wrote:
+> On Sat, 13 Mar 2021 12:34:10 +0100,
+> Vitaly Rodionov wrote:
+>> @@ -1357,6 +1362,22 @@ static const struct hda_verb cs8409_cs42l42_init_verbs[] = {
+>>   	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0080 },     /* I2C mode */
+>>   	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x005b },     /* Set I2C bus speed */
+>>   	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0200 },     /* 100kHz I2C_STO = 2 */
+>> +	{ 0x24, AC_VERB_SET_CONFIG_DEFAULT_BYTES_0, 0xF0 }, /* Widget node ASP-1-TX */
+>> +	{ 0x24, AC_VERB_SET_CONFIG_DEFAULT_BYTES_1, 0x20 },
+>> +	{ 0x24, AC_VERB_SET_CONFIG_DEFAULT_BYTES_2, 0x21 },
+>> +	{ 0x24, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3, 0x04 },
+>> +	{ 0x34, AC_VERB_SET_CONFIG_DEFAULT_BYTES_0, 0x50 }, /* Widget node ASP-1-RX0 */
+>> +	{ 0x34, AC_VERB_SET_CONFIG_DEFAULT_BYTES_1, 0x20 },
+>> +	{ 0x34, AC_VERB_SET_CONFIG_DEFAULT_BYTES_2, 0xa1 },
+>> +	{ 0x34, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3, 0x04 },
+>> +	{ 0x2C, AC_VERB_SET_CONFIG_DEFAULT_BYTES_0, 0xF0 }, /* Widget node ASP-2-TX */
+>> +	{ 0x2C, AC_VERB_SET_CONFIG_DEFAULT_BYTES_1, 0x00 },
+>> +	{ 0x2C, AC_VERB_SET_CONFIG_DEFAULT_BYTES_2, 0x10 },
+>> +	{ 0x2C, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3, 0x90 },
+>> +	{ 0x44, AC_VERB_SET_CONFIG_DEFAULT_BYTES_0, 0x90 }, /* Widget node DMIC-1 */
+>> +	{ 0x44, AC_VERB_SET_CONFIG_DEFAULT_BYTES_1, 0x00 },
+>> +	{ 0x44, AC_VERB_SET_CONFIG_DEFAULT_BYTES_2, 0xA0 },
+>> +	{ 0x44, AC_VERB_SET_CONFIG_DEFAULT_BYTES_3, 0x90 },
+> Those widgets are all pin widgets, right?  If so, setting via the
+> pincfg table would be more suitable, as it's cached and exposed via
+> sysfs for debugging.
 
---2lo5rsjkxxw57v4h
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, you are right, actually we already have these widgets in pincfg 
+table, so this code is redundant.
 
-Hi!
+Will fix in next version.
 
-On Mon, Mar 08, 2021 at 10:47:03AM +0800, =E7=8F=AD=E6=B6=9B wrote:
-> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B43=E6=9C=885=E6=97=
-=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=8812:07=E5=86=99=E9=81=93=EF=BC=9A
->=20
-> > Hi,
-> >
-> > On Tue, Mar 02, 2021 at 08:37:37PM +0800, Ban Tao wrote:
-> > > From: Ban Tao <fengzheng923@gmail.com>
-> > >
-> > > The Allwinner R818, A133, R329, V536 and V833 has a new PWM controller
-> > > IP compared to the older Allwinner SoCs.
-> > >
-> > > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-> >
-> > Thanks for sending an update.
-> >
-> > Like I said in the previous version though, without proper SoC support
-> > upstream, that driver would effectively be dead code
-> >
->=20
-> I'm not sure if the latest Linux code supports R818, A133, R329, V536 or
-> V833,
+>
+>
+> thanks,
+>
+> Takashi
 
-It doesn't at the moment...
 
-> But the driver supports most of the sun50i family of SoCs and some of the
-> sun8i SoCs.
-> Maybe I shouldn't submit this code right now...
-
-=2E.. but if that driver can drive controllers found on other SoCs that we
-support already, then you're very welcome to work on those first :)
-
-Maxime
-
---2lo5rsjkxxw57v4h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE9/jgAKCRDj7w1vZxhR
-xbp7AP9tXT/cAsA0a7cCF482qX6R6//ybLvT4uWUAcKfz4eZUwD/ZebQpz449bQs
-Coq4CQv8bG57kqddyB+YmkyawsWIlgM=
-=q6Yf
------END PGP SIGNATURE-----
-
---2lo5rsjkxxw57v4h--
