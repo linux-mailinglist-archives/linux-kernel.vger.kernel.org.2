@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC05833BD1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D772E33BD4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239397AbhCOOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S233276AbhCOOd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhCOOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 152BE61477;
-        Mon, 15 Mar 2021 14:00:33 +0000 (UTC)
+        id S233376AbhCOOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C0864FAB;
+        Mon, 15 Mar 2021 14:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816835;
-        bh=GTeUtwzfq/978IFxOmeHTwhMilYuUVY1oe7gQEu1PeU=;
+        s=korg; t=1615816866;
+        bh=6l8rwjeuK1Wifa+KWPbGb6ZQnQvOs+p5WE2NX50jh9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T1tZju5bfeeMaAcNV/Zt1bhx9wi4OtuRNTKZKYSVWlpuah/TgfxjUtQdBJOxSM/++
-         a16P3dNC48rvZhCV4TO5uESf+nH3Ep0h7L+pCIJGFgv5wb4UOwIKzydHCYtasQ6WB7
-         0ER3wQthCXvx1/JLYOaQuPLtUEWhjC/PMpbp7ZdY=
+        b=AE8HuaiwHQ0QfewNye6q3V6ErzwrVUF3yKga7kQMCLWzbIrXAT6YDtzFQ8ORTjgwI
+         3z7pvH64EldBj7sO1v/khT5u3LIswe9KcgcBhvmZADSw1uh8FBrHFawRpT4NCEm7f4
+         l5J/Jd7rqvdZZn/PoHgIC5EB8gkkCErur5htg1CI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 141/290] spi: stm32: make spurious and overrun interrupts visible
-Date:   Mon, 15 Mar 2021 14:53:54 +0100
-Message-Id: <20210315135546.680216630@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 172/306] ALSA: usb-audio: Apply the control quirk to Plantronics headsets
+Date:   Mon, 15 Mar 2021 14:53:55 +0100
+Message-Id: <20210315135513.430916118@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit c64e7efe46b7de21937ef4b3594d9b1fc74f07df ]
+commit 06abcb18b3a021ba1a3f2020cbefb3ed04e59e72 upstream.
 
-We do not expect to receive spurious interrupts so rise a warning
-if it happens.
+Other Plantronics headset models seem requiring the same workaround as
+C320-M to add the 20ms delay for the control messages, too.  Apply the
+workaround generically for devices with the vendor ID 0x047f.
 
-RX overrun is an error condition that signals a corrupted RX
-stream both in dma and in irq modes. Report the error and
-abort the transfer in either cases.
+Note that the problem didn't surface before 5.11 just with luck.
+Since 5.11 got a big code rewrite about the stream handling, the
+parameter setup procedure has changed, and this seemed triggering the
+problem more often.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1612551572-495-9-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182552
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210304085009.4770-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-stm32.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ sound/usb/quirks.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6eeb39669a86..53c4311cc6ab 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -928,8 +928,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 		mask |= STM32H7_SPI_SR_RXP;
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1672,10 +1672,10 @@ void snd_usb_ctl_msg_quirk(struct usb_de
+ 		msleep(20);
  
- 	if (!(sr & mask)) {
--		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
--			sr, ier);
-+		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
-+			 sr, ier);
- 		spin_unlock_irqrestore(&spi->lock, flags);
- 		return IRQ_NONE;
- 	}
-@@ -956,15 +956,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	}
+ 	/*
+-	 * Plantronics C320-M needs a delay to avoid random
+-	 * microhpone failures.
++	 * Plantronics headsets (C320, C320-M, etc) need a delay to avoid
++	 * random microhpone failures.
+ 	 */
+-	if (chip->usb_id == USB_ID(0x047f, 0xc025)  &&
++	if (USB_ID_VENDOR(chip->usb_id) == 0x047f &&
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
  
- 	if (sr & STM32H7_SPI_SR_OVR) {
--		dev_warn(spi->dev, "Overrun: received value discarded\n");
--		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
--			stm32h7_spi_read_rxfifo(spi, false);
--		/*
--		 * If overrun is detected while using DMA, it means that
--		 * something went wrong, so stop the current transfer
--		 */
--		if (spi->cur_usedma)
--			end = true;
-+		dev_err(spi->dev, "Overrun: RX data lost\n");
-+		end = true;
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_EOT) {
--- 
-2.30.1
-
 
 
