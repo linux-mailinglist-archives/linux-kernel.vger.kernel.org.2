@@ -2,470 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3425D33C2F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2B033C2F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhCOQ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:59:06 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:13840 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234699AbhCOQ6a (ORCPT
+        id S235064AbhCOQ7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:59:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:56614 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232557AbhCOQ6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:58:30 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FGmgbl030888;
-        Mon, 15 Mar 2021 11:58:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=CweXAMDfV7EpGgsjI38jOkicRqdv2/vHXx7pGkULT2U=;
- b=lMij/on6Sfn4xTWZgPXX4J+L47osvn7m6BmDpfVieRtWArTyGzfzVkVOzyff0m2CVowd
- gyu10elrl+iICzZDI9TlrJGUB7OZWqI74eNquxdk0YoiGmETGfD5hJ9VAR+X7/kA2lDj
- 8P8m7buzJRR+pOWmU4Fawl/2tMG4Us6IJZBqUWqhV5xYo8sucxBJPckKWtA6jq3zw82t
- jTgWDoTLU5GRqgFHG4Ju8/+QfA8z95fzYVAOIcKlpPbNQs/UM01QxjmmLS1xPvt7eQ7B
- kCoJYP7lq/wZwX7e0q8hOmS14a0uLt7lPasxM3IU/ho6ssHTpshLTNWwTYvG+l+wA7aD ug== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3790bs2bks-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 15 Mar 2021 11:58:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
- 2021 16:57:08 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 15 Mar 2021 16:57:08 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DFBE011D7;
-        Mon, 15 Mar 2021 16:57:07 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 4/4] ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
-Date:   Mon, 15 Mar 2021 16:57:06 +0000
-Message-ID: <20210315165706.3629-5-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315165706.3629-1-vitalyr@opensource.cirrus.com>
-References: <20210315165706.3629-1-vitalyr@opensource.cirrus.com>
+        Mon, 15 Mar 2021 12:58:25 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FGjkOV151374;
+        Mon, 15 Mar 2021 16:57:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ subject : from : in-reply-to : date : cc : content-transfer-encoding :
+ message-id : references : to : mime-version; s=corp-2020-01-29;
+ bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
+ b=p9AysWlBJsScrHRdGD86f8piOP/gmLOzb4UCpzQ/Tl1L2ZXrpzXhVNs6ek94XQvMZDvx
+ 663Dt3h0/xF37C8GMx+ZnscvlNYN8I1c5DO8xHOxNzOrTPrlIxyYEtEc8LAdx1jUd0BH
+ vvouwt1SCB6aQ7SoQhBBWP/Qxre1/b0B4OEXNbxoRwKY3mkHRwpPBa0hLcvwlB3WOR4L
+ R3ZPqCWur17vjAlQXRfy8IxNUYJ+N0nwkVtFZ1T3OLTlODN6yYpYXLq224U9u5jnsUbp
+ czP4wo8JN5jO86ZUEaacRBLCk6HOmf8ssdZchtejA7SD1eo1BYVzPDvb7Gm3U8ajrbpk ng== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 378p1nmk08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 16:57:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FGk646075085;
+        Mon, 15 Mar 2021 16:57:45 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
+        by userp3030.oracle.com with ESMTP id 3797axxh6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 16:57:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hxKmvBEDr/SC6py9v/JwxXpz9mR14t1XFp8Dkre5pcZoIi9K6+7XkO1RhvHxFgASgV9GEIvebH/jk9/9640Ns7Yam5pR9inhBeVBwL0T8f7UZy0lKUvXXZ6xAhb5Hx1nPe8hYjU1DC3B7NMSfoETdJDPhd1ZrszSiiOnX8eUpixgagbJ+cwHQ2/0Q6NuWkpkKk5pE2hWtfv683vViIahv6k5bt3SAK0me1twwrsQHU5X7Jo8UjQpMrVveLsTHUAppemjYuP7g8/uElbH4cYrO8xsDwpZHMPWbOcMqyJMt7o6tCgPhaDJ55hbyY//ro0howzdTmSszQRYyBCGrpA/0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
+ b=TMQqViM4OQzpDNkPEuq64S/fJKiD+VX6wJMKj12ZlaXeOwepPvhEPLy/P6DPW75JIrdxgs1XTjirZldgndP8qVAIoTdNGSkcpHly2k6SJtlDPy7qVH7MotXfovBTN4xT1dBJe1Br2mRaCbWLs0fJNCl4pRxVju2QhUacuSAaqvM+3T4Lj7yW8l33iaIuQhLEaNsr7oTtiTBECwHqwaxXmGX/GQXDJfgDvLhlknBkLt9c7JnDXQ0HwYNMPJZByeNYtEWMApqOqH0Hx0/zND8rckCAa3nTV7FsjWOd4UjpNMBh1d6CikcYYQ035BsRAk0HIYmO1Y+af44dEe4R2Ub4Mw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
+ b=rvNHcI9iiLKu/xrP4rAzujSK40uMb5tVOk4SoPkUaxgch3pUiIqaqhrwWEdIBpqtpccR1Jlt3G61yF5FWTDVRjuMx3zsj07utROdybppX/Btl+nvh4VquzkT+ZbYJ3lXGNjelEtwvOne5hQArD0i6py08PYdoQnTguK8dMvhPzg=
+Authentication-Results: digikod.net; dkim=none (message not signed)
+ header.d=none;digikod.net; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by CH2PR10MB3768.namprd10.prod.outlook.com (2603:10b6:610:7::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Mon, 15 Mar
+ 2021 16:57:43 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::95df:950e:af4c:a5df]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::95df:950e:af4c:a5df%9]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
+ 16:57:43 +0000
+Content-Type: text/plain; charset=utf-8
+Subject: Re: [PATCH v7 1/5] tools/certs: Add print-cert-tbs-hash.sh
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+In-Reply-To: <20210312171232.2681989-2-mic@digikod.net>
+Date:   Mon, 15 Mar 2021 10:57:35 -0600
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0BB27C1C-9B66-4671-B3F5-B4C505955CC6@oracle.com>
+References: <20210312171232.2681989-1-mic@digikod.net>
+ <20210312171232.2681989-2-mic@digikod.net>
+To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+X-Mailer: Apple Mail (2.3273)
+X-Originating-IP: [24.52.35.144]
+X-ClientProxiedBy: BY3PR03CA0015.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::20) To CH2PR10MB4150.namprd10.prod.outlook.com
+ (2603:10b6:610:ac::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.16.177.128] (24.52.35.144) by BY3PR03CA0015.namprd03.prod.outlook.com (2603:10b6:a03:39a::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 16:57:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b81d12ba-f105-4de8-6fd9-08d8e7d37361
+X-MS-TrafficTypeDiagnostic: CH2PR10MB3768:
+X-Microsoft-Antispam-PRVS: <CH2PR10MB37688642D5F9F1B240882B96876C9@CH2PR10MB3768.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:69;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KyMGOksJLqFlTW6xUIU3oEe78aQa4kZtmtE4jT7jMmJSmvIqHFaPuO9r0Eg2BT63+YB6Ip4MUMvqt9qaEmcmOSLG0eBiLm0lIA8wEV62qT9GNr4w75gnKE15Wh0eUPg/2y+1VO3SfnQOf9LuQfvCYpc8/IqLvPv+PXT7nJkErLxAsnHb0YPbDL6Qfui2iEXw6atALQ73LYrTY9x7AJSeKuja75KVn/J4oy/jd8WA6MdBWJMEyP5WBc4uVchguN21o8lnlz8/qhXqVMPYO/UYHK/XU5nZTXa0D/SFK9znWNqngcb9eoa5oTaBBs3e2EdJ7O1REOkrojdAUQL3LHZ9QFeBsTzayW+3uOJ1UEKB4ahIHC1XxMKNNJlxybDo7ngixoP1QNmDLSi18q9x1q/UeutuFEXALR0MpXCs+R9SQ5k4vB4226/2rbtUCAwDmpTHE5p6LsUbUAjOTAxVrpN3U0ikMX9qp9be07u3nGpr3Hi2fsvbBIWI1kzfsLOAbpz1LDln4zf70+/sSzKXGmTYJwECsHntb2GmEpMPP9sZHoAo9ENdtRWom2voW+50Lg3sQ46wTjp/C/M4dU9IwuZUo/VDX/L2/2eA0+Z7O9ePeqCa02Bw9Xe0CLfc+CtxnYVSpj94bOvTqMr0NZbZZwl96VDvrH9WiP/sfxLp1ttHuza525k1dNS05B0TQtbKLKoZCBkh5Ie7aOrJdGUVMlaK1jQEuYYm/APatWHsnyT1PMo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(136003)(39860400002)(66574015)(6916009)(2906002)(66946007)(7416002)(8676002)(2616005)(16526019)(4326008)(5660300002)(186003)(26005)(478600001)(6666004)(83380400001)(45080400002)(86362001)(966005)(66476007)(16576012)(316002)(66556008)(6486002)(44832011)(33656002)(36756003)(8936002)(52116002)(54906003)(53546011)(956004)(45980500001)(414714003)(473944003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q2loZHhQZTBDYkEzSm5iTVdtbmlWd0VzdnBQem9ldG1Oci9NNDhucElzekpU?=
+ =?utf-8?B?L2JtRGJNeWwxK3lmOXlNQnQ1ZHFxY1ZiZEU0N1VGU1hqaHJUQmVzNHV4OUMr?=
+ =?utf-8?B?TUdZdVU4K1dkb1FiaklmMFpNZ2JLaWdsZlZrN1ZyZmVZeUJvZURTSzgwS1cv?=
+ =?utf-8?B?Y0lVakxQUys5QnVGNUdrc0xBb0pjNVdEajdGdFlZTGF0TnY1MUVHN1NzRDRK?=
+ =?utf-8?B?UldXT0Y5ejZISnZSV0hYMzNRdVBoTVdVMjNsUkxIYmJaa2l6SlBJZ3crLzFt?=
+ =?utf-8?B?OUNnV3pibUh0VU9ybUQ4emdtU3N6T3BnM0tGNUdjTWdDald5OFlSTkFGNzF4?=
+ =?utf-8?B?eTBPSE9lZ1BBWWdzR0dzT1BRV0VZWUNSdDRjR1Rla3BlZDJKbmw4Yno5UkJ1?=
+ =?utf-8?B?ZmJ6M0F1VHM3QzAyaEZrMUJUWGpwVi9MQWVUWjVkVDljaGJGMmdsMFIwOVhq?=
+ =?utf-8?B?czZzWFNpT3RzbkovUTk0MVVxVlpPN3B4SFpOR1pvaGwrYVRFNFRMaWd2ZFpN?=
+ =?utf-8?B?KzVSei9waUFCZFRRd2RDRDIrSFdBTm14NUdJb2tRL3Zya1hjYmhGZWY0T1Vi?=
+ =?utf-8?B?V1NDVkFuMDh3elI3WEpZV0dGTUJjbEhnZnM1djJHV0RRODJueVIzbnBGbnBQ?=
+ =?utf-8?B?bUhxTkt1cmhQVXJSdXF6bmNScDMyWWJiM1ZMRFh0MlhrakN1cFlicVNyUVQr?=
+ =?utf-8?B?TjhYUko0ckhwMDJHQUw4YmRrbStEenYrOWtZVEtHMVpjamZ1Rzc3ajFpRG9p?=
+ =?utf-8?B?ekdKbVVPNGY2N0VVT2F4VVNSSFpWVEp3bWdmbWdISEJ0dm9lT3d3MUVmdXhH?=
+ =?utf-8?B?UWxHaWZvSTV2cXozdkV2N21iaG5wT0d5anBMMjJYQ3o2UFdCd0R3YUZ5S0FJ?=
+ =?utf-8?B?TUlWazFDSDE2QXU1ZjRHNEtSZjAzTkd2ZzBXaDEwWldXNW5iMytUUUhkdmxt?=
+ =?utf-8?B?UW1CNy9rK05tME1Zb0FTNFhqYVhIRzJtQUJKaGVNVFN4V3M1cEFiMHBtUDJm?=
+ =?utf-8?B?V0dUNmUzTndHZGpDUThDZzVMQjJtVDNkT1VvY3FKUTJKTHlzdENDVldKNEFO?=
+ =?utf-8?B?NFlaVVBDRW5xS3JkRWQ0SjJHdDdValNhYVVZWkVqTEhob1VGT1AyZ3EvNGJm?=
+ =?utf-8?B?MXBUSmp4WWhpR2ZKeXc0cEc1UUh6WHRyM256ZXdTckRUWUw5QUFtSHU0RHh1?=
+ =?utf-8?B?S3diRVhhNjg1VDMxTkQ1TWpBeUpoU2tMSmgvVlBjejlid0RCUHlTc1pOaDRJ?=
+ =?utf-8?B?Rk1SQTJXaVhXYzBtbnAyZGkxaXc3ek5WSWMyRzlJRlA3Y2x1QXFic2hWN0xS?=
+ =?utf-8?B?VHB4ZGRvWHNNZzJFV3BNNWU4S29HalR4a2xoV09yUjZ5NlJqa3JsampFRS9m?=
+ =?utf-8?B?UjA0SXZYb2JIZUtCTUM0SG02cFRQQWlrbUtzSXNQOWV4ZmM2RVVrQjdqWTI4?=
+ =?utf-8?B?dWJ6TjhNa0srVGpSZXE1a3lBRmRCOUVwQjZTT3JNYmsza0J3dldvSUIyWnNX?=
+ =?utf-8?B?cTFkMytiQzRkRG15b0pTU0N4YVB6YkRqUHhXVjZnWTBBcVhCS0ZXb2FjS05s?=
+ =?utf-8?B?TGtRaVlINkkveFlXZTVta1RvMkcrY0tiR3lDdkNZZnY5Wkt3Q1lrelh3N2Nz?=
+ =?utf-8?B?bFdwbjVYUE1lY2dLc2g1TGdQV25SOEJqbUwzQTFodFFWSUdHNVk5UllPbmUy?=
+ =?utf-8?B?SWRWeHdiODhqZzFGdENXL1VtbEFUbW96dXZZV0xnMWJaSFFzZ0l6TUR0dTYz?=
+ =?utf-8?Q?c5jUu/MJCKLvHYb2UYfl9/0CKZvKVGISz+khN3q?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b81d12ba-f105-4de8-6fd9-08d8e7d37361
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 16:57:43.4125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Tkcd0GVlt/jf7gv6D1XvS4Kc90u7tU7UQ3uxerhFaUE3ThiWxHHwBjFOMKw8RbYphoA7Q+tKtBsmJRmUW9yzb114BWB5fTdH46n9RnMl0r4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB3768
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103150114
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103150114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-CS8409/CS42L42 Driver currently does most of the platform specific
-setup inside the main body of the code, however, this setup can be
-moved into fixup functions, to make the driver more generic.
+> On Mar 12, 2021, at 10:12 AM, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
+wrote:
+>=20
+> From: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+>=20
+> Add a new helper print-cert-tbs-hash.sh to generate a TBSCertificate
+> hash from a given certificate.  This is useful to generate a blacklist
+> key description used to forbid loading a specific certificate in a
+> keyring, or to invalidate a certificate provided by a PKCS#7 file.
+>=20
+> This kind of hash formatting is required to populate the file pointed
+> out by CONFIG_SYSTEM_BLACKLIST_HASH_LIST, but only the kernel code was
+> available to understand how to effectively create such hash.
+>=20
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Eric Snowberg <eric.snowberg@oracle.com>
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Link: https://lore.kernel.org/r/20210312171232.2681989-2-mic@digikod.net
 
-Making the driver more generic, allows the driver to use the
-cs_parse_auto_config function in the patch function. This function
-forces all of the ADCs to be permanently powered, which means the
-cap_sync_hook function is no longer needed to restart the stream, when
-the jack has been ejected.
+Tested-by: Eric Snowberg <eric.snowberg@oracle.com>
 
-Since the codec is re-initialized on every init/resume, there is no
-need to add specific verbs to be run on init, and instead these can
-be combined with the initialization verbs, which are run on init.
-
-In addition, the extra fixup verbs are no longer required, since this
-is taken care of elsewhere.
-
-Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cirrus.c | 280 ++++++++++++-----------------------
- 1 file changed, 98 insertions(+), 182 deletions(-)
-
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index b64c11e8c8a1..965e4357f030 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1292,9 +1292,14 @@ enum {
- 	CS8409_BULLSEYE,
- 	CS8409_WARLOCK,
- 	CS8409_CYBORG,
--	CS8409_VERBS,
-+	CS8409_FIXUPS,
- };
- 
-+static void cs8409_cs42l42_fixups(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action);
-+static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-+		unsigned int cmd, unsigned int flags, unsigned int *res);
-+
- /* Dell Inspiron models with cs8409/cs42l42 */
- static const struct hda_model_fixup cs8409_models[] = {
- 	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
-@@ -1368,48 +1373,28 @@ static const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
- 	{} /* terminator */
- };
- 
--static const struct hda_verb cs8409_cs42l42_add_verbs[] = {
--	{ 0x24, 0x71c, 0xF0 }, /* Widget node ASP-1-TX */
--	{ 0x24, 0x71d, 0x20 },
--	{ 0x24, 0x71e, 0x21 },
--	{ 0x24, 0x71f, 0x04 },
--	{ 0x34, 0x71c, 0x50 }, /* Widget node ASP-1-RX0 */
--	{ 0x34, 0x71d, 0x20 },
--	{ 0x34, 0x71e, 0xa1 },
--	{ 0x34, 0x71f, 0x04 },
--	{ 0x2C, 0x71c, 0xF0 }, /* Widget node ASP-2-TX */
--	{ 0x2C, 0x71d, 0x00 },
--	{ 0x2C, 0x71e, 0x10 },
--	{ 0x2C, 0x71f, 0x90 },
--	{ 0x44, 0x71c, 0x90 }, /* Widget node DMIC-1 */
--	{ 0x44, 0x71d, 0x00 },
--	{ 0x44, 0x71e, 0xA0 },
--	{ 0x44, 0x71f, 0x90 },
--	{} /* terminator */
--};
--
- static const struct hda_fixup cs8409_fixups[] = {
- 	[CS8409_BULLSEYE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
- 	[CS8409_WARLOCK] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
- 	[CS8409_CYBORG] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
--	[CS8409_VERBS] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = cs8409_cs42l42_add_verbs,
-+	[CS8409_FIXUPS] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cs8409_cs42l42_fixups,
- 	},
- };
- 
-@@ -2004,26 +1989,6 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
- }
- 
--static int cs8409_cs42l42_build_controls(struct hda_codec *codec)
--{
--	int err;
--
--	err = snd_hda_gen_build_controls(codec);
--	if (err < 0)
--		return err;
--
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_BUILD);
--
--	/* Run jack auto detect first time on boot
--	 * after controls have been added, to check if jack has
--	 * been already plugged in
--	 */
--	cs8409_cs42l42_run_jack_detect(codec);
--	usleep_range(100000, 150000);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM
- /* Manage PDREF, when transition to D3hot */
- static int cs8409_suspend(struct hda_codec *codec)
-@@ -2044,31 +2009,6 @@ static int cs8409_suspend(struct hda_codec *codec)
- }
- #endif
- 
--static void cs8409_cs42l42_cap_sync_hook(struct hda_codec *codec,
--					 struct snd_kcontrol *kcontrol,
--					 struct snd_ctl_elem_value *ucontrol)
--{
--	struct cs_spec *spec = codec->spec;
--	unsigned int curval, expval;
--	/* CS8409 DMIC Pin only allows the setting of the Stream Parameters in
--	 * Power State D0. When a headset is unplugged, and the path is switched to
--	 * the DMIC, the Stream is restarted with the new ADC, but this is done in
--	 * Power State D3. Restart the Stream now DMIC is in D0.
--	 */
--	if (spec->gen.cur_adc == CS8409_CS42L42_DMIC_ADC_PIN_NID) {
--		curval = snd_hda_codec_read(codec, spec->gen.cur_adc,
--			0, AC_VERB_GET_CONV, 0);
--		expval = (spec->gen.cur_adc_stream_tag << 4) | 0;
--		if (curval != expval) {
--			codec_dbg(codec, "%s Restarting Stream after DMIC switch\n", __func__);
--			__snd_hda_codec_cleanup_stream(codec, spec->gen.cur_adc, 1);
--			snd_hda_codec_setup_stream(codec, spec->gen.cur_adc,
--					   spec->gen.cur_adc_stream_tag, 0,
--					   spec->gen.cur_adc_format);
--		}
--	}
--}
--
- /* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
- static void cs8409_enable_ur(struct hda_codec *codec, int flag)
- {
-@@ -2152,25 +2092,14 @@ static int cs8409_cs42l42_init(struct hda_codec *codec)
- {
- 	int ret = snd_hda_gen_init(codec);
- 
--	if (!ret) {
--		/* On Dell platforms with suspend D3 mode support we
--		 * have to re-initialise cs8409 bridge and companion
--		 * cs42l42 codec
--		 */
--		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
--		snd_hda_sequence_write(codec, cs8409_cs42l42_add_verbs);
--
--		cs8409_cs42l42_hw_init(codec);
--
--		cs8409_cs42l42_run_jack_detect(codec);
--		usleep_range(100000, 150000);
--	}
-+	if (!ret)
-+		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
- 
- 	return ret;
- }
- 
- static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
--	.build_controls = cs8409_cs42l42_build_controls,
-+	.build_controls = cs_build_controls,
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cs8409_cs42l42_init,
- 	.free = cs_free,
-@@ -2180,66 +2109,91 @@ static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
- #endif
- };
- 
--static int cs8409_cs42l42_fixup(struct hda_codec *codec)
-+static void cs8409_cs42l42_fixups(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
- {
--	int err;
- 	struct cs_spec *spec = codec->spec;
- 	int caps;
- 
--	/* Basic initial sequence for specific hw configuration */
--	snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
--
--	/* CS8409 is simple HDA bridge and intended to be used with a remote
--	 * companion codec. Most of input/output PIN(s) have only basic
--	 * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
--	 * capabilities and no presence detect capable (PDC) and call to
--	 * snd_hda_gen_build_controls() will mark them as non detectable
--	 * phantom jacks. However, in this configuration companion codec
--	 * CS42L42 is connected to these pins and it has jack detect
--	 * capabilities. We have to override pin capabilities,
--	 * otherwise they will not be created as input devices.
--	 */
--	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
--			AC_PAR_PIN_CAP);
--	if (caps >= 0)
--		snd_hdac_override_parm(&codec->core,
--			CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
--			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
--			AC_PAR_PIN_CAP);
--	if (caps >= 0)
--		snd_hdac_override_parm(&codec->core,
--			CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
--			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--	snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
--		(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
--
--	snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
--		(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_add_verbs(codec, cs8409_cs42l42_init_verbs);
-+		/* verb exec op override */
-+		spec->exec_verb = codec->core.exec_verb;
-+		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
- 
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
-+		mutex_init(&spec->cs8409_i2c_mux);
- 
--	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, 0, 0);
--	if (err < 0)
--		return err;
-+		codec->patch_ops = cs8409_cs42l42_patch_ops;
- 
--	err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
--	if (err < 0)
--		return err;
-+		spec->gen.suppress_auto_mute = 1;
-+		spec->gen.no_primary_hp = 1;
-+		spec->gen.suppress_vmaster = 1;
- 
--	if (!snd_hda_gen_add_kctl(
--			&spec->gen, NULL, &cs8409_cs42l42_hp_volume_mixer))
--		return -1;
-+		/* GPIO 5 out, 3,4 in */
-+		spec->gpio_dir = GPIO5_INT;
-+		spec->gpio_data = 0;
-+		spec->gpio_mask = 0x03f;
- 
--	if (!snd_hda_gen_add_kctl(
--			&spec->gen, NULL, &cs8409_cs42l42_amic_volume_mixer))
--		return -1;
-+		spec->cs42l42_hp_jack_in = 0;
-+		spec->cs42l42_mic_jack_in = 0;
- 
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
-+		/* Basic initial sequence for specific hw configuration */
-+		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
- 
--	return 0;
-+		/* CS8409 is simple HDA bridge and intended to be used with a remote
-+		 * companion codec. Most of input/output PIN(s) have only basic
-+		 * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
-+		 * capabilities and no presence detect capable (PDC) and call to
-+		 * snd_hda_gen_build_controls() will mark them as non detectable
-+		 * phantom jacks. However, in this configuration companion codec
-+		 * CS42L42 is connected to these pins and it has jack detect
-+		 * capabilities. We have to override pin capabilities,
-+		 * otherwise they will not be created as input devices.
-+		 */
-+		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
-+				AC_PAR_PIN_CAP);
-+		if (caps >= 0)
-+			snd_hdac_override_parm(&codec->core,
-+				CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
-+				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
-+
-+		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
-+				AC_PAR_PIN_CAP);
-+		if (caps >= 0)
-+			snd_hdac_override_parm(&codec->core,
-+				CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
-+				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
-+
-+		snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
-+			(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+
-+		snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
-+			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+		break;
-+	case HDA_FIXUP_ACT_PROBE:
-+		snd_hda_gen_add_kctl(&spec->gen,
-+			NULL, &cs8409_cs42l42_hp_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen,
-+			NULL, &cs8409_cs42l42_amic_volume_mixer);
-+		cs8409_cs42l42_hw_init(codec);
-+		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		cs8409_cs42l42_hw_init(codec);
-+		// Fall through
-+	case HDA_FIXUP_ACT_BUILD:
-+		/* Run jack auto detect first time on boot
-+		 * after controls have been added, to check if jack has
-+		 * been already plugged in.
-+		 * Run immediately after init.
-+		 */
-+		cs8409_cs42l42_run_jack_detect(codec);
-+		usleep_range(100000, 150000);
-+		break;
-+	default:
-+		break;
-+	}
- }
- 
- static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-@@ -2280,11 +2234,9 @@ static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
- 
- static int patch_cs8409(struct hda_codec *codec)
- {
--	struct cs_spec *spec;
--	int err = -EINVAL;
-+	int err;
- 
--	spec = cs_alloc_spec(codec, CS8409_VENDOR_NID);
--	if (!spec)
-+	if (!cs_alloc_spec(codec, CS8409_VENDOR_NID))
- 		return -ENOMEM;
- 
- 	snd_hda_pick_fixup(codec,
-@@ -2295,52 +2247,16 @@ static int patch_cs8409(struct hda_codec *codec)
- 			codec->bus->pci->subsystem_vendor,
- 			codec->bus->pci->subsystem_device);
- 
--	switch (codec->fixup_id) {
--	/* Dell platforms with CS42L42 companion codec */
--	case CS8409_BULLSEYE:
--	case CS8409_WARLOCK:
--	case CS8409_CYBORG:
--
--		snd_hda_add_verbs(codec, cs8409_cs42l42_add_verbs);
--
--		/* verb exec op override */
--		spec->exec_verb = codec->core.exec_verb;
--		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
--
--		mutex_init(&spec->cs8409_i2c_mux);
--
--		codec->patch_ops = cs8409_cs42l42_patch_ops;
--
--		spec->gen.cap_sync_hook = cs8409_cs42l42_cap_sync_hook;
--
--		spec->gen.suppress_auto_mute = 1;
--		spec->gen.no_primary_hp = 1;
--		spec->gen.suppress_vmaster = 1;
--		/* GPIO 5 out, 3,4 in */
--		spec->gpio_dir = GPIO5_INT;
--		spec->gpio_data = 0;
--		spec->gpio_mask = 0x03f;
--
--		spec->cs42l42_hp_jack_in = 0;
--		spec->cs42l42_mic_jack_in = 0;
--
--		err = cs8409_cs42l42_fixup(codec);
--		break;
--
--	default:
--		codec_err(codec, "VID=%08x, DEV=%08x not supported\n",
--				codec->bus->pci->subsystem_vendor,
--				codec->bus->pci->subsystem_device);
--		break;
--	}
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
--	if (!err) {
--		cs8409_cs42l42_hw_init(codec);
--		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
--	} else
-+	err = cs_parse_auto_config(codec);
-+	if (err < 0) {
- 		cs_free(codec);
-+		return err;
-+	}
- 
--	return err;
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
-+	return 0;
- }
- 
- /*
--- 
-2.25.1
+> ---
+>=20
+> Changes since v5:
+> * Add Reviewed-by Jarkko.
+>=20
+> Changes since v3:
+> * Explain in the commit message that this kind of formating is not new
+>  but it wasn't documented.
+>=20
+> Changes since v1:
+> * Fix typo.
+> * Use "if" block instead of "||" .
+> ---
+> MAINTAINERS                        |  1 +
+> tools/certs/print-cert-tbs-hash.sh | 91 ++++++++++++++++++++++++++++++
+> 2 files changed, 92 insertions(+)
+> create mode 100755 tools/certs/print-cert-tbs-hash.sh
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 00836f6452f0..773a362e807f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4120,6 +4120,7 @@ F:	Documentation/admin-guide/module-signing.rst
+> F:	certs/
+> F:	scripts/extract-cert.c
+> F:	scripts/sign-file.c
+> +F:	tools/certs/
+>=20
+> CFAG12864B LCD DRIVER
+> M:	Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+> diff --git a/tools/certs/print-cert-tbs-hash.sh b/tools/certs/print-cert-=
+tbs-hash.sh
+> new file mode 100755
+> index 000000000000..c93df5387ec9
+> --- /dev/null
+> +++ b/tools/certs/print-cert-tbs-hash.sh
+> @@ -0,0 +1,91 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright =C2=A9 2020, Microsoft Corporation. All rights reserved.
+> +#
+> +# Author: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+> +#
+> +# Compute and print the To Be Signed (TBS) hash of a certificate.  This =
+is used
+> +# as description of keys in the blacklist keyring to identify certificat=
+es.
+> +# This output should be redirected, without newline, in a file (hash0.tx=
+t) and
+> +# signed to create a PKCS#7 file (hash0.p7s).  Both of these files can t=
+hen be
+> +# loaded in the kernel with.
+> +#
+> +# Exemple on a workstation:
+> +# ./print-cert-tbs-hash.sh certificate-to-invalidate.pem > hash0.txt
+> +# openssl smime -sign -in hash0.txt -inkey builtin-private-key.pem \
+> +#               -signer builtin-certificate.pem -certfile certificate-ch=
+ain.pem \
+> +#               -noattr -binary -outform DER -out hash0.p7s
+> +#
+> +# Exemple on a managed system:
+> +# keyctl padd blacklist "$(< hash0.txt)" %:.blacklist < hash0.p7s
+> +
+> +set -u -e -o pipefail
+> +
+> +CERT=3D"${1:-}"
+> +BASENAME=3D"$(basename -- "${BASH_SOURCE[0]}")"
+> +
+> +if [ $# -ne 1 ] || [ ! -f "${CERT}" ]; then
+> +	echo "usage: ${BASENAME} <certificate>" >&2
+> +	exit 1
+> +fi
+> +
+> +# Checks that it is indeed a certificate (PEM or DER encoded) and exclud=
+e the
+> +# optional PEM text header.
+> +if ! PEM=3D"$(openssl x509 -inform DER -in "${CERT}" 2>/dev/null || open=
+ssl x509 -in "${CERT}")"; then
+> +	echo "ERROR: Failed to parse certificate" >&2
+> +	exit 1
+> +fi
+> +
+> +# TBSCertificate starts at the second entry.
+> +# Cf. https://tools.ietf.org/html/rfc3280#section-4.1
+> +#
+> +# Exemple of first lines printed by openssl asn1parse:
+> +#    0:d=3D0  hl=3D4 l=3D 763 cons: SEQUENCE
+> +#    4:d=3D1  hl=3D4 l=3D 483 cons: SEQUENCE
+> +#    8:d=3D2  hl=3D2 l=3D   3 cons: cont [ 0 ]
+> +#   10:d=3D3  hl=3D2 l=3D   1 prim: INTEGER           :02
+> +#   13:d=3D2  hl=3D2 l=3D  20 prim: INTEGER           :3CEB2CB8818D968AC=
+00EEFE195F0DF9665328B7B
+> +#   35:d=3D2  hl=3D2 l=3D  13 cons: SEQUENCE
+> +#   37:d=3D3  hl=3D2 l=3D   9 prim: OBJECT            :sha256WithRSAEncr=
+yption
+> +RANGE_AND_DIGEST_RE=3D'
+> +2s/^\s*\([0-9]\+\):d=3D\s*[0-9]\+\s\+hl=3D\s*[0-9]\+\s\+l=3D\s*\([0-9]\+=
+\)\s\+cons:\s*SEQUENCE\s*$/\1 \2/p;
+> +7s/^\s*[0-9]\+:d=3D\s*[0-9]\+\s\+hl=3D\s*[0-9]\+\s\+l=3D\s*[0-9]\+\s\+pr=
+im:\s*OBJECT\s*:\(.*\)$/\1/p;
+> +'
+> +
+> +RANGE_AND_DIGEST=3D($(echo "${PEM}" | \
+> +	openssl asn1parse -in - | \
+> +	sed -n -e "${RANGE_AND_DIGEST_RE}"))
+> +
+> +if [ "${#RANGE_AND_DIGEST[@]}" !=3D 3 ]; then
+> +	echo "ERROR: Failed to parse TBSCertificate." >&2
+> +	exit 1
+> +fi
+> +
+> +OFFSET=3D"${RANGE_AND_DIGEST[0]}"
+> +END=3D"$(( OFFSET + RANGE_AND_DIGEST[1] ))"
+> +DIGEST=3D"${RANGE_AND_DIGEST[2]}"
+> +
+> +# The signature hash algorithm is used by Linux to blacklist certificate=
+s.
+> +# Cf. crypto/asymmetric_keys/x509_cert_parser.c:x509_note_pkey_algo()
+> +DIGEST_MATCH=3D""
+> +while read -r DIGEST_ITEM; do
+> +	if [ -z "${DIGEST_ITEM}" ]; then
+> +		break
+> +	fi
+> +	if echo "${DIGEST}" | grep -qiF "${DIGEST_ITEM}"; then
+> +		DIGEST_MATCH=3D"${DIGEST_ITEM}"
+> +		break
+> +	fi
+> +done < <(openssl list -digest-commands | tr ' ' '\n' | sort -ur)
+> +
+> +if [ -z "${DIGEST_MATCH}" ]; then
+> +	echo "ERROR: Unknown digest algorithm: ${DIGEST}" >&2
+> +	exit 1
+> +fi
+> +
+> +echo "${PEM}" | \
+> +	openssl x509 -in - -outform DER | \
+> +	dd "bs=3D1" "skip=3D${OFFSET}" "count=3D${END}" "status=3Dnone" | \
+> +	openssl dgst "-${DIGEST_MATCH}" - | \
+> +	awk '{printf "tbs:" $2}'
+> --=20
+> 2.30.2
+>=20
 
