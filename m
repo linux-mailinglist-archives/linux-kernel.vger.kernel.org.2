@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDDC33B914
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8F633BA03
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhCOOFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34916 "EHLO mail.kernel.org"
+        id S235394AbhCOOHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231955AbhCON5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24EC864F23;
-        Mon, 15 Mar 2021 13:57:20 +0000 (UTC)
+        id S232241AbhCON6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2043C64F01;
+        Mon, 15 Mar 2021 13:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816642;
-        bh=EKtIuy4eeUOiHRfT7UaTpUYKs9fNuUweBxtdgRGO6yo=;
+        s=korg; t=1615816680;
+        bh=p2Qq4GYPioMsa0XKgXrE0A9OR9T7H/RwnkiV9NVLwRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fbo1/6QjkjpdKoJqKzo/Htz1ZLOGfOmHo0pqncnMSu/NIZPA6g2xg8Bs4h78p2saM
-         ae3CO/CUaUbqg4Jjex53iJ/XeCLFfcrgOBQ30uzlmolTo43iqY0boT7po7EndFD4MZ
-         ZRuMs/HbkTD+v0O1Pv6KjfoX+eEcl08GqXPVGPFI=
+        b=sOsfEpCermotee2PbXAyuYHCuyiGX8HkBscMlp10o48Zg14vLk3Vqx4U7Ybt7A05r
+         hDAxCyA+MiHzzWxksRkEP0dhC72eIA8p9IkXYURY1P9B4mkruAXPjuWjThJlRqXW+P
+         dfqp8uHbObeWvTtJON5sHWd2agyWGbHuDJRT1pHc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 029/290] mt76: dma: do not report truncated frames to mac80211
-Date:   Mon, 15 Mar 2021 14:52:02 +0100
-Message-Id: <20210315135542.910378015@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 060/306] net: mscc: ocelot: properly reject destination IP keys in VCAP IS1
+Date:   Mon, 15 Mar 2021 14:52:03 +0100
+Message-Id: <20210315135509.678873406@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit d0bd52c591a1070c54dc428e926660eb4f981099 upstream.
+commit f1becbed411c6fa29d7ce3def3a1dcd4f63f2d74 upstream.
 
-Commit b102f0c522cf6 ("mt76: fix array overflow on receiving too many
-fragments for a packet") fixes a possible OOB access but it introduces a
-memory leak since the pending frame is not released to page_frag_cache
-if the frag array of skb_shared_info is full. Commit 93a1d4791c10
-("mt76: dma: fix a possible memory leak in mt76_add_fragment()") fixes
-the issue but does not free the truncated skb that is forwarded to
-mac80211 layer. Fix the leftover issue discarding even truncated skbs.
+An attempt is made to warn the user about the fact that VCAP IS1 cannot
+offload keys matching on destination IP (at least given the current half
+key format), but sadly that warning fails miserably in practice, due to
+the fact that it operates on an uninitialized "match" variable. We must
+first decode the keys from the flow rule.
 
-Fixes: 93a1d4791c10 ("mt76: dma: fix a possible memory leak in mt76_add_fragment()")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/a03166fcc8214644333c68674a781836e0f57576.1612697217.git.lorenzo@kernel.org
+Fixes: 75944fda1dfe ("net: mscc: ocelot: offload ingress skbedit and vlan actions to VCAP IS1")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/mediatek/mt76/dma.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mscc/ocelot_flower.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/mediatek/mt76/dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/dma.c
-@@ -521,13 +521,13 @@ mt76_add_fragment(struct mt76_dev *dev,
- {
- 	struct sk_buff *skb = q->rx_head;
- 	struct skb_shared_info *shinfo = skb_shinfo(skb);
-+	int nr_frags = shinfo->nr_frags;
+--- a/drivers/net/ethernet/mscc/ocelot_flower.c
++++ b/drivers/net/ethernet/mscc/ocelot_flower.c
+@@ -540,13 +540,14 @@ ocelot_flower_parse_key(struct ocelot *o
+ 			return -EOPNOTSUPP;
+ 		}
  
--	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
-+	if (nr_frags < ARRAY_SIZE(shinfo->frags)) {
- 		struct page *page = virt_to_head_page(data);
- 		int offset = data - page_address(page) + q->buf_offset;
++		flow_rule_match_ipv4_addrs(rule, &match);
++
+ 		if (filter->block_id == VCAP_IS1 && *(u32 *)&match.mask->dst) {
+ 			NL_SET_ERR_MSG_MOD(extack,
+ 					   "Key type S1_NORMAL cannot match on destination IP");
+ 			return -EOPNOTSUPP;
+ 		}
  
--		skb_add_rx_frag(skb, shinfo->nr_frags, page, offset, len,
--				q->buf_size);
-+		skb_add_rx_frag(skb, nr_frags, page, offset, len, q->buf_size);
- 	} else {
- 		skb_free_frag(data);
- 	}
-@@ -536,7 +536,10 @@ mt76_add_fragment(struct mt76_dev *dev,
- 		return;
+-		flow_rule_match_ipv4_addrs(rule, &match);
+ 		tmp = &filter->key.ipv4.sip.value.addr[0];
+ 		memcpy(tmp, &match.key->src, 4);
  
- 	q->rx_head = NULL;
--	dev->drv->rx_skb(dev, q - dev->q_rx, skb);
-+	if (nr_frags < ARRAY_SIZE(shinfo->frags))
-+		dev->drv->rx_skb(dev, q - dev->q_rx, skb);
-+	else
-+		dev_kfree_skb(skb);
- }
- 
- static int
 
 
