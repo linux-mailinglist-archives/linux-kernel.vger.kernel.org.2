@@ -2,140 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F6C33AC79
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C61533AC7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhCOHrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:47:18 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:56931 "EHLO m42-2.mailgun.net"
+        id S230152AbhCOHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:47:20 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:50946 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229970AbhCOHrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:47:06 -0400
+        id S230076AbhCOHrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:47:05 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615794425; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=cqOlyDbcrleWuWQdEeOtSIicMHD4k5gpxWrr9pX0tR4=; b=n0KZj5XLqfWuVHR/HsB8TwOZ0K8Ehg3ch51f0q43zTC6kI5uZaZg33e4/DriuLpogcJCbsL8
- fOJNKRrFDx36qBa2fsze54vRuOpb4xV6Cp1m6nrQ4PgsLs+zOqPMHnlID2MU7NhYDG91Xbcx
- LCsa0xHRY5C8kF3+i7ukP2CPtk8=
-X-Mailgun-Sending-Ip: 69.72.42.2
+ s=smtp; t=1615794425; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GQH/kOHUpisLYvOdA5Xbp3StY6qFqGdxoPdlOf0xsLg=;
+ b=JONCL/zo2ko0SbdDkOr4oDsK3iHYR4Dc0Io3QoZBZ6uKPjCWoQyG71ToQYV+2JKn6W2qzHHW
+ O5SMqbhAPWNas2A3gEVGcPDo6XBMrfvEkjmxfsCy8YsiwOJ7yQt2emXn4+yOO4gLncKQlFp7
+ MDaqhOJVppLhlctxsOMbesyTg7U=
+X-Mailgun-Sending-Ip: 104.130.96.11
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 604f10ebe2200c0a0d1fc3b3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 07:46:51
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 604f10f84db3bb68012044c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 07:47:04
  GMT
-Sender: stummala=codeaurora.org@mg.codeaurora.org
+Sender: cang=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 691BFC433C6; Mon, 15 Mar 2021 07:46:51 +0000 (UTC)
+        id 0F27DC43462; Mon, 15 Mar 2021 07:47:04 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACFF5C433CA;
-        Mon, 15 Mar 2021 07:46:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACFF5C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
-Date:   Mon, 15 Mar 2021 13:16:45 +0530
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, stummala@codeaurora.org
-Subject: Re: [PATCH] f2fs: fix the discard thread sleep timeout under high
- utilization
-Message-ID: <20210315074645.GA8562@codeaurora.org>
-References: <1615784186-2693-1-git-send-email-stummala@codeaurora.org>
- <49be0c70-4fe4-6acd-b508-08621f0623c0@huawei.com>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37026C433CA;
+        Mon, 15 Mar 2021 07:47:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49be0c70-4fe4-6acd-b508-08621f0623c0@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 15:47:02 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+In-Reply-To: <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
+References: <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
+ <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+ <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+ <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p8>
+ <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
+ <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
+Message-ID: <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
-
-On Mon, Mar 15, 2021 at 02:12:44PM +0800, Chao Yu wrote:
-> Sahitya,
+On 2021-03-15 15:23, Can Guo wrote:
+> On 2021-03-15 15:07, Daejun Park wrote:
+>>>> This patch supports the HPB 2.0.
+>>>> 
+>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
+>>>> In the case of Read (<= 32KB) is supported as single HPB read.
+>>>> In the case of Read (36KB ~ 512KB) is supported by as a combination 
+>>>> of
+>>>> write buffer command and HPB read command to deliver more PPN.
+>>>> The write buffer commands may not be issued immediately due to busy
+>>>> tags.
+>>>> To use HPB read more aggressively, the driver can requeue the write
+>>>> buffer
+>>>> command. The requeue threshold is implemented as timeout and can be
+>>>> modified with requeue_timeout_ms entry in sysfs.
+>>>> 
+>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>>>> ---
+>>>> +static struct attribute *hpb_dev_param_attrs[] = {
+>>>> +        &dev_attr_requeue_timeout_ms.attr,
+>>>> +        NULL,
+>>>> +};
+>>>> +
+>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
+>>>> +        .name = "hpb_param_sysfs",
+>>>> +        .attrs = hpb_dev_param_attrs,
+>>>> +};
+>>>> +
+>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+>>>> +{
+>>>> +        struct ufshpb_req *pre_req = NULL;
+>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+>>>> +        int i, j;
+>>>> +
+>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+>>>> +
+>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), 
+>>>> GFP_KERNEL);
+>>>> +        hpb->throttle_pre_req = qd;
+>>>> +        hpb->num_inflight_pre_req = 0;
+>>>> +
+>>>> +        if (!hpb->pre_req)
+>>>> +                goto release_mem;
+>>>> +
+>>>> +        for (i = 0; i < qd; i++) {
+>>>> +                pre_req = hpb->pre_req + i;
+>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
+>>>> +                pre_req->req = NULL;
+>>>> +                pre_req->bio = NULL;
+>>> 
+>>> Why don't prepare bio as same as wb.m_page? Won't that save more time
+>>> for ufshpb_issue_pre_req()?
+>> 
+>> It is pre_req pool. So although we prepare bio at this time, it just
+>> only for first pre_req.
 > 
-> On 2021/3/15 12:56, Sahitya Tummala wrote:
-> >When f2fs is heavily utilized over 80%, the current discard policy
-> >sets the max sleep timeout of discard thread as 50ms
-> >(DEF_MIN_DISCARD_ISSUE_TIME). But this is set even when there are
-> >no pending discard commands to be issued. This results into
-> >unnecessary frequent and periodic wake ups of the discard thread.
-> >This patch adds check for pending  discard commands in addition
-> >to heavy utilization condition to prevent those wake ups.
+> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and 
+> bio_put()
+> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a 
+> page.
+> So, prepare 16 (if queue depth is 32) bios here, just use them along 
+> with
+> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall it 
+> work?
 > 
-> Could this commit fix your issue?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=43f8c47ea7d59c7b2270835f1d7c4618a1ea27b6
-> 
-I don't think it will help because we are changing the max timeout of the
-dpolicy itself in __init_discard_policy() when util > 80% as below -  
 
-dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+If it works, you can even have the bio_add_pc_page() called here. Later 
+in
+ufshpb_execute_pre_req(), you don't need to call 
+ufshpb_pre_req_add_bio_page(),
+just call ufshpb_prep_entry() once instead - it save many repeated steps 
+for a
+pre_req, and you don't even need to call bio_reset() in this case, since 
+for a
+bio, nothing changes after it is binded with a specific page...
 
-And issue_discard_thread() uses this value as wait_ms, when there
-are no more pending discard commands to be issued.
-<snip>
-                } else {
-                        wait_ms = dpolicy.max_interval;
-                }
-<snip>
-
-The new patch posted above is not changing anything related to the  max_interval.
-Hence, I think it won't help the uncessary wakeup problem I am trying to solve
-for this condition - util > 80% and when there are no pending discards.
-
-Please let me know if i am missing something.
-
-Thanks,
-Sahitya.
+Can Guo.
 
 > Thanks,
+> Can Guo.
 > 
-> >
-> >Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> >---
-> >  fs/f2fs/segment.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> >diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> >index dced46c..df30220 100644
-> >--- a/fs/f2fs/segment.c
-> >+++ b/fs/f2fs/segment.c
-> >@@ -1112,6 +1112,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
-> >  				struct discard_policy *dpolicy,
-> >  				int discard_type, unsigned int granularity)
-> >  {
-> >+	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-> >+
-> >  	/* common policy */
-> >  	dpolicy->type = discard_type;
-> >  	dpolicy->sync = true;
-> >@@ -1129,7 +1131,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
-> >  		dpolicy->io_aware = true;
-> >  		dpolicy->sync = false;
-> >  		dpolicy->ordered = true;
-> >-		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
-> >+		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL &&
-> >+				atomic_read(&dcc->discard_cmd_cnt)) {
-> >  			dpolicy->granularity = 1;
-> >  			dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
-> >  		}
-> >
-
--- 
---
-Sent by a consultant of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+>> After use it, it should be prepared bio at issue phase.
+>> 
+>> Thanks,
+>> Daejun
+>> 
+>>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>>> +
+>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL | 
+>>>> __GFP_ZERO);
+>>>> +                if (!pre_req->wb.m_page) {
+>>>> +                        for (j = 0; j < i; j++)
+>>>> +                                
+>>>> __free_page(hpb->pre_req[j].wb.m_page);
+>>>> +
+>>>> +                        goto release_mem;
+>>>> +                }
+>>>> +                list_add_tail(&pre_req->list_req, 
+>>>> &hpb->lh_pre_req_free);
+>>>> +        }
+>>>> +
+>>>> +        return 0;
+>>>> +release_mem:
+>>>> +        kfree(hpb->pre_req);
+>>>> +        return -ENOMEM;
+>>>> +}
+>>>> +
+>>> 
+>>> 
+>>> 
