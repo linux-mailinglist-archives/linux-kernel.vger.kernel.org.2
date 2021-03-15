@@ -2,116 +2,673 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A63B33C986
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB9133C989
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhCOWun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
+        id S232446AbhCOWzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhCOWul (ORCPT
+        with ESMTP id S231975AbhCOWzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:50:41 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17548C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:50:41 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n17so12476254plc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R2+ovV6L3in/MumK+lTJGLQ5/2i+MFlHYR2x0Kz43Uk=;
-        b=Kx+vExQNwcrCcz/1VobS6pnZvxjXg3JIuqQQh4w+D0sdgaaWHUWrYxM1EmMqJTZoez
-         I4w8XUY2s/aa6lYc/pfrSzcMBQORMijou/ifDRycyWarXqsLBxFYdHvVeWuvQEo5rrYf
-         g+0gBIibn5kjjFd/0YexcLsUVmF2/Ok0Ab6hQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R2+ovV6L3in/MumK+lTJGLQ5/2i+MFlHYR2x0Kz43Uk=;
-        b=k1aBwdmdmQKzByAlTHRDwkKZPEsQvpmqjY7Ay608nOHpt1zsqbuJRKE6FeFga3lYcz
-         wrbKNQr2jU5vpHjQt7XDyuNp1vRLxZC5NohjVYDvi95Tnpzr6gL5VFBO6p3zQF8XUFsf
-         5+Qt2Zu9QKIEYOQTkKh47VGYDmo64fRMJ554NEH8Fwc6WnF1aqp2ahNwlH8BP0v4DUEG
-         mWeThYWpu+PFpXuWH+59fUMwH+Ku37Ll0th4Vjg4nHJkB7oc6apjPOvbSa0otZ7ZXVsv
-         oPlb36RZcVKpRcs6hCO45chNrF4NhqKdQNWufIwbI+DUIWrFRahWjwFl/xlB73NiOaJX
-         r5Gw==
-X-Gm-Message-State: AOAM532fpH2y9waTtbYuKrgV4r+SQtedNjWfuskLAhhC4CFwrpvDoFNJ
-        p1iSn7GagNMwyyPeZH1MKG9TJA==
-X-Google-Smtp-Source: ABdhPJy+q49KIQaR8QnZDHxJ8pD9j0Svh6so5BA+3ZGasQchet21dplnLkDJwDQU4EEkdHLC4GQfmw==
-X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr1447789pjd.212.1615848640724;
-        Mon, 15 Mar 2021 15:50:40 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:9867:b969:5d4f:e017])
-        by smtp.gmail.com with UTF8SMTPSA id c24sm13631741pfi.193.2021.03.15.15.50.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 15:50:40 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 15:50:39 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: sc7180: Add CoachZ rev3
-Message-ID: <YE/kv1CwPoEGs9O8@google.com>
-References: <20210312183228.550779-1-mka@chromium.org>
- <20210312103211.v2.3.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
- <CAD=FV=Xq4bd8j3_to_9rJmyqWTi-78OWVCd0meaJ9e_pmOH+Rg@mail.gmail.com>
+        Mon, 15 Mar 2021 18:55:06 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60886C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:55:06 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lLw6z-00Gf7T-H4; Mon, 15 Mar 2021 23:54:57 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 1/3] gcov: combine common code
+Date:   Mon, 15 Mar 2021 23:54:53 +0100
+Message-Id: <20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=Xq4bd8j3_to_9rJmyqWTi-78OWVCd0meaJ9e_pmOH+Rg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:49:04PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Fri, Mar 12, 2021 at 10:32 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > CoachZ rev3 uses a 100k NTC thermistor for the charger temperatures,
-> > instead of the 47k NTC that is stuffed in earlier revisions. Add .dts
-> > files for rev3.
-> >
-> > The 47k NTC currently isn't supported by the PM6150 ADC driver.
-> > Disable the charger thermal zone for rev1 and rev2 to avoid the use
-> > of bogus temperature values.
-> >
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> >
-> > Changes in v2:
-> > - added CoachZ rev3
-> > - updated subject and commit message
-> >
-> >  arch/arm64/boot/dts/qcom/Makefile              |  2 ++
-> >  .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts |  9 +++++++++
-> >  .../dts/qcom/sc7180-trogdor-coachz-r2-lte.dts  |  4 ++--
-> >  .../boot/dts/qcom/sc7180-trogdor-coachz-r2.dts | 13 +++++++++++--
-> >  .../dts/qcom/sc7180-trogdor-coachz-r3-lte.dts  | 18 ++++++++++++++++++
-> >  .../boot/dts/qcom/sc7180-trogdor-coachz-r3.dts | 15 +++++++++++++++
-> >  6 files changed, 57 insertions(+), 4 deletions(-)
-> 
-> So what you have here is good and we could land it. Feel free to add
-> my Reviewed-by tag if you want.
-> 
-> ...but I want to propose an alternative. It turns out that these days
-> coachz-r1 and coachz-r2 are actually the same. The only reason both
-> exist is because <https://crrev.com/c/2733863> ("CHROMIUM: arm64: dts:
-> qcom: sc7180: add dmic_clk_en back") wasn't the proper inverse of
-> <https://crrev.com/c/2596726> ("CHROMIUM: arm64: dts: qcom: sc7180:
-> remove dmic_clk_en").
-> 
-> It sorta squashes two changes into one, but if you combined your
-> change with one that folded "-r1" into "-r2" it would actually make a
-> smaller / easier to understand change, essentially, it would be:
-> - just a rename of the "-r2" file to be "-r3"
-> - add "-rev2" into the list of compatibles in "-r1" file.
-> - add the "disable" into the "-r1" file.
+From: Johannes Berg <johannes.berg@intel.com>
 
-I agree, if rev1 and rev2 are the same in terms of the DT they
-should use the same file(s).
+There's a lot of duplicated code between gcc and clang
+implementations, move it over to fs.c to simplify the
+code, there's no reason to believe that for small data
+like this one would not just implement the simple
+convert_to_gcda() function.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ kernel/gcov/base.c    |  49 +++++++++++++
+ kernel/gcov/clang.c   | 167 +-----------------------------------------
+ kernel/gcov/fs.c      | 116 +++++++++++++++++++++++++++++
+ kernel/gcov/gcc_4_7.c | 167 +-----------------------------------------
+ kernel/gcov/gcov.h    |  14 +---
+ 5 files changed, 171 insertions(+), 342 deletions(-)
+
+diff --git a/kernel/gcov/base.c b/kernel/gcov/base.c
+index 0ffe9f194080..073a3738c5e6 100644
+--- a/kernel/gcov/base.c
++++ b/kernel/gcov/base.c
+@@ -49,6 +49,55 @@ void gcov_enable_events(void)
+ 	mutex_unlock(&gcov_lock);
+ }
+ 
++/**
++ * store_gcov_u32 - store 32 bit number in gcov format to buffer
++ * @buffer: target buffer or NULL
++ * @off: offset into the buffer
++ * @v: value to be stored
++ *
++ * Number format defined by gcc: numbers are recorded in the 32 bit
++ * unsigned binary form of the endianness of the machine generating the
++ * file. Returns the number of bytes stored. If @buffer is %NULL, doesn't
++ * store anything.
++ */
++size_t store_gcov_u32(void *buffer, size_t off, u32 v)
++{
++	u32 *data;
++
++	if (buffer) {
++		data = buffer + off;
++		*data = v;
++	}
++
++	return sizeof(*data);
++}
++
++/**
++ * store_gcov_u64 - store 64 bit number in gcov format to buffer
++ * @buffer: target buffer or NULL
++ * @off: offset into the buffer
++ * @v: value to be stored
++ *
++ * Number format defined by gcc: numbers are recorded in the 32 bit
++ * unsigned binary form of the endianness of the machine generating the
++ * file. 64 bit numbers are stored as two 32 bit numbers, the low part
++ * first. Returns the number of bytes stored. If @buffer is %NULL, doesn't store
++ * anything.
++ */
++size_t store_gcov_u64(void *buffer, size_t off, u64 v)
++{
++	u32 *data;
++
++	if (buffer) {
++		data = buffer + off;
++
++		data[0] = (v & 0xffffffffUL);
++		data[1] = (v >> 32);
++	}
++
++	return sizeof(*data) * 2;
++}
++
+ #ifdef CONFIG_MODULES
+ /* Update list and generate events when modules are unloaded. */
+ static int gcov_module_notifier(struct notifier_block *nb, unsigned long event,
+diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
+index c94b820a1b62..e59c290527b2 100644
+--- a/kernel/gcov/clang.c
++++ b/kernel/gcov/clang.c
+@@ -48,7 +48,6 @@
+ #include <linux/list.h>
+ #include <linux/printk.h>
+ #include <linux/ratelimit.h>
+-#include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include "gcov.h"
+@@ -376,71 +375,6 @@ void gcov_info_free(struct gcov_info *info)
+ 	kfree(info);
+ }
+ 
+-#define ITER_STRIDE	PAGE_SIZE
+-
+-/**
+- * struct gcov_iterator - specifies current file position in logical records
+- * @info: associated profiling data
+- * @buffer: buffer containing file data
+- * @size: size of buffer
+- * @pos: current position in file
+- */
+-struct gcov_iterator {
+-	struct gcov_info *info;
+-	void *buffer;
+-	size_t size;
+-	loff_t pos;
+-};
+-
+-/**
+- * store_gcov_u32 - store 32 bit number in gcov format to buffer
+- * @buffer: target buffer or NULL
+- * @off: offset into the buffer
+- * @v: value to be stored
+- *
+- * Number format defined by gcc: numbers are recorded in the 32 bit
+- * unsigned binary form of the endianness of the machine generating the
+- * file. Returns the number of bytes stored. If @buffer is %NULL, doesn't
+- * store anything.
+- */
+-static size_t store_gcov_u32(void *buffer, size_t off, u32 v)
+-{
+-	u32 *data;
+-
+-	if (buffer) {
+-		data = buffer + off;
+-		*data = v;
+-	}
+-
+-	return sizeof(*data);
+-}
+-
+-/**
+- * store_gcov_u64 - store 64 bit number in gcov format to buffer
+- * @buffer: target buffer or NULL
+- * @off: offset into the buffer
+- * @v: value to be stored
+- *
+- * Number format defined by gcc: numbers are recorded in the 32 bit
+- * unsigned binary form of the endianness of the machine generating the
+- * file. 64 bit numbers are stored as two 32 bit numbers, the low part
+- * first. Returns the number of bytes stored. If @buffer is %NULL, doesn't store
+- * anything.
+- */
+-static size_t store_gcov_u64(void *buffer, size_t off, u64 v)
+-{
+-	u32 *data;
+-
+-	if (buffer) {
+-		data = buffer + off;
+-
+-		data[0] = (v & 0xffffffffUL);
+-		data[1] = (v >> 32);
+-	}
+-
+-	return sizeof(*data) * 2;
+-}
+-
+ /**
+  * convert_to_gcda - convert profiling data set to gcda file format
+  * @buffer: the buffer to store file data or %NULL if no data should be stored
+@@ -448,7 +382,7 @@ static size_t store_gcov_u64(void *buffer, size_t off, u64 v)
+  *
+  * Returns the number of bytes that were/would have been stored into the buffer.
+  */
+-static size_t convert_to_gcda(char *buffer, struct gcov_info *info)
++size_t convert_to_gcda(char *buffer, struct gcov_info *info)
+ {
+ 	struct gcov_fn_info *fi_ptr;
+ 	size_t pos = 0;
+@@ -480,102 +414,3 @@ static size_t convert_to_gcda(char *buffer, struct gcov_info *info)
+ 
+ 	return pos;
+ }
+-
+-/**
+- * gcov_iter_new - allocate and initialize profiling data iterator
+- * @info: profiling data set to be iterated
+- *
+- * Return file iterator on success, %NULL otherwise.
+- */
+-struct gcov_iterator *gcov_iter_new(struct gcov_info *info)
+-{
+-	struct gcov_iterator *iter;
+-
+-	iter = kzalloc(sizeof(struct gcov_iterator), GFP_KERNEL);
+-	if (!iter)
+-		goto err_free;
+-
+-	iter->info = info;
+-	/* Dry-run to get the actual buffer size. */
+-	iter->size = convert_to_gcda(NULL, info);
+-	iter->buffer = vmalloc(iter->size);
+-	if (!iter->buffer)
+-		goto err_free;
+-
+-	convert_to_gcda(iter->buffer, info);
+-
+-	return iter;
+-
+-err_free:
+-	kfree(iter);
+-	return NULL;
+-}
+-
+-
+-/**
+- * gcov_iter_get_info - return profiling data set for given file iterator
+- * @iter: file iterator
+- */
+-void gcov_iter_free(struct gcov_iterator *iter)
+-{
+-	vfree(iter->buffer);
+-	kfree(iter);
+-}
+-
+-/**
+- * gcov_iter_get_info - return profiling data set for given file iterator
+- * @iter: file iterator
+- */
+-struct gcov_info *gcov_iter_get_info(struct gcov_iterator *iter)
+-{
+-	return iter->info;
+-}
+-
+-/**
+- * gcov_iter_start - reset file iterator to starting position
+- * @iter: file iterator
+- */
+-void gcov_iter_start(struct gcov_iterator *iter)
+-{
+-	iter->pos = 0;
+-}
+-
+-/**
+- * gcov_iter_next - advance file iterator to next logical record
+- * @iter: file iterator
+- *
+- * Return zero if new position is valid, non-zero if iterator has reached end.
+- */
+-int gcov_iter_next(struct gcov_iterator *iter)
+-{
+-	if (iter->pos < iter->size)
+-		iter->pos += ITER_STRIDE;
+-
+-	if (iter->pos >= iter->size)
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-
+-/**
+- * gcov_iter_write - write data for current pos to seq_file
+- * @iter: file iterator
+- * @seq: seq_file handle
+- *
+- * Return zero on success, non-zero otherwise.
+- */
+-int gcov_iter_write(struct gcov_iterator *iter, struct seq_file *seq)
+-{
+-	size_t len;
+-
+-	if (iter->pos >= iter->size)
+-		return -EINVAL;
+-
+-	len = ITER_STRIDE;
+-	if (iter->pos + len > iter->size)
+-		len = iter->size - iter->pos;
+-
+-	seq_write(seq, iter->buffer + iter->pos, len);
+-
+-	return 0;
+-}
+diff --git a/kernel/gcov/fs.c b/kernel/gcov/fs.c
+index 82babf5aa077..2d29e1d1225d 100644
+--- a/kernel/gcov/fs.c
++++ b/kernel/gcov/fs.c
+@@ -26,6 +26,7 @@
+ #include <linux/slab.h>
+ #include <linux/mutex.h>
+ #include <linux/seq_file.h>
++#include <linux/vmalloc.h>
+ #include "gcov.h"
+ 
+ /**
+@@ -85,6 +86,121 @@ static int __init gcov_persist_setup(char *str)
+ }
+ __setup("gcov_persist=", gcov_persist_setup);
+ 
++#define ITER_STRIDE	PAGE_SIZE
++
++/**
++ * struct gcov_iterator - specifies current file position in logical records
++ * @info: associated profiling data
++ * @buffer: buffer containing file data
++ * @size: size of buffer
++ * @pos: current position in file
++ */
++struct gcov_iterator {
++	struct gcov_info *info;
++	void *buffer;
++	size_t size;
++	loff_t pos;
++};
++
++/**
++ * gcov_iter_new - allocate and initialize profiling data iterator
++ * @info: profiling data set to be iterated
++ *
++ * Return file iterator on success, %NULL otherwise.
++ */
++static struct gcov_iterator *gcov_iter_new(struct gcov_info *info)
++{
++	struct gcov_iterator *iter;
++
++	iter = kzalloc(sizeof(struct gcov_iterator), GFP_KERNEL);
++	if (!iter)
++		goto err_free;
++
++	iter->info = info;
++	/* Dry-run to get the actual buffer size. */
++	iter->size = convert_to_gcda(NULL, info);
++	iter->buffer = vmalloc(iter->size);
++	if (!iter->buffer)
++		goto err_free;
++
++	convert_to_gcda(iter->buffer, info);
++
++	return iter;
++
++err_free:
++	kfree(iter);
++	return NULL;
++}
++
++
++/**
++ * gcov_iter_free - free iterator data
++ * @iter: file iterator
++ */
++static void gcov_iter_free(struct gcov_iterator *iter)
++{
++	vfree(iter->buffer);
++	kfree(iter);
++}
++
++/**
++ * gcov_iter_get_info - return profiling data set for given file iterator
++ * @iter: file iterator
++ */
++static struct gcov_info *gcov_iter_get_info(struct gcov_iterator *iter)
++{
++	return iter->info;
++}
++
++/**
++ * gcov_iter_start - reset file iterator to starting position
++ * @iter: file iterator
++ */
++static void gcov_iter_start(struct gcov_iterator *iter)
++{
++	iter->pos = 0;
++}
++
++/**
++ * gcov_iter_next - advance file iterator to next logical record
++ * @iter: file iterator
++ *
++ * Return zero if new position is valid, non-zero if iterator has reached end.
++ */
++static int gcov_iter_next(struct gcov_iterator *iter)
++{
++	if (iter->pos < iter->size)
++		iter->pos += ITER_STRIDE;
++
++	if (iter->pos >= iter->size)
++		return -EINVAL;
++
++	return 0;
++}
++
++/**
++ * gcov_iter_write - write data for current pos to seq_file
++ * @iter: file iterator
++ * @seq: seq_file handle
++ *
++ * Return zero on success, non-zero otherwise.
++ */
++static int gcov_iter_write(struct gcov_iterator *iter, struct seq_file *seq)
++{
++	size_t len;
++
++	if (iter->pos >= iter->size)
++		return -EINVAL;
++
++	len = ITER_STRIDE;
++	if (iter->pos + len > iter->size)
++		len = iter->size - iter->pos;
++
++	seq_write(seq, iter->buffer + iter->pos, len);
++
++	return 0;
++}
++
+ /*
+  * seq_file.start() implementation for gcov data files. Note that the
+  * gcov_iterator interface is designed to be more restrictive than seq_file
+diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
+index c53408a00d0b..1251f2434e90 100644
+--- a/kernel/gcov/gcc_4_7.c
++++ b/kernel/gcov/gcc_4_7.c
+@@ -15,7 +15,6 @@
+ #include <linux/errno.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+-#include <linux/seq_file.h>
+ #include <linux/vmalloc.h>
+ #include "gcov.h"
+ 
+@@ -363,71 +362,6 @@ void gcov_info_free(struct gcov_info *info)
+ 	kfree(info);
+ }
+ 
+-#define ITER_STRIDE	PAGE_SIZE
+-
+-/**
+- * struct gcov_iterator - specifies current file position in logical records
+- * @info: associated profiling data
+- * @buffer: buffer containing file data
+- * @size: size of buffer
+- * @pos: current position in file
+- */
+-struct gcov_iterator {
+-	struct gcov_info *info;
+-	void *buffer;
+-	size_t size;
+-	loff_t pos;
+-};
+-
+-/**
+- * store_gcov_u32 - store 32 bit number in gcov format to buffer
+- * @buffer: target buffer or NULL
+- * @off: offset into the buffer
+- * @v: value to be stored
+- *
+- * Number format defined by gcc: numbers are recorded in the 32 bit
+- * unsigned binary form of the endianness of the machine generating the
+- * file. Returns the number of bytes stored. If @buffer is %NULL, doesn't
+- * store anything.
+- */
+-static size_t store_gcov_u32(void *buffer, size_t off, u32 v)
+-{
+-	u32 *data;
+-
+-	if (buffer) {
+-		data = buffer + off;
+-		*data = v;
+-	}
+-
+-	return sizeof(*data);
+-}
+-
+-/**
+- * store_gcov_u64 - store 64 bit number in gcov format to buffer
+- * @buffer: target buffer or NULL
+- * @off: offset into the buffer
+- * @v: value to be stored
+- *
+- * Number format defined by gcc: numbers are recorded in the 32 bit
+- * unsigned binary form of the endianness of the machine generating the
+- * file. 64 bit numbers are stored as two 32 bit numbers, the low part
+- * first. Returns the number of bytes stored. If @buffer is %NULL, doesn't store
+- * anything.
+- */
+-static size_t store_gcov_u64(void *buffer, size_t off, u64 v)
+-{
+-	u32 *data;
+-
+-	if (buffer) {
+-		data = buffer + off;
+-
+-		data[0] = (v & 0xffffffffUL);
+-		data[1] = (v >> 32);
+-	}
+-
+-	return sizeof(*data) * 2;
+-}
+-
+ /**
+  * convert_to_gcda - convert profiling data set to gcda file format
+  * @buffer: the buffer to store file data or %NULL if no data should be stored
+@@ -435,7 +369,7 @@ static size_t store_gcov_u64(void *buffer, size_t off, u64 v)
+  *
+  * Returns the number of bytes that were/would have been stored into the buffer.
+  */
+-static size_t convert_to_gcda(char *buffer, struct gcov_info *info)
++size_t convert_to_gcda(char *buffer, struct gcov_info *info)
+ {
+ 	struct gcov_fn_info *fi_ptr;
+ 	struct gcov_ctr_info *ci_ptr;
+@@ -481,102 +415,3 @@ static size_t convert_to_gcda(char *buffer, struct gcov_info *info)
+ 
+ 	return pos;
+ }
+-
+-/**
+- * gcov_iter_new - allocate and initialize profiling data iterator
+- * @info: profiling data set to be iterated
+- *
+- * Return file iterator on success, %NULL otherwise.
+- */
+-struct gcov_iterator *gcov_iter_new(struct gcov_info *info)
+-{
+-	struct gcov_iterator *iter;
+-
+-	iter = kzalloc(sizeof(struct gcov_iterator), GFP_KERNEL);
+-	if (!iter)
+-		goto err_free;
+-
+-	iter->info = info;
+-	/* Dry-run to get the actual buffer size. */
+-	iter->size = convert_to_gcda(NULL, info);
+-	iter->buffer = vmalloc(iter->size);
+-	if (!iter->buffer)
+-		goto err_free;
+-
+-	convert_to_gcda(iter->buffer, info);
+-
+-	return iter;
+-
+-err_free:
+-	kfree(iter);
+-	return NULL;
+-}
+-
+-
+-/**
+- * gcov_iter_get_info - return profiling data set for given file iterator
+- * @iter: file iterator
+- */
+-void gcov_iter_free(struct gcov_iterator *iter)
+-{
+-	vfree(iter->buffer);
+-	kfree(iter);
+-}
+-
+-/**
+- * gcov_iter_get_info - return profiling data set for given file iterator
+- * @iter: file iterator
+- */
+-struct gcov_info *gcov_iter_get_info(struct gcov_iterator *iter)
+-{
+-	return iter->info;
+-}
+-
+-/**
+- * gcov_iter_start - reset file iterator to starting position
+- * @iter: file iterator
+- */
+-void gcov_iter_start(struct gcov_iterator *iter)
+-{
+-	iter->pos = 0;
+-}
+-
+-/**
+- * gcov_iter_next - advance file iterator to next logical record
+- * @iter: file iterator
+- *
+- * Return zero if new position is valid, non-zero if iterator has reached end.
+- */
+-int gcov_iter_next(struct gcov_iterator *iter)
+-{
+-	if (iter->pos < iter->size)
+-		iter->pos += ITER_STRIDE;
+-
+-	if (iter->pos >= iter->size)
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-
+-/**
+- * gcov_iter_write - write data for current pos to seq_file
+- * @iter: file iterator
+- * @seq: seq_file handle
+- *
+- * Return zero on success, non-zero otherwise.
+- */
+-int gcov_iter_write(struct gcov_iterator *iter, struct seq_file *seq)
+-{
+-	size_t len;
+-
+-	if (iter->pos >= iter->size)
+-		return -EINVAL;
+-
+-	len = ITER_STRIDE;
+-	if (iter->pos + len > iter->size)
+-		len = iter->size - iter->pos;
+-
+-	seq_write(seq, iter->buffer + iter->pos, len);
+-
+-	return 0;
+-}
+diff --git a/kernel/gcov/gcov.h b/kernel/gcov/gcov.h
+index 6ab2c1808c9d..912b8ea01d33 100644
+--- a/kernel/gcov/gcov.h
++++ b/kernel/gcov/gcov.h
+@@ -48,6 +48,7 @@ struct gcov_info *gcov_info_next(struct gcov_info *info);
+ void gcov_info_link(struct gcov_info *info);
+ void gcov_info_unlink(struct gcov_info *prev, struct gcov_info *info);
+ bool gcov_info_within_module(struct gcov_info *info, struct module *mod);
++size_t convert_to_gcda(char *buffer, struct gcov_info *info);
+ 
+ /* Base interface. */
+ enum gcov_action {
+@@ -58,16 +59,9 @@ enum gcov_action {
+ void gcov_event(enum gcov_action action, struct gcov_info *info);
+ void gcov_enable_events(void);
+ 
+-/* Iterator control. */
+-struct seq_file;
+-struct gcov_iterator;
+-
+-struct gcov_iterator *gcov_iter_new(struct gcov_info *info);
+-void gcov_iter_free(struct gcov_iterator *iter);
+-void gcov_iter_start(struct gcov_iterator *iter);
+-int gcov_iter_next(struct gcov_iterator *iter);
+-int gcov_iter_write(struct gcov_iterator *iter, struct seq_file *seq);
+-struct gcov_info *gcov_iter_get_info(struct gcov_iterator *iter);
++/* writing helpers */
++size_t store_gcov_u32(void *buffer, size_t off, u32 v);
++size_t store_gcov_u64(void *buffer, size_t off, u64 v);
+ 
+ /* gcov_info control. */
+ void gcov_info_reset(struct gcov_info *info);
+-- 
+2.30.2
+
