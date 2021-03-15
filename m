@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4346033BAF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7276C33BB15
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhCOOLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:11:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
+        id S235965AbhCOOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232169AbhCON6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E42B664F12;
-        Mon, 15 Mar 2021 13:58:19 +0000 (UTC)
+        id S232165AbhCON6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9544264F4A;
+        Mon, 15 Mar 2021 13:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816701;
-        bh=9CV0ZSnjWWhvIHdvkEWgDCT3NYALRwpERTnLsQQyn3k=;
+        s=korg; t=1615816703;
+        bh=98MF8/ODNy3scW7fgMkNaWKxFbnVN2mLF74ZaQb+7E0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pj8YgrS/E4djL59U2zIyqRwA9YLVOpSQFW0M2D9mt7Gm30qoZTqppnQCISq959cYy
-         WvsK34r658SRlxK0KSfXdX9kE6l19C0AHsc2ChvDLR5j0TUEVS+tk7RARtLfEMU+lg
-         5fkGyyDloZnvOXB6jRIO+BY0IwEVsba/ShOnY0qU=
+        b=dVjXs9Wvn23JpbedzeIcYmPwLk7L5NBttdmPrxtyIJeOqYdX98pa9LH8ROm5LRaK/
+         d1WyIiP+xnfmZUcwMm4JIxRWNXyksJRIpV5/2MMc7qsVsB9DhhjLJ0ytZMSyMnksiW
+         BR0aR2GmdDIixVQyB1LFERE1e6o6XFr3GQmZVPJ4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kun-Chuan Hsieh <jetswayss@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH 5.10 064/290] tools/resolve_btfids: Fix build error with older host toolchains
-Date:   Mon, 15 Mar 2021 14:52:37 +0100
-Message-Id: <20210315135544.077842633@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        He Zhe <zhe.he@windriver.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 5.10 065/290] perf build: Fix ccache usage in $(CC) when generating arch errno table
+Date:   Mon, 15 Mar 2021 14:52:38 +0100
+Message-Id: <20210315135544.109381805@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,41 +47,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Kun-Chuan Hsieh <jetswayss@gmail.com>
+From: Antonio Terceiro <antonio.terceiro@linaro.org>
 
-commit 41462c6e730ca0e63f5fed5a517052385d980c54 upstream.
+commit dacfc08dcafa7d443ab339592999e37bbb8a3ef0 upstream.
 
-Older libelf.h and glibc elf.h might not yet define the ELF compression
-types.
+This was introduced by commit e4ffd066ff440a57 ("perf: Normalize gcc
+parameter when generating arch errno table").
 
-Checking and defining SHF_COMPRESSED fix the build error when compiling
-with older toolchains. Also, the tool resolve_btfids is compiled with host
-toolchain. The host toolchain is more likely to be older than the cross
-compile toolchain.
+Assuming the first word of $(CC) is the actual compiler breaks usage
+like CC="ccache gcc": the script ends up calling ccache directly with
+gcc arguments, what fails. Instead of getting the first word, just
+remove from $(CC) any word that starts with a "-". This maintains the
+spirit of the original patch, while not breaking ccache users.
 
-Fixes: 51f6463aacfb ("tools/resolve_btfids: Fix sections with wrong alignment")
-Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Link: https://lore.kernel.org/bpf/20210224052752.5284-1-jetswayss@gmail.com
+Fixes: e4ffd066ff440a57 ("perf: Normalize gcc parameter when generating arch errno table")
+Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: He Zhe <zhe.he@windriver.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20210224130046.346977-1-antonio.terceiro@linaro.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/bpf/resolve_btfids/main.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ tools/perf/Makefile.perf |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -258,6 +258,11 @@ static struct btf_id *add_symbol(struct
- 	return btf_id__add(root, id, false);
- }
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -600,7 +600,7 @@ arch_errno_hdr_dir := $(srctree)/tools
+ arch_errno_tbl := $(srctree)/tools/perf/trace/beauty/arch_errno_names.sh
  
-+/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
-+#ifndef SHF_COMPRESSED
-+#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
-+#endif
-+
- /*
-  * The data of compressed section should be aligned to 4
-  * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
+ $(arch_errno_name_array): $(arch_errno_tbl)
+-	$(Q)$(SHELL) '$(arch_errno_tbl)' $(firstword $(CC)) $(arch_errno_hdr_dir) > $@
++	$(Q)$(SHELL) '$(arch_errno_tbl)' '$(patsubst -%,,$(CC))' $(arch_errno_hdr_dir) > $@
+ 
+ sync_file_range_arrays := $(beauty_outdir)/sync_file_range_arrays.c
+ sync_file_range_tbls := $(srctree)/tools/perf/trace/beauty/sync_file_range.sh
 
 
