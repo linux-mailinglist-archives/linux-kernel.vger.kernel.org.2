@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E819A33C504
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB1F33C50B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCOR7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:59:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46290 "EHLO mail.kernel.org"
+        id S232773AbhCOSAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:00:54 -0400
+Received: from mga17.intel.com ([192.55.52.151]:52164 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230051AbhCOR7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4927964E81;
-        Mon, 15 Mar 2021 17:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615831172;
-        bh=PywP2e9DwoaZXH2HBFQoUUv4R4W/QxpkPTvLkp6GMu4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ITTzXPnUEF8zbxUyFT4KyU/OzafCEUcYs/sobN0oCmoaar4jwu9t4fkA7zl1JU4MU
-         zKGYNPGONHR+Sl+jFvgKWdSBSSPNzhR8+AzLQ6T7ttoovA92vlspF10uyxmMIjLHPz
-         mwfYuqS2PggzithN33efTxX7ZZWRB3vPHvwkbPvJRtkdhe6cwLtAKW8ZMK+uGdepTS
-         HfGgHO0XHT7UpWo+sNHS/dThtcMKXJluR6us/PMAEfn6hjkA58JumTmxhfXVznDLPs
-         k1nojHN+D0q8ikYrUq7dptPUkkXVtaMFVGjI6LNSB1XRnQX9tXsV3YNS3C8ki1jPop
-         9ZQsbNiFUFOsQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0CECB352261C; Mon, 15 Mar 2021 10:59:32 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 10:59:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
+        id S230525AbhCOSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:00:21 -0400
+IronPort-SDR: pYzrd9wXxlJ8+b346RkGovAG8X2rgVBh6NJV66CIX1z8aHG7sJFZtcOrGrij7PYuSRXU40b1Z+
+ MPhD0wGEEB6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="169047251"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="169047251"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 11:00:08 -0700
+IronPort-SDR: ELNcK7QfzGPQESYiCrMSnAufPriSvSGN3i2/A7Aj4rD70U8RwZ8TdFAiMA/8Qe7pgn0RjsC5o7
+ H9u75oS+P2DQ==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="601517639"
+Received: from lguadamu-mobl1.amr.corp.intel.com (HELO [10.213.176.188]) ([10.213.176.188])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 11:00:06 -0700
+Subject: Re: [PATCH v1 00/14] Multigenerational LRU
+To:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>,
-        Oliver Glitta <glittao@gmail.com>
-Subject: Re: [PATCH] [PATCH] mm, slub: enable slub_debug static key when
- creating cache with explicit debug flags
-Message-ID: <20210315175932.GO2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210315153415.24404-1-vbabka@suse.cz>
- <2d80f81a-ed85-a36f-6527-b75da3ae209e@google.com>
- <e723d919-222a-0675-5aae-44dfe1ce005f@suse.cz>
- <20210315173207.GN2696@paulmck-ThinkPad-P72>
- <8c4f3385-e935-8363-c6bd-ffe6b8c2d6c4@suse.cz>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+References: <20210313075747.3781593-1-yuzhao@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5f621dd6-4bbd-dbf7-8fa1-d63d9a5bfc16@intel.com>
+Date:   Mon, 15 Mar 2021 11:00:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c4f3385-e935-8363-c6bd-ffe6b8c2d6c4@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 06:36:34PM +0100, Vlastimil Babka wrote:
-> On 3/15/21 6:32 PM, Paul E. McKenney wrote:
-> > On Mon, Mar 15, 2021 at 06:28:42PM +0100, Vlastimil Babka wrote:
-> >> On 3/15/21 6:16 PM, David Rientjes wrote:
-> >> > On Mon, 15 Mar 2021, Vlastimil Babka wrote:
-> >> > 
-> >> >> Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> >> >> introduced a static key to optimize the case where no debugging is enabled for
-> >> >> any cache. The static key is enabled when slub_debug boot parameter is passed,
-> >> >> or CONFIG_SLUB_DEBUG_ON enabled.
-> >> >> 
-> >> >> However, some caches might be created with one or more debugging flags
-> >> >> explicitly passed to kmem_cache_create(), and the commit missed this. Thus the
-> >> >> debugging functionality would not be actually performed for these caches unless
-> >> >> the static key gets enabled by boot param or config.
-> >> >> 
-> >> >> This patch fixes it by checking for debugging flags passed to
-> >> >> kmem_cache_create() and enabling the static key accordingly.
-> >> >> 
-> >> >> Note such explicit debugging flags should not be used outside of debugging and
-> >> >> testing as they will now enable the static key globally. btrfs_init_cachep()
-> >> >> creates a cache with SLAB_RED_ZONE but that's a mistake that's being corrected
-> >> >> [1]. rcu_torture_stats() creates a cache with SLAB_STORE_USER, but that is a
-> >> >> testing module so it's OK and will start working as intended after this patch.
-> >> >> 
-> >> >> Also note that in case of backports to kernels before v5.12 that don't have
-> >> >> 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
-> >> >> static_branch_enable_cpuslocked() should be used.
-> >> >> 
-> >> > 
-> >> > Since this affects 5.9+, is the plan to propose backports to stable with 
-> >> > static_branch_enable_cpuslocked() once this is merged?  (I notice the 
-> >> > absence of the stable tag here, which I believe is intended.)
-> >> 
-> >> I was thinking about it, and since the rcutorture user is only in -next (AFAICS)
-> >> and btrfs user was unintended, it didn't seem to meet stable criteria to me. But
-> >> I won't mind if it's backported.
-> > 
-> > I had better ask...  Should rcutorture be doing something different?
-> > 
-> > 							Thanx, Paul
-> 
-> No, I think it's fine if a testing module such as rcutorture flips the static
-> key for the rest of the kernel's uptime. I only CC'd you as FYI in case you were
-> wondering why you can't see any alloc/free stacks in its output :)
+On 3/12/21 11:57 PM, Yu Zhao wrote:
+> Background
+> ==========
+> DRAM is a major factor in total cost of ownership, and improving
+> memory overcommit brings a high return on investment. Over the past
+> decade of research and experimentation in memory overcommit, we
+> observed a distinct trend across millions of servers and clients: the
+> size of page cache has been decreasing because of the growing
+> popularity of cloud storage. Nowadays anon pages account for more than
+> 90% of our memory consumption and page cache contains mostly
+> executable pages.
 
-Ah, all of my recent tests have been for sufficient duration that all
-was well by the time that that code was invoked.  But thank you for the
-heads up -- someone will hit this sooner or later, and I freely confess
-that I would have been clueless.
+This makes a compelling argument that current reclaim is not well
+optimized for anonymous memory with low rates of sharing.  Basically,
+anonymous rmap is very powerful, but we're not getting enough bang for
+our buck out of it.
 
-							Thanx, Paul
+I also understand that the workloads you reference are anonymous-heavy
+and that page cache isn't a *major* component.
+
+But, what does happens to page-cache-heavy workloads?  Does this just
+effectively force databases that want to use shmem over to hugetlbfs?
+How bad does this scanning get in the worst case if there's a lot of
+sharing?
+
+I'm kinda surprised by this, but my 16GB laptop has a lot more page
+cache than I would have guessed:
+
+> Active(anon):    4065088 kB
+> Inactive(anon):  3981928 kB
+> Active(file):    2260580 kB
+> Inactive(file):  3738096 kB
+> AnonPages:       6624776 kB
+> Mapped:           692036 kB
+> Shmem:            776276 kB
+
+Most of it isn't mapped, but it's far from all being used for text.
