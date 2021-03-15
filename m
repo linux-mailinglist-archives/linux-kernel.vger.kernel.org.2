@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063C333B53A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5349D33B55D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhCONxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
+        id S231243AbhCONyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhCONxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1DDD64EE3;
-        Mon, 15 Mar 2021 13:53:04 +0000 (UTC)
+        id S230112AbhCONxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3928964EEC;
+        Mon, 15 Mar 2021 13:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816386;
-        bh=hY9yoymQHAwbfuCA/86axSBRpD3w74urAxUJsgV+UBc=;
+        s=korg; t=1615816394;
+        bh=dMn7XsKtA1xK+QI9+vobxM8LkEqT1GfUZUUKSTSHkMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h1iWinCzn/94JQyosrkOkz5w+BTzyaz8kLXWxruEgTIqqYx6PTTPmtUGip4BfW/27
-         5e4y1AOFaAoYZWD3Ao2JcuIbeWwRzpR3qs5j+CxCfUYXmZdKJdQsXHljSunNus+39o
-         Mg7gVw+dMw0ZxBxZiuHBH5vAeO84O5yijywJhnMY=
+        b=LQriiOvVDmxj3fG9O93wYf9otBkYtyRcBb0kNVSXIZkaFrxKJ1sTTjuedxwXOFy7v
+         Tu0iBl9/KpYW7T9Dybdgw+4BnMMpsWeKNwxXWB9YJQG57SOsg0jgF/sS00wi+Cv5d9
+         4lSpzusxY26NPTXDmSlxxq4ilLwvdhbcm7gw+nHY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.9 10/78] cifs: return proper error code in statfs(2)
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 19/75] mmc: mxs-mmc: Fix a resource leak in an error handling path in mxs_mmc_probe()
 Date:   Mon, 15 Mar 2021 14:51:33 +0100
-Message-Id: <20210315135212.403907073@linuxfoundation.org>
+Message-Id: <20210315135208.881886983@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 14302ee3301b3a77b331cc14efb95bf7184c73cc upstream.
+[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
 
-In cifs_statfs(), if server->ops->queryfs is not NULL, then we should
-use its return value rather than always returning 0.  Instead, use rc
-variable as it is properly set to 0 in case there is no
-server->ops->queryfs.
+If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
+call.
 
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifsfs.c |    2 +-
+ drivers/mmc/host/mxs-mmc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -208,7 +208,7 @@ cifs_statfs(struct dentry *dentry, struc
- 		rc = server->ops->queryfs(xid, tcon, buf);
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index c8b8ac66ff7e..687fd68fbbcd 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -651,7 +651,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
  
- 	free_xid(xid);
--	return 0;
-+	return rc;
- }
+ 	ret = mmc_of_parse(mmc);
+ 	if (ret)
+-		goto out_clk_disable;
++		goto out_free_dma;
  
- static long cifs_fallocate(struct file *file, int mode, loff_t off, loff_t len)
+ 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
+ 
+-- 
+2.30.1
+
 
 
