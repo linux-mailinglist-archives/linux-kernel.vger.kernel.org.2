@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C12733BBEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7344A33BD37
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbhCOONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:13:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S239896AbhCOOdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230404AbhCON7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F78864F13;
-        Mon, 15 Mar 2021 13:58:52 +0000 (UTC)
+        id S233272AbhCOOBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3AE64F6E;
+        Mon, 15 Mar 2021 14:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816733;
-        bh=Bmx3KOJBYYoPNczQQuo7vTa/SwT5fCvIwJqqd6fl1Pw=;
+        s=korg; t=1615816856;
+        bh=l3sIDKaoBXfVT2r26H/MhkciIgEcgQWWz+VuS4H84v0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LzjwfRD6G0Mcvk9uQdMDzm23eQJCZUQJyJp7kl3G1zRwIpkev8OiOvnlcjXCT1qdM
-         bNax3D2EcTH0Sw1NB4RHjQYFpg21HRPuOW/fpomEiV4c912ZP71vhVWVseowXDrHuE
-         ACFnGL4muuU8qqksT/iGg+G5/upx8CAaLzpgxtSQ=
+        b=ysBAxdd7rnfj2B4Yt02RNNTOLdNCvhAnxE7Wj83pVqZ5Gt0O4EAuZ7N5e/tMj+QUr
+         atEzx3N5pDvLXdG4cWchU5zMHjkS3/NWRR8zFvq8uXMhzlS6ylw83Ee3AfcOXW17DM
+         rLXhJ6zFu4XR3eluTyEpr3DzdRspd6xP0M6xK6Fc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 4.19 034/120] drm/compat: Clear bounce structures
-Date:   Mon, 15 Mar 2021 14:56:25 +0100
-Message-Id: <20210315135721.107312851@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 154/168] include/linux/sched/mm.h: use rcu_dereference in in_vfork()
+Date:   Mon, 15 Mar 2021 14:56:26 +0100
+Message-Id: <20210315135555.410453379@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +46,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit de066e116306baf3a6a62691ac63cfc0b1dabddb upstream.
+[ Upstream commit 149fc787353f65b7e72e05e7b75d34863266c3e2 ]
 
-Some of them have gaps, or fields we don't clear. Native ioctl code
-does full copies plus zero-extends on size mismatch, so nothing can
-leak. But compat is more hand-rolled so need to be careful.
+Fix a sparse warning by using rcu_dereference().  Technically this is a
+bug and a sufficiently aggressive compiler could reload the `real_parent'
+pointer outside the protection of the rcu lock (and access freed memory),
+but I think it's pretty unlikely to happen.
 
-None of these matter for performance, so just memset.
-
-Also I didn't fix up the CONFIG_DRM_LEGACY or CONFIG_DRM_AGP ioctl, those
-are security holes anyway.
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reported-by: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com # vblank ioctl
-Cc: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210222100643.400935-1-daniel.vetter@ffwll.ch
-(cherry picked from commit e926c474ebee404441c838d18224cd6f246a71b7)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210221194207.1351703-1-willy@infradead.org
+Fixes: b18dc5f291c0 ("mm, oom: skip vforked tasks from being selected")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_ioc32.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/linux/sched/mm.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_ioc32.c
-+++ b/drivers/gpu/drm/drm_ioc32.c
-@@ -96,6 +96,8 @@ static int compat_drm_version(struct fil
- 	if (copy_from_user(&v32, (void __user *)arg, sizeof(v32)))
- 		return -EFAULT;
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index a132d875d351..3a1d899019af 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -167,7 +167,8 @@ static inline bool in_vfork(struct task_struct *tsk)
+ 	 * another oom-unkillable task does this it should blame itself.
+ 	 */
+ 	rcu_read_lock();
+-	ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
++	ret = tsk->vfork_done &&
++			rcu_dereference(tsk->real_parent)->mm == tsk->mm;
+ 	rcu_read_unlock();
  
-+	memset(&v, 0, sizeof(v));
-+
- 	v = (struct drm_version) {
- 		.name_len = v32.name_len,
- 		.name = compat_ptr(v32.name),
-@@ -134,6 +136,9 @@ static int compat_drm_getunique(struct f
- 
- 	if (copy_from_user(&uq32, (void __user *)arg, sizeof(uq32)))
- 		return -EFAULT;
-+
-+	memset(&uq, 0, sizeof(uq));
-+
- 	uq = (struct drm_unique){
- 		.unique_len = uq32.unique_len,
- 		.unique = compat_ptr(uq32.unique),
-@@ -260,6 +265,8 @@ static int compat_drm_getclient(struct f
- 	if (copy_from_user(&c32, argp, sizeof(c32)))
- 		return -EFAULT;
- 
-+	memset(&client, 0, sizeof(client));
-+
- 	client.idx = c32.idx;
- 
- 	err = drm_ioctl_kernel(file, drm_getclient, &client, DRM_UNLOCKED);
-@@ -842,6 +849,8 @@ static int compat_drm_wait_vblank(struct
- 	if (copy_from_user(&req32, argp, sizeof(req32)))
- 		return -EFAULT;
- 
-+	memset(&req, 0, sizeof(req));
-+
- 	req.request.type = req32.request.type;
- 	req.request.sequence = req32.request.sequence;
- 	req.request.signal = req32.request.signal;
-@@ -879,6 +888,8 @@ static int compat_drm_mode_addfb2(struct
- 	struct drm_mode_fb_cmd2 req64;
- 	int err;
- 
-+	memset(&req64, 0, sizeof(req64));
-+
- 	if (copy_from_user(&req64, argp,
- 			   offsetof(drm_mode_fb_cmd232_t, modifier)))
- 		return -EFAULT;
+ 	return ret;
+-- 
+2.30.1
+
 
 
