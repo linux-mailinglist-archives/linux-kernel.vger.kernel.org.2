@@ -2,199 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DA933B359
+	by mail.lfdr.de (Postfix) with ESMTP id E399433B35A
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCONKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhCONKB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:10:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DFFC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:10:01 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lLmyb-0004DA-CB; Mon, 15 Mar 2021 14:09:41 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:91fd:fdb9:356d:9a2d] (unknown [IPv6:2a03:f580:87bc:d400:91fd:fdb9:356d:9a2d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 559F75F5AAB;
-        Mon, 15 Mar 2021 13:09:36 +0000 (UTC)
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, olteanv@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        linux-can@vger.kernel.org
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-Message-ID: <4b02d9bb-772f-ff40-b865-ea87bd1bea6e@pengutronix.de>
-Date:   Mon, 15 Mar 2021 14:09:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S230000AbhCONKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229807AbhCONKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:10:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA49A64E74;
+        Mon, 15 Mar 2021 13:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615813817;
+        bh=ICd/Atj2FZXZ0iL/M9SMQR97uK2V17AYDzyyz2GmxsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=acX2vCxhcUiwzCPU2wbxWQavkq6vI2lb8d8timNCAEOGqa8nGqSYqB77e7TeZwDBC
+         zMm/WhnabaLO+X1UMMywJJaRLpIoXMgKvlWd34huPEGv7o49OBelCHQGQLvx7WZJjz
+         S9/81127GYN3W4tEGz+eGLFvm3EC2OIxsB0qCltXr783Vh61OFIIKyF8FtB2XSZ/nW
+         K79QEcMdjzjM1IRoVasGVIDZs4+WnDRsSXBHVSmaw1SFr8DBXu4Kzsx24Pa5/U4t8U
+         yTn/uqoIOc1PID2WzWpMRf5/9yjFB/VXD9wvnhlyv28D2zF7oHDwYqtOp1z5G8aVMi
+         pt8WQKrdEBpGA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 680E440647; Mon, 15 Mar 2021 10:10:14 -0300 (-03)
+Date:   Mon, 15 Mar 2021 10:10:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>, Andi Kleen <andi@firstfloor.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-perf-users@ghostprotocols.net" 
+        <linux-perf-users@ghostprotocols.net>
+Subject: Re: [PATCH] perf-stat: introduce bperf, share hardware PMCs with BPF
+Message-ID: <YE9ctk/sO/bokBjw@kernel.org>
+References: <20210312020257.197137-1-songliubraving@fb.com>
+ <YEt5o7pSTleymwy1@kernel.org>
+ <F55800AC-73A5-46A4-9E08-1DD00691267C@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="XfdkZiGWe4GpXgPyF3Eq71MC2ms5K2wwq"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F55800AC-73A5-46A4-9E08-1DD00691267C@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XfdkZiGWe4GpXgPyF3Eq71MC2ms5K2wwq
-Content-Type: multipart/mixed; boundary="nVncz7ZIHzuqTZClRZDr3c4OVwDWj5Ycp";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org, olteanv@gmail.com
-Cc: ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
- edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
- ap420073@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linuxarm@openeuler.org, linux-can@vger.kernel.org
-Message-ID: <4b02d9bb-772f-ff40-b865-ea87bd1bea6e@pengutronix.de>
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+Em Fri, Mar 12, 2021 at 06:52:39PM +0000, Song Liu escreveu:
+> > On Mar 12, 2021, at 6:24 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Thu, Mar 11, 2021 at 06:02:57PM -0800, Song Liu escreveu:
+> >> perf uses performance monitoring counters (PMCs) to monitor system
+> >> performance. The PMCs are limited hardware resources. For example,
+> >> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
+> >> 
+> >> Modern data center systems use these PMCs in many different ways:
+> >> system level monitoring, (maybe nested) container level monitoring, per
+> >> process monitoring, profiling (in sample mode), etc. In some cases,
+> >> there are more active perf_events than available hardware PMCs. To allow
+> >> all perf_events to have a chance to run, it is necessary to do expensive
+> >> time multiplexing of events.
+> >> 
+> >> On the other hand, many monitoring tools count the common metrics (cycles,
+> >> instructions). It is a waste to have multiple tools create multiple
+> >> perf_events of "cycles" and occupy multiple PMCs.
+> >> 
+> >> bperf tries to reduce such wastes by allowing multiple perf_events of
+> >> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
+> >> of having each perf-stat session to read its own perf_events, bperf uses
+> >> BPF programs to read the perf_events and aggregate readings to BPF maps.
+> >> Then, the perf-stat session(s) reads the values from these BPF maps.
+> >> 
+> >> Please refer to the comment before the definition of bperf_ops for the
+> >> description of bperf architecture.
+> >> 
+> >> bperf is off by default. To enable it, pass --use-bpf option to perf-stat.
+> >> bperf uses a BPF hashmap to share information about BPF programs and maps
+> >> used by bperf. This map is pinned to bpffs. The default address is
+> >> /sys/fs/bpf/bperf_attr_map. The user could change the address with option
+> >> --attr-map.
+> >> 
+> >> ---
+> >> Known limitations:
+> >> 1. Do not support per cgroup events;
+> >> 2. Do not support monitoring of BPF program (perf-stat -b);
+> >> 3. Do not support event groups.
+> >> The following commands have been tested:
+> >> 
+> >>   perf stat --use-bpf -e cycles -a
+> >>   perf stat --use-bpf -e cycles -C 1,3,4
+> >>   perf stat --use-bpf -e cycles -p 123
+> >>   perf stat --use-bpf -e cycles -t 100,101
 
---nVncz7ZIHzuqTZClRZDr3c4OVwDWj5Ycp
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+<SNIP>
 
-On 3/15/21 4:10 AM, Yunsheng Lin wrote:
-> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-> flag set, but queue discipline by-pass does not work for lockless
-> qdisc because skb is always enqueued to qdisc even when the qdisc
-> is empty, see __dev_xmit_skb().
->=20
-> This patch calls sch_direct_xmit() to transmit the skb directly
-> to the driver for empty lockless qdisc too, which aviod enqueuing
-> and dequeuing operation. qdisc->empty is set to false whenever a
-> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
-> skb dequeuing return NULL, see pfifo_fast_dequeue(), a spinlock is
-> added to avoid the race between enqueue/dequeue and qdisc->empty
-> setting.
->=20
-> If there is requeued skb in q->gso_skb, and qdisc->empty is true,
-> do not allow bypassing requeued skb. enqueuing and dequeuing in
-> q->gso_skb is always protected by qdisc->seqlock, so is the access
-> of q->gso_skb by skb_queue_empty();
->=20
-> Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
-> is false to avoid packet stuck problem.
->=20
-> The performance for ip_forward test increases about 10% with this
-> patch.
->=20
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >> @@ -925,15 +931,15 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+> >> 	/*
+> >> 	 * Enable counters and exec the command:
+> >> 	 */
+> >> -	t0 = rdclock();
+> >> -	clock_gettime(CLOCK_MONOTONIC, &ref_time);
+> >> -
+> >> 	if (forks) {
+> >> 		evlist__start_workload(evsel_list);
+> >> 		err = enable_counters();
+> >> 		if (err)
+> >> 			return -1;
+> >> 
+> >> +		t0 = rdclock();
+> >> +		clock_gettime(CLOCK_MONOTONIC, &ref_time);
+> >> +
+> >> 		if (interval || timeout || evlist__ctlfd_initialized(evsel_list))
+> >> 			status = dispatch_events(forks, timeout, interval, &times);
+> >> 		if (child_pid != -1) {
+> >> @@ -954,6 +960,10 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+> >> 		err = enable_counters();
+> >> 		if (err)
+> >> 			return -1;
+> >> +
+> >> +		t0 = rdclock();
+> >> +		clock_gettime(CLOCK_MONOTONIC, &ref_time);
+> >> +
+> >> 		status = dispatch_events(forks, timeout, interval, &times);
+> >> 	}
+> >> 
+> > 
+> > The above two hunks seems out of place, i.e. can they go to a different
+> > patch and with an explanation about why this is needed?
+> 
+> Actually, I am still debating whether we want the above change in a separate 
+> patch. It is related to the following change. 
+> 
+> [...]
+> 
+> >> +	/*
+> >> +	 * Attahcing the skeleton takes non-trivial time (0.2s+ on a kernel
+> >> +	 * with some debug options enabled). This shows as a longer first
+> >> +	 * interval:
+> >> +	 *
+> >> +	 * # perf stat -e cycles -a -I 1000
+> >> +	 * #           time             counts unit events
+> >> +	 *      1.267634674     26,259,166,523      cycles
+> >> +	 *      2.271637827     22,550,822,286      cycles
+> >> +	 *      3.275406553     22,852,583,744      cycles
+> >> +	 *
+> >> +	 * Fix this by zeroing accum_readings after attaching the program.
+> >> +	 */
+> >> +	bperf_sync_counters(evsel);
+> >> +	entry_cnt = bpf_map__max_entries(skel->maps.accum_readings);
+> >> +	memset(values, 0, sizeof(struct bpf_perf_event_value) * num_cpu_bpf);
+> >> +
+> >> +	for (i = 0; i < entry_cnt; i++) {
+> >> +		bpf_map_update_elem(bpf_map__fd(skel->maps.accum_readings),
+> >> +				    &i, values, BPF_ANY);
+> >> +	}
+> >> +	return 0;
+> >> +}
+> 
+> Attaching the skeleton takes non-trivial time, so that we get a bigger first 
+> interval (1.26s in the example above). To fix this, in __run_perf_stat(), we 
+> get t0 and ref_time after enable_counters(). 
+> 
+> Maybe a comment in __run_perf_stat() is better than a separate patch?
 
-I gave it a short test on a single core imx. No problem here.
+I still think that there is value in taking those measurements after we
+enable the counters, as, for instance, for interval mode we want
+measurements with the counters enabled, whatever happens before the
+counters are enabled is just startup time, etc. Jiri, Andi?
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---nVncz7ZIHzuqTZClRZDr3c4OVwDWj5Ycp--
-
---XfdkZiGWe4GpXgPyF3Eq71MC2ms5K2wwq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBPXI0ACgkQqclaivrt
-76kzZAgArkElmvsUkhVVnZlZ8tzI2BkmR+z2RwCfUGdUVPAFVdBlp/UdH9aV1gEJ
-3WPLeMrXrAyOS+MSh4u1USIM3YJ7DQhBlZaxORx5uY2YUqu5Ejftbk1DjhKLc7fj
-yM0QzHx37e4soGNMYoKeX4NCIC71CE7YspUmpiav09ZkWBU0eoGOLYtfBQZ/WTYF
-MzUbrPH2bi0F3c8mCFr2AQ5KTFkc8dYWJDXSZe1jfdjFw0p7guwCoTR9JFKkNtiW
-eDul1LxGXdCUWKrkmhhQFhkbgd3BTRgT/24DVLeSmEiS+6OhoaozrArRWatDyE52
-AVDpHTHBTrQfLSSBzCs9g7a88oKNUw==
-=hwgR
------END PGP SIGNATURE-----
-
---XfdkZiGWe4GpXgPyF3Eq71MC2ms5K2wwq--
+- Arnaldo
