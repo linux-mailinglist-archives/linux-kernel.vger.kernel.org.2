@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFDA33AF34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81FC33AF43
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCOJrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:47:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59336 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229546AbhCOJqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:46:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D97FDAD74;
-        Mon, 15 Mar 2021 09:46:30 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 335e3db6;
-        Mon, 15 Mar 2021 09:47:45 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 09:47:45 +0000
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
-Message-ID: <YE8tQc66C6MW7EqY@suse.de>
-References: <YEsryBEFq4HuLKBs@suse.de>
- <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
- <YEtc54pWLLjb6SgL@suse.de>
- <20210312131123.GZ3479805@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210312131123.GZ3479805@casper.infradead.org>
+        id S229536AbhCOJtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:49:46 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:51294 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhCOJtP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:49:15 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.228])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 46EA2E012A;
+        Mon, 15 Mar 2021 17:49:10 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Jonathan Corbet <corbet@lwn.net>, Wang Qing <wangqing@vivo.com>,
+        Joe Perches <joe@perches.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] doc: admin-guide: remove explanation of "watchdog/%u"
+Date:   Mon, 15 Mar 2021 17:49:03 +0800
+Message-Id: <1615801744-31548-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSkJMTBpMTUMfGR8YVkpNSk5DS0pMTktNSU5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKSktOSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nhg6NDo4Nz8PIUsYKA8SKzYM
+        HzwwFDZVSlVKTUpOQ0tKTE5KT0NMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUNZV1kIAVlBSU9OQjcG
+X-HM-Tid: 0a78354a141e2c17kusn46ea2e012a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 01:11:23PM +0000, Matthew Wilcox wrote:
-> On Fri, Mar 12, 2021 at 12:21:59PM +0000, Luis Henriques wrote:
-> > > > I've seen a bug report (5.10.16 kernel splat below) that seems to be
-> > > > reproducible in kernels as early as 5.4.
-> 
-> If this is reproducible, can you turn this BUG_ON into a VM_BUG_ON_PAGE()
-> so we know what kind of problem we're dealing with?  Assuming the SUSE
-> tumbleweed kernels enable CONFIG_DEBUG_VM, which I'm sure they do.
+"watchdog/%u" threads has be replaced by cpu_stop_work, 
+which will mislead the reader.
 
-Just to make sure I got this right, you want to test something like this:
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ .../admin-guide/kernel-per-CPU-kthreads.rst          | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
- 				}
- 			}
--			BUG_ON(page_mapped(page));
-+			VM_BUG_ON_PAGE(page_mapped(page), page);
- 			ret2 = do_launder_page(mapping, page);
- 			if (ret2 == 0) {
- 				if (!invalidate_complete_page2(mapping, page))
-
-Cheers,
---
-Luís
-
-> 
-> > > Page fault locks the page before installing a new pte, at least
-> > > AFAICS, so the BUG looks impossible.  The referenced commits only
-> > > touch very high level control of writeback, so they may well increase
-> > > the chance of a bug triggering, but very unlikely to be the actual
-> > > cause of the bug.   I'm guessing this to be an MM issue.
-> > 
-> > Ok, thank you for having a look at it.
-> > 
-> > Interestingly, there's a single commit to mm/truncate.c in 5.4:
-> > ef18a1ca847b ("mm/thp: allow dropping THP from page cache").  I'm Cc'ing
-> > Andrew and Kirill, maybe they have some ideas.
-> 
-> That's probably not it; unless FUSE has developed the ability to insert
-> compound pages into the page cache without me noticing.
-> 
-> (if it had, that would absolutely explain it -- i have a fix in my thp
-> tree for this case, but it doesn't affect any existing filesystem
-> because only shmem uses compound pages and it doesn't call
-> invalidate_inode_pages2_range)
+diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+index 531f689..5e51ee5
+--- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
++++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+@@ -332,23 +332,3 @@ To reduce its OS jitter, do at least one of the following:
+ 	kthreads from being created in the first place.  However, please
+ 	note that this will not eliminate OS jitter, but will instead
+ 	shift it to RCU_SOFTIRQ.
+-
+-Name:
+-  watchdog/%u
+-
+-Purpose:
+-  Detect software lockups on each CPU.
+-
+-To reduce its OS jitter, do at least one of the following:
+-
+-1.	Build with CONFIG_LOCKUP_DETECTOR=n, which will prevent these
+-	kthreads from being created in the first place.
+-2.	Boot with "nosoftlockup=0", which will also prevent these kthreads
+-	from being created.  Other related watchdog and softlockup boot
+-	parameters may be found in Documentation/admin-guide/kernel-parameters.rst
+-	and Documentation/watchdog/watchdog-parameters.rst.
+-3.	Echo a zero to /proc/sys/kernel/watchdog to disable the
+-	watchdog timer.
+-4.	Echo a large number of /proc/sys/kernel/watchdog_thresh in
+-	order to reduce the frequency of OS jitter due to the watchdog
+-	timer down to a level that is acceptable for your workload.
+-- 
+2.7.4
