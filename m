@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F69233B0CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816F533B0BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhCOLQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:16:44 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:35374 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhCOLQU (ORCPT
+        id S229913AbhCOLM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:12:27 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43220 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhCOLMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:16:20 -0400
-Received: from localhost (unknown [192.168.167.225])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 37D18F2D33;
-        Mon, 15 Mar 2021 19:16:18 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P2274T140461670921984S1615806972641643_;
-        Mon, 15 Mar 2021 19:16:18 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5029d3549c0123fd912d29e648a7e3c9>
-X-RL-SENDER: penghaob@uniontech.com
-X-SENDER: penghaob@uniontech.com
-X-LOGIN-NAME: penghaob@uniontech.com
-X-FST-TO: gregkh@linuxfoundation.org
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Hao Peng <penghaob@uniontech.com>
-To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        izabela.bakollari@gmail.com, penghaob@uniontech.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rts5208: add empty line in general.c
-Date:   Mon, 15 Mar 2021 19:12:20 +0800
-Message-Id: <20210315111220.27090-1-penghaob@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 15 Mar 2021 07:12:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D32021C0B78; Mon, 15 Mar 2021 12:12:22 +0100 (CET)
+Date:   Mon, 15 Mar 2021 12:12:22 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Rahul Tanwar <rtanwar@maxlinear.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
+        "dmurphy@ti.com" <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Cheol Yong Kim <ckim@maxlinear.com>,
+        Qiming Wu <qwu@maxlinear.com>
+Subject: Re: [PATCH] leds: lgm: fix gpiolib dependency
+Message-ID: <20210315111222.GA10084@duo.ucw.cz>
+References: <MN2PR19MB36933AFDC4531D0F7A984608B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
+ <MN2PR19MB3693FBBD3E6DB8A916260D69B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
+In-Reply-To: <MN2PR19MB3693FBBD3E6DB8A916260D69B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add one empty line upon return for easy reading.
 
-Signed-off-by: Hao Peng <penghaob@uniontech.com>
----
- drivers/staging/rts5208/general.c | 1 +
- 1 file changed, 1 insertion(+)
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/rts5208/general.c b/drivers/staging/rts5208/general.c
-index 0f912b011064..1ddfbc5aecb7 100644
---- a/drivers/staging/rts5208/general.c
-+++ b/drivers/staging/rts5208/general.c
-@@ -20,6 +20,7 @@ int bit1cnt_long(u32 data)
- 			cnt++;
- 		data >>= 1;
- 	}
-+
- 	return cnt;
- }
- 
--- 
-2.20.1
+Hi!
 
+> On 15/3/2021 5:44 pm, Rahul Tanwar wrote:
+>=20
+> From: Arnd Bergmann <arnd@kernel.org><mailto:arnd@kernel.org>
+>=20
+> From: Arnd Bergmann <arnd@arndb.de><mailto:arnd@arndb.de>
+>=20
+=2E..
 
+>=20
+> diff<https://lore.kernel.org/lkml/20210308153052.2353885-1-arnd@kernel.or=
+g/#iZ30drivers:leds:blink:Kconfig> --git a/drivers/leds/blink/Kconfig b/dri=
+vers/leds/blink/Kconfig
+> index 265b53476a80..6dedc58c47b3 100644
 
+=2E..
+>=20
+> Acked-by: Rahul Tanwar <rtanwar@maxlinear.com><mailto:rtanwar@maxlinear.c=
+om>
+
+You may want to do something with your mail configuration. This is
+quite corrupted.
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYE9BFgAKCRAw5/Bqldv6
+8mCqAJ0UPjBFffBM+bycLyzjoiKGTpCeRQCfVY+IwUW8QbX0F8Ffp2ce4pDKScA=
+=XdIp
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
