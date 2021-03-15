@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1021D33BE89
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58E133BDCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240551AbhCOOrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49142 "EHLO mail.kernel.org"
+        id S236320AbhCOOi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233877AbhCOOCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B917264E83;
-        Mon, 15 Mar 2021 14:02:32 +0000 (UTC)
+        id S233683AbhCOOCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A1464F2A;
+        Mon, 15 Mar 2021 14:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816953;
-        bh=IFfqQ8qPfWnqGiSXAud+IN7dXAdtEKUe1+FwHMdPJCE=;
+        s=korg; t=1615816934;
+        bh=u7UkRSy9B1ZZ3IVHg+R2ZGdmRPhqigoLa7nfDciS3UY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMNeHkpV2kunLcne9LTS5lcFcGgZA1S7vSSwbvTYi/wUi+Uxymv6v6wpnPK+Lhp08
-         6Iqr+NeUk4KhK9ktByD4rtlh5muUVZy+hvOAsB76X9eBtgNifBEsTP3DgLbtKpAO+i
-         jmjGDC5oBgbyQOqFdgzLQfIzfNcSpCofHElEDUq0=
+        b=djlo7smlpWppW5KJ4EUTwUrXUTFwYzXi2qhPe5BbURDYIF7k/kvyID9HAZYyM7gmG
+         1vpJdBWx7hL3bSVrGL/xSl7LaD7QdsmDNluUjlxJfQSr5RWtsjOoEe5oATJaJXFooF
+         F1fYG1hifeEZ3GmEq9XTVy+o/pXzVRwrXIRKuKhw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 5.11 225/306] staging: ks7010: prevent buffer overflow in ks_wlan_set_scan()
-Date:   Mon, 15 Mar 2021 14:54:48 +0100
-Message-Id: <20210315135515.223753558@linuxfoundation.org>
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.10 196/290] cifs: do not send close in compound create+close requests
+Date:   Mon, 15 Mar 2021 14:54:49 +0100
+Message-Id: <20210315135548.531298161@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +43,179 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Paulo Alcantara <pc@cjr.nz>
 
-commit e163b9823a0b08c3bb8dc4f5b4b5c221c24ec3e5 upstream.
+commit 04ad69c342fc4de5bd23be9ef15ea7574fb1a87e upstream.
 
-The user can specify a "req->essid_len" of up to 255 but if it's
-over IW_ESSID_MAX_SIZE (32) that can lead to memory corruption.
+In case of interrupted syscalls, prevent sending CLOSE commands for
+compound CREATE+CLOSE requests by introducing an
+CIFS_CP_CREATE_CLOSE_OP flag to indicate lower layers that it should
+not send a CLOSE command to the MIDs corresponding the compound
+CREATE+CLOSE request.
 
-Fixes: 13a9930d15b4 ("staging: ks7010: add driver from Nanonote extra-repository")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YD4fS8+HmM/Qmrw6@mwanda
+A simple reproducer:
+
+    #!/bin/bash
+
+    mount //server/share /mnt -o username=foo,password=***
+    tc qdisc add dev eth0 root netem delay 450ms
+    stat -f /mnt &>/dev/null & pid=$!
+    sleep 0.01
+    kill $pid
+    tc qdisc del dev eth0 root
+    umount /mnt
+
+Before patch:
+
+    ...
+    6 0.256893470 192.168.122.2 → 192.168.122.15 SMB2 402 Create Request File: ;GetInfo Request FS_INFO/FileFsFullSizeInformation;Close Request
+    7 0.257144491 192.168.122.15 → 192.168.122.2 SMB2 498 Create Response File: ;GetInfo Response;Close Response
+    9 0.260798209 192.168.122.2 → 192.168.122.15 SMB2 146 Close Request File:
+   10 0.260841089 192.168.122.15 → 192.168.122.2 SMB2 130 Close Response, Error: STATUS_FILE_CLOSED
+
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/staging/ks7010/ks_wlan_net.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/ks7010/ks_wlan_net.c
-+++ b/drivers/staging/ks7010/ks_wlan_net.c
-@@ -1120,6 +1120,7 @@ static int ks_wlan_set_scan(struct net_d
- {
- 	struct ks_wlan_private *priv = netdev_priv(dev);
- 	struct iw_scan_req *req = NULL;
-+	int len;
+---
+ fs/cifs/cifsglob.h  |   11 ++++++-----
+ fs/cifs/smb2inode.c |    1 +
+ fs/cifs/smb2misc.c  |    8 ++++----
+ fs/cifs/smb2ops.c   |   10 +++++-----
+ fs/cifs/smb2proto.h |    3 +--
+ fs/cifs/transport.c |    2 +-
+ 6 files changed, 18 insertions(+), 17 deletions(-)
+
+--- a/fs/cifs/cifsglob.h
++++ b/fs/cifs/cifsglob.h
+@@ -256,7 +256,7 @@ struct smb_version_operations {
+ 	/* verify the message */
+ 	int (*check_message)(char *, unsigned int, struct TCP_Server_Info *);
+ 	bool (*is_oplock_break)(char *, struct TCP_Server_Info *);
+-	int (*handle_cancelled_mid)(char *, struct TCP_Server_Info *);
++	int (*handle_cancelled_mid)(struct mid_q_entry *, struct TCP_Server_Info *);
+ 	void (*downgrade_oplock)(struct TCP_Server_Info *server,
+ 				 struct cifsInodeInfo *cinode, __u32 oplock,
+ 				 unsigned int epoch, bool *purge_cache);
+@@ -1785,10 +1785,11 @@ static inline bool is_retryable_error(in
+ #define   CIFS_NO_RSP_BUF   0x040    /* no response buffer required */
  
- 	if (priv->sleep_mode == SLP_SLEEP)
- 		return -EPERM;
-@@ -1129,8 +1130,9 @@ static int ks_wlan_set_scan(struct net_d
- 	if (wrqu->data.length == sizeof(struct iw_scan_req) &&
- 	    wrqu->data.flags & IW_SCAN_THIS_ESSID) {
- 		req = (struct iw_scan_req *)extra;
--		priv->scan_ssid_len = req->essid_len;
--		memcpy(priv->scan_ssid, req->essid, priv->scan_ssid_len);
-+		len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+		priv->scan_ssid_len = len;
-+		memcpy(priv->scan_ssid, req->essid, len);
- 	} else {
- 		priv->scan_ssid_len = 0;
- 	}
+ /* Type of request operation */
+-#define   CIFS_ECHO_OP      0x080    /* echo request */
+-#define   CIFS_OBREAK_OP   0x0100    /* oplock break request */
+-#define   CIFS_NEG_OP      0x0200    /* negotiate request */
+-#define   CIFS_OP_MASK     0x0380    /* mask request type */
++#define   CIFS_ECHO_OP            0x080  /* echo request */
++#define   CIFS_OBREAK_OP          0x0100 /* oplock break request */
++#define   CIFS_NEG_OP             0x0200 /* negotiate request */
++#define   CIFS_CP_CREATE_CLOSE_OP 0x0400 /* compound create+close request */
++#define   CIFS_OP_MASK            0x0780 /* mask request type */
+ 
+ #define   CIFS_HAS_CREDITS 0x0400    /* already has credits */
+ #define   CIFS_TRANSFORM_REQ 0x0800    /* transform request before sending */
+--- a/fs/cifs/smb2inode.c
++++ b/fs/cifs/smb2inode.c
+@@ -358,6 +358,7 @@ smb2_compound_op(const unsigned int xid,
+ 	if (cfile)
+ 		goto after_close;
+ 	/* Close */
++	flags |= CIFS_CP_CREATE_CLOSE_OP;
+ 	rqst[num_rqst].rq_iov = &vars->close_iov[0];
+ 	rqst[num_rqst].rq_nvec = 1;
+ 	rc = SMB2_close_init(tcon, server,
+--- a/fs/cifs/smb2misc.c
++++ b/fs/cifs/smb2misc.c
+@@ -835,14 +835,14 @@ smb2_handle_cancelled_close(struct cifs_
+ }
+ 
+ int
+-smb2_handle_cancelled_mid(char *buffer, struct TCP_Server_Info *server)
++smb2_handle_cancelled_mid(struct mid_q_entry *mid, struct TCP_Server_Info *server)
+ {
+-	struct smb2_sync_hdr *sync_hdr = (struct smb2_sync_hdr *)buffer;
+-	struct smb2_create_rsp *rsp = (struct smb2_create_rsp *)buffer;
++	struct smb2_sync_hdr *sync_hdr = mid->resp_buf;
++	struct smb2_create_rsp *rsp = mid->resp_buf;
+ 	struct cifs_tcon *tcon;
+ 	int rc;
+ 
+-	if (sync_hdr->Command != SMB2_CREATE ||
++	if ((mid->optype & CIFS_CP_CREATE_CLOSE_OP) || sync_hdr->Command != SMB2_CREATE ||
+ 	    sync_hdr->Status != STATUS_SUCCESS)
+ 		return 0;
+ 
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1137,7 +1137,7 @@ smb2_set_ea(const unsigned int xid, stru
+ 	struct TCP_Server_Info *server = cifs_pick_channel(ses);
+ 	__le16 *utf16_path = NULL;
+ 	int ea_name_len = strlen(ea_name);
+-	int flags = 0;
++	int flags = CIFS_CP_CREATE_CLOSE_OP;
+ 	int len;
+ 	struct smb_rqst rqst[3];
+ 	int resp_buftype[3];
+@@ -1515,7 +1515,7 @@ smb2_ioctl_query_info(const unsigned int
+ 	struct smb_query_info qi;
+ 	struct smb_query_info __user *pqi;
+ 	int rc = 0;
+-	int flags = 0;
++	int flags = CIFS_CP_CREATE_CLOSE_OP;
+ 	struct smb2_query_info_rsp *qi_rsp = NULL;
+ 	struct smb2_ioctl_rsp *io_rsp = NULL;
+ 	void *buffer = NULL;
+@@ -2482,7 +2482,7 @@ smb2_query_info_compound(const unsigned
+ {
+ 	struct cifs_ses *ses = tcon->ses;
+ 	struct TCP_Server_Info *server = cifs_pick_channel(ses);
+-	int flags = 0;
++	int flags = CIFS_CP_CREATE_CLOSE_OP;
+ 	struct smb_rqst rqst[3];
+ 	int resp_buftype[3];
+ 	struct kvec rsp_iov[3];
+@@ -2880,7 +2880,7 @@ smb2_query_symlink(const unsigned int xi
+ 	unsigned int sub_offset;
+ 	unsigned int print_len;
+ 	unsigned int print_offset;
+-	int flags = 0;
++	int flags = CIFS_CP_CREATE_CLOSE_OP;
+ 	struct smb_rqst rqst[3];
+ 	int resp_buftype[3];
+ 	struct kvec rsp_iov[3];
+@@ -3062,7 +3062,7 @@ smb2_query_reparse_tag(const unsigned in
+ 	struct cifs_open_parms oparms;
+ 	struct cifs_fid fid;
+ 	struct TCP_Server_Info *server = cifs_pick_channel(tcon->ses);
+-	int flags = 0;
++	int flags = CIFS_CP_CREATE_CLOSE_OP;
+ 	struct smb_rqst rqst[3];
+ 	int resp_buftype[3];
+ 	struct kvec rsp_iov[3];
+--- a/fs/cifs/smb2proto.h
++++ b/fs/cifs/smb2proto.h
+@@ -246,8 +246,7 @@ extern int SMB2_oplock_break(const unsig
+ extern int smb2_handle_cancelled_close(struct cifs_tcon *tcon,
+ 				       __u64 persistent_fid,
+ 				       __u64 volatile_fid);
+-extern int smb2_handle_cancelled_mid(char *buffer,
+-					struct TCP_Server_Info *server);
++extern int smb2_handle_cancelled_mid(struct mid_q_entry *mid, struct TCP_Server_Info *server);
+ void smb2_cancelled_close_fid(struct work_struct *work);
+ extern int SMB2_QFS_info(const unsigned int xid, struct cifs_tcon *tcon,
+ 			 u64 persistent_file_id, u64 volatile_file_id,
+--- a/fs/cifs/transport.c
++++ b/fs/cifs/transport.c
+@@ -101,7 +101,7 @@ static void _cifs_mid_q_entry_release(st
+ 	if (midEntry->resp_buf && (midEntry->mid_flags & MID_WAIT_CANCELLED) &&
+ 	    midEntry->mid_state == MID_RESPONSE_RECEIVED &&
+ 	    server->ops->handle_cancelled_mid)
+-		server->ops->handle_cancelled_mid(midEntry->resp_buf, server);
++		server->ops->handle_cancelled_mid(midEntry, server);
+ 
+ 	midEntry->mid_state = MID_FREE;
+ 	atomic_dec(&midCount);
 
 
