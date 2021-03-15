@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD4333BCDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9A733BE77
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235290AbhCOO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S239739AbhCOOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232306AbhCON6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C94864F45;
-        Mon, 15 Mar 2021 13:58:34 +0000 (UTC)
+        id S232105AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C143364F26;
+        Mon, 15 Mar 2021 13:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816715;
-        bh=jlVvzcmfAS3ovLC8JdqNKY6c62Pk08N4/aEfwqtaILQ=;
+        s=korg; t=1615816684;
+        bh=wdYP8A9YSW13Zm9rj4iecbtkbcaVWHR0gA37V1xYZGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUJVBrvl/gMuC7gpw/0Bu4O/eT15BaJBaZWApzkGRm0srK3WHBXsZQrNPb1Zmfgvp
-         /AdfSrdUJVt8HFgKrP353M4blG9qosRTLLAf0KS9+Pw6L0XlVSjYsetSLhypsi1VyA
-         8UO6MTkybPTfHkxj/n7pTZ0/lXRj0421WFVI/OqY=
+        b=qnnfteiwzMNig/MtCnAe+84Zv3a8ySqDp6xJRjVB0K5BhmGNZmx+eIvtOWTX5btUS
+         TgEJymPJLe17PYwoM418OUIeg3J6HTaRFoKq0QIWt/d+G4b3b6bRCGlQhMh5Z9VBDr
+         fb5ka3UJysxvFvMX8FF+4Cin+oSA7MpqXSgo7OEE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 081/306] net: stmmac: fix watchdog timeout during suspend/resume stress test
-Date:   Mon, 15 Mar 2021 14:52:24 +0100
-Message-Id: <20210315135510.381953478@linuxfoundation.org>
+        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 054/290] net: stmmac: Fix VLAN filter delete timeout issue in Intel mGBE SGMII
+Date:   Mon, 15 Mar 2021 14:52:27 +0100
+Message-Id: <20210315135543.756630933@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-commit c511819d138de38e1637eedb645c207e09680d0f upstream.
+commit 9a7b3950c7e15968e23d83be215e95ccc7c92a53 upstream.
 
-stmmac_xmit() call stmmac_tx_timer_arm() at the end to modify tx timer to
-do the transmission cleanup work. Imagine such a situation, stmmac enters
-suspend immediately after tx timer modified, it's expire callback
-stmmac_tx_clean() would not be invoked. This could affect BQL, since
-netdev_tx_sent_queue() has been called, but netdev_tx_completed_queue()
-have not been involved, as a result, dql_avail(&dev_queue->dql) finally
-always return a negative value.
+For Intel mGbE controller, MAC VLAN filter delete operation will time-out
+if serdes power-down sequence happened first during driver remove() with
+below message.
 
-__dev_queue_xmit->__dev_xmit_skb->qdisc_run->__qdisc_run->qdisc_restart->dequeue_skb:
-	if ((q->flags & TCQ_F_ONETXQUEUE) &&
-		netif_xmit_frozen_or_stopped(txq)) // __QUEUE_STATE_STACK_XOFF is set
+[82294.764958] intel-eth-pci 0000:00:1e.4 eth2: stmmac_dvr_remove: removing driver
+[82294.778677] intel-eth-pci 0000:00:1e.4 eth2: Timeout accessing MAC_VLAN_Tag_Filter
+[82294.779997] intel-eth-pci 0000:00:1e.4 eth2: failed to kill vid 0081/0
+[82294.947053] intel-eth-pci 0000:00:1d.2 eth1: stmmac_dvr_remove: removing driver
+[82295.002091] intel-eth-pci 0000:00:1d.1 eth0: stmmac_dvr_remove: removing driver
 
-Net core will stop transmitting any more. Finillay, net watchdong would timeout.
-To fix this issue, we should call netdev_tx_reset_queue() in stmmac_resume().
+Therefore, we delay the serdes power-down to be after unregister_netdev()
+which triggers the VLAN filter delete.
 
-Fixes: 54139cf3bb33 ("net: stmmac: adding multiple buffers for rx")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: b9663b7ca6ff ("net: stmmac: Enable SERDES power up/down sequence")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5260,6 +5260,8 @@ static void stmmac_reset_queues_param(st
- 		tx_q->cur_tx = 0;
- 		tx_q->dirty_tx = 0;
- 		tx_q->mss = 0;
-+
-+		netdev_tx_reset_queue(netdev_get_tx_queue(priv->dev, queue));
- 	}
- }
+@@ -5114,13 +5114,16 @@ int stmmac_dvr_remove(struct device *dev
+ 	netdev_info(priv->dev, "%s: removing driver", __func__);
  
+ 	stmmac_stop_all_dma(priv);
++	stmmac_mac_set(priv, priv->ioaddr, false);
++	netif_carrier_off(ndev);
++	unregister_netdev(ndev);
+ 
++	/* Serdes power down needs to happen after VLAN filter
++	 * is deleted that is triggered by unregister_netdev().
++	 */
+ 	if (priv->plat->serdes_powerdown)
+ 		priv->plat->serdes_powerdown(ndev, priv->plat->bsp_priv);
+ 
+-	stmmac_mac_set(priv, priv->ioaddr, false);
+-	netif_carrier_off(ndev);
+-	unregister_netdev(ndev);
+ #ifdef CONFIG_DEBUG_FS
+ 	stmmac_exit_fs(ndev);
+ #endif
 
 
