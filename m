@@ -2,231 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2106033AD90
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD11933AD89
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhCOIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:34:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:52238 "EHLO foss.arm.com"
+        id S229490AbhCOIdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:33:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51623 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhCOIdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:33:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 016401FB;
-        Mon, 15 Mar 2021 01:33:37 -0700 (PDT)
-Received: from bogus (unknown [10.163.67.35])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AEE43F70D;
-        Mon, 15 Mar 2021 01:33:33 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 08:33:27 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com
-Subject: Re: [PATCH v6 37/37] firmware: arm_scmi: add dynamic scmi devices
- creation
-Message-ID: <20210315083327.p6gculrdl3vlavhp@bogus>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
- <20210202221555.41167-38-cristian.marussi@arm.com>
+        id S229523AbhCOId0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:33:26 -0400
+IronPort-SDR: p90FytXK6lNyVfyiuc0C9EA2y3rdVKEM3gbP/D+5JJwlGk9UXTxxzHCUATqgflJFPVMjncyu5/
+ NUkYcVLM0MCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="188414655"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="188414655"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 01:33:24 -0700
+IronPort-SDR: ZgEVDje230GewEXPvE8PeHo8e/TZ8o7bNkwgoEYdgu0xed67WxuNlJpx2QA93FLv/F/CEFOqKF
+ PkwmsR4ykJsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="590253278"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga005.jf.intel.com with ESMTP; 15 Mar 2021 01:33:22 -0700
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-acpi: Add support for NVIDIA
+ BlueField-3 SoC
+To:     Liming Sun <limings@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Khalil Blaiech <kblaiech@nvidia.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <8236f89c-720e-f8bd-86d0-9654175de659@intel.com>
+Date:   Mon, 15 Mar 2021 10:33:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202221555.41167-38-cristian.marussi@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+On 12/03/21 3:48 pm, Liming Sun wrote:
+> This commit adds ACPI support for the BlueField-3 SoC which uses
+> the DWC_mshc eMMC controller. The boundary check logic in static
+> function dwcmshc_adma_write_desc() comes from sdhci-of-dwcmshc.c.
 
-Sorry for the delay.
+Did you consider adding ACPI support to sdhci-of-dwcmshc.c ?
+Other drivers have taken that approach, see sdhci-xenon.c or sdhci-iproc.c
 
-On Tue, Feb 02, 2021 at 10:15:55PM +0000, Cristian Marussi wrote:
-> Having added the support for SCMI protocols as modules in order to let
-> vendors extend the SCMI core with their own additions it seems odd to
-> then force SCMI drivers built on top to use a static device table to
-> declare their devices since this way any new SCMI drivers addition
-> would need the core SCMI device table to be updated too.
->
-> Remove the static core device table and let SCMI drivers to simply declare
-> which device/protocol pair they need at initialization time: the core will
-> then take care to generate such devices dynamically during platform
-> initialization or at module loading time, as long as the requested
-> underlying protocol is defined in the DT.
->
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> 
+> Signed-off-by: Liming Sun <limings@nvidia.com>
+> Reviewed-by: Khalil Blaiech <kblaiech@nvidia.com>
 > ---
-> v4 --> v5
-> - using klist instead of custom lists
-> v3 --> v4
-> - add a few comments
-> ---
->  drivers/firmware/arm_scmi/bus.c    |  30 +++
->  drivers/firmware/arm_scmi/common.h |   5 +
->  drivers/firmware/arm_scmi/driver.c | 309 +++++++++++++++++++++++++----
->  3 files changed, 310 insertions(+), 34 deletions(-)
->
-> diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
-> index 88e5057f4e85..88149a46e6d9 100644
-> --- a/drivers/firmware/arm_scmi/bus.c
-> +++ b/drivers/firmware/arm_scmi/bus.c
-> @@ -51,6 +51,31 @@ static int scmi_dev_match(struct device *dev, struct device_driver *drv)
->  	return 0;
->  }
->
-> +static int scmi_match_by_id_table(struct device *dev, void *data)
-> +{
-> +	struct scmi_device *sdev = to_scmi_dev(dev);
-> +	struct scmi_device_id *id_table = data;
-> +
-> +	return sdev->protocol_id == id_table->protocol_id &&
-> +		!strcmp(sdev->name, id_table->name);
-> +}
-> +
-> +struct scmi_device *scmi_find_child_dev(struct device *parent,
-> +					int prot_id, const char *name)
-> +{
-> +	struct scmi_device_id id_table;
-> +	struct device *dev;
-> +
-> +	id_table.protocol_id = prot_id;
-> +	id_table.name = name;
-> +
-> +	dev = device_find_child(parent, &id_table, scmi_match_by_id_table);
-> +	if (!dev)
-> +		return NULL;
-> +
-> +	return to_scmi_dev(dev);
-> +}
-> +
->  const struct scmi_protocol *scmi_get_protocol(int protocol_id)
->  {
->  	const struct scmi_protocol *proto;
-> @@ -114,6 +139,10 @@ int scmi_driver_register(struct scmi_driver *driver, struct module *owner,
->  {
->  	int retval;
->
-> +	retval = scmi_request_protocol_device(driver->id_table);
-> +	if (retval)
-> +		return retval;
-> +
->  	driver->driver.bus = &scmi_bus_type;
->  	driver->driver.name = driver->name;
->  	driver->driver.owner = owner;
-> @@ -130,6 +159,7 @@ EXPORT_SYMBOL_GPL(scmi_driver_register);
->  void scmi_driver_unregister(struct scmi_driver *driver)
->  {
->  	driver_unregister(&driver->driver);
-> +	scmi_unrequest_protocol_device(driver->id_table);
->  }
->  EXPORT_SYMBOL_GPL(scmi_driver_unregister);
->
-> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> index 1e2046c61d43..9a0519db4865 100644
-> --- a/drivers/firmware/arm_scmi/common.h
-> +++ b/drivers/firmware/arm_scmi/common.h
-> @@ -307,6 +307,11 @@ struct scmi_transport_ops {
->  	bool (*poll_done)(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer);
+>  drivers/mmc/host/sdhci-acpi.c | 64 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+> index 54205e3..6448e94e 100644
+> --- a/drivers/mmc/host/sdhci-acpi.c
+> +++ b/drivers/mmc/host/sdhci-acpi.c
+> @@ -716,6 +716,68 @@ static int sdhci_acpi_emmc_amd_probe_slot(struct platform_device *pdev,
+>  	.priv_size	= sizeof(struct amd_sdhci_host),
 >  };
->
-> +int scmi_request_protocol_device(const struct scmi_device_id *id_table);
-> +void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table);
-
-Sorry for being pedantic, I don't like these names. I would prefer
-something like scmi_protocol_device_{create,destroy/delete}_request.
-The action the function does needs to be at the end of the function name.
-Atleast that is something I follow. I haven't checked all the previous
-patches, just this function made to look at both the name style and the
-name itself.
-
-
-> +struct scmi_device *scmi_find_child_dev(struct device *parent,
-> +					int prot_id, const char *name);
+>  
+> +/* Check DMA address/length boundary. */
+> +static inline bool dwcmshc_adma_boundary_ok(dma_addr_t addr, int len)
+> +{
+> +	return (addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1));
+> +}
 > +
-
-scmi_child_dev_find based on what I mentioned above. Please change all
-other non-static functions even if I have not mentioned. Try to cover
-all the new functions introduced in this series, existing ones we can
-take up later.
-
->  /**
->   * struct scmi_desc - Description of SoC integration
->   *
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index dcdfd94b47f7..9fc979e3b16f 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -21,6 +21,7 @@
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/ktime.h>
-> +#include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
-> @@ -56,6 +57,14 @@ static DEFINE_MUTEX(scmi_list_mutex);
->  /* Track the unique id for the transfers for debug & profiling purpose */
->  static atomic_t transfer_last_id;
->
-> +static DEFINE_IDR(scmi_requested_devices);
-> +static DEFINE_MUTEX(scmi_requested_devices_mtx);
+> +/*
+> + * If DMA addr spans 128MB boundary, we split the DMA transfer into two
+> + * so that each DMA transfer doesn't exceed the boundary.
+> + */
+> +static void dwcmshc_adma_write_desc(struct sdhci_host *host, void **desc,
+> +				    dma_addr_t addr, int len, unsigned int cmd)
+> +{
+> +	int tmplen, offset;
 > +
-> +struct scmi_requested_dev {
-> +	const struct scmi_device_id *id_table;
-> +	struct list_head node;
+> +	if (likely(!len || dwcmshc_adma_boundary_ok(addr, len))) {
+> +		sdhci_adma_write_desc(host, desc, addr, len, cmd);
+> +		return;
+> +	}
+> +
+> +	offset = addr & (SZ_128M - 1);
+> +	tmplen = SZ_128M - offset;
+> +	sdhci_adma_write_desc(host, desc, addr, tmplen, cmd);
+> +
+> +	addr += tmplen;
+> +	len -= tmplen;
+> +	sdhci_adma_write_desc(host, desc, addr, len, cmd);
+> +}
+> +
+> +static int sdhci_acpi_emmc_nvda_bf_probe_slot(struct platform_device *pdev,
+> +					      struct acpi_device *adev)
+> +{
+> +	struct sdhci_acpi_host *c = platform_get_drvdata(pdev);
+> +	struct sdhci_host *host = c->host;
+> +	u32 extra;
+> +
+> +	/* Extra adma table cnt for cross 128M boundary handling. */
+> +	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
+> +	extra = min(extra, (u32)SDHCI_MAX_SEGS);
+> +	host->adma_table_cnt += extra;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct sdhci_ops sdhci_acpi_ops_nvda_bf = {
+> +	.set_clock		= sdhci_set_clock,
+> +	.set_bus_width		= sdhci_set_bus_width,
+> +	.set_uhs_signaling	= sdhci_set_uhs_signaling,
+> +	.reset			= sdhci_reset,
+> +	.adma_write_desc	= dwcmshc_adma_write_desc,
 > +};
 > +
->  /**
->   * struct scmi_xfers_info - Structure to manage transfer information
->   *
-> @@ -113,6 +122,8 @@ struct scmi_protocol_instance {
->   * @protocols_mtx: A mutex to protect protocols instances initialization.
->   * @protocols_imp: List of protocols implemented, currently maximum of
->   *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
-> + * @active_protocols: IDR storing device_nodes for protocols actually defined
-> + *		      in the DT and confirmed as implemented by fw.
->   * @notify_priv: Pointer to private data structure specific to notifications.
->   * @node: List head
->   * @users: Number of users of this instance
-> @@ -130,6 +141,7 @@ struct scmi_info {
->  	/* Ensure mutual exclusive access to protocols instance array */
->  	struct mutex protocols_mtx;
->  	u8 *protocols_imp;
-> +	struct idr active_protocols;
->  	void *notify_priv;
->  	struct list_head node;
->  	int users;
-> @@ -936,6 +948,13 @@ static void scmi_devm_put_protocol(struct scmi_device *sdev, u8 protocol_id)
->  	WARN_ON(ret);
->  }
->
-> +static inline
-> +struct scmi_handle *scmi_handle_get_from_info(struct scmi_info *info)
-> +{
-> +	info->users++;
-
-Doesn't it race with anything ? I have already forgotten how this is used
-and in what context this gets called.
-
-> +	return &info->handle;
-> +}
+> +static const struct sdhci_acpi_chip sdhci_acpi_chip_nvda_bf = {
+> +	.ops = &sdhci_acpi_ops_nvda_bf,
+> +};
 > +
->  /**
->   * scmi_handle_get() - Get the SCMI handle for a device
->   *
-> @@ -957,8 +976,7 @@ struct scmi_handle *scmi_handle_get(struct device *dev)
->  	list_for_each(p, &scmi_list) {
->  		info = list_entry(p, struct scmi_info, node);
->  		if (dev->parent == info->dev) {
-> -			handle = &info->handle;
-> -			info->users++;
-> +			handle = scmi_handle_get_from_info(info);
+> +static const struct sdhci_acpi_slot sdhci_acpi_slot_nvda_bf_emmc = {
+> +	.chip		= &sdhci_acpi_chip_nvda_bf,
+> +	.caps		= MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE,
+> +	.probe_slot	= sdhci_acpi_emmc_nvda_bf_probe_slot,
+> +};
+> +
+>  struct sdhci_acpi_uid_slot {
+>  	const char *hid;
+>  	const char *uid;
+> @@ -740,6 +802,7 @@ struct sdhci_acpi_uid_slot {
+>  	{ "QCOM8051", NULL, &sdhci_acpi_slot_qcom_sd_3v },
+>  	{ "QCOM8052", NULL, &sdhci_acpi_slot_qcom_sd },
+>  	{ "AMDI0040", NULL, &sdhci_acpi_slot_amd_emmc },
+> +	{ "MLNXBF30", NULL, &sdhci_acpi_slot_nvda_bf_emmc },
+>  	{ },
+>  };
+>  
+> @@ -757,6 +820,7 @@ struct sdhci_acpi_uid_slot {
+>  	{ "QCOM8051" },
+>  	{ "QCOM8052" },
+>  	{ "AMDI0040" },
+> +	{ "MLNXBF30" },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(acpi, sdhci_acpi_ids);
+> 
 
-Ah here it is. Any particular reasons for moving it to separate function ?
-
---
-Regards,
-Sudeep
