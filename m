@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF81133BDF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724FE33BDDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237357AbhCOOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49242 "EHLO mail.kernel.org"
+        id S233700AbhCOOj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:39:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233969AbhCOOCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F184C64EEE;
-        Mon, 15 Mar 2021 14:02:40 +0000 (UTC)
+        id S233723AbhCOOCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D3E64EF3;
+        Mon, 15 Mar 2021 14:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816962;
-        bh=pWVrf9WJrCrW6pcncVZT4ohTEHF2z1MMs/CPqbxUEps=;
+        s=korg; t=1615816941;
+        bh=198ZG1tjpE0eJK8e0iIWR6GPw4Ku9YEGd3F79jUu4mA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXm4CBiWA6ViBWF+qju2KqLg7nGC1dBWt7QrFFTr7XOqsmZJNivFUU0zDlyG8uadW
-         mgBEigyjbLeBHidY0Dz5t/JCLQEbacmWGk4pUFOodlH3MEjWP6bDcrp9z5uGZlKIXN
-         eySePeq1py+oLUvTfJdseCS5ecM44l7f4UMCnemA=
+        b=AWfC0o80CkgYi2ZUC5VYP8gzxjgcSPSTJ9NPI+53d3awzGl/t9yW3tqr/ymzHy9my
+         gpdQoYzvCkAmIwMbQ6tau18dFF5jNS1toM3Y5utD/dWEYKm01l8H8SMa0SBgPJFRHp
+         AU+1D+pQj27ybnjdPpCX68EMGC+BNBsdWa4Sb7vc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.11 231/306] staging: comedi: das6402: Fix endian problem for AI command data
+        stable@vger.kernel.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 5.10 201/290] usb: gadget: f_uac1: stop playback on function disable
 Date:   Mon, 15 Mar 2021 14:54:54 +0100
-Message-Id: <20210315135515.442173147@linuxfoundation.org>
+Message-Id: <20210315135548.709145884@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit 1c0f20b78781b9ca50dc3ecfd396d0db5b141890 upstream.
+commit cc2ac63d4cf72104e0e7f58bb846121f0f51bb19 upstream.
 
-The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the call to
-`comedi_buf_write_samples()` is passing the address of a 32-bit integer
-variable.  On bigendian machines, this will copy 2 bytes from the wrong
-end of the 32-bit value.  Fix it by changing the type of the variable
-holding the sample value to `unsigned short`.
+There is missing playback stop/cleanup in case of
+gadget's ->disable callback that happens on
+events like USB host resetting or gadget disconnection
 
-Fixes: d1d24cb65ee3 ("staging: comedi: das6402: read analog input samples in interrupt handler")
-Cc: <stable@vger.kernel.org> # 3.19+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-5-abbotti@mev.co.uk
+Fixes: 0591bc236015 ("usb: gadget: add f_uac1 variant based on a new u_audio api")
+Cc: <stable@vger.kernel.org> # 4.13+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-3-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/das6402.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_uac1.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/staging/comedi/drivers/das6402.c
-+++ b/drivers/staging/comedi/drivers/das6402.c
-@@ -186,7 +186,7 @@ static irqreturn_t das6402_interrupt(int
- 	if (status & DAS6402_STATUS_FFULL) {
- 		async->events |= COMEDI_CB_OVERFLOW;
- 	} else if (status & DAS6402_STATUS_FFNE) {
--		unsigned int val;
-+		unsigned short val;
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -499,6 +499,7 @@ static void f_audio_disable(struct usb_f
+ 	uac1->as_out_alt = 0;
+ 	uac1->as_in_alt = 0;
  
- 		val = das6402_ai_read_sample(dev, s);
- 		comedi_buf_write_samples(s, &val, 1);
++	u_audio_stop_playback(&uac1->g_audio);
+ 	u_audio_stop_capture(&uac1->g_audio);
+ }
+ 
 
 
