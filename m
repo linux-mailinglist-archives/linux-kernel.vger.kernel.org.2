@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024A033B5A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4124B33B57F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCONyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55932 "EHLO mail.kernel.org"
+        id S231561AbhCONyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230394AbhCONx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 147BF64EE3;
-        Mon, 15 Mar 2021 13:53:27 +0000 (UTC)
+        id S229921AbhCONxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E428C64EE3;
+        Mon, 15 Mar 2021 13:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816409;
-        bh=teUnFo6lz84TObThR+47puxhK4824JQ6PffgWhlreDs=;
+        s=korg; t=1615816401;
+        bh=bjk8PQVrzoJuLFSJ+kN8uM7FlRaIrgGcdQwMJGeTwS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sm4afVbPilHif/14Wy77WAv4d+Efsbm+HFbBPO19+arxC1MULU5RUwRxF1qFSxQMh
-         85jytJxVznD8Xuei/iTuKP4J9jj13eBPA3quC5C9uY3b5SI6/jUwddeYZamqwkmlYn
-         proNHywCzTHSPwQrtlCorZSmgii7uBYV48BdmuJg=
+        b=YSRkfQnGzwu1MHeNiwuVgB/pi8tdcAkyAjd0htywfUFNDaBHf2ICD4648yuHDzQok
+         3GSL/7YIA3c4k44WQkqwquinwMOG8ED0PX2UjNso+9PwZs5I75t2W3Z+QrpfQzwJNk
+         m5ahH6E2918IeN1Xp4ww5O2SzehMcONs2fuXxXp8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 27/75] ALSA: usb-audio: Fix "cannot get freq eq" errors on Dell AE515 sound bar
+        stable@vger.kernel.org, "Steven J. Magnani" <magnani@ieee.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 18/78] udf: fix silent AED tagLocation corruption
 Date:   Mon, 15 Mar 2021 14:51:41 +0100
-Message-Id: <20210315135209.141215753@linuxfoundation.org>
+Message-Id: <20210315135212.663538880@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Steven J. Magnani <magnani@ieee.org>
 
-commit fec60c3bc5d1713db2727cdffc638d48f9c07dc3 upstream.
+[ Upstream commit 63c9e47a1642fc817654a1bc18a6ec4bbcc0f056 ]
 
-Dell AE515 sound bar (413c:a506) spews the error messages when the
-driver tries to read the current sample frequency, hence it needs to
-be on the list in snd_usb_get_sample_rate_quirk().
+When extending a file, udf_do_extend_file() may enter following empty
+indirect extent. At the end of udf_do_extend_file() we revert prev_epos
+to point to the last written extent. However if we end up not adding any
+further extent in udf_do_extend_file(), the reverting points prev_epos
+into the header area of the AED and following updates of the extents
+(in udf_update_extents()) will corrupt the header.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211551
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210304083021.2152-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Make sure that we do not follow indirect extent if we are not going to
+add any more extents so that returning back to the last written extent
+works correctly.
+
+Link: https://lore.kernel.org/r/20210107234116.6190-2-magnani@ieee.org
+Signed-off-by: Steven J. Magnani <magnani@ieee.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/udf/inode.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1154,6 +1154,7 @@ bool snd_usb_get_sample_rate_quirk(struc
- 	case USB_ID(0x1de7, 0x0114): /* Phoenix Audio MT202pcs */
- 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
- 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
-+	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
- 		return true;
+diff --git a/fs/udf/inode.c b/fs/udf/inode.c
+index 149baf5f3d19..50607673a6a9 100644
+--- a/fs/udf/inode.c
++++ b/fs/udf/inode.c
+@@ -548,11 +548,14 @@ static int udf_do_extend_file(struct inode *inode,
+ 
+ 		udf_write_aext(inode, last_pos, &last_ext->extLocation,
+ 				last_ext->extLength, 1);
++
+ 		/*
+-		 * We've rewritten the last extent but there may be empty
+-		 * indirect extent after it - enter it.
++		 * We've rewritten the last extent. If we are going to add
++		 * more extents, we may need to enter possible following
++		 * empty indirect extent.
+ 		 */
+-		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
++		if (new_block_bytes || prealloc_len)
++			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
  	}
- 	return false;
+ 
+ 	/* Managed to do everything necessary? */
+-- 
+2.30.1
+
 
 
