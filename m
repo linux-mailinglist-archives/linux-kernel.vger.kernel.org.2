@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B9233ABF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABF333ABF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCOHCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhCOHCB (ORCPT
+        id S229937AbhCOHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:06:13 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:44538 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229607AbhCOHFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:02:01 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D3CC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:02:01 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id r24so6531292otp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ercbfG1R+jYY5kAMzB1CxJzjP3BC476NBkefwMrUqc=;
-        b=YuFpc6BFGFhaddH6/ks7Iiw0XD5QrBxYbt1LLavddq5hZFPHQZyiJh+MdBao6/KpAE
-         rEDSi+XzdBH+QAKNqdB75Pz4Cd5yhI9WvAmfa5wJ5ar7HDXVPY4R5nCn+SyhaG0+TiJV
-         sh7m5cxFaghQw11iO9k1bYgM9hgOyfVZO2INxuc8COvfJ0hZfXaYj3DCAYDyQ6wzsmjz
-         DDN6RuxFC3gV9ckpUkHE819+aA+dvuZMHnZqGglS4dRtX7WvZwyaCxhxqHMF9tL1BYt4
-         jDwwHNyN3xjosLFC5J3mG0/dghQm1wvSY7cSsRCZs3t7BWnHOc3/LckNfO9B1Q8ZxTtZ
-         U4XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ercbfG1R+jYY5kAMzB1CxJzjP3BC476NBkefwMrUqc=;
-        b=DId0zXNpzyDfCw7O3Xf/hvbVRogfKM68TZLv7lZAMXsLDSdX32Ex/OX4ZFx5raIEux
-         u4EvEMWrBe+Z3no6F6DW9kKD5TbiGYld2iSMVWtF8G0AEYpN/1fWikHkiJOc3q27l73H
-         RnYK70DtT99uoNPi4wrF16wMfA8i5TvMoG5TH5YKZZeOfhbGCBQaAn2oMqUEN5TcStXX
-         LQGWIK+tJLnZcb/xLxw5GOGVtcjnDt9r/F7dBb0QyPW/m/wSfmGEtI0ZWi2yos/UkB0v
-         kv0x6Q+En0I6cQt56sz1lShHBXrY2A4HL/hcu9W8LwLXbpx5MfCkx+VyICMRiY6aK+tn
-         nLDQ==
-X-Gm-Message-State: AOAM531x1fzIqw/JjBSTkhalZWWxtWcDu3eqBvcLrTvK+Oy4wig44waY
-        K4+F2RFvd23v6wK5Q8YWLxy0COfu+ePpGTFg5zr7cA==
-X-Google-Smtp-Source: ABdhPJx6CKy7J+wpDnOOoXLtejW70Fv4dgOiOj+Mmwq5b1yfinOcgaUuMyswlceY1gvEQSms8Xrs4uswaF7wVt3gjLA=
-X-Received: by 2002:a9d:2cf:: with SMTP id 73mr12856232otl.28.1615791720523;
- Mon, 15 Mar 2021 00:02:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
- <20210310052503.3618486-5-bhupesh.sharma@linaro.org> <161567012068.1478170.1203237376997442299@swboyd.mtv.corp.google.com>
-In-Reply-To: <161567012068.1478170.1203237376997442299@swboyd.mtv.corp.google.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 15 Mar 2021 12:31:49 +0530
-Message-ID: <CAH=2Ntw9H0OrT=aPiAciP5B2ef7ZDdxM2i2nvuaVo+2NWD+uuA@mail.gmail.com>
-Subject: Re: [PATCH 4/8] dt-bindings/clock: qcom: sm8250: Add gcc clocks for
- sm8250 crypto block
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 15 Mar 2021 03:05:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0URunCVN_1615791943;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0URunCVN_1615791943)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 15 Mar 2021 15:05:44 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     tony@atomide.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] ARM: OMAP2+: use true and false for bool variable
+Date:   Mon, 15 Mar 2021 15:05:41 +0800
+Message-Id: <1615791941-62388-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+fixed the following coccicheck:
+./arch/arm/mach-omap2/powerdomain.c:1205:9-10: WARNING: return of 0/1 in
+function 'pwrdm_can_ever_lose_context' with return type bool
 
-Thanks for the review.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/arm/mach-omap2/powerdomain.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-On Sun, 14 Mar 2021 at 02:45, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Bhupesh Sharma (2021-03-09 21:24:59)
-> > This patch adds the global clock controller (gcc) clocks required
->
->  $ git grep "This patch" -- Documentation/process/submitting-patches.rst
+diff --git a/arch/arm/mach-omap2/powerdomain.c b/arch/arm/mach-omap2/powerdomain.c
+index 1cbac76..0a5b87e 100644
+--- a/arch/arm/mach-omap2/powerdomain.c
++++ b/arch/arm/mach-omap2/powerdomain.c
+@@ -1202,26 +1202,26 @@ bool pwrdm_can_ever_lose_context(struct powerdomain *pwrdm)
+ 	if (!pwrdm) {
+ 		pr_debug("powerdomain: %s: invalid powerdomain pointer\n",
+ 			 __func__);
+-		return 1;
++		return true;
+ 	}
+ 
+ 	if (pwrdm->pwrsts & PWRSTS_OFF)
+-		return 1;
++		return true;
+ 
+ 	if (pwrdm->pwrsts & PWRSTS_RET) {
+ 		if (pwrdm->pwrsts_logic_ret & PWRSTS_OFF)
+-			return 1;
++			return true;
+ 
+ 		for (i = 0; i < pwrdm->banks; i++)
+ 			if (pwrdm->pwrsts_mem_ret[i] & PWRSTS_OFF)
+-				return 1;
++				return true;
+ 	}
+ 
+ 	for (i = 0; i < pwrdm->banks; i++)
+ 		if (pwrdm->pwrsts_mem_on[i] & PWRSTS_OFF)
+-			return 1;
++			return true;
+ 
+-	return 0;
++	return false;
+ }
+ 
+ /**
+-- 
+1.8.3.1
 
-Sure, will fix and send a v2.
-
-Regards,
-Bhupesh
-
-> > by the sm8250 crypto block to function to the dt-binding header file
-> > (namely: GCC_CE1_AHB_CLK, GCC_CE1_AXI_CLK and GCC_CE1_CLK).
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: bhupesh.linux@gmail.com
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
