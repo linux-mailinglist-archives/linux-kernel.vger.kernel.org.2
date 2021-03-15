@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3729733BBA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E18633BB1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237534AbhCOOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S236073AbhCOOMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCON7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51B1964F7B;
-        Mon, 15 Mar 2021 13:59:15 +0000 (UTC)
+        id S232344AbhCON61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4292564F19;
+        Mon, 15 Mar 2021 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816756;
-        bh=BZd8ZWTBHXjORfUMwuiP28uoGML+8uvn3smCDSKYvXE=;
+        s=korg; t=1615816705;
+        bh=kGe4IeQT3kT57ervuAEKjOxyxbogQTU2TZ4UBtx5L54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sHK28rt/J3yKD4PlFngVR1BEQpl+4Fw7CFYxjI5fnkWUh/ZEjEL4t1F/9hdbFSU0C
-         JSoK8eeFXMbD5fMRieSvWoCSvb+8B1+e0VZ0XtnQtGVZFOeYeRpXxIhMfVw6Mk0j+p
-         +7t3eADaqUFDgBxQFi3VatGEKspSbJ08GvW8naTs=
+        b=EbxVc6clKHrHRJKE6eOKfg7jYYv9hBWF4IvJLThKKcNyXk/ak3A09maveDPsWvxL8
+         q1uvvycbLvBQPoYw4YdyNZl10O7ZH2FPb0cU9QUQdn17xuysSzpGUkxHy7wcgEcRg+
+         bqMLoRJoBVtwdEQCci1x6jm+YdIbAgy2jjKk55gg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 048/120] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.14 09/95] can: flexcan: assert FRZ bit in flexcan_chip_freeze()
 Date:   Mon, 15 Mar 2021 14:56:39 +0100
-Message-Id: <20210315135721.560237991@linuxfoundation.org>
+Message-Id: <20210315135740.575536653@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +41,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
+commit 449052cfebf624b670faa040245d3feed770d22f upstream.
 
-While sampling for marked events, currently we record the sample only
-if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
-set. SIAR_VALID bit is used for fetching the instruction address from
-Sampled Instruction Address Register(SIAR). But there are some
-usecases, where the user is interested only in the PMU stats at each
-counter overflow and the exact IP of the overflow event is not
-required. Dropping SIAR invalid samples will fail to record some of
-the counter overflows in such cases.
+Assert HALT bit to enter freeze mode, there is a premise that FRZ bit is
+asserted. This patch asserts FRZ bit in flexcan_chip_freeze, although
+the reset value is 1b'1. This is a prepare patch, later patch will
+invoke flexcan_chip_freeze() to enter freeze mode, which polling freeze
+mode acknowledge.
 
-Example of such usecase is dumping the PMU stats (event counts) after
-some regular amount of instructions/events from the userspace (ex: via
-ptrace). Here counter overflow is indicated to userspace via signal
-handler, and captured by monitoring and enabling I/O signaling on the
-event file descriptor. In these cases, we expect to get
-sample/overflow indication after each specified sample_period.
-
-Perf event attribute will not have PERF_SAMPLE_IP set in the
-sample_type if exact IP of the overflow event is not requested. So
-while profiling if SAMPLE_IP is not set, just record the counter
-overflow irrespective of SIAR_VALID check.
-
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-[mpe: Reflow comment and if formatting]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b1aa1c7a2165b ("can: flexcan: fix transition from and to freeze mode in chip_{,un}freeze")
+Link: https://lore.kernel.org/r/20210218110037.16591-2-qiangqing.zhang@nxp.com
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/net/can/flexcan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 70de13822828..091bdeaf02a3 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2046,7 +2046,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 			left += period;
- 			if (left <= 0)
- 				left = period;
--			record = siar_valid(regs);
-+
-+			/*
-+			 * If address is not requested in the sample via
-+			 * PERF_SAMPLE_IP, just record that sample irrespective
-+			 * of SIAR valid check.
-+			 */
-+			if (event->attr.sample_type & PERF_SAMPLE_IP)
-+				record = siar_valid(regs);
-+			else
-+				record = 1;
-+
- 			event->hw.last_period = event->hw.sample_period;
- 		}
- 		if (left < 0x80000000LL)
-@@ -2064,9 +2074,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
- 	 * these cases.
- 	 */
--	if (event->attr.exclude_kernel && record)
--		if (is_kernel_addr(mfspr(SPRN_SIAR)))
--			record = 0;
-+	if (event->attr.exclude_kernel &&
-+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
-+	    is_kernel_addr(mfspr(SPRN_SIAR)))
-+		record = 0;
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -417,7 +417,7 @@ static int flexcan_chip_freeze(struct fl
+ 	u32 reg;
  
- 	/*
- 	 * Finally record data if requested.
--- 
-2.30.1
-
+ 	reg = flexcan_read(&regs->mcr);
+-	reg |= FLEXCAN_MCR_HALT;
++	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
+ 	flexcan_write(reg, &regs->mcr);
+ 
+ 	while (timeout-- && !(flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
 
 
