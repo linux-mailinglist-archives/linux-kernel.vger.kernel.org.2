@@ -2,143 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0723333C183
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6119533C186
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhCOQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:19:46 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45993 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbhCOQTl (ORCPT
+        id S231165AbhCOQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:20:20 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:33924 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhCOQUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:19:41 -0400
-Received: by mail-ot1-f53.google.com with SMTP id f73-20020a9d03cf0000b02901b4d889bce0so5412094otf.12;
-        Mon, 15 Mar 2021 09:19:41 -0700 (PDT)
+        Mon, 15 Mar 2021 12:20:11 -0400
+Received: by mail-il1-f182.google.com with SMTP id z9so9909635iln.1;
+        Mon, 15 Mar 2021 09:20:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhDXdT+Qk1yZgYcJ7G0DPhjw1AHmHsmXi9SEBVXA2Gw=;
-        b=sB9fjvAT5QxOwnbpGLlYLH3URFQjwdGcY1prDpGFqeSi32XxFs0BseANS7mmwDycie
-         tkouF52Bti1024vb9YQxqtqFJTx5VxfyoSvh7sC/O4M97wmsviXWJcuLYvlqY8Lg4HcQ
-         N0MyLj+V29wuI48dyBGq/AHLABd8Luu2y9pSrZ52fIvxcVkyKDntVEonOkVvXGa2Ak6O
-         uWJcXny4DXfUaj0a4020QfErzRUk84Yh63QT3ltKxr+j+rdxZ4OFnUNUo5qmD/LflXo/
-         j7w+35FKHEn5PGHA0bXUinXbo0oUOz0A0ktmGQYiLXtLxdjlBX4dclgjCmmF4RinOXsI
-         I3EA==
-X-Gm-Message-State: AOAM531A7PeiQyrGCIzV9HaFrvbSvAypLtHKzma1z+aQach/oy2XduQP
-        NnCa2K+ERdeEEzC07hxnl24GKFTft0so9fQXmhfl2dN9RTw=
-X-Google-Smtp-Source: ABdhPJzHxsaszMe8pnfqRcU6lgYlCbAiR4iynVcVsvhI3THx7YrFgWZV0cy2S6yGRVehH46qz2UuFWnBzmQXvE9fkPE=
-X-Received: by 2002:a9d:3422:: with SMTP id v31mr14622147otb.260.1615825180891;
- Mon, 15 Mar 2021 09:19:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kr4OMC1op1BT+aoSdNJWUJjIKZl6gd8/tZF3DArBYO8=;
+        b=U05RfH8EcOnW82vZwUsg4+KUEbtS3wuzv26VI+bx1j3ssbDHn4r04Sic5wTqB73xxG
+         y01gw/a0tR5Kl2J4J8aFRB5dGBJn68WEwjCoIVsB8qkwAnXi8sFBMmflrhmasonGzjxN
+         hc06GBO6IhcvjXpA90/Ks+Qb/LwfJN7z7Y65HxaF3LwWVpFcFt5TRaDxTsSEOTB7Ok7u
+         YvQfVav1dh9n7y/qtKs0LxFYyFNrKdeWAA7K7hlHZIflCPEqiiw+6JWN8L6IssJ7W/T4
+         a3UbEvRThh+r+8/axV5bBKb2E29NWn3sgarBbZGuDL1hAV6XpI8Tqkq+1bOjF+afKqV6
+         gTWg==
+X-Gm-Message-State: AOAM53246H5zecOODyoPBjQtY6j05E/oYT6UFlIfkxcXMSr+bcBfy9BQ
+        3cUHeGoZKYFsWwFONO7OqA==
+X-Google-Smtp-Source: ABdhPJwyJu/KGiP4wsae33e5rozsMMIRwiCYEhCbt63FG6Yf/6k0s/A3J6Q0q4Gxq1bALwSOPLuK0Q==
+X-Received: by 2002:a92:4a03:: with SMTP id m3mr281296ilf.185.1615825210549;
+        Mon, 15 Mar 2021 09:20:10 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id h193sm7479901iof.9.2021.03.15.09.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 09:20:09 -0700 (PDT)
+Received: (nullmailer pid 972277 invoked by uid 1000);
+        Mon, 15 Mar 2021 16:20:07 -0000
+Date:   Mon, 15 Mar 2021 10:20:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 2/3] dt-bindings:iio:adc: add documentation for TI
+ TSC2046 controller
+Message-ID: <20210315162007.GA972089@robh.at.kernel.org>
+References: <20210312105515.32055-1-o.rempel@pengutronix.de>
+ <20210312105515.32055-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com> <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
- <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com> <CAJZ5v0gC+60n0-UkMw8h5JPBc6grQtD1ambSOCAHV2HLm886yQ@mail.gmail.com>
- <CAJZ5v0g_ztenDY-ER6A0fKD-ZHhLfF3zQdRYYxQb5jSXudd8xQ@mail.gmail.com>
- <e8593eae-40b8-bc9a-78db-529d28d2be88@redhat.com> <YEkgP0G94uQBGDa9@linux.ibm.com>
- <0d05364c-4881-d78a-9721-bd15f5eb822b@redhat.com> <CAJZ5v0jOpNJrOt5xn-1YkSB9Q15NZS2cxmsGKAU945YNbs+hOw@mail.gmail.com>
- <YE5dJ6U3nPWsXY4D@linux.ibm.com>
-In-Reply-To: <YE5dJ6U3nPWsXY4D@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 15 Mar 2021 17:19:29 +0100
-Message-ID: <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312105515.32055-3-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
-> > > >
-> > > > There is some care that should be taken to make sure we get the order
-> > > > right, but I don't see a fundamental issue here.
-> >
-> > Me neither.
-> >
-> > > > If I understand correctly, Rafael's concern is about changing the parts of
-> > > > ACPICA that should be OS agnostic, so I think we just need another place to
-> > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
-> >
-> > Something like this.
-> >
-> > There is also the problem that memblock_reserve() needs to be called
-> > for all of the tables early enough, which will require some reordering
-> > of the early init code.
-> >
-> > > > Since the reservation should be done early in x86::setup_arch() (and
-> > > > probably in arm64::setup_arch()) we might just have a function that parses
-> > > > table headers and reserves them, similarly to how we parse the tables
-> > > > during KASLR setup.
-> >
-> > Right.
->
-> I've looked at it a bit more and we do something like the patch below that
-> nearly duplicates acpi_tb_parse_root_table() which is not very nice.
+On Fri, 12 Mar 2021 11:55:14 +0100, Oleksij Rempel wrote:
+> Add a binding documentation for the TI TSC2046 touchscreen controllers
+> ADC functionality.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/iio/adc/ti,tsc2046.yaml          | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+> 
 
-It looks to me that the code need not be duplicated (see below).
-
-> Besides, reserving ACPI tables early and then calling acpi_table_init()
-> (and acpi_tb_parse_root_table() again would mean doing the dance with
-> early_memremap() twice for no good reason.
-
-That'd be simply inefficient which is kind of acceptable to me to start with.
-
-And I changing the ACPICA code can be avoided at least initially, it
-by itself would be a good enough reason.
-
-> I believe the most effective way to deal with this would be to have a
-> function that does parsing, reservation and installs the tables supplied by
-> the firmware which can be called really early and then another function
-> that overrides tables if needed a some later point.
-
-I agree that this should be the direction to go into.
-
-However, it looks to me that something like the following could be
-done to start with:
-
-(a) Make __acpi_map_table() call memblock_reserve() in addition to
-early_memremap().
-
-My assumption here is that the memblock_reserve() will simply be
-ignored if it is called too late.
-
-(b) Introduce acpi_reserve_tables() as something like
-
-void __init acpi_table_reserve(void)
-{
-        acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
-}
-
-Because initial_tables is passed to acpi_initialize_tables() above and
-allow_resize is 0, the array used by it will simply get overwritten
-when acpi_table_init() gets called.
-
-(c) Make setup_arch() call acpi_table_reserve() like in the original
-patch from George.
-
-Would that work?
-
-If so, I'll cut a patch along these lines.
+Reviewed-by: Rob Herring <robh@kernel.org>
