@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A6433C936
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF19D33C93F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCOWQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S231720AbhCOWTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhCOWPa (ORCPT
+        with ESMTP id S229824AbhCOWTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:15:30 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ED2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:15:29 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n10so21302477pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:15:29 -0700 (PDT)
+        Mon, 15 Mar 2021 18:19:37 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15448C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:37 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id z8so18143727ljm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4NJ97PlxHnFzJWJgTtpDT+uKjd7HgYN+0ebu/wLMsHQ=;
-        b=GfeWNb1p88yRfbJnymIfERA/ut8kED0Wo7XExiGoNzml+80Z9oey4U0Ro5ATU1yaU2
-         HTXnfdZHk6IoQmCWOJmzEb8cMJ+ycjfmtAfwRs9BLtRmg+ZBBxLW7s5f8mLFH9cpacl2
-         tnpMFAMPUUJ7b6g/nDRVteP7L4YMejkChexPI=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JHuD9L12GwXv9CMjuewy7NJi4UEeZj8gMIMY0fXoMjo=;
+        b=S+PBvkiNvoS7h8zAD5cjsSRJz4FVPn0bUbOW1vAx3cSOxv0XYlgWOMD63ht2EW+UvG
+         WqRwvdt1hEocnp30SVofJDviTh5NFMlDuAZFdZ0CFQTPQzKAvpCn4FZXTYX5F2Q7x0TA
+         w6hkZe/5rBy3BNMBjtwIU8r7P3WUEjnalDrr4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4NJ97PlxHnFzJWJgTtpDT+uKjd7HgYN+0ebu/wLMsHQ=;
-        b=S9K1cJLDLw44JYL/RtMPybFk3eL0Gdng/ijvun1DLdFiwuE0lTojGwBlY7E6SoONKV
-         xzHxLlmZaZWBQ2P+g4jjMNHoqNe0YRg25N63D4kRfhmjEx6V41MMCx1I/BdVSdBYiKse
-         Y/UXGkn9GACv9IlArsHbnbP/D8haKqiKSi+R6lNKXvNm/nxZVyKOmbF5VwrBhpMIySlP
-         I5DrUYVjii9+zHchHm4q94SCtRIebiI7mH0dxboB8+0/Yc/xdNv2783LaDa2ahfx34nx
-         lLR+4pPY8/n4Fl/6e0IUJANY4nA6Wii9WUQ0XCWwxHqdnAOlwwAJXfkSx4gd84tk9fAB
-         zEMw==
-X-Gm-Message-State: AOAM532GpPzrOp2Gybs3JId5+rvDpDAS35Z0+n9K0FN0S7Obckgg9DiY
-        7PYD/604bI/4WrBqmkq5HuIR7g==
-X-Google-Smtp-Source: ABdhPJyTjnc9LdJf0dvdcKWL6IHisbEo+ZUejO8pNco1fmFRm1nNRoQe3Sx5RQqz8b9aU1cRR2xiPQ==
-X-Received: by 2002:a65:6a0c:: with SMTP id m12mr1019256pgu.161.1615846529292;
-        Mon, 15 Mar 2021 15:15:29 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s194sm14685269pfs.57.2021.03.15.15.15.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 15:15:28 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 15:15:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/6] init_on_alloc: Optimize static branches
-Message-ID: <202103151514.AE11A69683@keescook>
-References: <20210315180229.1224655-1-keescook@chromium.org>
- <20210315180229.1224655-3-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JHuD9L12GwXv9CMjuewy7NJi4UEeZj8gMIMY0fXoMjo=;
+        b=Ir5+9cbqpbIRKH1EBJ3UALwD7MFhoYawcGo0X0asjUzbnpUyI4MkifShLT1FHn7Px3
+         UnvKuK3PcVgF1LRRXZC/iNt5QdpxDW3eS5gogRRNUVHrDovubaz5My4Zf97inzWTzN6o
+         6ll2q5DIMgUhhuimzcPWg7jMNKVMHp07iuToaWS/T9xEzcUwMu0lPYuQZCD41fByEfY4
+         mFNkWilRZICkGhBISVBgX6xB1CkPJJatrnVruELSjnTCiX00QYXRFPCnRpic4oWXedu5
+         uMTloTd25DD3dWYkP4ZtB5NumKVUMPUMq0bod+dtxZAyBHVU+UEujPEjo9xJaFnhS6C0
+         /QZg==
+X-Gm-Message-State: AOAM532Tpt0z7tyoOBpZ2SH1oEJqLzv+Dht2tvbblvFSo9wVLnfLcHwL
+        ocxmD6haL2YwEkwbj9PeQi9X2xnF3XG6jg==
+X-Google-Smtp-Source: ABdhPJwQeGqOUzwRbczG5clWaW5b5d7l0vraN9AIOxzAqqI79ZC4SeeesnV2VqV9iwcY4aY22ubUoA==
+X-Received: by 2002:a2e:9055:: with SMTP id n21mr704367ljg.248.1615846775226;
+        Mon, 15 Mar 2021 15:19:35 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id 192sm3011870ljj.95.2021.03.15.15.19.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 15:19:34 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id s17so18149693ljc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:33 -0700 (PDT)
+X-Received: by 2002:a2e:a589:: with SMTP id m9mr729361ljp.220.1615846773296;
+ Mon, 15 Mar 2021 15:19:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315180229.1224655-3-keescook@chromium.org>
+References: <cover.1615372955.git.gladkov.alexey@gmail.com>
+ <59ee3289194cd97d70085cce701bc494bfcb4fd2.1615372955.git.gladkov.alexey@gmail.com>
+ <202103151426.ED27141@keescook>
+In-Reply-To: <202103151426.ED27141@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 15 Mar 2021 15:19:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjYOCgM+mKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com>
+Message-ID: <CAHk-=wjYOCgM+mKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/8] Use atomic_t for ucounts reference counting
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:02:25AM -0700, Kees Cook wrote:
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 076582f58f68..b0977d525c06 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -601,7 +601,8 @@ static inline void cache_random_seq_destroy(struct kmem_cache *cachep) { }
->  
->  static inline bool slab_want_init_on_alloc(gfp_t flags, struct kmem_cache *c)
->  {
-> -	if (static_branch_unlikely(&init_on_alloc)) {
-> +	if (static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
+On Mon, Mar 15, 2021 at 3:03 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 01:01:28PM +0100, Alexey Gladkov wrote:
+> > The current implementation of the ucounts reference counter requires the
+> > use of spin_lock. We're going to use get_ucounts() in more performance
+> > critical areas like a handling of RLIMIT_SIGPENDING.
+>
+> This really looks like it should be refcount_t.
 
-Gah, this should be CONFIG_INIT_ON_ALLOC_DEFAULT_ON.
+No.
 
-I'll see if there are any more comments before sending a v7...
+refcount_t didn't have the capabilities required.
 
--Kees
+It just saturates, and doesn't have the "don't do this" case, which
+the ucounts case *DOES* have.
 
-> +				&init_on_alloc)) {
->  		if (c->ctor)
->  			return false;
->  		if (c->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON))
-> @@ -613,7 +614,8 @@ static inline bool slab_want_init_on_alloc(gfp_t flags, struct kmem_cache *c)
->  
->  static inline bool slab_want_init_on_free(struct kmem_cache *c)
->  {
-> -	if (static_branch_unlikely(&init_on_free))
-> +	if (static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
-> +				&init_on_free))
->  		return !(c->ctor ||
->  			 (c->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON)));
->  	return false;
-> -- 
-> 2.25.1
-> 
+In other words, refcount_t is entirely misdesigned for this - because
+it's literally designed for "people can't handle overflow, so we warn
+and saturate".
 
--- 
-Kees Cook
+ucounts can never saturate, because they replace saturation with
+"don't do that then".
+
+In other words, ucounts work like the page counts do (which also don't
+saturate, they just say "ok, you can't get a reference".
+
+I know you are attached to refcounts, but really: they are not only
+more expensive, THEY LITERALLY DO THE WRONG THING.
+
+           Linus
