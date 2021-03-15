@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D3533BD0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F058033BD1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235949AbhCOOcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S239449AbhCOOc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233216AbhCOOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 663E164F2E;
-        Mon, 15 Mar 2021 14:00:43 +0000 (UTC)
+        id S233228AbhCOOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEEE64F6D;
+        Mon, 15 Mar 2021 14:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816844;
-        bh=7AU0H5/2jDc9x1n8Lgnc8XeCwv7//fVKNGekwzwCito=;
+        s=korg; t=1615816846;
+        bh=tKfLqY2RtHJ2cGJXWSiB9eV7t8BzdLjfNlrWg1O+C48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IOkHXPrE50/+8TIRbgsrfsLicaHqVbvn9/zOzby/NDIh+GQc+vQQewVv9UXUjbTE5
-         w6PBoNJwfIiEg7euHfYCUXEfiZA4vYwM2fFMkDHtkyKC6QzO5RAergULEEOv9gDehC
-         XFVhExOM0uQv8v07bVLLBE/WYfYzqkOmJxze4KDs=
+        b=YL9EwobDUA3q0aqHTFtZUj4si2P27Vl7yA6oxbMqar1MDg9Ach9jmEFO9fHJVVSDS
+         ki1qspmQfkceVssqsw8JyWGn2p7JT1lro+kfG4j6h3x4IgFYPx/9qWGVGdndw2AtcE
+         Yb134VTpDzrHQhGfNI3Z3L3qT1cyCYlI65SF6jLk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 147/290] clk: qcom: gdsc: Implement NO_RET_PERIPH flag
-Date:   Mon, 15 Mar 2021 14:54:00 +0100
-Message-Id: <20210315135546.879001642@linuxfoundation.org>
+Subject: [PATCH 5.10 148/290] sparc32: Limit memblock allocation to low memory
+Date:   Mon, 15 Mar 2021 14:54:01 +0100
+Message-Id: <20210315135546.918508206@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -44,77 +43,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Andreas Larsson <andreas@gaisler.com>
 
-[ Upstream commit 785c02eb35009a4be6dbc68f4f7d916e90b7177d ]
+[ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
 
-In some rare occasions, we want to only set the RETAIN_MEM bit, but
-not the RETAIN_PERIPH one: this is seen on at least SDM630/636/660's
-GPU-GX GDSC, where unsetting and setting back the RETAIN_PERIPH bit
-will generate chaos and panics during GPU suspend time (mainly, the
-chaos is unaligned access).
+Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
+memblocks instead of bootmem, but also made high memory available via
+memblock allocation which does not work together with e.g. phys_to_virt
+and can lead to kernel panic.
 
-For this reason, introduce a new NO_RET_PERIPH flag to the GDSC
-driver to address this corner case.
+This changes back to only low memory being allocatable in the early
+stages, now using memblock allocation.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Link: https://lore.kernel.org/r/20210113183817.447866-8-angelogioacchino.delregno@somainline.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gdsc.c | 10 ++++++++--
- drivers/clk/qcom/gdsc.h |  3 ++-
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ arch/sparc/mm/init_32.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-index af26e0695b86..51ed640e527b 100644
---- a/drivers/clk/qcom/gdsc.c
-+++ b/drivers/clk/qcom/gdsc.c
-@@ -183,7 +183,10 @@ static inline int gdsc_assert_reset(struct gdsc *sc)
- static inline void gdsc_force_mem_on(struct gdsc *sc)
- {
- 	int i;
--	u32 mask = RETAIN_MEM | RETAIN_PERIPH;
-+	u32 mask = RETAIN_MEM;
-+
-+	if (!(sc->flags & NO_RET_PERIPH))
-+		mask |= RETAIN_PERIPH;
+diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+index eb2946b1df8a..6139c5700ccc 100644
+--- a/arch/sparc/mm/init_32.c
++++ b/arch/sparc/mm/init_32.c
+@@ -197,6 +197,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
+ 	size = memblock_phys_mem_size() - memblock_reserved_size();
+ 	*pages_avail = (size >> PAGE_SHIFT) - high_pages;
  
- 	for (i = 0; i < sc->cxc_count; i++)
- 		regmap_update_bits(sc->regmap, sc->cxcs[i], mask, mask);
-@@ -192,7 +195,10 @@ static inline void gdsc_force_mem_on(struct gdsc *sc)
- static inline void gdsc_clear_mem_on(struct gdsc *sc)
- {
- 	int i;
--	u32 mask = RETAIN_MEM | RETAIN_PERIPH;
-+	u32 mask = RETAIN_MEM;
++	/* Only allow low memory to be allocated via memblock allocation */
++	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
 +
-+	if (!(sc->flags & NO_RET_PERIPH))
-+		mask |= RETAIN_PERIPH;
+ 	return max_pfn;
+ }
  
- 	for (i = 0; i < sc->cxc_count; i++)
- 		regmap_update_bits(sc->regmap, sc->cxcs[i], mask, 0);
-diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
-index bd537438c793..5bb396b344d1 100644
---- a/drivers/clk/qcom/gdsc.h
-+++ b/drivers/clk/qcom/gdsc.h
-@@ -42,7 +42,7 @@ struct gdsc {
- #define PWRSTS_ON		BIT(2)
- #define PWRSTS_OFF_ON		(PWRSTS_OFF | PWRSTS_ON)
- #define PWRSTS_RET_ON		(PWRSTS_RET | PWRSTS_ON)
--	const u8			flags;
-+	const u16			flags;
- #define VOTABLE		BIT(0)
- #define CLAMP_IO	BIT(1)
- #define HW_CTRL		BIT(2)
-@@ -51,6 +51,7 @@ struct gdsc {
- #define POLL_CFG_GDSCR	BIT(5)
- #define ALWAYS_ON	BIT(6)
- #define RETAIN_FF_ENABLE	BIT(7)
-+#define NO_RET_PERIPH	BIT(8)
- 	struct reset_controller_dev	*rcdev;
- 	unsigned int			*resets;
- 	unsigned int			reset_count;
 -- 
 2.30.1
 
