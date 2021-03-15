@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B9133BE90
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBA433BE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240795AbhCOOsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49272 "EHLO mail.kernel.org"
+        id S240730AbhCOOr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233986AbhCOOCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233989AbhCOOCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:02:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D6664EF8;
-        Mon, 15 Mar 2021 14:02:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B94F64EF3;
+        Mon, 15 Mar 2021 14:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816965;
-        bh=jXmsmJ53SzD4UnqQjC8pqBIu+n78DV1VH/uxOqQKBCI=;
+        s=korg; t=1615816966;
+        bh=+U3DPYnaAU4BV6e5NzWqBd35UHJisgfIAbZ7CIwD1+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvS3vuSqNpnnEk5NxxilI2yagYyhDP+aB9eXHjjvw2MF2OFjLBi7IbNWTmNA58EKt
-         TFVSjVVhq+L0Vq3BkZCURDgv6VKVZcUwiHZRvLCKv2s8jMyB6GEHBuccl30oy6tSpP
-         Q3C1Q9OmAT9LhsUAmbjshfYzwYCf25MfjnYGODYU=
+        b=hJK6dgPWHgV/1+jPuPMyI1VzbZvPs5ia0UnuFVdnn9rKFkItf3bkcmt9wK5MeekSQ
+         0p/NunwMLyv7Ugnbvbtjns/gqZiuzSfIPTDiXd+8FTfwBv0lk2c9qeisVPl2udWjqd
+         kWTAFh/ZBNDsQqCTyd01vfEGZOGCNA7/Pine6E5M=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.11 233/306] staging: comedi: dmm32at: Fix endian problem for AI command data
-Date:   Mon, 15 Mar 2021 14:54:56 +0100
-Message-Id: <20210315135515.507894921@linuxfoundation.org>
+Subject: [PATCH 5.11 234/306] staging: comedi: me4000: Fix endian problem for AI command data
+Date:   Mon, 15 Mar 2021 14:54:57 +0100
+Message-Id: <20210315135515.548855457@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,39 +42,34 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 54999c0d94b3c26625f896f8e3460bc029821578 upstream.
+commit b39dfcced399d31e7c4b7341693b18e01c8f655e upstream.
 
 The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the call to
-`comedi_buf_write_samples()` is passing the address of a 32-bit integer
+use Comedi's 16-bit sample format.  However, the calls to
+`comedi_buf_write_samples()` are passing the address of a 32-bit integer
 variable.  On bigendian machines, this will copy 2 bytes from the wrong
 end of the 32-bit value.  Fix it by changing the type of the variable
 holding the sample value to `unsigned short`.
 
-[Note: the bug was introduced in commit 1700529b24cc ("staging: comedi:
-dmm32at: use comedi_buf_write_samples()") but the patch applies better
-to the later (but in the same kernel release) commit 0c0eadadcbe6e
-("staging: comedi: dmm32at: introduce dmm32_ai_get_sample()").]
-
-Fixes: 0c0eadadcbe6e ("staging: comedi: dmm32at: introduce dmm32_ai_get_sample()")
+Fixes: de88924f67d1 ("staging: comedi: me4000: use comedi_buf_write_samples()")
 Cc: <stable@vger.kernel.org> # 3.19+
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-7-abbotti@mev.co.uk
+Link: https://lore.kernel.org/r/20210223143055.257402-8-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/dmm32at.c |    2 +-
+ drivers/staging/comedi/drivers/me4000.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/dmm32at.c
-+++ b/drivers/staging/comedi/drivers/dmm32at.c
-@@ -404,7 +404,7 @@ static irqreturn_t dmm32at_isr(int irq,
- {
- 	struct comedi_device *dev = d;
- 	unsigned char intstat;
--	unsigned int val;
-+	unsigned short val;
+--- a/drivers/staging/comedi/drivers/me4000.c
++++ b/drivers/staging/comedi/drivers/me4000.c
+@@ -924,7 +924,7 @@ static irqreturn_t me4000_ai_isr(int irq
+ 	struct comedi_subdevice *s = dev->read_subdev;
  	int i;
+ 	int c = 0;
+-	unsigned int lval;
++	unsigned short lval;
  
- 	if (!dev->attached) {
+ 	if (!dev->attached)
+ 		return IRQ_NONE;
 
 
