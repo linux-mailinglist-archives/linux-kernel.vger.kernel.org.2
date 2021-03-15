@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6F33B5EE
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6A333B5ED
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhCON4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
+        id S231816AbhCONz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhCONxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA05E64EEC;
-        Mon, 15 Mar 2021 13:53:48 +0000 (UTC)
+        id S229754AbhCONxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 045D864EEE;
+        Mon, 15 Mar 2021 13:53:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816430;
-        bh=HCJa9TYHWg0WZQI2llOpeLP5sN/gHL88pDnxAHrsfk0=;
+        s=korg; t=1615816425;
+        bh=r0NFEYd/l/POvdCJBd4AjfC1kmwL3AU9L6yFw80C9o8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKXFX5/htOoD6Rv5/tLMAXzXf2qIlyltSRLm6rUKKwJ+bfFOGNKoCxfSKCEOCrve+
-         SVF0JUjJ06oRuG0vdaGwH3WkZFSiLO2rh98unK5nqae5IT9wCks25isD4MnkMcybOp
-         DMguwaKkvtD4US0nhyJZl67Bs+0zt2oCCHv9nDOM=
+        b=xwb/K4Dkve8asV0mCTKL6BBX2yR2XH8qdt48aOpaShYKW0+7ylficEdSbA6J+Q5d4
+         q6sbWRUdmDQFnYWVbZ8rCbcuEWOlZYNNJvdYlojAckABOOYB6NtfPH6TyJEpF3NjMh
+         zz67ysdtjdVlK9QBcaZoz0SiKkk+9hAGh9FJ6r2I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 39/75] USB: serial: cp210x: add some more GE USB IDs
-Date:   Mon, 15 Mar 2021 14:51:53 +0100
-Message-Id: <20210315135209.528655032@linuxfoundation.org>
+        stable@vger.kernel.org, Yorick de Wid <ydewid@gmail.com>
+Subject: [PATCH 4.9 31/78] Goodix Fingerprint device is not a modem
+Date:   Mon, 15 Mar 2021 14:51:54 +0100
+Message-Id: <20210315135213.091204126@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,31 +40,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+From: Yorick de Wid <ydewid@gmail.com>
 
-commit 42213a0190b535093a604945db05a4225bf43885 upstream.
+commit 4d8654e81db7346f915eca9f1aff18f385cab621 upstream.
 
-GE CS1000 has some more custom USB IDs for CP2102N; add them
-to the driver to have working auto-probing.
+The CDC ACM driver is false matching the Goodix Fingerprint device
+against the USB_CDC_ACM_PROTO_AT_V25TER.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+The Goodix Fingerprint device is a biometrics sensor that should be
+handled in user-space. libfprint has some support for Goodix
+fingerprint sensors, although not for this particular one. It is
+possible that the vendor allocates a PID per OEM (Lenovo, Dell etc).
+If this happens to be the case then more devices from the same vendor
+could potentially match the ACM modem module table.
+
+Signed-off-by: Yorick de Wid <ydewid@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210213144901.53199-1-ydewid@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -199,6 +199,8 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
- 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
- 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
-+	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
-+	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
- 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
- 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
- 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1883,6 +1883,11 @@ static const struct usb_device_id acm_id
+ 	.driver_info = SEND_ZERO_PACKET,
+ 	},
+ 
++	/* Exclude Goodix Fingerprint Reader */
++	{ USB_DEVICE(0x27c6, 0x5395),
++	.driver_info = IGNORE_DEVICE,
++	},
++
+ 	/* control interfaces without any protocol set */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
+ 		USB_CDC_PROTO_NONE) },
 
 
