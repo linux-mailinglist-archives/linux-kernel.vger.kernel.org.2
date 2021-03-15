@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B1333BE50
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AF833BC42
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238845AbhCOOpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
+        id S231678AbhCOOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234485AbhCOOEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 001AE601FD;
-        Mon, 15 Mar 2021 14:04:06 +0000 (UTC)
+        id S231688AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A96D64DAD;
+        Mon, 15 Mar 2021 13:59:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817048;
-        bh=wTkS8Du1PyKudOn9ERCR7T2hGeUF3cVTnJ+QTC5wg/U=;
+        s=korg; t=1615816782;
+        bh=198ZG1tjpE0eJK8e0iIWR6GPw4Ku9YEGd3F79jUu4mA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t5KmDIYZAPE+f6I/X0QygJwbVolhz1dYC+DCnoVM4814XvFCepj2dHxuRUqj4Ncds
-         EtZzonmdrjvhU2NQo4HhuUnLIoF9lWaKjjkmLiwVb1i2MhayfxX3hYdRRaOHSdaBZ8
-         d9KQK/3L9FDb/qza/9lf8bPD0PKEP7JKyP1RcDQo=
+        b=KVfeuiLLPuNhFTjFZzNZjjkgVwiUQfKWY87nLA1rNWRENYnUDWoOrlu+B+VWstdkZ
+         MOqFRkEB5Z6hykk4b4NGGx/WAJgK/RAaZo6kToCvFbswy9SF9D0DAxufL2wEgvOFMQ
+         qm455MIYO3lNalaTvh2ivTV6P2/YNlwWmHWft0Dc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH 5.11 274/306] sched: Collate affine_move_task() stoppers
-Date:   Mon, 15 Mar 2021 14:55:37 +0100
-Message-Id: <20210315135516.922062784@linuxfoundation.org>
+        stable@vger.kernel.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 5.4 106/168] usb: gadget: f_uac1: stop playback on function disable
+Date:   Mon, 15 Mar 2021 14:55:38 +0100
+Message-Id: <20210315135553.848590368@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,64 +40,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit 58b1a45086b5f80f2b2842aa7ed0da51a64a302b upstream.
+commit cc2ac63d4cf72104e0e7f58bb846121f0f51bb19 upstream.
 
-The SCA_MIGRATE_ENABLE and task_running() cases are almost identical,
-collapse them to avoid further duplication.
+There is missing playback stop/cleanup in case of
+gadget's ->disable callback that happens on
+events like USB host resetting or gadget disconnection
 
-Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-Cc: stable@kernel.org
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.500108964@infradead.org
+Fixes: 0591bc236015 ("usb: gadget: add f_uac1 variant based on a new u_audio api")
+Cc: <stable@vger.kernel.org> # 4.13+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-3-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/core.c |   23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ drivers/usb/gadget/function/f_uac1.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2279,30 +2279,23 @@ static int affine_move_task(struct rq *r
- 		return -EINVAL;
- 	}
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -499,6 +499,7 @@ static void f_audio_disable(struct usb_f
+ 	uac1->as_out_alt = 0;
+ 	uac1->as_in_alt = 0;
  
--	if (flags & SCA_MIGRATE_ENABLE) {
--
--		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
--		p->migration_flags &= ~MDF_PUSH;
--		task_rq_unlock(rq, p, rf);
--
--		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
--				    &pending->arg, &pending->stop_work);
--
--		return 0;
--	}
--
- 	if (task_running(rq, p) || p->state == TASK_WAKING) {
- 		/*
--		 * Lessen races (and headaches) by delegating
--		 * is_migration_disabled(p) checks to the stopper, which will
--		 * run on the same CPU as said p.
-+		 * MIGRATE_ENABLE gets here because 'p == current', but for
-+		 * anything else we cannot do is_migration_disabled(), punt
-+		 * and have the stopper function handle it all race-free.
- 		 */
-+
- 		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			p->migration_flags &= ~MDF_PUSH;
- 		task_rq_unlock(rq, p, rf);
++	u_audio_stop_playback(&uac1->g_audio);
+ 	u_audio_stop_capture(&uac1->g_audio);
+ }
  
- 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
- 				    &pending->arg, &pending->stop_work);
- 
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			return 0;
- 	} else {
- 
- 		if (!is_migration_disabled(p)) {
 
 
