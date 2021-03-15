@@ -2,34 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116FE33BE18
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED50E33BE3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238567AbhCOOmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49594 "EHLO mail.kernel.org"
+        id S238788AbhCOOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234318AbhCOODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 169B064DAD;
-        Mon, 15 Mar 2021 14:03:10 +0000 (UTC)
+        id S234504AbhCOODq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6C6664EE3;
+        Mon, 15 Mar 2021 14:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816992;
-        bh=V7viz8xu8N8sJYEkw/htq8X3o9dPilKEp2U4S6NTMI4=;
+        s=korg; t=1615817025;
+        bh=LhpoZ0uUhZh39UDjgMmZOu5gqIsck3d/R/PafC0L0CM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sq3OpH8mX7mNXkyX8bUg4UT734sepzJ1xfg/0XnyxPEmcKmZNqS3iglX8f8xUq2A/
-         ufAGjhU/GrMkLghrEARr2fEh+IJxtSDBE7S/KW7d9eF7xrUiGEPpMdojPspgbRdmDr
-         XxlNvipSWq1v6Em6VBh8TjiYlCow/x5LLgB2E4yE=
+        b=JzCiHcsljwFXzuyWLJ4NeHPTPTSv/0matAbNQCl6g5BJt6PCzEQ4PhwwCOZO2DjGW
+         FcSHpQlpa1CVgQxALUdSLcq+exVXGy/Ewm1Nlaa/jIyDTNWQZ5ipyHH6i8nQNrcgP3
+         xjfS7wJJzX+4m25HZmrvCqihabj6WCvXeBoUQb2s=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.10 234/290] staging: comedi: adv_pci1710: Fix endian problem for AI command data
-Date:   Mon, 15 Mar 2021 14:55:27 +0100
-Message-Id: <20210315135549.892348450@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        Baoquan He <bhe@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Aslan Bakirov <aslan@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 265/306] memblock: fix section mismatch warning
+Date:   Mon, 15 Mar 2021 14:55:28 +0100
+Message-Id: <20210315135516.595578150@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +51,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit b2e78630f733a76508b53ba680528ca39c890e82 upstream.
+[ Upstream commit 34dc2efb39a231280fd6696a59bbe712bf3c5c4a ]
 
-The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the calls to
-`comedi_buf_write_samples()` are passing the address of a 32-bit integer
-variable.  On bigendian machines, this will copy 2 bytes from the wrong
-end of the 32-bit value.  Fix it by changing the type of the variables
-holding the sample value to `unsigned short`.  The type of the `val`
-parameter of `pci1710_ai_read_sample()` is changed to `unsigned short *`
-accordingly.  The type of the `val` variable in `pci1710_ai_insn_read()`
-is also changed to `unsigned short` since its address is passed to
-`pci1710_ai_read_sample()`.
+The inlining logic in clang-13 is rewritten to often not inline some
+functions that were inlined by all earlier compilers.
 
-Fixes: a9c3a015c12f ("staging: comedi: adv_pci1710: use comedi_buf_write_samples()")
-Cc: <stable@vger.kernel.org> # 4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-4-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In case of the memblock interfaces, this exposed a harmless bug of a
+missing __init annotation:
+
+WARNING: modpost: vmlinux.o(.text+0x507c0a): Section mismatch in reference from the function memblock_bottom_up() to the variable .meminit.data:memblock
+The function memblock_bottom_up() references
+the variable __meminitdata memblock.
+This is often because memblock_bottom_up lacks a __meminitdata
+annotation or the annotation of memblock is wrong.
+
+Interestingly, these annotations were present originally, but got removed
+with the explanation that the __init annotation prevents the function from
+getting inlined.  I checked this again and found that while this is the
+case with clang, gcc (version 7 through 10, did not test others) does
+inline the functions regardless.
+
+As the previous change was apparently intended to help the clang builds,
+reverting it to help the newer clang versions seems appropriate as well.
+gcc builds don't seem to care either way.
+
+Link: https://lkml.kernel.org/r/20210225133808.2188581-1-arnd@kernel.org
+Fixes: 5bdba520c1b3 ("mm: memblock: drop __init from memblock functions to make it inline")
+Reference: 2cfb3665e864 ("include/linux/memblock.h: add __init to memblock_set_bottom_up()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Aslan Bakirov <aslan@fb.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/adv_pci1710.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/linux/memblock.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/comedi/drivers/adv_pci1710.c
-+++ b/drivers/staging/comedi/drivers/adv_pci1710.c
-@@ -300,11 +300,11 @@ static int pci1710_ai_eoc(struct comedi_
- static int pci1710_ai_read_sample(struct comedi_device *dev,
- 				  struct comedi_subdevice *s,
- 				  unsigned int cur_chan,
--				  unsigned int *val)
-+				  unsigned short *val)
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index b93c44b9121e..7643d2dfa959 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+ /*
+  * Set the allocation direction to bottom-up or top-down.
+  */
+-static inline void memblock_set_bottom_up(bool enable)
++static inline __init void memblock_set_bottom_up(bool enable)
  {
- 	const struct boardtype *board = dev->board_ptr;
- 	struct pci1710_private *devpriv = dev->private;
--	unsigned int sample;
-+	unsigned short sample;
- 	unsigned int chan;
- 
- 	sample = inw(dev->iobase + PCI171X_AD_DATA_REG);
-@@ -345,7 +345,7 @@ static int pci1710_ai_insn_read(struct c
- 	pci1710_ai_setup_chanlist(dev, s, &insn->chanspec, 1, 1);
- 
- 	for (i = 0; i < insn->n; i++) {
--		unsigned int val;
-+		unsigned short val;
- 
- 		/* start conversion */
- 		outw(0, dev->iobase + PCI171X_SOFTTRG_REG);
-@@ -395,7 +395,7 @@ static void pci1710_handle_every_sample(
+ 	memblock.bottom_up = enable;
+ }
+@@ -470,7 +470,7 @@ static inline void memblock_set_bottom_up(bool enable)
+  * if this is true, that said, memblock will allocate memory
+  * in bottom-up direction.
+  */
+-static inline bool memblock_bottom_up(void)
++static inline __init bool memblock_bottom_up(void)
  {
- 	struct comedi_cmd *cmd = &s->async->cmd;
- 	unsigned int status;
--	unsigned int val;
-+	unsigned short val;
- 	int ret;
- 
- 	status = inw(dev->iobase + PCI171X_STATUS_REG);
-@@ -455,7 +455,7 @@ static void pci1710_handle_fifo(struct c
- 	}
- 
- 	for (i = 0; i < devpriv->max_samples; i++) {
--		unsigned int val;
-+		unsigned short val;
- 		int ret;
- 
- 		ret = pci1710_ai_read_sample(dev, s, s->async->cur_chan, &val);
+ 	return memblock.bottom_up;
+ }
+-- 
+2.30.1
+
 
 
