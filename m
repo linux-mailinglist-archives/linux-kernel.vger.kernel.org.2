@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFC233BE56
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3902C33BE66
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238954AbhCOOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        id S238994AbhCOOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:46:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234549AbhCOOET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24884600EF;
-        Mon, 15 Mar 2021 14:04:16 +0000 (UTC)
+        id S234575AbhCOOEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19244601FD;
+        Mon, 15 Mar 2021 14:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817058;
-        bh=t6RUt6HUzB0MgaDyS9B4bHBo4NehUJSKVH0UAGG2iL0=;
+        s=korg; t=1615817060;
+        bh=x3Htg2voxND8Ah2g0xemyHciB6hV7tmKLcRWo8Y2DHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZKxo5B/F5K3/SzSq8/w6sguyzgHibHV3EAPjaf0CzfW6hjICxtBM9dEhoGPLHG67h
-         GFnFbFPWsKxHjtSCT2ReABpNOhYoGTtASKQDIOLZn4+omiUb459jeUspb16Vttspis
-         L98dmdYcA1SafiBpKSM23/C/ATSXvN8ppWBiPtgU=
+        b=PNHUDj/U2FiVOeufpd2Y3kRnfqVvBQx8LnrDQSb/9o1j/bqzQKOw77tiv/qB1fWDE
+         o1BI47ICPKFn4LtoUtQE4PveNx5Nz9d5dWv4qsTdR5rLtrqGhxLrnco2UoJ68FrDJR
+         3ddXEESm4w2mnuJA1Dthxap34xo8Xt4GcQtR2mxc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 267/290] powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
-Date:   Mon, 15 Mar 2021 14:56:00 +0100
-Message-Id: <20210315135551.044220754@linuxfoundation.org>
+        stable@vger.kernel.org, Lior Ribak <liorribak@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 268/290] binfmt_misc: fix possible deadlock in bm_register_write
+Date:   Mon, 15 Mar 2021 14:56:01 +0100
+Message-Id: <20210315135551.076305421@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,83 +44,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Lior Ribak <liorribak@gmail.com>
 
-commit bd73758803c2eedc037c2268b65a19542a832594 upstream.
+commit e7850f4d844e0acfac7e570af611d89deade3146 upstream.
 
-Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
-when CONFIG_VSX is not set, to avoid following build failure.
+There is a deadlock in bm_register_write:
 
-  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
-  In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
-                   from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
-                   from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
-  ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
-     64 |   enable_kernel_vsx(); \
-        |   ^~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
-    640 |  DC_FP_START();
-        |  ^~~~~~~~~~~
-  ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
-     75 |   disable_kernel_vsx(); \
-        |   ^~~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
-    676 |  DC_FP_END();
-        |  ^~~~~~~~~
-  cc1: some warnings being treated as errors
-  make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
+First, in the begining of the function, a lock is taken on the binfmt_misc
+root inode with inode_lock(d_inode(root)).
 
-This works because the caller is checking if VSX is available using
-cpu_has_feature():
+Then, if the user used the MISC_FMT_OPEN_FILE flag, the function will call
+open_exec on the user-provided interpreter.
 
-  #define DC_FP_START() { \
-  	if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
-  		preempt_disable(); \
-  		enable_kernel_vsx(); \
-  	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
-  		preempt_disable(); \
-  		enable_kernel_altivec(); \
-  	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
-  		preempt_disable(); \
-  		enable_kernel_fp(); \
-  	} \
+open_exec will call a path lookup, and if the path lookup process includes
+the root of binfmt_misc, it will try to take a shared lock on its inode
+again, but it is already locked, and the code will get stuck in a deadlock
 
-When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP)
-constant folds to 'false' so the call to enable_kernel_vsx() is
-discarded and the build succeeds.
+To reproduce the bug:
+$ echo ":iiiii:E::ii::/proc/sys/fs/binfmt_misc/bla:F" > /proc/sys/fs/binfmt_misc/register
 
-Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
-Cc: stable@vger.kernel.org # v5.6+
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Incorporate some discussion comments into the change log]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu
+backtrace of where the lock occurs (#5):
+0  schedule () at ./arch/x86/include/asm/current.h:15
+1  0xffffffff81b51237 in rwsem_down_read_slowpath (sem=0xffff888003b202e0, count=<optimized out>, state=state@entry=2) at kernel/locking/rwsem.c:992
+2  0xffffffff81b5150a in __down_read_common (state=2, sem=<optimized out>) at kernel/locking/rwsem.c:1213
+3  __down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1222
+4  down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1355
+5  0xffffffff811ee22a in inode_lock_shared (inode=<optimized out>) at ./include/linux/fs.h:783
+6  open_last_lookups (op=0xffffc9000022fe34, file=0xffff888004098600, nd=0xffffc9000022fd10) at fs/namei.c:3177
+7  path_openat (nd=nd@entry=0xffffc9000022fd10, op=op@entry=0xffffc9000022fe34, flags=flags@entry=65) at fs/namei.c:3366
+8  0xffffffff811efe1c in do_filp_open (dfd=<optimized out>, pathname=pathname@entry=0xffff8880031b9000, op=op@entry=0xffffc9000022fe34) at fs/namei.c:3396
+9  0xffffffff811e493f in do_open_execat (fd=fd@entry=-100, name=name@entry=0xffff8880031b9000, flags=<optimized out>, flags@entry=0) at fs/exec.c:913
+10 0xffffffff811e4a92 in open_exec (name=<optimized out>) at fs/exec.c:948
+11 0xffffffff8124aa84 in bm_register_write (file=<optimized out>, buffer=<optimized out>, count=19, ppos=<optimized out>) at fs/binfmt_misc.c:682
+12 0xffffffff811decd2 in vfs_write (file=file@entry=0xffff888004098500, buf=buf@entry=0xa758d0 ":iiiii:E::ii::i:CF
+", count=count@entry=19, pos=pos@entry=0xffffc9000022ff10) at fs/read_write.c:603
+13 0xffffffff811defda in ksys_write (fd=<optimized out>, buf=0xa758d0 ":iiiii:E::ii::i:CF
+", count=19) at fs/read_write.c:658
+14 0xffffffff81b49813 in do_syscall_64 (nr=<optimized out>, regs=0xffffc9000022ff58) at arch/x86/entry/common.c:46
+15 0xffffffff81c0007c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+
+To solve the issue, the open_exec call is moved to before the write
+lock is taken by bm_register_write
+
+Link: https://lkml.kernel.org/r/20210228224414.95962-1-liorribak@gmail.com
+Fixes: 948b701a607f1 ("binfmt_misc: add persistent opened binary handler for containers")
+Signed-off-by: Lior Ribak <liorribak@gmail.com>
+Acked-by: Helge Deller <deller@gmx.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/switch_to.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/binfmt_misc.c |   29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
---- a/arch/powerpc/include/asm/switch_to.h
-+++ b/arch/powerpc/include/asm/switch_to.h
-@@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(vo
- {
- 	msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
- }
-+#else
-+static inline void enable_kernel_vsx(void)
-+{
-+	BUILD_BUG();
-+}
-+
-+static inline void disable_kernel_vsx(void)
-+{
-+	BUILD_BUG();
-+}
- #endif
+--- a/fs/binfmt_misc.c
++++ b/fs/binfmt_misc.c
+@@ -647,12 +647,24 @@ static ssize_t bm_register_write(struct
+ 	struct super_block *sb = file_inode(file)->i_sb;
+ 	struct dentry *root = sb->s_root, *dentry;
+ 	int err = 0;
++	struct file *f = NULL;
  
- #ifdef CONFIG_SPE
+ 	e = create_entry(buffer, count);
+ 
+ 	if (IS_ERR(e))
+ 		return PTR_ERR(e);
+ 
++	if (e->flags & MISC_FMT_OPEN_FILE) {
++		f = open_exec(e->interpreter);
++		if (IS_ERR(f)) {
++			pr_notice("register: failed to install interpreter file %s\n",
++				 e->interpreter);
++			kfree(e);
++			return PTR_ERR(f);
++		}
++		e->interp_file = f;
++	}
++
+ 	inode_lock(d_inode(root));
+ 	dentry = lookup_one_len(e->name, root, strlen(e->name));
+ 	err = PTR_ERR(dentry);
+@@ -676,21 +688,6 @@ static ssize_t bm_register_write(struct
+ 		goto out2;
+ 	}
+ 
+-	if (e->flags & MISC_FMT_OPEN_FILE) {
+-		struct file *f;
+-
+-		f = open_exec(e->interpreter);
+-		if (IS_ERR(f)) {
+-			err = PTR_ERR(f);
+-			pr_notice("register: failed to install interpreter file %s\n", e->interpreter);
+-			simple_release_fs(&bm_mnt, &entry_count);
+-			iput(inode);
+-			inode = NULL;
+-			goto out2;
+-		}
+-		e->interp_file = f;
+-	}
+-
+ 	e->dentry = dget(dentry);
+ 	inode->i_private = e;
+ 	inode->i_fop = &bm_entry_operations;
+@@ -707,6 +704,8 @@ out:
+ 	inode_unlock(d_inode(root));
+ 
+ 	if (err) {
++		if (f)
++			filp_close(f, NULL);
+ 		kfree(e);
+ 		return err;
+ 	}
 
 
