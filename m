@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BA833BEEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9564F33BF01
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhCOOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S241587AbhCOOwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236542AbhCOOfu (ORCPT
+        with ESMTP id S237111AbhCOOgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:35:50 -0400
+        Mon, 15 Mar 2021 10:36:14 -0400
 Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB00C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:35:50 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id n17so15207681wrq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:35:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F62FC061765
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:35:52 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id i5so15188808wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=CWD0ZTykbS9rpgPcDzjldFEhYHHZjk+W/M1Qg3Ptvcw=;
-        b=YH68EwOClBXGIJmeGqCUN2dhjlTkG1F/UlBsPGBdkrfbjGJ/wKGnavp/Cs02ZJyOnA
-         i9zS8UvlY5ht/Sq8FBKuH8o7kQzDd9aRtAZB0T6BuYdPfO2/PZ5iLEWx3SDEdYDHSyOh
-         dczI07hP20xwCKm4zmlPWwLc2zRwazuu0pxdK0MlOIAasdPOq29Fld+MgcxnMs/WHnHO
-         HOSy4YvbCExvOeq9JGAP8qvzGB6+CrW/eN35hN4MDI0unThGS3JFrIFcZiM6TXLYw1F5
-         q7IyUQGmMGC0Mo9hAE3MU6bekn5puwnNhVM6fJSQlGmCLzTdiwBtuBi4J5gRMFdsuId4
-         wIig==
+        bh=XM9Fqo9BFURTmcHtiI6lmQ6Zl1fY1T+F2S1cS3+zeUo=;
+        b=bKIIrxzhrczRyndajmokRMPtSQEcu111oQ9npGw7bv47pkRLemXtMvq2xN5IA1Aazi
+         Ve0fnnavrRoBroulLIEYvCdbI+rkDswIW/n81LueYuK7CcZyMiFXX7U4oSYVdFEosFVO
+         4XDSOgSw7gCG/kU4oeUYSRSQoLezMQ+UwrReoibt2dY+MxmCc+RvGbVpjPdSsoW8VLzj
+         iFZBZlyR8MGLq1rQuv2SibuG3kjnxzYISkCwTYfxQPReIZ2cwW+ihzzADXECtDCYqPWA
+         Gii9VDQBgd45ZTkbNe558j9x0S9QG2jCoPdSr79fzn2jVoDPjMVZFLOK8JKloJGNd08Y
+         SqdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CWD0ZTykbS9rpgPcDzjldFEhYHHZjk+W/M1Qg3Ptvcw=;
-        b=GiD6ovHYCTb4NLsvb5tuNacXsE4FXWnJP5cYwRLp3lcFoZ7QwGDOsvXc7mgm+RSRGP
-         rhiPAtcG0a+b5Y/YoQV99MSp7pUbODGvSrcjqKB+wxvjztZTKLnQZE3aNhk6d6+sAHu5
-         w5Gfd7m9dzqmWoZeePgwNomzotlPw7SfyZhUiDXbI9o8UzM41qdiSTdlUpBGj8p7HsWM
-         AExIEbQ6vEWg8I73IhK5aZUGHAQdk+RlOZJPrKbpaEmlQ2zDFDYDjcIgyVmqCXFDXGfm
-         2zLXx/NkQClKdaSSX6E74ArVjeUln2bQ9dWFko205Di+5+V8kgP5aaCriZZ1Upi/E89E
-         6r+g==
-X-Gm-Message-State: AOAM531ZrMYknNvr/0Ufy8hDBbh62lDs7lEZoQ/vjwkMIAyBbkok/FWx
-        zJSnNVrVxsXvqoEUAe/zOIpyyByelyLo
-X-Google-Smtp-Source: ABdhPJxyely57bJXbfq5qywc89TBRX65VoRvNM5+Je7YF6yjHB3oFwlqb826w0urpEOUPJE9/f/45AdrETx6
+        bh=XM9Fqo9BFURTmcHtiI6lmQ6Zl1fY1T+F2S1cS3+zeUo=;
+        b=cH2AK5g+AWQ2r5nZH8Mxu7iMJSEMMkuPt0fq825ibGlODKQ+GJpQC79kJo/6oJWUJu
+         GmsxUtgETtI/A7OPbMEq7084L/kKvlvfTZVBTQKyt1BYiXC38QuC9ZrUL8J0mjGcOeCS
+         EyIpbMpTsZE9hsgfGtIAPLXcmPj80yl72IWQq1aEPSrxI21Wcqabw/7tHcGTVpCqgfIO
+         n9LCrs/d4ukvIUwwrqavs9NYgAS6K5Qk3KujOi0pUaHgknptrEUPRlkdMMsWQpSzyQwI
+         R90rl9b7KR6twMHTIN2RM0Gat+ZXb+PooP5b+khbl1gTya79BfRGW84g+DnQU42wc9IH
+         gh1w==
+X-Gm-Message-State: AOAM532VXP25a7GGHF+2+YM9liP5D2J8rdkvYI9cCxkRE3DImXsP/8i/
+        nJPJUgtRRI0q8DtgVUoSrbuu1lGFyFa+
+X-Google-Smtp-Source: ABdhPJyH7PRqGoLoUvKE1E9rOxfevMyBMCizkYPSX3DRJyQ4kkfYKppPwBjw5T8gP92kUTM7iCiidaEXdjph
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:a504:: with SMTP id
- o4mr12766wme.174.1615818948988; Mon, 15 Mar 2021 07:35:48 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 14:35:04 +0000
+ (user=qperret job=sendgmr) by 2002:a1c:43c5:: with SMTP id
+ q188mr28699wma.94.1615818951131; Mon, 15 Mar 2021 07:35:51 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 14:35:05 +0000
 In-Reply-To: <20210315143536.214621-1-qperret@google.com>
-Message-Id: <20210315143536.214621-5-qperret@google.com>
+Message-Id: <20210315143536.214621-6-qperret@google.com>
 Mime-Version: 1.0
 References: <20210315143536.214621-1-qperret@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v5 04/36] KVM: arm64: Initialize kvm_nvhe_init_params early
+Subject: [PATCH v5 05/36] KVM: arm64: Avoid free_page() in page-table allocator
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -66,107 +66,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the initialization of kvm_nvhe_init_params in a dedicated function
-that is run early, and only once during KVM init, rather than every time
-the KVM vectors are set and reset.
+Currently, the KVM page-table allocator uses a mix of put_page() and
+free_page() calls depending on the context even though page-allocation
+is always achieved using variants of __get_free_page().
 
-This also opens the opportunity for the hypervisor to change the init
-structs during boot, hence simplifying the replacement of host-provided
-page-table by the one the hypervisor will create for itself.
+Make the code consistent by using put_page() throughout, and reduce the
+memory management API surface used by the page-table code. This will
+ease factoring out page-allocation from pgtable.c, which is a
+pre-requisite to creating page-tables at EL2.
 
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/arm.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ arch/arm64/kvm/hyp/pgtable.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index fc4c95dd2d26..2d1e7ef69c04 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1383,22 +1383,18 @@ static int kvm_init_vector_slots(void)
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 4d177ce1d536..81fe032f34d1 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -413,7 +413,7 @@ int kvm_pgtable_hyp_init(struct kvm_pgtable *pgt, u32 va_bits)
+ static int hyp_free_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 			   enum kvm_pgtable_walk_flags flag, void * const arg)
+ {
+-	free_page((unsigned long)kvm_pte_follow(*ptep));
++	put_page(virt_to_page(kvm_pte_follow(*ptep)));
  	return 0;
  }
  
--static void cpu_init_hyp_mode(void)
-+static void cpu_prepare_hyp_mode(int cpu)
- {
--	struct kvm_nvhe_init_params *params = this_cpu_ptr_nvhe_sym(kvm_init_params);
--	struct arm_smccc_res res;
-+	struct kvm_nvhe_init_params *params = per_cpu_ptr_nvhe_sym(kvm_init_params, cpu);
- 	unsigned long tcr;
+@@ -425,7 +425,7 @@ void kvm_pgtable_hyp_destroy(struct kvm_pgtable *pgt)
+ 	};
  
--	/* Switch from the HYP stub to our own HYP init vector */
--	__hyp_set_vectors(kvm_get_idmap_vector());
--
- 	/*
- 	 * Calculate the raw per-cpu offset without a translation from the
- 	 * kernel's mapping to the linear mapping, and store it in tpidr_el2
- 	 * so that we can use adr_l to access per-cpu variables in EL2.
- 	 * Also drop the KASAN tag which gets in the way...
- 	 */
--	params->tpidr_el2 = (unsigned long)kasan_reset_tag(this_cpu_ptr_nvhe_sym(__per_cpu_start)) -
-+	params->tpidr_el2 = (unsigned long)kasan_reset_tag(per_cpu_ptr_nvhe_sym(__per_cpu_start, cpu)) -
- 			    (unsigned long)kvm_ksym_ref(CHOOSE_NVHE_SYM(__per_cpu_start));
+ 	WARN_ON(kvm_pgtable_walk(pgt, 0, BIT(pgt->ia_bits), &walker));
+-	free_page((unsigned long)pgt->pgd);
++	put_page(virt_to_page(pgt->pgd));
+ 	pgt->pgd = NULL;
+ }
  
- 	params->mair_el2 = read_sysreg(mair_el1);
-@@ -1422,7 +1418,7 @@ static void cpu_init_hyp_mode(void)
- 	tcr |= (idmap_t0sz & GENMASK(TCR_TxSZ_WIDTH - 1, 0)) << TCR_T0SZ_OFFSET;
- 	params->tcr_el2 = tcr;
+@@ -577,7 +577,7 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
+ 	if (!data->anchor)
+ 		return 0;
  
--	params->stack_hyp_va = kern_hyp_va(__this_cpu_read(kvm_arm_hyp_stack_page) + PAGE_SIZE);
-+	params->stack_hyp_va = kern_hyp_va(per_cpu(kvm_arm_hyp_stack_page, cpu) + PAGE_SIZE);
- 	params->pgd_pa = kvm_mmu_get_httbr();
+-	free_page((unsigned long)kvm_pte_follow(*ptep));
++	put_page(virt_to_page(kvm_pte_follow(*ptep)));
+ 	put_page(virt_to_page(ptep));
  
- 	/*
-@@ -1430,6 +1426,15 @@ static void cpu_init_hyp_mode(void)
- 	 * be read while the MMU is off.
- 	 */
- 	kvm_flush_dcache_to_poc(params, sizeof(*params));
-+}
-+
-+static void cpu_init_hyp_mode(void)
-+{
-+	struct kvm_nvhe_init_params *params;
-+	struct arm_smccc_res res;
-+
-+	/* Switch from the HYP stub to our own HYP init vector */
-+	__hyp_set_vectors(kvm_get_idmap_vector());
- 
- 	/*
- 	 * Call initialization code, and switch to the full blown HYP code.
-@@ -1438,6 +1443,7 @@ static void cpu_init_hyp_mode(void)
- 	 * cpus_have_const_cap() wrapper.
- 	 */
- 	BUG_ON(!system_capabilities_finalized());
-+	params = this_cpu_ptr_nvhe_sym(kvm_init_params);
- 	arm_smccc_1_1_hvc(KVM_HOST_SMCCC_FUNC(__kvm_hyp_init), virt_to_phys(params), &res);
- 	WARN_ON(res.a0 != SMCCC_RET_SUCCESS);
- 
-@@ -1785,19 +1791,19 @@ static int init_hyp_mode(void)
- 		}
+ 	if (data->anchor == ptep) {
+@@ -700,7 +700,7 @@ static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
  	}
  
--	/*
--	 * Map Hyp percpu pages
--	 */
- 	for_each_possible_cpu(cpu) {
- 		char *percpu_begin = (char *)kvm_arm_hyp_percpu_base[cpu];
- 		char *percpu_end = percpu_begin + nvhe_percpu_size();
+ 	if (childp)
+-		free_page((unsigned long)childp);
++		put_page(virt_to_page(childp));
  
-+		/* Map Hyp percpu pages */
- 		err = create_hyp_mappings(percpu_begin, percpu_end, PAGE_HYP);
--
- 		if (err) {
- 			kvm_err("Cannot map hyp percpu region\n");
- 			goto out_err;
- 		}
-+
-+		/* Prepare the CPU initialization parameters */
-+		cpu_prepare_hyp_mode(cpu);
- 	}
+ 	return 0;
+ }
+@@ -897,7 +897,7 @@ static int stage2_free_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 	put_page(virt_to_page(ptep));
  
- 	if (is_protected_kvm_enabled()) {
+ 	if (kvm_pte_table(pte, level))
+-		free_page((unsigned long)kvm_pte_follow(pte));
++		put_page(virt_to_page(kvm_pte_follow(pte)));
+ 
+ 	return 0;
+ }
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
