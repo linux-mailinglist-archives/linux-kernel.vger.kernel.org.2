@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A611C33B54E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E9933B573
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhCONyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55712 "EHLO mail.kernel.org"
+        id S231431AbhCONy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhCONxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FFD64EED;
-        Mon, 15 Mar 2021 13:53:08 +0000 (UTC)
+        id S230176AbhCONxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE93264EB6;
+        Mon, 15 Mar 2021 13:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816390;
-        bh=iLmPXNG76G6u/naED2bfEhxm8XyFLQIPdZKWYuVdl9c=;
+        s=korg; t=1615816398;
+        bh=S5XiGYEdYWex8KJD0TxuldqiutPHm2atiw9CRDWoP1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QV8rK+X9S5LPiOSQpVFM7p1dmuv7vs6TShRRKEIHbpSdQJ7MVTrkszbm34foVD9ga
-         b1cVe4sVUq5cHBc4XaWiZSVC+Yfw6HxFFTriPYcaXyp+LO2gHi8xITzFpvtzwfL5SZ
-         0m3EIsPLBxWuPbFhSs2OePp079wdzlwebyMPmIj4=
+        b=Lau1WZOL4R9VMMCkrgajL72S06iDupsf6KArGI+yX6Qy5i7y9vjmOYQjKQ5tQe857
+         cSk2RL5QVgu+/6pBDdPcSXATLzx+KpTA+F9sAq/9mWOoKG5ftcdB1t60GmNpWt7UkB
+         PFUG5VK3f68vFVWe50JacVOycJpXrWzMEFO6HMxU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Kevin(Yudong) Yang" <yyd@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 12/78] net/mlx4_en: update moderation when config reset
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 21/75] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
 Date:   Mon, 15 Mar 2021 14:51:35 +0100
-Message-Id: <20210315135212.466263867@linuxfoundation.org>
+Message-Id: <20210315135208.944227908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,80 +42,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Kevin(Yudong) Yang <yyd@google.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-commit 00ff801bb8ce6711e919af4530b6ffa14a22390a upstream.
+[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
 
-This patch fixes a bug that the moderation config will not be
-applied when calling mlx4_en_reset_config. For example, when
-turning on rx timestamping, mlx4_en_reset_config() will be called,
-causing the NIC to forget previous moderation config.
+While sampling for marked events, currently we record the sample only
+if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
+set. SIAR_VALID bit is used for fetching the instruction address from
+Sampled Instruction Address Register(SIAR). But there are some
+usecases, where the user is interested only in the PMU stats at each
+counter overflow and the exact IP of the overflow event is not
+required. Dropping SIAR invalid samples will fail to record some of
+the counter overflows in such cases.
 
-This fix is in phase with a previous fix:
-commit 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss
-after set_ringparam is called")
+Example of such usecase is dumping the PMU stats (event counts) after
+some regular amount of instructions/events from the userspace (ex: via
+ptrace). Here counter overflow is indicated to userspace via signal
+handler, and captured by monitoring and enabling I/O signaling on the
+event file descriptor. In these cases, we expect to get
+sample/overflow indication after each specified sample_period.
 
-Tested: Before this patch, on a host with NIC using mlx4, run
-netserver and stream TCP to the host at full utilization.
-$ sar -I SUM 1
-                 INTR    intr/s
-14:03:56          sum  48758.00
+Perf event attribute will not have PERF_SAMPLE_IP set in the
+sample_type if exact IP of the overflow event is not requested. So
+while profiling if SAMPLE_IP is not set, just record the counter
+overflow irrespective of SIAR_VALID check.
 
-After rx hwtstamp is enabled:
-$ sar -I SUM 1
-14:10:38          sum 317771.00
-We see the moderation is not working properly and issued 7x more
-interrupts.
-
-After the patch, and turned on rx hwtstamp, the rate of interrupts
-is as expected:
-$ sar -I SUM 1
-14:52:11          sum  49332.00
-
-Fixes: 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss after set_ringparam is called")
-Signed-off-by: Kevin(Yudong) Yang <yyd@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Neal Cardwell <ncardwell@google.com>
-CC: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+[mpe: Reflow comment and if formatting]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    2 +-
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c  |    2 ++
- drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    |    1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -47,7 +47,7 @@
- #define EN_ETHTOOL_SHORT_MASK cpu_to_be16(0xffff)
- #define EN_ETHTOOL_WORD_MASK  cpu_to_be32(0xffffffff)
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index e593e7f856ed..7a80e1cff6e2 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2008,7 +2008,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 			left += period;
+ 			if (left <= 0)
+ 				left = period;
+-			record = siar_valid(regs);
++
++			/*
++			 * If address is not requested in the sample via
++			 * PERF_SAMPLE_IP, just record that sample irrespective
++			 * of SIAR valid check.
++			 */
++			if (event->attr.sample_type & PERF_SAMPLE_IP)
++				record = siar_valid(regs);
++			else
++				record = 1;
++
+ 			event->hw.last_period = event->hw.sample_period;
+ 		}
+ 		if (left < 0x80000000LL)
+@@ -2026,9 +2036,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
+ 	 * these cases.
+ 	 */
+-	if (event->attr.exclude_kernel && record)
+-		if (is_kernel_addr(mfspr(SPRN_SIAR)))
+-			record = 0;
++	if (event->attr.exclude_kernel &&
++	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
++	    is_kernel_addr(mfspr(SPRN_SIAR)))
++		record = 0;
  
--static int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
-+int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
- {
- 	int i;
- 	int err = 0;
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -3459,6 +3459,8 @@ int mlx4_en_reset_config(struct net_devi
- 			en_err(priv, "Failed starting port\n");
- 	}
- 
-+	if (!err)
-+		err = mlx4_en_moderation_update(priv);
- out:
- 	mutex_unlock(&mdev->state_lock);
- 	kfree(tmp);
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-@@ -773,6 +773,7 @@ void mlx4_en_ptp_overflow_check(struct m
- #define DEV_FEATURE_CHANGED(dev, new_features, feature) \
- 	((dev->features & feature) ^ (new_features & feature))
- 
-+int mlx4_en_moderation_update(struct mlx4_en_priv *priv);
- int mlx4_en_reset_config(struct net_device *dev,
- 			 struct hwtstamp_config ts_config,
- 			 netdev_features_t new_features);
+ 	/*
+ 	 * Finally record data if requested.
+-- 
+2.30.1
+
 
 
