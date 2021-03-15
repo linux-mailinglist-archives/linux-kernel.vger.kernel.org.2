@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A9233BBA7
+	by mail.lfdr.de (Postfix) with ESMTP id 724C333BBA8
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbhCOOT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S237665AbhCOOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232469AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232496AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94AD964F19;
-        Mon, 15 Mar 2021 13:59:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D2C264F60;
+        Mon, 15 Mar 2021 13:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816768;
-        bh=2kspGpLfUEBLgLAq1ZGvCCgsmP9b4EWHvwylP07uFQU=;
+        s=korg; t=1615816771;
+        bh=f/SalJyee8+GeT1xcSqOnFDZYd4raLachmV8vPv0UtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TyESi0MSvnh1PEcNj5SsoUVjGD/4WOHGtiDxMiMxZ+THxixI+5OIAy1I0/iHrZvLv
-         Ft3jbyATlxLBPMsK/cdi+tUyWP75fniEvajZzJZIm2FBGEguPlM0JikdYW/A9DZhVi
-         CId4sJx/i7m2mY2cKeELn4y40p8l+6Wu0HktH+RE=
+        b=SmXqu9Thkp81FwbZ6le0Zw8I+RQ974ABVCluArFm/AqKPYOvTSf9P5+UJ+cfKRsXm
+         8WFEXX2APHbEzJkcGyqCuREtiE1yFJKbkVZY74ulUwIGyThOgHYA7JVkdoZlEE3QKa
+         OaOtJ+YoIDH4WZrshFLpDwSbDOux1eL99gUfTtcg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.14 48/95] mmc: core: Fix partition switch time for eMMC
-Date:   Mon, 15 Mar 2021 14:57:18 +0100
-Message-Id: <20210315135741.856616568@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.14 50/95] USB: gadget: u_ether: Fix a configfs return code
+Date:   Mon, 15 Mar 2021 14:57:20 +0100
+Message-Id: <20210315135741.919624690@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -42,57 +41,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 66fbacccbab91e6e55d9c8f1fc0910a8eb6c81f7 upstream.
+commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
 
-Avoid the following warning by always defining partition switch time:
+If the string is invalid, this should return -EINVAL instead of 0.
 
- [    3.209874] mmc1: unspecified timeout for CMD6 - use generic
- [    3.222780] ------------[ cut here ]------------
- [    3.233363] WARNING: CPU: 1 PID: 111 at drivers/mmc/core/mmc_ops.c:575 __mmc_switch+0x200/0x204
-
-Reported-by: Paul Fertser <fercerpav@gmail.com>
-Fixes: 1c447116d017 ("mmc: mmc: Fix partition switch timeout for some eMMCs")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/168bbfd6-0c5b-5ace-ab41-402e7937c46e@intel.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/core/mmc.c |   15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -426,10 +426,6 @@ static int mmc_decode_ext_csd(struct mmc
- 
- 		/* EXT_CSD value is in units of 10ms, but we store in ms */
- 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
--		/* Some eMMC set the value too low so set a minimum */
--		if (card->ext_csd.part_time &&
--		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
--			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
- 
- 		/* Sleep / awake timeout in 100ns units */
- 		if (sa_shift > 0 && sa_shift <= 0x17)
-@@ -619,6 +615,17 @@ static int mmc_decode_ext_csd(struct mmc
- 		card->ext_csd.data_sector_size = 512;
- 	}
- 
-+	/*
-+	 * GENERIC_CMD6_TIME is to be used "unless a specific timeout is defined
-+	 * when accessing a specific field", so use it here if there is no
-+	 * PARTITION_SWITCH_TIME.
-+	 */
-+	if (!card->ext_csd.part_time)
-+		card->ext_csd.part_time = card->ext_csd.generic_cmd6_time;
-+	/* Some eMMC set the value too low so set a minimum */
-+	if (card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
-+		card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
-+
- 	/* eMMC v5 or later */
- 	if (card->ext_csd.rev >= 7) {
- 		memcpy(card->ext_csd.fwrev, &ext_csd[EXT_CSD_FIRMWARE_VERSION],
+--- a/drivers/usb/gadget/function/u_ether_configfs.h
++++ b/drivers/usb/gadget/function/u_ether_configfs.h
+@@ -172,12 +172,11 @@ out:									\
+ 						size_t len)		\
+ 	{								\
+ 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
+-		int ret;						\
++		int ret = -EINVAL;					\
+ 		u8 val;							\
+ 									\
+ 		mutex_lock(&opts->lock);				\
+-		ret = sscanf(page, "%02hhx", &val);			\
+-		if (ret > 0) {						\
++		if (sscanf(page, "%02hhx", &val) > 0) {			\
+ 			opts->_n_ = val;				\
+ 			ret = len;					\
+ 		}							\
 
 
