@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026433B4C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC47233B4CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhCONkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:40:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44034 "EHLO
+        id S229805AbhCONmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:42:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50699 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229721AbhCONjl (ORCPT
+        by vger.kernel.org with ESMTP id S229713AbhCONl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:39:41 -0400
+        Mon, 15 Mar 2021 09:41:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615815581;
+        s=mimecast20190719; t=1615815717;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FBloEIKc9d+TaaEDfCG9lNf3Br/ubHPcgUeOPhTr6GA=;
-        b=fAib18chOSq3hyNwapsvA8l8v/dGE7e8K1sa9ixGXdMkAiHJ+Vj1GRHUFAKrDJ1N9/tKhe
-        HZB6mzRLDNyHb3JilJgmwGYNBbuAHvj/qpNOeFsS93DFq9yWO5A7sWg7FB0NyUnfi4sl5y
-        BQcPL8TFR2BIOb/jmGhJzQS+J9gdKc0=
+        bh=pIaBmIY3wpgp8eqLpLPVRWAADavoCBIo1W8aCkerR6M=;
+        b=IBa+/4uC/qUAayvMuH8AIe9TAogkwTwhK5zxBoQzOEsbpRQhs2/w0Md6Jis4rjDumKdODM
+        npyL1AwWt1YRQAU6DaHhB7eB+RFGSNwipIW94TwvYlPLSU1mEs+q60A7SPaiL87V201p8D
+        eyhuozeVJACBoYJESxUvcYJOuiAPHbQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-jeXUEtpqMLCSpUTFmj-UZg-1; Mon, 15 Mar 2021 09:39:37 -0400
-X-MC-Unique: jeXUEtpqMLCSpUTFmj-UZg-1
+ us-mta-439-aHkpMn5yMBmMROU_HtnydA-1; Mon, 15 Mar 2021 09:41:53 -0400
+X-MC-Unique: aHkpMn5yMBmMROU_HtnydA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7338E809AC7;
-        Mon, 15 Mar 2021 13:39:35 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7292118AAF;
-        Mon, 15 Mar 2021 13:39:29 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 14:39:28 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C08380006E;
+        Mon, 15 Mar 2021 13:41:51 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E8E19620DE;
+        Mon, 15 Mar 2021 13:41:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com>
+References: <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com> <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
         Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH 7/7] net: page_pool: use alloc_pages_bulk in refill code
- path
-Message-ID: <20210315143928.5d94da8f@carbon>
-In-Reply-To: <YEvJmVrnTzKT1XAY@apalos.home>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
-        <20210312154331.32229-8-mgorman@techsingularity.net>
-        <CAKgT0UebK=mMwDV+UH8CqBRt0E0Koc7EB42kwgf0hYHDT_2OfQ@mail.gmail.com>
-        <YEvJmVrnTzKT1XAY@apalos.home>
+        Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 0/3] vfs: Use an xarray instead of inserted bookmarks to scan mount list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2857439.1615815708.1@warthog.procyon.org.uk>
+Date:   Mon, 15 Mar 2021 13:41:48 +0000
+Message-ID: <2857440.1615815708@warthog.procyon.org.uk>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 22:05:45 +0200
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-> [...]
-> > 6. return last_page
-> >   
-> > > +       /* Remaining pages store in alloc.cache */
-> > > +       list_for_each_entry_safe(page, next, &page_list, lru) {
-> > > +               list_del(&page->lru);
-> > > +               if ((pp_flags & PP_FLAG_DMA_MAP) &&
-> > > +                   unlikely(!page_pool_dma_map(pool, page))) {
-> > > +                       put_page(page);
-> > > +                       continue;
-> > > +               }  
-> > 
-> > So if you added a last_page pointer what you could do is check for it
-> > here and assign it to the alloc cache. If last_page is not set the
-> > block would be skipped.
-> >   
-> > > +               if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
-> > > +                       pool->alloc.cache[pool->alloc.count++] = page;
-> > > +                       pool->pages_state_hold_cnt++;
-> > > +                       trace_page_pool_state_hold(pool, page,
-> > > +                                                  pool->pages_state_hold_cnt);
-> > > +               } else {
-> > > +                       put_page(page);  
-> > 
-> > If you are just calling put_page here aren't you leaking DMA mappings?
-> > Wouldn't you need to potentially unmap the page before you call
-> > put_page on it?  
+> >  (2) We can use the file position to represent the mnt_id and can jump to
+> >      it directly - ie. using seek() to jump to a mount object by its ID.
 > 
-> Oops, I completely missed that. Alexander is right here.
+> What happens if the mount at the current position is removed?
 
-Well, the put_page() case can never happen as the pool->alloc.cache[]
-is known to be empty when this function is called.  I do agree that the
-code looks cumbersome and should free the DMA mapping, if it could
-happen.
+umount_tree() requires the namespace_sem to be writelocked, so that should be
+fine as the patches currently read-lock that whilst doing /proc/*/mount*
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+I'm assuming that kern_unmount() won't be a problem as it is there to deal
+with mounts made by kern_mount() which don't get added to the mount list
+(mnt_ns is MNT_NS_INTERNAL).  kern_unmount_array() seems to be the same
+because overlayfs gives it mounts generated by clone_private_mount().  It
+might be worth putting a WARN_ON() in kern_unmount() to require this.
+
+When reading through proc, m_start() calls xas_find() which returns the entry
+at the starting index or, if not present, the next higher entry.
+
+David
 
