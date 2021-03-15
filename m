@@ -2,83 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32B533C95C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D5933C964
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhCOW1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:27:46 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:47511 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231969AbhCOW1Q (ORCPT
+        id S232723AbhCOW3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:29:55 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42164 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232392AbhCOW3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:27:16 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 2A868828671;
-        Tue, 16 Mar 2021 09:27:09 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lLvg4-002xIa-IE; Tue, 16 Mar 2021 09:27:08 +1100
-Date:   Tue, 16 Mar 2021 09:27:08 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 00/25] Page folios
-Message-ID: <20210315222708.GA349301@dread.disaster.area>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
- <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
- <20210315115501.7rmzaan2hxsqowgq@box>
- <YE9VLGl50hLIJHci@dhcp22.suse.cz>
- <20210315190904.GB150808@infradead.org>
- <20210315194014.GZ2577561@casper.infradead.org>
+        Mon, 15 Mar 2021 18:29:53 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CFB53316;
+        Mon, 15 Mar 2021 23:29:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615847392;
+        bh=9xkhRM0j+nX1FTTSK3uL/NgOwlSI9cxaFA4x/a0LwmA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Op1M4esyOwjY2AJLPLKc/46UfzKqU1ZAzo1pr8GPD3IdqHWchRZUUvHullidoMvf3
+         K9ekN56TvFlKEfTH2xR28Ud9OmuWi7GAE7HQBdai8mbFFKr8VUZ4XPaWHIqEBwxlKR
+         0k4ZdTt2YrKYz3Bg2irwd4FwrOwvCDI8WLOkodvg=
+Date:   Tue, 16 Mar 2021 00:29:16 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] arm64: dts: renesas: eagle: Add GMSL .dtsi
+Message-ID: <YE/fvOpL3NgUOi+T@pendragon.ideasonboard.com>
+References: <20210315163028.173148-1-jacopo+renesas@jmondi.org>
+ <20210315163028.173148-4-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210315194014.GZ2577561@casper.infradead.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=7-415B0cAAAA:8
-        a=22_hVACOjlP6-iFW9EAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210315163028.173148-4-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 07:40:14PM +0000, Matthew Wilcox wrote:
-> I would agree that the conversion is both straightforward and noisy.
-> There are some minor things that crop up, like noticing that we get
-> the accounting wrong for writeback of compound pages.  That's not
-> entirely unexpected since no filesystem supports both compound pages
-> and writeback today.
+Hi Jacopo,
 
-And this is where the abstraction that the "folio" introduces is
-required - filesystem people don't want to have to deal with all the
-complexity and subtlety of compound pages when large page support is
-added to the page cache. As Willy says, this will be a never-ending
-source of data corruption bugs....
+Thank you for the patch.
 
-Hence from the filesystem side of things, I think this abstraction
-is absolutely necessary. Especially because handling buffered IO in
-4kB pages really, really sucks from a performance persepctive and
-the sooner we have native high-order page support in the page cache
-the better.  These days buffered IO often can't even max out a cheap
-NVMe SSD because of the CPU cost of per-page state management in the
-page cache. So the sooner we have large page support to mitigate the
-worst of the overhead for streaming buffered IO, the better.
+On Mon, Mar 15, 2021 at 05:30:27PM +0100, Jacopo Mondi wrote:
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> 
+> Describe the FAKRA connector available on Eagle board that allows
+> connecting GMSL camera modules such as IMI RDACM20 and RDACM21.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi | 186 ++++++++++++++++++++
+>  1 file changed, 186 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> new file mode 100644
+> index 000000000000..ec3e7493aa71
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> @@ -0,0 +1,186 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Device Tree Source (overlay) for the Eagle V3M GMSL connectors
+> + *
+> + * Copyright (C) 2017 Ideas on Board <kieran.bingham@ideasonboard.com>
+> + * Copyright (C) 2021 Jacopo Mondi <jacopo+renesas@jmondi.org>
+> + *
+> + * This overlay allows you to define GMSL cameras connected to the FAKRA
+> + * connectors on the Eagle-V3M (or compatible) board.
+> + *
+> + * The following cameras are currently supported:
+> + *    "imi,rdacm20"
+> + *    "imi,rdacm21"
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/*
+> + * Select which cameras are in use:
+> + * #define EAGLE_CAMERA0_RDACM20
+> + * #define EAGLE_CAMERA0_RDACM21
+> + *
+> + * The two camera modules are configured with different image formats
+> + * and cannot be mixed.
+> + */
+> +#define EAGLE_CAMERA0_RDACM20
+> +#define EAGLE_CAMERA1_RDACM20
+> +#define EAGLE_CAMERA2_RDACM20
+> +#define EAGLE_CAMERA3_RDACM20
 
-FWIW, like others, I'm not a fan of "folio" as a name, but I can live
-with it because it so jarringly different to "pages" that we're not
-going to confuse the two of them. But if we want a better name, my
-suggestion would be for a "struct cage" as in Compound pAGE....
+Shouldn't this be moved out of this file, and set in the file that
+includes it, in order to make this .dtsi fully parametric ?
 
-Cheers,
+> +
+> +/* Set the compatible string based on the camera model. */
+> +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA1_RDACM21) || \
+> +    defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA3_RDACM21)
+> +#define EAGLE_CAMERA_MODEL	"imi,rdacm21"
+> +#define EAGLE_USE_RDACM21
+> +#elif defined(EAGLE_CAMERA0_RDACM20) || defined(EAGLE_CAMERA1_RDACM20) || \
+> +    defined(EAGLE_CAMERA2_RDACM20) || defined(EAGLE_CAMERA3_RDACM20)
+> +#define EAGLE_CAMERA_MODEL	"imi,rdacm20"
+> +#define EAGLE_USE_RDACM20
+> +#endif
 
-Dave.
+It could be nice to catch errors caused by mix-and-matching different
+camera models. Or, possibly even better, we could have one #define to
+select the camera model, and other #define to select the ports on which
+cameras are connected. That would make the error impossible in the first
+place, and would scale better when we'll add support for more cameras.
+
+> +
+> +/* Define which cameras are available. */
+> +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA0_RDACM20)
+> +#define EAGLE_USE_CAMERA_0
+> +#endif
+> +
+> +#if defined(EAGLE_CAMERA1_RDACM21) || defined(EAGLE_CAMERA1_RDACM20)
+> +#define EAGLE_USE_CAMERA_1
+> +#endif
+> +
+> +#if defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA2_RDACM20)
+> +#define EAGLE_USE_CAMERA_2
+> +#endif
+> +
+> +#if defined(EAGLE_CAMERA3_RDACM21) || defined(EAGLE_CAMERA3_RDACM20)
+> +#define EAGLE_USE_CAMERA_3
+> +#endif
+> +
+> +/* Define the endpoint links. */
+> +#ifdef EAGLE_USE_CAMERA_0
+> +&max9286_in0 {
+> +	remote-endpoint = <&fakra_con0>;
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_1
+> +&max9286_in1 {
+> +	remote-endpoint = <&fakra_con1>;
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_2
+> +&max9286_in2 {
+> +	remote-endpoint = <&fakra_con2>;
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_3
+> +&max9286_in3 {
+> +	remote-endpoint = <&fakra_con3>;
+> +};
+> +#endif
+> +
+> +/* Populate the GMSL i2c-mux bus with camera nodes. */
+> +#if defined(EAGLE_USE_RDACM21) || defined(EAGLE_USE_RDACM20)
+> +
+> +#ifdef EAGLE_USE_CAMERA_0
+> +&vin0 {
+> +	status = "okay";
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_1
+> +&vin1 {
+> +	status = "okay";
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_2
+> +&vin2 {
+> +	status = "okay";
+> +};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_3
+> +&vin3 {
+> +	status = "okay";
+> +};
+> +#endif
+
+As routing is supposed to be dynamic (even if fully dynamic routing of
+VCs and DTs may not be supported in the driver yet), shouldn't we enable
+all VIN instances unconditionally ?
+
+> +
+> +&gmsl {
+> +
+> +	status = "okay";
+> +	maxim,reverse-channel-microvolt = <100000>;
+> +
+> +	i2c-mux {
+> +#ifdef EAGLE_USE_CAMERA_0
+> +		i2c@0 {
+> +			status = "okay";
+> +
+> +			camera@51 {
+> +				compatible = EAGLE_CAMERA_MODEL;
+> +				reg = <0x51>, <0x61>;
+> +
+> +				port {
+> +					fakra_con0: endpoint {
+> +						remote-endpoint = <&max9286_in0>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_1
+> +		i2c@1 {
+> +			status = "okay";
+> +
+> +			camera@52 {
+> +				compatible = EAGLE_CAMERA_MODEL;
+> +				reg = <0x52>, <0x62>;
+> +
+> +				port {
+> +					fakra_con1: endpoint {
+> +						remote-endpoint = <&max9286_in1>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_2
+> +		i2c@2 {
+> +			status = "okay";
+> +
+> +			camera@53 {
+> +				compatible = EAGLE_CAMERA_MODEL;
+> +				reg = <0x53>, <0x63>;
+> +
+> +				port {
+> +					fakra_con2: endpoint {
+> +						remote-endpoint = <&max9286_in2>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +
+> +#ifdef EAGLE_USE_CAMERA_3
+> +		i2c@3 {
+> +			status = "okay";
+> +
+> +			camera@54 {
+> +				compatible = EAGLE_CAMERA_MODEL;
+> +				reg = <0x54>, <0x64>;
+> +
+> +				port {
+> +					fakra_con3: endpoint {
+> +						remote-endpoint = <&max9286_in3>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +#endif
+> +	};
+> +};
+> +#endif
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Regards,
+
+Laurent Pinchart
