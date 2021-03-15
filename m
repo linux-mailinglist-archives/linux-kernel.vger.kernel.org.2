@@ -2,394 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1708633C7DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F54633C7D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhCOUiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhCOUit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:38:49 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5FC06174A;
-        Mon, 15 Mar 2021 13:38:49 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id t85so7319790pfc.13;
-        Mon, 15 Mar 2021 13:38:49 -0700 (PDT)
+        id S232301AbhCOUhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:37:23 -0400
+Received: from mail-eopbgr1310129.outbound.protection.outlook.com ([40.107.131.129]:16512
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229549AbhCOUhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 16:37:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ia0xuSfVTu7KmfezcWToWjd7xpIp4+Phs3h2miypP5PM7lnH4elrnlhRxJAU3JnlBLVjuRb4LcyhVeJVqF+U35wuxyM9zwN+ORq2fHvLEoMwi6zA3QZI4ZvW+i21mqffHiMV1QPKaobbHFY5t+8Gxce5X9zLN1y7WLTOV1TobOuK2R5e3HZDY77/4tscbS7B8Kc0Y5UQPbO4UA6vb94ntFFxBN6kbtoekweEz1ckCiwvxAlJSHLAzX+HttdUaWqnAqsj94wd8b+BqRq0DKlH6wV4W3cI5hfD1He4gDHWYFA13onAQ/x8nB7E0CIXHvnVjlC3kCpIL0uJbhyqtbr5MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=idzyL5RcvUGUkAobA5qTlyqwYYwQ+dIAd08gf2ofVyM=;
+ b=dXVLJtgo0dq0jJBwJ0XGFL/cg3auQZCrLWATta0ZYpfkiCf+8XaAfpA1Bz/SSpj9sNQnFjasIp+IsXMWyGYhplKLpBrt+8YU+sA1lHY4t1R2vGVza4H4BaaOFh/x6+w19NS4qop+bliccfeOsLLMBYTh91Zvi3YmWeFKLS+u4ENS8ApEu/OipQFtLRUToda5e6hjzvCd9U36ejJowSHu9lOB0yuK3vdGWFvFC/hhaiFczu9LVPeV3aF0DAt3tr8ejn1uj3VXTers7GDht7GqYAfWPT06Xo8sD+7htnMtQv5QR6WVep+x+CzToiKBZfxLXf6WwCnJ1QxWfTun1RrlWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zenithal.me; dmarc=pass action=none header.from=zenithal.me;
+ dkim=pass header.d=zenithal.me; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JI5gjZqD2xEbJnqMP+YxSmCk5ElN95HtSiD6k6zxrCs=;
-        b=fFTYrpvM5ORm3shjjJorGw/YfeEq+dLrmMr7fCTrbm5TV6KZpL3IxXzb+tzn9zr0FQ
-         UhNzWFyQ1NdiseZFF9spqEf8ShasJJgNkYk1urY5W7LhBeEH4yXPsZUkBd4cuwpcQSgG
-         NXmAEtBtAFwNfInkQIf4/lQRwjTmaKOu6ggP3AGQqpYiTSYd2tSg6Y6YhY4LXJGrUMCo
-         vv+SBUEWLKy68bfI9W6qwY/RtkT22Xt+Q3YXWV9PAfeOy5dLadaD9sJ0/qujwLdrCngW
-         ayKwHPvndIR8CCvCaNrGtdS1sUxglxDoNl1Zj8u0wdwidocQxBqaIb5zfNuwKw2Z/PU+
-         F2yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JI5gjZqD2xEbJnqMP+YxSmCk5ElN95HtSiD6k6zxrCs=;
-        b=d2Q6YkJjzk38A4m2H3AlmZ8IiOFUwrbJmVgBhhJjASHLuqOzgUxT7m65Tczho7LNMd
-         8eHvXfpeoLRNZz2cOGlllrCMNUMR3yZPsUjzRz8/sEbAhZPv+HK9GyIS9PL4ZS4tcVFB
-         48i8gPFARccbPXev/94TkccNCeHAP3I3fSQvkMzP6jECOHecuKFDyeaIC/pu8deNOH3H
-         tow30TCsy+UDe76tAgHOFtad7JQ0xIX8P4QrGj2c+fbQb1m/7MSJ8zG/qml3WRa9rY9v
-         13YYphD8XrnjziMehWBB2Bcdg6PLGbdQLEq+c/QVaw4jaF1PnMTyjBQwzgR20AAbCopK
-         zRPg==
-X-Gm-Message-State: AOAM530KNRBEhf/bG8lgFvhqSdR9mhSw6veLtwSGV3Yk7HzZsHR/QOlC
-        D/0WinrKm3HCrpZcRrRTVQU=
-X-Google-Smtp-Source: ABdhPJyH9KRRilmgJCb752bMDst7wp3eGhZJGUFdzlaK6g+zBevlaFvofwnwBDdT2j/AluZPlqyQxQ==
-X-Received: by 2002:a63:fc12:: with SMTP id j18mr779988pgi.334.1615840728663;
-        Mon, 15 Mar 2021 13:38:48 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x19sm14183014pfi.220.2021.03.15.13.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:38:48 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        digetx@gmail.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Date:   Mon, 15 Mar 2021 13:36:31 -0700
-Message-Id: <20210315203631.24990-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ d=tsinghuau.onmicrosoft.com; s=selector1-tsinghuau-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=idzyL5RcvUGUkAobA5qTlyqwYYwQ+dIAd08gf2ofVyM=;
+ b=tLkGI1AjUq8TM9owIGV1L9tv1DDl6h/cJMoDpihzghvBTLthdnburUijbfzVotXG5+DUJ9fN3rK9VKtDVkUoIsSMfPXAaYFbdHsjmLSGbKk8Zwt35Km1BAAyK7B8h9Yh+ztDqyiPYxK7xnXOFVKlW9eJz2udihUxle5QPoFYnAM=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=zenithal.me;
+Received: from HK0PR03MB3795.apcprd03.prod.outlook.com (2603:1096:203:3c::10)
+ by HK0PR03MB4754.apcprd03.prod.outlook.com (2603:1096:203:b7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.11; Mon, 15 Mar
+ 2021 20:37:06 +0000
+Received: from HK0PR03MB3795.apcprd03.prod.outlook.com
+ ([fe80::8492:e28e:e777:6d05]) by HK0PR03MB3795.apcprd03.prod.outlook.com
+ ([fe80::8492:e28e:e777:6d05%6]) with mapi id 15.20.3955.011; Mon, 15 Mar 2021
+ 20:37:06 +0000
+Date:   Tue, 16 Mar 2021 04:36:57 +0800
+From:   "Hongren Zheng (Zenithal)" <i@zenithal.me>
+To:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] usbip: tools: add options and examples in man page
+ related to device mode
+Message-ID: <YE/FaQxejKplWwyL@Sun>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Operating-System: Linux Sun 5.10.19-1-lts 
+X-Mailer: Mutt 2.0.5 (da5e3282) (2021-01-21)
+X-Originating-IP: [2402:f000:6:6009::11]
+X-ClientProxiedBy: BYAPR07CA0013.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::26) To HK0PR03MB3795.apcprd03.prod.outlook.com
+ (2603:1096:203:3c::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2402:f000:6:6009::11) by BYAPR07CA0013.namprd07.prod.outlook.com (2603:10b6:a02:bc::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 20:37:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 94288790-ab16-4641-5ccc-08d8e7f218fa
+X-MS-TrafficTypeDiagnostic: HK0PR03MB4754:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR03MB4754F2C1CA96BC179DD47A9FBC6C9@HK0PR03MB4754.apcprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GICZgc+TU88WRXxi8O/fnEt/er4ep3VEbq/BAiMWaQpYFS65NA3friYcVTFvajMUn+WlqSL2YhF/C08rNEB3dgL3T1UaN9VmpBeIb3enQK+idfbvobJTb5oKl9kHtX4BsS+Ih3fD8H98PZT+hPcqFLGsPidJRHiQN63qxCaIolIqxM3hYUVNsfIHl5OFybp4kYMl5gwpkioU+Qu7Rvl/1G3AkYGBCv35OXSs+zZnY0rOa4TDr3e51Ls5FHh6+SeL6jPuBY2QIAp0BBgDoIR8qiOdJsw5yLNZJt+CQcrj9S3YXFhnID1xB6GWFSB1P5OUS820YsqXKeZf0W/cTSZv3c62gXc+ncqF+aO9pwK68vWajDaA5fwL6CtfW6zXM1WBNF0kAcB4fhZxFC4gs+BPsMmst4DyKqDl3bT7Ceqf/7JxjBYJZJh5lRJnMX0sVCyBVxh3FIhbFrqoFDiwwvSjW/iMiaalJ3U5zF+LgsEDQEX5ZhAb200lly2vVTgWyly95rgpbl75dR0nyFiLoSTNlTm1AT5V/B6jSSgiYxDrGB8plxKbMuE2V46H2KHyfIuvHP9e8tKHSsh5aO7Du0wFieYL8RUVLlbwlylAJvC4k8A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR03MB3795.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(39830400003)(396003)(346002)(136003)(366004)(376002)(316002)(8936002)(86362001)(478600001)(4326008)(6486002)(2906002)(66946007)(52116002)(33716001)(786003)(9686003)(8676002)(6666004)(16526019)(66476007)(186003)(66556008)(110136005)(5660300002)(6496006)(49092004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?u4GJLv2X76xCSsBzRGzuuZQy6+x++F/xalVOo9Oc+mFN8/I7ED5hBC0RAf1N?=
+ =?us-ascii?Q?8f3gRsr6rCu2uD4J0ge8rF9VeBiIGygp9BT7zAU1u+0brU72UPpCua97qtPi?=
+ =?us-ascii?Q?gr6oJqXNOrGtEt/wyVfy0f4ZWJjecrmDy7IbN+VgY5nzAjfYFhl7zQ6YGpNR?=
+ =?us-ascii?Q?50Zq6d4FkYunz4O21Z23mBw3LuTrE7pMFyv855PNWTRyFYoS/qSPDmMDVQ1h?=
+ =?us-ascii?Q?DylQ5r8wTnVcp4r0g4T/dqBwzwgE49DJO6zjX39id4mMgPI/cM36j046T9ej?=
+ =?us-ascii?Q?j04HUrw7bCXEeZcltsz8s2UXP6cjWbWlwt2hau5B4hJWPWG2Gl8QjUep6yFt?=
+ =?us-ascii?Q?A850t1//YRHPbBpf7K+/5J40yEy5bZWqcUvCdQI+Vr+TCrC0UD0vBbr/Ui0o?=
+ =?us-ascii?Q?aOfrz+eCuL7OqcqegFjsJVDjf0gqQIUu/FBYE2BVTIyNZsXDMs6BXefhbfds?=
+ =?us-ascii?Q?CTbtrAxjRS3LVY46K/uDnkb98wmFfZUmSJFrAkuwZoFjtbaEpcsnlFClwQ3y?=
+ =?us-ascii?Q?UXJKRkZxtFeLxYNeqvza94cJ114OLzpjWYi7A5y7OrtQVGoQLYSIrSQbKMb7?=
+ =?us-ascii?Q?GHAvqMVe4yBog5O2AseUevNt0/3t5OaEw3ZSmxj/8q4iaIZHb8vMUsPxlMKl?=
+ =?us-ascii?Q?JGs6xwOeLeMhqh/sOHo6jCAUKUUgZ6Iwg1srbYxdH7lGpcl/TaSGWB+bIjAg?=
+ =?us-ascii?Q?hsoDDTvMWlDxGC0/nLq2qiSoMSUexTMUVI3drFiVJERG5B4Mh5ZoviBzzn4c?=
+ =?us-ascii?Q?hU0nfZoy7k1JoVGC8SGmDOTuk1xRsIIDHluRO1/+mFWlTokAH/g3dhdpUAm2?=
+ =?us-ascii?Q?Ivlr80OY7XVM1a9xkmqGlCL+3fLVEtnqgA4HOB2V5Ha3gfl6HG0yVRKGOL5+?=
+ =?us-ascii?Q?iK/PwfFLlSxe58TFXFpAD7jFfHid87ENd4XhFYmtCBF+RCC8QA3Xes9bFAdJ?=
+ =?us-ascii?Q?iqyluc6L5oIW+UJnU7mtxgdcYGcK/pKzNCf9FM7OCqn9x1zua897rF8l/LR6?=
+ =?us-ascii?Q?RbGZXsZf2XXZJwh0f6yPCdofFi58bectKp6FrHmS3Fm+f0xCW+1rNmqHOXQQ?=
+ =?us-ascii?Q?hu6fMCq1YJNXoMNpBQ9E41K+9142F48GtCLtTz9orZaUGxM83BV6yrCe5bkv?=
+ =?us-ascii?Q?RIHJqmaWyxwMIECYTG2/svZgGFaLtYsGub8mVfrdLg7bcK6mKu/Oum82MRHA?=
+ =?us-ascii?Q?VsqmyuYBehA4Lw+doHkQ1p0okvV09rudCCJQpCWENXYVjsNSJ+WJtZ9KIIbv?=
+ =?us-ascii?Q?I8GAESMdpCVaQ677ssz/cehYxYc1oDnr4SNzS0Of4ERXW9WCGTLl2WzoHMAS?=
+ =?us-ascii?Q?iy5m1PyRyh1UDrKUPIpe0lEVVU/vWl5HULlN8/alIpA12g=3D=3D?=
+X-OriginatorOrg: zenithal.me
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94288790-ab16-4641-5ccc-08d8e7f218fa
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR03MB3795.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 20:37:06.3257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 436d481c-43b1-4418-8d7f-84c1e4887cf0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y7whGa1dE+NPVFnd1WWCdSwEsR3m/If5TBQtQxTcXnvetMBLnAYoiIX2XUznE3o2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB4754
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch dumps all active mapping entries from pagetable
-to a debugfs directory named "mappings".
+The commit e0546fd8b748b19d8edd1550530da8ebad6e4b31 implemented device
+mode for user space tools, however the corresponding options are not
+documented in man page.
 
-Attaching an example:
+This commit documents the options and provides examples on device mode.
 
-SWGROUP: hc
-ASID: 0
-reg: 0x250
-PTB_ASID: 0xe0080004
-as->pd_dma: 0x80004000
-{
-        [1023] 0xf008000b (1)
-        {
-                PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
-                [#1023, #1023] | 0x5  | 0x0000000111a8d000 | 0x00000000fffff000 | 0x1000
-        }
-}
-Total PDE count: 1
-Total PTE count: 1
-
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Hongren Zheng <i@zenithal.me>
 ---
+ tools/usb/usbip/doc/usbip.8  | 25 +++++++++++++++++++++++++
+ tools/usb/usbip/doc/usbipd.8 | 22 ++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
 
-Changelog
-v5:
- * Fixed a typo in commit message
- * Splitted a long line into two lines
- * Rearranged variable defines by length
- * Added Tested-by and Reviewed-by from Dmitry
-v4: https://lkml.org/lkml/2021/3/14/429
- * Changed %d to %u for unsigned variables
- * Fixed print format mismatch warnings on ARM32
-v3: https://lkml.org/lkml/2021/3/14/30
- * Fixed PHYS and IOVA print formats
- * Changed variables to unsigned int type
- * Changed the table outputs to be compact
-v2: https://lkml.org/lkml/2021/3/9/1382
- * Expanded mutex range to the entire function
- * Added as->lock to protect pagetable walkthrough
- * Replaced devm_kzalloc with devm_kcalloc for group_debug
- * Added "PTE RANGE" and "SIZE" columns to group contiguous mappings
- * Dropped as->count check; added WARN_ON when as->count mismatches pd[pd_index]
-v1: https://lkml.org/lkml/2020/9/26/70
+PATCH v2:
+    Add signed-off-by line
 
- drivers/iommu/tegra-smmu.c | 181 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 176 insertions(+), 5 deletions(-)
+PATCH v3:
+    Move patch changelog after the marker line
+    Remove nickname in signed-off-by line
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 97eb62f667d2..b728cae63314 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -19,6 +19,11 @@
- #include <soc/tegra/ahb.h>
- #include <soc/tegra/mc.h>
+diff --git a/tools/usb/usbip/doc/usbip.8 b/tools/usb/usbip/doc/usbip.8
+index a15d20063b98..385b0eda8746 100644
+--- a/tools/usb/usbip/doc/usbip.8
++++ b/tools/usb/usbip/doc/usbip.8
+@@ -49,6 +49,13 @@ then exit.
+ Attach a remote USB device.
+ .PP
  
-+struct tegra_smmu_group_debug {
-+	const struct tegra_smmu_swgroup *group;
-+	void *priv;
-+};
++.HP
++\fBattach\fR \-\-remote=<\fIhost\fR> \-\-device=<\fdev_id\fR>
++.IP
++Attach a remote USB gadget.
++Only used when the remote usbipd is in device mode.
++.PP
 +
- struct tegra_smmu_group {
- 	struct list_head list;
- 	struct tegra_smmu *smmu;
-@@ -47,6 +52,8 @@ struct tegra_smmu {
- 	struct dentry *debugfs;
+ .HP
+ \fBdetach\fR \-\-port=<\fIport\fR>
+ .IP
+@@ -73,6 +80,14 @@ Stop exporting a device so it can be used by a local driver.
+ List USB devices exported by a remote host.
+ .PP
  
- 	struct iommu_device iommu;	/* IOMMU Core code handle */
++.HP
++\fBlist\fR \-\-device
++.IP
++List USB gadgets of local usbip-vudc.
++Only used when the local usbipd is in device mode.
++This can not list usbip-vudc USB gadgets of the remote device mode usbipd.
++.PP
 +
-+	struct tegra_smmu_group_debug *group_debug;
- };
+ .HP
+ \fBlist\fR \-\-local
+ .IP
+@@ -93,5 +108,15 @@ List local USB devices.
+     client:# usbip detach --port=0
+         - Detach the usb device.
  
- struct tegra_smmu_as {
-@@ -152,6 +159,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
++The following example shows the use of device mode
++
++    server:# usbip list --device
++        - Note this is the server side
++
++    client:# modprobe vhci-hcd
++
++    client:# usbip attach --remote=server --device=usbip-vudc.0
++        - Connect the remote USB gadget
++
+ .SH "SEE ALSO"
+ \fBusbipd\fP\fB(8)\fB\fP
+diff --git a/tools/usb/usbip/doc/usbipd.8 b/tools/usb/usbip/doc/usbipd.8
+index fb62a756893b..53c8d5792de6 100644
+--- a/tools/usb/usbip/doc/usbipd.8
++++ b/tools/usb/usbip/doc/usbipd.8
+@@ -29,6 +29,12 @@ Bind to IPv4. Default is both.
+ Bind to IPv6. Default is both.
+ .PP
  
- #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
- 				 SMMU_PDE_NONSECURE)
-+#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
-+				 SMMU_PTE_NONSECURE)
-+#define SMMU_PTE_ATTR_SHIFT	(29)
++.HP
++\fB\-e\fR, \fB\-\-device\fR
++.IP
++Run in device mode. Rather than drive an attached device, create a virtual UDC to bind gadgets to.
++.PP
++
+ .HP
+ \fB\-D\fR, \fB\-\-daemon\fR
+ .IP
+@@ -86,6 +92,22 @@ USB/IP client can connect and use exported devices.
+         - A usb device 1-2 is now exportable to other hosts!
+         - Use 'usbip unbind --busid=1-2' when you want to shutdown exporting and use the device locally.
  
- static unsigned int iova_pd_index(unsigned long iova)
- {
-@@ -163,6 +173,12 @@ static unsigned int iova_pt_index(unsigned long iova)
- 	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
- }
++The following example shows the use of device mode
++
++    server:# modprobe usbip-vudc
++        - Use /sys/class/udc/ interface
++        - usbip-host is independent of this module.
++
++    server:# usbipd -e -D
++        - Start usbip daemon in device mode.
++
++    server:# modprobe g_mass_storage file=/tmp/tmp.img
++        - Bind a gadget to usbip-vudc
++        - in this example, a mass storage gadget is bound
++
++    server:# usbip list --device
++        - Note this is the server side
++
+ .SH "SEE ALSO"
+ \fBusbip\fP\fB(8)\fB\fP
  
-+static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
-+{
-+	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
-+	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-+}
-+
- static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
- {
- 	addr >>= 12;
-@@ -334,7 +350,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
- }
- 
- static const struct tegra_smmu_swgroup *
--tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
-+tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
- {
- 	const struct tegra_smmu_swgroup *group = NULL;
- 	unsigned int i;
-@@ -342,6 +358,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
- 	for (i = 0; i < smmu->soc->num_swgroups; i++) {
- 		if (smmu->soc->swgroups[i].swgroup == swgroup) {
- 			group = &smmu->soc->swgroups[i];
-+			if (index)
-+				*index = i;
- 			break;
- 		}
- 	}
-@@ -350,19 +368,22 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
- }
- 
- static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
--			      unsigned int asid)
-+			      struct tegra_smmu_as *as)
- {
- 	const struct tegra_smmu_swgroup *group;
-+	unsigned int asid = as->id;
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value |= SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = as;
- 	} else {
- 		pr_warn("%s group from swgroup %u not found\n", __func__,
- 				swgroup);
-@@ -389,13 +410,15 @@ static void tegra_smmu_disable(struct tegra_smmu *smmu, unsigned int swgroup,
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value &= ~SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = NULL;
- 	}
- 
- 	for (i = 0; i < smmu->soc->num_clients; i++) {
-@@ -499,7 +522,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
- 		if (err)
- 			goto disable;
- 
--		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
-+		tegra_smmu_enable(smmu, fwspec->ids[index], as);
- 	}
- 
- 	if (index == 0)
-@@ -1058,8 +1081,141 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
- 
- DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
- 
-+static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-+{
-+	struct tegra_smmu_group_debug *group_debug = s->private;
-+	const struct tegra_smmu_swgroup *group;
-+	struct tegra_smmu_as *as;
-+	struct tegra_smmu *smmu;
-+	unsigned int pd_index;
-+	unsigned int pt_index;
-+	unsigned long flags;
-+	u64 pte_count = 0;
-+	u32 pde_count = 0;
-+	u32 val, ptb_reg;
-+	u32 *pd;
-+
-+	if (!group_debug || !group_debug->priv || !group_debug->group)
-+		return 0;
-+
-+	group = group_debug->group;
-+	as = group_debug->priv;
-+	smmu = as->smmu;
-+
-+	mutex_lock(&smmu->lock);
-+
-+	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
-+	if (!val)
-+		goto unlock;
-+
-+	pd = page_address(as->pd);
-+	if (!pd)
-+		goto unlock;
-+
-+	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n",
-+		   group->name, as->id, group->reg);
-+
-+	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
-+	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
-+
-+	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: %pad\n",
-+		   ptb_reg, &as->pd_dma);
-+	seq_puts(s, "{\n");
-+
-+	spin_lock_irqsave(&as->lock, flags);
-+
-+	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-+		struct page *pt_page;
-+		unsigned int i;
-+		u32 *addr;
-+
-+		/* An empty PDE should not have a pte use count */
-+		WARN_ON_ONCE(!pd[pd_index] ^ !as->count[pd_index]);
-+
-+		/* Skip this empty PDE */
-+		if (!pd[pd_index])
-+			continue;
-+
-+		pde_count++;
-+		pte_count += as->count[pd_index];
-+		seq_printf(s, "\t[%u] 0x%x (%d)\n",
-+			   pd_index, pd[pd_index], as->count[pd_index]);
-+		pt_page = as->pts[pd_index];
-+		addr = page_address(pt_page);
-+
-+		seq_puts(s, "\t{\n");
-+		seq_printf(s, "\t\t%-14s | %-4s | %-10s%s | %-10s%s | %-11s\n",
-+			   "PTE RANGE", "ATTR",
-+			   "PHYS", sizeof(phys_addr_t) > 4 ? "        " : "",
-+			   "IOVA", sizeof(dma_addr_t)  > 4 ? "        " : "",
-+			   "SIZE");
-+		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
-+			size_t size = SMMU_SIZE_PT;
-+			dma_addr_t iova;
-+			phys_addr_t pa;
-+
-+			i = 1;
-+
-+			if (!addr[pt_index])
-+				continue;
-+
-+			iova = pd_pt_index_iova(pd_index, pt_index);
-+			pa = SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR);
-+
-+			/* Check contiguous mappings and increase size */
-+			while (pt_index + i < SMMU_NUM_PTE) {
-+				dma_addr_t next_iova;
-+				phys_addr_t next_pa;
-+
-+				if (!addr[pt_index + i])
-+					break;
-+
-+				next_iova = pd_pt_index_iova(pd_index, pt_index + i);
-+				next_pa = SMMU_PFN_PHYS(addr[pt_index + i] & ~SMMU_PTE_ATTR);
-+
-+				/* Break at the end of a linear mapping */
-+				if ((next_iova - iova != SMMU_SIZE_PT * i) ||
-+				    (next_pa - pa != SMMU_SIZE_PT * i))
-+					break;
-+
-+				i++;
-+			}
-+
-+			seq_printf(s, "\t\t[#%-4u, #%-4u] | 0x%-2x | %pa | %pad | 0x%-9zx\n",
-+				   pt_index, pt_index + i - 1,
-+				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
-+				   &pa, &iova, size * i);
-+		}
-+		seq_puts(s, "\t}\n");
-+	}
-+
-+	spin_unlock_irqrestore(&as->lock, flags);
-+
-+	seq_puts(s, "}\n");
-+	seq_printf(s, "Total PDE count: %u\n", pde_count);
-+	seq_printf(s, "Total PTE count: %llu\n", pte_count);
-+
-+unlock:
-+	mutex_unlock(&smmu->lock);
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
-+
- static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- {
-+	const struct tegra_smmu_soc *soc = smmu->soc;
-+	struct tegra_smmu_group_debug *group_debug;
-+	struct device *dev = smmu->dev;
-+	struct dentry *d;
-+	unsigned int i;
-+
-+	group_debug = devm_kcalloc(dev, soc->num_swgroups,
-+				   sizeof(*group_debug), GFP_KERNEL);
-+	if (!group_debug)
-+		return;
-+
- 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
- 	if (!smmu->debugfs)
- 		return;
-@@ -1068,6 +1224,21 @@ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- 			    &tegra_smmu_swgroups_fops);
- 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
- 			    &tegra_smmu_clients_fops);
-+	d = debugfs_create_dir("mappings", smmu->debugfs);
-+
-+	for (i = 0; i < soc->num_swgroups; i++) {
-+		const struct tegra_smmu_swgroup *group = &soc->swgroups[i];
-+
-+		if (!group->name)
-+			continue;
-+
-+		group_debug[i].group = group;
-+
-+		debugfs_create_file(group->name, 0444, d, &group_debug[i],
-+				    &tegra_smmu_mappings_fops);
-+	}
-+
-+	smmu->group_debug = group_debug;
- }
- 
- static void tegra_smmu_debugfs_exit(struct tegra_smmu *smmu)
 -- 
-2.17.1
+2.30.1
 
