@@ -2,157 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FB333B2F3
+	by mail.lfdr.de (Postfix) with ESMTP id 682C633B2F4
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhCOMmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:42:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28578 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhCOMlt (ORCPT
+        id S229729AbhCOMmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:42:14 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23069 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229761AbhCOMmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:41:49 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FCYNeg116163;
-        Mon, 15 Mar 2021 08:41:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : date : in-reply-to : references : content-type : mime-version
- : content-transfer-encoding; s=pp1;
- bh=AWUj5QnJ1eCR/ts0f3fygZ/kkYbXG0oc6rIHZFNv8xo=;
- b=MnzpBm7unuw5wOMy7GruS0IMRGY4atz3IPPagpmfJ0xgPcYhogmCjMW2QDegURHEgtxY
- yt8VLPV59lkLvlls9CJClivq968N8PsmoLpkM9VEuMj7NkTaqVbTWS3CFyOVohjn1TPe
- uglEG0yELetB40Bz9sgjnSKNSploPdZo8exWoD7sjLdUNclquUahGOCiFC8gUP5xQRNk
- VvfemhdF8r9ujTR6DEkGxRpuFesakGTiWN9gbsFhWqOW5HOXQWaUZEQQk9cg0Dly+eEi
- bwa5/Z5VUzc/6SxGsjCObzZb0RbOvXZ+9xo3KUmhvF3aMPgp/ivx/O/FXazUN0pimup/ Xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqn8sr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 08:41:37 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12FCYaob117137;
-        Mon, 15 Mar 2021 08:41:37 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqn8rw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 08:41:37 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12FCSGqF000892;
-        Mon, 15 Mar 2021 12:41:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 378n18huua-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 12:41:34 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12FCfWcn42598718
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 12:41:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 698484204C;
-        Mon, 15 Mar 2021 12:41:32 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A206342041;
-        Mon, 15 Mar 2021 12:41:29 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.67.76])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Mar 2021 12:41:29 +0000 (GMT)
-Message-ID: <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
-Subject: Re: NULL deref in integrity_inode_get
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Date:   Mon, 15 Mar 2021 08:41:28 -0400
-In-Reply-To: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
-References: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-15_05:2021-03-15,2021-03-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1011 phishscore=0
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103150088
+        Mon, 15 Mar 2021 08:42:06 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-177-6OpnscJoP_CFeueYMNDZHg-1; Mon, 15 Mar 2021 12:42:03 +0000
+X-MC-Unique: 6OpnscJoP_CFeueYMNDZHg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 15 Mar 2021 12:42:02 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Mon, 15 Mar 2021 12:42:02 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tiezhu Yang' <yangtiezhu@loongson.cn>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: RE: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
+ with GCC in csum_tcpudp_nofold()
+Thread-Topic: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
+ with GCC in csum_tcpudp_nofold()
+Thread-Index: AQHXGZZkp8sV3w87mU2VG3u7laRZUqqE/LVw
+Date:   Mon, 15 Mar 2021 12:42:02 +0000
+Message-ID: <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com>
+References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
+ <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
+ <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
+In-Reply-To: <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On Mon, 2021-03-15 at 11:58 +0100, Dmitry Vyukov wrote:
-> Hi,
-> 
-> I am trying to boot 5.12-rc3 with this config:
-> https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
-> 
-> in qemu:
-> qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
-> max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
-> wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
->  -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
->    -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
-> nic,model=virtio-net-pci   -object
-> memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
->   -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
-> root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
-> panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
-> vm_pid -m 2G -cpu host
-> 
-> But it crashes on NULL deref in integrity_inode_get during boot:
-> 
-> Run /sbin/init as init process
-> BUG: kernel NULL pointer dereference, address: 000000000000001c
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 0 P4D 0
-> Oops: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-> rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
-> Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
-> 3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
-> 1c 4cf
-> RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
-> RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
-> R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
-> R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
-> FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
->  process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
->  ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
->  security_bprm_check+0x7d/0xa0 security/security.c:845
->  search_binary_handler fs/exec.c:1708 [inline]
->  exec_binprm fs/exec.c:1761 [inline]
->  bprm_execve fs/exec.c:1830 [inline]
->  bprm_execve+0x764/0x19a0 fs/exec.c:1792
->  kernel_execve+0x370/0x460 fs/exec.c:1973
->  try_to_run_init_process+0x14/0x4e init/main.c:1366
->  kernel_init+0x11d/0x1b8 init/main.c:1477
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Modules linked in:
-> CR2: 000000000000001c
-> ---[ end trace 22d601a500de7d79 ]---
-
-It looks like integrity_inode_get() fails to alloc memory.   Only on
-failure to verify the integrity of a file would an error be returned.  
-I think that is what you would want to happen.  Without an "appraise"
-policy, this shouldn't happen.
-
-Mimi
+RnJvbTogVGllemh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+DQo+IFNlbnQ6IDE1IE1h
+cmNoIDIwMjEgMTI6MjYNCj4gT24gMDMvMTUvMjAyMSAwNDo0OSBBTSwgTWFjaWVqIFcuIFJvenlj
+a2kgd3JvdGU6DQo+ID4gT24gVHVlLCA5IE1hciAyMDIxLCBUaWV6aHUgWWFuZyB3cm90ZToNCj4g
+Pg0KPiA+PiBkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL2luY2x1ZGUvYXNtL2NoZWNrc3VtLmggYi9h
+cmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiA+PiBpbmRleCAxZTZjMTM1Li44MGVk
+ZGQ0IDEwMDY0NA0KPiA+PiAtLS0gYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0K
+PiA+PiArKysgYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiA+PiBAQCAtMTI4
+LDkgKzEyOCwxMyBAQCBzdGF0aWMgaW5saW5lIF9fc3VtMTYgaXBfZmFzdF9jc3VtKGNvbnN0IHZv
+aWQgKmlwaCwgdW5zaWduZWQgaW50IGlobCkNCj4gPj4NCj4gPj4gICBzdGF0aWMgaW5saW5lIF9f
+d3N1bSBjc3VtX3RjcHVkcF9ub2ZvbGQoX19iZTMyIHNhZGRyLCBfX2JlMzIgZGFkZHIsDQo+ID4+
+ICAgCQkJCQlfX3UzMiBsZW4sIF9fdTggcHJvdG8sDQo+ID4+IC0JCQkJCV9fd3N1bSBzdW0pDQo+
+ID4+ICsJCQkJCV9fd3N1bSBzdW1faW4pDQo+ID4+ICAgew0KPiA+PiAtCXVuc2lnbmVkIGxvbmcg
+dG1wID0gKF9fZm9yY2UgdW5zaWduZWQgbG9uZylzdW07DQo+ID4+ICsjaWZkZWYgX19jbGFuZ19f
+DQo+ID4+ICsJdW5zaWduZWQgbG9uZyBzdW0gPSAoX19mb3JjZSB1bnNpZ25lZCBsb25nKXN1bV9p
+bjsNCj4gPj4gKyNlbHNlDQo+ID4+ICsJX193c3VtIHN1bSA9IHN1bV9pbjsNCj4gPj4gKyNlbmRp
+Zg0KPiA+ICAgVGhpcyBsb29rcyBtdWNoIGJldHRlciB0byBtZSwgYnV0IEknZCBrZWVwIHRoZSB2
+YXJpYWJsZSBuYW1lcyB1bmNoYW5nZWQNCj4gPiBhcyBgc3VtX2luJyBpc24ndCB1c2VkIGJleW9u
+ZCB0aGUgaW5pdGlhbCBhc3NpZ25tZW50IGFueXdheSAoeW91J2xsIGhhdmUNCj4gPiB0byB1cGRh
+dGUgdGhlIHJlZmVyZW5jZXMgd2l0aCBhc20gb3BlcmFuZHMgYWNjb3JkaW5nbHkgb2YgY291cnNl
+KS4NCj4gPg0KPiA+ICAgSGF2ZSB5b3UgdmVyaWZpZWQgdGhhdCBjb2RlIHByb2R1Y2VkIGJ5IEdD
+QyByZW1haW5zIHRoZSBzYW1lIHdpdGggeW91cg0KPiA+IGNoYW5nZSBpbiBwbGFjZSBhcyBpdCB1
+c2VkIHRvIGJlIHVwIHRvIGNvbW1pdCAxOTg2ODhlZGJmNzc/ICBJIGNhbiBzZWUgbm8NCj4gPiBz
+dWNoIGluZm9ybWF0aW9uIGluIHRoZSBjb21taXQgZGVzY3JpcHRpb24gd2hldGhlciBoZXJlIG9y
+IGluIHRoZSBzYWlkDQo+ID4gY29tbWl0Lg0KPiA+DQo+ID4gICAgTWFjaWVqDQo+IA0KPiBIaSBN
+YWNpZWosDQo+IA0KPiBUaGFua3MgZm9yIHlvdXIgcmVwbHkuDQo+IA0KPiBnY2MgLS12ZXJzaW9u
+DQo+IGdjYyAoRGViaWFuIDEwLjIuMS02KSAxMC4yLjEgMjAyMTAxMTANCj4gDQo+IG5ldC9pcHY0
+L3RjcF9pcHY0LmMNCj4gdGNwX3Y0X3NlbmRfcmVzZXQoKQ0KPiAgICBjc3VtX3RjcHVkcF9ub2Zv
+bGQoKQ0KPiANCj4gb2JqZHVtcCAtZCB2bWxpbnV4ID4gdm1saW51eC5kdW1wDQo+IA0KPiAoMSkg
+QmVmb3JlIGNvbW1pdCAxOTg2ODhlZGJmNzcNCj4gKCJNSVBTOiBGaXggaW5saW5lIGFzbSBpbnB1
+dC9vdXRwdXQgdHlwZSBtaXNtYXRjaCBpbiBjaGVja3N1bS5oIHVzZWQNCj4gd2l0aCBDbGFuZyIp
+Og0KPiANCj4gZmZmZmZmZmY4MGFhODM1YzogICAgICAgMDAwMDQwMjUgICAgICAgIG1vdmUgICAg
+YTQsemVybw0KPiBmZmZmZmZmZjgwYWE4MzYwOiAgICAgICA5MjAyMDAxMiAgICAgICAgbGJ1ICAg
+ICB2MCwxOChzMCkNCj4gZmZmZmZmZmY4MGFhODM2NDogICAgICAgZGUxNDAwMzAgICAgICAgIGxk
+ICAgICAgczQsNDgoczApDQo+IGZmZmZmZmZmODBhYTgzNjg6ICAgICAgIDAwNjQxODJkICAgICAg
+ICBkYWRkdSAgIHYxLHYxLGEwDQo+IGZmZmZmZmZmODBhYTgzNmM6ICAgICAgIDMwNDIwMGZmICAg
+ICAgICBhbmRpICAgIHYwLHYwLDB4ZmYNCj4gZmZmZmZmZmY4MGFhODM3MDogICAgICAgOWM2NDAw
+MGMgICAgICAgIGx3dSAgICAgYTAsMTIodjEpDQo+IGZmZmZmZmZmODBhYTgzNzQ6ICAgICAgIDlj
+NjYwMDEwICAgICAgICBsd3UgICAgIGEyLDE2KHYxKQ0KPiBmZmZmZmZmZjgwYWE4Mzc4OiAgICAg
+ICBhZmE3MDAzOCAgICAgICAgc3cgICAgICBhMyw1NihzcCkNCj4gZmZmZmZmZmY4MGFhODM3Yzog
+ICAgICAgMjQwNzFhMDAgICAgICAgIGxpICAgICAgYTMsNjY1Ng0KPiBmZmZmZmZmZjgwYWE4Mzgw
+OiAgICAgICAwMDg2MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhMg0KPiBmZmZmZmZmZjgwYWE4
+Mzg0OiAgICAgICAwMDg3MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhMw0KPiBmZmZmZmZmZjgw
+YWE4Mzg4OiAgICAgICAwMDg4MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhNA0KPiBmZmZmZmZm
+ZjgwYWE4MzhjOiAgICAgICAwMDA0MDgzYyAgICAgICAgZHNsbDMyICBhdCxhMCwweDANCj4gZmZm
+ZmZmZmY4MGFhODM5MDogICAgICAgMDA4MTIwMmQgICAgICAgIGRhZGR1ICAgYTAsYTAsYXQNCj4g
+ZmZmZmZmZmY4MGFhODM5NDogICAgICAgMDA4MTA4MmIgICAgICAgIHNsdHUgICAgYXQsYTAsYXQN
+Cj4gZmZmZmZmZmY4MGFhODM5ODogICAgICAgMDAwNDIwM2YgICAgICAgIGRzcmEzMiAgYTAsYTAs
+MHgwDQo+IGZmZmZmZmZmODBhYTgzOWM6ICAgICAgIDAwODEyMDIxICAgICAgICBhZGR1ICAgIGEw
+LGEwLGF0DQo+IA0KPiAoMikgQWZ0ZXIgY29tbWl0IDE5ODY4OGVkYmY3Nw0KPiAoIk1JUFM6IEZp
+eCBpbmxpbmUgYXNtIGlucHV0L291dHB1dCB0eXBlIG1pc21hdGNoIGluIGNoZWNrc3VtLmggdXNl
+ZA0KPiB3aXRoIENsYW5nIik6DQo+IA0KPiBmZmZmZmZmZjgwYWE4MzZjOiAgICAgICAwMDAwNDAy
+NSAgICAgICAgbW92ZSAgICBhNCx6ZXJvDQo+IGZmZmZmZmZmODBhYTgzNzA6ICAgICAgIDkyMDQw
+MDEyICAgICAgICBsYnUgICAgIGEwLDE4KHMwKQ0KPiBmZmZmZmZmZjgwYWE4Mzc0OiAgICAgICBk
+ZTE0MDAzMCAgICAgICAgbGQgICAgICBzNCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM3ODogICAg
+ICAgMDA2MjE4MmQgICAgICAgIGRhZGR1ICAgdjEsdjEsdjANCj4gZmZmZmZmZmY4MGFhODM3Yzog
+ICAgICAgMzA4NDAwZmYgICAgICAgIGFuZGkgICAgYTAsYTAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4
+MzgwOiAgICAgICA5YzYyMDAwYyAgICAgICAgbHd1ICAgICB2MCwxMih2MSkNCj4gZmZmZmZmZmY4
+MGFhODM4NDogICAgICAgOWM2NjAwMTAgICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZm
+ZmZmODBhYTgzODg6ICAgICAgIGFmYTcwMDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBm
+ZmZmZmZmZjgwYWE4MzhjOiAgICAgICAyNDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+
+IGZmZmZmZmZmODBhYTgzOTA6ICAgICAgIDAwNDYxMDJkICAgICAgICBkYWRkdSAgIHYwLHYwLGEy
+DQo+IGZmZmZmZmZmODBhYTgzOTQ6ICAgICAgIDAwNDcxMDJkICAgICAgICBkYWRkdSAgIHYwLHYw
+LGEzDQo+IGZmZmZmZmZmODBhYTgzOTg6ICAgICAgIDAwNDgxMDJkICAgICAgICBkYWRkdSAgIHYw
+LHYwLGE0DQo+IGZmZmZmZmZmODBhYTgzOWM6ICAgICAgIDAwMDIwODNjICAgICAgICBkc2xsMzIg
+IGF0LHYwLDB4MA0KPiBmZmZmZmZmZjgwYWE4M2EwOiAgICAgICAwMDQxMTAyZCAgICAgICAgZGFk
+ZHUgICB2MCx2MCxhdA0KPiBmZmZmZmZmZjgwYWE4M2E0OiAgICAgICAwMDQxMDgyYiAgICAgICAg
+c2x0dSAgICBhdCx2MCxhdA0KPiBmZmZmZmZmZjgwYWE4M2E4OiAgICAgICAwMDAyMTAzZiAgICAg
+ICAgZHNyYTMyICB2MCx2MCwweDANCj4gZmZmZmZmZmY4MGFhODNhYzogICAgICAgMDA0MTEwMjEg
+ICAgICAgIGFkZHUgICAgdjAsdjAsYXQNCj4gDQo+ICgzKSBXaXRoIHRoaXMgcGF0Y2g6DQo+IA0K
+PiBmZmZmZmZmZjgwYWE4MzVjOiAgICAgICAwMDAwNDAyNSAgICAgICAgbW92ZSAgICBhNCx6ZXJv
+DQo+IGZmZmZmZmZmODBhYTgzNjA6ICAgICAgIDkyMDIwMDEyICAgICAgICBsYnUgICAgIHYwLDE4
+KHMwKQ0KPiBmZmZmZmZmZjgwYWE4MzY0OiAgICAgICBkZTE0MDAzMCAgICAgICAgbGQgICAgICBz
+NCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM2ODogICAgICAgMDA2NDE4MmQgICAgICAgIGRhZGR1
+ICAgdjEsdjEsYTANCj4gZmZmZmZmZmY4MGFhODM2YzogICAgICAgMzA0MjAwZmYgICAgICAgIGFu
+ZGkgICAgdjAsdjAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4MzcwOiAgICAgICA5YzY0MDAwYyAgICAg
+ICAgbHd1ICAgICBhMCwxMih2MSkNCj4gZmZmZmZmZmY4MGFhODM3NDogICAgICAgOWM2NjAwMTAg
+ICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZmZmZmODBhYTgzNzg6ICAgICAgIGFmYTcw
+MDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBmZmZmZmZmZjgwYWE4MzdjOiAgICAgICAy
+NDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+IGZmZmZmZmZmODBhYTgzODA6ICAgICAg
+IDAwODYyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEyDQo+IGZmZmZmZmZmODBhYTgzODQ6ICAg
+ICAgIDAwODcyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEzDQo+IGZmZmZmZmZmODBhYTgzODg6
+ICAgICAgIDAwODgyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGE0DQo+IGZmZmZmZmZmODBhYTgz
+OGM6ICAgICAgIDAwMDQwODNjICAgICAgICBkc2xsMzIgIGF0LGEwLDB4MA0KPiBmZmZmZmZmZjgw
+YWE4MzkwOiAgICAgICAwMDgxMjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhdA0KPiBmZmZmZmZm
+ZjgwYWE4Mzk0OiAgICAgICAwMDgxMDgyYiAgICAgICAgc2x0dSAgICBhdCxhMCxhdA0KPiBmZmZm
+ZmZmZjgwYWE4Mzk4OiAgICAgICAwMDA0MjAzZiAgICAgICAgZHNyYTMyICBhMCxhMCwweDANCj4g
+ZmZmZmZmZmY4MGFhODM5YzogICAgICAgMDA4MTIwMjEgICAgICAgIGFkZHUgICAgYTAsYTAsYXQN
+Cj4gDQo+ICg0KSBXaXRoIHRoZSBmb2xsb3dpbmcgY2hhbmdlcyBiYXNlZCBvbiBjb21taXQgMTk4
+Njg4ZWRiZjc3DQo+ICgiTUlQUzogRml4IGlubGluZSBhc20gaW5wdXQvb3V0cHV0IHR5cGUgbWlz
+bWF0Y2ggaW4gY2hlY2tzdW0uaCB1c2VkDQo+IHdpdGggQ2xhbmciKToNCj4gDQo+IGRpZmYgLS1n
+aXQgYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiBiL2FyY2gvbWlwcy9pbmNs
+dWRlL2FzbS9jaGVja3N1bS5oDQo+IGluZGV4IDFlNmMxMzUuLmUxZjgwNDA3IDEwMDY0NA0KPiAt
+LS0gYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiArKysgYi9hcmNoL21pcHMv
+aW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiBAQCAtMTMwLDcgKzEzMCwxMSBAQCBzdGF0aWMgaW5s
+aW5lIF9fd3N1bSBjc3VtX3RjcHVkcF9ub2ZvbGQoX19iZTMyDQo+IHNhZGRyLCBfX2JlMzIgZGFk
+ZHIsDQo+ICAgICAgICAgICAgICAgICAgICAgICBfX3UzMiBsZW4sIF9fdTggcHJvdG8sDQo+ICAg
+ICAgICAgICAgICAgICAgICAgICBfX3dzdW0gc3VtKQ0KPiAgIHsNCj4gKyNpZmRlZiBfX2NsYW5n
+X18NCj4gICAgICAgdW5zaWduZWQgbG9uZyB0bXAgPSAoX19mb3JjZSB1bnNpZ25lZCBsb25nKXN1
+bTsNCj4gKyNlbHNlDQo+ICsgICAgX193c3VtIHRtcCA9IHN1bTsNCj4gKyNlbmRpZg0KPiANCj4g
+ICAgICAgX19hc21fXygNCj4gICAgICAgIiAgICAuc2V0ICAgIHB1c2ggICAgICAgICMgY3N1bV90
+Y3B1ZHBfbm9mb2xkXG4iDQo+IA0KPiBmZmZmZmZmZjgwYWE4MzVjOiAgICAgICAwMDAwNDAyNSAg
+ICAgICAgbW92ZSAgICBhNCx6ZXJvDQo+IGZmZmZmZmZmODBhYTgzNjA6ICAgICAgIDkyMDIwMDEy
+ICAgICAgICBsYnUgICAgIHYwLDE4KHMwKQ0KPiBmZmZmZmZmZjgwYWE4MzY0OiAgICAgICBkZTE0
+MDAzMCAgICAgICAgbGQgICAgICBzNCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM2ODogICAgICAg
+MDA2NDE4MmQgICAgICAgIGRhZGR1ICAgdjEsdjEsYTANCj4gZmZmZmZmZmY4MGFhODM2YzogICAg
+ICAgMzA0MjAwZmYgICAgICAgIGFuZGkgICAgdjAsdjAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4Mzcw
+OiAgICAgICA5YzY0MDAwYyAgICAgICAgbHd1ICAgICBhMCwxMih2MSkNCj4gZmZmZmZmZmY4MGFh
+ODM3NDogICAgICAgOWM2NjAwMTAgICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZmZmZm
+ODBhYTgzNzg6ICAgICAgIGFmYTcwMDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBmZmZm
+ZmZmZjgwYWE4MzdjOiAgICAgICAyNDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+IGZm
+ZmZmZmZmODBhYTgzODA6ICAgICAgIDAwODYyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEyDQo+
+IGZmZmZmZmZmODBhYTgzODQ6ICAgICAgIDAwODcyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEz
+DQo+IGZmZmZmZmZmODBhYTgzODg6ICAgICAgIDAwODgyMDJkICAgICAgICBkYWRkdSAgIGEwLGEw
+LGE0DQo+IGZmZmZmZmZmODBhYTgzOGM6ICAgICAgIDAwMDQwODNjICAgICAgICBkc2xsMzIgIGF0
+LGEwLDB4MA0KPiBmZmZmZmZmZjgwYWE4MzkwOiAgICAgICAwMDgxMjAyZCAgICAgICAgZGFkZHUg
+ICBhMCxhMCxhdA0KPiBmZmZmZmZmZjgwYWE4Mzk0OiAgICAgICAwMDgxMDgyYiAgICAgICAgc2x0
+dSAgICBhdCxhMCxhdA0KPiBmZmZmZmZmZjgwYWE4Mzk4OiAgICAgICAwMDA0MjAzZiAgICAgICAg
+ZHNyYTMyICBhMCxhMCwweDANCj4gZmZmZmZmZmY4MGFhODM5YzogICAgICAgMDA4MTIwMjEgICAg
+ICAgIGFkZHUgICAgYTAsYTAsYXQNCj4gDQo+IFRoZSBjb2RlIHByb2R1Y2VkIGJ5IEdDQyByZW1h
+aW5zIHRoZSBzYW1lIGJldHdlZW4gKDEpLCAoMykgYW5kICg0KSwNCj4gdGhlIGxhc3QgY2hhbmdl
+cyBsb29rcyBsaWtlIGJldHRlciAod2l0aCBsZXNzIGNoYW5nZXMgYmFzZWQgb24gY29tbWl0DQo+
+IDE5ODY4OGVkYmY3NyksIHNvIEkgd2lsbCBzZW5kIHYzIGxhdGVyLg0KDQpBcmVuJ3QgdGhvc2Ug
+YWxsIHRoZSBzYW1lIC0gYXBhcnQgZnJvbSByZWdpc3RlciBzZWxlY3Rpb24uDQpOb3QgdGhhdCBJ
+IGdyb2sgdGhlIG1pcHMgb3Bjb2Rlcy4NCkJ1dCB0aGF0IGNvZGUgaGFzIGhvcnJpZG5lc3Mgb24g
+aXRzIHNpZGUuDQoNClRoZSBvbmx5IG9idmlvdXMgZGlmZmVyZW5jZSBpcyB0aGF0IHNvbWV0aGlu
+ZyBlbHNlIGNoYW5nZXMgdGhlDQpjb2RlIG9mZnNldCBmcm9tIHh4eHg1YyB0byB4eHh4NmMuDQoN
+CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
+TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
+MTM5NzM4NiAoV2FsZXMpDQo=
 
