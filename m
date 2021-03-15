@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF8E33AF96
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54EE33AFA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhCOKHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:07:36 -0400
-Received: from codesynthesis.com ([188.40.148.39]:43696 "EHLO
-        codesynthesis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCOKHW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:07:22 -0400
-Received: from brak.codesynthesis.com (unknown [105.186.254.17])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by codesynthesis.com (Postfix) with ESMTPSA id EF45B5F1DD;
-        Mon, 15 Mar 2021 10:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
-        s=mail1; t=1615802839;
-        bh=leiXsLjdN8Y+FqZLPyr3PVl00+fnXBtZhhkHD/yZ6lc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:From;
-        b=YvtG8X8bvNeV54hLlGBg+t+yqlG68L09LtuhGR4zgXKcXyC5LZRif1nywDoa++WT4
-         PSL5c5LXS2AWobaucV40ZwFFliwbW3jBFqZsQRd1ADMm0fpFlg5GYXHZ/sSDpJgsTs
-         EzCS3SvRygfAvCDRTroJ7zx7bTwQWikW/wPbr5fac9qSsReFeSwNiGhClC7FrbZeKw
-         05xpH8xyYykWEyR+a5OVou+qHaB0jSknO59hBWOpNr3bp657eqMtK0D9EQXJ4Q7rBD
-         Od11e+v9fyFHuis8OwcD5YhETky4G84QV6xxjA5ZzcfGVHcI1fkOlLMt4IObrKLCWz
-         55Sed/kuIGfYg==
-Received: by brak.codesynthesis.com (Postfix, from userid 1000)
-        id 004C21A802C0; Mon, 15 Mar 2021 12:07:09 +0200 (SAST)
-Date:   Mon, 15 Mar 2021 12:07:09 +0200
-From:   Boris Kolpackov <boris@codesynthesis.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/13] kconfig: move conf_set_all_new_symbols() to conf.c
-Message-ID: <boris.20210315115747@codesynthesis.com>
-References: <20210313194836.372585-1-masahiroy@kernel.org>
- <20210313194836.372585-7-masahiroy@kernel.org>
+        id S229518AbhCOKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229467AbhCOKLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:11:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D959F64E20;
+        Mon, 15 Mar 2021 10:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615803084;
+        bh=TBo4JwGbMiYixxXMujavD0wEMBia0P6yh8TLzXUBZzI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kOGSfzOzZu3WPcJKhfaB+U8hFVaTdnHRTr1+sIvJEryXLDLuDgt8t/MJfqUQOwjIO
+         cp8Q5ACafH+L8yLTejSJOAzUoEqdocdz1y3G8AGmz6bT3KWYUxUtYjj64ug4CmHJGk
+         zO68is3LBZ7kBPlRG+mvmkHLp6AtlzRrioXl+FsxQ6XfCco/SxusF0kDA3Vaq3TL46
+         EBfzfRGUUZydBWis22hkhpzcoeNffWfmMpnRXkj00+bGIbP7l1FET/BAJPeaq/I5w2
+         hfBbdU6fnRhX1/7qf2IQu8jFPczuOzrxIo5Gcha/OFvrbbLp1qiaDbI2weT1P1jr9i
+         uEsLjhNC9Ah9Q==
+Date:   Mon, 15 Mar 2021 15:41:20 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and
+ premphasis swing table
+Message-ID: <YE8yyK7l9qQKuF3V@vkoul-mobl>
+References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210313194836.372585-7-masahiroy@kernel.org>
-Organization: Code Synthesis
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
+On 18-02-21, 08:51, Kuogee Hsieh wrote:
+> Add hbr3_hbr2 voltage and premphasis swing table to support
+> HBR3 link rate.
 
-> This function is only used in conf.c. Move it there together with the
-> randomize_choice_values() helper.
->
-> [...]
->
-> diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
-> index f946ab49ef50..d0d5acecb530 100644
-> --- a/scripts/kconfig/lkc.h
-> +++ b/scripts/kconfig/lkc.h
-> @@ -57,7 +57,6 @@ const char *zconf_curname(void);
->  const char *conf_get_configname(void);
->  void sym_set_change_count(int count);
->  void sym_add_change_count(int count);
-> -bool conf_set_all_new_symbols(enum conf_def_mode mode);
->  void set_all_choice_values(struct symbol *csym);
+Please use phy: qcom-qmp: "...." for the patch title
 
-A number of people package kconfig as a library that is then used
-in various projects outside of the Linux kernel. Removing this
-function breaks the library ABI and potentially such project. For
-example, I call conf_set_all_new_symbols() from my libbuild2-kconfig
-build system module[1].
+> 
+> Changes in V2:
+> -- replaced upper case with lower case at hbr3_hbr2 table
+> 
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index 0939a9e..4dcc074 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -2965,6 +2965,20 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_phy *qphy)
+>  	       qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
+>  }
+>  
+> +static const u8 qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] = {
+> +        { 0x00, 0x0c, 0x15, 0x1a },
+> +        { 0x02, 0x0e, 0x16, 0xff },
+> +        { 0x02, 0x11, 0xff, 0xff },
+> +        { 0x04, 0xff, 0xff, 0xff }
 
-I know you don't care much for such out-of-kernel usage, still, this
-(and the previous commit) feels like superficial reshuffling of code
-and perhaps it's worth not breaking things unless there is something
-substantial to gain?
+This should use tabs and not spaces, please fix this and resend the
+patch after running checkpatch --strict and adding Steve's acks
 
-[1] https://github.com/build2/libbuild2-kconfig/blob/master/libbuild2-kconfig/libbuild2/kconfig/init.cxx#L938
+> +};
+> +
+> +static const u8 qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] = {
+> +        { 0x02, 0x12, 0x16, 0x1a },
+> +        { 0x09, 0x19, 0x1f, 0xff },
+> +        { 0x10, 0x1f, 0xff, 0xff },
+> +        { 0x1f, 0xff, 0xff, 0xff }
+> +};
+> +
+>  static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] = {
+>  	{ 0x00, 0x0c, 0x14, 0x19 },
+>  	{ 0x00, 0x0b, 0x12, 0xff },
+> @@ -3000,8 +3014,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qmp_phy *qphy)
+>  		drvr_en = 0x10;
+>  	}
+>  
+> -	voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> -	pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+> +	if (dp_opts->link_rate <= 2700) {
+> +		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> +		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+> +	} else {
+> +		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
+> +		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
+> +	}
+>  
+>  	/* TODO: Move check to config check */
+>  	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+
+-- 
+~Vinod
