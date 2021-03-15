@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B5E33BB69
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F1D33BB66
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236917AbhCOOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S236896AbhCOOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhCON7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 228BE64F43;
-        Mon, 15 Mar 2021 13:58:59 +0000 (UTC)
+        id S231588AbhCON71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B135664F2D;
+        Mon, 15 Mar 2021 13:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816741;
-        bh=50Xuy5NzZD7iZ5ddL4wtXPxtTC/vFPC95KHHeKUGfEs=;
+        s=korg; t=1615816742;
+        bh=0KiJ5mnokOVvD5sEl1axOX46e0RnlfG0HeqRb906NkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qNHAsHSiG9pnlO6AYUyMLfaNtru+ANdMerV4e86uzPsmx7gZm7F2bxXzmG9Gelcxf
-         mhaoS1rIMlPKKNALh9HRr0G32IA6GPjF2YpNKDyPofkJjAa1bV03JTFpitBCopj4Fy
-         mUVML5BcFXxS72fwbNhseRPwt/1myFAVknBuvsg8=
+        b=BKQCPBrpaUejd5DS+bH4p+W0zwAwBnuLN+bj4MuclBjBkdMHqJ0A8frbWkA34o67i
+         +i2Iu3QJ6GUdLTnEJli0Wzc3xkVQcV04lBGVGe/xp0SLofLLX6b8+NMc7qhTFOPmt/
+         nrbDDEszWRKAa9HkWG7EtFR8RcOXFoHEGEsEHThw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 079/168] PCI: mediatek: Add missing of_node_put() to fix reference leak
-Date:   Mon, 15 Mar 2021 14:55:11 +0100
-Message-Id: <20210315135552.989774904@linuxfoundation.org>
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.4 080/168] kbuild: clamp SUBLEVEL to 255
+Date:   Mon, 15 Mar 2021 14:55:12 +0100
+Message-Id: <20210315135553.018784874@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,61 +41,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Krzysztof Wilczyński <kw@linux.com>
+[ Upstream commit 9b82f13e7ef316cdc0a8858f1349f4defce3f9e0 ]
 
-[ Upstream commit 42814c438aac79746d310f413a27d5b0b959c5de ]
+Right now if SUBLEVEL becomes larger than 255 it will overflow into the
+territory of PATCHLEVEL, causing havoc in userspace that tests for
+specific kernel version.
 
-The for_each_available_child_of_node helper internally makes use of the
-of_get_next_available_child() which performs an of_node_get() on each
-iteration when searching for next available child node.
+While userspace code tests for MAJOR and PATCHLEVEL, it doesn't test
+SUBLEVEL at any point as ABI changes don't happen in the context of
+stable tree.
 
-Should an available child node be found, then it would return a device
-node pointer with reference count incremented, thus early return from
-the middle of the loop requires an explicit of_node_put() to prevent
-reference count leak.
+Thus, to avoid overflows, simply clamp SUBLEVEL to it's maximum value in
+the context of LINUX_VERSION_CODE. This does not affect "make
+kernelversion" and such.
 
-To stop the reference leak, explicitly call of_node_put() before
-returning after an error occurred.
-
-Link: https://lore.kernel.org/r/20210120184810.3068794-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-mediatek.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ Makefile | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index 626a7c352dfd..728a59655825 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -1063,14 +1063,14 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		err = of_pci_get_devfn(child);
- 		if (err < 0) {
- 			dev_err(dev, "failed to parse devfn: %d\n", err);
--			return err;
-+			goto error_put_node;
- 		}
+diff --git a/Makefile b/Makefile
+index e27d031f3241..00be167f9b13 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1175,9 +1175,15 @@ define filechk_utsrelease.h
+ endef
  
- 		slot = PCI_SLOT(err);
+ define filechk_version.h
+-	echo \#define LINUX_VERSION_CODE $(shell                         \
+-	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+-	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
++	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
++		echo \#define LINUX_VERSION_CODE $(shell                 \
++		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
++	else                                                             \
++		echo \#define LINUX_VERSION_CODE $(shell                 \
++		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
++	fi;                                                              \
++	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
++	((c) > 255 ? 255 : (c)))'
+ endef
  
- 		err = mtk_pcie_parse_port(pcie, child, slot);
- 		if (err)
--			return err;
-+			goto error_put_node;
- 	}
- 
- 	err = mtk_pcie_subsys_powerup(pcie);
-@@ -1086,6 +1086,9 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		mtk_pcie_subsys_powerdown(pcie);
- 
- 	return 0;
-+error_put_node:
-+	of_node_put(child);
-+	return err;
- }
- 
- static int mtk_pcie_probe(struct platform_device *pdev)
+ $(version_h): FORCE
 -- 
 2.30.1
 
