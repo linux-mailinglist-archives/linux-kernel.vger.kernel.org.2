@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127D633BC98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FA733BE6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238926AbhCOO1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:27:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S239179AbhCOOqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AA364F5C;
-        Mon, 15 Mar 2021 14:00:23 +0000 (UTC)
+        id S234625AbhCOOEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C82C64F8E;
+        Mon, 15 Mar 2021 14:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816824;
-        bh=ZGHqpYg9bmFhxcT4Y1kLePiSwzu/r6PtAwOwk3qAU0U=;
+        s=korg; t=1615817072;
+        bh=lv+0TvJd6eDnBA65zQK+qLe6zQ/VSNK8Tkf105+Wgi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlRSVeMOr6h7+ggEXUNAz7XM2GHseuPEHPEvi4aJAM3/mDXVnfOLAVg2pjH/qAo38
-         N628BCklI8aIQXaUH5aAU8tuFshmLc9ySdFckTYUFVhIsHJH9ZRoparPX2CKyjAhYj
-         UeLMbMItQg9FGcgKEkKJtYCWfBy3JEfSZHYjHZtQ=
+        b=WFVpLZLkGcQszZht/yBslsHWf0cnWOZhJp33nEGFxaVL2GXnA6T+CQvZuvZbuXyhu
+         6BmLimuKBDX3FBL5e2icrMAcvt8GlLSFNzH8RNiRBHev7mK5Uw82sn6aD9CykbpGPt
+         ZAVyx+i5ro+eLN2K2wh/ZocqYVJnjZEur6CCq97w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 135/168] staging: comedi: addi_apci_1500: Fix endian problem for command sample
-Date:   Mon, 15 Mar 2021 14:56:07 +0100
-Message-Id: <20210315135554.777851035@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 275/290] x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
+Date:   Mon, 15 Mar 2021 14:56:08 +0100
+Message-Id: <20210315135551.327241513@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Andy Lutomirski <luto@kernel.org>
 
-commit ac0bbf55ed3be75fde1f8907e91ecd2fd589bde3 upstream.
+commit 5d5675df792ff67e74a500c4c94db0f99e6a10ef upstream.
 
-The digital input subdevice supports Comedi asynchronous commands that
-read interrupt status information.  This uses 16-bit Comedi samples (of
-which only the bottom 8 bits contain status information).  However, the
-interrupt handler is calling `comedi_buf_write_samples()` with the
-address of a 32-bit variable `unsigned int status`.  On a bigendian
-machine, this will copy 2 bytes from the wrong end of the variable.  Fix
-it by changing the type of the variable to `unsigned short`.
+On a 32-bit fast syscall that fails to read its arguments from user
+memory, the kernel currently does syscall exit work but not
+syscall entry work.  This confuses audit and ptrace.  For example:
 
-Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Cc: <stable@vger.kernel.org> #4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-3-abbotti@mev.co.uk
+    $ ./tools/testing/selftests/x86/syscall_arg_fault_32
+    ...
+    strace: pid 264258: entering, ptrace_syscall_info.op == 2
+    ...
+
+This is a minimal fix intended for ease of backporting.  A more
+complete cleanup is coming.
+
+Fixes: 0b085e68f407 ("x86/entry: Consolidate 32/64 bit syscall entry")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/8c82296ddf803b91f8d1e5eac89e5803ba54ab0e.1614884673.git.luto@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ arch/x86/entry/common.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -208,7 +208,7 @@ static irqreturn_t apci1500_interrupt(in
- 	struct comedi_device *dev = d;
- 	struct apci1500_private *devpriv = dev->private;
- 	struct comedi_subdevice *s = dev->read_subdev;
--	unsigned int status = 0;
-+	unsigned short status = 0;
- 	unsigned int val;
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -128,7 +128,8 @@ static noinstr bool __do_fast_syscall_32
+ 		regs->ax = -EFAULT;
  
- 	val = inl(devpriv->amcc + AMCC_OP_REG_INTCSR);
-@@ -238,14 +238,14 @@ static irqreturn_t apci1500_interrupt(in
- 	 *
- 	 *    Mask     Meaning
- 	 * ----------  ------------------------------------------
--	 * 0x00000001  Event 1 has occurred
--	 * 0x00000010  Event 2 has occurred
--	 * 0x00000100  Counter/timer 1 has run down (not implemented)
--	 * 0x00001000  Counter/timer 2 has run down (not implemented)
--	 * 0x00010000  Counter 3 has run down (not implemented)
--	 * 0x00100000  Watchdog has run down (not implemented)
--	 * 0x01000000  Voltage error
--	 * 0x10000000  Short-circuit error
-+	 * 0b00000001  Event 1 has occurred
-+	 * 0b00000010  Event 2 has occurred
-+	 * 0b00000100  Counter/timer 1 has run down (not implemented)
-+	 * 0b00001000  Counter/timer 2 has run down (not implemented)
-+	 * 0b00010000  Counter 3 has run down (not implemented)
-+	 * 0b00100000  Watchdog has run down (not implemented)
-+	 * 0b01000000  Voltage error
-+	 * 0b10000000  Short-circuit error
- 	 */
- 	comedi_buf_write_samples(s, &status, 1);
- 	comedi_handle_events(dev, s);
+ 		instrumentation_end();
+-		syscall_exit_to_user_mode(regs);
++		local_irq_disable();
++		irqentry_exit_to_user_mode(regs);
+ 		return false;
+ 	}
+ 
 
 
