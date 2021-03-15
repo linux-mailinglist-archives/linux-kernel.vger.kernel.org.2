@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E8733C464
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9973133C462
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbhCORgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S233913AbhCORgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233145AbhCORgN (ORCPT
+        with ESMTP id S233501AbhCORgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:36:13 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87909C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:13 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id mm21so67601870ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:13 -0700 (PDT)
+        Mon, 15 Mar 2021 13:36:14 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C628C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:14 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id p8so67656531ejb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DgS4OPGpMnlY/AXfZW8QgtbwbGQ3UnwEJWQevK1FyQM=;
-        b=Al7Au5qrWKDUWWxWszyg+RCKYoNVfZF0Ls3oN/2uJW2qijirbLB8Ls9c9al9GH1PqS
-         XJTiZ5qLKkjlQ57tROZSdvEMFl1PNE2LwXTN8sVWHICg/4NtoVbWGpHGto7aLGg5ebgm
-         /GdQT2pCbd3tce+FV57gOZON15GPsKK6oUI/s=
+        bh=kGLUxRHfm3EIlGd4N+uEn8OSkXWMynAv8QMKM8OCTEg=;
+        b=XoBqXGw00b+nV7WXr92n0EdsVDmyBBbbt6UZfiZc91iF+dhWYj40r0p1dBj69bv2wm
+         m5O65up56g+rtsLwAaCZFnW+jbtEerOILhXss9ALl6UexQFweLZymGoq/cUisipf6rO9
+         k+q2jl7oz4EBEtGm8UsFQaHebvcWS6+Vzy3+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DgS4OPGpMnlY/AXfZW8QgtbwbGQ3UnwEJWQevK1FyQM=;
-        b=RZwcixVvewGz6ApuQJx9cy1d+A99Wkqgc3Jy9C3hFdqeY+kkbkTmA7Mau9Auw7kaAX
-         qTMLUhC3R+uev8KTOWkaAZNOgNKdPhwDZR9f+C6e2bruI9WurJjOAj70rl4+2+vABKn/
-         4EFCj7YzWEuktCmHZTkSkDD9iBPeVl+7g8ZuKh/SFHMF+30HEVG8flBE2hBIUeLZEaAH
-         oHxcMJ5Lx+5cO6nWuY4fvaT9n4jVtCahP+rtXWSThKow1Ey8ZDSsgC0wtxyg2OLWXfTJ
-         kZGkN82t1i9e76fDNrnR9UR0IQtMhbkPwDU8MhobadrNGidCpscNN1I3YNcs6isdFDU2
-         /SOg==
-X-Gm-Message-State: AOAM5326AfEsKhtPTOCodGYaPSbNxn/UKMLYfMHIFK9AwNpn0dzR+Zbz
-        S2rG4IZ9nLZvasLqqgCCtee3kQ==
-X-Google-Smtp-Source: ABdhPJybqQLxb6wI/x4Uz9yaDR+qzO+umUF/dAlWVl6VlDbW2ZvoVdKUqmc7bpycPL9FfzOuKkQCJQ==
-X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr24713291ejs.211.1615829772215;
+        bh=kGLUxRHfm3EIlGd4N+uEn8OSkXWMynAv8QMKM8OCTEg=;
+        b=AiW9jvRLdHrqpJyG0JqDx8UYl3x8SBY7PW7zee7H6iz33LuylfGA4nxMJpsG8P5Iyf
+         8pEikzwDUg7svjLT3aaU7LkGffn5V4wL+F4AeJ0mnSAqw38MMRWu/7VN/gc1tWOsprlQ
+         Bav/dj3Ol6XUldjcjvNnP3KTgGkkFmXWqGe6kMW09PD8UQNE1p5ccw/dUxqFTA9NNt/M
+         PTzyvngtKFRAfwEOlwoTfEwM8tvFC06PWN/eyoAga2Y0sPrmqZ3xaI/RmbTX9CA8NoCf
+         T/+AmOt98dLo7MfR1Cva4vIb/LQGyxbsPVp9KAqCLW/XcyF0Y4jBaRNIzRYZMDI7I+cH
+         kEwA==
+X-Gm-Message-State: AOAM5322/85U1geQ20hHALih92WGX41fDivVsMVa32KTFuQ8p37cKGLe
+        d/shVvHAhEoGEUQcFcrknkUr7w==
+X-Google-Smtp-Source: ABdhPJxhr0bL1B8rtOBmIEPWSJulYD8sUtEQc75FYbnJbNufb4DVLqF+V6zZEnppOctDz1QkwiR31A==
+X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr24655719eji.163.1615829772839;
         Mon, 15 Mar 2021 10:36:12 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id a3sm8109239ejv.40.2021.03.15.10.36.11
+        by smtp.gmail.com with ESMTPSA id a3sm8109239ejv.40.2021.03.15.10.36.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Mar 2021 10:36:12 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
@@ -51,10 +51,10 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH v4 01/11] media: v4l2-ioctl: Fix check_ext_ctrls
-Date:   Mon, 15 Mar 2021 18:35:59 +0100
-Message-Id: <20210315173609.1547857-2-ribalda@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v4 02/11] media: uvcvideo: Set capability in s_param
+Date:   Mon, 15 Mar 2021 18:36:00 +0100
+Message-Id: <20210315173609.1547857-3-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210315173609.1547857-1-ribalda@chromium.org>
 References: <20210315173609.1547857-1-ribalda@chromium.org>
@@ -64,62 +64,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers that do not use the ctrl-framework use this function instead.
-
-- Return error when handling of REQUEST_VAL.
-- Do not check for multiple classes when getting the DEF_VAL.
-
 Fixes v4l2-compliance:
-Control ioctls (Input 0):
-		fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-	test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
 
-Cc: stable@vger.kernel.org
-Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Format ioctls (Input 0):
+                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
+                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 31d1342e61e8..9406e90ff805 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -917,15 +917,24 @@ static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
- 	for (i = 0; i < c->count; i++)
- 		c->controls[i].reserved2[0] = 0;
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 252136cc885c..157310c0ca87 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -472,10 +472,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
+ 	uvc_simplify_fraction(&timeperframe.numerator,
+ 		&timeperframe.denominator, 8, 333);
  
--	/* V4L2_CID_PRIVATE_BASE cannot be used as control class
--	   when using extended controls.
--	   Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
--	   is it allowed for backwards compatibility.
--	 */
--	if (!allow_priv && c->which == V4L2_CID_PRIVATE_BASE)
--		return 0;
--	if (!c->which)
-+	switch (c->which) {
-+	case V4L2_CID_PRIVATE_BASE:
-+		/*
-+		 * V4L2_CID_PRIVATE_BASE cannot be used as control class
-+		 * when using extended controls.
-+		 * Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-+		 * is it allowed for backwards compatibility.
-+		*/
-+		if (!allow_priv)
-+			return 0;
-+		break;
-+	case V4L2_CTRL_WHICH_DEF_VAL:
-+	case V4L2_CTRL_WHICH_CUR_VAL:
- 		return 1;
-+	case V4L2_CTRL_WHICH_REQUEST_VAL:
-+		return 0;
+-	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		parm->parm.capture.timeperframe = timeperframe;
+-	else
++		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
++	} else {
+ 		parm->parm.output.timeperframe = timeperframe;
++		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
 +	}
-+
- 	/* Check that all controls are from the same control class. */
- 	for (i = 0; i < c->count; i++) {
- 		if (V4L2_CTRL_ID2WHICH(c->controls[i].id) != c->which) {
+ 
+ 	return 0;
+ }
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
