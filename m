@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816F533B0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4534233B0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCOLM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:12:27 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43220 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhCOLMZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:12:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D32021C0B78; Mon, 15 Mar 2021 12:12:22 +0100 (CET)
-Date:   Mon, 15 Mar 2021 12:12:22 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Rahul Tanwar <rtanwar@maxlinear.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
-        "dmurphy@ti.com" <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Cheol Yong Kim <ckim@maxlinear.com>,
-        Qiming Wu <qwu@maxlinear.com>
-Subject: Re: [PATCH] leds: lgm: fix gpiolib dependency
-Message-ID: <20210315111222.GA10084@duo.ucw.cz>
-References: <MN2PR19MB36933AFDC4531D0F7A984608B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
- <MN2PR19MB3693FBBD3E6DB8A916260D69B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
+        id S229721AbhCOLPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhCOLOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:14:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADDC364E61;
+        Mon, 15 Mar 2021 11:14:36 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 11:14:34 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: arm64: kernel/sys.c - silence initialization warnings.
+Message-ID: <20210315111433.GA22897@arm.com>
+References: <162859.1615542946@turing-police>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <MN2PR19MB3693FBBD3E6DB8A916260D69B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <162859.1615542946@turing-police>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 04:55:46AM -0500, Valdis Klētnieks wrote:
+> Building arch/arm64/kernel/sys.o with W=1 throws over 300 warnings:
+> 
+> /usr/src/linux-next/arch/arm64/kernel/sys.c:56:40: warning: initialized field overwritten [-Woverride-init]
+>    56 | #define __SYSCALL(nr, sym)      [nr] = __arm64_##sym,
+>       |                                        ^~~~~~~~
+> /usr/src/linux-next/include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
+>    29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
+>       |                                     ^~~~~~~~~
+> /usr/src/linux-next/include/uapi/asm-generic/unistd.h:34:1: note: in expansion of macro '__SC_COMP'
+>    34 | __SC_COMP(__NR_io_setup, sys_io_setup, compat_sys_io_setup)
+>       | ^~~~~~~~~
+> 
+> We know that's pretty much the file's purpose in life, so tell the
+> build system to not remind us.  This makes the 1 other warning a
+> lot more noticeable. 
+> 
+> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+> 
+> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> index ed65576ce710..916b21d2b35b 100644
+> --- a/arch/arm64/kernel/Makefile
+> +++ b/arch/arm64/kernel/Makefile
+> @@ -8,6 +8,7 @@ CFLAGS_armv8_deprecated.o := -I$(src)
+>  CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_sys.o += $(call cc-disable-warning, override-init)
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We do similar initialisation in arch/arm64/kernel/sys32.c and
+arch/arm64/kernel/traps.c for example. It's a pretty common pattern
+throughout the kernel.
 
-Hi!
+So we either treat W=1 output as diff against the vanilla kernel when
+checking new patches or we remove override-init altogether from W=1.
+Mark Rutland pointed me to an older thread:
 
-> On 15/3/2021 5:44 pm, Rahul Tanwar wrote:
->=20
-> From: Arnd Bergmann <arnd@kernel.org><mailto:arnd@kernel.org>
->=20
-> From: Arnd Bergmann <arnd@arndb.de><mailto:arnd@arndb.de>
->=20
-=2E..
+https://lore.kernel.org/linux-arm-kernel/20190809083251.GA48423@lakrids.cambridge.arm.com/
 
->=20
-> diff<https://lore.kernel.org/lkml/20210308153052.2353885-1-arnd@kernel.or=
-g/#iZ30drivers:leds:blink:Kconfig> --git a/drivers/leds/blink/Kconfig b/dri=
-vers/leds/blink/Kconfig
-> index 265b53476a80..6dedc58c47b3 100644
-
-=2E..
->=20
-> Acked-by: Rahul Tanwar <rtanwar@maxlinear.com><mailto:rtanwar@maxlinear.c=
-om>
-
-You may want to do something with your mail configuration. This is
-quite corrupted.
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYE9BFgAKCRAw5/Bqldv6
-8mCqAJ0UPjBFffBM+bycLyzjoiKGTpCeRQCfVY+IwUW8QbX0F8Ffp2ce4pDKScA=
-=XdIp
------END PGP SIGNATURE-----
-
---4Ckj6UjgE2iN1+kY--
+-- 
+Catalin
