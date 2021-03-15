@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A6D33C563
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8674B33C568
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhCOSTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbhCOSTA (ORCPT
+        id S231971AbhCOSTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:19:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26201 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231390AbhCOSTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:19:00 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B022C06174A;
-        Mon, 15 Mar 2021 11:18:59 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id r16so5794279pfh.10;
-        Mon, 15 Mar 2021 11:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y8KjN7BvbJBB4Xq70O198nwg/n4ypQbS+m7yJFiOEWQ=;
-        b=gwpZSgZX0Epe+8nbtIpyQ2tgzt6FMVjwLtRVQ74e2t6U7QF+lwd//gTzl5cgIiHfIL
-         rF5ACZx9xruq9D4MzklX16Me8jHlpnP3fYD39y99CjwYfmzsliZCFya1HytK1nAgRxYk
-         ktY/9oAiAXBMyMt584EosLI6CbcAl3xbfNFqpeVlZGWXvMEuLS4tSxxnI2fErj2Xa66i
-         oQsD/bk2qGtzz/BGubwddmNmCrU4BoNQUVVGM827E7z9Hpg3OA1OWY+biHDLKX6T5AP7
-         +1PGyMOC8CFTA8LV5865Br1SqM+2sGmQm+TpZhX4mhaTg4UUVFYrjSwsA4ZUgS0LUw1c
-         IE0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y8KjN7BvbJBB4Xq70O198nwg/n4ypQbS+m7yJFiOEWQ=;
-        b=S1lx7YA5AJcznHoLvagK/WgwrboA1HcuWUImoGAnOHuuOZqZ5z2yuItTjF8M6Lkakw
-         cGubj+N4VDLpTZdkt/2dKbxlGqe0+PcfJfgLQGf2KIzRvHZQ1SgSLv1/cTHt3lC6RQWB
-         MVck3WslJdnnCRDT9N3kCyCWDcRvtbs3PUMkUseF9yfsbzug+cKilg+zWiFB5HCerf1o
-         ey4TqRo0/7F9S6qBCfb0e8fyrTulhQMHq1xGcMmqpmfDPoaJCbOjLHqRPSDaQe9ZoLQR
-         AcVY95Sc1aUCs3LuRjWuA/OWdQ+FD3MmJmOQUyfTjJcPq1XIIWwNw+N8IBam3XWpRI16
-         FPUg==
-X-Gm-Message-State: AOAM530YoaryXeYx931pTHEBvQLLdZrIdqtRl4Tjsi7RIkR+tYOCZmKG
-        xbYouQxbecxkAXz7VIPPCLd+FOEOWcXq/7+aKQ0=
-X-Google-Smtp-Source: ABdhPJxr0Mw50JiZmPtASt1ryjlfNQ61J5A233fEgj8VzkAkx83REKYYG7B9JCIjmR0sRhVFdLUbvjBUZ4DxuyAx1cY=
-X-Received: by 2002:a63:ce15:: with SMTP id y21mr384404pgf.4.1615832338992;
- Mon, 15 Mar 2021 11:18:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210315135541.921894249@linuxfoundation.org> <20210315135544.659848571@linuxfoundation.org>
- <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
-In-Reply-To: <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Mar 2021 20:18:43 +0200
-Message-ID: <CAHp75VePHxAXHVJ974dXv6PnCbZhTTksY+-_moEZUzUzkFKE=Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 081/290] gpiolib: Read "gpio-line-names" from a
- firmware node
-To:     Marek Vasut <marex@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Roman Guskov <rguskov@dh-electronics.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        Mon, 15 Mar 2021 14:19:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615832359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4lwr2MQuhGgaP+aDNtyMeR5Cd4Z5d5TENFki18L169Q=;
+        b=cEw83EPVuRnv77nxM55lOcZ7BpvrVB/itvB1MuVkXHr2vQGyQPMhzbwjbpoLuHslO6gcjw
+        4jSZk5R4u+jos+PBJ6Zr/RJcOc7/Tu7QQ1qv8GL75XCZXnVneyhKseZwBx/c4LVib2Spfj
+        tmo6qLrEolKtiP6c4hux1M7yZsPfgPs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-J_4xzsA3NT2pN2kj3r1TPg-1; Mon, 15 Mar 2021 14:19:16 -0400
+X-MC-Unique: J_4xzsA3NT2pN2kj3r1TPg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4939481433D;
+        Mon, 15 Mar 2021 18:19:14 +0000 (UTC)
+Received: from starship (unknown [10.35.207.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF05B5C5E0;
+        Mon, 15 Mar 2021 18:19:10 +0000 (UTC)
+Message-ID: <1a4f35e356c50e38916acef6c86175b24efca0a3.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>
+Date:   Mon, 15 Mar 2021 20:19:09 +0200
+In-Reply-To: <0dbcff57-8197-8fbb-809d-b47a4f5e9e77@redhat.com>
+References: <20210315174316.477511-1-mlevitsk@redhat.com>
+         <20210315174316.477511-3-mlevitsk@redhat.com>
+         <0dbcff57-8197-8fbb-809d-b47a4f5e9e77@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 5:05 PM Marek Vasut <marex@denx.de> wrote:
->
-> On 3/15/21 2:52 PM, gregkh@linuxfoundation.org wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
-> >
-> > On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
-> > see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
-> > pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
-> > and iterates over all of its DT subnodes when registering each GPIO
-> > bank gpiochip. Each gpiochip has:
-> >
-> >    - gpio_chip.parent = dev,
-> >      where dev is the device node of the pin controller
-> >    - gpio_chip.of_node = np,
-> >      which is the OF node of the GPIO bank
-> >
-> > Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
-> > i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
-> >
-> > The original code behaved correctly, as it extracted the "gpio-line-names"
-> > from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
-> >
-> > To achieve the same behaviour, read property from the firmware node.
->
-> There seem to be some discussion going on around this patch, so please
-> postpone backporting until that is settled. Same for v5.11 backport. I
-> hope Andy/Bartosz agrees ?
+On Mon, 2021-03-15 at 18:56 +0100, Paolo Bonzini wrote:
+> On 15/03/21 18:43, Maxim Levitsky wrote:
+> > +	if (!guest_cpuid_is_intel(vcpu)) {
+> > +		/*
+> > +		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
+> > +		 * in VMCB and clear intercepts to avoid #VMEXIT.
+> > +		 */
+> > +		if (vls) {
+> > +			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
+> > +			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
+> > +			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+> > +		}
+> > +		/* No need to intercept these msrs either */
+> > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
+> > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
+> > +	}
+> 
+> An "else" is needed here to do the opposite setup (removing the "if 
+> (vls)" from init_vmcb).
 
-No need to postpone. The fix will be somewhere else, though inside gpiolib.c.
+init_vmcb currently set the INTERCEPT_VMLOAD and INTERCEPT_VMSAVE and it doesn't enable vls
+thus there is nothing to do if I don't want to enable vls.
+It seems reasonable to me.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Both msrs I marked as '.always = false' in the 
+'direct_access_msrs', which makes them be intercepted by the default.
+If I were to use '.always = true' it would feel a bit wrong as the intercept is not always
+enabled.
+
+What do you think?
+
+> 
+> This also makes the code more readable since you can write
+> 
+> 	if (guest_cpuid_is_intel(vcpu)) {
+> 		/*
+> 		 * We must intercept SYSENTER_EIP and SYSENTER_ESP
+> 		 * accesses because the processor only stores 32 bits.
+> 		 * For the same reason we cannot use virtual
+> 		 * VMLOAD/VMSAVE.
+> 		 */
+> 		...
+> 	} else {
+> 		/* Do the opposite.  */
+> 		...
+> 	}
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> Paolo
+> 
+
+
