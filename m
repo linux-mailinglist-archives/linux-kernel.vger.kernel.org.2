@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021E933B827
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA0B33B7D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhCOOCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
+        id S233327AbhCOOB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231707AbhCON4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735B064F31;
-        Mon, 15 Mar 2021 13:56:36 +0000 (UTC)
+        id S230509AbhCON4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ED1064EF3;
+        Mon, 15 Mar 2021 13:56:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816597;
-        bh=MLwSzS5Vnp2OoJVdpI1dqdnD2DwcwS0rspTGTGTA9UM=;
+        s=korg; t=1615816599;
+        bh=Z0ScXEL6DEP6O0epDMFNqZSv2NhcBtfef/eKh+PBNIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MuK/6X/lVp9SsuNu+J+yJaZlxXbFyJikr7x+ZTqkNzvhlAXL73x78dNNbtIzGuRMF
-         TNzF9FWAabXRzJGfRBhfw6NFabHOGHRSlg7e8ifYddDzjoQyPqcqeARrBrTkfrOKG1
-         7d3+6/QX6Ck3Y4uv+C13WBugEf3ytXHFLKz9WpM0=
+        b=wHadaa0K5hconS/MrMRdHQSTWj6XkcA4yYnk/5wkAAAEBu9uU2em3h4kxmy4vv7Ho
+         HJMVRmmGe72rVeuXvCTG4YP4A9oQXfBeHYrTZ93WMTJW7Lr4Jf1NlRF067BGcc/bA+
+         7HMfUrE1My1klGmuW4L8xzA0MemkVgVEC7s6Xa5Q=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.11 012/306] ath11k: fix AP mode for QCA6390
-Date:   Mon, 15 Mar 2021 14:51:15 +0100
-Message-Id: <20210315135508.030734513@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 013/306] net: l2tp: reduce log level of messages in receive path, add counter instead
+Date:   Mon, 15 Mar 2021 14:51:16 +0100
+Message-Id: <20210315135508.068053744@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -40,55 +42,188 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Kalle Valo <kvalo@codeaurora.org>
+From: Matthias Schiffer <mschiffer@universe-factory.net>
 
-commit 77d7e87128d4dfb400df4208b2812160e999c165 upstream.
+commit 3e59e8856758eb5a2dfe1f831ef53b168fd58105 upstream.
 
-Commit c134d1f8c436 ("ath11k: Handle errors if peer creation fails") completely
-broke AP mode on QCA6390:
+Commit 5ee759cda51b ("l2tp: use standard API for warning log messages")
+changed a number of warnings about invalid packets in the receive path
+so that they are always shown, instead of only when a special L2TP debug
+flag is set. Even with rate limiting these warnings can easily cause
+significant log spam - potentially triggered by a malicious party
+sending invalid packets on purpose.
 
-kernel: [  151.230734] ath11k_pci 0000:06:00.0: failed to create peer after vdev start delay: -22
-wpa_supplicant[2307]: Failed to set beacon parameters
-wpa_supplicant[2307]: Interface initialization failed
-wpa_supplicant[2307]: wlan0: interface state UNINITIALIZED->DISABLED
-wpa_supplicant[2307]: wlan0: AP-DISABLED
-wpa_supplicant[2307]: wlan0: Unable to setup interface.
-wpa_supplicant[2307]: Failed to initialize AP interface
+In addition these warnings were noticed by projects like Tunneldigger [1],
+which uses L2TP for its data path, but implements its own control
+protocol (which is sufficiently different from L2TP data packets that it
+would always be passed up to userspace even with future extensions of
+L2TP).
 
-This was because commit c134d1f8c436 ("ath11k: Handle errors if peer creation
-fails") added error handling for ath11k_peer_create(), which had been failing
-all along but was unnoticed due to the missing error handling. The actual bug
-was introduced already in commit aa44b2f3ecd4 ("ath11k: start vdev if a bss peer is
-already created").
+Some of the warnings were already redundant, as l2tp_stats has a counter
+for these packets. This commit adds one additional counter for invalid
+packets that are passed up to userspace. Packets with unknown session are
+not counted as invalid, as there is nothing wrong with the format of
+these packets.
 
-ath11k_peer_create() was failing because for AP mode the peer is created
-already earlier op_add_interface() and we should skip creation here, but the
-check for modes was wrong.  Fixing that makes AP mode work again.
+With the additional counter, all of these messages are either redundant
+or benign, so we reduce them to pr_debug_ratelimited().
 
-This shouldn't affect IPQ8074 nor QCN9074 as they have hw_params.vdev_start_delay disabled.
+[1] https://github.com/wlanslovenija/tunneldigger/issues/160
 
-Tested-on: QCA6390 hw2.0 PCI WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
-
-Fixes: c134d1f8c436 ("ath11k: Handle errors if peer creation fails")
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1614006849-25764-1-git-send-email-kvalo@codeaurora.org
+Fixes: 5ee759cda51b ("l2tp: use standard API for warning log messages")
+Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/linux/l2tp.h |    1 +
+ net/l2tp/l2tp_core.c      |   41 ++++++++++++++++++++++-------------------
+ net/l2tp/l2tp_core.h      |    1 +
+ net/l2tp/l2tp_netlink.c   |    6 ++++++
+ 4 files changed, 30 insertions(+), 19 deletions(-)
 
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -5299,8 +5299,8 @@ ath11k_mac_op_assign_vif_chanctx(struct
+--- a/include/uapi/linux/l2tp.h
++++ b/include/uapi/linux/l2tp.h
+@@ -145,6 +145,7 @@ enum {
+ 	L2TP_ATTR_RX_ERRORS,		/* u64 */
+ 	L2TP_ATTR_STATS_PAD,
+ 	L2TP_ATTR_RX_COOKIE_DISCARDS,	/* u64 */
++	L2TP_ATTR_RX_INVALID,		/* u64 */
+ 	__L2TP_ATTR_STATS_MAX,
+ };
+ 
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -649,9 +649,9 @@ void l2tp_recv_common(struct l2tp_sessio
+ 	/* Parse and check optional cookie */
+ 	if (session->peer_cookie_len > 0) {
+ 		if (memcmp(ptr, &session->peer_cookie[0], session->peer_cookie_len)) {
+-			pr_warn_ratelimited("%s: cookie mismatch (%u/%u). Discarding.\n",
+-					    tunnel->name, tunnel->tunnel_id,
+-					    session->session_id);
++			pr_debug_ratelimited("%s: cookie mismatch (%u/%u). Discarding.\n",
++					     tunnel->name, tunnel->tunnel_id,
++					     session->session_id);
+ 			atomic_long_inc(&session->stats.rx_cookie_discards);
+ 			goto discard;
+ 		}
+@@ -702,8 +702,8 @@ void l2tp_recv_common(struct l2tp_sessio
+ 		 * If user has configured mandatory sequence numbers, discard.
+ 		 */
+ 		if (session->recv_seq) {
+-			pr_warn_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
+-					    session->name);
++			pr_debug_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
++					     session->name);
+ 			atomic_long_inc(&session->stats.rx_seq_discards);
+ 			goto discard;
+ 		}
+@@ -718,8 +718,8 @@ void l2tp_recv_common(struct l2tp_sessio
+ 			session->send_seq = 0;
+ 			l2tp_session_set_header_len(session, tunnel->version);
+ 		} else if (session->send_seq) {
+-			pr_warn_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
+-					    session->name);
++			pr_debug_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
++					     session->name);
+ 			atomic_long_inc(&session->stats.rx_seq_discards);
+ 			goto discard;
+ 		}
+@@ -809,9 +809,9 @@ static int l2tp_udp_recv_core(struct l2t
+ 
+ 	/* Short packet? */
+ 	if (!pskb_may_pull(skb, L2TP_HDR_SIZE_MAX)) {
+-		pr_warn_ratelimited("%s: recv short packet (len=%d)\n",
+-				    tunnel->name, skb->len);
+-		goto error;
++		pr_debug_ratelimited("%s: recv short packet (len=%d)\n",
++				     tunnel->name, skb->len);
++		goto invalid;
  	}
  
- 	if (ab->hw_params.vdev_start_delay &&
--	    (arvif->vdev_type == WMI_VDEV_TYPE_AP ||
--	    arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)) {
-+	    arvif->vdev_type != WMI_VDEV_TYPE_AP &&
-+	    arvif->vdev_type != WMI_VDEV_TYPE_MONITOR) {
- 		param.vdev_id = arvif->vdev_id;
- 		param.peer_type = WMI_PEER_TYPE_DEFAULT;
- 		param.peer_addr = ar->mac_addr;
+ 	/* Point to L2TP header */
+@@ -824,9 +824,9 @@ static int l2tp_udp_recv_core(struct l2t
+ 	/* Check protocol version */
+ 	version = hdrflags & L2TP_HDR_VER_MASK;
+ 	if (version != tunnel->version) {
+-		pr_warn_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
+-				    tunnel->name, version, tunnel->version);
+-		goto error;
++		pr_debug_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
++				     tunnel->name, version, tunnel->version);
++		goto invalid;
+ 	}
+ 
+ 	/* Get length of L2TP packet */
+@@ -834,7 +834,7 @@ static int l2tp_udp_recv_core(struct l2t
+ 
+ 	/* If type is control packet, it is handled by userspace. */
+ 	if (hdrflags & L2TP_HDRFLAG_T)
+-		goto error;
++		goto pass;
+ 
+ 	/* Skip flags */
+ 	ptr += 2;
+@@ -863,21 +863,24 @@ static int l2tp_udp_recv_core(struct l2t
+ 			l2tp_session_dec_refcount(session);
+ 
+ 		/* Not found? Pass to userspace to deal with */
+-		pr_warn_ratelimited("%s: no session found (%u/%u). Passing up.\n",
+-				    tunnel->name, tunnel_id, session_id);
+-		goto error;
++		pr_debug_ratelimited("%s: no session found (%u/%u). Passing up.\n",
++				     tunnel->name, tunnel_id, session_id);
++		goto pass;
+ 	}
+ 
+ 	if (tunnel->version == L2TP_HDR_VER_3 &&
+ 	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
+-		goto error;
++		goto invalid;
+ 
+ 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+ 	l2tp_session_dec_refcount(session);
+ 
+ 	return 0;
+ 
+-error:
++invalid:
++	atomic_long_inc(&tunnel->stats.rx_invalid);
++
++pass:
+ 	/* Put UDP header back */
+ 	__skb_push(skb, sizeof(struct udphdr));
+ 
+--- a/net/l2tp/l2tp_core.h
++++ b/net/l2tp/l2tp_core.h
+@@ -39,6 +39,7 @@ struct l2tp_stats {
+ 	atomic_long_t		rx_oos_packets;
+ 	atomic_long_t		rx_errors;
+ 	atomic_long_t		rx_cookie_discards;
++	atomic_long_t		rx_invalid;
+ };
+ 
+ struct l2tp_tunnel;
+--- a/net/l2tp/l2tp_netlink.c
++++ b/net/l2tp/l2tp_netlink.c
+@@ -428,6 +428,9 @@ static int l2tp_nl_tunnel_send(struct sk
+ 			      L2TP_ATTR_STATS_PAD) ||
+ 	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_ERRORS,
+ 			      atomic_long_read(&tunnel->stats.rx_errors),
++			      L2TP_ATTR_STATS_PAD) ||
++	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_INVALID,
++			      atomic_long_read(&tunnel->stats.rx_invalid),
+ 			      L2TP_ATTR_STATS_PAD))
+ 		goto nla_put_failure;
+ 	nla_nest_end(skb, nest);
+@@ -771,6 +774,9 @@ static int l2tp_nl_session_send(struct s
+ 			      L2TP_ATTR_STATS_PAD) ||
+ 	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_ERRORS,
+ 			      atomic_long_read(&session->stats.rx_errors),
++			      L2TP_ATTR_STATS_PAD) ||
++	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_INVALID,
++			      atomic_long_read(&session->stats.rx_invalid),
+ 			      L2TP_ATTR_STATS_PAD))
+ 		goto nla_put_failure;
+ 	nla_nest_end(skb, nest);
 
 
