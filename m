@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E8633BD39
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C46C33BC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239932AbhCOOdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S234503AbhCOO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:26:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233239AbhCOOBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4117564F56;
-        Mon, 15 Mar 2021 14:00:48 +0000 (UTC)
+        id S233052AbhCOOAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3865664EEE;
+        Mon, 15 Mar 2021 14:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816849;
-        bh=5JkEQhZyy6tNcgw/Mn7IBu1WfEqYGJ4I9IjfJJSL07s=;
+        s=korg; t=1615816818;
+        bh=3dHF4xPZBkdJCHhLjFFJ+oVg5bdDf4otkPiATNSJy9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ArxNHRge61MJcXrbgVFvMWzUIHg7/nWYDPeIu/4FMBefblVqarPR1RMC+/7vnW55T
-         Q9ZzePbk0cdbQ7ARQpV9c7znioFFVW2T1SZC+M+/+fuDP68i2Hzc1iOYYSEcESOkMU
-         E739oTvVIQvvCXYpL0HMhxfgkhNasqQzTDlNO0ls=
+        b=jgsy/sxE4Exsho3jfgIhmb8r2FqTdRyb0vmRdyAOKlD1bZkuhHnRTk1BiOdUNiSWU
+         NQ6qxDgE5DfuAVvuuyUlKfz5BzCcZFOGF814yC/q8fDyvEu7/K+F6fMvtPGNqW/eSC
+         be5N8DeS9LgUnqFtra++skFUF7N9ApRY+KMh6ZCc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 160/306] scsi: libiscsi: Fix iscsi_prep_scsi_cmd_pdu() error handling
-Date:   Mon, 15 Mar 2021 14:53:43 +0100
-Message-Id: <20210315135513.041699981@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 131/290] i2c: rcar: faster irq code to minimize HW race condition
+Date:   Mon, 15 Mar 2021 14:53:44 +0100
+Message-Id: <20210315135546.327084320@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +44,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-[ Upstream commit d28d48c699779973ab9a3bd0e5acfa112bd4fdef ]
+[ Upstream commit c7b514ec979e23a08c411f3d8ed39c7922751422 ]
 
-If iscsi_prep_scsi_cmd_pdu() fails we try to add it back to the cmdqueue,
-but we leave it partially setup. We don't have functions that can undo the
-pdu and init task setup. We only have cleanup_task which can clean up both
-parts. So this has us just fail the cmd and go through the standard cleanup
-routine and then have the SCSI midlayer retry it like is done when it fails
-in the queuecommand path.
+To avoid the HW race condition on R-Car Gen2 and earlier, we need to
+write to ICMCR as soon as possible in the interrupt handler. We can
+improve this by writing a static value instead of masking out bits.
 
-Link: https://lore.kernel.org/r/20210207044608.27585-2-michael.christie@oracle.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 1851015299b3..af40de7e51e7 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -1532,14 +1532,9 @@ static int iscsi_data_xmit(struct iscsi_conn *conn)
- 		}
- 		rc = iscsi_prep_scsi_cmd_pdu(conn->task);
- 		if (rc) {
--			if (rc == -ENOMEM || rc == -EACCES) {
--				spin_lock_bh(&conn->taskqueuelock);
--				list_add_tail(&conn->task->running,
--					      &conn->cmdqueue);
--				conn->task = NULL;
--				spin_unlock_bh(&conn->taskqueuelock);
--				goto done;
--			} else
-+			if (rc == -ENOMEM || rc == -EACCES)
-+				fail_scsi_task(conn->task, DID_IMM_RETRY);
-+			else
- 				fail_scsi_task(conn->task, DID_ABORT);
- 			spin_lock_bh(&conn->taskqueuelock);
- 			continue;
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 217def2d7cb4..824586d7ee56 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -91,7 +91,6 @@
+ 
+ #define RCAR_BUS_PHASE_START	(MDBS | MIE | ESG)
+ #define RCAR_BUS_PHASE_DATA	(MDBS | MIE)
+-#define RCAR_BUS_MASK_DATA	(~(ESG | FSB) & 0xFF)
+ #define RCAR_BUS_PHASE_STOP	(MDBS | MIE | FSB)
+ 
+ #define RCAR_IRQ_SEND	(MNR | MAL | MST | MAT | MDE)
+@@ -621,7 +620,7 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ /*
+  * This driver has a lock-free design because there are IP cores (at least
+  * R-Car Gen2) which have an inherent race condition in their hardware design.
+- * There, we need to clear RCAR_BUS_MASK_DATA bits as soon as possible after
++ * There, we need to switch to RCAR_BUS_PHASE_DATA as soon as possible after
+  * the interrupt was generated, otherwise an unwanted repeated message gets
+  * generated. It turned out that taking a spinlock at the beginning of the ISR
+  * was already causing repeated messages. Thus, this driver was converted to
+@@ -630,13 +629,11 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ static irqreturn_t rcar_i2c_irq(int irq, void *ptr)
+ {
+ 	struct rcar_i2c_priv *priv = ptr;
+-	u32 msr, val;
++	u32 msr;
+ 
+ 	/* Clear START or STOP immediately, except for REPSTART after read */
+-	if (likely(!(priv->flags & ID_P_REP_AFTER_RD))) {
+-		val = rcar_i2c_read(priv, ICMCR);
+-		rcar_i2c_write(priv, ICMCR, val & RCAR_BUS_MASK_DATA);
+-	}
++	if (likely(!(priv->flags & ID_P_REP_AFTER_RD)))
++		rcar_i2c_write(priv, ICMCR, RCAR_BUS_PHASE_DATA);
+ 
+ 	msr = rcar_i2c_read(priv, ICMSR);
+ 
 -- 
 2.30.1
 
