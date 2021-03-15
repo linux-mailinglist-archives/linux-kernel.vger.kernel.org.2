@@ -2,179 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284D933C6E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1910033C6F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbhCOTdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:33:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31519 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233668AbhCOTdi (ORCPT
+        id S232549AbhCOTie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231769AbhCOTiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:33:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615836818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ikEFCrnLtZHBa2my38LuFFSw28vFN+co4nd7kls4/Ls=;
-        b=DL/VX5cz6DS+c/fp+O+c+6AgP7pKz/lfpvp8ScEFFbkF73SLH75GLGKrnEqSWGivXZcPoy
-        axCaKDe4h9v5tG0E7lgkuSCeN5rGsg+BkJsMAkTSqZAO3RkAWHIX2PwLlvl4evNlzFn4BN
-        r3i4NToqsurdZj+oTK68ro/c07OoWnk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-hrO1AAzdOyCqU8E3y8_3IA-1; Mon, 15 Mar 2021 15:33:35 -0400
-X-MC-Unique: hrO1AAzdOyCqU8E3y8_3IA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 013C3100C618;
-        Mon, 15 Mar 2021 19:33:34 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7612E19701;
-        Mon, 15 Mar 2021 19:33:30 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 624AF3250E696;
-        Mon, 15 Mar 2021 20:33:29 +0100 (CET)
-Subject: [PATCH mel-git] net: page_pool: use alloc_pages_bulk in refill code
- path
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, chuck.lever@oracle.com,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        netdev@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 15 Mar 2021 20:33:29 +0100
-Message-ID: <161583680934.3715498.9919702368074023313.stgit@firesoul>
-In-Reply-To: <161583677541.3715498.6118778324185171839.stgit@firesoul>
-References: <161583677541.3715498.6118778324185171839.stgit@firesoul>
-User-Agent: StGit/0.19
+        Mon, 15 Mar 2021 15:38:08 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE85C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:38:08 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id s7so32889122qkg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bQgWtkKs155MccZMhkLMAA6hlfzyu0erwh4dS45kygM=;
+        b=TA4kd7+lQ0INPNYmhlZ+/kkEZuJI+mcK4QWfrLnUerPdu8Yo4at4Kj6rFiSpVwDrSD
+         hO/EhpvvYKl5cxA/eCANmpE0Nw5gK0PrKlTyC7LVQZ+Zwqm+GJUaXAvfUXh+uAlE/EQv
+         XYq4FsssAipO7mTgwRArE9A/oDl93E3N/qG04=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bQgWtkKs155MccZMhkLMAA6hlfzyu0erwh4dS45kygM=;
+        b=P2x8cFPRiY53iJRsCzShGQSEJeTzjbsjoty4wJ83YM5Fbff9oxzHJ7P1zjyvYDveHO
+         7MOJDCzU3JyNCWjQKOwOvI0ehFf9a2wTUNbq3nBzsfOxVlQzwjVV7jLSAMbKJWTI54kw
+         51p/U6h1L8IY0TyCkHZlOCR04MyCVd215zUOrvVJ3Jo+KwRtWjJmvihkzyIn/iVnDpRm
+         PTeFjxLuxQoD53qzxEbJ+snfWGGbLrTaYpdnwSupNXRdtlMGRWIG/46dxgVax5o6Hxs+
+         EUb7OjYugu0wXf4aD1cV4Ub3KJ7Ks/dS2s21llebrsOmg88AbfzK1fZRtxip1LmmUZkV
+         DtZA==
+X-Gm-Message-State: AOAM5314VKfPjAnR5LxzjpgqhdptoRRVaAYn9v/gpTH3tbUHNlNETJLi
+        OB7jD54M2a+rRXYqOwROj1pF9Eyft159aQ==
+X-Google-Smtp-Source: ABdhPJy7H8rzYwOkrgm9fUYMJrkduJ6SN64zzbS4sWykLtPfCVwbudVmUVQb0xXinTLUYh8pN8YRIg==
+X-Received: by 2002:a05:620a:630:: with SMTP id 16mr28333256qkv.304.1615837086603;
+        Mon, 15 Mar 2021 12:38:06 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id t2sm11554722qtd.13.2021.03.15.12.37.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 12:37:51 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id p193so34416287yba.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:37:50 -0700 (PDT)
+X-Received: by 2002:a25:ab54:: with SMTP id u78mr2053766ybi.276.1615837070313;
+ Mon, 15 Mar 2021 12:37:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210314061054.19451-1-srivasam@codeaurora.org> <20210314061054.19451-2-srivasam@codeaurora.org>
+In-Reply-To: <20210314061054.19451-2-srivasam@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 15 Mar 2021 12:37:37 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VA4-ht8Mmroc+T=En6c=GEDchoJ70W1ziSs-MVyqQOfw@mail.gmail.com>
+Message-ID: <CAD=FV=VA4-ht8Mmroc+T=En6c=GEDchoJ70W1ziSs-MVyqQOfw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
+ link for I2S driver
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are cases where the page_pool need to refill with pages from the
-page allocator. Some workloads cause the page_pool to release pages
-instead of recycling these pages.
+Hi,
 
-For these workload it can improve performance to bulk alloc pages from
-the page-allocator to refill the alloc cache.
+On Sat, Mar 13, 2021 at 10:11 PM Srinivasa Rao Mandadapu
+<srivasam@codeaurora.org> wrote:
+>
+> From: Ajit Pandey <ajitp@codeaurora.org>
+>
+> Add dai link for supporting lpass I2S driver, which is used
+> for audio capture and playback.
+> Add lpass-cpu node with  pin controls and i2s primary
+> and secondary dai-links
 
-For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
-redirecting xdp_frame packets into a veth, that does XDP_PASS to create
-an SKB from the xdp_frame, which then cannot return the page to the
-page_pool. In this case, we saw[1] an improvement of 13% from using
-the alloc_pages_bulk API (3,810,013 pps -> 4,308,208 pps).
+You missed Stephen's comments on your commit message [1]
 
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
+[1] https://lore.kernel.org/r/161566899554.1478170.1265435102634351195@swboyd.mtv.corp.google.com/
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- net/core/page_pool.c |   73 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 47 insertions(+), 26 deletions(-)
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 58 ++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 40e1b2beaa6c..7c194335c066 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -203,38 +203,17 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
- 	return true;
- }
- 
--/* slow path */
--noinline
--static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
--						 gfp_t _gfp)
-+static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
-+						 gfp_t gfp)
- {
--	unsigned int pp_flags = pool->p.flags;
- 	struct page *page;
--	gfp_t gfp = _gfp;
--
--	/* We could always set __GFP_COMP, and avoid this branch, as
--	 * prep_new_page() can handle order-0 with __GFP_COMP.
--	 */
--	if (pool->p.order)
--		gfp |= __GFP_COMP;
--
--	/* FUTURE development:
--	 *
--	 * Current slow-path essentially falls back to single page
--	 * allocations, which doesn't improve performance.  This code
--	 * need bulk allocation support from the page allocator code.
--	 */
- 
--	/* Cache was empty, do real allocation */
--#ifdef CONFIG_NUMA
-+	gfp |= __GFP_COMP;
- 	page = alloc_pages_node(pool->p.nid, gfp, pool->p.order);
--#else
--	page = alloc_pages(gfp, pool->p.order);
--#endif
--	if (!page)
-+	if (unlikely(!page))
- 		return NULL;
- 
--	if ((pp_flags & PP_FLAG_DMA_MAP) &&
-+	if ((pool->p.flags & PP_FLAG_DMA_MAP) &&
- 	    unlikely(!page_pool_dma_map(pool, page))) {
- 		put_page(page);
- 		return NULL;
-@@ -243,6 +222,48 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	/* Track how many pages are held 'in-flight' */
- 	pool->pages_state_hold_cnt++;
- 	trace_page_pool_state_hold(pool, page, pool->pages_state_hold_cnt);
-+	return page;
-+}
-+
-+/* slow path */
-+noinline
-+static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
-+						 gfp_t gfp)
-+{
-+	const int bulk = PP_ALLOC_CACHE_REFILL;
-+	unsigned int pp_flags = pool->p.flags;
-+	unsigned int pp_order = pool->p.order;
-+	int pp_nid = pool->p.nid;
-+	struct page *page, *next;
-+	LIST_HEAD(page_list);
-+
-+	/* Don't support bulk alloc for high-order pages */
-+	if (unlikely(pp_order))
-+		return __page_pool_alloc_page_order(pool, gfp);
-+
-+	if (unlikely(!__alloc_pages_bulk(gfp, pp_nid, NULL, bulk, &page_list)))
-+		return NULL;
-+
-+	list_for_each_entry_safe(page, next, &page_list, lru) {
-+		list_del(&page->lru);
-+		if ((pp_flags & PP_FLAG_DMA_MAP) &&
-+		    unlikely(!page_pool_dma_map(pool, page))) {
-+			put_page(page);
-+			continue;
-+		}
-+		/* Alloc cache have room as it is empty on function call */
-+		pool->alloc.cache[pool->alloc.count++] = page;
-+		/* Track how many pages are held 'in-flight' */
-+		pool->pages_state_hold_cnt++;
-+		trace_page_pool_state_hold(pool, page,
-+					   pool->pages_state_hold_cnt);
-+	}
-+
-+	/* Return last page */
-+	if (likely(pool->alloc.count > 0))
-+		page = pool->alloc.cache[--pool->alloc.count];
-+	else
-+		page = NULL;
- 
- 	/* When page just alloc'ed is should/must have refcnt 1. */
- 	return page;
+The commit message nits aren't terribly important and Bjorn can
+presumably just fix them when applying if he cares. IMO you don't need
+to re-spin.
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
+With these two patches plus commit 9922f50f7178 ("ASoC: qcom:
+lpass-cpu: Fix lpass dai ids parse") in the sound tree I get audio on
+sc7180-trogdor-lazor! Thus:
+
+Tested-by: Douglas Anderson <dianders@chromium.org>
