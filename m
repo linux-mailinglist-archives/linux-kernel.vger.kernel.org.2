@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDDE33BE46
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F0833BE72
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbhCOOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51270 "EHLO mail.kernel.org"
+        id S239478AbhCOOrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233648AbhCOOEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE8164F00;
-        Mon, 15 Mar 2021 14:04:02 +0000 (UTC)
+        id S234661AbhCOOEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88AE864EFD;
+        Mon, 15 Mar 2021 14:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817045;
-        bh=psv5oi681gfJ3dlKmVGbYsGxJ0rP+v0JLkT18VQAiRM=;
+        s=korg; t=1615817084;
+        bh=dLggE5UcIHdTZxiVTcRYvG1zoFKMcwZg9ZMurFrMvKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z8jcTxlUOXtI42KiOeRtBv2zlvqM9nVQsE0u37CAbVTgQeuKhMZKy/Q4YutfY5FpH
-         bYgm8QKb8DMWvNl9Y7Ce+p+otUc3AvHstNavvwua9lN3lV9SrJH+SdJ14HIDkWFd8i
-         8eBygMSt2tWVmzqae1MsijUUmIXIcMJDKH3wnPwo=
+        b=1ORzIRsAQjtwyEIy+HbiRzbowW9d2nGht4MqlvvTaTyrKBMbyQBAbUQNIfy6c0Pqp
+         hHEQbhkeYxm/Df6wLK7LYpd+ZGgeyIyHmRpUdUu6HAOJjl0ZtquBKk1diqBWN8JxCX
+         4RxgaQXX4fXgDLhby/aDvei1hiGXlmdqKzrcgt+E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        John Dias <joaodias@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 261/290] zram: fix return value on writeback_store
-Date:   Mon, 15 Mar 2021 14:55:54 +0100
-Message-Id: <20210315135550.841075914@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.11 292/306] KVM: x86: Ensure deadline timer has truly expired before posting its IRQ
+Date:   Mon, 15 Mar 2021 14:55:55 +0100
+Message-Id: <20210315135517.556638562@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +41,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Minchan Kim <minchan@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 57e0076e6575a7b7cef620a0bd2ee2549ef77818 upstream.
+commit beda430177f56656e7980dcce93456ffaa35676b upstream.
 
-writeback_store's return value is overwritten by submit_bio_wait's return
-value.  Thus, writeback_store will return zero since there was no IO
-error.  In the end, write syscall from userspace will see the zero as
-return value, which could make the process stall to keep trying the write
-until it will succeed.
+When posting a deadline timer interrupt, open code the checks guarding
+__kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
+check in kvm_wait_lapic_expire().  The injection check will always fail
+since the interrupt has not yet be injected.  Moving the call after
+injection would also be wrong as that wouldn't actually delay delivery
+of the IRQ if it is indeed sent via posted interrupt.
 
-Link: https://lkml.kernel.org/r/20210312173949.2197662-1-minchan@kernel.org
-Fixes: 3b82a051c101("drivers/block/zram/zram_drv.c: fix error return codes not being returned in writeback_store")
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: John Dias <joaodias@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210305021808.3769732-1-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/zram/zram_drv.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/kvm/lapic.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -633,7 +633,7 @@ static ssize_t writeback_store(struct de
- 	struct bio_vec bio_vec;
- 	struct page *page;
- 	ssize_t ret = len;
--	int mode;
-+	int mode, err;
- 	unsigned long blk_idx = 0;
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -1641,7 +1641,16 @@ static void apic_timer_expired(struct kv
+ 	}
  
- 	if (sysfs_streq(buf, "idle"))
-@@ -725,12 +725,17 @@ static ssize_t writeback_store(struct de
- 		 * XXX: A single page IO would be inefficient for write
- 		 * but it would be not bad as starter.
- 		 */
--		ret = submit_bio_wait(&bio);
--		if (ret) {
-+		err = submit_bio_wait(&bio);
-+		if (err) {
- 			zram_slot_lock(zram, index);
- 			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
- 			zram_clear_flag(zram, index, ZRAM_IDLE);
- 			zram_slot_unlock(zram, index);
-+			/*
-+			 * Return last IO error unless every IO were
-+			 * not suceeded.
-+			 */
-+			ret = err;
- 			continue;
- 		}
- 
+ 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
+-		kvm_wait_lapic_expire(vcpu);
++		/*
++		 * Ensure the guest's timer has truly expired before posting an
++		 * interrupt.  Open code the relevant checks to avoid querying
++		 * lapic_timer_int_injected(), which will be false since the
++		 * interrupt isn't yet injected.  Waiting until after injecting
++		 * is not an option since that won't help a posted interrupt.
++		 */
++		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
++		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
++			__kvm_wait_lapic_expire(vcpu);
+ 		kvm_apic_inject_pending_timer_irqs(apic);
+ 		return;
+ 	}
 
 
