@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D9733BC1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF35C33BC1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhCOOXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S238246AbhCOOXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232941AbhCOOAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA7F864F19;
-        Mon, 15 Mar 2021 13:59:58 +0000 (UTC)
+        id S229683AbhCOOAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 249D764F34;
+        Mon, 15 Mar 2021 13:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816799;
-        bh=I5/Ju2sqpmZF9GUUl8cG9iEELjgWoaYlwhzX40Zzz+w=;
+        s=korg; t=1615816801;
+        bh=JenUZER30KxouxqsM2Q3lyzzCgK0ZOPHs2FtCukF018=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqmaPCmMak7fESJlSDQNLm1FMx5WFB1Y/EJ2//3N5vVEPI4vRkTT3SoOfsijrRB5A
-         IZSE4zMDRIxOPtT0T0Sl26tNuTWxCQzu78AQzXN0tTOhKjL+6XFVVtGh7WyyHQEjvf
-         F3s/zDBRkFHBHEKLrHcKUJy72IzxP/He6N1Ac5Hs=
+        b=JhiFYlyZ0R39RRSd4olTcDkq+aSuj1O0vLBLbr83wquLN4f2NwOg/Lp2YVNW1BZow
+         br40gK4/HkYXuW2j+LQjmlZun0KOwh2p2u8nq4ceYykwQjLOf2Imz++K6Upug6AQ1K
+         UGHJ6IQ8p3MWfTVIhJs99ZOTvtHWF70/AoZ9Gf98=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 4.19 076/120] usb: renesas_usbhs: Clear PIPECFG for re-enabling pipe with other EPNUM
-Date:   Mon, 15 Mar 2021 14:57:07 +0100
-Message-Id: <20210315135722.462364689@linuxfoundation.org>
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.19 077/120] xhci: Improve detection of device initiated wake signal.
+Date:   Mon, 15 Mar 2021 14:57:08 +0100
+Message-Id: <20210315135722.493529122@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -41,47 +41,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit b1d25e6ee57c2605845595b6c61340d734253eb3 upstream.
+commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
 
-According to the datasheet, this controller has a restriction
-which "set an endpoint number so that combinations of the DIR bit and
-the EPNUM bits do not overlap.". However, since the udc core driver is
-possible to assign a bulk pipe as an interrupt endpoint, an endpoint
-number may not match the pipe number. After that, when user rebinds
-another gadget driver, this driver broke the restriction because
-the driver didn't clear any configuration in usb_ep_disable().
+A xHC USB 3 port might miss the first wake signal from a USB 3 device
+if the port LFPS reveiver isn't enabled fast enough after xHC resume.
 
-Example:
- # modprobe g_ncm
- Then, EP3 = pipe 3, EP4 = pipe 4, EP5 = pipe 6
- # rmmod g_ncm
- # modprobe g_hid
- Then, EP3 = pipe 6, EP4 = pipe 7.
- So, pipe 3 and pipe 6 are set as EP3.
+xHC host will anyway be resumed by a PME# signal, but will go back to
+suspend if no port activity is seen.
+The device resends the U3 LFPS wake signal after a 100ms delay, but
+by then host is already suspended, starting all over from the
+beginning of this issue.
 
-So, clear PIPECFG register in usbhs_pipe_free().
+USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
+needs to delay 100ms before resending the wake.
 
-Fixes: dfb87b8bfe09 ("usb: renesas_usbhs: gadget: fix re-enabling pipe without re-connecting")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1615168538-26101-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
+Don't suspend immediately if port activity isn't detected in resume.
+Instead add a retry. If there is no port activity then delay for 120ms,
+and re-check for port activity.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/renesas_usbhs/pipe.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/host/xhci.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/renesas_usbhs/pipe.c
-+++ b/drivers/usb/renesas_usbhs/pipe.c
-@@ -746,6 +746,8 @@ struct usbhs_pipe *usbhs_pipe_malloc(str
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1078,6 +1078,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
+ 	struct usb_hcd		*secondary_hcd;
+ 	int			retval = 0;
+ 	bool			comp_timer_running = false;
++	bool			pending_portevent = false;
  
- void usbhs_pipe_free(struct usbhs_pipe *pipe)
- {
-+	usbhsp_pipe_select(pipe);
-+	usbhsp_pipe_cfg_set(pipe, 0xFFFF, 0);
- 	usbhsp_put_pipe(pipe);
- }
+ 	if (!hcd->state)
+ 		return 0;
+@@ -1216,13 +1217,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
  
+  done:
+ 	if (retval == 0) {
+-		/* Resume root hubs only when have pending events. */
+-		if (xhci_pending_portevent(xhci)) {
++		/*
++		 * Resume roothubs only if there are pending events.
++		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
++		 * the first wake signalling failed, give it that chance.
++		 */
++		pending_portevent = xhci_pending_portevent(xhci);
++		if (!pending_portevent) {
++			msleep(120);
++			pending_portevent = xhci_pending_portevent(xhci);
++		}
++
++		if (pending_portevent) {
+ 			usb_hcd_resume_root_hub(xhci->shared_hcd);
+ 			usb_hcd_resume_root_hub(hcd);
+ 		}
+ 	}
+-
+ 	/*
+ 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
+ 	 * be re-initialized Always after a system resume. Ports are subject
 
 
