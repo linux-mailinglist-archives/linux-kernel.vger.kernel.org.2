@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBC333BB26
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562B433BB44
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236289AbhCOOMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S232122AbhCOOOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232414AbhCON6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35DCA64F2F;
-        Mon, 15 Mar 2021 13:58:30 +0000 (UTC)
+        id S230425AbhCON7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9583664F1E;
+        Mon, 15 Mar 2021 13:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816711;
-        bh=VupWNzS1C9FEPcZk+mVDKvKN4MycCpmLi/K35zgcKvU=;
+        s=korg; t=1615816719;
+        bh=SeEx1BCJOUjqxYPZYyrkBUe9IDEKTvgxx0uGP38XcnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqXx+/lxwrbGeskdeKoapC+wZUyYEipA0S2B0FHGfo1OF0vxSFX3OJoJj4PzyLW0G
-         zqYqYbjK+3JXG4inAnOdmBjUIPQXRlhp/QBPU3Cj/cNMKlLjFJoTRni4AevwWtIb5E
-         tO1hJyxzAGYbIidhKsyNmfHriatxF96JK4zNbIyU=
+        b=KeBTg1fI2FnEEKbpt8dd9uOsJzvPjgM2mmrOMjMaPwFdptKCPij3oHcbPs4Uq/CYw
+         EfOsD3y1GUqIxNhLitEo2idfeZt7jBkJNv4RWthehrdrqLfCPybgsqkZxBFPZAlAuN
+         iRExAXhg8g6+ZDbu615IXT5AF7tphslpLDMELPk8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 061/168] net: phy: fix save wrong speed and duplex problem if autoneg is on
-Date:   Mon, 15 Mar 2021 14:54:53 +0100
-Message-Id: <20210315135552.371764008@linuxfoundation.org>
+Subject: [PATCH 5.4 066/168] mmc: mediatek: fix race condition between msdc_request_timeout and irq
+Date:   Mon, 15 Mar 2021 14:54:58 +0100
+Message-Id: <20210315135552.537435625@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,55 +42,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Chaotian Jing <chaotian.jing@mediatek.com>
 
-[ Upstream commit d9032dba5a2b2bbf0fdce67c8795300ec9923b43 ]
+[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
 
-If phy uses generic driver and autoneg is on, enter command
-"ethtool -s eth0 speed 50" will not change phy speed actually, but
-command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
-has been set to 50 and no update later.
+when get request SW timeout, if CMD/DAT xfer done irq coming right now,
+then there is race between the msdc_request_timeout work and irq handler,
+and the host->cmd and host->data may set to NULL in irq handler. also,
+current flow ensure that only one path can go to msdc_request_done(), so
+no need check the return value of cancel_delayed_work().
 
-And duplex setting has same problem too.
-
-However, if autoneg is on, phy only changes speed and duplex according to
-phydev->advertising, but not phydev->speed and phydev->duplex. So in this
-case, phydev->speed and phydev->duplex don't need to be set in function
-phy_ethtool_ksettings_set() if autoneg is on.
-
-Fixes: 51e2a3846eab ("PHY: Avoid unnecessary aneg restarts")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
+Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/phy.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index b718b11607fc..b0b8a3ce82b6 100644
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -345,15 +345,16 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 9d47a2bd2546..1254a5650cff 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -1020,13 +1020,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
+ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+ {
+ 	unsigned long flags;
+-	bool ret;
  
- 	phydev->autoneg = autoneg;
+-	ret = cancel_delayed_work(&host->req_timeout);
+-	if (!ret) {
+-		/* delay work already running */
+-		return;
+-	}
++	/*
++	 * No need check the return value of cancel_delayed_work, as only ONE
++	 * path will go here!
++	 */
++	cancel_delayed_work(&host->req_timeout);
++
+ 	spin_lock_irqsave(&host->lock, flags);
+ 	host->mrq = NULL;
+ 	spin_unlock_irqrestore(&host->lock, flags);
+@@ -1046,7 +1046,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 	bool done = false;
+ 	bool sbc_error;
+ 	unsigned long flags;
+-	u32 *rsp = cmd->resp;
++	u32 *rsp;
  
--	phydev->speed = speed;
-+	if (autoneg == AUTONEG_DISABLE) {
-+		phydev->speed = speed;
-+		phydev->duplex = duplex;
-+	}
+ 	if (mrq->sbc && cmd == mrq->cmd &&
+ 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
+@@ -1067,6 +1067,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
  
- 	linkmode_copy(phydev->advertising, advertising);
+ 	if (done)
+ 		return true;
++	rsp = cmd->resp;
  
- 	linkmode_mod_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
- 			 phydev->advertising, autoneg == AUTONEG_ENABLE);
+ 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
  
--	phydev->duplex = duplex;
--
- 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+@@ -1254,7 +1255,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
+ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 				struct mmc_request *mrq, struct mmc_data *data)
+ {
+-	struct mmc_command *stop = data->stop;
++	struct mmc_command *stop;
+ 	unsigned long flags;
+ 	bool done;
+ 	unsigned int check_data = events &
+@@ -1270,6 +1271,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
  
- 	/* Restart the PHY */
+ 	if (done)
+ 		return true;
++	stop = data->stop;
+ 
+ 	if (check_data || (stop && stop->error)) {
+ 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
 -- 
 2.30.1
 
