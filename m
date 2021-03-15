@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D1C33C27F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4795A33C281
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhCOQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:52:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46747 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232437AbhCOQvp (ORCPT
+        id S232674AbhCOQwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhCOQw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:51:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615827104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFFcd4wD8/CMTprSPx6NQ5pGVPcuBak1/nAOtKKtWKQ=;
-        b=WuhGiCrPxSAwPNs/wwshEq0B5MzHKYk31vyK1yy8ZPFkKrCOeP6o/uMGDb2g7jJh07yzAB
-        x/xjHZvi90eaWIfEt+rgex+Rqb5QQ6ZhmdojcFNKVCw7dl/0pjzK45S0MINmFVx7VeKJcd
-        GuArS1/2ntul3blQSfWBzcAbrmWDTlc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-HlO-i1j-P7ub0ae-8cCVmA-1; Mon, 15 Mar 2021 12:51:41 -0400
-X-MC-Unique: HlO-i1j-P7ub0ae-8cCVmA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98F951B2C981;
-        Mon, 15 Mar 2021 16:51:39 +0000 (UTC)
-Received: from [10.36.112.75] (ovpn-112-75.ams2.redhat.com [10.36.112.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 359965D745;
-        Mon, 15 Mar 2021 16:51:31 +0000 (UTC)
-Subject: Re: [PATCH v4 06/14] vringh: add vringh_kiov_length() helper
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     netdev@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org
-References: <20210315163450.254396-1-sgarzare@redhat.com>
- <20210315163450.254396-7-sgarzare@redhat.com>
-From:   Laurent Vivier <lvivier@redhat.com>
-Message-ID: <b06eb44c-d4e5-e47c-fbf5-26be469aae9e@redhat.com>
-Date:   Mon, 15 Mar 2021 17:51:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 12:52:29 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68700C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:52:28 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id k2so10019704ili.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I0fio/Xr/Ly6DyTgEWQynoHoUq6FwgIyQD271+C3RNY=;
+        b=UQ19CCehLZ660g3s3UPDiQx535TvUiWgMD5fu/qA3K/dzYjT77TFq13R9EOTAezL9q
+         ISwnWhv8I/A1AYTKjs3nImttMkCOF8Wrocgf318Wu0nARlPajUeNMhagGDQeKJ/Qfcy8
+         8qhveUh5V9mYbrLh6juQLBttB7iYNlU6XKfrM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I0fio/Xr/Ly6DyTgEWQynoHoUq6FwgIyQD271+C3RNY=;
+        b=pQXPIkFr9LIPDrPkr0zfHro3vSR95gLqZr6s8IUNZefHuGuGSl9Z0rtVE2MY84G55R
+         GLdfxhrkNmcBVn6P1qlkZCq/qdBRfYYxmmRIFFTtSexEuGbyAWF9Ukglp4jL/Mb8rFg9
+         WeXYaN8XRdR45UVUxx6DAr+iNhCLgJrJuwY2i/wD9eXT2tb85SjglRrxHYlIFy5BLIzx
+         SMkdz1WoT5FPcSRyO26R3/guH3XMt9mPLh6eCzdRIyg8igSmcIZtx0AQcQk9E0+V8ppn
+         +3rw7kABTr3sdcKT3p7Sc2+636gvS6DvD9HdyHtN3de1tcim3yJQj+hGXBISwNnN7KX1
+         tkow==
+X-Gm-Message-State: AOAM531llmmQ5eZBafK/t8S5/IZAvFXUgiT6B9dC/zQdPuMXJOG5BR7B
+        5J7mnsq4NRuJjVBHox/ms6abf8JEfUJnsFjIUFiy
+X-Google-Smtp-Source: ABdhPJxtAb/xjNeIJFH1q/5hHI/w3CXBjeigYEpLIX9eKpoGGREben0fqn6/MiMpnQWd0Va6CG7RJR/CgkxudOaAjcU=
+X-Received: by 2002:a05:6e02:1524:: with SMTP id i4mr395752ilu.147.1615827147940;
+ Mon, 15 Mar 2021 09:52:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210315163450.254396-7-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210315110500.802897-1-anup.patel@wdc.com> <20210315110500.802897-2-anup.patel@wdc.com>
+In-Reply-To: <20210315110500.802897-2-anup.patel@wdc.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 15 Mar 2021 09:52:17 -0700
+Message-ID: <CAOnJCUKnU_dzfT39vnxhwHi9Yea-i7oZ2NmHU4L22rzv8VmW8g@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] RISC-V: Don't print SBI version for all detected extensions
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/2021 17:34, Stefano Garzarella wrote:
-> This new helper returns the total number of bytes covered by
-> a vringh_kiov.
-> 
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+On Mon, Mar 15, 2021 at 4:07 AM Anup Patel <anup.patel@wdc.com> wrote:
+>
+> The sbi_init() already prints SBI version before detecting
+> various SBI extensions so we don't need to print SBI version
+> for all detected SBI extensions.
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  include/linux/vringh.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> index 755211ebd195..84db7b8f912f 100644
-> --- a/include/linux/vringh.h
-> +++ b/include/linux/vringh.h
-> @@ -199,6 +199,17 @@ static inline void vringh_kiov_cleanup(struct vringh_kiov *kiov)
->  	kiov->iov = NULL;
->  }
->  
-> +static inline size_t vringh_kiov_length(struct vringh_kiov *kiov)
-> +{
-> +	size_t len = 0;
-> +	int i;
-> +
-> +	for (i = kiov->i; i < kiov->used; i++)
-> +		len += kiov->iov[i].iov_len;
-> +
-> +	return len;
-> +}
+>  arch/riscv/kernel/sbi.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index f4a7db3d309e..c0dcebdd30ec 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -577,19 +577,19 @@ void __init sbi_init(void)
+>                         sbi_get_firmware_id(), sbi_get_firmware_version());
+>                 if (sbi_probe_extension(SBI_EXT_TIME) > 0) {
+>                         __sbi_set_timer = __sbi_set_timer_v02;
+> -                       pr_info("SBI v0.2 TIME extension detected\n");
+> +                       pr_info("SBI TIME extension detected\n");
+>                 } else {
+>                         __sbi_set_timer = __sbi_set_timer_v01;
+>                 }
+>                 if (sbi_probe_extension(SBI_EXT_IPI) > 0) {
+>                         __sbi_send_ipi  = __sbi_send_ipi_v02;
+> -                       pr_info("SBI v0.2 IPI extension detected\n");
+> +                       pr_info("SBI IPI extension detected\n");
+>                 } else {
+>                         __sbi_send_ipi  = __sbi_send_ipi_v01;
+>                 }
+>                 if (sbi_probe_extension(SBI_EXT_RFENCE) > 0) {
+>                         __sbi_rfence    = __sbi_rfence_v02;
+> -                       pr_info("SBI v0.2 RFENCE extension detected\n");
+> +                       pr_info("SBI RFENCE extension detected\n");
+>                 } else {
+>                         __sbi_rfence    = __sbi_rfence_v01;
+>                 }
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Do we really need an helper?
 
-For instance, we can use:
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
 
-len = iov_length((struct iovec *)kiov->iov, kiov->used);
-
-Or do we want to avoid the cast?
-
-Thanks,
-Laurent
-
+-- 
+Regards,
+Atish
