@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2F233B9AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82AA33B974
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhCOOGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        id S234371AbhCOODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232070AbhCON5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84FAA64EF9;
-        Mon, 15 Mar 2021 13:57:41 +0000 (UTC)
+        id S230289AbhCON5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5218064F2A;
+        Mon, 15 Mar 2021 13:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816662;
-        bh=lZTynE910o75TtbFcVTnO8xh1elc8Bg6ye9eeHJ2WUw=;
+        s=korg; t=1615816626;
+        bh=1qkicVdTJAhRNQZu9LqfjfsLRgL3aLMZPWlzvhucciE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c/o7LdWKNfsF36VTKCpdkHSLpQChECQ75UNZgUvsq3ihQQCYnyYD5cf938rbkIE1e
-         3KeyGPYAn/ovVbnDkyKMrutSxrPAB43cu0dJ2q50UyBVnRO5eqMlLHDcCdyJ4VC75T
-         buW0iuhVWwpBOpwqbndBE20UhIMXipNMDZk26FHU=
+        b=uubwlLNwpKMbSDFoxl8Y7AgIEplg4We7f3E6XVk+sq/IgHCau/ac7XZzYRIwNyjiu
+         XwqYA4FQlk8jh1qL1aQ6GOOq+n8UGZgsE81xGRRmzYSMxlaxrHPV41GtW9iT3YAdCQ
+         qxqIYE3zAt/CwJQxlEx5v9KqjToLM79b+4sFnKF0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 049/306] net: enetc: fix incorrect TPID when receiving 802.1ad tagged packets
-Date:   Mon, 15 Mar 2021 14:51:52 +0100
-Message-Id: <20210315135509.307853239@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH 5.10 020/290] net: always use icmp{,v6}_ndo_send from ndo_start_xmit
+Date:   Mon, 15 Mar 2021 14:51:53 +0100
+Message-Id: <20210315135542.613146474@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,93 +47,186 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit 827b6fd046516af605e190c872949f22208b5d41 upstream.
+commit 4372339efc06bc2a796f4cc9d0a7a929dfda4967 upstream.
 
-When the enetc ports have rx-vlan-offload enabled, they report a TPID of
-ETH_P_8021Q regardless of what was actually in the packet. When
-rx-vlan-offload is disabled, packets have the proper TPID. Fix this
-inconsistency by finishing the TODO left in the code.
+There were a few remaining tunnel drivers that didn't receive the prior
+conversion to icmp{,v6}_ndo_send. Knowing now that this could lead to
+memory corrution (see ee576c47db60 ("net: icmp: pass zeroed opts from
+icmp{,v6}_ndo_send before sending") for details), there's even more
+imperative to have these all converted. So this commit goes through the
+remaining cases that I could find and does a boring translation to the
+ndo variety.
 
-Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+The Fixes: line below is the merge that originally added icmp{,v6}_
+ndo_send and converted the first batch of icmp{,v6}_send users. The
+rationale then for the change applies equally to this patch. It's just
+that these drivers were left out of the initial conversion because these
+network devices are hiding in net/ rather than in drivers/net/.
+
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 803381f9f117 ("Merge branch 'icmp-account-for-NAT-when-sending-icmps-from-ndo-layer'")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c    |   34 ++++++++++++++++++------
- drivers/net/ethernet/freescale/enetc/enetc_hw.h |    3 ++
- 2 files changed, 29 insertions(+), 8 deletions(-)
+ net/ipv4/ip_tunnel.c  |    5 ++---
+ net/ipv4/ip_vti.c     |    6 +++---
+ net/ipv6/ip6_gre.c    |   16 ++++++++--------
+ net/ipv6/ip6_tunnel.c |   10 +++++-----
+ net/ipv6/ip6_vti.c    |    6 +++---
+ net/ipv6/sit.c        |    2 +-
+ 6 files changed, 22 insertions(+), 23 deletions(-)
 
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -523,9 +523,8 @@ static void enetc_get_rx_tstamp(struct n
- static void enetc_get_offloads(struct enetc_bdr *rx_ring,
- 			       union enetc_rx_bd *rxbd, struct sk_buff *skb)
- {
--#ifdef CONFIG_FSL_ENETC_PTP_CLOCK
- 	struct enetc_ndev_priv *priv = netdev_priv(rx_ring->ndev);
--#endif
-+
- 	/* TODO: hashing */
- 	if (rx_ring->ndev->features & NETIF_F_RXCSUM) {
- 		u16 inet_csum = le16_to_cpu(rxbd->r.inet_csum);
-@@ -534,12 +533,31 @@ static void enetc_get_offloads(struct en
- 		skb->ip_summed = CHECKSUM_COMPLETE;
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -502,8 +502,7 @@ static int tnl_update_pmtu(struct net_de
+ 		if (!skb_is_gso(skb) &&
+ 		    (inner_iph->frag_off & htons(IP_DF)) &&
+ 		    mtu < pkt_size) {
+-			memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
+ 			return -E2BIG;
+ 		}
+ 	}
+@@ -527,7 +526,7 @@ static int tnl_update_pmtu(struct net_de
+ 
+ 		if (!skb_is_gso(skb) && mtu >= IPV6_MIN_MTU &&
+ 					mtu < pkt_size) {
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 			return -E2BIG;
+ 		}
+ 	}
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -238,13 +238,13 @@ static netdev_tx_t vti_xmit(struct sk_bu
+ 	if (skb->len > mtu) {
+ 		skb_dst_update_pmtu_no_confirm(skb, mtu);
+ 		if (skb->protocol == htons(ETH_P_IP)) {
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		} else {
+ 			if (mtu < IPV6_MIN_MTU)
+ 				mtu = IPV6_MIN_MTU;
+ 
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		}
+ 
+ 		dst_release(dst);
+--- a/net/ipv6/ip6_gre.c
++++ b/net/ipv6/ip6_gre.c
+@@ -678,8 +678,8 @@ static int prepare_ip6gre_xmit_ipv6(stru
+ 
+ 		tel = (struct ipv6_tlv_tnl_enc_lim *)&skb_network_header(skb)[offset];
+ 		if (tel->encap_limit == 0) {
+-			icmpv6_send(skb, ICMPV6_PARAMPROB,
+-				    ICMPV6_HDR_FIELD, offset + 2);
++			icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
++					ICMPV6_HDR_FIELD, offset + 2);
+ 			return -1;
+ 		}
+ 		*encap_limit = tel->encap_limit - 1;
+@@ -805,8 +805,8 @@ static inline int ip6gre_xmit_ipv4(struc
+ 	if (err != 0) {
+ 		/* XXX: send ICMP error even if DF is not set. */
+ 		if (err == -EMSGSIZE)
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		return -1;
  	}
  
--	/* copy VLAN to skb, if one is extracted, for now we assume it's a
--	 * standard TPID, but HW also supports custom values
--	 */
--	if (le16_to_cpu(rxbd->r.flags) & ENETC_RXBD_FLAG_VLAN)
--		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
--				       le16_to_cpu(rxbd->r.vlan_opt));
-+	if (le16_to_cpu(rxbd->r.flags) & ENETC_RXBD_FLAG_VLAN) {
-+		__be16 tpid = 0;
-+
-+		switch (le16_to_cpu(rxbd->r.flags) & ENETC_RXBD_FLAG_TPID) {
-+		case 0:
-+			tpid = htons(ETH_P_8021Q);
-+			break;
-+		case 1:
-+			tpid = htons(ETH_P_8021AD);
-+			break;
-+		case 2:
-+			tpid = htons(enetc_port_rd(&priv->si->hw,
-+						   ENETC_PCVLANR1));
-+			break;
-+		case 3:
-+			tpid = htons(enetc_port_rd(&priv->si->hw,
-+						   ENETC_PCVLANR2));
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		__vlan_hwaccel_put_tag(skb, tpid, le16_to_cpu(rxbd->r.vlan_opt));
-+	}
-+
- #ifdef CONFIG_FSL_ENETC_PTP_CLOCK
- 	if (priv->active_offloads & ENETC_F_RX_TSTAMP)
- 		enetc_get_rx_tstamp(rx_ring->ndev, rxbd, skb);
---- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-@@ -172,6 +172,8 @@ enum enetc_bdr_type {TX, RX};
- #define ENETC_PSIPMAR0(n)	(0x0100 + (n) * 0x8) /* n = SI index */
- #define ENETC_PSIPMAR1(n)	(0x0104 + (n) * 0x8)
- #define ENETC_PVCLCTR		0x0208
-+#define ENETC_PCVLANR1		0x0210
-+#define ENETC_PCVLANR2		0x0214
- #define ENETC_VLAN_TYPE_C	BIT(0)
- #define ENETC_VLAN_TYPE_S	BIT(1)
- #define ENETC_PVCLCTR_OVTPIDL(bmp)	((bmp) & 0xff) /* VLAN_TYPE */
-@@ -570,6 +572,7 @@ union enetc_rx_bd {
- #define ENETC_RXBD_LSTATUS(flags)	((flags) << 16)
- #define ENETC_RXBD_FLAG_VLAN	BIT(9)
- #define ENETC_RXBD_FLAG_TSTMP	BIT(10)
-+#define ENETC_RXBD_FLAG_TPID	GENMASK(1, 0)
+@@ -837,7 +837,7 @@ static inline int ip6gre_xmit_ipv6(struc
+ 			  &mtu, skb->protocol);
+ 	if (err != 0) {
+ 		if (err == -EMSGSIZE)
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		return -1;
+ 	}
  
- #define ENETC_MAC_ADDR_FILT_CNT	8 /* # of supported entries per port */
- #define EMETC_MAC_ADDR_FILT_RES	3 /* # of reserved entries at the beginning */
+@@ -1063,10 +1063,10 @@ static netdev_tx_t ip6erspan_tunnel_xmit
+ 		/* XXX: send ICMP error even if DF is not set. */
+ 		if (err == -EMSGSIZE) {
+ 			if (skb->protocol == htons(ETH_P_IP))
+-				icmp_send(skb, ICMP_DEST_UNREACH,
+-					  ICMP_FRAG_NEEDED, htonl(mtu));
++				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
++					      ICMP_FRAG_NEEDED, htonl(mtu));
+ 			else
+-				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		}
+ 
+ 		goto tx_err;
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -1363,8 +1363,8 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
+ 
+ 				tel = (void *)&skb_network_header(skb)[offset];
+ 				if (tel->encap_limit == 0) {
+-					icmpv6_send(skb, ICMPV6_PARAMPROB,
+-						ICMPV6_HDR_FIELD, offset + 2);
++					icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
++							ICMPV6_HDR_FIELD, offset + 2);
+ 					return -1;
+ 				}
+ 				encap_limit = tel->encap_limit - 1;
+@@ -1416,11 +1416,11 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
+ 		if (err == -EMSGSIZE)
+ 			switch (protocol) {
+ 			case IPPROTO_IPIP:
+-				icmp_send(skb, ICMP_DEST_UNREACH,
+-					  ICMP_FRAG_NEEDED, htonl(mtu));
++				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
++					      ICMP_FRAG_NEEDED, htonl(mtu));
+ 				break;
+ 			case IPPROTO_IPV6:
+-				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 				break;
+ 			default:
+ 				break;
+--- a/net/ipv6/ip6_vti.c
++++ b/net/ipv6/ip6_vti.c
+@@ -520,10 +520,10 @@ vti6_xmit(struct sk_buff *skb, struct ne
+ 			if (mtu < IPV6_MIN_MTU)
+ 				mtu = IPV6_MIN_MTU;
+ 
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		} else {
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		}
+ 
+ 		err = -EMSGSIZE;
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -987,7 +987,7 @@ static netdev_tx_t ipip6_tunnel_xmit(str
+ 			skb_dst_update_pmtu_no_confirm(skb, mtu);
+ 
+ 		if (skb->len > mtu && !skb_is_gso(skb)) {
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 			ip_rt_put(rt);
+ 			goto tx_error;
+ 		}
 
 
