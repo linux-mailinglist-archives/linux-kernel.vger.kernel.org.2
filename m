@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338F033BBB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946FD33BBAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhCOOT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S237735AbhCOOTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232546AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E59D564F34;
-        Mon, 15 Mar 2021 13:59:31 +0000 (UTC)
+        id S232685AbhCON7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F5164F1A;
+        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816773;
-        bh=SmkaahNmjuMD/+bb5iHDas9E0xh7WN3DAKY9tEEcZ9o=;
+        s=korg; t=1615816774;
+        bh=5EHHy+RI8mq93sT8v8wO7Z8g+xB42XGaRZ8h7umuZbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaKS+fa0ayhgUge8Pr0/DAOSz5byX2MXE1EF4N55tZeg8kUa9PrZK7Y7zApdK17MI
-         IVxCDRTC+UalNnx26aQ3dXG1ZLwCmM8eKWwQYsX6iyIpVZT/1hEr8bpT+CtrK4QTDS
-         +IIHebYLrkczMKTATiu/Y5QZv4MrLsKBkzUYxuao=
+        b=f8MiS2zsLGQZ4E7kd4VuBAxUxv05LoZBDThBI/Oi/ectpgwj5sqkBlN8dkFw5iOdr
+         vT54vWzjOJ3AJ0Sd3Pa1TaNJhmIiKdsF3td/ATZaKbJN5DJSs4LXu58qWtOT1SbbkI
+         j0Fj1558Mol/fzs0wgf1D257P9ANNerVl96IzH6g=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 106/290] media: rc: compile rc-cec.c into rc-core
-Date:   Mon, 15 Mar 2021 14:53:19 +0100
-Message-Id: <20210315135545.491077454@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.10 107/290] cifs: fix credit accounting for extra channel
+Date:   Mon, 15 Mar 2021 14:53:20 +0100
+Message-Id: <20210315135545.522200360@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,140 +42,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Hans Verkuil <hverkuil@xs4all.nl>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit f09f9f93afad770a04b35235a0aa465fcc8d6e3d upstream.
+commit a249cc8bc2e2fed680047d326eb9a50756724198 upstream.
 
-The rc-cec keymap is unusual in that it can't be built as a module,
-instead it is registered directly in rc-main.c if CONFIG_MEDIA_CEC_RC
-is set. This is because it can be called from drm_dp_cec_set_edid() via
-cec_register_adapter() in an asynchronous context, and it is not
-allowed to use request_module() to load rc-cec.ko in that case. Trying to
-do so results in a 'WARN_ON_ONCE(wait && current_is_async())'.
+With multichannel, operations like the queries
+from "ls -lR" can cause all credits to be used and
+errors to be returned since max_credits was not
+being set correctly on the secondary channels and
+thus the client was requesting 0 credits incorrectly
+in some cases (which can lead to not having
+enough credits to perform any operation on that
+channel).
 
-Since this keymap is only used if CONFIG_MEDIA_CEC_RC is set, we
-just compile this keymap into the rc-core module and never as a
-separate module.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 2c6d1fffa1d9 (drm: add support for DisplayPort CEC-Tunneling-over-AUX)
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+CC: <stable@vger.kernel.org> # v5.8+
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/rc/Makefile         |    1 +
- drivers/media/rc/keymaps/Makefile |    1 -
- drivers/media/rc/keymaps/rc-cec.c |   28 +++++++++++-----------------
- drivers/media/rc/rc-main.c        |    6 ++++++
- include/media/rc-map.h            |    7 +++++++
- 5 files changed, 25 insertions(+), 18 deletions(-)
+ fs/cifs/connect.c |   10 +++++-----
+ fs/cifs/sess.c    |    1 +
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/media/rc/Makefile
-+++ b/drivers/media/rc/Makefile
-@@ -5,6 +5,7 @@ obj-y += keymaps/
- obj-$(CONFIG_RC_CORE) += rc-core.o
- rc-core-y := rc-main.o rc-ir-raw.o
- rc-core-$(CONFIG_LIRC) += lirc_dev.o
-+rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
- rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
- obj-$(CONFIG_IR_NEC_DECODER) += ir-nec-decoder.o
- obj-$(CONFIG_IR_RC5_DECODER) += ir-rc5-decoder.o
---- a/drivers/media/rc/keymaps/Makefile
-+++ b/drivers/media/rc/keymaps/Makefile
-@@ -21,7 +21,6 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t
- 			rc-behold.o \
- 			rc-behold-columbus.o \
- 			rc-budget-ci-old.o \
--			rc-cec.o \
- 			rc-cinergy-1400.o \
- 			rc-cinergy.o \
- 			rc-d680-dmb.o \
---- a/drivers/media/rc/keymaps/rc-cec.c
-+++ b/drivers/media/rc/keymaps/rc-cec.c
-@@ -1,6 +1,16 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Keytable for the CEC remote control
-  *
-+ * This keymap is unusual in that it can't be built as a module,
-+ * instead it is registered directly in rc-main.c if CONFIG_MEDIA_CEC_RC
-+ * is set. This is because it can be called from drm_dp_cec_set_edid() via
-+ * cec_register_adapter() in an asynchronous context, and it is not
-+ * allowed to use request_module() to load rc-cec.ko in that case.
-+ *
-+ * Since this keymap is only used if CONFIG_MEDIA_CEC_RC is set, we
-+ * just compile this keymap into the rc-core module and never as a
-+ * separate module.
-+ *
-  * Copyright (c) 2015 by Kamil Debski
-  */
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -2629,6 +2629,11 @@ smbd_connected:
+ 	tcp_ses->min_offload = volume_info->min_offload;
+ 	tcp_ses->tcpStatus = CifsNeedNegotiate;
  
-@@ -152,7 +162,7 @@ static struct rc_map_table cec[] = {
- 	/* 0x77-0xff: Reserved */
- };
- 
--static struct rc_map_list cec_map = {
-+struct rc_map_list cec_map = {
- 	.map = {
- 		.scan		= cec,
- 		.size		= ARRAY_SIZE(cec),
-@@ -160,19 +170,3 @@ static struct rc_map_list cec_map = {
- 		.name		= RC_MAP_CEC,
- 	}
- };
--
--static int __init init_rc_map_cec(void)
--{
--	return rc_map_register(&cec_map);
--}
--
--static void __exit exit_rc_map_cec(void)
--{
--	rc_map_unregister(&cec_map);
--}
--
--module_init(init_rc_map_cec);
--module_exit(exit_rc_map_cec);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Kamil Debski");
---- a/drivers/media/rc/rc-main.c
-+++ b/drivers/media/rc/rc-main.c
-@@ -2069,6 +2069,9 @@ static int __init rc_core_init(void)
- 
- 	led_trigger_register_simple("rc-feedback", &led_feedback);
- 	rc_map_register(&empty_map);
-+#ifdef CONFIG_MEDIA_CEC_RC
-+	rc_map_register(&cec_map);
-+#endif
- 
- 	return 0;
- }
-@@ -2078,6 +2081,9 @@ static void __exit rc_core_exit(void)
- 	lirc_dev_exit();
- 	class_unregister(&rc_class);
- 	led_trigger_unregister_simple(led_feedback);
-+#ifdef CONFIG_MEDIA_CEC_RC
-+	rc_map_unregister(&cec_map);
-+#endif
- 	rc_map_unregister(&empty_map);
- }
- 
---- a/include/media/rc-map.h
-+++ b/include/media/rc-map.h
-@@ -175,6 +175,13 @@ struct rc_map_list {
- 	struct rc_map map;
- };
- 
-+#ifdef CONFIG_MEDIA_CEC_RC
-+/*
-+ * rc_map_list from rc-cec.c
-+ */
-+extern struct rc_map_list cec_map;
-+#endif
++	if ((volume_info->max_credits < 20) || (volume_info->max_credits > 60000))
++		tcp_ses->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
++	else
++		tcp_ses->max_credits = volume_info->max_credits;
 +
- /* Routines from rc-map.c */
+ 	tcp_ses->nr_targets = 1;
+ 	tcp_ses->ignore_signature = volume_info->ignore_signature;
+ 	/* thread spawned, put it on the list */
+@@ -4077,11 +4082,6 @@ static int mount_get_conns(struct smb_vo
  
- /**
+ 	*nserver = server;
+ 
+-	if ((vol->max_credits < 20) || (vol->max_credits > 60000))
+-		server->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
+-	else
+-		server->max_credits = vol->max_credits;
+-
+ 	/* get a reference to a SMB session */
+ 	ses = cifs_get_smb_ses(server, vol);
+ 	if (IS_ERR(ses)) {
+--- a/fs/cifs/sess.c
++++ b/fs/cifs/sess.c
+@@ -224,6 +224,7 @@ cifs_ses_add_channel(struct cifs_ses *se
+ 	vol.noautotune = ses->server->noautotune;
+ 	vol.sockopt_tcp_nodelay = ses->server->tcp_nodelay;
+ 	vol.echo_interval = ses->server->echo_interval / HZ;
++	vol.max_credits = ses->server->max_credits;
+ 
+ 	/*
+ 	 * This will be used for encoding/decoding user/domain/pw
 
 
