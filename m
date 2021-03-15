@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCAC33BAD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2AA33BBCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235721AbhCOOKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:10:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S232779AbhCOOVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232290AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69F9B64EF3;
-        Mon, 15 Mar 2021 13:58:17 +0000 (UTC)
+        id S232696AbhCON7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DE964F46;
+        Mon, 15 Mar 2021 13:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816698;
-        bh=6JzNxAYuGj0N3DsPXW3YpmIefZQqBRq5K6bvIzYn8aU=;
+        s=korg; t=1615816750;
+        bh=iakUUpx4G6VONJ2CRlAEqBBDWFCcmWmLRSuQ8I4Q60A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JLOK71+1lQzsUQ6IMd3uDZDn66R6rKDWYcTcvXvDIQhUebCMcCNKJtMCPKweZZ8HJ
-         tJq8CeVUG20N7S1uj+vpbgRom0eT/6fkQfP5cHjXyWhi+Fq722J4v5XaOD6BnS9bYE
-         0oDfJpjqhlZUviqVpcMCFw+oD1iuV8WS0WBSFI9Y=
+        b=z24wGXmDq5t+hRVIsAKCF+XG59zVH5naMI/8BbRIR8OZln2kNfGztqOoWk8c4D57C
+         r3HpcdB0CehiiZ6AifvuqsEroVgUvUMWmlWcP8c+cTQN18j64I5pcGLYqskFVBTCx2
+         VvG+Tv4pL9lFeori2PMfswNp6QIHq/gD15ItOH4A=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 05/95] net: Introduce parse_protocol header_ops callback
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 044/120] mmc: mxs-mmc: Fix a resource leak in an error handling path in mxs_mmc_probe()
 Date:   Mon, 15 Mar 2021 14:56:35 +0100
-Message-Id: <20210315135740.438622487@linuxfoundation.org>
+Message-Id: <20210315135721.435765477@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit e78b2915517e8fcadb1bc130ad6aeac7099e510c upstream.
+[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
 
-Introduce a new optional header_ops callback called parse_protocol and a
-wrapper function dev_parse_header_protocol, similar to dev_parse_header.
+If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
+call.
 
-The new callback's purpose is to extract the protocol number from the L2
-header, the format of which is known to the driver, but not to the upper
-layers of the stack.
-
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/netdevice.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mmc/host/mxs-mmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -272,6 +272,7 @@ struct header_ops {
- 				const struct net_device *dev,
- 				const unsigned char *haddr);
- 	bool	(*validate)(const char *ll_header, unsigned int len);
-+	__be16	(*parse_protocol)(const struct sk_buff *skb);
- };
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index add1e70195ea..7125687faf76 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -659,7 +659,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
  
- /* These flag bits are private to the generic network queueing
-@@ -2731,6 +2732,15 @@ static inline int dev_parse_header(const
- 	return dev->header_ops->parse(skb, haddr);
- }
+ 	ret = mmc_of_parse(mmc);
+ 	if (ret)
+-		goto out_clk_disable;
++		goto out_free_dma;
  
-+static inline __be16 dev_parse_header_protocol(const struct sk_buff *skb)
-+{
-+	const struct net_device *dev = skb->dev;
-+
-+	if (!dev->header_ops || !dev->header_ops->parse_protocol)
-+		return 0;
-+	return dev->header_ops->parse_protocol(skb);
-+}
-+
- /* ll_header must have at least hard_header_len allocated */
- static inline bool dev_validate_header(const struct net_device *dev,
- 				       char *ll_header, int len)
+ 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
+ 
+-- 
+2.30.1
+
 
 
