@@ -2,52 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C91733ACDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB0833ACF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhCOH41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCOH4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:56:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D787264E12;
-        Mon, 15 Mar 2021 07:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615794973;
-        bh=osdF5qmTEUxcpJl4FEQ0M6fxE/JEHBv/lB5q6kUbatw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dWcRgyOj3/E4paueDASxMWAqjMW5+JR7dUmIznngZpofmklvV60rmnN64pCRABsLR
-         LEP+K22Q0KoPRQ90Z6525FmrOUczeE2omMGCijIMTzVwREI20Z347nu++7AVrHb4xx
-         Gt4w99enn9MiokquVkr7+kAul278eEJJCCluBqtE=
-Date:   Mon, 15 Mar 2021 08:56:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     straube.linux@gmail.com, lu@pplo.net, dan.carpenter@oracle.com,
-        serrazimone@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8192u: remove extra lines
-Message-ID: <YE8TGufU6hyEBPgX@kroah.com>
-References: <20210315072759.23107-1-zhaoxiao@uniontech.com>
+        id S230110AbhCOICb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229964AbhCOICH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:02:07 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1DCC061574;
+        Mon, 15 Mar 2021 01:02:07 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id o11so32448149iob.1;
+        Mon, 15 Mar 2021 01:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tqMwSsxE8mSsOZPr95VkNebuiZwi7tRKMS9S8b6s9Z4=;
+        b=XaFtGW31ERcEkEBmeuxVBQMgfDZzcM7jLzZ2lxTuy48U6hIHhrgaBBXd/9RZ5ZyLHE
+         m7uDowuJ1+i9fVsBYUvzPkSOxrHjS8pO+sIIN4YZHkErzAAMalREgcaVDKq+i8D4zWZR
+         a/yH+Z2RpMsOMih5g41EzlrbFKjZ4oXMOFXQxzLuKZHUNkGD1faHt3GCuCXKnCnvKobQ
+         Pjl5Fl0FBHw8fZsN1cW14dVc3ELjvGhBoX9Q5qM+C3+A2zqa7sPmF3F96vzsRP8Zko5o
+         OOm1cjB7i8WzzWqnWZUHtAowiURhqlsBN+oTYhrR0tKTcmKsdbUn3ezhy8mQw6x7fOzd
+         aC6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tqMwSsxE8mSsOZPr95VkNebuiZwi7tRKMS9S8b6s9Z4=;
+        b=OCuJH8XgLC3dwaPMmyjV/eSKnuVn7a0tYhre2VKxV5fUvKioZs+OwZSipHeYvfUUjF
+         PWQJKjr6ng4gTS1kX2Xnvn2eZT9slQnqi7AHWcfqMAi/fOvGV7J9IhHXUoOe/X+/dc+R
+         wfKBB1vLbnfGAaunynhTavOieffeNenNkc7chLJdJwYrsTasm6HwIPN7qIStbISzeLXh
+         iG6nAonH5Ljuwr3JZvXV/nFJARVxjMGTJ3KpQwigBJZWrWK88NzsK4ceszsXltqHXoL7
+         FprCiD6oyfZK9T95rGM3RNdulMc13SXtkmVSR3sMQLx+rnl1BzQyAzlDd97B1UBvZDV3
+         zuow==
+X-Gm-Message-State: AOAM532IOm2Az8XFfP+7n6TwpsAkJ3iYo9/wDj7t3lczaK4YRM1IcFuk
+        vJ5UMC+m9tP/rbkT3E5kl4Srb0FyEj4JYNMWmOI=
+X-Google-Smtp-Source: ABdhPJwQiYkuELW/9smSceH+H6tbTZaziR6zdehTzqcKsNFxphJsP1z9Jk3ej+O9RkGa5WpzAuPeRZ0ptaBZXwPlggY=
+X-Received: by 2002:a02:6a14:: with SMTP id l20mr8693220jac.12.1615795327125;
+ Mon, 15 Mar 2021 01:02:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315072759.23107-1-zhaoxiao@uniontech.com>
+References: <20210314201818.27380-1-yashsri421@gmail.com>
+In-Reply-To: <20210314201818.27380-1-yashsri421@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 15 Mar 2021 09:01:56 +0100
+Message-ID: <CAKXUXMzH-cUVeuCT6eM_0iHzgKpzvZUPO6pKNpD0yUp2td09Ug@mail.gmail.com>
+Subject: Re: [PATCH 00/10] rsi: fix comment syntax in file headers
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     siva8118@gmail.com, linux-kernel-mentees@lists.linuxfoundation.org,
+        amitkarwar@gmail.com, kvalo@codeaurora.org,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 03:27:59PM +0800, zhaoxiao wrote:
-> Remove extra lines in many functions in r8192U_wx.c.
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+On Sun, Mar 14, 2021 at 9:18 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
+>
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> There are files in drivers/net/wireless/rsi which follow this syntax in
+> their file headers, i.e. start with '/**' like comments, which causes
+> unexpected warnings from kernel-doc.
+>
+> E.g., running scripts/kernel-doc -none on drivers/net/wireless/rsi/rsi_coex.h
+> causes this warning:
+> "warning: wrong kernel-doc identifier on line:
+>  * Copyright (c) 2018 Redpine Signals Inc."
+>
+> Similarly for other files too.
+>
+> Provide a simple fix by replacing the kernel-doc like comment syntax with
+> general format, i.e. "/*", to prevent kernel-doc from parsing it.
+>
 
-You did mor than just remove extra lines :(
+Aditya, thanks for starting to clean up the repository following your
+investigation on kernel-doc warnings.
 
-Also we need an extra line right before your signed-off-by line, as
-checkpatch should have warned you about.
+The changes to all those files look sound.
 
-Please fix up and resend.
+However I think these ten patches are really just _one change_, and
+hence, all can be put into a single commit.
 
-thanks,
+Hints that suggest it is one change:
 
-greg k-h
+- The commit message is pretty much the same (same motivation, same
+explanation, same design decisions)
+- The change is basically the same (same resulting change in different files)
+- All patches are sent to the same responsible people, all of the
+patches would be reviewed and accepted by the same people.
+- All ten patches can be reviewed at once.
+
+How about merging all ten patches into one patch and sending out a v2.
+
+Lukas
