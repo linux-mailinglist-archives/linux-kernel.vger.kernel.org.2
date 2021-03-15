@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1683933B5BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA1933B5D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhCONzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56320 "EHLO mail.kernel.org"
+        id S231734AbhCONzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230423AbhCONxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B0B64EB6;
-        Mon, 15 Mar 2021 13:53:37 +0000 (UTC)
+        id S230440AbhCONxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE26864EFB;
+        Mon, 15 Mar 2021 13:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816418;
-        bh=ldILrh6RMHVfa6rWoh1dewS+vb8vdxbdYP652MAs2Fo=;
+        s=korg; t=1615816420;
+        bh=eIQ1Dx6r4nTfUikTFLl1a1FCC6RAXUFnnPDny7KbnQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QpZ5CaStM/UOljlIlFmK7xKo0B1Ksx7F+RSHeirFE/ui0daz4ulOBFx+/+wotVGFf
-         /qOriDQYzV44TXh99PfrezWZrzSFS95jzkZd9YOAki9LtDKNtgJyLn6++7KRs3w9Rq
-         JKdh/lMm/gKOCvtpymMT7gkZvh29nl2iftLl6jUs=
+        b=Uk2SMWcG2QuJMbAuQiX+o1BSHpVqni058AWy/siFKpb+EVnihEyHl0Llt8YzJWppl
+         iixPErKUmoFnmF1aZwwp+WsXr+8cNN3Wb801MeR6mP63OzKK/qd7NFdGdk0WHp1zEc
+         XhQLH1QXGiq5LmU9qFJXDtYiL2p64PzxxsrqZ0Ho=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yorick de Wid <ydewid@gmail.com>
-Subject: [PATCH 4.4 32/75] Goodix Fingerprint device is not a modem
-Date:   Mon, 15 Mar 2021 14:51:46 +0100
-Message-Id: <20210315135209.306809713@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@freescale.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 4.4 33/75] usb: gadget: f_uac2: always increase endpoint max_packet_size by one audio slot
+Date:   Mon, 15 Mar 2021 14:51:47 +0100
+Message-Id: <20210315135209.336312188@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
 References: <20210315135208.252034256@linuxfoundation.org>
@@ -40,41 +41,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Yorick de Wid <ydewid@gmail.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit 4d8654e81db7346f915eca9f1aff18f385cab621 upstream.
+commit 789ea77310f0200c84002884ffd628e2baf3ad8a upstream.
 
-The CDC ACM driver is false matching the Goodix Fingerprint device
-against the USB_CDC_ACM_PROTO_AT_V25TER.
+As per UAC2 Audio Data Formats spec (2.3.1.1 USB Packets),
+if the sampling rate is a constant, the allowable variation
+of number of audio slots per virtual frame is +/- 1 audio slot.
 
-The Goodix Fingerprint device is a biometrics sensor that should be
-handled in user-space. libfprint has some support for Goodix
-fingerprint sensors, although not for this particular one. It is
-possible that the vendor allocates a PID per OEM (Lenovo, Dell etc).
-If this happens to be the case then more devices from the same vendor
-could potentially match the ACM modem module table.
+It means that endpoint should be able to accept/send +1 audio
+slot.
 
-Signed-off-by: Yorick de Wid <ydewid@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210213144901.53199-1-ydewid@gmail.com
+Previous endpoint max_packet_size calculation code
+was adding sometimes +1 audio slot due to DIV_ROUND_UP
+behaviour which was rounding up to closest integer.
+However this doesn't work if the numbers are divisible.
+
+It had no any impact with Linux hosts which ignore
+this issue, but in case of more strict Windows it
+caused rejected enumeration
+
+Thus always add +1 audio slot to endpoint's max packet size
+
+Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+Cc: Peter Chen <peter.chen@freescale.com>
+Cc: <stable@vger.kernel.org> #v4.3+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-2-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/gadget/function/f_uac2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1928,6 +1928,11 @@ static const struct usb_device_id acm_id
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
+--- a/drivers/usb/gadget/function/f_uac2.c
++++ b/drivers/usb/gadget/function/f_uac2.c
+@@ -997,7 +997,7 @@ static int set_ep_max_packet_size(const
+ 	}
  
-+	/* Exclude Goodix Fingerprint Reader */
-+	{ USB_DEVICE(0x27c6, 0x5395),
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	/* control interfaces without any protocol set */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
- 		USB_CDC_PROTO_NONE) },
+ 	max_size_bw = num_channels(chmask) * ssize *
+-		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
++		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
+ 	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
+ 						    max_size_ep));
+ 
 
 
