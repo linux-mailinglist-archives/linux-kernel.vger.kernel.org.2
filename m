@@ -2,480 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EA433C66E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B56533C66A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233062AbhCOTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:08:16 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:10458 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233081AbhCOTIF (ORCPT
+        id S232491AbhCOTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:08:11 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21303 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233065AbhCOTH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:08:05 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FJ65vA021194;
-        Mon, 15 Mar 2021 14:07:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=O9w11qcSDO3j5101IRu3wesN3Tf1Y5dr3B56jq9bF84=;
- b=g1tmJCuyMt1bQsS2OTnBzC2zTykuzEj9YMj5Cyg5repIGJlmKDNDNTZfHfpMxpx06vp1
- qLbr8A3bsluq49WeiqpzwH6q9aBmfU/tNQ0zHWXXGzUqf6aZJe1juv51ugvRFtClGmqt
- ZhqjJG3vlKhrvuYj5IQziXvZXTmwTZCHjrGSKTbyVDin67UksQWKGHotnbThgsh7i+2y
- 1EEE5yClRgtD7/2ksLCn2zk+UX5jAiqP6g/ctNIYncqxIKAt+psEe4+JvIdjxGtKzi5d
- PUS8gwrpOQlganu7c6TbSHZkrjWlrfgHuQpZVHp3oSSb1Q71pUZuowcxiNFVEyQMG2Kg 5w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 378tpv2t0m-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 15 Mar 2021 14:07:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
- 2021 19:07:18 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 15 Mar 2021 19:07:18 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 38DC311D7;
-        Mon, 15 Mar 2021 19:07:18 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v3 4/4] ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
-Date:   Mon, 15 Mar 2021 19:07:16 +0000
-Message-ID: <20210315190716.47686-5-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315190716.47686-1-vitalyr@opensource.cirrus.com>
-References: <20210315190716.47686-1-vitalyr@opensource.cirrus.com>
+        Mon, 15 Mar 2021 15:07:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1615835255; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=HAkH51heumbQwdNzsjPdBupsUuBZUhiZBqEOPY9qjCTw0h+jT6qDKTSl5cPPyG9mfzGKEzm9envje0R/hXnWr2zeNVOt2kIT/H1IMfEJqYOEO8Eycu9QZ4RypLZo/y+5iRbyP/B+RBoqe3atbwH2efqHbaHNfxw8QRBcpO5QtD4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1615835255; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=qXkPKXLIdi3YS2QxskiB00F5rS0qkdSxQYzMcJTjnMo=; 
+        b=VskweQsyJ0O92QukL95je+EvRd84ESYR5M1oeDmMdFr0gYywAJP2jep1VQ5xQnqsLVMu0JQ7mI/uGRCv+x99rt/94FsmQeTZ7uqlg74pDPWGwFiteH0H8+M5AvrdXfUAVnvIOWIGYTj7rA8MrDhhe3b3vCzjHlSNSRY5I/oR6oY=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1615835255;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=qXkPKXLIdi3YS2QxskiB00F5rS0qkdSxQYzMcJTjnMo=;
+        b=ZePJWn+dogfxbUGEc8UgaRZdlIKn2mO6hobca/LZYecW6nM2vzotDxQpe/9Gxf//
+        d+WJ4E2nPmcAwjDeFyTu3QRo+fEx+sW6euZHBvKeRP3lAtIo5rQH42gLxzBABZAJ2iq
+        QfE+YdK30/JEhdcD20QzMMI3pX2fJXz2QNFH8+pk=
+Received: from localhost.localdomain (106.51.111.227 [106.51.111.227]) by mx.zohomail.com
+        with SMTPS id 1615835252947113.0549001989333; Mon, 15 Mar 2021 12:07:32 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, hdanton@sina.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com
+Message-ID: <20210315190727.21576-1-mail@anirudhrb.com>
+Subject: [PATCH] jfs: fix use-after-free in lbmIODone
+Date:   Tue, 16 Mar 2021 00:37:27 +0530
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 malwarescore=0
- priorityscore=1501 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103150128
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Content-Type: text/plain; charset=utf8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+Fix use-after-free by waiting for ongoing IO to complete before freeing
+lbufs in lbmLogShutdown. Add a counter in struct jfs_log to keep track
+of the number of in-flight IO operations and a wait queue to wait on for
+the IO operations to complete.
 
-CS8409/CS42L42 Driver currently does most of the platform specific
-setup inside the main body of the code, however, this setup can be
-moved into fixup functions, to make the driver more generic.
-
-Making the driver more generic, allows the driver to use the
-cs_parse_auto_config function in the patch function. This function
-forces all of the ADCs to be permanently powered, which means the
-cap_sync_hook function is no longer needed to restart the stream, when
-the jack has been ejected.
-
-Since the codec is re-initialized on every init/resume, there is no
-need to add specific verbs to be run on init, and instead these can
-be combined with the initialization verbs, which are run on init.
-
-In addition, the extra fixup verbs are no longer required, since this
-is taken care of elsewhere.
-
-Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-
-Changes in v1:
-- No changes
-
-Changes in v2:
-- Removed redundant fields in cs8409_cs42l42_init_verbs table.
-
-Changes in v3:
-- No changes
-
+Reported-by: syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 ---
- sound/pci/hda/patch_cirrus.c | 280 ++++++++++++-----------------------
- 1 file changed, 98 insertions(+), 182 deletions(-)
+ fs/jfs/jfs_logmgr.c | 17 ++++++++++++++---
+ fs/jfs/jfs_logmgr.h |  2 ++
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index c99ec5e485af..9180b8000006 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1292,9 +1292,14 @@ enum {
- 	CS8409_BULLSEYE,
- 	CS8409_WARLOCK,
- 	CS8409_CYBORG,
--	CS8409_VERBS,
-+	CS8409_FIXUPS,
- };
- 
-+static void cs8409_cs42l42_fixups(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action);
-+static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-+		unsigned int cmd, unsigned int flags, unsigned int *res);
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index 9330eff210e0..82d20c4687aa 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -1815,6 +1815,8 @@ static int lbmLogInit(struct jfs_log * log)
+ =09 */
+ =09init_waitqueue_head(&log->free_wait);
+=20
++=09init_waitqueue_head(&log->io_waitq);
 +
- /* Dell Inspiron models with cs8409/cs42l42 */
- static const struct hda_model_fixup cs8409_models[] = {
- 	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
-@@ -1368,48 +1373,28 @@ static const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
- 	{} /* terminator */
- };
- 
--static const struct hda_verb cs8409_cs42l42_add_verbs[] = {
--	{ 0x24, 0x71c, 0xF0 }, /* Widget node ASP-1-TX */
--	{ 0x24, 0x71d, 0x20 },
--	{ 0x24, 0x71e, 0x21 },
--	{ 0x24, 0x71f, 0x04 },
--	{ 0x34, 0x71c, 0x50 }, /* Widget node ASP-1-RX0 */
--	{ 0x34, 0x71d, 0x20 },
--	{ 0x34, 0x71e, 0xa1 },
--	{ 0x34, 0x71f, 0x04 },
--	{ 0x2C, 0x71c, 0xF0 }, /* Widget node ASP-2-TX */
--	{ 0x2C, 0x71d, 0x00 },
--	{ 0x2C, 0x71e, 0x10 },
--	{ 0x2C, 0x71f, 0x90 },
--	{ 0x44, 0x71c, 0x90 }, /* Widget node DMIC-1 */
--	{ 0x44, 0x71d, 0x00 },
--	{ 0x44, 0x71e, 0xA0 },
--	{ 0x44, 0x71f, 0x90 },
--	{} /* terminator */
--};
--
- static const struct hda_fixup cs8409_fixups[] = {
- 	[CS8409_BULLSEYE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
- 	[CS8409_WARLOCK] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
- 	[CS8409_CYBORG] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
- 		.chained = true,
--		.chain_id = CS8409_VERBS,
-+		.chain_id = CS8409_FIXUPS,
- 	},
--	[CS8409_VERBS] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = cs8409_cs42l42_add_verbs,
-+	[CS8409_FIXUPS] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cs8409_cs42l42_fixups,
- 	},
- };
- 
-@@ -2004,26 +1989,6 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
- }
- 
--static int cs8409_cs42l42_build_controls(struct hda_codec *codec)
--{
--	int err;
--
--	err = snd_hda_gen_build_controls(codec);
--	if (err < 0)
--		return err;
--
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_BUILD);
--
--	/* Run jack auto detect first time on boot
--	 * after controls have been added, to check if jack has
--	 * been already plugged in
--	 */
--	cs8409_cs42l42_run_jack_detect(codec);
--	usleep_range(100000, 150000);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM
- /* Manage PDREF, when transition to D3hot */
- static int cs8409_suspend(struct hda_codec *codec)
-@@ -2044,31 +2009,6 @@ static int cs8409_suspend(struct hda_codec *codec)
- }
- #endif
- 
--static void cs8409_cs42l42_cap_sync_hook(struct hda_codec *codec,
--					 struct snd_kcontrol *kcontrol,
--					 struct snd_ctl_elem_value *ucontrol)
--{
--	struct cs_spec *spec = codec->spec;
--	unsigned int curval, expval;
--	/* CS8409 DMIC Pin only allows the setting of the Stream Parameters in
--	 * Power State D0. When a headset is unplugged, and the path is switched to
--	 * the DMIC, the Stream is restarted with the new ADC, but this is done in
--	 * Power State D3. Restart the Stream now DMIC is in D0.
--	 */
--	if (spec->gen.cur_adc == CS8409_CS42L42_DMIC_ADC_PIN_NID) {
--		curval = snd_hda_codec_read(codec, spec->gen.cur_adc,
--			0, AC_VERB_GET_CONV, 0);
--		expval = (spec->gen.cur_adc_stream_tag << 4) | 0;
--		if (curval != expval) {
--			codec_dbg(codec, "%s Restarting Stream after DMIC switch\n", __func__);
--			__snd_hda_codec_cleanup_stream(codec, spec->gen.cur_adc, 1);
--			snd_hda_codec_setup_stream(codec, spec->gen.cur_adc,
--					   spec->gen.cur_adc_stream_tag, 0,
--					   spec->gen.cur_adc_format);
--		}
--	}
--}
--
- /* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
- static void cs8409_enable_ur(struct hda_codec *codec, int flag)
- {
-@@ -2152,25 +2092,14 @@ static int cs8409_cs42l42_init(struct hda_codec *codec)
- {
- 	int ret = snd_hda_gen_init(codec);
- 
--	if (!ret) {
--		/* On Dell platforms with suspend D3 mode support we
--		 * have to re-initialise cs8409 bridge and companion
--		 * cs42l42 codec
--		 */
--		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
--		snd_hda_sequence_write(codec, cs8409_cs42l42_add_verbs);
--
--		cs8409_cs42l42_hw_init(codec);
--
--		cs8409_cs42l42_run_jack_detect(codec);
--		usleep_range(100000, 150000);
--	}
-+	if (!ret)
-+		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
- 
- 	return ret;
- }
- 
- static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
--	.build_controls = cs8409_cs42l42_build_controls,
-+	.build_controls = cs_build_controls,
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cs8409_cs42l42_init,
- 	.free = cs_free,
-@@ -2180,66 +2109,91 @@ static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
- #endif
- };
- 
--static int cs8409_cs42l42_fixup(struct hda_codec *codec)
-+static void cs8409_cs42l42_fixups(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
- {
--	int err;
- 	struct cs_spec *spec = codec->spec;
- 	int caps;
- 
--	/* Basic initial sequence for specific hw configuration */
--	snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
--
--	/* CS8409 is simple HDA bridge and intended to be used with a remote
--	 * companion codec. Most of input/output PIN(s) have only basic
--	 * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
--	 * capabilities and no presence detect capable (PDC) and call to
--	 * snd_hda_gen_build_controls() will mark them as non detectable
--	 * phantom jacks. However, in this configuration companion codec
--	 * CS42L42 is connected to these pins and it has jack detect
--	 * capabilities. We have to override pin capabilities,
--	 * otherwise they will not be created as input devices.
--	 */
--	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
--			AC_PAR_PIN_CAP);
--	if (caps >= 0)
--		snd_hdac_override_parm(&codec->core,
--			CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
--			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
--			AC_PAR_PIN_CAP);
--	if (caps >= 0)
--		snd_hdac_override_parm(&codec->core,
--			CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
--			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--	snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
--		(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
--
--	snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
--		(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_add_verbs(codec, cs8409_cs42l42_init_verbs);
-+		/* verb exec op override */
-+		spec->exec_verb = codec->core.exec_verb;
-+		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
- 
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
-+		mutex_init(&spec->cs8409_i2c_mux);
- 
--	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, 0, 0);
--	if (err < 0)
--		return err;
-+		codec->patch_ops = cs8409_cs42l42_patch_ops;
- 
--	err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
--	if (err < 0)
--		return err;
-+		spec->gen.suppress_auto_mute = 1;
-+		spec->gen.no_primary_hp = 1;
-+		spec->gen.suppress_vmaster = 1;
- 
--	if (!snd_hda_gen_add_kctl(
--			&spec->gen, NULL, &cs8409_cs42l42_hp_volume_mixer))
--		return -1;
-+		/* GPIO 5 out, 3,4 in */
-+		spec->gpio_dir = GPIO5_INT;
-+		spec->gpio_data = 0;
-+		spec->gpio_mask = 0x03f;
- 
--	if (!snd_hda_gen_add_kctl(
--			&spec->gen, NULL, &cs8409_cs42l42_amic_volume_mixer))
--		return -1;
-+		spec->cs42l42_hp_jack_in = 0;
-+		spec->cs42l42_mic_jack_in = 0;
- 
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
-+		/* Basic initial sequence for specific hw configuration */
-+		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
- 
--	return 0;
-+		/* CS8409 is simple HDA bridge and intended to be used with a remote
-+		 * companion codec. Most of input/output PIN(s) have only basic
-+		 * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
-+		 * capabilities and no presence detect capable (PDC) and call to
-+		 * snd_hda_gen_build_controls() will mark them as non detectable
-+		 * phantom jacks. However, in this configuration companion codec
-+		 * CS42L42 is connected to these pins and it has jack detect
-+		 * capabilities. We have to override pin capabilities,
-+		 * otherwise they will not be created as input devices.
-+		 */
-+		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
-+				AC_PAR_PIN_CAP);
-+		if (caps >= 0)
-+			snd_hdac_override_parm(&codec->core,
-+				CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
-+				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
+ =09log->lbuf_free =3D NULL;
+=20
+ =09for (i =3D 0; i < LOGPAGES;) {
+@@ -1864,6 +1866,7 @@ static void lbmLogShutdown(struct jfs_log * log)
+ =09struct lbuf *lbuf;
+=20
+ =09jfs_info("lbmLogShutdown: log:0x%p", log);
++=09wait_event(log->io_waitq, !atomic_read(&log->io_inflight));
+=20
+ =09lbuf =3D log->lbuf_free;
+ =09while (lbuf) {
+@@ -1990,6 +1993,8 @@ static int lbmRead(struct jfs_log * log, int pn, stru=
+ct lbuf ** bpp)
+ =09bio->bi_end_io =3D lbmIODone;
+ =09bio->bi_private =3D bp;
+ =09bio->bi_opf =3D REQ_OP_READ;
 +
-+		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
-+				AC_PAR_PIN_CAP);
-+		if (caps >= 0)
-+			snd_hdac_override_parm(&codec->core,
-+				CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
-+				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
++=09atomic_inc(&log->io_inflight);
+ =09/*check if journaling to disk has been disabled*/
+ =09if (log->no_integrity) {
+ =09=09bio->bi_iter.bi_size =3D 0;
+@@ -2135,6 +2140,7 @@ static void lbmStartIO(struct lbuf * bp)
+ =09bio->bi_private =3D bp;
+ =09bio->bi_opf =3D REQ_OP_WRITE | REQ_SYNC;
+=20
++=09atomic_inc(&log->io_inflight);
+ =09/* check if journaling to disk has been disabled */
+ =09if (log->no_integrity) {
+ =09=09bio->bi_iter.bi_size =3D 0;
+@@ -2200,6 +2206,8 @@ static void lbmIODone(struct bio *bio)
+=20
+ =09bio_put(bio);
+=20
++=09log =3D bp->l_log;
 +
-+		snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
-+			(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
+ =09/*
+ =09 *=09pagein completion
+ =09 */
+@@ -2211,7 +2219,7 @@ static void lbmIODone(struct bio *bio)
+ =09=09/* wakeup I/O initiator */
+ =09=09LCACHE_WAKEUP(&bp->l_ioevent);
+=20
+-=09=09return;
++=09=09goto out;
+ =09}
+=20
+ =09/*
+@@ -2230,13 +2238,12 @@ static void lbmIODone(struct bio *bio)
+ =09INCREMENT(lmStat.pagedone);
+=20
+ =09/* update committed lsn */
+-=09log =3D bp->l_log;
+ =09log->clsn =3D (bp->l_pn << L2LOGPSIZE) + bp->l_ceor;
+=20
+ =09if (bp->l_flag & lbmDIRECT) {
+ =09=09LCACHE_WAKEUP(&bp->l_ioevent);
+ =09=09LCACHE_UNLOCK(flags);
+-=09=09return;
++=09=09goto out;
+ =09}
+=20
+ =09tail =3D log->wqueue;
+@@ -2315,6 +2322,10 @@ static void lbmIODone(struct bio *bio)
+=20
+ =09=09LCACHE_UNLOCK(flags);=09/* unlock+enable */
+ =09}
 +
-+		snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
-+			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+		break;
-+	case HDA_FIXUP_ACT_PROBE:
-+		snd_hda_gen_add_kctl(&spec->gen,
-+			NULL, &cs8409_cs42l42_hp_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen,
-+			NULL, &cs8409_cs42l42_amic_volume_mixer);
-+		cs8409_cs42l42_hw_init(codec);
-+		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		cs8409_cs42l42_hw_init(codec);
-+		// Fall through
-+	case HDA_FIXUP_ACT_BUILD:
-+		/* Run jack auto detect first time on boot
-+		 * after controls have been added, to check if jack has
-+		 * been already plugged in.
-+		 * Run immediately after init.
-+		 */
-+		cs8409_cs42l42_run_jack_detect(codec);
-+		usleep_range(100000, 150000);
-+		break;
-+	default:
-+		break;
-+	}
++out:
++=09if (atomic_dec_and_test(&log->io_inflight))
++=09=09wake_up(&log->io_waitq);
  }
- 
- static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-@@ -2280,11 +2234,9 @@ static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
- 
- static int patch_cs8409(struct hda_codec *codec)
- {
--	struct cs_spec *spec;
--	int err = -EINVAL;
-+	int err;
- 
--	spec = cs_alloc_spec(codec, CS8409_VENDOR_NID);
--	if (!spec)
-+	if (!cs_alloc_spec(codec, CS8409_VENDOR_NID))
- 		return -ENOMEM;
- 
- 	snd_hda_pick_fixup(codec,
-@@ -2295,52 +2247,16 @@ static int patch_cs8409(struct hda_codec *codec)
- 			codec->bus->pci->subsystem_vendor,
- 			codec->bus->pci->subsystem_device);
- 
--	switch (codec->fixup_id) {
--	/* Dell platforms with CS42L42 companion codec */
--	case CS8409_BULLSEYE:
--	case CS8409_WARLOCK:
--	case CS8409_CYBORG:
--
--		snd_hda_add_verbs(codec, cs8409_cs42l42_add_verbs);
--
--		/* verb exec op override */
--		spec->exec_verb = codec->core.exec_verb;
--		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
--
--		mutex_init(&spec->cs8409_i2c_mux);
--
--		codec->patch_ops = cs8409_cs42l42_patch_ops;
--
--		spec->gen.cap_sync_hook = cs8409_cs42l42_cap_sync_hook;
--
--		spec->gen.suppress_auto_mute = 1;
--		spec->gen.no_primary_hp = 1;
--		spec->gen.suppress_vmaster = 1;
--		/* GPIO 5 out, 3,4 in */
--		spec->gpio_dir = GPIO5_INT;
--		spec->gpio_data = 0;
--		spec->gpio_mask = 0x03f;
--
--		spec->cs42l42_hp_jack_in = 0;
--		spec->cs42l42_mic_jack_in = 0;
--
--		err = cs8409_cs42l42_fixup(codec);
--		break;
--
--	default:
--		codec_err(codec, "VID=%08x, DEV=%08x not supported\n",
--				codec->bus->pci->subsystem_vendor,
--				codec->bus->pci->subsystem_device);
--		break;
--	}
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
--	if (!err) {
--		cs8409_cs42l42_hw_init(codec);
--		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
--	} else
-+	err = cs_parse_auto_config(codec);
-+	if (err < 0) {
- 		cs_free(codec);
-+		return err;
-+	}
- 
--	return err;
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
-+	return 0;
- }
- 
+=20
+ int jfsIOWait(void *arg)
+diff --git a/fs/jfs/jfs_logmgr.h b/fs/jfs/jfs_logmgr.h
+index 805877ce5020..3e92fe251f28 100644
+--- a/fs/jfs/jfs_logmgr.h
++++ b/fs/jfs/jfs_logmgr.h
+@@ -400,6 +400,8 @@ struct jfs_log {
+ =09uuid_t uuid;=09=09/* 16: 128-bit uuid of log device */
+=20
+ =09int no_integrity;=09/* 3: flag to disable journaling to disk */
++=09atomic_t io_inflight;
++=09wait_queue_head_t io_waitq;
+ };
+=20
  /*
--- 
-2.25.1
+--=20
+2.26.2
+
 
