@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE6133C6FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFE233C6FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233363AbhCOTlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233717AbhCOTlJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:41:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D17C06174A;
-        Mon, 15 Mar 2021 12:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=12+6Ush9hX1Ewkklvi8wTA42vfuCkxo+PweocyhvKNY=; b=LSYjZJ1PS3v9Llm7VndY/q4cXy
-        j0KkqBeKB7gNp9++92jjLflydlcCnykyajon27zQHRsSzRs/d0hmw4XgqvFPNS5OUI9H1zAgglEBv
-        i7rwkWjTQ3h7xBr1H7pjCoaj9Q+b5DHmWOleFGfV5DEx4ktk0tSHlZrhE5LifZqCeSE4XhuRaCP81
-        5jvejFphWh+xdcxIKMxBeBRidvye+FYk3PnOcESZgFGQLj5pkCT6rHlyUZRu6U5ugF+eEU2dFLE8u
-        KMKI1lNZj/XgwsurcWNVijyf1S7lKzzBj/YC0a+OpqntC1BxLi0u25KCyPrpgnXrggwRXAkLzlNcp
-        WSIfHVCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLt4Y-000feN-QM; Mon, 15 Mar 2021 19:40:19 +0000
-Date:   Mon, 15 Mar 2021 19:40:14 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 00/25] Page folios
-Message-ID: <20210315194014.GZ2577561@casper.infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
- <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
- <20210315115501.7rmzaan2hxsqowgq@box>
- <YE9VLGl50hLIJHci@dhcp22.suse.cz>
- <20210315190904.GB150808@infradead.org>
+        id S233190AbhCOTo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhCOToQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7AD164E4D;
+        Mon, 15 Mar 2021 19:44:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615837456;
+        bh=UAce/rGcdj2/yYhiWLiUo6Z/rclaCY8iTSRrttyY9Js=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iYuhGzFo37VYinzSH3h0VG2lzkaXa0JQ8P/+RyjgWBcasBEtjqWxDWUSsvub9WW1M
+         xtwVlMTGuK4FsRr7mQ97N06nx+w0Q0kypFCxv6xCDu1byA9l6bW8mqg5Psq6DCMUoq
+         muGhumLARaJbJDjjxN0+remrzFlpZpY1YJAaqGE+i/8f9UxOifl+GskcTx6oabN+fB
+         w9PcbzYZkIZNi/o2JVjMxkpN1gHLzPKV+wUrWD2Afj+62aDbKjG3L4FvhcyqalFtFp
+         HFMoc+FfxnD+aU/Xe0J81LVZT6Fxt0n7SwOMwuD9I4Us5YBFlbnBcSxb5xehrS96Fj
+         05XYigcur4+UQ==
+Received: by mail-ej1-f50.google.com with SMTP id lr13so68362512ejb.8;
+        Mon, 15 Mar 2021 12:44:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531NaMSCLuHAB1gpppuBv4XOIDNJUdkifQm5W+yoAxeTuJiFCPdP
+        Z7C8GfIQplCeozpSGKBzI/eewLOl1TpfXJdDKQ==
+X-Google-Smtp-Source: ABdhPJwOS7Jdo9j/ce2nXz+gkKLZmvlJsRCR0zozStd99u3lWkjUNzfzn0f2xRfxZhJydPmR4YU5q2fU4n/Qp6eBQJQ=
+X-Received: by 2002:a17:906:c405:: with SMTP id u5mr25581082ejz.341.1615837454425;
+ Mon, 15 Mar 2021 12:44:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315190904.GB150808@infradead.org>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+In-Reply-To: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 15 Mar 2021 13:44:02 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKL9VojmrygoARW6jSzBiyJDqBDjv-z8R04yf4VGdhhBA@mail.gmail.com>
+Message-ID: <CAL_JsqKL9VojmrygoARW6jSzBiyJDqBDjv-z8R04yf4VGdhhBA@mail.gmail.com>
+Subject: Re: [PATCH 00/38] Convert power-supply DT bindings to YAML
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 07:09:04PM +0000, Christoph Hellwig wrote:
-> On Mon, Mar 15, 2021 at 01:38:04PM +0100, Michal Hocko wrote:
-> > I tend to agree here as well. The level compoud_head has spread out
-> > silently is just too large. There are people coming up with all sorts of
-> > optimizations to workaround that, and they are quite right that this is
-> > somehing worth doing, but last attempts I have seen were very focused on
-> > specific page flags handling which is imho worse wrt maintainability
-> > than a higher level and type safe abstraction. I find it quite nice that
-> > this doesn't really have to be a flag day conversion but it can be done
-> > incrementally.
-> > 
-> > I didn't get review the series yet and I cannot really promise anything
-> > but from what I understand the conversion should be pretty
-> > straightforward, albeit noisy.
-> > 
-> > One thing that was really strange to me when seeing the concept for the
-> > first time was the choice of naming (no I do not want to start any
-> > bikeshedding) because it hasn't really resonated with the udnerlying
-> > concept. Maybe just me as a non native speaker... page_head would have
-> > been so much more straightforward but not something I really care about.
-> 
-> That pretty much summarizes my opinion as well.  I'll need to find some
-> time to review the series as well.
+On Fri, Mar 12, 2021 at 8:44 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Hi,
+>
+> I keep getting patches for existing drivers, that modify DT behaviour
+> without updating the binding file. Let's move everything to DT schema
+> files, so that this can easily be cached automatically by dtbs_check.
+>
+> After this series only three bindings are left unconverted:
+>
+> 1. max8925_battery.txt
+>    This describes a node below the PMIC, which does not have its own
+>    compatible value. It needs to be described in the PMIC binding
+>    file, which has not yet been converted.
+>
+> 2. stericsson,ab8500-battery.txt
+>    This also describes a node below the PMIC, which does not have
+>    its own compatible value. The same applies.
+>
+> 3. charger-manager.txt
+>    This is far more complex to convert than the other files, due
+>    to the 'cm-regulator-name' / "<>-supply" thing. I skipped it
+>    for now.
+>
+> I tested the series using dt-validate 2021.3.dev6+g38efe3f and nothing
+> is reported when running dtbs_check like this:
+>
+> make -s -j42 dtbs_check DT_SCHEMA_FILES="Documentation/devicetree/bindings/power/supply/*.yaml"
+>
+> Also nothing is reported when checking the power-supply binding files
+> like this:
+>
+> for file in Documentation/devicetree/bindings/power/supply/*yaml ; do
+>     make -s -j42 dt_binding_check DT_SCHEMA_FILES=$file ;
+> done
+>
+> This is also available as 'psy-yaml-binding' branch from my repository:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+>
+> Thanks for reviewing it,
 
-If it's easier for you, I'm trying to keep
-https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
-up to date.  Not all of those 111 patches are suitable for upstreaming,
-but it might give you a better idea of where I'm going than if I only
-posted the first 70-80 of them.  Stopping at
-"mm/memory: Use a folio in copy_pte_range()" nets us almost 10kb of
-text reduction for the UEK-derived config, about 3.3kb on an allnoconfig
-(which is a little over 0.1% on a 2.4MB kernel).
+Thanks for doing this. Other than the couple of things I pointed out,
+looks good overall.
 
-The reason I didn't go with 'head' is that traditionally 'head' implies
-that there are tail pages.  It would be weird to ask 'if (HeadHead(head))'
-That's currently spelled 'if (FolioMulti(folio))'.  But it can be changed
-if there's a really better alternative.  It'll make me more grumpy if
-somebody comes up with a really good alternative in six months.
-
-I would agree that the conversion is both straightforward and noisy.
-There are some minor things that crop up, like noticing that we get
-the accounting wrong for writeback of compound pages.  That's not
-entirely unexpected since no filesystem supports both compound pages
-and writeback today.
+Rob
