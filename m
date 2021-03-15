@@ -2,208 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4EC33C8DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0845B33C8E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbhCOVwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
+        id S231233AbhCOVxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233247AbhCOVwC (ORCPT
+        with ESMTP id S233763AbhCOVxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:52:02 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460C1C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:52:02 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e7so10817041ile.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v7N6p1x0BsH0iM7+7iNRHjfZcm0BfhMj037soR+6HF4=;
-        b=poW1YMS4YSxaLKEiHkfDczYRpqjgHVgtW4F8oj4a78qxH0zHERoYJ65kHX3saRWU8p
-         SpOhu/1bOxZlp+4PZxOMRBGzZ7LHESr7/QUG7FxrxE618vxSEn7G9lgXlNgJ2NsBgTKk
-         gqjmxWmyL6Plw2ZRbUKZrpEzJ0Er7SCmELP2JN1vG1siq4wGMUPgI+yS7QIhKFyZ/Arm
-         42kAJUpxzU1EbUY2mtvYAX0e8IVnKLAZTshpovvj34m7gg21m0yx3Ahn0WAHj3nvIuwx
-         us8ySMRvf33t20j7ObYagpY1Bx2qCbFq6a0rqSaVIZtl5y6J/tZjLuRaynAC5KTsy0eb
-         yj8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v7N6p1x0BsH0iM7+7iNRHjfZcm0BfhMj037soR+6HF4=;
-        b=mBHoQu9mxo3ViHIZtAPUXr/2mOFZhu79IhQSjrOspRKq7ofV1idIRmqDId8wVDPxm8
-         RoTNFZ/LS1aVohRzmpiLhv53HTvLGDtYd15k9gsyrzHYeDYeVKLmSoAS5cOFXaO5GSK8
-         NGFa2GHDWHJ1THAHZ7Hp94LjyzObDnCavXKZNLwKnIdZd7CNuVY/C8XxADDRlZu3tiM4
-         YrcqKk/3oMhSzW3NGDGXZu+p6CY5QxiF5BFkNAKlicdeuZayt7SAeib/Oc5X+aLFygWr
-         TVBLvmZrKOo7/JtQ6TJg7lCpz8j8qAN1UNDn9GTh8oNcohoun1bfaWP4hkflxgyTWxDI
-         5afQ==
-X-Gm-Message-State: AOAM532i6O6pAL4xxPD569ZJ+2YdNkq0TbVgR0wJLEnB7h0OFuVGFNc9
-        8Q2ihhosZDwydr5XoJy8B+utww==
-X-Google-Smtp-Source: ABdhPJyx+YoXdoYx4vHWnNanw0Rzp9ouALpv/wl8rCTdgBVFzLBgFd/HLFX6xZm/+7GWJqe5yfwxKQ==
-X-Received: by 2002:a92:c690:: with SMTP id o16mr1375597ilg.256.1615845121704;
-        Mon, 15 Mar 2021 14:52:01 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id y3sm7424625iot.15.2021.03.15.14.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 14:52:01 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        David.Laight@ACULAB.COM, olteanv@gmail.com,
-        alexander.duyck@gmail.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Duyck <alexanderduyck@fb.com>
-Subject: [PATCH net-next v6 6/6] net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
-Date:   Mon, 15 Mar 2021 16:51:51 -0500
-Message-Id: <20210315215151.3029676-7-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210315215151.3029676-1-elder@linaro.org>
-References: <20210315215151.3029676-1-elder@linaro.org>
+        Mon, 15 Mar 2021 17:53:31 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CEBC06174A;
+        Mon, 15 Mar 2021 14:53:31 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94AC8316;
+        Mon, 15 Mar 2021 22:53:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615845209;
+        bh=NP09BMA6VB3qBcwkU03/j0FFvyDG5Q9dDt1gweluTKU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qiiGM42aYQ2GOn5d9W+5s0Fx5BeY7d5KLKbjSYYI0MX9eK0QiZg3VH3nWyAveDtQG
+         IEKnil3weHxaxduP6d07JV0LdqtBfaYwmbqzUVIt+BHqLbkz3c4dFMf8ep2z5VlL9w
+         uMFZJJcLBri6N4zBs8HRgyt8btpstzbUo9SW9RDI=
+Date:   Mon, 15 Mar 2021 23:52:53 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/18] media: i2c: rdacm21: Give more time to OV490 to
+ boot
+Message-ID: <YE/XNaSLw2Gq+llE@pendragon.ideasonboard.com>
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-13-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210315131512.133720-13-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the use of C bit-fields in the rmnet_map_ul_csum_header
-structure with a single two-byte (big endian) structure member,
-and use masks to encode or get values within it.  The content of
-these fields can be accessed using simple bitwise AND and OR
-operations on the (host byte order) value of the new structure
-member.
+Hi Jacopo,
 
-Previously rmnet_map_ipv4_ul_csum_header() would update C bit-field
-values in host byte order, then forcibly fix their byte order using
-a combination of byte swap operations and types.
+Thank you for the patch.
 
-Instead, just compute the value that needs to go into the new
-structure member and save it with a simple byte-order conversion.
+On Mon, Mar 15, 2021 at 02:15:06PM +0100, Jacopo Mondi wrote:
+> It has been observed through repeated testing (250 boots) that in the
+> 10% of the cases the RDACM21 initialization sequence errors out due a
+> timeout waiting for the OV490 firmware to complete its boot phase.
+> 
+> Albeit being the current timeout relatively large (300-600 milliseconds),
 
-Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
+"Even if the current timeout is already relatively large" ?
 
-Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
-zeroes every field in the upload checksum header.  Replace that with
-a single memset() operation.
+> doubling it reduces the sporadic error rate down to 1 over an 80 boot
+> sequences test run.
+> 
+> The firmware boot delay is unfortunately not characterized in the camera
+> module manual.
+> 
+> Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
----
-v5: - Assign checksum start offset a little later (with csum_info)
-v4: - Don't use u16_get_bits() to access the checksum field offset
-v3: - Use BIT(x) and don't use u16_get_bits() for single-bit flags
-v2: - Fixed to use u16_encode_bits() instead of be16_encode_bits()
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
- .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 38 +++++++------------
- include/linux/if_rmnet.h                      | 21 +++++-----
- 2 files changed, 23 insertions(+), 36 deletions(-)
+> ---
+>  drivers/media/i2c/rdacm21.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index 50a9b0d8255d..07cf077d8efd 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -53,7 +53,7 @@
+>  #define OV490_PID			0x8080300a
+>  #define OV490_VER			0x8080300b
+>  #define OV490_PID_TIMEOUT		20
+> -#define OV490_OUTPUT_EN_TIMEOUT		300
+> +#define OV490_OUTPUT_EN_TIMEOUT		600
+>  
+>  #define OV490_GPIO0			BIT(0)
+>  #define OV490_SPWDN0			BIT(0)
 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index c336c17e01fe4..0ac2ff828320c 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -197,20 +197,16 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
- 			      struct rmnet_map_ul_csum_header *ul_header,
- 			      struct sk_buff *skb)
- {
--	__be16 *hdr = (__be16 *)ul_header;
- 	struct iphdr *ip4h = iphdr;
-+	u16 val;
- 
--	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
--	ul_header->csum_insert_offset = skb->csum_offset;
--	ul_header->csum_enabled = 1;
-+	val = MAP_CSUM_UL_ENABLED_FLAG;
- 	if (ip4h->protocol == IPPROTO_UDP)
--		ul_header->udp_ind = 1;
--	else
--		ul_header->udp_ind = 0;
-+		val |= MAP_CSUM_UL_UDP_FLAG;
-+	val |= skb->csum_offset & MAP_CSUM_UL_OFFSET_MASK;
- 
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -237,21 +233,16 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
- 			      struct rmnet_map_ul_csum_header *ul_header,
- 			      struct sk_buff *skb)
- {
--	__be16 *hdr = (__be16 *)ul_header;
- 	struct ipv6hdr *ip6h = ip6hdr;
-+	u16 val;
- 
--	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
--	ul_header->csum_insert_offset = skb->csum_offset;
--	ul_header->csum_enabled = 1;
--
-+	val = MAP_CSUM_UL_ENABLED_FLAG;
- 	if (ip6h->nexthdr == IPPROTO_UDP)
--		ul_header->udp_ind = 1;
--	else
--		ul_header->udp_ind = 0;
-+		val |= MAP_CSUM_UL_UDP_FLAG;
-+	val |= skb->csum_offset & MAP_CSUM_UL_OFFSET_MASK;
- 
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -419,10 +410,7 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
- 	}
- 
- sw_csum:
--	ul_header->csum_start_offset = 0;
--	ul_header->csum_insert_offset = 0;
--	ul_header->csum_enabled = 0;
--	ul_header->udp_ind = 0;
-+	memset(ul_header, 0, sizeof(*ul_header));
- 
- 	priv->stats.csum_sw++;
- }
-diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-index 941997df9e088..4efb537f57f31 100644
---- a/include/linux/if_rmnet.h
-+++ b/include/linux/if_rmnet.h
-@@ -33,17 +33,16 @@ struct rmnet_map_dl_csum_trailer {
- 
- struct rmnet_map_ul_csum_header {
- 	__be16 csum_start_offset;
--#if defined(__LITTLE_ENDIAN_BITFIELD)
--	u16 csum_insert_offset:14;
--	u16 udp_ind:1;
--	u16 csum_enabled:1;
--#elif defined (__BIG_ENDIAN_BITFIELD)
--	u16 csum_enabled:1;
--	u16 udp_ind:1;
--	u16 csum_insert_offset:14;
--#else
--#error	"Please fix <asm/byteorder.h>"
--#endif
-+	__be16 csum_info;		/* MAP_CSUM_UL_* */
- } __aligned(1);
- 
-+/* csum_info field:
-+ *  OFFSET:	where (offset in bytes) to insert computed checksum
-+ *  UDP:	1 = UDP checksum (zero checkum means no checksum)
-+ *  ENABLED:	1 = checksum computation requested
-+ */
-+#define MAP_CSUM_UL_OFFSET_MASK		GENMASK(13, 0)
-+#define MAP_CSUM_UL_UDP_FLAG		BIT(14)
-+#define MAP_CSUM_UL_ENABLED_FLAG	BIT(15)
-+
- #endif /* !(_LINUX_IF_RMNET_H_) */
 -- 
-2.27.0
+Regards,
 
+Laurent Pinchart
