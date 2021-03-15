@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE2833C9FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7ED33CA03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhCOXhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
+        id S233783AbhCOXiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhCOXhd (ORCPT
+        with ESMTP id S233836AbhCOXiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:37:33 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81296C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:37:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id c16so16096412ply.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:37:33 -0700 (PDT)
+        Mon, 15 Mar 2021 19:38:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B214EC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:12 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v62so39733298ybb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m5DKET+zhD2D4Fd/Hccb3C70vrkwKJbqddmWptN5Rcg=;
-        b=CcBIATws8iJMUNgDgLzeoUqd5qjalBXpH3OfRKHqPAmMCK2yg7SfBN4sTLiu5GNTA5
-         pOZt2vwdaHNnRTMZvRoY6xhc036l2aOZoYx74+eHMoHlne0CYUQ35Rz8fN2nqz8C5qqk
-         472Zdw6e9uPIq27nr4qLk8X4jRXw8L1lID86G8q32ZGVUlG7qKUS97quQn0Dhwg+Ympf
-         pqt8biCTL8lGuq1qKYdc++NHG8743QNzLPCu/fplbhtvrh5kiL4pLfR//d2Xn8QeDU2h
-         zhmNC7w+PtuvJk98I22AClyO/cqGn5Z4dryqbWUe2bHptxIefXYnQRtWTQ+L+87lS32V
-         Wj7w==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OJG5tHSRHGT9S+uZcZRNR3aTYP0+DUQ0Eor7atCfRB4=;
+        b=JTPqPdRQbM5CiZ6rBU7vJ1rcRT+FqRrK4VFC/asvMFNG12vo/RlN42YMWGU2ajbuaC
+         V0rvz/PxHaZfPwo9Ibdsj/8BeeiJnw8KbKw2gGMSHzZlR7E5FhcnNc2C3136RoreuMPb
+         dSewy+veTF6Re1439u5iFaaOhRszQwnG+ZBKK9H+IRfULxUBCWsYxgq4LW5gt+ru/3Bx
+         kcI5uuJpGzp+9DdD+sify9W6QRWhhrINgnMVVaTT1b6qoChRwnwVQa9QYeqG0wUKPhZw
+         v08+2U5Tzb50jPT+bBMaYFmRDqtpEIOWFmFFANuW1w/10fMb+m5fWsYdXq2wuZ+sxW8c
+         jXag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m5DKET+zhD2D4Fd/Hccb3C70vrkwKJbqddmWptN5Rcg=;
-        b=RhoFStEFD9hHFhf42v2NLZ6CuvXB8ElU6VnpxxI4myPQvQWMcnASUFwru8ZR0iPyaK
-         VBGL8HkKx71QASuTrbFz7dQFdzQV83qqwLdug9lTjt2zhPY2jbvj0Zd5YjPeRG22y+F1
-         KIlVLdYtR8UpuuiuGNexycoGZzvIUN1bJLJe87U8rIsRVaFNWT1XQxQdwdFwY1YBkdCK
-         ho8OdsiXf+NFPRaAabYASVjbF/JXEsi1VauJIu7wZT6st2I7NuVKhzhcyRUsOh1m7PNr
-         56qb8F1+rcS4tDwydxguu88XQa2qEEMYR19jPqcJghzw4wwNcRNRwKo7LV1j7WM24FBX
-         0dIw==
-X-Gm-Message-State: AOAM530UxhzjMYOdori4QEnaaXcuKCe5gShhP8O7xWijpQoGfaCyJccG
-        I6F3ay8uShM6yqhgOnO3cGkmlg==
-X-Google-Smtp-Source: ABdhPJyeOCb//22JJMMlmKYoWfd71Qf5DD7ZghvVWV8EJaoAT8g47yxOwBOQkv7MaJieupA2dD4L1A==
-X-Received: by 2002:a17:90b:1953:: with SMTP id nk19mr1648941pjb.28.1615851452764;
-        Mon, 15 Mar 2021 16:37:32 -0700 (PDT)
-Received: from google.com ([2620:15c:f:10:3d60:4c70:d756:da57])
-        by smtp.gmail.com with ESMTPSA id z11sm14734939pgj.22.2021.03.15.16.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 16:37:32 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 16:37:25 -0700
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OJG5tHSRHGT9S+uZcZRNR3aTYP0+DUQ0Eor7atCfRB4=;
+        b=Rf7bTmrRmAyGPoMWYF14IvDawWbxUqX2wF/iKj/IaaohTz5zHgVTmgdv6MINzGiMoW
+         b4z1qzxoYlTVaojqQ9W9Vm9prYVl2QPeRTIvm3TuSVOYw/isBIqny0XsZF3b0aJGVt/K
+         SQ8fZKrfsINrRcdTM8eIjpgN+aBmQixpHazfHgjmZT8JLt/OOUfrF9jaJ4RV21/YC1uh
+         js3rGbvAVvbA8vtJ5J5IKaBOEuCs0ULhPpsYdQ3rlENsl2joSeSQri9VqC7WMwMTkUFh
+         lhtiKrt3CfGm4FqTdaZF+vqpz7Dxmxg1OzqWp52FXDyE+IJFC/ry2Fn4ZSGKHepkB6ma
+         D9Wg==
+X-Gm-Message-State: AOAM530zDzQYlX+1BiSj4h2YNJJ6QISZPP9wsF/gLhhBS+etwMnAGJvf
+        T3aXjUz8lXADWcLPVR5fFLmRLyIyjNfwfXdipRmHdBQl678EwbZybXF9G5GtPaYR6v44TXQHx7Z
+        vj6V0l+acK7FH0yhbGPsXd+fwRPKcuA6ltpwDT4RK1PXfGCK3Wi79rJAsW9YyeF8Zk60ET5Qj
+X-Google-Smtp-Source: ABdhPJyb7sgl96cn0UFQyghFSxnyvOu5a4b/lo/hS2BRsSTyGhPkX1P6I+5vprLKAn5qurT1N+F2Nc/3xvOc
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:888a:4e22:67:844a])
+ (user=bgardon job=sendgmr) by 2002:a25:7306:: with SMTP id
+ o6mr3101056ybc.132.1615851491748; Mon, 15 Mar 2021 16:38:11 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 16:37:59 -0700
+Message-Id: <20210315233803.2706477-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v3 0/4] Fix RCU warnings in TDP MMU
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
         Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
- single stepping
-Message-ID: <YE/vtYYwMakERzTS@google.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
- <20210315221020.661693-3-mlevitsk@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315221020.661693-3-mlevitsk@redhat.com>
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021, Maxim Levitsky wrote:
-> This change greatly helps with two issues:
-> 
-> * Resuming from a breakpoint is much more reliable.
-> 
->   When resuming execution from a breakpoint, with interrupts enabled, more often
->   than not, KVM would inject an interrupt and make the CPU jump immediately to
->   the interrupt handler and eventually return to the breakpoint, to trigger it
->   again.
-> 
->   From the user point of view it looks like the CPU never executed a
->   single instruction and in some cases that can even prevent forward progress,
->   for example, when the breakpoint is placed by an automated script
->   (e.g lx-symbols), which does something in response to the breakpoint and then
->   continues the guest automatically.
->   If the script execution takes enough time for another interrupt to arrive,
->   the guest will be stuck on the same breakpoint RIP forever.
-> 
-> * Normal single stepping is much more predictable, since it won't land the
->   debugger into an interrupt handler, so it is much more usable.
-> 
->   (If entry to an interrupt handler is desired, the user can still place a
->   breakpoint at it and resume the guest, which won't activate this workaround
->   and let the gdb still stop at the interrupt handler)
-> 
-> Since this change is only active when guest is debugged, it won't affect
-> KVM running normal 'production' VMs.
-> 
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Tested-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a9d95f90a0487..b75d990fcf12b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
->  		can_inject = false;
->  	}
->  
-> +	/*
-> +	 * Don't inject interrupts while single stepping to make guest debug easier
-> +	 */
-> +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
-> +		return;
+The Linux Test Robot found a few RCU warnings in the TDP MMU:
+https://www.spinics.net/lists/kernel/msg3845500.html
+https://www.spinics.net/lists/kernel/msg3845521.html
 
-Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
-blocking at the start of single-stepping, unwind at the end?  Deviating this far
-from architectural behavior will end in tears at some point.
+Fix these warnings and cleanup a hack in tdp_mmu_iter_cond_resched.
 
-> +
->  	/*
->  	 * Finally, inject interrupt events.  If an event cannot be injected
->  	 * due to architectural conditions (e.g. IF=0) a window-open exit
-> -- 
-> 2.26.2
-> 
+Tested by compiling as suggested in the test robot report and confirmed
+that the warnings go away with this series applied. Also ran
+kvm-unit-tests on an Intel Skylake machine with the TDP MMU enabled and
+confirmed that the series introduced no new failures.
+
+Ben Gardon (3):
+  KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
+  KVM: x86/mmu: Fix RCU usage when atomically zapping SPTEs
+  KVM: x86/mmu: Factor out tdp_iter_return_to_root
+
+Sean Christopherson (1):
+  KVM: x86/mmu: Store the address space ID in the TDP iterator
+
+ arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
+ arch/x86/kvm/mmu/tdp_iter.c     | 30 +++++++++++++++----------
+ arch/x86/kvm/mmu/tdp_iter.h     |  4 +++-
+ arch/x86/kvm/mmu/tdp_mmu.c      | 40 +++++++++++++--------------------
+ 4 files changed, 41 insertions(+), 38 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
