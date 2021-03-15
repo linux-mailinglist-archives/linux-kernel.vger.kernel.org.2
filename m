@@ -2,145 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD933C9AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F51F33C9AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhCOXFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:05:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53504 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232661AbhCOXFG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:05:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615849505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4BkiJzMuTVAJA3cYXXYZCbKZg3oS9NpekVRQsni4UgM=;
-        b=ADxUaMn0wwo+RiaUBy/4gsvrgxi85MvXsFtnA1/UP5XwmE5LrVk0c7sG11wJEdHQfik+RX
-        S2dQ90PMTSe02no5T6EOc/4LgI61QUgaiub6pf94xq0n/vH/e2dy9A4FJ7yAtFG+WDbojC
-        paRLIVl0dnX2FCniT9h5/R5prvuIYmE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-9NNzMw_5PQqxCEbIGCFuqA-1; Mon, 15 Mar 2021 19:05:00 -0400
-X-MC-Unique: 9NNzMw_5PQqxCEbIGCFuqA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA18381426F;
-        Mon, 15 Mar 2021 23:04:58 +0000 (UTC)
-Received: from krava (unknown [10.40.196.50])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B6B505D9D3;
-        Mon, 15 Mar 2021 23:04:56 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 00:04:55 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2 17/27] perf evsel: Adjust hybrid event and global
- event mixed group
-Message-ID: <YE/oF4pOkyQmm0rI@krava>
-References: <20210311070742.9318-1-yao.jin@linux.intel.com>
- <20210311070742.9318-18-yao.jin@linux.intel.com>
+        id S233311AbhCOXFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233454AbhCOXF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:05:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A546964E07;
+        Mon, 15 Mar 2021 23:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615849528;
+        bh=mThrypAfS1ZWYKktlz1+6DLIOR3JnDe9Dwd1coWe4Kw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kICSplKy6VgcSY3GYz50VYln+QyowsHZVyqj2X7Bcgd/MtITEJlcWpLOcK69LnMrM
+         CfFPajbxfW6YoXjU+pA0wRF+J7orizeDfCV1PwLjXkl8Woed1evBVvmqfk/9SYT3SX
+         Q1KGnIJNYZplVGDAbsazluPiFlbi2eaoQMPvI1F3TLP7kHYHi5vg2LUqWwXvCj608T
+         zTXbI3jUUlGlhQBMjeKYDzKhHSbVH+bd4tCnCEYZFE7Eh3nxu+xUQAaP/JGIFvLTDE
+         V6g6eh06ayzD9PH6V/VDqm2M12fct4iukF6bTFYs8DpwkW6TQKDsqXwNSY3wVWBz9K
+         audVCwX5mATKA==
+Date:   Tue, 16 Mar 2021 01:05:02 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-ID: <YE/oHt92suFDHJ7Z@kernel.org>
+References: <d2ebcffeb9193d26a1305e08fe1aa1347feb1c62.1615250634.git.kai.huang@intel.com>
+ <YEvg2vNfiDYoc9u3@google.com>
+ <YE0M/VoETPw7YZIy@kernel.org>
+ <YE0NeChRjBlldQ8H@kernel.org>
+ <YE4M8JGGl9Xyx51/@kernel.org>
+ <YE4rVnfQ9y7CnVvr@kernel.org>
+ <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
+ <YE9beKYDaG1sMWq+@kernel.org>
+ <YE9mVUF0KOPNSfA9@kernel.org>
+ <20210316094859.7b5947b743a81dff7434615c@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311070742.9318-18-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210316094859.7b5947b743a81dff7434615c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 03:07:32PM +0800, Jin Yao wrote:
-> A group mixed with hybrid event and global event is allowed. For example,
-> group leader is 'cpu-clock' and the group member is 'cpu_atom/cycles/'.
+On Tue, Mar 16, 2021 at 09:48:59AM +1300, Kai Huang wrote:
+> On Mon, 15 Mar 2021 15:51:17 +0200 Jarkko Sakkinen wrote:
+> > On Mon, Mar 15, 2021 at 03:04:59PM +0200, Jarkko Sakkinen wrote:
+> > > On Mon, Mar 15, 2021 at 04:13:17PM +1300, Kai Huang wrote:
+> > > > On Sun, 14 Mar 2021 17:27:18 +0200 Jarkko Sakkinen wrote:
+> > > > > On Sun, Mar 14, 2021 at 05:25:26PM +0200, Jarkko Sakkinen wrote:
+> > > > > > On Sat, Mar 13, 2021 at 09:07:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > > > On Sat, Mar 13, 2021 at 09:05:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > > > > On Fri, Mar 12, 2021 at 01:44:58PM -0800, Sean Christopherson wrote:
+> > > > > > > > > On Tue, Mar 09, 2021, Kai Huang wrote:
+> > > > > > > > > > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > > > > > > > > > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > > > > > > > > > if SGX Launch Control is in locked mode, or not supported in the
+> > > > > > > > > > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > > > > > > > > > configurations to use SGX.
+> > > > > > > > > > 
+> > > > > > > > > > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > > > > > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> > > > > > > > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > > index 44fe91a5bfb3..8c922e68274d 100644
+> > > > > > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > > @@ -712,7 +712,15 @@ static int __init sgx_init(void)
+> > > > > > > > > >  		goto err_page_cache;
+> > > > > > > > > >  	}
+> > > > > > > > > >  
+> > > > > > > > > > -	ret = sgx_drv_init();
+> > > > > > > > > > +	/*
+> > > > > > > > > > +	 * Always try to initialize the native *and* KVM drivers.
+> > > > > > > > > > +	 * The KVM driver is less picky than the native one and
+> > > > > > > > > > +	 * can function if the native one is not supported on the
+> > > > > > > > > > +	 * current system or fails to initialize.
+> > > > > > > > > > +	 *
+> > > > > > > > > > +	 * Error out only if both fail to initialize.
+> > > > > > > > > > +	 */
+> > > > > > > > > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> > > > > > > > > 
+> > > > > > > > > I love this code.
+> > > > > > > > > 
+> > > > > > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > > > > > 
+> > > > > > > > I'm still wondering why this code let's go through when sgx_drv_init()
+> > > > > > > > succeeds and sgx_vepc_init() fails.
+> > > > > > > > 
+> > > > > > > > The inline comment explains only the mirrored case (which does make
+> > > > > > > > sense).
+> > > > > > > 
+> > > > > > > I.e. if sgx_drv_init() succeeds, I'd expect that sgx_vepc_init() must
+> > > > > > > succeed. Why expect legitly anything else?
+> > > > > >  
+> > > > > > Apologies coming with these ideas at this point, but here is what this
+> > > > > > led me.
+> > > > > > 
+> > > > > > I think that the all this complexity comes from a bad code structure.
+> > > > > > 
+> > > > > > So, what is essentially happening here:
+> > > > > > 
+> > > > > > - We essentially want to make EPC always work.
+> > > > > > - Driver optionally.
+> > > > > > 
+> > > > > > So what this sums to is something like:
+> > > > > > 
+> > > > > >         ret = sgx_epc_init();
+> > > > > >         if (ret) {
+> > > > > >                 pr_err("EPC initialization failed.\n");
+> > > > > >                 return ret;
+> > > > > >         }
+> > > > > > 
+> > > > > >         ret = sgx_drv_init();
+> > > > > >         if (ret)
+> > > > > >                 pr_info("Driver could not be initialized.\n");
+> > > > > > 
+> > > > > >         /* continue */
+> > > > > > 
+> > > > > > I.e. I think there should be a single EPC init, which does both EPC
+> > > > > > bootstrapping and vepc, and driver initialization comes after that.
+> > > > > 
+> > > > > In other words, from SGX point of view, the thing that KVM needs is
+> > > > > to cut out EPC and driver part into different islands. How this is now
+> > > > > implemented in the current patch set is half-way there but not yet what
+> > > > > it should be.
+> > > > 
+> > > > Well conceptually, SGX virtualization and SGX driver are two independently
+> > > > functionalities can be enabled separately, although they both requires some
+> > > > come functionalities, such as /dev/sgx_provision, which we have moved to
+> > > > sgx/main.c exactly for this purpose. THerefore, conceptually, it is bad to make
+> > > > assumption that, if SGX virtualization initialization succeeded, SGX driver
+> > > > must succeed -- we can potentially add more staff in SGX virtualization in the
+> > > > future..
+> > > > 
+> > > > If the name sgx_vepc_init() confuses you, I can rename it to sgx_virt_init().
+> > > 
+> > > I don't understand what would be the bad thing here. Can you open that
+> > > up please? I'm neither capable of predicting the future...
 > 
-> e.g.
-> perf stat -e '{cpu-clock,cpu_atom/cycles/}' -a
+> Conceptually they are two different functionalities, and doesn't depend on each
+> other. Why calling SGX driver initialization only when SGX virtualization
+> succeeded?
 > 
-> The challenge is their available cpus are not fully matched.
-> For example, 'cpu-clock' is available on CPU0-CPU23, but 'cpu_core/cycles/'
-> is available on CPU16-CPU23.
+> We might want to add reclaiming EPC page (VMM EPC oversubscription) from KVM
+> guest in the future, which may bring more initialization staff sgx_vepc_init(),
+> and those new staff should not impact SGX driver.
 > 
-> When getting the group id for group member, we must be very careful
-> because the cpu for 'cpu-clock' is not equal to the cpu for 'cpu_atom/cycles/'.
-> Actually the cpu here is the index of evsel->core.cpus, not the real CPU ID.
-> e.g. cpu0 for 'cpu-clock' is CPU0, but cpu0 for 'cpu_atom/cycles/' is CPU16.
+> I don't see your approach is any better, both from concept and flexibility.
 > 
-> Another challenge is for group read. The events in group may be not
-> available on all cpus. For example the leader is a software event and
-> it's available on CPU0-CPU1, but the group member is a hybrid event and
-> it's only available on CPU1. For CPU0, we have only one event, but for CPU1
-> we have two events. So we need to change the read size according to
-> the real number of events on that cpu.
+> Like I said, we can rename to sgx_virt_init() to be more generic, but I
+> strongly disagree your approach.
+> 
+> > 
+> > Right, so since vepc_init() does only just device file initialization the
+> > current function structure is fine. I totally forgot that sgx_drv_init()
+> > does not call EPC initialization when I wrote the above :-) We refactored
+> > during the inital cycle the driver so many times that I sometimes fix up
+> > thing, sorry about.
+> > 
+> > To meld this into code:
+> > 
+> >         ret = sgx_vepc_init();
+> >         if (ret != -ENODEV) {
+> >                 pr_err("vEPC initialization failed with %d.\n", ret);
+> >                 return ret;
+> >         }
+> > 
+> >         ret = sgx_drv_init();
+> >         if (ret != ENODEV)
+> >                 pr_info("Driver initialization failed %d.\n", ret);
+> 
+> Hmm.. Let's say an extreme case: misc_register() failed in sgx_vepc_init(), due
+> to -ENOMEM. Then OOM kill gets involved, and kills bunch of apps. And then In
+> this case, theoretically, misc_register() in sgx_drv_init() doesn't need to
+> fail.
+> 
+> The point is really SGX driver and SGX virt are two independent
+> functionalities, so don't make dependency on them, manually. Plus I don't see
+> any benefit of your approach, but only cons.
 
-ugh, this is really bad.. do we really want to support it? ;-)
-I guess we need that for metrics..
+The way I've understood it is that given that KVM can support SGX
+without FLC, vEPC should be available even if driver cannot be
+enabled.
 
-SNIP
+This is also exactly what the short summary states.
 
-> 
->    Performance counter stats for 'system wide':
-> 
->            24,059.14 msec cpu-clock                 #   23.994 CPUs utilized
->        6,406,677,892      cpu_atom/cycles/          #  266.289 M/sec
-> 
->          1.002699058 seconds time elapsed
-> 
-> For cpu_atom/cycles/, cpu16-cpu23 are set with valid group fd (cpu-clock's fd
-> on that cpu). For counting results, cpu-clock has 24 cpus aggregation and
-> cpu_atom/cycles/ has 8 cpus aggregation. That's expected.
-> 
-> But if the event order is changed, e.g. '{cpu_atom/cycles/,cpu-clock}',
-> there leaves more works to do.
-> 
->   root@ssp-pwrt-002:~# ./perf stat -e '{cpu_atom/cycles/,cpu-clock}' -a -vvv -- sleep 1
+"Initialize virtual EPC driver even when SGX driver is disabled"
 
-what id you add the other hybrid pmu event? or just cycles?
+It *does not* state:
+
+"Initialize SGX driver even when vEPC driver is disabled"
+
+Also, this is how I interpret the inline comment.
+
+All this considered, the other direction is undocumented functionality.
 
 
-SNIP
-  
-> +static int hybrid_read_size(struct evsel *leader, int cpu, int *nr_members)
-> +{
-> +	struct evsel *pos;
-> +	int nr = 1, back, new_size = 0, idx;
-> +
-> +	for_each_group_member(pos, leader) {
-> +		idx = evsel_cpuid_match(leader, pos, cpu);
-> +		if (idx != -1)
-> +			nr++;
-> +	}
-> +
-> +	if (nr != leader->core.nr_members) {
-> +		back = leader->core.nr_members;
-> +		leader->core.nr_members = nr;
-> +		new_size = perf_evsel__read_size(&leader->core);
-> +		leader->core.nr_members = back;
-> +	}
-> +
-> +	*nr_members = nr;
-> +	return new_size;
-> +}
-> +
->  static int evsel__read_group(struct evsel *leader, int cpu, int thread)
->  {
->  	struct perf_stat_evsel *ps = leader->stats;
->  	u64 read_format = leader->core.attr.read_format;
->  	int size = perf_evsel__read_size(&leader->core);
-> +	int new_size, nr_members;
->  	u64 *data = ps->group_data;
->  
->  	if (!(read_format & PERF_FORMAT_ID))
->  		return -EINVAL;
-
-I wonder if we do not find some reasonable generic way to process
-this, porhaps we should make some early check that this evlist has
-hybrid event and the move the implementation in some separated
-hybrid-XXX object, so we don't confuse the code
-
-jirka
-
+/Jarkko
