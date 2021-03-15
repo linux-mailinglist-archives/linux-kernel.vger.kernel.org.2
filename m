@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5143B33B6A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F4133B68A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhCON6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57582 "EHLO mail.kernel.org"
+        id S229810AbhCON6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231444AbhCONy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86E7364EEC;
-        Mon, 15 Mar 2021 13:54:23 +0000 (UTC)
+        id S231449AbhCONya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7246E64EE3;
+        Mon, 15 Mar 2021 13:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816465;
-        bh=mAXqVa1GxQzMOxWvVdIqVfZjw+tpCX/rdV/w5e2TQHE=;
+        s=korg; t=1615816466;
+        bh=KA5lgiQDxsghnz5TVajIikeYslzRNzr57tlHqw7sVAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3EI9Oy9Mt/0b/g+wc15EaInWllc/G0njlepL1Y/UXk08qkV2JByD48C7b2UvOV3d
-         +nLP4KuRLnOBVRBxNYEoHWP2VqyTeJZAPwBjt5LTmjuCiFx188uCJCPCMsU3qKLDhO
-         qgS3mOd6WCDighARAy7xXewpD+5BQgaXvvhHi00g=
+        b=f8g/LjJ8ZoGlbFmfD3lL7FkD/KWahRFdPZGHKl2Po+ruXknDLHaSXtXEMM/ldI54R
+         tX/DCxr5Kb1a27JKuuzcNEVmW8gkK3J+raYhh3+xBL1U9GbA2M3JmJmfM0O5b3Ht5l
+         04afIHG5C2ihPLLeyAVV2nvzbPffA5ft6TMkwd5I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 60/75] prctl: fix PR_SET_MM_AUXV kernel stack leak
-Date:   Mon, 15 Mar 2021 14:52:14 +0100
-Message-Id: <20210315135210.222099013@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 61/75] alpha: add $(src)/ rather than $(obj)/ to make source file path
+Date:   Mon, 15 Mar 2021 14:52:15 +0100
+Message-Id: <20210315135210.252431959@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
 References: <20210315135208.252034256@linuxfoundation.org>
@@ -42,45 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alexey Dobriyan <adobriyan@gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-[ Upstream commit c995f12ad8842dbf5cfed113fb52cdd083f5afd1 ]
+commit 5ed78e5523fd9ba77b8444d380d54da1f88c53fc upstream.
 
-Doing a
+$(ev6-y)divide.S is a source file, not a build-time generated file.
+So, it should be prefixed with $(src)/ rather than $(obj)/.
 
-	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
-
-will copy 1 byte from userspace to (quite big) on-stack array
-and then stash everything to mm->saved_auxv.
-AT_NULL terminator will be inserted at the very end.
-
-/proc/*/auxv handler will find that AT_NULL terminator
-and copy original stack contents to userspace.
-
-This devious scheme requires CAP_SYS_RESOURCE.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sys.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/alpha/lib/Makefile |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index e98664039cb2..8ac977df4dd4 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1910,7 +1910,7 @@ static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
- 	 * up to the caller to provide sane values here, otherwise userspace
- 	 * tools which use this vector might be unhappy.
- 	 */
--	unsigned long user_auxv[AT_VECTOR_SIZE];
-+	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
+--- a/arch/alpha/lib/Makefile
++++ b/arch/alpha/lib/Makefile
+@@ -46,11 +46,11 @@ AFLAGS___remqu.o =       -DREM
+ AFLAGS___divlu.o = -DDIV       -DINTSIZE
+ AFLAGS___remlu.o =       -DREM -DINTSIZE
  
- 	if (len > sizeof(user_auxv))
- 		return -EINVAL;
--- 
-2.30.1
-
+-$(obj)/__divqu.o: $(obj)/$(ev6-y)divide.S
++$(obj)/__divqu.o: $(src)/$(ev6-y)divide.S
+ 	$(cmd_as_o_S)
+-$(obj)/__remqu.o: $(obj)/$(ev6-y)divide.S
++$(obj)/__remqu.o: $(src)/$(ev6-y)divide.S
+ 	$(cmd_as_o_S)
+-$(obj)/__divlu.o: $(obj)/$(ev6-y)divide.S
++$(obj)/__divlu.o: $(src)/$(ev6-y)divide.S
+ 	$(cmd_as_o_S)
+-$(obj)/__remlu.o: $(obj)/$(ev6-y)divide.S
++$(obj)/__remlu.o: $(src)/$(ev6-y)divide.S
+ 	$(cmd_as_o_S)
 
 
