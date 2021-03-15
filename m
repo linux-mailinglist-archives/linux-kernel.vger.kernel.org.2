@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2949033B8C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA2133B802
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbhCOOE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34886 "EHLO mail.kernel.org"
+        id S233499AbhCOOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhCON5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 944C364F0C;
-        Mon, 15 Mar 2021 13:57:19 +0000 (UTC)
+        id S231183AbhCON4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91BF864EF0;
+        Mon, 15 Mar 2021 13:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816640;
-        bh=fgowpRYNBb9TtpvY7+SDkKL4ZtEN7QAeVIZq6rFT1mY=;
+        s=korg; t=1615816602;
+        bh=EZ6438jdmEK2eveHPKSP6K3z3mdbdXEA24l4Melgygs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xs7UahQeO+fq7bGQY7lzUkDAcrvKx0Sl2I3yt57NXWjwM9NR/Hrp1pWQ3br4mPId7
-         B+5k6yD9jP1NOc2ANwwTVgU/dQDjuuqaFsKN5sxuJBRJBdB6lAfZvO/TP2qen+u0lc
-         zBXtox5EKwC5aolriUmfgqqWLbdPGkL7FHgRc0SA=
+        b=VGdt6ZnwXXZG9ZeISq80M7qb2UFSEgTY08WRnmGkxXMnDb34HxIaU075fxmNNItai
+         EHaGdeFDxyL31ggW/JUugoRje5cbk1NE0N9mk5eeBN6mQe64yXy2nU4BE/0qf9O5YT
+         4TDgtctqYKtinlGj4Z9lIQ3cT8BIO0w42PjyWaoo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 036/306] ibmvnic: remove excessive irqsave
-Date:   Mon, 15 Mar 2021 14:51:39 +0100
-Message-Id: <20210315135508.856738975@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tom Herbert <tom@herbertland.com>,
+        Willem de Bruijn <willemb@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 007/290] net: Fix gro aggregation for udp encaps with zero csum
+Date:   Mon, 15 Mar 2021 14:51:40 +0100
+Message-Id: <20210315135542.187362018@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +46,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Junlin Yang <yangjunlin@yulong.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 69cdb7947adb816fc9325b4ec02a6dddd5070b82 upstream.
+commit 89e5c58fc1e2857ccdaae506fb8bc5fed57ee063 upstream.
 
-ibmvnic_remove locks multiple spinlocks while disabling interrupts:
-spin_lock_irqsave(&adapter->state_lock, flags);
-spin_lock_irqsave(&adapter->rwi_lock, flags);
+We noticed a GRO issue for UDP-based encaps such as vxlan/geneve when the
+csum for the UDP header itself is 0. In that case, GRO aggregation does
+not take place on the phys dev, but instead is deferred to the vxlan/geneve
+driver (see trace below).
 
-As reported by coccinelle, the second _irqsave() overwrites the value
-saved in 'flags' by the first _irqsave(),   therefore when the second
-_irqrestore() comes,the value in 'flags' is not valid,the value saved
-by the first _irqsave() has been lost.
-This likely leads to IRQs remaining disabled. So remove the second
-_irqsave():
-spin_lock_irqsave(&adapter->state_lock, flags);
-spin_lock(&adapter->rwi_lock);
+The reason is essentially that GRO aggregation bails out in udp_gro_receive()
+for such case when drivers marked the skb with CHECKSUM_UNNECESSARY (ice, i40e,
+others) where for non-zero csums 2abb7cdc0dc8 ("udp: Add support for doing
+checksum unnecessary conversion") promotes those skbs to CHECKSUM_COMPLETE
+and napi context has csum_valid set. This is however not the case for zero
+UDP csum (here: csum_cnt is still 0 and csum_valid continues to be false).
 
-Generated by: ./scripts/coccinelle/locks/flags.cocci
-./drivers/net/ethernet/ibm/ibmvnic.c:5413:1-18:
-ERROR: nested lock+irqsave that reuses flags from line 5404.
+At the same time 57c67ff4bd92 ("udp: additional GRO support") added matches
+on !uh->check ^ !uh2->check as part to determine candidates for aggregation,
+so it certainly is expected to handle zero csums in udp_gro_receive(). The
+purpose of the check added via 662880f44203 ("net: Allow GRO to use and set
+levels of checksum unnecessary") seems to catch bad csum and stop aggregation
+right away.
 
-Fixes: 4a41c421f367 ("ibmvnic: serialize access to work queue on remove")
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+One way to fix aggregation in the zero case is to only perform the !csum_valid
+check in udp_gro_receive() if uh->check is infact non-zero.
+
+Before:
+
+  [...]
+  swapper     0 [008]   731.946506: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100400 len=1500   (1)
+  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100200 len=1500
+  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101100 len=1500
+  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101700 len=1500
+  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101b00 len=1500
+  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100600 len=1500
+  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100f00 len=1500
+  swapper     0 [008]   731.946509: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100a00 len=1500
+  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100500 len=1500
+  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100700 len=1500
+  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101d00 len=1500   (2)
+  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101000 len=1500
+  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101c00 len=1500
+  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101400 len=1500
+  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100e00 len=1500
+  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101600 len=1500
+  swapper     0 [008]   731.946521: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100800 len=774
+  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497100400 len=14032 (1)
+  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497101d00 len=9112  (2)
+  [...]
+
+  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
+  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
+  Recv   Send    Send
+  Socket Socket  Message  Elapsed
+  Size   Size    Size     Time     Throughput
+  bytes  bytes   bytes    secs.    10^6bits/sec
+
+   87380  16384  16384    20.01    13129.24
+
+After:
+
+  [...]
+  swapper     0 [026]   521.862641: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479000 len=11286 (1)
+  swapper     0 [026]   521.862643: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479000 len=11236 (1)
+  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d478500 len=2898  (2)
+  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479f00 len=8490  (3)
+  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d478500 len=2848  (2)
+  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479f00 len=8440  (3)
+  [...]
+
+  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
+  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
+  Recv   Send    Send
+  Socket Socket  Message  Elapsed
+  Size   Size    Size     Time     Throughput
+  bytes  bytes   bytes    secs.    10^6bits/sec
+
+   87380  16384  16384    20.01    24576.53
+
+Fixes: 57c67ff4bd92 ("udp: additional GRO support")
+Fixes: 662880f44203 ("net: Allow GRO to use and set levels of checksum unnecessary")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc: Tom Herbert <tom@herbertland.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/r/20210226212248.8300-1-daniel@iogearbox.net
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/udp_offload.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -5474,9 +5474,9 @@ static int ibmvnic_remove(struct vio_dev
- 	 * after setting state, so __ibmvnic_reset() which is called
- 	 * from the flush_work() below, can make progress.
- 	 */
--	spin_lock_irqsave(&adapter->rwi_lock, flags);
-+	spin_lock(&adapter->rwi_lock);
- 	adapter->state = VNIC_REMOVING;
--	spin_unlock_irqrestore(&adapter->rwi_lock, flags);
-+	spin_unlock(&adapter->rwi_lock);
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -522,7 +522,7 @@ struct sk_buff *udp_gro_receive(struct l
+ 	}
  
- 	spin_unlock_irqrestore(&adapter->state_lock, flags);
- 
+ 	if (!sk || NAPI_GRO_CB(skb)->encap_mark ||
+-	    (skb->ip_summed != CHECKSUM_PARTIAL &&
++	    (uh->check && skb->ip_summed != CHECKSUM_PARTIAL &&
+ 	     NAPI_GRO_CB(skb)->csum_cnt == 0 &&
+ 	     !NAPI_GRO_CB(skb)->csum_valid) ||
+ 	    !udp_sk(sk)->gro_receive)
 
 
