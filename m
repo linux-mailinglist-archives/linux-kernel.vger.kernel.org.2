@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6522233C1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E6F33C1C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhCOQ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:27:47 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:49644 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbhCOQ1d (ORCPT
+        id S230239AbhCOQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:29:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230428AbhCOQ3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:27:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=m8eFPt4Ky/TIsfccDRiBKAA6Im8fSHoSL1rWmfMykMo=; b=litugTKON8LXh2E4fNWf+tdFsh
-        q2CsD9IDYGKKVIawn8gamhxRH644MuufqFWDCKKprPoZHtnAsUpBhIfbDLYsRIwcTEv0TojuuQngh
-        9J3WiaV60JpGFYmjOv2GNCbeGl6swiX0xF3BgMcQ26cgzBguK1z1MH20QdPZRSQUkmZ+cHM0b8weO
-        nMw1zNo5ZDzrtWTjylir56GRiIHipKmvmqBkHqMQTaNXL2ccxzXkV9uRTIH6IoeArfVAH59w8/LqW
-        lQKk+yTetQfXb8ka5Hd5m4l/qqdvdrI67gA7aRHbkH+i+GOkWx0VzhB9jVE/dO+eFCXLyB281bkpf
-        Y9mF4fFg==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lLq3k-0000KL-25; Mon, 15 Mar 2021 10:27:13 -0600
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
+        Mon, 15 Mar 2021 12:29:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615825743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nl1+WY2yc35r8DKGgQPrYO8xQPdF6BvZlTPgaL/G56k=;
+        b=Vy9uNIFp5GkvQua/FEpKRTiBfckxT4X/drsuy2F0vD8j8Hp1L/wCDCcJXh1ValaBCMJKu2
+        7kDkyoBE++6VBIympbnQMkYIJx4TH5HWwXfE/hZwhPN91IvFn9rCyrI3HiOPDNBLY8DTfe
+        PXXz6AAfr6J+5HvncwgoZXebO5sLgc4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-gaY_ODU1M2SL4P00G20Vrw-1; Mon, 15 Mar 2021 12:29:01 -0400
+X-MC-Unique: gaY_ODU1M2SL4P00G20Vrw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 491E9107ACCD;
+        Mon, 15 Mar 2021 16:28:57 +0000 (UTC)
+Received: from [10.36.112.200] (ovpn-112-200.ams2.redhat.com [10.36.112.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB8F5D755;
+        Mon, 15 Mar 2021 16:28:41 +0000 (UTC)
+Subject: Re: [PATCH RFCv2] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to
+ prefault/prealloc memory
+From:   David Hildenbrand <david@redhat.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
         Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-5-logang@deltatee.com>
- <20210313013856.GA3402637@iweiny-DESK2.sc.intel.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <7509243d-b605-953b-6941-72876a60d527@deltatee.com>
-Date:   Mon, 15 Mar 2021 10:27:08 -0600
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
+References: <20210308164520.18323-1-david@redhat.com>
+ <20210315122213.k52wtlbbhsw42pks@box>
+ <7d607d1c-efd5-3888-39bb-9e5f8bc08185@redhat.com>
+ <20210315130353.iqnwsnp2c2wpt4y2@box>
+ <e59d6301-6ba8-1d7f-5c15-60364eec3fe1@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <df583cb8-ed13-92a1-811f-46d193ab4ae7@redhat.com>
+Date:   Mon, 15 Mar 2021 17:28:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210313013856.GA3402637@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+In-Reply-To: <e59d6301-6ba8-1d7f-5c15-60364eec3fe1@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, ira.weiny@intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH v2 04/11] PCI/P2PDMA: Introduce
- pci_p2pdma_should_map_bus() and pci_p2pdma_bus_offset()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-03-12 6:38 p.m., Ira Weiny wrote:
-> On Thu, Mar 11, 2021 at 04:31:34PM -0700, Logan Gunthorpe wrote:
->> Introduce pci_p2pdma_should_map_bus() which is meant to be called by
->> DMA map functions to determine how to map a given p2pdma page.
+On 15.03.21 14:26, David Hildenbrand wrote:
+> On 15.03.21 14:03, Kirill A. Shutemov wrote:
+>> On Mon, Mar 15, 2021 at 01:25:40PM +0100, David Hildenbrand wrote:
+>>> On 15.03.21 13:22, Kirill A. Shutemov wrote:
+>>>> On Mon, Mar 08, 2021 at 05:45:20PM +0100, David Hildenbrand wrote:
+>>>>> +			case -EHWPOISON: /* Skip over any poisoned pages. */
+>>>>> +				start += PAGE_SIZE;
+>>>>> +				continue;
+>>>>
+>>>> Why is it good approach? It's not abvious to me.
+>>>
+>>> My main motivation was to simplify return code handling. I don't want to
+>>> return -EHWPOISON to user space
 >>
->> pci_p2pdma_bus_offset() is also added to allow callers to get the bus
->> offset if they need to map the bus address.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>  drivers/pci/p2pdma.c       | 50 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/pci-p2pdma.h | 11 +++++++++
->>  2 files changed, 61 insertions(+)
->>
->> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
->> index 7f6836732bce..66d16b7eb668 100644
->> --- a/drivers/pci/p2pdma.c
->> +++ b/drivers/pci/p2pdma.c
->> @@ -912,6 +912,56 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
->>  }
->>  EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
->>  
->> +/**
->> + * pci_p2pdma_bus_offset - returns the bus offset for a given page
->> + * @page: page to get the offset for
->> + *
->> + * Must be passed a PCI p2pdma page.
->> + */
->> +u64 pci_p2pdma_bus_offset(struct page *page)
->> +{
->> +	struct pci_p2pdma_pagemap *p2p_pgmap = to_p2p_pgmap(page->pgmap);
->> +
->> +	WARN_ON(!is_pci_p2pdma_page(page));
+>> Why? Hiding the problem under the rug doesn't help anybody. SIGBUS later
+>> is not better than an error upfront.
 > 
-> Shouldn't this check be before the to_p2p_pgmap() call?  
-
-The to_p2p_pgmap() call is just doing pointer arithmetic, so strictly
-speaking it doesn't need to be before. We just can't access p2p_pgmap
-until it has been checked.
-
-> And I've been told not
-> to introduce WARN_ON's.  Should this be?
+> Well, if you think about "prefaulting page tables", the first intuition
+> is certainly not to check for poisoned pages, right? After all, you are
+> not actually accessing memory, you are allocating memory if required and
+> fill page tables. OTOH, mlock() will also choke on poisoned pages.
 > 
-> 	if (!is_pci_p2pdma_page(page))
-> 		return -1;
+> With the current semantics, you can start and run a VM just fine.
+> Preallocation/prefaulting succeeded after all. On access you will get a
+> SIGBUS, from which e.g., QEMU can recover by injecting an MCE into the
+> guest - just like if you would hit a poisoned page later.
+> 
+> The problem we are talking about is most probably very rare, especially
+> when using MADV_POPULATE_ for actual preallocation.
+> 
+> I don't have a strong opinion; not bailing out on poisoned pages felt
+> like the right thing to do.
 
-In this case the WARN_ON is just to guard against misuse of the
-function. It should never happen unless a developer changes the code in
-a way that is incorrect. So I think that's the correct use of WARN_ON.
-Though I might change it to WARN and return, that seems safer.
+I'll switch to propagating -EHWPOISON, it matches how e.g., mlock() 
+behaves -- not ignoring poisoned pages. Thanks!
 
-Logan
+-- 
+Thanks,
+
+David / dhildenb
+
