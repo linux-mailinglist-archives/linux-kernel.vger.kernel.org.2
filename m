@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD5133BBA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A986333BBA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhCOOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S237651AbhCOOTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhCON7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C04164D9E;
-        Mon, 15 Mar 2021 13:59:26 +0000 (UTC)
+        id S232460AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B499864EF5;
+        Mon, 15 Mar 2021 13:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816768;
-        bh=3J5T+51wExoyAnoz49/GEIY5eCDLm7DZch2NxfueNNM=;
+        s=korg; t=1615816770;
+        bh=22Sy2O0/sNhIpTplUZi3RFzECWze9MCTHRDGpGRufjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UkUU095ikGmCx39s8+j9ySUC/A1M6hS92R9jfPII3SnHRW7KqrKfOD08qqbisQ7IS
-         5ifNlp1Q2fI2oaOYHGhxqr7Of88j2xEupPiP+VkXkk9Dyz+dprogkHY5MI2AOcuqZ+
-         LlMqTqmOzrhl1a0cyg+ZN0GXV5lfA6HeHYNoqgxI=
+        b=J0Xmc/26oVGTy3lsh2zQ6LDVoU5Mpi2YYLC3W+ybZx1+2crlp3S/68MKB158oieCL
+         p34SBAJx6wuY7MlTqCTmYFRzrRLeKQ8reu2qF9pweuz/0iWQCLiv++M5yh8Y/3BdAq
+         Gc163DTmHQKTRCHYgincjHlzruwrtrjvM/Gggmko=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 103/290] media: rkisp1: params: fix wrong bits settings
-Date:   Mon, 15 Mar 2021 14:53:16 +0100
-Message-Id: <20210315135545.396949680@linuxfoundation.org>
+Subject: [PATCH 5.10 104/290] media: v4l: vsp1: Fix uif null pointer access
+Date:   Mon, 15 Mar 2021 14:53:17 +0100
+Message-Id: <20210315135545.428211935@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,33 +42,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-commit 2025a48cfd92d541c5ee47deee97f8a46d00c4ac upstream.
+commit 6732f313938027a910e1f7351951ff52c0329e70 upstream.
 
-The histogram mode is set using 'rkisp1_params_set_bits'.
-Only the bits of the mode should be the value argument for
-that function. Otherwise bits outside the mode mask are
-turned on which is not what was intended.
+RZ/G2L SoC has no UIF. This patch fixes null pointer access, when UIF
+module is not used.
 
-Fixes: bae1155cf579 ("media: staging: rkisp1: add output device for parameters")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Fixes: 5e824f989e6e8("media: v4l: vsp1: Integrate DISCOM in display pipeline")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/media/rkisp1/rkisp1-params.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/platform/vsp1/vsp1_drm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/media/rkisp1/rkisp1-params.c
-+++ b/drivers/staging/media/rkisp1/rkisp1-params.c
-@@ -1291,7 +1291,6 @@ static void rkisp1_params_config_paramet
- 	memset(hst.hist_weight, 0x01, sizeof(hst.hist_weight));
- 	rkisp1_hst_config(params, &hst);
- 	rkisp1_param_set_bits(params, RKISP1_CIF_ISP_HIST_PROP,
--			      ~RKISP1_CIF_ISP_HIST_PROP_MODE_MASK |
- 			      rkisp1_hst_params_default_config.mode);
- 
- 	/* set the  range */
+--- a/drivers/media/platform/vsp1/vsp1_drm.c
++++ b/drivers/media/platform/vsp1/vsp1_drm.c
+@@ -462,9 +462,9 @@ static int vsp1_du_pipeline_setup_inputs
+ 	 * make sure it is present in the pipeline's list of entities if it
+ 	 * wasn't already.
+ 	 */
+-	if (!use_uif) {
++	if (drm_pipe->uif && !use_uif) {
+ 		drm_pipe->uif->pipe = NULL;
+-	} else if (!drm_pipe->uif->pipe) {
++	} else if (drm_pipe->uif && !drm_pipe->uif->pipe) {
+ 		drm_pipe->uif->pipe = pipe;
+ 		list_add_tail(&drm_pipe->uif->list_pipe, &pipe->entities);
+ 	}
 
 
