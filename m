@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6F833B0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF48333B0DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhCOLTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:19:24 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43934 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhCOLTS (ORCPT
+        id S229987AbhCOLU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:20:29 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:36716 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhCOLUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:19:18 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 336A71C0B78; Mon, 15 Mar 2021 12:19:16 +0100 (CET)
-Date:   Mon, 15 Mar 2021 12:19:15 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20210315111915.GA14857@duo.ucw.cz>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-3-henning.schild@siemens.com>
- <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sm4nu43k4a2Rpi4c"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 15 Mar 2021 07:20:21 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 91AAB4002C6;
+        Mon, 15 Mar 2021 19:20:15 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     zhouchuangao <zhouchuangao@vivo.com>
+Subject: [PATCH] proc/sysctl: Fix function name error in comments
+Date:   Mon, 15 Mar 2021 04:19:54 -0700
+Message-Id: <1615807194-79646-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHUIdGktJSU1MQ0sYVkpNSk5DS0xJSk5MQ0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PjY6OTo6Nj8ROUssPh4dVi1N
+        PiNPCQ1VSlVKTUpOQ0tMSUpNSklOVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUpNQk43Bg++
+X-HM-Tid: 0a78359d7862d991kuws91aab4002c6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function name should be modified to register_sysctl_paths instead
+of register_sysctl_table_path.
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+---
+ fs/proc/proc_sysctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 984e42f..f026a48 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1562,7 +1562,7 @@ struct ctl_table_header *__register_sysctl_paths(
+ }
+ 
+ /**
+- * register_sysctl_table_path - register a sysctl table hierarchy
++ * register_sysctl_paths - register a sysctl table hierarchy
+  * @path: The path to the directory the sysctl table is in.
+  * @table: the top-level table structure
+  *
+-- 
+2.7.4
 
-> > +       struct led_classdev cdev;
-> > +};
-> > +
-> > +static struct simatic_ipc_led simatic_ipc_leds_io[] =3D {
-> > +       {1 << 15, "simatic-ipc:green:" LED_FUNCTION_STATUS "-1" },
-> > +       {1 << 7,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-1" },
-> > +       {1 << 14, "simatic-ipc:red:" LED_FUNCTION_STATUS "-2" },
-> > +       {1 << 6,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-2" },
-> > +       {1 << 13, "simatic-ipc:red:" LED_FUNCTION_STATUS "-3" },
-> > +       {1 << 5,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-3" },
->=20
-> Can you use BIT() macro here? And can it be sorted by the bit order?
-
-There's nothing wrong with << and this order is fine.
-
-But I still don't like the naming. simantic-ipc: prefix is
-useless. Having 6 status leds is not good, either.
-
-> > +       struct simatic_ipc_led *led =3D
-> > +               container_of(led_cd, struct simatic_ipc_led, cdev);
->=20
-> One line?
-
-80 columns. It is fine as it is.
-
-Best regards,
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---sm4nu43k4a2Rpi4c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYE9CswAKCRAw5/Bqldv6
-8tJBAJ0QMrBemQByIk0eybhiAr+UntP9OwCeOLQPeLwTNXrHjtUcD1y+OCeIVgE=
-=4CEG
------END PGP SIGNATURE-----
-
---sm4nu43k4a2Rpi4c--
