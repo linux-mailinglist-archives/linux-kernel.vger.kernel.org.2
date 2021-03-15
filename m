@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B82333B51A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3675F33B532
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhCONxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55460 "EHLO mail.kernel.org"
+        id S230464AbhCONxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhCONwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1816164EED;
-        Mon, 15 Mar 2021 13:52:52 +0000 (UTC)
+        id S229945AbhCONxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DE3561606;
+        Mon, 15 Mar 2021 13:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816375;
-        bh=XNpy37LGE6RZ+Ti4veN4+ZUKqsUfs9mUVHCpS4Q+XMI=;
+        s=korg; t=1615816385;
+        bh=F/Xy1t0ooY/XYzzrx09NjPVLLKoiU183ZMnQP/qTA/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R13SQqRi1a117vRyQb34K7EjgBGj/LovlYEKwjrcRz++i0k6HU/TET8Izt9d6nmJI
-         e7+edUXGUHxtS3+4gdvpu0mGfbVpUwhIW7ZUzTN3yCwZkRCfGKAXuaq7pcEteXD6Bf
-         mzOj/zrfXclUEQdf7ck8VJ8IFlZw0YTDPS2PdcLc=
+        b=Du6xQihS8a0Ml60LU3vVof26KXJS2eElwQrNquuvgTYqIbqkfzEjeU9mYkVQYxRou
+         NmUlSGY6bdCf626aBQzTz5nEzFeFXObrXnfNTgnwE1fBK8WDWmHMsNf81r3kZzSTYe
+         LP9N7fpCeVOTXYPvVGVX89fKPIyElA8yD8/N5jEA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, "Kevin(Yudong) Yang" <yyd@google.com>,
         Eric Dumazet <edumazet@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tom Herbert <tom@herbertland.com>,
-        Willem de Bruijn <willemb@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 04/78] net: Fix gro aggregation for udp encaps with zero csum
-Date:   Mon, 15 Mar 2021 14:51:27 +0100
-Message-Id: <20210315135212.212795602@linuxfoundation.org>
+        Neal Cardwell <ncardwell@google.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 14/75] net/mlx4_en: update moderation when config reset
+Date:   Mon, 15 Mar 2021 14:51:28 +0100
+Message-Id: <20210315135208.728222767@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,110 +44,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Kevin(Yudong) Yang <yyd@google.com>
 
-commit 89e5c58fc1e2857ccdaae506fb8bc5fed57ee063 upstream.
+commit 00ff801bb8ce6711e919af4530b6ffa14a22390a upstream.
 
-We noticed a GRO issue for UDP-based encaps such as vxlan/geneve when the
-csum for the UDP header itself is 0. In that case, GRO aggregation does
-not take place on the phys dev, but instead is deferred to the vxlan/geneve
-driver (see trace below).
+This patch fixes a bug that the moderation config will not be
+applied when calling mlx4_en_reset_config. For example, when
+turning on rx timestamping, mlx4_en_reset_config() will be called,
+causing the NIC to forget previous moderation config.
 
-The reason is essentially that GRO aggregation bails out in udp_gro_receive()
-for such case when drivers marked the skb with CHECKSUM_UNNECESSARY (ice, i40e,
-others) where for non-zero csums 2abb7cdc0dc8 ("udp: Add support for doing
-checksum unnecessary conversion") promotes those skbs to CHECKSUM_COMPLETE
-and napi context has csum_valid set. This is however not the case for zero
-UDP csum (here: csum_cnt is still 0 and csum_valid continues to be false).
+This fix is in phase with a previous fix:
+commit 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss
+after set_ringparam is called")
 
-At the same time 57c67ff4bd92 ("udp: additional GRO support") added matches
-on !uh->check ^ !uh2->check as part to determine candidates for aggregation,
-so it certainly is expected to handle zero csums in udp_gro_receive(). The
-purpose of the check added via 662880f44203 ("net: Allow GRO to use and set
-levels of checksum unnecessary") seems to catch bad csum and stop aggregation
-right away.
+Tested: Before this patch, on a host with NIC using mlx4, run
+netserver and stream TCP to the host at full utilization.
+$ sar -I SUM 1
+                 INTR    intr/s
+14:03:56          sum  48758.00
 
-One way to fix aggregation in the zero case is to only perform the !csum_valid
-check in udp_gro_receive() if uh->check is infact non-zero.
+After rx hwtstamp is enabled:
+$ sar -I SUM 1
+14:10:38          sum 317771.00
+We see the moderation is not working properly and issued 7x more
+interrupts.
 
-Before:
+After the patch, and turned on rx hwtstamp, the rate of interrupts
+is as expected:
+$ sar -I SUM 1
+14:52:11          sum  49332.00
 
-  [...]
-  swapper     0 [008]   731.946506: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100400 len=1500   (1)
-  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100200 len=1500
-  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101100 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101700 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101b00 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100600 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100f00 len=1500
-  swapper     0 [008]   731.946509: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100a00 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100500 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100700 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101d00 len=1500   (2)
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101000 len=1500
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101c00 len=1500
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101400 len=1500
-  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100e00 len=1500
-  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101600 len=1500
-  swapper     0 [008]   731.946521: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100800 len=774
-  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497100400 len=14032 (1)
-  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497101d00 len=9112  (2)
-  [...]
-
-  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
-  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
-  Recv   Send    Send
-  Socket Socket  Message  Elapsed
-  Size   Size    Size     Time     Throughput
-  bytes  bytes   bytes    secs.    10^6bits/sec
-
-   87380  16384  16384    20.01    13129.24
-
-After:
-
-  [...]
-  swapper     0 [026]   521.862641: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479000 len=11286 (1)
-  swapper     0 [026]   521.862643: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479000 len=11236 (1)
-  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d478500 len=2898  (2)
-  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479f00 len=8490  (3)
-  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d478500 len=2848  (2)
-  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479f00 len=8440  (3)
-  [...]
-
-  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
-  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
-  Recv   Send    Send
-  Socket Socket  Message  Elapsed
-  Size   Size    Size     Time     Throughput
-  bytes  bytes   bytes    secs.    10^6bits/sec
-
-   87380  16384  16384    20.01    24576.53
-
-Fixes: 57c67ff4bd92 ("udp: additional GRO support")
-Fixes: 662880f44203 ("net: Allow GRO to use and set levels of checksum unnecessary")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Tom Herbert <tom@herbertland.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/r/20210226212248.8300-1-daniel@iogearbox.net
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss after set_ringparam is called")
+Signed-off-by: Kevin(Yudong) Yang <yyd@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+CC: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/udp_offload.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c  |    2 ++
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    |    1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -265,7 +265,7 @@ struct sk_buff **udp_gro_receive(struct
- 	struct sock *sk;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -47,7 +47,7 @@
+ #define EN_ETHTOOL_SHORT_MASK cpu_to_be16(0xffff)
+ #define EN_ETHTOOL_WORD_MASK  cpu_to_be32(0xffffffff)
  
- 	if (NAPI_GRO_CB(skb)->encap_mark ||
--	    (skb->ip_summed != CHECKSUM_PARTIAL &&
-+	    (uh->check && skb->ip_summed != CHECKSUM_PARTIAL &&
- 	     NAPI_GRO_CB(skb)->csum_cnt == 0 &&
- 	     !NAPI_GRO_CB(skb)->csum_valid))
- 		goto out;
+-static int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
+ {
+ 	int i;
+ 	int err = 0;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -3188,6 +3188,8 @@ int mlx4_en_reset_config(struct net_devi
+ 			en_err(priv, "Failed starting port\n");
+ 	}
+ 
++	if (!err)
++		err = mlx4_en_moderation_update(priv);
+ out:
+ 	mutex_unlock(&mdev->state_lock);
+ 	netdev_features_change(dev);
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -839,6 +839,7 @@ void mlx4_en_ptp_overflow_check(struct m
+ #define DEV_FEATURE_CHANGED(dev, new_features, feature) \
+ 	((dev->features & feature) ^ (new_features & feature))
+ 
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv);
+ int mlx4_en_reset_config(struct net_device *dev,
+ 			 struct hwtstamp_config ts_config,
+ 			 netdev_features_t new_features);
 
 
