@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0C033BF04
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86A633BF02
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241639AbhCOOxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S241603AbhCOOxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237255AbhCOOgu (ORCPT
+        with ESMTP id S237270AbhCOOgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:36:50 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B65C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:49 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id n16so14119611wro.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:49 -0700 (PDT)
+        Mon, 15 Mar 2021 10:36:52 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B0AC0613D7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:51 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id m17so2910942wml.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=7KQyHaF+3apf7Y8TpzkfAGxiiNAXfY9WxfoZinPV3PM=;
-        b=nCh+MTm5suwqkjsMCJKCmjD5G5p9Yons9zWPQjWQKANe8ikkY0caYEONUTsaEkL59U
-         ouuLUWAidPgBNvKjE2bGc6hnvC8t5ET+x3klfk9mdUOCfOUkRtmXGKAXukzbiratGawb
-         Xay9E8DTux+rw9B01nkaYLNG63yIwCpXtcA3K5ol35lTCDvFJW8HfNDNfXJlltm/Hbwa
-         Bx7aUVA6q+s1OjOEPIU5PdBO2nNox+Kbt8h+5V9ICoDu4jQiFQum9JrFV3mDPBFCiIyT
-         puIu3d1X0xEUndRmLwQ+SyqfcSRxkjN5va4KPwEyHecP7A3rYuxz/JLkxLb+XuZYZT+j
-         GhpQ==
+        bh=AA7WNBlUpAMSn2MPgzLs0H4xGSlUKHXKOJZW0a7DVr8=;
+        b=HeeWafaKs1HfgyYwhqnBsqj7EK/JP92Y1I97LGu+XsaGNx4whjki/w/Xz28ogNllvE
+         b0nYVRKWRncPCFEbY0JXosEAosQURum1lxLWf6JY4ooTP7CEqSoUkpG+z3FsL8xKO4sn
+         V85Ha8YcUJ/k28GR12KlKLEz8Uz4W6Vf2vyEBz9epFHY6S1Q+U4MS8mR1c6sD/QWlCgc
+         I8wdtWxIEQ2QqVHUVh1zepYacBo20vrjz7i8tIJOsNoqxBx0JdsK4KZksiihTA39E4SJ
+         8Of/8rpeQD6QG4DxY7Qa3HgzKToUx87gJXhwQx0yE97b3VWUmrjYUOymLfDY67HKJcmu
+         D7QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7KQyHaF+3apf7Y8TpzkfAGxiiNAXfY9WxfoZinPV3PM=;
-        b=lcUp+tKgxuXoVVDMg2gDLHULiSyOyVZnPs5gRzvCBJmD4Ej+kEC51RANsmIK2Sx/ub
-         TubEcWBYwv+kVckDRq6mxPPywavjpzXG8OMIAbsjjtDKe1qVn3upOHd5fGNDG70Qax74
-         Ln10HIfRuYd6usKNNZq2ZGCnjQjQHU5BLYca7A7jBE2rdbNRYvFpaZ4Q8etiddW0lIiK
-         GxOFTbBdmxQp3bCHOnT4CiNmkFkovpN0JrGMia5fzru7q+/JSck1UgweBKtvIOCdDIKy
-         SZQOmvvEE/cju24SBx1pdtE13qI6Cdw766jEfkwFPh2BlNEqZNQkgC6RmQQ5ISZJrqgH
-         whOA==
-X-Gm-Message-State: AOAM531sbyV/LoOXZ3vasIK3dEAa8Ea2r6u2quxEFh+xFc9vfDEjtEz4
-        i3Y9l8dqgTMK1IzT66qantNp6SJZ8nsn
-X-Google-Smtp-Source: ABdhPJyoJIIrQZsAyr8mdopLNi4Weje+sg8QxQsFlZwQnfAYN86kr7YRPIVtrsYq0cht4F/mZuUkkHQOCp8e
+        bh=AA7WNBlUpAMSn2MPgzLs0H4xGSlUKHXKOJZW0a7DVr8=;
+        b=eFWKqM7VkSY64mbKLCdXsMjvL1GBCFJIXFji1pRygysRoS1vIACVfHvsOvYbr8Slbh
+         abHS/L6EXjRauFT3P4+kn1RHnHCM6O8iFVDpZSYkiXpcHTov/C2/oLCwEqccPoYU9pMs
+         fyuXCMu4YepcAH6LQauVS58itmx+Lps4L3VRtm1UK8gPafvIZWGsBqBsvU3ufFthmevo
+         BhMSu6ldP8BFlFw6t4xqd6Z4zQqAqyHaoVMCHsSk+9OWrKH6aq0Oh5vd1Yk5qhcBozcJ
+         OLPIEIFbVTYKuP6w2ZM2cl6YfYdmY7pYkHZL0w+3DEUXq8fSZl3kmoLOz3IA63pu7WXm
+         7Kfg==
+X-Gm-Message-State: AOAM532J2DxHelyTo08Kfw9QrIPiRJJulC3SZGbe709UsuW5K9aur6vh
+        FCUwy0sQRzAXq8+OikIT4FfmTW8BN2hq
+X-Google-Smtp-Source: ABdhPJxAvSUEErjsvOYHEMkOG9WC8BDpEz7C+7gjZsMj3MWQ0vfpsnAIsGPSV9GXjDX/nZy7FrSUOvIbWZvo
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a7b:c18e:: with SMTP id
- y14mr1121507wmi.1.1615819008335; Mon, 15 Mar 2021 07:36:48 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 14:35:33 +0000
+ (user=qperret job=sendgmr) by 2002:a05:600c:b57:: with SMTP id
+ k23mr14700303wmr.145.1615819010555; Mon, 15 Mar 2021 07:36:50 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 14:35:34 +0000
 In-Reply-To: <20210315143536.214621-1-qperret@google.com>
-Message-Id: <20210315143536.214621-34-qperret@google.com>
+Message-Id: <20210315143536.214621-35-qperret@google.com>
 Mime-Version: 1.0
 References: <20210315143536.214621-1-qperret@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v5 33/36] KVM: arm64: Wrap the host with a stage 2
+Subject: [PATCH v5 34/36] KVM: arm64: Page-align the .hyp sections
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -66,515 +66,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When KVM runs in protected nVHE mode, make use of a stage 2 page-table
-to give the hypervisor some control over the host memory accesses. The
-host stage 2 is created lazily using large block mappings if possible,
-and will default to page mappings in absence of a better solution.
-
-From this point on, memory accesses from the host to protected memory
-regions (e.g. not 'owned' by the host) are fatal and lead to hyp_panic().
+We will soon unmap the .hyp sections from the host stage 2 in Protected
+nVHE mode, which obviously works with at least page granularity, so make
+sure to align them correctly.
 
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_asm.h              |   1 +
- arch/arm64/kernel/image-vars.h                |   3 +
- arch/arm64/kvm/arm.c                          |  10 +
- arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  34 +++
- arch/arm64/kvm/hyp/nvhe/Makefile              |   2 +-
- arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   1 +
- arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  11 +
- arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 246 ++++++++++++++++++
- arch/arm64/kvm/hyp/nvhe/setup.c               |   5 +
- arch/arm64/kvm/hyp/nvhe/switch.c              |   7 +-
- arch/arm64/kvm/hyp/nvhe/tlb.c                 |   4 +-
- 11 files changed, 317 insertions(+), 7 deletions(-)
- create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
- create mode 100644 arch/arm64/kvm/hyp/nvhe/mem_protect.c
+ arch/arm64/kernel/vmlinux.lds.S | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 6dce860f8bca..b127af02bd45 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -61,6 +61,7 @@
- #define __KVM_HOST_SMCCC_FUNC___pkvm_create_mappings		16
- #define __KVM_HOST_SMCCC_FUNC___pkvm_create_private_mapping	17
- #define __KVM_HOST_SMCCC_FUNC___pkvm_cpu_set_vector		18
-+#define __KVM_HOST_SMCCC_FUNC___pkvm_prot_finalize		19
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index e96173ce211b..709d2c433c5e 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -15,9 +15,11 @@
  
- #ifndef __ASSEMBLY__
- 
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index 940c378fa837..d5dc2b792651 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -131,6 +131,9 @@ KVM_NVHE_ALIAS(__hyp_bss_end);
- KVM_NVHE_ALIAS(__hyp_rodata_start);
- KVM_NVHE_ALIAS(__hyp_rodata_end);
- 
-+/* pKVM static key */
-+KVM_NVHE_ALIAS(kvm_protected_mode_initialized);
-+
- #endif /* CONFIG_KVM */
- 
- #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index d474eec606a3..7e6a81079652 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1889,12 +1889,22 @@ static int init_hyp_mode(void)
- 	return err;
- }
- 
-+void _kvm_host_prot_finalize(void *discard)
-+{
-+	WARN_ON(kvm_call_hyp_nvhe(__pkvm_prot_finalize));
-+}
-+
- static int finalize_hyp_mode(void)
- {
- 	if (!is_protected_kvm_enabled())
- 		return 0;
- 
-+	/*
-+	 * Flip the static key upfront as that may no longer be possible
-+	 * once the host stage 2 is installed.
-+	 */
- 	static_branch_enable(&kvm_protected_mode_initialized);
-+	on_each_cpu(_kvm_host_prot_finalize, NULL, 1);
- 
- 	return 0;
- }
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-new file mode 100644
-index 000000000000..d293cb328cc4
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-@@ -0,0 +1,34 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 Google LLC
-+ * Author: Quentin Perret <qperret@google.com>
-+ */
-+
-+#ifndef __KVM_NVHE_MEM_PROTECT__
-+#define __KVM_NVHE_MEM_PROTECT__
-+#include <linux/kvm_host.h>
-+#include <asm/kvm_hyp.h>
-+#include <asm/kvm_pgtable.h>
-+#include <asm/virt.h>
-+#include <nvhe/spinlock.h>
-+
-+struct host_kvm {
-+	struct kvm_arch arch;
-+	struct kvm_pgtable pgt;
-+	struct kvm_pgtable_mm_ops mm_ops;
-+	hyp_spinlock_t lock;
-+};
-+extern struct host_kvm host_kvm;
-+
-+int __pkvm_prot_finalize(void);
-+int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool);
-+void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
-+
-+static __always_inline void __load_host_stage2(void)
-+{
-+	if (static_branch_likely(&kvm_protected_mode_initialized))
-+		__load_stage2(&host_kvm.arch.mmu, host_kvm.arch.vtcr);
-+	else
-+		write_sysreg(0, vttbr_el2);
-+}
-+#endif /* __KVM_NVHE_MEM_PROTECT__ */
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index b334354b8dd0..f55201a7ff33 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -14,7 +14,7 @@ lib-objs := $(addprefix ../../../lib/, $(lib-objs))
- 
- obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
- 	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o page_alloc.o \
--	 cache.o setup.o mm.o
-+	 cache.o setup.o mm.o mem_protect.o
- obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
- 	 ../fpsimd.o ../hyp-entry.o ../exception.o ../pgtable.o
- obj-y += $(lib-objs)
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-index a50ad9e9fc05..c164045af238 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-@@ -119,6 +119,7 @@ alternative_else_nop_endif
- 
- 	/* Invalidate the stale TLBs from Bootloader */
- 	tlbi	alle2
-+	tlbi	vmalls12e1
- 	dsb	sy
- 
- 	/*
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-index ae6503c9be15..f47028d3fd0a 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-@@ -13,6 +13,7 @@
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
- 
-+#include <nvhe/mem_protect.h>
- #include <nvhe/mm.h>
- #include <nvhe/trap_handler.h>
- 
-@@ -151,6 +152,10 @@ static void handle___pkvm_create_private_mapping(struct kvm_cpu_context *host_ct
- 	cpu_reg(host_ctxt, 1) = __pkvm_create_private_mapping(phys, size, prot);
- }
- 
-+static void handle___pkvm_prot_finalize(struct kvm_cpu_context *host_ctxt)
-+{
-+	cpu_reg(host_ctxt, 1) = __pkvm_prot_finalize();
-+}
- typedef void (*hcall_t)(struct kvm_cpu_context *);
- 
- #define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = (hcall_t)handle_##x
-@@ -174,6 +179,7 @@ static const hcall_t host_hcall[] = {
- 	HANDLE_FUNC(__pkvm_cpu_set_vector),
- 	HANDLE_FUNC(__pkvm_create_mappings),
- 	HANDLE_FUNC(__pkvm_create_private_mapping),
-+	HANDLE_FUNC(__pkvm_prot_finalize),
- };
- 
- static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
-@@ -226,6 +232,11 @@ void handle_trap(struct kvm_cpu_context *host_ctxt)
- 	case ESR_ELx_EC_SMC64:
- 		handle_host_smc(host_ctxt);
- 		break;
-+	case ESR_ELx_EC_IABT_LOW:
-+		fallthrough;
-+	case ESR_ELx_EC_DABT_LOW:
-+		handle_host_mem_abort(host_ctxt);
-+		break;
- 	default:
- 		hyp_panic();
+ #define HYPERVISOR_DATA_SECTIONS				\
+ 	HYP_SECTION_NAME(.rodata) : {				\
++		. = ALIGN(PAGE_SIZE);				\
+ 		__hyp_rodata_start = .;				\
+ 		*(HYP_SECTION_NAME(.data..ro_after_init))	\
+ 		*(HYP_SECTION_NAME(.rodata))			\
++		. = ALIGN(PAGE_SIZE);				\
+ 		__hyp_rodata_end = .;				\
  	}
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-new file mode 100644
-index 000000000000..5c88a325e6fc
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -0,0 +1,246 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 Google LLC
-+ * Author: Quentin Perret <qperret@google.com>
-+ */
-+
-+#include <linux/kvm_host.h>
-+#include <asm/kvm_cpufeature.h>
-+#include <asm/kvm_emulate.h>
-+#include <asm/kvm_hyp.h>
-+#include <asm/kvm_mmu.h>
-+#include <asm/kvm_pgtable.h>
-+#include <asm/stage2_pgtable.h>
-+
-+#include <hyp/switch.h>
-+
-+#include <nvhe/gfp.h>
-+#include <nvhe/memory.h>
-+#include <nvhe/mem_protect.h>
-+#include <nvhe/mm.h>
-+
-+extern unsigned long hyp_nr_cpus;
-+struct host_kvm host_kvm;
-+
-+struct hyp_pool host_s2_mem;
-+struct hyp_pool host_s2_dev;
-+
-+static void *host_s2_zalloc_pages_exact(size_t size)
-+{
-+	return hyp_alloc_pages(&host_s2_mem, get_order(size));
-+}
-+
-+static void *host_s2_zalloc_page(void *pool)
-+{
-+	return hyp_alloc_pages(pool, 0);
-+}
-+
-+static int prepare_s2_pools(void *mem_pgt_pool, void *dev_pgt_pool)
-+{
-+	unsigned long nr_pages, pfn;
-+	int ret;
-+
-+	pfn = hyp_virt_to_pfn(mem_pgt_pool);
-+	nr_pages = host_s2_mem_pgtable_pages();
-+	ret = hyp_pool_init(&host_s2_mem, pfn, nr_pages, 0);
-+	if (ret)
-+		return ret;
-+
-+	pfn = hyp_virt_to_pfn(dev_pgt_pool);
-+	nr_pages = host_s2_dev_pgtable_pages();
-+	ret = hyp_pool_init(&host_s2_dev, pfn, nr_pages, 0);
-+	if (ret)
-+		return ret;
-+
-+	host_kvm.mm_ops = (struct kvm_pgtable_mm_ops) {
-+		.zalloc_pages_exact = host_s2_zalloc_pages_exact,
-+		.zalloc_page = host_s2_zalloc_page,
-+		.phys_to_virt = hyp_phys_to_virt,
-+		.virt_to_phys = hyp_virt_to_phys,
-+		.page_count = hyp_page_count,
-+		.get_page = hyp_get_page,
-+		.put_page = hyp_put_page,
-+	};
-+
-+	return 0;
-+}
-+
-+static void prepare_host_vtcr(void)
-+{
-+	u32 parange, phys_shift;
-+	u64 mmfr0, mmfr1;
-+
-+	mmfr0 = arm64_ftr_reg_id_aa64mmfr0_el1.sys_val;
-+	mmfr1 = arm64_ftr_reg_id_aa64mmfr1_el1.sys_val;
-+
-+	/* The host stage 2 is id-mapped, so use parange for T0SZ */
-+	parange = kvm_get_parange(mmfr0);
-+	phys_shift = id_aa64mmfr0_parange_to_phys_shift(parange);
-+
-+	host_kvm.arch.vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
-+}
-+
-+int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool)
-+{
-+	struct kvm_s2_mmu *mmu = &host_kvm.arch.mmu;
-+	int ret;
-+
-+	prepare_host_vtcr();
-+	hyp_spin_lock_init(&host_kvm.lock);
-+
-+	ret = prepare_s2_pools(mem_pgt_pool, dev_pgt_pool);
-+	if (ret)
-+		return ret;
-+
-+	ret = kvm_pgtable_stage2_init(&host_kvm.pgt, &host_kvm.arch,
-+				      &host_kvm.mm_ops);
-+	if (ret)
-+		return ret;
-+
-+	mmu->pgd_phys = __hyp_pa(host_kvm.pgt.pgd);
-+	mmu->arch = &host_kvm.arch;
-+	mmu->pgt = &host_kvm.pgt;
-+	mmu->vmid.vmid_gen = 0;
-+	mmu->vmid.vmid = 0;
-+
-+	return 0;
-+}
-+
-+int __pkvm_prot_finalize(void)
-+{
-+	struct kvm_s2_mmu *mmu = &host_kvm.arch.mmu;
-+	struct kvm_nvhe_init_params *params = this_cpu_ptr(&kvm_init_params);
-+
-+	params->vttbr = kvm_get_vttbr(mmu);
-+	params->vtcr = host_kvm.arch.vtcr;
-+	params->hcr_el2 |= HCR_VM;
-+	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
-+		params->hcr_el2 |= HCR_FWB;
-+	kvm_flush_dcache_to_poc(params, sizeof(*params));
-+
-+	write_sysreg(params->hcr_el2, hcr_el2);
-+	__load_stage2(&host_kvm.arch.mmu, host_kvm.arch.vtcr);
-+
-+	/*
-+	 * Make sure to have an ISB before the TLB maintenance below but only
-+	 * when __load_stage2() doesn't include one already.
-+	 */
-+	asm(ALTERNATIVE("isb", "nop", ARM64_WORKAROUND_SPECULATIVE_AT));
-+
-+	/* Invalidate stale HCR bits that may be cached in TLBs */
-+	__tlbi(vmalls12e1);
-+	dsb(nsh);
-+	isb();
-+
-+	return 0;
-+}
-+
-+static int host_stage2_unmap_dev_all(void)
-+{
-+	struct kvm_pgtable *pgt = &host_kvm.pgt;
-+	struct memblock_region *reg;
-+	u64 addr = 0;
-+	int i, ret;
-+
-+	/* Unmap all non-memory regions to recycle the pages */
-+	for (i = 0; i < hyp_memblock_nr; i++, addr = reg->base + reg->size) {
-+		reg = &hyp_memory[i];
-+		ret = kvm_pgtable_stage2_unmap(pgt, addr, reg->base - addr);
-+		if (ret)
-+			return ret;
-+	}
-+	return kvm_pgtable_stage2_unmap(pgt, addr, BIT(pgt->ia_bits) - addr);
-+}
-+
-+static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
-+{
-+	int cur, left = 0, right = hyp_memblock_nr;
-+	struct memblock_region *reg;
-+	phys_addr_t end;
-+
-+	range->start = 0;
-+	range->end = ULONG_MAX;
-+
-+	/* The list of memblock regions is sorted, binary search it */
-+	while (left < right) {
-+		cur = (left + right) >> 1;
-+		reg = &hyp_memory[cur];
-+		end = reg->base + reg->size;
-+		if (addr < reg->base) {
-+			right = cur;
-+			range->end = reg->base;
-+		} else if (addr >= end) {
-+			left = cur + 1;
-+			range->start = end;
-+		} else {
-+			range->start = reg->base;
-+			range->end = end;
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-+
-+static inline int __host_stage2_idmap(u64 start, u64 end,
-+				      enum kvm_pgtable_prot prot,
-+				      struct hyp_pool *pool)
-+{
-+	return kvm_pgtable_stage2_map(&host_kvm.pgt, start, end - start, start,
-+				      prot, pool);
-+}
-+
-+static int host_stage2_idmap(u64 addr)
-+{
-+	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
-+	struct kvm_mem_range range;
-+	bool is_memory = find_mem_range(addr, &range);
-+	struct hyp_pool *pool = is_memory ? &host_s2_mem : &host_s2_dev;
-+	int ret;
-+
-+	if (is_memory)
-+		prot |= KVM_PGTABLE_PROT_X;
-+
-+	hyp_spin_lock(&host_kvm.lock);
-+	ret = kvm_pgtable_stage2_find_range(&host_kvm.pgt, addr, prot, &range);
-+	if (ret)
-+		goto unlock;
-+
-+	ret = __host_stage2_idmap(range.start, range.end, prot, pool);
-+	if (is_memory || ret != -ENOMEM)
-+		goto unlock;
-+
-+	/*
-+	 * host_s2_mem has been provided with enough pages to cover all of
-+	 * memory with page granularity, so we should never hit the ENOMEM case.
-+	 * However, it is difficult to know how much of the MMIO range we will
-+	 * need to cover upfront, so we may need to 'recycle' the pages if we
-+	 * run out.
-+	 */
-+	ret = host_stage2_unmap_dev_all();
-+	if (ret)
-+		goto unlock;
-+
-+	ret = __host_stage2_idmap(range.start, range.end, prot, pool);
-+
-+unlock:
-+	hyp_spin_unlock(&host_kvm.lock);
-+
-+	return ret;
-+}
-+
-+void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
-+{
-+	struct kvm_vcpu_fault_info fault;
-+	u64 esr, addr;
-+	int ret = 0;
-+
-+	esr = read_sysreg_el2(SYS_ESR);
-+	if (!__get_fault_info(esr, &fault))
-+		hyp_panic();
-+
-+	addr = (fault.hpfar_el2 & HPFAR_MASK) << 8;
-+	ret = host_stage2_idmap(addr);
-+	if (ret && ret != -EAGAIN)
-+		hyp_panic();
-+}
-diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-index c1a3e7e0ebbc..7488f53b0aa2 100644
---- a/arch/arm64/kvm/hyp/nvhe/setup.c
-+++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-@@ -12,6 +12,7 @@
- #include <nvhe/early_alloc.h>
- #include <nvhe/gfp.h>
- #include <nvhe/memory.h>
-+#include <nvhe/mem_protect.h>
- #include <nvhe/mm.h>
- #include <nvhe/trap_handler.h>
  
-@@ -157,6 +158,10 @@ void __noreturn __pkvm_init_finalise(void)
- 	if (ret)
- 		goto out;
+@@ -72,21 +74,14 @@ ENTRY(_text)
+ jiffies = jiffies_64;
  
-+	ret = kvm_host_prepare_stage2(host_s2_mem_pgt_base, host_s2_dev_pgt_base);
-+	if (ret)
-+		goto out;
-+
- 	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
- 		.zalloc_page = hyp_zalloc_hyp_page,
- 		.phys_to_virt = hyp_phys_to_virt,
-diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-index 979a76cdf9fb..31bc1a843bf8 100644
---- a/arch/arm64/kvm/hyp/nvhe/switch.c
-+++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-@@ -28,6 +28,8 @@
- #include <asm/processor.h>
- #include <asm/thread_info.h>
+ #define HYPERVISOR_TEXT					\
+-	/*						\
+-	 * Align to 4 KB so that			\
+-	 * a) the HYP vector table is at its minimum	\
+-	 *    alignment of 2048 bytes			\
+-	 * b) the HYP init code will not cross a page	\
+-	 *    boundary if its size does not exceed	\
+-	 *    4 KB (see related ASSERT() below)		\
+-	 */						\
+-	. = ALIGN(SZ_4K);				\
++	. = ALIGN(PAGE_SIZE);				\
+ 	__hyp_idmap_text_start = .;			\
+ 	*(.hyp.idmap.text)				\
+ 	__hyp_idmap_text_end = .;			\
+ 	__hyp_text_start = .;				\
+ 	*(.hyp.text)					\
+ 	HYPERVISOR_EXTABLE				\
++	. = ALIGN(PAGE_SIZE);				\
+ 	__hyp_text_end = .;
  
-+#include <nvhe/mem_protect.h>
-+
- /* Non-VHE specific context */
- DEFINE_PER_CPU(struct kvm_host_data, kvm_host_data);
- DEFINE_PER_CPU(struct kvm_cpu_context, kvm_hyp_ctxt);
-@@ -102,11 +104,6 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
- 	write_sysreg(__kvm_hyp_host_vector, vbar_el2);
- }
+ #define IDMAP_TEXT					\
+@@ -322,11 +317,12 @@ SECTIONS
+ #include "image-vars.h"
  
--static void __load_host_stage2(void)
--{
--	write_sysreg(0, vttbr_el2);
--}
--
- /* Save VGICv3 state on non-VHE systems */
- static void __hyp_vgic_save_state(struct kvm_vcpu *vcpu)
- {
-diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
-index fbde89a2c6e8..255a23a1b2db 100644
---- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-+++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-@@ -8,6 +8,8 @@
- #include <asm/kvm_mmu.h>
- #include <asm/tlbflush.h>
- 
-+#include <nvhe/mem_protect.h>
-+
- struct tlb_inv_context {
- 	u64		tcr;
- };
-@@ -43,7 +45,7 @@ static void __tlb_switch_to_guest(struct kvm_s2_mmu *mmu,
- 
- static void __tlb_switch_to_host(struct tlb_inv_context *cxt)
- {
--	write_sysreg(0, vttbr_el2);
-+	__load_host_stage2();
- 
- 	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT)) {
- 		/* Ensure write of the host VMID */
+ /*
+- * The HYP init code and ID map text can't be longer than a page each,
+- * and should not cross a page boundary.
++ * The HYP init code and ID map text can't be longer than a page each. The
++ * former is page-aligned, but the latter may not be with 16K or 64K pages, so
++ * it should also not cross a page boundary.
+  */
+-ASSERT(__hyp_idmap_text_end - (__hyp_idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
+-	"HYP init code too big or misaligned")
++ASSERT(__hyp_idmap_text_end - __hyp_idmap_text_start <= PAGE_SIZE,
++	"HYP init code too big")
+ ASSERT(__idmap_text_end - (__idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
+ 	"ID map text too big or misaligned")
+ #ifdef CONFIG_HIBERNATION
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
