@@ -2,297 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E14233C34B
+	by mail.lfdr.de (Postfix) with ESMTP id 83C7633C34C
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhCORFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCORFU (ORCPT
+        id S230510AbhCORFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:05:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20960 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233278AbhCORF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:05:20 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AACC06174A;
-        Mon, 15 Mar 2021 10:05:19 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id s1so10007234ilh.12;
-        Mon, 15 Mar 2021 10:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=39ZN48q0zUkDRD+hp0CCNdCm31Y57ajm8R/PL6qcfJE=;
-        b=ocSmXidV5cs8FHV/J3NK2Mkoopfo7UMjqYqVQQtOnps04FDgF6+6SgehS7Isd5d42M
-         LftBtoM3YoQgPTOWkaXLRYH88MhXn1B0AkO6A8XN5rcFf6BP3lhRTlmX8FtogqxfQFWm
-         kTOJ0AN231PIvk3mOxRpLrdzagjx7pNojk7rijrwoFgwjwOvXDb0yU+jeXHypIDjdRlU
-         SIA/b0ySxmTLBMPB+AFkx0k//NZ5bYv0zBxRMuB5SoxL5xFE9ZcA1y6meiIdy/46PIvU
-         tHcuBvJSUYUcbcmN4/Fb1F2ivZJ98BOuEYxJxrD8AwQOPSm+QsNrQvRmxDVHqgQOQVqS
-         QxsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=39ZN48q0zUkDRD+hp0CCNdCm31Y57ajm8R/PL6qcfJE=;
-        b=q6AP+H2W1LKWDD/oq203XdFPH1Mni+bNbVBL55xiB+BfPiNxBv4aKN1kdEw+4t1ypC
-         k/2VFL3i08/A+mhmsRvTROM2QpdWpr2wBfdXcZYAQ0t0q9FWf4TkZLnjDtBpBOP/gEOX
-         9oP4sMQr8hc+kJsgDH14vegOkvG+urKh3+yxoaNVa/m/FPuHvCpJcw5BlEjkoNJ8Cu+C
-         zig19bgcZk91zPRq3IHPmzpChGoUA0YHe1Vz5uDK95VAIgDzLJlg+GEPp+eLhPHbNRKE
-         wlDPnsEmvegx32/TDR/Aeh1kHe2FcJsUnbMUdHfMosgVw+X3qQOGJMG/K5OjtqLR6k97
-         fkFw==
-X-Gm-Message-State: AOAM531sSMtSfctVtTj0RPNVMcp3ABEN05H7Z6BDGdFm21iECTKHDVpp
-        5pZv2J2Z7Qj8fDlHvqfzYz4F0qXMt/YjklOl8yA=
-X-Google-Smtp-Source: ABdhPJx2aJ0Tjb/6gayEiFEkCrz+qmFV5JvDeHXTpZDtwHDSLmajOi2KyKLMhAPeTgxroKiUpaflv3MYXKTOZKyW1t0=
-X-Received: by 2002:a92:ce84:: with SMTP id r4mr481941ilo.112.1615827919134;
- Mon, 15 Mar 2021 10:05:19 -0700 (PDT)
+        Mon, 15 Mar 2021 13:05:26 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FH4Ghm036913;
+        Mon, 15 Mar 2021 13:05:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CWnQIsW5EkBHkWpMJg4WytVjClsy5FDTnDem8szIcyU=;
+ b=enQGRh0ph6RsWPQVoAeT/bQvs5zALNb6j7df/RqWSfPzttr32ViHIBBjaAGDCU7cxj2f
+ XXdb4FRAW/IoRUs3Jbx+u3h58AyxtqVG+wL7MzkdNqHxWKUEKSY00Z/JZIUYYNkvDiQe
+ 2gi/kdRTVOjRlL0iO8cypF+OhdTMFrjr9cG21EUC9Pyattj3u6coHWdlQjHbJYVollwN
+ a0PF52IyeiW4Q0n1Qz11iAhfHMnvu9CUEtAgtnqqR0WUyVdAk2LeQ4v/6gTxCt2UdQFm
+ CIy3so/xXQDJUmnO97YyCWW+WJt99SwzBMsrT1CFdqXss7/V3es0zO+oBnRJ4k1jvxta YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37aag5tftw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 13:05:22 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12FH4KRe037143;
+        Mon, 15 Mar 2021 13:05:21 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37aag5tftd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 13:05:21 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12FH30dR006788;
+        Mon, 15 Mar 2021 17:05:20 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 37a3gc3wp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 17:05:20 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12FH5IQI26935684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 17:05:18 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DD8DBE058;
+        Mon, 15 Mar 2021 17:05:18 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A075BE053;
+        Mon, 15 Mar 2021 17:05:17 +0000 (GMT)
+Received: from Tobins-MacBook-Pro-2.local (unknown [9.85.181.215])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Mar 2021 17:05:16 +0000 (GMT)
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     Paolo Bonzini <pbonzini@redhat.com>, natet@google.com
+Cc:     Dov Murik <dovmurik@linux.vnet.ibm.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com, rientjes@google.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Laszlo Ersek <lersek@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>
+References: <20210224085915.28751-1-natet@google.com>
+ <7829472d-741c-1057-c61f-321fcfb5bdcd@linux.ibm.com>
+ <35dde628-f1a8-c3bf-9c7d-7789166b0ee1@redhat.com>
+From:   Tobin Feldman-Fitzthum <tobin@linux.ibm.com>
+Message-ID: <adb84c91-1651-94b6-0084-f86296e96530@linux.ibm.com>
+Date:   Mon, 15 Mar 2021 13:05:16 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210312113253.305040674@infradead.org> <20210312205914.GG22098@zn.tnic>
- <CA+icZUWSCS6vAQOXoG6nsW+Dbnogivzf+rmegCTMjz5hjE5cKQ@mail.gmail.com>
- <20210313084923.GA16144@zn.tnic> <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
- <20210313121541.GC16144@zn.tnic> <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
- <20210313124919.GD16144@zn.tnic> <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
- <20210313132927.GF16144@zn.tnic> <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
-In-Reply-To: <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 15 Mar 2021 18:04:41 +0100
-Message-ID: <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Content-Type: multipart/mixed; boundary="00000000000024158805bd964128"
+In-Reply-To: <35dde628-f1a8-c3bf-9c7d-7789166b0ee1@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-15_08:2021-03-15,2021-03-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103150115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000024158805bd964128
-Content-Type: text/plain; charset="UTF-8"
+On 3/11/21 11:29 AM, Paolo Bonzini wrote:
 
-On Sat, Mar 13, 2021 at 2:47 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-[ ... ]
-> Let me look if I will do a selfmade ThinLTO+PGO optimized LLVM
-> toolchain v12.0.0-rc3 this weekend.
+> On 11/03/21 16:30, Tobin Feldman-Fitzthum wrote:
+>> I am not sure how the mirror VM will be supported in QEMU. Usually 
+>> there is one QEMU process per-vm. Now we would need to run a second 
+>> VM and communicate with it during migration. Is there a way to do 
+>> this without adding significant complexity?
 >
+> I can answer this part.  I think this will actually be simpler than 
+> with auxiliary vCPUs.  There will be a separate pair of VM+vCPU file 
+> descriptors within the same QEMU process, and some code to set up the 
+> memory map using KVM_SET_USER_MEMORY_REGION.
+>
+> However, the code to run this VM will be very small as the VM does not 
+> have to do MMIO, interrupts, live migration (of itself), etc.  It just 
+> starts up and communicates with QEMU using a mailbox at a 
+> predetermined address.
 
-I did it.
+We've been starting up our Migration Handler via OVMF. I'm not sure if 
+this would work with a minimal setup in QEMU.
 
-Here some fresh numbers:
+-Tobin
 
-[ Selfmade LLVM toolchain v12.0.0-rc3 "stage1-only" ]
-[ Host-Kernel: 5.12.0-rc2-8-amd64-clang12-cfi includes Peter's NOPS patchset ]
-
-Performance counter stats for 'make V=1 -j4 LLVM=1 LLVM_IAS=1
-PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-9-amd64-clang12-cfi
-KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-03-13 bindeb-pkg
-KDEB_PKGVERSION=5.12.0~rc2-9~bullseye+dileks1':
-
-      55936351.95 msec task-clock                #    3.580 CPUs
-utilized
-          8291848      context-switches          #    0.148 K/sec
-           269686      cpu-migrations            #    0.005 K/sec
-        288389721      page-faults               #    0.005 M/sec
-  108344049253836      cycles                    #    1.937 GHz
-   83228135285263      stalled-cycles-frontend   #   76.82% frontend
-cycles idle
-   65616255370809      stalled-cycles-backend    #   60.56% backend
-cycles idle
-   59590373937199      instructions              #    0.55  insn per
-cycle
-                                                 #    1.40  stalled
-cycles per insn
-   10906265495505      branches                  #  194.976 M/sec
-     488578274434      branch-misses             #    4.48% of all
-branches
-
-  15622.926203302 seconds time elapsed
-
-  53453.974928000 seconds user
-   2526.773533000 seconds sys
-
-
-[ Selfmade LLVM toolchain v12.0.0-rc3 "thinlto_pgo_optimized" ]
-[ Host-Kernel: Debian's 5.10.19-1 kernel ]
-
-Performance counter stats for 'make V=1 -j4 LLVM=1 LLVM_IAS=1
-PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12-cfi
-KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-03-14 bindeb-pkg
-KDEB_PKGVERSION=5.12.0~rc2-10~bullseye+dileks1':
-
-      40223080.69 msec task-clock                #    3.434 CPUs
-utilized
-          7438923      context-switches          #    0.185 K/sec
-           245636      cpu-migrations            #    0.006 K/sec
-        288073015      page-faults               #    0.007 M/sec
-   77325441657129      cycles                    #    1.922 GHz
-   55357463522675      stalled-cycles-frontend   #   71.59% frontend
-cycles idle
-   38978871249074      stalled-cycles-backend    #   50.41% backend
-cycles idle
-   55178265045056      instructions              #    0.71  insn per
-cycle
-                                                 #    1.00  stalled
-cycles per insn
-    9749166033571      branches                  #  242.377 M/sec
-     431303563167      branch-misses             #    4.42% of all
-branches
-
-  11714.751645982 seconds time elapsed
-
-  37951.117840000 seconds user
-   2313.807151000 seconds sys
-
-
-[ Selfmade LLVM toolchain v12.0.0-rc3 "thinlto_pgo_optimized" ]
-[ Host-Kernel: 5.12.0-rc2-10-amd64-clang12-cfi includes Peter's NOPS patchset ]
-
-Performance counter stats for 'make V=1 -j4 LLVM=1 LLVM_IAS=1
-PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-1-amd64-clang12-cfi
-KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-03-15 bindeb-pkg
-KDEB_PKGVERSION=5.12.0~rc3-1~bullseye+dileks1':
-
-      40632207.25 msec task-clock                #    3.406 CPUs
-utilized
-          8216832      context-switches          #    0.202 K/sec
-           277610      cpu-migrations            #    0.007 K/sec
-        281331052      page-faults               #    0.007 M/sec
-   77031538570411      cycles                    #    1.896 GHz
-              (83.33%)
-   55247905369487      stalled-cycles-frontend   #   71.72% frontend
-cycles idle     (83.33%)
-   39046795510242      stalled-cycles-backend    #   50.69% backend
-cycles idle      (66.67%)
-   54592585444704      instructions              #    0.71  insn per
-cycle
-                                                 #    1.01  stalled
-cycles per insn  (83.33%)
-    9641589406714      branches                  #  237.289 M/sec
-              (83.33%)
-     435317273069      branch-misses             #    4.51% of all
-branches          (83.33%)
-
-  11928.047003788 seconds time elapsed
-
-  38187.685111000 seconds user
-   2502.075987000 seconds sys
-
-As said in an earlier email:
-A ThinLTO+PGO optimized LLVM-toolchain saves here approx. 60mins of build-time.
-
-Depending on the host-kernel including Peter's NOPS patchset: 3mins
-longer build-time.
-Brewing time of one single Turkish Tea bag.
-
-Attached are the 3 build-time log-files.
-
-- Sedat -
-
---00000000000024158805bd964128
-Content-Type: text/plain; charset="US-ASCII"; 
-	name="build-time_5.12.0-rc2-9-amd64-clang12-cfi.txt"
-Content-Disposition: attachment; 
-	filename="build-time_5.12.0-rc2-9-amd64-clang12-cfi.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kmau1j8y0>
-X-Attachment-Id: f_kmau1j8y0
-
-IFBlcmZvcm1hbmNlIGNvdW50ZXIgc3RhdHMgZm9yICdtYWtlIFY9MSAtajQgTExWTT0xIExMVk1f
-SUFTPTEgUEFIT0xFPS9vcHQvcGFob2xlL2Jpbi9wYWhvbGUgTE9DQUxWRVJTSU9OPS05LWFtZDY0
-LWNsYW5nMTItY2ZpIEtCVUlMRF9WRVJCT1NFPTEgS0JVSUxEX0JVSUxEX0hPU1Q9aW5pemEgS0JV
-SUxEX0JVSUxEX1VTRVI9c2VkYXQuZGlsZWtAZ21haWwuY29tIEtCVUlMRF9CVUlMRF9USU1FU1RB
-TVA9MjAyMS0wMy0xMyBiaW5kZWItcGtnIEtERUJfUEtHVkVSU0lPTj01LjEyLjB+cmMyLTl+YnVs
-bHNleWUrZGlsZWtzMSc6CgogICAgICAgNTU5MzYzNTEuOTUgbXNlYyB0YXNrLWNsb2NrICAgICAg
-ICAgICAgICAgICMgICAgMy41ODAgQ1BVcyB1dGlsaXplZCAgICAgICAgICAKICAgICAgICAgICA4
-MjkxODQ4ICAgICAgY29udGV4dC1zd2l0Y2hlcyAgICAgICAgICAjICAgIDAuMTQ4IEsvc2VjICAg
-ICAgICAgICAgICAgICAgCiAgICAgICAgICAgIDI2OTY4NiAgICAgIGNwdS1taWdyYXRpb25zICAg
-ICAgICAgICAgIyAgICAwLjAwNSBLL3NlYyAgICAgICAgICAgICAgICAgIAogICAgICAgICAyODgz
-ODk3MjEgICAgICBwYWdlLWZhdWx0cyAgICAgICAgICAgICAgICMgICAgMC4wMDUgTS9zZWMgICAg
-ICAgICAgICAgICAgICAKICAgMTA4MzQ0MDQ5MjUzODM2ICAgICAgY3ljbGVzICAgICAgICAgICAg
-ICAgICAgICAjICAgIDEuOTM3IEdIeiAgICAgICAgICAgICAgICAgICAgCiAgICA4MzIyODEzNTI4
-NTI2MyAgICAgIHN0YWxsZWQtY3ljbGVzLWZyb250ZW5kICAgIyAgIDc2LjgyJSBmcm9udGVuZCBj
-eWNsZXMgaWRsZSAgIAogICAgNjU2MTYyNTUzNzA4MDkgICAgICBzdGFsbGVkLWN5Y2xlcy1iYWNr
-ZW5kICAgICMgICA2MC41NiUgYmFja2VuZCBjeWNsZXMgaWRsZSAgICAKICAgIDU5NTkwMzczOTM3
-MTk5ICAgICAgaW5zdHJ1Y3Rpb25zICAgICAgICAgICAgICAjICAgIDAuNTUgIGluc24gcGVyIGN5
-Y2xlICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIyAgICAxLjQwICBzdGFsbGVkIGN5Y2xlcyBwZXIgaW5zbgogICAgMTA5MDYyNjU0OTU1
-MDUgICAgICBicmFuY2hlcyAgICAgICAgICAgICAgICAgICMgIDE5NC45NzYgTS9zZWMgICAgICAg
-ICAgICAgICAgICAKICAgICAgNDg4NTc4Mjc0NDM0ICAgICAgYnJhbmNoLW1pc3NlcyAgICAgICAg
-ICAgICAjICAgIDQuNDglIG9mIGFsbCBicmFuY2hlcyAgICAgICAgCgogICAxNTYyMi45MjYyMDMz
-MDIgc2Vjb25kcyB0aW1lIGVsYXBzZWQKCiAgIDUzNDUzLjk3NDkyODAwMCBzZWNvbmRzIHVzZXIK
-ICAgIDI1MjYuNzczNTMzMDAwIHNlY29uZHMgc3lzCgoK
---00000000000024158805bd964128
-Content-Type: text/plain; charset="US-ASCII"; 
-	name="build-time_5.12.0-rc2-10-amd64-clang12-cfi.txt"
-Content-Disposition: attachment; 
-	filename="build-time_5.12.0-rc2-10-amd64-clang12-cfi.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kmau1mn71>
-X-Attachment-Id: f_kmau1mn71
-
-IFBlcmZvcm1hbmNlIGNvdW50ZXIgc3RhdHMgZm9yICdtYWtlIFY9MSAtajQgTExWTT0xIExMVk1f
-SUFTPTEgUEFIT0xFPS9vcHQvcGFob2xlL2Jpbi9wYWhvbGUgTE9DQUxWRVJTSU9OPS0xMC1hbWQ2
-NC1jbGFuZzEyLWNmaSBLQlVJTERfVkVSQk9TRT0xIEtCVUlMRF9CVUlMRF9IT1NUPWluaXphIEtC
-VUlMRF9CVUlMRF9VU0VSPXNlZGF0LmRpbGVrQGdtYWlsLmNvbSBLQlVJTERfQlVJTERfVElNRVNU
-QU1QPTIwMjEtMDMtMTQgYmluZGViLXBrZyBLREVCX1BLR1ZFUlNJT049NS4xMi4wfnJjMi0xMH5i
-dWxsc2V5ZStkaWxla3MxJzoKCiAgICAgICA0MDIyMzA4MC42OSBtc2VjIHRhc2stY2xvY2sgICAg
-ICAgICAgICAgICAgIyAgICAzLjQzNCBDUFVzIHV0aWxpemVkICAgICAgICAgIAogICAgICAgICAg
-IDc0Mzg5MjMgICAgICBjb250ZXh0LXN3aXRjaGVzICAgICAgICAgICMgICAgMC4xODUgSy9zZWMg
-ICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgMjQ1NjM2ICAgICAgY3B1LW1pZ3JhdGlvbnMg
-ICAgICAgICAgICAjICAgIDAuMDA2IEsvc2VjICAgICAgICAgICAgICAgICAgCiAgICAgICAgIDI4
-ODA3MzAxNSAgICAgIHBhZ2UtZmF1bHRzICAgICAgICAgICAgICAgIyAgICAwLjAwNyBNL3NlYyAg
-ICAgICAgICAgICAgICAgIAogICAgNzczMjU0NDE2NTcxMjkgICAgICBjeWNsZXMgICAgICAgICAg
-ICAgICAgICAgICMgICAgMS45MjIgR0h6ICAgICAgICAgICAgICAgICAgICAKICAgIDU1MzU3NDYz
-NTIyNjc1ICAgICAgc3RhbGxlZC1jeWNsZXMtZnJvbnRlbmQgICAjICAgNzEuNTklIGZyb250ZW5k
-IGN5Y2xlcyBpZGxlICAgCiAgICAzODk3ODg3MTI0OTA3NCAgICAgIHN0YWxsZWQtY3ljbGVzLWJh
-Y2tlbmQgICAgIyAgIDUwLjQxJSBiYWNrZW5kIGN5Y2xlcyBpZGxlICAgIAogICAgNTUxNzgyNjUw
-NDUwNTYgICAgICBpbnN0cnVjdGlvbnMgICAgICAgICAgICAgICMgICAgMC43MSAgaW5zbiBwZXIg
-Y3ljbGUgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAjICAgIDEuMDAgIHN0YWxsZWQgY3ljbGVzIHBlciBpbnNuCiAgICAgOTc0OTE2NjAz
-MzU3MSAgICAgIGJyYW5jaGVzICAgICAgICAgICAgICAgICAgIyAgMjQyLjM3NyBNL3NlYyAgICAg
-ICAgICAgICAgICAgIAogICAgICA0MzEzMDM1NjMxNjcgICAgICBicmFuY2gtbWlzc2VzICAgICAg
-ICAgICAgICMgICAgNC40MiUgb2YgYWxsIGJyYW5jaGVzICAgICAgICAKCiAgIDExNzE0Ljc1MTY0
-NTk4MiBzZWNvbmRzIHRpbWUgZWxhcHNlZAoKICAgMzc5NTEuMTE3ODQwMDAwIHNlY29uZHMgdXNl
-cgogICAgMjMxMy44MDcxNTEwMDAgc2Vjb25kcyBzeXMKCgo=
---00000000000024158805bd964128
-Content-Type: text/plain; charset="US-ASCII"; 
-	name="build-time_5.12.0-rc3-1-amd64-clang12-cfi.txt"
-Content-Disposition: attachment; 
-	filename="build-time_5.12.0-rc3-1-amd64-clang12-cfi.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kmau1qab2>
-X-Attachment-Id: f_kmau1qab2
-
-IFBlcmZvcm1hbmNlIGNvdW50ZXIgc3RhdHMgZm9yICdtYWtlIFY9MSAtajQgTExWTT0xIExMVk1f
-SUFTPTEgUEFIT0xFPS9vcHQvcGFob2xlL2Jpbi9wYWhvbGUgTE9DQUxWRVJTSU9OPS0xLWFtZDY0
-LWNsYW5nMTItY2ZpIEtCVUlMRF9WRVJCT1NFPTEgS0JVSUxEX0JVSUxEX0hPU1Q9aW5pemEgS0JV
-SUxEX0JVSUxEX1VTRVI9c2VkYXQuZGlsZWtAZ21haWwuY29tIEtCVUlMRF9CVUlMRF9USU1FU1RB
-TVA9MjAyMS0wMy0xNSBiaW5kZWItcGtnIEtERUJfUEtHVkVSU0lPTj01LjEyLjB+cmMzLTF+YnVs
-bHNleWUrZGlsZWtzMSc6CgogICAgICAgNDA2MzIyMDcuMjUgbXNlYyB0YXNrLWNsb2NrICAgICAg
-ICAgICAgICAgICMgICAgMy40MDYgQ1BVcyB1dGlsaXplZCAgICAgICAgICAKICAgICAgICAgICA4
-MjE2ODMyICAgICAgY29udGV4dC1zd2l0Y2hlcyAgICAgICAgICAjICAgIDAuMjAyIEsvc2VjICAg
-ICAgICAgICAgICAgICAgCiAgICAgICAgICAgIDI3NzYxMCAgICAgIGNwdS1taWdyYXRpb25zICAg
-ICAgICAgICAgIyAgICAwLjAwNyBLL3NlYyAgICAgICAgICAgICAgICAgIAogICAgICAgICAyODEz
-MzEwNTIgICAgICBwYWdlLWZhdWx0cyAgICAgICAgICAgICAgICMgICAgMC4wMDcgTS9zZWMgICAg
-ICAgICAgICAgICAgICAKICAgIDc3MDMxNTM4NTcwNDExICAgICAgY3ljbGVzICAgICAgICAgICAg
-ICAgICAgICAjICAgIDEuODk2IEdIeiAgICAgICAgICAgICAgICAgICAgICAoODMuMzMlKQogICAg
-NTUyNDc5MDUzNjk0ODcgICAgICBzdGFsbGVkLWN5Y2xlcy1mcm9udGVuZCAgICMgICA3MS43MiUg
-ZnJvbnRlbmQgY3ljbGVzIGlkbGUgICAgICg4My4zMyUpCiAgICAzOTA0Njc5NTUxMDI0MiAgICAg
-IHN0YWxsZWQtY3ljbGVzLWJhY2tlbmQgICAgIyAgIDUwLjY5JSBiYWNrZW5kIGN5Y2xlcyBpZGxl
-ICAgICAgKDY2LjY3JSkKICAgIDU0NTkyNTg1NDQ0NzA0ICAgICAgaW5zdHJ1Y3Rpb25zICAgICAg
-ICAgICAgICAjICAgIDAuNzEgIGluc24gcGVyIGN5Y2xlICAgICAgICAgCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyAgICAxLjAxICBzdGFsbGVkIGN5
-Y2xlcyBwZXIgaW5zbiAgKDgzLjMzJSkKICAgICA5NjQxNTg5NDA2NzE0ICAgICAgYnJhbmNoZXMg
-ICAgICAgICAgICAgICAgICAjICAyMzcuMjg5IE0vc2VjICAgICAgICAgICAgICAgICAgICAoODMu
-MzMlKQogICAgICA0MzUzMTcyNzMwNjkgICAgICBicmFuY2gtbWlzc2VzICAgICAgICAgICAgICMg
-ICAgNC41MSUgb2YgYWxsIGJyYW5jaGVzICAgICAgICAgICg4My4zMyUpCgogICAxMTkyOC4wNDcw
-MDM3ODggc2Vjb25kcyB0aW1lIGVsYXBzZWQKCiAgIDM4MTg3LjY4NTExMTAwMCBzZWNvbmRzIHVz
-ZXIKICAgIDI1MDIuMDc1OTg3MDAwIHNlY29uZHMgc3lzCgoK
---00000000000024158805bd964128--
+>
+> I also think (but I'm not 100% sure) that the auxiliary VM does not 
+> have to watch changes in the primary VM's memory map (e.g. mapping and 
+> unmapping of BARs).  In QEMU terms, the auxiliary VM's memory map 
+> tracks RAMBlocks, not MemoryRegions, which makes things much simpler.
+>
+> There are already many examples of mini VMMs running special purpose 
+> VMs in the kernel's tools/testing/selftests/kvm directory, and I don't 
+> think the QEMU code would be any more complex than that.
+>
+> Paolo
+>
