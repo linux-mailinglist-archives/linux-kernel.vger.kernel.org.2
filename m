@@ -2,57 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D607E33AD12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4433AD13
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCOII0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:08:26 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:55787 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229924AbhCOIHx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:07:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0URxYg3w_1615795656;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0URxYg3w_1615795656)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 15 Mar 2021 16:07:51 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     john.stultz@linaro.org
-Cc:     tglx@linutronix.de, sboyd@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests: timers: remove unneeded semicolon
-Date:   Mon, 15 Mar 2021 16:07:35 +0800
-Message-Id: <1615795655-5560-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230186AbhCOII3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:08:29 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:52788 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhCOIIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:08:00 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9F5D61A1347;
+        Mon, 15 Mar 2021 09:07:55 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9204C1A0DE2;
+        Mon, 15 Mar 2021 09:07:55 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 76E6F20304;
+        Mon, 15 Mar 2021 09:07:55 +0100 (CET)
+Date:   Mon, 15 Mar 2021 10:07:55 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     shawnguo@kernel.org, ping.bai@nxp.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx8mp: Remove the none exist pcie clocks
+Message-ID: <20210315080755.cuasc5yowvcvktwc@fsr-ub1664-175>
+References: <1615793965-1422-1-git-send-email-hongxing.zhu@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615793965-1422-1-git-send-email-hongxing.zhu@nxp.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On 21-03-15 15:39:24, Richard Zhu wrote:
+> In the i.MX8MP PCIe design, the PCIe PHY REF clock comes from external
+> OSC or internal system PLL. It is configured in the IOMUX_GPR14 register
+> directly, and can't be contolled by CCM at all.
+> Remove the PCIE PHY clock from clock driver to clean up codes.
+> There is only one PCIe in i.MX8MP, remove the none exist second PCIe
+> related clocks.
+> Remove the none exsits clocks IDs together.
+> 
 
-./tools/testing/selftests/timers/inconsistency-check.c:75:2-3: Unneeded
-semicolon.
+Please resend both patches and add linux-clk@vger.kernel.org to cc.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/timers/inconsistency-check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
-index 022d3ff..e6756d9 100644
---- a/tools/testing/selftests/timers/inconsistency-check.c
-+++ b/tools/testing/selftests/timers/inconsistency-check.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
--- 
-1.8.3.1
-
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
+> ---
+>  drivers/clk/imx/clk-imx8mp.c             | 15 ---------------
+>  include/dt-bindings/clock/imx8mp-clock.h |  3 ---
+>  2 files changed, 18 deletions(-)
+> 
+> diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
+> index 2f4e1d674e1c..afbeb6bf1909 100644
+> --- a/drivers/clk/imx/clk-imx8mp.c
+> +++ b/drivers/clk/imx/clk-imx8mp.c
+> @@ -152,10 +152,6 @@ static const char * const imx8mp_can2_sels[] = {"osc_24m", "sys_pll2_200m", "sys
+>  						"sys_pll1_160m", "sys_pll1_800m", "sys_pll3_out",
+>  						"sys_pll2_250m", "audio_pll2_out", };
+>  
+> -static const char * const imx8mp_pcie_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+> -						    "clk_ext1", "clk_ext2", "clk_ext3",
+> -						    "clk_ext4", "sys_pll1_400m", };
+> -
+>  static const char * const imx8mp_pcie_aux_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+>  						    "sys_pll3_out", "sys_pll2_100m", "sys_pll1_80m",
+>  						    "sys_pll1_160m", "sys_pll1_200m", };
+> @@ -380,14 +376,6 @@ static const char * const imx8mp_memrepair_sels[] = {"osc_24m", "sys_pll2_100m",
+>  							"sys_pll1_800m", "sys_pll2_1000m", "sys_pll3_out",
+>  							"clk_ext3", "audio_pll2_out", };
+>  
+> -static const char * const imx8mp_pcie2_ctrl_sels[] = {"osc_24m", "sys_pll2_250m", "sys_pll2_200m",
+> -						      "sys_pll1_266m", "sys_pll1_800m", "sys_pll2_500m",
+> -						      "sys_pll2_333m", "sys_pll3_out", };
+> -
+> -static const char * const imx8mp_pcie2_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+> -						     "clk_ext1", "clk_ext2", "clk_ext3",
+> -						     "clk_ext4", "sys_pll1_400m", };
+> -
+>  static const char * const imx8mp_media_mipi_test_byte_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+>  								"sys_pll3_out", "sys_pll2_100m",
+>  								"sys_pll1_80m", "sys_pll1_160m",
+> @@ -585,7 +573,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+>  	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
+>  	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
+>  	hws[IMX8MP_CLK_CAN2] = imx8m_clk_hw_composite("can2", imx8mp_can2_sels, ccm_base + 0xa280);
+> -	hws[IMX8MP_CLK_PCIE_PHY] = imx8m_clk_hw_composite("pcie_phy", imx8mp_pcie_phy_sels, ccm_base + 0xa380);
+>  	hws[IMX8MP_CLK_PCIE_AUX] = imx8m_clk_hw_composite("pcie_aux", imx8mp_pcie_aux_sels, ccm_base + 0xa400);
+>  	hws[IMX8MP_CLK_I2C5] = imx8m_clk_hw_composite("i2c5", imx8mp_i2c5_sels, ccm_base + 0xa480);
+>  	hws[IMX8MP_CLK_I2C6] = imx8m_clk_hw_composite("i2c6", imx8mp_i2c6_sels, ccm_base + 0xa500);
+> @@ -643,8 +630,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+>  	hws[IMX8MP_CLK_MEDIA_CAM2_PIX] = imx8m_clk_hw_composite("media_cam2_pix", imx8mp_media_cam2_pix_sels, ccm_base + 0xbe80);
+>  	hws[IMX8MP_CLK_MEDIA_LDB] = imx8m_clk_hw_composite("media_ldb", imx8mp_media_ldb_sels, ccm_base + 0xbf00);
+>  	hws[IMX8MP_CLK_MEMREPAIR] = imx8m_clk_hw_composite_critical("mem_repair", imx8mp_memrepair_sels, ccm_base + 0xbf80);
+> -	hws[IMX8MP_CLK_PCIE2_CTRL] = imx8m_clk_hw_composite("pcie2_ctrl", imx8mp_pcie2_ctrl_sels, ccm_base + 0xc000);
+> -	hws[IMX8MP_CLK_PCIE2_PHY] = imx8m_clk_hw_composite("pcie2_phy", imx8mp_pcie2_phy_sels, ccm_base + 0xc080);
+>  	hws[IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE] = imx8m_clk_hw_composite("media_mipi_test_byte", imx8mp_media_mipi_test_byte_sels, ccm_base + 0xc100);
+>  	hws[IMX8MP_CLK_ECSPI3] = imx8m_clk_hw_composite("ecspi3", imx8mp_ecspi3_sels, ccm_base + 0xc180);
+>  	hws[IMX8MP_CLK_PDM] = imx8m_clk_hw_composite("pdm", imx8mp_pdm_sels, ccm_base + 0xc200);
+> diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
+> index e8d68fbb6e3f..43927a1b9e94 100644
+> --- a/include/dt-bindings/clock/imx8mp-clock.h
+> +++ b/include/dt-bindings/clock/imx8mp-clock.h
+> @@ -125,7 +125,6 @@
+>  #define IMX8MP_CLK_CAN1				116
+>  #define IMX8MP_CLK_CAN2				117
+>  #define IMX8MP_CLK_MEMREPAIR			118
+> -#define IMX8MP_CLK_PCIE_PHY			119
+>  #define IMX8MP_CLK_PCIE_AUX			120
+>  #define IMX8MP_CLK_I2C5				121
+>  #define IMX8MP_CLK_I2C6				122
+> @@ -182,8 +181,6 @@
+>  #define IMX8MP_CLK_MEDIA_CAM2_PIX		173
+>  #define IMX8MP_CLK_MEDIA_LDB			174
+>  #define IMX8MP_CLK_MEDIA_MIPI_CSI2_ESC		175
+> -#define IMX8MP_CLK_PCIE2_CTRL			176
+> -#define IMX8MP_CLK_PCIE2_PHY			177
+>  #define IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE		178
+>  #define IMX8MP_CLK_ECSPI3			179
+>  #define IMX8MP_CLK_PDM				180
+> -- 
+> 2.17.1
+> 
