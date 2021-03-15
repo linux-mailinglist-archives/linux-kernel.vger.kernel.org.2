@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB6A33BBD2
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACC433BBD3
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhCOOVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S233803AbhCOOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232834AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EFA764F31;
-        Mon, 15 Mar 2021 13:59:40 +0000 (UTC)
+        id S232881AbhCOOAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDCA364F56;
+        Mon, 15 Mar 2021 13:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816781;
-        bh=rmC7IlEqG/sf97jfBeF9COqnucpg5NZszwxabt3aGbU=;
+        s=korg; t=1615816787;
+        bh=WdSA0u9QNjoXc1vg2BJB76lxbzJAX+Hz+pf+MzpjaqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqLyLFHNv+0DF8B6NiIRfEkg69Ha5xvGF+iSrXaEVfSLvhfSfvN0Uuj5WyNMbQD9e
-         ARJuiuWaiFjOTjy2fcni8fvpVjuizOtFrEzDcoxEckDZ5PYB5jauLujVDb7w/SC8Kk
-         OGdhpp5NsyvjCAZ44PvXtyy163kX5uualtKiVyGg=
+        b=B9xAMCdio+kZQTjLkjrogyL8zv6+5TVRlOg5mfjRxgxmc0KxP3mZDG5MAj1YSashL
+         /I/9CRRWu8Avlmk+AQqJmZpQiSwFtd5CMH1dDdwXwzr7vQSyjbJ76VNLVu4iZ/Zww1
+         n7GAJAjAnNBzOEkRcawtUH5qTcQw5FS3+onWDxUM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@freescale.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH 5.4 105/168] usb: gadget: f_uac2: always increase endpoint max_packet_size by one audio slot
-Date:   Mon, 15 Mar 2021 14:55:37 +0100
-Message-Id: <20210315135553.817987765@linuxfoundation.org>
+        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
+        Pete Zaitcev <zaitcev@redhat.com>
+Subject: [PATCH 5.4 109/168] USB: usblp: fix a hang in poll() if disconnected
+Date:   Mon, 15 Mar 2021 14:55:41 +0100
+Message-Id: <20210315135553.940841112@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -41,48 +41,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+From: Pete Zaitcev <zaitcev@redhat.com>
 
-commit 789ea77310f0200c84002884ffd628e2baf3ad8a upstream.
+commit 9de2c43acf37a17dc4c69ff78bb099b80fb74325 upstream.
 
-As per UAC2 Audio Data Formats spec (2.3.1.1 USB Packets),
-if the sampling rate is a constant, the allowable variation
-of number of audio slots per virtual frame is +/- 1 audio slot.
+Apparently an application that opens a device and calls select()
+on it, will hang if the decice is disconnected. It's a little
+surprising that we had this bug for 15 years, but apparently
+nobody ever uses select() with a printer: only write() and read(),
+and those work fine. Well, you can also select() with a timeout.
 
-It means that endpoint should be able to accept/send +1 audio
-slot.
+The fix is modeled after devio.c. A few other drivers check the
+condition first, then do not add the wait queue in case the
+device is disconnected. We doubt that's completely race-free.
+So, this patch adds the process first, then locks properly
+and checks for the disconnect.
 
-Previous endpoint max_packet_size calculation code
-was adding sometimes +1 audio slot due to DIV_ROUND_UP
-behaviour which was rounding up to closest integer.
-However this doesn't work if the numbers are divisible.
-
-It had no any impact with Linux hosts which ignore
-this issue, but in case of more strict Windows it
-caused rejected enumeration
-
-Thus always add +1 audio slot to endpoint's max packet size
-
-Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
-Cc: Peter Chen <peter.chen@freescale.com>
-Cc: <stable@vger.kernel.org> #v4.3+
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Link: https://lore.kernel.org/r/1614599375-8803-2-git-send-email-ruslan.bilovol@gmail.com
+Reviewed-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Pete Zaitcev <zaitcev@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210303221053.1cf3313e@suzdal.zaitcev.lan
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_uac2.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/class/usblp.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/gadget/function/f_uac2.c
-+++ b/drivers/usb/gadget/function/f_uac2.c
-@@ -478,7 +478,7 @@ static int set_ep_max_packet_size(const
- 	}
+--- a/drivers/usb/class/usblp.c
++++ b/drivers/usb/class/usblp.c
+@@ -494,16 +494,24 @@ static int usblp_release(struct inode *i
+ /* No kernel lock - fine */
+ static __poll_t usblp_poll(struct file *file, struct poll_table_struct *wait)
+ {
+-	__poll_t ret;
++	struct usblp *usblp = file->private_data;
++	__poll_t ret = 0;
+ 	unsigned long flags;
  
- 	max_size_bw = num_channels(chmask) * ssize *
--		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
-+		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
- 	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
- 						    max_size_ep));
- 
+-	struct usblp *usblp = file->private_data;
+ 	/* Should we check file->f_mode & FMODE_WRITE before poll_wait()? */
+ 	poll_wait(file, &usblp->rwait, wait);
+ 	poll_wait(file, &usblp->wwait, wait);
++
++	mutex_lock(&usblp->mut);
++	if (!usblp->present)
++		ret |= EPOLLHUP;
++	mutex_unlock(&usblp->mut);
++
+ 	spin_lock_irqsave(&usblp->lock, flags);
+-	ret = ((usblp->bidir && usblp->rcomplete) ? EPOLLIN  | EPOLLRDNORM : 0) |
+-	   ((usblp->no_paper || usblp->wcomplete) ? EPOLLOUT | EPOLLWRNORM : 0);
++	if (usblp->bidir && usblp->rcomplete)
++		ret |= EPOLLIN  | EPOLLRDNORM;
++	if (usblp->no_paper || usblp->wcomplete)
++		ret |= EPOLLOUT | EPOLLWRNORM;
+ 	spin_unlock_irqrestore(&usblp->lock, flags);
+ 	return ret;
+ }
 
 
