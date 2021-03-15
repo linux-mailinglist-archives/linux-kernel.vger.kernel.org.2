@@ -2,312 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F2733A9D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D47A33A9DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCODQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:16:37 -0400
-Received: from z11.mailgun.us ([104.130.96.11]:36211 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229679AbhCODQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:16:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615778174; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=nGk2N7p+SUGqciovQZuInQOaZz0NQeAuvjf80+XT74I=;
- b=U7Q7xKU5ELvhf2wNz6SzmZLdcnQW9O0x9oEBzUh5yawUOt57hoUFHoKdaPvsnXjVm8xGPn+c
- yu1Wk6xxLl9zYkSSTXVT2yaCUqxXEyiIb1mOs8ArK6MUNZMwyTIjV5pyJeTdWKIws/6mLCab
- umIcEve0gmLbbHtw0S1CRM1ssnE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 604ed176e3fca7d0a6ec6e11 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 03:16:06
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0D73AC43464; Mon, 15 Mar 2021 03:16:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7805DC433CA;
-        Mon, 15 Mar 2021 03:16:04 +0000 (UTC)
+        id S229811AbhCODRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhCODQk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 23:16:40 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805EDC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:16:40 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id i18so8008757ilq.13
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8CSdX0A5B03bYxZSOAFsQfaxoGs/c+Z6tlah++60gTY=;
+        b=M1aCcZ0O6ZbH9y3UD8F1qMyWCkdN6xkqXLyKM3I+zmtPFHX8f6FNDs7tvIQe7NsjT/
+         xM3kxaB3ieHl8V+SF/VkTwa0+SRxkAmzV3IXkXDiwYr/5L+IKf1C34btj0YoSB+nwsDg
+         yfmDE3cjTZAA7UffAYwO1RdVkMLZv6SI1HV4sThbBYzaqwIAsgkw1pdI3IyhGbf9l4Th
+         LAmDHQYTkMybikVR43XL7MM7ocQ47MTqezZTIsoA/o+qFmHetlHMIq279IiTQ5+Hxtnm
+         Pi45BWbNfksXX22GbhbNuXiUtK/siaJXHqraAvlYUKhPLN2TljkE/iJF8B7y1bp1tWD3
+         gBdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8CSdX0A5B03bYxZSOAFsQfaxoGs/c+Z6tlah++60gTY=;
+        b=dI6gDfbjKtIsCqExjjDRkMNHmNczjnwTnS2wJk6MT8uwpWViQyNb289OxWl7ww0g4X
+         LCiT5/yPZdItXQ6IbffUnX7a0F95hVSCwEVAMAeqU8YvQvhhR8rmU1Q0VUlIuK7G5JBR
+         IFbfVm+I/9uTMYASQdb/sxwuNEiAGD9l1f2Uf+v6LrpgB3xv0Me1NzZSPhqcFVRJ6xJh
+         O9ZOKGYPp2nzuTTH4h1W2sjdRz0gRufqnizeIc9gCkwhVQ8yBxhBVxckWKk4YVClSqLl
+         JHLGQnZBs67HEjJJ2p0Yn6pucrg4zKdQsiXMkdn66JvWZfJWSpwY5rIGrapVljjvOqCp
+         hL0g==
+X-Gm-Message-State: AOAM531CYplH4QPL255fMjL5FtINeSHUaBzWNW5cM5tJlmfYbY42XcGT
+        ViYtELobknmEWFaWIVMHv5/Urw==
+X-Google-Smtp-Source: ABdhPJws6zaW8x+jq9JtvGiyR0BJEFsx418QCKCDT8zxit3R7F7nTOvZNlLr2f3XrZG1R0qIhEZdgA==
+X-Received: by 2002:a92:de4c:: with SMTP id e12mr10256007ilr.63.1615778199817;
+        Sun, 14 Mar 2021 20:16:39 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:4d84:eb70:5c32:32b8])
+        by smtp.gmail.com with ESMTPSA id a5sm7138189ilh.23.2021.03.14.20.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 20:16:39 -0700 (PDT)
+Date:   Sun, 14 Mar 2021 21:16:35 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+Subject: Re: [PATCH v1 06/14] mm, x86: support the access bit on non-leaf PMD
+ entries
+Message-ID: <YE7Rk/YA1Uj7yFn2@google.com>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-7-yuzhao@google.com>
+ <ce818341-ed33-cd8c-5c06-65147f510c4d@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 15 Mar 2021 11:16:04 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 03/10] scsi: ufshpb: Add region's reads counter
-In-Reply-To: <20210302132503.224670-4-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-4-avri.altman@wdc.com>
-Message-ID: <343d6b0d7802b58bec6e3c06e6f9be57@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce818341-ed33-cd8c-5c06-65147f510c4d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
+On Sun, Mar 14, 2021 at 04:22:03PM -0700, Dave Hansen wrote:
+> On 3/12/21 11:57 PM, Yu Zhao wrote:
+> > Some architectures support the accessed bit on non-leaf PMD entries
+> > (parents) in addition to leaf PTE entries (children) where pages are
+> > mapped, e.g., x86_64 sets the accessed bit on a parent when using it
+> > as part of linear-address translation [1]. Page table walkers who are
+> > interested in the accessed bit on children can take advantage of this:
+> > they do not need to search the children when the accessed bit is not
+> > set on a parent, given that they have previously cleared the accessed
+> > bit on this parent in addition to its children.
+> 
+> I'd like to hear a *LOT* more about how this is going to be used.
+> 
+> The one part of this which is entirely missing is the interaction with
+> the TLB and mid-level paging structure caches.  The CPU is pretty
+> aggressive about setting no-leaf accessed bits when TLB entries are
+> created.  This *looks* to be depending on that behavior, but it would be
+> nice to spell it out explicitly.
 
-On 2021-03-02 21:24, Avri Altman wrote:
-> In host control mode, reads are the major source of activation trials.
-> Keep track of those reads counters, for both active as well inactive
-> regions.
-> 
-> We reset the read counter upon write - we are only interested in 
-> "clean"
-> reads.  less intuitive however, is that we also reset it upon region's
-> deactivation.  Region deactivation is often due to the fact that
-> eviction took place: a region become active on the expense of another.
-> This is happening when the max-active-regions limit has crossed. If we
-> don’t reset the counter, we will trigger a lot of trashing of the HPB
-> database, since few reads (or even one) to the region that was
-> deactivated, will trigger a re-activation trial.
-> 
-> Keep those counters normalized, as we are using those reads as a
-> comparative score, to make various decisions.
-> If during consecutive normalizations an active region has exhaust its
-> reads - inactivate it.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 102 ++++++++++++++++++++++++++++++++------
->  drivers/scsi/ufs/ufshpb.h |   5 ++
->  2 files changed, 92 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 044fec9854a0..a8f8d13af21a 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -16,6 +16,8 @@
->  #include "ufshpb.h"
->  #include "../sd.h"
-> 
-> +#define ACTIVATION_THRESHOLD 4 /* 4 IOs */
-> +
->  /* memory management */
->  static struct kmem_cache *ufshpb_mctx_cache;
->  static mempool_t *ufshpb_mctx_pool;
-> @@ -554,6 +556,21 @@ static int ufshpb_issue_pre_req(struct ufshpb_lu
-> *hpb, struct scsi_cmnd *cmd,
->  	return ret;
->  }
-> 
-> +static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
-> rgn_idx,
-> +				      int srgn_idx)
-> +{
-> +	struct ufshpb_region *rgn;
-> +	struct ufshpb_subregion *srgn;
-> +
-> +	rgn = hpb->rgn_tbl + rgn_idx;
-> +	srgn = rgn->srgn_tbl + srgn_idx;
-> +
-> +	list_del_init(&rgn->list_inact_rgn);
-> +
-> +	if (list_empty(&srgn->list_act_srgn))
-> +		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
-> +}
-> +
->  /*
->   * This function will set up HPB read command using host-side L2P map 
-> data.
->   */
-> @@ -600,12 +617,44 @@ int ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->  		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
->  				 transfer_len);
->  		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +		if (hpb->is_hcm) {
-> +			spin_lock_irqsave(&rgn->rgn_lock, flags);
+Good point. Let me start with a couple of observations we've made:
+  1) some applications create very sparse address spaces, for various
+  reasons. A notable example is those using Scudo memory allocations:
+  they usually have double-digit numbers of PTE entries for each PMD
+  entry (and thousands of VMAs for just a few hundred MBs of memory
+  usage, sigh...).
+  2) scans of an address space (from the reclaim path) are much less
+  frequent than context switches of it. Under our heaviest memory
+  pressure (30%+ overcommitted; guess how much we've profited from
+  it :) ), their magnitudes are still on different orders.
+  Specifically, on our smallest system (2GB, with PCID), we observed
+  no difference between flushing and not flushing TLB in terms of page
+  selections. We actually observed more TLB misses under heavier
+  memory pressure, and our theory is that this is due to increased
+  memory footprint that causes the pressure.
 
-rgn_lock is never used in IRQ contexts, so no need of irqsave and
-irqrestore everywhere, which can impact performance. Please correct
-me if I am wrong.
+There are two use cases for the accessed bit on non-leaf PMD entries:
+the hot tracking and the cold tracking. I'll focus on the cold
+tracking, which is what this series about.
 
-Meanwhile, have you ever initialized the rgn_lock before use it???
+Since non-leaf entries are more likely to be cached, in theory, the
+false negative rate is higher compared with leaf entries as the CPU
+won't set the accessed bit again until the next TLB miss. (Here a
+false negative means the accessed bit isn't set on an entry has been
+used, after we cleared the accessed bit. And IIRC, there are also
+false positives, i.e., the accessed bit is set on entries used by
+speculative execution only.) But this is not a problem because of the
+second observation aforementioned.
 
-Thanks,
-Can Guo.
+Now let's consider the worst case scenario: what happens when we hit
+a false negative on a non-leaf PMD entry? We think the pages mapped
+by the PTE entries of this PMD entry are inactive and try to reclaim
+them, until we see the accessed bit set on one of the PTE entries.
+This will cost us one futile attempt for all the 512 PTE entries. A
+glance at lru_gen_scan_around() in the 11th patch would explain
+exactly why. If you are guessing that function embodies the same idea
+of "fault around", you are right.
 
-> +			rgn->reads = 0;
-> +			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +		}
-> +
->  		return 0;
->  	}
-> 
->  	if (!ufshpb_is_support_chunk(hpb, transfer_len))
->  		return 0;
-> 
-> +	if (hpb->is_hcm) {
-> +		bool activate = false;
-> +		/*
-> +		 * in host control mode, reads are the main source for
-> +		 * activation trials.
-> +		 */
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads++;
-> +		if (rgn->reads == ACTIVATION_THRESHOLD)
-> +			activate = true;
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +		if (activate) {
-> +			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
-> +			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
-> +			hpb->stats.rb_active_cnt++;
-> +			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
-> +			dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
-> +				"activate region %d-%d\n", rgn_idx, srgn_idx);
-> +		}
-> +
-> +		/* keep those counters normalized */
-> +		if (rgn->reads > hpb->entries_per_srgn)
-> +			schedule_work(&hpb->ufshpb_normalization_work);
-> +	}
-> +
->  	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->  	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
->  				   transfer_len)) {
-> @@ -745,21 +794,6 @@ static int ufshpb_clear_dirty_bitmap(struct 
-> ufshpb_lu *hpb,
->  	return 0;
->  }
-> 
-> -static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
-> rgn_idx,
-> -				      int srgn_idx)
-> -{
-> -	struct ufshpb_region *rgn;
-> -	struct ufshpb_subregion *srgn;
-> -
-> -	rgn = hpb->rgn_tbl + rgn_idx;
-> -	srgn = rgn->srgn_tbl + srgn_idx;
-> -
-> -	list_del_init(&rgn->list_inact_rgn);
-> -
-> -	if (list_empty(&srgn->list_act_srgn))
-> -		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
-> -}
-> -
->  static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int 
-> rgn_idx)
->  {
->  	struct ufshpb_region *rgn;
-> @@ -1079,6 +1113,14 @@ static void __ufshpb_evict_region(struct 
-> ufshpb_lu *hpb,
-> 
->  	ufshpb_cleanup_lru_info(lru_info, rgn);
-> 
-> +	if (hpb->is_hcm) {
-> +		unsigned long flags;
-> +
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads = 0;
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +	}
-> +
->  	for_each_sub_region(rgn, srgn_idx, srgn)
->  		ufshpb_purge_active_subregion(hpb, srgn);
->  }
-> @@ -1523,6 +1565,31 @@ static void
-> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
->  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->  }
-> 
-> +static void ufshpb_normalization_work_handler(struct work_struct 
-> *work)
-> +{
-> +	struct ufshpb_lu *hpb;
-> +	int rgn_idx;
-> +	unsigned long flags;
-> +
-> +	hpb = container_of(work, struct ufshpb_lu, 
-> ufshpb_normalization_work);
-> +
-> +	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
-> +		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
-> +
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads = (rgn->reads >> 1);
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +
-> +		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
-> +			continue;
-> +
-> +		/* if region is active but has no reads - inactivate it */
-> +		spin_lock(&hpb->rsp_list_lock);
-> +		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
-> +		spin_unlock(&hpb->rsp_list_lock);
-> +	}
-> +}
-> +
->  static void ufshpb_map_work_handler(struct work_struct *work)
->  {
->  	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu, 
-> map_work);
-> @@ -1913,6 +1980,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
-> *hba, struct ufshpb_lu *hpb)
->  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
-> 
->  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
-> +	if (hpb->is_hcm)
-> +		INIT_WORK(&hpb->ufshpb_normalization_work,
-> +			  ufshpb_normalization_work_handler);
-> 
->  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
->  			  sizeof(struct ufshpb_req), 0, 0, NULL);
-> @@ -2012,6 +2082,8 @@ static void ufshpb_discard_rsp_lists(struct
-> ufshpb_lu *hpb)
-> 
->  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->  {
-> +	if (hpb->is_hcm)
-> +		cancel_work_sync(&hpb->ufshpb_normalization_work);
->  	cancel_work_sync(&hpb->map_work);
->  }
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index 8119b1a3d1e5..bd4308010466 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -121,6 +121,10 @@ struct ufshpb_region {
->  	struct list_head list_lru_rgn;
->  	unsigned long rgn_flags;
->  #define RGN_FLAG_DIRTY 0
-> +
-> +	/* region reads - for host mode */
-> +	spinlock_t rgn_lock;
-> +	unsigned int reads;
->  };
-> 
->  #define for_each_sub_region(rgn, i, srgn)				\
-> @@ -211,6 +215,7 @@ struct ufshpb_lu {
-> 
->  	/* for selecting victim */
->  	struct victim_select_info lru_info;
-> +	struct work_struct ufshpb_normalization_work;
-> 
->  	/* pinned region information */
->  	u32 lu_pinned_start;
+And there are two places that could benefit from this patch (and the
+next) immediately, independent to this series. One is
+clear_refs_test_walk() in fs/proc/task_mmu.c. The other is
+madvise_pageout_page_range() and madvise_cold_page_range() in
+mm/madvise.c. Both are page table walkers that clear the accessed bit.
+
+I think I've covered a lot of ground but I'm sure there is a lot more.
+So please feel free to add and I'll include everything we discuss here
+in the next version.
