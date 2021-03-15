@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6397C33C55B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A6D33C563
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCOSQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
+        id S229558AbhCOSTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhCOSQR (ORCPT
+        with ESMTP id S231548AbhCOSTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:16:17 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0164CC06174A;
-        Mon, 15 Mar 2021 11:16:17 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id l2so20954250pgb.1;
-        Mon, 15 Mar 2021 11:16:16 -0700 (PDT)
+        Mon, 15 Mar 2021 14:19:00 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B022C06174A;
+        Mon, 15 Mar 2021 11:18:59 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id r16so5794279pfh.10;
+        Mon, 15 Mar 2021 11:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N7gXh8If5lLSf1WxWeVi7tx6btQcwG11a3RaI0iXEjI=;
-        b=uuMxU7VNbmDo+baQMlzi65YLpPhkRIYur8VUqEFbKk4c38qae3zU8Adjiedbj4vCge
-         O9o3Q6wa1J/WWEzzUTMjtyhj6CpurGADfhIsGsIvViZVcaSX3NaJuHPu994N0ApsikS/
-         cfDtH2xi3cBxubVwunRN7CKxHdY6xx0AkFa4gPYFbzEyC4u5KEU1MHrfRoWOPXLUhb9Z
-         Cs158JnD1XS+7HdgeUreI4rfnDcCwOro5oRvLT0V92XthUqUiuDZzL2dxcCTbbUqH5c8
-         WH+2ZQqUQaSqCbREVLIhe53TM7J0wRcWwIh60lUfvd8fXfI7qgAOrOhOVKt7eLtLaJoN
-         +HGQ==
+        bh=Y8KjN7BvbJBB4Xq70O198nwg/n4ypQbS+m7yJFiOEWQ=;
+        b=gwpZSgZX0Epe+8nbtIpyQ2tgzt6FMVjwLtRVQ74e2t6U7QF+lwd//gTzl5cgIiHfIL
+         rF5ACZx9xruq9D4MzklX16Me8jHlpnP3fYD39y99CjwYfmzsliZCFya1HytK1nAgRxYk
+         ktY/9oAiAXBMyMt584EosLI6CbcAl3xbfNFqpeVlZGWXvMEuLS4tSxxnI2fErj2Xa66i
+         oQsD/bk2qGtzz/BGubwddmNmCrU4BoNQUVVGM827E7z9Hpg3OA1OWY+biHDLKX6T5AP7
+         +1PGyMOC8CFTA8LV5865Br1SqM+2sGmQm+TpZhX4mhaTg4UUVFYrjSwsA4ZUgS0LUw1c
+         IE0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N7gXh8If5lLSf1WxWeVi7tx6btQcwG11a3RaI0iXEjI=;
-        b=OhvWsbus8kkSCsHDWtkYobrmNTWVgIoH5nS4mwsbjnxEBCv0gtfrKlNuPcL4zid2NW
-         tSdVkP+a8hdQD7RMBvyE8/mssEGxUFfCIktVqEdy6BtuFdkWAwaAjpY5Bp5FP3K9S5SM
-         QrAp6xsoLf+KUn9pwBDcAWreprQDXvQdtcmwAq8oQWi+OhB/afVOJk5wskYtR72+fu7w
-         5I/j5aThJxyjP/nk6bf1IbseRGWQ+lJ7ENuhTnB0fxhTbVfMIUP4KmLhvKn/r5j00RSF
-         n3cT3YLGNbJkLX4L/3JFT9lKBG5iaaJYIZOfrKJhZd023ZTKm60Mg32llKNZq5gVtiCI
-         1KjA==
-X-Gm-Message-State: AOAM532Z7rmGXkGXXVtIo/tIzlb2loasho7PuY+g6s+/9ZjGO3k5WavX
-        EzEJ/GONGvjSjVlRUWd+L86MmLhgRnVXa/1ttPDmMezepQt0cw==
-X-Google-Smtp-Source: ABdhPJw3alc5qqFKGQJPh1tDzn1eBVQRLupqnrLTL2qF/XOJf5/y8VM1JRrWHY5lq01mpISfsJuuGz2skwQSj2wOYcQ=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr25185217pfb.7.1615832176481; Mon, 15
- Mar 2021 11:16:16 -0700 (PDT)
+        bh=Y8KjN7BvbJBB4Xq70O198nwg/n4ypQbS+m7yJFiOEWQ=;
+        b=S1lx7YA5AJcznHoLvagK/WgwrboA1HcuWUImoGAnOHuuOZqZ5z2yuItTjF8M6Lkakw
+         cGubj+N4VDLpTZdkt/2dKbxlGqe0+PcfJfgLQGf2KIzRvHZQ1SgSLv1/cTHt3lC6RQWB
+         MVck3WslJdnnCRDT9N3kCyCWDcRvtbs3PUMkUseF9yfsbzug+cKilg+zWiFB5HCerf1o
+         ey4TqRo0/7F9S6qBCfb0e8fyrTulhQMHq1xGcMmqpmfDPoaJCbOjLHqRPSDaQe9ZoLQR
+         AcVY95Sc1aUCs3LuRjWuA/OWdQ+FD3MmJmOQUyfTjJcPq1XIIWwNw+N8IBam3XWpRI16
+         FPUg==
+X-Gm-Message-State: AOAM530YoaryXeYx931pTHEBvQLLdZrIdqtRl4Tjsi7RIkR+tYOCZmKG
+        xbYouQxbecxkAXz7VIPPCLd+FOEOWcXq/7+aKQ0=
+X-Google-Smtp-Source: ABdhPJxr0Mw50JiZmPtASt1ryjlfNQ61J5A233fEgj8VzkAkx83REKYYG7B9JCIjmR0sRhVFdLUbvjBUZ4DxuyAx1cY=
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr384404pgf.4.1615832338992;
+ Mon, 15 Mar 2021 11:18:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+References: <20210315135541.921894249@linuxfoundation.org> <20210315135544.659848571@linuxfoundation.org>
+ <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
+In-Reply-To: <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Mar 2021 20:16:00 +0200
-Message-ID: <CAHp75VcopwQgUQVF_uGwddzioTJqddwuft11+HBwH25e1kQEyw@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
- interrupt handlers
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date:   Mon, 15 Mar 2021 20:18:43 +0200
+Message-ID: <CAHp75VePHxAXHVJ974dXv6PnCbZhTTksY+-_moEZUzUzkFKE=Q@mail.gmail.com>
+Subject: Re: [PATCH 5.10 081/290] gpiolib: Read "gpio-line-names" from a
+ firmware node
+To:     Marek Vasut <marex@denx.de>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Arnd Bergmann <arnd@kernel.org>
+        Stable <stable@vger.kernel.org>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 8:12 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Mon, Mar 15, 2021 at 5:05 PM Marek Vasut <marex@denx.de> wrote:
 >
-> Since interrupt handler is called with disabled local interrupts, there
-> is no need to use the spinlock primitives disabling interrupts as well.
+> On 3/15/21 2:52 PM, gregkh@linuxfoundation.org wrote:
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
+> >
+> > On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> > see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> > pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> > and iterates over all of its DT subnodes when registering each GPIO
+> > bank gpiochip. Each gpiochip has:
+> >
+> >    - gpio_chip.parent = dev,
+> >      where dev is the device node of the pin controller
+> >    - gpio_chip.of_node = np,
+> >      which is the OF node of the GPIO bank
+> >
+> > Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> > i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> >
+> > The original code behaved correctly, as it extracted the "gpio-line-names"
+> > from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> >
+> > To achieve the same behaviour, read property from the firmware node.
+>
+> There seem to be some discussion going on around this patch, so please
+> postpone backporting until that is settled. Same for v5.11 backport. I
+> hope Andy/Bartosz agrees ?
 
-Thanks!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/tty/serial/samsung_tty.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 80df842bf4c7..d9e4b67a12a0 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -715,13 +715,12 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
->         struct s3c24xx_uart_dma *dma = ourport->dma;
->         struct tty_struct *tty = tty_port_tty_get(&ourport->port.state->port);
->         struct tty_port *t = &port->state->port;
-> -       unsigned long flags;
->         struct dma_tx_state state;
->
->         utrstat = rd_regl(port, S3C2410_UTRSTAT);
->         rd_regl(port, S3C2410_UFSTAT);
->
-> -       spin_lock_irqsave(&port->lock, flags);
-> +       spin_lock(&port->lock);
->
->         if (!(utrstat & S3C2410_UTRSTAT_TIMEOUT)) {
->                 s3c64xx_start_rx_dma(ourport);
-> @@ -750,7 +749,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
->         wr_regl(port, S3C2410_UTRSTAT, S3C2410_UTRSTAT_TIMEOUT);
->
->  finish:
-> -       spin_unlock_irqrestore(&port->lock, flags);
-> +       spin_unlock(&port->lock);
->
->         return IRQ_HANDLED;
->  }
-> @@ -846,11 +845,10 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
->  {
->         struct s3c24xx_uart_port *ourport = dev_id;
->         struct uart_port *port = &ourport->port;
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&port->lock, flags);
-> +       spin_lock(&port->lock);
->         s3c24xx_serial_rx_drain_fifo(ourport);
-> -       spin_unlock_irqrestore(&port->lock, flags);
-> +       spin_unlock(&port->lock);
->
->         return IRQ_HANDLED;
->  }
-> @@ -934,13 +932,12 @@ static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
->  {
->         struct s3c24xx_uart_port *ourport = id;
->         struct uart_port *port = &ourport->port;
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&port->lock, flags);
-> +       spin_lock(&port->lock);
->
->         s3c24xx_serial_tx_chars(ourport);
->
-> -       spin_unlock_irqrestore(&port->lock, flags);
-> +       spin_unlock(&port->lock);
->         return IRQ_HANDLED;
->  }
->
-> --
-> 2.25.1
->
-
+No need to postpone. The fix will be somewhere else, though inside gpiolib.c.
 
 -- 
 With Best Regards,
