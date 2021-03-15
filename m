@@ -2,273 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06B833C120
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12EE33C12F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhCOQDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:03:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:37616 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhCOQDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:03:23 -0400
-IronPort-SDR: KgqixJFJGa/vFk24lsNIh+S6pI+yqy6Y8UeTJKHolwHqsjGTJ9Fr3vTsudri9Go1XLjvh8ar0j
- II6iRWL4zXtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176707007"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="176707007"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 09:03:22 -0700
-IronPort-SDR: iFfO3e2NKZ7Zv28ata6VSNp3ghnX8s8Ad5CZDnPnA9JowPFueihUZ6yMqjOS7uBTBcfVrFbXdh
- BXyJNCgJpOow==
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="601474008"
-Received: from lguadamu-mobl1.amr.corp.intel.com (HELO [10.213.176.188]) ([10.213.176.188])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 09:03:21 -0700
-Subject: Re: [PATCH v4 2/3] x86/sgx: Replace section local dirty page lists
- with a global list
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210313160119.1318533-1-jarkko@kernel.org>
- <20210313160119.1318533-3-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b2a02fa6-8076-9fe4-59b7-91a91f44aaf7@intel.com>
-Date:   Mon, 15 Mar 2021 09:03:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210313160119.1318533-3-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S233925AbhCOQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhCOQFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:05:03 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7020C06174A;
+        Mon, 15 Mar 2021 09:05:02 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id ci14so67003868ejc.7;
+        Mon, 15 Mar 2021 09:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iTN15QOmjZC4ZxIPSp9uAnRcwTL7uX2dN8RBpC7no10=;
+        b=h5t2n2hctg+YpumjNtWRMx3N9tyn5e/T68EzWoBq+RMJ/qpov94ODOu+Kyqx/mME4K
+         pA7qA2aaihEtATr/I/NA3w6uR1ife8AOcEnFQC7F6vJexUjSzIcZ9DS0MsgUr5aOJF9N
+         N+z9QgO/06+zYJHNriysM0VHUAQkKcgFw75WpnLUPQ2jmbs1nH4KWvxE8Fqws2a+qLUa
+         g5YR7fg9iBq67CYiBPzv4AZwaJfeyx3aUDsT53ZDX7O970Yo5vRiRk5VBV5OS3E0W/uD
+         SvSnJjndDILJBHZMRJQklJOcpjTvcCaHT8jnTRplnZogm3TFlwx2Nc//x5gIdzIaWUWo
+         8/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iTN15QOmjZC4ZxIPSp9uAnRcwTL7uX2dN8RBpC7no10=;
+        b=eIMwZacYTQ68dDlCCW/xBkDh3LFMsvZwXD2f/QZiwYO+1DEpU661YnNZfyKuJdfzyG
+         MmuQ5bU0WdLxmFxt1hW7CscElwkEWhGe//q8pjBJFCwar8TF2aIeQiIK5jcQVQO4lkJi
+         LGmq/BVv4kbsJBlPvUgHNKCdQQ+Yj1Hv3DXA12oGXLF8d+KE6oY8IkqrCuu5GS1d27yd
+         ICHqDA20J5M4IUcEi1uwsIgKtZ1PLA5Lo4pI98tp6xBtP858ve+mSi/BDpmEV671zocf
+         9okCHTFIPtCvKLax5w81NvbFUgQ4s2ZYz1dj7n9JUe9yRjfrAUapezo+tvQ3EUfpZv2u
+         mTHw==
+X-Gm-Message-State: AOAM533lwEIQl3HmlUBUo/4P3Xk0EVr4LnAbQFfhDyPesBsrh6xIsFRb
+        2hcHkke99Bup+Qe363aHyI8=
+X-Google-Smtp-Source: ABdhPJyip3DfIUvk4XF6M2+1Qr+fHdi8j4USy2CBep19ai87e4UOTyv1FytpAa+pg/thVRFyp6sCNQ==
+X-Received: by 2002:a17:907:3e8c:: with SMTP id hs12mr24546527ejc.105.1615824301533;
+        Mon, 15 Mar 2021 09:05:01 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d28:c000:5c39:c910:15c8:a935])
+        by smtp.gmail.com with ESMTPSA id z17sm7748510eju.27.2021.03.15.09.05.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 09:05:01 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Yu Chen <chenyu56@huawei.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH 0/5] Rectify file references for dt-bindings in MAINTAINERS
+Date:   Mon, 15 Mar 2021 17:04:46 +0100
+Message-Id: <20210315160451.7469-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/13/21 8:01 AM, Jarkko Sakkinen wrote:
-> Reset initialized EPC pages in sgx_dirty_page_list to uninitialized state,
-> and free them using sgx_free_epc_page(). Do two passes, as for SECS pages
-> the first round can fail, if all child pages have not yet been removed.
-> The driver puts all pages on startup first to sgx_dirty_page_list, as the
-> initialization could be triggered by kexec(), meaning that pages have been
-> reserved for active enclaves before the operation.
-> 
-> The section local lists are redundant, as sgx_free_epc_page() figures
-> out the correction by using epc_page->section.
+Hi Rob,
 
-During normal runtime, the "ksgxd" daemon behaves like a  version of
-kswapd just for SGX.  But, its first job is to initialize enclave
-memory.  This is done in a a separate thread because this initialization
-can be quite slow.
+here is a patch series that cleans up all file references for dt-bindings
+in MAINTAINERS. It applies cleanly on next-20210315.
 
-Currently, the SGX boot code places each enclave page on a
-sgx_section-local list (init_laundry_list).  Once it starts up, the
-ksgxd code walks over that list and populates the actual SGX page allocator.
+With this patch series and another patch (already accepted elsewhere)
+[see Link], ./scripts/get_maintainers.pl --self-test=patterns reports no
+further warning on next-20210315.
 
-However, the per-section structures are going away to make way for the
-SGX NUMA allocator.  There's also little need to have a per-section
-structure; the enclave pages are all treated identically, and they can
-be placed on the correct allocator list from metadata stoered in the
-enclave page itself.
+Could you pick this series for your devicetree bindings tree?
 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 65004fb8a91f..cb4561444b96 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -27,39 +27,10 @@ static LIST_HEAD(sgx_active_page_list);
->  static DEFINE_SPINLOCK(sgx_reclaimer_lock);
->  
->  /*
-> - * Reset dirty EPC pages to uninitialized state. Laundry can be left with SECS
-> - * pages whose child pages blocked EREMOVE.
-> + * When the driver initialized, EPC pages go first here, as they could be
-> + * initialized to an active enclave, on kexec entry.
->   */
-> -static void sgx_sanitize_section(struct sgx_epc_section *section)
-> -{
-> -	struct sgx_epc_page *page;
-> -	LIST_HEAD(dirty);
-> -	int ret;
-> -
-> -	/* init_laundry_list is thread-local, no need for a lock: */
-> -	while (!list_empty(&section->init_laundry_list)) {
-> -		if (kthread_should_stop())
-> -			return;
-> -
-> -		/* needed for access to ->page_list: */
-> -		spin_lock(&section->lock);
-> -
-> -		page = list_first_entry(&section->init_laundry_list,
-> -					struct sgx_epc_page, list);
-> -
-> -		ret = __eremove(sgx_get_epc_virt_addr(page));
-> -		if (!ret)
-> -			list_move(&page->list, &section->page_list);
-> -		else
-> -			list_move_tail(&page->list, &dirty);
-> -
-> -		spin_unlock(&section->lock);
-> -
-> -		cond_resched();
-> -	}
-> -
-> -	list_splice(&dirty, &section->init_laundry_list);
-> -}
-> +static LIST_HEAD(sgx_dirty_page_list);
->  
->  static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
->  {
-> @@ -400,25 +371,48 @@ static bool sgx_should_reclaim(unsigned long watermark)
->  
->  static int ksgxd(void *p)
->  {
-> -	int i;
-> +	struct sgx_epc_page *page;
-> +	LIST_HEAD(dirty);
-> +	int i, ret;
->  
->  	set_freezable();
->  
->  	/*
-> -	 * Sanitize pages in order to recover from kexec(). The 2nd pass is
-> -	 * required for SECS pages, whose child pages blocked EREMOVE.
-> +	 * Reset initialized EPC pages in sgx_dirty_page_list to uninitialized state,
-> +	 * and free them using sgx_free_epc_page(). 
+No functional change, just cleaning up MAINTAINERS.
 
-I'm not a fan of comments that tell us verbatim what the code does.
+Lukas
 
->							Do two passes, as for SECS pages the
-> +	 * first round can fail, if all child pages have not yet been removed.  The
-> +	 * driver puts all pages on startup first to sgx_dirty_page_list, as the
-> +	 * initialization could be triggered by kexec(), meaning that pages have been
-> +	 * reserved for active enclaves before the operation.
->  	 */
+Link: https://lore.kernel.org/lkml/20210208071619.3234-1-lukas.bulwahn@gmail.com/
 
+Lukas Bulwahn (5):
+  MAINTAINERS: rectify some references automatically
+  MAINTAINERS: rectify entry for ARM/TOSHIBA VISCONTI ARCHITECTURE
+  MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB GPIO HUB DRIVER
+  MAINTAINERS: rectify entry for INTEL KEEM BAY DRM DRIVER
+  MAINTAINERS: rectify entries for dt-bindings
 
+ MAINTAINERS | 46 ++++++++++++++++++++++------------------------
+ 1 file changed, 22 insertions(+), 24 deletions(-)
 
-> -	for (i = 0; i < sgx_nr_epc_sections; i++)
-> -		sgx_sanitize_section(&sgx_epc_sections[i]);
->  
-> -	for (i = 0; i < sgx_nr_epc_sections; i++) {
-> -		sgx_sanitize_section(&sgx_epc_sections[i]);
+-- 
+2.17.1
 
-FWIW, I don't like the removal of the helper here.  I really like kernel
-threads' top-level function to be very understandable and clean.  This
-makes it quite a bit harder to figure out what is going on.
-
-For instance, we could just have a sgx_sanitize_pages() which has a
-local dirty list and just calls:
-
-void sgx_santitize_pages(void)
-{
-	LIST_HEAD(dirty);
-
-	/*
-	 * Comment about two passes
-	 */
-	__sgx_sanitize_pages(&dirty)
-	__sgx_sanitize_pages(&dirty)
-}
-
-> +	/* sgx_dirty_page_list is thread-local to ksgxd, no need for a lock: */
-> +	for (i = 0; i < 2 && !list_empty(&sgx_dirty_page_list); i++) {
-> +		while (!list_empty(&sgx_dirty_page_list)) {
-> +			if (kthread_should_stop())
-> +				return 0;
-> +
-> +			page = list_first_entry(&sgx_dirty_page_list, struct sgx_epc_page, list);
-> +
-> +			ret = __eremove(sgx_get_epc_virt_addr(page));
-> +			if (!ret) {
-> +				/* The page is clean - move to the free list. */
-
-I'd even say:
-				/*
-				 * page is now sanitized.  Make it
-				 * available via the SGX page allocator:
-				 */
-
-See what that does?  It actually links the "cleaning" to the freeing.
-
-> +				list_del(&page->list);
-> +				sgx_free_epc_page(page);
-> +			} else {
-> +				/* The page is not yet clean - move to the dirty list. */
-> +				list_move_tail(&page->list, &dirty);
-> +			}
-> +
-> +			cond_resched();
-> +		}
->  
-> -		/* Should never happen. */
-> -		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
-> -			WARN(1, "EPC section %d has unsanitized pages.\n", i);
-> +		list_splice(&dirty, &sgx_dirty_page_list);
->  	}
->  
-> +	if (!list_empty(&sgx_dirty_page_list))
-> +		WARN(1, "EPC section %d has unsanitized pages.\n", i);
-> +
->  	while (!kthread_should_stop()) {
->  		if (try_to_freeze())
->  			continue;
-> @@ -632,13 +626,12 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
->  	section->phys_addr = phys_addr;
->  	spin_lock_init(&section->lock);
->  	INIT_LIST_HEAD(&section->page_list);
-> -	INIT_LIST_HEAD(&section->init_laundry_list);
->  
->  	for (i = 0; i < nr_pages; i++) {
->  		section->pages[i].section = index;
->  		section->pages[i].flags = 0;
->  		section->pages[i].owner = NULL;
-> -		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
-> +		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
->  	}
-...
