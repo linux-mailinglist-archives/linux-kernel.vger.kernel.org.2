@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D1F33BCD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1B33BBE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235235AbhCOO3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:29:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S234943AbhCOOIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232399AbhCON6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 784D764F1A;
-        Mon, 15 Mar 2021 13:58:26 +0000 (UTC)
+        id S232002AbhCON6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8143664EED;
+        Mon, 15 Mar 2021 13:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816708;
-        bh=zpNUKK/aPKyGPqxpwHHm0Ond1XIcDiwIFmzE1PWTR9g=;
+        s=korg; t=1615816674;
+        bh=u5OynKd7iO5/IG2I3kk480sm9gyr1EaQo0TwBUcaQCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6TALwkKxTxTbMBVOPUQD0dsGnWKo7uJ/h3Ry4Y0pAqy102+1EO222zIQCJ9IhkHq
-         Tz3+y2uUinCDzM4kaptEH1eW4dyj0ruLuEjXnG55E9TpM5ClDSmbANsKCqR8sV66tM
-         QqVFYMETzyf+HynAvQlqjwPQGhUR7U8YGelRxOhk=
+        b=dNCX632xdhiSeDmzGgN6G7vmixF4nrStGTR5+hXbN9Jw3O+jVG/QshuPexn4+6R0S
+         Pp3mExmtjtTwSGkCMY0i0miuK3U2o5yuIt4+wXSh2DOjbVj/oicZjAjshJGGn8Ul8Q
+         zCZbyhH3GsUVnOpleqEpuZ0r6Ltftgq2AVDG0RHw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony@phenome.org>,
-        Shannon Nelson <snelson@pensando.io>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.11 077/306] ixgbe: fail to create xfrm offload of IPsec tunnel mode SA
-Date:   Mon, 15 Mar 2021 14:52:20 +0100
-Message-Id: <20210315135510.244205815@linuxfoundation.org>
+        stable@vger.kernel.org, Maximilian Heyne <mheyne@amazon.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 048/290] net: sched: avoid duplicates in classes dump
+Date:   Mon, 15 Mar 2021 14:52:21 +0100
+Message-Id: <20210315135543.550617565@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +41,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Antony Antony <antony@phenome.org>
+From: Maximilian Heyne <mheyne@amazon.de>
 
-commit d785e1fec60179f534fbe8d006c890e5ad186e51 upstream.
+commit bfc2560563586372212b0a8aeca7428975fa91fe upstream.
 
-Based on talks and indirect references ixgbe IPsec offlod do not
-support IPsec tunnel mode offload. It can only support IPsec transport
-mode offload. Now explicitly fail when creating non transport mode SA
-with offload to avoid false performance expectations.
+This is a follow up of commit ea3274695353 ("net: sched: avoid
+duplicates in qdisc dump") which has fixed the issue only for the qdisc
+dump.
 
-Fixes: 63a67fe229ea ("ixgbe: add ipsec offload add and remove SA")
-Signed-off-by: Antony Antony <antony@phenome.org>
-Acked-by: Shannon Nelson <snelson@pensando.io>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+The duplicate printing also occurs when dumping the classes via
+  tc class show dev eth0
+
+Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c |    5 +++++
- drivers/net/ethernet/intel/ixgbevf/ipsec.c     |    5 +++++
- 2 files changed, 10 insertions(+)
+ net/sched/sch_api.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-@@ -575,6 +575,11 @@ static int ixgbe_ipsec_add_sa(struct xfr
- 		return -EINVAL;
- 	}
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -2167,7 +2167,7 @@ static int tc_dump_tclass_qdisc(struct Q
  
-+	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
-+		netdev_err(dev, "Unsupported mode for ipsec offload\n");
-+		return -EINVAL;
-+	}
-+
- 	if (ixgbe_ipsec_check_mgmt_ip(xs)) {
- 		netdev_err(dev, "IPsec IP addr clash with mgmt filters\n");
- 		return -EINVAL;
---- a/drivers/net/ethernet/intel/ixgbevf/ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ipsec.c
-@@ -272,6 +272,11 @@ static int ixgbevf_ipsec_add_sa(struct x
- 		return -EINVAL;
- 	}
+ static int tc_dump_tclass_root(struct Qdisc *root, struct sk_buff *skb,
+ 			       struct tcmsg *tcm, struct netlink_callback *cb,
+-			       int *t_p, int s_t)
++			       int *t_p, int s_t, bool recur)
+ {
+ 	struct Qdisc *q;
+ 	int b;
+@@ -2178,7 +2178,7 @@ static int tc_dump_tclass_root(struct Qd
+ 	if (tc_dump_tclass_qdisc(root, skb, tcm, cb, t_p, s_t) < 0)
+ 		return -1;
  
-+	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
-+		netdev_err(dev, "Unsupported mode for ipsec offload\n");
-+		return -EINVAL;
-+	}
-+
- 	if (xs->xso.flags & XFRM_OFFLOAD_INBOUND) {
- 		struct rx_sa rsa;
+-	if (!qdisc_dev(root))
++	if (!qdisc_dev(root) || !recur)
+ 		return 0;
  
+ 	if (tcm->tcm_parent) {
+@@ -2213,13 +2213,13 @@ static int tc_dump_tclass(struct sk_buff
+ 	s_t = cb->args[0];
+ 	t = 0;
+ 
+-	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t) < 0)
++	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t, true) < 0)
+ 		goto done;
+ 
+ 	dev_queue = dev_ingress_queue(dev);
+ 	if (dev_queue &&
+ 	    tc_dump_tclass_root(dev_queue->qdisc_sleeping, skb, tcm, cb,
+-				&t, s_t) < 0)
++				&t, s_t, false) < 0)
+ 		goto done;
+ 
+ done:
 
 
