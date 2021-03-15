@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F01B33B641
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0D133B669
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhCON5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:57:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
+        id S232146AbhCON5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231213AbhCONyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ED1D601FD;
-        Mon, 15 Mar 2021 13:54:12 +0000 (UTC)
+        id S231334AbhCONyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D29B64F19;
+        Mon, 15 Mar 2021 13:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816454;
-        bh=gBLWqRKW6uXW1BdmXR1ZQ+oprUn9KRBhm8RRwiFkKAk=;
+        s=korg; t=1615816458;
+        bh=u05QLZmcL9GGMe5D8tEnIMmyh9DU6uRxx+Tp8Cvl9Dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BjDZkygcJPwiwJJhAME29jK9YAybJNH28/jA2DRHRFDpisDHH1i/gqOhl7OOY1G2l
-         sd2lMgHJwT5EC6/UOY/zs6DI8eY4VnbZ7GAcbfib4AWQ0X02EuSZIeNfWLPe3YQNut
-         4eQoeSZp0lgMET28fMGaFpINVSF9duNRdW5S2Xis=
+        b=ADJ2LESChl9aC1chsHaxNQgqbuCDbtVAbj1shnGAYTMfCzHxNtHiqptkmZl0HxgqZ
+         hNaCspjUCp4MkhE9C9cXiKSB/GiO4e/D5qiSQ/6fpuHF7JqI5rE2YKRITKJOvmqtMY
+         pCcstp0h3nB4NwX+/5b2gjRLKHF6NNYlv328cv30=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.9 48/78] staging: ks7010: prevent buffer overflow in ks_wlan_set_scan()
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.4 57/75] staging: comedi: pcl818: Fix endian problem for AI command data
 Date:   Mon, 15 Mar 2021 14:52:11 +0100
-Message-Id: <20210315135213.644225264@linuxfoundation.org>
+Message-Id: <20210315135210.120829925@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit e163b9823a0b08c3bb8dc4f5b4b5c221c24ec3e5 upstream.
+commit 148e34fd33d53740642db523724226de14ee5281 upstream.
 
-The user can specify a "req->essid_len" of up to 255 but if it's
-over IW_ESSID_MAX_SIZE (32) that can lead to memory corruption.
+The analog input subdevice supports Comedi asynchronous commands that
+use Comedi's 16-bit sample format.  However, the call to
+`comedi_buf_write_samples()` is passing the address of a 32-bit integer
+parameter.  On bigendian machines, this will copy 2 bytes from the wrong
+end of the 32-bit value.  Fix it by changing the type of the parameter
+holding the sample value to `unsigned short`.
 
-Fixes: 13a9930d15b4 ("staging: ks7010: add driver from Nanonote extra-repository")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YD4fS8+HmM/Qmrw6@mwanda
+[Note: the bug was introduced in commit edf4537bcbf5 ("staging: comedi:
+pcl818: use comedi_buf_write_samples()") but the patch applies better to
+commit d615416de615 ("staging: comedi: pcl818: introduce
+pcl818_ai_write_sample()").]
+
+Fixes: d615416de615 ("staging: comedi: pcl818: introduce pcl818_ai_write_sample()")
+Cc: <stable@vger.kernel.org> # 4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-10-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/ks7010/ks_wlan_net.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/pcl818.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/ks7010/ks_wlan_net.c
-+++ b/drivers/staging/ks7010/ks_wlan_net.c
-@@ -1404,6 +1404,7 @@ static int ks_wlan_set_scan(struct net_d
- 	struct ks_wlan_private *priv =
- 	    (struct ks_wlan_private *)netdev_priv(dev);
- 	struct iw_scan_req *req = NULL;
-+	int len;
- 	DPRINTK(2, "\n");
+--- a/drivers/staging/comedi/drivers/pcl818.c
++++ b/drivers/staging/comedi/drivers/pcl818.c
+@@ -422,7 +422,7 @@ static int pcl818_ai_eoc(struct comedi_d
  
- 	if (priv->sleep_mode == SLP_SLEEP) {
-@@ -1415,8 +1416,9 @@ static int ks_wlan_set_scan(struct net_d
- 	if (wrqu->data.length == sizeof(struct iw_scan_req)
- 	    && wrqu->data.flags & IW_SCAN_THIS_ESSID) {
- 		req = (struct iw_scan_req *)extra;
--		priv->scan_ssid_len = req->essid_len;
--		memcpy(priv->scan_ssid, req->essid, priv->scan_ssid_len);
-+		len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+		priv->scan_ssid_len = len;
-+		memcpy(priv->scan_ssid, req->essid, len);
- 	} else {
- 		priv->scan_ssid_len = 0;
- 	}
+ static bool pcl818_ai_write_sample(struct comedi_device *dev,
+ 				   struct comedi_subdevice *s,
+-				   unsigned int chan, unsigned int val)
++				   unsigned int chan, unsigned short val)
+ {
+ 	struct pcl818_private *devpriv = dev->private;
+ 	struct comedi_cmd *cmd = &s->async->cmd;
 
 
