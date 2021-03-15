@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7473633AF7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D52433AF7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhCOKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:02:15 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:36973 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCOKBz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:01:55 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id ADD4F2223A;
-        Mon, 15 Mar 2021 11:01:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615802513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S229705AbhCOKCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:02:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46976 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229704AbhCOKCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:02:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615802557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FGPd+CT8s79hFeiEpM/nnYfFAxMfPqg60ZHDn0T03J4=;
-        b=fGMoLNBJp8Pp/nYl6HtpNFLCX0GQXr4Ri1CbML5wUaQlTuTTaEvXwh23HCkE6qt8f6GC8k
-        QkoWMKAdUOQ+JI3xVfpVc0iN7dkMZakL1h1JX3xbstUCopdIWzEisVxJRGP1gjXZ7VDNAp
-        LMhpf0eyYmLuaQ6jNZnoJ8Y3kZF37Vc=
+        bh=lC33yesXT/l1eNWRzOrRWoHnCkXcgUYP9aLI65SFJOw=;
+        b=q6dhqGsaxBFD1siL5hSWQrfR3B829Xx0nJnjXLvRmkiUn8eYS7CTXlmlkMrxT2TxAJwIlv
+        8i0oxH9jr6ykdD3NP71Y7aYwUz5pyaJkmkbA5uVBAIUjzqnJ2W0rx6gt9xXWHhBl/ZaObj
+        pFPdhqIz57HLdrQvWjtGKxXmRUXZd84=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E4029AD74;
+        Mon, 15 Mar 2021 10:02:36 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 11:02:36 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YE8wvGHhbV4nAGGI@alley>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <YEtNKMF3KH1kUDxY@alley>
+ <YEtyUM07gsqR6ltG@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 11:01:53 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at
-Subject: Re: [PATCH v4 1/4] mtd: spi-nor: add OTP support
-In-Reply-To: <f0ffd9b3-94d1-05ca-7e90-5014bf7a3db4@microchip.com>
-References: <20210306000535.9890-1-michael@walle.cc>
- <20210306000535.9890-2-michael@walle.cc>
- <7dd4bfb0-bb38-20c8-68e1-ece836c847fa@microchip.com>
- <b83dbbcdee6bdeee0d494ba79fd792e4@walle.cc>
- <8b35d8f6-6ff8-9bf3-02bd-434cf46acccb@microchip.com>
- <f0ffd9b3-94d1-05ca-7e90-5014bf7a3db4@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <bbbc6230b7d60a2421520ce7d163be56@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEtyUM07gsqR6ltG@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-15 10:44, schrieb Tudor.Ambarus@microchip.com:
-> On 3/15/21 11:39 AM, Tudor Ambarus - M18064 wrote:
->> On 3/15/21 11:23 AM, Michael Walle wrote:
->> 
->> cut
->> 
->>>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->>>>> new file mode 100644
->>>>> index 000000000000..4e301fd5156b
->>>>> --- /dev/null
->>>>> +++ b/drivers/mtd/spi-nor/otp.c
->>>>> @@ -0,0 +1,218 @@
->>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>> +/*
->>>>> + * OTP support for SPI NOR flashes
->>>>> + *
->>>>> + * Copyright (C) 2021 Michael Walle <michael@walle.cc>> + */
->>>>> +
->>>>> +#include <linux/log2.h>
->>>>> +#include <linux/mtd/mtd.h>
->>>>> +#include <linux/mtd/spi-nor.h>
->>>>> +
->>>>> +#include "core.h"
->>>>> +
->>>>> +#define spi_nor_otp_ops(nor) ((nor)->params->otp.ops)
->>>>> +#define spi_nor_otp_region_len(nor) ((nor)->params->otp.org->len)
->>>>> +#define spi_nor_otp_n_regions(nor)
->>>>> ((nor)->params->otp.org->n_regions)
->>>> 
->>>> I don't like these wrappers because they gratuiously hide what's 
->>>> really
->>>> there.
->>>> I find the code more easier to read without these wrappers, because 
->>>> I
->>>> don't
->>>> have to memorize what these wrappers are doing, and I better see how
->>>> the code
->>>> is organized.
->>> 
->>> TBH I find it easier on the eye and I've never seen so much 
->>> dereferences
->>> as in mtd/spi-nor.
+On Fri 2021-03-12 13:53:20, Chris Down wrote:
+> Ack to all unmentioned suggestions. :-)
 > 
-> the dereferences will still be there, but will be just hidden by these 
-> wrappers,
-> don't they? Why would one prefer the wrappers?
+> Petr Mladek writes:
+> > > +	  changed or no longer present.
+> > > +
+> > > +	  There is no additional runtime cost to printk with this enabled.
+> > > +
+> > >  #
+> > >  # Architectures with an unreliable sched_clock() should select this:
+> > >  #
+> > > diff --git a/kernel/module.c b/kernel/module.c
+> > > index 1e5aad812310..44df2913a046 100644
+> > > --- a/kernel/module.c
+> > > +++ b/kernel/module.c
+> > > @@ -1064,6 +1064,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+> > >  	blocking_notifier_call_chain(&module_notify_list,
+> > >  				     MODULE_STATE_GOING, mod);
+> > >  	klp_module_going(mod);
+> > > +	pi_sec_remove(mod);
+> > 
+> > Is there any particular reason why this is not done via the module
+> > notifier, please?
+> > 
+> > Other subsystems hardcode their callbacks here only when they
+> > require some special ordering that could not be achieved by
+> > the notifiers.
+> > 
+> > The hardcoded callbacks complicate the error paths in
+> > the module loader code.
+> 
+> Oh! That's exactly what I feel as well, but I mistakenly thought that's what
+> you were asking for in the feedback for v4. Turns out I misread your
+> statement about storing the pointer to `struct module` (hence my message
+> last time querying whether it was sensible or not) as being about not using
+> the module notifier. Mea culpa.
+> 
+> > > +static void *pi_next(struct seq_file *s, void *v, loff_t *pos)
+> > > +{
+> > > +	const struct pi_sec *ps = s->file->f_inode->i_private;
+> > > +	struct pi_object *pi = NULL;
+> > 
+> > Please, call the variables by the content and not by prefix.
+> > A variable called "pi" might include anything used by "pi" API.
+> > 
+> > [...]
+> > 
+> > Please, try to put more effort into creating the function and
+> > variable names. I know that I am probably too picky about it.
+> > But you seem to be the other extreme.
+> > 
+> > Inconsistent, ambiguous, or meaningless names might make even few
+> > lines of code hard to follow. It makes it write-only.
+> > It is hard to review and maintain.
+> 
+> Hmm, I'd even say that I agree with this statement, but as I understand it a
+> `pi` variable always means pi_object, and `ps` always means pi_sec. I'm not
+> immediately seeing it as meaningless or ambiguous (although maybe your
+> concern was more abstractly aesthetic with overlapping the `pi_` prefix?).
 
-That's why I wrote "easier on the eye", yes that is subjective. But
-there are also technical aspects, for example, the helpers all
-operate on "struct nor*", so you don't have to use the
-dereference chain or build up local variables. For example, see
-spi_nor_otp_read_write(), it doesn't have to know
-anything about the "struct spi_nor_otp_organization".
+"incosistent" was more about the previous (v4) version. v5 was fine
+from this POV.
 
-And of course you could change the actual implementation
-without touching the code everywhere,.
+"ambiguous" and "meaningless" was primary about "pi" variable. "pi"
+was used as prefix for all functions and structure names in the API.
+The variable "pi" might mean any piece of information from this API.
+For me it had similar meaning as "x" in the meaning of anything.
+Better name would have been "object" because it was a pointer
+to struct pi_object.
 
--michael
+Another problematic name was "struct pi_sec". It makes sense for
+storing start and end pointers to the elf section. But the dentry
+pointer has nothing to do with an elf section.
+
+> The "content" here is pretty abstract, so I'm not quite sure what your
+> suggestion for naming them based on content is. Maybe (assuming it doesn't
+> just disappear, which it seems it will) a pi_sec named sec
+
+My problem with pi_sec is explained above. Anyway, it seems that it
+will disappear.
+
+> , and the pi_object named fmt_index?
+
+I do not see "fmt_index" mentioned anywhere in v5 or v4. I suggested
+to use "pi_entry" instead of "pi_object".
+
+I agree that "object" and "entry" are equally abstract. As I said,
+I prefer "entry" because I maintain also kernel/livepatch code
+and we use "object" there in other meaning.
+
+Alternative names would be struct pi_fmt_info or pi_fmt_rec like
+metainformation or record about the printk format. They are
+more specific than "entry".
+
+> I don't feel strongly that this is more clear though, so maybe you
+> mean something else?
+
+I was pretty tired when reviewing the patch. It was not easy for me
+to create the mental model of the code. I felt that some other names
+would have made it easier.
+
+Also the tricky pi_next() implementation did not help much. It looks
+like you changed the code many times to get it working and did not
+clean it at the end.
+
+Best Regards,
+Petr
