@@ -2,360 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7537333B2AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F04133B2B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCOM0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCOM0O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:26:14 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DACC061574;
-        Mon, 15 Mar 2021 05:26:12 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id w11so8562691wrr.10;
-        Mon, 15 Mar 2021 05:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=+9zt49fikWOqfDxTMbEBEb4hG/YqPjQSW82REHjyXDA=;
-        b=vQArxQRp0hSz2PkncaILmCft97NDuAqBp31KJn2dK9y6Qo6K7ZoxkDx/dKpwViwLUt
-         ho8GhyfDdGN4T9Z5/XToemJ97fo+wIYysVmjcKGWiwTs8xJ5qOZ+aiDWM25MeFe/AZz1
-         iCFihtvMYMtzluf9nBRcI+QYpH5n9KVoy4oRW2MtJ50dzCh8GR+IgvxAuySj0kXsOChu
-         j2jabx+4EZmj0mESZ5UHsvkBy8hJpArvGdLjy0TyVsabp8jNl/Qz5jbLnMlpDFGfwNOn
-         3Xz0RbTMTrCwyuuMfc3UZUJYZJWZuRouDn/YPOWnlxjUnqgwjSgwAa8YWZoonHZbPVJ4
-         dv6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+9zt49fikWOqfDxTMbEBEb4hG/YqPjQSW82REHjyXDA=;
-        b=PdYNBtWRBXxJYcBTUm/W2LPthtPTYlx3cF9cNqr6RYJbr42H9VxcsGG3dlVQ654zTR
-         Rrlci8227sKgIFP8lZFDeoEJVLv6kyzMJy9jaV1X01bNWkK3l2RDGBwLANY7d1uP0NIM
-         WLtRWeQHaaVRGlOyXJN9UJfpypiIYcYNAB2B3gZE6Euz+PBVPIofsHMv27fazIQl4cGz
-         DqWeTCcXUYEhQWLU+HwpaYuxYCQm9W0eo1Z5nkjlWSNEB6X+4dW43g4mXHdXRJuB51QQ
-         L/SJCXvBLn5VTfdeMB5sSYDAjEuB7ZsUGstKoiQTeRvKUgeqNTitC35SaAifqfmnHJk6
-         pSbQ==
-X-Gm-Message-State: AOAM532kiSbm5lA5MdN9WEiGjoFXsoZnTnahzLzXdj01yZRZ7XKT5u5X
-        HrFUu+Tlqh9HaVxDyAypxKo=
-X-Google-Smtp-Source: ABdhPJw3myQ/eowQUQ0FJIE6cG+CnV6fuDCB1J3HqUxY392nHUfJ6qv6YOSqliVY30l1gFZeVze30A==
-X-Received: by 2002:a5d:4e83:: with SMTP id e3mr27228955wru.82.1615811170956;
-        Mon, 15 Mar 2021 05:26:10 -0700 (PDT)
-Received: from skynet.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id o7sm18317851wrs.16.2021.03.15.05.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:26:10 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     jonas.gorski@gmail.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] clk: bcm: Add BCM63268 timer clock and reset driver
-Date:   Mon, 15 Mar 2021 13:26:05 +0100
-Message-Id: <20210315122605.28437-5-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210315122605.28437-1-noltari@gmail.com>
-References: <20210315122605.28437-1-noltari@gmail.com>
+        id S229890AbhCOM0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:26:55 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48182 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229729AbhCOM0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:26:17 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9deUk9gscQZAA--.15749S3;
+        Mon, 15 Mar 2021 20:26:06 +0800 (CST)
+Subject: Re: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
+ with GCC in csum_tcpudp_nofold()
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
+ <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        David Laight <David.Laight@ACULAB.COM>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
+Date:   Mon, 15 Mar 2021 20:26:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxf9deUk9gscQZAA--.15749S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxKFWrurW8KFy8XrykKrW7Jwb_yoW7Cw1fpr
+        W8Jr4UZFsIvry8WFy5Gry5urW5tr1DC3WUAFnxJw15ZF9xWrnrJryrJa97CrnrJr15AF12
+        qFyDKr4kJw45KaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
+        r21lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjsjjDUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for BCM63268 timer clock and reset controller.
+On 03/15/2021 04:49 AM, Maciej W. Rozycki wrote:
+> On Tue, 9 Mar 2021, Tiezhu Yang wrote:
+>
+>> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+>> index 1e6c135..80eddd4 100644
+>> --- a/arch/mips/include/asm/checksum.h
+>> +++ b/arch/mips/include/asm/checksum.h
+>> @@ -128,9 +128,13 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+>>   
+>>   static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+>>   					__u32 len, __u8 proto,
+>> -					__wsum sum)
+>> +					__wsum sum_in)
+>>   {
+>> -	unsigned long tmp = (__force unsigned long)sum;
+>> +#ifdef __clang__
+>> +	unsigned long sum = (__force unsigned long)sum_in;
+>> +#else
+>> +	__wsum sum = sum_in;
+>> +#endif
+>   This looks much better to me, but I'd keep the variable names unchanged
+> as `sum_in' isn't used beyond the initial assignment anyway (you'll have
+> to update the references with asm operands accordingly of course).
+>
+>   Have you verified that code produced by GCC remains the same with your
+> change in place as it used to be up to commit 198688edbf77?  I can see no
+> such information in the commit description whether here or in the said
+> commit.
+>
+>    Maciej
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: add changes suggested by Stephen Boyd
+Hi Maciej,
 
- drivers/clk/bcm/Kconfig              |   9 ++
- drivers/clk/bcm/Makefile             |   1 +
- drivers/clk/bcm/clk-bcm63268-timer.c | 231 +++++++++++++++++++++++++++
- 3 files changed, 241 insertions(+)
- create mode 100644 drivers/clk/bcm/clk-bcm63268-timer.c
+Thanks for your reply.
 
-diff --git a/drivers/clk/bcm/Kconfig b/drivers/clk/bcm/Kconfig
-index ec738f74a026..952c3b6ff71a 100644
---- a/drivers/clk/bcm/Kconfig
-+++ b/drivers/clk/bcm/Kconfig
-@@ -37,6 +37,15 @@ config CLK_BCM_63XX_GATE
- 	  Enable common clock framework support for Broadcom BCM63xx DSL SoCs
- 	  based on the MIPS architecture
- 
-+config CLK_BCM63268_TIMER
-+	bool "Broadcom BCM63268 timer clock and reset support"
-+	depends on BMIPS_GENERIC || COMPILE_TEST
-+	default BMIPS_GENERIC
-+	select RESET_CONTROLLER
-+	help
-+	  Enable timer clock and reset support for Broadcom BCM63268 DSL SoCs
-+	  based on the MIPS architecture.
-+
- config CLK_BCM_KONA
- 	bool "Broadcom Kona CCU clock support"
- 	depends on ARCH_BCM_MOBILE || COMPILE_TEST
-diff --git a/drivers/clk/bcm/Makefile b/drivers/clk/bcm/Makefile
-index edb66b44cb27..d0b6f4b1fb08 100644
---- a/drivers/clk/bcm/Makefile
-+++ b/drivers/clk/bcm/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_CLK_BCM_63XX)	+= clk-bcm63xx.o
- obj-$(CONFIG_CLK_BCM_63XX_GATE)	+= clk-bcm63xx-gate.o
-+obj-$(CONFIG_CLK_BCM63268_TIMER) += clk-bcm63268-timer.o
- obj-$(CONFIG_CLK_BCM_KONA)	+= clk-kona.o
- obj-$(CONFIG_CLK_BCM_KONA)	+= clk-kona-setup.o
- obj-$(CONFIG_CLK_BCM_KONA)	+= clk-bcm281xx.o
-diff --git a/drivers/clk/bcm/clk-bcm63268-timer.c b/drivers/clk/bcm/clk-bcm63268-timer.c
-new file mode 100644
-index 000000000000..c86394b434ec
---- /dev/null
-+++ b/drivers/clk/bcm/clk-bcm63268-timer.c
-@@ -0,0 +1,231 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * BCM63268 Timer Clock and Reset Controller Driver
-+ *
-+ * Copyright (C) 2021 Álvaro Fernández Rojas <noltari@gmail.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/delay.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/reset-controller.h>
-+
-+#include <dt-bindings/clock/bcm63268-clock.h>
-+
-+#define BCM63268_TIMER_RESET_SLEEP_MIN_US	10000
-+#define BCM63268_TIMER_RESET_SLEEP_MAX_US	20000
-+
-+struct bcm63268_tclkrst_hw {
-+	void __iomem *regs;
-+	spinlock_t lock;
-+
-+	struct reset_controller_dev rcdev;
-+	struct clk_hw_onecell_data data;
-+};
-+
-+struct bcm63268_tclk_table_entry {
-+	const char * const name;
-+	u8 bit;
-+};
-+
-+static const struct bcm63268_tclk_table_entry bcm63268_timer_clocks[] = {
-+	{
-+		.name = "ephy1",
-+		.bit = BCM63268_TCLK_EPHY1,
-+	}, {
-+		.name = "ephy2",
-+		.bit = BCM63268_TCLK_EPHY2,
-+	}, {
-+		.name = "ephy3",
-+		.bit = BCM63268_TCLK_EPHY3,
-+	}, {
-+		.name = "gphy1",
-+		.bit = BCM63268_TCLK_GPHY1,
-+	}, {
-+		.name = "dsl",
-+		.bit = BCM63268_TCLK_DSL,
-+	}, {
-+		.name = "wakeon_ephy",
-+		.bit = BCM63268_TCLK_WAKEON_EPHY,
-+	}, {
-+		.name = "wakeon_dsl",
-+		.bit = BCM63268_TCLK_WAKEON_DSL,
-+	}, {
-+		.name = "fap1_pll",
-+		.bit = BCM63268_TCLK_FAP1,
-+	}, {
-+		.name = "fap2_pll",
-+		.bit = BCM63268_TCLK_FAP2,
-+	}, {
-+		.name = "uto_50",
-+		.bit = BCM63268_TCLK_UTO_50,
-+	}, {
-+		.name = "uto_extin",
-+		.bit = BCM63268_TCLK_UTO_EXTIN,
-+	}, {
-+		.name = "usb_ref",
-+		.bit = BCM63268_TCLK_USB_REF,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static inline struct bcm63268_tclkrst_hw *
-+to_bcm63268_timer_reset(struct reset_controller_dev *rcdev)
-+{
-+	return container_of(rcdev, struct bcm63268_tclkrst_hw, rcdev);
-+}
-+
-+static int bcm63268_timer_reset_update(struct reset_controller_dev *rcdev,
-+				unsigned long id, bool assert)
-+{
-+	struct bcm63268_tclkrst_hw *reset = to_bcm63268_timer_reset(rcdev);
-+	unsigned long flags;
-+	uint32_t val;
-+
-+	spin_lock_irqsave(&reset->lock, flags);
-+	val = __raw_readl(reset->regs);
-+	if (assert)
-+		val &= ~BIT(id);
-+	else
-+		val |= BIT(id);
-+	__raw_writel(val, reset->regs);
-+	spin_unlock_irqrestore(&reset->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int bcm63268_timer_reset_assert(struct reset_controller_dev *rcdev,
-+				unsigned long id)
-+{
-+	return bcm63268_timer_reset_update(rcdev, id, true);
-+}
-+
-+static int bcm63268_timer_reset_deassert(struct reset_controller_dev *rcdev,
-+				  unsigned long id)
-+{
-+	return bcm63268_timer_reset_update(rcdev, id, false);
-+}
-+
-+static int bcm63268_timer_reset_reset(struct reset_controller_dev *rcdev,
-+			       unsigned long id)
-+{
-+	bcm63268_timer_reset_update(rcdev, id, true);
-+	usleep_range(BCM63268_TIMER_RESET_SLEEP_MIN_US,
-+		     BCM63268_TIMER_RESET_SLEEP_MAX_US);
-+
-+	bcm63268_timer_reset_update(rcdev, id, false);
-+	/*
-+	 * Ensure component is taken out reset state by sleeping also after
-+	 * deasserting the reset. Otherwise, the component may not be ready
-+	 * for operation.
-+	 */
-+	usleep_range(BCM63268_TIMER_RESET_SLEEP_MIN_US,
-+		     BCM63268_TIMER_RESET_SLEEP_MAX_US);
-+
-+	return 0;
-+}
-+
-+static int bcm63268_timer_reset_status(struct reset_controller_dev *rcdev,
-+				unsigned long id)
-+{
-+	struct bcm63268_tclkrst_hw *reset = to_bcm63268_timer_reset(rcdev);
-+
-+	return !(__raw_readl(reset->regs) & BIT(id));
-+}
-+
-+static struct reset_control_ops bcm63268_timer_reset_ops = {
-+	.assert = bcm63268_timer_reset_assert,
-+	.deassert = bcm63268_timer_reset_deassert,
-+	.reset = bcm63268_timer_reset_reset,
-+	.status = bcm63268_timer_reset_status,
-+};
-+
-+static int bcm63268_tclk_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct bcm63268_tclk_table_entry *entry, *table;
-+	struct bcm63268_tclkrst_hw *hw;
-+	struct clk_hw *clk;
-+	u8 maxbit = 0;
-+	int i, ret;
-+
-+	table = of_device_get_match_data(dev);
-+	if (!table)
-+		return -EINVAL;
-+
-+	for (entry = table; entry->name; entry++)
-+		maxbit = max(maxbit, entry->bit);
-+	maxbit++;
-+
-+	hw = devm_kzalloc(&pdev->dev, struct_size(hw, data.hws, maxbit),
-+			  GFP_KERNEL);
-+	if (!hw)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, hw);
-+
-+	spin_lock_init(&hw->lock);
-+
-+	hw->data.num = maxbit;
-+	for (i = 0; i < maxbit; i++)
-+		hw->data.hws[i] = ERR_PTR(-ENODEV);
-+
-+	hw->regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(hw->regs))
-+		return PTR_ERR(hw->regs);
-+
-+	for (entry = table; entry->name; entry++) {
-+		clk = clk_hw_register_gate(dev, entry->name, NULL, 0,
-+					   hw->regs, entry->bit,
-+					   CLK_GATE_BIG_ENDIAN, &hw->lock);
-+		if (IS_ERR(clk)) {
-+			ret = PTR_ERR(clk);
-+			goto out_err;
-+		}
-+
-+		hw->data.hws[entry->bit] = clk;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
-+					  &hw->data);
-+	if (ret)
-+		return ret;
-+
-+	hw->rcdev.of_node = dev->of_node;
-+	hw->rcdev.ops = &bcm63268_timer_reset_ops;
-+
-+	ret = devm_reset_controller_register(dev, &hw->rcdev);
-+	if (ret)
-+		dev_err(dev, "Failed to register reset controller\n");
-+
-+	return 0;
-+
-+out_err:
-+	for (i = 0; i < hw->data.num; i++) {
-+		if (!IS_ERR(hw->data.hws[i]))
-+			clk_hw_unregister_gate(hw->data.hws[i]);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bcm63268_tclk_dt_ids[] = {
-+	{
-+		.compatible = "brcm,bcm63268-timer-clocks",
-+		.data = &bcm63268_timer_clocks,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static struct platform_driver bcm63268_tclk = {
-+	.probe = bcm63268_tclk_probe,
-+	.driver = {
-+		.name = "bcm63268-timer-clock",
-+		.of_match_table = bcm63268_tclk_dt_ids,
-+	},
-+};
-+builtin_platform_driver(bcm63268_tclk);
--- 
-2.20.1
+gcc --version
+gcc (Debian 10.2.1-6) 10.2.1 20210110
+
+net/ipv4/tcp_ipv4.c
+tcp_v4_send_reset()
+   csum_tcpudp_nofold()
+
+objdump -d vmlinux > vmlinux.dump
+
+(1) Before commit 198688edbf77
+("MIPS: Fix inline asm input/output type mismatch in checksum.h used 
+with Clang"):
+
+ffffffff80aa835c:       00004025        move    a4,zero
+ffffffff80aa8360:       92020012        lbu     v0,18(s0)
+ffffffff80aa8364:       de140030        ld      s4,48(s0)
+ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
+ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
+ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
+ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
+ffffffff80aa8378:       afa70038        sw      a3,56(sp)
+ffffffff80aa837c:       24071a00        li      a3,6656
+ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
+ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
+ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
+ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
+ffffffff80aa8390:       0081202d        daddu   a0,a0,at
+ffffffff80aa8394:       0081082b        sltu    at,a0,at
+ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
+ffffffff80aa839c:       00812021        addu    a0,a0,at
+
+(2) After commit 198688edbf77
+("MIPS: Fix inline asm input/output type mismatch in checksum.h used 
+with Clang"):
+
+ffffffff80aa836c:       00004025        move    a4,zero
+ffffffff80aa8370:       92040012        lbu     a0,18(s0)
+ffffffff80aa8374:       de140030        ld      s4,48(s0)
+ffffffff80aa8378:       0062182d        daddu   v1,v1,v0
+ffffffff80aa837c:       308400ff        andi    a0,a0,0xff
+ffffffff80aa8380:       9c62000c        lwu     v0,12(v1)
+ffffffff80aa8384:       9c660010        lwu     a2,16(v1)
+ffffffff80aa8388:       afa70038        sw      a3,56(sp)
+ffffffff80aa838c:       24071a00        li      a3,6656
+ffffffff80aa8390:       0046102d        daddu   v0,v0,a2
+ffffffff80aa8394:       0047102d        daddu   v0,v0,a3
+ffffffff80aa8398:       0048102d        daddu   v0,v0,a4
+ffffffff80aa839c:       0002083c        dsll32  at,v0,0x0
+ffffffff80aa83a0:       0041102d        daddu   v0,v0,at
+ffffffff80aa83a4:       0041082b        sltu    at,v0,at
+ffffffff80aa83a8:       0002103f        dsra32  v0,v0,0x0
+ffffffff80aa83ac:       00411021        addu    v0,v0,at
+
+(3) With this patch:
+
+ffffffff80aa835c:       00004025        move    a4,zero
+ffffffff80aa8360:       92020012        lbu     v0,18(s0)
+ffffffff80aa8364:       de140030        ld      s4,48(s0)
+ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
+ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
+ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
+ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
+ffffffff80aa8378:       afa70038        sw      a3,56(sp)
+ffffffff80aa837c:       24071a00        li      a3,6656
+ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
+ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
+ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
+ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
+ffffffff80aa8390:       0081202d        daddu   a0,a0,at
+ffffffff80aa8394:       0081082b        sltu    at,a0,at
+ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
+ffffffff80aa839c:       00812021        addu    a0,a0,at
+
+(4) With the following changes based on commit 198688edbf77
+("MIPS: Fix inline asm input/output type mismatch in checksum.h used 
+with Clang"):
+
+diff --git a/arch/mips/include/asm/checksum.h 
+b/arch/mips/include/asm/checksum.h
+index 1e6c135..e1f80407 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -130,7 +130,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 
+saddr, __be32 daddr,
+                      __u32 len, __u8 proto,
+                      __wsum sum)
+  {
++#ifdef __clang__
+      unsigned long tmp = (__force unsigned long)sum;
++#else
++    __wsum tmp = sum;
++#endif
+
+      __asm__(
+      "    .set    push        # csum_tcpudp_nofold\n"
+
+ffffffff80aa835c:       00004025        move    a4,zero
+ffffffff80aa8360:       92020012        lbu     v0,18(s0)
+ffffffff80aa8364:       de140030        ld      s4,48(s0)
+ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
+ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
+ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
+ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
+ffffffff80aa8378:       afa70038        sw      a3,56(sp)
+ffffffff80aa837c:       24071a00        li      a3,6656
+ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
+ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
+ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
+ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
+ffffffff80aa8390:       0081202d        daddu   a0,a0,at
+ffffffff80aa8394:       0081082b        sltu    at,a0,at
+ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
+ffffffff80aa839c:       00812021        addu    a0,a0,at
+
+The code produced by GCC remains the same between (1), (3) and (4),
+the last changes looks like better (with less changes based on commit
+198688edbf77), so I will send v3 later.
+
+Thanks,
+Tiezhu
 
