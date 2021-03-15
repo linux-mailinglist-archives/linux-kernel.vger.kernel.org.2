@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B8B33B1C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAAB33B1CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCOLw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
+        id S229775AbhCOLzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhCOLwQ (ORCPT
+        with ESMTP id S229754AbhCOLy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:52:16 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274C1C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:52:16 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id n79so31264355qke.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:52:16 -0700 (PDT)
+        Mon, 15 Mar 2021 07:54:59 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3E5C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:54:59 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id u4so15850062ljo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32TvfxSkzYWhVmQkeQkwenaCMad2tF6b4G0jVDrs/a4=;
-        b=ALfTs7zBGQzj2IMrYgNcHtnpLmGTXDRfaQxZeu/odl7eyYeCFi0V4NJ2x+y2LuA/uz
-         ph/729wVQpd0FYg5hUL/S5JpkzzIIbXewyEbvTpYCTaOondRqIV/FlqJJHPMNzO38S0Q
-         uJIkZ/5XeFOaFuwSu0wnZUFE2kxWowkZVUzuVr6UYgHHX97qT7+D5GZ74lpqhG97Y0Iu
-         QuRRiUBPJqd3xTswAwvv0dz/KN7xZuyVta1zyH76bJzIgh6+tWMhlBeBOyQEjnQz6oGu
-         Lfa9LATToyUKerCBNO7M5foMGA1o0zbY18S+cyGiuV4dLDY5SS1PphobALB7tG2TshM+
-         ifrw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TCKES4KspyjNo/wG6JlZwaabmOGw2Jey0GicXPV904o=;
+        b=QofG4+vX6fm1lS8Ti+Sc8uYu9K3mrAW/Zt51ntjHYb7oPYBEuUa71SJMW6Ix65YfHf
+         h6Rm2mkTYqfNHKZ63Wub4y/6rJxNGW4xwmcCNRbzKugLnrgiuDJEgNHFSktztrcSMzPh
+         wAV+TvvaV1AOZNYHNLrh3/M/iFG76m88mZied3mCZoXjYAZleUbSq0jKDWQOoUyoh8+C
+         ppMf6KNdOyBhWJr8W8V2O5SPmTfEb1wWRUQBVsD3tcQm/RNNemAqj9EFTS5MlCOzR/mE
+         x4lUP098Rcwiru++abTAX+uLsKMIuunUctiLmlUfWO+oqBWRGLVfdcbKQO6SK1XUinXY
+         OVOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32TvfxSkzYWhVmQkeQkwenaCMad2tF6b4G0jVDrs/a4=;
-        b=Rpkx0LiMcIj4Ti6Bfzb/+0hSmWW+aFhvfJ98RMjqqPKQlQAFTQ4Xop+DHCYtxgB5El
-         4UZY1k4JsyJks+hEoNSxccPrdV4CswRrldK4VsvgPBDztJA4Cr3ALzFIOak0W13XGT7z
-         yy2eUJewoQpBlAh4Tj/LMw/A+Nurx93vRXzYUADtjZdm6Ai8Pg4B2WLOM8CiUp2nUxHN
-         fV6c8AisMgRLlGytyBFdtDWtcsBVYTChFNPb+YdQGyYUyT9UbWN3Z7yZ5kBV51UqLzby
-         /TlBTKilPRda4PvVbV0apiJeP/DIwkszXdJb0CMDb9pLuCL35b4xbH/3PB+9BE2e2XYk
-         NNaA==
-X-Gm-Message-State: AOAM5333ITz/c2i50mzfz82+xihEd1dqD7w+UqVuvEV70PqiyfymiHYY
-        49OflOx1l2ZRDkxOwb3wkd+/8ymDw4AGJY4ORREl/Q==
-X-Google-Smtp-Source: ABdhPJyTiP3VZRD2+BkeloNDqEutijd0tcaoS2gge3f4Ric1U/h+BWCA5c0B+z0nk79PDPEdKLh0VUeNxtwNGc7korU=
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr23826304qkx.501.1615809134984;
- Mon, 15 Mar 2021 04:52:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TCKES4KspyjNo/wG6JlZwaabmOGw2Jey0GicXPV904o=;
+        b=oEg2DXawdaXeU9gDZh5+vHPHODwO7HT4ZOnZDBlTJs+PjhjgBj55IzEaMLE6TG2z85
+         b62KAyxhTNpZ+mceV447b1dV677LdsSVofiVLmqkK3ng9jAqbktib2tkdKLkXzzOWc/m
+         2ybzvzvP9R/hvCT0mUK119R6Dc5lX8ZxZBdvxj4J/R1XP2DL/InK/yNn/81A3XGp3KX8
+         a05GGm+nuWAARpGRZXt3K6BKKL8CMqJf4vn/uc3P3LxC6JRPpnrKQm5RMUUZEgCWE3fJ
+         r55XXcdYc/0tuTwWMA6IeZizdlG/wI8FH5Lf/pKBfe4ytnAjyJcc89rtgjeGYQK7WLYG
+         CtAg==
+X-Gm-Message-State: AOAM530EEtNSMXRwsxrV6Ba3skE90VGLhubpjEZd+Q4PbCAZu/uDOcBu
+        NSBCFSjy++aLBS/XR0AeJs6RN5qV/KCU3Q==
+X-Google-Smtp-Source: ABdhPJxskvGqVCaD7c5cQLEXx7onYddRtZr2Vrf4cuw2WNFh8fiISy6s9e81NVnbHcCvTGkhNlNV2g==
+X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr10494828ljj.116.1615809297641;
+        Mon, 15 Mar 2021 04:54:57 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id 200sm2688793lfl.2.2021.03.15.04.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 04:54:57 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 40B4A10246E; Mon, 15 Mar 2021 14:55:01 +0300 (+03)
+Date:   Mon, 15 Mar 2021 14:55:01 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 00/25] Page folios
+Message-ID: <20210315115501.7rmzaan2hxsqowgq@box>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
+ <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
 MIME-Version: 1.0
-References: <00000000000096cdaa05bd32d46f@google.com> <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
- <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
- <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com> <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk>
-In-Reply-To: <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 15 Mar 2021 12:52:03 +0100
-Message-ID: <CACT4Y+a1pQ96UWEB3pAnbxPZ+6jW2tqSzkTMqJ+XSbZsKLHgAw@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 12:30 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->
-> On 14/03/2021 11:03, Dmitry Vyukov wrote:
-> > On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >>> On Wed, Mar 10, 2021 at 7:28 PM syzbot
-> >>> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
-> >>>>
-> >>>> Hello,
-> >>>>
-> >>>> syzbot found the following issue on:
-> >>>>
-> >>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> >>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
-> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
-> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
-> >>>> userspace arch: riscv64
-> >>>>
-> >>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>>
-> >>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>>> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
-> >>>
-> >>> +riscv maintainers
-> >>>
-> >>> Another case of put_user crashing.
-> >>
-> >> There are 58 crashes in sock_ioctl already. Somehow there is a very
-> >> significant skew towards crashing with this "user memory without
-> >> uaccess routines" in schedule_tail and sock_ioctl of all places in the
-> >> kernel that use put_user... This looks very strange... Any ideas
-> >> what's special about these 2 locations?
-> >
-> > I could imagine if such a crash happens after a previous stack
-> > overflow and now task data structures are corrupted. But f_getown does
-> > not look like a function that consumes way more than other kernel
-> > syscalls...
->
-> The last crash I looked at suggested somehow put_user got re-entered
-> with the user protection turned back on. Either there is a path through
-> one of the kernel handlers where this happens or there's something
-> weird going on with qemu.
+On Sat, Mar 13, 2021 at 07:09:01PM -0800, Hugh Dickins wrote:
+> On Sat, 13 Mar 2021, Andrew Morton wrote:
+> > On Fri,  5 Mar 2021 04:18:36 +0000 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+> > 
+> > > Our type system does not currently distinguish between tail pages and
+> > > head or single pages.  This is a problem because we call compound_head()
+> > > multiple times (and the compiler cannot optimise it out), bloating the
+> > > kernel.  It also makes programming hard as it is often unclear whether
+> > > a function operates on an individual page, or an entire compound page.
+> > > 
+> > > This patch series introduces the struct folio, which is a type that
+> > > represents an entire compound page.  This initial set reduces the kernel
+> > > size by approximately 6kB, although its real purpose is adding
+> > > infrastructure to enable further use of the folio.
+> > 
+> > Geeze it's a lot of noise.  More things to remember and we'll forever
+> > have a mismash of `page' and `folio' and code everywhere converting
+> > from one to the other.  Ongoing addition of folio
+> > accessors/manipulators to overlay the existing page
+> > accessors/manipulators, etc.
+> > 
+> > It's unclear to me that it's all really worth it.  What feedback have
+> > you seen from others?
+> 
+> My own feeling and feedback have been much like yours.
+> 
+> I don't get very excited by type safety at this level; and although
+> I protested back when all those compound_head()s got tucked into the
+> *PageFlag() functions, the text size increase was not very much, and
+> I never noticed any adverse performance reports.
+> 
+> To me, it's distraction, churn and friction, ongoing for years; but
+> that's just me, and I'm resigned to the possibility that it will go in.
+> Matthew is not alone in wanting to pursue it: let others speak.
 
-Is there any kind of tracking/reporting that would help to localize
-it? I could re-reproduce with that code.
+I'm with Matthew on this. I would really want to drop the number of places
+where we call compoud_head(). I hope we can get rid of the page flag
+policy hack I made.
 
-> I'll be trying to get this run up on real hardware this week, the nvme
-> with my debian install died last week so I have to go and re-install
-> the machine to get development work done on it.
->
-> --
-> Ben Dooks                               http://www.codethink.co.uk/
-> Senior Engineer                         Codethink - Providing Genius
->
-> https://www.codethink.co.uk/privacy.html
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/ed89390a-91e1-320a-fae5-27b7f3a20424%40codethink.co.uk.
+-- 
+ Kirill A. Shutemov
