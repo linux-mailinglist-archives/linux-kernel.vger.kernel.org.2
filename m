@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6B033BB1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99C633BB6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236055AbhCOOMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S231596AbhCOOQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232351AbhCON62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA13B64F18;
-        Mon, 15 Mar 2021 13:58:25 +0000 (UTC)
+        id S232660AbhCON71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5F1964EEC;
+        Mon, 15 Mar 2021 13:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816706;
-        bh=3bTbJriGyVpXBp0f/r1CFonGIIs07A4ZzRZa71rgZ4Q=;
+        s=korg; t=1615816742;
+        bh=fzv0hS2tpRP+IvjwmV+vVbY3kcM+z5Dwz+AHRVWSx+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YNuE8vWvvJtUyeHQ6WJYzQ9MipntqWsRYsr/T6V5CFRVNGyZKMoCldl5KxXvIguGo
-         XCEsutarcpc+5TUbsDSUlR8iByc2LA+nVt5w/TJOhLcOV1lxlZc2wDuUEozhAYLiDJ
-         kZJWR/ZrVmVot5o01uSfjjZbBcvRllzZOTHjDc9Y=
+        b=HqkNfhkU8EO+fKW4FVt3cOrSR0B6j/pS6UsaN0ZTzzsqt1tg/CbDj3zyQ8qpVrnZ7
+         caYrU8noCauBjPwz85w4el1VVmLKDzfaVwd108XoCX3GcSy8t6k5dAMwgm+b8Kll4a
+         nUXOsjp8nVfsJBeLcn45+XKA6B+LdbX/+IT52FFY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 067/290] net: stmmac: fix watchdog timeout during suspend/resume stress test
+        stable@vger.kernel.org,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 097/306] drm/amd/display: Add a backlight module option
 Date:   Mon, 15 Mar 2021 14:52:40 +0100
-Message-Id: <20210315135544.173287463@linuxfoundation.org>
+Message-Id: <20210315135510.936504116@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +43,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit c511819d138de38e1637eedb645c207e09680d0f upstream.
+commit 7a46f05e5e163c00e41892e671294286e53fe15c upstream.
 
-stmmac_xmit() call stmmac_tx_timer_arm() at the end to modify tx timer to
-do the transmission cleanup work. Imagine such a situation, stmmac enters
-suspend immediately after tx timer modified, it's expire callback
-stmmac_tx_clean() would not be invoked. This could affect BQL, since
-netdev_tx_sent_queue() has been called, but netdev_tx_completed_queue()
-have not been involved, as a result, dql_avail(&dev_queue->dql) finally
-always return a negative value.
+There seem devices that don't work with the aux channel backlight
+control.  For allowing such users to test with the other backlight
+control method, provide a new module option, aux_backlight, to specify
+enabling or disabling the aux backport support explicitly.  As
+default, the aux support is detected by the hardware capability.
 
-__dev_queue_xmit->__dev_xmit_skb->qdisc_run->__qdisc_run->qdisc_restart->dequeue_skb:
-	if ((q->flags & TCQ_F_ONETXQUEUE) &&
-		netif_xmit_frozen_or_stopped(txq)) // __QUEUE_STATE_STACK_XOFF is set
+v2: make the backlight option generic in case we add future
+backlight types (Alex)
 
-Net core will stop transmitting any more. Finillay, net watchdong would timeout.
-To fix this issue, we should call netdev_tx_reset_queue() in stmmac_resume().
-
-Fixes: 54139cf3bb33 ("net: stmmac: adding multiple buffers for rx")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1180749
+BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1438
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h               |    1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c           |    4 ++++
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    5 +++++
+ 3 files changed, 10 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5230,6 +5230,8 @@ static void stmmac_reset_queues_param(st
- 		tx_q->cur_tx = 0;
- 		tx_q->dirty_tx = 0;
- 		tx_q->mss = 0;
-+
-+		netdev_tx_reset_queue(netdev_get_tx_queue(priv->dev, queue));
- 	}
- }
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -179,6 +179,7 @@ extern uint amdgpu_smu_memory_pool_size;
+ extern uint amdgpu_dc_feature_mask;
+ extern uint amdgpu_dc_debug_mask;
+ extern uint amdgpu_dm_abm_level;
++extern int amdgpu_backlight;
+ extern struct amdgpu_mgpu_info mgpu_info;
+ extern int amdgpu_ras_enable;
+ extern uint amdgpu_ras_mask;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -777,6 +777,10 @@ uint amdgpu_dm_abm_level;
+ MODULE_PARM_DESC(abmlevel, "ABM level (0 = off (default), 1-4 = backlight reduction level) ");
+ module_param_named(abmlevel, amdgpu_dm_abm_level, uint, 0444);
  
++int amdgpu_backlight = -1;
++MODULE_PARM_DESC(backlight, "Backlight control (0 = pwm, 1 = aux, -1 auto (default))");
++module_param_named(backlight, amdgpu_backlight, bint, 0444);
++
+ /**
+  * DOC: tmz (int)
+  * Trusted Memory Zone (TMZ) is a method to protect data being written
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -2209,6 +2209,11 @@ static void update_connector_ext_caps(st
+ 	    caps->ext_caps->bits.hdr_aux_backlight_control == 1)
+ 		caps->aux_support = true;
+ 
++	if (amdgpu_backlight == 0)
++		caps->aux_support = false;
++	else if (amdgpu_backlight == 1)
++		caps->aux_support = true;
++
+ 	/* From the specification (CTA-861-G), for calculating the maximum
+ 	 * luminance we need to use:
+ 	 *	Luminance = 50*2**(CV/32)
 
 
