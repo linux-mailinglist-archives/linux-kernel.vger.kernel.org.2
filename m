@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399C333C68E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2C933C67E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhCOTKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        id S233172AbhCOTJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhCOTKN (ORCPT
+        with ESMTP id S233252AbhCOTJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:10:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC23C06174A;
-        Mon, 15 Mar 2021 12:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mkpF9omMUUFgPhO7wM2oolIv2L3IwnCTiRJGLYj/QNo=; b=m+fRbbsfcHaiqSu+dUQambcli/
-        ayhSDuAmTMfgav8aX4P6JUjk2UJMjfrhSSVInwiDYtTmQxyp2LuXKNZkV09fswCHEPBjWuSH3bA2m
-        kw7a7sJDLRbm+EJ7comRFCaOHYRkn3XUtgaY3jrPctWZMWbE6z59Ix5nvs/L/ynPTX2t4sHtWqZBn
-        hEYBcI24VItDXo8c6KddZqLKi1r1xMhVm0hS6T0LGrd+xXaVwZs/YJooBaLz9fsWlCJJHQCdDGjNU
-        suEBhlzf3181euFSUmfd2uuXPNZDjtfp5u99R441myZp9pbxLsVwgWZXhpZFuh7klOeWsPWIRHnZF
-        J5kENouA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLsaO-000dXn-R4; Mon, 15 Mar 2021 19:09:09 +0000
-Date:   Mon, 15 Mar 2021 19:09:04 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 00/25] Page folios
-Message-ID: <20210315190904.GB150808@infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
- <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
- <20210315115501.7rmzaan2hxsqowgq@box>
- <YE9VLGl50hLIJHci@dhcp22.suse.cz>
+        Mon, 15 Mar 2021 15:09:09 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49B8C06174A;
+        Mon, 15 Mar 2021 12:09:09 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 73C642E5;
+        Mon, 15 Mar 2021 19:09:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 73C642E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615835349; bh=ZBSsbD4nkj2DS/6nUad/j7rTlC6FlsoysMDBIJcrd0c=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=On8cL7vYDBmXsZk2kWSMNnrdDh9uLFBwPQFYGp3G1tTLVqrKCdXyhMygHDVyX4/EL
+         vliRR9mGiyUcUL5KgkSMV40hQexxySJywNh0exJejC4RbBRVtfhFa+1mh/QxteX4Nf
+         wYfoZMrUr7S3eywZ5hQNOrWEwfXZv1BUECZCQ1JBuitEdpVNqTjqlIflfzyHHc/JDm
+         j9gJXGGShpF9cTasPpP5ylT6WuFsBQdbvQwfCp8RFKeiPYLyCtLM3LgSstk5jZz+QA
+         CsGs1kCyUL8ipBTcJLvtFAKRZXZ0KywB5OeZv5PfkMuwicAlm423kvhNkwNNyd5x56
+         K4Vw96ULMSUVA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Wu XiangCheng <bobwxc@email.cn>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH] docs/zh_CN: fix original link unknown document warning
+In-Reply-To: <20210310083335.GA17722@mipc>
+References: <20210310142019.27b9aa7b@canb.auug.org.au>
+ <20210310083335.GA17722@mipc>
+Date:   Mon, 15 Mar 2021 13:09:08 -0600
+Message-ID: <87eegg2q0b.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE9VLGl50hLIJHci@dhcp22.suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:38:04PM +0100, Michal Hocko wrote:
-> I tend to agree here as well. The level compoud_head has spread out
-> silently is just too large. There are people coming up with all sorts of
-> optimizations to workaround that, and they are quite right that this is
-> somehing worth doing, but last attempts I have seen were very focused on
-> specific page flags handling which is imho worse wrt maintainability
-> than a higher level and type safe abstraction. I find it quite nice that
-> this doesn't really have to be a flag day conversion but it can be done
-> incrementally.
-> 
-> I didn't get review the series yet and I cannot really promise anything
-> but from what I understand the conversion should be pretty
-> straightforward, albeit noisy.
-> 
-> One thing that was really strange to me when seeing the concept for the
-> first time was the choice of naming (no I do not want to start any
-> bikeshedding) because it hasn't really resonated with the udnerlying
-> concept. Maybe just me as a non native speaker... page_head would have
-> been so much more straightforward but not something I really care about.
+Wu XiangCheng <bobwxc@email.cn> writes:
 
-That pretty much summarizes my opinion as well.  I'll need to find some
-time to review the series as well.
+> fix original link unknown document warning in zh_CN/admin-guide/README.rst
+> and admin-guide/unicode.rst which introduced by commit:
+>
+>   550c8399d017 ("docs/zh_CN: Add zh_CN/admin-guide/README.rst")
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
+> ---
+> Sorry for the inconvenience. This is a fix patch. 
+> Or I could re-submit the two original patches if you need.
+>
+>  Documentation/translations/zh_CN/admin-guide/README.rst  | 2 +-
+>  Documentation/translations/zh_CN/admin-guide/unicode.rst | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/translations/zh_CN/admin-guide/README.rst b/Documentation/translations/zh_CN/admin-guide/README.rst
+> index 939aee115e48..99b708a416d8 100644
+> --- a/Documentation/translations/zh_CN/admin-guide/README.rst
+> +++ b/Documentation/translations/zh_CN/admin-guide/README.rst
+> @@ -1,6 +1,6 @@
+>  .. include:: ../disclaimer-zh_CN.rst
+>  
+> -:Original: :ref:`Documentation/admin-guide/README.rst <Linux kernel release 5.x>`
+> +:Original: :doc:`../../../admin-guide/README`
+
+It seems even better to just let automarkup do its thing:
+
+	:Original: Documentation/admin-guide/README.rst
+
+I'll just put in a quick fix along those lines.
+
+Thanks,
+
+jon
