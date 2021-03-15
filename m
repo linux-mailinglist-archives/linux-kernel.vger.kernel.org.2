@@ -2,425 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A825733AC4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820BD33AC51
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCOHbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhCOHbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:31:08 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B964FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:31:07 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n132so32340232iod.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=AXYsZAX7PpcIGgFpuxdfD/j2PUKZqkGWIvpgQ9Y2MAQ=;
-        b=IskZuM9TZ4GJfB47r/hYMBk7NlVbaU2Hn4gZYxnDExtA2heCa/DNQtvdXSD22/8T/a
-         zn0XHe+EUYx05M3BJxir/+XOx3ygU8Cp0ovY9ECkrHuR53PdD3pgtZkVqTgfgLRvbjoT
-         PATWAzQiJqoMV2ru5w/bnwRTYfE4QB5eJM/3w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=AXYsZAX7PpcIGgFpuxdfD/j2PUKZqkGWIvpgQ9Y2MAQ=;
-        b=VJIAHtIuidSypknkyv4b2u7hRRYgMerX5vrD0yP3T7pNEu7E9lMmvt4CXaN90xsT8s
-         VSrbpzdoPHD2vLFgMnDxPwH8/7XFLH0FTY5OttE5KlXHpQSk3DKKYV1zwarZF0tg56Aw
-         DKYAZLNolWSoAiaYv+8CSEaX2pYmgPpieRmazVOg4f2ERLHuXOg+swYwdS20Pxed+FzV
-         VNxaNAVbAjbrPlSMG1zsNvu7WoiLBIuHK9MGKilu6oDQ0yfizJKuQlhNJMpf7LEs40eu
-         JLPW2DAFnG2PV20aCsTVyTcfnfakqUOp/xzMeSqPD77kZNddj7kwmVfDnGOqDREudo+R
-         O8lQ==
-X-Gm-Message-State: AOAM530xh9jxK6/ALmrZNR/LpaJs3F0S6BPZ2Gk8Iqpk9FYRHFofF6li
-        X234woJrCtaYB5yqN1gPyJhmV/oknhgKjg==
-X-Google-Smtp-Source: ABdhPJyhiXgZE+aQL6mITW9e7Lp5/2VmAjvOopKq+QUBNDYKbRJ46XFY6PO5hA9BQp4/FBdTboOVeQ==
-X-Received: by 2002:a05:6638:329e:: with SMTP id f30mr8452119jav.121.1615793466907;
-        Mon, 15 Mar 2021 00:31:06 -0700 (PDT)
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
-        by smtp.gmail.com with ESMTPSA id h2sm6357087ioj.30.2021.03.15.00.31.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 00:31:06 -0700 (PDT)
-Received: by mail-il1-f169.google.com with SMTP id f10so8435785ilq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:31:05 -0700 (PDT)
-X-Received: by 2002:a92:730a:: with SMTP id o10mr10837380ilc.160.1615793465408;
- Mon, 15 Mar 2021 00:31:05 -0700 (PDT)
+        id S229965AbhCOHdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:33:35 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:44275 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhCOHdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:33:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615793611; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZzoafUkXqTQ8SlY2qyEpLES8Y6LCpnSFPTpiNb51gqA=;
+ b=Avah+MVNnK2s0/dtNTux4GtWGp9sPvK5iyW+7UBOJa/lSp4Dv+oz4iax+sSDYQUJI1SqhZeN
+ Tsz2a3+B7xrVCMNW1q3Z3eOF5UmILNPG2QSVW2ujMXQdoGK4w/VKnJtCZx0IcNzy+acAd4rc
+ RHH7t/QxMZVeMw3UNH02XpKDDEY=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 604f0dc84db3bb68011745c5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 07:33:28
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B0A3EC433ED; Mon, 15 Mar 2021 07:33:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98232C433CA;
+        Mon, 15 Mar 2021 07:33:26 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210312235521.1408503-1-ribalda@chromium.org>
-In-Reply-To: <20210312235521.1408503-1-ribalda@chromium.org>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Mon, 15 Mar 2021 08:30:57 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvK8AD7RUYGN-7e1zH9cMGTqGnwn4fJ+ZfKtktuJC14Nw@mail.gmail.com>
-Message-ID: <CANiDSCvK8AD7RUYGN-7e1zH9cMGTqGnwn4fJ+ZfKtktuJC14Nw@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
-To:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 15:33:26 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
+In-Reply-To: <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-6-avri.altman@wdc.com>
+ <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
+Message-ID: <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph
+On 2021-03-15 12:02, Can Guo wrote:
+> On 2021-03-02 21:24, Avri Altman wrote:
+>> I host mode, the host is expected to send HPB-WRITE-BUFFER with
+>> buffer-id = 0x1 when it inactivates a region.
+>> 
+>> Use the map-requests pool as there is no point in assigning a
+>> designated cache for umap-requests.
+>> 
+>> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+>> ---
+>>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
+>>  drivers/scsi/ufs/ufshpb.h |  1 +
+>>  2 files changed, 15 insertions(+)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>> index 6f4fd22eaf2f..0744feb4d484 100644
+>> --- a/drivers/scsi/ufs/ufshpb.c
+>> +++ b/drivers/scsi/ufs/ufshpb.c
+>> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct 
+>> ufshpb_lu *hpb,
+>> 
+>>  	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
+>> 
+>> +	hpb->stats.umap_req_cnt++;
+>>  	return 0;
+>>  }
+>> 
+>> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct 
+>> ufshpb_lu *hpb,
+>>  	return -EAGAIN;
+>>  }
+>> 
+>> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
+>> +					struct ufshpb_region *rgn)
+>> +{
+>> +	return ufshpb_issue_umap_req(hpb, rgn);
+>> +}
+>> +
+>>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+>>  {
+>>  	return ufshpb_issue_umap_req(hpb, NULL);
+>> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct 
+>> ufshpb_lu *hpb,
+>>  	struct ufshpb_subregion *srgn;
+>>  	int srgn_idx;
+>> 
+>> +
+>> +	if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+> 
+> __ufshpb_evict_region() is called with rgn_state_lock held and IRQ 
+> disabled,
+> when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(), 
+> below
+> warning shall pop up every time, fix it?
+> 
+> void blk_execute_rq_nowait(struct request_queue *q, struct gendisk 
+> *bd_disk,
+> 		   struct request *rq, int at_head,
+> 			   rq_end_io_fn *done)
+> {
+> 	WARN_ON(irqs_disabled());
+> ...
+> 
 
-I guess you can merge this patch from your tree. I hope it is not too
-late in this release cycle.
+Moreover, since we are here with rgn_state_lock held and IRQ disabled,
+in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache, 
+GFP_KERNEL)
+has the GFP_KERNEL flag, scheduling while atomic???
 
-Have a great week!
+Can Guo.
 
-On Sat, Mar 13, 2021 at 12:55 AM Ricardo Ribalda <ribalda@chromium.org> wrote:
->
-> On architectures where there is no coherent caching such as ARM use the
-> dma_alloc_noncontiguous API and handle manually the cache flushing using
-> dma_sync_sgtable().
->
-> If the architechture has coherent cache, the API falls back to
-> alloc_dma_pages, so we can remove the coherent caching code-path from the
-> driver, making it simpler.
->
-> With this patch on the affected architectures we can measure up to 20x
-> performance improvement in uvc_video_copy_data_work().
->
-> Eg: aarch64 with an external usb camera
->
-> NON_CONTIGUOUS
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 67034480 : duration 33303
-> FPS: 29.99
-> URB: 523446/4993 uS/qty: 104.836 avg 132.532 std 13.230 min 831.094 max (uS)
-> header: 76564/4993 uS/qty: 15.334 avg 15.229 std 3.438 min 186.875 max (uS)
-> latency: 468945/4992 uS/qty: 93.939 avg 132.577 std 9.531 min 824.010 max (uS)
-> decode: 54161/4993 uS/qty: 10.847 avg 6.313 std 1.614 min 111.458 max (uS)
-> raw decode speed: 9.931 Gbits/s
-> raw URB handling speed: 1.025 Gbits/s
-> throughput: 16.102 Mbits/s
-> URB decode CPU usage 0.162600 %
->
-> COHERENT
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 54683536 : duration 33302
-> FPS: 29.99
-> URB: 1478135/4000 uS/qty: 369.533 avg 390.357 std 22.968 min 3337.865 max (uS)
-> header: 79761/4000 uS/qty: 19.940 avg 18.495 std 1.875 min 336.719 max (uS)
-> latency: 281077/4000 uS/qty: 70.269 avg 83.102 std 5.104 min 735.000 max (uS)
-> decode: 1197057/4000 uS/qty: 299.264 avg 318.080 std 1.615 min 2806.667 max (uS)
-> raw decode speed: 365.470 Mbits/s
-> raw URB handling speed: 295.986 Mbits/s
-> throughput: 13.136 Mbits/s
-> URB decode CPU usage 3.594500 %
->
-> In non-affected architectures we see no significant impact.
->
-> Eg: x86 with an external usb camera
->
-> NON_CONTIGUOUS
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 70179056 : duration 33301
-> FPS: 29.99
-> URB: 288901/4897 uS/qty: 58.995 avg 26.022 std 4.319 min 253.853 max (uS)
-> header: 54792/4897 uS/qty: 11.189 avg 6.218 std 0.620 min 61.750 max (uS)
-> latency: 236602/4897 uS/qty: 48.315 avg 24.244 std 1.764 min 240.924 max (uS)
-> decode: 52298/4897 uS/qty: 10.679 avg 8.299 std 1.638 min 108.861 max (uS)
-> raw decode speed: 10.796 Gbits/s
-> raw URB handling speed: 1.949 Gbits/s
-> throughput: 16.859 Mbits/s
-> URB decode CPU usage 0.157000 %
->
-> COHERENT
-> frames:  999
-> packets: 999
-> empty:   0 (0 %)
-> errors:  0
-> invalid: 0
-> pts: 0 early, 0 initial, 999 ok
-> scr: 0 count ok, 0 diff ok
-> sof: 2048 <= sof <= 0, freq 0.000 kHz
-> bytes 71818320 : duration 33301
-> FPS: 29.99
-> URB: 321021/5000 uS/qty: 64.204 avg 23.001 std 10.430 min 268.837 max (uS)
-> header: 54308/5000 uS/qty: 10.861 avg 5.104 std 0.778 min 54.736 max (uS)
-> latency: 268799/5000 uS/qty: 53.759 avg 21.827 std 6.095 min 255.153 max (uS)
-> decode: 52222/5000 uS/qty: 10.444 avg 7.137 std 1.874 min 71.103 max (uS)
-> raw decode speed: 11.048 Gbits/s
-> raw URB handling speed: 1.789 Gbits/s
-> throughput: 17.253 Mbits/s
-> URB decode CPU usage 0.156800 %
->
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->
-> Changelog from v3 (Thanks Laurent!):
->
-> - Rename stream_dir and stream_to_dmadev to avoid collisions
-> - Improve commit message
->
->  drivers/media/usb/uvc/uvc_video.c | 94 +++++++++++++++++++++++--------
->  drivers/media/usb/uvc/uvcvideo.h  |  5 +-
->  2 files changed, 73 insertions(+), 26 deletions(-)
->
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index f2f565281e63..cdd8eb500bb7 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -6,11 +6,14 @@
->   *          Laurent Pinchart (laurent.pinchart@ideasonboard.com)
->   */
->
-> +#include <linux/dma-mapping.h>
-> +#include <linux/highmem.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/usb.h>
-> +#include <linux/usb/hcd.h>
->  #include <linux/videodev2.h>
->  #include <linux/vmalloc.h>
->  #include <linux/wait.h>
-> @@ -1096,6 +1099,29 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
->         return data[0];
->  }
->
-> +static inline enum dma_data_direction uvc_stream_dir(
-> +                               struct uvc_streaming *stream)
-> +{
-> +       if (stream->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> +               return DMA_FROM_DEVICE;
-> +       else
-> +               return DMA_TO_DEVICE;
-> +}
-> +
-> +static inline struct device *uvc_stream_to_dmadev(struct uvc_streaming *stream)
-> +{
-> +       return bus_to_hcd(stream->dev->udev->bus)->self.sysdev;
-> +}
-> +
-> +static int uvc_submit_urb(struct uvc_urb *uvc_urb, gfp_t mem_flags)
-> +{
-> +       /* Sync DMA. */
-> +       dma_sync_sgtable_for_device(uvc_stream_to_dmadev(uvc_urb->stream),
-> +                                   uvc_urb->sgt,
-> +                                   uvc_stream_dir(uvc_urb->stream));
-> +       return usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
-> +}
-> +
->  /*
->   * uvc_video_decode_data_work: Asynchronous memcpy processing
->   *
-> @@ -1117,7 +1143,7 @@ static void uvc_video_copy_data_work(struct work_struct *work)
->                 uvc_queue_buffer_release(op->buf);
->         }
->
-> -       ret = usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
-> +       ret = uvc_submit_urb(uvc_urb, GFP_KERNEL);
->         if (ret < 0)
->                 dev_err(&uvc_urb->stream->intf->dev,
->                         "Failed to resubmit video URB (%d).\n", ret);
-> @@ -1537,6 +1563,12 @@ static void uvc_video_complete(struct urb *urb)
->         /* Re-initialise the URB async work. */
->         uvc_urb->async_operations = 0;
->
-> +       /* Sync DMA and invalidate vmap range. */
-> +       dma_sync_sgtable_for_cpu(uvc_stream_to_dmadev(uvc_urb->stream),
-> +                                uvc_urb->sgt, uvc_stream_dir(stream));
-> +       invalidate_kernel_vmap_range(uvc_urb->buffer,
-> +                                    uvc_urb->stream->urb_size);
-> +
->         /*
->          * Process the URB headers, and optionally queue expensive memcpy tasks
->          * to be deferred to a work queue.
-> @@ -1545,7 +1577,7 @@ static void uvc_video_complete(struct urb *urb)
->
->         /* If no async work is needed, resubmit the URB immediately. */
->         if (!uvc_urb->async_operations) {
-> -               ret = usb_submit_urb(uvc_urb->urb, GFP_ATOMIC);
-> +               ret = uvc_submit_urb(uvc_urb, GFP_ATOMIC);
->                 if (ret < 0)
->                         dev_err(&stream->intf->dev,
->                                 "Failed to resubmit video URB (%d).\n", ret);
-> @@ -1560,24 +1592,49 @@ static void uvc_video_complete(struct urb *urb)
->   */
->  static void uvc_free_urb_buffers(struct uvc_streaming *stream)
->  {
-> +       struct device *dma_dev = uvc_stream_to_dmadev(stream);
->         struct uvc_urb *uvc_urb;
->
->         for_each_uvc_urb(uvc_urb, stream) {
->                 if (!uvc_urb->buffer)
->                         continue;
->
-> -#ifndef CONFIG_DMA_NONCOHERENT
-> -               usb_free_coherent(stream->dev->udev, stream->urb_size,
-> -                                 uvc_urb->buffer, uvc_urb->dma);
-> -#else
-> -               kfree(uvc_urb->buffer);
-> -#endif
-> +               dma_vunmap_noncontiguous(dma_dev, uvc_urb->buffer);
-> +               dma_free_noncontiguous(dma_dev, stream->urb_size, uvc_urb->sgt,
-> +                                      uvc_stream_dir(stream));
-> +
->                 uvc_urb->buffer = NULL;
-> +               uvc_urb->sgt = NULL;
->         }
->
->         stream->urb_size = 0;
->  }
->
-> +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
-> +                                struct uvc_urb *uvc_urb, gfp_t gfp_flags)
-> +{
-> +       struct device *dma_dev = uvc_stream_to_dmadev(stream);
-> +
-> +       uvc_urb->sgt = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> +                                              uvc_stream_dir(stream),
-> +                                              gfp_flags, 0);
-> +       if (!uvc_urb->sgt)
-> +               return false;
-> +       uvc_urb->dma = uvc_urb->sgt->sgl->dma_address;
-> +
-> +       uvc_urb->buffer = dma_vmap_noncontiguous(dma_dev, stream->urb_size,
-> +                                                uvc_urb->sgt);
-> +       if (!uvc_urb->buffer) {
-> +               dma_free_noncontiguous(dma_dev, stream->urb_size,
-> +                                      uvc_urb->sgt,
-> +                                      uvc_stream_dir(stream));
-> +               uvc_urb->sgt = NULL;
-> +               return false;
-> +       }
-> +
-> +       return true;
-> +}
-> +
->  /*
->   * Allocate transfer buffers. This function can be called with buffers
->   * already allocated when resuming from suspend, in which case it will
-> @@ -1608,19 +1665,12 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
->
->         /* Retry allocations until one succeed. */
->         for (; npackets > 1; npackets /= 2) {
-> +               stream->urb_size = psize * npackets;
-> +
->                 for (i = 0; i < UVC_URBS; ++i) {
->                         struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
->
-> -                       stream->urb_size = psize * npackets;
-> -#ifndef CONFIG_DMA_NONCOHERENT
-> -                       uvc_urb->buffer = usb_alloc_coherent(
-> -                               stream->dev->udev, stream->urb_size,
-> -                               gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
-> -#else
-> -                       uvc_urb->buffer =
-> -                           kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
-> -#endif
-> -                       if (!uvc_urb->buffer) {
-> +                       if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
->                                 uvc_free_urb_buffers(stream);
->                                 break;
->                         }
-> @@ -1730,12 +1780,8 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
->                 urb->context = uvc_urb;
->                 urb->pipe = usb_rcvisocpipe(stream->dev->udev,
->                                 ep->desc.bEndpointAddress);
-> -#ifndef CONFIG_DMA_NONCOHERENT
->                 urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
->                 urb->transfer_dma = uvc_urb->dma;
-> -#else
-> -               urb->transfer_flags = URB_ISO_ASAP;
-> -#endif
->                 urb->interval = ep->desc.bInterval;
->                 urb->transfer_buffer = uvc_urb->buffer;
->                 urb->complete = uvc_video_complete;
-> @@ -1795,10 +1841,8 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
->
->                 usb_fill_bulk_urb(urb, stream->dev->udev, pipe, uvc_urb->buffer,
->                                   size, uvc_video_complete, uvc_urb);
-> -#ifndef CONFIG_DMA_NONCOHERENT
->                 urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
->                 urb->transfer_dma = uvc_urb->dma;
-> -#endif
->
->                 uvc_urb->urb = urb;
->         }
-> @@ -1895,7 +1939,7 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
->
->         /* Submit the URBs. */
->         for_each_uvc_urb(uvc_urb, stream) {
-> -               ret = usb_submit_urb(uvc_urb->urb, gfp_flags);
-> +               ret = uvc_submit_urb(uvc_urb, gfp_flags);
->                 if (ret < 0) {
->                         dev_err(&stream->intf->dev,
->                                 "Failed to submit URB %u (%d).\n",
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 97df5ecd66c9..cce5e38133cd 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -219,6 +219,7 @@
->   */
->
->  struct gpio_desc;
-> +struct sg_table;
->  struct uvc_device;
->
->  /* TODO: Put the most frequently accessed fields at the beginning of
-> @@ -545,7 +546,8 @@ struct uvc_copy_op {
->   * @urb: the URB described by this context structure
->   * @stream: UVC streaming context
->   * @buffer: memory storage for the URB
-> - * @dma: DMA coherent addressing for the urb_buffer
-> + * @dma: Allocated DMA handle
-> + * @sgt: sgt_table with the urb locations in memory
->   * @async_operations: counter to indicate the number of copy operations
->   * @copy_operations: work descriptors for asynchronous copy operations
->   * @work: work queue entry for asynchronous decode
-> @@ -556,6 +558,7 @@ struct uvc_urb {
->
->         char *buffer;
->         dma_addr_t dma;
-> +       struct sg_table *sgt;
->
->         unsigned int async_operations;
->         struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-> --
-> 2.31.0.rc2.261.g7f71774620-goog
->
-
-
--- 
-Ricardo Ribalda
+> Thanks.
+> Can Guo.
+> 
+>> +		return;
+>> +
+>>  	lru_info = &hpb->lru_info;
+>> 
+>>  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", 
+>> rgn->rgn_idx);
+>> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
+>>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
+>>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
+>>  ufshpb_sysfs_attr_show_func(map_req_cnt);
+>> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
+>> 
+>>  static struct attribute *hpb_dev_stat_attrs[] = {
+>>  	&dev_attr_hit_cnt.attr,
+>> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] = 
+>> {
+>>  	&dev_attr_rb_active_cnt.attr,
+>>  	&dev_attr_rb_inactive_cnt.attr,
+>>  	&dev_attr_map_req_cnt.attr,
+>> +	&dev_attr_umap_req_cnt.attr,
+>>  	NULL,
+>>  };
+>> 
+>> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu 
+>> *hpb)
+>>  	hpb->stats.rb_active_cnt = 0;
+>>  	hpb->stats.rb_inactive_cnt = 0;
+>>  	hpb->stats.map_req_cnt = 0;
+>> +	hpb->stats.umap_req_cnt = 0;
+>>  }
+>> 
+>>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
+>> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>> index bd4308010466..84598a317897 100644
+>> --- a/drivers/scsi/ufs/ufshpb.h
+>> +++ b/drivers/scsi/ufs/ufshpb.h
+>> @@ -186,6 +186,7 @@ struct ufshpb_stats {
+>>  	u64 rb_inactive_cnt;
+>>  	u64 map_req_cnt;
+>>  	u64 pre_req_cnt;
+>> +	u64 umap_req_cnt;
+>>  };
+>> 
+>>  struct ufshpb_lu {
