@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5ED533C7A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE77D33C7A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhCOUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:21:18 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:38423 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbhCOUVL (ORCPT
+        id S232128AbhCOUWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229972AbhCOUWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:21:11 -0400
-Received: by mail-pj1-f41.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso108287pji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:21:11 -0700 (PDT)
+        Mon, 15 Mar 2021 16:22:22 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B288CC06174A;
+        Mon, 15 Mar 2021 13:22:22 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id o16so4160186pgu.3;
+        Mon, 15 Mar 2021 13:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FeMO8N8mOrZOYLthvyTTz6z7169kWhSczB4v2641sdc=;
+        b=d2xRug54QK11RhuS51cwYWzCyiFKVfFVqkKpn1hGP+w6zlXkDAcdo3R/Fq72dRCrxV
+         /e/MCUsTxwh3pDIoH5jUl34/KCvkHYVa5gjuYfwhppdpAQNC7tY9zLrUm16TjAXZKAzH
+         5ORp2K7HSVnPBHb1YDnIOHDHKyHv3FykZVXva5Uw0dKRwN8B0NtV0iew22fUFkJ4fVpU
+         bUSFzAgb/846ikYCXVS2U0pwDM3DWmYT1kM4BYK9h82hyTP+ADaKlYu8fUT1pOrUduNC
+         87+p2cYpzDB2V19Xb7uO1LBD5sSh0IkXpzzNEqFIrJnCXTFEw9LpkObKwndcs4MYCVps
+         Qd9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tE3KW+4aBQn+aDjatnRbs367+dzc11McNltTJfv0RjI=;
-        b=dNrnIybLaP8lmWpfHI7Loci7ZIXZ9/waCiqlmCpYg7laxy6dJeAZ2ME7uZfJ+dH8Ah
-         cyFss98Y57Gabjebn/nW4bsTtS/Gr7YXWTTKBhGp3tyWHCwZmam6ykfvLt0OmNVYAIny
-         N8DWUPdSOCQB6qrTUS1mPOQ+p9BfMHPe1nHHB2KDIQ6RnJHLX8oWKX1xhWXFZBgHyNnA
-         nol7Nmf922Gf13pvqJyZ56cmQIlCAqIULTr4ZV/mG8FPRuGLx/8RQZVh/FLvzZDFoj6a
-         pbpm93WLwTaGMxiLisvf1lsKWcnRs6vYa0G4hA2sW0AXo+4OpmrzDAMuihjmJoGPFL64
-         SwPw==
-X-Gm-Message-State: AOAM533pyPffzMU+xhfJRhyMi0ZKbikuKRxJKP24oi+JxBNUzW0G3OXS
-        GUhkdSDIvMNWjeBaggGn57A=
-X-Google-Smtp-Source: ABdhPJz6WQo0IztRQ/5mnMM6ZTlFLUBFc51471onQx9ZUay/hAkKEz+ay+dMpImZBozmYJwWDlpGFw==
-X-Received: by 2002:a17:902:da91:b029:e5:e7cf:d737 with SMTP id j17-20020a170902da91b02900e5e7cfd737mr13065274plx.24.1615839671382;
-        Mon, 15 Mar 2021 13:21:11 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id h14sm472557pjc.37.2021.03.15.13.21.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:21:10 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 558FA40106; Mon, 15 Mar 2021 20:21:09 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 20:21:09 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
-Message-ID: <20210315202109.GY4332@42.do-not-panic.com>
-References: <20210313212528.2956377-1-linux@rasmusvillemoes.dk>
- <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FeMO8N8mOrZOYLthvyTTz6z7169kWhSczB4v2641sdc=;
+        b=O0SLC9s4uEvH+H4CThMvVYhL8qxrwtYgveaefcEXfn17c8Ec8BZ0WitCtloRnO+oxn
+         R7sXnXHSuoa1dSe/aTb1sZCyK7n3PtDeg95p1cwQffDp44Kzzknge/ANbPUZyCKuaarN
+         PbDd9sjccx6JrqC0dMznhnR4SL3hOoeQb7xSt66Wh/BO7JVy/k+6EkW0QNmQFgc7UQ/X
+         W6Wfkvyvcf8k8b3U4yAcmzUrBKRitZsEOZ9jntlv+UlmSAev6eZYl6xOPwtBZDnVN7La
+         GdK7rHhE6DBeiM1JkYl1R+zvCh/+7HQhT/xBOrXnhgYxC9eajfP/QjdSQjb6XWdWY74+
+         5sRQ==
+X-Gm-Message-State: AOAM530Dlw+Q7EaEwCxesNmLYOrF6QNBeo5k+zUboDsJ72uQOSNJkdIa
+        KFnFWrw2GsTVIOujl2YpgTsL8TzB3Mk=
+X-Google-Smtp-Source: ABdhPJye9+6KXatviEcgw0cN88pvabSHnuOQB/JhEgRIofvEFdqdOAeVeA+UbNopWBKj/kPzDqJXwQ==
+X-Received: by 2002:a63:7cc:: with SMTP id 195mr717255pgh.323.1615839741733;
+        Mon, 15 Mar 2021 13:22:21 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id js16sm473935pjb.21.2021.03.15.13.22.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 13:22:21 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/168] 5.4.106-rc1 review
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210315135550.333963635@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <0a57d66b-bb32-2cc7-a418-22ba2383687f@gmail.com>
+Date:   Mon, 15 Mar 2021 13:22:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 10:25:27PM +0100, Rasmus Villemoes wrote:
-> Most of the boot process doesn't actually need anything from the
-> initramfs, until of course PID1 is to be executed. So instead of doing
-> the decompressing and populating of the initramfs synchronously in
-> populate_rootfs() itself, push that off to a worker thread.
-> 
-> This is primarily motivated by an embedded ppc target, where unpacking
-> even the rather modest sized initramfs takes 0.6 seconds, which is
-> long enough that the external watchdog becomes unhappy that it doesn't
-> get attention soon enough. By doing the initramfs decompression in a
-> worker thread, we get to do the device_initcalls and hence start
-> petting the watchdog much sooner.
-> 
-> Normal desktops might benefit as well. On my mostly stock Ubuntu
-> kernel, my initramfs is a 26M xz-compressed blob, decompressing to
-> around 126M. That takes almost two seconds:
-> 
-> [    0.201454] Trying to unpack rootfs image as initramfs...
-> [    1.976633] Freeing initrd memory: 29416K
-> 
-> Before this patch, these lines occur consecutively in dmesg. With this
-> patch, the timestamps on these two lines is roughly the same as above,
-> but with 172 lines inbetween - so more than one cpu has been kept busy
-> doing work that would otherwise only happen after the
-> populate_rootfs() finished.
-> 
-> Should one of the initcalls done after rootfs_initcall time (i.e.,
-> device_ and late_ initcalls) need something from the initramfs (say, a
-> kernel module or a firmware blob), it will simply wait for the
-> initramfs unpacking to be done before proceeding, which should in
-> theory make this completely safe.
-> 
-> But if some driver pokes around in the filesystem directly and not via
-> one of the official kernel interfaces (i.e. request_firmware*(),
-> call_usermodehelper*) that theory may not hold - also, I certainly
-> might have missed a spot when sprinkling wait_for_initramfs(). So
-> there is an escape hatch in the form of an initramfs_async= command
-> line parameter.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-  Luis
+On 3/15/2021 6:53 AM, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 5.4.106 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Mar 2021 13:55:26 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.106-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit ARM and 64-bit kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
