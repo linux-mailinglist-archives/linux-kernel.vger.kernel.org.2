@@ -2,249 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB11433AED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652CE33AED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCOJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:29:42 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13928 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCOJ3h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:29:37 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DzWLC2gCBzlVmw;
-        Mon, 15 Mar 2021 17:28:03 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 15 Mar 2021 17:29:29 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH net-next] net: sched: remove unnecessay lock protection for skb_bad_txq/gso_skb
-Date:   Mon, 15 Mar 2021 17:30:10 +0800
-Message-ID: <1615800610-34700-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S229691AbhCOJao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:30:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhCOJaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:30:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98C0D64E74;
+        Mon, 15 Mar 2021 09:30:08 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lLjY6-001cQC-Iq; Mon, 15 Mar 2021 09:30:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 15 Mar 2021 09:30:06 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shenming Lu <lushenming@huawei.com>
+Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v4 5/6] KVM: arm64: GICv4.1: Restore VLPI pending state to
+ physical side
+In-Reply-To: <cd821431-52a7-d9a6-1468-8ce0c9446d85@huawei.com>
+References: <20210313083900.234-1-lushenming@huawei.com>
+ <20210313083900.234-6-lushenming@huawei.com>
+ <d9047922808df340feca2f257cfb8a3d@kernel.org>
+ <81fbadda-0489-ffc3-cb38-08e89871ec95@huawei.com>
+ <b03ec1e5447024f9f990377e2c28e84f@kernel.org>
+ <cd821431-52a7-d9a6-1468-8ce0c9446d85@huawei.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <4f37549dcc5d3dd59a92bc94f2f0b59b@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently qdisc_lock(q) is taken before enqueuing and dequeuing
-for lockless qdisc's skb_bad_txq/gso_skb queue, qdisc->seqlock is
-also taken, which can provide the same protection as qdisc_lock(q).
+On 2021-03-15 09:25, Shenming Lu wrote:
+> On 2021/3/15 17:20, Marc Zyngier wrote:
+>> On 2021-03-15 09:11, Shenming Lu wrote:
+>>> On 2021/3/15 16:30, Marc Zyngier wrote:
+>>>> On 2021-03-13 08:38, Shenming Lu wrote:
+>>>>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>>>> 
+>>>>> When setting the forwarding path of a VLPI (switch to the HW mode),
+>>>>> we can also transfer the pending state from irq->pending_latch to
+>>>>> VPT (especially in migration, the pending states of VLPIs are 
+>>>>> restored
+>>>>> into kvm’s vgic first). And we currently send "INT+VSYNC" to 
+>>>>> trigger
+>>>>> a VLPI to pending.
+>>>>> 
+>>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>>>> ---
+>>>>>  arch/arm64/kvm/vgic/vgic-v4.c | 18 ++++++++++++++++++
+>>>>>  1 file changed, 18 insertions(+)
+>>>>> 
+>>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
+>>>>> b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>> index ac029ba3d337..3b82ab80c2f3 100644
+>>>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+>>>>> @@ -449,6 +449,24 @@ int kvm_vgic_v4_set_forwarding(struct kvm 
+>>>>> *kvm, int virq,
+>>>>>      irq->host_irq    = virq;
+>>>>>      atomic_inc(&map.vpe->vlpi_count);
+>>>>> 
+>>>>> +    /* Transfer pending state */
+>>>>> +    if (irq->pending_latch) {
+>>>>> +        unsigned long flags;
+>>>>> +
+>>>>> +        ret = irq_set_irqchip_state(irq->host_irq,
+>>>>> +                        IRQCHIP_STATE_PENDING,
+>>>>> +                        irq->pending_latch);
+>>>>> +        WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+>>>>> +
+>>>>> +        /*
+>>>>> +         * Clear pending_latch and communicate this state
+>>>>> +         * change via vgic_queue_irq_unlock.
+>>>>> +         */
+>>>>> +        raw_spin_lock_irqsave(&irq->irq_lock, flags);
+>>>>> +        irq->pending_latch = false;
+>>>>> +        vgic_queue_irq_unlock(kvm, irq, flags);
+>>>>> +    }
+>>>>> +
+>>>>>  out:
+>>>>>      mutex_unlock(&its->its_lock);
+>>>>>      return ret;
+>>>> 
+>>>> The read side of the pending state isn't locked, but the write side 
+>>>> is.
+>>>> I'd rather you lock the whole sequence for peace of mind.
+>>> 
+>>> Did you mean to lock before emitting the mapping request, Or just 
+>>> before reading
+>>> the pending state?
+>> 
+>> Just before reading the pending state, so that we can't get a 
+>> concurrent
+>> modification of that state while we make the interrupt pending in the 
+>> VPT
+>> and clearing it in the emulation.
+> 
+> Get it. I will correct it right now.
 
-This patch removes the unnecessay qdisc_lock(q) protection for
-lockless qdisc' skb_bad_txq/gso_skb queue.
+Please hold off sending a new version for a few days. My inbox is 
+exploding...
 
-And dev_reset_queue() takes the qdisc->seqlock for lockless qdisc
-besides taking the qdisc_lock(q) when doing the qdisc reset,
-some_qdisc_is_busy() takes both qdisc->seqlock and qdisc_lock(q)
-when checking qdisc status. It is unnecessary to take both lock
-while the fast path only take one lock, so this patch also changes
-it to only take qdisc_lock(q) for locked qdisc, and only take
-qdisc->seqlock for lockless qdisc.
+Thanks,
 
-Since qdisc->seqlock is taken for lockless qdisc when calling
-qdisc_is_running() in some_qdisc_is_busy(), use qdisc->running
-to decide if the lockless qdisc is running.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/sch_generic.h |  2 --
- net/sched/sch_generic.c   | 72 +++++++++++++----------------------------------
- 2 files changed, 19 insertions(+), 55 deletions(-)
-
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 2d6eb60..0e497ed 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -139,8 +139,6 @@ static inline struct Qdisc *qdisc_refcount_inc_nz(struct Qdisc *qdisc)
- 
- static inline bool qdisc_is_running(struct Qdisc *qdisc)
- {
--	if (qdisc->flags & TCQ_F_NOLOCK)
--		return spin_is_locked(&qdisc->seqlock);
- 	return (raw_read_seqcount(&qdisc->running) & 1) ? true : false;
- }
- 
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 49eae93..a5f1e3c 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -38,7 +38,7 @@ EXPORT_SYMBOL(default_qdisc_ops);
- /* Main transmission queue. */
- 
- /* Modifications to data participating in scheduling must be protected with
-- * qdisc_lock(qdisc) spinlock.
-+ * qdisc_lock(qdisc) or qdisc->seqlock spinlock.
-  *
-  * The idea is the following:
-  * - enqueue, dequeue are serialized via qdisc root lock
-@@ -51,14 +51,8 @@ EXPORT_SYMBOL(default_qdisc_ops);
- static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
- {
- 	const struct netdev_queue *txq = q->dev_queue;
--	spinlock_t *lock = NULL;
- 	struct sk_buff *skb;
- 
--	if (q->flags & TCQ_F_NOLOCK) {
--		lock = qdisc_lock(q);
--		spin_lock(lock);
--	}
--
- 	skb = skb_peek(&q->skb_bad_txq);
- 	if (skb) {
- 		/* check the reason of requeuing without tx lock first */
-@@ -77,9 +71,6 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
- 		}
- 	}
- 
--	if (lock)
--		spin_unlock(lock);
--
- 	return skb;
- }
- 
-@@ -96,13 +87,6 @@ static inline struct sk_buff *qdisc_dequeue_skb_bad_txq(struct Qdisc *q)
- static inline void qdisc_enqueue_skb_bad_txq(struct Qdisc *q,
- 					     struct sk_buff *skb)
- {
--	spinlock_t *lock = NULL;
--
--	if (q->flags & TCQ_F_NOLOCK) {
--		lock = qdisc_lock(q);
--		spin_lock(lock);
--	}
--
- 	__skb_queue_tail(&q->skb_bad_txq, skb);
- 
- 	if (qdisc_is_percpu_stats(q)) {
-@@ -112,20 +96,10 @@ static inline void qdisc_enqueue_skb_bad_txq(struct Qdisc *q,
- 		qdisc_qstats_backlog_inc(q, skb);
- 		q->q.qlen++;
- 	}
--
--	if (lock)
--		spin_unlock(lock);
- }
- 
- static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
- {
--	spinlock_t *lock = NULL;
--
--	if (q->flags & TCQ_F_NOLOCK) {
--		lock = qdisc_lock(q);
--		spin_lock(lock);
--	}
--
- 	while (skb) {
- 		struct sk_buff *next = skb->next;
- 
-@@ -144,8 +118,7 @@ static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
- 
- 		skb = next;
- 	}
--	if (lock)
--		spin_unlock(lock);
-+
- 	__netif_schedule(q);
- }
- 
-@@ -207,24 +180,9 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 
- 	*packets = 1;
- 	if (unlikely(!skb_queue_empty(&q->gso_skb))) {
--		spinlock_t *lock = NULL;
--
--		if (q->flags & TCQ_F_NOLOCK) {
--			lock = qdisc_lock(q);
--			spin_lock(lock);
--		}
- 
- 		skb = skb_peek(&q->gso_skb);
- 
--		/* skb may be null if another cpu pulls gso_skb off in between
--		 * empty check and lock.
--		 */
--		if (!skb) {
--			if (lock)
--				spin_unlock(lock);
--			goto validate;
--		}
--
- 		/* skb in gso_skb were already validated */
- 		*validate = false;
- 		if (xfrm_offload(skb))
-@@ -243,11 +201,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 		} else {
- 			skb = NULL;
- 		}
--		if (lock)
--			spin_unlock(lock);
-+
- 		goto trace;
- 	}
--validate:
-+
- 	*validate = true;
- 
- 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
-@@ -1153,13 +1110,15 @@ static void dev_reset_queue(struct net_device *dev,
- 
- 	if (nolock)
- 		spin_lock_bh(&qdisc->seqlock);
--	spin_lock_bh(qdisc_lock(qdisc));
-+	else
-+		spin_lock_bh(qdisc_lock(qdisc));
- 
- 	qdisc_reset(qdisc);
- 
--	spin_unlock_bh(qdisc_lock(qdisc));
- 	if (nolock)
- 		spin_unlock_bh(&qdisc->seqlock);
-+	else
-+		spin_unlock_bh(qdisc_lock(qdisc));
- }
- 
- static bool some_qdisc_is_busy(struct net_device *dev)
-@@ -1168,20 +1127,27 @@ static bool some_qdisc_is_busy(struct net_device *dev)
- 
- 	for (i = 0; i < dev->num_tx_queues; i++) {
- 		struct netdev_queue *dev_queue;
--		spinlock_t *root_lock;
- 		struct Qdisc *q;
-+		bool nolock;
- 		int val;
- 
- 		dev_queue = netdev_get_tx_queue(dev, i);
- 		q = dev_queue->qdisc_sleeping;
- 
--		root_lock = qdisc_lock(q);
--		spin_lock_bh(root_lock);
-+		nolock = q->flags & TCQ_F_NOLOCK;
-+
-+		if (nolock)
-+			spin_lock_bh(&q->seqlock);
-+		else
-+			spin_lock_bh(qdisc_lock(q));
- 
- 		val = (qdisc_is_running(q) ||
- 		       test_bit(__QDISC_STATE_SCHED, &q->state));
- 
--		spin_unlock_bh(root_lock);
-+		if (nolock)
-+			spin_unlock_bh(&q->seqlock);
-+		else
-+			spin_unlock_bh(qdisc_lock(q));
- 
- 		if (val)
- 			return true;
+         M.
 -- 
-2.7.4
-
+Jazz is not dead. It just smells funny...
