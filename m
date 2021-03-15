@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4272933C9CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FA733C9A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhCOXMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233563AbhCOXLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:11:41 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3986C06174A;
-        Mon, 15 Mar 2021 16:11:40 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e7so10976659ile.7;
-        Mon, 15 Mar 2021 16:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OWwHR8Ne423+zbtI1q+8mLttBfXbDb6VslhtXcXanQg=;
-        b=tDmV3Clxxrt5CYW6RR5YvvuFRnN750yidjGLYegOB42Ae9zwMhBjB8qjfA173QHAlG
-         oAWC+SYJO1hS9ifiZSDX1U/sGOQyigND3hHv1grdytMkoojG5raNQxL+9HUwT8RXSxG5
-         asX49ilTHb6G06bDtHYtIwSjlpYCbnTABKe5yHIEm0h6g3ojlhxqhL/N/XeIsyXy0zPW
-         dWpvNMJRikRoHV1IjjcsOPy404NrmT5eMpPXTQ24R2ibgtXXbLBzX2E7xLn4hSne7pu9
-         K3Rr8c7Ky8R3vo28DEHiwdx5ppLMUJ61kCV1q/KGy1Ek/yPqrxVJh2vOtr0Ou014TA9B
-         AwGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OWwHR8Ne423+zbtI1q+8mLttBfXbDb6VslhtXcXanQg=;
-        b=CAo4GWTOQIoI92jFrY/bFM1Rj1ABsUdH88c5lojR8Ot8QsFYJCESpkwfzKYV/wjAMj
-         4qqFEubQZ9FDVfn+0S3yW/gnQsZWxEliHYBBbAzN2oIeaJaaVnpO6tlrAyl7UCc51Z9J
-         /nY4kFOZVAJzWk2c6mXGNztY5Todyinx0qeaXO6k+KAfQ5CnYULSXDw56gSBuTqmtm15
-         JiYJLHUp+y0/ZYuz5QrqTFyZal5KXsJRRoAlYGhi82PVxhrRLW7dhWyZS34iXXY4QTAC
-         jLUSU8osD//zSTO0RnrP298Eg3FKcfmJE+L8ipXFBRjkAiMPdlG1p9crh4XZyccEUxdm
-         yENg==
-X-Gm-Message-State: AOAM531TYHrnQ0qBmsTF74STQ6JKY6sjwD8IfzIWND9sQQtaUajP+6ob
-        a+JR/Rn1+kuTLNP4ymc/IJEf7SpPj+aDMeSXwFY=
-X-Google-Smtp-Source: ABdhPJyIMGxVLSY13hI+sOxMMBbHkVYSuVizx6fGRZmxlv5OglFxTSdwX1GBMv9JMdlw2kMfPpdh3pViASu367w3Gpc=
-X-Received: by 2002:a05:6e02:dcd:: with SMTP id l13mr1430957ilj.271.1615849900503;
- Mon, 15 Mar 2021 16:11:40 -0700 (PDT)
+        id S233207AbhCOXEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:04:45 -0400
+Received: from bluehome.net ([96.66.250.149]:48380 "EHLO bluehome.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232661AbhCOXEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:04:31 -0400
+Received: from pc.lan (pc.lan [10.0.0.51])
+        by bluehome.net (Postfix) with ESMTPSA id 1C0C14B4021D;
+        Mon, 15 Mar 2021 15:57:04 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 15:57:03 -0700
+From:   Jason Self <jason@bluehome.net>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/95] 4.14.226-rc1 review
+Message-ID: <20210315155703.2024ca46@pc.lan>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 MIME-Version: 1.0
-References: <1615801436-3016-1-git-send-email-dillon.minfei@gmail.com>
- <1615801436-3016-4-git-send-email-dillon.minfei@gmail.com> <20210315162648.GB981570@robh.at.kernel.org>
-In-Reply-To: <20210315162648.GB981570@robh.at.kernel.org>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Mon, 15 Mar 2021 23:11:04 +0800
-Message-ID: <CAL9mu0+T++RotJt_ayPDFmbxjLL6G20FzR0aQ2FMjn6Dz0qaFw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] dt-bindings: pinctrl: stm32: Add stm32h750 pinctrl
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        gregkh@linuxfoundation.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-serial@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux@armlinux.org.uk,
-        erwan.leray@st.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        erwan.leray@foss.st.com,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, afzal.mohd.ma@gmail.com,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/0iRP7VtiU4LzdSRG9DD8iLk"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:26 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, 15 Mar 2021 17:43:50 +0800, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
-> > This patch intend to add pinctrl configuration support for
-> > stm32h750 value line
-> >
-> > The datasheet of stm32h750 value line can be found at:
-> > https://www.st.com/resource/en/datasheet/stm32h750ib.pdf
-> >
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->
->
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
->
-> If a tag was not added on purpose, please state why and what changed.
->
-Sorry for that, i forgot to remove patch 3 from v2/v3 theris, there are no
-changes in v2/v3. please just ignore it , thanks.
+--Sig_/0iRP7VtiU4LzdSRG9DD8iLk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Dillon,
-Best Regards.
+On Mon, 15 Mar 2021 14:56:30 +0100
+gregkh@linuxfoundation.org wrote:
+
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+> This is the start of the stable review cycle for the 4.14.226 release.
+
+Tested on amd64, arm64, armhf, i386, m68k, or1k, powerpc, ppc64,
+ppc64el, s390x, sparc64. No problems detected.
+
+Tested-by: Jason Self <jason@bluehome.net>
+
+--Sig_/0iRP7VtiU4LzdSRG9DD8iLk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE9hGpCP+hZcaZWE7UnQ2zG1RaMZgFAmBP5j8ACgkQnQ2zG1Ra
+MZjKExAAoUN+CLSU3K2D14vBTe4Br+kvrIJOSXVzVzz0F4U7g7Mm0uvdnKBB1jks
+SP1jcgdam1d5PcCl7ratHttS23j7baC3g7Fk47L6sY/QsbbfZqsrkoxeu5zOTgy5
+2K+pXm2fUbc9dKrfg1+PqtIhOjl2EqOaqM1sEtyOALTvu2Soeb+ElLtmzfO9eVTi
+mFEvAQbHQGMqauTo+O94zYBXbANBb/VBaWv8mPVfIyxiJwdazaVsmHTuiwGe4ZgI
+c0CX2UkjOA4JRw5BSOVvO0AT5GZNSAXGHSVDbCfs3jUX07roj9N+d83S9SzszXJb
+XIgQQg76ehZA3sYfTOutgbFijxx1E26iGOvSsZ3ONcxD4cnd4BOV0owAfbbCzkRb
+/+HKVUDEqkiu3hVIwZVcPv4qnqXBkc0qdyfQW+NnmeBC/yLiqn5ELbkyE10gGSMb
+z6NAZ6caHHLGCVHs4yUysXGJCxFYvhWsaq6kYTMQq8euyAd3COU1fxWKt9P9jH0q
+HcHLQxt3XvDoHqSlJchXAghvPN4gjg+5OetzgSVD6doBYsSq24NEwpiPC/6RYSSE
+4u59sS40uZxjQi6tv9e6dJ+zLiArYa6zBeHwnMjYPrgo//QJ/qvTbPeAmgSldFcs
+76H7zFeqLC2jiWh/lpfXPcZ/B1OU3IFGV3QVk+H0jkMf0dT6BsA=
+=8oQo
+-----END PGP SIGNATURE-----
+
+--Sig_/0iRP7VtiU4LzdSRG9DD8iLk--
