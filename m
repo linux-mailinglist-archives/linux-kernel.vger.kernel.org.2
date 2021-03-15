@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3794033BC12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426F033BC05
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238141AbhCOOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S237910AbhCOOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232917AbhCOOAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65DA564F38;
-        Mon, 15 Mar 2021 13:59:54 +0000 (UTC)
+        id S232926AbhCOOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAB3864F29;
+        Mon, 15 Mar 2021 13:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816795;
-        bh=G54vohvt+g5VieYybML1LGzxlSiZ1Tb+gpNzAx1aXvg=;
+        s=korg; t=1615816797;
+        bh=fIp6IdXQAyyI0c+e1A99N7sVQg5EIe8/xZD5EV0ZVQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXbRZARcCPM9aIFuskUmQfGN+dTqjysp32XiQ77Fx+YdrmMGlTQOZA4JiCDC+6iOj
-         XcBAlQQs11vHLK1euAv7jCFAFuSAebre96aXrtDIVJnLmWBGlwit39r5vmw1Oz5vzE
-         HLWCf4b93gJL2gUnvTgqQOBnJknQhqPZ3JBw3NZY=
+        b=J0+i59yf6nqilE8bpibNVdlIvgWR7qDsmxjmtE5XrNCeq/xVEfe5QQFq9dMS0koCa
+         RP96P5byJauVhuUpyBmMeH5Qe8ekuxS4TbXNcRVDELfNqpa+8bVJysqJdIyU54Zw0z
+         egMluj6Divr3+mhpbg89DtKKwuLnwz/OyM92e304=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Steven J. Magnani" <magnani@ieee.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 129/306] udf: fix silent AED tagLocation corruption
-Date:   Mon, 15 Mar 2021 14:53:12 +0100
-Message-Id: <20210315135512.018201682@linuxfoundation.org>
+        stable@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 130/306] iommu/vt-d: Clear PRQ overflow only when PRQ is empty
+Date:   Mon, 15 Mar 2021 14:53:13 +0100
+Message-Id: <20210315135512.047519645@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,51 +42,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Steven J. Magnani <magnani@ieee.org>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit 63c9e47a1642fc817654a1bc18a6ec4bbcc0f056 ]
+[ Upstream commit 28a77185f1cd0650b664f54614143aaaa3a7a615 ]
 
-When extending a file, udf_do_extend_file() may enter following empty
-indirect extent. At the end of udf_do_extend_file() we revert prev_epos
-to point to the last written extent. However if we end up not adding any
-further extent in udf_do_extend_file(), the reverting points prev_epos
-into the header area of the AED and following updates of the extents
-(in udf_update_extents()) will corrupt the header.
+It is incorrect to always clear PRO when it's set w/o first checking
+whether the overflow condition has been cleared. Current code assumes
+that if an overflow condition occurs it must have been cleared by earlier
+loop. However since the code runs in a threaded context, the overflow
+condition could occur even after setting the head to the tail under some
+extreme condition. To be sane, we should read both head/tail again when
+seeing a pending PRO and only clear PRO after all pending PRs have been
+handled.
 
-Make sure that we do not follow indirect extent if we are not going to
-add any more extents so that returning back to the last written extent
-works correctly.
-
-Link: https://lore.kernel.org/r/20210107234116.6190-2-magnani@ieee.org
-Signed-off-by: Steven J. Magnani <magnani@ieee.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/linux-iommu/MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com/
+Link: https://lore.kernel.org/r/20210126080730.2232859-2-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/udf/inode.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/iommu/intel/svm.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-index bb89c3e43212..0dd2f93ac048 100644
---- a/fs/udf/inode.c
-+++ b/fs/udf/inode.c
-@@ -544,11 +544,14 @@ static int udf_do_extend_file(struct inode *inode,
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 18a9f05df407..b3bcd6dec93e 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -1079,8 +1079,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+ 	 * Clear the page request overflow bit and wake up all threads that
+ 	 * are waiting for the completion of this handling.
+ 	 */
+-	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO)
+-		writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
++	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
++		pr_info_ratelimited("IOMMU: %s: PRQ overflow detected\n",
++				    iommu->name);
++		head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
++		tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
++		if (head == tail) {
++			writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
++			pr_info_ratelimited("IOMMU: %s: PRQ overflow cleared",
++					    iommu->name);
++		}
++	}
  
- 		udf_write_aext(inode, last_pos, &last_ext->extLocation,
- 				last_ext->extLength, 1);
-+
- 		/*
--		 * We've rewritten the last extent but there may be empty
--		 * indirect extent after it - enter it.
-+		 * We've rewritten the last extent. If we are going to add
-+		 * more extents, we may need to enter possible following
-+		 * empty indirect extent.
- 		 */
--		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
-+		if (new_block_bytes || prealloc_len)
-+			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
- 	}
- 
- 	/* Managed to do everything necessary? */
+ 	if (!completion_done(&iommu->prq_complete))
+ 		complete(&iommu->prq_complete);
 -- 
 2.30.1
 
