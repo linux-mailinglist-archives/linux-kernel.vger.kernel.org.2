@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F5C33B2AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FDC33B2B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhCOM0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S229922AbhCOM04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhCOM0M (ORCPT
+        with ESMTP id S229741AbhCOM0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:26:12 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C0C06175F;
-        Mon, 15 Mar 2021 05:26:11 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k8so5585415wrc.3;
-        Mon, 15 Mar 2021 05:26:11 -0700 (PDT)
+        Mon, 15 Mar 2021 08:26:17 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36281C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:26:17 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id f124so31355728qkj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pS078ZcCIx29RU55R2WWNIxxiQ2PLPKOcATYlxFAcpk=;
-        b=ly4PwdFD+EOpshYxUqcGMnxctLABybCHLIjYPcExOgOdnwL+rSMRTt7reZHZdH228x
-         IvffS+M0Yy84mkPUJpRMKAYuaLxmqfKpCpP81zXir2Oy8cwQpy1qbQqbhx5Im0OMSYxG
-         zbpTmTBkCCQSrVkPg0UMh2hnmLtAig498x3NFMIKNtQ1AdsKX4bVHqt6EX7UM7uWTz94
-         hHThKnM6/3m1dhv2UzGuhNgcInStTTLW5r5dT6t4MgfILVRptOMMXtZxwm9OLuxilw1E
-         gTeinWv0uxboHugBfgKOe/eCiwsMPv7nqmk27Fimjx6AgbSVDJcZfvqKH7BEd+9RKcDE
-         88Mw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jsGt/dwOV8D6F+fCE9EMCron0uUReKVhhqz5+NJRPXc=;
+        b=OjqnRoV5lREN6AkRYyL3wtxE/OICaE0LY7v9GG+Jnhf23pxUciNPwTle5NOeU68II8
+         /aeYla+smovrpH6q5NVVAWomfDjgrHQtvg3divL70X7qzGdLGvSXSw64hMNifBq6DObn
+         J6Ph0Jv3KxPEMBbUG1drx4h+3EvGdod4RI/xaPGFz4jeEQOtnyEMRMmyD2is3h7/bpYB
+         ngX2JXWeRP/j55yow1F2cflKD/YzI9BWTNmIIgW3dRFs5h3pS0nT4R2inpuBHgVmZRAJ
+         TfUOy1Zg8o1LvXtqDROR8ZtKMS4Y69SOHlmIUntraau2wcWx4Dh2hsEhZOW1S2Pij/1N
+         TuOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pS078ZcCIx29RU55R2WWNIxxiQ2PLPKOcATYlxFAcpk=;
-        b=YOO7yIk8jcE9+/Eq12wRlACJJfMIQF+SJXPx8iGGwtuzrPB0lYSuhWR2DcLkTZ1fce
-         t0Ili/XUWC++BMtLxwTvFTcLCmSP0CAyKk8yP8GSy5/u2A0zjdocrk1YWc1/OkBVIMiu
-         iRBKaPj/zSwiW+uLJPtBgkCYXXiNT5OUt2CmnIhbhATpmAX1unbeuWLLXXiyHyqMUPFu
-         jfyH32VGEV7P7X0ZfGSqVV2ct6oC9wAbPipCr4dBwJ4fKYZWbfbGtM5G4FzHB3Kg72nC
-         znelHcZW0VuGOXFEJX7GyXngBZJSXQhZM27VfUDsUe6GG/PJRv0+VgMp49Qyx55t+Mea
-         1Wpg==
-X-Gm-Message-State: AOAM5329Z1NDDV7wHIXbdjKuFkRNgOAsCiqtKm314SRIKJoiu8JNdQzc
-        Nhf2Q+rEZ4P2qT7MMMmrb4o=
-X-Google-Smtp-Source: ABdhPJxsvTHkCv4b8La2/7hlcU9Uu31ZWMq96RKnKn42zfJLp5xQMgpJ4LDMMd1MZvVclM2METdG5w==
-X-Received: by 2002:a5d:4fca:: with SMTP id h10mr28373914wrw.70.1615811170030;
-        Mon, 15 Mar 2021 05:26:10 -0700 (PDT)
-Received: from skynet.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id o7sm18317851wrs.16.2021.03.15.05.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:26:09 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     jonas.gorski@gmail.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 3/4] dt-bindings: clock: Add BCM63268 timer binding
-Date:   Mon, 15 Mar 2021 13:26:04 +0100
-Message-Id: <20210315122605.28437-4-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210315122605.28437-1-noltari@gmail.com>
-References: <20210315122605.28437-1-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jsGt/dwOV8D6F+fCE9EMCron0uUReKVhhqz5+NJRPXc=;
+        b=bmhqqRHE6xzaw385x4EKa1UVbM8b82mRgqDbhj9ICqPACpodjiwH7sxZz7YHvdrKcP
+         qY5yAGbk7F5KZ9+FfIpE2lh3mdEQpM9X0ca91z7XFNIYJfSFis9qtEAylJTe4fp9+gjk
+         vNePwwD9x0E3IGNWuSfZHtwAIpqVTiuJ6gBOD1J1sKc9KBL5w+QVoJ9z7LaT8wotXFoR
+         1m4vqpg9yYe5w0bIrcYerBwSJSkINbXixWP6Z9ehZUZlkO+XGFHjdvmO51j9FR7Rwx8R
+         OcTyepxVx0JMNKMBRjVBYF2Nk0Xu4GtYlWW+SQJKMaW/r47yeCR6ncUZA+wiFPT/Eowm
+         zN/A==
+X-Gm-Message-State: AOAM531h5qWtK0qSeCi9AbtFOfNyeUuoLQJNZ6BKPW9d48P9yBf1RZtp
+        jEphwt7v1c5+LGr/y+Db4PW0p9btUK79OUYfd/eQlw==
+X-Google-Smtp-Source: ABdhPJy8B+Q8m1FZs/7BgCVwNNRGjJlQrRHFP8Hq/jCV9z5Qtg/YSzefsAVyuVDnydxSiixQKKLRHBE+V4zZoBYFGQc=
+X-Received: by 2002:a37:46cf:: with SMTP id t198mr24843358qka.265.1615811176122;
+ Mon, 15 Mar 2021 05:26:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <0000000000009c21de05ba6849e7@google.com> <CACT4Y+ZjVc+_fg+Ggx8zRWSGqzf4gmZcngBXLf_R4F-GKU4a9A@mail.gmail.com>
+ <20210315120943.GB22897@arm.com>
+In-Reply-To: <20210315120943.GB22897@arm.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 15 Mar 2021 13:26:04 +0100
+Message-ID: <CACT4Y+Z0gir1LFtf_Xa2XHnu-ws8nk6Na9CtXFs71k+YLtw0xw@mail.gmail.com>
+Subject: Re: kernel BUG in memory_bm_free
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     syzbot <syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com>,
+        Len Brown <len.brown@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Broadcom BCM63268 Clock and Reset controller.
+On Mon, Mar 15, 2021 at 1:09 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Mon, Mar 15, 2021 at 08:08:06AM +0100, Dmitry Vyukov wrote:
+> > On Wed, Feb 3, 2021 at 6:59 AM syzbot
+> > <syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com> wrote:
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    3aaf0a27 Merge tag 'clang-format-for-linux-v5.11-rc7' of g..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=17ef6108d00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=10152c2ea16351e7
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5ecbe63baca437585bd4
+> > > userspace arch: arm64
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com
+> >
+> > The BUG is:
+> > BUG_ON(!virt_addr_valid(addr));
+> >
+> > #syz fix: arm64: Do not pass tagged addresses to __is_lm_address()
+>
+> Does this mean that commit 91cb2c8b072e ("arm64: Do not pass tagged
+> addresses to __is_lm_address()") fixes the regression? The patch was
+> merged in -5.11-rc7 I think.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- v2: no changes
-
- .../clock/brcm,bcm63268-timer-clocks.yaml     | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
-
-diff --git a/Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml b/Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
-new file mode 100644
-index 000000000000..199818b2fb6d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/brcm,bcm63268-timer-clocks.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Broadcom BCM63268 Timer Clock and Reset Device Tree Bindings
-+
-+maintainers:
-+  - Álvaro Fernández Rojas <noltari@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: brcm,bcm63268-timer-clocks
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    const: 1
-+
-+  "#reset-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#clock-cells"
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    timer_clk: clock-controller@100000ac {
-+      compatible = "brcm,bcm63268-timer-clocks";
-+      reg = <0x100000ac 0x4>;
-+      #clock-cells = <1>;
-+      #reset-cells = <1>;
-+    };
--- 
-2.20.1
-
+I hope so.
