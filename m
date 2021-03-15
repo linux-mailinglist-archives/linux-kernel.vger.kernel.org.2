@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DE633B76F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0F033B8BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhCOOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:00:24 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:30821 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCONzN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:55:13 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 15 Mar 2021 06:55:12 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Mar 2021 06:55:11 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Mar 2021 19:24:34 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 478D116AC; Mon, 15 Mar 2021 19:24:33 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
-        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org, David Collins <collinsd@codeaurora.org>,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V2 1/5] regulator: qcom-rpmh: Add pmic5_ftsmps520 buck
-Date:   Mon, 15 Mar 2021 19:24:10 +0530
-Message-Id: <1615816454-1733-2-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
-References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+        id S234559AbhCOOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231901AbhCON5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 438AE64F1A;
+        Mon, 15 Mar 2021 13:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615816637;
+        bh=brXWXpnYW6YQL0ESqPRMZqTazFW2xCed+nZ3A+nBLeU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UY+XdkQkIBZ/PnBjRuf5GakahDW7i2+HMt99+WKEGrrSbzlZT3n1Zthgj08gzsXZU
+         3Z8yyOIuLNtISsxGcGZ1BzrbSficFTQhFw9IxrEN/0iozDiD+I6kLGcGG/+jeqt5UR
+         YTNWlEsyD+7LIJFa02J7npX1XfPbUOdDUCHoDM+Y=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 5.4 018/168] selftests/bpf: Mask bpf_csum_diff() return value to 16 bits in test_verifier
+Date:   Mon, 15 Mar 2021 14:54:10 +0100
+Message-Id: <20210315135550.945940300@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pmic5_ftsmps520 buck as this is required for PM7325
-and PMR735A PMICs.
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
+From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+
+commit 6185266c5a853bb0f2a459e3ff594546f277609b upstream.
+
+The verifier test labelled "valid read map access into a read-only array
+2" calls the bpf_csum_diff() helper and checks its return value. However,
+architecture implementations of csum_partial() (which is what the helper
+uses) differ in whether they fold the return value to 16 bit or not. For
+example, x86 version has ...
+
+	if (unlikely(odd)) {
+		result = from32to16(result);
+		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+	}
+
+... while generic lib/checksum.c does:
+
+	result = from32to16(result);
+	if (odd)
+		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+
+This makes the helper return different values on different architectures,
+breaking the test on non-x86. To fix this, add an additional instruction
+to always mask the return value to 16 bits, and update the expected return
+value accordingly.
+
+Fixes: fb2abb73e575 ("bpf, selftest: test {rd, wr}only flags and direct value access")
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210228103017.320240-1-yauheni.kaliuta@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-Changes in V2:
- - No change.
+ tools/testing/selftests/bpf/verifier/array_access.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- drivers/regulator/qcom-rpmh-regulator.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+--- a/tools/testing/selftests/bpf/verifier/array_access.c
++++ b/tools/testing/selftests/bpf/verifier/array_access.c
+@@ -250,12 +250,13 @@
+ 	BPF_MOV64_IMM(BPF_REG_5, 0),
+ 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 		     BPF_FUNC_csum_diff),
++	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 	.fixup_map_array_ro = { 3 },
+ 	.result = ACCEPT,
+-	.retval = -29,
++	.retval = 65507,
+ },
+ {
+ 	"invalid write map access into a read-only array 1",
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index 79a554f..9471890 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -723,6 +723,15 @@ static const struct rpmh_vreg_hw_data pmic5_ftsmps510 = {
- 	.of_map_mode = rpmh_regulator_pmic4_smps_of_map_mode,
- };
- 
-+static const struct rpmh_vreg_hw_data pmic5_ftsmps520 = {
-+	.regulator_type = VRM,
-+	.ops = &rpmh_regulator_vrm_ops,
-+	.voltage_range = REGULATOR_LINEAR_RANGE(300000, 0, 263, 4000),
-+	.n_voltages = 264,
-+	.pmic_mode_map = pmic_mode_map_pmic5_smps,
-+	.of_map_mode = rpmh_regulator_pmic4_smps_of_map_mode,
-+};
-+
- static const struct rpmh_vreg_hw_data pmic5_hfsmps515 = {
- 	.regulator_type = VRM,
- 	.ops = &rpmh_regulator_vrm_ops,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
 
