@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A19933BAEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544A033B9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhCOOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S233778AbhCOOG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:06:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 874E364F0D;
-        Mon, 15 Mar 2021 13:58:18 +0000 (UTC)
+        id S232101AbhCON5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D47064F25;
+        Mon, 15 Mar 2021 13:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816699;
-        bh=etdHtidwxzljVrBeF2zHsYOYnaLL7Kn+/lR3nWja0VE=;
+        s=korg; t=1615816666;
+        bh=ExHf5068zaTRt8fEwdOXgMu3QM2m30Of+cXSm5AnGG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y+Djd9pGQlVlFQhZ5HCKYFzVMk1Tcog4fV1vgG5K8nks3XA2C+0ulSgp7vXC3NYdU
-         YbMo5fwrx5vTsFwb6/lhi1ygdPPIWO76catM3+ljQfLJH9V9NqAPywi2iU0q7hzexk
-         5/9Kgg2w3WfCxc/KIMCJeojpp4tNx7X/YCvU93CE=
+        b=Ho/Sn50Us5rwG4ibPU95zdlUvvXukdXt8e+1tafDZELfAdlJIfyGkfM18P/f/LI8l
+         R4gXSl/ayQs7RqAqLUAam2rUWIYaf0nCUt6Eob5F5/hIfqcJAxxcuenizjupoExvME
+         BAcpWSNFnDBaoPsRJA0gVPfTxJnlGapzzb73J7ng=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 072/306] s390/qeth: fix memory leak after failed TX Buffer allocation
-Date:   Mon, 15 Mar 2021 14:52:15 +0100
-Message-Id: <20210315135510.076202367@linuxfoundation.org>
+Subject: [PATCH 5.10 043/290] net: enetc: keep RX ring consumer index in sync with hardware
+Date:   Mon, 15 Mar 2021 14:52:16 +0100
+Message-Id: <20210315135543.383986601@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,97 +41,242 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit e7a36d27f6b9f389e41d8189a8a08919c6835732 upstream.
+commit 3a5d12c9be6f30080600c8bacaf310194e37d029 upstream.
 
-When qeth_alloc_qdio_queues() fails to allocate one of the buffers that
-back an Output Queue, the 'out_freeoutqbufs' path will free all
-previously allocated buffers for this queue. But it misses to free the
-half-finished queue struct itself.
+The RX rings have a producer index owned by hardware, where newly
+received frame buffers are placed, and a consumer index owned by
+software, where newly allocated buffers are placed, in expectation of
+hardware being able to place frame data in them.
 
-Move the buffer allocation into qeth_alloc_output_queue(), and deal with
-such errors internally.
+Hardware increments the producer index when a frame is received, however
+it is not allowed to increment the producer index to match the consumer
+index (RBCIR) since the ring can hold at most RBLENR[LENGTH]-1 received
+BDs. Whenever the producer index matches the value of the consumer
+index, the ring has no unprocessed received frames and all BDs in the
+ring have been initialized/prepared by software, i.e. hardware owns all
+BDs in the ring.
 
-Fixes: 0da9581ddb0f ("qeth: exploit asynchronous delivery of storage blocks")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+The code uses the next_to_clean variable to keep track of the producer
+index, and the next_to_use variable to keep track of the consumer index.
+
+The RX rings are seeded from enetc_refill_rx_ring, which is called from
+two places:
+
+1. initially the ring is seeded until full with enetc_bd_unused(rx_ring),
+   i.e. with 511 buffers. This will make next_to_clean=0 and next_to_use=511:
+
+.ndo_open
+-> enetc_open
+   -> enetc_setup_bdrs
+      -> enetc_setup_rxbdr
+         -> enetc_refill_rx_ring
+
+2. then during the data path processing, it is refilled with 16 buffers
+   at a time:
+
+enetc_msix
+-> napi_schedule
+   -> enetc_poll
+      -> enetc_clean_rx_ring
+         -> enetc_refill_rx_ring
+
+There is just one problem: the initial seeding done during .ndo_open
+updates just the producer index (ENETC_RBPIR) with 0, and the software
+next_to_clean and next_to_use variables. Notably, it will not update the
+consumer index to make the hardware aware of the newly added buffers.
+
+Wait, what? So how does it work?
+
+Well, the reset values of the producer index and of the consumer index
+of a ring are both zero. As per the description in the second paragraph,
+it means that the ring is full of buffers waiting for hardware to put
+frames in them, which by coincidence is almost true, because we have in
+fact seeded 511 buffers into the ring.
+
+But will the hardware attempt to access the 512th entry of the ring,
+which has an invalid BD in it? Well, no, because in order to do that, it
+would have to first populate the first 511 entries, and the NAPI
+enetc_poll will kick in by then. Eventually, after 16 processed slots
+have become available in the RX ring, enetc_clean_rx_ring will call
+enetc_refill_rx_ring and then will [ finally ] update the consumer index
+with the new software next_to_use variable. From now on, the
+next_to_clean and next_to_use variables are in sync with the producer
+and consumer ring indices.
+
+So the day is saved, right? Well, not quite. Freeing the memory
+allocated for the rings is done in:
+
+enetc_close
+-> enetc_clear_bdrs
+   -> enetc_clear_rxbdr
+      -> this just disables the ring
+-> enetc_free_rxtx_rings
+   -> enetc_free_rx_ring
+      -> sets next_to_clean and next_to_use to 0
+
+but again, nothing is committed to the hardware producer and consumer
+indices (yay!). The assumption is that the ring is disabled, so the
+indices don't matter anyway, and it's the responsibility of the "open"
+code path to set those up.
+
+.. Except that the "open" code path does not set those up properly.
+
+While initially, things almost work, during subsequent enetc_close ->
+enetc_open sequences, we have problems. To be precise, the enetc_open
+that is subsequent to enetc_close will again refill the ring with 511
+entries, but it will leave the consumer index untouched. Untouched
+means, of course, equal to the value it had before disabling the ring
+and draining the old buffers in enetc_close.
+
+But as mentioned, enetc_setup_rxbdr will at least update the producer
+index though, through this line of code:
+
+	enetc_rxbdr_wr(hw, idx, ENETC_RBPIR, 0);
+
+so at this stage we'll have:
+
+next_to_clean=0 (in hardware 0)
+next_to_use=511 (in hardware we'll have the refill index prior to enetc_close)
+
+Again, the next_to_clean and producer index are in sync and set to
+correct values, so the driver manages to limp on. Eventually, 16 ring
+entries will be consumed by enetc_poll, and the savior
+enetc_clean_rx_ring will come and call enetc_refill_rx_ring, and then
+update the hardware consumer ring based upon the new next_to_use.
+
+So.. it works?
+Well, by coincidence, it almost does, but there's a circumstance where
+enetc_clean_rx_ring won't be there to save us. If the previous value of
+the consumer index was 15, there's a problem, because the NAPI poll
+sequence will only issue a refill when 16 or more buffers have been
+consumed.
+
+It's easiest to illustrate this with an example:
+
+ip link set eno0 up
+ip addr add 192.168.100.1/24 dev eno0
+ping 192.168.100.1 -c 20 # ping this port from another board
+ip link set eno0 down
+ip link set eno0 up
+ping 192.168.100.1 -c 20 # ping it again from the same other board
+
+One by one:
+
+1. ip link set eno0 up
+-> calls enetc_setup_rxbdr:
+   -> calls enetc_refill_rx_ring(511 buffers)
+   -> next_to_clean=0 (in hw 0)
+   -> next_to_use=511 (in hw 0)
+
+2. ping 192.168.100.1 -c 20 # ping this port from another board
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=1 next_to_clean 0 (in hw 1) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=2 next_to_clean 1 (in hw 2) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=3 next_to_clean 2 (in hw 3) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=4 next_to_clean 3 (in hw 4) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=5 next_to_clean 4 (in hw 5) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=6 next_to_clean 5 (in hw 6) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=7 next_to_clean 6 (in hw 7) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=8 next_to_clean 7 (in hw 8) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=9 next_to_clean 8 (in hw 9) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=10 next_to_clean 9 (in hw 10) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=11 next_to_clean 10 (in hw 11) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=12 next_to_clean 11 (in hw 12) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=13 next_to_clean 12 (in hw 13) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=14 next_to_clean 13 (in hw 14) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=15 next_to_clean 14 (in hw 15) next_to_use 511 (in hw 0)
+enetc_clean_rx_ring: enetc_refill_rx_ring(16) increments next_to_use by 16 (mod 512) and writes it to hw
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=0 next_to_clean 15 (in hw 16) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=1 next_to_clean 16 (in hw 17) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=2 next_to_clean 17 (in hw 18) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=3 next_to_clean 18 (in hw 19) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=4 next_to_clean 19 (in hw 20) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=5 next_to_clean 20 (in hw 21) next_to_use 15 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=6 next_to_clean 21 (in hw 22) next_to_use 15 (in hw 15)
+
+20 packets transmitted, 20 packets received, 0% packet loss
+
+3. ip link set eno0 down
+enetc_free_rx_ring: next_to_clean 0 (in hw 22), next_to_use 0 (in hw 15)
+
+4. ip link set eno0 up
+-> calls enetc_setup_rxbdr:
+   -> calls enetc_refill_rx_ring(511 buffers)
+   -> next_to_clean=0 (in hw 0)
+   -> next_to_use=511 (in hw 15)
+
+5. ping 192.168.100.1 -c 20 # ping it again from the same other board
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=1 next_to_clean 0 (in hw 1) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=2 next_to_clean 1 (in hw 2) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=3 next_to_clean 2 (in hw 3) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=4 next_to_clean 3 (in hw 4) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=5 next_to_clean 4 (in hw 5) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=6 next_to_clean 5 (in hw 6) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=7 next_to_clean 6 (in hw 7) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=8 next_to_clean 7 (in hw 8) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=9 next_to_clean 8 (in hw 9) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=10 next_to_clean 9 (in hw 10) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=11 next_to_clean 10 (in hw 11) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=12 next_to_clean 11 (in hw 12) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=13 next_to_clean 12 (in hw 13) next_to_use 511 (in hw 15)
+enetc_clean_rx_ring: rx_frm_cnt=1 cleaned_cnt=14 next_to_clean 13 (in hw 14) next_to_use 511 (in hw 15)
+
+20 packets transmitted, 12 packets received, 40% packet loss
+
+And there it dies. No enetc_refill_rx_ring (because cleaned_cnt must be equal
+to 15 for that to happen), no nothing. The hardware enters the condition where
+the producer (14) + 1 is equal to the consumer (15) index, which makes it
+believe it has no more free buffers to put packets in, so it starts discarding
+them:
+
+ip netns exec ns0 ethtool -S eno0 | grep -v ': 0'
+NIC statistics:
+     Rx ring  0 discarded frames: 8
+
+Summarized, if the interface receives between 16 and 32 (mod 512) frames
+and then there is a link flap, then the port will eventually die with no
+way to recover. If it receives less than 16 (mod 512) frames, then the
+initial NAPI poll [ before the link flap ] will not update the consumer
+index in hardware (it will remain zero) which will be ok when the buffers
+are later reinitialized. If more than 32 (mod 512) frames are received,
+the initial NAPI poll has the chance to refill the ring twice, updating
+the consumer index to at least 32. So after the link flap, the consumer
+index is still wrong, but the post-flap NAPI poll gets a chance to
+refill the ring once (because it passes through cleaned_cnt=15) and
+makes the consumer index be again back in sync with next_to_use.
+
+The solution to this problem is actually simple, we just need to write
+next_to_use into the hardware consumer index at enetc_open time, which
+always brings it back in sync after an initial buffer seeding process.
+
+The simpler thing would be to put the write to the consumer index into
+enetc_refill_rx_ring directly, but there are issues with the MDIO
+locking: in the NAPI poll code we have the enetc_lock_mdio() taken from
+top-level and we use the unlocked enetc_wr_reg_hot, whereas in
+enetc_open, the enetc_lock_mdio() is not taken at the top level, but
+instead by each individual enetc_wr_reg, so we are forced to put an
+additional enetc_wr_reg in enetc_setup_rxbdr. Better organization of
+the code is left as a refactoring exercise.
+
+Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/net/qeth_core_main.c |   35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/s390/net/qeth_core_main.c
-+++ b/drivers/s390/net/qeth_core_main.c
-@@ -2630,15 +2630,28 @@ static void qeth_free_output_queue(struc
- static struct qeth_qdio_out_q *qeth_alloc_output_queue(void)
- {
- 	struct qeth_qdio_out_q *q = kzalloc(sizeof(*q), GFP_KERNEL);
-+	unsigned int i;
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1252,6 +1252,8 @@ static void enetc_setup_rxbdr(struct ene
+ 	rx_ring->idr = hw->reg + ENETC_SIRXIDR;
  
- 	if (!q)
- 		return NULL;
+ 	enetc_refill_rx_ring(rx_ring, enetc_bd_unused(rx_ring));
++	/* update ENETC's consumer index */
++	enetc_rxbdr_wr(hw, idx, ENETC_RBCIR, rx_ring->next_to_use);
  
--	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q)) {
--		kfree(q);
--		return NULL;
-+	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q))
-+		goto err_qdio_bufs;
-+
-+	for (i = 0; i < QDIO_MAX_BUFFERS_PER_Q; i++) {
-+		if (qeth_init_qdio_out_buf(q, i))
-+			goto err_out_bufs;
- 	}
-+
- 	return q;
-+
-+err_out_bufs:
-+	while (i > 0)
-+		kmem_cache_free(qeth_qdio_outbuf_cache, q->bufs[--i]);
-+	qdio_free_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q);
-+err_qdio_bufs:
-+	kfree(q);
-+	return NULL;
- }
- 
- static void qeth_tx_completion_timer(struct timer_list *timer)
-@@ -2651,7 +2664,7 @@ static void qeth_tx_completion_timer(str
- 
- static int qeth_alloc_qdio_queues(struct qeth_card *card)
- {
--	int i, j;
-+	unsigned int i;
- 
- 	QETH_CARD_TEXT(card, 2, "allcqdbf");
- 
-@@ -2685,13 +2698,6 @@ static int qeth_alloc_qdio_queues(struct
- 		queue->coalesce_usecs = QETH_TX_COALESCE_USECS;
- 		queue->max_coalesced_frames = QETH_TX_MAX_COALESCED_FRAMES;
- 		queue->priority = QETH_QIB_PQUE_PRIO_DEFAULT;
--
--		/* give outbound qeth_qdio_buffers their qdio_buffers */
--		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
--			WARN_ON(queue->bufs[j]);
--			if (qeth_init_qdio_out_buf(queue, j))
--				goto out_freeoutqbufs;
--		}
- 	}
- 
- 	/* completion */
-@@ -2700,13 +2706,6 @@ static int qeth_alloc_qdio_queues(struct
- 
- 	return 0;
- 
--out_freeoutqbufs:
--	while (j > 0) {
--		--j;
--		kmem_cache_free(qeth_qdio_outbuf_cache,
--				card->qdio.out_qs[i]->bufs[j]);
--		card->qdio.out_qs[i]->bufs[j] = NULL;
--	}
- out_freeoutq:
- 	while (i > 0) {
- 		qeth_free_output_queue(card->qdio.out_qs[--i]);
+ 	/* enable ring */
+ 	enetc_rxbdr_wr(hw, idx, ENETC_RBMR, rbmr);
 
 
