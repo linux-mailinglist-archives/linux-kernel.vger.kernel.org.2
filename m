@@ -2,206 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E737B33C8CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DE133C8D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhCOVtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S233759AbhCOVwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233838AbhCOVts (ORCPT
+        with ESMTP id S229696AbhCOVv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:49:48 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925E3C06174A;
-        Mon, 15 Mar 2021 14:49:47 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id r17so68795505ejy.13;
-        Mon, 15 Mar 2021 14:49:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bdRYAsY27cE7OZ7dSGJejE/DzZtoI51iMsrMQPUfTHs=;
-        b=Rl8EKpVAjhcwLsFNpQe6ZNrNBOFz3BOLjHLt1QTDZktP77CGB/WiRIb/XTjPvBzQZn
-         dkWVA7jt3Epf9LWVORtvGq9v4OuHOwHJjuxGRFHMx62H0GkEQRgtpDsW4ElWuQEiNa/r
-         u9Ay/sBmKIToeSoIRsQyFWiFplAMqU89DRPU2bU9bgmSt7p+C+WR7gCe229Mz3YrQVoF
-         SuP+pj1jwhVpsPqAzpwN+Gp8kGFw1yCC3aSGTcmb+uT35XMEsq5qRhIfQAeZbFhCNCFC
-         pFMS/Hb6/Sw9LugiXZzg8lvlmsXhWuJMnX9z9bqxJNbN0a77YHGRaV5D5LijGwTNgb/K
-         aLyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bdRYAsY27cE7OZ7dSGJejE/DzZtoI51iMsrMQPUfTHs=;
-        b=NssP4KAYZTfcTrOH3heJ/q7a1VbJiFNwz/gFqHboC+uB5Z2meLOJ2k0QdQZdKLJ1ms
-         f3EqfJXeg1EEWAHTQgf3LFJmhJ/w0FD2kMRaEZXVhF6EchZ97fV2eqzKN2jlA97UrS8h
-         w1oxEVnuXsXr+XWHy2oa3d/cwY4SaHopy9BeNINSeN+Tse76Wsc5vU7kWhI/zuexy4MS
-         F36v70dfKzoc+JMQ1lhmPKK031AXGcNdJv5F98O7dlhjxFBFs4/00X6/yOQ8qTw/6kPk
-         jhk8Zhf/aZChukpu1s6DYehlqOlHdr0jn260xrqeVE2JbkqtEryNOdjgz/xpmGB7fz9Q
-         LRqA==
-X-Gm-Message-State: AOAM531N+26p8afDboXhXRCj/9iHjc3tMr1ZRfqmuhwWG+JeeLZzXCk2
-        r8OTe7EuVHCOPsbL2KHTCyw=
-X-Google-Smtp-Source: ABdhPJxEM61Wq2O8s7PxaC0HxLoMWZZq/L0qg0WRRCFCiyMx46sxM9J7JLzxZzMMwd8U79fOCp7WVw==
-X-Received: by 2002:a17:907:2642:: with SMTP id ar2mr26035072ejc.145.1615844986388;
-        Mon, 15 Mar 2021 14:49:46 -0700 (PDT)
-Received: from skbuf ([188.25.219.167])
-        by smtp.gmail.com with ESMTPSA id rs24sm8126249ejb.75.2021.03.15.14.49.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 14:49:46 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 23:49:44 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     LGA1150 <dqfext@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH net-next] net: dsa: rtl8366rb: support bridge offloading
-Message-ID: <20210315214944.vom3v75sy7qqmiu4@skbuf>
-References: <20210315170144.2081099-1-dqfext@gmail.com>
+        Mon, 15 Mar 2021 17:51:29 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5EDC06174A;
+        Mon, 15 Mar 2021 14:51:28 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 67E1822234;
+        Mon, 15 Mar 2021 22:51:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615845086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qbz18nJ52fhKTcYvqVifixwv65SjhEo6nJ/z7ymJrV0=;
+        b=QwgxxdZ63fdHtC0poTGN4eZlhN+ambTQ2Veti9bfvBQiBvBN4wyHDyw98IiAV+zGHVswPe
+        ZFfhSphnd25WlsBmUEnm2dr6IAYOwvfNphhQE3BGLJITeeJhHD9didZHjZ3QX0+4gBj81o
+        zAb+CBIyYdXWbq3M9hCd9sZFDDi+cuE=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315170144.2081099-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 22:51:25 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
+In-Reply-To: <20210201222010.GA31234@bjorn-Precision-5520>
+References: <20210201222010.GA31234@bjorn-Precision-5520>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <d2c7ec0e416dd6bb6818892750bff6d7@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:01:44AM +0800, LGA1150 wrote:
-> From: DENG Qingfang <dqfext@gmail.com>
+Am 2021-02-01 23:20, schrieb Bjorn Helgaas:
+> On Mon, Feb 01, 2021 at 08:49:16PM +0100, Michael Walle wrote:
+>> Am 2021-01-17 20:27, schrieb Michael Walle:
+>> > Am 2021-01-16 00:57, schrieb Bjorn Helgaas:
+>> > > On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
+>> > > > Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
+>> > > > > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
+>> > > > > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
+>> > >
+>> > > > > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
+>> > > > > > > that overlaps another BAR, a quirk might be the right fix. But my
+>> > > > > > > guess is the device is working correctly per spec and there's
+>> > > > > > > something wrong in how firmware/Linux is assigning things.  That would
+>> > > > > > > mean we need a more generic fix that's not a quirk and not tied to the
+>> > > > > > > Intel i210.
+>> > > > > >
+>> > > > > > Agreed, but as you already stated (and I've also found that in
+>> > > > > > the PCI spec) the Expansion ROM address decoder can be shared by
+>> > > > > > the other BARs and it shouldn't matter as long as the ExpROM BAR
+>> > > > > > is disabled, which is the case here.
+>> > > > >
+>> > > > > My point is just that if this could theoretically affect devices
+>> > > > > other than the i210, the fix should not be an i210-specific quirk.
+>> > > > > I'll assume this is a general problem and wait for a generic PCI
+>> > > > > core solution unless it's i210-specific.
+>> > > >
+>> > > > I guess the culprit here is that linux skips the programming of the
+>> > > > BAR because of some broken Matrox card. That should have been a
+>> > > > quirk instead, right? But I don't know if we want to change that, do
+>> > > > we? How many other cards depend on that?
+>> > >
+>> > > Oh, right.  There's definitely some complicated history there that
+>> > > makes me a little scared to change things.  But it's also unfortunate
+>> > > if we have to pile quirks on top of quirks.
+>> > >
+>> > > > And still, how do we find out that the i210 is behaving correctly?
+>> > > > In my opinion it is clearly not. You can change the ExpROM BAR value
+>> > > > during runtime and it will start working (while keeping it
+>> > > > disabled).  Am I missing something here?
+>> > >
+>> > > I agree; if the ROM BAR is disabled, I don't think it should matter at
+>> > > all what it contains, so this does look like an i210 defect.
+>> > >
+>> > > Would you mind trying the patch below?  It should update the ROM BAR
+>> > > value even when it is disabled.  With the current pci_enable_rom()
+>> > > code that doesn't rely on the value read from the BAR, I *think* this
+>> > > should be safe even on the Matrox and similar devices.
+>> >
+>> > Your patch will fix my issue:
+>> >
+>> > Tested-by: Michael Walle <michael@walle.cc>
+>> 
+>> any news on this?
 > 
-> Use port isolation registers to configure bridge offloading.
-> Remove the VLAN init, as we have proper CPU tag and bridge offloading
-> support now.
-> 
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
-> Changes since RFC:
->   Fix build error
-> 
->  drivers/net/dsa/rtl8366rb.c | 71 +++++++++++++++++++++++++++++++++----
->  1 file changed, 65 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
-> index a89093bc6c6a..bbcfdd84f0e9 100644
-> --- a/drivers/net/dsa/rtl8366rb.c
-> +++ b/drivers/net/dsa/rtl8366rb.c
-> @@ -300,6 +300,12 @@
->  #define RTL8366RB_INTERRUPT_STATUS_REG	0x0442
->  #define RTL8366RB_NUM_INTERRUPT		14 /* 0..13 */
->  
-> +/* Port isolation registers */
-> +#define RTL8366RB_PORT_ISO_BASE		0x0F08
-> +#define RTL8366RB_PORT_ISO(pnum)	(RTL8366RB_PORT_ISO_BASE + (pnum))
-> +#define RTL8366RB_PORT_ISO_EN		BIT(0)
-> +#define RTL8366RB_PORT_ISO_PORTS_MASK	GENMASK(7, 1)
-> +
->  /* bits 0..5 enable force when cleared */
->  #define RTL8366RB_MAC_FORCE_CTRL_REG	0x0F11
->  
-> @@ -835,6 +841,15 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
->  	if (ret)
->  		return ret;
->  
-> +	/* Isolate user ports */
-> +	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-> +		ret = regmap_write(smi->map, RTL8366RB_PORT_ISO(i),
-> +				   RTL8366RB_PORT_ISO_EN |
-> +				   BIT(RTL8366RB_PORT_NUM_CPU + 1));
+> Thanks for the reminder.  I was thinking this morning that I need to
+> get back to this.  I'm trying to convince myself that doing this
+> wouldn't break the problem fixed by 755528c860b0 ("Ignore disabled ROM
+> resources at setup").  So far I haven't quite succeeded.
 
-You have a RTL8366RB_PORT_ISO_PORTS_MASK that you don't use, and you
-open-code a +1 here and everywhere below. Wouldn't it be more useful to
-have a macro for RTL8366RB_PORT_ISO_PORTS(mask)?
+ping #2 ;)
 
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	/* Set up the "green ethernet" feature */
->  	ret = rtl8366rb_jam_table(rtl8366rb_green_jam,
->  				  ARRAY_SIZE(rtl8366rb_green_jam), smi, false);
-> @@ -963,10 +978,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
->  			return ret;
->  	}
->  
-> -	ret = rtl8366_init_vlan(smi);
-> -	if (ret)
-> -		return ret;
-> -
-
-You can actually delete rtl8366_init_vlan now, it is unused.
-
->  	ret = rtl8366rb_setup_cascaded_irq(smi);
->  	if (ret)
->  		dev_info(smi->dev, "no interrupt support\n");
-> @@ -977,8 +988,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
->  		return -ENODEV;
->  	}
->  
-> -	ds->configure_vlan_while_not_filtering = false;
-> -
->  	return 0;
->  }
->  
-> @@ -1127,6 +1136,54 @@ rtl8366rb_port_disable(struct dsa_switch *ds, int port)
->  	rb8366rb_set_port_led(smi, port, false);
->  }
->  
-> +static int
-> +rtl8366rb_port_bridge_join(struct dsa_switch *ds, int port,
-> +			   struct net_device *bridge)
-> +{
-> +	struct realtek_smi *smi = ds->priv;
-> +	unsigned int port_bitmap = 0;
-> +	int ret, i;
-> +
-> +	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-
-Could you use ds->num_ports please?
-
-> +		if (i == port)
-> +			continue;
-> +		if (dsa_to_port(ds, i)->bridge_dev != bridge)
-> +			continue;
-> +		ret = regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
-> +					 0, BIT(port + 1));
-
-You call regmap_update_bits with a mask of 0? What does it mean?
-This is tested, right?
-
-> +		if (ret)
-> +			return ret;
-> +
-> +		port_bitmap |= BIT(i);
-> +	}
-> +
-> +	return regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
-> +				  0, port_bitmap << 1);
-> +}
-> +
-> +static void
-> +rtl8366rb_port_bridge_leave(struct dsa_switch *ds, int port,
-> +			    struct net_device *bridge)
-> +{
-> +	struct realtek_smi *smi = ds->priv;
-> +	unsigned int port_bitmap = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-> +		if (i == port)
-> +			continue;
-> +		if (dsa_to_port(ds, i)->bridge_dev != bridge)
-> +			continue;
-> +		regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
-> +				   BIT(port + 1), 0);
-> +
-> +		port_bitmap |= BIT(i);
-> +	}
-> +
-> +	regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
-> +			   port_bitmap << 1, 0);
-> +}
-> +
+-michael
