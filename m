@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80D833BC8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3725733BD25
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhCOO0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S239484AbhCOOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:32:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233014AbhCOOAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6B6864F33;
-        Mon, 15 Mar 2021 14:00:09 +0000 (UTC)
+        id S233224AbhCOOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EAD264F2C;
+        Mon, 15 Mar 2021 14:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816811;
-        bh=3c0MogGl9MpIaEJ0nwjZaBmQoxwOldb6L0hsW2RRFMY=;
+        s=korg; t=1615816845;
+        bh=2nfIUCNxLafC23yIpON74DLn4U5M1gY0E//vdyOTZf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z2U5CPL0JeBm0R6mRAR/5JxY8RkAHkc3XsD9s3NYSRj62sRC+vVEnSMtXW0U5QdK6
-         0JbyMtLDHHs0ncFx4N4XhfQNl0FomgrefQSFoALMGVonnrfo64Xw0+VY43jAwX/+BN
-         XFQ2t+Zr7gji4LLgeoFk2BH3Df5eMETwkNq6L/Jo=
+        b=gpepgdDs9NT/ds64j2WqdMa50IZxhdNbdTjWHn6iBIAho6akCS93WM3diYi0gyim0
+         R+yt/bagjibqv3itibvDHFMGWPcECAFGhbdW1RFqLgw0faGiHPzRMIGMwtbj/W1hZo
+         8SCx8113dMFU6YAnfmZabmujigoR0k2XQ1UxRP00=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Tom Rix <trix@redhat.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 127/290] net: enetc: initialize RFS/RSS memories for unused ports too
-Date:   Mon, 15 Mar 2021 14:53:40 +0100
-Message-Id: <20210315135546.200632751@linuxfoundation.org>
+Subject: [PATCH 5.11 158/306] drivers/base/memory: dont store phys_device in memory blocks
+Date:   Mon, 15 Mar 2021 14:53:41 +0100
+Message-Id: <20210315135512.967826369@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,172 +54,181 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 3222b5b613db558e9a494bbf53f3c984d90f71ea ]
+[ Upstream commit e9a2e48e8704c9d20a625c6f2357147d03ea7b97 ]
 
-Michael reports that since linux-next-20210211, the AER messages for ECC
-errors have started reappearing, and this time they can be reliably
-reproduced with the first ping on one of his LS1028A boards.
+No need to store the value for each and every memory block, as we can
+easily query the value at runtime.  Reshuffle the members to optimize the
+memory layout.  Also, let's clarify what the interface once was used for
+and why it's legacy nowadays.
 
-$ ping 1[   33.258069] pcieport 0000:00:1f.0: AER: Multiple Corrected error received: 0000:00:00.0
-72.16.0.1
-PING [   33.267050] pcieport 0000:00:1f.0: AER: can't find device of ID0000
-172.16.0.1 (172.16.0.1): 56 data bytes
-64 bytes from 172.16.0.1: seq=0 ttl=64 time=17.124 ms
-64 bytes from 172.16.0.1: seq=1 ttl=64 time=0.273 ms
+"phys_device" was used on s390x in older versions of lsmem[2]/chmem[3],
+back when they were still part of s390x-tools.  They were later replaced
+by the variants in linux-utils.  For example, RHEL6 and RHEL7 contain
+lsmem/chmem from s390-utils.  RHEL8 switched to versions from util-linux
+on s390x [4].
 
-$ devmem 0x1f8010e10 32
-0xC0000006
+"phys_device" was added with sysfs support for memory hotplug in commit
+3947be1969a9 ("[PATCH] memory hotplug: sysfs and add/remove functions") in
+2005.  It always returned 0.
 
-It isn't clear why this is necessary, but it seems that for the errors
-to go away, we must clear the entire RFS and RSS memory, not just for
-the ports in use.
+s390x started returning something != 0 on some setups (if sclp.rzm is set
+by HW) in 2010 via commit 57b552ba0b2f ("memory hotplug/s390: set
+phys_device").
 
-Sadly the code is structured in such a way that we can't have unified
-logic for the used and unused ports. For the minimal initialization of
-an unused port, we need just to enable and ioremap the PF memory space,
-and a control buffer descriptor ring. Unused ports must then free the
-CBDR because the driver will exit, but used ports can not pick up from
-where that code path left, since the CBDR API does not reinitialize a
-ring when setting it up, so its producer and consumer indices are out of
-sync between the software and hardware state. So a separate
-enetc_init_unused_port function was created, and it gets called right
-after the PF memory space is enabled.
+For s390x, it allowed for identifying which memory block devices belong to
+the same storage increment (RZM).  Only if all memory block devices
+comprising a single storage increment were offline, the memory could
+actually be removed in the hypervisor.
 
-Fixes: 07bf34a50e32 ("net: enetc: initialize the RFS and RSS memories")
-Reported-by: Michael Walle <michael@walle.cc>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Since commit e5d709bb5fb7 ("s390/memory hotplug: provide
+memory_block_size_bytes() function") in 2013 a memory block device spans
+at least one storage increment - which is why the interface isn't really
+helpful/used anymore (except by old lsmem/chmem tools).
+
+There were once RFC patches to make use of "phys_device" in ACPI context;
+however, the underlying problem could be solved using different interfaces
+[1].
+
+[1] https://patchwork.kernel.org/patch/2163871/
+[2] https://github.com/ibm-s390-tools/s390-tools/blob/v2.1.0/zconf/lsmem
+[3] https://github.com/ibm-s390-tools/s390-tools/blob/v2.1.0/zconf/chmem
+[4] https://bugzilla.redhat.com/show_bug.cgi?id=1504134
+
+Link: https://lkml.kernel.org/r/20210201181347.13262-2-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc: Tom Rix <trix@redhat.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c  |  8 ++---
- drivers/net/ethernet/freescale/enetc/enetc.h  |  4 +++
- .../net/ethernet/freescale/enetc/enetc_pf.c   | 33 ++++++++++++++++---
- 3 files changed, 36 insertions(+), 9 deletions(-)
+ .../ABI/testing/sysfs-devices-memory          |  5 ++--
+ .../admin-guide/mm/memory-hotplug.rst         |  4 +--
+ drivers/base/memory.c                         | 25 +++++++------------
+ include/linux/memory.h                        |  3 +--
+ 4 files changed, 15 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 019a0fa3d9a5..df4a858c8001 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1035,7 +1035,7 @@ static void enetc_free_rxtx_rings(struct enetc_ndev_priv *priv)
- 		enetc_free_tx_ring(priv->tx_ring[i]);
+diff --git a/Documentation/ABI/testing/sysfs-devices-memory b/Documentation/ABI/testing/sysfs-devices-memory
+index 246a45b96d22..58dbc592bc57 100644
+--- a/Documentation/ABI/testing/sysfs-devices-memory
++++ b/Documentation/ABI/testing/sysfs-devices-memory
+@@ -26,8 +26,9 @@ Date:		September 2008
+ Contact:	Badari Pulavarty <pbadari@us.ibm.com>
+ Description:
+ 		The file /sys/devices/system/memory/memoryX/phys_device
+-		is read-only and is designed to show the name of physical
+-		memory device.  Implementation is currently incomplete.
++		is read-only;  it is a legacy interface only ever used on s390x
++		to expose the covered storage increment.
++Users:		Legacy s390-tools lsmem/chmem
+ 
+ What:		/sys/devices/system/memory/memoryX/phys_index
+ Date:		September 2008
+diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+index 5c4432c96c4b..245739f55ac7 100644
+--- a/Documentation/admin-guide/mm/memory-hotplug.rst
++++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+@@ -160,8 +160,8 @@ Under each memory block, you can see 5 files:
+ 
+                     "online_movable", "online", "offline" command
+                     which will be performed on all sections in the block.
+-``phys_device``     read-only: designed to show the name of physical memory
+-                    device.  This is not well implemented now.
++``phys_device``	    read-only: legacy interface only ever used on s390x to
++		    expose the covered storage increment.
+ ``removable``       read-only: contains an integer value indicating
+                     whether the memory block is removable or not
+                     removable.  A value of 1 indicates that the memory
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index eef4ffb6122c..de058d15b33e 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -290,20 +290,20 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
  }
  
--static int enetc_alloc_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
-+int enetc_alloc_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
+ /*
+- * phys_device is a bad name for this.  What I really want
+- * is a way to differentiate between memory ranges that
+- * are part of physical devices that constitute
+- * a complete removable unit or fru.
+- * i.e. do these ranges belong to the same physical device,
+- * s.t. if I offline all of these sections I can then
+- * remove the physical device?
++ * Legacy interface that we cannot remove: s390x exposes the storage increment
++ * covered by a memory block, allowing for identifying which memory blocks
++ * comprise a storage increment. Since a memory block spans complete
++ * storage increments nowadays, this interface is basically unused. Other
++ * archs never exposed != 0.
+  */
+ static ssize_t phys_device_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
  {
- 	int size = cbdr->bd_count * sizeof(struct enetc_cbd);
+ 	struct memory_block *mem = to_memory_block(dev);
++	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
  
-@@ -1056,7 +1056,7 @@ static int enetc_alloc_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
+-	return sysfs_emit(buf, "%d\n", mem->phys_device);
++	return sysfs_emit(buf, "%d\n",
++			  arch_get_memory_phys_device(start_pfn));
+ }
+ 
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+@@ -488,11 +488,7 @@ static DEVICE_ATTR_WO(soft_offline_page);
+ static DEVICE_ATTR_WO(hard_offline_page);
+ #endif
+ 
+-/*
+- * Note that phys_device is optional.  It is here to allow for
+- * differentiation between which *physical* devices each
+- * section belongs to...
+- */
++/* See phys_device_show(). */
+ int __weak arch_get_memory_phys_device(unsigned long start_pfn)
+ {
  	return 0;
- }
- 
--static void enetc_free_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
-+void enetc_free_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
+@@ -574,7 +570,6 @@ int register_memory(struct memory_block *memory)
+ static int init_memory_block(unsigned long block_id, unsigned long state)
  {
- 	int size = cbdr->bd_count * sizeof(struct enetc_cbd);
+ 	struct memory_block *mem;
+-	unsigned long start_pfn;
+ 	int ret = 0;
  
-@@ -1064,7 +1064,7 @@ static void enetc_free_cbdr(struct device *dev, struct enetc_cbdr *cbdr)
- 	cbdr->bd_base = NULL;
- }
+ 	mem = find_memory_block_by_id(block_id);
+@@ -588,8 +583,6 @@ static int init_memory_block(unsigned long block_id, unsigned long state)
  
--static void enetc_setup_cbdr(struct enetc_hw *hw, struct enetc_cbdr *cbdr)
-+void enetc_setup_cbdr(struct enetc_hw *hw, struct enetc_cbdr *cbdr)
- {
- 	/* set CBDR cache attributes */
- 	enetc_wr(hw, ENETC_SICAR2,
-@@ -1084,7 +1084,7 @@ static void enetc_setup_cbdr(struct enetc_hw *hw, struct enetc_cbdr *cbdr)
- 	cbdr->cir = hw->reg + ENETC_SICBDRCIR;
- }
+ 	mem->start_section_nr = block_id * sections_per_block;
+ 	mem->state = state;
+-	start_pfn = section_nr_to_pfn(mem->start_section_nr);
+-	mem->phys_device = arch_get_memory_phys_device(start_pfn);
+ 	mem->nid = NUMA_NO_NODE;
  
--static void enetc_clear_cbdr(struct enetc_hw *hw)
-+void enetc_clear_cbdr(struct enetc_hw *hw)
- {
- 	enetc_wr(hw, ENETC_SICBDRMR, 0);
- }
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.h b/drivers/net/ethernet/freescale/enetc/enetc.h
-index 6bc23f9b53fa..15d19cbd5a95 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.h
-@@ -311,6 +311,10 @@ int enetc_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- void enetc_set_ethtool_ops(struct net_device *ndev);
+ 	ret = register_memory(mem);
+diff --git a/include/linux/memory.h b/include/linux/memory.h
+index 439a89e758d8..4da95e684e20 100644
+--- a/include/linux/memory.h
++++ b/include/linux/memory.h
+@@ -27,9 +27,8 @@ struct memory_block {
+ 	unsigned long start_section_nr;
+ 	unsigned long state;		/* serialized by the dev->lock */
+ 	int online_type;		/* for passing data to online routine */
+-	int phys_device;		/* to which fru does this belong? */
+-	struct device dev;
+ 	int nid;			/* NID for this memory block */
++	struct device dev;
+ };
  
- /* control buffer descriptor ring (CBDR) */
-+int enetc_alloc_cbdr(struct device *dev, struct enetc_cbdr *cbdr);
-+void enetc_free_cbdr(struct device *dev, struct enetc_cbdr *cbdr);
-+void enetc_setup_cbdr(struct enetc_hw *hw, struct enetc_cbdr *cbdr);
-+void enetc_clear_cbdr(struct enetc_hw *hw);
- int enetc_set_mac_flt_entry(struct enetc_si *si, int index,
- 			    char *mac_addr, int si_map);
- int enetc_clear_mac_flt_entry(struct enetc_si *si, int index);
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index f29058dddb36..83187cd59fdd 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -1081,6 +1081,26 @@ static int enetc_init_port_rss_memory(struct enetc_si *si)
- 	return err;
- }
- 
-+static void enetc_init_unused_port(struct enetc_si *si)
-+{
-+	struct device *dev = &si->pdev->dev;
-+	struct enetc_hw *hw = &si->hw;
-+	int err;
-+
-+	si->cbd_ring.bd_count = ENETC_CBDR_DEFAULT_SIZE;
-+	err = enetc_alloc_cbdr(dev, &si->cbd_ring);
-+	if (err)
-+		return;
-+
-+	enetc_setup_cbdr(hw, &si->cbd_ring);
-+
-+	enetc_init_port_rfs_memory(si);
-+	enetc_init_port_rss_memory(si);
-+
-+	enetc_clear_cbdr(hw);
-+	enetc_free_cbdr(dev, &si->cbd_ring);
-+}
-+
- static int enetc_pf_probe(struct pci_dev *pdev,
- 			  const struct pci_device_id *ent)
- {
-@@ -1091,11 +1111,6 @@ static int enetc_pf_probe(struct pci_dev *pdev,
- 	struct enetc_pf *pf;
- 	int err;
- 
--	if (node && !of_device_is_available(node)) {
--		dev_info(&pdev->dev, "device is disabled, skipping\n");
--		return -ENODEV;
--	}
--
- 	err = enetc_pci_probe(pdev, KBUILD_MODNAME, sizeof(*pf));
- 	if (err) {
- 		dev_err(&pdev->dev, "PCI probing failed\n");
-@@ -1109,6 +1124,13 @@ static int enetc_pf_probe(struct pci_dev *pdev,
- 		goto err_map_pf_space;
- 	}
- 
-+	if (node && !of_device_is_available(node)) {
-+		enetc_init_unused_port(si);
-+		dev_info(&pdev->dev, "device is disabled, skipping\n");
-+		err = -ENODEV;
-+		goto err_device_disabled;
-+	}
-+
- 	pf = enetc_si_priv(si);
- 	pf->si = si;
- 	pf->total_vfs = pci_sriov_get_totalvfs(pdev);
-@@ -1191,6 +1213,7 @@ err_alloc_si_res:
- 	si->ndev = NULL;
- 	free_netdev(ndev);
- err_alloc_netdev:
-+err_device_disabled:
- err_map_pf_space:
- 	enetc_pci_remove(pdev);
- 
+ int arch_get_memory_phys_device(unsigned long start_pfn);
 -- 
 2.30.1
 
