@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34D833BB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E98133BB86
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbhCOOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S237376AbhCOORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 728F164F4F;
-        Mon, 15 Mar 2021 13:59:18 +0000 (UTC)
+        id S232744AbhCON7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB3464F5E;
+        Mon, 15 Mar 2021 13:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816759;
-        bh=Cx7Z6Teu877+PcieRFJ0pOYWFpG8cXlCbz19Qlmfev0=;
+        s=korg; t=1615816761;
+        bh=xPOyjQVC9zn/UwBkVcl/FOk/o6vGCPsyRe8EBtqcggY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lprL3i00Nv3F4Ms1cyrKq0fdGONOw1mHTRqNw7B5spr7nhy0Y2qx+2HwwtONC6eSp
-         FyOFNcmZZzFleXsBhnJnV2riUhCn1eOhZ3BAzvz7OTdEFWOcAOGGVgeOuHDV2g9g4C
-         PVlwnEGtpJb4rVvo2/rj2jVvCwn7D96nVa+lxDTk=
+        b=eOv3m34AH4YeFss2+wBq9a8eDFfVZ+sRkI2WVj/H8UhViaBLYBvQYxvO0Ea+Znmex
+         O2+fcuDNfUBNBSpWaJnMu/9U56lKrroG6qEPuV97u0WL2H9KjKNVTOuEgB9fVBovDM
+         hiiYFlnmm/LvH78/2EQAxVSryNgt/CZTrswq3ZAw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 42/95] ALSA: hda: Drop the BATCH workaround for AMD controllers
-Date:   Mon, 15 Mar 2021 14:57:12 +0100
-Message-Id: <20210315135741.651429790@linuxfoundation.org>
+        stable@vger.kernel.org, Abhishek Sahu <abhsahu@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 43/95] ALSA: hda: Avoid spurious unsol event handling during S3/S4
+Date:   Mon, 15 Mar 2021 14:57:13 +0100
+Message-Id: <20210315135741.683165639@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -42,44 +43,42 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit 28e96c1693ec1cdc963807611f8b5ad400431e82 upstream.
+commit 5ff9dde42e8c72ed8102eb8cb62e03f9dc2103ab upstream.
 
-The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
-AMD controller (1022:1457)") introduced a few workarounds for the
-recent AMD HD-audio controller, and one of them is the forced BATCH
-PCM mode so that PulseAudio avoids the timer-based scheduling.  This
-was thought to cover for some badly working applications, but this
-actually worsens for more others.  In total, this wasn't a good idea
-to enforce it.
+When HD-audio bus receives unsolicited events during its system
+suspend/resume (S3 and S4) phase, the controller driver may still try
+to process events although the codec chips are already (or yet)
+powered down.  This might screw up the codec communication, resulting
+in CORB/RIRB errors.  Such events should be rather skipped, as the
+codec chip status such as the jack status will be fully refreshed at
+the system resume time.
 
-This is a partial revert of the commit above for dropping the PCM
-BATCH enforcement part to recover from the regression again.
+Since we're tracking the system suspend/resume state in codec
+power.power_state field, let's add the check in the common unsol event
+handler entry point to filter out such events.
 
-Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210308160726.22930-1-tiwai@suse.de
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
+Tested-by: Abhishek Sahu <abhsahu@nvidia.com>
+Cc: <stable@vger.kernel.org> # 183ab39eb0ea: ALSA: hda: Initialize power_state
+Link: https://lore.kernel.org/r/20210310112809.9215-3-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_controller.c |    7 -------
- 1 file changed, 7 deletions(-)
+ sound/pci/hda/hda_bind.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -624,13 +624,6 @@ static int azx_pcm_open(struct snd_pcm_s
- 				     20,
- 				     178000000);
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -46,6 +46,10 @@ static void hda_codec_unsol_event(struct
+ 	if (codec->bus->shutdown)
+ 		return;
  
--	/* by some reason, the playback stream stalls on PulseAudio with
--	 * tsched=1 when a capture stream triggers.  Until we figure out the
--	 * real cause, disable tsched mode by telling the PCM info flag.
--	 */
--	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
--		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
--
- 	if (chip->align_buffer_size)
- 		/* constrain buffer sizes to be multiple of 128
- 		   bytes. This is more efficient in terms of memory
++	/* ignore unsol events during system suspend/resume */
++	if (codec->core.dev.power.power_state.event != PM_EVENT_ON)
++		return;
++
+ 	if (codec->patch_ops.unsol_event)
+ 		codec->patch_ops.unsol_event(codec, ev);
+ }
 
 
