@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5163233C768
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DCC33C75F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhCOUEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:04:13 -0400
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:36847 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhCOUDs (ORCPT
+        id S234001AbhCOUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233899AbhCOUDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:03:48 -0400
-Received: by mail-ej1-f53.google.com with SMTP id e19so68488837ejt.3;
-        Mon, 15 Mar 2021 13:03:47 -0700 (PDT)
+        Mon, 15 Mar 2021 16:03:14 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6F3C06174A;
+        Mon, 15 Mar 2021 13:03:14 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x7so7279436pfi.7;
+        Mon, 15 Mar 2021 13:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4Go4PTA7wIYrW2Nafn8vquSQ2REdIl3hiShJgeKtl+8=;
+        b=jXJF+bq3kVD20zt2PHA264DWtOpqLhyzr6Tn2V19Mi1t6d59kZ7wqpOP/oGlHMLBUq
+         6ofsQYTDy9dfpiy3agJspezufFdcKOYPRLum9E3oYmuh/EDom0qsgHDoOqVt5RGpydwL
+         LpfL8rMj3Aq2AsBS4PibK/Te3w5p1Zkj0J7w+j89DdoECMDVGEIjkvJAOK8eRfWphuEm
+         KfOVhip/fdfEW6G9mjkRGxE1uQi0FcDMknvIvobXEWR1EDaxzURoilAHwYau2kKf7PLr
+         WKi6Kzgg95N8Fpzu0Zztwp3TEfnm/esOjYLVUovwfOSZmgKxMXDC5ueJd8w2AgPutaJc
+         9PUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DV40QsbLmfrHazcRS7XkP3bcaAXUsBsn36zxNtb6dP8=;
-        b=W/7sucFbvFG462CxXMsQbGlcfthxTZTvUHcC+eZbyKe8XG6M4RsEUPYA5pgtxTA+lx
-         5LDaL6RRALZ5RglKs3qWWasrTOBK3XejloHhcalHbQtP7M8Lh0O4LwzONSvF+GPxDFBY
-         iRxGXiYNr0Z1+qX+97wpYRp4cTqiFax1DNL2NRkZj04+M+mMGHYNIGfoXnWjuVaTVV+q
-         wR11dQhpg3C/9vvirwHyjI2JNFgaD5BfSbouJBSGGf2TVe0z/wWedI45dVRv7XLTS5eX
-         QgOitvNNkB0xoyYgGD2dfTVObiStCSWBtOnrfc9KE6Kh7q7VYRLUwAC3yWGQGGIs0Qqg
-         MKGQ==
-X-Gm-Message-State: AOAM5316eqv9aC4a17sQw27RzODO2MT3+4YvvemZlE1J6Jswzu6u7FUl
-        5bgi5Ns1asyiStzh28INbYNff7T5rhSTfg==
-X-Google-Smtp-Source: ABdhPJwGlvmSof040MXGMHe7UCZDixkNuAVv/Swr1OfG+JI694yceu9KyDg8F0XNHDSgvIxlf2OLUg==
-X-Received: by 2002:a17:906:be9:: with SMTP id z9mr25347682ejg.35.1615838627191;
-        Mon, 15 Mar 2021 13:03:47 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-188-216-41-250.cust.vodafonedsl.it. [188.216.41.250])
-        by smtp.gmail.com with ESMTPSA id x21sm8551210eds.53.2021.03.15.13.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:03:46 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH -next 5/5] loop: increment sequence number
-Date:   Mon, 15 Mar 2021 21:02:42 +0100
-Message-Id: <20210315200242.67355-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315200242.67355-1-mcroce@linux.microsoft.com>
-References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4Go4PTA7wIYrW2Nafn8vquSQ2REdIl3hiShJgeKtl+8=;
+        b=KwDRYPMSbybtrI6oy46DYiM0KxsCGne6T9QpHsBR72SW5B2MIi8xkvGx4WCeim9KqE
+         Z0aJMxUlXfUfcoQfSKLYnEg18c2OEHSHwnzu4HYs7R7t1ildFchOX9EnlCl8l60iWV4Q
+         aoKGAZ+GFggQAR0SBjwn1FajF0GAPZuGN1Xw4j8hfd/sa/ysK5ucnSidmnDUvZTkIjTQ
+         E8/harDuB33zIFGV8UxRlr2OvPNKrofyikgEhxY+m5xbJE65oxvtH9JAw7aR0TCHr9Q3
+         V6b0ttBhnukQhQtI0OLM7m43/06CHO8+xU7lhOTdOrj8kYtkHtlhN0W1t+UWwnzPIlKc
+         x5CQ==
+X-Gm-Message-State: AOAM533reTUkN+V8ZiZ0EDEG3p/PcRax2/6ApI24WsiGPy3xNRaTssHP
+        VuG4jWm8G/f+7TO94TK2Yz24f2X9pXw=
+X-Google-Smtp-Source: ABdhPJzRDLUtvo3tFtmTJYpTgjzZmWysMq4AB+CfaFho70CldVEH2zBVzppudCPfxABSy1hAwV0vlg==
+X-Received: by 2002:a62:ddd2:0:b029:1f1:533b:b1cf with SMTP id w201-20020a62ddd20000b02901f1533bb1cfmr25393858pff.56.1615838594083;
+        Mon, 15 Mar 2021 13:03:14 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i14sm459765pjh.17.2021.03.15.13.03.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 13:03:13 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag
+ operations
+To:     DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Ren=c3=a9_van_Dorst?= <opensource@vdorst.com>
+References: <20210315170940.2414854-1-dqfext@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
+Date:   Mon, 15 Mar 2021 13:03:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315170940.2414854-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-On a very loaded system, if there are many events queued up from multiple
-attach/detach cycles, it's impossible to match them up with the
-LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the position
-of our own association in the queue is[1].
-Not even an empty uevent queue is a reliable indication that we already
-received the uevent we were waiting for, since with multi-partition block
-devices each partition's event is queued asynchronously and might be
-delivered later.
 
-Increment the disk sequence number when setting or changing the backing
-file, so the userspace knows which backing file generated the event.
+On 3/15/2021 10:09 AM, DENG Qingfang wrote:
+> Support port MDB and bridge flag operations.
+> 
+> As the hardware can manage multicast forwarding itself, offload_fwd_mark
+> can be unconditionally set to true.
+> 
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
+> Changes since RFC:
+>   Replaced BR_AUTO_MASK with BR_FLOOD | BR_LEARNING
+> 
+>  drivers/net/dsa/mt7530.c | 124 +++++++++++++++++++++++++++++++++++++--
+>  drivers/net/dsa/mt7530.h |   1 +
+>  net/dsa/tag_mtk.c        |  14 +----
+>  3 files changed, 122 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 2342d4528b4c..f765984330c9 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -1000,8 +1000,9 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
+>  	mt7530_write(priv, MT7530_PVC_P(port),
+>  		     PORT_SPEC_TAG);
+>  
+> -	/* Unknown multicast frame forwarding to the cpu port */
+> -	mt7530_rmw(priv, MT7530_MFC, UNM_FFP_MASK, UNM_FFP(BIT(port)));
+> +	/* Disable flooding by default */
+> +	mt7530_rmw(priv, MT7530_MFC, BC_FFP_MASK | UNM_FFP_MASK | UNU_FFP_MASK,
+> +		   BC_FFP(BIT(port)) | UNM_FFP(BIT(port)) | UNU_FFP(BIT(port)));
 
-[1] https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/block/loop.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index a370cde3ddd4..1541ccff81f9 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -734,6 +734,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 		goto out_err;
- 
- 	/* and ... switch */
-+	inc_diskseq(lo->lo_disk);
- 	blk_mq_freeze_queue(lo->lo_queue);
- 	mapping_set_gfp_mask(old_file->f_mapping, lo->old_gfp_mask);
- 	lo->lo_backing_file = file;
-@@ -1122,6 +1123,8 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	if (error)
- 		goto out_unlock;
- 
-+	inc_diskseq(lo->lo_disk);
-+
- 	if (!(file->f_mode & FMODE_WRITE) || !(mode & FMODE_WRITE) ||
- 	    !file->f_op->write_iter)
- 		lo->lo_flags |= LO_FLAGS_READ_ONLY;
+It's not clear to me why this is appropriate especially when the ports
+operated in standalone mode, can you expand a bit more on this?
 -- 
-2.30.2
-
+Florian
