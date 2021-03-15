@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4495833B077
+	by mail.lfdr.de (Postfix) with ESMTP id BE84733B078
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhCOK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:58:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39007 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229599AbhCOK5x (ORCPT
+        id S229937AbhCOK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:58:28 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:36581 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhCOK56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:57:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-225-HPXRzdpYMDacC0wfCCXGQg-1; Mon, 15 Mar 2021 10:57:50 +0000
-X-MC-Unique: HPXRzdpYMDacC0wfCCXGQg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 15 Mar 2021 10:57:49 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Mon, 15 Mar 2021 10:57:49 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nick Desaulniers' <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     Sami Tolvanen <samitolvanen@google.com>,
-        Candle Sun <candlesea@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] Makefile: LTO: have linker check -Wframe-larger-than
-Thread-Topic: [PATCH] Makefile: LTO: have linker check -Wframe-larger-than
-Thread-Index: AQHXF2kAjNB5JXKr7kq0KcwGISzjWaqE5Fyg
-Date:   Mon, 15 Mar 2021 10:57:49 +0000
-Message-ID: <45f3e718a0c046f9a11f49eb199d425c@AcuMS.aculab.com>
-References: <20210312010942.1546679-1-ndesaulniers@google.com>
- <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnPhpKRs6SePCUCPs_2MUFbWgJiaf9F9J+aQZGESSQ9yA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 15 Mar 2021 06:57:58 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 10534580A01;
+        Mon, 15 Mar 2021 06:57:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 15 Mar 2021 06:57:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=wWPFpRcTbfUYJw3V5FoYwoWbKzf
+        lwHa42zjUJms/VmI=; b=pbJBTPv4p0yeEFUkBNifdfshAIOAdrYaZL75tDdfKDt
+        cIIMLneFpizIPChw3WvW+QLZf5BGTPXOOTwp5JiOCbGGXkcJWgZi6Ejx2UPZLqMM
+        1pN4z58pTF9B+8z3IgPt649WTrNq5h0dfeXpIimuLogyaceNPDikacWBZCYUt4AU
+        LF69/1Fsq8gfFs6+FE7Jz657dqJYK0cmMb+5jw3xjnJ5u8YJZSXRZUY2GrwWsivn
+        wPljXL2Eugy39v7k43dj0ZJtVU5RjFRp2ZTSNSUDthAYNzY38qqMLMz4LE72MoUx
+        SSczUIryZbwoIcnhl5VI6A9JZ3CVA3mz4cg+Rvm7EuA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wWPFpR
+        cTbfUYJw3V5FoYwoWbKzflwHa42zjUJms/VmI=; b=EbedVMcoQgT0EC8Rx6pRxj
+        D+89meVLJg1e8Y+/P5luMXQhQ4JywX7EdeiixpqRwFzgqN2aozz8d1XQ8kezWmnA
+        JqZQmBNNO0lCOqo/xcz7cCEXU0PrKD98B2dmjBwtzt0YFJkjy04YQ6JCfrsS6STQ
+        f0Jy6LkbUuQRzQ5DHpMV0VKQak75fm4JCj13irDpDtmI9W9OrkDFKrQjYHF3mhv9
+        ZIxP5mrNKBdnLfOiNmw1io+P2flxtjz7Rt5d3WJVNvK9e9Gxg7p8h1dteK1p5UW9
+        SAymVVPd8wSV/MmrnSNoKJxcp+LPn7AOdfinx+v6jb1UYMk86CdTR8YnW6jbOqNQ
+        ==
+X-ME-Sender: <xms:tD1PYDN5Y0rznMPIxN2oNbBt8fmQfZ1IR37fJKFDWh3Ntr7wpVtRzQ>
+    <xme:tD1PYN-IOEj9eyCvkKPhHHkUHxnXwTQWx9uQmdaS2LXe2xhybspK2SNpcD7yDiNrW
+    SUW1xHOULkD8GoAHyA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:tD1PYCT5_hEv5UUnGV2wAf1Xcj_AvPuWbfQRL-ODhCWqZqwUhoQzRA>
+    <xmx:tD1PYHvYeedGqIS5IdDjK3s1uCwcxJrIoMuG9rXO8zyWPX8K1Ysh2Q>
+    <xmx:tD1PYLdyB39y7iytOjoexjASpqY9k2RCHfLrw-qaoBQdS788HL-T0w>
+    <xmx:tj1PYKxyrisK2Mu5TskRmhqEWXeLqV3OHeheeE1L4AYDVv-ubpiHtQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 52F6C24005B;
+        Mon, 15 Mar 2021 06:57:56 -0400 (EDT)
+Date:   Mon, 15 Mar 2021 11:57:53 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: timer: Simplify conditional expressions
+Message-ID: <20210315105753.lgkc66nwwvby7dmt@gilmour>
+References: <20210315043250.45095-1-samuel@sholland.org>
+ <20210315043250.45095-2-samuel@sholland.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vfoklvg7svqlei4f"
+Content-Disposition: inline
+In-Reply-To: <20210315043250.45095-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAxMiBNYXJjaCAyMDIxIDE3OjU1DQo+IA0K
-PiBPbiBUaHUsIE1hciAxMSwgMjAyMSBhdCA1OjA5IFBNIE5pY2sgRGVzYXVsbmllcnMNCj4gPG5k
-ZXNhdWxuaWVyc0Bnb29nbGUuY29tPiB3cm90ZToNCj4gPg0KPiA+IC1XZnJhbWUtbGFyZ2VyLXRo
-YW49IHJlcXVpcmVzIHN0YWNrIGZyYW1lIGluZm9ybWF0aW9uLCB3aGljaCB0aGUNCj4gPiBmcm9u
-dGVuZCBjYW5ub3QgcHJvdmlkZS4gVGhpcyBkaWFnbm9zdGljIGlzIGVtaXR0ZWQgbGF0ZSBkdXJp
-bmcNCj4gPiBjb21waWxhdGlvbiBvbmNlIHN0YWNrIGZyYW1lIHNpemUgaXMgYXZhaWxhYmxlLg0K
-PiA+DQo+ID4gV2hlbiBidWlsZGluZyB3aXRoIExUTywgdGhlIGZyb250ZW5kIHNpbXBseSBsb3dl
-cnMgQyB0byBMTFZNIElSIGFuZCBkb2VzDQo+ID4gbm90IGhhdmUgc3RhY2sgZnJhbWUgaW5mb3Jt
-YXRpb24sIHNvIGl0IGNhbm5vdCBlbWl0IHRoaXMgZGlhZ25vc3RpYy4NCj4gPiBXaGVuIHRoZSBs
-aW5rZXIgZHJpdmVzIExUTywgaXQgcmVzdGFydHMgb3B0aW1pemF0aW9ucyBhbmQgbG93ZXJzIExM
-Vk0gSVINCj4gPiB0byBvYmplY3QgY29kZS4gQXQgdGhhdCBwb2ludCwgaXQgaGFzIHN0YWNrIGZy
-YW1lIGluZm9ybWF0aW9uIGJ1dA0KPiA+IGRvZXNuJ3Qga25vdyB0byBjaGVjayBmb3IgYSBzcGVj
-aWZpYyBtYXggc3RhY2sgZnJhbWUgc2l6ZS4NCg0KV2l0aCBMVE8gdGhlIGxpbmtlciBvdWdodCB0
-byBiZSBhYmxlIHRvIGRvIGEgc3RhY2sgZnJhbWUgY2hlY2sNCmFjcm9zcyBtdWx0aXBsZXMgZnVu
-Y3Rpb25zIGluIHRoZSBjYWxsIHN0YWNrLg0KDQpDbGVhcmx5IHJlY3Vyc2l2ZSBjYWxscyBjYXVz
-ZSBpc3N1ZXMuDQpJbmRpcmVjdCBvbmVzIGFzIHdlbGwgLSBidXQgZG9lcyBDRkkgaW5jbHVkZSBl
-bm91Z2ggaW5mbw0KYWJvdXQgd2hhdCBjYW4gYmUgY2FsbGVkIGZyb20gd2hlcmUgdG8gaGVscD8N
-Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
-LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
-OiAxMzk3Mzg2IChXYWxlcykNCg==
 
+--vfoklvg7svqlei4f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Mar 14, 2021 at 11:32:46PM -0500, Samuel Holland wrote:
+> The sun4i timer IP block has a variable number of interrupts based on
+> the compatible. Use enums to combine the two sections for the existing
+> 3-interrupt variants, and to simplify adding new compatible strings.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+
+Acked-by: Maxime Ripard <maxime@cerno.tech>
+
+Thanks!
+Maxime
+
+--vfoklvg7svqlei4f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE89sQAKCRDj7w1vZxhR
+xZrgAP9GcBp645D4PdV212rKQGYA1TqxEoanGnnxW1cyS9ZQngD/SBxuJ/3pux/J
+GPEXi4AEBvbRhe24ia1EPUXKPqo0Yw8=
+=xnu4
+-----END PGP SIGNATURE-----
+
+--vfoklvg7svqlei4f--
