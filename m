@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E033BE05
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF4F33BE87
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhCOOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49380 "EHLO mail.kernel.org"
+        id S240480AbhCOOrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234082AbhCOOCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF7A64EEF;
-        Mon, 15 Mar 2021 14:02:52 +0000 (UTC)
+        id S233893AbhCOOCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3281564EF3;
+        Mon, 15 Mar 2021 14:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816974;
-        bh=Q1YXNqEzfzI1SCGqkqq9bYqxLhmTCfcq65w/M53JeGw=;
+        s=korg; t=1615816955;
+        bh=29PgtmEDf0c+uslzpTsM6GpiVJ9WCgJL2+GQIQYDjMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B0TsvwsUDVxUNi9az0QJmpW+fNF/c4WaT9CmEJv3q8jHkKarNbuCF3PriyTuANFvc
-         94h+6F9oedqzDP7nBZdo2Uf5vCQYeDeLX/onIal4t5yJ0g81CE1QMk7AGPuS0LHLfi
-         CdbD/RIcrCZ9DUvz4Qp11LkwfMJAtK365Bk+LjUM=
+        b=CrIm7fS6i4NhunSV4yOHH2PkykBVZ/7Iz9r4fLd533Nqv5m/OJgi2k7gzmkLIv0V4
+         YoLWG0F3OEIdPjyyZ4EvvR8e/DI1/2DU9/5SJwwIOqAL7zF1ZHc3WMqoh2axOmDQG2
+         nYcTnwH3qFeB02N5xZuVstTRWO1BBVR5a0PIx/7U=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 239/306] sh_eth: fix TRSCER mask for R7S72100
-Date:   Mon, 15 Mar 2021 14:55:02 +0100
-Message-Id: <20210315135515.721541218@linuxfoundation.org>
+        stable@vger.kernel.org, Forest Crossman <cyrozap@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 210/290] usb: xhci: Fix ASMedia ASM1042A and ASM3242 DMA addressing
+Date:   Mon, 15 Mar 2021 14:55:03 +0100
+Message-Id: <20210315135549.033703744@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Forest Crossman <cyrozap@gmail.com>
 
-[ Upstream commit 75be7fb7f978202c4c3a1a713af4485afb2ff5f6 ]
+commit b71c669ad8390dd1c866298319ff89fe68b45653 upstream.
 
-According  to  the RZ/A1H Group, RZ/A1M Group User's Manual: Hardware,
-Rev. 4.00, the TRSCER register has bit 9 reserved, hence we can't use
-the driver's default TRSCER mask.  Add the explicit initializer for
-sh_eth_cpu_data::trscer_err_mask for R7S72100.
+I've confirmed that both the ASMedia ASM1042A and ASM3242 have the same
+problem as the ASM1142 and ASM2142/ASM3142, where they lose some of the
+upper bits of 64-bit DMA addresses. As with the other chips, this can
+cause problems on systems where the upper bits matter, and adding the
+XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
 
-Fixes: db893473d313 ("sh_eth: Add support for r7s72100")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210311115353.2137560-4-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/renesas/sh_eth.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/host/xhci-pci.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
-index 1dfecfd938cf..f029c7c03804 100644
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -560,6 +560,8 @@ static struct sh_eth_cpu_data r7s72100_data = {
- 			  EESR_TDE,
- 	.fdr_value	= 0x0000070f,
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -66,6 +66,7 @@
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
+ #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+ #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
++#define PCI_DEVICE_ID_ASMEDIA_3242_XHCI			0x3242
  
-+	.trscer_err_mask = DESC_I_RINT8 | DESC_I_RINT5,
-+
- 	.no_psr		= 1,
- 	.apr		= 1,
- 	.mpr		= 1,
--- 
-2.30.1
-
+ static const char hcd_name[] = "xhci_hcd";
+ 
+@@ -276,11 +277,14 @@ static void xhci_pci_quirks(struct devic
+ 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
+ 		xhci->quirks |= XHCI_BROKEN_STREAMS;
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
++		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI) {
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
++		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
++	}
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+ 	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
+-	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_3242_XHCI))
+ 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
 
 
