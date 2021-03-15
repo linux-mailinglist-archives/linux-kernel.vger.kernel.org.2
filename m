@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04C033B5FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C573A33B602
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhCON4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57176 "EHLO mail.kernel.org"
+        id S231260AbhCON4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231279AbhCONyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1BB64EEE;
-        Mon, 15 Mar 2021 13:53:58 +0000 (UTC)
+        id S231302AbhCONyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A48B664EEA;
+        Mon, 15 Mar 2021 13:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816440;
-        bh=ChNDQVWqze+2TmvHP96sghDHmoFl2G1lIe/UTpDyBcM=;
+        s=korg; t=1615816442;
+        bh=2BIycqwhJIlEfRFJTM7CLI8vnQgrYEVG62hH6jHCeWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7ielITc0vyHTf4AYInNlvfXY+UaYZmc2ZRYz/u8/KKq4ecc1kvjQdMe6fwBvC1o8
-         PSBZV1g6Meu3dp6/ruXY2M8wKxGOXMLAXjqvGVy+4fQRHvlskOAlucDFpbddOZlz5A
-         RJwwR7Q8/jxjZS268cRltsVKzrj3qq8aFzO2O0Ug=
+        b=HphQLIHjJ0UdGcim1fsYNC+l4XlnCNKRNBvhJhrzb1kCjNVT66z7OUSzodUJb2gRl
+         sSGlKyrRjMu62m7SenX0S+cJhscFfBY63oAegYLd7UaxxjJMvAJ2K6LFaCMs1B89Ky
+         OgxB85Z5Vsxk0v0NF2OrS493n29dDeVkQr4AFC6k=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 4.9 40/78] usbip: fix vhci_hcd to check for stream socket
-Date:   Mon, 15 Mar 2021 14:52:03 +0100
-Message-Id: <20210315135213.382588285@linuxfoundation.org>
+Subject: [PATCH 4.9 41/78] usbip: fix vudc to check for stream socket
+Date:   Mon, 15 Mar 2021 14:52:04 +0100
+Message-Id: <20210315135213.415412176@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -44,40 +44,53 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit f55a0571690c4aae03180e001522538c0927432f upstream.
+commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
 
-Fix attach_store() to validate the passed in file descriptor is a
-stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
+Fix usbip_sockfd_store() to validate the passed in file descriptor is
+a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
 sock_recvmsg() can't detect end of stream.
 
 Cc: stable@vger.kernel.org
 Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/52712aa308915bda02cece1589e04ee8b401d1f3.1615171203.git.skhan@linuxfoundation.org
+Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vhci_sysfs.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/usb/usbip/vudc_sysfs.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -309,8 +309,16 @@ static ssize_t store_attach(struct devic
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -24,6 +24,7 @@
+ #include <linux/usb/ch9.h>
+ #include <linux/sysfs.h>
+ #include <linux/kthread.h>
++#include <linux/file.h>
+ #include <linux/byteorder/generic.h>
  
- 	/* Extract socket from fd. */
- 	socket = sockfd_lookup(sockfd, &err);
--	if (!socket)
-+	if (!socket) {
-+		dev_err(dev, "failed to lookup sock");
- 		return -EINVAL;
-+	}
-+	if (socket->type != SOCK_STREAM) {
-+		dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+			socket->type);
-+		sockfd_put(socket);
-+		return -EINVAL;
-+	}
+ #include "usbip_common.h"
+@@ -150,6 +151,13 @@ static ssize_t store_sockfd(struct devic
+ 			goto unlock_ud;
+ 		}
  
- 	/* now need lock until setting vdev status as used */
++		if (socket->type != SOCK_STREAM) {
++			dev_err(dev, "Expecting SOCK_STREAM - found %d",
++				socket->type);
++			ret = -EINVAL;
++			goto sock_err;
++		}
++
+ 		udc->ud.tcp_socket = socket;
  
+ 		spin_unlock_irq(&udc->ud.lock);
+@@ -189,6 +197,8 @@ static ssize_t store_sockfd(struct devic
+ 
+ 	return count;
+ 
++sock_err:
++	sockfd_put(socket);
+ unlock_ud:
+ 	spin_unlock_irq(&udc->ud.lock);
+ unlock:
 
 
