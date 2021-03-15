@@ -2,143 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DE433C262
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEB833C263
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhCOQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhCOQmZ (ORCPT
+        id S233707AbhCOQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:42:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35818 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232829AbhCOQmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:42:25 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4922FC06174A;
-        Mon, 15 Mar 2021 09:42:25 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n132so34092530iod.0;
-        Mon, 15 Mar 2021 09:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=suo82Wm7Q2Ni3L8PUnv9EFjW8tqvE9ayUdLNwJVj7+c=;
-        b=pS8R6CQkEasUaZHCwMCMhsPT3tbRp/QS6uMaq7aHuGKMtL5dcBXWzx7RblXACmYlwS
-         +61aeHcCqF6nuLwGdSiA4ZRufOyEp5jrdAIbMZA35OckXTJXv0lflJa0kPHDVc2Lv/nM
-         PVT6HmZUAMWGFHD8fLsgO/l1q94tBgvGXGhqYfwu3gi6hNPlpoKIK3in9Zzwyfj+ffDR
-         uX6RT7/7x/+8gLCEz3YeSsjuicGfhCYUd7KTy81Au/BKcWGnPIUOswMb3q7nwPzvyEdp
-         32azc0a18RSwOxxVzSJzp8PySrfV16x757ndsMJBNnM1MluNTFpw23K/r+tbBNWdMuut
-         egLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=suo82Wm7Q2Ni3L8PUnv9EFjW8tqvE9ayUdLNwJVj7+c=;
-        b=bJjtY2McQ6mO3Tf8NiLwx9Oho7uU6cqaV26kcpwuM/xEtXXK9XHX4ljR0Qo80rd4Az
-         Qdm9c6XK1uP4Emb077YaV7v30o65XIn2Q2hmW+jvaoMQ3nRwtgUvl/sL1k+hK54v0nfq
-         0leKv4oTZT/c6ONRJnDRn0GT/5Wvix4uLj8HJuGcZR3c8d+c3HL4A06wO9QYfHjxoOnW
-         TSuao7OUlLKx8N0OMkKLwU/KdA8bcz+En3kLlYCTWV9M+6Yl7mo6o2cSdnkXSddo05dx
-         ECIwCQSehmRzh7HrdeNn+IEZe7Ne8kobMEldL0z0pJRaoloVW5a+di27WizMqXVIVUBo
-         Rwgw==
-X-Gm-Message-State: AOAM533GCG7NvU6F7FUM7lby2ciLCxEkqCg09B4y7j0WTkEEWUdeTsJg
-        4su9VHXvU/fOvTwlX7uSbNt8Cja38l1uM1JeIqU=
-X-Google-Smtp-Source: ABdhPJy4M7AFuZ9fXk3YWkOXHWMyTm5M0r+u+NXPK2z8BW1WLbau1LHz4JM11zjA5k+lTqTRzP9s9elQPtEOHkXiqp8=
-X-Received: by 2002:a02:9a0a:: with SMTP id b10mr10259501jal.132.1615826544698;
- Mon, 15 Mar 2021 09:42:24 -0700 (PDT)
+        Mon, 15 Mar 2021 12:42:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615826554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fGluRhk+PJrpzTtViETCiWQbIPiyTfmSvpP2ZDxvRgw=;
+        b=VWEhKfsOYLHURNavR871EhK8f7kwwtw1W8PTLX/61eNdCin2havzT+5LeClsJ53mXbj6s0
+        GqOboAjRmFJXIHeez14l6zKvIjXUYZ2NJ69Vqgp+PH9Zo4E3v9DSvj7+Z8CGPMr6zzNeVU
+        VNGYPCPgpzytJIvrNcG0WNVng7F2+b0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-cl6paFfuOZioICwlchD9fw-1; Mon, 15 Mar 2021 12:42:30 -0400
+X-MC-Unique: cl6paFfuOZioICwlchD9fw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2C9EDF8A0;
+        Mon, 15 Mar 2021 16:42:28 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D91A55C3E6;
+        Mon, 15 Mar 2021 16:42:22 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 17:42:21 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210315174221.1c9e0fe7@carbon>
+In-Reply-To: <20210315104204.GB3697@techsingularity.net>
+References: <20210312124609.33d4d4ba@carbon>
+        <20210312145814.GA2577561@casper.infradead.org>
+        <20210312160350.GW3697@techsingularity.net>
+        <20210312210823.GE2577561@casper.infradead.org>
+        <20210313131648.GY3697@techsingularity.net>
+        <20210313163949.GI2577561@casper.infradead.org>
+        <7D8C62E1-77FD-4B41-90D7-253D13715A6F@oracle.com>
+        <20210313193343.GJ2577561@casper.infradead.org>
+        <20210314125231.GA3697@techsingularity.net>
+        <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
+        <20210315104204.GB3697@techsingularity.net>
 MIME-Version: 1.0
-References: <20210302210646.3044738-1-nathan@kernel.org> <20210309205915.2340265-1-nathan@kernel.org>
- <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
-In-Reply-To: <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 15 Mar 2021 17:41:47 +0100
-Message-ID: <CA+icZUVRyEGnLnRBiZjmZqmvCLkR8AZR8tihho83Lrr_F9A2BA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] Makefile: Remove '--gcc-toolchain' flag
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 5:22 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Wed, Mar 10, 2021 at 5:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > This flag was originally added to allow clang to find the GNU cross
-> > tools in commit 785f11aa595b ("kbuild: Add better clang cross build
-> > support"). This flag was not enough to find the tools at times so
-> > '--prefix' was added to the list in commit ef8c4ed9db80 ("kbuild: allow
-> > to use GCC toolchain not in Clang search path") and improved upon in
-> > commit ca9b31f6bb9c ("Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang
-> > cross compilation"). Now that '--prefix' specifies a full path and
-> > prefix, '--gcc-toolchain' serves no purpose because the kernel builds
-> > with '-nostdinc' and '-nostdlib'.
-> >
-> > This has been verified with self compiled LLVM 10.0.1 and LLVM 13.0.0 as
-> > well as a distribution version of LLVM 11.1.0 without binutils in the
-> > LLVM toolchain locations.
-> >
-> > Link: https://reviews.llvm.org/D97902
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> >
-> > v1 -> v2:
-> >
-> > * Improve commit message (add history behind flag and link to Fangrui's
-> >   documentation improvement).
->
->
-> Both applied to linux-kbuild. Thanks.
->
+On Mon, 15 Mar 2021 10:42:05 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Sorry for being pedantic: This misses my Tested-by#s (see [1]).
+> On Sun, Mar 14, 2021 at 03:22:02PM +0000, Chuck Lever III wrote:
+> > >> Anyway, I'm not arguing against a bulk allocator, nor even saying this
+> > >> is a bad interface.  It just maybe could be better.
+> > >>   
+> > > 
+> > > I think it puts more responsibility on the caller to use the API correctly
+> > > but I also see no value in arguing about it further because there is no
+> > > supporting data either way (I don't have routine access to a sufficiently
+> > > fast network to generate the data). I can add the following patch and let
+> > > callers figure out which interface is preferred. If one of the interfaces
+> > > is dead in a year, it can be removed.
+> > > 
+> > > As there are a couple of ways the arrays could be used, I'm leaving it
+> > > up to Jesper and Chuck which interface they want to use. In particular,
+> > > it would be preferred if the array has no valid struct pages in it but
+> > > it's up to them to judge how practical that is.  
+> > 
+> > I'm interested to hear from Jesper.
+> > 
+> > My two cents (US):
+> > 
+> > If svc_alloc_arg() is the /only/ consumer that wants to fill
+> > a partially populated array of page pointers, then there's no
+> > code-duplication benefit to changing the synopsis of
+> > alloc_pages_bulk() at this point.
+> > 
+> > Also, if the consumers still have to pass in the number of
+> > pages the array needs, rather than having the bulk allocator
+> > figure it out, then there's not much additional benefit, IMO.
+> > 
+> > Ideally (for SUNRPC) alloc_pages_bulk() would take a pointer
+> > to a sparsely-populated array and the total number of elements
+> > in that array, and fill in the NULL elements. The return value
+> > would be "success -- all elements are populated" or "failure --
+> > some elements remain NULL".
+> >   
+> 
+> If the array API interface was expected to handle sparse arrays, it would
+> make sense to define nr_pages are the number of pages that need to be
+> in the array instead of the number of pages to allocate. The preamble
+> would skip the first N number of allocated pages and decrement nr_pages
+> accordingly before the watermark check. The return value would then be the
+> last populated array element and the caller decides if that is enough to
+> proceed or if the API needs to be called again. There is a slight risk
+> that with a spare array that only needed 1 page in reality would fail
+> the watermark check but on low memory, allocations take more work anyway.
+> That definition of nr_pages would avoid the potential buffer overrun but
+> both you and Jesper would need to agree that it's an appropriate API.
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v13-git
+I actually like the idea of doing it this way.  Even-though the
+page_pool fast-path (__page_pool_get_cached()) doesn't clear/mark the
+"consumed" elements with NULL.  I'm ready to change page_pool to handle
+this when calling this API, as I think it will be faster than walking
+the linked list.
 
-AFAICS v2 changes some comments in the commit only but not code?
+Even-though my page_pool use-case doesn't have a sparse array to
+populate (like NFS/SUNRPC) then I can still use this API that Chuck is
+suggesting. Thus, I'm fine with this :-)
 
-- Sedat -
 
-[1] https://marc.info/?l=linux-kernel&m=161480031518629&w=2
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=d4aa405bc9cd506532f075456645716cdd1739c1
+(p.s. working on implementing Alexander Duyck's suggestions, but I
+don't have it ready yet, I will try to send new patch tomorrow. And I
+do realize that with this API change I have to reimplement it again,
+but as long as we make forward progress then I'll happily do it).
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
->
->
->
->
-> > I did not carry tags forward so that people could re-review and test.
-> >
-> >  Makefile | 4 ----
-> >  1 file changed, 4 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 31dcdb3d61fa..182e93d91198 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -568,10 +568,6 @@ ifneq ($(CROSS_COMPILE),)
-> >  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> >  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> > -GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
-> > -endif
-> > -ifneq ($(GCC_TOOLCHAIN),)
-> > -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
-> >  endif
-> >  ifneq ($(LLVM_IAS),1)
-> >  CLANG_FLAGS    += -no-integrated-as
-> >
-> > base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> > --
-> > 2.31.0.rc1
-> >
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+/* fast path */
+static struct page *__page_pool_get_cached(struct page_pool *pool)
+{
+	struct page *page;
+
+	/* Caller MUST guarantee safe non-concurrent access, e.g. softirq */
+	if (likely(pool->alloc.count)) {
+		/* Fast-path */
+		page = pool->alloc.cache[--pool->alloc.count];
+	} else {
+		page = page_pool_refill_alloc_cache(pool);
+	}
+
+	return page;
+}
+
