@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074E133C9BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A733C9C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhCOXK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:10:28 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50430 "EHLO fornost.hmeau.com"
+        id S233518AbhCOXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:11:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhCOXKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:10:08 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lLwLP-00061Y-RR; Tue, 16 Mar 2021 10:09:52 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 16 Mar 2021 10:09:51 +1100
-Date:   Tue, 16 Mar 2021 10:09:51 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size
- mismatch
-Message-ID: <20210315230951.GA17229@gondor.apana.org.au>
-References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
- <202103120329.VU4uJ0yZ-lkp@intel.com>
- <CAHk-=whmwEJ-4tGamqOCw4BDJ-yjYrLRYxaFq5YurVc-XXO+hg@mail.gmail.com>
- <db88186a-d6af-33c9-f1fb-10b673b8fdd6@intel.com>
- <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
- <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com>
- <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
- <YE/ERLHBdjJ19TYT@audible.transient.net>
- <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
+        id S233397AbhCOXLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:11:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06BF364E07;
+        Mon, 15 Mar 2021 23:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615849878;
+        bh=cyt5+m+H54MVA06BZt1j4xvZoJYimo2TbsujhwdmfqY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=vBsskRe2rS+ejZ+ePVYbUtBliABoidDpSi6G1pcG5gTi4XUX25/C3YC8KV0CbGfEN
+         VUEv/i4iJzDjflOXFzPaXtSPZVy+U6O53VrQI5JSNuEN8+zjOeR5u3Wz8nFBYSzicY
+         LC3Pfj45R4SPIsVs3jZdw84fQpL1M9bQNvyE/D9kAKfUEHVBMiEjQB4PuPLNgEc0SN
+         wh/E1qYUZdhCp+nXCsptsEG29dTJ0OlUSoUsqxWJDO0M+8UTvxOk3vC8evkphEIkUc
+         dpzc/Z3iEElfeZ9qgEY/rTFZmo48JZFEj9SRJGzhYQPC+1gl9tAkmbxpBB1DcoL1iW
+         PlWqOernvxXDg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C315235239EE; Mon, 15 Mar 2021 16:11:17 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 16:11:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 06/10] softirq: Don't try waking ksoftirqd
+ before it has been spawned
+Message-ID: <20210315231117.GP2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
+ <20210304000019.22459-6-paulmck@kernel.org>
+ <20210312113641.GA3646@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210312113641.GA3646@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:57:58PM -0700, Linus Torvalds wrote:
->
->     $ [ "!"  = ".size" -a "b" = ".LPBX0," ]
+On Fri, Mar 12, 2021 at 12:36:41PM +0100, Frederic Weisbecker wrote:
+> On Wed, Mar 03, 2021 at 04:00:15PM -0800, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > If there is heavy softirq activity, the softirq system will attempt
+> > to awaken ksoftirqd and will stop the traditional back-of-interrupt
+> > softirq processing.  This is all well and good, but only if the
+> > ksoftirqd kthreads already exist, which is not the case during early
+> > boot, in which case the system hangs.
+> > 
+> > One reproducer is as follows:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
+> > 
+> > This commit therefore adds a couple of existence checks for ksoftirqd
+> > and forces back-of-interrupt softirq processing when ksoftirqd does not
+> > yet exist.  With this change, the above test passes.
+> > 
+> > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > [ paulmck: Remove unneeded check per Sebastian Siewior feedback. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> causes
-> 
->     dash: 6: [: =: unexpected operator
-> 
-> because for some reason that "-a" ends up (wild handwaving here about
-> what is going on) re-parsing the first expression, and ignoring the
-> quoting around "!" when it does so.
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-The quoting on "!" doesn't help I'm afraid.  Even though [ is a
-built-in it is not allowed to look at the quoting because it's
-supposed to behave in the same way whether you get the builtin [
-or the one from /usr/bin.
+Applied, thank you!
 
-So when it gets the expression the quoting on the "!" has already
-been removed.
-
-IOW this expression is ambiguous and may or may not fail depending
-on how it's parsed.
-
-Note that when you have a simple expression like
-
-	[ "!" = ".size" ]
-
-special rules come into play on how it is parsed:
-
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/test.html
-
-But this does not apply when you construct more complex ones with
--a.
-
-There are two ways around this when writing scripts, you either
-add something to ensure that "!" cannot occur, e.g.,
-
-	[ "X$a" = "X$b" -a ... ]
-
-or you break it down into a simpler expression that is guaranteed
-by POSIX:
-
-	[ "$a" = "$b" ] && [ ... ]
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+							Thanx, Paul
