@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E859F33BD72
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB5E33BD61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhCOOfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S236208AbhCOOeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhCOOBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233449AbhCOOBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D8664F23;
-        Mon, 15 Mar 2021 14:01:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C524A64F26;
+        Mon, 15 Mar 2021 14:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816889;
-        bh=oNeT7UkvqxRBX3Bnap7SLnaoOLWYYGHGMOLeeypXxAs=;
+        s=korg; t=1615816891;
+        bh=bnMyIbrShjA4blcSkPzg+jREYFUvXb6DtJpVnVbFUFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=miGSEnfPzZ2VorAvbOUwfsHM2vgu74TrZQX9+LoxVsgoBdEoZTqX+Ap1OKz1NdH7o
-         pVq1u8AppUU/lLPFqPpCn8EDY7gZqwLFbATSZTRxkChdv5bu4VkDCMcPXGC9DFfFog
-         0OFAt9PGmdkd0C87llQoDzqLuMWcpaCUBKhOZcGI=
+        b=f4uaeXKxxc5Bqs1h7Qn185+sm4Ua6YtmVmXb6js1lFKELW2ZYvPgc31J3J8xR6edG
+         nr/1W/DesvBhOezCF8+Bdjt377j8Vftywl4jKsGcwg1ZoJfhFCfQtc8EB9hEeRenxD
+         1ceIwVFnXKs+NW2LRvbSOCg4Z30Ac69XFd4zc7hM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 170/290] ARM: efistub: replace adrl pseudo-op with adr_l macro invocation
-Date:   Mon, 15 Mar 2021 14:54:23 +0100
-Message-Id: <20210315135547.643891667@linuxfoundation.org>
+        stable@vger.kernel.org, Andreas Kempe <kempe@lysator.liu.se>,
+        John Ernberg <john.ernberg@actia.se>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 171/290] ALSA: usb: Add Plantronics C320-M USB ctrl msg delay quirk
+Date:   Mon, 15 Mar 2021 14:54:24 +0100
+Message-Id: <20210315135547.677876725@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,44 +42,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: John Ernberg <john.ernberg@actia.se>
 
-commit 67e3f828bd4bf5e4eb4214dc4eb227d8f1c8a877 upstream.
+commit fc7c5c208eb7bc2df3a9f4234f14eca250001cb6 upstream.
 
-The ARM 'adrl' pseudo instruction is a bit problematic, as it does not
-exist in Thumb mode, and it is not implemented by Clang either. Since
-the Thumb variant has a slightly bigger range, it is sometimes necessary
-to emit the 'adrl' variant in ARM mode where Thumb mode can use adr just
-fine. However, that still leaves the Clang issue, which does not appear
-to be supporting this any time soon.
+The microphone in the Plantronics C320-M headset will randomly
+fail to initialize properly, at least when using Microsoft Teams.
+Introducing a 20ms delay on the control messages appears to
+resolve the issue.
 
-So let's switch to the adr_l macro, which works for both ARM and Thumb,
-and has unlimited range.
-
-Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1065
+Tested-by: Andreas Kempe <kempe@lysator.liu.se>
+Signed-off-by: John Ernberg <john.ernberg@actia.se>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210303181405.39835-1-john.ernberg@actia.se
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/compressed/head.S | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/usb/quirks.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index a0de09f994d8..247ce9055990 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -1440,8 +1440,7 @@ ENTRY(efi_enter_kernel)
- 		mov	r4, r0			@ preserve image base
- 		mov	r8, r1			@ preserve DT pointer
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1672,6 +1672,14 @@ void snd_usb_ctl_msg_quirk(struct usb_de
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
  
-- ARM(		adrl	r0, call_cache_fn	)
-- THUMB(		adr	r0, call_cache_fn	)
-+		adr_l	r0, call_cache_fn
- 		adr	r1, 0f			@ clean the region of code we
- 		bl	cache_clean_flush	@ may run with the MMU off
- 
--- 
-2.30.1
-
++	/*
++	 * Plantronics C320-M needs a delay to avoid random
++	 * microhpone failures.
++	 */
++	if (chip->usb_id == USB_ID(0x047f, 0xc025)  &&
++	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
++		msleep(20);
++
+ 	/* Zoom R16/24, many Logitech(at least H650e/H570e/BCC950),
+ 	 * Jabra 550a, Kingston HyperX needs a tiny delay here,
+ 	 * otherwise requests like get/set frequency return
 
 
