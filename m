@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44D833C3F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2392D33C3F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235969AbhCORQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235060AbhCORQP (ORCPT
+        id S236001AbhCORQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:16:23 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:42928 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235774AbhCORQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:16:15 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B93FC06175F
+        Mon, 15 Mar 2021 13:16:16 -0400
+Received: by mail-pl1-f180.google.com with SMTP id e2so10371766pld.9
         for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:16:15 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ha17so8401304pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=vkbgOXNRjmxTcw1oc4wVA8/mmcZsN9FbZ3cSv6WDfss=;
-        b=vHGrIXtbAnB0hsWFkRVsBVtDapqSeQHP9YPXjdXzuGzaReV6xIo5HCJXKVwi7/3Eij
-         cJSNy9cqf2x5xni7GXxxGfmNtjAglgbxHox2FOwrJ6vR2XDTBSzeAa4lgZR+3JgoksTT
-         mDzdOjPd15zKTeTQFlf4RHgdBM0r62m9L+juaXMmZbB8yKsS1JvyIsgUJhaNveU6ktLF
-         MmD/d60dPSRQKAseQOCk15PbyOx25nN6AgjMebpx9+jdWJjap/u0L1Rc9va8LuZp/cez
-         5j4vr76o6VEwT9epPVvwtyF9OQUfTOgFJR8G3fFTt4iYkrRWe3BnUYiX1WVPUlBKte5u
-         agQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=vkbgOXNRjmxTcw1oc4wVA8/mmcZsN9FbZ3cSv6WDfss=;
-        b=jFK2ggqeckPmxp+j1/KED1KXUJb+XNVHqHVON3v6rDm6xhZnknojHqRw+n96xBwhEd
-         P2Lv4RMMg0A8MGGvemWF5GSQ4zBobCmLEsa0r40L4crF1q+0Uew9qUx4ckDTz5KIh7Q0
-         jxOhXpEvP/Pdny9TTvAjLDkz3bK+DRTEN4C7gZni8dQV9yUPqBTKMQM453wxq5+Xj5HW
-         R9VYug6ruaywqImbNg9wcQe6sfwDZ4jT/FN7mivRKOM9DGSznQaFrj35Uv/X4CfI/iMb
-         NLuw69iiNqzctOwayWIcWORN1iG/BV1n5cob0enzv42Bh5MD2dErQWBIR+jtRtuOyy1S
-         ZDTQ==
-X-Gm-Message-State: AOAM533IH20Fr5jauh/yzUihz1n+q9U5roLJgcvCttKtZPjdP3/kOIOA
-        hbmR4bycQEkJIIJi47cSAn4MTQvlYWSOCg==
-X-Google-Smtp-Source: ABdhPJynimVWlz2D9pxTZJUTa2nWLBJAmcFtq7xh/TIQTYYAUqAXCU+Nu07rPMO12pC4brn1UhRr1Q==
-X-Received: by 2002:a17:90a:b293:: with SMTP id c19mr58684pjr.193.1615828574415;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NW+eXND38mNlb3ZqG2dmVqWyYEV8WBK57NAHmFqZFYY=;
+        b=grZZm1XXabzI0FIG8zAtzUpWbaQPDwJtpkxcZPL41OSYgt7NQsD8Xo1JazDIUdgDTK
+         6e6OvQb9Bt7sv7zV4HHiLZyYrKLF2PX6I3y0dhtsvvk6boEZSHCkUyPa42ZMg05em9Qr
+         kFr74BxTPuTOhyM2ZEc2ff8q2tw9L2FP3bKQcw1F47o8GbJOQEI+qJ7PBDmMwJh/xIkC
+         NX6AKLYeH+wfKEfJp2PVHhC5CwU1+47Y3Phu04cXzdj6G5RZMEY8W74OmItEWo0ZfY4F
+         E8wpazNjMqn+8Mg+00b3710Nqy5zphHmOlIWppwIkmZjb2rwkNmK+9iYvJ6UoL4JFCoI
+         SKNA==
+X-Gm-Message-State: AOAM532pKNxtmkbQkHCXJH38J9gbAnwxqsR5RP4GayWEEZWAoDrPXAaq
+        wmb3ovwOqdm0Qu0ArX4RTnM=
+X-Google-Smtp-Source: ABdhPJwiobUzDkmGkjLB6bhTKEQ8DPqu3/A1XDIavy2tRuDicMt3YJjAzVpVPxhLi0MBkjEYjwBYSA==
+X-Received: by 2002:a17:902:8217:b029:e6:2875:b1d9 with SMTP id x23-20020a1709028217b02900e62875b1d9mr12202035pln.70.1615828575563;
+        Mon, 15 Mar 2021 10:16:15 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:4faf:1598:b15b:7e86? ([2601:647:4802:9070:4faf:1598:b15b:7e86])
+        by smtp.gmail.com with ESMTPSA id bg16sm188680pjb.43.2021.03.15.10.16.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 15 Mar 2021 10:16:14 -0700 (PDT)
-Received: from [2620:15c:17:3:15aa:7e35:d042:44e5] ([2620:15c:17:3:15aa:7e35:d042:44e5])
-        by smtp.gmail.com with ESMTPSA id h6sm14006271pfb.157.2021.03.15.10.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 10:16:13 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 10:16:13 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Oliver Glitta <glittao@gmail.com>
-Subject: Re: [PATCH] [PATCH] mm, slub: enable slub_debug static key when
- creating cache with explicit debug flags
-In-Reply-To: <20210315153415.24404-1-vbabka@suse.cz>
-Message-ID: <2d80f81a-ed85-a36f-6527-b75da3ae209e@google.com>
-References: <20210315153415.24404-1-vbabka@suse.cz>
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+Date:   Mon, 15 Mar 2021 10:16:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021, Vlastimil Babka wrote:
 
-> Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> introduced a static key to optimize the case where no debugging is enabled for
-> any cache. The static key is enabled when slub_debug boot parameter is passed,
-> or CONFIG_SLUB_DEBUG_ON enabled.
+> Hi Sagi,
 > 
-> However, some caches might be created with one or more debugging flags
-> explicitly passed to kmem_cache_create(), and the commit missed this. Thus the
-> debugging functionality would not be actually performed for these caches unless
-> the static key gets enabled by boot param or config.
+> On Fri, Mar 05, 2021 at 11:57:30AM -0800, Sagi Grimberg wrote:
+>> Daniel, again, there is nothing specific about this to nvme-tcp,
+>> this is a safeguard against a funky controller (or a different
+>> bug that is hidden by this).
 > 
-> This patch fixes it by checking for debugging flags passed to
-> kmem_cache_create() and enabling the static key accordingly.
+> As far I can tell, the main difference between nvme-tcp and FC/NVMe,
+> nvme-tcp has not a FW or a big driver which filter out some noise from a
+> misbehaving controller. I haven't really checked the other transports
+> but I wouldn't surprised they share the same properties as FC/NVMe.
 > 
-> Note such explicit debugging flags should not be used outside of debugging and
-> testing as they will now enable the static key globally. btrfs_init_cachep()
-> creates a cache with SLAB_RED_ZONE but that's a mistake that's being corrected
-> [1]. rcu_torture_stats() creates a cache with SLAB_STORE_USER, but that is a
-> testing module so it's OK and will start working as intended after this patch.
+>> The same can happen in any other transport so I would suggest that if
+>> this is a safeguard we want to put in place, we should make it a
+>> generic one.
+>>
+>> i.e. nvme_tag_to_rq() that _all_ transports call consistently.
 > 
-> Also note that in case of backports to kernels before v5.12 that don't have
-> 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
-> static_branch_enable_cpuslocked() should be used.
+> Okay, I'll review all the relevant code and see what could made more
+> generic and consistent.
 > 
+> Though I think nvme-tcp plays in a different league as it is exposed to
+> normal networking traffic and this is a very hostile environment.
 
-Since this affects 5.9+, is the plan to propose backports to stable with 
-static_branch_enable_cpuslocked() once this is merged?  (I notice the 
-absence of the stable tag here, which I believe is intended.)
-
-> [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
-> 
-> Reported-by: Oliver Glitta <glittao@gmail.com>
-> Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-
-Acked-by: David Rientjes <rientjes@google.com>
-
-> ---
->  mm/slub.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 350a37f30e60..cd6694ad1a0a 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3827,6 +3827,15 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
->  
->  static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
->  {
-> +#ifdef CONFIG_SLUB_DEBUG
-> +	/*
-> +	 * If no slub_debug was enabled globally, the static key is not yet
-> +	 * enabled by setup_slub_debug(). Enable it if the cache is being
-> +	 * created with any of the debugging flags passed explicitly.
-> +	 */
-> +	if (flags & SLAB_DEBUG_FLAGS)
-> +		static_branch_enable(&slub_debug_enabled);
-> +#endif
->  	s->flags = kmem_cache_flags(s->size, flags, s->name);
->  #ifdef CONFIG_SLAB_FREELIST_HARDENED
->  	s->random = get_random_long();
+It is, but in this situation, the controller is sending a second
+completion that results in a use-after-free, which makes the
+transport irrelevant. Unless there is some other flow (which is unclear
+to me) that causes this which is a bug that needs to be fixed rather
+than hidden with a safeguard.
