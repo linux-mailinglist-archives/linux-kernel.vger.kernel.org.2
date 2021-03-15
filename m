@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0475C33C196
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE1533C19B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhCOQW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S232321AbhCOQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhCOQW1 (ORCPT
+        with ESMTP id S231978AbhCOQXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:22:27 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264C4C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:22:27 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id w34so19686947pga.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4OgT1op5pKi9FPa9H6iNM9XBtjK1+8GfQ3rJ+7I0hzg=;
-        b=HPFxk1Zjce149T/5GYwsq4vVi8kl7RSBQGKUGvT9NymyCL5rp01UP+ZpzYZMmRE16S
-         YRbQ0a+dbcjFaOLrI3Z/iCOPI9UJw/1Mmq8BqVjt5LeT2rzixpuYHVcKZdBNTxfg1vDe
-         5Ot1ZXVlFg+HFGZLFoW8wepjsxCuuqh5IB2LmywdIODSk8EoXFu1Ctb3aWZ0OKcI2OIJ
-         Ih5jrY6ATdw1GDi/K8ZFtT1+wC49lt/JSzL+PJXdCwPowLZaErwogcAetcnMy7o495Cz
-         TZ9WOyfUXU/haFnwb4NLfk0y+lIASQnzn7eVpMgv2tu51NxucboE/FP0t2PLcZJs6576
-         XeRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4OgT1op5pKi9FPa9H6iNM9XBtjK1+8GfQ3rJ+7I0hzg=;
-        b=B1iibcn0embQW6JsE/0JGf4SQE4KW+PHg00kd7bkdWQFPn4OQfddtlcVNvInIFMuO2
-         1q6RghXglOETBm4AqcjLtyw8YwIoBDcUkrTMZBnQgH3wKQDslOr1mO5of9vz1Owkxxzf
-         yEQRdOJx6Q+1bzPZDkpsQMCza4FP7f6hffp5h2xrxsH8CN7aFKv9z8wLOV5glyAqPdlO
-         DGDdxWeK7ukjdGXUz2PsmKJ2Hnhp423rEXEffFBaZVCxPjVplddVAKmktrEjzoXWv3+g
-         kpFFI9ShcCxE1e6exApS9/Pbd7gF7ncI9j23JFy1L6ZZ0AY1/pSkbkIh591tzqWz71LQ
-         0iXg==
-X-Gm-Message-State: AOAM533ILpwjlLIc+nsteVhnGxBFRH5vh0TAFrYcOFJgsijlcQrvO8bh
-        IMD1hHRX7gLDFbKnxnQtjv7qig==
-X-Google-Smtp-Source: ABdhPJwTkkx4r53sv5pqh1F/+EV63pgm09PHYplM3kJLusGQI94sZ6ELMpBINgkwEsze/alAmXWY8Q==
-X-Received: by 2002:a63:c84a:: with SMTP id l10mr294989pgi.159.1615825346568;
-        Mon, 15 Mar 2021 09:22:26 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d19sm81935pjs.55.2021.03.15.09.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 09:22:25 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 10:22:24 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: qcom_q6v5_mss: Provide errors for
- firmware-name parsing
-Message-ID: <20210315162224.GB1339147@xps15>
-References: <20210312002605.3273255-1-bjorn.andersson@linaro.org>
+        Mon, 15 Mar 2021 12:23:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E70C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dATR+l/9OxpL8ldkODQxrNOVyD7GPAsYjw7FnqDxdJQ=; b=KD7LoKorI1XcbDqRY3XGRkUMXw
+        1rYQN+Nd3STXiXcoT/vw8069YcpVZnCYfFywbY95hvyIwhhl4QCAaxVu1TPMg/ToqqIiAez/q+mZ7
+        5AJBTYCAMscP31d9KnaCvwto+l/9jJ+Ks+VYwEq632vu6K4urzY/6tl3LLqXiYVoVAAw6nW6YqW7M
+        aIPOkHN75Y3coldiCFAZdzGXK/BUDcvJXNy7l6q3DxSZbeFgbNM+beMu7BiD66qUzbkRGv8Np7Vd5
+        u9PpnmqWOhY7Wk1M7FfQ+b1mnee+72eOP3IgMhmb4kuazo35zXTiuxWLHvxkuwIYGnph26upOFdwH
+        X5zGVt9Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLpzj-000Ql7-SU; Mon, 15 Mar 2021 16:23:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2DC93301324;
+        Mon, 15 Mar 2021 17:23:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16421202C6091; Mon, 15 Mar 2021 17:23:03 +0100 (CET)
+Date:   Mon, 15 Mar 2021 17:23:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] x86/alternatives: Optimize optimize_nops()
+Message-ID: <YE+J56MHUcSOyTTb@hirez.programming.kicks-ass.net>
+References: <YE+BFIil8wj+q8Qi@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312002605.3273255-1-bjorn.andersson@linaro.org>
+In-Reply-To: <YE+BFIil8wj+q8Qi@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:26:05PM -0800, Bjorn Andersson wrote:
-> Failing to read the "firmware-name" DT property without informing the
-> developer is annoying, add some helpful debug prints.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 66106ba25ba3..15abfbba78d2 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -1661,8 +1661,10 @@ static int q6v5_probe(struct platform_device *pdev)
->  	mba_image = desc->hexagon_mba_image;
->  	ret = of_property_read_string_index(pdev->dev.of_node, "firmware-name",
->  					    0, &mba_image);
-> -	if (ret < 0 && ret != -EINVAL)
-> +	if (ret < 0 && ret != -EINVAL) {
-> +		dev_err(&pdev->dev, "unable to read mba firmware-name\n");
->  		return ret;
-> +	}
->  
->  	rproc = rproc_alloc(&pdev->dev, pdev->name, &q6v5_ops,
->  			    mba_image, sizeof(*qproc));
-> @@ -1680,8 +1682,10 @@ static int q6v5_probe(struct platform_device *pdev)
->  	qproc->hexagon_mdt_image = "modem.mdt";
->  	ret = of_property_read_string_index(pdev->dev.of_node, "firmware-name",
->  					    1, &qproc->hexagon_mdt_image);
-> -	if (ret < 0 && ret != -EINVAL)
-> +	if (ret < 0 && ret != -EINVAL) {
-> +		dev_err(&pdev->dev, "unable to read mpss firmware-name\n");
->  		goto free_rproc;
-> +	}
+On Mon, Mar 15, 2021 at 04:45:24PM +0100, Peter Zijlstra wrote:
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -345,19 +345,39 @@ recompute_jump(struct alt_instr *a, u8 *
+>  static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
+>  {
+>  	unsigned long flags;
+> +	int nops = 0, i = 0;
+> +	struct insn insn;
+> +	u8 *nop = NULL;
+> +
+> +	do {
+> +		kernel_insn_init(&insn, &instr[i], MAX_INSN_SIZE);
+> +		insn_get_length(&insn);
+> +
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+I suppose you'd like to see that replaced with something like this,
+rite?
 
->  
->  	platform_set_drvdata(pdev, qproc);
->  
-> -- 
-> 2.29.2
-> 
+
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -350,8 +350,8 @@ static void __init_or_module noinline op
+ 	u8 *nop = NULL;
+ 
+ 	do {
+-		kernel_insn_init(&insn, &instr[i], MAX_INSN_SIZE);
+-		insn_get_length(&insn);
++		if (insn_decode(&insn, &instr[i], MAX_INSN_SIZE, INSN_MODE_KERN))
++			return;
+ 
+ 		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90) {
+ 			if (!nop) {
