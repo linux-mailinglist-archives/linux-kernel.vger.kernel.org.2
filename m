@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2889E33BBEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B3133BC26
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237113AbhCOORU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S238463AbhCOOXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231851AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9292C64F42;
-        Mon, 15 Mar 2021 13:59:09 +0000 (UTC)
+        id S232055AbhCOOAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89C8A64F07;
+        Mon, 15 Mar 2021 13:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816750;
-        bh=+dLMDR0iclzPgzx6Mrlb2Nb8EtxTaZNFwxyzdorgccc=;
+        s=korg; t=1615816786;
+        bh=3dHF4xPZBkdJCHhLjFFJ+oVg5bdDf4otkPiATNSJy9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0f2dPDwrBgPOjN2eax70b5nOCtDm6OrpiG813EgPD06pMjwIItE3bKuEcFL87y+4
-         XumyHSTxWomtFEgbITKDUq5WZCtCvLIN6s1uc2rnO9doxvSCA+ZX7f6LK15uTmqKT4
-         5H4dLcs28Pu9G7OIiNPuPAxxkng/fBJbEyubVaCQ=
+        b=OGQfnsbN7jXWzzPQolcSArXTTC4gh2hGE/+mtrO124dGWAYRHAullA7yj9fkVayjc
+         WtAxSi2t2ESdwXl+K9dXyra8DB9FfhlYbKxBvakY2ioG21QYOIb5Tz37bKHdLeNCDV
+         SocqM3ysmUnw1W1bqurjwefD9OD/YJVpOVC5BumE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neil Roberts <nroberts@igalia.com>,
-        Steven Price <steven.price@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.10 093/290] drm/shmem-helper: Dont remove the offset in vm_area_struct pgoff
-Date:   Mon, 15 Mar 2021 14:53:06 +0100
-Message-Id: <20210315135545.067178724@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 124/306] i2c: rcar: faster irq code to minimize HW race condition
+Date:   Mon, 15 Mar 2021 14:53:07 +0100
+Message-Id: <20210315135511.861679238@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +44,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Neil Roberts <nroberts@igalia.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit 11d5a4745e00e73745774671dbf2fb07bd6e2363 upstream.
+[ Upstream commit c7b514ec979e23a08c411f3d8ed39c7922751422 ]
 
-When mmapping the shmem, it would previously adjust the pgoff in the
-vm_area_struct to remove the fake offset that is added to be able to
-identify the buffer. This patch removes the adjustment and makes the
-fault handler use the vm_fault address to calculate the page offset
-instead. Although using this address is apparently discouraged, several
-DRM drivers seem to be doing it anyway.
+To avoid the HW race condition on R-Car Gen2 and earlier, we need to
+write to ICMCR as soon as possible in the interrupt handler. We can
+improve this by writing a static value instead of masking out bits.
 
-The problem with removing the pgoff is that it prevents
-drm_vma_node_unmap from working because that searches the mapping tree
-by address. That doesn't work because all of the mappings are at offset
-0. drm_vma_node_unmap is being used by the shmem helpers when purging
-the buffer.
-
-This fixes a bug in Panfrost which is using drm_gem_shmem_purge. Without
-this the mapping for the purged buffer can still be accessed which might
-mean it would access random pages from other buffers
-
-v2: Don't check whether the unsigned page_offset is less than 0.
-
-Cc: stable@vger.kernel.org
-Fixes: 17acb9f35ed7 ("drm/shmem: Add madvise state and purge helpers")
-Signed-off-by: Neil Roberts <nroberts@igalia.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Signed-off-by: Steven Price <steven.price@arm.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210223155125.199577-3-nroberts@igalia.com
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -536,15 +536,19 @@ static vm_fault_t drm_gem_shmem_fault(st
- 	loff_t num_pages = obj->size >> PAGE_SHIFT;
- 	vm_fault_t ret;
- 	struct page *page;
-+	pgoff_t page_offset;
-+
-+	/* We don't use vmf->pgoff since that has the fake offset */
-+	page_offset = (vmf->address - vma->vm_start) >> PAGE_SHIFT;
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 217def2d7cb4..824586d7ee56 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -91,7 +91,6 @@
  
- 	mutex_lock(&shmem->pages_lock);
+ #define RCAR_BUS_PHASE_START	(MDBS | MIE | ESG)
+ #define RCAR_BUS_PHASE_DATA	(MDBS | MIE)
+-#define RCAR_BUS_MASK_DATA	(~(ESG | FSB) & 0xFF)
+ #define RCAR_BUS_PHASE_STOP	(MDBS | MIE | FSB)
  
--	if (vmf->pgoff >= num_pages ||
-+	if (page_offset >= num_pages ||
- 	    WARN_ON_ONCE(!shmem->pages) ||
- 	    shmem->madv < 0) {
- 		ret = VM_FAULT_SIGBUS;
- 	} else {
--		page = shmem->pages[vmf->pgoff];
-+		page = shmem->pages[page_offset];
+ #define RCAR_IRQ_SEND	(MNR | MAL | MST | MAT | MDE)
+@@ -621,7 +620,7 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ /*
+  * This driver has a lock-free design because there are IP cores (at least
+  * R-Car Gen2) which have an inherent race condition in their hardware design.
+- * There, we need to clear RCAR_BUS_MASK_DATA bits as soon as possible after
++ * There, we need to switch to RCAR_BUS_PHASE_DATA as soon as possible after
+  * the interrupt was generated, otherwise an unwanted repeated message gets
+  * generated. It turned out that taking a spinlock at the beginning of the ISR
+  * was already causing repeated messages. Thus, this driver was converted to
+@@ -630,13 +629,11 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ static irqreturn_t rcar_i2c_irq(int irq, void *ptr)
+ {
+ 	struct rcar_i2c_priv *priv = ptr;
+-	u32 msr, val;
++	u32 msr;
  
- 		ret = vmf_insert_page(vma, vmf->address, page);
- 	}
-@@ -600,9 +604,6 @@ int drm_gem_shmem_mmap(struct drm_gem_ob
- 	struct drm_gem_shmem_object *shmem;
- 	int ret;
+ 	/* Clear START or STOP immediately, except for REPSTART after read */
+-	if (likely(!(priv->flags & ID_P_REP_AFTER_RD))) {
+-		val = rcar_i2c_read(priv, ICMCR);
+-		rcar_i2c_write(priv, ICMCR, val & RCAR_BUS_MASK_DATA);
+-	}
++	if (likely(!(priv->flags & ID_P_REP_AFTER_RD)))
++		rcar_i2c_write(priv, ICMCR, RCAR_BUS_PHASE_DATA);
  
--	/* Remove the fake offset */
--	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
--
- 	if (obj->import_attach) {
- 		/* Drop the reference drm_gem_mmap_obj() acquired.*/
- 		drm_gem_object_put(obj);
+ 	msr = rcar_i2c_read(priv, ICMSR);
+ 
+-- 
+2.30.1
+
 
 
