@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4853A33B524
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C16E33B518
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhCONxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55554 "EHLO mail.kernel.org"
+        id S230243AbhCONxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229862AbhCONxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A2DC64EB6;
-        Mon, 15 Mar 2021 13:52:58 +0000 (UTC)
+        id S229921AbhCONww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2827F64EF0;
+        Mon, 15 Mar 2021 13:52:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816381;
-        bh=lgEPCoKRkyzEgb68wpQr0WOMNlEFkO0uKQfIXSmt5lM=;
+        s=korg; t=1615816372;
+        bh=0sT4d9BSyem9AsgEkZVpJuZYeysTVbVInfe6VPlxUoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NmkFCibnq8sXUNd/CvdW4klHxaKlAG3KzRWMKneHkLfxQckdjmmGBpAEsF5QyK32n
-         /jJIe9LMaHHGRTTGT8ISNCTvjP42NRSqOTz44b6MRVIkG+1+f9k+V89Kfe8AyzadzI
-         5+ZIqiBx0xXxz7+ufR232g23CxUg62B1aBdgZUbM=
+        b=yjVjiTK3mc0qrbjrXltnGUyVwlkZS+Uilwq9INodvewqPrVemgLMJ/8gtVbHc/GT3
+         W/A+isZEV8pCiIvEiiexgG0MbWRlHglFaoAXTsccEAnxKaVACf0naTktwG6VXlUUuH
+         cujSVulrSrWsTvPQ67hY1HTzYPjiY/ielcN5D3Nw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Liebler <stli@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [PATCH 4.4 12/75] futex: Cure exit race
+        stable@vger.kernel.org, Martin Kennedy <hurricos@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.9 03/78] ath9k: fix transmitting to stations in dynamic SMPS mode
 Date:   Mon, 15 Mar 2021 14:51:26 +0100
-Message-Id: <20210315135208.663967134@linuxfoundation.org>
+Message-Id: <20210315135212.180795544@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,189 +41,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit da791a667536bf8322042e38ca85d55a78d3c273 upstream.
+commit 3b9ea7206d7e1fdd7419cbd10badd3b2c80d04b4 upstream.
 
-This patch comes directly from an origin patch (commit
-9c3f3986036760c48a92f04b36774aa9f63673f80) in v4.9.
+When transmitting to a receiver in dynamic SMPS mode, all transmissions that
+use multiple spatial streams need to be sent using CTS-to-self or RTS/CTS to
+give the receiver's extra chains some time to wake up.
+This fixes the tx rate getting stuck at <= MCS7 for some clients, especially
+Intel ones, which make aggressive use of SMPS.
 
-Stefan reported, that the glibc tst-robustpi4 test case fails
-occasionally. That case creates the following race between
-sys_exit() and sys_futex_lock_pi():
-
- CPU0				CPU1
-
- sys_exit()			sys_futex()
-  do_exit()			 futex_lock_pi()
-   exit_signals(tsk)		  No waiters:
-    tsk->flags |= PF_EXITING;	  *uaddr == 0x00000PID
-  mm_release(tsk)		  Set waiter bit
-   exit_robust_list(tsk) {	  *uaddr = 0x80000PID;
-      Set owner died		  attach_to_pi_owner() {
-    *uaddr = 0xC0000000;	   tsk = get_task(PID);
-   }				   if (!tsk->flags & PF_EXITING) {
-  ...				     attach();
-  tsk->flags |= PF_EXITPIDONE;	   } else {
-				     if (!(tsk->flags & PF_EXITPIDONE))
-				       return -EAGAIN;
-				     return -ESRCH; <--- FAIL
-				   }
-
-ESRCH is returned all the way to user space, which triggers the glibc test
-case assert. Returning ESRCH unconditionally is wrong here because the user
-space value has been changed by the exiting task to 0xC0000000, i.e. the
-FUTEX_OWNER_DIED bit is set and the futex PID value has been cleared. This
-is a valid state and the kernel has to handle it, i.e. taking the futex.
-
-Cure it by rereading the user space value when PF_EXITING and PF_EXITPIDONE
-is set in the task which 'owns' the futex. If the value has changed, let
-the kernel retry the operation, which includes all regular sanity checks
-and correctly handles the FUTEX_OWNER_DIED case.
-
-If it hasn't changed, then return ESRCH as there is no way to distinguish
-this case from malfunctioning user space. This happens when the exiting
-task did not have a robust list, the robust list was corrupted or the user
-space value in the futex was simply bogus.
-
-Reported-by: Stefan Liebler <stli@linux.ibm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Darren Hart <dvhart@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Sasha Levin <sashal@kernel.org>
 Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=200467
-Link: https://lkml.kernel.org/r/20181210152311.986181245@linutronix.de
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[Lee: Required to satisfy functional dependency from futex back-port.
- Re-add the missing handle_exit_race() parts from:
- 3d4775df0a89 ("futex: Replace PF_EXITPIDONE with a state")]
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Reported-by: Martin Kennedy <hurricos@gmail.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210214184911.96702-1-nbd@nbd.name
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |   71 ++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath9k/ath9k.h |    3 ++-
+ drivers/net/wireless/ath/ath9k/xmit.c  |    6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1198,11 +1198,67 @@ static void wait_for_owner_exiting(int r
- 	put_task_struct(exiting);
- }
+--- a/drivers/net/wireless/ath/ath9k/ath9k.h
++++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+@@ -179,7 +179,8 @@ struct ath_frame_info {
+ 	s8 txq;
+ 	u8 keyix;
+ 	u8 rtscts_rate;
+-	u8 retries : 7;
++	u8 retries : 6;
++	u8 dyn_smps : 1;
+ 	u8 baw_tracked : 1;
+ 	u8 tx_power;
+ 	enum ath9k_key_type keytype:2;
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -1255,6 +1255,11 @@ static void ath_buf_set_rate(struct ath_
+ 				 is_40, is_sgi, is_sp);
+ 			if (rix < 8 && (tx_info->flags & IEEE80211_TX_CTL_STBC))
+ 				info->rates[i].RateFlags |= ATH9K_RATESERIES_STBC;
++			if (rix >= 8 && fi->dyn_smps) {
++				info->rates[i].RateFlags |=
++					ATH9K_RATESERIES_RTS_CTS;
++				info->flags |= ATH9K_TXDESC_CTSENA;
++			}
  
-+static int handle_exit_race(u32 __user *uaddr, u32 uval,
-+			    struct task_struct *tsk)
-+{
-+	u32 uval2;
-+
-+	/*
-+	 * If the futex exit state is not yet FUTEX_STATE_DEAD, wait
-+	 * for it to finish.
-+	 */
-+	if (tsk && tsk->futex_state != FUTEX_STATE_DEAD)
-+		return -EAGAIN;
-+
-+	/*
-+	 * Reread the user space value to handle the following situation:
-+	 *
-+	 * CPU0				CPU1
-+	 *
-+	 * sys_exit()			sys_futex()
-+	 *  do_exit()			 futex_lock_pi()
-+	 *                                futex_lock_pi_atomic()
-+	 *   exit_signals(tsk)		    No waiters:
-+	 *    tsk->flags |= PF_EXITING;	    *uaddr == 0x00000PID
-+	 *  mm_release(tsk)		    Set waiter bit
-+	 *   exit_robust_list(tsk) {	    *uaddr = 0x80000PID;
-+	 *      Set owner died		    attach_to_pi_owner() {
-+	 *    *uaddr = 0xC0000000;	     tsk = get_task(PID);
-+	 *   }				     if (!tsk->flags & PF_EXITING) {
-+	 *  ...				       attach();
-+	 *  tsk->futex_state =               } else {
-+	 *	FUTEX_STATE_DEAD;              if (tsk->futex_state !=
-+	 *					  FUTEX_STATE_DEAD)
-+	 *				         return -EAGAIN;
-+	 *				       return -ESRCH; <--- FAIL
-+	 *				     }
-+	 *
-+	 * Returning ESRCH unconditionally is wrong here because the
-+	 * user space value has been changed by the exiting task.
-+	 *
-+	 * The same logic applies to the case where the exiting task is
-+	 * already gone.
-+	 */
-+	if (get_futex_value_locked(&uval2, uaddr))
-+		return -EFAULT;
-+
-+	/* If the user space value has changed, try again. */
-+	if (uval2 != uval)
-+		return -EAGAIN;
-+
-+	/*
-+	 * The exiting task did not have a robust list, the robust list was
-+	 * corrupted or the user space value in *uaddr is simply bogus.
-+	 * Give up and tell user space.
-+	 */
-+	return -ESRCH;
-+}
-+
- /*
-  * Lookup the task for the TID provided from user space and attach to
-  * it after doing proper sanity checks.
-  */
--static int attach_to_pi_owner(u32 uval, union futex_key *key,
-+static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
- 			      struct futex_pi_state **ps,
- 			      struct task_struct **exiting)
- {
-@@ -1213,12 +1269,15 @@ static int attach_to_pi_owner(u32 uval,
- 	/*
- 	 * We are the first waiter - try to look up the real owner and attach
- 	 * the new pi_state to it, but bail out when TID = 0 [1]
-+	 *
-+	 * The !pid check is paranoid. None of the call sites should end up
-+	 * with pid == 0, but better safe than sorry. Let the caller retry
- 	 */
- 	if (!pid)
--		return -ESRCH;
-+		return -EAGAIN;
- 	p = futex_find_get_task(pid);
- 	if (!p)
--		return -ESRCH;
-+		return handle_exit_race(uaddr, uval, NULL);
- 
- 	if (unlikely(p->flags & PF_KTHREAD)) {
- 		put_task_struct(p);
-@@ -1237,7 +1296,7 @@ static int attach_to_pi_owner(u32 uval,
- 		 * FUTEX_STATE_DEAD, we know that the task has finished
- 		 * the cleanup:
- 		 */
--		int ret = (p->futex_state = FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
-+		int ret = handle_exit_race(uaddr, uval, p);
- 
- 		raw_spin_unlock_irq(&p->pi_lock);
- 		/*
-@@ -1303,7 +1362,7 @@ static int lookup_pi_state(u32 __user *u
- 	 * We are the first waiter - try to look up the owner based on
- 	 * @uval and attach to it.
- 	 */
--	return attach_to_pi_owner(uval, key, ps, exiting);
-+	return attach_to_pi_owner(uaddr, uval, key, ps, exiting);
- }
- 
- static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
-@@ -1419,7 +1478,7 @@ static int futex_lock_pi_atomic(u32 __us
- 	 * attach to the owner. If that fails, no harm done, we only
- 	 * set the FUTEX_WAITERS bit in the user space variable.
- 	 */
--	return attach_to_pi_owner(uval, key, ps, exiting);
-+	return attach_to_pi_owner(uaddr, newval, key, ps, exiting);
- }
- 
- /**
+ 			info->txpower[i] = ath_get_rate_txpower(sc, bf, rix,
+ 								is_40, false);
+@@ -2158,6 +2163,7 @@ static void setup_frame_info(struct ieee
+ 		fi->keyix = an->ps_key;
+ 	else
+ 		fi->keyix = ATH9K_TXKEYIX_INVALID;
++	fi->dyn_smps = sta && sta->smps_mode == IEEE80211_SMPS_DYNAMIC;
+ 	fi->keytype = keytype;
+ 	fi->framelen = framelen;
+ 	fi->tx_power = txpower;
 
 
