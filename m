@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE41E33AB9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD8033ABAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCOGhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 02:37:00 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:62944 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhCOGg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 02:36:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615790219; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=UnMKnQ0upwcZQULIAzy6S4QOxI40VwQxQnJKEVcsB7M=;
- b=gjCKXj+5eK+ysyep/+B0yOB3Oj328trOtPxb3R+zwIi3BkSXq4FIVsSQq/knTyNQIvM8W4bV
- cGMdoKZ19F3KtGLFFVZv5hB5WZwo8AGDHZnn+bcFgx1NsKEYHppR2wzt6nHUPoSmmOuLZhiM
- sRcA/phwVmHiZd2MBqawqlDtVpY=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 604f00884db3bb6801eee79f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 06:36:56
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 13E90C43464; Mon, 15 Mar 2021 06:36:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A670C433CA;
-        Mon, 15 Mar 2021 06:36:55 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 14:36:55 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, huobean@gmail.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
-In-Reply-To: <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
-References: <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
- <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p8>
- <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
-Message-ID: <9eb5f8385f830bdec25828f17527c73f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S230017AbhCOGjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 02:39:44 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:48700 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhCOGj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 02:39:26 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id EA651B9639;
+        Mon, 15 Mar 2021 14:39:22 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P29406T140393971717888S1615790360484377_;
+        Mon, 15 Mar 2021 14:39:22 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <df0691ade47602fc9b47b08f22689e01>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: mturquette@baylibre.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     mturquette@baylibre.com, robh+dt@kernel.org, sboyd@kernel.org,
+        heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v4 0/4] clk: rockchip: add clock controller for rk3568
+Date:   Mon, 15 Mar 2021 14:39:09 +0800
+Message-Id: <20210315063913.15184-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 09:31, Daejun Park wrote:
-> This patch supports the HPB 2.0.
-> 
-> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
-> In the case of Read (<= 32KB) is supported as single HPB read.
-> In the case of Read (36KB ~ 512KB) is supported by as a combination of
-> write buffer command and HPB read command to deliver more PPN.
-> The write buffer commands may not be issued immediately due to busy 
-> tags.
-> To use HPB read more aggressively, the driver can requeue the write 
-> buffer
-> command. The requeue threshold is implemented as timeout and can be
-> modified with requeue_timeout_ms entry in sysfs.
-> 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
-> +static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct 
-> scsi_cmnd *cmd,
-> +				int *read_id)
-> +{
-> +	struct ufshpb_req *pre_req;
-> +	struct request *req = NULL;
-> +	struct bio *bio = NULL;
-> +	unsigned long flags;
-> +	int _read_id;
-> +	int ret = 0;
-> +
-> +	req = blk_get_request(cmd->device->request_queue,
+Add the clock tree definition for the new rk3568 SoC.
 
-To keep symmetry with ufshpb_get_req(), can we use 
-hpb->sdev_ufs_lu->request_queue?
+Change in V4:
+[PATCH v4 1/4]: No change.
+[PATCH v4 2/4]: No change.
+[PATCH v4 3/4]: No change.
+[PATCH v4 4/4]: Drop parenthesis and module alias.
 
-Thanks,
-Can Guo.
+Change in V3:
+[PATCH v3 1/4]: Fix some code styles.
+[PATCH v3 2/4]: No change.
+[PATCH v3 3/4]: No change.
+[PATCH v3 4/4]: No change.
 
-> +			      REQ_OP_SCSI_OUT | REQ_SYNC, BLK_MQ_REQ_NOWAIT);
-> +	if (IS_ERR(req))
-> +		return -EAGAIN;
-> +
-> +	bio = bio_alloc(GFP_ATOMIC, 1);
-> +	if (!bio) {
-> +		blk_put_request(req);
-> +		return -EAGAIN;
-> +	}
-> +
-> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +	pre_req = ufshpb_get_pre_req(hpb);
-> +	if (!pre_req) {
-> +		ret = -EAGAIN;
-> +		goto unlock_out;
-> +	}
-> +	_read_id = ufshpb_get_read_id(hpb);
-> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +	pre_req->req = req;
-> +	pre_req->bio = bio;
-> +
-> +	ret = ufshpb_execute_pre_req(hpb, cmd, pre_req, _read_id);
-> +	if (ret)
-> +		goto free_pre_req;
-> +
-> +	*read_id = _read_id;
-> +
-> +	return ret;
-> +free_pre_req:
-> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +	ufshpb_put_pre_req(hpb, pre_req);
-> +unlock_out:
-> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +	bio_put(bio);
-> +	blk_put_request(req);
-> +	return ret;
-> +}
-> +
+Change in V2:
+[PATCH v2 1/4]: Convert rockchip,rk3568-cru.txt to YAML,
+                And update commit message.
+[PATCH v2 2/4]: No change.
+[PATCH v2 3/4]: Use arrays to support more core independent div
+settings.
+[PATCH v2 4/4]: Adapter [PATCH v2 3/4] changes.
+
+Elaine Zhang (4):
+  dt-binding: clock: Document rockchip,rk3568-cru bindings
+  clk: rockchip: add dt-binding header for rk3568
+  clk: rockchip: support more core div setting
+  clk: rockchip: add clock controller for rk3568
+
+ .../bindings/clock/rockchip,rk3568-cru.yaml   |   60 +
+ drivers/clk/rockchip/Kconfig                  |    7 +
+ drivers/clk/rockchip/Makefile                 |    1 +
+ drivers/clk/rockchip/clk-cpu.c                |   53 +-
+ drivers/clk/rockchip/clk-px30.c               |    7 +-
+ drivers/clk/rockchip/clk-rk3036.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3128.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3188.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3228.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3288.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3308.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3328.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3368.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3399.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3568.c             | 1725 +++++++++++++++++
+ drivers/clk/rockchip/clk-rv1108.c             |    7 +-
+ drivers/clk/rockchip/clk.h                    |   54 +-
+ include/dt-bindings/clock/rk3568-cru.h        |  926 +++++++++
+ 18 files changed, 2842 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.yaml
+ create mode 100644 drivers/clk/rockchip/clk-rk3568.c
+ create mode 100644 include/dt-bindings/clock/rk3568-cru.h
+
+-- 
+2.17.1
+
+
+
