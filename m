@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4756933BD76
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB1933BD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhCOOfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:35:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S236166AbhCOOel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233480AbhCOOBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5290D64EEA;
-        Mon, 15 Mar 2021 14:01:44 +0000 (UTC)
+        id S233419AbhCOOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1521064EEA;
+        Mon, 15 Mar 2021 14:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816905;
-        bh=+JcAoFLgLXKXXxLZloBbxdahgWcsoABDP2DuTfg0MSM=;
+        s=korg; t=1615816877;
+        bh=slnlhpSBqrcz8K5+o2gwuRlOg2HLVJt1EKKH8unuxJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FD/hn6hT70QwPSgilW4va/o71EyFOj+bu9/FSOjhVoGkOHzctqBbATytUtA2DeIwT
-         43Z9MubjXNunlLzG/RyaCUOhePgatGyplcRH57OZmdYNcCMcuT04PdjdByxSfiCooU
-         RA9Dg7RceIW4rWZy8lmunfnTRl32/0SrsmC2llvo=
+        b=RKSx1caNA0Sfvu7v6TdSzKyJEGrwpy6bBM+p1VTzvaMKYlwW8SZYWoXPbZNMJPaZI
+         8eswbuSgVDQLRuTvy7OamYXhOMeF9+eSUMtiv8BLFlkuchBK8htrvXUJ5in0CB7FAI
+         /p+W20f5pGewv48XiddpdVkpqkZCc5fO+DQQkbj0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yorick de Wid <ydewid@gmail.com>
-Subject: [PATCH 5.11 193/306] Goodix Fingerprint device is not a modem
-Date:   Mon, 15 Mar 2021 14:54:16 +0100
-Message-Id: <20210315135514.144434729@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 164/290] scsi: target: core: Add cmd length set before cmd complete
+Date:   Mon, 15 Mar 2021 14:54:17 +0100
+Message-Id: <20210315135547.447658469@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +44,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Yorick de Wid <ydewid@gmail.com>
+From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 
-commit 4d8654e81db7346f915eca9f1aff18f385cab621 upstream.
+[ Upstream commit 1c73e0c5e54d5f7d77f422a10b03ebe61eaed5ad ]
 
-The CDC ACM driver is false matching the Goodix Fingerprint device
-against the USB_CDC_ACM_PROTO_AT_V25TER.
+TCM doesn't properly handle underflow case for service actions. One way to
+prevent it is to always complete command with
+target_complete_cmd_with_length(), however it requires access to data_sg,
+which is not always available.
 
-The Goodix Fingerprint device is a biometrics sensor that should be
-handled in user-space. libfprint has some support for Goodix
-fingerprint sensors, although not for this particular one. It is
-possible that the vendor allocates a PID per OEM (Lenovo, Dell etc).
-If this happens to be the case then more devices from the same vendor
-could potentially match the ACM modem module table.
+This change introduces target_set_cmd_data_length() function which allows
+to set command data length before completing it.
 
-Signed-off-by: Yorick de Wid <ydewid@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210213144901.53199-1-ydewid@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210209072202.41154-2-a.miloserdov@yadro.com
+Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
+Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/target/target_core_transport.c | 15 +++++++++++----
+ include/target/target_core_backend.h   |  1 +
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1929,6 +1929,11 @@ static const struct usb_device_id acm_id
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index ff26ab0a5f60..484f0ba0a65b 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -873,11 +873,9 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
+ }
+ EXPORT_SYMBOL(target_complete_cmd);
  
-+	/* Exclude Goodix Fingerprint Reader */
-+	{ USB_DEVICE(0x27c6, 0x5395),
-+	.driver_info = IGNORE_DEVICE,
-+	},
+-void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
++void target_set_cmd_data_length(struct se_cmd *cmd, int length)
+ {
+-	if ((scsi_status == SAM_STAT_GOOD ||
+-	     cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) &&
+-	    length < cmd->data_length) {
++	if (length < cmd->data_length) {
+ 		if (cmd->se_cmd_flags & SCF_UNDERFLOW_BIT) {
+ 			cmd->residual_count += cmd->data_length - length;
+ 		} else {
+@@ -887,6 +885,15 @@ void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int len
+ 
+ 		cmd->data_length = length;
+ 	}
++}
++EXPORT_SYMBOL(target_set_cmd_data_length);
 +
- 	/* control interfaces without any protocol set */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
- 		USB_CDC_PROTO_NONE) },
++void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
++{
++	if (scsi_status == SAM_STAT_GOOD ||
++	    cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) {
++		target_set_cmd_data_length(cmd, length);
++	}
+ 
+ 	target_complete_cmd(cmd, scsi_status);
+ }
+diff --git a/include/target/target_core_backend.h b/include/target/target_core_backend.h
+index 6336780d83a7..ce2fba49c95d 100644
+--- a/include/target/target_core_backend.h
++++ b/include/target/target_core_backend.h
+@@ -72,6 +72,7 @@ int	transport_backend_register(const struct target_backend_ops *);
+ void	target_backend_unregister(const struct target_backend_ops *);
+ 
+ void	target_complete_cmd(struct se_cmd *, u8);
++void	target_set_cmd_data_length(struct se_cmd *, int);
+ void	target_complete_cmd_with_length(struct se_cmd *, u8, int);
+ 
+ void	transport_copy_sense_to_cmd(struct se_cmd *, unsigned char *);
+-- 
+2.30.1
+
 
 
