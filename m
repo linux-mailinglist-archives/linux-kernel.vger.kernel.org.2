@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32ED333C8E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1328733C8E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhCOV4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:56:50 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41832 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhCOV4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:56:41 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BDA46316;
-        Mon, 15 Mar 2021 22:56:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615845400;
-        bh=Mu/Bq32xgb1lbkO7ZIYXDgzir3coVjJSFFlMiEQD1Aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k5OabQknRFg6nc2uM826ox3mrheQgLN9zxhL4Eburjz6/wl1fp7rwxDj/nIvdrvlj
-         nFCWHxsyPSzK6q0YsMqJh16+jVUeNbmTzZr0u2SxMDwwQi4t62L63978VSAkvSCR7f
-         DsR53pcvKBO6C/L2zz3K0wcG9AKT3iM30YepBtcc=
-Date:   Mon, 15 Mar 2021 23:56:04 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH v2 16/18] media: v4l2-subdev: De-deprecate init() subdev
- op
-Message-ID: <YE/X9LLrv1Hq/BL6@pendragon.ideasonboard.com>
-References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
- <20210315131512.133720-17-jacopo+renesas@jmondi.org>
+        id S232371AbhCOV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:57:22 -0400
+Received: from ozlabs.org ([203.11.71.1]:54931 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232152AbhCOV5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 17:57:10 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DzqyX3Klxz9sPf;
+        Tue, 16 Mar 2021 08:57:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615845429;
+        bh=NoHwXOgxdwjCIOsOUn+xBqlS8d+1WIyWDoDRzsElZZo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pY8NqhyUGMjvyoNidA5BrVXjUAAFLwyDtO0BtEeC3US8azX6RmzsLvi378wDZ/+7G
+         L/qCS3RVMJTWtNFaov4OS6wAY9grU/kTTm1iXw9BbhK9247sg+h/UPtzSllM9sr4ef
+         +Q/hjUCli6fdwj1j6CzuIyPAelfmPSr3kp0MOEOFDPMcbgMzRZ5DClXEGhsd9qSIET
+         5Sfe2gO/WNY4fEhlScfnKBwJ7oS1IN2s3OreAy86JLBdu9s+gmuhyoGDtj9w7OnHyX
+         yFncbzdTHxar8kEJikpWEYKt/3w3WaEp5Sgl4UhVVsjPjrMwTLC5bWV11njvA33l25
+         LU3n/eqavgDog==
+Date:   Tue, 16 Mar 2021 08:57:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Alexander Ovechkin <ovov@yandex-team.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20210316085706.7df472fd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210315131512.133720-17-jacopo+renesas@jmondi.org>
+Content-Type: multipart/signed; boundary="Sig_/Sf=EHNm.5=al3VQJ3TPwgtA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+--Sig_/Sf=EHNm.5=al3VQJ3TPwgtA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the patch.
+Hi all,
 
-On Mon, Mar 15, 2021 at 02:15:10PM +0100, Jacopo Mondi wrote:
-> The init() subdev core operation is deemed to be deprecated for new
-> subdevice drivers. However it could prove useful for complex
-> architectures to defer operation that require access to the
-> communication bus if said bus is not available (or fully configured)
-> at the time when the subdevice probe() function is run.
-> 
-> As an example, the GMSL architecture requires the GMSL configuration
-> link to be configured on the host side after the remote subdevice
-> has completed its probe function. After the configuration on the host
-> side has been performed, the subdevice registers can be accessed through
-> the communication bus.
-> 
-> In particular:
-> 
-> 	HOST			REMOTE
-> 
-> 	probe()
-> 	   |
-> 	   ---------------------> |
-> 				  probe() {
-> 				     bus config()
-> 				  }
-> 	   |<--------------------|
-> 	v4l2 async bound {
-> 	    bus config()
-> 	    call subdev init()
-> 	   |-------------------->|
-> 				 init() {
-> 				     access register on the bus()
-> 				}
-> 	   |<-------------------
-> 	}
-> 
-> In the GMSL use case the bus configuration requires the enablement of the
-> noise immunity threshold on the remote side which ensures reliability
-> of communications in electrically noisy environments. After the subdevice
-> has enabled the threshold at the end of its probe() sequence the host
-> side shall compensate it with an higher signal amplitude. Once this
-> sequence has completed the bus can be accessed with noise protection
-> enabled and all the operations that require a considerable number of
-> transactions on the bus (such as the image sensor configuration
-> sequence) are run in the subdevice init() operation implementation.
+In commit
 
-I think this can be considered as a reasonable use of .init(). I'd like
-to get feedback from Hans and Sakari (CC'ed) though.
+  7233da86697e ("tcp: relookup sock for RST+ACK packets handled by obsolete=
+ req sock")
 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  include/media/v4l2-subdev.h | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index d0e9a5bdb08b..3068d9940669 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
->   *	each pin being configured.  This function could be called at times
->   *	other than just subdevice initialization.
->   *
-> - * @init: initialize the sensor registers to some sort of reasonable default
-> - *	values. Do not use for new drivers and should be removed in existing
-> - *	drivers.
-> + * @init: initialize the subdevice registers to some sort of reasonable default
-> + *	values. Do not use for new drivers (and should be removed in existing
-> + *	ones) for regular architectures where the image sensor is connected to
-> + *	the host receiver. For more complex architectures where the subdevice
-> + *	initialization should be deferred to the completion of the probe
-> + *	sequence of some intermediate component, or the communication bus
-> + *	requires configurations on the host side that depend on the completion
-> + *	of the probe sequence of the remote subdevices, the usage of this
-> + *	operation could be considered to allow the devices along the pipeline to
-> + *	probe and register in the media graph and to defer any operation that
-> + *	require actual access to the communication bus to their init() function
-> + *	implementation.
->   *
->   * @load_fw: load firmware.
->   *
+Fixes tag
 
--- 
-Regards,
+  Fixes: e0f9759f530 ("tcp: try to keep packet if SYN_RCV race is lost")
 
-Laurent Pinchart
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+This is not worth rebasing for, but can be avoided in the future by
+setting core.abbrev to 12 (or more) or (for git v2.11 or later) just
+making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Sf=EHNm.5=al3VQJ3TPwgtA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBP2DIACgkQAVBC80lX
+0Gxe8gf+K4Kgh7RbXGOjeH2USp2hnorFzHLPbWenmg1Z0ps/eovVxlMJ+e58gdmM
+AjRgyaUQspJfhnbqWvn4tE7wM+iQ7x49znaH42t2jAwC3JKS+jVSj20L8zHzC9jT
+K5xRcofCX7N0TYWCT8/oefvedJDOHHtGA2A1igISrp1lFVuNZ+TWn0ESPq29viyv
+2AC9mv2slBIe4I4EUPwAqpLADay4XG2HatDsbKIB1HtuyelohCpbym2/DWT6TEGD
+5cuipYJfwp2BnZQu+glentR7xkG9KjPp12h3fxi7aYW8OTiqouVMTaew2jSEqIAD
+4KQHrDdXUMTUNa0A6+Mr3idAnzekSw==
+=MM0W
+-----END PGP SIGNATURE-----
+
+--Sig_/Sf=EHNm.5=al3VQJ3TPwgtA--
