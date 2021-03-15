@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7E133B2A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56EB33B2AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhCOM02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:26:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhCOM0I (ORCPT
+        id S229723AbhCOM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhCOM0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:26:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615811168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BN3J83lgEQDDF6GxaX9y5aWAfYv6V2YaybS0wCx0hT0=;
-        b=N8EmnouDBSt1k7IT+TUMLwkyFPfjGDQZxAqrd3lat1o7J6PuLzUSj8Ettfi0rrsa7szu1X
-        lYNIB7zYQvniW34W9nCnMkb1h8xAT2TRqTPDTgd8BGisBU4JYGysm1blKx7Facnn9KbR0y
-        5Q0An/Y+bhoMj6aztjlXdQBfU6kz6CQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-1VYrYoYjORCC5akzOPfb_A-1; Mon, 15 Mar 2021 08:26:04 -0400
-X-MC-Unique: 1VYrYoYjORCC5akzOPfb_A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8F62801817;
-        Mon, 15 Mar 2021 12:25:59 +0000 (UTC)
-Received: from [10.36.112.200] (ovpn-112-200.ams2.redhat.com [10.36.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CC1A560CEF;
-        Mon, 15 Mar 2021 12:25:41 +0000 (UTC)
-Subject: Re: [PATCH RFCv2] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to
- prefault/prealloc memory
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
-References: <20210308164520.18323-1-david@redhat.com>
- <20210315122213.k52wtlbbhsw42pks@box>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <7d607d1c-efd5-3888-39bb-9e5f8bc08185@redhat.com>
-Date:   Mon, 15 Mar 2021 13:25:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 08:26:09 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B651C061574;
+        Mon, 15 Mar 2021 05:26:08 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v4so5592860wrp.13;
+        Mon, 15 Mar 2021 05:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZGsQp5GmOmkLFtn8H/yFZ1lX9b0lB9nbj1NVQJIXgeA=;
+        b=o7cb5Rd4KQ9bPCpiezaOtY8rJGytjNnwtKQI0idEeM4H8JBsmzSBWTzhm7bP9frOhy
+         Ja94fIAr5vxeUPscEiWQC/fWoUTRJi8yN6iul4fXmw1EPRhFFRFmpO5dj/YMIJi79NG2
+         YQbfvmiSiI0vVFHL1ddH7ccuNpsH/bdK/D8h1ul3WnuJdRpxtz8f40LSb4Ne+lRLuJ9b
+         NkJUspUI4H/Gf9AAgXFQvvxBWTXv1jPvgfhhsQxKVbRbVHcQiOePfBvl9EQ+ipR7kiHn
+         rsZRjZBg/mtDwH5AaoB//QXEx03boBVhz09s81btuVdCtJ4/C/l8aByUR9oZzpKT3zPb
+         5jfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZGsQp5GmOmkLFtn8H/yFZ1lX9b0lB9nbj1NVQJIXgeA=;
+        b=IPGg03KsTtjL7S2s35WMAhwc9kQVtYgVwp8iMXwh4iRhmxHDTpjwR3Y6pkvbN/NQwU
+         QJcK/1jfr4LiDYE8qN4T18GzViLAiJgcGiUb15MlliAI4Isf5smQn45k/URbnAgoCuOO
+         erXXVXjch3XAAGS5bhWUKWpuF8PUdhAgIbupRZq6ProGfscctiXRL9NUPoo4rGJyDKmc
+         8dQTX4UhNWttrwwbM5xmyP9P8MyzagWMZll1zVTtt/FYW/cwNCpEKlrqDO7tqBVhSUjk
+         e2YTFhKM9JqluQIr93tnxxLOysycLjpRWiyVDJ5xvbxAfv5BL0WmWmkmhUQ0dWs2NNc1
+         H1iQ==
+X-Gm-Message-State: AOAM5301X5ERfPNJSeRXXfD1SV9TTlrCBkPkcIMYGviWQTN2RPj0frHf
+        UKPSO+fECSPLoAeGA4ZiZbA=
+X-Google-Smtp-Source: ABdhPJzdV+fOihdMIfEKHYtiwdUVCV9zitjwsw24jgpVmK4iK+WtKG6nMx1zPOTVOHfdMB/9dthUjA==
+X-Received: by 2002:a5d:5088:: with SMTP id a8mr27587236wrt.294.1615811167220;
+        Mon, 15 Mar 2021 05:26:07 -0700 (PDT)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id o7sm18317851wrs.16.2021.03.15.05.26.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 05:26:07 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] clk: add BCM63268 timer clock and reset
+Date:   Mon, 15 Mar 2021 13:26:01 +0100
+Message-Id: <20210315122605.28437-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210315122213.k52wtlbbhsw42pks@box>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 13:22, Kirill A. Shutemov wrote:
-> On Mon, Mar 08, 2021 at 05:45:20PM +0100, David Hildenbrand wrote:
->> +			case -EHWPOISON: /* Skip over any poisoned pages. */
->> +				start += PAGE_SIZE;
->> +				continue;
-> 
-> Why is it good approach? It's not abvious to me.
+Broadcom BCM63268 has a timer clock and reset controller which has the
+following layout:
+  #define POR_RESET_STATUS            (1 << 31)
+  #define HW_RESET_STATUS             (1 << 30)
+  #define SW_RESET_STATUS             (1 << 29)
+  #define USB_REF_CLKEN               (1 << 18)
+  #define UTO_EXTIN_CLKEN             (1 << 17)
+  #define UTO_CLK50_SEL               (1 << 16)
+  #define FAP2_PLL_CLKEN              (1 << 15)
+  #define FAP2_PLL_FREQ_SHIFT         12
+  #define FAP1_PLL_CLKEN              (1 << 11)
+  #define FAP1_PLL_FREQ_SHIFT         8
+  #define WAKEON_DSL                  (1 << 7)
+  #define WAKEON_EPHY                 (1 << 6)
+  #define DSL_ENERGY_DETECT_ENABLE    (1 << 4)
+  #define GPHY_1_ENERGY_DETECT_ENABLE (1 << 3)
+  #define EPHY_3_ENERGY_DETECT_ENABLE (1 << 2)
+  #define EPHY_2_ENERGY_DETECT_ENABLE (1 << 1)
+  #define EPHY_1_ENERGY_DETECT_ENABLE (1 << 0)
 
-My main motivation was to simplify return code handling. I don't want to 
-return -EHWPOISON to user space and I don't want to convert it into 
-something misleading like -ENOMEM or -EINVAL. So I decided to handle 
-such stuff internally.
+v2: add changes suggested by Stephen Boyd.
 
-What would be you take on that?
+Álvaro Fernández Rojas (4):
+  dt-bindings: clk: add BCM63268 timer clock definitions
+  dt-bindings: reset: add BCM63268 timer reset definitions
+  dt-bindings: clock: Add BCM63268 timer binding
+  clk: bcm: Add BCM63268 timer clock and reset driver
+
+ .../clock/brcm,bcm63268-timer-clocks.yaml     |  40 +++
+ drivers/clk/bcm/Kconfig                       |   9 +
+ drivers/clk/bcm/Makefile                      |   1 +
+ drivers/clk/bcm/clk-bcm63268-timer.c          | 231 ++++++++++++++++++
+ include/dt-bindings/clock/bcm63268-clock.h    |  13 +
+ include/dt-bindings/reset/bcm63268-reset.h    |   4 +
+ 6 files changed, 298 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
+ create mode 100644 drivers/clk/bcm/clk-bcm63268-timer.c
 
 -- 
-Thanks,
-
-David / dhildenb
+2.20.1
 
