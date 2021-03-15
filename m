@@ -2,45 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED50E33BE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6BF33BE1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238788AbhCOOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
+        id S238671AbhCOOmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234504AbhCOODq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6C6664EE3;
-        Mon, 15 Mar 2021 14:03:42 +0000 (UTC)
+        id S234323AbhCOODO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA33764E83;
+        Mon, 15 Mar 2021 14:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817025;
-        bh=LhpoZ0uUhZh39UDjgMmZOu5gqIsck3d/R/PafC0L0CM=;
+        s=korg; t=1615816993;
+        bh=pWVrf9WJrCrW6pcncVZT4ohTEHF2z1MMs/CPqbxUEps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzCiHcsljwFXzuyWLJ4NeHPTPTSv/0matAbNQCl6g5BJt6PCzEQ4PhwwCOZO2DjGW
-         FcSHpQlpa1CVgQxALUdSLcq+exVXGy/Ewm1Nlaa/jIyDTNWQZ5ipyHH6i8nQNrcgP3
-         xjfS7wJJzX+4m25HZmrvCqihabj6WCvXeBoUQb2s=
+        b=kTTlY/hx08SWdKpb7XMEjZchyyMEUYaxdjbyxAm7H2BFC7dAXwzLat7iaoI/JEJtH
+         /VgW4MgyWt4AIjhERDNMWC5HWK8s8qC11Kcf8uzJSeMcc0ADJLYXWwpNMULq/AHMb1
+         x/3aqLdhloBJLo6EGdKTAmRRhIeIJtDpNGwLIf1I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Baoquan He <bhe@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Aslan Bakirov <aslan@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 265/306] memblock: fix section mismatch warning
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.10 235/290] staging: comedi: das6402: Fix endian problem for AI command data
 Date:   Mon, 15 Mar 2021 14:55:28 +0100
-Message-Id: <20210315135516.595578150@linuxfoundation.org>
+Message-Id: <20210315135549.926201910@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,75 +40,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-[ Upstream commit 34dc2efb39a231280fd6696a59bbe712bf3c5c4a ]
+commit 1c0f20b78781b9ca50dc3ecfd396d0db5b141890 upstream.
 
-The inlining logic in clang-13 is rewritten to often not inline some
-functions that were inlined by all earlier compilers.
+The analog input subdevice supports Comedi asynchronous commands that
+use Comedi's 16-bit sample format.  However, the call to
+`comedi_buf_write_samples()` is passing the address of a 32-bit integer
+variable.  On bigendian machines, this will copy 2 bytes from the wrong
+end of the 32-bit value.  Fix it by changing the type of the variable
+holding the sample value to `unsigned short`.
 
-In case of the memblock interfaces, this exposed a harmless bug of a
-missing __init annotation:
-
-WARNING: modpost: vmlinux.o(.text+0x507c0a): Section mismatch in reference from the function memblock_bottom_up() to the variable .meminit.data:memblock
-The function memblock_bottom_up() references
-the variable __meminitdata memblock.
-This is often because memblock_bottom_up lacks a __meminitdata
-annotation or the annotation of memblock is wrong.
-
-Interestingly, these annotations were present originally, but got removed
-with the explanation that the __init annotation prevents the function from
-getting inlined.  I checked this again and found that while this is the
-case with clang, gcc (version 7 through 10, did not test others) does
-inline the functions regardless.
-
-As the previous change was apparently intended to help the clang builds,
-reverting it to help the newer clang versions seems appropriate as well.
-gcc builds don't seem to care either way.
-
-Link: https://lkml.kernel.org/r/20210225133808.2188581-1-arnd@kernel.org
-Fixes: 5bdba520c1b3 ("mm: memblock: drop __init from memblock functions to make it inline")
-Reference: 2cfb3665e864 ("include/linux/memblock.h: add __init to memblock_set_bottom_up()")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Aslan Bakirov <aslan@fb.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d1d24cb65ee3 ("staging: comedi: das6402: read analog input samples in interrupt handler")
+Cc: <stable@vger.kernel.org> # 3.19+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-5-abbotti@mev.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/memblock.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/das6402.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index b93c44b9121e..7643d2dfa959 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
- /*
-  * Set the allocation direction to bottom-up or top-down.
-  */
--static inline void memblock_set_bottom_up(bool enable)
-+static inline __init void memblock_set_bottom_up(bool enable)
- {
- 	memblock.bottom_up = enable;
- }
-@@ -470,7 +470,7 @@ static inline void memblock_set_bottom_up(bool enable)
-  * if this is true, that said, memblock will allocate memory
-  * in bottom-up direction.
-  */
--static inline bool memblock_bottom_up(void)
-+static inline __init bool memblock_bottom_up(void)
- {
- 	return memblock.bottom_up;
- }
--- 
-2.30.1
-
+--- a/drivers/staging/comedi/drivers/das6402.c
++++ b/drivers/staging/comedi/drivers/das6402.c
+@@ -186,7 +186,7 @@ static irqreturn_t das6402_interrupt(int
+ 	if (status & DAS6402_STATUS_FFULL) {
+ 		async->events |= COMEDI_CB_OVERFLOW;
+ 	} else if (status & DAS6402_STATUS_FFNE) {
+-		unsigned int val;
++		unsigned short val;
+ 
+ 		val = das6402_ai_read_sample(dev, s);
+ 		comedi_buf_write_samples(s, &val, 1);
 
 
