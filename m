@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AADD33C7A2
+	by mail.lfdr.de (Postfix) with ESMTP id B5ED533C7A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhCOUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233666AbhCOUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Mar 2021 16:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhCOUVA (ORCPT
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:38423 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232128AbhCOUVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:21:00 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C6EC06174A;
-        Mon, 15 Mar 2021 13:21:00 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6BE402E5;
-        Mon, 15 Mar 2021 20:21:00 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6BE402E5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615839660; bh=YM7+iJCyaR3Kgy/2lXgIddw6Qs0Wtx4bSayd637mJO0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=CArspoU1TfpeCbM/TLgUyaXcM5/7V9YUFG5m8M6D0FBtY3srALSyxdeO49R0bByTp
-         l9uVOj1k/BU5F+sfnPj7Y1Dc64qDlwse5f0UfX855gqAWBUpgh6WGYNmd+t1nEHhoU
-         9sg8dQihEgYgE8DaeaO7kIh+P1dUgaXi3Oy5Y0y2pmzEyYEjgZ20uIP2NR8HBjI/V4
-         bMUTCVAPjUVCh9khmkhuLn3rnV7FJECInK5Nk3rvrPCjhbMA3yV8eToBrxhVhI+vwj
-         kIkgd0GWkSrh8pKE3WlHx90VOLD11LJeZSR/aG/0mDj10bDsyJyWVvOzcntBKYPMbZ
-         dnb51CZPzW3NQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1, RFC] docs: reporting-issues.rst: tone down 'test
- vanilla mainline' a little
-In-Reply-To: <20210310072858.231776-1-linux@leemhuis.info>
-References: <20210310072858.231776-1-linux@leemhuis.info>
-Date:   Mon, 15 Mar 2021 14:20:59 -0600
-Message-ID: <874khc1844.fsf@meer.lwn.net>
+        Mon, 15 Mar 2021 16:21:11 -0400
+Received: by mail-pj1-f41.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso108287pji.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:21:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tE3KW+4aBQn+aDjatnRbs367+dzc11McNltTJfv0RjI=;
+        b=dNrnIybLaP8lmWpfHI7Loci7ZIXZ9/waCiqlmCpYg7laxy6dJeAZ2ME7uZfJ+dH8Ah
+         cyFss98Y57Gabjebn/nW4bsTtS/Gr7YXWTTKBhGp3tyWHCwZmam6ykfvLt0OmNVYAIny
+         N8DWUPdSOCQB6qrTUS1mPOQ+p9BfMHPe1nHHB2KDIQ6RnJHLX8oWKX1xhWXFZBgHyNnA
+         nol7Nmf922Gf13pvqJyZ56cmQIlCAqIULTr4ZV/mG8FPRuGLx/8RQZVh/FLvzZDFoj6a
+         pbpm93WLwTaGMxiLisvf1lsKWcnRs6vYa0G4hA2sW0AXo+4OpmrzDAMuihjmJoGPFL64
+         SwPw==
+X-Gm-Message-State: AOAM533pyPffzMU+xhfJRhyMi0ZKbikuKRxJKP24oi+JxBNUzW0G3OXS
+        GUhkdSDIvMNWjeBaggGn57A=
+X-Google-Smtp-Source: ABdhPJz6WQo0IztRQ/5mnMM6ZTlFLUBFc51471onQx9ZUay/hAkKEz+ay+dMpImZBozmYJwWDlpGFw==
+X-Received: by 2002:a17:902:da91:b029:e5:e7cf:d737 with SMTP id j17-20020a170902da91b02900e5e7cfd737mr13065274plx.24.1615839671382;
+        Mon, 15 Mar 2021 13:21:11 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id h14sm472557pjc.37.2021.03.15.13.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 13:21:10 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 558FA40106; Mon, 15 Mar 2021 20:21:09 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 20:21:09 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
+Message-ID: <20210315202109.GY4332@42.do-not-panic.com>
+References: <20210313212528.2956377-1-linux@rasmusvillemoes.dk>
+ <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thorsten Leemhuis <linux@leemhuis.info> writes:
+On Sat, Mar 13, 2021 at 10:25:27PM +0100, Rasmus Villemoes wrote:
+> Most of the boot process doesn't actually need anything from the
+> initramfs, until of course PID1 is to be executed. So instead of doing
+> the decompressing and populating of the initramfs synchronously in
+> populate_rootfs() itself, push that off to a worker thread.
+> 
+> This is primarily motivated by an embedded ppc target, where unpacking
+> even the rather modest sized initramfs takes 0.6 seconds, which is
+> long enough that the external watchdog becomes unhappy that it doesn't
+> get attention soon enough. By doing the initramfs decompression in a
+> worker thread, we get to do the device_initcalls and hence start
+> petting the watchdog much sooner.
+> 
+> Normal desktops might benefit as well. On my mostly stock Ubuntu
+> kernel, my initramfs is a 26M xz-compressed blob, decompressing to
+> around 126M. That takes almost two seconds:
+> 
+> [    0.201454] Trying to unpack rootfs image as initramfs...
+> [    1.976633] Freeing initrd memory: 29416K
+> 
+> Before this patch, these lines occur consecutively in dmesg. With this
+> patch, the timestamps on these two lines is roughly the same as above,
+> but with 172 lines inbetween - so more than one cpu has been kept busy
+> doing work that would otherwise only happen after the
+> populate_rootfs() finished.
+> 
+> Should one of the initcalls done after rootfs_initcall time (i.e.,
+> device_ and late_ initcalls) need something from the initramfs (say, a
+> kernel module or a firmware blob), it will simply wait for the
+> initramfs unpacking to be done before proceeding, which should in
+> theory make this completely safe.
+> 
+> But if some driver pokes around in the filesystem directly and not via
+> one of the official kernel interfaces (i.e. request_firmware*(),
+> call_usermodehelper*) that theory may not hold - also, I certainly
+> might have missed a spot when sprinkling wait_for_initramfs(). So
+> there is an escape hatch in the form of an initramfs_async= command
+> line parameter.
+> 
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-> Tell users that reporting bugs with vendor kernels which are only
-> slightly patched can be okay in some situations, but point out there's a
-> risk in doing so.
->
-> Adjust some related sections to make them compatible and a bit clearer.
-> At the same time make them less daunting: we want users to report bugs,
-> even if they can't test vanilla mainline kernel.
->
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> CC: Randy Dunlap <rdunlap@infradead.org>
->
-> ---
-> With this I try to get rid of the last remaining parts that have a
-> 'this needs discussion' box that's in the text. I hope I've found a
-> middle ground that everybody can live with.
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-For the most part it seems OK to me.
-
-I *really* worry, though, that this file is getting so big that few
-people will work their way through it.  Anything that could be done to
-make it more concise going forward would be more than welcome.
-
-One other thing down below...
-
-> v1, RFC
-> * this version
-> ---
->  .../admin-guide/reporting-issues.rst          | 273 ++++++++++--------
->  1 file changed, 149 insertions(+), 124 deletions(-)
->
-> diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-> index 18b1280f7abf..a475e014f9ca 100644
-> --- a/Documentation/admin-guide/reporting-issues.rst
-> +++ b/Documentation/admin-guide/reporting-issues.rst
-> @@ -94,10 +94,11 @@ early if an issue that looks like a Linux kernel problem is actually caused by
->  something else. These steps thus help to ensure the time you invest in this
->  process won't feel wasted in the end:
->  
-> - * Stop reading this document and report the problem to your vendor instead,
-> -   unless you are running the latest mainline kernel already or are willing to
-> -   install it. This kernel must not be modified or enhanced in any way, and
-> -   thus be considered 'vanilla'.
-> + * Are you facing an issue with a Linux kernel a hardware or software vendor
-> +   provided? Then in almost all cases you are better off to stop reading this
-> +   document and reporting the issue to your vendor instead, unless you are
-> +   willing to install the latest Linux version yourself. Be aware the latter
-> +   will often be needed anyway to hunt down and fix issues.
->  
->   * See if the issue you are dealing with qualifies as regression, security
->     issue, or a really severe problem: those are 'issues of high priority' that
-> @@ -134,12 +135,14 @@ process won't feel wasted in the end:
->  
->  After these preparations you'll now enter the main part:
->  
-> - * Install the latest Linux mainline kernel: that's where all issues get
-> -   fixed first, because it's the version line the kernel developers mainly
-> -   care about. Testing and reporting with the latest Linux stable kernel can
-> -   be an acceptable alternative in some situations, for example during the
-> -   merge window; but during that period you might want to suspend your efforts
-> -   till its end anyway.
-> + * Unless you are already running the latest 'mainline' Linux kernel, better
-> +   go and install it for the reporting process. Testing and reporting with
-> +   the latest 'stable' Linux can be an acceptable alternative in some
-> +   situations; during the merge window that actually might be even the best
-> +   approach, but in that development phase it can be an even better idea to
-> +   suspend your efforts for a few days anyway. Whatever version you choose,
-> +   ideally use a 'vanilla' built. Ignoring these advices will dramatically
-> +   increase the risk you report will be rejected or ignored.
-
-s/built/build/
-
-Also, I would stop quoting terms like "mainline", "stable" and "vanilla"
-throughout.  It makes the reading experience a bit stranger without
-(IMO) adding anything.
-
-Thanks,
-
-jon
+  Luis
