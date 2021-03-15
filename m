@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE4A33BD7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0691A33BD7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhCOOgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S239462AbhCOOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233439AbhCOOBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233443AbhCOOBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 675CA64EFD;
-        Mon, 15 Mar 2021 14:01:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6668B64EF8;
+        Mon, 15 Mar 2021 14:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816885;
-        bh=Zv2XFb+UhgLEWWjRedagP/PXdO1InDZ1OoE7nhSVA9A=;
+        s=korg; t=1615816887;
+        bh=+V2buA3fXOgeRsujsVxANguWYfDMeZDcLQpatHGt2DU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KCVQ81AU8xa0Pbhq5y2wmap8jw+mOS3YBygOlQWjv+fdu3u0Jf7f/r5rnmm2BPwk9
-         QO2OIjC0CFXALjru2+HGHGHP5MCx7ad4MslKyuoGNTYa0Y2BdFsCtZKfu7bNPIaL24
-         xwR+fKrtmm3SsSG+l7OL+G0HFYWXQ6GQzq/6UDUE=
+        b=2QJhuH3RbgPjV7lgbU7COa0Gk3/qoa/GuT4KuNHKBM5XoBsT7Pf0F8yQ5QUra9TiS
+         ua23QJ9d/CIv+UKjXez4muIxn+54LWIC8rpLLdHBaSu8a5+K1EgzPZjtjSVz4efTMI
+         BgEQQ1RwGd1HBMVeDnfyHCKqOBDIUGfrJskIeI2Q=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Ard Biesheuvel <ardb@kernel.org>,
-        Jian Cai <jiancai@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 168/290] ARM: 9029/1: Make iwmmxt.S support Clangs integrated assembler
-Date:   Mon, 15 Mar 2021 14:54:21 +0100
-Message-Id: <20210315135547.576665912@linuxfoundation.org>
+Subject: [PATCH 5.10 169/290] ARM: assembler: introduce adr_l, ldr_l and str_l macros
+Date:   Mon, 15 Mar 2021 14:54:22 +0100
+Message-Id: <20210315135547.606646930@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -44,212 +44,152 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jian Cai <jiancai@google.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 3c9f5708b7aed6a963e2aefccbd1854802de163e upstream.
+commit 0b1674638a5c69cbace63278625c199100955490 upstream.
 
-This patch replaces 6 IWMMXT instructions Clang's integrated assembler
-does not support in iwmmxt.S using macros, while making sure GNU
-assembler still emit the same instructions. This should be easier than
-providing full IWMMXT support in Clang.  This is one of the last bits of
-kernel code that could be compiled but not assembled with clang. Once
-all of it works with IAS, we no longer need to special-case 32-bit Arm
-in Kbuild, or turn off CONFIG_IWMMXT when build-testing.
+Like arm64, ARM supports position independent code sequences that
+produce symbol references with a greater reach than the ordinary
+adr/ldr instructions. Since on ARM, the adrl pseudo-instruction is
+only supported in ARM mode (and not at all when using Clang), having
+a adr_l macro like we do on arm64 is useful, and increases symmetry
+as well.
 
-"Intel Wireless MMX Technology - Developer Guide - August, 2002" should
-be referenced for the encoding schemes of these extensions.
+Currently, we use open coded instruction sequences involving literals
+and arithmetic operations. Instead, we can use movw/movt pairs on v7
+CPUs, circumventing the D-cache entirely.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/975
+E.g., on v7+ CPUs, we can emit a PC-relative reference as follows:
 
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Jian Cai <jiancai@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+       movw         <reg>, #:lower16:<sym> - (1f + 8)
+       movt         <reg>, #:upper16:<sym> - (1f + 8)
+  1:   add          <reg>, <reg>, pc
+
+For older CPUs, we can emit the literal into a subsection, allowing it
+to be emitted out of line while retaining the ability to perform
+arithmetic on label offsets.
+
+E.g., on pre-v7 CPUs, we can emit a PC-relative reference as follows:
+
+       ldr          <reg>, 2f
+  1:   add          <reg>, <reg>, pc
+       .subsection  1
+  2:   .long        <sym> - (1b + 8)
+       .previous
+
+This is allowed by the assembler because, unlike ordinary sections,
+subsections are combined into a single section in the object file, and
+so the label references are not true cross-section references that are
+visible as relocations. (Subsections have been available in binutils
+since 2004 at least, so they should not cause any issues with older
+toolchains.)
+
+So use the above to implement the macros mov_l, adr_l, ldr_l and str_l,
+all of which will use movw/movt pairs on v7 and later CPUs, and use
+PC-relative literals otherwise.
+
+Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
- arch/arm/kernel/iwmmxt.h | 47 +++++++++++++++++++++
- 2 files changed, 92 insertions(+), 44 deletions(-)
- create mode 100644 arch/arm/kernel/iwmmxt.h
+ arch/arm/include/asm/assembler.h | 84 ++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
 
-diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
-index 0dcae787b004..d2b4ac06e4ed 100644
---- a/arch/arm/kernel/iwmmxt.S
-+++ b/arch/arm/kernel/iwmmxt.S
-@@ -16,6 +16,7 @@
- #include <asm/thread_info.h>
- #include <asm/asm-offsets.h>
- #include <asm/assembler.h>
-+#include "iwmmxt.h"
+diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+index feac2c8b86f2..72627c5fb3b2 100644
+--- a/arch/arm/include/asm/assembler.h
++++ b/arch/arm/include/asm/assembler.h
+@@ -494,4 +494,88 @@ THUMB(	orr	\reg , \reg , #PSR_T_BIT	)
+ #define _ASM_NOKPROBE(entry)
+ #endif
  
- #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
- #define PJ4(code...)		code
-@@ -113,33 +114,33 @@ concan_save:
- 
- concan_dump:
- 
--	wstrw	wCSSF, [r1, #MMX_WCSSF]
--	wstrw	wCASF, [r1, #MMX_WCASF]
--	wstrw	wCGR0, [r1, #MMX_WCGR0]
--	wstrw	wCGR1, [r1, #MMX_WCGR1]
--	wstrw	wCGR2, [r1, #MMX_WCGR2]
--	wstrw	wCGR3, [r1, #MMX_WCGR3]
-+	wstrw	wCSSF, r1, MMX_WCSSF
-+	wstrw	wCASF, r1, MMX_WCASF
-+	wstrw	wCGR0, r1, MMX_WCGR0
-+	wstrw	wCGR1, r1, MMX_WCGR1
-+	wstrw	wCGR2, r1, MMX_WCGR2
-+	wstrw	wCGR3, r1, MMX_WCGR3
- 
- 1:	@ MUP? wRn
- 	tst	r2, #0x2
- 	beq	2f
- 
--	wstrd	wR0,  [r1, #MMX_WR0]
--	wstrd	wR1,  [r1, #MMX_WR1]
--	wstrd	wR2,  [r1, #MMX_WR2]
--	wstrd	wR3,  [r1, #MMX_WR3]
--	wstrd	wR4,  [r1, #MMX_WR4]
--	wstrd	wR5,  [r1, #MMX_WR5]
--	wstrd	wR6,  [r1, #MMX_WR6]
--	wstrd	wR7,  [r1, #MMX_WR7]
--	wstrd	wR8,  [r1, #MMX_WR8]
--	wstrd	wR9,  [r1, #MMX_WR9]
--	wstrd	wR10, [r1, #MMX_WR10]
--	wstrd	wR11, [r1, #MMX_WR11]
--	wstrd	wR12, [r1, #MMX_WR12]
--	wstrd	wR13, [r1, #MMX_WR13]
--	wstrd	wR14, [r1, #MMX_WR14]
--	wstrd	wR15, [r1, #MMX_WR15]
-+	wstrd	wR0,  r1, MMX_WR0
-+	wstrd	wR1,  r1, MMX_WR1
-+	wstrd	wR2,  r1, MMX_WR2
-+	wstrd	wR3,  r1, MMX_WR3
-+	wstrd	wR4,  r1, MMX_WR4
-+	wstrd	wR5,  r1, MMX_WR5
-+	wstrd	wR6,  r1, MMX_WR6
-+	wstrd	wR7,  r1, MMX_WR7
-+	wstrd	wR8,  r1, MMX_WR8
-+	wstrd	wR9,  r1, MMX_WR9
-+	wstrd	wR10, r1, MMX_WR10
-+	wstrd	wR11, r1, MMX_WR11
-+	wstrd	wR12, r1, MMX_WR12
-+	wstrd	wR13, r1, MMX_WR13
-+	wstrd	wR14, r1, MMX_WR14
-+	wstrd	wR15, r1, MMX_WR15
- 
- 2:	teq	r0, #0				@ anything to load?
- 	reteq	lr				@ if not, return
-@@ -147,30 +148,30 @@ concan_dump:
- concan_load:
- 
- 	@ Load wRn
--	wldrd	wR0,  [r0, #MMX_WR0]
--	wldrd	wR1,  [r0, #MMX_WR1]
--	wldrd	wR2,  [r0, #MMX_WR2]
--	wldrd	wR3,  [r0, #MMX_WR3]
--	wldrd	wR4,  [r0, #MMX_WR4]
--	wldrd	wR5,  [r0, #MMX_WR5]
--	wldrd	wR6,  [r0, #MMX_WR6]
--	wldrd	wR7,  [r0, #MMX_WR7]
--	wldrd	wR8,  [r0, #MMX_WR8]
--	wldrd	wR9,  [r0, #MMX_WR9]
--	wldrd	wR10, [r0, #MMX_WR10]
--	wldrd	wR11, [r0, #MMX_WR11]
--	wldrd	wR12, [r0, #MMX_WR12]
--	wldrd	wR13, [r0, #MMX_WR13]
--	wldrd	wR14, [r0, #MMX_WR14]
--	wldrd	wR15, [r0, #MMX_WR15]
-+	wldrd	wR0,  r0, MMX_WR0
-+	wldrd	wR1,  r0, MMX_WR1
-+	wldrd	wR2,  r0, MMX_WR2
-+	wldrd	wR3,  r0, MMX_WR3
-+	wldrd	wR4,  r0, MMX_WR4
-+	wldrd	wR5,  r0, MMX_WR5
-+	wldrd	wR6,  r0, MMX_WR6
-+	wldrd	wR7,  r0, MMX_WR7
-+	wldrd	wR8,  r0, MMX_WR8
-+	wldrd	wR9,  r0, MMX_WR9
-+	wldrd	wR10, r0, MMX_WR10
-+	wldrd	wR11, r0, MMX_WR11
-+	wldrd	wR12, r0, MMX_WR12
-+	wldrd	wR13, r0, MMX_WR13
-+	wldrd	wR14, r0, MMX_WR14
-+	wldrd	wR15, r0, MMX_WR15
- 
- 	@ Load wCx
--	wldrw	wCSSF, [r0, #MMX_WCSSF]
--	wldrw	wCASF, [r0, #MMX_WCASF]
--	wldrw	wCGR0, [r0, #MMX_WCGR0]
--	wldrw	wCGR1, [r0, #MMX_WCGR1]
--	wldrw	wCGR2, [r0, #MMX_WCGR2]
--	wldrw	wCGR3, [r0, #MMX_WCGR3]
-+	wldrw	wCSSF, r0, MMX_WCSSF
-+	wldrw	wCASF, r0, MMX_WCASF
-+	wldrw	wCGR0, r0, MMX_WCGR0
-+	wldrw	wCGR1, r0, MMX_WCGR1
-+	wldrw	wCGR2, r0, MMX_WCGR2
-+	wldrw	wCGR3, r0, MMX_WCGR3
- 
- 	@ clear CUP/MUP (only if r1 != 0)
- 	teq	r1, #0
-diff --git a/arch/arm/kernel/iwmmxt.h b/arch/arm/kernel/iwmmxt.h
-new file mode 100644
-index 000000000000..fb627286f5bb
---- /dev/null
-+++ b/arch/arm/kernel/iwmmxt.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++	.macro		__adldst_l, op, reg, sym, tmp, c
++	.if		__LINUX_ARM_ARCH__ < 7
++	ldr\c		\tmp, .La\@
++	.subsection	1
++	.align		2
++.La\@:	.long		\sym - .Lpc\@
++	.previous
++	.else
++	.ifnb		\c
++ THUMB(	ittt		\c			)
++	.endif
++	movw\c		\tmp, #:lower16:\sym - .Lpc\@
++	movt\c		\tmp, #:upper16:\sym - .Lpc\@
++	.endif
 +
-+#ifndef __IWMMXT_H__
-+#define __IWMMXT_H__
++#ifndef CONFIG_THUMB2_KERNEL
++	.set		.Lpc\@, . + 8			// PC bias
++	.ifc		\op, add
++	add\c		\reg, \tmp, pc
++	.else
++	\op\c		\reg, [pc, \tmp]
++	.endif
++#else
++.Lb\@:	add\c		\tmp, \tmp, pc
++	/*
++	 * In Thumb-2 builds, the PC bias depends on whether we are currently
++	 * emitting into a .arm or a .thumb section. The size of the add opcode
++	 * above will be 2 bytes when emitting in Thumb mode and 4 bytes when
++	 * emitting in ARM mode, so let's use this to account for the bias.
++	 */
++	.set		.Lpc\@, . + (. - .Lb\@)
 +
-+.irp b, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-+.set .LwR\b, \b
-+.set .Lr\b, \b
-+.endr
-+
-+.set .LwCSSF, 0x2
-+.set .LwCASF, 0x3
-+.set .LwCGR0, 0x8
-+.set .LwCGR1, 0x9
-+.set .LwCGR2, 0xa
-+.set .LwCGR3, 0xb
-+
-+.macro wldrd, reg:req, base:req, offset:req
-+.inst 0xedd00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wldrw, reg:req, base:req, offset:req
-+.inst 0xfd900100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wstrd, reg:req, base:req, offset:req
-+.inst 0xedc00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+.macro wstrw, reg:req, base:req, offset:req
-+.inst 0xfd800100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
-+.endm
-+
-+#ifdef __clang__
-+
-+#define wCon c1
-+
-+.macro tmrc, dest:req, control:req
-+mrc p1, 0, \dest, \control, c0, 0
-+.endm
-+
-+.macro tmcr, control:req, src:req
-+mcr p1, 0, \src, \control, c0, 0
-+.endm
++	.ifnc		\op, add
++	\op\c		\reg, [\tmp]
++	.endif
 +#endif
++	.endm
 +
-+#endif
++	/*
++	 * mov_l - move a constant value or [relocated] address into a register
++	 */
++	.macro		mov_l, dst:req, imm:req
++	.if		__LINUX_ARM_ARCH__ < 7
++	ldr		\dst, =\imm
++	.else
++	movw		\dst, #:lower16:\imm
++	movt		\dst, #:upper16:\imm
++	.endif
++	.endm
++
++	/*
++	 * adr_l - adr pseudo-op with unlimited range
++	 *
++	 * @dst: destination register
++	 * @sym: name of the symbol
++	 * @cond: conditional opcode suffix
++	 */
++	.macro		adr_l, dst:req, sym:req, cond
++	__adldst_l	add, \dst, \sym, \dst, \cond
++	.endm
++
++	/*
++	 * ldr_l - ldr <literal> pseudo-op with unlimited range
++	 *
++	 * @dst: destination register
++	 * @sym: name of the symbol
++	 * @cond: conditional opcode suffix
++	 */
++	.macro		ldr_l, dst:req, sym:req, cond
++	__adldst_l	ldr, \dst, \sym, \dst, \cond
++	.endm
++
++	/*
++	 * str_l - str <literal> pseudo-op with unlimited range
++	 *
++	 * @src: source register
++	 * @sym: name of the symbol
++	 * @tmp: mandatory scratch register
++	 * @cond: conditional opcode suffix
++	 */
++	.macro		str_l, src:req, sym:req, tmp:req, cond
++	__adldst_l	str, \src, \sym, \tmp, \cond
++	.endm
++
+ #endif /* __ASM_ASSEMBLER_H__ */
 -- 
 2.30.1
 
