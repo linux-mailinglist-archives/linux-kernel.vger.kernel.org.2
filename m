@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FAE33BD5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D05233BD58
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhCOOer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S236085AbhCOOe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233414AbhCOOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233422AbhCOOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FE8C64F2F;
-        Mon, 15 Mar 2021 14:01:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A93B864EF0;
+        Mon, 15 Mar 2021 14:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816876;
-        bh=cEGCOtMDGpg659riwCNFXJ4O5WLv1yj7SL9t6GPLMIU=;
+        s=korg; t=1615816878;
+        bh=n3FtlREOVVzRH53tiaO0kZzH93lD160lJblRxHLW9bE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Opf26JjcpjOnHZE7v46CYhy3+RPWAo+4p8hquFNOEzec2sZoAzpYg8hcQZd5IzpSx
-         5uTHiAhJ51oSyGOKfRJtDrHl+r/S/UqKRl4nHc6wYETD6zzWwPXnd3L3K9CsG6cDlp
-         up22/CLQJ7431Rts8A5pSIARA9pJD7F24IaCUFoQ=
+        b=wfE2YPox2LPlnoK/8n0oenYlyiTJr8GzZGryWFIhJfvMK4iRLqUQNu7EdYNkXb5mO
+         H2O/3nAGaPahw28Dhr5IB2AaSzyBkBMEkD57E25+Msd17v3gB5tj18g6dYFY0BimzD
+         N7BLt6pA9FWLJnarrUcyWgohDrCkmvFL8F6Mbr1A=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: [PATCH 5.4 165/168] KVM: arm64: Reject VM creation when the default IPA size is unsupported
-Date:   Mon, 15 Mar 2021 14:56:37 +0100
-Message-Id: <20210315135555.785710226@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
+        Juergen Gross <jgross@suse.com>,
+        Julien Grall <jgrall@amazon.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [PATCH 5.4 166/168] xen/events: reset affinity of 2-level event when tearing it down
+Date:   Mon, 15 Mar 2021 14:56:38 +0100
+Message-Id: <20210315135555.819614796@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -42,88 +43,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Marc Zyngier <maz@kernel.org>
+From: Juergen Gross <jgross@suse.com>
 
-Commit 7d717558dd5ef10d28866750d5c24ff892ea3778 upstream.
+commit 9e77d96b8e2724ed00380189f7b0ded61113b39f upstream.
 
-KVM/arm64 has forever used a 40bit default IPA space, partially
-due to its 32bit heritage (where the only choice is 40bit).
+When creating a new event channel with 2-level events the affinity
+needs to be reset initially in order to avoid using an old affinity
+from earlier usage of the event channel port. So when tearing an event
+channel down reset all affinity bits.
 
-However, there are implementations in the wild that have a *cough*
-much smaller *cough* IPA space, which leads to a misprogramming of
-VTCR_EL2, and a guest that is stuck on its first memory access
-if userspace dares to ask for the default IPA setting (which most
-VMMs do).
+The same applies to the affinity when onlining a vcpu: all old
+affinity settings for this vcpu must be reset. As percpu events get
+initialized before the percpu event channel hook is called,
+resetting of the affinities happens after offlining a vcpu (this is
+working, as initial percpu memory is zeroed out).
 
-Instead, blundly reject the creation of such VM, as we can't
-satisfy the requirements from userspace (with a one-off warning).
-Also clarify the boot warning, and document that the VM creation
-will fail when an unsupported IPA size is provided.
-
-Although this is an ABI change, it doesn't really change much
-for userspace:
-
-- the guest couldn't run before this change, but no error was
-  returned. At least userspace knows what is happening.
-
-- a memory slot that was accepted because it did fit the default
-  IPA space now doesn't even get a chance to be registered.
-
-The other thing that is left doing is to convince userspace to
-actually use the IPA space setting instead of relying on the
-antiquated default.
-
-Fixes: 233a7cb23531 ("kvm: arm64: Allow tuning the physical address size for VM")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20210311100016.3830038-2-maz@kernel.org
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Link: https://lore.kernel.org/r/20210306161833.4552-2-jgross@suse.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/virt/kvm/api.txt |    3 +++
- arch/arm64/kvm/reset.c         |   11 ++++++++---
- 2 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/xen/events/events_2l.c       |   15 +++++++++++++++
+ drivers/xen/events/events_base.c     |    1 +
+ drivers/xen/events/events_internal.h |    8 ++++++++
+ 3 files changed, 24 insertions(+)
 
---- a/Documentation/virt/kvm/api.txt
-+++ b/Documentation/virt/kvm/api.txt
-@@ -172,6 +172,9 @@ is dependent on the CPU capability and t
- be retrieved using KVM_CAP_ARM_VM_IPA_SIZE of the KVM_CHECK_EXTENSION
- ioctl() at run-time.
- 
-+Creation of the VM will fail if the requested IPA size (whether it is
-+implicit or explicit) is unsupported on the host.
-+
- Please note that configuring the IPA size does not affect the capability
- exposed by the guest CPUs in ID_AA64MMFR0_EL1[PARange]. It only affects
- size of the address translated by the stage2 level (guest physical to
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -378,10 +378,10 @@ void kvm_set_ipa_limit(void)
- 		pr_info("kvm: Limiting the IPA size due to kernel %s Address limit\n",
- 			(va_max < pa_max) ? "Virtual" : "Physical");
- 
--	WARN(ipa_max < KVM_PHYS_SHIFT,
--	     "KVM IPA limit (%d bit) is smaller than default size\n", ipa_max);
- 	kvm_ipa_limit = ipa_max;
--	kvm_info("IPA Size Limit: %dbits\n", kvm_ipa_limit);
-+	kvm_info("IPA Size Limit: %d bits%s\n", kvm_ipa_limit,
-+		 ((kvm_ipa_limit < KVM_PHYS_SHIFT) ?
-+		  " (Reduced IPA size, limited VM/VMM compatibility)" : ""));
+--- a/drivers/xen/events/events_2l.c
++++ b/drivers/xen/events/events_2l.c
+@@ -47,6 +47,11 @@ static unsigned evtchn_2l_max_channels(v
+ 	return EVTCHN_2L_NR_CHANNELS;
  }
  
- /*
-@@ -408,6 +408,11 @@ int kvm_arm_setup_stage2(struct kvm *kvm
- 			return -EINVAL;
- 	} else {
- 		phys_shift = KVM_PHYS_SHIFT;
-+		if (phys_shift > kvm_ipa_limit) {
-+			pr_warn_once("%s using unsupported default IPA limit, upgrade your VMM\n",
-+				     current->comm);
-+			return -EINVAL;
-+		}
- 	}
++static void evtchn_2l_remove(evtchn_port_t evtchn, unsigned int cpu)
++{
++	clear_bit(evtchn, BM(per_cpu(cpu_evtchn_mask, cpu)));
++}
++
+ static void evtchn_2l_bind_to_cpu(struct irq_info *info, unsigned cpu)
+ {
+ 	clear_bit(info->evtchn, BM(per_cpu(cpu_evtchn_mask, info->cpu)));
+@@ -354,9 +359,18 @@ static void evtchn_2l_resume(void)
+ 				EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
+ }
  
- 	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) & 7;
++static int evtchn_2l_percpu_deinit(unsigned int cpu)
++{
++	memset(per_cpu(cpu_evtchn_mask, cpu), 0, sizeof(xen_ulong_t) *
++			EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
++
++	return 0;
++}
++
+ static const struct evtchn_ops evtchn_ops_2l = {
+ 	.max_channels      = evtchn_2l_max_channels,
+ 	.nr_channels       = evtchn_2l_max_channels,
++	.remove            = evtchn_2l_remove,
+ 	.bind_to_cpu       = evtchn_2l_bind_to_cpu,
+ 	.clear_pending     = evtchn_2l_clear_pending,
+ 	.set_pending       = evtchn_2l_set_pending,
+@@ -366,6 +380,7 @@ static const struct evtchn_ops evtchn_op
+ 	.unmask            = evtchn_2l_unmask,
+ 	.handle_events     = evtchn_2l_handle_events,
+ 	.resume	           = evtchn_2l_resume,
++	.percpu_deinit     = evtchn_2l_percpu_deinit,
+ };
+ 
+ void __init xen_evtchn_2l_init(void)
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -286,6 +286,7 @@ static int xen_irq_info_pirq_setup(unsig
+ static void xen_irq_info_cleanup(struct irq_info *info)
+ {
+ 	set_evtchn_to_irq(info->evtchn, -1);
++	xen_evtchn_port_remove(info->evtchn, info->cpu);
+ 	info->evtchn = 0;
+ }
+ 
+--- a/drivers/xen/events/events_internal.h
++++ b/drivers/xen/events/events_internal.h
+@@ -65,6 +65,7 @@ struct evtchn_ops {
+ 	unsigned (*nr_channels)(void);
+ 
+ 	int (*setup)(struct irq_info *info);
++	void (*remove)(evtchn_port_t port, unsigned int cpu);
+ 	void (*bind_to_cpu)(struct irq_info *info, unsigned cpu);
+ 
+ 	void (*clear_pending)(unsigned port);
+@@ -107,6 +108,13 @@ static inline int xen_evtchn_port_setup(
+ 	return 0;
+ }
+ 
++static inline void xen_evtchn_port_remove(evtchn_port_t evtchn,
++					  unsigned int cpu)
++{
++	if (evtchn_ops->remove)
++		evtchn_ops->remove(evtchn, cpu);
++}
++
+ static inline void xen_evtchn_port_bind_to_cpu(struct irq_info *info,
+ 					       unsigned cpu)
+ {
 
 
