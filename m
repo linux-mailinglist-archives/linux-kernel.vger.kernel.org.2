@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1E733BE5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967F133BE5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhCOOpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52254 "EHLO mail.kernel.org"
+        id S239081AbhCOOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231921AbhCOOEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1E0564EEB;
-        Mon, 15 Mar 2021 14:04:17 +0000 (UTC)
+        id S234589AbhCOOE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F04364EF9;
+        Mon, 15 Mar 2021 14:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817059;
-        bh=zg/ODY4xgrUUljpz1wfqqqExAwX4/xT6tnck+U0eMes=;
+        s=korg; t=1615817060;
+        bh=Wv/L7dQYYmEgnEQy5a6/j0Hm8/20q6x4KkXVE12LBk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IQLq+ZV4ACQjwY3fUoP9/I6rAFt9mxpNGJcN0FNeS/sx197qRlYIPZuqoAN5YfsOv
-         IzrSWArYTamRFHjfqQgUjWZQMSjgJVAejVGRLx/UjdRKWIIhth/y2ctImsaTp0ac5s
-         f5JktvRgUwuhVaP7f8ukEscvWXvp0eWyRJyYPuOQ=
+        b=vAEwH1gY3f6HECDKCsFLgswKZeixgDKABwPMzm89Q+HDaHRl2N3vSBYH8PgPzFZ1l
+         F4zHRXZR7365tUfILqPeaiMeg0QkkGgmZ/wNdMwD2JLk+NIbqlJoGrg+oCrYcF2adN
+         WGK0cs96NKfdkGjgR0uBZom5hu5lnyaTAkhtLQ9E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.11 280/306] powerpc/64s: Fix instruction encoding for lis in ppc_function_entry()
-Date:   Mon, 15 Mar 2021 14:55:43 +0100
-Message-Id: <20210315135517.139145957@linuxfoundation.org>
+Subject: [PATCH 5.11 281/306] powerpc: Fix inverted SET_FULL_REGS bitop
+Date:   Mon, 15 Mar 2021 14:55:44 +0100
+Message-Id: <20210315135517.178753846@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -43,36 +41,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit cea15316ceee2d4a51dfdecd79e08a438135416c upstream.
+commit 73ac79881804eed2e9d76ecdd1018037f8510cb1 upstream.
 
-'lis r2,N' is 'addis r2,0,N' and the instruction encoding in the macro
-LIS_R2 is incorrect (it currently maps to 'addis r0,r2,N'). Fix the
-same.
+This bit operation was inverted and set the low bit rather than
+cleared it, breaking the ability to ptrace non-volatile GPRs after
+exec. Fix.
 
-Fixes: c71b7eff426f ("powerpc: Add ABIv2 support to ppc_function_entry")
-Cc: stable@vger.kernel.org # v3.16+
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+Only affects 64e and 32-bit.
+
+Fixes: feb9df3462e6 ("powerpc/64s: Always has full regs, so remove remnant checks")
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210304020411.16796-1-naveen.n.rao@linux.vnet.ibm.com
+Link: https://lore.kernel.org/r/20210308085530.3191843-1-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/code-patching.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/ptrace.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/code-patching.h
-+++ b/arch/powerpc/include/asm/code-patching.h
-@@ -73,7 +73,7 @@ void __patch_exception(int exc, unsigned
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -195,7 +195,7 @@ static inline void regs_set_return_value
+ #define TRAP_FLAGS_MASK		0x11
+ #define TRAP(regs)		((regs)->trap & ~TRAP_FLAGS_MASK)
+ #define FULL_REGS(regs)		(((regs)->trap & 1) == 0)
+-#define SET_FULL_REGS(regs)	((regs)->trap |= 1)
++#define SET_FULL_REGS(regs)	((regs)->trap &= ~1)
  #endif
- 
- #define OP_RT_RA_MASK	0xffff0000UL
--#define LIS_R2		0x3c020000UL
-+#define LIS_R2		0x3c400000UL
- #define ADDIS_R2_R12	0x3c4c0000UL
- #define ADDI_R2_R2	0x38420000UL
- 
+ #define CHECK_FULL_REGS(regs)	BUG_ON(!FULL_REGS(regs))
+ #define NV_REG_POISON		0xdeadbeefdeadbeefUL
+@@ -210,7 +210,7 @@ static inline void regs_set_return_value
+ #define TRAP_FLAGS_MASK		0x1F
+ #define TRAP(regs)		((regs)->trap & ~TRAP_FLAGS_MASK)
+ #define FULL_REGS(regs)		(((regs)->trap & 1) == 0)
+-#define SET_FULL_REGS(regs)	((regs)->trap |= 1)
++#define SET_FULL_REGS(regs)	((regs)->trap &= ~1)
+ #define IS_CRITICAL_EXC(regs)	(((regs)->trap & 2) != 0)
+ #define IS_MCHECK_EXC(regs)	(((regs)->trap & 4) != 0)
+ #define IS_DEBUG_EXC(regs)	(((regs)->trap & 8) != 0)
 
 
