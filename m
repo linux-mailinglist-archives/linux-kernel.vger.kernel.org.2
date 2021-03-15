@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B3B33BD9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4E133BDE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240384AbhCOOhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47972 "EHLO mail.kernel.org"
+        id S236568AbhCOOjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:39:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233225AbhCOOBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E5364EF0;
-        Mon, 15 Mar 2021 14:01:48 +0000 (UTC)
+        id S233679AbhCOOCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2ACE64F2B;
+        Mon, 15 Mar 2021 14:02:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816909;
-        bh=/Ddd2zPl42t0KPISs+Dxeg/qgBi4KA8gGxKbfY4SnUE=;
+        s=korg; t=1615816937;
+        bh=Z6zOcIPe8C4x6d3GhlWcunOtUQl88DPN2oo6keWNqv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hkn6CVYFE1m+sbAn7KwUzEBttVjxq9t0ShoC9fQgOu6Xcepovm24u5kTnY70tw8hn
-         gKxyCG9byMrXv6G1wzN3uleSqknPGdrJrctmKeOzWXfNgJajGgzU2d4YhGHjH9pDJg
-         3F07PYwi1n71e8VFQQTzNbZj/ZkAhZgI1daLrm0w=
+        b=amHIrClUF419Q5HSZYyLuKXemZLHAsy0GGrekxtjQ7wsn9EenSADEUgZ6J/Avgrrq
+         KMD6Vl+pxylCPbw6Gr1hfz8hSZhPI0h5GPwW3QxTFVT3JndWd1vy8wvyPoS0j8E0g2
+         vbhJh4TC4MTLfcWSVuK9BAHocCr7GmkCTRQqOOdc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.10 183/290] Revert 95ebabde382c ("capabilities: Dont allow writing ambiguous v3 file capabilities")
-Date:   Mon, 15 Mar 2021 14:54:36 +0100
-Message-Id: <20210315135548.097352490@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.11 214/306] usbip: fix vudc to check for stream socket
+Date:   Mon, 15 Mar 2021 14:54:37 +0100
+Message-Id: <20210315135514.857456498@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +42,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 3b0c2d3eaa83da259d7726192cf55a137769012f upstream.
+commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
 
-It turns out that there are in fact userspace implementations that
-care and this recent change caused a regression.
-
-https://github.com/containers/buildah/issues/3071
-
-As the motivation for the original change was future development,
-and the impact is existing real world code just revert this change
-and allow the ambiguity in v3 file caps.
+Fix usbip_sockfd_store() to validate the passed in file descriptor is
+a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
+sock_recvmsg() can't detect end of stream.
 
 Cc: stable@vger.kernel.org
-Fixes: 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/commoncap.c |   12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/usb/usbip/vudc_sysfs.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -500,8 +500,7 @@ int cap_convert_nscap(struct dentry *den
- 	__u32 magic, nsmagic;
- 	struct inode *inode = d_backing_inode(dentry);
- 	struct user_namespace *task_ns = current_user_ns(),
--		*fs_ns = inode->i_sb->s_user_ns,
--		*ancestor;
-+		*fs_ns = inode->i_sb->s_user_ns;
- 	kuid_t rootid;
- 	size_t newsize;
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -138,6 +138,13 @@ static ssize_t usbip_sockfd_store(struct
+ 			goto unlock_ud;
+ 		}
  
-@@ -524,15 +523,6 @@ int cap_convert_nscap(struct dentry *den
- 	if (nsrootid == -1)
- 		return -EINVAL;
++		if (socket->type != SOCK_STREAM) {
++			dev_err(dev, "Expecting SOCK_STREAM - found %d",
++				socket->type);
++			ret = -EINVAL;
++			goto sock_err;
++		}
++
+ 		udc->ud.tcp_socket = socket;
  
--	/*
--	 * Do not allow allow adding a v3 filesystem capability xattr
--	 * if the rootid field is ambiguous.
--	 */
--	for (ancestor = task_ns->parent; ancestor; ancestor = ancestor->parent) {
--		if (from_kuid(ancestor, rootid) == 0)
--			return -EINVAL;
--	}
--
- 	newsize = sizeof(struct vfs_ns_cap_data);
- 	nscap = kmalloc(newsize, GFP_ATOMIC);
- 	if (!nscap)
+ 		spin_unlock_irq(&udc->ud.lock);
+@@ -177,6 +184,8 @@ static ssize_t usbip_sockfd_store(struct
+ 
+ 	return count;
+ 
++sock_err:
++	sockfd_put(socket);
+ unlock_ud:
+ 	spin_unlock_irq(&udc->ud.lock);
+ unlock:
 
 
