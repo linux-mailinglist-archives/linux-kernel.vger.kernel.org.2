@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B496633BC3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A2A33BE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238767AbhCOOXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:44 -0400
+        id S239900AbhCOOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:21 -0400
 Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232849AbhCOOAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E9364F2C;
-        Mon, 15 Mar 2021 13:59:30 +0000 (UTC)
+        id S232531AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E29C64EF1;
+        Mon, 15 Mar 2021 13:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816772;
-        bh=RoXW4qYsjowdjYRwEkUrLlyxsPVbzch6wfVru7DvVJI=;
+        s=korg; t=1615816725;
+        bh=/8R6R06lhlNFIZDBwF3ujdYr58JUCq8f0opCZTPs2JY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mh6gpWq0aFBUVtD/+qqG0W7sw6tJt3QMtKxyNuCQJkavuC48ec9oFbWh6hpXSFlJQ
-         8PQyKQMqM+oFeofS1CDYoBAt26G6Xr4RlccfXhhWS+BHi2wM3c1XUx4KvQANKNcvIN
-         WpT9QgaZwj5lHh1Mgtlu8qJSgNQdCL9FVmIfn7LY=
+        b=WzuDKTWCg9G2aBFip8BkReSnUpEaXQpGuPVvzarlv4vjJovYz5an9Yog+WMsifOze
+         QRWoVmHwQoxFDi+VzFUgB840yDunuUbcvQ2ztlj2hmz37cHm3L6GdQ6SbLnrTbxGIH
+         4XyaL3ocw9ezxFE9QnVYusXEiqdtX8ME3HYB1ZYI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 057/120] scsi: target: core: Add cmd length set before cmd complete
-Date:   Mon, 15 Mar 2021 14:56:48 +0100
-Message-Id: <20210315135721.855243136@linuxfoundation.org>
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 21/95] net: lapbether: Remove netif_start_queue / netif_stop_queue
+Date:   Mon, 15 Mar 2021 14:56:51 +0100
+Message-Id: <20210315135740.975849857@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +42,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 1c73e0c5e54d5f7d77f422a10b03ebe61eaed5ad ]
+commit f7d9d4854519fdf4d45c70a4d953438cd88e7e58 upstream.
 
-TCM doesn't properly handle underflow case for service actions. One way to
-prevent it is to always complete command with
-target_complete_cmd_with_length(), however it requires access to data_sg,
-which is not always available.
+For the devices in this driver, the default qdisc is "noqueue",
+because their "tx_queue_len" is 0.
 
-This change introduces target_set_cmd_data_length() function which allows
-to set command data length before completing it.
+In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
+"noqueue" qdisc are specially handled. Packets are transmitted without
+being queued after a "dev->flags & IFF_UP" check. However, it's possible
+that even if this check succeeds, "ops->ndo_stop" may still have already
+been called. This is because in "__dev_close_many", "ops->ndo_stop" is
+called before clearing the "IFF_UP" flag.
 
-Link: https://lore.kernel.org/r/20210209072202.41154-2-a.miloserdov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
+"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
+checks "netif_xmit_stopped" and finds that the queue is already stopped.
+In this case, it will complain that:
+"Virtual device ... asks to queue packet!"
+
+To prevent "__dev_queue_xmit" from generating this complaint, we should
+not call "netif_stop_queue" in "ops->ndo_stop".
+
+We also don't need to call "netif_start_queue" in "ops->ndo_open",
+because after a netdev is allocated and registered, the
+"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
+to call "netif_start_queue" to clear it.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/target/target_core_transport.c | 15 +++++++++++----
- include/target/target_core_backend.h   |  1 +
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/net/wan/lapbether.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index f1b730b77a31..bdada97cd4fe 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -841,11 +841,9 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
- }
- EXPORT_SYMBOL(target_complete_cmd);
- 
--void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+void target_set_cmd_data_length(struct se_cmd *cmd, int length)
- {
--	if ((scsi_status == SAM_STAT_GOOD ||
--	     cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) &&
--	    length < cmd->data_length) {
-+	if (length < cmd->data_length) {
- 		if (cmd->se_cmd_flags & SCF_UNDERFLOW_BIT) {
- 			cmd->residual_count += cmd->data_length - length;
- 		} else {
-@@ -855,6 +853,15 @@ void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int len
- 
- 		cmd->data_length = length;
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -286,7 +286,6 @@ static int lapbeth_open(struct net_devic
+ 		return -ENODEV;
  	}
-+}
-+EXPORT_SYMBOL(target_set_cmd_data_length);
-+
-+void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+{
-+	if (scsi_status == SAM_STAT_GOOD ||
-+	    cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) {
-+		target_set_cmd_data_length(cmd, length);
-+	}
  
- 	target_complete_cmd(cmd, scsi_status);
+-	netif_start_queue(dev);
+ 	return 0;
  }
-diff --git a/include/target/target_core_backend.h b/include/target/target_core_backend.h
-index 51b6f50eabee..0deeff9b4496 100644
---- a/include/target/target_core_backend.h
-+++ b/include/target/target_core_backend.h
-@@ -69,6 +69,7 @@ int	transport_backend_register(const struct target_backend_ops *);
- void	target_backend_unregister(const struct target_backend_ops *);
  
- void	target_complete_cmd(struct se_cmd *, u8);
-+void	target_set_cmd_data_length(struct se_cmd *, int);
- void	target_complete_cmd_with_length(struct se_cmd *, u8, int);
+@@ -294,8 +293,6 @@ static int lapbeth_close(struct net_devi
+ {
+ 	int err;
  
- void	transport_copy_sense_to_cmd(struct se_cmd *, unsigned char *);
--- 
-2.30.1
-
+-	netif_stop_queue(dev);
+-
+ 	if ((err = lapb_unregister(dev)) != LAPB_OK)
+ 		pr_err("lapb_unregister error: %d\n", err);
+ 
 
 
