@@ -2,242 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7AA33C950
+	by mail.lfdr.de (Postfix) with ESMTP id 0E74933C94F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhCOWYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:24:04 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:42100 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhCOWXf (ORCPT
+        id S232778AbhCOWYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232282AbhCOWXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:23:35 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2BC00316;
-        Mon, 15 Mar 2021 23:23:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615847014;
-        bh=i5Gp2H8N3R+I/w0dXvW9UnL1rsZiOHMIgbZGs1M6FiA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pYoi7x0ASrHmtXLjLk9IGo1mysffbC65rSM4yMfqXkOXsHPV2a1wXOaN/wQi2Ss24
-         hM8XIepF4Reoqb9JgZfbOX3rDugKGN/eAOaMXDe2tWKQNXlUr1lcc8qBafqbUxQFvu
-         zrbGuAlb/KNN6NL/v947bCRHAVESWD9anKCEqHG4=
-Date:   Tue, 16 Mar 2021 00:22:58 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] arm64: dts: renesas: eagle: Enable MAX9286
-Message-ID: <YE/eQrBTAKtQ1cyR@pendragon.ideasonboard.com>
-References: <20210315163028.173148-1-jacopo+renesas@jmondi.org>
- <20210315163028.173148-3-jacopo+renesas@jmondi.org>
+        Mon, 15 Mar 2021 18:23:30 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2250C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:23:30 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id r16so6170745pfh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=76pLO4ynd5ZWyHNZ5ZDnbUyusicrWJvIzQ5SsEfOQDk=;
+        b=airqsXzB/pgup9ugIMokOYOuKc7ZnQPtpIwDXFzpRbFsDaCkP1G8y4Exe06QF6l+hd
+         k7GGyjxmpCS+N8LxgaxVkErbGTuglwMmT442b3UL14DvdSXAE0DQQG4bEJzaEUWyEqMU
+         /48gWqX0Y9tvWyQ7fMkNcuOwMqwk7aDAy/wCP2Wp0lhKACYfP+dNRuwzwc9pVCXlIG3L
+         Pcwi0I8n/Br+aUTJP3BM1796/zCy2pUhwBtFQffBrFz0k8LVLxC/FmQk4nDbrGL4SzZH
+         W5tsoTvgZRxpSeqxRDY2m6gXmjcrNVishHe56MgyoPTWALrd1ClF+ylfl0Oo5XCaaVZo
+         t74g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=76pLO4ynd5ZWyHNZ5ZDnbUyusicrWJvIzQ5SsEfOQDk=;
+        b=ltpw8UC/firI9zz7G28b+GYmpkgc5tyKzYZajXUrboQ/CYZmycImvvA83YFn9jqhm4
+         CYR72O8aKlBpE7AZ3BuNKe6v9XFJWyGSAn2T5IfNFCop+uBXD37TVeTZvmzraum/rVHN
+         ssB4rdgunGtBlPXzCmkeLQeVlJdzDIMTcWajzHXURKZpyV7iTfU221uRYp+75qo3Ig93
+         ilBbb9yXsVdO8aU67BIqr/pwA3MSFTMZs6CsgrCKuNduuJtzjFW9giPnZANAMHTMoTV3
+         bAYWNdI8IAqxJ0y8DtKJidQw8esGwPpuPfXx0VHwRxK53IyyjcIVuxmdjBJPq38YHbB7
+         W4oA==
+X-Gm-Message-State: AOAM5308h/NCXDzy9uc+KSGg7vXY7uZq7UNmOHwbq/c3DzHzzXdj0u/m
+        6RGIOjAuAZiAlgY7MqtjH1RGxYtLhw+jOQ==
+X-Google-Smtp-Source: ABdhPJzErUir6olHz3A1ngb1qVLxTGkxO4C5zuXPoJPawtyx7X02V/kHW2KtzInAJJ84hCgOH6wwSw==
+X-Received: by 2002:a62:37c6:0:b029:1f0:abe0:8d1c with SMTP id e189-20020a6237c60000b02901f0abe08d1cmr12130769pfa.23.1615847010099;
+        Mon, 15 Mar 2021 15:23:30 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:3d60:4c70:d756:da57])
+        by smtp.gmail.com with ESMTPSA id s76sm14738422pfc.110.2021.03.15.15.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 15:23:29 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 15:23:24 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 4/4] KVM: x86/mmu: Store the address space ID in the
+ TDP iterator
+Message-ID: <YE/eXP60IVki7csd@google.com>
+References: <20210315182643.2437374-1-bgardon@google.com>
+ <20210315182643.2437374-5-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315163028.173148-3-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210315182643.2437374-5-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Mon, Mar 15, 2021, Ben Gardon wrote:
 
-Thank you for the patch.
+Missing "From: Sean Christopherson <seanjc@google.com>", i.e. the commit in your
+local tree needs "git commit --amend --author="Sean Christopherson <seanjc@google.com>".
+Alternatively, you could just erase my SOB ;-)
 
-On Mon, Mar 15, 2021 at 05:30:26PM +0100, Jacopo Mondi wrote:
-> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Store the address space ID in the TDP iterator so that it can be
+> retrieved without having to bounce through the root shadow page.  This
+> streamlines the code and fixes a Sparse warning about not properly using
+> rcu_dereference() when grabbing the ID from the root on the fly.
 > 
-> Enable the MAX9286 GMSL deserializer on the Eagle-V3M board.
-> 
-> Connected cameras should be defined in a device-tree overlay or included
-> after these definitions.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 > ---
->  .../arm64/boot/dts/renesas/r8a77970-eagle.dts | 132 ++++++++++++++++++
->  1 file changed, 132 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
-> index 874a7fc2730b..d2f63cccc238 100644
-> --- a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
-> +++ b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
-> @@ -6,6 +6,8 @@
->   * Copyright (C) 2017 Cogent Embedded, Inc.
->   */
->  
-> +#include <dt-bindings/gpio/gpio.h>
-> +
->  /dts-v1/;
->  #include "r8a77970.dtsi"
->  
-> @@ -188,6 +190,11 @@ i2c0_pins: i2c0 {
->  		function = "i2c0";
->  	};
->  
-> +	i2c3_pins: i2c3 {
-> +		groups = "i2c3_a";
-> +		function = "i2c3";
-> +	};
-> +
->  	qspi0_pins: qspi0 {
->  		groups = "qspi0_ctrl", "qspi0_data4";
->  		function = "qspi0";
-> @@ -266,6 +273,131 @@ &rwdt {
->  	status = "okay";
->  };
-
-Could we keep the nodes alphabetically sorted ?
-
-> +&csi40 {
-> +	status = "okay";
-> +
-> +	ports {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-
-This is already present in r8a77970.dtsi, you can drop it.
-
-> +
-> +		port@0 {
-> +			reg = <0>;
-
-Similarly, should we add port@0 in r8a77970.dtsi, with its reg property
-?
-
-> +
-> +			csi40_in: endpoint {
-> +				clock-lanes = <0>;
-> +				data-lanes = <1 2 3 4>;
-> +				remote-endpoint = <&max9286_out0>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c3 {
-> +	pinctrl-0 = <&i2c3_pins>;
-> +	pinctrl-names = "default";
-> +
-> +	status = "okay";
-> +	clock-frequency = <400000>;
-> +
-> +	gmsl: gmsl-deserializer@48 {
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		compatible = "maxim,max9286";
-> +		reg = <0x48>;
-> +
-> +		/* eagle-pca9654-max9286-pwdn */
-> +		enable-gpios = <&io_expander 0 GPIO_ACTIVE_HIGH>;
-> +
-> +		/*
-> +		 * Workaround: Hog the CAMVDD line high as we can't establish a
-> +		 * regulator-fixed on the gpio_chip exposed by &gmsl due to
-> +		 * circular-dependency issues.
-> +		 */
-> +		camvdd-en-hog {
-> +			gpio-hog;
-> +			gpios = <0 0>;
-> +			output-low;
-> +			line-name = "CAMVDD_EN";
-> +		};
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				max9286_in0: endpoint {
-> +				};
-
-Shouldn't we leave out empty endpoints, and add them to the overlays
-instead ? Endpoints describe links, so they shouldn't exist on their
-own.
-
-With these minor issues addressed,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +				max9286_in1: endpoint {
-> +				};
-> +			};
-> +
-> +			port@2 {
-> +				reg = <2>;
-> +				max9286_in2: endpoint {
-> +				};
-> +			};
-> +
-> +			port@3 {
-> +				reg = <3>;
-> +				max9286_in3: endpoint {
-> +				};
-> +			};
-> +
-> +			port@4 {
-> +				reg = <4>;
-> +				max9286_out0: endpoint {
-> +					clock-lanes = <0>;
-> +					data-lanes = <1 2 3 4>;
-> +					remote-endpoint = <&csi40_in>;
-> +				};
-> +			};
-> +		};
-> +
-> +		i2c-mux {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			i2c@0 {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				reg = <0>;
-> +
-> +				status = "disabled";
-> +			};
-> +
-> +			i2c@1 {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				reg = <1>;
-> +
-> +				status = "disabled";
-> +			};
-> +
-> +			i2c@2 {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				reg = <2>;
-> +
-> +				status = "disabled";
-> +			};
-> +
-> +			i2c@3 {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				reg = <3>;
-> +
-> +				status = "disabled";
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &scif0 {
->  	pinctrl-0 = <&scif0_pins>;
->  	pinctrl-names = "default";
-
--- 
-Regards,
-
-Laurent Pinchart
