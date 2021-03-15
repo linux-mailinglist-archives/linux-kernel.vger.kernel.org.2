@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5885333B1F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFB133B1F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhCOMAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:00:34 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11411 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhCOMAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:00:12 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DzZjc4bRnz9tyRV;
-        Mon, 15 Mar 2021 13:00:04 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 0HpYqaHq1lcH; Mon, 15 Mar 2021 13:00:04 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzZjc3cHZz9tyRR;
-        Mon, 15 Mar 2021 13:00:04 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B1F9A8B773;
-        Mon, 15 Mar 2021 13:00:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dpPoxwu5oRI6; Mon, 15 Mar 2021 13:00:09 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 83EA68B75B;
-        Mon, 15 Mar 2021 13:00:09 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 74A49675DF; Mon, 15 Mar 2021 12:00:09 +0000 (UTC)
-Message-Id: <e4d1aae7604d89c98a52dfd8ce8443462e595670.1615809591.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/math: Fix missing __user qualifier for get_user() and
- other sparse warnings
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 15 Mar 2021 12:00:09 +0000 (UTC)
+        id S230252AbhCOMAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhCOL75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:59:57 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34064C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:59:56 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id e9so5547677wrw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SS1gct42nXEurrNmbvLMUHBfwY4gO5XhOVCF9euUF9s=;
+        b=MUVhFOjYfQavUzABQXpLiEHlqUT3kzcdNXJk9R2s1IIzW53qoU76OIdvRjkVSRHwZG
+         MtK28UTKXFQwGa0NHFvP98HaDgWRB/6+wenmYvSqtPKLU6ffJy2CLQwDffwSCztSNUOD
+         wSVuTsNlrnhf73WyfMX0izOwHqfWsRmq8tC0o+Sb+XMIFqW9hjS+emFAP99ZWJFnUxRx
+         GJTRzAVLk76O5LSSkeq23c6tjz8TSgW8xB8cCwVh8iCTg7i1xBDp5mw0lPeWCU2kMo9p
+         mtKp/uZ0XetXYPSjXBIPJ/MXpZB5jZf/zfhV72tjHSxW0KDVboKgB/m3j0lpKL2nG296
+         EnYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SS1gct42nXEurrNmbvLMUHBfwY4gO5XhOVCF9euUF9s=;
+        b=K46FCZJ+RBwi6oobbUWBPv4gx5bFekoya1bqwNBTzjI9XUKbDDC1d2ZspJJ2CY7ii2
+         N2DH2rR0UK1V7IFZcnJM1A85B4Wu6j9VAAMyG2nKtsxF6s7Cm7gj4HLdcO1ERR0C9jh1
+         LJfrV4/eeOmlLVuFSLkjzGDECr+9GlGT0ijAjV9hfS1qyN5fG48LqDyoLSG4HM2YOntl
+         0QbhZbFmrSXLzW10w70ur2vTBJRwC91n92EFVXP1ZplYkT0CywuOyT4j0gAvzhLb+/id
+         xfIXJ5SBmYlQgZ1H44W/emKDPAEQnMeSgaA7JTBuvPs1qHMtdl+DS8qzJcYHX9gyelQn
+         +G7Q==
+X-Gm-Message-State: AOAM53181a/lzAuYyEkYk6HpNIyQ/1gUt+ymCKuWxlTHTJs6OJkPSgi+
+        wsuZEF/HUsptDUUZ0yf/C57kgw==
+X-Google-Smtp-Source: ABdhPJwLLHk3+2nVXdv1rSFL/CLcrBN5exMsKtZ/CKY/bRSQAaObXhf1VDwv6SBICLHZ+nQrVC8BYg==
+X-Received: by 2002:a5d:6a4c:: with SMTP id t12mr26298747wrw.289.1615809595542;
+        Mon, 15 Mar 2021 04:59:55 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id f22sm12048777wmc.33.2021.03.15.04.59.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 04:59:55 -0700 (PDT)
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: msm8916: Enable modem and WiFi
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <20210312003318.3273536-6-bjorn.andersson@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Message-ID: <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
+Date:   Mon, 15 Mar 2021 12:01:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210312003318.3273536-6-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse reports the following problems:
+On 12/03/2021 00:33, Bjorn Andersson wrote:
+> Enable the modem and WiFi subsystems and specify msm8916 specific
+> firmware path for these and the WCNSS control service.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 12 ++++++++++++
+>   arch/arm64/boot/dts/qcom/msm8916.dtsi     |  2 +-
+>   2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> index 6aef0c2e4f0a..448e3561ef63 100644
+> --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> @@ -305,6 +305,12 @@ &mdss {
+>   	status = "okay";
+>   };
+>   
+> +&mpss {
+> +	status = "okay";
+> +
+> +	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mbn";
+> +};
+> +
+>   &pm8916_resin {
+>   	status = "okay";
+>   	linux,code = <KEY_VOLUMEDOWN>;
+> @@ -312,6 +318,8 @@ &pm8916_resin {
+>   
+>   &pronto {
+>   	status = "okay";
+> +
+> +	firmware-name = "qcom/msm8916/wcnss.mbn";
+>   };
 
-arch/powerpc/math-emu/math.c:228:21: warning: Using plain integer as NULL pointer
-arch/powerpc/math-emu/math.c:228:31: warning: Using plain integer as NULL pointer
-arch/powerpc/math-emu/math.c:228:41: warning: Using plain integer as NULL pointer
-arch/powerpc/math-emu/math.c:228:51: warning: Using plain integer as NULL pointer
-arch/powerpc/math-emu/math.c:237:13: warning: incorrect type in initializer (different address spaces)
-arch/powerpc/math-emu/math.c:237:13:    expected unsigned int [noderef] __user *_gu_addr
-arch/powerpc/math-emu/math.c:237:13:    got unsigned int [usertype] *
-arch/powerpc/math-emu/math.c:226:1: warning: symbol 'do_mathemu' was not declared. Should it be static?
+On Debian I have to do this
 
-Add missing __user qualifier when casting pointer used in get_user()
 
-Use NULL instead of 0 to initialise opX local variables.
+index 2a6a23cb14ca..597cdc8f51cc 100644
+--- a/drivers/remoteproc/qcom_wcnss.c
++++ b/drivers/remoteproc/qcom_wcnss.c
+@@ -33,7 +33,7 @@
+  #include "qcom_wcnss.h"
 
-Add a prototype for do_mathemu() (Added in processor.h like sparc)
+  #define WCNSS_CRASH_REASON_SMEM                422
+-#define WCNSS_FIRMWARE_NAME            "wcnss.mdt"
++#define WCNSS_FIRMWARE_NAME            "qcom/msm8916/wcnss.mdt"
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+so I guess wcnss_probe() -> rproc_alloc() wants this fix too.
+
 ---
- arch/powerpc/include/asm/processor.h | 2 ++
- arch/powerpc/kernel/traps.c          | 1 -
- arch/powerpc/math-emu/math.c         | 4 ++--
- 3 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
-index 8acc3590c971..f21834a1d32e 100644
---- a/arch/powerpc/include/asm/processor.h
-+++ b/arch/powerpc/include/asm/processor.h
-@@ -417,6 +417,8 @@ extern int fix_alignment(struct pt_regs *);
- #define NET_IP_ALIGN	0
- #endif
- 
-+int do_mathemu(struct pt_regs *regs);
-+
- #endif /* __KERNEL__ */
- #endif /* __ASSEMBLY__ */
- #endif /* _ASM_POWERPC_PROCESSOR_H */
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index d615cd7ebfae..3cafbde7a51c 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -1406,7 +1406,6 @@ int is_valid_bugaddr(unsigned long addr)
- static int emulate_math(struct pt_regs *regs)
- {
- 	int ret;
--	extern int do_mathemu(struct pt_regs *regs);
- 
- 	ret = do_mathemu(regs);
- 	if (ret >= 0)
-diff --git a/arch/powerpc/math-emu/math.c b/arch/powerpc/math-emu/math.c
-index 30b4b69c6941..327165f26ca6 100644
---- a/arch/powerpc/math-emu/math.c
-+++ b/arch/powerpc/math-emu/math.c
-@@ -225,7 +225,7 @@ record_exception(struct pt_regs *regs, int eflag)
- int
- do_mathemu(struct pt_regs *regs)
- {
--	void *op0 = 0, *op1 = 0, *op2 = 0, *op3 = 0;
-+	void *op0 = NULL, *op1 = NULL, *op2 = NULL, *op3 = NULL;
- 	unsigned long pc = regs->nip;
- 	signed short sdisp;
- 	u32 insn = 0;
-@@ -234,7 +234,7 @@ do_mathemu(struct pt_regs *regs)
- 	int type = 0;
- 	int eflag, trap;
- 
--	if (get_user(insn, (u32 *)pc))
-+	if (get_user(insn, (u32 __user *)pc))
- 		return -EFAULT;
- 
- 	switch (insn >> 26) {
--- 
-2.25.0
-
+bod
