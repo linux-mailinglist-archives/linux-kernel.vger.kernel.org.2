@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D3A33B519
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02A033B516
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCONxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55474 "EHLO mail.kernel.org"
+        id S230201AbhCONxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhCONwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A27E764EB6;
-        Mon, 15 Mar 2021 13:52:53 +0000 (UTC)
+        id S229919AbhCONwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EAAA64EEC;
+        Mon, 15 Mar 2021 13:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816375;
-        bh=90rt/R300T0yeBDlUv1j8R/0HAAsGEgXlH838DM2RxM=;
+        s=korg; t=1615816370;
+        bh=53j0FcMQQNm8OF72VSJVGls+1WQtkpEOpK/tgX+uFjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S9HU1iczRehOurdhG3sGQCWoPWl/twu/+t2YAZ9Dn+OrSKe0lrsHscN3zOM6XubZS
-         RTuHBZy/Ii1IchI7P/ucxva9kZ8+bGYdANAopzmxfV1eUnp1G2Xfpo8WNG7gWRHjB8
-         KxF5hT3ofeCIoVWbBP8AxsSmwcGwMpdqtLuRkiAg=
+        b=Xua0mnw/mEfO7SmeHKNgodlef/0v3vYpZLdJ8WB1XeLoa19pRNa21mXSiJWT9k7QY
+         sWDN4wTNu8Gy2L8OVZylNZeEIHbk6Fu4vxpb83nxLQwrIbnxlO34YHlobrfI2lsQqW
+         60oT8nfq8D2Vhr+xKD6fbDj3tPIqN8a/1rNPH7zw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 10/75] Revert "mm, slub: consider rest of partial list if acquire_slab() fails"
-Date:   Mon, 15 Mar 2021 14:51:24 +0100
-Message-Id: <20210315135208.602406622@linuxfoundation.org>
+        stable@vger.kernel.org, Zbynek Michl <zbynek.michl@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 02/78] ethernet: alx: fix order of calls on resume
+Date:   Mon, 15 Mar 2021 14:51:25 +0100
+Message-Id: <20210315135212.149650666@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +42,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Jakub Kicinski <kuba@kernel.org>
 
-commit 9b1ea29bc0d7b94d420f96a0f4121403efc3dd85 upstream.
+commit a4dcfbc4ee2218abd567d81d795082d8d4afcdf6 upstream.
 
-This reverts commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf.
+netif_device_attach() will unpause the queues so we can't call
+it before __alx_open(). This went undetected until
+commit b0999223f224 ("alx: add ability to allocate and free
+alx_napi structures") but now if stack tries to xmit immediately
+on resume before __alx_open() we'll crash on the NAPI being null:
 
-The kernel test robot reports a huge performance regression due to the
-commit, and the reason seems fairly straightforward: when there is
-contention on the page list (which is what causes acquire_slab() to
-fail), we do _not_ want to just loop and try again, because that will
-transfer the contention to the 'n->list_lock' spinlock we hold, and
-just make things even worse.
+ BUG: kernel NULL pointer dereference, address: 0000000000000198
+ CPU: 0 PID: 12 Comm: ksoftirqd/0 Tainted: G           OE 5.10.0-3-amd64 #1 Debian 5.10.13-1
+ Hardware name: Gigabyte Technology Co., Ltd. To be filled by O.E.M./H77-D3H, BIOS F15 11/14/2013
+ RIP: 0010:alx_start_xmit+0x34/0x650 [alx]
+ Code: 41 56 41 55 41 54 55 53 48 83 ec 20 0f b7 57 7c 8b 8e b0
+0b 00 00 39 ca 72 06 89 d0 31 d2 f7 f1 89 d2 48 8b 84 df
+ RSP: 0018:ffffb09240083d28 EFLAGS: 00010297
+ RAX: 0000000000000000 RBX: ffffa04d80ae7800 RCX: 0000000000000004
+ RDX: 0000000000000000 RSI: ffffa04d80afa000 RDI: ffffa04e92e92a00
+ RBP: 0000000000000042 R08: 0000000000000100 R09: ffffa04ea3146700
+ R10: 0000000000000014 R11: 0000000000000000 R12: ffffa04e92e92100
+ R13: 0000000000000001 R14: ffffa04e92e92a00 R15: ffffa04e92e92a00
+ FS:  0000000000000000(0000) GS:ffffa0508f600000(0000) knlGS:0000000000000000
+ i915 0000:00:02.0: vblank wait timed out on crtc 0
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000198 CR3: 000000004460a001 CR4: 00000000001706f0
+ Call Trace:
+  dev_hard_start_xmit+0xc7/0x1e0
+  sch_direct_xmit+0x10f/0x310
 
-This is admittedly likely a problem only on big machines - the kernel
-test robot report comes from a 96-thread dual socket Intel Xeon Gold
-6252 setup, but the regression there really is quite noticeable:
-
-   -47.9% regression of stress-ng.rawpkt.ops_per_sec
-
-and the commit that was marked as being fixed (7ced37197196: "slub:
-Acquire_slab() avoid loop") actually did the loop exit early very
-intentionally (the hint being that "avoid loop" part of that commit
-message), exactly to avoid this issue.
-
-The correct thing to do may be to pick some kind of reasonable middle
-ground: instead of breaking out of the loop on the very first sign of
-contention, or trying over and over and over again, the right thing may
-be to re-try _once_, and then give up on the second failure (or pick
-your favorite value for "once"..).
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Link: https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
-Cc: Jann Horn <jannh@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Acked-by: Christoph Lameter <cl@linux.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org> # 4.9+
+Fixes: bc2bebe8de8e ("alx: remove WoL support")
+Reported-by: Zbynek Michl <zbynek.michl@gmail.com>
+Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=983595
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Tested-by: Zbynek Michl <zbynek.michl@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slub.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/atheros/alx/main.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1682,7 +1682,7 @@ static void *get_partial_node(struct kme
+--- a/drivers/net/ethernet/atheros/alx/main.c
++++ b/drivers/net/ethernet/atheros/alx/main.c
+@@ -1694,13 +1694,19 @@ static int alx_resume(struct device *dev
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct alx_priv *alx = pci_get_drvdata(pdev);
+ 	struct alx_hw *hw = &alx->hw;
++	int err;
  
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
- 		if (!t)
--			continue; /* cmpxchg raced */
-+			break;
+ 	alx_reset_phy(hw);
  
- 		available += objects;
- 		if (!object) {
+ 	if (!netif_running(alx->dev))
+ 		return 0;
++
++	err = __alx_open(alx, true);
++	if (err)
++		return err;
++
+ 	netif_device_attach(alx->dev);
+-	return __alx_open(alx, true);
++	return 0;
+ }
+ 
+ static SIMPLE_DEV_PM_OPS(alx_pm_ops, alx_suspend, alx_resume);
 
 
