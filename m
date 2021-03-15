@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AA433C6D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD0833C731
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhCOTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbhCOT3x (ORCPT
+        id S233809AbhCOTzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:55:40 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.4]:32969 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232837AbhCOTzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:29:53 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227D7C06174A;
-        Mon, 15 Mar 2021 12:29:53 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id CBDA8372;
-        Mon, 15 Mar 2021 19:29:52 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net CBDA8372
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615836592; bh=YGwB17DyHiwXuCM/3j9A6hWkbkG7nsKbAZr4BdwUMEY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=dRl2ZiJjZ6Xsnyyg20r1F6Josdjljbzb6LifEyPlxEaWidtd3DDDhHqEZSBfCTxng
-         B0v5tdoMv4HkkNw3BqpwYm5S6mNd2z3W8MWb5eesOM+sRO2T4PvCOFFUqA5TWo4NQJ
-         fNi4Z6GYfUiBKWVUYX0R9nH+acNAApgTwKJopwUxZkQOJyqx2Iopt2I5j+4FCfedlJ
-         RR5TWDHzdLfhoGYPQ6vI2ANUllO2oswBhbIozGWKu7IH5AmFxfeonIvpdBfZ0Gj7DE
-         NB4FmZxvIH7lShuCC8N80TFAmqf2BHVBqwVB3TDPvEDxkN9iH6p/tg8rXwLqa5717a
-         fBpju68NjWznQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wren Turkal <wt@penguintechs.org>
-Cc:     Wren Turkal <wt@penguintechs.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] Expose the bus kernel docs to the build docs.
-In-Reply-To: <20210308191417.4750-1-wt@penguintechs.org>
-References: <20210307031611.GU2723601@casper.infradead.org>
- <20210308191417.4750-1-wt@penguintechs.org>
-Date:   Mon, 15 Mar 2021 13:29:52 -0600
-Message-ID: <87sg4w1ahb.fsf@meer.lwn.net>
+        Mon, 15 Mar 2021 15:55:22 -0400
+X-Greylist: delayed 1413 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 15:55:22 EDT
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 7BC2A2F16
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:31:30 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Lsw6lfzHw5rKQLsw6lsuOB; Mon, 15 Mar 2021 14:31:30 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/H0ligbcxPpdDZScnFVEzZTS5RK+PXk5CzzXsw7JzbA=; b=ktrIMr/qHov2/xwdpYQbGI/u6A
+        +Oe/YcFuhW6ut7NfPsD3AwKnpdjpQCSB2kDvbYe+O14x+a8sWgkhvsBLwt8Fup7Nca6W64Ou+y5LM
+        2JDuPI7gqgNeHw/RtaH7I4bxB7R7QQRRAvUwzXuBEseF4w6RlgtelgvWOnVu5/VmcVN1F9yLz73zI
+        xurIUVrLsOw+ytisHO4+sNG/8nyfMWJjqHvi4dc5ppWLAaQsAlQCT7iTHNQi+1lDNVXIarnQ9IPrs
+        BpItnUSmPcB/bXilXHoqKoUxFw/n1uC/50vOFHuy4BlP7ikGaCDppDYui3AjD1vwNonFLiEJELQOd
+        TNtcFdAQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:34340 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lLsw6-002lVA-5d; Mon, 15 Mar 2021 14:31:30 -0500
+Subject: Re: [PATCH v3][next] xfs: Replace one-element arrays with
+ flexible-array members
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210311042302.GA137676@embeddedor>
+ <20210311044700.GU3419940@magnolia>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <96be7032-a95c-e8d2-a7f8-64b96686ea42@embeddedor.com>
+Date:   Mon, 15 Mar 2021 13:31:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210311044700.GU3419940@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lLsw6-002lVA-5d
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:34340
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wren Turkal <wt@penguintechs.org> writes:
 
-> Before, the bus type related APIs that were defined in the
-> include/linux/device/bus.h were not referenced anywhere in the docs, so
-> I linked it to the bus types api documentation.
 
-This should really be phrased in the imperative style as described in
-Documentation/process/submitting-patches.rst.  I wouldn't ordinarily
-reject a patch just for that, but...
+On 3/10/21 22:47, Darrick J. Wong wrote:
+> On Wed, Mar 10, 2021 at 10:23:02PM -0600, Gustavo A. R. Silva wrote:
+>> There is a regular need in the kernel to provide a way to declare having
+>> a dynamically sized set of trailing elements in a structure. Kernel code
+>> should always use “flexible array members”[1] for these cases. The older
+>> style of one-element or zero-length arrays should no longer be used[2].
+>>
+>> Refactor the code according to the use of flexible-array members in
+>> multiple structures, instead of one-element arrays. Also, make use of
+>> the new struct_size() helper to properly calculate the size of multiple
+>> structures that contain flexible-array members. Additionally, wrap
+>> some calls to the struct_size() helper in multiple inline functions.
+>>
+>> Below are the results of running xfstests for groups shutdown and log
+>> with the following configuration in local.config:
+>>
+>> export TEST_DEV=/dev/sda3
+>> export TEST_DIR=/mnt/test
+>> export SCRATCH_DEV=/dev/sda4
+>> export SCRATCH_MNT=/mnt/scratch
+>>
+>> The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
+> 
+> Looks good to me, will toss it at my fstests cloud and see if anything
+> shakes out.  Thanks for cleaning up this goofy thorn-pile!
 
-> Signed-off-by: Wren Turkal <wt@penguintechs.org>
-> ---
->  Documentation/driver-api/driver-model/bus.rst | 8 ++++++++
->  Documentation/driver-api/infrastructure.rst   | 3 +--
->  2 files changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
-> index 016b15a6e8ea..c53b01e95fd9 100644
-> --- a/Documentation/driver-api/driver-model/bus.rst
-> +++ b/Documentation/driver-api/driver-model/bus.rst
-> @@ -1,3 +1,5 @@
-> +.. _bus_types:
-> +
->  =========
->  Bus Types
->  =========
-> @@ -144,3 +146,9 @@ sysfs directory using::
->  
->  	int bus_create_file(struct bus_type *, struct bus_attribute *);
->  	void bus_remove_file(struct bus_type *, struct bus_attribute *);
-> +
-> +Functions and Structures
-> +========================
-> +
-> +.. kernel-doc:: include/linux/device/bus.h
-> +.. kernel-doc:: drivers/base/bus.c
-> diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
-> index 683bd460e222..eb2a2c9e3c0c 100644
-> --- a/Documentation/driver-api/infrastructure.rst
-> +++ b/Documentation/driver-api/infrastructure.rst
-> @@ -41,8 +41,7 @@ Device Drivers Base
->  .. kernel-doc:: drivers/base/platform.c
->     :export:
->  
-> -.. kernel-doc:: drivers/base/bus.c
-> -   :export:
-> +:ref:`bus_types`
+Great. It's been fun to work on this. :p
 
-Rather than inserting labels and making explicit cross-references, it
-seems better to just let automarkup do the work for you.  So instead of
-the above line, something like:
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-   See also Documentation/driver-api/driver-model/bus.rst
-
-Thanks,
-
-jon
+Thanks!
+--
+Gustavo
