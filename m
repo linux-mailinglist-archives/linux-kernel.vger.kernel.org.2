@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8F633BA03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49CA33B8EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhCOOHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:07:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S234706AbhCOOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:04:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhCON6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2043C64F01;
-        Mon, 15 Mar 2021 13:57:58 +0000 (UTC)
+        id S231965AbhCON5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D864564F2D;
+        Mon, 15 Mar 2021 13:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816680;
-        bh=p2Qq4GYPioMsa0XKgXrE0A9OR9T7H/RwnkiV9NVLwRA=;
+        s=korg; t=1615816644;
+        bh=KUgnUfIhMV6ghQ263E7VfkbB5r4OQ8SSZIpzaryCweQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sOsfEpCermotee2PbXAyuYHCuyiGX8HkBscMlp10o48Zg14vLk3Vqx4U7Ybt7A05r
-         hDAxCyA+MiHzzWxksRkEP0dhC72eIA8p9IkXYURY1P9B4mkruAXPjuWjThJlRqXW+P
-         dfqp8uHbObeWvTtJON5sHWd2agyWGbHuDJRT1pHc=
+        b=V/VBLTZwuW1PfHDYW6mSJo9qIztITKt5A2cwR+8G7dzd8pcuFjBFA9a/n6FtxxG/I
+         rSPiMWeur5CWZ1eUXZu5BBee7KiP1ppymQiIq3vQbIHgYFj/jSWYUU28yMqwUpqzAy
+         gjfMR5RjCVP0vx63NgXDWdMbBFiWbAnuNkB1vxoY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 060/306] net: mscc: ocelot: properly reject destination IP keys in VCAP IS1
+        stable@vger.kernel.org,
+        Christoph Plattner <christoph.plattner@thalesgroup.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 030/290] powerpc/603: Fix protection of user pages mapped with PROT_NONE
 Date:   Mon, 15 Mar 2021 14:52:03 +0100
-Message-Id: <20210315135509.678873406@linuxfoundation.org>
+Message-Id: <20210315135542.940267543@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +43,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit f1becbed411c6fa29d7ce3def3a1dcd4f63f2d74 upstream.
+commit c119565a15a628efdfa51352f9f6c5186e506a1c upstream.
 
-An attempt is made to warn the user about the fact that VCAP IS1 cannot
-offload keys matching on destination IP (at least given the current half
-key format), but sadly that warning fails miserably in practice, due to
-the fact that it operates on an uninitialized "match" variable. We must
-first decode the keys from the flow rule.
+On book3s/32, page protection is defined by the PP bits in the PTE
+which provide the following protection depending on the access
+keys defined in the matching segment register:
+- PP 00 means RW with key 0 and N/A with key 1.
+- PP 01 means RW with key 0 and RO with key 1.
+- PP 10 means RW with both key 0 and key 1.
+- PP 11 means RO with both key 0 and key 1.
 
-Fixes: 75944fda1dfe ("net: mscc: ocelot: offload ingress skbedit and vlan actions to VCAP IS1")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Since the implementation of kernel userspace access protection,
+PP bits have been set as follows:
+- PP00 for pages without _PAGE_USER
+- PP01 for pages with _PAGE_USER and _PAGE_RW
+- PP11 for pages with _PAGE_USER and without _PAGE_RW
+
+For kernelspace segments, kernel accesses are performed with key 0
+and user accesses are performed with key 1. As PP00 is used for
+non _PAGE_USER pages, user can't access kernel pages not flagged
+_PAGE_USER while kernel can.
+
+For userspace segments, both kernel and user accesses are performed
+with key 0, therefore pages not flagged _PAGE_USER are still
+accessible to the user.
+
+This shouldn't be an issue, because userspace is expected to be
+accessible to the user. But unlike most other architectures, powerpc
+implements PROT_NONE protection by removing _PAGE_USER flag instead of
+flagging the page as not valid. This means that pages in userspace
+that are not flagged _PAGE_USER shall remain inaccessible.
+
+To get the expected behaviour, just mimic other architectures in the
+TLB miss handler by checking _PAGE_USER permission on userspace
+accesses as if it was the _PAGE_PRESENT bit.
+
+Note that this problem only is only for 603 cores. The 604+ have
+an hash table, and hash_page() function already implement the
+verification of _PAGE_USER permission on userspace pages.
+
+Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
+Cc: stable@vger.kernel.org # v5.2+
+Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mscc/ocelot_flower.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/head_book3s_32.S |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mscc/ocelot_flower.c
-+++ b/drivers/net/ethernet/mscc/ocelot_flower.c
-@@ -540,13 +540,14 @@ ocelot_flower_parse_key(struct ocelot *o
- 			return -EOPNOTSUPP;
- 		}
- 
-+		flow_rule_match_ipv4_addrs(rule, &match);
-+
- 		if (filter->block_id == VCAP_IS1 && *(u32 *)&match.mask->dst) {
- 			NL_SET_ERR_MSG_MOD(extack,
- 					   "Key type S1_NORMAL cannot match on destination IP");
- 			return -EOPNOTSUPP;
- 		}
- 
--		flow_rule_match_ipv4_addrs(rule, &match);
- 		tmp = &filter->key.ipv4.sip.value.addr[0];
- 		memcpy(tmp, &match.key->src, 4);
- 
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -461,10 +461,11 @@ InstructionTLBMiss:
+ 	cmplw	0,r1,r3
+ #endif
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC | _PAGE_USER
+ #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ #endif
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+@@ -523,9 +524,10 @@ DataLoadTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
+@@ -599,9 +601,10 @@ DataStoreTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
 
 
