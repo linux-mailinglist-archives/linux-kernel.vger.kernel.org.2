@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE1E33BB9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7DA33BBC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhCOOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S232432AbhCOOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232471AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC38464EF9;
-        Mon, 15 Mar 2021 13:59:29 +0000 (UTC)
+        id S232628AbhCON7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3943364EFC;
+        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816771;
-        bh=wmSJzdMwCOzPUjx8SWQUQRJX27s79VJqdKjOsW4Yauo=;
+        s=korg; t=1615816774;
+        bh=20NaSGLvTYKwMt1yutcaUGuc6VgU+tHjTLCYqQx3qRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFWl8XWXDgLEcp8ku3QJUmOGkmzTGeVGMe3jn/bkubzjn1GPkqcEQTXiQp+vo7Gfo
-         Em5r3i96nzH9yfGUteFiQvWkq3DmfV9X8racc6NxHRlS65jZ7+noZ1TeweVtU4ApW7
-         gW5z82GGnn5AcDZ8trhekwaS83JnSIBb0+nm44kM=
+        b=bXJPH1dspsrUZH/5zl+LY3f03xS+6YFaZ8DH1Yl6RapSNPtCtcR4bDRjVkIeAmcYf
+         6lS9IezBIrTs7bHDol/MMDTmP59N4kl4sQo5r+NmxK55qaEMgKu5zE/uW5wkilPekS
+         4jNVoLVNqAdBFOMJQllbelMbU8VbRZw4Vb8+OUA4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Bjoern Walk <bwalk@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 098/168] s390/dasd: fix hanging DASD driver unbind
-Date:   Mon, 15 Mar 2021 14:55:30 +0100
-Message-Id: <20210315135553.591815804@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 100/168] software node: Fix node registration
+Date:   Mon, 15 Mar 2021 14:55:32 +0100
+Message-Id: <20210315135553.655781092@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,49 +43,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit 7d365bd0bff3c0310c39ebaffc9a8458e036d666 upstream.
+commit 8891123f9cbb9c1ee531e5a87fa116f0af685c48 upstream.
 
-In case of an unbind of the DASD device driver the function
-dasd_generic_remove() is called which shuts down the device.
-Among others this functions removes the int_handler from the cdev.
-During shutdown the device cancels all outstanding IO requests and waits
-for completion of the clear request.
-Unfortunately the clear interrupt will never be received when there is no
-interrupt handler connected.
+Software node can not be registered before its parent.
 
-Fix by moving the int_handler removal after the call to the state machine
-where no request or interrupt is outstanding.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Tested-by: Bjoern Walk <bwalk@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 80488a6b1d3c ("software node: Add support for static node descriptors")
+Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/block/dasd.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/base/swnode.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/s390/block/dasd.c
-+++ b/drivers/s390/block/dasd.c
-@@ -3522,8 +3522,6 @@ void dasd_generic_remove(struct ccw_devi
- 	struct dasd_device *device;
- 	struct dasd_block *block;
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -812,6 +812,9 @@ int software_node_register(const struct
+ 	if (software_node_to_swnode(node))
+ 		return -EEXIST;
  
--	cdev->handler = NULL;
--
- 	device = dasd_device_from_cdev(cdev);
- 	if (IS_ERR(device)) {
- 		dasd_remove_sysfs_files(cdev);
-@@ -3542,6 +3540,7 @@ void dasd_generic_remove(struct ccw_devi
- 	 * no quite down yet.
- 	 */
- 	dasd_set_target_state(device, DASD_STATE_NEW);
-+	cdev->handler = NULL;
- 	/* dasd_delete_device destroys the device reference. */
- 	block = device->block;
- 	dasd_delete_device(device);
++	if (node->parent && !parent)
++		return -EINVAL;
++
+ 	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0));
+ }
+ EXPORT_SYMBOL_GPL(software_node_register);
 
 
