@@ -2,168 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D7D33C6AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E9633C6AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhCOTST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:18:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:37152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233284AbhCOTSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:18:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63E451FB;
-        Mon, 15 Mar 2021 12:18:12 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA8743F718;
-        Mon, 15 Mar 2021 12:18:10 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: Re: [PATCH v3 6/7] sched/fair: Filter out locally-unsolvable misfit imbalances
-In-Reply-To: <CAKfTPtAZmOp+c4LR0jKSP=cSUOnu0O_ubGUMnpEKh-cPc89qZw@mail.gmail.com>
-References: <20210311120527.167870-1-valentin.schneider@arm.com> <20210311120527.167870-7-valentin.schneider@arm.com> <CAKfTPtAZmOp+c4LR0jKSP=cSUOnu0O_ubGUMnpEKh-cPc89qZw@mail.gmail.com>
-Date:   Mon, 15 Mar 2021 19:18:04 +0000
-Message-ID: <87v99srztf.mognet@arm.com>
+        id S233348AbhCOTSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233284AbhCOTSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:18:37 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2B6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jZmOaTXneS/gkFmYB6NTqg1LICHCjyHhRmKndRI5egE=; b=ltrfEKbkUCSW2J+nr2wzIkvffY
+        ftEZ3/26MDy8l4rlbJ1IIcJ6y4RBgEF3MlnPfixCICILaM4zy02D+8FMiyb1S/LF3iSYs9lHPSLTt
+        nrxWXFfHNEzBeIoQeQ0J5AiElnzLmbLQ42eBTeQelZmKK9dCuuqX/51MkU3qBHLVEQZE=;
+Received: from p200300ccff0cb7001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:b700:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lLsjZ-0005TE-Jq; Mon, 15 Mar 2021 20:18:33 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lLsjZ-0004OR-8R; Mon, 15 Mar 2021 20:18:33 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     j.neuschaefer@gmx.net, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v4] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Date:   Mon, 15 Mar 2021 20:18:32 +0100
+Message-Id: <20210315191832.16842-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/21 16:13, Vincent Guittot wrote:
-> On Thu, 11 Mar 2021 at 13:05, Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> Consider the following (hypothetical) asymmetric CPU capacity topology,
->> with some amount of capacity pressure (RT | DL | IRQ | thermal):
->>
->>   DIE [          ]
->>   MC  [    ][    ]
->>        0  1  2  3
->>
->>   | CPU | capacity_orig | capacity |
->>   |-----+---------------+----------|
->>   |   0 |           870 |      860 |
->>   |   1 |           870 |      600 |
->>   |   2 |          1024 |      850 |
->>   |   3 |          1024 |      860 |
->>
->> If CPU1 has a misfit task, then CPU0, CPU2 and CPU3 are valid candidates to
->> grant the task an uplift in CPU capacity. Consider CPU0 and CPU3 as
->> sufficiently busy, i.e. don't have enough spare capacity to accommodate
->> CPU1's misfit task. This would then fall on CPU2 to pull the task.
->>
->> This currently won't happen, because CPU2 will fail
->>
->>   capacity_greater(capacity_of(CPU2), sg->sgc->max_capacity)
->
-> which has been introduced by the previous patch: patch5
->
->>
->> in update_sd_pick_busiest(), where 'sg' is the [0, 1] group at DIE
->> level. In this case, the max_capacity is that of CPU0's, which is at this
->> point in time greater than that of CPU2's. This comparison doesn't make
->> much sense, given that the only CPUs we should care about in this scenario
->> are CPU1 (the CPU with the misfit task) and CPU2 (the load-balance
->> destination CPU).
->>
->> Aggregate a misfit task's load into sgs->group_misfit_task_load only if
->> env->dst_cpu would grant it a capacity uplift. Separately track whether a
->> sched_group contains a misfit task to still classify it as
->> group_misfit_task and not pick it as busiest group when pulling from a
->
-> Could you give more details about why we should keep tracking the
-> group as misfit ? Do you have a UC in mind ?
->
+Add the version of the EC in the Tolino Shine 2 HD
+to the supported versions. It seems not to have an RTC
+and does not ack data written to it.
+The vendor kernel happily ignores write errors, using
+I2C via userspace i2c-set also shows the error.
+So add a quirk to ignore that error.
 
-As stated the current behaviour is to classify groups as group_misfit_task
-regardless of the dst_cpu's capacity. When we see a group_misfit_task
-candidate group misfit task with higher per-CPU capacity than the local
-group, we don't pick it as busiest.
+PWM can be successfully configured despite of that error.
 
-I initially thought not marking those as group_misfit_task was the right
-thing to do, as they could then be classified as group_fully_busy or
-group_has_spare. Consider:
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+---
+Changes in v4:
+- rename subdevices back to v2 (suggested by Jonathan)
+- initialize subdevs in switch
 
-  DIE [          ]
-  MC  [    ][    ]
-       0  1  2  3
-       L  L  B  B
+Changes in v3:
+- remove have_rtc variable
+- rename subdevices again
 
-  arch_scale_capacity(L) < arch_scale_capacity(B)
+Changes in v2:
+- more comments about stacking regmap construction
+- fix accidential line removal
+- better naming for subdevices
 
-  CPUs 0-1 are idle / lightly loaded
-  CPU2 has a misfit task and a few very small tasks
-  CPU3 has a few very small tasks
+ drivers/mfd/ntxec.c       | 56 ++++++++++++++++++++++++++++++++++++---
+ include/linux/mfd/ntxec.h |  1 +
+ 2 files changed, 54 insertions(+), 3 deletions(-)
 
-When CPU0 is running load_balance() at DIE level, right now we'll classify
-the [2-3] group as group_misfit_task and not pick it as busiest because the
-local group has a lower CPU capacity.
+diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+index 957de2b03529..b711e73eedcb 100644
+--- a/drivers/mfd/ntxec.c
++++ b/drivers/mfd/ntxec.c
+@@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
+ 	.priority = 128,
+ };
+ 
++static int regmap_ignore_write(void *context,
++			       unsigned int reg, unsigned int val)
++
++{
++	struct regmap *regmap = context;
++
++	regmap_write(regmap, reg, val);
++
++	return 0;
++}
++
++static int regmap_wrap_read(void *context, unsigned int reg,
++			    unsigned int *val)
++{
++	struct regmap *regmap = context;
++
++	return regmap_read(regmap, reg, val);
++}
++
++/*
++ * Some firmware versions do not ack written data, add a wrapper. It
++ * is used to stack another regmap on top.
++ */
++static const struct regmap_config regmap_config_noack = {
++	.name = "ntxec_noack",
++	.reg_bits = 8,
++	.val_bits = 16,
++	.cache_type = REGCACHE_NONE,
++	.reg_write = regmap_ignore_write,
++	.reg_read = regmap_wrap_read
++};
++
+ static const struct regmap_config regmap_config = {
+ 	.name = "ntxec",
+ 	.reg_bits = 8,
+@@ -104,16 +136,22 @@ static const struct regmap_config regmap_config = {
+ 	.val_format_endian = REGMAP_ENDIAN_BIG,
+ };
+ 
+-static const struct mfd_cell ntxec_subdevices[] = {
++static const struct mfd_cell ntxec_subdev[] = {
+ 	{ .name = "ntxec-rtc" },
+ 	{ .name = "ntxec-pwm" },
+ };
+ 
++static const struct mfd_cell ntxec_subdev_pwm[] = {
++	{ .name = "ntxec-pwm" },
++};
++
+ static int ntxec_probe(struct i2c_client *client)
+ {
+ 	struct ntxec *ec;
+ 	unsigned int version;
+ 	int res;
++	const struct mfd_cell *subdevs;
++	size_t n_subdevs;
+ 
+ 	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+ 	if (!ec)
+@@ -137,6 +175,18 @@ static int ntxec_probe(struct i2c_client *client)
+ 	/* Bail out if we encounter an unknown firmware version */
+ 	switch (version) {
+ 	case NTXEC_VERSION_KOBO_AURA:
++		subdevs = ntxec_subdev;
++		n_subdevs = ARRAY_SIZE(ntxec_subdev);
++		break;
++	case NTXEC_VERSION_TOLINO_SHINE2:
++		subdevs = ntxec_subdev_pwm;
++		n_subdevs = ARRAY_SIZE(ntxec_subdev_pwm);
++		/* Another regmap stacked on top of the other */
++		ec->regmap = devm_regmap_init(ec->dev, NULL,
++					      ec->regmap,
++					      &regmap_config_noack);
++		if (IS_ERR(ec->regmap))
++			return PTR_ERR(ec->regmap);
+ 		break;
+ 	default:
+ 		dev_err(ec->dev,
+@@ -181,8 +231,8 @@ static int ntxec_probe(struct i2c_client *client)
+ 
+ 	i2c_set_clientdata(client, ec);
+ 
+-	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
+-				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
++	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
++				   subdevs, n_subdevs, NULL, 0, NULL);
+ 	if (res)
+ 		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
+ 
+diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
+index 361204d125f1..26ab3b8eb612 100644
+--- a/include/linux/mfd/ntxec.h
++++ b/include/linux/mfd/ntxec.h
+@@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
+ 
+ /* Known firmware versions */
+ #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
++#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
+ 
+ #endif
+-- 
+2.29.2
 
-If we didn't do that, we could leave the misfit task alone and pull some
-small task(s) from CPU2 or CPU3, which would be a good thing to
-do. However, by allowing a group containing a misfit task to be picked as
-the busiest group when a CPU of lower capacity is pulling, we run the risk
-of the misfit task itself being downmigrated - e.g. if we repeatedly
-increment the sd->nr_balance_failed counter and do an active balance (maybe
-because the small tasks were unfortunately cache_hot()).
-
-It's less than ideal, but I considered not downmigrating misfit tasks was
-the thing to prioritize (and FWIW it also maintains current behaviour).
-
-
-Another approach would be to add task utilization vs CPU capacity checks in
-detach_tasks() and need_active_balance() to prevent downmigration when
-env->imbalance_type < group_misfit_task. This may go against the busiest
-group selection heuristics however (misfit tasks could be the main
-contributors to the imbalance, but we end up not moving them).
-
-
->> lower-capacity CPU (which is the current behaviour and prevents
->> down-migration).
->>
->> Since find_busiest_queue() can now iterate over CPUs with a higher capacity
->> than the local CPU's, add a capacity check there.
->>
->> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
->> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-
->> @@ -8447,10 +8454,21 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->>                         continue;
->>
->>                 /* Check for a misfit task on the cpu */
->> -               if (sd_has_asym_cpucapacity(env->sd) &&
->> -                   sgs->group_misfit_task_load < rq->misfit_task_load) {
->> -                       sgs->group_misfit_task_load = rq->misfit_task_load;
->> -                       *sg_status |= SG_OVERLOAD;
->> +               if (!sd_has_asym_cpucapacity(env->sd) ||
->> +                   !rq->misfit_task_load)
->> +                       continue;
->> +
->> +               *sg_status |= SG_OVERLOAD;
->> +               sgs->group_has_misfit_task = true;
->> +
->> +               /*
->> +                * Don't attempt to maximize load for misfit tasks that can't be
->> +                * granted a CPU capacity uplift.
->> +                */
->> +               if (cpu_capacity_greater(env->dst_cpu, i)) {
->> +                       sgs->group_misfit_task_load = max(
->> +                               sgs->group_misfit_task_load,
->> +                               rq->misfit_task_load);
->
-> Please encapsulate all this misfit specific code in a dedicated
-> function which will be called from update_sg_lb_stats
->
-
-Will do.
