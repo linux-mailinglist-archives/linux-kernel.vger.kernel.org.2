@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A4233BF28
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2072033BF29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241784AbhCOOyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:54:40 -0400
-Received: from mail-eopbgr60058.outbound.protection.outlook.com ([40.107.6.58]:32580
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239245AbhCOOuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:50:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UqYMD0UWStyVTUNyEkOep25RKdSFBkvw3BHqJAEC21nk9dBpw6z4HtxjPZgDwr1AigtUMMrm8ATnj6k9mwl9okm30kC/nSi1vGkiT+4er23PX+VqQBz6CeFfHOGrKbwNPrVtDrc8iu0+qAGPbM1ooVh1lb0Xqgc3EIE+S3+4Q2e9lNHKHXNlxB1Fw2iIihNBgDlfcWHd8skJ1scKqF566AItVz6EWEyVBwkZyijtUMPPmkLUfCSsCGhjGGTVXCTX8QrdBc02nqfhFrUTjjp7ORvvr6crTN+Grnuq1V2VUoVr8es7immIKMINYMy2hnuIPZXS1oJ7x0Ix5ICGPwaMDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4LxWfM4ys+mNnc6+yuV7nNJz02u2FR6UCdPWL/+jRIY=;
- b=GlWl29dO/rdX3cOpdFi9bIF0s1B3i4i0tCyynSqVpBXDR1faYc/Qo1QKBOyhSh7/lubDJdrlBodCtPBj6nwhzVyGMNw/eLS9rvQI5vtvELLVajTuNmEM9Ld4Uj3Dn6j2EhAGveSyJWtTsjYgqE0F+ihiTebpecFlmiHH2Q/GrlcXRcAK0xnVU7iNYG41EtclZ7LBE8llGDO8RDER12ErtH4o5xxQhEXHdyH76sUR71yOva7pfiNVd3g9MoDUpb3F2jrrrJH5NZJfnazo7wU1Tw8cQ0jOlx9zv6lGipDSiA1XhvBntCAHzUQzGOyu8LB/8NgbktB/ilNV/9veWUR25g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4LxWfM4ys+mNnc6+yuV7nNJz02u2FR6UCdPWL/+jRIY=;
- b=TrIBgFehZGIA9jDLyH0uZn/agAg73yreXX1ghkAaFLPeAsH46NxMgtx1KwEA1SAN9X26ovOkHSuxt7lyIpp9nG/NRqKHUNuSF5AuWMfVngQNMWJNDS6z5UF0R6dThxdoL7R1sBVJYx4xZ45r3Kc4JrCbVbApCdMlvJN5GaR0cDI=
-Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:ac::5)
- by PA4PR10MB4527.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:10f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 14:50:03 +0000
-Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7040:2788:a951:5f6]) by PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7040:2788:a951:5f6%6]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
- 14:50:03 +0000
-From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: RE: [PATCH 07/23] ASoC: da7219-aad: remove useless initialization
-Thread-Topic: [PATCH 07/23] ASoC: da7219-aad: remove useless initialization
-Thread-Index: AQHXF2zJR4bcoxBZ90eRUUBlgkvUT6qFJVOQ
-Date:   Mon, 15 Mar 2021 14:50:03 +0000
-Message-ID: <PR3PR10MB414250D4E3CD8419B40A00B7806C9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
-References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
- <20210312182246.5153-8-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210312182246.5153-8-pierre-louis.bossart@linux.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [147.161.166.124]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1d6b4b03-25d4-4a0a-b96c-08d8e7c19dc7
-x-ms-traffictypediagnostic: PA4PR10MB4527:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PA4PR10MB45276E791830773A935CE419A76C9@PA4PR10MB4527.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:326;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oqRmmoKwo+y+p21NDGvLpWuIq/3pc9jGe4DvAunaniODdB7S76on5pg7Vn1MyqwDUeZUqD6u0duHVsViw/LXVyb8Z14UnLg4h5EYk2hK913iwUUf4bWaIAjD0Kuzf5fFRe0od7iKYVJQLYVxCbcvrk7XP9fwfBlvqhZS0mKuE94EORJPapwzmEBiCZPtH6TIHAKpjn9EasBJRy1vHO3maUj2q4/RDO1xVEuroYvrsif2euDVyG7vi8H9MQY7KhqQntwZPntYnR27qguvVxuODkSqFoZdD3jLDNSdIFjUBIhA0zfOQIN1nh/rnR7eyNlG7quxfBHC/Dt/wkdsv3WUKAfGLU4lMYjQe1ykSwUspwvFl3VOZQmejOhVsblhOCq2znlUFwrDIvT2gppwrCTJJbsFCCXBXXW9U2zUm7O9GQUfRaJRzWiEAfhDBvevgBPmsdYddOTTp3eSkf+gIwAlLmz5BwXZCjoVpRRHYuBpVwB8gNrBwKtJsrLMotVSlSXXZyqdRmsQ5nkoHVz1la7GhStMwGLolFX8ogykflxxcmo5cMf7mzlhuWgEtTRAuqJ1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(316002)(71200400001)(478600001)(110136005)(558084003)(6506007)(7696005)(26005)(86362001)(8676002)(66476007)(54906003)(9686003)(8936002)(186003)(33656002)(4326008)(66946007)(5660300002)(53546011)(66446008)(52536014)(76116006)(64756008)(83380400001)(2906002)(55016002)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?gCwry12/4xujRzhmg7eeqD2qTWCIFG3lyWR+MAQZ5V95kDE2mgkpfV10C6l4?=
- =?us-ascii?Q?o7IETNNGmOjn6RnRZ6B0PqwLa+JUtpM4yDDRj+gGqboFORBpvcgtaxavWM6m?=
- =?us-ascii?Q?vh/9ecdhAe+fQsMX6XY3GUuBA/GacYtKxCG7gbEX34dDo8jHWcFkTX7Fth4J?=
- =?us-ascii?Q?hlTseVtzRyW4x5C7idpqrmcQ4QoCX6dJeogtqUWN8Zp/6Bd4+AFHPOhGi3wD?=
- =?us-ascii?Q?0qXqHkmZPF282D/64b6hmvfg28aG4TBXwxlxd3XF4t0CADvugHNHHGvTr5Hr?=
- =?us-ascii?Q?NkJExfioXBvNc1lPmrUzlFf8cbq6tLEqjSRZ2RiQ0xugATKhcnMXIy320W8o?=
- =?us-ascii?Q?OuDk4sP2dSvlqia4qJ2FaiHJ/bYXtq1Z4rQ1P3/wA/AxFSbu/D4vHHWAx4pa?=
- =?us-ascii?Q?p9aVCLltJLYW9idj8eT0bH6DpSzKQagZs0Bn3c0rO2DBipkhiZrlPnZdvSuN?=
- =?us-ascii?Q?NgX95v3NV1LobXzhWRxrHP0kYmMA76JuUl347+aGpoHnzCcwcyvwsIbEjIDo?=
- =?us-ascii?Q?/S3V3tkBI/RcbZICATE3vnznJXC6LL37Iqu0Yu3E1/vl1kWEzap9QUt2x+y7?=
- =?us-ascii?Q?zk/V0m4WoS/E4WKcrXh+jtCUUfPQ8EgOueLB0zV90ytU4CfFveOGj7G4Hl1l?=
- =?us-ascii?Q?ySpT8sFWocZWw7FPG0uFEurA+xFKmrbeHKlocXIft+5ax1fdQ0BB1xYbh0SZ?=
- =?us-ascii?Q?H+3LCjrS/fml/hrJveiLMf6UYQelrO2vxtR7KhgUHhJBFzv1/YIsrpS+9T62?=
- =?us-ascii?Q?NQDiEB20Zc6UzG+Hz2eVCD9giC7xgsJ6Ac2LVmcEwWUi3L/SMsX2Iumwp5iW?=
- =?us-ascii?Q?bB1CdIYI1Cx75p+YEhkbJw9A/kGbz0+h0OjT4Yx8yebdKiHjF2NnIMA24CiS?=
- =?us-ascii?Q?P6yruCxAB/9L2YR073P8k3Ij+kHxEIi/6rrbRjqEr5N2Abt7GAgHHZNaOvRo?=
- =?us-ascii?Q?btsy0JOij+C3l6+gVkahPC6bR01zQvvtFUVBdWkLaW+gGmd0UWc/YTd3l1cd?=
- =?us-ascii?Q?tm/HbXD7uIEOSSvV3xx6GhpnSMHxnRpm9su7jH3J8W4SAv7aFptJZS/56zeE?=
- =?us-ascii?Q?YqIpoKdchJIRWWl+fq7RLf3W4ZHu4S+0YxXWBFtgeILHRxnXd0+b0nrfATra?=
- =?us-ascii?Q?YajWVzg3gHLFxp0RYJkcY7Tv+7KKaduF8TA82q42FBmmxqnbohB4TUEeKEnH?=
- =?us-ascii?Q?PwH/3kgKmXvLbKuQ2P3cJjBliasgAh8SWHcGdPkzuMW50tYMBaXH+u8jREWN?=
- =?us-ascii?Q?ZGox0F016anviFq0l+03MPtrFoeRmxbjiwHgNOj7/pqom0cxRgwhZIGkJRuC?=
- =?us-ascii?Q?P9XyeY6YIKj4eACPp9rIY2C1?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S241807AbhCOOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:54:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240806AbhCOOwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:52:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEEB264E4D;
+        Mon, 15 Mar 2021 14:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615819961;
+        bh=G3ozJXmGXxAqgrO+D3whXaRr9LYu3Iu2YW+g7hNfPuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OVrJ2ZTABExkLOf3T9pFk2hY164N3cDdTbU4yBvVpG2Ue5m1HjAjXktQ4GhdZcxTO
+         y2ufICjjv42ebbx3yl5/2eRtgGJj0Z7QEXFD9fW2HClpFzkvuXG5jLVSEXjz+8PQAg
+         uen2Y/yZaPmK/4SD+zERgnidBLItHlVSnkpSQT1sY6AuWcV5uvSDeEPQAB91Zkj8ES
+         4rWtL82GfDZDDd50I3rXsBa4AXMlz0ThGU1ku0NpmbfI0r6if0Qtx5brsvZeN1qzYq
+         +XqhVs+zdwXe4GhJ0TpEzBLqTcMDt/vYBbCrAaeQw8vd4J8cRi9wvcVPX9giO2GSqu
+         2NiMtcbp7KROA==
+Received: by pali.im (Postfix)
+        id 6538182E; Mon, 15 Mar 2021 15:52:38 +0100 (CET)
+Date:   Mon, 15 Mar 2021 15:52:38 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210315145238.6sg5deblr2z2pupu@pali>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312173452.3855-5-ameynarkhede03@gmail.com>
+ <20210314235545.girtrazsdxtrqo2q@pali>
+ <20210315134323.llz2o7yhezwgealp@archlinux>
+ <20210315135226.avwmnhkfsgof6ihw@pali>
+ <20210315083409.08b1359b@x1.home.shazbot.org>
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d6b4b03-25d4-4a0a-b96c-08d8e7c19dc7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2021 14:50:03.3984
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mjTaEY7chypVT48hua3cIIFlxP9cOCscxck+9td92mqNtr3QSlZVnnKOTyUztdY98yjUEV0l/N/3TKIj7iJLk2eKeszYe5M8Y9Vn6q/491I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR10MB4527
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315083409.08b1359b@x1.home.shazbot.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12 March 2021 18:23, Pierre-Louis Bossart wrote:
+On Monday 15 March 2021 08:34:09 Alex Williamson wrote:
+> On Mon, 15 Mar 2021 14:52:26 +0100
+> Pali Rohár <pali@kernel.org> wrote:
+> 
+> > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > warm reset respectively.  
+> > 
+> > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > type of reset, which is currently implemented only for PCIe hot plug
+> > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > kernel and therefore drivers do not export this type of reset via any
+> > kernel function (yet).
+> 
+> Warm reset is beyond the scope of this series, but could be implemented
+> in a compatible way to fit within the pci_reset_fn_methods[] array
+> defined here.
 
-> cppcheck warning:
->=20
-> sound/soc/codecs/da7219-aad.c:118:22: style: Variable 'ret' is
-> assigned a value that is never used. [unreadVariable]
->  int report =3D 0, ret =3D 0;
->                      ^
->=20
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
->
+Ok!
 
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> Note that with this series the resets available through
+> pci_reset_function() and the per device reset attribute is sysfs remain
+> exactly the same as they are currently.  The bus and slot reset
+> methods used here are limited to devices where only a single function is
+> affected by the reset, therefore it is not like the patch you proposed
+> which performed a reset irrespective of the downstream devices.  This
+> series only enables selection of the existing methods.  Thanks,
+> 
+> Alex
+> 
+
+But with this patch series, there is still an issue with PCI secondary
+bus reset mechanism as exported sysfs attribute does not do that
+remove-reset-rescan procedure. As discussed in other thread, this reset
+let device in unconfigured / broken state.
