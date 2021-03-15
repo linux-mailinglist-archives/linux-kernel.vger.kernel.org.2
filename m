@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FD633BBCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD3F33BBD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhCOOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S233728AbhCOOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232790AbhCON74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 598C464F0C;
-        Mon, 15 Mar 2021 13:59:36 +0000 (UTC)
+        id S232813AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40AE564F0D;
+        Mon, 15 Mar 2021 13:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816777;
-        bh=pzoWsmL7VIyHDrq2fn/nkEgzivR3lET1aNWpEzDK7mY=;
+        s=korg; t=1615816780;
+        bh=FTAwELuj2EcQRMLn9mlwt2MunR7r3AyeDut4nIGaRjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H9LFueYVXGEIz53SEUmuelu7aAc+tJm7PQR+2gGqKncuI3fM0h+4IgShpl8t6CrTz
-         A0Occ7jONzVwMIOpndzrpTTrTe/HGhhqcN2GoC0HaUmBfSLPJvL62e0s4X/mm+sGok
-         QZBhnKZ3GfVDGyfA/ln4u+Gf+JE4DPL9PYiGOQD0=
+        b=Mva0MIEcbqp38I9uWerltgKcgjc1JmuuFkI+XXb7M0f65UUgeLdAxZMnR5tmw/pjq
+         jlazNSHHOj8tauZENBFL/flJQhrtCUSGXucRc4mZZeNnkNb4S2P8io6fDpZoMcejE8
+         QKbtioI3688UxulG2njkLbV6TfsNwW69KlKODr/U=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Li <Frank.Li@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 102/168] mmc: cqhci: Fix random crash when remove mmc module/card
-Date:   Mon, 15 Mar 2021 14:55:34 +0100
-Message-Id: <20210315135553.724688511@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.4 104/168] USB: gadget: u_ether: Fix a configfs return code
+Date:   Mon, 15 Mar 2021 14:55:36 +0100
+Message-Id: <20210315135553.786047105@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -42,94 +41,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Frank Li <lznuaa@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit f06391c45e83f9a731045deb23df7cc3814fd795 upstream.
+commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
 
-[ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
-[ 6684.498531] mmc0: card 0001 removed
-[ 6684.501556] Mem abort info:
-[ 6684.509681]   ESR = 0x96000047
-[ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 6684.518394]   SET = 0, FnV = 0
-[ 6684.521707]   EA = 0, S1PTW = 0
-[ 6684.524998] Data abort info:
-[ 6684.528236]   ISV = 0, ISS = 0x00000047
-[ 6684.532986]   CM = 0, WnR = 1
-[ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
-[ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
-[ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
-[ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
-[ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
-[ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
-[ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
+If the string is invalid, this should return -EINVAL instead of 0.
 
-[ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
-^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
-[ 6684.626734] sp : ffff80001243b9f0
-[ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
-[ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
-[ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
-[ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
-[ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
-[ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
-[ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
-[ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
-[ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
-[ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
-[ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
-[ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
-[ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
-[ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
-[ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
-[ 6684.709854] Call trace:
-[ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
-[ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
-[ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
-[ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
-
-The problem occurs when cqhci_request() get called after cqhci_disable() as
-it leads to access of allocated memory that has already been freed. Let's
-fix the problem by calling cqhci_disable() a bit later in the remove path.
-
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
-Diagnosed-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20210303174248.542175-1-Frank.Li@nxp.com
-Fixes: f690f4409ddd ("mmc: mmc: Enable CQE's")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/core/bus.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/mmc/core/bus.c
-+++ b/drivers/mmc/core/bus.c
-@@ -373,11 +373,6 @@ void mmc_remove_card(struct mmc_card *ca
- 	mmc_remove_card_debugfs(card);
- #endif
- 
--	if (host->cqe_enabled) {
--		host->cqe_ops->cqe_disable(host);
--		host->cqe_enabled = false;
--	}
--
- 	if (mmc_card_present(card)) {
- 		if (mmc_host_is_spi(card->host)) {
- 			pr_info("%s: SPI card removed\n",
-@@ -390,6 +385,10 @@ void mmc_remove_card(struct mmc_card *ca
- 		of_node_put(card->dev.of_node);
- 	}
- 
-+	if (host->cqe_enabled) {
-+		host->cqe_ops->cqe_disable(host);
-+		host->cqe_enabled = false;
-+	}
-+
- 	put_device(&card->dev);
- }
--
+--- a/drivers/usb/gadget/function/u_ether_configfs.h
++++ b/drivers/usb/gadget/function/u_ether_configfs.h
+@@ -169,12 +169,11 @@ out:									\
+ 						size_t len)		\
+ 	{								\
+ 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
+-		int ret;						\
++		int ret = -EINVAL;					\
+ 		u8 val;							\
+ 									\
+ 		mutex_lock(&opts->lock);				\
+-		ret = sscanf(page, "%02hhx", &val);			\
+-		if (ret > 0) {						\
++		if (sscanf(page, "%02hhx", &val) > 0) {			\
+ 			opts->_n_ = val;				\
+ 			ret = len;					\
+ 		}							\
 
 
