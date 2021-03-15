@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50D733BE11
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB0C33BE34
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238320AbhCOOmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49528 "EHLO mail.kernel.org"
+        id S238284AbhCOOnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:43:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234244AbhCOODG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C76AE64EED;
-        Mon, 15 Mar 2021 14:03:05 +0000 (UTC)
+        id S231387AbhCOODg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E05B64F0D;
+        Mon, 15 Mar 2021 14:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816986;
-        bh=9XsMaaOiAspY5eNbUTF64jnvZ7fk4hGIKdA/MsveCG8=;
+        s=korg; t=1615817016;
+        bh=F2XfBiiVRJnCI5oXCFxS44h7hKUw94JQWOPU9mOA1Uc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RAANTUtH6BBjpVeX+Zp6/R/tATw7apkwBciZtE/IxFK1uWRrggs+1zC3XwnSVwBM8
-         bdzN+JnPMZs56+GkAzcYhJtSWs0dT9aLpy4lHVojJfQQI5c25PAJuW24qh6N3LC2gt
-         l2ZgcuGPTO6gKdOTf0ar33mYL3MeEtywNBK2cs94=
+        b=nmeiKSZhOqQ7oIwkJpAIM2D0cWyjB8gtf6OOBPuSOzaylEHfislQYOTlfGV0YSSqA
+         BQKweNLCh1p8sCYbl5w3oOitX1CY3E4oBbiVoxMcbGSl13LaGL8z2y4IFrTbg32bau
+         3wGYVdTu6aOljb3C+AR2uvYfbSTqaucqEK5aY7Oc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
-Subject: [PATCH 5.10 230/290] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
-Date:   Mon, 15 Mar 2021 14:55:23 +0100
-Message-Id: <20210315135549.754227637@linuxfoundation.org>
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 261/306] perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large PEBS and LBR
+Date:   Mon, 15 Mar 2021 14:55:24 +0100
+Message-Id: <20210315135516.468851372@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lee Gibson <leegib@gmail.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
+[ Upstream commit afbef30149587ad46f4780b1e0cc5e219745ce90 ]
 
-Function r8712_sitesurvey_cmd calls memcpy without checking the length.
-A user could control that length and trigger a buffer overflow.
-Fix by checking the length is within the maximum allowed size.
+To supply a PID/TID for large PEBS, it requires flushing the PEBS buffer
+in a context switch.
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
-Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For normal LBRs, a context switch can flip the address space and LBR
+entries are not tagged with an identifier, we need to wipe the LBR, even
+for per-cpu events.
+
+For LBR callstack, save/restore the stack is required during a context
+switch.
+
+Set PERF_ATTACH_SCHED_CB for the event with large PEBS & LBR.
+
+Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20201130193842.10569-2-kan.liang@linux.intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/rtl8712/rtl871x_cmd.c
-+++ b/drivers/staging/rtl8712/rtl871x_cmd.c
-@@ -192,8 +192,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
- 	psurveyPara->ss_ssidlen = 0;
- 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
- 	if (pssid && pssid->SsidLength) {
--		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
--		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
-+		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
-+
-+		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
-+		psurveyPara->ss_ssidlen = cpu_to_le32(len);
- 	}
- 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
- 	r8712_enqueue_cmd(pcmdpriv, ph2c);
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 4faaef3a8f6c..d3f5cf70c1a0 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3578,8 +3578,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
+ 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+ 			if (!(event->attr.sample_type &
+-			      ~intel_pmu_large_pebs_flags(event)))
++			      ~intel_pmu_large_pebs_flags(event))) {
+ 				event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
++				event->attach_state |= PERF_ATTACH_SCHED_CB;
++			}
+ 		}
+ 		if (x86_pmu.pebs_aliases)
+ 			x86_pmu.pebs_aliases(event);
+@@ -3592,6 +3594,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 		ret = intel_pmu_setup_lbr_filter(event);
+ 		if (ret)
+ 			return ret;
++		event->attach_state |= PERF_ATTACH_SCHED_CB;
+ 
+ 		/*
+ 		 * BTS is set up earlier in this path, so don't account twice
+-- 
+2.30.1
+
 
 
