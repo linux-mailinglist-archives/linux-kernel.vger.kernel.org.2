@@ -2,133 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5EF33A9D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0255933A9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhCODNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:13:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229672AbhCODN3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:13:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615778008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1KQvhWT/uEAJYmXyLme3QfbVxRoW/9wvj83xMof6nwU=;
-        b=QLsjr49YHYQ34Z7dtvI2Sez0SMf3hbPuNpimDG3srBs9lT/x/c/OI2QeAOFN9v+GpT59tD
-        /AeQ7H3XbHqhYpGAx7GKYnyJ542D6iB9KBOVityD2XDJv2vGUQc1TW3/EJqdwwTfx5KQYC
-        5bIHvdQd8VRd6LMP3W2/7F4zLfr3gNk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-rc4aCGvfNxeJ8CCy2hzIpg-1; Sun, 14 Mar 2021 23:13:25 -0400
-X-MC-Unique: rc4aCGvfNxeJ8CCy2hzIpg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9F5A107B02A;
-        Mon, 15 Mar 2021 03:13:21 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-199.pek2.redhat.com [10.72.13.199])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A0A3A1C4;
-        Mon, 15 Mar 2021 03:13:07 +0000 (UTC)
-Subject: Re: [PATCH v7] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
- <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
- <8070f03d-8233-636b-5ea9-395e723f7a2c@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <503b88c9-1e82-a3a3-0536-d710ddc834a5@redhat.com>
-Date:   Mon, 15 Mar 2021 11:13:05 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <8070f03d-8233-636b-5ea9-395e723f7a2c@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S229873AbhCODNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:13:53 -0400
+Received: from mga06.intel.com ([134.134.136.31]:58290 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhCODNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 23:13:30 -0400
+IronPort-SDR: B39+thwy6Ux1i4cGSmKM+ioznOoMk3Thf9T1VuaCKy9MiFlRKXKJhlnuOznBZYrhzqv5JJjand
+ xm3a6mu0HeAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="250395008"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="250395008"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 20:13:24 -0700
+IronPort-SDR: p8LbPsQcux8hrC2l1EGDiqITPv19SPhk0nZDYEJES0jLJ7AHA6zjXX6ywiY+GcQjVOe0WknA/6
+ l8SZGUUnxGIg==
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="604695617"
+Received: from avaldezb-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.229.198])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 20:13:19 -0700
+Date:   Mon, 15 Mar 2021 16:13:17 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-Id: <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
+In-Reply-To: <YE4rVnfQ9y7CnVvr@kernel.org>
+References: <cover.1615250634.git.kai.huang@intel.com>
+        <d2ebcffeb9193d26a1305e08fe1aa1347feb1c62.1615250634.git.kai.huang@intel.com>
+        <YEvg2vNfiDYoc9u3@google.com>
+        <YE0M/VoETPw7YZIy@kernel.org>
+        <YE0NeChRjBlldQ8H@kernel.org>
+        <YE4M8JGGl9Xyx51/@kernel.org>
+        <YE4rVnfQ9y7CnVvr@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 14 Mar 2021 17:27:18 +0200 Jarkko Sakkinen wrote:
+> On Sun, Mar 14, 2021 at 05:25:26PM +0200, Jarkko Sakkinen wrote:
+> > On Sat, Mar 13, 2021 at 09:07:36PM +0200, Jarkko Sakkinen wrote:
+> > > On Sat, Mar 13, 2021 at 09:05:36PM +0200, Jarkko Sakkinen wrote:
+> > > > On Fri, Mar 12, 2021 at 01:44:58PM -0800, Sean Christopherson wrote:
+> > > > > On Tue, Mar 09, 2021, Kai Huang wrote:
+> > > > > > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > > > > > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > > > > > if SGX Launch Control is in locked mode, or not supported in the
+> > > > > > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > > > > > configurations to use SGX.
+> > > > > > 
+> > > > > > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > > > ---
+> > > > > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> > > > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > index 44fe91a5bfb3..8c922e68274d 100644
+> > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > @@ -712,7 +712,15 @@ static int __init sgx_init(void)
+> > > > > >  		goto err_page_cache;
+> > > > > >  	}
+> > > > > >  
+> > > > > > -	ret = sgx_drv_init();
+> > > > > > +	/*
+> > > > > > +	 * Always try to initialize the native *and* KVM drivers.
+> > > > > > +	 * The KVM driver is less picky than the native one and
+> > > > > > +	 * can function if the native one is not supported on the
+> > > > > > +	 * current system or fails to initialize.
+> > > > > > +	 *
+> > > > > > +	 * Error out only if both fail to initialize.
+> > > > > > +	 */
+> > > > > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> > > > > 
+> > > > > I love this code.
+> > > > > 
+> > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > 
+> > > > I'm still wondering why this code let's go through when sgx_drv_init()
+> > > > succeeds and sgx_vepc_init() fails.
+> > > > 
+> > > > The inline comment explains only the mirrored case (which does make
+> > > > sense).
+> > > 
+> > > I.e. if sgx_drv_init() succeeds, I'd expect that sgx_vepc_init() must
+> > > succeed. Why expect legitly anything else?
+> >  
+> > Apologies coming with these ideas at this point, but here is what this
+> > led me.
+> > 
+> > I think that the all this complexity comes from a bad code structure.
+> > 
+> > So, what is essentially happening here:
+> > 
+> > - We essentially want to make EPC always work.
+> > - Driver optionally.
+> > 
+> > So what this sums to is something like:
+> > 
+> >         ret = sgx_epc_init();
+> >         if (ret) {
+> >                 pr_err("EPC initialization failed.\n");
+> >                 return ret;
+> >         }
+> > 
+> >         ret = sgx_drv_init();
+> >         if (ret)
+> >                 pr_info("Driver could not be initialized.\n");
+> > 
+> >         /* continue */
+> > 
+> > I.e. I think there should be a single EPC init, which does both EPC
+> > bootstrapping and vepc, and driver initialization comes after that.
+> 
+> In other words, from SGX point of view, the thing that KVM needs is
+> to cut out EPC and driver part into different islands. How this is now
+> implemented in the current patch set is half-way there but not yet what
+> it should be.
 
-On 2021/3/15 9:14 上午, Jie Deng wrote:
->
-> On 2021/3/12 16:58, Arnd Bergmann wrote:
->> On Fri, Mar 12, 2021 at 2:33 PM Jie Deng <jie.deng@intel.com> wrote:
->>
->>> +
->>> +/**
->>> + * struct virtio_i2c_req - the virtio I2C request structure
->>> + * @out_hdr: the OUT header of the virtio I2C message
->>> + * @buf: the buffer into which data is read, or from which it's 
->>> written
->>> + * @in_hdr: the IN header of the virtio I2C message
->>> + */
->>> +struct virtio_i2c_req {
->>> +       struct virtio_i2c_out_hdr out_hdr;
->>> +       uint8_t *buf;
->>> +       struct virtio_i2c_in_hdr in_hdr;
->>> +};
->> The simpler request structure clearly looks better than the previous 
->> version,
->> but I think I found another problem here, at least a theoretical one:
->>
->> When you map the headers into the DMA address space, they should
->> be in separate cache lines, to allow the DMA mapping interfaces to
->> perform cache management on each one without accidentally clobbering
->> another member.
->>
->> So far I think there is an assumption that virtio buffers are always
->> on cache-coherent devices, but if you ever have a virtio-i2c device
->> backend on a physical interconnect that is not cache coherent (e.g. a
->> microcontroller that shares the memory bus), this breaks down.
->>
->> You could avoid this by either allocating arrays of each type 
->> separately,
->> or by marking each member that you pass to the device as
->> ____cacheline_aligned.
->>
->>        Arnd
-> The virtio devices are software emulated.
+Well conceptually, SGX virtualization and SGX driver are two independently
+functionalities can be enabled separately, although they both requires some
+come functionalities, such as /dev/sgx_provision, which we have moved to
+sgx/main.c exactly for this purpose. THerefore, conceptually, it is bad to make
+assumption that, if SGX virtualization initialization succeeded, SGX driver
+must succeed -- we can potentially add more staff in SGX virtualization in the
+future..
 
+If the name sgx_vepc_init() confuses you, I can rename it to sgx_virt_init().
 
-This is not correct. There're already a brunch hardware virtio devices.
+Hi Sean,
 
-Thanks
-
-
-> The backend software may need to
-> consider this since it may exchange data with physical devices. But I 
-> don't think
-> we need it for this interface, because no DMA operation is involved 
-> between the
-> frontend driver and backend driver.
->
-> Regards,
->
-> Jie
->
->
-
+Please let us know if you have comments.
