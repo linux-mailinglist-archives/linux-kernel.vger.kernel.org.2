@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5A033BB8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643BC33BB5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237506AbhCOOR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
+        id S236737AbhCOOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231673AbhCON7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01FF164F07;
-        Mon, 15 Mar 2021 13:59:21 +0000 (UTC)
+        id S232152AbhCON7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA65464F35;
+        Mon, 15 Mar 2021 13:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816763;
-        bh=+6XnFK6k1kgA4CbStrWf4Fa4e0eBbvtL+qYw5ciU/Ts=;
+        s=korg; t=1615816732;
+        bh=wg2yj9QpO+l8N0iOHMXm7lpOUNINfu6Tujb51ym6jf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NagDYlMUm4j0050NBeN0eXe+fQxQOKeDqyp1mScfC10pFCAEUpRA6GRT5OJdLx3oj
-         QBDou6/VKVqkCWPIdB3SFjtFz+YPQRQ1raEH0DXVK1e5qxD6w1fw11fMreaPAVOV5Y
-         kLNmsBqcYi7eb4ee5NNuavFC0bB7EgcsueduzEjw=
+        b=z4KKZm+PTPkijVJh6inix8Zv183rS3hGwCqaDRLk1Ewpptwpm/G3/F2eaFY88v+k+
+         0cdtH1Yr6RDendZ2AqA0muwrk4ftDHtHmT0sPmik+CZ7aYJtvF1hMcXrC7TgqzIj2I
+         /Ptg1YEpBA/aaVlC3pFc4gL6q4AKqvGdtEmqdDVw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.11 110/306] drm/shmem-helpers: vunmap: Dont put pages for dma-buf
-Date:   Mon, 15 Mar 2021 14:52:53 +0100
-Message-Id: <20210315135511.364599516@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.10 081/290] gpiolib: Read "gpio-line-names" from a firmware node
+Date:   Mon, 15 Mar 2021 14:52:54 +0100
+Message-Id: <20210315135544.659848571@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Noralf Trønnes <noralf@tronnes.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 64e194e278673bceb68fb2dde7dbc3d812bfceb3 upstream.
+commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
 
-dma-buf importing was reworked in commit 7d2cd72a9aa3
-("drm/shmem-helpers: Simplify dma-buf importing"). Before that commit
-drm_gem_shmem_prime_import_sg_table() did set ->pages_use_count=1 and
-drm_gem_shmem_vunmap_locked() could call drm_gem_shmem_put_pages()
-unconditionally. Now without the use count set, put pages is called also
-on dma-bufs. Fix this by only putting pages if it's not imported.
+On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+and iterates over all of its DT subnodes when registering each GPIO
+bank gpiochip. Each gpiochip has:
 
-Signed-off-by: Noralf Trønnes <noralf@tronnes.org>
-Fixes: 7d2cd72a9aa3 ("drm/shmem-helpers: Simplify dma-buf importing")
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210219122203.51130-1-noralf@tronnes.org
-(cherry picked from commit cdea72518a2b38207146e92e1c9e2fac15975679)
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+  - gpio_chip.parent = dev,
+    where dev is the device node of the pin controller
+  - gpio_chip.of_node = np,
+    which is the OF node of the GPIO bank
+
+Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+
+The original code behaved correctly, as it extracted the "gpio-line-names"
+from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+
+To achieve the same behaviour, read property from the firmware node.
+
+Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+Reported-by: Marek Vasut <marex@denx.de>
+Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpio/gpiolib.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -357,13 +357,14 @@ static void drm_gem_shmem_vunmap_locked(
- 	if (--shmem->vmap_use_count > 0)
- 		return;
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -364,22 +364,18 @@ static int gpiochip_set_desc_names(struc
+  *
+  * Looks for device property "gpio-line-names" and if it exists assigns
+  * GPIO line names for the chip. The memory allocated for the assigned
+- * names belong to the underlying software node and should not be released
++ * names belong to the underlying firmware node and should not be released
+  * by the caller.
+  */
+ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+ {
+ 	struct gpio_device *gdev = chip->gpiodev;
+-	struct device *dev = chip->parent;
++	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+ 	const char **names;
+ 	int ret, i;
+ 	int count;
  
--	if (obj->import_attach)
-+	if (obj->import_attach) {
- 		dma_buf_vunmap(obj->import_attach->dmabuf, map);
--	else
-+	} else {
- 		vunmap(shmem->vaddr);
-+		drm_gem_shmem_put_pages(shmem);
-+	}
+-	/* GPIO chip may not have a parent device whose properties we inspect. */
+-	if (!dev)
+-		return 0;
+-
+-	count = device_property_string_array_count(dev, "gpio-line-names");
++	count = fwnode_property_string_array_count(fwnode, "gpio-line-names");
+ 	if (count < 0)
+ 		return 0;
  
- 	shmem->vaddr = NULL;
--	drm_gem_shmem_put_pages(shmem);
- }
+@@ -393,7 +389,7 @@ static int devprop_gpiochip_set_names(st
+ 	if (!names)
+ 		return -ENOMEM;
  
- /*
+-	ret = device_property_read_string_array(dev, "gpio-line-names",
++	ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
+ 						names, count);
+ 	if (ret < 0) {
+ 		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
 
 
