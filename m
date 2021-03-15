@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5319B33C1F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4FF33C202
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhCOPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:52:04 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:58606 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhCOPvo (ORCPT
+        id S232186AbhCOQen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:34:43 -0400
+Received: from de-out1.bosch-org.com ([139.15.230.186]:45224 "EHLO
+        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232363AbhCOQe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:51:44 -0400
-X-Greylist: delayed 403 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 11:51:43 EDT
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id D957C3C04C0;
-        Mon, 15 Mar 2021 16:44:58 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CN18AV6ZaDqd; Mon, 15 Mar 2021 16:44:53 +0100 (CET)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 929E73C04C1;
-        Mon, 15 Mar 2021 16:44:51 +0100 (CET)
-Received: from lxhi-065.192.168.1.1 (10.72.94.10) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
- 2021 16:44:47 +0100
-From:   Eugeniu Rosca <erosca@de.adit-jv.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Jiafei Pan <Jiafei.Pan@nxp.com>,
-        Romain Perier <romain.perier@gmail.com>
-CC:     Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Dirk Behme <dirk.behme@de.bosch.com>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>
-Subject: [PATCH] softirq: Be more verbose on t->state BUG()
-Date:   Mon, 15 Mar 2021 16:44:21 +0100
-Message-ID: <20210315154421.11463-1-erosca@de.adit-jv.com>
-X-Mailer: git-send-email 2.29.0
+        Mon, 15 Mar 2021 12:34:27 -0400
+Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
+        by fe0vms0186.rbdmz01.com (Postfix) with ESMTPS id 4Dzhp92g1cz1XLFjX;
+        Mon, 15 Mar 2021 17:34:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
+        s=key3-intmail; t=1615826065;
+        bh=fP74M6HwZDCum3+vzeaerJPkseKxvj4gZV75mefECbo=; l=10;
+        h=From:Subject:From:Reply-To:Sender;
+        b=MIN3BlJNgODXDNSB3/Hku9dYktOxtyonFptukMu1o1hljZ+htCVy9PiFayD+Pr7Sh
+         ebeMpH3cy7hQSFTPFDhiUqsgTqTMcnYKeoOtRrcd/aejipx7IVXo8OmzVfsPA3hf8/
+         /i37zd9AqejkwKYAHZzr5qmkKJBqM7JXYclPAR9Q=
+Received: from fe0vm1740.rbesz01.com (unknown [10.58.172.176])
+        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 4Dzhp92K7zz1K5;
+        Mon, 15 Mar 2021 17:34:25 +0100 (CET)
+X-AuditID: 0a3aad14-081ff70000004cbe-59-604f8c91600b
+Received: from si0vm1949.rbesz01.com ( [10.58.173.29])
+        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by fe0vm1740.rbesz01.com (SMG Outbound) with SMTP id 8A.9F.19646.19C8F406; Mon, 15 Mar 2021 17:34:25 +0100 (CET)
+Received: from FE-HUB2000.de.bosch.com (unknown [10.4.103.109])
+        by si0vm1949.rbesz01.com (Postfix) with ESMTPS id 4Dzhp91Xrmz6CjZP7;
+        Mon, 15 Mar 2021 17:34:25 +0100 (CET)
+Received: from luchador.grb-fir.grb.de.bosch.com (10.19.187.97) by
+ FE-HUB2000.de.bosch.com (10.4.103.109) with Microsoft SMTP Server id
+ 15.1.2176.2; Mon, 15 Mar 2021 17:34:24 +0100
+From:   Mark Jonas <mark.jonas@de.bosch.com>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <Adam.Thomson.Opensource@diasemi.com>,
+        <stwiss.opensource@diasemi.com>, <marek.vasut@gmail.com>,
+        <tingquan.ruan@cn.bosch.com>, <hubert.streidl@de.bosch.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Mark Jonas <mark.jonas@de.bosch.com>
+Subject: [PATCH v5] mfd: da9063: Support SMBus and I2C mode
+Date:   Mon, 15 Mar 2021 17:09:03 +0100
+Message-ID: <20210315160903.799426-1-mark.jonas@de.bosch.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.72.94.10]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsXCZbVWVndij3+CwZ5pghZL3y9ltrj/9Sij
+        RcffL4wWl3fNYbO4+ns9i8Xe1ovMFnf3z2V0YPdY8UnfY9OqTjaPO9f2sHl83iQXwBLFZZOS
+        mpNZllqkb5fAlfHs4HP2glbRih9HUhoYNwp2MXJySAiYSMy73csMYgsJTGeSeLBJpYuRC8he
+        xyhx5OZ0dghnB6PEhnmrGEGq2AS0JG6e2AHWISIQLdHy9QQTSBGzwComiTurdrGDJIQFrCVO
+        rvzJBGKzCKhK9K57xwZi8wrYSjQuusgKsVpeYual7+wQcUGJkzOfsIDYzEDx5q2zmSFsCYmD
+        L14wT2Dkm4WkbBaSsllIyhYwMq9iFE1LNSjLNTQ3MdArSkotrjIw1EvOz93ECAlVkR2MJ3s+
+        6B1iZOJgPMQowcGsJML7Wcc3QYg3JbGyKrUoP76oNCe1+BCjNAeLkjivCs/GOCGB9MSS1OzU
+        1ILUIpgsEwenVANToK9LImP+/OpHkdO1k+X3rZ86X+zaqX9H2/ceVbwrsFxewvDrnzU5GVKv
+        RK5qb3n1Z1tbqebrX0ufxhpJXG8w9/NmWfz+x/K+fKGjHMZXM+9ZdF0R/3I35tFHkxPB4Sr5
+        yf8nu8148i+7ffniV5/mX600+Ke3zynB481i2xNmgq8Piz7061F2XfTjmnres+XJQbLp5p+Y
+        G1ZseFB+YRK7fcHx8k+m93O2Ciy6f8eKu9Bn8eJLSj9zdglMzVjw7tOS11VHfOe2Vb9Uabvk
+        m9Jw2XzHmsPR84tkJ52+LrzsY/xDXR73a6vfus7WNZKUjD9VkNxfzLq3+kvqEjWG2MmPnQuY
+        z3iFdM5KOluVM33uYyWW4oxEQy3mouJEAF3tk+TEAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dirk Behme <dirk.behme@de.bosch.com>
+From: Hubert Streidl <hubert.streidl@de.bosch.com>
 
-In case this BUG() is hit, it helps debugging a lot to get an idea
-what tasklet is the root cause. So, be slightly more verbose here.
+By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+means the PMIC will automatically reset the interface when the clock
+signal ceases for more than the SMBus timeout of 35 ms.
 
-Signed-off-by: Dirk Behme <dirk.behme@de.bosch.com>
-Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+If the I2C driver / device is not capable of creating atomic I2C
+transactions, a context change can cause a ceasing of the clock signal.
+This can happen if for example a real-time thread is scheduled. Then
+the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+a write message could end up in the wrong register. This could cause
+unpredictable system behavior.
+
+The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+interface. This mode does not reset the interface when the clock
+signal ceases. Thus the problem depicted above does not occur.
+
+This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+reasonably be assumed that the bus cannot obey SMBus timings if
+this functionality is set. SMBus commands most probably are emulated
+in this case which is prone to the latency issue described above.
+
+This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+otherwise keeps the default SMBus mode.
+
+Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
 ---
- kernel/softirq.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/mfd/da9063-i2c.c             | 10 ++++++++++
+ include/linux/mfd/da9063/registers.h |  3 +++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 9908ec4a9bfe..a6b602ad48d6 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -550,9 +550,13 @@ static void tasklet_action_common(struct softirq_action *a,
+diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+index 3781d0bb7786..e8a022e697c5 100644
+--- a/drivers/mfd/da9063-i2c.c
++++ b/drivers/mfd/da9063-i2c.c
+@@ -442,6 +442,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
- 		if (tasklet_trylock(t)) {
- 			if (!atomic_read(&t->count)) {
--				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
--							&t->state))
-+				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state)) {
-+					if (t->use_callback)
-+						pr_emerg("tasklet failed, cb: %pS\n", t->callback);
-+					else
-+						pr_emerg("tasklet failed, func: %pS\n", t->func);
- 					BUG();
-+				}
- 				if (t->use_callback)
- 					t->callback(t);
- 				else
++	/* If SMBus is not available and only I2C is possible, enter I2C mode */
++	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
++		ret = regmap_clear_bits(da9063->regmap, DA9063_REG_CONFIG_J,
++			  DA9063_TWOWIRE_TO);
++		if (ret < 0) {
++			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode.\n");
++			return -EIO;
++		}
++	}
++
+ 	return da9063_device_init(da9063, i2c->irq);
+ }
+ 
+diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
+index 1dbabf1b3cb8..6e0f66a2e727 100644
+--- a/include/linux/mfd/da9063/registers.h
++++ b/include/linux/mfd/da9063/registers.h
+@@ -1037,6 +1037,9 @@
+ #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
+ #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
+ 
++/* DA9063_REG_CONFIG_J (addr=0x10F) */
++#define DA9063_TWOWIRE_TO			0x40
++
+ /* DA9063_REG_MON_REG_5 (addr=0x116) */
+ #define DA9063_MON_A8_IDX_MASK			0x07
+ #define		DA9063_MON_A8_IDX_NONE		0x00
 -- 
-2.29.0
+2.25.1
 
