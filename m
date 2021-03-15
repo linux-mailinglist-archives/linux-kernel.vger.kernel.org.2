@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC7F33C67D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399C333C68E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhCOTJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:09:16 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53866 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbhCOTIl (ORCPT
+        id S232861AbhCOTKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232994AbhCOTKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:08:41 -0400
-Received: by mail-io1-f72.google.com with SMTP id r10so21742717iod.20
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:08:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/mrm/Dlydg6hO1FVZ+2T84nuCJe4bOszaXqCBMOqrkM=;
-        b=Jh7dksLZlsi+j2rUxG6a4hhk2G/vpFwu51jNjGSR6KO6OsWm3tqdx5x4f6mNMSQmyJ
-         8tkFMD8ExOBodp2Qbq50XK+iWa1jex220QT0fbECrhhejR7EY1VS7i/rh4zFywhf2jKx
-         qmLGMiOAd1NwTmHf0+A87ASo3L7gfocYb38e2BOGnBHWHOqzsUSyDVCyKyZAC7Oy1rNd
-         S5+vlYT28Rfgot/sFeE4s0jprZ0Z3Qro6wmRSMG4gJECxDMvgzmBn81K5WKaBYCI1xNC
-         o8kYt2cYl6V2SXYfLulxS36TIwf9qFtIA+oyhZvZQsD1Xnz/i5wq6Sov79yRuvJt5RkX
-         TkSQ==
-X-Gm-Message-State: AOAM531z4LprfqZIDVKX8jkdAn0g1HFy5g7nSaCiSqf9XRY1muaFLIMk
-        jFZAC9Vt7yffw1XsDh8YgdbqAjcmM9/HzVfaOc0sXoTb5Zdr
-X-Google-Smtp-Source: ABdhPJxpfkuCB0z+KQgDbj9FZZCNswQBHJfoFoPaaCWLGG9Ad7xWgel986EaH/AwaISW8/y4M6eF+ITlI1Av0+iJ7BGUG9YNhB8k
+        Mon, 15 Mar 2021 15:10:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC23C06174A;
+        Mon, 15 Mar 2021 12:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mkpF9omMUUFgPhO7wM2oolIv2L3IwnCTiRJGLYj/QNo=; b=m+fRbbsfcHaiqSu+dUQambcli/
+        ayhSDuAmTMfgav8aX4P6JUjk2UJMjfrhSSVInwiDYtTmQxyp2LuXKNZkV09fswCHEPBjWuSH3bA2m
+        kw7a7sJDLRbm+EJ7comRFCaOHYRkn3XUtgaY3jrPctWZMWbE6z59Ix5nvs/L/ynPTX2t4sHtWqZBn
+        hEYBcI24VItDXo8c6KddZqLKi1r1xMhVm0hS6T0LGrd+xXaVwZs/YJooBaLz9fsWlCJJHQCdDGjNU
+        suEBhlzf3181euFSUmfd2uuXPNZDjtfp5u99R441myZp9pbxLsVwgWZXhpZFuh7klOeWsPWIRHnZF
+        J5kENouA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLsaO-000dXn-R4; Mon, 15 Mar 2021 19:09:09 +0000
+Date:   Mon, 15 Mar 2021 19:09:04 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 00/25] Page folios
+Message-ID: <20210315190904.GB150808@infradead.org>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210313123658.ad2dcf79a113a8619c19c33b@linux-foundation.org>
+ <alpine.LSU.2.11.2103131842590.14125@eggly.anvils>
+ <20210315115501.7rmzaan2hxsqowgq@box>
+ <YE9VLGl50hLIJHci@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8d01:: with SMTP id m1mr788943ioj.72.1615835320949;
- Mon, 15 Mar 2021 12:08:40 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:08:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005225a605bd97fa64@google.com>
-Subject: [syzbot] WARNING in io_ring_exit_work
-From:   syzbot <syzbot+00e15cda746c5bc70e24@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE9VLGl50hLIJHci@dhcp22.suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Mar 15, 2021 at 01:38:04PM +0100, Michal Hocko wrote:
+> I tend to agree here as well. The level compoud_head has spread out
+> silently is just too large. There are people coming up with all sorts of
+> optimizations to workaround that, and they are quite right that this is
+> somehing worth doing, but last attempts I have seen were very focused on
+> specific page flags handling which is imho worse wrt maintainability
+> than a higher level and type safe abstraction. I find it quite nice that
+> this doesn't really have to be a flag day conversion but it can be done
+> incrementally.
+> 
+> I didn't get review the series yet and I cannot really promise anything
+> but from what I understand the conversion should be pretty
+> straightforward, albeit noisy.
+> 
+> One thing that was really strange to me when seeing the concept for the
+> first time was the choice of naming (no I do not want to start any
+> bikeshedding) because it hasn't really resonated with the udnerlying
+> concept. Maybe just me as a non native speaker... page_head would have
+> been so much more straightforward but not something I really care about.
 
-syzbot found the following issue on:
-
-HEAD commit:    b01d57bf Add linux-next specific files for 20210310
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ae049ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=95af83fd326c2b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=00e15cda746c5bc70e24
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+00e15cda746c5bc70e24@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 225 at fs/io_uring.c:8456 io_ring_exit_work+0x130/0xcf0 fs/io_uring.c:8456
-Modules linked in:
-CPU: 0 PID: 225 Comm: kworker/u4:5 Not tainted 5.12.0-rc2-next-20210310-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-RIP: 0010:io_ring_exit_work+0x130/0xcf0 fs/io_uring.c:8456
-Code: 7d 00 00 0f 85 bf 09 00 00 48 8b 05 3a 15 e5 09 4d 89 f5 31 ff 49 29 c5 4c 89 ee e8 6a 09 98 ff 4d 85 ed 79 a5 e8 40 01 98 ff <0f> 0b eb 9c e8 37 01 98 ff 31 f6 49 bf 00 00 00 00 00 fc ff df 4c
-RSP: 0018:ffffc9000163fbc8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88801dd36930 RCX: 0000000000000000
-RDX: ffff8880120d9c00 RSI: ffffffff81dbdc60 RDI: 0000000000000003
-RBP: fffffbfff1781e30 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81dbdc56 R11: 0000000000000000 R12: ffff88801dd364e0
-R13: fffffffffffffffe R14: 00000001000040a4 R15: ffff88801dd36000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcf0ff32000 CR3: 00000000180fb000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+That pretty much summarizes my opinion as well.  I'll need to find some
+time to review the series as well.
