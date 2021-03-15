@@ -2,135 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A0D33B030
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C596D33B034
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhCOKo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:44:59 -0400
-Received: from smtp69.ord1c.emailsrvr.com ([108.166.43.69]:41595 "EHLO
-        smtp69.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229562AbhCOKog (ORCPT
+        id S229943AbhCOKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhCOKpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:44:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1615805074;
-        bh=xlOfUEowI6NCZiO+ZHuwX6ae9Gxb/RcMpL8ZU4SGWU8=;
-        h=Subject:To:From:Date:From;
-        b=lbgRdHoy4kG9XgEwL6I8BMAihM46vUOJUmFupDZcf6jZ4mw3hpebCWoz+LTuwoDrm
-         oDCSAv97lMioLo74LkVq7O8UkwATw9KLcofj1KqXr0dFVKISYSIZ4eGhcHyfulbyj+
-         A6UfvvSTEm7o/VP/esH+0n9wpDiDsDnZGpvvk1i0=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp17.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 76D6D6016D;
-        Mon, 15 Mar 2021 06:44:33 -0400 (EDT)
-Subject: Re: [PATCH] staging: comedi: replace slash in name
-To:     Tong Zhang <ztong0001@gmail.com>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210314035757.2740146-1-ztong0001@gmail.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <5d7a5e1c-35ab-58cb-ebcd-da5b280c802e@mev.co.uk>
-Date:   Mon, 15 Mar 2021 10:44:32 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 06:45:14 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83714C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:45:13 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y16so8431397wrw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JkUqr4eqSLlIHqALxAhNIjo94t7X7mfAdvoNtfMBKoc=;
+        b=kl+YyFfzyL7uHNgsdx0i7WD29arND119rdlyB6u6AMPQhgsGZNlPxY1BQ4XgzD3I9P
+         Rt53DMFFauCs6ogybVC634SlKBtDgE1DkUcf1ggtKVD8+eF6KE+RxymUlRKrrlA1hHn0
+         7ltWGcfMHUrH9hj+vP6DKRgRVLq6PRF4sE5DVYy8OSA1oP5VP8juL3DS5PPq47VQpTkX
+         LUVIBGXpoPRcWnwRaTxinFBAmVS9WBabaetvHHuelzKz0JT+SKnmAkVQvBte7kPbg+cJ
+         vsHJNi7UJVkr1a1qcaXQqiiGwPh/mHKB96O5S2IPGj+iRQsip69pwioHQOFu6nHb24uO
+         uomQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JkUqr4eqSLlIHqALxAhNIjo94t7X7mfAdvoNtfMBKoc=;
+        b=bAC66OdLQKvJygKOEDj09Gv5AtVA51N8S+ZhDH6JkZlLh+wKlqTYoD4n4VvMIiIudY
+         LGa3RznornDRKfvQoO9dqg+c4GOzsSHnViwIkgD8AKauIwZxqjdx4yi88zrMK7seuWDd
+         nMhlPLKyMDQedHaBhcd5okBm9ezNunDKm8Xkny56E5VEMimRx6sDt39f+rBWbu/OgVY/
+         EC+P44fg3GfsaWCimF60NIM0HZxF7nGzzdLUosoPPopBxbv7ciqyeewr6/CdKm06CsU2
+         wqdtK5o4Xl2YakBawsgbIa8J/6N3HTjnX9MB2CyJzZeKvyIcIF7lMBwj51wIuwSX+2ME
+         tQDA==
+X-Gm-Message-State: AOAM530cy03ycicW8oRucGas2/Ww9SZAZ2aYUDLCuJSLXF/tNKWXenjE
+        vmnEhKUJaCIia8otyc5tryDX4ZI4s8kb1w==
+X-Google-Smtp-Source: ABdhPJyeSssCjMaD+v19KVUYAuX5OfF2vn0xh+fyu9YlwPcRB0mZu/9iwBlIj2NxH03Zp5NyFo/VRw==
+X-Received: by 2002:adf:a3c2:: with SMTP id m2mr26871769wrb.195.1615805112121;
+        Mon, 15 Mar 2021 03:45:12 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id s3sm18191381wrt.93.2021.03.15.03.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 03:45:11 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     srini@kernel.org, srinivas.kandagatla@linaro.org
+Cc:     nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] nvmem: rmem: fix undefined reference to memremap
+Date:   Mon, 15 Mar 2021 10:44:57 +0000
+Message-Id: <20210315104457.18140-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20210314035757.2740146-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: e06d8992-0b05-4806-b625-31fc857a83a4-1-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/03/2021 03:57, Tong Zhang wrote:
-> request_irq() wont accept a name which contains slash so we need to
-> repalce it with something else -- otherwise it will trigger a warning
-> and the entry in /proc/irq/ will not be created
-> 
-> [    1.565966] name 'pci-das6402/16'
-> [    1.566149] WARNING: CPU: 0 PID: 184 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
-> [    1.568923] RIP: 0010:__xlate_proc_name+0x93/0xb0
-> [    1.574200] Call Trace:
-> [    1.574722]  proc_mkdir+0x18/0x20
-> [    1.576629]  request_threaded_irq+0xfe/0x160
-> [    1.576859]  auto_attach+0x60a/0xc40 [cb_pcidas64]
-> 
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> ---
->  drivers/staging/comedi/drivers/cb_pcidas64.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/comedi/drivers/cb_pcidas64.c b/drivers/staging/comedi/drivers/cb_pcidas64.c
-> index fa987bb0e7cd..662d6ffb8f60 100644
-> --- a/drivers/staging/comedi/drivers/cb_pcidas64.c
-> +++ b/drivers/staging/comedi/drivers/cb_pcidas64.c
-> @@ -677,7 +677,7 @@ static const int bytes_in_sample = 2;
->  
->  static const struct pcidas64_board pcidas64_boards[] = {
->  	[BOARD_PCIDAS6402_16] = {
-> -		.name		= "pci-das6402/16",
-> +		.name		= "pci-das6402-16",
->  		.ai_se_chans	= 64,
->  		.ai_bits	= 16,
->  		.ai_speed	= 5000,
-> @@ -693,7 +693,7 @@ static const struct pcidas64_board pcidas64_boards[] = {
->  		.has_8255	= 1,
->  	},
->  	[BOARD_PCIDAS6402_12] = {
-> -		.name		= "pci-das6402/12",	/* XXX check */
-> +		.name		= "pci-das6402-12",	/* XXX check */
->  		.ai_se_chans	= 64,
->  		.ai_bits	= 12,
->  		.ai_speed	= 5000,
-> @@ -709,7 +709,7 @@ static const struct pcidas64_board pcidas64_boards[] = {
->  		.has_8255	= 1,
->  	},
->  	[BOARD_PCIDAS64_M1_16] = {
-> -		.name		= "pci-das64/m1/16",
-> +		.name		= "pci-das64-m1-16",
->  		.ai_se_chans	= 64,
->  		.ai_bits	= 16,
->  		.ai_speed	= 1000,
-> @@ -725,7 +725,7 @@ static const struct pcidas64_board pcidas64_boards[] = {
->  		.has_8255	= 1,
->  	},
->  	[BOARD_PCIDAS64_M2_16] = {
-> -		.name = "pci-das64/m2/16",
-> +		.name = "pci-das64-m2-16",
->  		.ai_se_chans	= 64,
->  		.ai_bits	= 16,
->  		.ai_speed	= 500,
-> @@ -741,7 +741,7 @@ static const struct pcidas64_board pcidas64_boards[] = {
->  		.has_8255	= 1,
->  	},
->  	[BOARD_PCIDAS64_M3_16] = {
-> -		.name		= "pci-das64/m3/16",
-> +		.name		= "pci-das64-m3-16",
->  		.ai_se_chans	= 64,
->  		.ai_bits	= 16,
->  		.ai_speed	= 333,
-> @@ -984,7 +984,7 @@ static const struct pcidas64_board pcidas64_boards[] = {
->  		.has_8255	= 0,
->  	},
->  	[BOARD_PCIDAS4020_12] = {
-> -		.name		= "pci-das4020/12",
-> +		.name		= "pci-das4020-12",
->  		.ai_se_chans	= 4,
->  		.ai_bits	= 12,
->  		.ai_speed	= 50,
-> 
+Fix below error reporte by kernel test robot
+rmem.c:(.text+0x14e): undefined reference to memremap
+s390x-linux-gnu-ld: rmem.c:(.text+0x1b6): undefined reference to memunmap
 
-Userspace applications can use these strings to determine the board
-type, so changing the strings would break those applications.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/nvmem/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I suggest passing the comedi driver name "cb_pcidas" to request_irq()
-for now.
-
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index 642ddc699fd1..dd2019006838 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -272,6 +272,7 @@ config SPRD_EFUSE
+ 
+ config NVMEM_RMEM
+ 	tristate "Reserved Memory Based Driver Support"
++	depends on HAS_IOMEM
+ 	help
+ 	  This driver maps reserved memory into an nvmem device. It might be
+ 	  useful to expose information left by firmware in memory.
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.21.0
+
