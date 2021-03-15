@@ -2,127 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E6F33C1C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F362633C1C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCOQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:29:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31326 "EHLO
+        id S231245AbhCOQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:30:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20263 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230428AbhCOQ3D (ORCPT
+        by vger.kernel.org with ESMTP id S230428AbhCOQ3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:29:03 -0400
+        Mon, 15 Mar 2021 12:29:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615825743;
+        s=mimecast20190719; t=1615825794;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nl1+WY2yc35r8DKGgQPrYO8xQPdF6BvZlTPgaL/G56k=;
-        b=Vy9uNIFp5GkvQua/FEpKRTiBfckxT4X/drsuy2F0vD8j8Hp1L/wCDCcJXh1ValaBCMJKu2
-        7kDkyoBE++6VBIympbnQMkYIJx4TH5HWwXfE/hZwhPN91IvFn9rCyrI3HiOPDNBLY8DTfe
-        PXXz6AAfr6J+5HvncwgoZXebO5sLgc4=
+        bh=lzbk2N/+IjCMMwtklLd0wUDwTbWk4sEAedTIBn0fl1A=;
+        b=fXVIoYTqTgZ17hnNDE0O3PIAJ+NWUq00HzlRqWRMwqnsSATTJSbuncL2kk2nq2wpJIWftE
+        qYp/+ANWwMPlZuCvjZqhnVOhw0FnYCM/UxtspIoCPfGoX1x7K57crQ28/BksgSHCUTXk7X
+        yyA0lAu8DmG9v/cWX+4l1QvQLEo/rqQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-gaY_ODU1M2SL4P00G20Vrw-1; Mon, 15 Mar 2021 12:29:01 -0400
-X-MC-Unique: gaY_ODU1M2SL4P00G20Vrw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-53-0Q5yoXykNbm-jMx5na5oDw-1; Mon, 15 Mar 2021 12:29:52 -0400
+X-MC-Unique: 0Q5yoXykNbm-jMx5na5oDw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 491E9107ACCD;
-        Mon, 15 Mar 2021 16:28:57 +0000 (UTC)
-Received: from [10.36.112.200] (ovpn-112-200.ams2.redhat.com [10.36.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB8F5D755;
-        Mon, 15 Mar 2021 16:28:41 +0000 (UTC)
-Subject: Re: [PATCH RFCv2] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to
- prefault/prealloc memory
-From:   David Hildenbrand <david@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
-References: <20210308164520.18323-1-david@redhat.com>
- <20210315122213.k52wtlbbhsw42pks@box>
- <7d607d1c-efd5-3888-39bb-9e5f8bc08185@redhat.com>
- <20210315130353.iqnwsnp2c2wpt4y2@box>
- <e59d6301-6ba8-1d7f-5c15-60364eec3fe1@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <df583cb8-ed13-92a1-811f-46d193ab4ae7@redhat.com>
-Date:   Mon, 15 Mar 2021 17:28:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DA9780006E;
+        Mon, 15 Mar 2021 16:29:51 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97B305D9C0;
+        Mon, 15 Mar 2021 16:29:50 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 10:29:50 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, raphael.norwitz@nutanix.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210315102950.230de1d6@x1.home.shazbot.org>
+In-Reply-To: <20210315153341.miip637z35mwv7fv@archlinux>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+        <20210312173452.3855-5-ameynarkhede03@gmail.com>
+        <20210314235545.girtrazsdxtrqo2q@pali>
+        <20210315134323.llz2o7yhezwgealp@archlinux>
+        <20210315135226.avwmnhkfsgof6ihw@pali>
+        <20210315083409.08b1359b@x1.home.shazbot.org>
+        <YE94InPHLWmOaH/b@unreal>
+        <20210315153341.miip637z35mwv7fv@archlinux>
+Organization: Red Hat
 MIME-Version: 1.0
-In-Reply-To: <e59d6301-6ba8-1d7f-5c15-60364eec3fe1@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 14:26, David Hildenbrand wrote:
-> On 15.03.21 14:03, Kirill A. Shutemov wrote:
->> On Mon, Mar 15, 2021 at 01:25:40PM +0100, David Hildenbrand wrote:
->>> On 15.03.21 13:22, Kirill A. Shutemov wrote:
->>>> On Mon, Mar 08, 2021 at 05:45:20PM +0100, David Hildenbrand wrote:
->>>>> +			case -EHWPOISON: /* Skip over any poisoned pages. */
->>>>> +				start += PAGE_SIZE;
->>>>> +				continue;
->>>>
->>>> Why is it good approach? It's not abvious to me.
->>>
->>> My main motivation was to simplify return code handling. I don't want to
->>> return -EHWPOISON to user space
->>
->> Why? Hiding the problem under the rug doesn't help anybody. SIGBUS later
->> is not better than an error upfront.
-> 
-> Well, if you think about "prefaulting page tables", the first intuition
-> is certainly not to check for poisoned pages, right? After all, you are
-> not actually accessing memory, you are allocating memory if required and
-> fill page tables. OTOH, mlock() will also choke on poisoned pages.
-> 
-> With the current semantics, you can start and run a VM just fine.
-> Preallocation/prefaulting succeeded after all. On access you will get a
-> SIGBUS, from which e.g., QEMU can recover by injecting an MCE into the
-> guest - just like if you would hit a poisoned page later.
-> 
-> The problem we are talking about is most probably very rare, especially
-> when using MADV_POPULATE_ for actual preallocation.
-> 
-> I don't have a strong opinion; not bailing out on poisoned pages felt
-> like the right thing to do.
+On Mon, 15 Mar 2021 21:03:41 +0530
+Amey Narkhede <ameynarkhede03@gmail.com> wrote:
 
-I'll switch to propagating -EHWPOISON, it matches how e.g., mlock() 
-behaves -- not ignoring poisoned pages. Thanks!
+> On 21/03/15 05:07PM, Leon Romanovsky wrote:
+> > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote: =20
+> > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > =20
+> > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote: =20
+> > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > warm reset respectively. =20
+> > > >
+> > > > No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is just =
+another
+> > > > type of reset, which is currently implemented only for PCIe hot plug
+> > > > bridges and for PowerPC PowerNV platform and it just call PCI secon=
+dary
+> > > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > > kernel and therefore drivers do not export this type of reset via a=
+ny
+> > > > kernel function (yet). =20
+> > >
+> > > Warm reset is beyond the scope of this series, but could be implement=
+ed
+> > > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > > defined here.  Note that with this series the resets available through
+> > > pci_reset_function() and the per device reset attribute is sysfs rema=
+in
+> > > exactly the same as they are currently.  The bus and slot reset
+> > > methods used here are limited to devices where only a single function=
+ is
+> > > affected by the reset, therefore it is not like the patch you proposed
+> > > which performed a reset irrespective of the downstream devices.  This
+> > > series only enables selection of the existing methods.  Thanks, =20
+> >
+> > Alex,
+> >
+> > I asked the patch author here [1], but didn't get any response, maybe
+> > you can answer me. What is the use case scenario for this functionality?
+> >
+> > Thanks
+> >
+> > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal
+> > =20
+> Sorry for not responding immediately. There were some buggy wifi cards
+> which needed FLR explicitly not sure if that behavior is fixed in
+> drivers. Also there is use a case at Nutanix but the engineer who
+> is involved is on PTO that is why I did not respond immediately as
+> I don't know the details yet.
 
--- 
-Thanks,
+And more generally, devices continue to have reset issues and we
+impose a fixed priority in our ordering.  We can and probably should
+continue to quirk devices when we find broken resets so that we have
+the best default behavior, but it's currently not easy for an end user
+to experiment, ie. this reset works, that one doesn't.  We might also
+have platform issues where a given reset works better on a certain
+platform.  Exposing a way to test these things might lead to better
+quirks.  In the case I think Pali was looking for, they wanted a
+mechanism to force a bus reset, if this was in reference to a single
+function device, this could be accomplished by setting a priority for
+that mechanism, which would translate to not only the sysfs reset
+attribute, but also the reset mechanism used by vfio-pci.  Thanks,
 
-David / dhildenb
+Alex
 
