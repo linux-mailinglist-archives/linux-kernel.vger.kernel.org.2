@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA9733B5E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A607733B5BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhCONzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        id S229926AbhCONzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230480AbhCONxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79F2D64EB6;
-        Mon, 15 Mar 2021 13:53:43 +0000 (UTC)
+        id S230139AbhCONxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF8364EF4;
+        Mon, 15 Mar 2021 13:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816425;
-        bh=BI0f3vxvgUWulihZxWgR0nEuD5eB5Ik7A18asIs/818=;
+        s=korg; t=1615816417;
+        bh=OUJkbMLPuPyNeMRr9PNXRB8qlTp5QF5E60k3qZox3IA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GRJDVLExSD4VtX1JsHmLsiP6If6g4smJ4ALsR7sdBB8cZCqFHcHhIXTlUyg2XkieR
-         OqLsJ/+Rzd5tMygy4+oVdiGUlGXttecTF6rSgnT3rycKAjtF6SxGkUPY05KGzYrNtr
-         ZVhx3bbTFhDLEEVDCX7cc3zMffu7Fteu/DY0CpCw=
+        b=TzXe7WbyIHSV7LUvrJc0wE5TnECVooheM4Ngwb6qioFAWOtdK0nweSed/VpveDNtc
+         TOrsUC7/v3soUEb2123SpM1+lSWlLY7G4zjjaIWXauy6GamukOpUpMEr0NMp1p4ewJ
+         apIv9MLZDy0+dpbGra4ObK+Da/tgn7b5DGVDUqSw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 36/75] USB: serial: io_edgeport: fix memory leak in edge_startup
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 27/78] ALSA: usb-audio: Fix "cannot get freq eq" errors on Dell AE515 sound bar
 Date:   Mon, 15 Mar 2021 14:51:50 +0100
-Message-Id: <20210315135209.426616432@linuxfoundation.org>
+Message-Id: <20210315135212.951909692@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +40,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
+commit fec60c3bc5d1713db2727cdffc638d48f9c07dc3 upstream.
 
-sysbot found memory leak in edge_startup().
-The problem was that when an error was received from the usb_submit_urb(),
-nothing was cleaned up.
+Dell AE515 sound bar (413c:a506) spews the error messages when the
+driver tries to read the current sample frequency, hence it needs to
+be on the list in snd_usb_get_sample_rate_quirk().
 
-Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
-Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
-Signed-off-by: Johan Hovold <johan@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211551
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210304083021.2152-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/io_edgeport.c
-+++ b/drivers/usb/serial/io_edgeport.c
-@@ -2966,26 +2966,32 @@ static int edge_startup(struct usb_seria
- 				response = -ENODEV;
- 			}
- 
--			usb_free_urb(edge_serial->interrupt_read_urb);
--			kfree(edge_serial->interrupt_in_buffer);
--
--			usb_free_urb(edge_serial->read_urb);
--			kfree(edge_serial->bulk_in_buffer);
--
--			kfree(edge_serial);
--
--			return response;
-+			goto error;
- 		}
- 
- 		/* start interrupt read for this edgeport this interrupt will
- 		 * continue as long as the edgeport is connected */
- 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
- 								GFP_KERNEL);
--		if (response)
-+		if (response) {
- 			dev_err(ddev, "%s - Error %d submitting control urb\n",
- 				__func__, response);
-+
-+			goto error;
-+		}
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1153,6 +1153,7 @@ bool snd_usb_get_sample_rate_quirk(struc
+ 	case USB_ID(0x1de7, 0x0114): /* Phoenix Audio MT202pcs */
+ 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
+ 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
++	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
+ 		return true;
  	}
- 	return response;
-+
-+error:
-+	usb_free_urb(edge_serial->interrupt_read_urb);
-+	kfree(edge_serial->interrupt_in_buffer);
-+
-+	usb_free_urb(edge_serial->read_urb);
-+	kfree(edge_serial->bulk_in_buffer);
-+
-+	kfree(edge_serial);
-+
-+	return response;
- }
- 
- 
+ 	return false;
 
 
