@@ -2,165 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC5833C7E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C6133C7E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhCOUmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
+        id S232147AbhCOUnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhCOUm0 (ORCPT
+        with ESMTP id S229962AbhCOUnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:42:26 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE40C06174A;
-        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id bt4so9450517pjb.5;
-        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
+        Mon, 15 Mar 2021 16:43:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBAFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:43:09 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id e7so59062924lft.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O6e8S7lh6iAwMopRVdoRppSa4LuJ+ayzrZbrIdMcAvU=;
-        b=B2ZkDvaAj+Bp0Qzw0qkFL5KfWIaPT7HH3yGSGINZ70hMsMP78DCawnP2aK/j3gfikE
-         6mJX2QHwgPqtMH/xLMMqZRug9agGhKiZF+0lPwNok/2zFimS12sL/Hfa5mK9TxMz7Pw7
-         pK5eD10SdJo49R7Q1Bar2lmzlckM8cOiTEHBAOa7RlWqm/xt/xpUQdOvLQ8nQXC0fjef
-         1FM9cD46b1uPD/iclC8CfdSOxm6hLpaYCCF08uv/npw0k44OS3xmUApWpIRUhcV5//cx
-         CbOgNwscEeod/ckQ2pHrEKj5slLnApTO03GD7kgKirj7hMOTBdDYRZDtXh+xX5e8xtjA
-         zBog==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XC8bY/c6LlHvD9TH9UevY57CN7cJD6ZiGwwB++TkJO4=;
+        b=eFzH9DHywvAGTJGl198bwljRgMQFqNDykZUJG+UuyF83Q9df2rYSrU3dKMNZl7Z4j/
+         17/8qsalGdf/AYWeLR7MS54AUyiv+ShaAFq7tTDGqC0cp9F63qYNqNgCMEIgBMxyFeZ5
+         XCkj5+csYUiGPv1zdQvRdDlwTB8A74Ak2pwww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O6e8S7lh6iAwMopRVdoRppSa4LuJ+ayzrZbrIdMcAvU=;
-        b=TIUr1lfMnF8GziQuQwOFR+emlH9flE68CqglgKJr6bcv2zlqWq+ZUgt4mTM0ybL02q
-         8l4XLATgvqlIyF3ZeX4RnSQNQSJirKjYe4ioQvI+sSRgc/wYidQmupMowbnh2ULOVk84
-         SyDQChEr6s+M1SvMU0uUvSxcP9STx3Lmh2yc6N4l9SUB3wYBrQjF9aF0j1ImUrKSW0oS
-         0VuSwV2lelcdlqwVZ2kMF8gImaTomr+DFbghdXOH0Gs/yA3zJoI4Kqn/B/go5oOYQIwd
-         rRzlQm9+goI5xgI/yeNpYBdK20tA1ZM3GYp3ck9orF9BGeBVPTjh5UzxES4bksDfOiVw
-         lJWw==
-X-Gm-Message-State: AOAM533aFtVdBEPwxu/7jNkW835RwD2vH6ra57EJDfZf0NT5jc8f0lqH
-        2WQX328Ut9w2/62pkn9GcboNSo5twb0=
-X-Google-Smtp-Source: ABdhPJzv4HCdbNqFTYAiNiPmpXDxe8kGt5XtOLngOQl2RkR/z+SpaqhCj1uU7m4WaANyftZsfiFnWA==
-X-Received: by 2002:a17:90a:9b18:: with SMTP id f24mr924038pjp.96.1615840944027;
-        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id w79sm14955596pfc.87.2021.03.15.13.42.21
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XC8bY/c6LlHvD9TH9UevY57CN7cJD6ZiGwwB++TkJO4=;
+        b=ElCiCZdMgN4X6+FGMJyd9a7/dMfsowye8kNMLFRgwpXSMZsg/ZSQ3Dcj31AFMRiJe9
+         5jGdBG4/FA9Cy7Zo4Sii61V/1NO198b12quFpOyr5P5ZXsOzXboOb6PsfV/x1R6a3uJ+
+         uj5pjlJBOZLnRfp8ryFhwL0tBfZAcZzsGJaHTlRx46SHnbe0d0Vjha+NFj8jCNP4Zynb
+         Awdp/jB5YjSyJW8NPgNpF87M9h0XRql1ixjPTNhh/cr/SmlEGtREcu5r53tulcGOE1zk
+         gwsY4wSW/k9UZZrlpmUYhBh7qPCKwItk9vwtnbEw7/jfCqB0RmHISIjKuv3yJpruE1ff
+         8wFg==
+X-Gm-Message-State: AOAM533u2pY0QRAuocs2RYynnpv79J78p8bcDRnGJGEr+2y7svL6zQN4
+        qlEZn7uYBaMHJbWjZlKEgWxvWetE71lqTw==
+X-Google-Smtp-Source: ABdhPJxwlJdAOR85jvbZihI/goKyeWRasUcVPe2tw7WWYjxuNIWKEezxt4T0Yq5xunRIrj9WVl/E9w==
+X-Received: by 2002:a19:7e45:: with SMTP id z66mr9000635lfc.612.1615840987864;
+        Mon, 15 Mar 2021 13:43:07 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id x19sm2766765lfr.198.2021.03.15.13.43.06
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 13:42:23 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/78] 4.9.262-rc1 review
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Ben Hutchings <ben@decadent.org.uk>
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210315135212.060847074@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <11774be7-0738-1a23-f186-0875b9e82ef6@gmail.com>
-Date:   Mon, 15 Mar 2021 13:42:20 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        Mon, 15 Mar 2021 13:43:07 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id p21so58912581lfu.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:43:06 -0700 (PDT)
+X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr9067488lfu.253.1615840986403;
+ Mon, 15 Mar 2021 13:43:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210315062808.GA837@xsang-OptiPlex-9020>
+In-Reply-To: <20210315062808.GA837@xsang-OptiPlex-9020>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 15 Mar 2021 13:42:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi1KcOZo4JeRDgJCU0gB5v16q6GJsFtF365MSfM8hH3zA@mail.gmail.com>
+Message-ID: <CAHk-=wi1KcOZo4JeRDgJCU0gB5v16q6GJsFtF365MSfM8hH3zA@mail.gmail.com>
+Subject: Re: [mm] f3344adf38: fxmark.hdd_btrfs_DWAL_63_bufferedio.works/sec
+ -52.4% regression
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Mar 14, 2021 at 11:30 PM kernel test robot
+<oliver.sang@intel.com> wrote:
+>
+> FYI, we noticed a -52.4% regression of fxmark.hdd_btrfs_DWAL_63_bufferedio.works/sec
 
+That's quite the huge regression.
 
-On 3/15/2021 6:51 AM, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 4.9.262 release.
-> There are 78 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 17 Mar 2021 13:51:58 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.262-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+But:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit kernels, still seeing the
-following futex warning, unfortunately simply running the function
-tracers does not allow me to trigger the warning, so I am having a hard
-time coming up with a simple reproducer:
+> due to commit: f3344adf38bd ("mm: memcontrol: optimize per-lruvec stats counter memory usage")
 
-*** 0[   66.551916] ------------[ cut here ]------------
-[   66.557855] WARNING: CPU: 3 PID: 1628 at kernel/futex.c:1584
-do_futex+0x800/0x974
-[   66.565457] Modules linked in: brcmv3d(O) wakeup_drv(O) bcmdriver(PO)
-[   66.572048]
-[   66.573609] CPU: 3 PID: 1628 Comm: boot Tainted: P           O
-4.9.262-1.22pre-g4c1466bf10ac #2
-[   66.582693] Hardware name: BCX972160DV (DT)
-[   66.586936] task: ffffffc07ae92280 task.stack: ffffffc0016ec000
-[   66.592923] PC is at do_futex+0x800/0x974
-[   66.596992] LR is at do_futex+0x784/0x974
-[   66.601057] pc : [<ffffff800810f470>] lr : [<ffffff800810f3f4>]
-pstate: 600001c5
-[   66.608547] sp : ffffffc0016efd10
-[   66.611912] x29: ffffffc0016efd10 x28: 0000000000000000
-[   66.617313] x27: 000000000000065c x26: ffffffc0016efdf8
-[   66.622713] x25: ffffffc079bf9090 x24: 000000008000065c
-[   66.628112] x23: ffffffc0016ec000 x22: 0000000000000000
-[   66.633511] x21: 000000000d72fbb0 x20: ffffffc079bf9080
-[   66.638912] x19: 0000000000000001 x18: 0000000000000000
-[   66.644313] x17: 0000007f845adfe8 x16: ffffff800810f5e4
-[   66.649713] x15: 000017d28638a692 x14: 00055d4a5b4a1ca0
-[   66.655114] x13: 000000000000012d x12: 0000000000000018
-[   66.660514] x11: 000000001f758ce6 x10: 0000000000000042
-[   66.665915] x9 : 003b9aca00000000 x8 : 0000000000000062
-[   66.671314] x7 : 0000000000007070 x6 : 0000000000000000
-[   66.676714] x5 : ffffffc079bf90b8 x4 : 0000000000000000
-[   66.682112] x3 : 0000000000000001 x2 : 0000000000000000
-[   66.687512] x1 : 0000000000000000 x0 : ffffff8009b0f7dd
-[   66.692909]
-[   66.694444] ---[ end trace cc7627749f0e27f6 ]---
-[   66.699114] Call trace:
-[   66.701614] Exception stack(0xffffffc0016efb10 to 0xffffffc0016efc40)
-[   66.708121] fb00:                                   0000000000000001
-0000007fffffffff
-[   66.712143] arm-scmi brcm_scmi@0: mbox timed out in resp(caller:
-scmi_perf_level_set+0x80/0xc0)
-[   66.712155] cpufreq: __target_index: Failed to change cpu frequency: -110
-[   66.731690] fb20: ffffffc0016efd10 ffffff800810f470 00000000600001c5
-000000000000003d
-[   66.739624] fb40: ffffffc079bf9090 ffffffc0016efdf8 000000000000065c
-ffffff8009a26000
-[   66.747559] fb60: ffffffc0016efb80 ffffff80080ddbec ffffffc0016efb90
-ffffff80080cf2ac
-[   66.755492] fb80: ffffff80099f6000 ffffff80080de170 ffffffc0016efc50
-ffffff80080c88e8
-[   66.763426] fba0: ffffffc07a6da280 ffffffc07a6da4a0 ffffffc0016efbc0
-ffffff80083d531c
-[   66.771360] fbc0: ffffffc0016efc00 ffffff800808e5c4 0000000000000008
-00000000000409ff
-[   66.779295] fbe0: ffffff8009b0f7dd 0000000000000000 0000000000000000
-0000000000000001
-[   66.787227] fc00: 0000000000000000 ffffffc079bf90b8 0000000000000000
-0000000000007070
-[   66.795160] fc20: 0000000000000062 003b9aca00000000 0000000000000042
-000000001f758ce6
-[   66.803095] [<ffffff800810f470>] do_futex+0x800/0x974
-[   66.808211] [<ffffff800810f740>] SyS_futex+0x15c/0x184
-[   66.813415] [<ffffff8008083180>] el0_svc_naked+0x34/0x38
+That's _literally_ just changing a dynamically allocated per-cpu array
+of "long[]" to an array of "s32[]" and in the process shrinking it
+from 304 bytes to 152 bytes.
 
-other than that:
+> in testcase: fxmark
+> on test machine: 288 threads Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz with 80G memory
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I think this must be some really random memory layout issue that
+causes some false sharing or similar.
+
+And it's not even that some fundamental data structure gets a
+different layout, it literally is just either:
+
+ (a) the (now smaller) array is allocated from a differently chunk,
+and that then causes random cache effects with something else
+
+ (b) the (old, and bigger) array was more spread out, and as a result
+had different fields in different cachelines and less false sharing
+
+Normally I'd say that (b) is the obvious case, except for the fact
+that this is a __percpu array.
+
+So in the common case there shouldn't be any cache contention _within_
+the array itself. Any cache contention should be with something else
+very hot that the change now randomly makes be in the same cache way
+or whatever.
+
+Afaik, only the flushing of the vmstats batches does access the percpu
+arrays from other CPUs, so (b) is not _entirely_ impossible if
+memcg_flush_percpu_vmstats() were to be very very very hot.
+
+But the profile data doesn't show anything remotely like that.
+
+In fact, the actual report seems to show things improving, ie things
+like elapsed time going down:
+
+>       1361            -9.5%       1232        fxmark.time.elapsed_time
+>       1361            -9.5%       1232        fxmark.time.elapsed_time.max
+>      25.67            +9.1%      28.00        fxmark.time.percent_of_cpu_this_job_got
+>     343.68            -2.0%     336.76        fxmark.time.system_time
+>      23.66            +2.5       26.12        mpstat.cpu.all.sys%
+
+but I don't know what the benchmark actually does, so maybe it just
+repeats things until it hits a certain confidence interval, and thus
+"elapsed time" is immaterial.
+
+Honestly, normally if I were to get a report about "52% regression"
+for a commit that is supposed to optimize something, I'd just revert
+the commit as a case of "ok, that optimization clearly didn't work".
+
+But there is absolutely no sign that this commit is actually the
+culprit, or explanation for why that should be, and what could be
+going on.
+
+So I'm going to treat this as a "bisection failure, possibly due to
+random code or data layout changes". Particularly since this seems to
+be a 4-socket Xeon Phi machine, which I think is likely a very very
+fragile system if there is some odd cache layout issue.
+
+If somebody can actually figure out what happened there, that would be
+good, but for now it goes into my "archived as a random outlier"
+folder.
+
+                 Linus
