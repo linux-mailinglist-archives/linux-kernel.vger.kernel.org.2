@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D3633BBF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAB533BE30
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237325AbhCOORi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        id S238126AbhCOOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C277B64DAD;
-        Mon, 15 Mar 2021 13:59:18 +0000 (UTC)
+        id S231774AbhCOODe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4342C64F05;
+        Mon, 15 Mar 2021 14:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816759;
-        bh=IzOuBKvlcXDQO5mbUQb1xCUN8aaHclHba4Q1eHNYjmc=;
+        s=korg; t=1615817014;
+        bh=K/iSoL6q7k8cO/ka6njGN2rQsmF2GAngz5mdvDbpFAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oock5ZNhD0fq/WSB3bY/JW9B5tlVBq7TM0RYDPy0A+gaDuS1uT8BC5RQ3x9yXiYTg
-         Yy5+OwFaZxpjk4BSfhzRwzZH28TrSxx8wxnhBaRDniMJ0jl3Rwrcwm6kq7uUpmiNBz
-         oPEiFr2sevetpYqIAjgoBGk8GilFRSYBtI+R32cI=
+        b=nrjtt03LhHG0f4Q2roHNQbU88L91AucuJvH7UV8QhBKfK2Rajnolr5J4fWCG/iwpP
+         8ezfQi+/KzVSEcFaJBUYYFlkjJf9za0KUqim5XSIixzyCM8mDRdaRFe3Mrjntg+EcS
+         NxihptnFonb80JPWfoB9VVBt9YYh2rda4pbwDjCE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simeon Simeonoff <sim.simeonoff@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 090/168] ALSA: hda/ca0132: Add Sound BlasterX AE-5 Plus support
-Date:   Mon, 15 Mar 2021 14:55:22 +0100
-Message-Id: <20210315135553.334418486@linuxfoundation.org>
+        stable@vger.kernel.org, Gabriel Marin <gmx@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 5.11 260/306] perf/core: Flush PMU internal buffers for per-CPU events
+Date:   Mon, 15 Mar 2021 14:55:23 +0100
+Message-Id: <20210315135516.434043944@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,31 +45,177 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Simeon Simeonoff <sim.simeonoff@gmail.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit f15c5c11abfbf8909eb30598315ecbec2311cfdc upstream.
+[ Upstream commit a5398bffc01fe044848c5024e5e867e407f239b8 ]
 
-The new AE-5 Plus model has a different Subsystem ID compared to the
-non-plus model. Adding the new id to the list of quirks.
+Sometimes the PMU internal buffers have to be flushed for per-CPU events
+during a context switch, e.g., large PEBS. Otherwise, the perf tool may
+report samples in locations that do not belong to the process where the
+samples are processed in, because PEBS does not tag samples with PID/TID.
 
-Signed-off-by: Simeon Simeonoff <sim.simeonoff@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/998cafbe10b648f724ee33570553f2d780a38963.camel@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The current code only flush the buffers for a per-task event. It doesn't
+check a per-CPU event.
+
+Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
+PMU internal buffers have to be flushed for this event during a context
+switch.
+
+Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
+which is required to be flushed.
+
+Only need to invoke the sched_task() for per-CPU events in this patch.
+The per-task events have been handled in perf_event_context_sched_in/out
+already.
+
+Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Reported-by: Gabriel Marin <gmx@google.com>
+Originally-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20201130193842.10569-1-kan.liang@linux.intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_ca0132.c |    1 +
- 1 file changed, 1 insertion(+)
+ include/linux/perf_event.h |  2 ++
+ kernel/events/core.c       | 42 ++++++++++++++++++++++++++++++++++----
+ 2 files changed, 40 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1185,6 +1185,7 @@ static const struct snd_pci_quirk ca0132
- 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
- 	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
- 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
-+	SND_PCI_QUIRK(0x1102, 0x0191, "Sound Blaster AE-5 Plus", QUIRK_AE5),
- 	SND_PCI_QUIRK(0x1102, 0x0081, "Sound Blaster AE-7", QUIRK_AE7),
- 	{}
- };
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 9a38f579bc76..419a4d77de00 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -606,6 +606,7 @@ struct swevent_hlist {
+ #define PERF_ATTACH_TASK	0x04
+ #define PERF_ATTACH_TASK_DATA	0x08
+ #define PERF_ATTACH_ITRACE	0x10
++#define PERF_ATTACH_SCHED_CB	0x20
+ 
+ struct perf_cgroup;
+ struct perf_buffer;
+@@ -872,6 +873,7 @@ struct perf_cpu_context {
+ 	struct list_head		cgrp_cpuctx_entry;
+ #endif
+ 
++	struct list_head		sched_cb_entry;
+ 	int				sched_cb_usage;
+ 
+ 	int				online;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 55d18791a72d..8425dbc1d239 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -385,6 +385,7 @@ static DEFINE_MUTEX(perf_sched_mutex);
+ static atomic_t perf_sched_count;
+ 
+ static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
++static DEFINE_PER_CPU(int, perf_sched_cb_usages);
+ static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
+ 
+ static atomic_t nr_mmap_events __read_mostly;
+@@ -3474,11 +3475,16 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 	}
+ }
+ 
++static DEFINE_PER_CPU(struct list_head, sched_cb_list);
++
+ void perf_sched_cb_dec(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	--cpuctx->sched_cb_usage;
++	this_cpu_dec(perf_sched_cb_usages);
++
++	if (!--cpuctx->sched_cb_usage)
++		list_del(&cpuctx->sched_cb_entry);
+ }
+ 
+ 
+@@ -3486,7 +3492,10 @@ void perf_sched_cb_inc(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	cpuctx->sched_cb_usage++;
++	if (!cpuctx->sched_cb_usage++)
++		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
++
++	this_cpu_inc(perf_sched_cb_usages);
+ }
+ 
+ /*
+@@ -3515,6 +3524,24 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
++static void perf_pmu_sched_task(struct task_struct *prev,
++				struct task_struct *next,
++				bool sched_in)
++{
++	struct perf_cpu_context *cpuctx;
++
++	if (prev == next)
++		return;
++
++	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
++		/* will be handled in perf_event_context_sched_in/out */
++		if (cpuctx->task_ctx)
++			continue;
++
++		__perf_pmu_sched_task(cpuctx, sched_in);
++	}
++}
++
+ static void perf_event_switch(struct task_struct *task,
+ 			      struct task_struct *next_prev, bool sched_in);
+ 
+@@ -3537,6 +3564,9 @@ void __perf_event_task_sched_out(struct task_struct *task,
+ {
+ 	int ctxn;
+ 
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(task, next, false);
++
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, next, false);
+ 
+@@ -3845,6 +3875,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
+ 
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, prev, true);
++
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(prev, task, true);
+ }
+ 
+ static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
+@@ -4669,7 +4702,7 @@ static void unaccount_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		dec = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_dec(&nr_mmap_events);
+@@ -11168,7 +11201,7 @@ static void account_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		inc = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_inc(&nr_mmap_events);
+@@ -12960,6 +12993,7 @@ static void __init perf_event_init_all_cpus(void)
+ #ifdef CONFIG_CGROUP_PERF
+ 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+ #endif
++		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+ 	}
+ }
+ 
+-- 
+2.30.1
+
 
 
