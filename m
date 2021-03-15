@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044ED33B2D9
+	by mail.lfdr.de (Postfix) with ESMTP id EC08E33B2DC
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhCOMef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:34:35 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:35833 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229553AbhCOMeJ (ORCPT
+        id S229713AbhCOMeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhCOMeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:34:09 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id C4F45C8D;
-        Mon, 15 Mar 2021 08:34:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 15 Mar 2021 08:34:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=o+4lJg+LgBsZLDEeRX2OAY/izVd
-        RhejlQr3StKZ3QuE=; b=qF1fr2TZm6+PolWdhpk9GOd+txSvVtACIAjs5XI7ETa
-        svWGXV95feIF8bte1YW//g+h3TCzuoOI0hr8gWfLpauxSXe+36eSli0vs9S5FcWO
-        zP2jqr3JpYo22+53QOPkzS3NRmJaGCTEBB4vUpdBg0gC0zD98eanO9uZkWcia3Ex
-        3ULrcKIFvuYaHw2xzKTITP03bgb9j/t+IEZeYKsv6ndFlOLJZZqUd80XMDWPAirJ
-        9g44pdJZOC0bI9dtndacwMxd1n8p0PzktfX6awZvcK7WNRLVGKtTIEyAgtmloLXk
-        npAmg37F1dJVSPj0sekYwrN5oyknVPVI9avsDFFEEiA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=o+4lJg
-        +LgBsZLDEeRX2OAY/izVdRhejlQr3StKZ3QuE=; b=Gov5Hbw9364M4YQ2+RG+Hb
-        Gpv0OrY9zW6dqPKsSWyLKhhrQCsKfvAPCsHo0K1UNXBhy+jrvWjBT9u6sKfedFAG
-        +iq/kfx7zxUg1vvHfn6pAj2D0ahgJGvpargfp5iOfWpWJvMpJHsu9gWcYAvv9fam
-        RpsNDWBYqm9y2doki8368UC3/5v6vAbkBXCot+rVz0rGnBpCb2zK1RECdU44NoGX
-        +0P8l7oflQqcU3JNJSeFh/lqGtCmagR30LtxefXUMu8ij8trVYNV6lNvVt/u1MqZ
-        9QioUDYYnuVcxC1Sjcy+rFfoPE5h4Fouf1TVqLxKZJC/d7ePnGFiP8YX5DLLJs1Q
-        ==
-X-ME-Sender: <xms:O1RPYHB2WA-CeTD7si9_ly2Et2Pbek0NqG9Aut43qZ03UttI8GGdMA>
-    <xme:O1RPYPh4dc5lDsZ82xQm3Mx6wW-Te-sqdYByoiyu9Fd8U7bUv77meOwJGqV1kmye_
-    IgV8XZBX5lnJg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledggedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necuggftrfgrthhtvghrnhepueelledtheekleethfeludduvdfhffeuvdffudevgeehke
-    egieffveehgeeftefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:O1RPYL_SyG_1y4sFCdatHYxffhoO9rjLREGbHfMtJaDhlOFnbVCOVw>
-    <xmx:O1RPYL9KEpFQ4CdJTFaqOfo06SvjAikNPmccBtK3BZl2ytyTVu17KA>
-    <xmx:O1RPYEBasH_h7Jp_lYBrn6_7yQylKBrwyjNy6iDkOWUGgDaX7rvnYQ>
-    <xmx:O1RPYHLpBxxIkk2MVZzIVtzRgOlgHc8WDQVGo0dezTJ0zjZoMUEU3w>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 02CAA1080067;
-        Mon, 15 Mar 2021 08:34:02 -0400 (EDT)
-Date:   Mon, 15 Mar 2021 13:34:01 +0100
-From:   Greg KH <greg@kroah.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     baijiaju1990@gmail.com, stable-commits@vger.kernel.org
-Subject: Re: Patch "net: bonding: fix error return code of bond_neigh_init()"
- has been added to the 5.11-stable tree
-Message-ID: <YE9UOR65S2/PplBC@kroah.com>
-References: <20210315031050.F13F264E2E@mail.kernel.org>
+        Mon, 15 Mar 2021 08:34:11 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00C8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:34:10 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id bm21so65868170ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1xoa3G+ISwKSIeuqcwnTgZqAGyqpi/mTiJ1R03k5mAc=;
+        b=LVWU4ordRDJ4NugmIqMqf+p5Llh9f5FzvOIzFM4b15JxtT3XC0042nqDEoZatqLSoV
+         JpFGPD0n2tJdGQDzDOGYjPBtfpFxAy5DMUzmjQ0cwHJn8jt9UCmSad/tFTVrJT4PZXCz
+         LIaFZxddaQr9VAgYrOqJleg4s94tHuhXJS3m4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1xoa3G+ISwKSIeuqcwnTgZqAGyqpi/mTiJ1R03k5mAc=;
+        b=UmteTtyk8YXIIwnpg7BLiJ6KUNh4guQvEPiN2RXwFjW7nk1LOa3MGsXHHMjueWNLQq
+         QsSvq2a1hoYGo7eQEZ1A/+FF2L9M3mb5lRPJvilDiG35At61+eatgjh7vwbLUoQsxySV
+         bk8hpBJvvwc0X4nNjygYOWA25nY9jtwMSMtidDdPswsfBpCIvWyk2OqeZ9dh3MQVpWYp
+         ShAXKf2/jKFn7BPPM0BByvY1u6rYIDoXte0T926jR6fnvRyjhxJ6ceH0r/BjgymvFCNw
+         nn1R9/fy+RyciqyyQFSG69sUvC6wLOLTTLHER1GUOwxkRgLweouqHEhj4258fpOD9Rus
+         4UOA==
+X-Gm-Message-State: AOAM533R08S8NL+1ReSYzhdwf0QH+/4kV0pUQ+0X8qiGc9VLprIQzQyl
+        jNy0n/ZtWF+4Ze2lP/Pnm6iemg==
+X-Google-Smtp-Source: ABdhPJxbz1uomQZnioarVABqV3L+IGQZFx3lXkxNbJZJrcgnEuUdljiCLjtxg/f6IbAHcTmWTaan+A==
+X-Received: by 2002:a17:906:380b:: with SMTP id v11mr23826856ejc.183.1615811649657;
+        Mon, 15 Mar 2021 05:34:09 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id p3sm7155128ejd.7.2021.03.15.05.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 05:34:09 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
+Subject: [PATCH v2 1/2] media: staging/intel-ipu3: Fix memory leak in imu_fmt
+Date:   Mon, 15 Mar 2021 13:34:05 +0100
+Message-Id: <20210315123406.1523607-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315031050.F13F264E2E@mail.kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 11:10:50PM -0400, Sasha Levin wrote:
-> This is a note to let you know that I've just added the patch titled
-> 
->     net: bonding: fix error return code of bond_neigh_init()
-> 
-> to the 5.11-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> 
-> The filename of the patch is:
->      net-bonding-fix-error-return-code-of-bond_neigh_init.patch
-> and it can be found in the queue-5.11 subdirectory.
-> 
-> If you, or anyone else, feels it should not be added to the stable tree,
-> please let <stable@vger.kernel.org> know about it.
+We are losing the reference to an allocated memory if try. Change the
+order of the check to avoid that.
 
-Your scripts are not cc:ing everyone on the s-o-b: chain of a patch :(
+Cc: stable@vger.kernel.org
+Fixes: 6d5f26f2e045 ("media: staging/intel-ipu3-v4l: reduce kernel stack usage")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Anyway, dropping this as I already added and then dropped it as it is
-being reverted.
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 60aa02eb7d2a..35a74d99322f 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -693,6 +693,13 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
+ 		if (inode == IMGU_NODE_STAT_3A || inode == IMGU_NODE_PARAMS)
+ 			continue;
+ 
++		/* CSS expects some format on OUT queue */
++		if (i != IPU3_CSS_QUEUE_OUT &&
++		    !imgu_pipe->nodes[inode].enabled) {
++			fmts[i] = NULL;
++			continue;
++		}
++
+ 		if (try) {
+ 			fmts[i] = kmemdup(&imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp,
+ 					  sizeof(struct v4l2_pix_format_mplane),
+@@ -705,10 +712,6 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
+ 			fmts[i] = &imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp;
+ 		}
+ 
+-		/* CSS expects some format on OUT queue */
+-		if (i != IPU3_CSS_QUEUE_OUT &&
+-		    !imgu_pipe->nodes[inode].enabled)
+-			fmts[i] = NULL;
+ 	}
+ 
+ 	if (!try) {
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
-thanks,
-
-greg k-h
