@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BCE33B350
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A32433B354
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhCONH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:07:57 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:40427 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhCONHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:07:46 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DzcCb4rHxz9tyRp;
-        Mon, 15 Mar 2021 14:07:39 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id yz-xw_o-N3tU; Mon, 15 Mar 2021 14:07:39 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzcCb3JYXz9tyRk;
-        Mon, 15 Mar 2021 14:07:39 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B50C58B778;
-        Mon, 15 Mar 2021 14:07:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nBPpXzvkFeHZ; Mon, 15 Mar 2021 14:07:44 +0100 (CET)
-Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7E56B8B776;
-        Mon, 15 Mar 2021 14:07:44 +0100 (CET)
-Subject: Re: Build regressions/improvements in v5.12-rc3
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20210315104409.1598822-1-geert@linux-m68k.org>
- <CAMuHMdVJFprsj9njwv13jWTBELuq8RcXOmR7AoR9dqDdydLcNQ@mail.gmail.com>
- <2c123f94-ceae-80c0-90e2-21909795eb76@csgroup.eu>
- <CAMuHMdUMjN9TW-ggAgOtj3V36kzNCfoG5o-Bcj=Lk9diJciS=g@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <561e4ab3-b2ec-849c-c1c6-38804cf7977e@csgroup.eu>
-Date:   Mon, 15 Mar 2021 14:07:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229787AbhCONJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhCONI7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:08:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF0FC06174A;
+        Mon, 15 Mar 2021 06:08:58 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so14745416pjb.2;
+        Mon, 15 Mar 2021 06:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WRJEvr70IzHCqubocLMuXrvU7JHp9bq9qzJ0p02omVs=;
+        b=onjuFLPSKxASfaF5eFOJ9UucCUGbo986h0gukKryrsy9dHjrZaG8/vninUMJIQLoCM
+         pZkS4QFR+4SJdIj9hVOUZGXCyusmTLOf9E9olDCSlFsFGXFOWBtQi/2aWZputxoGD5B6
+         nFEARzwYeEeSbZeoSGHBQUvgN+HfvAeIcgza7hSr3g5vr5N1Y3EIVFldQP9ny7Tw3bzj
+         sxUIp/otx86aAIqhx9fznfxzCd8dYkUXeK8wtonQdAcaT+mAtZoXCgW/vJpyOjpmp2q6
+         ukwCBECkpE5CzVpG4t7dsbyv2w7M75VSI4hxGW8rk8SR7m7oSLQBVqhuguEiNXmJqoBL
+         tuXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WRJEvr70IzHCqubocLMuXrvU7JHp9bq9qzJ0p02omVs=;
+        b=LaU+6gbRnIW3ULc169n/Pu0cPPBzfmTPmL/4exYqjQU8SddZesAl7JrurYK9bzeAUr
+         9f5bo+xAxvrRrTsc3lE8/CKWgWwuUUjaz0CKCLELHG5xMxmw/Aw0psHKe1tFPOouLqTM
+         FzTyYAuJQztu+Jyuut2X4SdX5uBKFwYhhKLRgWU3vXDZd0DGfjwoGAL0jFCLdjVSsCH0
+         0v/MnhjuRN6K/Ak3+ySlbl94flxhOVOZfkvXkLiYVwjipQIS09NGMqchJgudDD/mKQql
+         wahJBVnLENuFPL5M7kaNRhA5Ysgs2FXxzwm18F1N2n1EDksjPA7pWPa19zMuEzS5KdWh
+         V+nw==
+X-Gm-Message-State: AOAM530A26Z+z8qOmBE4N1FnlRAint1JmEMdl1d+spZJUlhAqwkk08TX
+        +ihZ9+sUgAGvQ00ymZTMZl4=
+X-Google-Smtp-Source: ABdhPJyW5zg56gpPIPanmhIsR7LtvfTLbkkJXUShLBoglHqsL3mpjiR1jUj1GendPoENubmigK/2Rg==
+X-Received: by 2002:a17:90a:a103:: with SMTP id s3mr12973213pjp.158.1615813738543;
+        Mon, 15 Mar 2021 06:08:58 -0700 (PDT)
+Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id d134sm13370955pfd.159.2021.03.15.06.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 06:08:58 -0700 (PDT)
+From:   Xiaofeng Cao <cxfcosmos@gmail.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, krzk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaofeng Cao <cxfcosmos@gmail.com>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>
+Subject: [PATCH] cpufreq:s5pv210:Fix typo issue
+Date:   Mon, 15 Mar 2021 21:08:55 +0800
+Message-Id: <20210315130855.9715-1-cxfcosmos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUMjN9TW-ggAgOtj3V36kzNCfoG5o-Bcj=Lk9diJciS=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+change 'freqency' to 'frequency'
+change 'accoriding' to 'according'
+change 'untile' to 'until'
+change 'souce' to 'source'
+change 'divier' to 'divider'
 
+Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+---
+ drivers/cpufreq/s5pv210-cpufreq.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Le 15/03/2021 à 12:02, Geert Uytterhoeven a écrit :
-> Hi Christophe,
-> 
-> On Mon, Mar 15, 2021 at 11:55 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 15/03/2021 à 11:49, Geert Uytterhoeven a écrit :
->>> On Mon, Mar 15, 2021 at 11:46 AM Geert Uytterhoeven
->>> <geert@linux-m68k.org> wrote:
->>>> JFYI, when comparing v5.12-rc3[1] to v5.12-rc2[3], the summaries are:
->>>>     - build errors: +2/-2
->>>
->>>> 2 error regressions:
->>>>     + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_248' declared with attribute error: BUILD_BUG failed:  => 320:38
->>>>     + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_249' declared with attribute error: BUILD_BUG failed:  => 320:38
->>>
->>> powerpc-gcc4.9/ppc64_book3e_allmodconfig
->>>
->>> So we traded implicit declaration errors:
->>>
->>>     - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
->>> error: implicit declaration of function 'disable_kernel_vsx'
->>> [-Werror=implicit-function-declaration]: 674:2 =>
->>>     - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
->>> error: implicit declaration of function 'enable_kernel_vsx'
->>> [-Werror=implicit-function-declaration]: 638:2 =>
->>>
->>> for compile-time assertions.
->>>
->>
->> You are missing https://github.com/linuxppc/linux/commit/eed5fae00593ab9d261a0c1ffc1bdb786a87a55a
-> 
-> Which is not part of v5.12-rc3.
-> 
+diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
+index 69786e5bbf05..72321c4507af 100644
+--- a/drivers/cpufreq/s5pv210-cpufreq.c
++++ b/drivers/cpufreq/s5pv210-cpufreq.c
+@@ -91,7 +91,7 @@ static DEFINE_MUTEX(set_freq_lock);
+ /* Use 800MHz when entering sleep mode */
+ #define SLEEP_FREQ	(800 * 1000)
+ 
+-/* Tracks if cpu freqency can be updated anymore */
++/* Tracks if cpu frequency can be updated anymore */
+ static bool no_cpufreq_access;
+ 
+ /*
+@@ -190,7 +190,7 @@ static u32 clkdiv_val[5][11] = {
+ 
+ /*
+  * This function set DRAM refresh counter
+- * accoriding to operating frequency of DRAM
++ * according to operating frequency of DRAM
+  * ch: DMC port number 0 or 1
+  * freq: Operating frequency of DRAM(KHz)
+  */
+@@ -378,7 +378,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+ 		/*
+ 		 * 6. Turn on APLL
+ 		 * 6-1. Set PMS values
+-		 * 6-2. Wait untile the PLL is locked
++		 * 6-2. Wait until the PLL is locked
+ 		 */
+ 		if (index == L0)
+ 			writel_relaxed(APLL_VAL_1000, S5P_APLL_CON);
+@@ -390,7 +390,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+ 		} while (!(reg & (0x1 << 29)));
+ 
+ 		/*
+-		 * 7. Change souce clock from SCLKMPLL(667Mhz)
++		 * 7. Change source clock from SCLKMPLL(667Mhz)
+ 		 * to SCLKA2M(200Mhz) in MFC_MUX and G3D MUX
+ 		 * (667/4=166)->(200/4=50)Mhz
+ 		 */
+@@ -439,7 +439,7 @@ static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+ 	}
+ 
+ 	/*
+-	 * L4 level need to change memory bus speed, hence onedram clock divier
++	 * L4 level need to change memory bus speed, hence onedram clock divider
+ 	 * and memory refresh parameter should be changed
+ 	 */
+ 	if (bus_speed_changing) {
+-- 
+2.25.1
 
-Yes, one step at a time :)
-
-When I did the first fix, I tested it with GCC 10 and it worked.
-
-It is only afterwards that I saw the problem in kisskb with gcc 4.9, hence the second fix.
-
-Christophe
