@@ -2,158 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DFB33BDF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BDD33BE74
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237717AbhCOOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
+        id S239575AbhCOOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233979AbhCOOCq (ORCPT
+        with ESMTP id S234686AbhCOOEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:46 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C35C06174A;
-        Mon, 15 Mar 2021 07:02:44 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id 61so5753457wrm.12;
-        Mon, 15 Mar 2021 07:02:44 -0700 (PDT)
+        Mon, 15 Mar 2021 10:04:50 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BA8C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:04:49 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z1so17479158edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=k0vn3g0iM9tzN5zs4VgW3rT5nVcEHeJKUw8PGKNq8mo=;
-        b=mtxAx5cWs61UGwBM7+LNzs509fgwmcXyFtwBhcyQOKx7rxl7Ym6jPE4w83BBHZHbAV
-         dzDpQwf5PYgEsmM1lunArSteDuIRyRT43+3RwcSEkDtTdXoa7iazy9PbnmY6q/7Xj+HT
-         NWN149YVOwQ0s285t18yUN5uL0jV8wdZZP/+6ICVKJnUjLfQJJMgeqt2S/1yK3UwDNjV
-         tYmg7NFWeX5ibxRGg4MWGSIVchnUfZaC+Zqn6Ymk8+nba/YAB6U02F1JqyaJwjl48P4r
-         G40UbXv1xNyTsv970hy5BHpagnp+2Mg5Mw6Atx/0QG+TSyIh7AD27kdx0QYS0LKfMXIc
-         gi7g==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ThaXMGEpT6BnTHGat0ZY25xQtwOn6HEUtZOw4cfytPM=;
+        b=vQw9MAwolIYek7+ndVUplRVJwQfFwA/itaZndNXUFLqncmbkCsZV0HRj91qKH22QOn
+         3km5Tt5dMddu2eIITvleSUes6exzHF93pgKloihb6ZC8UsV4UNs9pyNDWEtOjJ7ZmHkN
+         Lgj60icPYdPDARh8uNeONWM8vViBFc91XpMqcZBvS4H4XkrqjRG1ewS6o7nUpECstaJt
+         +4LR9WaqUSPPph8X9XS8Jnsne4+iTMcPVTThmZSVbLDIx9XFev6fOpawyYoqkN9AfUDR
+         Y7LiGOogWMS0b4CPX2eUWmAGlJO91imP2/efnVwqZQJg7TSfy1D7aD6jQDQ3qqAqPp2Q
+         yJKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=k0vn3g0iM9tzN5zs4VgW3rT5nVcEHeJKUw8PGKNq8mo=;
-        b=UeOVaCHTF/Xp2As0k1BVq1zrenw6puvf1h5V8CcjBagxkc1YvQh2jI6/URlob39A13
-         M0cnd29AHHgjO+5RZ85MT4xsxIWA89CyrMhjw75C+VlaEsTaatSeTzhwvIQ02Gy40hqB
-         oSsxwrtfyh1LIk2n2zJBJV/EiJ2F/xmXyAYt1z4BD41a6dx9LxUrAAvTZDxPpBFaeXBw
-         HWzLKjCRg2olkbODrzSa3pKSa2A5hzO3R43EPS5eZ3uwo53LARWDoD6rpohiWCB0fC+2
-         RStIkj8zBH9P0GDTeCAm3fxVZSvRP5vfTCzqQyuq2hy4l+hB5udOtcnsmBZN3SB9IeHB
-         xdXQ==
-X-Gm-Message-State: AOAM530yu4TMU1SEtp+AjgO2H1FShmrjtxHxexVLhvggmXaLhHubIk6l
-        dAl/iHqksqmOsNIbi0bRqJg=
-X-Google-Smtp-Source: ABdhPJx28lC8vTBtYr2kHoXQJipgXe7H1XrROX3f9kSupKxCshYAGQmCEA/JKVPb+O6qsghAFI/jNA==
-X-Received: by 2002:a5d:6a49:: with SMTP id t9mr28200782wrw.131.1615816961722;
-        Mon, 15 Mar 2021 07:02:41 -0700 (PDT)
-Received: from macbook-pro-alvaro.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id b131sm12689628wmb.34.2021.03.15.07.02.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Mar 2021 07:02:41 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <YEaQdXwrmVekXp4G@lunn.ch>
-Date:   Mon, 15 Mar 2021 15:02:37 +0100
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D39D163A-C6B3-4B66-B650-8FF0A06EF7A2@gmail.com>
-References: <20210308184102.3921-1-noltari@gmail.com>
- <20210308184102.3921-3-noltari@gmail.com> <YEaQdXwrmVekXp4G@lunn.ch>
-To:     Andrew Lunn <andrew@lunn.ch>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ThaXMGEpT6BnTHGat0ZY25xQtwOn6HEUtZOw4cfytPM=;
+        b=lWbBiQhx0j9CStG1y78j6aQe3k/GLNgDNxXVkQopMmYH6/4GwksT9sbbteweU1dhkp
+         RmQHwuU0/2oEyVDe72Jij/OAoxFv42osrLesiW0I6W35ynqP60HvwT5meDWxdmkGRI1k
+         oZTnrbo49ZdItWeOeIVp3oU+X0RcvkhDKpqqU0FJRLBmXmSymBP/7uGXn9fF5yK4P1tb
+         16vS/dhblq7+MgnjZcyKVBXA5KnfRvIO0IIXTchghNkGIUQDt1JtBxsXfHpZj/CEw0RQ
+         Lf0wUeQveUWPN7AfyJ2y9AY67ceWZn4mYMkFEvkT5ESex90FcJq9l/umBQ3KTELjVMOx
+         NRBQ==
+X-Gm-Message-State: AOAM530fmf39g5A55HA0NoiP+P9ZMJOgbh9+ad+f4Ao3mFSfrsaqg4kU
+        EYEElJn3CmHHMsYmon6/hW83cVYFGGdxXdONZgWJxQ==
+X-Google-Smtp-Source: ABdhPJypbu2r2UdJhsCFDkhRAXSi6AGamZMeyLroxMvtbDbCrrqbUuuohfQEDfdtdoH9qQlaLYQjJkxvPbvQMsonGQ4=
+X-Received: by 2002:a05:6402:22f6:: with SMTP id dn22mr29613666edb.214.1615817088622;
+ Mon, 15 Mar 2021 07:04:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
+ <YE8z+ohM9abBs9SD@smile.fi.intel.com> <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
+In-Reply-To: <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 15 Mar 2021 15:04:37 +0100
+Message-ID: <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware node
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Mon, Mar 15, 2021 at 1:50 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
+> > > On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > > Unfortunately while this may fix the particular use-case on STM32, it
+> > > breaks all other users as the 'gpio-line-names' property doesn't live
+> > > on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
+> > >
+> > > How about we first look for this property on the latter and only if
+> > > it's not present descend down to the former fwnode?
+> >
+> > Oops, I have tested on x86 and it worked the same way.
+> >
+> > Lemme check this, but I think the issue rather in ordering when we apply fwnode
+> > to the newly created device and when we actually retrieve gpio-line-names
+> > property.
+>
+> Hmm... I can't see how it's possible can be. Can you provide a platform name
+> and pointers to the DTS that has been broken by the change?
+>
 
-> El 8 mar 2021, a las 22:00, Andrew Lunn <andrew@lunn.ch> escribi=C3=B3:
->=20
->> +static int bcm6368_mdiomux_probe(struct platform_device *pdev)
->> +{
->> +	struct bcm6368_mdiomux_desc *md;
->> +	struct mii_bus *bus;
->> +	struct resource *res;
->> +	int rc;
->> +
->> +	md =3D devm_kzalloc(&pdev->dev, sizeof(*md), GFP_KERNEL);
->> +	if (!md)
->> +		return -ENOMEM;
->> +	md->dev =3D &pdev->dev;
->> +
->> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	if (!res)
->> +		return -EINVAL;
->> +
->> +	/* Just ioremap, as this MDIO block is usually integrated into =
-an
->> +	 * Ethernet MAC controller register range
->> +	 */
->> +	md->base =3D devm_ioremap(&pdev->dev, res->start, =
-resource_size(res));
->> +	if (!md->base) {
->> +		dev_err(&pdev->dev, "failed to ioremap register\n");
->> +		return -ENOMEM;
->> +	}
->> +
->> +	md->mii_bus =3D devm_mdiobus_alloc(&pdev->dev);
->> +	if (!md->mii_bus) {
->> +		dev_err(&pdev->dev, "mdiomux bus alloc failed\n");
->> +		return ENOMEM;
->> +	}
->> +
->> +	bus =3D md->mii_bus;
->> +	bus->priv =3D md;
->> +	bus->name =3D "BCM6368 MDIO mux bus";
->> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%d", pdev->name, =
-pdev->id);
->> +	bus->parent =3D &pdev->dev;
->> +	bus->read =3D bcm6368_mdiomux_read;
->> +	bus->write =3D bcm6368_mdiomux_write;
->> +	bus->phy_mask =3D 0x3f;
->> +	bus->dev.of_node =3D pdev->dev.of_node;
->> +
->> +	rc =3D mdiobus_register(bus);
->> +	if (rc) {
->> +		dev_err(&pdev->dev, "mdiomux registration failed\n");
->> +		return rc;
->> +	}
->=20
-> So this is different to all the other mux drivers. Normally there is
-> an MDIO driver. And there is a mux driver. Two separate drivers. The
-> mux driver uses a phandle to reference the MDIO driver. Here we have
-> both in one driver.
->=20
-> Does this MDIO bus device exist as a standalone device? Without the
-> mux? If silicon does exist like that, having two separate drivers
-> would be better.
+I noticed it with gpio-mockup (libgpiod tests failed on v5.12-rc3) and
+the WiP gpio-sim - but it's the same on most DT platforms. The node
+that contains the `gpio-line-names` is the one associated with the
+platform device passed to the GPIO driver. The gpiolib then creates
+another struct device that becomes the child of that node but it
+doesn't copy the parent's properties to it (nor should it).
 
-BCM6368 (and newer) SoCs have an integrated ethernet switch controller =
-with dedicated internal phys, but it also supports connecting to =
-external phys not integrated in the internal switch.
-Ports 0-3 are internal, ports 4-7 are external and can be connected to =
-external switches or phys and port 8 is the CPU.
-This MDIO bus device is integrated in the BCM63xx switch registers, =
-which corresponds to the same registers present in =
-drivers/net/dsa/b53/b53_regs.h.
-As you can see in the source code, registers are the same for the =
-internal and external bus. The only difference is that if MDIOC_EXT_MASK =
-(bit 16) is set, the MDIO bus accessed will be the external, and on the =
-contrary, if bit 16 isn=E2=80=99t set, the MDIO bus accessed will be the =
-internal one.
+Every driver that reads device properties does it from the parent
+device, not the one in gdev - whether it uses of_, fwnode_ or generic
+device_ properties.
 
-I don=E2=80=99t know if this answers your question, but I think that =
-adding it as mdiomux is the way to go.
-
->=20
->     Andrew
-
-Best regards,
-=C3=81lvaro.=
+Bartosz
