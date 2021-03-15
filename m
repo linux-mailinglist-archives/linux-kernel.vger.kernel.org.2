@@ -2,238 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D755833AE23
+	by mail.lfdr.de (Postfix) with ESMTP id 8B29133AE22
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhCOI7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:59:18 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:38990 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhCOI7G (ORCPT
+        id S229714AbhCOI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:59:16 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36512 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229649AbhCOI7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:59:06 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12F8wkxbF027002, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12F8wkxbF027002
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 15 Mar 2021 16:58:46 +0800
-Received: from localhost.localdomain (172.21.132.99) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 15 Mar 2021 16:58:45 +0800
-From:   <hildawu@realtek.com>
-To:     <marcel@holtmann.org>
-CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <tientzu@chromium.org>,
-        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
-        <kidman@realtek.com>
-Subject: [PATCH] Bluetooth: hci_h5: btrtl: Add quirk for keep power during suspend/resume for specific devices
-Date:   Mon, 15 Mar 2021 16:58:40 +0800
-Message-ID: <20210315085840.4424-1-hildawu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Mar 2021 04:59:03 -0400
+X-UUID: 82d7528d58eb468f880f50929af6b1df-20210315
+X-UUID: 82d7528d58eb468f880f50929af6b1df-20210315
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 726664109; Mon, 15 Mar 2021 16:58:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 15 Mar 2021 16:58:57 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Mar 2021 16:58:57 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <daniel@0x0f.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+CC:     <daniel@thingy.jp>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <maz@kernel.org>, <tglx@linutronix.de>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v2] irqchip/irq-mst: Support polarity configuration
+Date:   Mon, 15 Mar 2021 16:58:55 +0800
+Message-ID: <20210315085855.23730-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAFr9PXmwp5FQP8dOZed0siz76qj4Lo-ytt=nt+1GR5qAFtEr9g@mail.gmail.com>
+References: <CAFr9PXmwp5FQP8dOZed0siz76qj4Lo-ytt=nt+1GR5qAFtEr9g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [172.21.132.99]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-TM-SNTS-SMTP: 5007523079440117CCE27AD2F0035B5726B867D344927A1A117F87F9928E1A362000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hildawu <hildawu@realtek.com>
+From: Daniel Palmer <daniel@0x0f.com>
 
-RTL8822C devices support BT wakeup Host. Add a quirk for these specific
-devices did not power off during suspend and resume.
-By this change, if the Host support that received BT device signal then
-it can be wakeup.
+> On Fri, 12 Mar 2021 at 01:11, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> > Why irq could accept either?
+> 
+> As the irq intc has no way to clear it's triggered state (no eoi) it
+> must just pass the signal through instead of latching it?
+> Otherwise it would latch once and never again right? That's what I
+> really didn't understand.
+> If it just passes the signal through and maybe inverts it then the GIC
+> can use edge or level I think.
 
-Signed-off-by: hildawu <hildawu@realtek.com>
----
- drivers/bluetooth/btrtl.c   | 36 ------------------------------------
- drivers/bluetooth/btrtl.h   | 35 +++++++++++++++++++++++++++++++++++
- drivers/bluetooth/hci_h5.c  | 35 ++++++++++++++++++++++++-----------
- include/net/bluetooth/hci.h |  9 +++++++++
- 4 files changed, 68 insertions(+), 47 deletions(-)
+Yes, but if we accidentally loss a irq and the interrupt is edge triggered which is
+latch to level by mst-intc, we will miss all the follow irqs because the driver
+didn't reset the interrupt status.
+Actually, I'm not sure if it's possible.
+But even if it's not, I think use level for parent GIC can better match
+the hardware signal processing.
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index e7fe5fb22753..94d1e7885aee 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -38,42 +38,6 @@
- 	.hci_ver = (hciv), \
- 	.hci_bus = (bus)
- 
--enum btrtl_chip_id {
--	CHIP_ID_8723A,
--	CHIP_ID_8723B,
--	CHIP_ID_8821A,
--	CHIP_ID_8761A,
--	CHIP_ID_8822B = 8,
--	CHIP_ID_8723D,
--	CHIP_ID_8821C,
--	CHIP_ID_8822C = 13,
--	CHIP_ID_8761B,
--	CHIP_ID_8852A = 18,
--};
--
--struct id_table {
--	__u16 match_flags;
--	__u16 lmp_subver;
--	__u16 hci_rev;
--	__u8 hci_ver;
--	__u8 hci_bus;
--	bool config_needed;
--	bool has_rom_version;
--	char *fw_name;
--	char *cfg_name;
--};
--
--struct btrtl_device_info {
--	const struct id_table *ic_info;
--	u8 rom_version;
--	u8 *fw_data;
--	int fw_len;
--	u8 *cfg_data;
--	int cfg_len;
--	bool drop_fw;
--	int project_id;
--};
--
- static const struct id_table ic_id_table[] = {
- 	/* 8723A */
- 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
-diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
-index 2a582682136d..0fa38c116762 100644
---- a/drivers/bluetooth/btrtl.h
-+++ b/drivers/bluetooth/btrtl.h
-@@ -12,6 +12,41 @@
- #define rtl_dev_info(dev, fmt, ...) bt_dev_info(dev, "RTL: " fmt, ##__VA_ARGS__)
- #define rtl_dev_dbg(dev, fmt, ...) bt_dev_dbg(dev, "RTL: " fmt, ##__VA_ARGS__)
- 
-+enum btrtl_chip_id {
-+	CHIP_ID_8723A,
-+	CHIP_ID_8723B,
-+	CHIP_ID_8821A,
-+	CHIP_ID_8761A,
-+	CHIP_ID_8822B = 8,
-+	CHIP_ID_8723D,
-+	CHIP_ID_8821C,
-+	CHIP_ID_8822C = 13,
-+	CHIP_ID_8761B,
-+	CHIP_ID_8852A = 18,
-+};
-+
-+struct id_table {
-+	__u16 match_flags;
-+	__u16 lmp_subver;
-+	__u16 hci_rev;
-+	__u8 hci_ver;
-+	__u8 hci_bus;
-+	bool config_needed;
-+	bool has_rom_version;
-+	char *fw_name;
-+	char *cfg_name;
-+};
-+
-+struct btrtl_device_info {
-+	const struct id_table *ic_info;
-+	u8 rom_version;
-+	u8 *fw_data;
-+	int fw_len;
-+	u8 *cfg_data;
-+	int cfg_len;
-+	int project_id;
-+};
-+
- struct btrtl_device_info;
- 
- struct rtl_download_cmd {
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 27e96681d583..1ca4ff89ea14 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -909,7 +909,15 @@ static int h5_btrtl_setup(struct h5 *h5)
- 	/* Enable controller to do both LE scan and BR/EDR inquiry
- 	 * simultaneously.
- 	 */
--	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
-+	switch (btrtl_dev->project_id) {
-+	case CHIP_ID_8822C:
-+	case CHIP_ID_8852A:
-+		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
-+		set_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks);
-+		break;
-+	default:
-+		break;
-+	}
- 
- out_free:
- 	btrtl_free(btrtl_dev);
-@@ -945,8 +953,11 @@ static void h5_btrtl_close(struct h5 *h5)
- static int h5_btrtl_suspend(struct h5 *h5)
- {
- 	serdev_device_set_flow_control(h5->hu->serdev, false);
--	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
--	gpiod_set_value_cansleep(h5->enable_gpio, 0);
-+
-+	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
-+		gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-+		gpiod_set_value_cansleep(h5->enable_gpio, 0);
-+	}
- 	return 0;
- }
- 
-@@ -972,17 +983,19 @@ static void h5_btrtl_reprobe_worker(struct work_struct *work)
- 
- static int h5_btrtl_resume(struct h5 *h5)
- {
--	struct h5_btrtl_reprobe *reprobe;
-+	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
-+		struct h5_btrtl_reprobe *reprobe;
- 
--	reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
--	if (!reprobe)
--		return -ENOMEM;
-+		reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
-+		if (!reprobe)
-+			return -ENOMEM;
- 
--	__module_get(THIS_MODULE);
-+		__module_get(THIS_MODULE);
- 
--	INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
--	reprobe->dev = get_device(&h5->hu->serdev->dev);
--	queue_work(system_long_wq, &reprobe->work);
-+		INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
-+		reprobe->dev = get_device(&h5->hu->serdev->dev);
-+		queue_work(system_long_wq, &reprobe->work);
-+	}
- 	return 0;
- }
- 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index ba2f439bc04d..2e88381b4a58 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -246,6 +246,15 @@ enum {
- 	 * HCI after resume.
- 	 */
- 	HCI_QUIRK_NO_SUSPEND_NOTIFIER,
-+
-+	/* When this quirk is set, the controller does not power off
-+	 * during suspend and resume. This mechanism lets BT devices wake
-+	 * the Host up if the Host and chips support.
-+	 *
-+	 * This quirk can be set before hci_register_dev is called or
-+	 * during the hdev->setup vendor callback.
-+	 */
-+	HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED,
- };
- 
- /* HCI device flags */
--- 
-2.17.1
+> 
+> > So maybe we don't need to do extra work to check the type for an fiq or irq controller?
+> 
+> I think without the eoi callback for the fiq it would only ever fire
+> once. I don't think doing the same eoi callback for the irq intc hurts
+> anything but it wouldn't do anything either from what I can tell.
+
+The reason why I don't do the same eoi callback for irq intc is that
+it's not ont spec.
+And some of MTK TV SoC use it for certain debug function which
+may cause unexpected result.
+
+> 
+> > And I will update the patch as following:
+> 
+> I think maybe Marc or someone else that knows better than I do should
+> comment on what needs to happen.
+> My input is just that the fiq controller seems to trigger on an edge,
+> holds it's signal to the GIC high until eoi happens and then only
+> triggers again on an edge.
+> I guess it doesn't matter if it's an edge or level if that's how it
+> works but you'd only get one interrupt out of it per edge even if
+> configured as a level interrupt.
+> 
+> The main thing I didn't want was filtering out edge interrupts
+> entirely as that breaks using edge interrupts with gpios i.e. using
+> gpiomon.
+> With the changes to set the polarity it can now detect rising or
+> falling edge gpio events. :)
+
+Thanks for your feedback and I will send patch v4 which includes the
+change I proposed in this thread.
 
