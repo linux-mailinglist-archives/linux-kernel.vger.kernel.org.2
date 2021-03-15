@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A60733BE1D
+	by mail.lfdr.de (Postfix) with ESMTP id E0B0133BE1E
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238734AbhCOOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49656 "EHLO mail.kernel.org"
+        id S238764AbhCOOmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234382AbhCOODR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC85464EEF;
-        Mon, 15 Mar 2021 14:03:16 +0000 (UTC)
+        id S234404AbhCOODT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D2A64E83;
+        Mon, 15 Mar 2021 14:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816997;
-        bh=+U3DPYnaAU4BV6e5NzWqBd35UHJisgfIAbZ7CIwD1+8=;
+        s=korg; t=1615816999;
+        bh=P2QOQYIZikTPjf1XFpcVc68IDWfLnmcVV5erqVDP8Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfz2K/LAXswREbADhdJiO0t7ALUJLh6ZssfOgwggqiaAETfhrZ6wEK7huXHoaxFGv
-         PKzXFyRMjH2RjwpxWdqNjrriSXMxa9sQcMh+sXGYmSaWyKHiOcv6Z5xvYJAbx2/dDu
-         w4U+O46k7vCQKvnEtsO1krm7zmVkgSNMlZ0mGlMU=
+        b=Xi87fNPxJ6R6XVBJXYxvL1aal7miuYdIvRR/ixVVJ3Mt28FYocmXzeufELNtwufm4
+         w9WiZhKe6JjfaqppeRBjektVR7avOMdlCQTCLflFHiuljdpYGr+ZGVCs9uFr/9rzkx
+         y/8JNut+cDQBcA7a/0GruUw9eyKH9P1LglSFVxHA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.10 238/290] staging: comedi: me4000: Fix endian problem for AI command data
-Date:   Mon, 15 Mar 2021 14:55:31 +0100
-Message-Id: <20210315135550.029183986@linuxfoundation.org>
+Subject: [PATCH 5.10 239/290] staging: comedi: pcl711: Fix endian problem for AI command data
+Date:   Mon, 15 Mar 2021 14:55:32 +0100
+Message-Id: <20210315135550.070497091@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,34 +42,34 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Ian Abbott <abbotti@mev.co.uk>
 
-commit b39dfcced399d31e7c4b7341693b18e01c8f655e upstream.
+commit a084303a645896e834883f2c5170d044410dfdb3 upstream.
 
 The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the calls to
-`comedi_buf_write_samples()` are passing the address of a 32-bit integer
+use Comedi's 16-bit sample format.  However, the call to
+`comedi_buf_write_samples()` is passing the address of a 32-bit integer
 variable.  On bigendian machines, this will copy 2 bytes from the wrong
 end of the 32-bit value.  Fix it by changing the type of the variable
 holding the sample value to `unsigned short`.
 
-Fixes: de88924f67d1 ("staging: comedi: me4000: use comedi_buf_write_samples()")
+Fixes: 1f44c034de2e ("staging: comedi: pcl711: use comedi_buf_write_samples()")
 Cc: <stable@vger.kernel.org> # 3.19+
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-8-abbotti@mev.co.uk
+Link: https://lore.kernel.org/r/20210223143055.257402-9-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/me4000.c |    2 +-
+ drivers/staging/comedi/drivers/pcl711.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/me4000.c
-+++ b/drivers/staging/comedi/drivers/me4000.c
-@@ -924,7 +924,7 @@ static irqreturn_t me4000_ai_isr(int irq
+--- a/drivers/staging/comedi/drivers/pcl711.c
++++ b/drivers/staging/comedi/drivers/pcl711.c
+@@ -184,7 +184,7 @@ static irqreturn_t pcl711_interrupt(int
+ 	struct comedi_device *dev = d;
  	struct comedi_subdevice *s = dev->read_subdev;
- 	int i;
- 	int c = 0;
--	unsigned int lval;
-+	unsigned short lval;
+ 	struct comedi_cmd *cmd = &s->async->cmd;
+-	unsigned int data;
++	unsigned short data;
  
- 	if (!dev->attached)
- 		return IRQ_NONE;
+ 	if (!dev->attached) {
+ 		dev_err(dev->class_dev, "spurious interrupt\n");
 
 
