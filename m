@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE6833B556
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE3A33B57D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhCONyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55730 "EHLO mail.kernel.org"
+        id S231528AbhCONye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhCONxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 388A364EE3;
-        Mon, 15 Mar 2021 13:53:11 +0000 (UTC)
+        id S230263AbhCONxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0C8164EEC;
+        Mon, 15 Mar 2021 13:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816392;
-        bh=CXDrykB2YTXWYcveyql7HCHu+NhUEXIlNh+/o7fFvTg=;
+        s=korg; t=1615816402;
+        bh=CZ7on+YJf3WTcr/rsqN6YG/1VWuXArhhpbw7a5u7HUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GtCYqdgUpPG2NqOAuc63B4y0oPHqqEovv0W0U8ow3CRBlXjgUxCBJxA2Ve7Oy5J4H
-         UG7POpW0bXPzl274KNbo582KSZZf6CuBtmcVOdqQeIN1AYfhQPK/wM9cnmI0TVLC0H
-         wnz/6CUqGDpSqWeYtUx8pHj4utAKLEEP3vQXCy8U=
+        b=lTRrVQGer6lK/pim2FPBgUCA8mf4uUm2dgdQaAIk3RgXHiu6e+XmlJVPRDMWnJTjR
+         7tD/g/f5Za94Gc2LbRICi/E08bXDw/Qh0GE7gmhq5Ku2ls2pe2pACD4CrQ4NWq+GO+
+         9FBFBivVDvh+a422sgsJ3hByvp1JXJnTS4+ULI8U=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Heyne <mheyne@amazon.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 13/78] net: sched: avoid duplicates in classes dump
-Date:   Mon, 15 Mar 2021 14:51:36 +0100
-Message-Id: <20210315135212.505232270@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 23/75] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Mon, 15 Mar 2021 14:51:37 +0100
+Message-Id: <20210315135209.006879358@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +42,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maximilian Heyne <mheyne@amazon.de>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit bfc2560563586372212b0a8aeca7428975fa91fe upstream.
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-This is a follow up of commit ea3274695353 ("net: sched: avoid
-duplicates in qdisc dump") which has fixed the issue only for the qdisc
-dump.
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-The duplicate printing also occurs when dumping the classes via
-  tc class show dev eth0
-
-Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_api.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -1789,7 +1789,7 @@ static int tc_dump_tclass_qdisc(struct Q
- 
- static int tc_dump_tclass_root(struct Qdisc *root, struct sk_buff *skb,
- 			       struct tcmsg *tcm, struct netlink_callback *cb,
--			       int *t_p, int s_t)
-+			       int *t_p, int s_t, bool recur)
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index f113fcd781d8..486f0d4f9aee 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -738,7 +738,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
  {
- 	struct Qdisc *q;
- 	int b;
-@@ -1800,7 +1800,7 @@ static int tc_dump_tclass_root(struct Qd
- 	if (tc_dump_tclass_qdisc(root, skb, tcm, cb, t_p, s_t) < 0)
- 		return -1;
- 
--	if (!qdisc_dev(root))
-+	if (!qdisc_dev(root) || !recur)
- 		return 0;
- 
- 	hash_for_each(qdisc_dev(root)->qdisc_hash, b, q, hash) {
-@@ -1828,13 +1828,13 @@ static int tc_dump_tclass(struct sk_buff
- 	s_t = cb->args[0];
- 	t = 0;
- 
--	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t) < 0)
-+	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t, true) < 0)
- 		goto done;
- 
- 	dev_queue = dev_ingress_queue(dev);
- 	if (dev_queue &&
- 	    tc_dump_tclass_root(dev_queue->qdisc_sleeping, skb, tcm, cb,
--				&t, s_t) < 0)
-+				&t, s_t, false) < 0)
- 		goto done;
- 
- done:
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
+-- 
+2.30.1
+
 
 
