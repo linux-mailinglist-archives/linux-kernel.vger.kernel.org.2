@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F8433BBC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8F833BB57
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhCOOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
+        id S236675AbhCOOPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:15:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 979B064F12;
-        Mon, 15 Mar 2021 13:59:37 +0000 (UTC)
+        id S231886AbhCON7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C840264F18;
+        Mon, 15 Mar 2021 13:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816778;
-        bh=Cx7Z6Teu877+PcieRFJ0pOYWFpG8cXlCbz19Qlmfev0=;
+        s=korg; t=1615816729;
+        bh=mK0tMNh33YcS0r2sDesU5oGkBtHFM6Cp/KDQ9bx6s/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bv4NxLYgDGJ87ttc2Iz8HWW32FnwG66joAKQEOpecE61QcH8LV5VWI4pByhbCtzy8
-         szY0cEMAaAGP76+FXqBQionbEOzoMi9yvAOEohjEHVOTZZIunTpWKa35T8g1Rnjkez
-         zNdVwjPDfJbj+K+xVyyDtjprSCCerXVXyvpz1rWo=
+        b=OTCnehWrg6dBqZvTHcK74zADwzq9gq6W3wfVJ8350PtjsUlSwLr6BeGXADvh/6EAs
+         vGWDK9DmZmMA6CV/3jAGxPLcWYmZDrleYUoYdCV3Y+zgpTX9KqOZiuu84DRfUQeQIG
+         CFNcWimesucNK2HcSOR/PW5KxYkSGq4P+vbhYSwk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 061/120] ALSA: hda: Drop the BATCH workaround for AMD controllers
-Date:   Mon, 15 Mar 2021 14:56:52 +0100
-Message-Id: <20210315135721.977471732@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 23/95] net: davicom: Fix regulator not turned off on driver removal
+Date:   Mon, 15 Mar 2021 14:56:53 +0100
+Message-Id: <20210315135741.038837179@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 28e96c1693ec1cdc963807611f8b5ad400431e82 upstream.
+commit cf9e60aa69ae6c40d3e3e4c94dd6c8de31674e9b upstream.
 
-The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
-AMD controller (1022:1457)") introduced a few workarounds for the
-recent AMD HD-audio controller, and one of them is the forced BATCH
-PCM mode so that PulseAudio avoids the timer-based scheduling.  This
-was thought to cover for some badly working applications, but this
-actually worsens for more others.  In total, this wasn't a good idea
-to enforce it.
+We must disable the regulator that was enabled in the probe function.
 
-This is a partial revert of the commit above for dropping the PCM
-BATCH enforcement part to recover from the regression again.
-
-Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210308160726.22930-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_controller.c |    7 -------
- 1 file changed, 7 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -624,13 +624,6 @@ static int azx_pcm_open(struct snd_pcm_s
- 				     20,
- 				     178000000);
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -143,6 +143,8 @@ struct board_info {
+ 	u32		wake_state;
  
--	/* by some reason, the playback stream stalls on PulseAudio with
--	 * tsched=1 when a capture stream triggers.  Until we figure out the
--	 * real cause, disable tsched mode by telling the PCM info flag.
--	 */
--	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
--		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
--
- 	if (chip->align_buffer_size)
- 		/* constrain buffer sizes to be multiple of 128
- 		   bytes. This is more efficient in terms of memory
+ 	int		ip_summed;
++
++	struct regulator *power_supply;
+ };
+ 
+ /* debug code */
+@@ -1492,6 +1494,8 @@ dm9000_probe(struct platform_device *pde
+ 
+ 	db->dev = &pdev->dev;
+ 	db->ndev = ndev;
++	if (!IS_ERR(power))
++		db->power_supply = power;
+ 
+ 	spin_lock_init(&db->lock);
+ 	mutex_init(&db->addr_lock);
+@@ -1781,10 +1785,13 @@ static int
+ dm9000_drv_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct board_info *dm = to_dm9000_board(ndev);
+ 
+ 	unregister_netdev(ndev);
+-	dm9000_release_board(pdev, netdev_priv(ndev));
++	dm9000_release_board(pdev, dm);
+ 	free_netdev(ndev);		/* free device structure */
++	if (dm->power_supply)
++		regulator_disable(dm->power_supply);
+ 
+ 	dev_dbg(&pdev->dev, "released and freed device\n");
+ 	return 0;
 
 
