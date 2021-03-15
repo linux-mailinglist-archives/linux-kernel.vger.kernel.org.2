@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F5B33AE27
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9233AE26
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhCOJCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:02:03 -0400
-Received: from thsbbfxrt01p.thalesgroup.com ([192.54.144.131]:55614 "EHLO
-        thsbbfxrt01p.thalesgroup.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229558AbhCOJB6 (ORCPT
+        id S229546AbhCOJCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:02:00 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:22779 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhCOJBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:01:58 -0400
-X-Greylist: delayed 367 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 05:01:58 EDT
-Received: from thsbbfxrt01p.thalesgroup.com (localhost [127.0.0.1])
-        by localhost (Postfix) with SMTP id 4DzVcx25Zhz466m;
-        Mon, 15 Mar 2021 09:55:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thalesgroup.com;
-        s=xrt20181201; t=1615798545;
-        bh=CEcbGr+YCKnFXAfof14yzdOmyvXMYVWwN86bTpugi84=;
-        h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-         Content-Transfer-Encoding:MIME-Version:From;
-        b=ez0wUFY3ZEWMwre815DtHVyvhPu/7mUJhykxep7ES3by+KWUklOx+j59h1MZDLgQM
-         Dl2LBArZO7SwK7Xynhdq6X2VRr2in+e6HFmhd9AMPo9oX0gdKUT65mYNuJa7W6i8XV
-         Yjw2GuMdZbpJl7wYi7YuwJUmt1vA+vs/+AbNtL3eHgBjrb+f3MAlbiWjElSmqNn3kd
-         apFWRIfUCBpMiszczcO5zBAVZVcu1eE2UthqXHB3JKts5MwS3Pw3tesRKbnRMPWWjj
-         7CAod++6LrG5fWQKt5Zd3whbf7c5TCAGcOgGttHsyG6nDTEXzBbrZrRg+a6wx5cFh6
-         36k5v+uvYuWaQ==
-From:   PLATTNER Christoph <christoph.plattner@thalesgroup.com>
-To:     Michael Ellerman <patch-notifications@ellerman.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "PLATTNER Christoph" <christoph.plattner@thalesgroup.com>
-Subject: RE: [PATCH] powerpc/603: Fix protection of user pages mapped with
- PROT_NONE
-Thread-Topic: [PATCH] powerpc/603: Fix protection of user pages mapped with
- PROT_NONE
-Thread-Index: AQHW+GOl2yWYuEbTpkiT/C3KqD+6EaqDcGkAgAGQiOA=
-Date:   Mon, 15 Mar 2021 08:55:39 +0000
-Message-ID: <921d9e7e-6680-4f83-8652-a88ebb64650f@THSDC1IRIMBX11P.iris.infra.thales>
-References: <4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu>
- <161571587047.138988.3119931595106306211.b4-ty@ellerman.id.au>
-In-Reply-To: <161571587047.138988.3119931595106306211.b4-ty@ellerman.id.au>
-Accept-Language: en-US, fr-FR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-pmwin-version: 4.0.3, Antivirus-Engine: 3.80.1, Antivirus-Data: 5.82
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 15 Mar 2021 05:01:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1615798903; x=1647334903;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=L1t2HqnlO7990sJbch3O4sVrvU6b4LxDMuwpwNAvqLU=;
+  b=JYlkLcVvk5n/jfgOs9YDrGHYdvP31OzRKLQWaZFfzH3o093u5c2wNw0a
+   tZDHWYqnm+yRH6gcZ84LG13DJGsTIoG7qRB1MUyrFMksq3woSFRovMQhs
+   SGcIm+SBxWYadylxsaTUjp+ZUkL5ySDRX+su8O0IA2iSvtxQA/xpWzk4U
+   s=;
+IronPort-HdrOrdr: A9a23:0YlRuq9aWpbHWouHXnduk+BqI+orLtY04lQ7vn1ZYzY9SK2lvu
+ qpm+kW0gKxtSYJVBgb6Le9EYSJXH+0z+8W3aA/JrGnNTOIhEKJK8VY4ZLm03ncHUTFh41g/I
+ NBV4Q7N9HqF1h9iq/BkW2FOvIt2sOO/qztpcq29QYJcShScK1r4wp0DQyWe3cGPDVuPpYyGJ
+ qC6scvnVPJEh4qR/+2CXUfU+/Iq8ejrv/bSCQbDB0q4hTmt1OVwYP9eiL34j4jST9Vhb8t/W
+ /Z+jaU2oyT99u/yhPaylbJ6YVXlNbL2rJ4dbWxo/lQDC7thAaubJlgXLPHnAldmpDI1GoX
+X-IronPort-AV: E=Sophos;i="5.81,249,1610409600"; 
+   d="scan'208";a="94501544"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 15 Mar 2021 09:01:26 +0000
+Received: from EX13D28EUC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 0510AA2740;
+        Mon, 15 Mar 2021 09:01:23 +0000 (UTC)
+Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.160.48) by
+ EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 15 Mar 2021 09:01:18 +0000
+References: <20210314222221.3996408-1-unixbhaskar@gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+CC:     <netanel@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
+        <saeedb@amazon.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <sameehj@amazon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rdunlap@infradead.org>
+Subject: Re: [PATCH] ethernet: amazon: ena: A typo fix in the file ena_com.h
+In-Reply-To: <20210314222221.3996408-1-unixbhaskar@gmail.com>
+Date:   Mon, 15 Mar 2021 11:00:57 +0200
+Message-ID: <pj41zlft0wlrjq.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.43.160.48]
+X-ClientProxiedBy: EX13D35UWB001.ant.amazon.com (10.43.161.47) To
+ EX13D28EUC001.ant.amazon.com (10.43.164.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Thank you for maintenance and for following this request.
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-Regards
-Christoph
+> Mundane typo fix.
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_com.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_com.h 
+> b/drivers/net/ethernet/amazon/ena/ena_com.h
+> index 343caf41e709..73b03ce59412 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_com.h
+> +++ b/drivers/net/ethernet/amazon/ena/ena_com.h
+> @@ -124,7 +124,7 @@ struct ena_com_io_cq {
+>
+>  	/* holds the number of cdesc of the current packet */
+>  	u16 cur_rx_pkt_cdesc_count;
+> -	/* save the firt cdesc idx of the current packet */
+> +	/* save the first cdesc idx of the current packet */
+>  	u16 cur_rx_pkt_cdesc_start_idx;
+>
+>  	u16 q_depth;
 
------Original Message-----
-From: Michael Ellerman <patch-notifications@ellerman.id.au>=20
-Sent: Sonntag, 14. M=E4rz 2021 11:01
-To: Michael Ellerman <mpe@ellerman.id.au>; Paul Mackerras <paulus@samba.org=
->; Benjamin Herrenschmidt <benh@kernel.crashing.org>; PLATTNER Christoph <c=
-hristoph.plattner@thalesgroup.com>; Christophe Leroy <christophe.leroy@csgr=
-oup.eu>
-Cc: linux-kernel@vger.kernel.org; linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/603: Fix protection of user pages mapped with =
-PROT_NONE
+Acked-by: Shay Agroskin <shayagr@amazon.com>
 
-On Mon, 1 Feb 2021 06:29:50 +0000 (UTC), Christophe Leroy wrote:
-> On book3s/32, page protection is defined by the PP bits in the PTE=20
-> which provide the following protection depending on the access keys=20
-> defined in the matching segment register:
-> - PP 00 means RW with key 0 and N/A with key 1.
-> - PP 01 means RW with key 0 and RO with key 1.
-> - PP 10 means RW with both key 0 and key 1.
-> - PP 11 means RO with both key 0 and key 1.
->=20
-> [...]
-
-Applied to powerpc/fixes.
-
-[1/1] powerpc/603: Fix protection of user pages mapped with PROT_NONE
-      https://git.kernel.org/powerpc/c/c119565a15a628efdfa51352f9f6c5186e50=
-6a1c
-
-cheers
+Thanks for your patch
