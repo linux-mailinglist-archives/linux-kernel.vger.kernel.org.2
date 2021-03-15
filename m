@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FF033C1FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1774C33C210
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhCOQdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:33:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233570AbhCOQdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:33:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A4664E42;
-        Mon, 15 Mar 2021 16:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615826008;
-        bh=f4K1PQi5GoA8DyancBzvuA/NuLTUjdftl7M7gxwy1No=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EjR/pS1cN3N97EsHHqVbRHIBpoeGPaSsRmHGYdei+80OM7tDfbC1i28OhSuN6mh3e
-         el0hMbHrqnIr7uMJfvqUWvkl6ZWIsYs7xuEvtZA+virmRuz8lnOTQDvyi4Bz3iB1PU
-         sb8UCVALUTP17F3wvYYCzD/GfJpxTi3tiPShtzvB6jKwi/GJFp0fGwRvOzacFJQWLG
-         cdwk6YxVlVYVtn0c6AaW99h4Ccx0UvP4R40QO03FMjcwqYHdvXusB5yWCemYBotqCy
-         fJQHP4Wd7rrcs6Rjfqp7Xc9Gb2uKyN1H1ckKf1Lf4Y86ol/YwKwUZisOzJy3fPZ/uP
-         wsfFBPi3b+O2A==
-Date:   Mon, 15 Mar 2021 16:33:23 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH v5 14/36] KVM: arm64: Provide __flush_dcache_area at EL2
-Message-ID: <20210315163322.GE3430@willie-the-truck>
-References: <20210315143536.214621-1-qperret@google.com>
- <20210315143536.214621-15-qperret@google.com>
+        id S232550AbhCOQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:35:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232313AbhCOQfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:35:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615826105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8E7bQAO4mPMCMNy7czH8SXiPxDN2NhK2/K7/V4lwNsU=;
+        b=YRgBnMnfDejZ2g4awmLGc/qsn/OSoekn0Hp5B3W2Xzgqh32t1PFTOFvbTrPOZFlc0r/Sjz
+        zLM3a2gL/wiPVZhg1e8Kg4A0mksK/e+HeqWZgzdxeWbLpVR45lvql5PfndLNBus5l5fsnp
+        DbSA1kcTBhBBBejqkcPmMS3Yy/3Dv8c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-3bB14KOROdS3_D81865z-Q-1; Mon, 15 Mar 2021 12:35:01 -0400
+X-MC-Unique: 3bB14KOROdS3_D81865z-Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E03A6100C663;
+        Mon, 15 Mar 2021 16:34:59 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-114-1.ams2.redhat.com [10.36.114.1])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 47AD319D7C;
+        Mon, 15 Mar 2021 16:34:51 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     netdev@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org
+Subject: [PATCH v4 00/14] vdpa: add vdpa simulator for block device
+Date:   Mon, 15 Mar 2021 17:34:36 +0100
+Message-Id: <20210315163450.254396-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315143536.214621-15-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:35:14PM +0000, Quentin Perret wrote:
-> We will need to do cache maintenance at EL2 soon, so compile a copy of
-> __flush_dcache_area at EL2, and provide a copy of arm64_ftr_reg_ctrel0
-> as it is needed by the read_ctr macro.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_cpufeature.h |  2 ++
->  arch/arm64/kvm/hyp/nvhe/Makefile        |  3 ++-
->  arch/arm64/kvm/hyp/nvhe/cache.S         | 13 +++++++++++++
->  arch/arm64/kvm/sys_regs.c               |  1 +
->  4 files changed, 18 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/cache.S
-> 
-> diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
-> index 3fd9f60d2180..efba1b89b8a4 100644
-> --- a/arch/arm64/include/asm/kvm_cpufeature.h
-> +++ b/arch/arm64/include/asm/kvm_cpufeature.h
-> @@ -13,3 +13,5 @@
->  #define KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg kvm_nvhe_sym(name)
->  #endif
->  #endif
-> +
-> +KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
+v4:
+- added support for iproute2 vdpa management tool in vdpa_sim_blk
+- removed get/set_config patches
+  - 'vdpa: add return value to get_config/set_config callbacks'
+  - 'vhost/vdpa: remove vhost_vdpa_config_validate()'
+- added get_config_size() patches
+  - 'vdpa: add get_config_size callback in vdpa_config_ops'
+  - 'vhost/vdpa: use get_config_size callback in vhost_vdpa_config_validate()'
 
-I still think this is a bit weird. If you really want to macro-ise stuff,
-then why not follow the sort of thing we do for e.g. per-cpu variables and
-have separate DECLARE_HYP_CPU_FTR_REG and DEFINE_HYP_CPU_FTR_REG macros.
+v3: https://lore.kernel.org/lkml/20210204172230.85853-1-sgarzare@redhat.com/
+v2: https://lore.kernel.org/lkml/20210128144127.113245-1-sgarzare@redhat.com/
+v1: https://lore.kernel.org/lkml/93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com/
 
-That way kvm_cpufeature.h can have header guards like a normal header and
-we can drop the '#ifndef KVM_HYP_CPU_FTR_REG' altogether. I don't think
-the duplication of the symbol name really matters -- it should fail at
-build time if something is missing.
+This series is the second part of the v1 linked above. The first part with
+refactoring of vdpa_sim has already been merged.
 
-Will
+The patches are based on Max Gurtovoy's work and extend the block simulator to
+have a ramdisk behaviour.
+
+As mentioned in the v1 there was 2 issues and I fixed them in this series:
+1. The identical mapping in the IOMMU used until now in vdpa_sim created issues
+   when mapping different virtual pages with the same physical address.
+   Fixed by patch "vdpa_sim: use iova module to allocate IOVA addresses"
+
+2. There was a race accessing the IOMMU between the vdpasim_blk_work() and the
+   device driver that map/unmap DMA regions. Fixed by patch "vringh: add
+   'iotlb_lock' to synchronize iotlb accesses"
+
+I used the Xie's patch coming from VDUSE series to allow vhost-vdpa to use
+block devices, and I added get_config_size() callback to allow any device
+in vhost-vdpa.
+
+The series also includes small fixes for vringh, vdpa, and vdpa_sim that I
+discovered while implementing and testing the block simulator.
+
+Thanks for your feedback,
+Stefano
+
+Max Gurtovoy (1):
+  vdpa: add vdpa simulator for block device
+
+Stefano Garzarella (12):
+  vdpa_sim: use iova module to allocate IOVA addresses
+  vringh: add 'iotlb_lock' to synchronize iotlb accesses
+  vringh: reset kiov 'consumed' field in __vringh_iov()
+  vringh: explain more about cleaning riov and wiov
+  vringh: implement vringh_kiov_advance()
+  vringh: add vringh_kiov_length() helper
+  vdpa_sim: cleanup kiovs in vdpasim_free()
+  vdpa: add get_config_size callback in vdpa_config_ops
+  vhost/vdpa: use get_config_size callback in
+    vhost_vdpa_config_validate()
+  vdpa_sim_blk: implement ramdisk behaviour
+  vdpa_sim_blk: handle VIRTIO_BLK_T_GET_ID
+  vdpa_sim_blk: add support for vdpa management tool
+
+Xie Yongji (1):
+  vhost/vdpa: Remove the restriction that only supports virtio-net
+    devices
+
+ drivers/vdpa/vdpa_sim/vdpa_sim.h     |   2 +
+ include/linux/vdpa.h                 |   4 +
+ include/linux/vringh.h               |  19 +-
+ drivers/vdpa/ifcvf/ifcvf_main.c      |   6 +
+ drivers/vdpa/mlx5/net/mlx5_vnet.c    |   6 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     | 127 ++++++----
+ drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 338 +++++++++++++++++++++++++++
+ drivers/vdpa/virtio_pci/vp_vdpa.c    |   8 +
+ drivers/vhost/vdpa.c                 |  15 +-
+ drivers/vhost/vringh.c               |  69 ++++--
+ drivers/vdpa/Kconfig                 |   8 +
+ drivers/vdpa/vdpa_sim/Makefile       |   1 +
+ 12 files changed, 529 insertions(+), 74 deletions(-)
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+
+-- 
+2.30.2
+
