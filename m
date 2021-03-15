@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BCB33BBEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC2833BE96
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237027AbhCOORK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S240949AbhCOOsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232670AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D7064E4D;
-        Mon, 15 Mar 2021 13:59:03 +0000 (UTC)
+        id S234347AbhCOODP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C3964DAD;
+        Mon, 15 Mar 2021 14:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816744;
-        bh=FXVQsqJafbUykDjJX4VgLotGsy67ToI7cKyI2urj75E=;
+        s=korg; t=1615816995;
+        bh=GT23MI2WT8PQhaf0Bt8mf+eRN5Gc0SR/mz72E4QscaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wfbt43iMeBJCfaDlzcYjBRhn8FMs60YWlQdpKJQ4UHh49dZDb4aRBO6JfDBaMl+YC
-         T3YyRssMhuufPCeJfAuFuTFlMK/lwyAhxV5NzqFOsxMGVjFLlOziZFc+BlGM5wNe4N
-         QURG0IpKGDo0dghD1pkZLbuadpUpyLC4XoOreu2k=
+        b=DDE/EdXi/kUkdxSCfyP9L/UWzdv7F4UUJDHZpxMs3bcHoKqkvTcHRG3nbr7DwM31l
+         Z3OqtuaEb1MZtTUm5kw+dnNpTgl7UXFnVuQZu5wr0mg8/eDsa4ii2rDBz8HUYKdMO0
+         UWDytwbM43i0ZaT8uOf8FyucNCUb5fpBPyMyZKZI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Anthony DeRossi <ajderossi@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/168] PCI: Fix pci_register_io_range() memory leak
+Subject: [PATCH 5.11 250/306] drm/ttm: Fix TTM page pool accounting
 Date:   Mon, 15 Mar 2021 14:55:13 +0100
-Message-Id: <20210315135553.050380477@linuxfoundation.org>
+Message-Id: <20210315135516.095878997@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +43,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Anthony DeRossi <ajderossi@gmail.com>
 
-[ Upstream commit f6bda644fa3a7070621c3bf12cd657f69a42f170 ]
+[ Upstream commit ca63d76fd2319db984f2875992643f900caf2c72 ]
 
-Kmemleak reports:
+Freed pages are not subtracted from the allocated_pages counter in
+ttm_pool_type_fini(), causing a leak in the count on device removal.
+The next shrinker invocation loops forever trying to free pages that are
+no longer in the pool:
 
-  unreferenced object 0xc328de40 (size 64):
-    comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
-    hex dump (first 32 bytes):
-      00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
-      00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  rcu: INFO: rcu_sched self-detected stall on CPU
+  rcu:  3-....: (9998 ticks this GP) idle=54e/1/0x4000000000000000 softirq=434857/434857 fqs=2237
+    (t=10001 jiffies g=2194533 q=49211)
+  NMI backtrace for cpu 3
+  CPU: 3 PID: 1034 Comm: kswapd0 Tainted: P           O      5.11.0-com #1
+  Hardware name: System manufacturer System Product Name/PRIME X570-PRO, BIOS 1405 11/19/2019
+  Call Trace:
+   <IRQ>
+   ...
+   </IRQ>
+   sysvec_apic_timer_interrupt+0x77/0x80
+   asm_sysvec_apic_timer_interrupt+0x12/0x20
+  RIP: 0010:mutex_unlock+0x16/0x20
+  Code: e7 48 8b 70 10 e8 7a 53 77 ff eb aa e8 43 6c ff ff 0f 1f 00 65 48 8b 14 25 00 6d 01 00 31 c9 48 89 d0 f0 48 0f b1 0f 48 39 c2 <74> 05 e9 e3 fe ff ff c3 66 90 48 8b 47 20 48 85 c0 74 0f 8b 50 10
+  RSP: 0018:ffffbdb840797be8 EFLAGS: 00000246
+  RAX: ffff9ff445a41c00 RBX: ffffffffc02a9ef8 RCX: 0000000000000000
+  RDX: ffff9ff445a41c00 RSI: ffffbdb840797c78 RDI: ffffffffc02a9ac0
+  RBP: 0000000000000080 R08: 0000000000000000 R09: ffffbdb840797c80
+  R10: 0000000000000000 R11: fffffffffffffff5 R12: 0000000000000000
+  R13: 0000000000000000 R14: 0000000000000084 R15: ffffffffc02a9a60
+   ttm_pool_shrink+0x7d/0x90 [ttm]
+   ttm_pool_shrinker_scan+0x5/0x20 [ttm]
+   do_shrink_slab+0x13a/0x1a0
+...
 
-  backtrace:
-    [<ad758d10>] pci_register_io_range+0x3c/0x80
-    [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
-    [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
-    [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
-    [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
-    [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
+debugfs shows the incorrect total:
 
-In case a PCI host driver's probe is deferred, the same I/O range may be
-allocated again, and be ignored, causing a memory leak.
+  $ cat /sys/kernel/debug/dri/0/ttm_page_pool
+            --- 0--- --- 1--- --- 2--- --- 3--- --- 4--- --- 5--- --- 6--- --- 7--- --- 8--- --- 9--- ---10---
+  wc      :        0        0        0        0        0        0        0        0        0        0        0
+  uc      :        0        0        0        0        0        0        0        0        0        0        0
+  wc 32   :        0        0        0        0        0        0        0        0        0        0        0
+  uc 32   :        0        0        0        0        0        0        0        0        0        0        0
+  DMA uc  :        0        0        0        0        0        0        0        0        0        0        0
+  DMA wc  :        0        0        0        0        0        0        0        0        0        0        0
+  DMA     :        0        0        0        0        0        0        0        0        0        0        0
 
-Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
-passed range already exists, so pci_register_io_range() will free it, and
-by (b) making pci_register_io_range() not consider -EEXIST an error
-condition.
+  total   :     3029 of  8244261
 
-Link: https://lore.kernel.org/r/20210202100332.829047-1-geert+renesas@glider.be
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Using ttm_pool_type_take() to remove pages from the pool before freeing
+them correctly accounts for the freed pages.
+
+Fixes: d099fc8f540a ("drm/ttm: new TT backend allocation pool v3")
+Signed-off-by: Anthony DeRossi <ajderossi@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210303011723.22512-1-ajderossi@gmail.com
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 4 ++++
- lib/logic_pio.c   | 3 +++
- 2 files changed, 7 insertions(+)
+ drivers/gpu/drm/ttm/ttm_pool.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 9add26438be5..3c3bc9f58498 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3903,6 +3903,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
- 	ret = logic_pio_register_range(range);
- 	if (ret)
- 		kfree(range);
-+
-+	/* Ignore duplicates due to deferred probing */
-+	if (ret == -EEXIST)
-+		ret = 0;
- #endif
+diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+index 6e27cb1bf48b..4eb6efb8b8c0 100644
+--- a/drivers/gpu/drm/ttm/ttm_pool.c
++++ b/drivers/gpu/drm/ttm/ttm_pool.c
+@@ -268,13 +268,13 @@ static void ttm_pool_type_init(struct ttm_pool_type *pt, struct ttm_pool *pool,
+ /* Remove a pool_type from the global shrinker list and free all pages */
+ static void ttm_pool_type_fini(struct ttm_pool_type *pt)
+ {
+-	struct page *p, *tmp;
++	struct page *p;
  
- 	return ret;
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index 905027574e5d..774bb02fff10 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -27,6 +27,8 @@ static DEFINE_MUTEX(io_range_mutex);
-  * @new_range: pointer to the IO range to be registered.
-  *
-  * Returns 0 on success, the error code in case of failure.
-+ * If the range already exists, -EEXIST will be returned, which should be
-+ * considered a success.
-  *
-  * Register a new IO range node in the IO range list.
-  */
-@@ -49,6 +51,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 	list_for_each_entry(range, &io_range_list, list) {
- 		if (range->fwnode == new_range->fwnode) {
- 			/* range already there */
-+			ret = -EEXIST;
- 			goto end_register;
- 		}
- 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
+ 	mutex_lock(&shrinker_lock);
+ 	list_del(&pt->shrinker_list);
+ 	mutex_unlock(&shrinker_lock);
+ 
+-	list_for_each_entry_safe(p, tmp, &pt->pages, lru)
++	while ((p = ttm_pool_type_take(pt)))
+ 		ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
+ }
+ 
 -- 
 2.30.1
 
