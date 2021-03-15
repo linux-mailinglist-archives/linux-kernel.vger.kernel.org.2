@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5DA33BB95
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD5133BBA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhCOOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S237634AbhCOOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232761AbhCON7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 432C364F17;
-        Mon, 15 Mar 2021 13:59:25 +0000 (UTC)
+        id S230436AbhCON7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C04164D9E;
+        Mon, 15 Mar 2021 13:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816766;
-        bh=1+oiQI9T+BEZ7+cq5WdB+SVZL/j02OZ6fOiHXpw0xMY=;
+        s=korg; t=1615816768;
+        bh=3J5T+51wExoyAnoz49/GEIY5eCDLm7DZch2NxfueNNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dqRYMX1HqE3MYE1Ag60mIzD9QSgRHfUEmbWxh/rVrqwPMbNI/nuks7/PLu3NtNLMf
-         0BhjBwwjZHbhZDVOGop27NnC3o4t6kIHfJk+W6/h4ZxL2qapD86RqCxAziD9+iLcU/
-         37vS8B5hFfMGtsQKeV22yr1jnSTapaL4EVE2Eqno=
+        b=UkUU095ikGmCx39s8+j9ySUC/A1M6hS92R9jfPII3SnHRW7KqrKfOD08qqbisQ7IS
+         5ifNlp1Q2fI2oaOYHGhxqr7Of88j2xEupPiP+VkXkk9Dyz+dprogkHY5MI2AOcuqZ+
+         LlMqTqmOzrhl1a0cyg+ZN0GXV5lfA6HeHYNoqgxI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maxtram95@gmail.com>,
+        stable@vger.kernel.org,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 102/290] media: usbtv: Fix deadlock on suspend
-Date:   Mon, 15 Mar 2021 14:53:15 +0100
-Message-Id: <20210315135545.366669444@linuxfoundation.org>
+Subject: [PATCH 5.10 103/290] media: rkisp1: params: fix wrong bits settings
+Date:   Mon, 15 Mar 2021 14:53:16 +0100
+Message-Id: <20210315135545.396949680@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,42 +43,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
+From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
 
-commit 8a7e27fd5cd696ba564a3f62cedef7269cfd0723 upstream.
+commit 2025a48cfd92d541c5ee47deee97f8a46d00c4ac upstream.
 
-usbtv doesn't support power management, so on system suspend the
-.disconnect callback of the driver is called. The teardown sequence
-includes a call to snd_card_free. Its implementation waits until the
-refcount of the sound card device drops to zero, however, if its file is
-open, snd_card_file_add takes a reference, which can't be dropped during
-the suspend, because the userspace processes are already frozen at this
-point. snd_card_free waits for completion forever, leading to a hang on
-suspend.
+The histogram mode is set using 'rkisp1_params_set_bits'.
+Only the bits of the mode should be the value argument for
+that function. Otherwise bits outside the mode mask are
+turned on which is not what was intended.
 
-This commit fixes this deadlock condition by replacing snd_card_free
-with snd_card_free_when_closed, that doesn't wait until all references
-are released, allowing suspend to progress.
-
-Fixes: 63ddf68de52e ("[media] usbtv: add audio support")
-Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Fixes: bae1155cf579 ("media: staging: rkisp1: add output device for parameters")
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/usbtv/usbtv-audio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/rkisp1/rkisp1-params.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/media/usb/usbtv/usbtv-audio.c
-+++ b/drivers/media/usb/usbtv/usbtv-audio.c
-@@ -371,7 +371,7 @@ void usbtv_audio_free(struct usbtv *usbt
- 	cancel_work_sync(&usbtv->snd_trigger);
+--- a/drivers/staging/media/rkisp1/rkisp1-params.c
++++ b/drivers/staging/media/rkisp1/rkisp1-params.c
+@@ -1291,7 +1291,6 @@ static void rkisp1_params_config_paramet
+ 	memset(hst.hist_weight, 0x01, sizeof(hst.hist_weight));
+ 	rkisp1_hst_config(params, &hst);
+ 	rkisp1_param_set_bits(params, RKISP1_CIF_ISP_HIST_PROP,
+-			      ~RKISP1_CIF_ISP_HIST_PROP_MODE_MASK |
+ 			      rkisp1_hst_params_default_config.mode);
  
- 	if (usbtv->snd && usbtv->udev) {
--		snd_card_free(usbtv->snd);
-+		snd_card_free_when_closed(usbtv->snd);
- 		usbtv->snd = NULL;
- 	}
- }
+ 	/* set the  range */
 
 
