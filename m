@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7413D33BD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A743833BDA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhCOOdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S240503AbhCOOiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233286AbhCOOBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4831F64F69;
-        Mon, 15 Mar 2021 14:00:58 +0000 (UTC)
+        id S233303AbhCOOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 437B964F4C;
+        Mon, 15 Mar 2021 14:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816859;
-        bh=ksqVK6wcCdbE1lO+qgCPDlFPW+GJdXp7WZ6R2M3NcWs=;
+        s=korg; t=1615816861;
+        bh=ymXPU7eyKX4VD6ej22W5UdfweekdAlrmG5I/6QPCzbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=af9cwx1mAHKJ3rW6r7tuwSGWkUxjfQb8bqMZpfF5JYU6phOo0OiVLxmwD+QxpRuQ0
-         m3A+jqR1RLBpw6EZT07KYHyog329VRpJ6/eT9kb84tvJYz8Wo+nNWt/zE4Ie9MExY+
-         YgvYTHrM3PjrhGYtVhWGr4vqPiYp2v9m+K9yTfBk=
+        b=Ne4J8DPnuSvtdvmdD6w5EafYf1Oh2wyK6cnk4qYsp+tx9dSBCjv831OUapGO9O8AP
+         JWF2d+O2zcOlqKyd0cGo+5Y+ivfkBaL2EP5QeItZli9lBlvxFyx+D+llPWmTB1fIa7
+         c064dJkB6EwABOlMKmuF7nJ9FvkTzj10FPsA+yFs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        John Dias <joaodias@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 156/168] zram: fix return value on writeback_store
-Date:   Mon, 15 Mar 2021 14:56:28 +0100
-Message-Id: <20210315135555.473229970@linuxfoundation.org>
+        stable@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 5.4 157/168] sched/membarrier: fix missing local execution of ipi_sync_rq_state()
+Date:   Mon, 15 Mar 2021 14:56:29 +0100
+Message-Id: <20210315135555.505804803@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -45,60 +43,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Minchan Kim <minchan@kernel.org>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-commit 57e0076e6575a7b7cef620a0bd2ee2549ef77818 upstream.
+commit ce29ddc47b91f97e7f69a0fb7cbb5845f52a9825 upstream.
 
-writeback_store's return value is overwritten by submit_bio_wait's return
-value.  Thus, writeback_store will return zero since there was no IO
-error.  In the end, write syscall from userspace will see the zero as
-return value, which could make the process stall to keep trying the write
-until it will succeed.
+The function sync_runqueues_membarrier_state() should copy the
+membarrier state from the @mm received as parameter to each runqueue
+currently running tasks using that mm.
 
-Link: https://lkml.kernel.org/r/20210312173949.2197662-1-minchan@kernel.org
-Fixes: 3b82a051c101("drivers/block/zram/zram_drv.c: fix error return codes not being returned in writeback_store")
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: John Dias <joaodias@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+However, the use of smp_call_function_many() skips the current runqueue,
+which is unintended. Replace by a call to on_each_cpu_mask().
+
+Fixes: 227a4aadc75b ("sched/membarrier: Fix p->mm->membarrier_state racy load")
+Reported-by: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org # 5.4.x+
+Link: https://lore.kernel.org/r/74F1E842-4A84-47BF-B6C2-5407DFDD4A4A@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/zram/zram_drv.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ kernel/sched/membarrier.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -627,7 +627,7 @@ static ssize_t writeback_store(struct de
- 	struct bio_vec bio_vec;
- 	struct page *page;
- 	ssize_t ret = len;
--	int mode;
-+	int mode, err;
- 	unsigned long blk_idx = 0;
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -265,9 +265,7 @@ static int sync_runqueues_membarrier_sta
+ 	}
+ 	rcu_read_unlock();
  
- 	if (sysfs_streq(buf, "idle"))
-@@ -719,12 +719,17 @@ static ssize_t writeback_store(struct de
- 		 * XXX: A single page IO would be inefficient for write
- 		 * but it would be not bad as starter.
- 		 */
--		ret = submit_bio_wait(&bio);
--		if (ret) {
-+		err = submit_bio_wait(&bio);
-+		if (err) {
- 			zram_slot_lock(zram, index);
- 			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
- 			zram_clear_flag(zram, index, ZRAM_IDLE);
- 			zram_slot_unlock(zram, index);
-+			/*
-+			 * Return last IO error unless every IO were
-+			 * not suceeded.
-+			 */
-+			ret = err;
- 			continue;
- 		}
+-	preempt_disable();
+-	smp_call_function_many(tmpmask, ipi_sync_rq_state, mm, 1);
+-	preempt_enable();
++	on_each_cpu_mask(tmpmask, ipi_sync_rq_state, mm, true);
  
+ 	free_cpumask_var(tmpmask);
+ 	cpus_read_unlock();
 
 
