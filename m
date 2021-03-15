@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7781D33BE19
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713EB33BE17
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238600AbhCOOmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
+        id S238531AbhCOOml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234317AbhCOODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA1664EEF;
-        Mon, 15 Mar 2021 14:03:10 +0000 (UTC)
+        id S234324AbhCOODO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED6E64E89;
+        Mon, 15 Mar 2021 14:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816991;
-        bh=XFnEJAJEGP1dMB9+leoyqbn0dOzO/j7o4mhWP36zdiE=;
+        s=korg; t=1615816993;
+        bh=57FeWDPrnbzJ/BZk84N/U//XUkDGiItnYuBeJKwqHtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BwlcehKWP5ruTcdaqkGv+BJ2TlNlmm0Sp/3atSXPh/t2gG8OgU4jAthm5NDOX/+6t
-         r7opNO9Bj69hTYqlhKAxQ6rKE692dMJ9pUcChYW2PnPwpMUgjOZNOVSBX0njuIdEFP
-         ain1kBryFo7Wsn6lPqTmbBUjgaONzDvRwFrhB33M=
+        b=e5m4v34GP2wVQ+TOCyHKbPKvlkn0Kc9CkratzJB2Pnp4+Fn96ghn6eX1Lv+ySUfjc
+         IHryePOtoWtZPLleRmyhHKJ6kZg2L3slwSBeHdwm8BIyD8OjZcPvSK60SWQPEw1yJa
+         fp5mI4hNe7GviItExz/QaemqxkwORMaX7yBGGmu0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 248/306] NFSv4.2: fix return value of _nfs4_get_security_label()
-Date:   Mon, 15 Mar 2021 14:55:11 +0100
-Message-Id: <20210315135516.028281292@linuxfoundation.org>
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 249/306] block: rsxx: fix error return code of rsxx_pci_probe()
+Date:   Mon, 15 Mar 2021 14:55:12 +0100
+Message-Id: <20210315135516.058691074@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -44,41 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
+[ Upstream commit df66617bfe87487190a60783d26175b65d2502ce ]
 
-An xattr 'get' handler is expected to return the length of the value on
-success, yet _nfs4_get_security_label() (and consequently also
-nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
-just 0 on success.
+When create_singlethread_workqueue returns NULL to card->event_wq, no
+error return code of rsxx_pci_probe() is assigned.
 
-Fix this by returning label.len instead, which contains the length of
-the result.
+To fix this bug, st is assigned with -ENOMEM in this case.
 
-Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-Reviewed-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Link: https://lore.kernel.org/r/20210310033017.4023-1-baijiaju1990@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/rsxx/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index fc8bbfd9beb3..7eb44f37558c 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -5972,7 +5972,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
- 		return ret;
- 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
- 		return -ENOENT;
--	return 0;
-+	return label.len;
- }
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index 5ac1881396af..227e1be4c6f9 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -871,6 +871,7 @@ static int rsxx_pci_probe(struct pci_dev *dev,
+ 	card->event_wq = create_singlethread_workqueue(DRIVER_NAME"_event");
+ 	if (!card->event_wq) {
+ 		dev_err(CARD_TO_DEV(card), "Failed card event setup.\n");
++		st = -ENOMEM;
+ 		goto failed_event_handler;
+ 	}
  
- static int nfs4_get_security_label(struct inode *inode, void *buf,
 -- 
 2.30.1
 
