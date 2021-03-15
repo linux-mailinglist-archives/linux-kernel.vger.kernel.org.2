@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A0033C166
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7FD33C16A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCOQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:15:33 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:20916 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCOQPY (ORCPT
+        id S229876AbhCOQQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhCOQPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:15:24 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 12FGD7XH030890;
-        Tue, 16 Mar 2021 01:13:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 12FGD7XH030890
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615824791;
-        bh=RIDE+IYVYeFvMxGbVmakCezynqhWEF9YmJQS0ypJjZ8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h9nU/IXQgiGpXqg+FtAqikJmOKNHNNwfLIUqmQvdKainMj+CxX7F/UJMBrWhoWgiG
-         tWjI8ONLP8uF3yeXjz6ulN2GUyu8rpH2OhDzCojIVuwBFOkfN3tXZVJR29k03yFtrm
-         K4+b2XiwpUBtRx3qfYiAikC8XwzcDdmfml/TUgm3f1u6U92nugudGxLIH9KJDNH9ol
-         +0FRd27Qm4D59Okv+ofS3Ws/IoXWrimqmzIhz//8ujdNTy8Oey8KVUN8NLAdXXBIyW
-         Iy2S3NAzbGkWwgKEV5zseNGMefKiO2qbSbrm6CaZS+Pu0AOLAUCHybJtkFpzQUon5d
-         Vxb98EFvujUeA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        "peterz@infradead.org" <peterz@infradead.org>
-Subject: [PATCH v2 3/3] kbuild: dwarf: use AS_VERSION instead of test_dwarf5_support.sh
-Date:   Tue, 16 Mar 2021 01:12:57 +0900
-Message-Id: <20210315161257.788477-3-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210315161257.788477-1-masahiroy@kernel.org>
-References: <20210315161257.788477-1-masahiroy@kernel.org>
+        Mon, 15 Mar 2021 12:15:45 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1BBC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:15:45 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 184so16928973ljf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=whezGPX07b3sUPoOpaXH07SshdzQOy4tuu1n0282U3Y=;
+        b=IkUaPU2LsXGiZ9t3R2YxU0xvXyAIf4MJNET4D3qz0haaeS6DDR8//ZDuN23aw74Tod
+         C6ks7QK1cXE8kzlhgAH6AJ+aYqgUmcMJUmWd4fUA51YFa9gRHB0zGLsY2uPT/A2zmHfv
+         k6nZny1yCduUwtvvu3wpc599sGC7hxaA5Bb8uuU+Q/9PIreBdRhbV7g8kuw3Yf3ohovR
+         4Zm4eOOu6EYB8dIX7nQDzUusdTqIjnHwV3eLYsoBuVbXQC/Dk48rHHrWQivhYhRZfNJa
+         whFia53i3rwrQuP4WP9CdYpW17gmmkxX2TkancRpN1seQQa2X7wX29FoMCk7nqYJ5B/a
+         PFiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=whezGPX07b3sUPoOpaXH07SshdzQOy4tuu1n0282U3Y=;
+        b=a5Q5RujCf4+AVSUJntpNnUBJ4yGWuYtv5FsXTFK/KvWmhxBgFFG59F9p6YOf6P5gWb
+         8x3MtvK8qEJoB6Xt0wo1bb6c2Ky8leKkilUmANAZN+a6N/ZIpCsJndmBsISCBnKM7BAI
+         GPVhWlU6b/7pBzCxY2RgeJ+gfqruacAOUbp5LG3Tg8HWlJ7M4fbLab4tMJekxyYgOu+l
+         VwK3Pz+KOoR5OkjoMjXR4VNu0eNhcN0sLsYh++soEIq0YHZJAopzI4pXf6GRJ2Jd0VP+
+         NmowmyvOqFGCKGgkGAt5LxP+D+45JKjukuE1uiRTYffgTf4Pb+fHqKAWVY0a+HftW1HY
+         /kAg==
+X-Gm-Message-State: AOAM533QaNkMo71cSiy1G+V9rsz67o10GUraaYJ0yPgCNj/EoDRqDdNl
+        Nv2N6VnguOtvXQKjteBlqdL3O+JKeaK58EdULBu1jA==
+X-Google-Smtp-Source: ABdhPJwlxhBzJkkcvbojy4usCRwaY3bkBsWbXm6KSAwvyMDTAsyGhJSQGbZPJqu/Ax4MeK78p7DDeRHVotyxH9Jwr3k=
+X-Received: by 2002:a2e:9cb:: with SMTP id 194mr10965708ljj.438.1615824943587;
+ Mon, 15 Mar 2021 09:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210312034218.3324410-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210312034218.3324410-1-bjorn.andersson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 15 Mar 2021 17:15:32 +0100
+Message-ID: <CACRpkdZOFGVnOY6wQtncKW8zdxqr1nicB9rRef+QffiFTOCaRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: qcom: sm8350: add GPIO wakeup interrupt map
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Vinod Koul <vinod.koul@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test code in scripts/test_dwarf5_support.sh is somewhat difficult
-to understand, but after all, we want to check binutils >= 2.35.2
+On Fri, Mar 12, 2021 at 4:41 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 
-From the former discussion, the requirement for generating DWARF v5 from
-C code is as follows:
+> From: Lina Iyer <ilina@codeaurora.org>
+>
+> GPIOs that can be configured as wakeup sources, have their interrupt
+> lines routed to PDC interrupt controller. Provide the interrupt map of
+> the GPIO to its wakeup capable interrupt parent.
+>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
- - gcc + gnu as          -> requires gcc 5.0+ (but 7.0+ for full support)
- - clang + gnu as        -> requires binutils 2.35.2+
- - clang + integrated as -> OK
+This patch 1/2 applied to the pin control tree.
+Please take the DTS patch into the qcom SoC tree!
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
----
-
-Changes in v2:
-  - fix typos
-  - simplify the dependency expression
-
- lib/Kconfig.debug              | 3 +--
- scripts/test_dwarf5_support.sh | 8 --------
- 2 files changed, 1 insertion(+), 10 deletions(-)
- delete mode 100755 scripts/test_dwarf5_support.sh
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index b479ae609a31..c85d5f7a1aeb 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -284,8 +284,7 @@ config DEBUG_INFO_DWARF4
- 
- config DEBUG_INFO_DWARF5
- 	bool "Generate DWARF Version 5 debuginfo"
--	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
--	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-+	depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && (AS_IS_LLVM || (AS_IS_GNU && AS_VERSION >= 23502)))
- 	depends on !DEBUG_INFO_BTF
- 	help
- 	  Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-deleted file mode 100755
-index c46e2456b47a..000000000000
---- a/scripts/test_dwarf5_support.sh
-+++ /dev/null
-@@ -1,8 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
--# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
--# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
--echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
--  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /dev/null -
--- 
-2.27.0
-
+Yours,
+Linus Walleij
