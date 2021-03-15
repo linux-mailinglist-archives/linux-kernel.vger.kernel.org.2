@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F4033BD4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A174A33BC6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhCOOd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S234287AbhCOOZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:25:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233368AbhCOOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D4C264FA7;
-        Mon, 15 Mar 2021 14:01:03 +0000 (UTC)
+        id S231492AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88CDD64EF2;
+        Mon, 15 Mar 2021 13:59:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816865;
-        bh=yaN49XIIDgAtP4qqR6/x5ODNu04vC1NLjRJL9m/gwnM=;
+        s=korg; t=1615816744;
+        bh=uWjmqd3vi/Hw0HY6wpiy2PHmEkJHmyNnY7TxG/om+FU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BtHl7DYYbnh71s1leLAxF8ia7g7Es9I3Bdc3zRNWGRkfSmuO2B9kj7dwAQvFkLxG2
-         UD8vyT4GZortSmB4rByIvOVfRGq2kIxfyTEh4gDvmb3uR7y8W/M6W/ac21n2TVBiBm
-         Z2ayulp2N+oRP5jCR3j5ZSD6H5cM0vypfUVpTLPQ=
+        b=1s4cOzlawCl0AeMAC2nqRBqXVayaFs+NMoarhI92rx0wA02R+uLzMF6oGOb9JSl8l
+         seCH995pVrWvnQiR2RQpLxOGZrBsrjd62SGhY88hyEsRoVlOlKKJLJZeQOvZLMhw6w
+         R1Mm3AdJSV6PVcwt769OsXUCqJ0rLrl3pAET7k8s=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lior Ribak <liorribak@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 159/168] binfmt_misc: fix possible deadlock in bm_register_write
-Date:   Mon, 15 Mar 2021 14:56:31 +0100
-Message-Id: <20210315135555.582411495@linuxfoundation.org>
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 041/120] net: phy: fix save wrong speed and duplex problem if autoneg is on
+Date:   Mon, 15 Mar 2021 14:56:32 +0100
+Message-Id: <20210315135721.337831191@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,118 +43,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lior Ribak <liorribak@gmail.com>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-commit e7850f4d844e0acfac7e570af611d89deade3146 upstream.
+[ Upstream commit d9032dba5a2b2bbf0fdce67c8795300ec9923b43 ]
 
-There is a deadlock in bm_register_write:
+If phy uses generic driver and autoneg is on, enter command
+"ethtool -s eth0 speed 50" will not change phy speed actually, but
+command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
+has been set to 50 and no update later.
 
-First, in the begining of the function, a lock is taken on the binfmt_misc
-root inode with inode_lock(d_inode(root)).
+And duplex setting has same problem too.
 
-Then, if the user used the MISC_FMT_OPEN_FILE flag, the function will call
-open_exec on the user-provided interpreter.
+However, if autoneg is on, phy only changes speed and duplex according to
+phydev->advertising, but not phydev->speed and phydev->duplex. So in this
+case, phydev->speed and phydev->duplex don't need to be set in function
+phy_ethtool_ksettings_set() if autoneg is on.
 
-open_exec will call a path lookup, and if the path lookup process includes
-the root of binfmt_misc, it will try to take a shared lock on its inode
-again, but it is already locked, and the code will get stuck in a deadlock
-
-To reproduce the bug:
-$ echo ":iiiii:E::ii::/proc/sys/fs/binfmt_misc/bla:F" > /proc/sys/fs/binfmt_misc/register
-
-backtrace of where the lock occurs (#5):
-0  schedule () at ./arch/x86/include/asm/current.h:15
-1  0xffffffff81b51237 in rwsem_down_read_slowpath (sem=0xffff888003b202e0, count=<optimized out>, state=state@entry=2) at kernel/locking/rwsem.c:992
-2  0xffffffff81b5150a in __down_read_common (state=2, sem=<optimized out>) at kernel/locking/rwsem.c:1213
-3  __down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1222
-4  down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1355
-5  0xffffffff811ee22a in inode_lock_shared (inode=<optimized out>) at ./include/linux/fs.h:783
-6  open_last_lookups (op=0xffffc9000022fe34, file=0xffff888004098600, nd=0xffffc9000022fd10) at fs/namei.c:3177
-7  path_openat (nd=nd@entry=0xffffc9000022fd10, op=op@entry=0xffffc9000022fe34, flags=flags@entry=65) at fs/namei.c:3366
-8  0xffffffff811efe1c in do_filp_open (dfd=<optimized out>, pathname=pathname@entry=0xffff8880031b9000, op=op@entry=0xffffc9000022fe34) at fs/namei.c:3396
-9  0xffffffff811e493f in do_open_execat (fd=fd@entry=-100, name=name@entry=0xffff8880031b9000, flags=<optimized out>, flags@entry=0) at fs/exec.c:913
-10 0xffffffff811e4a92 in open_exec (name=<optimized out>) at fs/exec.c:948
-11 0xffffffff8124aa84 in bm_register_write (file=<optimized out>, buffer=<optimized out>, count=19, ppos=<optimized out>) at fs/binfmt_misc.c:682
-12 0xffffffff811decd2 in vfs_write (file=file@entry=0xffff888004098500, buf=buf@entry=0xa758d0 ":iiiii:E::ii::i:CF
-", count=count@entry=19, pos=pos@entry=0xffffc9000022ff10) at fs/read_write.c:603
-13 0xffffffff811defda in ksys_write (fd=<optimized out>, buf=0xa758d0 ":iiiii:E::ii::i:CF
-", count=19) at fs/read_write.c:658
-14 0xffffffff81b49813 in do_syscall_64 (nr=<optimized out>, regs=0xffffc9000022ff58) at arch/x86/entry/common.c:46
-15 0xffffffff81c0007c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
-
-To solve the issue, the open_exec call is moved to before the write
-lock is taken by bm_register_write
-
-Link: https://lkml.kernel.org/r/20210228224414.95962-1-liorribak@gmail.com
-Fixes: 948b701a607f1 ("binfmt_misc: add persistent opened binary handler for containers")
-Signed-off-by: Lior Ribak <liorribak@gmail.com>
-Acked-by: Helge Deller <deller@gmx.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 51e2a3846eab ("PHY: Avoid unnecessary aneg restarts")
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/binfmt_misc.c |   29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+ drivers/net/phy/phy.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/binfmt_misc.c
-+++ b/fs/binfmt_misc.c
-@@ -696,12 +696,24 @@ static ssize_t bm_register_write(struct
- 	struct super_block *sb = file_inode(file)->i_sb;
- 	struct dentry *root = sb->s_root, *dentry;
- 	int err = 0;
-+	struct file *f = NULL;
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index cc454b8c032c..dd4bf4265a5e 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -335,7 +335,10 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
  
- 	e = create_entry(buffer, count);
+ 	phydev->autoneg = autoneg;
  
- 	if (IS_ERR(e))
- 		return PTR_ERR(e);
- 
-+	if (e->flags & MISC_FMT_OPEN_FILE) {
-+		f = open_exec(e->interpreter);
-+		if (IS_ERR(f)) {
-+			pr_notice("register: failed to install interpreter file %s\n",
-+				 e->interpreter);
-+			kfree(e);
-+			return PTR_ERR(f);
-+		}
-+		e->interp_file = f;
+-	phydev->speed = speed;
++	if (autoneg == AUTONEG_DISABLE) {
++		phydev->speed = speed;
++		phydev->duplex = duplex;
 +	}
-+
- 	inode_lock(d_inode(root));
- 	dentry = lookup_one_len(e->name, root, strlen(e->name));
- 	err = PTR_ERR(dentry);
-@@ -725,21 +737,6 @@ static ssize_t bm_register_write(struct
- 		goto out2;
- 	}
  
--	if (e->flags & MISC_FMT_OPEN_FILE) {
--		struct file *f;
--
--		f = open_exec(e->interpreter);
--		if (IS_ERR(f)) {
--			err = PTR_ERR(f);
--			pr_notice("register: failed to install interpreter file %s\n", e->interpreter);
--			simple_release_fs(&bm_mnt, &entry_count);
--			iput(inode);
--			inode = NULL;
--			goto out2;
--		}
--		e->interp_file = f;
--	}
--
- 	e->dentry = dget(dentry);
- 	inode->i_private = e;
- 	inode->i_fop = &bm_entry_operations;
-@@ -756,6 +753,8 @@ out:
- 	inode_unlock(d_inode(root));
+ 	phydev->advertising = advertising;
  
- 	if (err) {
-+		if (f)
-+			filp_close(f, NULL);
- 		kfree(e);
- 		return err;
- 	}
+@@ -344,8 +347,6 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
+ 	else
+ 		phydev->advertising &= ~ADVERTISED_Autoneg;
+ 
+-	phydev->duplex = duplex;
+-
+ 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+ 
+ 	/* Restart the PHY */
+-- 
+2.30.1
+
 
 
