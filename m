@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2F533BE59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ED933BE32
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238963AbhCOOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51960 "EHLO mail.kernel.org"
+        id S238197AbhCOOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhCOOER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 847D064E89;
-        Mon, 15 Mar 2021 14:04:14 +0000 (UTC)
+        id S231356AbhCOODg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC68264EF1;
+        Mon, 15 Mar 2021 14:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817055;
-        bh=UPEbvgQAMpZ8MPZYPFSzw49Va+WUebUD+ZGbXcx94cE=;
+        s=korg; t=1615817015;
+        bh=OsN9fP/3Q8x/uk2NpP+b5JvtzITPXV9VGc9C/iPEXmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=roUPhtKKIPDdy5hW+wvuxKCtHKsVMBLN42Vz/fRAbDCtxiZtz+e5xjdNM/J1dcGx9
-         9wmuraD06Qh8pjMX0ujhS6gOlOMv60mW1KKCoeX8N0wQq6h6I9uuYWtYi+V8fxi0N2
-         g1xt9QouynKNDsffLLnr/dAZhhURGURHouPOfFVw=
+        b=Fd/9gMAanGlnPqJmvpSzOsb5salbpoj99oPxa7dRvf9JJ5q9iKI5+ObqUqQXLzglN
+         y9m0w5XUwDT7SXiYGELLMqtgCwIsaqfhdCOcM+8oyC+BDhf6xOlPoB4f0bmmBspo5a
+         etEbWywEzhRkPj5WpFWHTQY50VnLkAcptXTYOhxw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH 5.11 278/306] sched: Simplify set_affinity_pending refcounts
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 248/290] NFSv4.2: fix return value of _nfs4_get_security_label()
 Date:   Mon, 15 Mar 2021 14:55:41 +0100
-Message-Id: <20210315135517.065144356@linuxfoundation.org>
+Message-Id: <20210315135550.399707805@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,124 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-commit 50caf9c14b1498c90cf808dbba2ca29bd32ccba4 upstream.
+[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
 
-Now that we have set_affinity_pending::stop_pending to indicate if a
-stopper is in progress, and we have the guarantee that if that stopper
-exists, it will (eventually) complete our @pending we can simplify the
-refcount scheme by no longer counting the stopper thread.
+An xattr 'get' handler is expected to return the length of the value on
+success, yet _nfs4_get_security_label() (and consequently also
+nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
+just 0 on success.
 
-Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-Cc: stable@kernel.org
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.724130207@infradead.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by returning label.len instead, which contains the length of
+the result.
+
+Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c |   32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+ fs/nfs/nfs4proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1862,6 +1862,10 @@ struct migration_arg {
- 	struct set_affinity_pending	*pending;
- };
- 
-+/*
-+ * @refs: number of wait_for_completion()
-+ * @stop_pending: is @stop_work in use
-+ */
- struct set_affinity_pending {
- 	refcount_t		refs;
- 	unsigned int		stop_pending;
-@@ -1997,10 +2001,6 @@ out:
- 	if (complete)
- 		complete_all(&pending->done);
- 
--	/* For pending->{arg,stop_work} */
--	if (pending && refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
--
- 	return 0;
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index a811d42ffbd1..ba2dfba4854b 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5967,7 +5967,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
+ 		return ret;
+ 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
+ 		return -ENOENT;
+-	return 0;
++	return label.len;
  }
  
-@@ -2199,12 +2199,16 @@ static int affine_move_task(struct rq *r
- 			push_task = get_task_struct(p);
- 		}
- 
-+		/*
-+		 * If there are pending waiters, but no pending stop_work,
-+		 * then complete now.
-+		 */
- 		pending = p->migration_pending;
--		if (pending) {
--			refcount_inc(&pending->refs);
-+		if (pending && !pending->stop_pending) {
- 			p->migration_pending = NULL;
- 			complete = true;
- 		}
-+
- 		task_rq_unlock(rq, p, rf);
- 
- 		if (push_task) {
-@@ -2213,7 +2217,7 @@ static int affine_move_task(struct rq *r
- 		}
- 
- 		if (complete)
--			goto do_complete;
-+			complete_all(&pending->done);
- 
- 		return 0;
- 	}
-@@ -2264,9 +2268,9 @@ static int affine_move_task(struct rq *r
- 		if (!stop_pending)
- 			pending->stop_pending = true;
- 
--		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
- 		if (flags & SCA_MIGRATE_ENABLE)
- 			p->migration_flags &= ~MDF_PUSH;
-+
- 		task_rq_unlock(rq, p, rf);
- 
- 		if (!stop_pending) {
-@@ -2282,12 +2286,13 @@ static int affine_move_task(struct rq *r
- 			if (task_on_rq_queued(p))
- 				rq = move_queued_task(rq, rf, p, dest_cpu);
- 
--			p->migration_pending = NULL;
--			complete = true;
-+			if (!pending->stop_pending) {
-+				p->migration_pending = NULL;
-+				complete = true;
-+			}
- 		}
- 		task_rq_unlock(rq, p, rf);
- 
--do_complete:
- 		if (complete)
- 			complete_all(&pending->done);
- 	}
-@@ -2295,7 +2300,7 @@ do_complete:
- 	wait_for_completion(&pending->done);
- 
- 	if (refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
-+		wake_up_var(&pending->refs); /* No UaF, just an address */
- 
- 	/*
- 	 * Block the original owner of &pending until all subsequent callers
-@@ -2303,6 +2308,9 @@ do_complete:
- 	 */
- 	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
- 
-+	/* ARGH */
-+	WARN_ON_ONCE(my_pending.stop_pending);
-+
- 	return 0;
- }
- 
+ static int nfs4_get_security_label(struct inode *inode, void *buf,
+-- 
+2.30.1
+
 
 
