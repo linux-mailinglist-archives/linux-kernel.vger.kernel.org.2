@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E25533BDA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BC533BE76
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240701AbhCOOiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:38:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
+        id S239681AbhCOOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233506AbhCOOBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE35064DAD;
-        Mon, 15 Mar 2021 14:01:51 +0000 (UTC)
+        id S232250AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AAC464F29;
+        Mon, 15 Mar 2021 13:58:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816913;
-        bh=M7EsEqAtFnvfj5oU+YriwkvpIGcbhpNTnd6ThIj0qoA=;
+        s=korg; t=1615816685;
+        bh=YbjjcTlyeZCxsakUCq89yYNSmpj+tvaTA1dxF0paFmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3ej6tPpwysDnlV1ZqXEH3rIjv+bONzlYf8cSMEH/KMIFgBuE2KX1X5IhoYMScshM
-         EPGd5R7EwnEK5+F2VT3Jsj6/H8ojC7ocTRE10MBiDu9DuRf43dEY/aMiwsLYomZLki
-         KNmOi7nMMqVnMizluA7vsM9M5g7z27Yxxq4NJh+0=
+        b=G9tpF3aGgLKJlUZa6c3DG1iJvse1e35OK3VdIKUH0Q0bnWKsbasJtJgU+B/BeMpCz
+         eCWxl4yG2AHoZsmhFpsDlIiZp959PbCCn6cpF+l1BoEwBvjFFhJu16sZdf8XizOvyM
+         ixDms6Svs2/9c/deqfiq4rcIex3Qr6tzMgE2TxLo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 185/290] block: Try to handle busy underlying device on discard
+        stable@vger.kernel.org, Scott Branden <scott.branden@broadcom.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 046/168] bnxt_en: reliably allocate IRQ table on reset to avoid crash
 Date:   Mon, 15 Mar 2021 14:54:38 +0100
-Message-Id: <20210315135548.169358717@linuxfoundation.org>
+Message-Id: <20210315135551.879835775@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +43,127 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jan Kara <jack@suse.cz>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-commit 56887cffe946bb0a90c74429fa94d6110a73119d upstream.
+commit 20d7d1c5c9b11e9f538ed4a2289be106de970d3e upstream.
 
-Commit 384d87ef2c95 ("block: Do not discard buffers under a mounted
-filesystem") made paths issuing discard or zeroout requests to the
-underlying device try to grab block device in exclusive mode. If that
-failed we returned EBUSY to userspace. This however caused unexpected
-fallout in userspace where e.g. FUSE filesystems issue discard requests
-from userspace daemons although the device is open exclusively by the
-kernel. Also shrinking of logical volume by LVM issues discard requests
-to a device which may be claimed exclusively because there's another LV
-on the same PV. So to avoid these userspace regressions, fall back to
-invalidate_inode_pages2_range() instead of returning EBUSY to userspace
-and return EBUSY only of that call fails as well (meaning that there's
-indeed someone using the particular device range we are trying to
-discard).
+The following trace excerpt corresponds with a NULL pointer dereference
+of 'bp->irq_tbl' in bnxt_setup_inta() on an Aarch64 system after many
+device resets:
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=211167
-Fixes: 384d87ef2c95 ("block: Do not discard buffers under a mounted filesystem")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+    Unable to handle kernel NULL pointer dereference at ... 000000d
+    ...
+    pc : string+0x3c/0x80
+    lr : vsnprintf+0x294/0x7e0
+    sp : ffff00000f61ba70 pstate : 20000145
+    x29: ffff00000f61ba70 x28: 000000000000000d
+    x27: ffff0000009c8b5a x26: ffff00000f61bb80
+    x25: ffff0000009c8b5a x24: 0000000000000012
+    x23: 00000000ffffffe0 x22: ffff000008990428
+    x21: ffff00000f61bb80 x20: 000000000000000d
+    x19: 000000000000001f x18: 0000000000000000
+    x17: 0000000000000000 x16: ffff800b6d0fb400
+    x15: 0000000000000000 x14: ffff800b7fe31ae8
+    x13: 00001ed16472c920 x12: ffff000008c6b1c9
+    x11: ffff000008cf0580 x10: ffff00000f61bb80
+    x9 : 00000000ffffffd8 x8 : 000000000000000c
+    x7 : ffff800b684b8000 x6 : 0000000000000000
+    x5 : 0000000000000065 x4 : 0000000000000001
+    x3 : ffff0a00ffffff04 x2 : 000000000000001f
+    x1 : 0000000000000000 x0 : 000000000000000d
+    Call trace:
+    string+0x3c/0x80
+    vsnprintf+0x294/0x7e0
+    snprintf+0x44/0x50
+    __bnxt_open_nic+0x34c/0x928 [bnxt_en]
+    bnxt_open+0xe8/0x238 [bnxt_en]
+    __dev_open+0xbc/0x130
+    __dev_change_flags+0x12c/0x168
+    dev_change_flags+0x20/0x60
+    ...
+
+Ordinarily, a call to bnxt_setup_inta() (not in trace due to inlining)
+would not be expected on a system supporting MSIX at all. However, if
+bnxt_init_int_mode() does not end up being called after the call to
+bnxt_clear_int_mode() in bnxt_fw_reset_close(), then the driver will
+think that only INTA is supported and bp->irq_tbl will be NULL,
+causing the above crash.
+
+In the error recovery scenario, we call bnxt_clear_int_mode() in
+bnxt_fw_reset_close() early in the sequence. Ordinarily, we will
+call bnxt_init_int_mode() in bnxt_hwrm_if_change() after we
+reestablish communication with the firmware after reset.  However,
+if the sequence has to abort before we call bnxt_init_int_mode() and
+if the user later attempts to re-open the device, then it will cause
+the crash above.
+
+We fix it in 2 ways:
+
+1. Check for bp->irq_tbl in bnxt_setup_int_mode(). If it is NULL, call
+bnxt_init_init_mode().
+
+2. If we need to abort in bnxt_hwrm_if_change() and cannot complete
+the error recovery sequence, set the BNXT_STATE_ABORT_ERR flag.  This
+will cause more drastic recovery at the next attempt to re-open the
+device, including a call to bnxt_init_int_mode().
+
+Fixes: 3bc7d4a352ef ("bnxt_en: Add BNXT_STATE_IN_FW_RESET state.")
+Reviewed-by: Scott Branden <scott.branden@broadcom.com>
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/block_dev.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -123,12 +123,21 @@ int truncate_bdev_range(struct block_dev
- 		err = bd_prepare_to_claim(bdev, claimed_bdev,
- 					  truncate_bdev_range);
- 		if (err)
--			return err;
-+			goto invalidate;
- 	}
- 	truncate_inode_pages_range(bdev->bd_inode->i_mapping, lstart, lend);
- 	if (claimed_bdev)
- 		bd_abort_claiming(bdev, claimed_bdev, truncate_bdev_range);
- 	return 0;
-+
-+invalidate:
-+	/*
-+	 * Someone else has handle exclusively open. Try invalidating instead.
-+	 * The 'end' argument is inclusive so the rounding is safe.
-+	 */
-+	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
-+					     lstart >> PAGE_SHIFT,
-+					     lend >> PAGE_SHIFT);
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -7925,10 +7925,18 @@ static void bnxt_setup_inta(struct bnxt
+ 	bp->irq_tbl[0].handler = bnxt_inta;
  }
- EXPORT_SYMBOL(truncate_bdev_range);
  
++static int bnxt_init_int_mode(struct bnxt *bp);
++
+ static int bnxt_setup_int_mode(struct bnxt *bp)
+ {
+ 	int rc;
+ 
++	if (!bp->irq_tbl) {
++		rc = bnxt_init_int_mode(bp);
++		if (rc || !bp->irq_tbl)
++			return rc ?: -ENODEV;
++	}
++
+ 	if (bp->flags & BNXT_FLAG_USING_MSIX)
+ 		bnxt_setup_msix(bp);
+ 	else
+@@ -8113,7 +8121,7 @@ static int bnxt_init_inta(struct bnxt *b
+ 
+ static int bnxt_init_int_mode(struct bnxt *bp)
+ {
+-	int rc = 0;
++	int rc = -ENODEV;
+ 
+ 	if (bp->flags & BNXT_FLAG_MSIX_CAP)
+ 		rc = bnxt_init_msix(bp);
+@@ -8748,7 +8756,8 @@ static int bnxt_hwrm_if_change(struct bn
+ {
+ 	struct hwrm_func_drv_if_change_output *resp = bp->hwrm_cmd_resp_addr;
+ 	struct hwrm_func_drv_if_change_input req = {0};
+-	bool resc_reinit = false, fw_reset = false;
++	bool fw_reset = !bp->irq_tbl;
++	bool resc_reinit = false;
+ 	u32 flags = 0;
+ 	int rc;
+ 
+@@ -8776,6 +8785,7 @@ static int bnxt_hwrm_if_change(struct bn
+ 
+ 	if (test_bit(BNXT_STATE_IN_FW_RESET, &bp->state) && !fw_reset) {
+ 		netdev_err(bp->dev, "RESET_DONE not set during FW reset.\n");
++		set_bit(BNXT_STATE_ABORT_ERR, &bp->state);
+ 		return -ENODEV;
+ 	}
+ 	if (resc_reinit || fw_reset) {
 
 
