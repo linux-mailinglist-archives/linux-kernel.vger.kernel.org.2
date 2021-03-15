@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB5033BCFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2F833BD8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhCOObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S238237AbhCOOhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231907AbhCOOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F83E64F16;
-        Mon, 15 Mar 2021 14:00:35 +0000 (UTC)
+        id S233386AbhCOOBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A9764FB3;
+        Mon, 15 Mar 2021 14:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816836;
-        bh=ffHiKX2x359sykKVshemZJfSIe3BzHOOXXmMQABK2nQ=;
+        s=korg; t=1615816868;
+        bh=idJa2A/Gb07HA0GVgp575eLkNkVLhD/MBtVGaDUi0rM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tCzqEEBh8a4KPvfv5hWjTaB3Mwzijs1xvrj9v56VfODcuNb+1i9R2v5oGumrP0BHO
-         EgXR0uGDzIdnGoMoUAwFTUzXksmlmiWzi7pvkhJkh1fC1GjSPu+EjhWxLM5UapXUWg
-         QLgzaTvQvMh/5BRAsYLIJyEtK7wM5Sw5l5hDrtkc=
+        b=rGVlAHhlHC56ENAGW1jB6GPukz7fHueXeiBg9Zuvt/KCzEBhHWDHAlPSYCh5OkTr+
+         U62JYk+XoMxSiRMByhJE0LbI8fj4fqSBGrKWwTOJX4nwWcCU5MLpUW1b95Wizn2CQX
+         5tn/3h9AAqxGmO+cPfTOCMEpD82atzQOzVn2hf9E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 142/290] powerpc: improve handling of unrecoverable system reset
-Date:   Mon, 15 Mar 2021 14:53:55 +0100
-Message-Id: <20210315135546.711852192@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 173/306] ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()
+Date:   Mon, 15 Mar 2021 14:53:56 +0100
+Message-Id: <20210315135513.464018292@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +42,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 11cb0a25f71818ca7ab4856548ecfd83c169aa4d ]
+commit 9799110825dba087c2bdce886977cf84dada2005 upstream.
 
-If an unrecoverable system reset hits in process context, the system
-does not have to panic. Similar to machine check, call nmi_exit()
-before die().
+Rear audio on Lenovo ThinkStation P620 stops working after commit
+1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo
+ThinkStation P620"):
+[    6.013526] usbcore: registered new interface driver snd-usb-audio
+[    6.023064] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.023083] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+[    6.023090] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.023098] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+[    6.023103] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.023110] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+[    6.045846] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.045866] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+[    6.045877] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.045886] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+[    6.045894] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+[    6.045908] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210130130852.2952424-26-npiggin@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+I overlooked the issue because when I was working on the said commit,
+only the front audio is tested. Apology for that.
+
+Changing supports_autosuspend in driver is too late for disabling
+autosuspend, because it was already used by USB probe routine, so it can
+break the balance on the following code that depends on
+supports_autosuspend.
+
+Fix it by using usb_disable_autosuspend() helper, and balance the
+suspend count in disconnect callback.
+
+Fixes: 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo ThinkStation P620")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210304043419.287191-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/traps.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/usb/card.c     |    5 +++++
+ sound/usb/quirks.c   |    2 +-
+ sound/usb/usbaudio.h |    1 +
+ 3 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 5006dcbe1d9f..77dffea3d537 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -509,8 +509,11 @@ void system_reset_exception(struct pt_regs *regs)
- 		die("Unrecoverable nested System Reset", regs, SIGABRT);
- #endif
- 	/* Must die if the interrupt is not recoverable */
--	if (!(regs->msr & MSR_RI))
-+	if (!(regs->msr & MSR_RI)) {
-+		/* For the reason explained in die_mce, nmi_exit before die */
-+		nmi_exit();
- 		die("Unrecoverable System Reset", regs, SIGABRT);
-+	}
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -831,6 +831,8 @@ static int usb_audio_probe(struct usb_in
+ 		snd_media_device_create(chip, intf);
+ 	}
  
- 	if (saved_hsrrs) {
- 		mtspr(SPRN_HSRR0, hsrr0);
--- 
-2.30.1
-
++	chip->quirk_type = quirk->type;
++
+ 	usb_chip[chip->index] = chip;
+ 	chip->intf[chip->num_interfaces] = intf;
+ 	chip->num_interfaces++;
+@@ -913,6 +915,9 @@ static void usb_audio_disconnect(struct
+ 	} else {
+ 		mutex_unlock(&register_mutex);
+ 	}
++
++	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
++		usb_enable_autosuspend(interface_to_usbdev(intf));
+ }
+ 
+ /* lock the shutdown (disconnect) task and autoresume */
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -547,7 +547,7 @@ static int setup_disable_autosuspend(str
+ 				       struct usb_driver *driver,
+ 				       const struct snd_usb_audio_quirk *quirk)
+ {
+-	driver->supports_autosuspend = 0;
++	usb_disable_autosuspend(interface_to_usbdev(iface));
+ 	return 1;	/* Continue with creating streams and mixer */
+ }
+ 
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -27,6 +27,7 @@ struct snd_usb_audio {
+ 	struct snd_card *card;
+ 	struct usb_interface *intf[MAX_CARD_INTERFACES];
+ 	u32 usb_id;
++	uint16_t quirk_type;
+ 	struct mutex mutex;
+ 	unsigned int system_suspend;
+ 	atomic_t active;
 
 
