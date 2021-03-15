@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE3A33B57D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BEA33B681
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhCONye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55852 "EHLO mail.kernel.org"
+        id S229887AbhCONyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230263AbhCONxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0C8164EEC;
-        Mon, 15 Mar 2021 13:53:20 +0000 (UTC)
+        id S230110AbhCONxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD33964E89;
+        Mon, 15 Mar 2021 13:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816402;
-        bh=CZ7on+YJf3WTcr/rsqN6YG/1VWuXArhhpbw7a5u7HUc=;
+        s=korg; t=1615816394;
+        bh=/8R6R06lhlNFIZDBwF3ujdYr58JUCq8f0opCZTPs2JY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lTRrVQGer6lK/pim2FPBgUCA8mf4uUm2dgdQaAIk3RgXHiu6e+XmlJVPRDMWnJTjR
-         7tD/g/f5Za94Gc2LbRICi/E08bXDw/Qh0GE7gmhq5Ku2ls2pe2pACD4CrQ4NWq+GO+
-         9FBFBivVDvh+a422sgsJ3hByvp1JXJnTS4+ULI8U=
+        b=zvFzEFd/kafs54uSrTGWLoyQgp9pR9bBScqJz0sAAxTqzBA5Mo+QDl2EmBVCKndDa
+         fuFY8m36cj9rNmcUd7OJQ0dDs/uOCopD9f+3trvg8lPKXhiUNPYlDV9F+Zrk/4rvje
+         Kjtj6+ibKvmxSYcqUO9aPG/6WSlv2V0LO17bnvzk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 23/75] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 14/78] net: lapbether: Remove netif_start_queue / netif_stop_queue
 Date:   Mon, 15 Mar 2021 14:51:37 +0100
-Message-Id: <20210315135209.006879358@linuxfoundation.org>
+Message-Id: <20210315135212.534633267@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
+commit f7d9d4854519fdf4d45c70a4d953438cd88e7e58 upstream.
 
-Avoid a potentially large stack frame and overflow by making
-"cpumask_t avail" a static variable. There is no concurrent
-access due to the existing locking.
+For the devices in this driver, the default qdisc is "noqueue",
+because their "tx_queue_len" is 0.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
+"noqueue" qdisc are specially handled. Packets are transmitted without
+being queued after a "dev->flags & IFF_UP" check. However, it's possible
+that even if this check succeeds, "ops->ndo_stop" may still have already
+been called. This is because in "__dev_close_many", "ops->ndo_stop" is
+called before clearing the "IFF_UP" flag.
+
+If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
+"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
+checks "netif_xmit_stopped" and finds that the queue is already stopped.
+In this case, it will complain that:
+"Virtual device ... asks to queue packet!"
+
+To prevent "__dev_queue_xmit" from generating this complaint, we should
+not call "netif_stop_queue" in "ops->ndo_stop".
+
+We also don't need to call "netif_start_queue" in "ops->ndo_open",
+because after a netdev is allocated and registered, the
+"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
+to call "netif_start_queue" to clear it.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wan/lapbether.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-index f113fcd781d8..486f0d4f9aee 100644
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -738,7 +738,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
- static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -286,7 +286,6 @@ static int lapbeth_open(struct net_devic
+ 		return -ENODEV;
+ 	}
+ 
+-	netif_start_queue(dev);
+ 	return 0;
+ }
+ 
+@@ -294,8 +293,6 @@ static int lapbeth_close(struct net_devi
  {
- 	struct sclp_core_entry *core;
--	cpumask_t avail;
-+	static cpumask_t avail;
- 	bool configured;
- 	u16 core_id;
- 	int nr, i;
--- 
-2.30.1
-
+ 	int err;
+ 
+-	netif_stop_queue(dev);
+-
+ 	if ((err = lapb_unregister(dev)) != LAPB_OK)
+ 		pr_err("lapb_unregister error: %d\n", err);
+ 
 
 
