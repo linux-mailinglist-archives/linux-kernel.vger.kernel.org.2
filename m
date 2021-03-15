@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80EE33BE16
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62B633BE38
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238500AbhCOOmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49574 "EHLO mail.kernel.org"
+        id S238366AbhCOOoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234305AbhCOODL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C454064E89;
-        Mon, 15 Mar 2021 14:03:09 +0000 (UTC)
+        id S232842AbhCOODo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A4F64EF3;
+        Mon, 15 Mar 2021 14:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816990;
-        bh=ZGHqpYg9bmFhxcT4Y1kLePiSwzu/r6PtAwOwk3qAU0U=;
+        s=korg; t=1615817022;
+        bh=5Q28Insji8hCawfXC4N4OSXAj2QgE19Qfz+hVjQ/DAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lu7p4VTEegE4JWLh9la+Z3qD7S93NLz3B+aePQumf0AizhFdyWzJc4eWFrKUUz1r/
-         F7+Xtq19B7RPTtrjdJwfj1SuGStoNGgtmC3w2GrRliHeKrKiFrTfo07KDsr4Tfvg1P
-         Q5iD8hzRixXZFR2wEB16V/0ojCShpPlg/3V8ZxkY=
+        b=ezjW++H7DaIThPSu25UIKVd/uixf056rrqcY3KqwCSa/pPSUcC26NABixR0SMrO+z
+         qLXcbhhXl0BnU61DWWnKJQxjdJbqDKnTVV70Tcooc4poppR6m/sqVaNZwBbj4J9FQy
+         RmNiOA9iEZjL6torwVmvEhhIqmH5Qi4lm0CGX+Gg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.10 233/290] staging: comedi: addi_apci_1500: Fix endian problem for command sample
-Date:   Mon, 15 Mar 2021 14:55:26 +0100
-Message-Id: <20210315135549.860777757@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 264/306] seqlock,lockdep: Fix seqcount_latch_init()
+Date:   Mon, 15 Mar 2021 14:55:27 +0100
+Message-Id: <20210315135516.564663602@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit ac0bbf55ed3be75fde1f8907e91ecd2fd589bde3 upstream.
+[ Upstream commit 4817a52b306136c8b2b2271d8770401441e4cf79 ]
 
-The digital input subdevice supports Comedi asynchronous commands that
-read interrupt status information.  This uses 16-bit Comedi samples (of
-which only the bottom 8 bits contain status information).  However, the
-interrupt handler is calling `comedi_buf_write_samples()` with the
-address of a 32-bit variable `unsigned int status`.  On a bigendian
-machine, this will copy 2 bytes from the wrong end of the variable.  Fix
-it by changing the type of the variable to `unsigned short`.
+seqcount_init() must be a macro in order to preserve the static
+variable that is used for the lockdep key. Don't then wrap it in an
+inline function, which destroys that.
 
-Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Cc: <stable@vger.kernel.org> #4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-3-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Luckily there aren't many users of this function, but fix it before it
+becomes a problem.
+
+Fixes: 80793c3471d9 ("seqlock: Introduce seqcount_latch_t")
+Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YEeFEbNUVkZaXDp4@hirez.programming.kicks-ass.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ include/linux/seqlock.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -208,7 +208,7 @@ static irqreturn_t apci1500_interrupt(in
- 	struct comedi_device *dev = d;
- 	struct apci1500_private *devpriv = dev->private;
- 	struct comedi_subdevice *s = dev->read_subdev;
--	unsigned int status = 0;
-+	unsigned short status = 0;
- 	unsigned int val;
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 2f7bb92b4c9e..f61e34fbaaea 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -664,10 +664,7 @@ typedef struct {
+  * seqcount_latch_init() - runtime initializer for seqcount_latch_t
+  * @s: Pointer to the seqcount_latch_t instance
+  */
+-static inline void seqcount_latch_init(seqcount_latch_t *s)
+-{
+-	seqcount_init(&s->seqcount);
+-}
++#define seqcount_latch_init(s) seqcount_init(&(s)->seqcount)
  
- 	val = inl(devpriv->amcc + AMCC_OP_REG_INTCSR);
-@@ -238,14 +238,14 @@ static irqreturn_t apci1500_interrupt(in
- 	 *
- 	 *    Mask     Meaning
- 	 * ----------  ------------------------------------------
--	 * 0x00000001  Event 1 has occurred
--	 * 0x00000010  Event 2 has occurred
--	 * 0x00000100  Counter/timer 1 has run down (not implemented)
--	 * 0x00001000  Counter/timer 2 has run down (not implemented)
--	 * 0x00010000  Counter 3 has run down (not implemented)
--	 * 0x00100000  Watchdog has run down (not implemented)
--	 * 0x01000000  Voltage error
--	 * 0x10000000  Short-circuit error
-+	 * 0b00000001  Event 1 has occurred
-+	 * 0b00000010  Event 2 has occurred
-+	 * 0b00000100  Counter/timer 1 has run down (not implemented)
-+	 * 0b00001000  Counter/timer 2 has run down (not implemented)
-+	 * 0b00010000  Counter 3 has run down (not implemented)
-+	 * 0b00100000  Watchdog has run down (not implemented)
-+	 * 0b01000000  Voltage error
-+	 * 0b10000000  Short-circuit error
- 	 */
- 	comedi_buf_write_samples(s, &status, 1);
- 	comedi_handle_events(dev, s);
+ /**
+  * raw_read_seqcount_latch() - pick even/odd latch data copy
+-- 
+2.30.1
+
 
 
