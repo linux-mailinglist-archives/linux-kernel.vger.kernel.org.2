@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6FB33B035
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C3B33B037
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhCOKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:45:35 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:17818 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhCOKpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:45:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615805119; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Ylc7MyxGKHBcPhryCW6d+Kcj0fWmkTz65X3rtbGl2n8=; b=ICh86YR/vVlZ9aFjFBOIqShSfQrEfelsXKnvgAuRyJyAo5CCZ3Gmv5mndcfCpBy2yL5t4E0Z
- tPb8qH0OOef8ZRwBeOcXVKxErXtY5vK/9s4TiScBjcXXTzFxiJMFsiL70kHlWbcfrZqqatrw
- wFBQXedY7ovh4k3aiXvgQhizm3g=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 604f3abe1de5dd7b993e94f7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 10:45:18
- GMT
-Sender: ylal=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EDF41C433ED; Mon, 15 Mar 2021 10:45:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.172] (unknown [49.206.45.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: ylal)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66AC4C433CA;
-        Mon, 15 Mar 2021 10:45:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66AC4C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ylal@codeaurora.org
-Subject: Re: [PATCH] driver core: Use unbound workqueue for deferred probes
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, pkondeti@codeaurora.org,
-        neeraju@codeaurora.org
-References: <1614167749-22005-1-git-send-email-ylal@codeaurora.org>
- <YDZKCk+it/7RpgUJ@kroah.com>
- <a40db2a2-f58a-aaec-6976-977d4b9f9e0e@codeaurora.org>
- <YDeNq+mBXDlHUlG4@kroah.com>
-From:   Yogesh Lal <ylal@codeaurora.org>
-Message-ID: <8061fa06-f101-e932-c67d-193e305d20b8@codeaurora.org>
-Date:   Mon, 15 Mar 2021 16:15:12 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229939AbhCOKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:46:35 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14341 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhCOKqS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:46:18 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DzY2D4q84z8xmQ;
+        Mon, 15 Mar 2021 18:44:20 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 15 Mar 2021 18:46:06 +0800
+Subject: Re: [PATCH 4/4] KVM: arm64: Don't retrieve memory slot again in page
+ fault handler
+To:     Gavin Shan <gshan@redhat.com>, <kvmarm@lists.cs.columbia.edu>
+References: <20210315041844.64915-1-gshan@redhat.com>
+ <20210315041844.64915-5-gshan@redhat.com>
+ <30073114-339f-33dd-0168-b4d6bfbe88bc@huawei.com>
+ <7a29ac43-ef11-e990-e08c-c5e97ea7d78d@redhat.com>
+CC:     <maz@kernel.org>, <will@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <shan.gavin@gmail.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <b3a175ca-67a7-7371-44ac-e17c8616badc@huawei.com>
+Date:   Mon, 15 Mar 2021 18:46:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <YDeNq+mBXDlHUlG4@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <7a29ac43-ef11-e990-e08c-c5e97ea7d78d@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Gavin,
 
-
-On 2/25/2021 5:14 PM, Greg KH wrote:
-> On Thu, Feb 25, 2021 at 04:03:50PM +0530, Yogesh Lal wrote:
->> Hi Greg,
+On 2021/3/15 17:56, Gavin Shan wrote:
+> Hi Keqian,
+> 
+> On 3/15/21 7:25 PM, Keqian Zhu wrote:
+>> On 2021/3/15 12:18, Gavin Shan wrote:
+>>> We needn't retrieve the memory slot again in user_mem_abort() because
+>>> the corresponding memory slot has been passed from the caller. This
+>> I think you are right, though fault_ipa will be adjusted when we try to use block mapping,
+>> the fault_supports_stage2_huge_mapping() makes sure we're not trying to map anything
+>> not covered by the memslot, so the adjusted fault_ipa still belongs to the memslot.
 >>
->>
->> On 2/24/2021 6:13 PM, Greg KH wrote:
->>> On Wed, Feb 24, 2021 at 05:25:49PM +0530, Yogesh Lal wrote:
->>>> Queue deferred driver probes on unbounded workqueue, to allow
->>>> scheduler better manage scheduling of long running probes.
+> 
+> Yeah, it's correct. Besides, the @logging_active is determined
+> based on the passed memory slot. It means user_mem_abort() can't
+> support memory range which spans multiple memory slot.
+> 
+>>> would save some CPU cycles. For example, the time used to write 1GB
+>>> memory, which is backed by 2MB hugetlb pages and write-protected, is
+>>> dropped by 6.8% from 928ms to 864ms.
 >>>
->>> Really?  What does this change and help?  What is the visable affect of
->>> this patch?  What problem does it solve?
+>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>> ---
+>>>   arch/arm64/kvm/mmu.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
 >>>
+>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>> index a5a8ade9fde4..4a4abcccfafb 100644
+>>> --- a/arch/arm64/kvm/mmu.c
+>>> +++ b/arch/arm64/kvm/mmu.c
+>>> @@ -846,7 +846,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>        */
+>>>       smp_rmb();
+>>>   -    pfn = gfn_to_pfn_prot(kvm, gfn, write_fault, &writable);
+>>> +    pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
+>>> +                   write_fault, &writable, NULL);
+>> It's better to update the code comments at same time.
 >>
->> We observed boot up improvement (~400 msec) when the deferred probe work is
->> made unbound. This is due to scheduler moving the worker running deferred
->> probe work to big CPUs. without this change, we see the worker is running on
->> LITTLE CPU due to affinity.
 > 
-> Why is none of this information in the changelog text?  How are we
-> supposed to know this?  And is this 400msec out of 10 seconds or
-
-We wanted to  first understand the requirement of bounded deferred probe 
-why it was really required.
-
-> something else?  Also, this sounds like your "little" cpus are really
-> bad, you might want to look into fixing them first :)
+> I guess you need some comments here? If so, I would add something
+> like below in v2:
 > 
+>     /*
+>      * gfn_to_pfn_prot() can be used either with unnecessary overhead
+>      * introduced to locate the memory slot because the memory slot is
+>      * always fixed even @gfn is adjusted for huge pages.
+>      */
+Looks good.
 
-~600ms (deferred probe bound to little core) and ~200ms (deferred probe 
-queued on unbound wq).
+See comments above "smp_rmb();", and actually my meaning is that we should change "gfn_to_pfn_prot"
+to "__gfn_to_pfn_memslot" :)
 
-> But if you really want to make this go faster, do not deferr your probe!
-> Why not fix that problem in your drivers instead?
-> 
-
-Yes, we are exploring in that direction as well but want to get upstream 
-opinion and understand the usability of unbounded wq.
-
->> Please let us now if there are any concerns/restrictions that deferred probe
->> work should run only on pinned kworkers. Since this work runs deferred probe
->> of several devices , the locality may not be that important
-> 
-> Can you prove that it is not important?  I know lots of gyrations are
-> done in some busses to keep probe happening on the same CPU for very
-> good reasons.  Changing that should not be done lightly as you will
-> break this.
-
-While debugging further and checking if probe are migrating found that 
-init thread can potentially migrate, as it has cpu affinity set to all 
-cpus, during driver probe (or there is something which prevents it, 
-which I am missing?) . Also, async probes use unbounded workqueue.
-So, using unbounded wq for deferred probes looks to be similar to these, 
-w.r.t. scheduling behavior.
-
+Thanks,
+Keqian
 
 > 
-> thanks,
+>>>       if (pfn == KVM_PFN_ERR_HWPOISON) {
+>>>           kvm_send_hwpoison_signal(hva, vma_shift);
+>>>           return 0;
+>>> @@ -912,7 +913,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>       /* Mark the page dirty only if the fault is handled successfully */
+>>>       if (writable && !ret) {
+>>>           kvm_set_pfn_dirty(pfn);
+>>> -        mark_page_dirty(kvm, gfn);
+>>> +        mark_page_dirty_in_slot(kvm, memslot, gfn);
+>>>       }
+>>>     out_unlock:
+>>>
 > 
-> greg k-h
+> Thanks,
+> Gavin
 > 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+> 
+> .
+> 
