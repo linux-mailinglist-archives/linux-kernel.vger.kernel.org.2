@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57C733BB99
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BFF33BB8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhCOOSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S236806AbhCOOSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232702AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230301AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49A6B64F3E;
-        Mon, 15 Mar 2021 13:59:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 013E564F27;
+        Mon, 15 Mar 2021 13:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816751;
-        bh=ogN7FbTujMMFv4mgK0Dnig98Hq/8MoXgI0/Jw4hM0sY=;
+        s=korg; t=1615816753;
+        bh=zK4at9k5Dm8F1q5zVGnHRvNLo57LWKGfx8uZ+FjbCQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gzdNQi844eUZdVRVC2prAFhOEpX+Su7geQWAGDCcYBy53xJGtHZYe9sMpyhGvrbuz
-         3CtJvj3OAUQB9xSrTb4Xz4NX2CO6HbmOfOAXyUnY1+bDd9x5grT73htN/NVi1lTHJt
-         nvdv7JmoKjih3y39MRqm5bV85Y4YtprYY0dyGx60=
+        b=TQsZN2yTTmR6XAe71sa7KFHzz89bgkOFMPZelfx77Vea5o8GVejHtS1/oV4y+Bg4+
+         wQkgiY2jMPUV0c7JVGWKmp0XHt5FPiO4w0MUSu2FFau+jpQ0rxISqnnCWC/6KOfLZz
+         wiBD9bb7YQVf0rkjrnMSrwkQyKZ6C+dEIRNAcKpo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
+        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/168] scsi: libiscsi: Fix iscsi_prep_scsi_cmd_pdu() error handling
-Date:   Mon, 15 Mar 2021 14:55:17 +0100
-Message-Id: <20210315135553.178288834@linuxfoundation.org>
+Subject: [PATCH 5.4 086/168] scsi: target: core: Add cmd length set before cmd complete
+Date:   Mon, 15 Mar 2021 14:55:18 +0100
+Message-Id: <20210315135553.210000175@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,48 +44,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 
-[ Upstream commit d28d48c699779973ab9a3bd0e5acfa112bd4fdef ]
+[ Upstream commit 1c73e0c5e54d5f7d77f422a10b03ebe61eaed5ad ]
 
-If iscsi_prep_scsi_cmd_pdu() fails we try to add it back to the cmdqueue,
-but we leave it partially setup. We don't have functions that can undo the
-pdu and init task setup. We only have cleanup_task which can clean up both
-parts. So this has us just fail the cmd and go through the standard cleanup
-routine and then have the SCSI midlayer retry it like is done when it fails
-in the queuecommand path.
+TCM doesn't properly handle underflow case for service actions. One way to
+prevent it is to always complete command with
+target_complete_cmd_with_length(), however it requires access to data_sg,
+which is not always available.
 
-Link: https://lore.kernel.org/r/20210207044608.27585-2-michael.christie@oracle.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
+This change introduces target_set_cmd_data_length() function which allows
+to set command data length before completing it.
+
+Link: https://lore.kernel.org/r/20210209072202.41154-2-a.miloserdov@yadro.com
+Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
+Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/target/target_core_transport.c | 15 +++++++++++----
+ include/target/target_core_backend.h   |  1 +
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index a14057c67a12..c5b7d18513b6 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -1532,14 +1532,9 @@ static int iscsi_data_xmit(struct iscsi_conn *conn)
- 		}
- 		rc = iscsi_prep_scsi_cmd_pdu(conn->task);
- 		if (rc) {
--			if (rc == -ENOMEM || rc == -EACCES) {
--				spin_lock_bh(&conn->taskqueuelock);
--				list_add_tail(&conn->task->running,
--					      &conn->cmdqueue);
--				conn->task = NULL;
--				spin_unlock_bh(&conn->taskqueuelock);
--				goto done;
--			} else
-+			if (rc == -ENOMEM || rc == -EACCES)
-+				fail_scsi_task(conn->task, DID_IMM_RETRY);
-+			else
- 				fail_scsi_task(conn->task, DID_ABORT);
- 			spin_lock_bh(&conn->taskqueuelock);
- 			continue;
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index b1f4be055f83..a16835c0bb1d 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -873,11 +873,9 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
+ }
+ EXPORT_SYMBOL(target_complete_cmd);
+ 
+-void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
++void target_set_cmd_data_length(struct se_cmd *cmd, int length)
+ {
+-	if ((scsi_status == SAM_STAT_GOOD ||
+-	     cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) &&
+-	    length < cmd->data_length) {
++	if (length < cmd->data_length) {
+ 		if (cmd->se_cmd_flags & SCF_UNDERFLOW_BIT) {
+ 			cmd->residual_count += cmd->data_length - length;
+ 		} else {
+@@ -887,6 +885,15 @@ void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int len
+ 
+ 		cmd->data_length = length;
+ 	}
++}
++EXPORT_SYMBOL(target_set_cmd_data_length);
++
++void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
++{
++	if (scsi_status == SAM_STAT_GOOD ||
++	    cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) {
++		target_set_cmd_data_length(cmd, length);
++	}
+ 
+ 	target_complete_cmd(cmd, scsi_status);
+ }
+diff --git a/include/target/target_core_backend.h b/include/target/target_core_backend.h
+index 51b6f50eabee..0deeff9b4496 100644
+--- a/include/target/target_core_backend.h
++++ b/include/target/target_core_backend.h
+@@ -69,6 +69,7 @@ int	transport_backend_register(const struct target_backend_ops *);
+ void	target_backend_unregister(const struct target_backend_ops *);
+ 
+ void	target_complete_cmd(struct se_cmd *, u8);
++void	target_set_cmd_data_length(struct se_cmd *, int);
+ void	target_complete_cmd_with_length(struct se_cmd *, u8, int);
+ 
+ void	transport_copy_sense_to_cmd(struct se_cmd *, unsigned char *);
 -- 
 2.30.1
 
