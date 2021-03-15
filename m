@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9E033B49C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC3833B49D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhCONbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCONbW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:31:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17836C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:31:22 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4Dzcks38stz9sW1; Tue, 16 Mar 2021 00:31:17 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        segher@kernel.crashing.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <a7aa198a88bcd33c6e35e99f70f86c7b7f2f9440.1615270757.git.christophe.leroy@csgroup.eu>
-References: <a7aa198a88bcd33c6e35e99f70f86c7b7f2f9440.1615270757.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/vdso32: Add missing _restgpr_31_x to fix build failure
-Message-Id: <161581505500.387233.5713425984426626454.b4-ty@ellerman.id.au>
-Date:   Tue, 16 Mar 2021 00:31:17 +1100 (AEDT)
+        id S231349AbhCONcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231411AbhCONb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:31:56 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B04C264EED;
+        Mon, 15 Mar 2021 13:31:55 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 09:31:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [GIT pull] locking/urgent for v5.12-rc3
+Message-ID: <20210315093153.2f1dd3be@gandalf.local.home>
+In-Reply-To: <YE9OOx0za7ZH3AXe@hirez.programming.kicks-ass.net>
+References: <161573639668.27979.17827928369874291298.tglx@nanos>
+        <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
+        <YE8b6dgsEG4OU0ay@hirez.programming.kicks-ass.net>
+        <YE9AkgbqL+eVO6p1@hirez.programming.kicks-ass.net>
+        <YE9EVNG4/5UMJvFp@hirez.programming.kicks-ass.net>
+        <YE9OOx0za7ZH3AXe@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 06:19:30 +0000 (UTC), Christophe Leroy wrote:
-> With some defconfig including CONFIG_CC_OPTIMIZE_FOR_SIZE,
-> (for instance mvme5100_defconfig and ps3_defconfig), gcc 5
-> generates a call to _restgpr_31_x.
-> 
-> Until recently it went unnoticed, but
-> commit 42ed6d56ade2 ("powerpc/vdso: Block R_PPC_REL24 relocations")
-> made it rise to the surface.
-> 
-> [...]
+On Mon, 15 Mar 2021 13:08:27 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Applied to powerpc/fixes.
+> So, anybody any opinion on if we ought to do this?
 
-[1/1] powerpc/vdso32: Add missing _restgpr_31_x to fix build failure
-      https://git.kernel.org/powerpc/c/08c18b63d9656e0389087d1956d2b37fd7019172
+Looks fine to me.
 
-cheers
+-- Steve
