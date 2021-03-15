@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A068A33BA29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F16233BB73
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbhCOOIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36728 "EHLO mail.kernel.org"
+        id S236936AbhCOOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:16:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230378AbhCON6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E12364F51;
-        Mon, 15 Mar 2021 13:58:10 +0000 (UTC)
+        id S232661AbhCON71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0D6664F12;
+        Mon, 15 Mar 2021 13:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816691;
-        bh=sdWnjAJvlnqJ2n9U+Zkd63cqwHEfAh4fXY7VV+tHcpE=;
+        s=korg; t=1615816743;
+        bh=BVQ6D2sJX+t8OYjd8r/XIXTKu0QBMuCKunDN/BZL3uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=02pdGiNKTgWnGkfMHVddQXG6CrpiFo0Hothrw9IaD49GLdCu0nh7LBhwKToYlpTkL
-         /NFESJ4iEj4ru1n76YlwCh/y4OAXkjUuD9u9VwQYKa7uZiq+ys7zqK9tQqurI7Ha24
-         KX88POlQMxSwKEeOmIaxb9N4njIhfEdINhQ7KEkM=
+        b=Jk/XBHGgzRJ7D2CFXmu18BfV9Dl93YXvp71LPV+0uDPttu7MK9rbrl/I8SlGUcVpN
+         VCyPt4Xd/RuuqX4mj5no7R//cPY4vYwLwuIGj+RIS4myPZ+5nJ0sH/3roovsCzGJCI
+         1ECLOJzwMqXQ6vthWsUTiPiq14CR1IWDtYhZamdQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.14 01/95] uapi: nfnetlink_cthelper.h: fix userspace compilation error
+        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.19 040/120] media: v4l: vsp1: Fix bru null pointer access
 Date:   Mon, 15 Mar 2021 14:56:31 +0100
-Message-Id: <20210315135740.298254443@linuxfoundation.org>
+Message-Id: <20210315135721.306299342@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,33 +42,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dmitry V. Levin <ldv@altlinux.org>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-commit c33cb0020ee6dd96cc9976d6085a7d8422f6dbed upstream.
+commit ac8d82f586c8692b501cb974604a71ef0e22a04c upstream.
 
-Apparently, <linux/netfilter/nfnetlink_cthelper.h> and
-<linux/netfilter/nfnetlink_acct.h> could not be included into the same
-compilation unit because of a cut-and-paste typo in the former header.
+RZ/G2L SoC has only BRS. This patch fixes null pointer access,when only
+BRS is enabled.
 
-Fixes: 12f7a505331e6 ("netfilter: add user-space connection tracking helper infrastructure")
-Cc: <stable@vger.kernel.org> # v3.6
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: cbb7fa49c7466("media: v4l: vsp1: Rename BRU to BRx")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/uapi/linux/netfilter/nfnetlink_cthelper.h |    2 +-
+ drivers/media/platform/vsp1/vsp1_drm.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-+++ b/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-@@ -5,7 +5,7 @@
- #define NFCT_HELPER_STATUS_DISABLED	0
- #define NFCT_HELPER_STATUS_ENABLED	1
- 
--enum nfnl_acct_msg_types {
-+enum nfnl_cthelper_msg_types {
- 	NFNL_MSG_CTHELPER_NEW,
- 	NFNL_MSG_CTHELPER_GET,
- 	NFNL_MSG_CTHELPER_DEL,
+--- a/drivers/media/platform/vsp1/vsp1_drm.c
++++ b/drivers/media/platform/vsp1/vsp1_drm.c
+@@ -243,7 +243,7 @@ static int vsp1_du_pipeline_setup_brx(st
+ 		brx = &vsp1->bru->entity;
+ 	else if (pipe->brx && !drm_pipe->force_brx_release)
+ 		brx = pipe->brx;
+-	else if (!vsp1->bru->entity.pipe)
++	else if (vsp1_feature(vsp1, VSP1_HAS_BRU) && !vsp1->bru->entity.pipe)
+ 		brx = &vsp1->bru->entity;
+ 	else
+ 		brx = &vsp1->brs->entity;
 
 
