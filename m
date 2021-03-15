@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A91633BE6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F49533BE45
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239416AbhCOOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:46:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52972 "EHLO mail.kernel.org"
+        id S238649AbhCOOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234635AbhCOOEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF2A264EE3;
-        Mon, 15 Mar 2021 14:04:35 +0000 (UTC)
+        id S233519AbhCOOEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F00DA64F0A;
+        Mon, 15 Mar 2021 14:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817077;
-        bh=5gBcwOLFuIb3qSYWTghwAo8YrGPi2BXQ9tvkKU8XT9s=;
+        s=korg; t=1615817040;
+        bh=IVTg84+G1khuab8C13rVN6gswVwBOlr/7Nji6DjvZWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DU+bPJSq7pOGn4qf8F/v1/hbJ74JmhMQvdFv6VfjcZvC7rLFuRtXCn751UfZqKl0Y
-         bS1vo03UWNZ9I2QvEhappP+hVtUOu8r2zp/fN7sF/ZtFl23Fzdmso7OV8RslHPVzMW
-         uboOonBKQVzGMlskzg1FGSqtyxIvaMsgKHD+Lsgc=
+        b=ByfJl7HjqkLKP3yojnfm8W3aBUyLq8aiOBpJlJlg8GDjuBpjFAOV/88K+bRAk5xMw
+         UVAh3cyC3Hj/JJu1N4WmX71Ft0AChLvIxlnewMkrICTv1jaAFIYw0g5BIIduAYdSyf
+         XjZXhyQuAcKqjJeLo35S85+jBOSrANG8XxSTCuZs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.11 288/306] x86/sev-es: Check regs->sp is trusted before adjusting #VC IST stack
-Date:   Mon, 15 Mar 2021 14:55:51 +0100
-Message-Id: <20210315135517.422810187@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 259/290] include/linux/sched/mm.h: use rcu_dereference in in_vfork()
+Date:   Mon, 15 Mar 2021 14:55:52 +0100
+Message-Id: <20210315135550.766623942@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +46,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit 545ac14c16b5dbd909d5a90ddf5b5a629a40fa94 upstream.
+[ Upstream commit 149fc787353f65b7e72e05e7b75d34863266c3e2 ]
 
-The code in the NMI handler to adjust the #VC handler IST stack is
-needed in case an NMI hits when the #VC handler is still using its IST
-stack.
+Fix a sparse warning by using rcu_dereference().  Technically this is a
+bug and a sufficiently aggressive compiler could reload the `real_parent'
+pointer outside the protection of the rcu lock (and access freed memory),
+but I think it's pretty unlikely to happen.
 
-But the check for this condition also needs to look if the regs->sp
-value is trusted, meaning it was not set by user-space. Extend the check
-to not use regs->sp when the NMI interrupted user-space code or the
-SYSCALL gap.
-
-Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
-Reported-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # 5.10+
-Link: https://lkml.kernel.org/r/20210303141716.29223-3-joro@8bytes.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210221194207.1351703-1-willy@infradead.org
+Fixes: b18dc5f291c0 ("mm, oom: skip vforked tasks from being selected")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/sev-es.c |   14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ include/linux/sched/mm.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -121,8 +121,18 @@ static void __init setup_vc_stacks(int c
- 	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
- }
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index d5ece7a9a403..dc1f4dcd9a82 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -140,7 +140,8 @@ static inline bool in_vfork(struct task_struct *tsk)
+ 	 * another oom-unkillable task does this it should blame itself.
+ 	 */
+ 	rcu_read_lock();
+-	ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
++	ret = tsk->vfork_done &&
++			rcu_dereference(tsk->real_parent)->mm == tsk->mm;
+ 	rcu_read_unlock();
  
--static __always_inline bool on_vc_stack(unsigned long sp)
-+static __always_inline bool on_vc_stack(struct pt_regs *regs)
- {
-+	unsigned long sp = regs->sp;
-+
-+	/* User-mode RSP is not trusted */
-+	if (user_mode(regs))
-+		return false;
-+
-+	/* SYSCALL gap still has user-mode RSP */
-+	if (ip_within_syscall_gap(regs))
-+		return false;
-+
- 	return ((sp >= __this_cpu_ist_bottom_va(VC)) && (sp < __this_cpu_ist_top_va(VC)));
- }
- 
-@@ -144,7 +154,7 @@ void noinstr __sev_es_ist_enter(struct p
- 	old_ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
- 
- 	/* Make room on the IST stack */
--	if (on_vc_stack(regs->sp))
-+	if (on_vc_stack(regs))
- 		new_ist = ALIGN_DOWN(regs->sp, 8) - sizeof(old_ist);
- 	else
- 		new_ist = old_ist - sizeof(old_ist);
+ 	return ret;
+-- 
+2.30.1
+
 
 
