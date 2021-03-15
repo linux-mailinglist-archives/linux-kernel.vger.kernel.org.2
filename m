@@ -2,123 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C1C33AF51
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2E633AEEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhCOJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhCOJya (ORCPT
+        id S229526AbhCOJi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:38:56 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:15768 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhCOJiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:54:30 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85B2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:54:29 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo19048175wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vb36aGZVBe1Zo7XeXtJbSBvtU1J1e9YMHXrwMcYQKHw=;
-        b=t4jAD04P+X+KqvlgV5RmZT5sq+1TA30moVvwlcpgcbhxDOhvxgUM0e5UT4HBDCaqYI
-         fMnaBBm2HpYbpKFAd8MipsDBrxVEP/pZ08k8oqpbIGPszA08IM8vcCo97OEVN9oeESRG
-         dtpVRuPgHx/H5YhG2czwsE2Nqbw8cf2YotaaUCGxHEMRYiJjABSs3dEd0g1B0ynCKX7u
-         fbXh6WMNnqR2yMzXYHhLt3Eg79GWug91FgiLXDSbdiKozAufDX1V1tgE7KL6IKo+SNfz
-         j46JzZ0QpnIAuqpQ9iPyxXNvdOePr1sy2g/BS4xeterZH8Ev86+fjueu9YRdvke08FE2
-         JyZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vb36aGZVBe1Zo7XeXtJbSBvtU1J1e9YMHXrwMcYQKHw=;
-        b=UBtBKmZIdv42qoSAYVBiLDLC5eOU33mFEr9ncROkBxukoGigg31jH2tUTy/Xqq0LOr
-         oFsTicvq/AAHh4FRtR6aM4xmiz4xj7ANBIfdmzzpq80eAPygxS5co2kRFiDHc5UXGT7O
-         pUA1yn9uHYKzJ42rpuBDN7zYO3YFEJJvslH0ZgnwBbExam8lcFWb1Hzl0O0dKBei8RKy
-         g17ckhulLF72ut78TJG+B3HCraoaQBx6hoGzDV9OB/gP0PMvQPFo47ykA7SYXewRzTpY
-         unjCKtmbdrJjU3+CDMnW+YvubAar2QU3lwaTyMLH2v6nA5QHymD/6dAubNXb3v2RLx9K
-         0hoA==
-X-Gm-Message-State: AOAM533N3ERcBP25zu9MayLzInxrY1hSrvldDeH6/0Lv3QIZassR/3Sp
-        UWK/4PaMA0sHzvgf9ROzyWB/2m35EpmhDw==
-X-Google-Smtp-Source: ABdhPJy5nWL1whb7b8NjkY0vJpYfi2s1EorStJdFT8jXTmDltnm9p2ZCDO+0+0Kor+kMwRubEdv8Tg==
-X-Received: by 2002:a1c:2857:: with SMTP id o84mr25013407wmo.181.1615802068087;
-        Mon, 15 Mar 2021 02:54:28 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id x11sm11765561wmi.3.2021.03.15.02.54.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Mar 2021 02:54:27 -0700 (PDT)
-Subject: Re: [PATCH v3 1/5] soundwire: add static port mapping support
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        broonie@kernel.org, vkoul@kernel.org
-Cc:     robh@kernel.org, devicetree@vger.kernel.org,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org
-References: <20210312113929.17512-1-srinivas.kandagatla@linaro.org>
- <20210312113929.17512-2-srinivas.kandagatla@linaro.org>
- <5869594c-dfd6-c49d-0168-1993cdeb5a43@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <8dd60c9f-d5c6-04d6-996e-5833382571d1@linaro.org>
-Date:   Mon, 15 Mar 2021 09:54:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 15 Mar 2021 05:38:23 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210315093819epoutp014613f71ce720ce5580c423275729b0be~seon52d2d0168001680epoutp01O
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:38:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210315093819epoutp014613f71ce720ce5580c423275729b0be~seon52d2d0168001680epoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615801099;
+        bh=3qlOT5uUZ+YLrom4qb6ld9dq4tKFakPJF6PM6+FP08Y=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=KRZSuGKR/4K3Q23RxNroyHLVDtbixG7PDvDknUNYJVEwjyBq0K3AVklrXQmR9CPOf
+         LBoHspMeICKERWR1PttA2hVvv+1sZHMrFRuKz0TimZwQVkf1dIhRWKhSuc7nGYKOra
+         oXOnLV24toMzDOJIRgZ723TJxWYXAOodLq2qBkfg=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210315093818epcas1p22c58560b57adb4f0b3bacb71c100dc02~seonZWTl12044420444epcas1p2z;
+        Mon, 15 Mar 2021 09:38:18 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DzWZ03Gpwz4x9Q0; Mon, 15 Mar
+        2021 09:38:16 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        92.C9.63458.80B2F406; Mon, 15 Mar 2021 18:38:16 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210315093815epcas1p32308b5dd2a04df776bdac997e20ce094~seoki7kcz2884728847epcas1p3r;
+        Mon, 15 Mar 2021 09:38:15 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210315093815epsmtrp1fcc3643f1e2f4e74108bc34993012487~seokiKwp_0925109251epsmtrp1R;
+        Mon, 15 Mar 2021 09:38:15 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-80-604f2b08c298
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        63.DF.13470.70B2F406; Mon, 15 Mar 2021 18:38:15 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210315093815epsmtip1101d5f3d12dda5bf2f6fefb917648e48~seokVao4y0057100571epsmtip1o;
+        Mon, 15 Mar 2021 09:38:15 +0000 (GMT)
+Subject: Re: [PATCH v2] PM / devfreq: Unlock mutex and free devfreq struct
+ in error path
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        stable@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <a73d618f-2369-0d80-f8c6-22ddd9a9a716@samsung.com>
+Date:   Mon, 15 Mar 2021 18:54:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <5869594c-dfd6-c49d-0168-1993cdeb5a43@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210315093123.20049-1-lukasz.luba@arm.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdlhTX5dD2z/B4MVhEYuzTW/YLS7vmsNm
+        8bn3CKPFwqYWdovbjSvYLBZsfMTowOaxZt4aRo++LasYPT5vkgtgjsq2yUhNTEktUkjNS85P
+        ycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAHaq6RQlphTChQKSCwuVtK3synK
+        Ly1JVcjILy6xVUotSMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzIztj7fjNjwXnOiuWzPrA2
+        MN5l72Lk5JAQMJFY+2EhaxcjF4eQwA5GiaXbnjNDOJ8YJbZ+PMEI4XxjlJh6awIbTMuTd2ug
+        qvYySkyZdQfKec8o0d+znxmkSlggSuLKhP1gS0QE4iUWHvoAZjMLBErMaD3HCmKzCWhJ7H9x
+        A2wqv4CixNUfjxlBbF4BO4mZ2yYwgdgsAqoS6xb/B5spKhAmcXJbC1SNoMTJmU9YQGxOAUuJ
+        ucdXsEDMF5e49WQ+E4QtL7H97Ryw4yQEGjkkpvX9Y4J4wUXi/s75jBC2sMSr41ugoSEl8bK/
+        Dcqullh58ggbRHMHo8SW/RdYIRLGEvuXTgYaxAG0QVNi/S59iLCixM7fcxkhFvNJvPvawwpS
+        IiHAK9HRJgRRoixx+cFdqBMkJRa3d7JNYFSaheSdWUhemIXkhVkIyxYwsqxiFEstKM5NTy02
+        LDBCju5NjOBEqWW2g3HS2w96hxiZOBgPMUpwMCuJ8H7W8U0Q4k1JrKxKLcqPLyrNSS0+xGgK
+        DOCJzFKiyfnAVJ1XEm9oamRsbGxhYmhmamioJM6baPAgXkggPbEkNTs1tSC1CKaPiYNTqoGJ
+        5fyUhOKcVhZOvgBNqfq3ghvk+2VVN9S6ZH7srBXSNHXo23Dks8Sq5lXKC71Vj3HUfpy6pO31
+        xy+mB0vPeM1TWMV1b3nYKp3Jfk1TJz5huZ36IvMv7/5JvqLLb8XK6Vhrf/+qpPt6+Vbnh5+K
+        CmuXfaiukjBzv5VU2y6ZpBse9KlVxjn+Itdy79opzkLXXotIXpn3b/EMrTnszVurq/++at90
+        4ubCdRwXD10UbL/Rpt64bdr2qQvZblTq5hh/3vQyYm5L/kFe2fP8lrw9S0rjXx1Z0vmm1XPn
+        3it3XR6FKB5wd427F65QOE1+UlKx5dPH2z4tLb3KoiH+cLkDZ1vh3tfFuyp5/2bxeqetNrFW
+        YinOSDTUYi4qTgQAD4S38x0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsWy7bCSnC67tn+CQddvVYuzTW/YLS7vmsNm
+        8bn3CKPFwqYWdovbjSvYLBZsfMTowOaxZt4aRo++LasYPT5vkgtgjuKySUnNySxLLdK3S+DK
+        2Pt+M2PBec6K5bM+sDYw3mXvYuTkkBAwkXjybg1zFyMXh5DAbkaJTRtnQyUkJaZdPAqU4ACy
+        hSUOHy6GqHnLKHHo/moWkLiwQJTE+ivCIOUiAvESEx5cZwcJMwsESlx6YANR3sMocenAJkaQ
+        GjYBLYn9L26wgdj8AooSV388BovzCthJzNw2gQnEZhFQlVi3+D8ziC0qECaxc8ljJogaQYmT
+        M5+wgNicApYSc4+vALOZBdQl/sy7xAxhi0vcejKfCcKWl9j+dg7zBEbhWUjaZyFpmYWkZRaS
+        lgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYKjRUtzB+P2VR/0DjEycTAeYpTg
+        YFYS4f2s45sgxJuSWFmVWpQfX1Sak1p8iFGag0VJnPdC18l4IYH0xJLU7NTUgtQimCwTB6dU
+        A9N0x3lyoSennPFrfNx0YsmKpIrz6sliviniRkKKG6WFvsafV7RrvC/OGX7Ttbdh/VM5nty1
+        3943eP/4zTrj0UPduxU9t8pW8RQwSbZpB2ZPajmkkn0zSYSXeYbARGm2hfkxJQvtU+/NPBCs
+        kMTFtywjv6pEXMhv5s9Zf/tuvJsWszzf6emtVMkO93R/Xu25ysxTn01l+JbO5aPcINU3k8XN
+        cOL/Hp+P5RtfJV/6V7RicXJcw8P2K8VxXNIlXNdkz4t27AgU5k1qZsg6/+PqrxaF35eKlKWr
+        Aip3i/Rv715faWzrcu+T6Z/PVw19TTn1K2+lNl68X2Wj0fh1T8It/cd7r7zbOaMlSHPpbfk1
+        SizFGYmGWsxFxYkAFukFzgUDAAA=
+X-CMS-MailID: 20210315093815epcas1p32308b5dd2a04df776bdac997e20ce094
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210315093239epcas1p4516341a9f5614f59bfeb6af66e146540
+References: <CGME20210315093239epcas1p4516341a9f5614f59bfeb6af66e146540@epcas1p4.samsung.com>
+        <20210315093123.20049-1-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/15/21 6:31 PM, Lukasz Luba wrote:
+> The devfreq->lock is held for time of setup. Release the lock in the
+> error path, before jumping to the end of the function.
+> 
+> Change the goto destination which frees the allocated memory.
+> 
+> Cc: v5.9+ <stable@vger.kernel.org> # v5.9+
+> Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+> v2:
+> - added fixes tag and CC stable v5.9+
+> - used capital letter in commit header
+> 
+> 
+>  drivers/devfreq/devfreq.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index b6d3e7db0b09..99b2eeedc238 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -822,7 +822,8 @@ struct devfreq *devfreq_add_device(struct device *dev,
+>  
+>  	if (devfreq->profile->timer < 0
+>  		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+> -		goto err_out;
+> +		mutex_unlock(&devfreq->lock);
+> +		goto err_dev;
+>  	}
+>  
+>  	if (!devfreq->profile->max_state && !devfreq->profile->freq_table) {
+> 
 
 
-On 12/03/2021 16:56, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 3/12/21 5:39 AM, Srinivas Kandagatla wrote:
->> Some of the SoundWire device ports are statically mapped to Controller
->> ports during design, however there is no way to expose this information
->> to the controller. Controllers like Qualcomm ones use this info to setup
->> static bandwidth parameters for those ports.
->>
->> A generic port allocation is not possible in this cases!
->> So this patch adds a new member m_port_map to struct sdw_slave to expose
->> this static map.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   include/linux/soundwire/sdw.h | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/include/linux/soundwire/sdw.h 
->> b/include/linux/soundwire/sdw.h
->> index d08039d65825..b032d6ac0b39 100644
->> --- a/include/linux/soundwire/sdw.h
->> +++ b/include/linux/soundwire/sdw.h
->> @@ -614,6 +614,7 @@ struct sdw_slave_ops {
->>    * @debugfs: Slave debugfs
->>    * @node: node for bus list
->>    * @port_ready: Port ready completion flag for each Slave port
->> + * @m_port_map: static Master port map for each Slave port0 to port14
-> 
-> did you mean port1..port14?
-> 
-Yes I agree its port1..port14, will update this in next version.
+Applied it. Thanks.
 
---srini
-> DP0 is a special case that's not supposed to be used for audio transport 
-> but rather extended control and command? >
->>    * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
->>    * @dev_num_sticky: one-time static Device Number assigned by Bus
->>    * @probed: boolean tracking driver state
->> @@ -645,6 +646,7 @@ struct sdw_slave {
->>   #endif
->>       struct list_head node;
->>       struct completion port_ready[SDW_MAX_PORTS];
->> +    unsigned int m_port_map[SDW_MAX_PORTS];
->>       enum sdw_clk_stop_mode curr_clk_stop_mode;
->>       u16 dev_num;
->>       u16 dev_num_sticky;
->>
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
