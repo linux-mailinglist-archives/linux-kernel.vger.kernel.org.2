@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E070A33AB55
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0862033AB56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhCOF43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 01:56:29 -0400
-Received: from www381.your-server.de ([78.46.137.84]:56206 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhCOFz5 (ORCPT
+        id S229883AbhCOF5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 01:57:05 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:30896 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhCOF4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 01:55:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=IkS7ZuA8VoKHngBBwqAzIVCXTQiYiHJGfANbczzqcLE=; b=UDczlLy35ac1fu1ljGMSRYoN2S
-        +9sL9QhBPmqp5KcQYespc0HPIdXWwYCzEtJJZwEs3lsM+VWz3MdQI86iBxSEn9zXWIsOPYr8b+rJy
-        cFse3+Btd5GGu6ckDf1ZFM/5AQHUVVsBTGG6u7xL0ZShajT4Bboabwm/Qt11HpfD32w2o/P/HdH+O
-        mgeMW566navEw7mr6GA8szputEE+mZgDC8j6OTKSadu+dPJhQxa5c1jpLP0Fym25H5hEh4IarYQA7
-        ssBSiXNT/4c7wxF+aIUee1FPhym6894dzRpAT1IAb2MnH3oQQiNlneEwjqUQcuoy7cP6Ot3si1xba
-        pHTx0dVQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lLgCn-00030V-QM; Mon, 15 Mar 2021 06:55:53 +0100
-Received: from [2001:a61:2aea:a901:9e5c:8eff:fe01:8578]
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lLgCn-000N93-KS; Mon, 15 Mar 2021 06:55:53 +0100
-Subject: Re: [PATCH v2] iio:dac:max517.c: Use devm_iio_device_register()
-To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
-        ardeleanalex@gmail.com, Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210314093356.10609-1-dmugil2000@gmail.com>
- <20210314175709.34301-1-dmugil2000@gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <707e5ff3-c38a-c0fe-e6b9-1e054cc46606@metafoo.de>
-Date:   Mon, 15 Mar 2021 06:55:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 01:56:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615787798; x=1647323798;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JOv9nf8B9U7wOZ0NotKK+ObE4/2lAZvK35sQX7F14L4=;
+  b=jdGG3QxceSRyKZY+kS002UJWQEryImLzKK10NeA9txHa1pjDTszr8B+R
+   yLKKSq30YaizSREyxLFpFi8l0J5uSGXxSuui+hVy1ySw0l3umCj9DHL72
+   4420fqH1ZZ2FcXnm5zeKcm4GXMzBoSYZ7ZvuwY+XFruuqIlKjw3yyQ+9u
+   S0DUTOQopq11qn8U4qbgdTgJA2Z1i2LWzhtkseg532qI0QQAwqbUXiue5
+   4zx6Tt35V6we/rl3GpoZEOBiwpHrMOaVuBTy75xJPF5oIZWtWpPdRR3/0
+   kbdFCzWLSfyEKNrmJvFySsepd6eZPxwVwdSW/xbBkVQ+m9QooJjJYAB3Q
+   A==;
+IronPort-SDR: hsLFSB8Xdzl+pfbgx4J0k//AhnnoWOx9KB+5rAPoB+vs3rQyjdm/+CTA+OxksTyviXEt5c6dps
+ 5ND6EAF2v7OIBo6MDLelBsyEblxjiaOUJkxAGxqaGmccozTzMkJ4lLnrUwP9eoNLSJ9dTkagl2
+ kIunYKhnu78Hz3ly3rQw3vle0gAF2bNiwiETi9FRES9eIfBOsxXF2XPwXOxMvbpxsRI2lzxLbc
+ F3U5FyNR8vpCmWUpOEmX4xYQNHm5yw05nTnEC5CJ0lZmy15YY3VP1Z4GdqOilyN+/xFhT4mV2K
+ p4E=
+X-IronPort-AV: E=Sophos;i="5.81,249,1610434800"; 
+   d="scan'208";a="112724540"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Mar 2021 22:56:38 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 14 Mar 2021 22:56:38 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sun, 14 Mar 2021 22:56:36 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <michael@walle.cc>, <p.yadav@ti.com>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: spi-nor: Update comment about the default flash parameters
+Date:   Mon, 15 Mar 2021 07:56:34 +0200
+Message-ID: <20210315055634.17332-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210314175709.34301-1-dmugil2000@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26108/Sun Mar 14 13:05:46 2021)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/14/21 6:57 PM, Mugilraj Dhavachelvan wrote:
-> Use devm_iio_device_register() to avoid remove function and
-> drop explicit call to iio_device_unregister().
->
-> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
->
-> changes v1->v2:
-> 	-As sugested by Alexandru removed i2c_set_clientdata() because the stored
-> 	 data will be never used.
+s/legacy/default. spi_nor_info_init_params initializes some default
+flash parameters and settings that can be overwritten when parsing
+SFDP, or by fixup hooks. There's nothing legacy about them, they are
+just some default settings, if not otherwise discovered or specified.
 
-Hi,
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This looks good!
-
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
-
-One thing process wise. I know it is tempting to send version 2 as a 
-reply to version 1, but this way it is also easy for the messages to get 
-lost in longer threads. At least for the IIO mailinglist we have decided 
-that it is best to send new versions of a patch series as their own 
-threads so that they stand own and get noticed.
-
-- Lars
-
-> ---
->   drivers/iio/dac/max517.c | 10 +---------
->   1 file changed, 1 insertion(+), 9 deletions(-)
->
-> diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
-> index 7e01838ef4d0..00f0062a0298 100644
-> --- a/drivers/iio/dac/max517.c
-> +++ b/drivers/iio/dac/max517.c
-> @@ -153,7 +153,6 @@ static int max517_probe(struct i2c_client *client,
->   	if (!indio_dev)
->   		return -ENOMEM;
->   	data = iio_priv(indio_dev);
-> -	i2c_set_clientdata(client, indio_dev);
->   	data->client = client;
->   
->   	/* establish that the iio_dev is a child of the i2c device */
-> @@ -189,13 +188,7 @@ static int max517_probe(struct i2c_client *client,
->   			data->vref_mv[chan] = platform_data->vref_mv[chan];
->   	}
->   
-> -	return iio_device_register(indio_dev);
-> -}
-> -
-> -static int max517_remove(struct i2c_client *client)
-> -{
-> -	iio_device_unregister(i2c_get_clientdata(client));
-> -	return 0;
-> +	return devm_iio_device_register(&client->dev, indio_dev);
->   }
->   
->   static const struct i2c_device_id max517_id[] = {
-> @@ -214,7 +207,6 @@ static struct i2c_driver max517_driver = {
->   		.pm	= &max517_pm_ops,
->   	},
->   	.probe		= max517_probe,
-> -	.remove		= max517_remove,
->   	.id_table	= max517_id,
->   };
->   module_i2c_driver(max517_driver);
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4a315cb1c4db..26f681cd3a98 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2913,7 +2913,7 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
+ 	struct device_node *np = spi_nor_get_flash_node(nor);
+ 	u8 i, erase_mask;
+ 
+-	/* Initialize legacy flash parameters and settings. */
++	/* Initialize default flash parameters and settings. */
+ 	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+ 	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+ 	params->setup = spi_nor_default_setup;
+-- 
+2.25.1
 
