@@ -2,154 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6360333B50D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1034C33B4F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhCONxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55296 "EHLO mail.kernel.org"
+        id S229743AbhCONwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhCONwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76A9664EB6;
-        Mon, 15 Mar 2021 13:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816361;
-        bh=hDaQLgO18Rj6T2ucV01F8tsSkHlvDnNbKNKLO8Lfxz4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9L3kYHq2ru7Lsvyx2FnwWUExZT3KvPFS8b2tycxwDNLo769Q2ZbkNaqpLJWo/h8I
-         AixCyEMbhf5h+PUvQ9+l+A950RAQ4wmmYu74i0vD9I8pTw2KLlMZobP/q0PE1ik1Oa
-         u77S1U/nfhQ8+rs1OzdtJ9otn13LRAXqRB2GDBHk=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tom Herbert <tom@herbertland.com>,
-        Willem de Bruijn <willemb@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 03/75] net: Fix gro aggregation for udp encaps with zero csum
-Date:   Mon, 15 Mar 2021 14:51:17 +0100
-Message-Id: <20210315135208.377858642@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229524AbhCONvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:51:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8A0964D9E;
+        Mon, 15 Mar 2021 13:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615816303;
+        bh=+BIlPAZ2Vr8nw75QH4LHz5LqpPdXI0+6isk0ygUkL3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qseNXZnkK9rROY8OB4iQubMB9JDLhkaaxooFBeEKM3coajSvaULa/u/T2t/OU94t0
+         oMUqB5PGbYDCDI8WAgJjDKaL3aDDs5M/d4s5FL5NTSrOIBkjSMeuqPv2p44doO+nDQ
+         RDTxKT0dZSxzrC1CFS8CVDY9zj1BpSedcWtY7EvZIOKOwQxkG/jqDM8PYQIZh2V9bR
+         QYwdkupTIRNmpqVhuTcOtcb2Kse1+BObzwSJxRtBqvQ5i080CHfN7gulShypikw5dG
+         gNHh8Me63fkQSJfj/uQ+f47fRRLW0HJhWukjym3ERxXOG/gEzrbBYhsFk4bm5UHC2n
+         wchXdu6VelJUg==
+Date:   Mon, 15 Mar 2021 15:51:17 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-ID: <YE9mVUF0KOPNSfA9@kernel.org>
+References: <cover.1615250634.git.kai.huang@intel.com>
+ <d2ebcffeb9193d26a1305e08fe1aa1347feb1c62.1615250634.git.kai.huang@intel.com>
+ <YEvg2vNfiDYoc9u3@google.com>
+ <YE0M/VoETPw7YZIy@kernel.org>
+ <YE0NeChRjBlldQ8H@kernel.org>
+ <YE4M8JGGl9Xyx51/@kernel.org>
+ <YE4rVnfQ9y7CnVvr@kernel.org>
+ <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
+ <YE9beKYDaG1sMWq+@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE9beKYDaG1sMWq+@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Mon, Mar 15, 2021 at 03:04:59PM +0200, Jarkko Sakkinen wrote:
+> On Mon, Mar 15, 2021 at 04:13:17PM +1300, Kai Huang wrote:
+> > On Sun, 14 Mar 2021 17:27:18 +0200 Jarkko Sakkinen wrote:
+> > > On Sun, Mar 14, 2021 at 05:25:26PM +0200, Jarkko Sakkinen wrote:
+> > > > On Sat, Mar 13, 2021 at 09:07:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > On Sat, Mar 13, 2021 at 09:05:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > > On Fri, Mar 12, 2021 at 01:44:58PM -0800, Sean Christopherson wrote:
+> > > > > > > On Tue, Mar 09, 2021, Kai Huang wrote:
+> > > > > > > > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > > > > > > > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > > > > > > > if SGX Launch Control is in locked mode, or not supported in the
+> > > > > > > > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > > > > > > > configurations to use SGX.
+> > > > > > > > 
+> > > > > > > > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > > > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > > > > > ---
+> > > > > > > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> > > > > > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > index 44fe91a5bfb3..8c922e68274d 100644
+> > > > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > @@ -712,7 +712,15 @@ static int __init sgx_init(void)
+> > > > > > > >  		goto err_page_cache;
+> > > > > > > >  	}
+> > > > > > > >  
+> > > > > > > > -	ret = sgx_drv_init();
+> > > > > > > > +	/*
+> > > > > > > > +	 * Always try to initialize the native *and* KVM drivers.
+> > > > > > > > +	 * The KVM driver is less picky than the native one and
+> > > > > > > > +	 * can function if the native one is not supported on the
+> > > > > > > > +	 * current system or fails to initialize.
+> > > > > > > > +	 *
+> > > > > > > > +	 * Error out only if both fail to initialize.
+> > > > > > > > +	 */
+> > > > > > > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> > > > > > > 
+> > > > > > > I love this code.
+> > > > > > > 
+> > > > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > > > 
+> > > > > > I'm still wondering why this code let's go through when sgx_drv_init()
+> > > > > > succeeds and sgx_vepc_init() fails.
+> > > > > > 
+> > > > > > The inline comment explains only the mirrored case (which does make
+> > > > > > sense).
+> > > > > 
+> > > > > I.e. if sgx_drv_init() succeeds, I'd expect that sgx_vepc_init() must
+> > > > > succeed. Why expect legitly anything else?
+> > > >  
+> > > > Apologies coming with these ideas at this point, but here is what this
+> > > > led me.
+> > > > 
+> > > > I think that the all this complexity comes from a bad code structure.
+> > > > 
+> > > > So, what is essentially happening here:
+> > > > 
+> > > > - We essentially want to make EPC always work.
+> > > > - Driver optionally.
+> > > > 
+> > > > So what this sums to is something like:
+> > > > 
+> > > >         ret = sgx_epc_init();
+> > > >         if (ret) {
+> > > >                 pr_err("EPC initialization failed.\n");
+> > > >                 return ret;
+> > > >         }
+> > > > 
+> > > >         ret = sgx_drv_init();
+> > > >         if (ret)
+> > > >                 pr_info("Driver could not be initialized.\n");
+> > > > 
+> > > >         /* continue */
+> > > > 
+> > > > I.e. I think there should be a single EPC init, which does both EPC
+> > > > bootstrapping and vepc, and driver initialization comes after that.
+> > > 
+> > > In other words, from SGX point of view, the thing that KVM needs is
+> > > to cut out EPC and driver part into different islands. How this is now
+> > > implemented in the current patch set is half-way there but not yet what
+> > > it should be.
+> > 
+> > Well conceptually, SGX virtualization and SGX driver are two independently
+> > functionalities can be enabled separately, although they both requires some
+> > come functionalities, such as /dev/sgx_provision, which we have moved to
+> > sgx/main.c exactly for this purpose. THerefore, conceptually, it is bad to make
+> > assumption that, if SGX virtualization initialization succeeded, SGX driver
+> > must succeed -- we can potentially add more staff in SGX virtualization in the
+> > future..
+> > 
+> > If the name sgx_vepc_init() confuses you, I can rename it to sgx_virt_init().
+> 
+> I don't understand what would be the bad thing here. Can you open that
+> up please? I'm neither capable of predicting the future...
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+Right, so since vepc_init() does only just device file initialization the
+current function structure is fine. I totally forgot that sgx_drv_init()
+does not call EPC initialization when I wrote the above :-) We refactored
+during the inital cycle the driver so many times that I sometimes fix up
+thing, sorry about.
 
-commit 89e5c58fc1e2857ccdaae506fb8bc5fed57ee063 upstream.
+To meld this into code:
 
-We noticed a GRO issue for UDP-based encaps such as vxlan/geneve when the
-csum for the UDP header itself is 0. In that case, GRO aggregation does
-not take place on the phys dev, but instead is deferred to the vxlan/geneve
-driver (see trace below).
+        ret = sgx_vepc_init();
+        if (ret != -ENODEV) {
+                pr_err("vEPC initialization failed with %d.\n", ret);
+                return ret;
+        }
 
-The reason is essentially that GRO aggregation bails out in udp_gro_receive()
-for such case when drivers marked the skb with CHECKSUM_UNNECESSARY (ice, i40e,
-others) where for non-zero csums 2abb7cdc0dc8 ("udp: Add support for doing
-checksum unnecessary conversion") promotes those skbs to CHECKSUM_COMPLETE
-and napi context has csum_valid set. This is however not the case for zero
-UDP csum (here: csum_cnt is still 0 and csum_valid continues to be false).
+        ret = sgx_drv_init();
+        if (ret != ENODEV)
+                pr_info("Driver initialization failed %d.\n", ret);
 
-At the same time 57c67ff4bd92 ("udp: additional GRO support") added matches
-on !uh->check ^ !uh2->check as part to determine candidates for aggregation,
-so it certainly is expected to handle zero csums in udp_gro_receive(). The
-purpose of the check added via 662880f44203 ("net: Allow GRO to use and set
-levels of checksum unnecessary") seems to catch bad csum and stop aggregation
-right away.
+This would also give more accurate information how far the initialization
+went.
 
-One way to fix aggregation in the zero case is to only perform the !csum_valid
-check in udp_gro_receive() if uh->check is infact non-zero.
-
-Before:
-
-  [...]
-  swapper     0 [008]   731.946506: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100400 len=1500   (1)
-  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100200 len=1500
-  swapper     0 [008]   731.946507: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101100 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101700 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101b00 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100600 len=1500
-  swapper     0 [008]   731.946508: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100f00 len=1500
-  swapper     0 [008]   731.946509: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100a00 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100500 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100700 len=1500
-  swapper     0 [008]   731.946516: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101d00 len=1500   (2)
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101000 len=1500
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101c00 len=1500
-  swapper     0 [008]   731.946517: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101400 len=1500
-  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100e00 len=1500
-  swapper     0 [008]   731.946518: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497101600 len=1500
-  swapper     0 [008]   731.946521: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff966497100800 len=774
-  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497100400 len=14032 (1)
-  swapper     0 [008]   731.946530: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff966497101d00 len=9112  (2)
-  [...]
-
-  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
-  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
-  Recv   Send    Send
-  Socket Socket  Message  Elapsed
-  Size   Size    Size     Time     Throughput
-  bytes  bytes   bytes    secs.    10^6bits/sec
-
-   87380  16384  16384    20.01    13129.24
-
-After:
-
-  [...]
-  swapper     0 [026]   521.862641: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479000 len=11286 (1)
-  swapper     0 [026]   521.862643: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479000 len=11236 (1)
-  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d478500 len=2898  (2)
-  swapper     0 [026]   521.862650: net:netif_receive_skb: dev=enp10s0f0  skbaddr=0xffff93ab0d479f00 len=8490  (3)
-  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d478500 len=2848  (2)
-  swapper     0 [026]   521.862653: net:netif_receive_skb: dev=test_vxlan skbaddr=0xffff93ab0d479f00 len=8440  (3)
-  [...]
-
-  # netperf -H 10.55.10.4 -t TCP_STREAM -l 20
-  MIGRATED TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.55.10.4 () port 0 AF_INET : demo
-  Recv   Send    Send
-  Socket Socket  Message  Elapsed
-  Size   Size    Size     Time     Throughput
-  bytes  bytes   bytes    secs.    10^6bits/sec
-
-   87380  16384  16384    20.01    24576.53
-
-Fixes: 57c67ff4bd92 ("udp: additional GRO support")
-Fixes: 662880f44203 ("net: Allow GRO to use and set levels of checksum unnecessary")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Tom Herbert <tom@herbertland.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/r/20210226212248.8300-1-daniel@iogearbox.net
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/udp_offload.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -300,7 +300,7 @@ struct sk_buff **udp_gro_receive(struct
- 	int flush = 1;
- 
- 	if (NAPI_GRO_CB(skb)->encap_mark ||
--	    (skb->ip_summed != CHECKSUM_PARTIAL &&
-+	    (uh->check && skb->ip_summed != CHECKSUM_PARTIAL &&
- 	     NAPI_GRO_CB(skb)->csum_cnt == 0 &&
- 	     !NAPI_GRO_CB(skb)->csum_valid))
- 		goto out;
-
-
+/Jarkko
