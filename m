@@ -2,157 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8872F33AEFC
+	by mail.lfdr.de (Postfix) with ESMTP id 5D42F33AEFA
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCOJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:40:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:55894 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229661AbhCOJkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:40:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37F691FB;
-        Mon, 15 Mar 2021 02:40:09 -0700 (PDT)
-Received: from [10.57.12.51] (unknown [10.57.12.51])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6CAE3F70D;
-        Mon, 15 Mar 2021 02:40:06 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] thermal/drivers/core: Use a char pointer for the
- cooling device name
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:MELLANOX ETHERNET SWITCH DRIVERS" <netdev@vger.kernel.org>
-References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
- <18fdc11b-abda-25d9-582f-de2f9dfa2feb@arm.com>
- <f51fcec0-1483-cecb-d984-591097c324ca@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <1aada78d-06f1-4ccd-cf81-7c2e8f5fe747@arm.com>
-Date:   Mon, 15 Mar 2021 09:40:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229699AbhCOJkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:40:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24171 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229643AbhCOJk3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:40:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615801228;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WIA9uAdrAsc0WNE5pHXgO80SUEbsiEpbQtctUapRlUU=;
+        b=NFnIoPSHCJqB6nGFxA4BlPzi6uNdToLLZhE87/1KUjCtYvjE4BeM7ybtZgN8G9HraaDrHN
+        juxbgCSM7X1gwVmi3qx7Il92jfyCuqGYPKKNDx/ptaO/pK0wiDkOYdN5Z95YIQoTzidZBW
+        NzwzMBasIP/PBE7BJ/bZ0loMY7zwV1E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-npB8E8JqPrW9mu9ad9xpXA-1; Mon, 15 Mar 2021 05:40:24 -0400
+X-MC-Unique: npB8E8JqPrW9mu9ad9xpXA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 682228710F1;
+        Mon, 15 Mar 2021 09:40:22 +0000 (UTC)
+Received: from [10.64.54.175] (vpn2-54-175.bne.redhat.com [10.64.54.175])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B66F6627DD;
+        Mon, 15 Mar 2021 09:40:19 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH 2/4] KVM: arm64: Use find_vma_intersection()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        will@kernel.org, alexandru.elisei@arm.com, shan.gavin@gmail.com
+References: <20210315041844.64915-1-gshan@redhat.com>
+ <20210315041844.64915-3-gshan@redhat.com> <87eeggg5nt.wl-maz@kernel.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <86cd410a-d62c-9023-7371-a9d178bfafc1@redhat.com>
+Date:   Mon, 15 Mar 2021 20:40:16 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <f51fcec0-1483-cecb-d984-591097c324ca@linaro.org>
+In-Reply-To: <87eeggg5nt.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
-
-On 3/12/21 9:01 PM, Daniel Lezcano wrote:
-> On 12/03/2021 19:49, Lukasz Luba wrote:
+On 3/15/21 7:52 PM, Marc Zyngier wrote:
+> On Mon, 15 Mar 2021 04:18:42 +0000,
+> Gavin Shan <gshan@redhat.com> wrote:
 >>
+>> find_vma_intersection() has been existing to search the intersected
+>> vma. This uses the function where it's applicable, to simplify the
+>> code.
 >>
->> On 3/12/21 5:03 PM, Daniel Lezcano wrote:
->>> We want to have any kind of name for the cooling devices as we do no
->>> longer want to rely on auto-numbering. Let's replace the cooling
->>> device's fixed array by a char pointer to be allocated dynamically
->>> when registering the cooling device, so we don't limit the length of
->>> the name.
->>>
->>> Rework the error path at the same time as we have to rollback the
->>> allocations in case of error.
->>>
->>> Tested with a dummy device having the name:
->>>    "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch"
->>>
->>> A village on the island of Anglesey (Wales), known to have the longest
->>> name in Europe.
->>>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> ---
->>>    .../ethernet/mellanox/mlxsw/core_thermal.c    |  2 +-
->>>    drivers/thermal/thermal_core.c                | 38 +++++++++++--------
->>>    include/linux/thermal.h                       |  2 +-
->>>    3 files changed, 24 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
->>> b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
->>> index bf85ce9835d7..7447c2a73cbd 100644
->>> --- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
->>> +++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
->>> @@ -141,7 +141,7 @@ static int mlxsw_get_cooling_device_idx(struct
->>> mlxsw_thermal *thermal,
->>>        /* Allow mlxsw thermal zone binding to an external cooling
->>> device */
->>>        for (i = 0; i < ARRAY_SIZE(mlxsw_thermal_external_allowed_cdev);
->>> i++) {
->>>            if (strnstr(cdev->type, mlxsw_thermal_external_allowed_cdev[i],
->>> -                sizeof(cdev->type)))
->>> +                strlen(cdev->type)))
->>>                return 0;
->>>        }
->>>    diff --git a/drivers/thermal/thermal_core.c
->>> b/drivers/thermal/thermal_core.c
->>> index 996c038f83a4..9ef8090eb645 100644
->>> --- a/drivers/thermal/thermal_core.c
->>> +++ b/drivers/thermal/thermal_core.c
->>> @@ -960,10 +960,7 @@ __thermal_cooling_device_register(struct
->>> device_node *np,
->>>    {
->>>        struct thermal_cooling_device *cdev;
->>>        struct thermal_zone_device *pos = NULL;
->>> -    int result;
->>> -
->>> -    if (type && strlen(type) >= THERMAL_NAME_LENGTH)
->>> -        return ERR_PTR(-EINVAL);
->>> +    int ret;
->>>          if (!ops || !ops->get_max_state || !ops->get_cur_state ||
->>>            !ops->set_cur_state)
->>> @@ -973,14 +970,17 @@ __thermal_cooling_device_register(struct
->>> device_node *np,
->>>        if (!cdev)
->>>            return ERR_PTR(-ENOMEM);
->>>    -    result = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
->>> -    if (result < 0) {
->>> -        kfree(cdev);
->>> -        return ERR_PTR(result);
->>> +    ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
->>> +    if (ret < 0)
->>> +        goto out_kfree_cdev;
->>> +    cdev->id = ret;
->>> +
->>> +    cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
->>> +    if (!cdev->type) {
->>> +        ret = -ENOMEM;
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   arch/arm64/kvm/mmu.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
 >>
->> Since we haven't called the device_register() yet, I would call here:
->> kfree(cdev);
->> and then jump
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index 84e70f953de6..286b603ed0d3 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -421,10 +421,11 @@ static void stage2_unmap_memslot(struct kvm *kvm,
+>>   	 *     +--------------------------------------------+
+>>   	 */
+>>   	do {
+>> -		struct vm_area_struct *vma = find_vma(current->mm, hva);
+>> +		struct vm_area_struct *vma;
+>>   		hva_t vm_start, vm_end;
+>>   
+>> -		if (!vma || vma->vm_start >= reg_end)
+>> +		vma = find_vma_intersection(current->mm, hva, reg_end);
 > 
-> I'm not sure to understand, we have to remove the ida, no ?
-
-Yes, we have to remove 'ida' and you jump to that label:
-goto out_ida_remove;
-but under that label, there is no 'put_device()'.
-We could have here, before the 'goto', a simple kfree, which
-should be safe, since we haven't called the device_register() yet.
-Something like:
-
---------8<------------------------------
-cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
-if (!cdev->type) {
-	ret = -ENOMEM;
-	kfree(cdev);
-	goto out_ida_remove;
-}
-
--------->8------------------------------
-
-
+> For context, here's the definition of find_vma_intersection():
 > 
->> Other than that, LGTM
->>
->> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
->>
->> Regards,
->> Lukasz
+> <quote>
+> static inline struct vm_area_struct * find_vma_intersection(struct mm_struct * mm, unsigned long start_addr, unsigned long end_addr)
+> {
+> 	struct vm_area_struct * vma = find_vma(mm,start_addr);
 > 
+> 	if (vma && end_addr <= vma->vm_start)
+> 		vma = NULL;
+> 	return vma;
+> }
+> </quote>
 > 
+> It seems that there is a boundary issue in either the old code or the
+> new one in the case where (reg_end == vma->start).
+> 
+> Which one is which?
+> 
+
+The old and new code is interchangeable, meaning "reg_end == vma->start"
+is invalid in both cases. So if there is a boundary issue, the old and new
+code should have same issue.
+
+According to the code, "reg_end == vma->start" is invalid. So I don't see
+there is a boundary issue. Hopefully, I don't miss anything :)
+
+Thanks,
+Gavin
+
