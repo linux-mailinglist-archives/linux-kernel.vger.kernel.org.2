@@ -2,87 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A9233AE26
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA7533AE29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCOJCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:02:00 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:22779 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhCOJBm (ORCPT
+        id S229683AbhCOJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhCOJCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:01:42 -0400
+        Mon, 15 Mar 2021 05:02:00 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA395C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:01:59 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id lr13so64859333ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615798903; x=1647334903;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=L1t2HqnlO7990sJbch3O4sVrvU6b4LxDMuwpwNAvqLU=;
-  b=JYlkLcVvk5n/jfgOs9YDrGHYdvP31OzRKLQWaZFfzH3o093u5c2wNw0a
-   tZDHWYqnm+yRH6gcZ84LG13DJGsTIoG7qRB1MUyrFMksq3woSFRovMQhs
-   SGcIm+SBxWYadylxsaTUjp+ZUkL5ySDRX+su8O0IA2iSvtxQA/xpWzk4U
-   s=;
-IronPort-HdrOrdr: A9a23:0YlRuq9aWpbHWouHXnduk+BqI+orLtY04lQ7vn1ZYzY9SK2lvu
- qpm+kW0gKxtSYJVBgb6Le9EYSJXH+0z+8W3aA/JrGnNTOIhEKJK8VY4ZLm03ncHUTFh41g/I
- NBV4Q7N9HqF1h9iq/BkW2FOvIt2sOO/qztpcq29QYJcShScK1r4wp0DQyWe3cGPDVuPpYyGJ
- qC6scvnVPJEh4qR/+2CXUfU+/Iq8ejrv/bSCQbDB0q4hTmt1OVwYP9eiL34j4jST9Vhb8t/W
- /Z+jaU2oyT99u/yhPaylbJ6YVXlNbL2rJ4dbWxo/lQDC7thAaubJlgXLPHnAldmpDI1GoX
-X-IronPort-AV: E=Sophos;i="5.81,249,1610409600"; 
-   d="scan'208";a="94501544"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 15 Mar 2021 09:01:26 +0000
-Received: from EX13D28EUC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 0510AA2740;
-        Mon, 15 Mar 2021 09:01:23 +0000 (UTC)
-Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.160.48) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Mar 2021 09:01:18 +0000
-References: <20210314222221.3996408-1-unixbhaskar@gmail.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-CC:     <netanel@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
-        <saeedb@amazon.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <sameehj@amazon.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rdunlap@infradead.org>
-Subject: Re: [PATCH] ethernet: amazon: ena: A typo fix in the file ena_com.h
-In-Reply-To: <20210314222221.3996408-1-unixbhaskar@gmail.com>
-Date:   Mon, 15 Mar 2021 11:00:57 +0200
-Message-ID: <pj41zlft0wlrjq.fsf@u570694869fb251.ant.amazon.com>
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e2sBs6NiXFEBjEW5EKicEDQG80m64//Jqveh+rRtB44=;
+        b=rtOek8t/l0dOFFYOaAgvr/GxPcxuWGJZDn1GUtVOmCnYNUEjbeIDDtNAvDjHMuWvj4
+         iPaiy7rj0s+kAhnC2BwwiCXA4AUT91cSe+/mCEKTfMvdiDQ1c6UHCuQdvKYAwg4i2Nn0
+         6RXR/u4y5Lgs3qGqKT6ARrPDCUsNDKf2TAFDKPY7YeIphqhVK9n+sdM7W+YXa79QRYfU
+         9M3beg7L32c1HbTaLBGIfBQjrXbqmtjmYHYilpzLQLBC0AQ82Gxh8qeBUk04kM5NCX6B
+         UkKWX3WdGNQhgjfw+IchlH/1lymmAq6s0Aa859kmVkqIdgd8pcb4/+u/oiQFvn/lu1bs
+         qKPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e2sBs6NiXFEBjEW5EKicEDQG80m64//Jqveh+rRtB44=;
+        b=lxrprL7i/9QClSsySrrr1Ogrk/2HGAtFo1J/kjYvfckX4DlRGfXCmTtdvxQhsVwdOz
+         uoByJkqOLeJXUkFnrBbPm4s+tb/jM8L6Sob2Jtn/Oj7pfr5XYCr15XbVOKQvtBwcp+Vk
+         JFnVkX+Oez6+9rpTh+dtet+aziyot4irRB1SJROt6x1qHQGeRRLmfEhyUtBEwKBJrgRf
+         ngqKwKDVtW4dg7L7x+XMXWokIGXBsWynkz9NhoHQneHBGS7Z8tSnPxX0M0V5vaxO9+ex
+         UXbIEHFvk/pc/OgtL4i8flNl7qxRV6IdBkrI1iVms9u78cP954a04nmg46BpF2VdJ9TR
+         t5yg==
+X-Gm-Message-State: AOAM532SBxrboxkSMY2Hl3LWXMoMSYQmTqkeUQ8v/p51KX0wgb38Jnbk
+        7wAzaxnZj+1lzM0Ma59Rk22ZVLuAqTKwTvhaZMkIfI4OyL2HOg==
+X-Google-Smtp-Source: ABdhPJz+l2yQBZkd11UpA8i0+HaQV8ndMsfdW4Wo6PIKv963xVVZSLZsZViialetAI1yDKjwcuZU/GXtejH5Mu3dAgI=
+X-Received: by 2002:a17:906:7842:: with SMTP id p2mr2450233ejm.87.1615798918325;
+ Mon, 15 Mar 2021 02:01:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D35UWB001.ant.amazon.com (10.43.161.47) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 15 Mar 2021 10:01:47 +0100
+Message-ID: <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware node
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
-
-> Mundane typo fix.
+On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> and iterates over all of its DT subnodes when registering each GPIO
+> bank gpiochip. Each gpiochip has:
+>
+>   - gpio_chip.parent = dev,
+>     where dev is the device node of the pin controller
+>   - gpio_chip.of_node = np,
+>     which is the OF node of the GPIO bank
+>
+> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+>
+> The original code behaved correctly, as it extracted the "gpio-line-names"
+> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+>
+> To achieve the same behaviour, read property from the firmware node.
+>
+> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+> Reported-by: Marek Vasut <marex@denx.de>
+> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/net/ethernet/amazon/ena/ena_com.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpio/gpiolib.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 >
-> diff --git a/drivers/net/ethernet/amazon/ena/ena_com.h 
-> b/drivers/net/ethernet/amazon/ena/ena_com.h
-> index 343caf41e709..73b03ce59412 100644
-> --- a/drivers/net/ethernet/amazon/ena/ena_com.h
-> +++ b/drivers/net/ethernet/amazon/ena/ena_com.h
-> @@ -124,7 +124,7 @@ struct ena_com_io_cq {
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 3bc25a9c4cd6..ba88011cc79d 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -367,22 +367,18 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
+>   *
+>   * Looks for device property "gpio-line-names" and if it exists assigns
+>   * GPIO line names for the chip. The memory allocated for the assigned
+> - * names belong to the underlying software node and should not be released
+> + * names belong to the underlying firmware node and should not be released
+>   * by the caller.
+>   */
+>  static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+>  {
+>         struct gpio_device *gdev = chip->gpiodev;
+> -       struct device *dev = chip->parent;
+> +       struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+>         const char **names;
+>         int ret, i;
+>         int count;
 >
->  	/* holds the number of cdesc of the current packet */
->  	u16 cur_rx_pkt_cdesc_count;
-> -	/* save the firt cdesc idx of the current packet */
-> +	/* save the first cdesc idx of the current packet */
->  	u16 cur_rx_pkt_cdesc_start_idx;
+> -       /* GPIO chip may not have a parent device whose properties we inspect. */
+> -       if (!dev)
+> -               return 0;
+> -
+> -       count = device_property_string_array_count(dev, "gpio-line-names");
+> +       count = fwnode_property_string_array_count(fwnode, "gpio-line-names");
+>         if (count < 0)
+>                 return 0;
 >
->  	u16 q_depth;
+> @@ -396,7 +392,7 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+>         if (!names)
+>                 return -ENOMEM;
+>
+> -       ret = device_property_read_string_array(dev, "gpio-line-names",
+> +       ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
+>                                                 names, count);
+>         if (ret < 0) {
+>                 dev_warn(&gdev->dev, "failed to read GPIO line names\n");
+> --
+> 2.30.1
+>
 
-Acked-by: Shay Agroskin <shayagr@amazon.com>
+Hi Andy!
 
-Thanks for your patch
+Unfortunately while this may fix the particular use-case on STM32, it
+breaks all other users as the 'gpio-line-names' property doesn't live
+on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
+
+How about we first look for this property on the latter and only if
+it's not present descend down to the former fwnode?
+
+Bart
