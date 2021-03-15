@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF19D33C93F
+	by mail.lfdr.de (Postfix) with ESMTP id 7191533C93E
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhCOWTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        id S231396AbhCOWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhCOWTh (ORCPT
+        with ESMTP id S229948AbhCOWTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 18:19:37 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15448C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:37 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id z8so18143727ljm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:36 -0700 (PDT)
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEA6C06175F;
+        Mon, 15 Mar 2021 15:19:37 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id x9so10339619qto.8;
+        Mon, 15 Mar 2021 15:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JHuD9L12GwXv9CMjuewy7NJi4UEeZj8gMIMY0fXoMjo=;
-        b=S+PBvkiNvoS7h8zAD5cjsSRJz4FVPn0bUbOW1vAx3cSOxv0XYlgWOMD63ht2EW+UvG
-         WqRwvdt1hEocnp30SVofJDviTh5NFMlDuAZFdZ0CFQTPQzKAvpCn4FZXTYX5F2Q7x0TA
-         w6hkZe/5rBy3BNMBjtwIU8r7P3WUEjnalDrr4=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3mc7yshphWRfddErbP6ANAyJjIp9vav1KVv/MqnV+08=;
+        b=k4pm+oGHyW/0Hrhbuc7q0+8SgSfdHGYYhPiguGQUh3briuu3jw/5TCyzMGYg8w060V
+         MryXnAFafYTZSEg8Y+OqxpfH8TPufBlnRmse3CpAcUakPqZ4TqGz08U1Dp6IHGvZo6dO
+         XzvFYARQvIi9vwCArHIBTKB7h0shngcktmS2v27/iOr9YVJOqXHOVsRyLEZeZV/XAEBz
+         wTWFgYDv6KA49YfmbS8Kz1BvuHErK/RNw44PjG4hs4LhLyftup1EIv+0wxbGVYDzlIxn
+         sKPxsUOx+ytNRtofdhTLCw/ZiSovafjqT75OP8vBE51uc2DsudjKzAuXR9mAJe0PxXw2
+         7Y0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JHuD9L12GwXv9CMjuewy7NJi4UEeZj8gMIMY0fXoMjo=;
-        b=Ir5+9cbqpbIRKH1EBJ3UALwD7MFhoYawcGo0X0asjUzbnpUyI4MkifShLT1FHn7Px3
-         UnvKuK3PcVgF1LRRXZC/iNt5QdpxDW3eS5gogRRNUVHrDovubaz5My4Zf97inzWTzN6o
-         6ll2q5DIMgUhhuimzcPWg7jMNKVMHp07iuToaWS/T9xEzcUwMu0lPYuQZCD41fByEfY4
-         mFNkWilRZICkGhBISVBgX6xB1CkPJJatrnVruELSjnTCiX00QYXRFPCnRpic4oWXedu5
-         uMTloTd25DD3dWYkP4ZtB5NumKVUMPUMq0bod+dtxZAyBHVU+UEujPEjo9xJaFnhS6C0
-         /QZg==
-X-Gm-Message-State: AOAM532Tpt0z7tyoOBpZ2SH1oEJqLzv+Dht2tvbblvFSo9wVLnfLcHwL
-        ocxmD6haL2YwEkwbj9PeQi9X2xnF3XG6jg==
-X-Google-Smtp-Source: ABdhPJwQeGqOUzwRbczG5clWaW5b5d7l0vraN9AIOxzAqqI79ZC4SeeesnV2VqV9iwcY4aY22ubUoA==
-X-Received: by 2002:a2e:9055:: with SMTP id n21mr704367ljg.248.1615846775226;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3mc7yshphWRfddErbP6ANAyJjIp9vav1KVv/MqnV+08=;
+        b=fhDP/AO+qKTx3lp1qLorflGV5wFmAvIcpV4H5Pwdls3FlQTL4oTzcBQsG+zCJZ7Qz6
+         T+E7x/sIr3Qn8vK478HrOBdUv6vhqbGS2Dy9cRXMa/XZSHZo+M9SDl8WPkH0ysZfGoOp
+         jbDv65stZjKDXCGJGUhDLsjsc6+FyY+H7r0MBtnzpfIhVbQXagtxnOEPQfQfx1aAQZnR
+         /bHvn+tezX8aUESBs/Pjj10L88/27d5L6AcXrU+lyk2KVAJ11ziXLhZwUVUDACGNHPo3
+         8ZuKrwPW4R/4iWmNOKB4hQuOhV1ux02RpzphdGBmlN32E1e4UhwE6Bb5AT2K6Ly0JblJ
+         B45A==
+X-Gm-Message-State: AOAM530NhVJUjbvXGHahEf7MXYUuSJrP+w4bNXvxGDcfVaYkchSA3A/P
+        o1fIVL+fVRO7zWl66e5pN+U=
+X-Google-Smtp-Source: ABdhPJzvXqprKoAutME/Zx0t4IAmyvOYWNNLf7LhOP5C6LVfWPeE7qFKtLKEj9qf8W3FiHj+NYGgGw==
+X-Received: by 2002:ac8:7a95:: with SMTP id x21mr6759670qtr.209.1615846776285;
+        Mon, 15 Mar 2021 15:19:36 -0700 (PDT)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id 6sm12369287qth.82.2021.03.15.15.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Mar 2021 15:19:35 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id 192sm3011870ljj.95.2021.03.15.15.19.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 15:19:34 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id s17so18149693ljc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:19:33 -0700 (PDT)
-X-Received: by 2002:a2e:a589:: with SMTP id m9mr729361ljp.220.1615846773296;
- Mon, 15 Mar 2021 15:19:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Mar 2021 18:19:35 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jacob Pan <jacob.jun.pan@intel.com>
+Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
+        rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>
+Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
+Message-ID: <YE/ddx5+ToNsgUF0@slm.duckdns.org>
+References: <20210303185513.27e18fce@jacob-builder>
+ <YEB8i6Chq4K/GGF6@google.com>
+ <YECfhCJtHUL9cB2L@slm.duckdns.org>
+ <20210312125821.22d9bfca@jacob-builder>
+ <YEvZ4muXqiSScQ8i@google.com>
+ <20210312145904.4071a9d6@jacob-builder>
+ <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
+ <20210313085701.1fd16a39@jacob-builder>
+ <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
+ <20210315151155.383a7e6e@jacob-builder>
 MIME-Version: 1.0
-References: <cover.1615372955.git.gladkov.alexey@gmail.com>
- <59ee3289194cd97d70085cce701bc494bfcb4fd2.1615372955.git.gladkov.alexey@gmail.com>
- <202103151426.ED27141@keescook>
-In-Reply-To: <202103151426.ED27141@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Mar 2021 15:19:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjYOCgM+mKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com>
-Message-ID: <CAHk-=wjYOCgM+mKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com>
-Subject: Re: [PATCH v8 3/8] Use atomic_t for ucounts reference counting
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315151155.383a7e6e@jacob-builder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 3:03 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Mar 10, 2021 at 01:01:28PM +0100, Alexey Gladkov wrote:
-> > The current implementation of the ucounts reference counter requires the
-> > use of spin_lock. We're going to use get_ucounts() in more performance
-> > critical areas like a handling of RLIMIT_SIGPENDING.
->
-> This really looks like it should be refcount_t.
+Hello,
 
-No.
+On Mon, Mar 15, 2021 at 03:11:55PM -0700, Jacob Pan wrote:
+> > Migration itself doesn't have restrictions but all resources are
+> > distributed on the same hierarchy, so the controllers are supposed to
+> > follow the same conventions that can be implemented by all controllers.
+> > 
+> Got it, I guess that is the behavior required by the unified hierarchy.
+> Cgroup v1 would be ok? But I am guessing we are not extending on v1?
 
-refcount_t didn't have the capabilities required.
+A new cgroup1 only controller is unlikely to be accpeted.
 
-It just saturates, and doesn't have the "don't do this" case, which
-the ucounts case *DOES* have.
+> The IOASIDs are programmed into devices to generate DMA requests tagged
+> with them. The IOMMU has a per device IOASID table with each entry has two
+> pointers:
+>  - the PGD of the guest process.
+>  - the PGD of the host process
+> 
+> The result of this 2 stage/nested translation is that we can share virtual
+> address (SVA) between guest process and DMA. The host process needs to
+> allocate multiple IOASIDs since one IOASID is needed for each guest process
+> who wants SVA.
+> 
+> The DMA binding among device-IOMMU-process is setup via a series of user
+> APIs (e.g. via VFIO).
+> 
+> If a process calls fork(), the children does not inherit the IOASIDs and
+> their bindings. Children who wish to use SVA has to call those APIs to
+> establish the binding for themselves.
+> 
+> Therefore, if a host process allocates 10 IOASIDs then does a
+> fork()/clone(), it cannot charge 10 IOASIDs in the new cgroup. i.e. the 10
+> IOASIDs stays with the process wherever it goes.
+> 
+> I feel this fit in the domain model, true?
 
-In other words, refcount_t is entirely misdesigned for this - because
-it's literally designed for "people can't handle overflow, so we warn
-and saturate".
+I still don't get where migration is coming into the picture. Who's
+migrating where?
 
-ucounts can never saturate, because they replace saturation with
-"don't do that then".
+Thanks.
 
-In other words, ucounts work like the page counts do (which also don't
-saturate, they just say "ok, you can't get a reference".
-
-I know you are attached to refcounts, but really: they are not only
-more expensive, THEY LITERALLY DO THE WRONG THING.
-
-           Linus
+-- 
+tejun
