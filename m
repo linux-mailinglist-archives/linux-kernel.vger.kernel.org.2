@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E8833C5C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB3633C5CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhCOSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:34:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
+        id S231502AbhCOSgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:36:42 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:21834 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhCOSeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:34:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615833258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H+y7FsHAfr9H0V0nZlpCJwqn4arhOTDKupfGhSsi4L0=;
-        b=KjlbibSfXB7NG662v+nqeUvX9bQmFZ6Tn4FZ8LSyV2Dy1wShX6HyGPkQ/3oP/oi8ltOa82
-        p4LArpJEH3uiUS4qK5AotGb4JiNd6JM5FPMBGV9OllfNYp2H0+Bq9mcfUIPNFQ81bOWovM
-        7fmYs578Xsmg19z3fl9mWp/3G2HomOI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2014DAE8F;
-        Mon, 15 Mar 2021 18:34:18 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 19:34:15 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     tj@kernel.org, rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YE+op0MZKG41EALi@blackbook>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <20210304231946.2766648-2-vipinsh@google.com>
- <YEpod5X29YqMhW/g@blackbook>
- <YEu74hkEPEyvxC85@google.com>
+        id S231140AbhCOSgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:36:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615833374; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=SOhMJvCUMxeCHuFeJOED/fJMEsvrE6qD1pHAxAfCeqI=; b=nVK5Ifc2d4eRK238XfP34QX3GvF+YVlmfR+XqDBcyH+9AM7XmHJRLgPuStsxjnNCeJobmGvZ
+ SUq6y6OT4MQMPulyYn7d6nF/SIDQ/l1bPFC+ygHoqLYVbA/9J6a19l/Iv/f9P3UbW4J2TwDj
+ gDS51EY1A3O5apW/+rP9h/TNEpQ=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 604fa9181de5dd7b99aa8ece (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 18:36:08
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DA980C43464; Mon, 15 Mar 2021 18:36:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CF45BC433C6;
+        Mon, 15 Mar 2021 18:36:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CF45BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv2 0/4] Enable various hardware blocks on SC7280 SoC
+Date:   Tue, 16 Mar 2021 00:05:45 +0530
+Message-Id: <cover.1615832893.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="s/zzXfvrLmfa0Un9"
-Content-Disposition: inline
-In-Reply-To: <YEu74hkEPEyvxC85@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series enables various hardware blocks such as LLCC, IPCC, AOSS QMP
+and Coresight on SC7280 SoC.
 
---s/zzXfvrLmfa0Un9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v2:
+ * Rename qmp to power-controller (Stephen)
+ * Drop the ipcc mailbox dt-binding from this series and send it separately
+ * Collect review tags
 
-On Fri, Mar 12, 2021 at 11:07:14AM -0800, Vipin Sharma <vipinsh@google.com>=
- wrote:
-> We should be fine without atomic64_t because we are using unsigned
-> long and not 64 bit explicitly. This will work on both 32 and 64 bit
-> machines.
-I see.
+Sai Prakash Ranjan (4):
+  arm64: dts: qcom: sc7280: Add device tree node for LLCC
+  arm64: dts: qcom: sc7280: Add IPCC for SC7280 SoC
+  arm64: dts: qcom: sc7280: Add AOSS QMP node
+  arm64: dts: qcom: sc7280: Add Coresight support
 
-> But I will add READ_ONCE and WRITE_ONCE because of potential chances of
-> load tearing and store tearing.
->=20
-> Do you agree?
-Yes.
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 520 +++++++++++++++++++++++++++
+ 1 file changed, 520 insertions(+)
 
-> This was only here to avoid multiple reads of capacity and making sure
-> if condition and seq_print will see the same value.
-Aha.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-> Also, I was not aware of load and store tearing of properly aligned
-> and machine word size variables. I will add READ_ONCE and WRITE_ONCE
-> at other places.
-Yeah, although it's theoretical, I think it also serves well to annotate
-such unsychronized accesses.
-
-Thanks,
-Michal
-
---s/zzXfvrLmfa0Un9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPqKEACgkQia1+riC5
-qSihOg//SpH6gNPHIcbQ+iF47BrOX3zJwft1PTn3D8d3byIaot3/Sym+j12ttkQU
-xstX/U3Mvimyouy50DFaYLiQ+EWMOPm8dzEw2nPOQFrL0bT6cjRdFnAzH7Y2m87c
-GufRjzeGwn8H2dRTPHiUjc+ETQhdjIRUOL5yUgoJkDGmV1m63j4rQUS5JXoHuW/i
-WH8ePRhc4SlGS/Ifgu3/+g0a3z+K46umCrHA9//BHI5gPyuvobyCdwIjrFekSDAq
-5vWwp6YGavoX5ZoZALUpokgcZR/iVRhTpt5m6psuYFhb+i+sWi/jYVgAeGSzZgCU
-G9uvFogZrPASTAHTss+MwdXoKUWWckG33D5MA8RtTXobewWrO7GcpTCFb79Mm0pF
-JzdVgBuMMuphLjkXHgQnSX8wHQQ7R545TuaSLXZBM9AqDPFjScEwdi68qRKPqopt
-wqqL64XiFnoICLnZjFpp11cL1gccY4cHYo71eNrVA1bdscO1iiO/c5xPbh9JD6cX
-I/cwAksf9R+bW+XUWrgsDvx9VuCiWfhEtiT/obqgDyHEQfE7JtgVX2IDN1o1pLcM
-+aGLPoyU/4Nc6aK898xqpJdzY/kCNB73YUuhdgH8lf1tY1P0myDTTivn7+XqZXd3
-hfMM6u+AdaUZhqymfylaEnTpQpBH4VfRAsBS0SnFuUnT93GnkqU=
-=+zv/
------END PGP SIGNATURE-----
-
---s/zzXfvrLmfa0Un9--
