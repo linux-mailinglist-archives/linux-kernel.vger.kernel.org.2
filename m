@@ -2,139 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CA933C4CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC8633C4F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhCORtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhCORs7 (ORCPT
+        id S232540AbhCOR4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:56:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229713AbhCOR4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:48:59 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E247C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:48:59 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id c16so15696544ply.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:48:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l4LOOlKghqKoUuetivtR1XqBry1SjVqiUzM952HtSrQ=;
-        b=gOpBnYQkTAQNlY7h/6aAMYNLrGslqM/a1BwxSCghq1Xx5KlFtg8dQo49K0HBXRi5qN
-         d+1KJjYaXMLjbWt+YzchPZ3fzFOGhQmgrrLk7VNu34kQDtUlUa/7UVDnB0/+sZ2Oe2g0
-         pUSXS71v2v0wNYJbjUbgTkE6Uy5Xw7quYdiG4=
+        Mon, 15 Mar 2021 13:56:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615830968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j1kmtbisPwSoThfREWhg9euwF5pmgKyEO+1jHxVyvEg=;
+        b=ODNe9oGzAD8AACCyZfyGi9zr2LwO1bWTVt0obt+d9nJOBA2Bg0CAyi8eXQ+7nhcT8RBlBM
+        r8RyrYEJb3FgjzRemxexg2iD08O8HfiTHFrp8T/JSrDhEkiYOaug1VnoSzRdV19cELccy0
+        0Vboz+5e4FWDP5CoP8Bxt9KiUuCs9fA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-6OTOVKRvOHijzCweYg-e8Q-1; Mon, 15 Mar 2021 13:56:06 -0400
+X-MC-Unique: 6OTOVKRvOHijzCweYg-e8Q-1
+Received: by mail-ej1-f70.google.com with SMTP id h14so12420229ejg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:56:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=l4LOOlKghqKoUuetivtR1XqBry1SjVqiUzM952HtSrQ=;
-        b=jSCWygA7V0HBDCCyvckd96HhL0BiX1r0G/QEnCJrIqmXHSiSoJVJ9PupUgEIWtfvEk
-         3nAjJ+L3G11hV3XH5mqKnD5bkF+XAH0HxYzEhbiMxFvJcG5ZugDoZZb+X88q2Rrg7mxX
-         YfiQ4gtvwXqgFKfIyrx5zv97CsCPH0hOjSbke3rrGL053zBAUKHI1sJAdluYoz9uzHGV
-         ccuI6U9uwjmUrQNlF5wsjMt9jAfWQNmSdVxxlJesI6sZ3MiiuUsGu3v0UpIx9Q17UY8/
-         qI3IeYmPmHt5ROq/xM5/hk+4t9hzL+kui6nQNeDtFJtJrps/nhujihCJhM+uD/pshf5b
-         n1Bw==
-X-Gm-Message-State: AOAM5335g9seMUbNswiMJHu2391aPiSJo+pFDJmV8vlElF3foPBN2W7W
-        Gd7qQmwJuhqT39QxtJXy+C0oqQ==
-X-Google-Smtp-Source: ABdhPJytQqspNyAmFVJp2yMxsg3y4Bpu+X+d/dwmCmDHRxFkOkOmLwVjDTGgiWbdlQgl/KqrFXf+DQ==
-X-Received: by 2002:a17:90b:e0d:: with SMTP id ge13mr247088pjb.1.1615830538984;
-        Mon, 15 Mar 2021 10:48:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k5sm14254077pfg.215.2021.03.15.10.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 10:48:58 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Date:   Mon, 15 Mar 2021 10:48:51 -0700
-Message-Id: <20210315174851.622228-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        bh=j1kmtbisPwSoThfREWhg9euwF5pmgKyEO+1jHxVyvEg=;
+        b=HWeRJXV+Wjr7PlFbyxdHKY9j4pm//4Pds5+6OEBhM25AtrJi+xpZcPVsRgwLrJRkR5
+         oAVhFj2qhz9llQbDRLLx840tkNtTPSO4h7oK0iQtOFZjDc64++Vs6atyQ48LSKE0m8Wd
+         tbL98jcw60SQcxC7KzieoDEMSPY0qJVkKWDvMq3N4SgJQQ3xz1SlLnJ8P07qO3qZsvr0
+         zqzs+Hp19ZkuzrqsFyxnOkdw8roqVktzln2GB/daYcajv5ZNu3RRhLtGK4m8udr4lwMG
+         /creXvhs6RUZ7gaCOgdzM3UimpvOiXj0eKzB02f6p0hQSeIG17ItifHg/yhVGKQ06P/A
+         Y6mQ==
+X-Gm-Message-State: AOAM533+325Pf5DjonGxci5+/a8EhzTxwpfbGZ2JWBewzS0A/etrnt49
+        7c5K1uPlwTlgtBImcopAAIHT16MlgEuZcM6dWY3vj9A46y/7S1ZfQtm1/gjkFvh6Wu62HHYpFvV
+        dxctRGJ1LNiw1vHvsT2dY3uZQ
+X-Received: by 2002:a17:907:20e4:: with SMTP id rh4mr25396808ejb.369.1615830965578;
+        Mon, 15 Mar 2021 10:56:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYS/S6RGenL0C9uMdNJZ5VHvxi3+MYTPCdVCM3+O9GQ3zLKEMu86WW4iJP/f9HtQWI5RUrjA==
+X-Received: by 2002:a17:907:20e4:: with SMTP id rh4mr25396785ejb.369.1615830965381;
+        Mon, 15 Mar 2021 10:56:05 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id la15sm7992488ejb.46.2021.03.15.10.56.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 10:56:04 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>
+References: <20210315174316.477511-1-mlevitsk@redhat.com>
+ <20210315174316.477511-3-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0dbcff57-8197-8fbb-809d-b47a4f5e9e77@redhat.com>
+Date:   Mon, 15 Mar 2021 18:56:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=8127f4bb12fc6c17d3829b992d9a4a2e95e55109; i=wnTs9CQ9b8oyAQUYWk1TWb6rr60OLTnvw/rrLAiBrmk=; m=WalZI6OWPnXJm31CATxJMvj5D+0cNcW5LRPeotCFpyY=; p=zv6zDQp+zJmS7mw61IUyZUpJiDoSaUWpqGFE94Dk8kY=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBPngIACgkQiXL039xtwCYaRA//bG9 CB3WWFg4jlT5EKm/W144wZYrWglGNAxyEPNd5poScEppgxVgn/GH0OVQqpJJ0L4YFWnJRdYVA390F yfuOuok9B61Vb9/pZ8M17bLNDu0bFnqkPm6he8p3lQWS1k5OwwT+a2O8TjTOLHG0XurastgeTAXF7 l77h6KV2VoX7QtaZRhAGSROGDU+z2Hzm1eX9bGnFM/o5K4GXO8V+pjkwqt+6fEc0GyydBoVYZuMDn AW2pqOlg1AtuvxPVTda7oKblHRPtrRE3FCZjXLvDCzBrsJEHKi+RgcRO1fvmVcSaa3GTDZJndNHuY Pa5tI1DrhWUnBvzWUKTfyWhsneDYLIfFoJ0D+x55pzM0DSGkoO5/SSnGNX6Lau0x+c+k8d0gM0Abi 9pgQxbhcIiW04KZvLrvl4B1EjgZRuXaPWq7nVR6GHjgUGO/SFbEnf8lR3PtbzZMxWKXYyohBuCnHm flNEXnYN+9zcrASK6lQ/KH5pjfJ+YQQlXvI5uuXxesWztdEbCkgOOcqcjs0XSXMZnnAXaU3cuBjhD pTz9vVXDOtiT7ZOiTjLmfVwsUEkCvx0KnBd9u+3tz3zjqft4qWDsQykY/bieSNeupTViLaKuLp0VR JwGDU0TZl5vcvYOo0O1HI9cZtOjet792j0GQ1qDpEH5oEEs7pwEpwCMEc1ZmjwbY=
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315174316.477511-3-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysfs interface to seq_file continues to be rather fragile, as seen
-with some recent exploits[1]. Move the seq_file buffer to the vmap area
-(while retaining the accounting flag), since it has guard pages that
-will catch and stop linear overflows. This seems justified given that
-seq_file already uses kvmalloc(), is almost always using a PAGE_SIZE or
-larger allocation, has allocations are normally short lived, and is not
-normally on a performance critical path.
+On 15/03/21 18:43, Maxim Levitsky wrote:
+> +	if (!guest_cpuid_is_intel(vcpu)) {
+> +		/*
+> +		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
+> +		 * in VMCB and clear intercepts to avoid #VMEXIT.
+> +		 */
+> +		if (vls) {
+> +			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
+> +			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
+> +			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+> +		}
+> +		/* No need to intercept these msrs either */
+> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
+> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
+> +	}
 
-[1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
+An "else" is needed here to do the opposite setup (removing the "if 
+(vls)" from init_vmcb).
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/seq_file.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+This also makes the code more readable since you can write
 
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index cb11a34fb871..16fb4a4e61e3 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -32,7 +32,12 @@ static void seq_set_overflow(struct seq_file *m)
- 
- static void *seq_buf_alloc(unsigned long size)
- {
--	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
-+	/*
-+	 * To be proactively defensive against buggy seq_get_buf() callers
-+	 * (i.e. sysfs handlers), use the vmap area to gain the trailing
-+	 * guard page which will protect against linear buffer overflows.
-+	 */
-+	return __vmalloc(size, GFP_KERNEL_ACCOUNT);
- }
- 
- /**
-@@ -130,7 +135,7 @@ static int traverse(struct seq_file *m, loff_t offset)
- 
- Eoverflow:
- 	m->op->stop(m, p);
--	kvfree(m->buf);
-+	vfree(m->buf);
- 	m->count = 0;
- 	m->buf = seq_buf_alloc(m->size <<= 1);
- 	return !m->buf ? -ENOMEM : -EAGAIN;
-@@ -237,7 +242,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 			goto Fill;
- 		// need a bigger buffer
- 		m->op->stop(m, p);
--		kvfree(m->buf);
-+		vfree(m->buf);
- 		m->count = 0;
- 		m->buf = seq_buf_alloc(m->size <<= 1);
- 		if (!m->buf)
-@@ -349,7 +354,7 @@ EXPORT_SYMBOL(seq_lseek);
- int seq_release(struct inode *inode, struct file *file)
- {
- 	struct seq_file *m = file->private_data;
--	kvfree(m->buf);
-+	vfree(m->buf);
- 	kmem_cache_free(seq_file_cache, m);
- 	return 0;
- }
-@@ -585,7 +590,7 @@ int single_open_size(struct file *file, int (*show)(struct seq_file *, void *),
- 		return -ENOMEM;
- 	ret = single_open(file, show, data);
- 	if (ret) {
--		kvfree(buf);
-+		vfree(buf);
- 		return ret;
- 	}
- 	((struct seq_file *)file->private_data)->buf = buf;
--- 
-2.25.1
+	if (guest_cpuid_is_intel(vcpu)) {
+		/*
+		 * We must intercept SYSENTER_EIP and SYSENTER_ESP
+		 * accesses because the processor only stores 32 bits.
+		 * For the same reason we cannot use virtual
+		 * VMLOAD/VMSAVE.
+		 */
+		...
+	} else {
+		/* Do the opposite.  */
+		...
+	}
+
+Paolo
 
