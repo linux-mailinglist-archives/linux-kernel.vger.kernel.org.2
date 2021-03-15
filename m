@@ -2,115 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A628A33C3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FED133C3BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhCORLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:11:34 -0400
-Received: from mail-dm6nam11on2058.outbound.protection.outlook.com ([40.107.223.58]:16096
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233912AbhCORLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:11:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HlKTtEhOY7kbKV92dfUMNqdN38iljcCABuSz32jSzTDnz50+U0MBanQsvxXz6jL4J6ClMy14UkclO+cpa80rKf1iPonPfxBc3OyY0rd8KJwEUQ0V+KGFn6EfNqq5It5y0z1zfZSPLh/zM8PxZj8O7716jK3Sjcsedx2AKFoLM+FaTqHhR6DLesXbr75iEZltfrUnFtpYDZrSlP2/c/Z/aubhNgKepoJMx+2+ZVHEdGNDXzIz3bTUgvqmQZlq3+ul8iSmw7pLslKKVhg42pP3XOR0RvPTjp9TZmE1WMQxy5LnQawhy4OBu7MAusXpB9OgxtKbIdG1H0RNogyYHmVuKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iGu8nV2+pJONbNsrLoKJWcCLR53IYpJPhqznMUUVndo=;
- b=gT7K2SC9GuDu3k4Y1/kipL/AiOI4y7cUkLzxGkHdg4FMMelG40ImiqIHAuyC85N4wgeqHkcYqxmnw0kDxAxrdhnTUwSOGKncMlPy7Rtf3MZfX+hc4Sd2wZlgoP2nNy+7I0/MY/3ijQCEB8AuiuxbOJGx45f4eftvD8thnSUVKP4uR9nHZlyAZS97G7MWG4yII2YxodEYDG5/Nj4kl2Ux/gMlPrjWnAE1bNwgOGodR/nqHMMAVVJYXBD6HloZcj6uM6MqvVCAK9hHlUGRi65gY58uHPKTbuA37FMXfz7M/3wfYq8sQzVI38TWjJKwpBzwcXyJSPvPsc4de1tSygbu8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iGu8nV2+pJONbNsrLoKJWcCLR53IYpJPhqznMUUVndo=;
- b=A3RrCRo4eqwtEfTT8Z59MfkIO+30Ll9b8pwLrIQq18wpgDRnkTJbwbk8gAsNrLDtgN8L5k+PrwqbPTkmkW9qMCyBLmtKHNu785NfAjkHPH+/a5G37fBwkwdN0vqVrRowKlPqv4x2NBJVE3Q7am9XQ1D9BPWBad3s2GG4andNOgTuOx3s4fWBFkgcVvYFmWdXIKN4mIUmiXkqB5FTjrCaNrfvL53QBPRDxZ6dj8vZQD/SqwEay8gw1vYzKbhEhYFZUTu+YBcwW3rYiYmZB/jLsBU403wJMFcukK4AwbnrolrfoRSaljVOnFMyFAjcDm+Qn4/T2pXf+Yn/OM/mbqgRgw==
-Received: from MW4PR03CA0114.namprd03.prod.outlook.com (2603:10b6:303:b7::29)
- by DM6PR12MB3754.namprd12.prod.outlook.com (2603:10b6:5:1c4::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 17:11:15 +0000
-Received: from CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b7:cafe::68) by MW4PR03CA0114.outlook.office365.com
- (2603:10b6:303:b7::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
- Transport; Mon, 15 Mar 2021 17:11:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT055.mail.protection.outlook.com (10.13.175.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 17:11:13 +0000
-Received: from [10.25.96.88] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
- 2021 17:10:43 +0000
-Subject: Re: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-To:     Mark Brown <broonie@kernel.org>
-CC:     Michael Walle <michael@walle.cc>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <robh@kernel.org>,
-        <sharadg@nvidia.com>, <thierry.reding@gmail.com>
-References: <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
- <20210312113544.GB5348@sirena.org.uk>
- <6ed28bb5330879b1919aced5174f319f@walle.cc>
- <20210312120456.GD5348@sirena.org.uk>
- <684332700f8be9f77348a510eb6eba22@walle.cc>
- <20210312134642.GF5348@sirena.org.uk>
- <8cdf1cfa971945792b509a687a4de735@walle.cc>
- <6af6439c-bdb8-cd0f-635d-069040ba5b65@nvidia.com>
- <20210315153925.GC4595@sirena.org.uk>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <3b3c5aea-60bc-d7bd-9ae6-5e890782b2e8@nvidia.com>
-Date:   Mon, 15 Mar 2021 22:40:40 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S234153AbhCORMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235727AbhCORME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:12:04 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D3CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:12:04 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id f20so34141061ioo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BGuMKOkdrHOiChjiafTuYIDNIf6YOyGwUuyeMXLl7C0=;
+        b=GVlfB9O2TVaFKAU9+/1TDlxsyrG3P7CDFeNmvi1VAFXXIeOM6yIYvnOQ87KMrVet7o
+         pc8iBNLTGtMD3y5iiC79KBGTkgrPeqjbk4ckBFVsszmjyi3bph7WhvYIVxd3Gg4jxkef
+         is0NjJ4BVjAVb2LpGSVhbL0Em39FGjFIgJgVY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BGuMKOkdrHOiChjiafTuYIDNIf6YOyGwUuyeMXLl7C0=;
+        b=aAEfbYxqph3w2LK7RbaFZbLb3/xHy9+kzAwv9ic5xjg3Jz2cLthyOStE7AfUHQsdyA
+         /lQ6gFAq+yoPblbbsSVcRYPmX0iJL71j4PjbcMoRMUTgxw9vRSw2UzrBDxMGqvHf3gvz
+         xKr4R81cILmu7Sm2a6jiVSupvYE/n3wD5D2d9t55jjjpUFAzN0xJqfVdZkqNdkhKbn7Y
+         V1bXHvv1ngOnewjAvapUqca6kqz1Ic+zlwF6x0eh0H9FjDWvRFhNxm2SmoH4rS7uL08x
+         mi/2ziLYnKaBjLBf7QjCNAEygeMY7yE9fBlrX1v+kOlOjCDYOC/ISk/xmWZeL7wKE36x
+         kPGg==
+X-Gm-Message-State: AOAM531bjeLpTAlcdBSjwerUrZkNRzap4Mi2sc7JV6yanGKRq9MKJQno
+        Iu8CLxInZ9gVYyStIcMaaR5Vd5tf+BD/CT9i
+X-Google-Smtp-Source: ABdhPJzdzScZ/3E4Er3ruk4IjJ+vujKOFVUezItG/5PAHWZJvSe8daOCnHf4GKrJBEp7/4ook3Vgww==
+X-Received: by 2002:a05:6602:184c:: with SMTP id d12mr461866ioi.8.1615828323164;
+        Mon, 15 Mar 2021 10:12:03 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id b16sm8178597ilq.49.2021.03.15.10.12.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 10:12:02 -0700 (PDT)
+Subject: Re: [PATCH net-next v4 2/6] net: qualcomm: rmnet: simplify some byte
+ order logic
+To:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Alex Elder <elder@linaro.org>
+Cc:     Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        stranche@codeaurora.org, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, sharathv@codeaurora.org,
+        bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, David Laight <David.Laight@aculab.com>,
+        Vladimir Oltean <olteanv@gmail.com>, elder@kernel.org,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210315133455.1576188-1-elder@linaro.org>
+ <20210315133455.1576188-3-elder@linaro.org>
+ <CAKgT0UetEDOgKmke7gA1MEmFBKpErcd9XZ0koe-LhCF_xW4=LA@mail.gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <ad9a687c-04f8-a354-ed37-49bec9569c2c@ieee.org>
+Date:   Mon, 15 Mar 2021 12:12:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210315153925.GC4595@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <CAKgT0UetEDOgKmke7gA1MEmFBKpErcd9XZ0koe-LhCF_xW4=LA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d10ef49a-00fb-4757-c617-08d8e7d55697
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3754:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3754D3CF701DC65AD13670BFA76C9@DM6PR12MB3754.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VIynl7zJZRwHYRAcuMV+amfO9g3vnPg0O5atVYYb/3nHaUwNbglQU0ZIGjMgLm2SPEs9QMK8L+EWnp44tM6cnb3vxY0uatXkUn61EP7WoR3YWYSBaHyS0bXCfDhN54JxgEm4RWJ569LWmEwkvzlc9y3XGo3l8YDeKO5eVSOIwndnwjyLq6fKxGA5cdv2goQOmNOp7JmJBG8WiFREXzfyUxTrS1bWCbaYxphKUiKILYAxvT068xPZ88LMgbJZzMEGNN+Hj68p6xhMzRpU3iDy2n17J8TMk0D2mAH4Hg0eRbPtkaM1HsY4C3+tWvKO0si8HhCeGbVpIO77hyXKsKYiqcw+WxvJRn6JZJzbPlbwnM92/hY3bTSgOKHw96GzxAxB0+XdwzjJ4CvxunthDBzR6jo9TtnbanoWNzH4Mv3bwKdgf1tQ/RbDgbrruJ4qkgMQ0Zw2xD5HfYDFch5MKTmPBsB7u3TjqqNr/HEdduuIyvK2bsrRkxYMSHiSSc5Kof2xuvMFAzWSJMCZojgOb4zOU0dvq2XGoD8Xa23R8G0ca59b923HsOsnDWW46T/ptvxvOyrCNLjY5gtURM/LC7TZC+T+QWkNh+wFR1TQkxmopie3j0UuWzOWtoW55VwwSMcJh007BuVCO0Gv99uzsynGuCaMPo/17MmHoVJrTobcfHp7Sfyh0OvGEqaB5igbOUBPX22WOGFVhCdQzOkJmJlgTV+cGBb/3fxU/WEzd5n1JHQ=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(396003)(346002)(46966006)(36840700001)(16576012)(356005)(7636003)(34020700004)(316002)(31686004)(36860700001)(82310400003)(2906002)(36906005)(5660300002)(83380400001)(8936002)(47076005)(36756003)(82740400003)(54906003)(2616005)(8676002)(6916009)(16526019)(426003)(4326008)(26005)(86362001)(70586007)(186003)(70206006)(336012)(31696002)(4744005)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 17:11:13.8263
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d10ef49a-00fb-4757-c617-08d8e7d55697
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3754
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Yes this is a problem, unfortunately I missed checking some of the
->> simple-card examples. I wonder we should be specifically looking for "mclk"
->> clock here.
-> That would definitely help mitigate the problem but I really think it's
-> cleaner and safer to just push this down to set_sysclk().
+On 3/15/21 11:02 AM, Alexander Duyck wrote:
+> On Mon, Mar 15, 2021 at 6:36 AM Alex Elder <elder@linaro.org> wrote:
+>>
+>> In rmnet_map_ipv4_ul_csum_header() and rmnet_map_ipv6_ul_csum_header()
+>> the offset within a packet at which checksumming should commence is
+>> calculated.  This calculation involves byte swapping and a forced type
+>> conversion that makes it hard to understand.
+>>
+>> Simplify this by computing the offset in host byte order, then
+>> converting the result when assigning it into the header field.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> ---
+>>   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 22 ++++++++++---------
+>>   1 file changed, 12 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> index 21d38167f9618..bd1aa11c9ce59 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> @@ -197,12 +197,13 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
+>>                                struct rmnet_map_ul_csum_header *ul_header,
+>>                                struct sk_buff *skb)
+>>   {
+>> -       struct iphdr *ip4h = (struct iphdr *)iphdr;
+>> -       __be16 *hdr = (__be16 *)ul_header, offset;
+>> +       __be16 *hdr = (__be16 *)ul_header;
+>> +       struct iphdr *ip4h = iphdr;
+>> +       u16 offset;
+>> +
+>> +       offset = skb_transport_header(skb) - (unsigned char *)iphdr;
+>> +       ul_header->csum_start_offset = htons(offset);
+> 
+> Rather than using skb_transport_header the correct pointer to use is
+> probably skb_checksum_start. The two are essentially synonymous but
+> the checksumming code is supposed to use skb_checksum_start.
 
-Understand now. I will push patches based on this. Thanks for the details.
+That's a great suggestion.  I was mimicking the existing
+code but it would be much better to use that.
+
+> Alternatively you could look at possibly using skb_network_header_len
+> as that would be the same value assuming that both headers are the
+> outer headers. Then you could avoid the extra pointer overhead.
+
+Actually, I think this is better still, because the purpose
+here is to tell the hardware where to start checksumming.
+I.e., it's unrelated to the SKB, and hides the calculation.
+
+Thank you.  I'll put together version 5, incorporating your
+suggestion.
+
+					-Alex
+
+>> -       offset = htons((__force u16)(skb_transport_header(skb) -
+>> -                                    (unsigned char *)iphdr));
+>> -       ul_header->csum_start_offset = offset;
+>>          ul_header->csum_insert_offset = skb->csum_offset;
+>>          ul_header->csum_enabled = 1;
+>>          if (ip4h->protocol == IPPROTO_UDP)
+>> @@ -239,12 +240,13 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
+>>                                struct rmnet_map_ul_csum_header *ul_header,
+>>                                struct sk_buff *skb)
+>>   {
+>> -       struct ipv6hdr *ip6h = (struct ipv6hdr *)ip6hdr;
+>> -       __be16 *hdr = (__be16 *)ul_header, offset;
+>> +       __be16 *hdr = (__be16 *)ul_header;
+>> +       struct ipv6hdr *ip6h = ip6hdr;
+>> +       u16 offset;
+>> +
+>> +       offset = skb_transport_header(skb) - (unsigned char *)ip6hdr;
+>> +       ul_header->csum_start_offset = htons(offset);
+> 
+> Same here.
+> 
+>>
+>> -       offset = htons((__force u16)(skb_transport_header(skb) -
+>> -                                    (unsigned char *)ip6hdr));
+>> -       ul_header->csum_start_offset = offset;
+>>          ul_header->csum_insert_offset = skb->csum_offset;
+>>          ul_header->csum_enabled = 1;
+>>
+>> --
+>> 2.27.0
+>>
+
