@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD7333BADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A9B33BB38
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235736AbhCOOKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:10:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S231670AbhCOON1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:13:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232296AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 211E664F2F;
-        Mon, 15 Mar 2021 13:58:17 +0000 (UTC)
+        id S232601AbhCON7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5C364F5E;
+        Mon, 15 Mar 2021 13:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816699;
-        bh=zpNUKK/aPKyGPqxpwHHm0Ond1XIcDiwIFmzE1PWTR9g=;
+        s=korg; t=1615816735;
+        bh=feoRGB0m9/7cM9bYnm40eLvBOV4SCiIQkTpYaUfRd20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iEJVfHxTAM/6CUjOP2A8Hmw1U4tSS6zWD/utZNl8EaAp7Jy/Zxu7f6Z8EjbArnqwD
-         oAyCoESIKlkPzJtVB8Az2je9wXL/wgfZleDvLzkQ5YOXIr6vrJhjrTzqO9eQ4Hq3uz
-         AIKVO/WYbXoW4BWZ0aFGqQceFu44xupb6OB9pdwk=
+        b=T59gGneC+SZ9eTemZRGDWcUQFsXayvgFtlH4jFPah/5hfGHRC+s9k5LtA/AQx54Gl
+         by0zjao8YncExmGVTfIFc6TaGUkke4ryzI800b22zEGBlhtXpprnIrODCuSW7blD1i
+         cmtYPetf76ctZt5ffU4n5a6cCQIHha2iiMrFM9H0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony@phenome.org>,
-        Shannon Nelson <snelson@pensando.io>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.10 063/290] ixgbe: fail to create xfrm offload of IPsec tunnel mode SA
+        stable@vger.kernel.org, Scott Branden <scott.branden@broadcom.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.11 093/306] bnxt_en: reliably allocate IRQ table on reset to avoid crash
 Date:   Mon, 15 Mar 2021 14:52:36 +0100
-Message-Id: <20210315135544.048787405@linuxfoundation.org>
+Message-Id: <20210315135510.800504775@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,127 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Antony Antony <antony@phenome.org>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-commit d785e1fec60179f534fbe8d006c890e5ad186e51 upstream.
+commit 20d7d1c5c9b11e9f538ed4a2289be106de970d3e upstream.
 
-Based on talks and indirect references ixgbe IPsec offlod do not
-support IPsec tunnel mode offload. It can only support IPsec transport
-mode offload. Now explicitly fail when creating non transport mode SA
-with offload to avoid false performance expectations.
+The following trace excerpt corresponds with a NULL pointer dereference
+of 'bp->irq_tbl' in bnxt_setup_inta() on an Aarch64 system after many
+device resets:
 
-Fixes: 63a67fe229ea ("ixgbe: add ipsec offload add and remove SA")
-Signed-off-by: Antony Antony <antony@phenome.org>
-Acked-by: Shannon Nelson <snelson@pensando.io>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+    Unable to handle kernel NULL pointer dereference at ... 000000d
+    ...
+    pc : string+0x3c/0x80
+    lr : vsnprintf+0x294/0x7e0
+    sp : ffff00000f61ba70 pstate : 20000145
+    x29: ffff00000f61ba70 x28: 000000000000000d
+    x27: ffff0000009c8b5a x26: ffff00000f61bb80
+    x25: ffff0000009c8b5a x24: 0000000000000012
+    x23: 00000000ffffffe0 x22: ffff000008990428
+    x21: ffff00000f61bb80 x20: 000000000000000d
+    x19: 000000000000001f x18: 0000000000000000
+    x17: 0000000000000000 x16: ffff800b6d0fb400
+    x15: 0000000000000000 x14: ffff800b7fe31ae8
+    x13: 00001ed16472c920 x12: ffff000008c6b1c9
+    x11: ffff000008cf0580 x10: ffff00000f61bb80
+    x9 : 00000000ffffffd8 x8 : 000000000000000c
+    x7 : ffff800b684b8000 x6 : 0000000000000000
+    x5 : 0000000000000065 x4 : 0000000000000001
+    x3 : ffff0a00ffffff04 x2 : 000000000000001f
+    x1 : 0000000000000000 x0 : 000000000000000d
+    Call trace:
+    string+0x3c/0x80
+    vsnprintf+0x294/0x7e0
+    snprintf+0x44/0x50
+    __bnxt_open_nic+0x34c/0x928 [bnxt_en]
+    bnxt_open+0xe8/0x238 [bnxt_en]
+    __dev_open+0xbc/0x130
+    __dev_change_flags+0x12c/0x168
+    dev_change_flags+0x20/0x60
+    ...
+
+Ordinarily, a call to bnxt_setup_inta() (not in trace due to inlining)
+would not be expected on a system supporting MSIX at all. However, if
+bnxt_init_int_mode() does not end up being called after the call to
+bnxt_clear_int_mode() in bnxt_fw_reset_close(), then the driver will
+think that only INTA is supported and bp->irq_tbl will be NULL,
+causing the above crash.
+
+In the error recovery scenario, we call bnxt_clear_int_mode() in
+bnxt_fw_reset_close() early in the sequence. Ordinarily, we will
+call bnxt_init_int_mode() in bnxt_hwrm_if_change() after we
+reestablish communication with the firmware after reset.  However,
+if the sequence has to abort before we call bnxt_init_int_mode() and
+if the user later attempts to re-open the device, then it will cause
+the crash above.
+
+We fix it in 2 ways:
+
+1. Check for bp->irq_tbl in bnxt_setup_int_mode(). If it is NULL, call
+bnxt_init_init_mode().
+
+2. If we need to abort in bnxt_hwrm_if_change() and cannot complete
+the error recovery sequence, set the BNXT_STATE_ABORT_ERR flag.  This
+will cause more drastic recovery at the next attempt to re-open the
+device, including a call to bnxt_init_int_mode().
+
+Fixes: 3bc7d4a352ef ("bnxt_en: Add BNXT_STATE_IN_FW_RESET state.")
+Reviewed-by: Scott Branden <scott.branden@broadcom.com>
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c |    5 +++++
- drivers/net/ethernet/intel/ixgbevf/ipsec.c     |    5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-@@ -575,6 +575,11 @@ static int ixgbe_ipsec_add_sa(struct xfr
- 		return -EINVAL;
- 	}
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -8430,10 +8430,18 @@ static void bnxt_setup_inta(struct bnxt
+ 	bp->irq_tbl[0].handler = bnxt_inta;
+ }
  
-+	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
-+		netdev_err(dev, "Unsupported mode for ipsec offload\n");
-+		return -EINVAL;
++static int bnxt_init_int_mode(struct bnxt *bp);
++
+ static int bnxt_setup_int_mode(struct bnxt *bp)
+ {
+ 	int rc;
+ 
++	if (!bp->irq_tbl) {
++		rc = bnxt_init_int_mode(bp);
++		if (rc || !bp->irq_tbl)
++			return rc ?: -ENODEV;
 +	}
 +
- 	if (ixgbe_ipsec_check_mgmt_ip(xs)) {
- 		netdev_err(dev, "IPsec IP addr clash with mgmt filters\n");
- 		return -EINVAL;
---- a/drivers/net/ethernet/intel/ixgbevf/ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ipsec.c
-@@ -272,6 +272,11 @@ static int ixgbevf_ipsec_add_sa(struct x
- 		return -EINVAL;
+ 	if (bp->flags & BNXT_FLAG_USING_MSIX)
+ 		bnxt_setup_msix(bp);
+ 	else
+@@ -8618,7 +8626,7 @@ static int bnxt_init_inta(struct bnxt *b
+ 
+ static int bnxt_init_int_mode(struct bnxt *bp)
+ {
+-	int rc = 0;
++	int rc = -ENODEV;
+ 
+ 	if (bp->flags & BNXT_FLAG_MSIX_CAP)
+ 		rc = bnxt_init_msix(bp);
+@@ -9339,7 +9347,8 @@ static int bnxt_hwrm_if_change(struct bn
+ {
+ 	struct hwrm_func_drv_if_change_output *resp = bp->hwrm_cmd_resp_addr;
+ 	struct hwrm_func_drv_if_change_input req = {0};
+-	bool resc_reinit = false, fw_reset = false;
++	bool fw_reset = !bp->irq_tbl;
++	bool resc_reinit = false;
+ 	u32 flags = 0;
+ 	int rc;
+ 
+@@ -9367,6 +9376,7 @@ static int bnxt_hwrm_if_change(struct bn
+ 
+ 	if (test_bit(BNXT_STATE_IN_FW_RESET, &bp->state) && !fw_reset) {
+ 		netdev_err(bp->dev, "RESET_DONE not set during FW reset.\n");
++		set_bit(BNXT_STATE_ABORT_ERR, &bp->state);
+ 		return -ENODEV;
  	}
- 
-+	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
-+		netdev_err(dev, "Unsupported mode for ipsec offload\n");
-+		return -EINVAL;
-+	}
-+
- 	if (xs->xso.flags & XFRM_OFFLOAD_INBOUND) {
- 		struct rx_sa rsa;
- 
+ 	if (resc_reinit || fw_reset) {
 
 
