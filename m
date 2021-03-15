@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761D933B8B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AD633B7CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhCOOEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34798 "EHLO mail.kernel.org"
+        id S233300AbhCOOBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230506AbhCON5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C3864F19;
-        Mon, 15 Mar 2021 13:57:15 +0000 (UTC)
+        id S229844AbhCON4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB16464EB6;
+        Mon, 15 Mar 2021 13:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816637;
-        bh=BjK/QruW1BkNMl4dzTySEjSv3ASKfjDmmcd39gaG9j4=;
+        s=korg; t=1615816596;
+        bh=70AUbpV9tK0YhOrcRgrP7R9s4mmDAQNs1J8jxcriaI8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g5WGZC2dDCmvjsn7PsG62RaZa5uJVai8Zq9UdccUrS7Fi7buW9nghuhfP0LTkVgor
-         JqTPb4ssd1xH4yFNHMZetu2YYIn1pBi8Z1bBu9/Dt+IsbpV9gqKg1mJnfvjiGI4ci3
-         3cgEmptjgBp2ydyMxL2xUyCKNO9k/+hVo4V/XAWE=
+        b=kKMDEH6gkKieFfAbTZVE88gfOl7z75ETU2GeVGbJn0CPrD2LkFy669ADtdzbpMvSY
+         IeOpnlOXa2jQ2jOuL2LEnosfYtg6FVhXsfrYJLwAJhWK487sz7yL4+AWp3+sWlzXk3
+         xfVPzqNdIC6pRLdadxN1ckHc0cqB4v5bIuCLAABI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        stable@vger.kernel.org, Zbynek Michl <zbynek.michl@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 034/306] ibmvnic: Fix possibly uninitialized old_num_tx_queues variable warning.
+Subject: [PATCH 5.10 004/290] ethernet: alx: fix order of calls on resume
 Date:   Mon, 15 Mar 2021 14:51:37 +0100
-Message-Id: <20210315135508.789050230@linuxfoundation.org>
+Message-Id: <20210315135542.082629062@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +42,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Michal Suchanek <msuchanek@suse.de>
+From: Jakub Kicinski <kuba@kernel.org>
 
-commit 6881b07fdd24850def1f03761c66042b983ff86e upstream.
+commit a4dcfbc4ee2218abd567d81d795082d8d4afcdf6 upstream.
 
-GCC 7.5 reports:
-../drivers/net/ethernet/ibm/ibmvnic.c: In function 'ibmvnic_reset_init':
-../drivers/net/ethernet/ibm/ibmvnic.c:5373:51: warning: 'old_num_tx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
-../drivers/net/ethernet/ibm/ibmvnic.c:5373:6: warning: 'old_num_rx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
+netif_device_attach() will unpause the queues so we can't call
+it before __alx_open(). This went undetected until
+commit b0999223f224 ("alx: add ability to allocate and free
+alx_napi structures") but now if stack tries to xmit immediately
+on resume before __alx_open() we'll crash on the NAPI being null:
 
-The variable is initialized only if(reset) and used only if(reset &&
-something) so this is a false positive. However, there is no reason to
-not initialize the variables unconditionally avoiding the warning.
+ BUG: kernel NULL pointer dereference, address: 0000000000000198
+ CPU: 0 PID: 12 Comm: ksoftirqd/0 Tainted: G           OE 5.10.0-3-amd64 #1 Debian 5.10.13-1
+ Hardware name: Gigabyte Technology Co., Ltd. To be filled by O.E.M./H77-D3H, BIOS F15 11/14/2013
+ RIP: 0010:alx_start_xmit+0x34/0x650 [alx]
+ Code: 41 56 41 55 41 54 55 53 48 83 ec 20 0f b7 57 7c 8b 8e b0
+0b 00 00 39 ca 72 06 89 d0 31 d2 f7 f1 89 d2 48 8b 84 df
+ RSP: 0018:ffffb09240083d28 EFLAGS: 00010297
+ RAX: 0000000000000000 RBX: ffffa04d80ae7800 RCX: 0000000000000004
+ RDX: 0000000000000000 RSI: ffffa04d80afa000 RDI: ffffa04e92e92a00
+ RBP: 0000000000000042 R08: 0000000000000100 R09: ffffa04ea3146700
+ R10: 0000000000000014 R11: 0000000000000000 R12: ffffa04e92e92100
+ R13: 0000000000000001 R14: ffffa04e92e92a00 R15: ffffa04e92e92a00
+ FS:  0000000000000000(0000) GS:ffffa0508f600000(0000) knlGS:0000000000000000
+ i915 0000:00:02.0: vblank wait timed out on crtc 0
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000198 CR3: 000000004460a001 CR4: 00000000001706f0
+ Call Trace:
+  dev_hard_start_xmit+0xc7/0x1e0
+  sch_direct_xmit+0x10f/0x310
 
-Fixes: 635e442f4a48 ("ibmvnic: merge ibmvnic_reset_init and ibmvnic_init")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Reviewed-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: <stable@vger.kernel.org> # 4.9+
+Fixes: bc2bebe8de8e ("alx: remove WoL support")
+Reported-by: Zbynek Michl <zbynek.michl@gmail.com>
+Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=983595
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Tested-by: Zbynek Michl <zbynek.michl@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/atheros/alx/main.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -5283,16 +5283,14 @@ static int ibmvnic_reset_init(struct ibm
- {
- 	struct device *dev = &adapter->vdev->dev;
- 	unsigned long timeout = msecs_to_jiffies(20000);
--	u64 old_num_rx_queues, old_num_tx_queues;
-+	u64 old_num_rx_queues = adapter->req_rx_queues;
-+	u64 old_num_tx_queues = adapter->req_tx_queues;
- 	int rc;
+--- a/drivers/net/ethernet/atheros/alx/main.c
++++ b/drivers/net/ethernet/atheros/alx/main.c
+@@ -1894,13 +1894,16 @@ static int alx_resume(struct device *dev
  
- 	adapter->from_passive_init = false;
+ 	if (!netif_running(alx->dev))
+ 		return 0;
+-	netif_device_attach(alx->dev);
  
--	if (reset) {
--		old_num_rx_queues = adapter->req_rx_queues;
--		old_num_tx_queues = adapter->req_tx_queues;
-+	if (reset)
- 		reinit_completion(&adapter->init_done);
--	}
+ 	rtnl_lock();
+ 	err = __alx_open(alx, true);
+ 	rtnl_unlock();
++	if (err)
++		return err;
++
++	netif_device_attach(alx->dev);
  
- 	adapter->init_done_rc = 0;
- 	rc = ibmvnic_send_crq_init(adapter);
+-	return err;
++	return 0;
+ }
+ 
+ static SIMPLE_DEV_PM_OPS(alx_pm_ops, alx_suspend, alx_resume);
 
 
