@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4ED33BB35
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5D533BB70
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236645AbhCOONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S236859AbhCOOQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:16:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhCON7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31DD864F5D;
-        Mon, 15 Mar 2021 13:58:54 +0000 (UTC)
+        id S232617AbhCON7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1D864EF9;
+        Mon, 15 Mar 2021 13:58:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816735;
-        bh=2HPj8oLrztMtAUCh9hgAZnZg5TF3uvxDrlotwYjiObQ=;
+        s=korg; t=1615816737;
+        bh=gRKwgZktH4u+F9jk1fBKe/Bz8H5BM0x3BycRYvJZzgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IvrxcZ4eharmiKsFeRIgLJj7cf+bSWLel1ot/uM9FdtSUP2qwEQ6ZfQuB351NNOB2
-         GuMrZsBeiGqriA5DqbVFH1zTCtpAga+9cpMWBcMKdX0VDwmlC3ZToU8oIWWanxxgRM
-         /hLizkmtdGmuoK+64rovn42sEKZbbYDhW08ooBWo=
+        b=XgnswB4TXpLUEdr413g0UxIiHGfQSjU4uM1pemYl4i8NvhNKdauRXQVVn68SNJCaF
+         8TqQPr2R2PEdGvUzF5RXms4IqAsX6nN41AyABfT22fMESBMmElBgw3K47LOzDDiDxL
+         gN+QTTFnwVkIQJ2T2i76kQ7ZJdijtUDf04a1QIfw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
-        Johan Hovold <johan@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.10 083/290] gpio: fix gpio-device list corruption
-Date:   Mon, 15 Mar 2021 14:52:56 +0100
-Message-Id: <20210315135544.723265412@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH 5.10 084/290] drm/compat: Clear bounce structures
+Date:   Mon, 15 Mar 2021 14:52:57 +0100
+Message-Id: <20210315135544.762265261@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,40 +43,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Johan Hovold <johan@kernel.org>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit cf25ef6b631c6fc6c0435fc91eba8734cca20511 upstream.
+commit de066e116306baf3a6a62691ac63cfc0b1dabddb upstream.
 
-Make sure to hold the gpio_lock when removing the gpio device from the
-gpio_devices list (when dropping the last reference) to avoid corrupting
-the list when there are concurrent accesses.
+Some of them have gaps, or fields we don't clear. Native ioctl code
+does full copies plus zero-extends on size mismatch, so nothing can
+leak. But compat is more hand-rolled so need to be careful.
 
-Fixes: ff2b13592299 ("gpio: make the gpiochip a real device")
-Cc: stable@vger.kernel.org      # 4.6
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-[ johan: adjust context to 5.11 ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
+None of these matter for performance, so just memset.
+
+Also I didn't fix up the CONFIG_DRM_LEGACY or CONFIG_DRM_AGP ioctl, those
+are security holes anyway.
+
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Reported-by: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com # vblank ioctl
+Cc: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210222100643.400935-1-daniel.vetter@ffwll.ch
+(cherry picked from commit e926c474ebee404441c838d18224cd6f246a71b7)
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpiolib.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/drm_ioc32.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -468,8 +468,12 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid
- static void gpiodevice_release(struct device *dev)
- {
- 	struct gpio_device *gdev = dev_get_drvdata(dev);
-+	unsigned long flags;
+--- a/drivers/gpu/drm/drm_ioc32.c
++++ b/drivers/gpu/drm/drm_ioc32.c
+@@ -99,6 +99,8 @@ static int compat_drm_version(struct fil
+ 	if (copy_from_user(&v32, (void __user *)arg, sizeof(v32)))
+ 		return -EFAULT;
  
-+	spin_lock_irqsave(&gpio_lock, flags);
- 	list_del(&gdev->list);
-+	spin_unlock_irqrestore(&gpio_lock, flags);
++	memset(&v, 0, sizeof(v));
 +
- 	ida_free(&gpio_ida, gdev->id);
- 	kfree_const(gdev->label);
- 	kfree(gdev->descs);
+ 	v = (struct drm_version) {
+ 		.name_len = v32.name_len,
+ 		.name = compat_ptr(v32.name),
+@@ -137,6 +139,9 @@ static int compat_drm_getunique(struct f
+ 
+ 	if (copy_from_user(&uq32, (void __user *)arg, sizeof(uq32)))
+ 		return -EFAULT;
++
++	memset(&uq, 0, sizeof(uq));
++
+ 	uq = (struct drm_unique){
+ 		.unique_len = uq32.unique_len,
+ 		.unique = compat_ptr(uq32.unique),
+@@ -265,6 +270,8 @@ static int compat_drm_getclient(struct f
+ 	if (copy_from_user(&c32, argp, sizeof(c32)))
+ 		return -EFAULT;
+ 
++	memset(&client, 0, sizeof(client));
++
+ 	client.idx = c32.idx;
+ 
+ 	err = drm_ioctl_kernel(file, drm_getclient, &client, 0);
+@@ -852,6 +859,8 @@ static int compat_drm_wait_vblank(struct
+ 	if (copy_from_user(&req32, argp, sizeof(req32)))
+ 		return -EFAULT;
+ 
++	memset(&req, 0, sizeof(req));
++
+ 	req.request.type = req32.request.type;
+ 	req.request.sequence = req32.request.sequence;
+ 	req.request.signal = req32.request.signal;
+@@ -889,6 +898,8 @@ static int compat_drm_mode_addfb2(struct
+ 	struct drm_mode_fb_cmd2 req64;
+ 	int err;
+ 
++	memset(&req64, 0, sizeof(req64));
++
+ 	if (copy_from_user(&req64, argp,
+ 			   offsetof(drm_mode_fb_cmd232_t, modifier)))
+ 		return -EFAULT;
 
 
