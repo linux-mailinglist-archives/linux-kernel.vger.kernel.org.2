@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16E33B518
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5098833B543
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhCONxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
+        id S231144AbhCONxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhCONww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2827F64EF0;
-        Mon, 15 Mar 2021 13:52:51 +0000 (UTC)
+        id S229874AbhCONxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EF64EF9;
+        Mon, 15 Mar 2021 13:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816372;
-        bh=0sT4d9BSyem9AsgEkZVpJuZYeysTVbVInfe6VPlxUoI=;
+        s=korg; t=1615816383;
+        bh=qaz12JiLe/Ys9E2n86Og5/hr3vi/49HOTrA/XwLcJrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yjVjiTK3mc0qrbjrXltnGUyVwlkZS+Uilwq9INodvewqPrVemgLMJ/8gtVbHc/GT3
-         W/A+isZEV8pCiIvEiiexgG0MbWRlHglFaoAXTsccEAnxKaVACf0naTktwG6VXlUUuH
-         cujSVulrSrWsTvPQ67hY1HTzYPjiY/ielcN5D3Nw=
+        b=XNVJxop/0yHYGh4afbsb0XfeqjsNQ/PMML1WireISbB6nHRjjpC4ZLusN+8ljhxx4
+         CxtbniT9A4r+ZCuhTrUApiK5XVT8yF1YUxOWwDiGpD/rmnDxkdcGxlxXnu09x/tHCp
+         K92/bnRw+6VqUlaaiHRj6P+UWzhimR5GR41ubMbc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Kennedy <hurricos@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.9 03/78] ath9k: fix transmitting to stations in dynamic SMPS mode
-Date:   Mon, 15 Mar 2021 14:51:26 +0100
-Message-Id: <20210315135212.180795544@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: [PATCH 4.4 13/75] futex: fix dead code in attach_to_pi_owner()
+Date:   Mon, 15 Mar 2021 14:51:27 +0100
+Message-Id: <20210315135208.696700074@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +42,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 3b9ea7206d7e1fdd7419cbd10badd3b2c80d04b4 upstream.
+This patch comes directly from an origin patch (commit
+91509e84949fc97e7424521c32a9e227746e0b85) in v4.9.
+And it is part of a full patch which was originally back-ported
+to v4.14 as commit e6e00df182908f34360c3c9f2d13cc719362e9c0
 
-When transmitting to a receiver in dynamic SMPS mode, all transmissions that
-use multiple spatial streams need to be sent using CTS-to-self or RTS/CTS to
-give the receiver's extra chains some time to wake up.
-This fixes the tx rate getting stuck at <= MCS7 for some clients, especially
-Intel ones, which make aggressive use of SMPS.
+The handle_exit_race() function is defined in commit 9c3f39860367
+ ("futex: Cure exit race"), which never returns -EBUSY. This results
+in a small piece of dead code in the attach_to_pi_owner() function:
 
-Cc: stable@vger.kernel.org
-Reported-by: Martin Kennedy <hurricos@gmail.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210214184911.96702-1-nbd@nbd.name
+	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
+	...
+	if (ret == -EBUSY)
+		*exiting = p; /* dead code */
+
+The return value -EBUSY is added to handle_exit_race() in upsteam
+commit ac31c7ff8624409 ("futex: Provide distinct return value when
+owner is exiting"). This commit was incorporated into v4.9.255, before
+the function handle_exit_race() was introduced, whitout Modify
+handle_exit_race().
+
+To fix dead code, extract the change of handle_exit_race() from
+commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
+ is exiting"), re-incorporated.
+
+Lee writes:
+
+This commit takes the remaining functional snippet of:
+
+ ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
+
+... and is the correct fix for this issue.
+
+Fixes: 9c3f39860367 ("futex: Cure exit race")
+Cc: stable@vger.kernel.org # v4.9.258
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath9k/ath9k.h |    3 ++-
- drivers/net/wireless/ath/ath9k/xmit.c  |    6 ++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ kernel/futex.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/wireless/ath/ath9k/ath9k.h
-+++ b/drivers/net/wireless/ath/ath9k/ath9k.h
-@@ -179,7 +179,8 @@ struct ath_frame_info {
- 	s8 txq;
- 	u8 keyix;
- 	u8 rtscts_rate;
--	u8 retries : 7;
-+	u8 retries : 6;
-+	u8 dyn_smps : 1;
- 	u8 baw_tracked : 1;
- 	u8 tx_power;
- 	enum ath9k_key_type keytype:2;
---- a/drivers/net/wireless/ath/ath9k/xmit.c
-+++ b/drivers/net/wireless/ath/ath9k/xmit.c
-@@ -1255,6 +1255,11 @@ static void ath_buf_set_rate(struct ath_
- 				 is_40, is_sgi, is_sp);
- 			if (rix < 8 && (tx_info->flags & IEEE80211_TX_CTL_STBC))
- 				info->rates[i].RateFlags |= ATH9K_RATESERIES_STBC;
-+			if (rix >= 8 && fi->dyn_smps) {
-+				info->rates[i].RateFlags |=
-+					ATH9K_RATESERIES_RTS_CTS;
-+				info->flags |= ATH9K_TXDESC_CTSENA;
-+			}
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1204,11 +1204,11 @@ static int handle_exit_race(u32 __user *
+ 	u32 uval2;
  
- 			info->txpower[i] = ath_get_rate_txpower(sc, bf, rix,
- 								is_40, false);
-@@ -2158,6 +2163,7 @@ static void setup_frame_info(struct ieee
- 		fi->keyix = an->ps_key;
- 	else
- 		fi->keyix = ATH9K_TXKEYIX_INVALID;
-+	fi->dyn_smps = sta && sta->smps_mode == IEEE80211_SMPS_DYNAMIC;
- 	fi->keytype = keytype;
- 	fi->framelen = framelen;
- 	fi->tx_power = txpower;
+ 	/*
+-	 * If the futex exit state is not yet FUTEX_STATE_DEAD, wait
+-	 * for it to finish.
++	 * If the futex exit state is not yet FUTEX_STATE_DEAD, tell the
++	 * caller that the alleged owner is busy.
+ 	 */
+ 	if (tsk && tsk->futex_state != FUTEX_STATE_DEAD)
+-		return -EAGAIN;
++		return -EBUSY;
+ 
+ 	/*
+ 	 * Reread the user space value to handle the following situation:
 
 
