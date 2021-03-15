@@ -2,208 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C81C33C620
+	by mail.lfdr.de (Postfix) with ESMTP id B90E333C621
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhCOSuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhCOStk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:49:40 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D17C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:49:39 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id o11so34592017iob.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PXbxDLQ5qzFahsfuQdQd2/oh6y0N5sQbqIGCA/JCZcI=;
-        b=gcxva2A+i8wAZZUM0MJqS4HJtjOcnfep/osbYXHElsJUPfyLqq0LlOqZ7yxTsu/U3O
-         X3qDUjpfYAtFVvZqW7hNgCnTx1XtIxQ2F9oqTNQQWvbRcuE92jdH9P7l1KbMMW9Mcobk
-         2s6+byeIDyItyjgCkC58xd0YiK8pamcDf+UI19fkAtf09oJmr14pittbE6f3rK4pqRWZ
-         3WkBcebWEJyAaztFyLqphCYnRzp7ww9Rt9C7KtwNbsU+gujsQkLQ84odRpnFum6cLmBD
-         nECtX0a17koHvS55m3nsYoqDQjibk+kUMFmdjEgGXY7eDaeGq5NFdHHDvnPayOQvR7Zg
-         dI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PXbxDLQ5qzFahsfuQdQd2/oh6y0N5sQbqIGCA/JCZcI=;
-        b=O5WI2lyppUQ9ATu/dmjxAbat4DQpuYcmhzzzKjAuWpXfUIXNayeCrBUE6w5+GxW5w6
-         ofulNoMxbUzkQyn7NTSuE3Tl1XhvgMJ1Qd4ffz0c9pS/It6qs8GpaqC6xfrzz02PZf6Q
-         iL9FgQWEl1AE3BMQIzP5eCees4JL2AnmXJ3330OPHvSNxS2zpHwDFFJEfA040VXgK6Kt
-         LElUKnGNXBvNmm8TBWqyAFo2XHnlQHcOP6FomlQ/lf6ocoesxTkD+ofKmXDNMWqTEOnP
-         41Sid+BaYAPq0dhe4HDthdJ8mZoSAMtKks4sPogYWCFDC/7bJ6alJX2wCLYfnf+DibSn
-         kU4w==
-X-Gm-Message-State: AOAM530uSMgPJYYebWOnOZ9W6ic2cVW6oJ6go3SsNv+K6u4E9UmB0v/A
-        fRZ5+5oagrdaaQLPeJKczRovDQ==
-X-Google-Smtp-Source: ABdhPJzG2lwjHlnTmgu1x/TXnXdNoT1TErE7Cvq+6JDSdEhCn+dELPNR/j8apYR0iz7HPsxaL6KizQ==
-X-Received: by 2002:a5d:9bc8:: with SMTP id d8mr680632ion.115.1615834179259;
-        Mon, 15 Mar 2021 11:49:39 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id a5sm8212162ilk.14.2021.03.15.11.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 11:49:38 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        David.Laight@ACULAB.COM, olteanv@gmail.com,
-        alexander.duyck@gmail.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Duyck <alexanderduyck@fb.com>
-Subject: [PATCH net-next v5 6/6] net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
-Date:   Mon, 15 Mar 2021 13:49:28 -0500
-Message-Id: <20210315184928.2913264-7-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210315184928.2913264-1-elder@linaro.org>
-References: <20210315184928.2913264-1-elder@linaro.org>
+        id S232837AbhCOSuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:50:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45802 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232256AbhCOSt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:49:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7FD47AE8F;
+        Mon, 15 Mar 2021 18:49:58 +0000 (UTC)
+To:     Xunlei Pang <xlpang@linux.alibaba.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shu Ming <sming56@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <1615303512-35058-1-git-send-email-xlpang@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3 0/4] mm/slub: Fix count_partial() problem
+Message-ID: <793c884a-9d60-baaf-fab8-3e5f4a024124@suse.cz>
+Date:   Mon, 15 Mar 2021 19:49:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <1615303512-35058-1-git-send-email-xlpang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the use of C bit-fields in the rmnet_map_ul_csum_header
-structure with a single two-byte (big endian) structure member,
-and use masks to encode or get values within it.  The content of
-these fields can be accessed using simple bitwise AND and OR
-operations on the (host byte order) value of the new structure
-member.
+On 3/9/21 4:25 PM, Xunlei Pang wrote:
+> count_partial() can hold n->list_lock spinlock for quite long, which
+> makes much trouble to the system. This series eliminate this problem.
 
-Previously rmnet_map_ipv4_ul_csum_header() would update C bit-field
-values in host byte order, then forcibly fix their byte order using
-a combination of byte swap operations and types.
+Before I check the details, I have two high-level comments:
 
-Instead, just compute the value that needs to go into the new
-structure member and save it with a simple byte-order conversion.
+- patch 1 introduces some counting scheme that patch 4 then changes, could we do
+this in one step to avoid the churn?
 
-Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
+- the series addresses the concern that spinlock is being held, but doesn't
+address the fact that counting partial per-node slabs is not nearly enough if we
+want accurate <active_objs> in /proc/slabinfo because there are also percpu
+slabs and per-cpu partial slabs, where we don't track the free objects at all.
+So after this series while the readers of /proc/slabinfo won't block the
+spinlock, they will get the same garbage data as before. So Christoph is not
+wrong to say that we can just report active_objs == num_objs and it won't
+actually break any ABI.
+At the same time somebody might actually want accurate object statistics at the
+expense of peak performance, and it would be nice to give them such option in
+SLUB. Right now we don't provide this accuracy even with CONFIG_SLUB_STATS,
+although that option provides many additional tuning stats, with additional
+overhead.
+So my proposal would be a new config for "accurate active objects" (or just tie
+it to CONFIG_SLUB_DEBUG?) that would extend the approach of percpu counters in
+patch 4 to all alloc/free, so that it includes percpu slabs. Without this config
+enabled, let's just report active_objs == num_objs.
 
-Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
-zeroes every field in the upload checksum header.  Replace that with
-a single memset() operation.
+Vlastimil
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
---
-v5: - Assign checksum start offset a little later (with csum_info)
-v4: - Don't use u16_get_bits() to access the checksum field offset
-v3: - Use BIT(x) and don't use u16_get_bits() for single-bit flags
-v2: - Fixed to use u16_encode_bits() instead of be16_encode_bits()
-
-.../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 38 +++++++------------
-include/linux/if_rmnet.h                      | 21 +++++-----
-2 files changed, 23 insertions(+), 36 deletions(-)
-
-iff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-ndex c336c17e01fe4..0ac2ff828320c 100644
--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@ -197,20 +197,16 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
-			      struct rmnet_map_ul_csum_header *ul_header,
-			      struct sk_buff *skb)
-{
-	__be16 *hdr = (__be16 *)ul_header;
-	struct iphdr *ip4h = iphdr;
-	u16 val;
-
-	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
-	ul_header->csum_insert_offset = skb->csum_offset;
-	ul_header->csum_enabled = 1;
-	val = MAP_CSUM_UL_ENABLED_FLAG;
-	if (ip4h->protocol == IPPROTO_UDP)
-		ul_header->udp_ind = 1;
-	else
-		ul_header->udp_ind = 0;
-		val |= MAP_CSUM_UL_UDP_FLAG;
-	val |= skb->csum_offset & MAP_CSUM_UL_OFFSET_MASK;
-
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -237,21 +233,16 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
- 			      struct rmnet_map_ul_csum_header *ul_header,
- 			      struct sk_buff *skb)
- {
--	__be16 *hdr = (__be16 *)ul_header;
- 	struct ipv6hdr *ip6h = ip6hdr;
-+	u16 val;
- 
--	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
--	ul_header->csum_insert_offset = skb->csum_offset;
--	ul_header->csum_enabled = 1;
--
-+	val = MAP_CSUM_UL_ENABLED_FLAG;
- 	if (ip6h->nexthdr == IPPROTO_UDP)
--		ul_header->udp_ind = 1;
--	else
--		ul_header->udp_ind = 0;
-+		val |= MAP_CSUM_UL_UDP_FLAG;
-+	val |= skb->csum_offset & MAP_CSUM_UL_OFFSET_MASK;
- 
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -419,10 +410,7 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
- 	}
- 
- sw_csum:
--	ul_header->csum_start_offset = 0;
--	ul_header->csum_insert_offset = 0;
--	ul_header->csum_enabled = 0;
--	ul_header->udp_ind = 0;
-+	memset(ul_header, 0, sizeof(*ul_header));
- 
- 	priv->stats.csum_sw++;
- }
-diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-index 941997df9e088..4efb537f57f31 100644
---- a/include/linux/if_rmnet.h
-+++ b/include/linux/if_rmnet.h
-@@ -33,17 +33,16 @@ struct rmnet_map_dl_csum_trailer {
- 
- struct rmnet_map_ul_csum_header {
- 	__be16 csum_start_offset;
--#if defined(__LITTLE_ENDIAN_BITFIELD)
--	u16 csum_insert_offset:14;
--	u16 udp_ind:1;
--	u16 csum_enabled:1;
--#elif defined (__BIG_ENDIAN_BITFIELD)
--	u16 csum_enabled:1;
--	u16 udp_ind:1;
--	u16 csum_insert_offset:14;
--#else
--#error	"Please fix <asm/byteorder.h>"
--#endif
-+	__be16 csum_info;		/* MAP_CSUM_UL_* */
- } __aligned(1);
- 
-+/* csum_info field:
-+ *  OFFSET:	where (offset in bytes) to insert computed checksum
-+ *  UDP:	1 = UDP checksum (zero checkum means no checksum)
-+ *  ENABLED:	1 = checksum computation requested
-+ */
-+#define MAP_CSUM_UL_OFFSET_MASK		GENMASK(13, 0)
-+#define MAP_CSUM_UL_UDP_FLAG		BIT(14)
-+#define MAP_CSUM_UL_ENABLED_FLAG	BIT(15)
-+
- #endif /* !(_LINUX_IF_RMNET_H_) */
--- 
-2.27.0
+> v1->v2:
+> - Improved changelog and variable naming for PATCH 1~2.
+> - PATCH3 adds per-cpu counter to avoid performance regression
+>   in concurrent __slab_free().
+> 
+> v2->v3:
+> - Changed "page->inuse" to the safe "new.inuse", etc.
+> - Used CONFIG_SLUB_DEBUG and CONFIG_SYSFS condition for new counters.
+> - atomic_long_t -> unsigned long
+> 
+> [Testing]
+> There seems might be a little performance impact under extreme
+> __slab_free() concurrent calls according to my tests.
+> 
+> On my 32-cpu 2-socket physical machine:
+> Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz
+> 
+> 1) perf stat --null --repeat 10 -- hackbench 20 thread 20000
+> 
+> == original, no patched
+> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+> 
+>       24.536050899 seconds time elapsed                                          ( +-  0.24% )
+> 
+> 
+> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+> 
+>       24.588049142 seconds time elapsed                                          ( +-  0.35% )
+> 
+> 
+> == patched with patch1~4
+> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+> 
+>       24.670892273 seconds time elapsed                                          ( +-  0.29% )
+> 
+> 
+> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+> 
+>       24.746755689 seconds time elapsed                                          ( +-  0.21% )
+> 
+> 
+> 2) perf stat --null --repeat 10 -- hackbench 32 thread 20000
+> 
+> == original, no patched
+>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+> 
+>       39.784911855 seconds time elapsed                                          ( +-  0.14% )
+> 
+>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+> 
+>       39.868687608 seconds time elapsed                                          ( +-  0.19% )
+> 
+> == patched with patch1~4
+>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+> 
+>       39.681273015 seconds time elapsed                                          ( +-  0.21% )
+> 
+>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+> 
+>       39.681238459 seconds time elapsed                                          ( +-  0.09% )
+> 
+> 
+> Xunlei Pang (4):
+>   mm/slub: Introduce two counters for partial objects
+>   mm/slub: Get rid of count_partial()
+>   percpu: Export per_cpu_sum()
+>   mm/slub: Use percpu partial free counter
+> 
+>  include/linux/percpu-defs.h   |  10 ++++
+>  kernel/locking/percpu-rwsem.c |  10 ----
+>  mm/slab.h                     |   4 ++
+>  mm/slub.c                     | 120 +++++++++++++++++++++++++++++-------------
+>  4 files changed, 97 insertions(+), 47 deletions(-)
+> 
 
