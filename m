@@ -2,216 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B9133BEE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771B733BEE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239476AbhCOOuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235525AbhCOObC (ORCPT
+        id S239554AbhCOOux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:50:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236178AbhCOOep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:31:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76295C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:31:00 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id s21so8895876pjq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxMFtpQXBw8+Teasy1N+8sAYQpWswbzlBxa6vG+wy8E=;
-        b=gtOUQuVWaqpqRobZHIW8g1STxSJRyKi2AepnJDvYLgM38OGEyhgC9dV4IzfmndbKBN
-         5p8Z87ncIscRXOf8NB6ExyBfXH5nNBpI2CWlG2yCXUBYdM9Iv9KdmLNTw3EgD1c0CE+d
-         B3PLhzYj8an+Io6C2Cu0fhrI6+b2lw5h021uBA4NWwrhhLnfPRpCjEGgAnZm/slngQnj
-         Pptj70b0dLLYMG1fAw6JgAttVLVcqhup/KRiZWXD1U9VqxbLLshBynZcxEjQDIgzP9OO
-         YciFGeOFojeopP4qWq5EtE9NoDOmNDI9iLdY37nwgKaQxVjmmTBXYyBT0HVy9vdGOZVS
-         AqwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxMFtpQXBw8+Teasy1N+8sAYQpWswbzlBxa6vG+wy8E=;
-        b=adbEgPOT0iAefaGBjVnHgRYWV9YSPbliiFEWPLpoXxEXVo7k0IZAJRL+XI5oaNbe3k
-         PX6YWy9ijpkgFS33UTjrQ94XS5kn6W+4GAiFsm2AtG7yIdgQ79+FCA2bIRqzWBiHnvGS
-         HmWA2cBt4iXooFXMfV7apLUUHZf0gCYSiXqbEyG4+af0JkpsX0/dWMxN5JfVY6bj/n1k
-         4aTRFdFTpYQQOtTZfmXEV2Y7HDKW6ZePHGeALBPSf4JI/QKI9mi7J4ZrRgalIcuQeAOS
-         QBBtdA2h1Khor9rKixShuwlsWGm8JJsvtBwJRjcpY855xLUlfDJmkHyVmohxRRIhLLyx
-         q/qQ==
-X-Gm-Message-State: AOAM533xtrf2giplXXcpPl9weHhMWbSCiFuLq5W1ku4/pO12V4UJptDX
-        hJ6qeVJrstBeeZyLMuFs1bs=
-X-Google-Smtp-Source: ABdhPJxKtsRPy4NcaEoJGSbHx2fCY9CauFVtyzYtzmzK8JdAmS0T9v47E9RJwq6ggc6be8NLChXvVQ==
-X-Received: by 2002:a17:90b:4d12:: with SMTP id mw18mr13173141pjb.196.1615818659958;
-        Mon, 15 Mar 2021 07:30:59 -0700 (PDT)
-Received: from vultr.guest ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id e1sm14072652pfd.72.2021.03.15.07.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 07:30:59 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [RESEND PATCH v2] perf stat: improve readability of shadow stats
-Date:   Mon, 15 Mar 2021 22:30:47 +0800
-Message-Id: <20210315143047.3867-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 15 Mar 2021 10:34:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615818881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mE4MXpTy1s3he7taiWasf89xOhGqDGcYELJJK6u3UHE=;
+        b=cDpToJJID6PRdj49eljl/2ulz+nEcnWZAkhj3xl94QSzKUnT6VBNQmZhZMq/7RUJj6nZZl
+        WojjpJUJd3ZH/y1v5zQa1AxO5d67LsX7yFG1F3QlTjk4pz9h/ds7BBrXHPuJAZ//ce0pFw
+        Uzjt6B2yJM8td4xzvMZ7CZn8nnK21gU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-fLspmacGMXOIVy7I9GZFiQ-1; Mon, 15 Mar 2021 10:34:40 -0400
+X-MC-Unique: fLspmacGMXOIVy7I9GZFiQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51D481007EF7;
+        Mon, 15 Mar 2021 14:34:10 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBF62614ED;
+        Mon, 15 Mar 2021 14:34:09 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 08:34:09 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210315083409.08b1359b@x1.home.shazbot.org>
+In-Reply-To: <20210315135226.avwmnhkfsgof6ihw@pali>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+        <20210312173452.3855-5-ameynarkhede03@gmail.com>
+        <20210314235545.girtrazsdxtrqo2q@pali>
+        <20210315134323.llz2o7yhezwgealp@archlinux>
+        <20210315135226.avwmnhkfsgof6ihw@pali>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds function convert_unit_double() and selects appropriate
-unit for shadow stats between K/M/G.
+On Mon, 15 Mar 2021 14:52:26 +0100
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-$ sudo ./perf stat -a -- sleep 1
+> On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > reset(pci_parent_bus_reset) which I think are hot reset and
+> > warm reset respectively. =20
+>=20
+> No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is just another
+> type of reset, which is currently implemented only for PCIe hot plug
+> bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> bus reset with some other hook. PCIe Warm Reset does not have API in
+> kernel and therefore drivers do not export this type of reset via any
+> kernel function (yet).
 
-Before: Unit 'M' is selected even the number is very small.
- Performance counter stats for 'system wide':
+Warm reset is beyond the scope of this series, but could be implemented
+in a compatible way to fit within the pci_reset_fn_methods[] array
+defined here.  Note that with this series the resets available through
+pci_reset_function() and the per device reset attribute is sysfs remain
+exactly the same as they are currently.  The bus and slot reset
+methods used here are limited to devices where only a single function is
+affected by the reset, therefore it is not like the patch you proposed
+which performed a reset irrespective of the downstream devices.  This
+series only enables selection of the existing methods.  Thanks,
 
-          4,003.06 msec cpu-clock                 #    3.998 CPUs utilized
-            16,179      context-switches          #    0.004 M/sec
-               161      cpu-migrations            #    0.040 K/sec
-             4,699      page-faults               #    0.001 M/sec
-     6,135,801,925      cycles                    #    1.533 GHz                      (83.21%)
-     5,783,308,491      stalled-cycles-frontend   #   94.26% frontend cycles idle     (83.21%)
-     4,543,694,050      stalled-cycles-backend    #   74.05% backend cycles idle      (66.49%)
-     4,720,130,587      instructions              #    0.77  insn per cycle
-                                                  #    1.23  stalled cycles per insn  (83.28%)
-       753,848,078      branches                  #  188.318 M/sec                    (83.61%)
-        37,457,747      branch-misses             #    4.97% of all branches          (83.48%)
-
-       1.001283725 seconds time elapsed
-
-After:
-$ sudo ./perf stat -a -- sleep 2
-
- Performance counter stats for 'system wide':
-
-          8,005.52 msec cpu-clock                 #    3.999 CPUs utilized
-            10,715      context-switches          #    1.338 K/sec
-               785      cpu-migrations            #   98.057 /sec
-               102      page-faults               #   12.741 /sec
-     1,948,202,279      cycles                    #    0.243 GHz
-     2,816,470,932      stalled-cycles-frontend   #  144.57% frontend cycles idle
-     2,661,172,207      stalled-cycles-backend    #  136.60% backend cycles idle
-       464,172,105      instructions              #    0.24  insn per cycle
-                                                  #    6.07  stalled cycles per insn
-        91,567,662      branches                  #   11.438 M/sec
-         7,756,054      branch-misses             #    8.47% of all branches
-
-       2.002040043 seconds time elapsed
-
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-
-v2:
-  o do not change 'sec' to 'cpu-sec'.
-  o use convert_unit_double to implement convert_unit.
----
- tools/perf/util/stat-shadow.c | 16 +++++++---------
- tools/perf/util/units.c       | 21 ++++++++++++++-------
- tools/perf/util/units.h       |  1 +
- 3 files changed, 22 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index 6ccf21a72f06..3f800e71126f 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -9,6 +9,7 @@
- #include "expr.h"
- #include "metricgroup.h"
- #include "cgroup.h"
-+#include "units.h"
- #include <linux/zalloc.h>
- 
- /*
-@@ -1270,18 +1271,15 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
- 				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
- 	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
--		char unit = 'M';
--		char unit_buf[10];
-+		char unit = ' ';
-+		char unit_buf[10] = "/sec";
- 
- 		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
--
- 		if (total)
--			ratio = 1000.0 * avg / total;
--		if (ratio < 0.001) {
--			ratio *= 1000;
--			unit = 'K';
--		}
--		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
-+			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
-+
-+		if (unit != ' ')
-+			snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
- 		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
- 	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
- 		print_smi_cost(config, cpu, out, st, &rsd);
-diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
-index a46762aec4c9..32c39cfe209b 100644
---- a/tools/perf/util/units.c
-+++ b/tools/perf/util/units.c
-@@ -33,28 +33,35 @@ unsigned long parse_tag_value(const char *str, struct parse_tag *tags)
- 	return (unsigned long) -1;
- }
- 
--unsigned long convert_unit(unsigned long value, char *unit)
-+double convert_unit_double(double value, char *unit)
- {
- 	*unit = ' ';
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'K';
- 	}
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'M';
- 	}
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'G';
- 	}
- 
- 	return value;
- }
- 
-+unsigned long convert_unit(unsigned long value, char *unit)
-+{
-+	double v = convert_unit_double((double)value, unit);
-+
-+	return (unsigned long)v;
-+}
-+
- int unit_number__scnprintf(char *buf, size_t size, u64 n)
- {
- 	char unit[4] = "BKMG";
-diff --git a/tools/perf/util/units.h b/tools/perf/util/units.h
-index 99263b6a23f7..ea43e74e3240 100644
---- a/tools/perf/util/units.h
-+++ b/tools/perf/util/units.h
-@@ -12,6 +12,7 @@ struct parse_tag {
- 
- unsigned long parse_tag_value(const char *str, struct parse_tag *tags);
- 
-+double convert_unit_double(double value, char *unit);
- unsigned long convert_unit(unsigned long value, char *unit);
- int unit_number__scnprintf(char *buf, size_t size, u64 n);
- 
--- 
-2.25.1
+Alex
 
