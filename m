@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0863B33C25E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DE433C262
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhCOQmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:42:11 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:38342 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234587AbhCOQmI (ORCPT
+        id S233372AbhCOQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhCOQmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:42:08 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 03A2F316;
-        Mon, 15 Mar 2021 17:42:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615826527;
-        bh=meXW2nUOk1RhrSoua6G9ceJqPGOfpSiHqaAKI/AhfkY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oicu7Ws0tGr32dBM25amrfw3RQnN4L1Un074PDc4TwcfPIytxaUZYATbMN8/+borr
-         UlDf9fDDiLQhM7K0RDO+YoG6jU5/f83kqULjHX1dziNEsBLJ4H3nZbbVi6lRModJs5
-         DfGB9WgmcW/PxEXRS5YiQ0Wnkx9NwXUIMsWnVU9k=
-Date:   Mon, 15 Mar 2021 18:41:31 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] drm/bridge: ti-sn65dsi86: Move code in prep for EDID
- read fix
-Message-ID: <YE+OO0m8iW8oS3cq@pendragon.ideasonboard.com>
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
- <20210304155144.2.Id492ddb6e2cdd05eb94474b93654b04b270c9bbe@changeid>
- <YE0qyYedS0NilsCy@pendragon.ideasonboard.com>
- <CAD=FV=X_HAdNkvZ7NGKDH9KapRRLgOfN23OZyy3VyaX+ywjRkQ@mail.gmail.com>
+        Mon, 15 Mar 2021 12:42:25 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4922FC06174A;
+        Mon, 15 Mar 2021 09:42:25 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id n132so34092530iod.0;
+        Mon, 15 Mar 2021 09:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=suo82Wm7Q2Ni3L8PUnv9EFjW8tqvE9ayUdLNwJVj7+c=;
+        b=pS8R6CQkEasUaZHCwMCMhsPT3tbRp/QS6uMaq7aHuGKMtL5dcBXWzx7RblXACmYlwS
+         +61aeHcCqF6nuLwGdSiA4ZRufOyEp5jrdAIbMZA35OckXTJXv0lflJa0kPHDVc2Lv/nM
+         PVT6HmZUAMWGFHD8fLsgO/l1q94tBgvGXGhqYfwu3gi6hNPlpoKIK3in9Zzwyfj+ffDR
+         uX6RT7/7x/+8gLCEz3YeSsjuicGfhCYUd7KTy81Au/BKcWGnPIUOswMb3q7nwPzvyEdp
+         32azc0a18RSwOxxVzSJzp8PySrfV16x757ndsMJBNnM1MluNTFpw23K/r+tbBNWdMuut
+         egLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=suo82Wm7Q2Ni3L8PUnv9EFjW8tqvE9ayUdLNwJVj7+c=;
+        b=bJjtY2McQ6mO3Tf8NiLwx9Oho7uU6cqaV26kcpwuM/xEtXXK9XHX4ljR0Qo80rd4Az
+         Qdm9c6XK1uP4Emb077YaV7v30o65XIn2Q2hmW+jvaoMQ3nRwtgUvl/sL1k+hK54v0nfq
+         0leKv4oTZT/c6ONRJnDRn0GT/5Wvix4uLj8HJuGcZR3c8d+c3HL4A06wO9QYfHjxoOnW
+         TSuao7OUlLKx8N0OMkKLwU/KdA8bcz+En3kLlYCTWV9M+6Yl7mo6o2cSdnkXSddo05dx
+         ECIwCQSehmRzh7HrdeNn+IEZe7Ne8kobMEldL0z0pJRaoloVW5a+di27WizMqXVIVUBo
+         Rwgw==
+X-Gm-Message-State: AOAM533GCG7NvU6F7FUM7lby2ciLCxEkqCg09B4y7j0WTkEEWUdeTsJg
+        4su9VHXvU/fOvTwlX7uSbNt8Cja38l1uM1JeIqU=
+X-Google-Smtp-Source: ABdhPJy4M7AFuZ9fXk3YWkOXHWMyTm5M0r+u+NXPK2z8BW1WLbau1LHz4JM11zjA5k+lTqTRzP9s9elQPtEOHkXiqp8=
+X-Received: by 2002:a02:9a0a:: with SMTP id b10mr10259501jal.132.1615826544698;
+ Mon, 15 Mar 2021 09:42:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=X_HAdNkvZ7NGKDH9KapRRLgOfN23OZyy3VyaX+ywjRkQ@mail.gmail.com>
+References: <20210302210646.3044738-1-nathan@kernel.org> <20210309205915.2340265-1-nathan@kernel.org>
+ <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 15 Mar 2021 17:41:47 +0100
+Message-ID: <CA+icZUVRyEGnLnRBiZjmZqmvCLkR8AZR8tihho83Lrr_F9A2BA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] Makefile: Remove '--gcc-toolchain' flag
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-On Mon, Mar 15, 2021 at 09:31:41AM -0700, Doug Anderson wrote:
-> On Sat, Mar 13, 2021 at 1:13 PM Laurent Pinchart wrote:
-> > On Thu, Mar 04, 2021 at 03:52:00PM -0800, Douglas Anderson wrote:
-> > > This patch is _only_ code motion to prepare for the patch
-> > > ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only if
-> > > refclk") and make it easier to understand.
+On Mon, Mar 15, 2021 at 5:22 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 5:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
 > >
-> > s/make/makes/
-> 
-> I was never an expert at grammar, but I think either "make" or "makes"
-> are fine. Simple version with parenthesis:
-> 
-> Mine:
-> 
-> This patch is <blah> to (prepare for the patch <blah>) and (make it
-> easier to understand).
-> 
-> Yours:
-> 
-> This patch is <blah> (to prepare for the patch <blah>) and (makes it
-> easier to understand).
-> 
-> I suppose also valid would be:
-> 
-> This patch is <blah> (to prepare for the patch <blah>) and (to make it
-> easier to understand).
-
-Your absolutely right. Both versions are fine, and your preferred
-version is best :-)
-
-> In any case if/when I spin this patch I'm fine changing it to your
-> version just because (as I understand) it's equally valid and maybe
-> looks slightly better?
-> 
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > This flag was originally added to allow clang to find the GNU cross
+> > tools in commit 785f11aa595b ("kbuild: Add better clang cross build
+> > support"). This flag was not enough to find the tools at times so
+> > '--prefix' was added to the list in commit ef8c4ed9db80 ("kbuild: allow
+> > to use GCC toolchain not in Clang search path") and improved upon in
+> > commit ca9b31f6bb9c ("Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang
+> > cross compilation"). Now that '--prefix' specifies a full path and
+> > prefix, '--gcc-toolchain' serves no purpose because the kernel builds
+> > with '-nostdinc' and '-nostdlib'.
 > >
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Thanks for the reviews!
+> > This has been verified with self compiled LLVM 10.0.1 and LLVM 13.0.0 as
+> > well as a distribution version of LLVM 11.1.0 without binutils in the
+> > LLVM toolchain locations.
+> >
+> > Link: https://reviews.llvm.org/D97902
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > ---
+> >
+> > v1 -> v2:
+> >
+> > * Improve commit message (add history behind flag and link to Fangrui's
+> >   documentation improvement).
+>
+>
+> Both applied to linux-kbuild. Thanks.
+>
 
--- 
-Regards,
+Sorry for being pedantic: This misses my Tested-by#s (see [1]).
 
-Laurent Pinchart
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v13-git
+
+AFAICS v2 changes some comments in the commit only but not code?
+
+- Sedat -
+
+[1] https://marc.info/?l=linux-kernel&m=161480031518629&w=2
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=d4aa405bc9cd506532f075456645716cdd1739c1
+
+>
+>
+>
+>
+> > I did not carry tags forward so that people could re-review and test.
+> >
+> >  Makefile | 4 ----
+> >  1 file changed, 4 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 31dcdb3d61fa..182e93d91198 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -568,10 +568,6 @@ ifneq ($(CROSS_COMPILE),)
+> >  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> >  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> > -GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+> > -endif
+> > -ifneq ($(GCC_TOOLCHAIN),)
+> > -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
+> >  endif
+> >  ifneq ($(LLVM_IAS),1)
+> >  CLANG_FLAGS    += -no-integrated-as
+> >
+> > base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+> > --
+> > 2.31.0.rc1
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
