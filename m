@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6B333B1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D8D33B1C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhCOLtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:49:47 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47712 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhCOLtc (ORCPT
+        id S229992AbhCOLvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:51:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46588 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230227AbhCOLvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:49:32 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0C7F81C0B78; Mon, 15 Mar 2021 12:49:30 +0100 (CET)
-Date:   Mon, 15 Mar 2021 12:49:29 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210315114929.GA17127@duo.ucw.cz>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
- <20210302163309.25528-3-henning.schild@siemens.com>
- <20210302205452.GA32573@duo.ucw.cz>
- <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
- <20210303193134.GB8720@amd>
- <20210303214810.511ad65a@md1za8fc.ad001.siemens.net>
- <20210303215615.64e45720@md1za8fc.ad001.siemens.net>
- <20210305192555.34f7ea0f@md1za8fc.ad001.siemens.net>
- <20210306135453.6dc186d2@md1za8fc.ad001.siemens.net>
- <20210306140633.57f28b05@md1za8fc.ad001.siemens.net>
+        Mon, 15 Mar 2021 07:51:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615809067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KhbwYbr1JWAcOIkfOcoM79xycZKeXHZVR1gf3zwYaTk=;
+        b=IN3kLwdoCyc/vQw5rSMAm53VLsS4RhazYiGY1g23y9K29CkBH2U90X4xXjrJ8PbBgucBda
+        OO8sDnjS1m9sT82bfH2N8opoyAXxBS4Pmu5UiM7HJKBuY0XucNq4K2k+cP8XNHfzUcGFDl
+        I6+d0HVTS+fWR5tnBiY4n8kuJyud5DE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-tpA4kB1PNBOgD4GwR0sblw-1; Mon, 15 Mar 2021 07:51:03 -0400
+X-MC-Unique: tpA4kB1PNBOgD4GwR0sblw-1
+Received: by mail-wr1-f72.google.com with SMTP id h30so15021007wrh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:51:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KhbwYbr1JWAcOIkfOcoM79xycZKeXHZVR1gf3zwYaTk=;
+        b=hS+RpIwz9YMJi+UqfjdU72b2se+YitPxUYvdgUfgp0yJRCT+onvrMyZvH7of/79sl1
+         ZdM3kY3l1iOZgzOG01cxsp3lSNh8/iim+so4oli1+T6/POmpbClPk24JYJwCvysIs3le
+         xAIbZ86SIq+UP8BX+KcgNfF6o0ekD8+q2vHU+Pk0FLxdRADOs9mUwa0M9NvcF7JkaT8Q
+         BRECS0A73J8KyMvbaKT+gQqBhxmlSVspNxM34ixFTfIfigXxRnE9RhT2xQaNwXtbjqe1
+         tQX/lY+dayg52CtSt+zCiVl+hMZD8lv5r84wtWXTifrSA76Qs+bgNMolKgcT/2a5KQix
+         mm1g==
+X-Gm-Message-State: AOAM531lEGjIyFNSY2YpXDRDxtA2/vRGX10BFDPOSrj9wkl8/HQVG1aJ
+        5u6hfT4y/tMS3GTs1R3cGr+ipceXbqhxkJAz+/D7Qr6dvtQHlw4WSBhbU4xQqJY9NdRbbSTFeoX
+        2IPd9ZuyA3hWVOrrcLV9srtCP
+X-Received: by 2002:a1c:2857:: with SMTP id o84mr25471294wmo.181.1615809062057;
+        Mon, 15 Mar 2021 04:51:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyj8r+wAIyoNyWKLiKRdkWWw3D0PyiO8E7h+4V9nhQzFYJxIDgAKAD8ONJqVHYJm5zq7xLASQ==
+X-Received: by 2002:a1c:2857:: with SMTP id o84mr25471280wmo.181.1615809061887;
+        Mon, 15 Mar 2021 04:51:01 -0700 (PDT)
+Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id c16sm22463404wrs.81.2021.03.15.04.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 04:51:01 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 12:50:58 +0100
+From:   Guillaume Nault <gnault@redhat.com>
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     paulus@samba.org, davem@davemloft.net, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Parkin <tparkin@katalix.com>
+Subject: Re: [BUG] net/ppp: A use after free in ppp_unregister_channe
+Message-ID: <20210315115058.GA4296@linux.home>
+References: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210306140633.57f28b05@md1za8fc.ad001.siemens.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6057386d.ca12.1782148389e.Coremail.lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 11, 2021 at 08:34:44PM +0800, lyl2019@mail.ustc.edu.cn wrote:
+> File: drivers/net/ppp/ppp_generic.c
+> 
+> In ppp_unregister_channel, pch could be freed in ppp_unbridge_channels()
+> but after that pch is still in use. Inside the function ppp_unbridge_channels,
+> if "pchbb == pch" is true and then pch will be freed.
 
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No. It's freed only if if the refcount drops to 0. And the caller of
+ppp_unregister_channel() must hold its own refcount. So
+ppp_unbridge_channels() is not going to drop the last refcount in this
+case.
 
-Hi!
+> I checked the commit history and found that this problem is introduced from
+> 4cf476ced45d7 ("ppp: add PPPIOCBRIDGECHAN and PPPIOCUNBRIDGECHAN ioctls").
 
-> > I would also be happy to include a fix to that script. My suggestion
-> > would be to allow bus=3Dplatform, in which case a "devicename" will be
-> > required and is allowed to have any value.
->=20
-> Furthermore it might be good to catch that in the led core instead of
-> that script. Maybe warn() on dev registration when function/color/name
-> seem off. Could later become "return -EINVAL"
+Next time, please also Cc. the author of the patch.
 
-I'm not sure if we want to change _existing_ funny names.
+> I have no idea about how to generate a suitable patch, sorry.
 
-Would document such as below be helpful?
+There's no patch to send as far as I can see.
 
-Could you describe the LEDs you have in similar format?
-
-Best regards,
-								Pavel
-
--*- org -*-
-
-It is somehow important to provide consistent interface to the
-userland. LED devices have one problem there, and that is naming of
-directories in /sys/class/leds. It would be nice if userland would
-just know right "name" for given LED function, but situation got more
-complex.
-
-Anyway, if backwards compatibility is not an issue, new code should
-use one of the "good" names from this list, and you should extend the
-list where applicable.
-
-Bad names are listed, too; in case you are writing application that
-wants to use particular feature, you should probe for good name, first,
-but then try the bad ones, too.
-
-* Keyboards
- =20
-Good: "input*:*:capslock"
-Good: "input*:*:scrolllock"
-Good: "input*:*:numlock"
-Bad: "shift-key-light" (Motorola Droid 4, capslock)
-
-Set of common keyboard LEDs, going back to PC AT or so.
-
-Good: "platform::kbd_backlight"
-Bad: "tpacpi::thinklight" (IBM/Lenovo Thinkpads)
-Bad: "lp5523:kb{1,2,3,4,5,6}" (Nokia N900)
-
-Frontlight/backlight of main keyboard.
-
-Bad: "button-backlight" (Motorola Droid 4)
-
-Some phones have touch buttons below screen; it is different from main
-keyboard. And this is their backlight.
-
-* Sound subsystem
-
-Good: "platform:*:mute"
-Good: "platform:*:micmute"
-
-LEDs on notebook body, indicating that sound input / output is muted.
-
-* System notification
-
-Good: "status-led:{red,green,blue}" (Motorola Droid 4)
-Bad: "lp5523:{r,g,b}" (Nokia N900)
-
-Phones usually have multi-color status LED.
-
-* Power management
-
-Good: "platform:*:charging" (allwinner sun50i)
-
-* Screen
-
-Good: ":backlight" (Motorola Droid 4)
-
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---vtzGhvizbBRQ85DL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYE9JyQAKCRAw5/Bqldv6
-8qL1AJ9fhBVoLp9LZkPwJCXTzhKG7oDscwCgvQjgYrt6l9FPpZiyYene5dzSDLY=
-=vid5
------END PGP SIGNATURE-----
-
---vtzGhvizbBRQ85DL--
