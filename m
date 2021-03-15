@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A8833BDA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAEE33BDB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240556AbhCOOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
+        id S239751AbhCOOdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233289AbhCOOBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5406B64F73;
-        Mon, 15 Mar 2021 14:00:59 +0000 (UTC)
+        id S233153AbhCOOAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20FBE64F8A;
+        Mon, 15 Mar 2021 14:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816860;
-        bh=xqOr3zUVxjQybEDwXaDfZ6ljBf40Bx0P6qZBLMUFHdA=;
+        s=korg; t=1615816830;
+        bh=8Ot3fnhF37NWp6SS6AiQuMpnw4SuJYw28xAlGF+me/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xaRGOkkQX06ZcT+GtgWge83isyC0+d9u5YJC7XRUKdii2Xen3hN+QX9TlP6eqJb5f
-         o65BWV8Fx/KN+D+V5obdm7qD+h6GinfJRms7FEK0un0q3BS8iP8sJY9MubRETCZlO+
-         8W7033720FYU+ydrD7xUNWixVqsRclXDgTEiDZG4=
+        b=uZ/g/7D74w+ImoIeXAxhQLLnifgX3O/B59FufR0uFs6kPAuCf1NU4sTL1W11qhkW5
+         iMZ1+no6/7H8RFg78Y1f4mnBXt4eDuKMOQ5wEcJDWMNi/DUEqGwEM66q9N9pm7jaXq
+         maRLcIxH5fcEJ0NX/tQQMfzZL9qC6XL7E7QEebLM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simeon Simeonoff <sim.simeonoff@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 167/306] ALSA: hda/ca0132: Add Sound BlasterX AE-5 Plus support
-Date:   Mon, 15 Mar 2021 14:53:50 +0100
-Message-Id: <20210315135513.273762840@linuxfoundation.org>
+        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 138/290] mmc: sdhci-iproc: Add ACPI bindings for the RPi
+Date:   Mon, 15 Mar 2021 14:53:51 +0100
+Message-Id: <20210315135546.576777150@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,31 +43,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Simeon Simeonoff <sim.simeonoff@gmail.com>
+From: Jeremy Linton <jeremy.linton@arm.com>
 
-commit f15c5c11abfbf8909eb30598315ecbec2311cfdc upstream.
+[ Upstream commit 4f9833d3ec8da34861cd0680b00c73e653877eb9 ]
 
-The new AE-5 Plus model has a different Subsystem ID compared to the
-non-plus model. Adding the new id to the list of quirks.
+The RPi4 has an Arasan controller it carries over from the RPi3 and a newer
+eMMC2 controller.  Because of a couple of quirks, it seems wiser to bind
+these controllers to the same driver that DT is using on this platform
+rather than the generic sdhci_acpi driver with PNP0D40.
 
-Signed-off-by: Simeon Simeonoff <sim.simeonoff@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/998cafbe10b648f724ee33570553f2d780a38963.camel@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So, BCM2847 describes the older Arasan and BRCME88C describes the newer
+eMMC2. The older Arasan is reusing an existing ACPI _HID used by other OSes
+booting these tables on the RPi.
+
+With this change, Linux is capable of utilizing the SD card slot, and the
+Wi-Fi when booted with UEFI+ACPI on the RPi4.
+
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210120000406.1843400-2-jeremy.linton@arm.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_ca0132.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1309,6 +1309,7 @@ static const struct snd_pci_quirk ca0132
- 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
- 	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
- 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
-+	SND_PCI_QUIRK(0x1102, 0x0191, "Sound Blaster AE-5 Plus", QUIRK_AE5),
- 	SND_PCI_QUIRK(0x1102, 0x0081, "Sound Blaster AE-7", QUIRK_AE7),
- 	{}
+diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+index c9434b461aab..ddeaf8e1f72f 100644
+--- a/drivers/mmc/host/sdhci-iproc.c
++++ b/drivers/mmc/host/sdhci-iproc.c
+@@ -296,9 +296,27 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
+ MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
+ 
+ #ifdef CONFIG_ACPI
++/*
++ * This is a duplicate of bcm2835_(pltfrm_)data without caps quirks
++ * which are provided by the ACPI table.
++ */
++static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
++	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
++		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
++		  SDHCI_QUIRK_NO_HISPD_BIT,
++	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
++	.ops = &sdhci_iproc_32only_ops,
++};
++
++static const struct sdhci_iproc_data bcm_arasan_data = {
++	.pdata = &sdhci_bcm_arasan_data,
++};
++
+ static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
+ 	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
+ 	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
++	{ .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
++	{ .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
+ 	{ /* sentinel */ }
  };
+ MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
+-- 
+2.30.1
+
 
 
