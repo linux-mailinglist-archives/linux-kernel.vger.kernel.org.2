@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575F233B6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEFB33B4F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhCON6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58282 "EHLO mail.kernel.org"
+        id S229847AbhCONwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:52:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231571AbhCONyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE9BE64EF8;
-        Mon, 15 Mar 2021 13:54:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816477;
-        bh=OL+eKSHNP2rEl3UaNiI6NgExxradoB4PZak6GzYIMLM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=js7iIo92h7REhk79xV6z6fH0zLeX2hVYyPfdmUcQfSzrJBtOOdp3YnE3WgE5LsRK2
-         59CuZ1DI5WUuhY+sWWTs8JHLG3YBoBMMjkhJJMeEI64YcukFD4C9/mMkUkVAjQ7dja
-         duQF8VvO7ocb1fqKd5KNZFM9pUdszNIouQjd6/vg=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 62/78] block: rsxx: fix error return code of rsxx_pci_probe()
-Date:   Mon, 15 Mar 2021 14:52:25 +0100
-Message-Id: <20210315135214.103261686@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229570AbhCONw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B5664D9E;
+        Mon, 15 Mar 2021 13:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615816348;
+        bh=rKKQeiICo8uU7lf6cZ5ilUHE0iv7JJ0zPh7r5swDxPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fA7suSNsVBtyNaigNsiFBbeOkv2dbaCa3xcc9ezmyXsYb1Vx0FKqSaD9pHEyYxtRw
+         LNMt2XLRokZguE3dX0ChqfZ7j0Ga9XxNpS3kkuL7Nka7AwYySjLza5F+WfRP/rx3uj
+         0pkeKbF0DGTQNRmtZ9/lCkbHNcKkd9wmmiD8zRqRbsp0pDjaUzBk23BEnb+3OXrTmE
+         a471MPixLzv5oKvObRPqNChiuKQGeuP36JhqNsvCiZ7Vja+PD7RyXmf5kpisrJYbv5
+         RmSn/Qkn530jkHNsSdhPw/sWvWFYWwzCA2g1o1+3QDx4Rm0qA/MpNVt0mskm1j3km7
+         fksSh9s+mEIZg==
+Received: by pali.im (Postfix)
+        id 38842828; Mon, 15 Mar 2021 14:52:26 +0100 (CET)
+Date:   Mon, 15 Mar 2021 14:52:26 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     bhelgaas@google.com, alex.williamson@redhat.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210315135226.avwmnhkfsgof6ihw@pali>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312173452.3855-5-ameynarkhede03@gmail.com>
+ <20210314235545.girtrazsdxtrqo2q@pali>
+ <20210315134323.llz2o7yhezwgealp@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315134323.llz2o7yhezwgealp@archlinux>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> slot reset (pci_dev_reset_slot_function) and secondary bus
+> reset(pci_parent_bus_reset) which I think are hot reset and
+> warm reset respectively.
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-
-[ Upstream commit df66617bfe87487190a60783d26175b65d2502ce ]
-
-When create_singlethread_workqueue returns NULL to card->event_wq, no
-error return code of rsxx_pci_probe() is assigned.
-
-To fix this bug, st is assigned with -ENOMEM in this case.
-
-Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Link: https://lore.kernel.org/r/20210310033017.4023-1-baijiaju1990@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/block/rsxx/core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 97b678c0ea13..4ab96c7f8fd7 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -892,6 +892,7 @@ static int rsxx_pci_probe(struct pci_dev *dev,
- 	card->event_wq = create_singlethread_workqueue(DRIVER_NAME"_event");
- 	if (!card->event_wq) {
- 		dev_err(CARD_TO_DEV(card), "Failed card event setup.\n");
-+		st = -ENOMEM;
- 		goto failed_event_handler;
- 	}
- 
--- 
-2.30.1
-
-
-
+No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+type of reset, which is currently implemented only for PCIe hot plug
+bridges and for PowerPC PowerNV platform and it just call PCI secondary
+bus reset with some other hook. PCIe Warm Reset does not have API in
+kernel and therefore drivers do not export this type of reset via any
+kernel function (yet).
