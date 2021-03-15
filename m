@@ -2,151 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2746333AD17
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E6633AD1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhCOIKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:10:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13953 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhCOIK2 (ORCPT
+        id S230076AbhCOIMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhCOIMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:10:28 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzTZV0fG8zrWmn;
-        Mon, 15 Mar 2021 16:08:34 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 15 Mar
- 2021 16:10:23 +0800
-Subject: Re: [PATCH] f2fs: fix the discard thread sleep timeout under high
- utilization
-To:     Sahitya Tummala <stummala@codeaurora.org>
-CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <1615784186-2693-1-git-send-email-stummala@codeaurora.org>
- <49be0c70-4fe4-6acd-b508-08621f0623c0@huawei.com>
- <20210315074645.GA8562@codeaurora.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0c7220d7-416e-32b7-96cb-effd3f84d6e2@huawei.com>
-Date:   Mon, 15 Mar 2021 16:10:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 15 Mar 2021 04:12:35 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46D0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:34 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id u16so8182416wrt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yFMV3sC6EFaNY9YDS9U8toqJni92w4JY/QYIQPnPelY=;
+        b=OyZ63WONnapU2W573ASZ0rpWb6ycwsmmGbKRvkp+UgKKLP5oGfqLStQn73CtJ2+oBK
+         jVzYsoXhiIqNmvM8rzupqhBmVIh7HphuL0RWmYmTrjjTCTd4Oni6ZS+ODaZwzQe7ci5O
+         eJEdLjiLBpTQTOLlU2/IOjp9wSQIf2sWwiCS4P1Ku9zH1G3A31E37gk0xDzzlsJtWo49
+         JcgAQPv2G/OiihfxF2ssP3Ah4nuSs86HDea+lK+QK1f4EQV+8+6ewvBkvNUqO+b652Y0
+         LdghNX9AZybMRcpcf+F37L8SGYCXEjTs+tYxGfXFcm6j94DKk6t487nsjaYq57t2aPzq
+         KhYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yFMV3sC6EFaNY9YDS9U8toqJni92w4JY/QYIQPnPelY=;
+        b=P5UvPTaL2UTTfFSdwkUsu/pszXAFblhpgaHplN5cMSfTuBc98SqGWtbF9oa1V/cjnK
+         o+3X5Q1MF35WVN9qjuKWmDl62x2b1Gyrno6z5Lrcob0hDNWmXsnm2uNq7aYMRHuiSVMs
+         iGWFlJNIZHsBO38laNXUAlEL59LuVHUcO0KuVfaSqTK1Wt7zmM6yh/h+Hzl9KTCL38IG
+         MRZSGb3UMdhfLxRSmKCbda62PR7Iu4BUgKmkCNA6uAglIHwUVraLnUzpJi7NPd+iTzYU
+         Wu0RZsIlNZcFzeE5SwT76h3BxfF6Yl3rxlHaNwhXVybrayejxEegypoSQIFCG5RatQbH
+         Z31g==
+X-Gm-Message-State: AOAM531Br5gdK0H7VF8Of0iffFN5mx0JXXNsRq3FIopTo5cWhyI1nVDG
+        7qNxNfQOqROgm0PZgA4DiV7OoQ==
+X-Google-Smtp-Source: ABdhPJwTKJfOyjJu/g8nYsAp4mNib1S5O6Kj5DHwHCXB84qmulUmL24LQ9lfumAhXHsFNv40ZjGrcQ==
+X-Received: by 2002:a5d:4521:: with SMTP id j1mr25632781wra.354.1615795953354;
+        Mon, 15 Mar 2021 01:12:33 -0700 (PDT)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id z2sm20744843wrm.0.2021.03.15.01.12.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 01:12:32 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 08:12:31 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210315081231.GX701493@dell>
+References: <20210313104258.17111-1-andreas@kemnade.info>
 MIME-Version: 1.0
-In-Reply-To: <20210315074645.GA8562@codeaurora.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210313104258.17111-1-andreas@kemnade.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sahitya,
+On Sat, 13 Mar 2021, Andreas Kemnade wrote:
 
-On 2021/3/15 15:46, Sahitya Tummala wrote:
-> Hi Chao,
+> Add the version of the EC in the Tolino Shine 2 HD
+> to the supported versions. It seems not to have an RTC
+> and does not ack data written to it.
+> The vendor kernel happily ignores write errors, using
+> I2C via userspace i2c-set also shows the error.
+> So add a quirk to ignore that error.
 > 
-> On Mon, Mar 15, 2021 at 02:12:44PM +0800, Chao Yu wrote:
->> Sahitya,
->>
->> On 2021/3/15 12:56, Sahitya Tummala wrote:
->>> When f2fs is heavily utilized over 80%, the current discard policy
->>> sets the max sleep timeout of discard thread as 50ms
->>> (DEF_MIN_DISCARD_ISSUE_TIME). But this is set even when there are
->>> no pending discard commands to be issued. This results into
->>> unnecessary frequent and periodic wake ups of the discard thread.
->>> This patch adds check for pending  discard commands in addition
->>> to heavy utilization condition to prevent those wake ups.
->>
->> Could this commit fix your issue?
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=43f8c47ea7d59c7b2270835f1d7c4618a1ea27b6
->>
-> I don't think it will help because we are changing the max timeout of the
-> dpolicy itself in __init_discard_policy() when util > 80% as below -
+> PWM can be successfully configured despite of that error.
 > 
-> dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+> Changes in v3:
+> - remove have_rtc variable
+> - rename subdevices again
 > 
-> And issue_discard_thread() uses this value as wait_ms, when there
-> are no more pending discard commands to be issued.
-> <snip>
->                  } else {
->                          wait_ms = dpolicy.max_interval;
->                  }
-> <snip>
+> Changes in v2:
+> - more comments about stacking regmap construction
+> - fix accidential line removal
+> - better naming for subdevices
+>  drivers/mfd/ntxec.c       | 55 ++++++++++++++++++++++++++++++++++++---
+>  include/linux/mfd/ntxec.h |  1 +
+>  2 files changed, 53 insertions(+), 3 deletions(-)
 > 
-> The new patch posted above is not changing anything related to the  max_interval.
-> Hence, I think it won't help the uncessary wakeup problem I am trying to solve
-> for this condition - util > 80% and when there are no pending discards.
-> 
-> Please let me know if i am missing something.
+> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+> index 957de2b03529..ab6860ef3e9a 100644
+> --- a/drivers/mfd/ntxec.c
+> +++ b/drivers/mfd/ntxec.c
+> @@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
+>  	.priority = 128,
+>  };
+>  
+> +static int regmap_ignore_write(void *context,
+> +			       unsigned int reg, unsigned int val)
+> +
+> +{
+> +	struct regmap *regmap = context;
+> +
+> +	regmap_write(regmap, reg, val);
+> +
+> +	return 0;
+> +}
+> +
+> +static int regmap_wrap_read(void *context, unsigned int reg,
+> +			    unsigned int *val)
+> +{
+> +	struct regmap *regmap = context;
+> +
+> +	return regmap_read(regmap, reg, val);
+> +}
+> +
+> +/*
+> + * Some firmware versions do not ack written data, add a wrapper. It
+> + * is used to stack another regmap on top.
+> + */
+> +static const struct regmap_config regmap_config_noack = {
+> +	.name = "ntxec_noack",
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +	.cache_type = REGCACHE_NONE,
+> +	.reg_write = regmap_ignore_write,
+> +	.reg_read = regmap_wrap_read
+> +};
+> +
+>  static const struct regmap_config regmap_config = {
+>  	.name = "ntxec",
+>  	.reg_bits = 8,
+> @@ -104,16 +136,22 @@ static const struct regmap_config regmap_config = {
+>  	.val_format_endian = REGMAP_ENDIAN_BIG,
+>  };
+>  
+> -static const struct mfd_cell ntxec_subdevices[] = {
+> +static const struct mfd_cell ntxec_subdev[] = {
+>  	{ .name = "ntxec-rtc" },
+>  	{ .name = "ntxec-pwm" },
+>  };
+>  
+> +static const struct mfd_cell ntxec_subdev_no_rtc[] = {
+> +	{ .name = "ntxec-pwm" },
+> +};
+> +
+>  static int ntxec_probe(struct i2c_client *client)
+>  {
+>  	struct ntxec *ec;
+>  	unsigned int version;
+>  	int res;
+> +	const struct mfd_cell *subdevs = ntxec_subdev;
+> +	size_t n_subdevs = ARRAY_SIZE(ntxec_subdev);
 
-Copied, thanks for the explanation.
+This is a little confusing.  I had to re-read to figure it out.
 
-But there is another case which can cause this issue in the case of
-disk util < 80%.
+In my mind, it would be clearer to explicitly set these in the
+switch, rather than have a default which can be over-written.
 
-wait_ms = DEF_MIN_DISCARD_ISSUE_TIME;
+>  	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+>  	if (!ec)
+> @@ -138,6 +176,16 @@ static int ntxec_probe(struct i2c_client *client)
+>  	switch (version) {
+>  	case NTXEC_VERSION_KOBO_AURA:
+>  		break;
+> +	case NTXEC_VERSION_TOLINO_SHINE2:
+> +		subdevs = ntxec_subdev_no_rtc;
+> +		n_subdevs = ARRAY_SIZE(ntxec_subdev_no_rtc);
+> +		/* Another regmap stacked on top of the other */
+> +		ec->regmap = devm_regmap_init(ec->dev, NULL,
+> +					      ec->regmap,
+> +					      &regmap_config_noack);
+> +		if (IS_ERR(ec->regmap))
+> +			return PTR_ERR(ec->regmap);
+> +		break;
+>  	default:
+>  		dev_err(ec->dev,
+>  			"Netronix embedded controller version %04x is not supported.\n",
+> @@ -181,8 +229,9 @@ static int ntxec_probe(struct i2c_client *client)
+>  
+>  	i2c_set_clientdata(client, ec);
+>  
+> -	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
+> -				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
+> +	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
+> +				   subdevs, n_subdevs,
+> +				   NULL, 0, NULL);
+>  	if (res)
+>  		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
+>  
+> diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
+> index 361204d125f1..26ab3b8eb612 100644
+> --- a/include/linux/mfd/ntxec.h
+> +++ b/include/linux/mfd/ntxec.h
+> @@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
+>  
+>  /* Known firmware versions */
+>  #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
+> +#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
+>  
+>  #endif
 
-do {
-	wait_event_interruptible_timeout(, wait_ms);
-
-	...
-
-	if (!atomic_read(&dcc->discard_cmd_cnt))
-[1] new statement
-		continue;
-
-} while();
-
-Then the loop will wakeup whenever 50ms timeout.
-
-So, to avoid this case, shouldn't we reset wait_ms to dpolicy.max_interval
-at [1]?
-
-Meanwhile, how about relocating discard_cmd_cnt check after
-__init_discard_policy(DPOLICY_FORCE)? and olny set .max_interval to
-DEF_MAX_DISCARD_ISSUE_TIME if there is no discard command, and keep
-.granularity to 1?
-
-Thanks,
-
-> 
-> Thanks,
-> Sahitya.
-> 
->> Thanks,
->>
->>>
->>> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
->>> ---
->>>   fs/f2fs/segment.c | 5 ++++-
->>>   1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>> index dced46c..df30220 100644
->>> --- a/fs/f2fs/segment.c
->>> +++ b/fs/f2fs/segment.c
->>> @@ -1112,6 +1112,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
->>>   				struct discard_policy *dpolicy,
->>>   				int discard_type, unsigned int granularity)
->>>   {
->>> +	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
->>> +
->>>   	/* common policy */
->>>   	dpolicy->type = discard_type;
->>>   	dpolicy->sync = true;
->>> @@ -1129,7 +1131,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
->>>   		dpolicy->io_aware = true;
->>>   		dpolicy->sync = false;
->>>   		dpolicy->ordered = true;
->>> -		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
->>> +		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL &&
->>> +				atomic_read(&dcc->discard_cmd_cnt)) {
->>>   			dpolicy->granularity = 1;
->>>   			dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
->>>   		}
->>>
-> 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
