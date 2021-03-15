@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFBC33AD78
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A890233AD7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCOIbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:31:33 -0400
-Received: from z11.mailgun.us ([104.130.96.11]:49879 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhCOIbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:31:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615797082; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=6sAJztk8VeY5vdyxWEOgHKZBVT2GTUCfpMZSijJe5uQ=;
- b=fBWs+00CMNWCLmUiWmRAnBjYoljAb9IOt80FRKvhDpakI2wQ2jPyuAWwMLoE7Sb30hFqjUni
- V5SFGkHw3td/eyRZ4RMIwbDtxGn+7efPrAXBJL25f1B8aLN7i65FYIVOxUVYAp5MeWvwBI6F
- yxeVTDiUOUSUoiw+ebzPtox9LzU=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 604f1b4de2200c0a0d3d3f40 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:31:09
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 107D3C43464; Mon, 15 Mar 2021 08:31:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S229553AbhCOIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:31:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22729 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229570AbhCOIbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:31:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615797084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZKg5OJ0Wle9GUUJPspxr/sYEl3Le9qh1nxrGMT+1Rf8=;
+        b=APt0FYtDH2Y2SXzyABS/0QaP2VfRoF94ExPy/fwFO1GNklsxcpKFtrgbUlBfFzbOVEARrZ
+        i9r4k3TDBg6k3zwYUnJUoXwsLNeWHwDVVOd0BNHUXqzhbQ/Di+8+51OWF90B0JcI4DpGfc
+        aCQSxGJXztJQtWNho2Lk3GqbsQpNefo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-aFVIdB69NjiChjbvg0Tg4g-1; Mon, 15 Mar 2021 04:31:20 -0400
+X-MC-Unique: aFVIdB69NjiChjbvg0Tg4g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1157DC433CA;
-        Mon, 15 Mar 2021 08:31:08 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79845100C665;
+        Mon, 15 Mar 2021 08:31:19 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-245.pek2.redhat.com [10.72.12.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 77A355D745;
+        Mon, 15 Mar 2021 08:31:13 +0000 (UTC)
+Subject: Re: [PATCH] vhost: Fix vhost_vq_reset()
+To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org
+References: <20210312140913.788592-1-lvivier@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7bb4ee1a-d204-eb94-792f-ca250dacacea@redhat.com>
+Date:   Mon, 15 Mar 2021 16:31:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 16:31:08 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 08/10] scsi: ufshpb: Limit the number of inflight map
- requests
-In-Reply-To: <20210302132503.224670-9-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-9-avri.altman@wdc.com>
-Message-ID: <b71279bee1cc9b2ffba5e4f8c90fdce9@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210312140913.788592-1-lvivier@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:25, Avri Altman wrote:
-> in host control mode the host is the originator of map requests. To not
 
-in -> In
+ÔÚ 2021/3/12 ÏÂÎç10:09, Laurent Vivier Ð´µÀ:
+> vhost_reset_is_le() is vhost_init_is_le(), and in the case of
+> cross-endian legacy, vhost_init_is_le() depends on vq->user_be.
+>
+> vq->user_be is set by vhost_disable_cross_endian().
+>
+> But in vhost_vq_reset(), we have:
+>
+>      vhost_reset_is_le(vq);
+>      vhost_disable_cross_endian(vq);
+>
+> And so user_be is used before being set.
+>
+> To fix that, reverse the lines order as there is no other dependency
+> between them.
+>
+> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
 
-Thanks,
-Can Guo.
 
-> flood the device with map requests, use a simple throttling mechanism
-> that limits the number of inflight map requests.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
 > ---
->  drivers/scsi/ufs/ufshpb.c | 11 +++++++++++
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 89a930e72cff..74da69727340 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -21,6 +21,7 @@
->  #define READ_TO_MS 1000
->  #define READ_TO_EXPIRIES 100
->  #define POLLING_INTERVAL_MS 200
-> +#define THROTTLE_MAP_REQ_DEFAULT 1
-> 
->  /* memory management */
->  static struct kmem_cache *ufshpb_mctx_cache;
-> @@ -750,6 +751,14 @@ static struct ufshpb_req
-> *ufshpb_get_map_req(struct ufshpb_lu *hpb,
->  	struct ufshpb_req *map_req;
->  	struct bio *bio;
-> 
-> +	if (hpb->is_hcm &&
-> +	    hpb->num_inflight_map_req >= THROTTLE_MAP_REQ_DEFAULT) {
-> +		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
-> +			 "map_req throttle. inflight %d throttle %d",
-> +			 hpb->num_inflight_map_req, THROTTLE_MAP_REQ_DEFAULT);
-> +		return NULL;
-> +	}
-> +
->  	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN);
->  	if (!map_req)
->  		return NULL;
-> @@ -764,6 +773,7 @@ static struct ufshpb_req
-> *ufshpb_get_map_req(struct ufshpb_lu *hpb,
-> 
->  	map_req->rb.srgn_idx = srgn->srgn_idx;
->  	map_req->rb.mctx = srgn->mctx;
-> +	hpb->num_inflight_map_req++;
-> 
->  	return map_req;
->  }
-> @@ -773,6 +783,7 @@ static void ufshpb_put_map_req(struct ufshpb_lu 
-> *hpb,
->  {
->  	bio_put(map_req->bio);
->  	ufshpb_put_req(hpb, map_req);
-> +	hpb->num_inflight_map_req--;
->  }
-> 
->  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index b49e9a34267f..d83ab488688a 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -212,6 +212,7 @@ struct ufshpb_lu {
->  	struct ufshpb_req *pre_req;
->  	int num_inflight_pre_req;
->  	int throttle_pre_req;
-> +	int num_inflight_map_req;
->  	struct list_head lh_pre_req_free;
->  	int cur_read_id;
->  	int pre_req_min_tr_len;
+>   drivers/vhost/vhost.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index a262e12c6dc2..5ccb0705beae 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -332,8 +332,8 @@ static void vhost_vq_reset(struct vhost_dev *dev,
+>   	vq->error_ctx = NULL;
+>   	vq->kick = NULL;
+>   	vq->log_ctx = NULL;
+> -	vhost_reset_is_le(vq);
+>   	vhost_disable_cross_endian(vq);
+> +	vhost_reset_is_le(vq);
+>   	vq->busyloop_timeout = 0;
+>   	vq->umem = NULL;
+>   	vq->iotlb = NULL;
+
