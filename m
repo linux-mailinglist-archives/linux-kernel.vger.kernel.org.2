@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8A933BA8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F070133B867
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhCOOJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:09:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35462 "EHLO mail.kernel.org"
+        id S234469AbhCOODY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232133AbhCON5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB2B64F36;
-        Mon, 15 Mar 2021 13:57:49 +0000 (UTC)
+        id S229900AbhCON5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 212E264EEE;
+        Mon, 15 Mar 2021 13:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816670;
-        bh=ULs0xDulZgZXrcyaRZxcqEYrIgBFhRxxjSfiS3yuAN0=;
+        s=korg; t=1615816633;
+        bh=brXWXpnYW6YQL0ESqPRMZqTazFW2xCed+nZ3A+nBLeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EdD3jP7lEF/qbA/U4ie3NJkWeR5oj+UFmTaBVeRjefRRW0/ZPZJ4AyxwtlWeG83+G
-         lRtTvbF1/sJ1tzPLtCLhiV4IvI5nl2i0yVZb6KBFLMBwmQbPQ+io15b+RaELcF9rJH
-         TZh8ewC3qGCCCDWbS1GfFdFX3wwuPiUQvT94McYo=
+        b=v0bZvNhH93Buf0tddVffN/+OF6Gf/zqR4BURUGFQbSadmf7OY3TzeCq3WxlD3+W23
+         yOBUGI+O/fmIOYVOsG8DqW8WTOTJYmec+O0TYPO7lXQo5iSjrnQdqompZHOO2y2N7v
+         jbxrqvuHzrtCDYKwxC2WDjew6V77i9zH1FXt6bWM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilario Gelmetti <iochesonome@gmail.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 054/306] net: dsa: tag_mtk: fix 802.1ad VLAN egress
+        stable@vger.kernel.org,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 5.10 024/290] selftests/bpf: Mask bpf_csum_diff() return value to 16 bits in test_verifier
 Date:   Mon, 15 Mar 2021 14:51:57 +0100
-Message-Id: <20210315135509.481199421@linuxfoundation.org>
+Message-Id: <20210315135542.755067257@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,79 +42,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 
-commit 9200f515c41f4cbaeffd8fdd1d8b6373a18b1b67 upstream.
+commit 6185266c5a853bb0f2a459e3ff594546f277609b upstream.
 
-A different TPID bit is used for 802.1ad VLAN frames.
+The verifier test labelled "valid read map access into a read-only array
+2" calls the bpf_csum_diff() helper and checks its return value. However,
+architecture implementations of csum_partial() (which is what the helper
+uses) differ in whether they fold the return value to 16 bit or not. For
+example, x86 version has ...
 
-Reported-by: Ilario Gelmetti <iochesonome@gmail.com>
-Fixes: f0af34317f4b ("net: dsa: mediatek: combine MediaTek tag with VLAN tag")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+	if (unlikely(odd)) {
+		result = from32to16(result);
+		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+	}
+
+... while generic lib/checksum.c does:
+
+	result = from32to16(result);
+	if (odd)
+		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+
+This makes the helper return different values on different architectures,
+breaking the test on non-x86. To fix this, add an additional instruction
+to always mask the return value to 16 bits, and update the expected return
+value accordingly.
+
+Fixes: fb2abb73e575 ("bpf, selftest: test {rd, wr}only flags and direct value access")
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210228103017.320240-1-yauheni.kaliuta@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/tag_mtk.c |   19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/testing/selftests/bpf/verifier/array_access.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/dsa/tag_mtk.c
-+++ b/net/dsa/tag_mtk.c
-@@ -13,6 +13,7 @@
- #define MTK_HDR_LEN		4
- #define MTK_HDR_XMIT_UNTAGGED		0
- #define MTK_HDR_XMIT_TAGGED_TPID_8100	1
-+#define MTK_HDR_XMIT_TAGGED_TPID_88A8	2
- #define MTK_HDR_RECV_SOURCE_PORT_MASK	GENMASK(2, 0)
- #define MTK_HDR_XMIT_DP_BIT_MASK	GENMASK(5, 0)
- #define MTK_HDR_XMIT_SA_DIS		BIT(6)
-@@ -21,8 +22,8 @@ static struct sk_buff *mtk_tag_xmit(stru
- 				    struct net_device *dev)
+--- a/tools/testing/selftests/bpf/verifier/array_access.c
++++ b/tools/testing/selftests/bpf/verifier/array_access.c
+@@ -250,12 +250,13 @@
+ 	BPF_MOV64_IMM(BPF_REG_5, 0),
+ 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 		     BPF_FUNC_csum_diff),
++	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 	.fixup_map_array_ro = { 3 },
+ 	.result = ACCEPT,
+-	.retval = -29,
++	.retval = 65507,
+ },
  {
- 	struct dsa_port *dp = dsa_slave_to_port(dev);
-+	u8 xmit_tpid;
- 	u8 *mtk_tag;
--	bool is_vlan_skb = true;
- 	unsigned char *dest = eth_hdr(skb)->h_dest;
- 	bool is_multicast_skb = is_multicast_ether_addr(dest) &&
- 				!is_broadcast_ether_addr(dest);
-@@ -33,10 +34,17 @@ static struct sk_buff *mtk_tag_xmit(stru
- 	 * the both special and VLAN tag at the same time and then look up VLAN
- 	 * table with VID.
- 	 */
--	if (!skb_vlan_tagged(skb)) {
-+	switch (skb->protocol) {
-+	case htons(ETH_P_8021Q):
-+		xmit_tpid = MTK_HDR_XMIT_TAGGED_TPID_8100;
-+		break;
-+	case htons(ETH_P_8021AD):
-+		xmit_tpid = MTK_HDR_XMIT_TAGGED_TPID_88A8;
-+		break;
-+	default:
-+		xmit_tpid = MTK_HDR_XMIT_UNTAGGED;
- 		skb_push(skb, MTK_HDR_LEN);
- 		memmove(skb->data, skb->data + MTK_HDR_LEN, 2 * ETH_ALEN);
--		is_vlan_skb = false;
- 	}
- 
- 	mtk_tag = skb->data + 2 * ETH_ALEN;
-@@ -44,8 +52,7 @@ static struct sk_buff *mtk_tag_xmit(stru
- 	/* Mark tag attribute on special tag insertion to notify hardware
- 	 * whether that's a combined special tag with 802.1Q header.
- 	 */
--	mtk_tag[0] = is_vlan_skb ? MTK_HDR_XMIT_TAGGED_TPID_8100 :
--		     MTK_HDR_XMIT_UNTAGGED;
-+	mtk_tag[0] = xmit_tpid;
- 	mtk_tag[1] = (1 << dp->index) & MTK_HDR_XMIT_DP_BIT_MASK;
- 
- 	/* Disable SA learning for multicast frames */
-@@ -53,7 +60,7 @@ static struct sk_buff *mtk_tag_xmit(stru
- 		mtk_tag[1] |= MTK_HDR_XMIT_SA_DIS;
- 
- 	/* Tag control information is kept for 802.1Q */
--	if (!is_vlan_skb) {
-+	if (xmit_tpid == MTK_HDR_XMIT_UNTAGGED) {
- 		mtk_tag[2] = 0;
- 		mtk_tag[3] = 0;
- 	}
+ 	"invalid write map access into a read-only array 1",
 
 
