@@ -2,138 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409B933B3AD
+	by mail.lfdr.de (Postfix) with ESMTP id BEC3433B3AE
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbhCONTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhCONSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:18:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92F5364EF1;
-        Mon, 15 Mar 2021 13:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615814319;
-        bh=GvxsnE6byjDsoGTHrozcWzN6uDeo+qEdNuMCVIrRz+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BWuEFpJIbTNNOcseevdmRaVa3Wqk5wkC+Rc8hf7ybYLroW2XMMuxD4MxDoVzdSiFp
-         GH37uv+wPEPh1lGZJ9ZADM1YEr0q6TsNY/HhHTAlNqYp/0XnwC62Rgj186/CmU4giP
-         RWME8x054W+gsc5ox+dHAHd4O71Rq3Zn6LhCC2RSU/FfAYTQ4Kqv2xk1gQ1vJhBF9O
-         Nizf5w4s3OF2mmWNLBqrE8yChZ8fi1VvXFQYP65hnqMqzNMKnh7IUzzZOKZqe7Sr+8
-         ceYgfvCLLRgc+Bm24bf/uPj6K03IXMzCxHC3fnRSa8cSGyYWtB/2vvC0GwWvZhHb1G
-         Pc27vvK+g4uwA==
-Date:   Mon, 15 Mar 2021 15:18:13 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YE9elQfTZHo/9TJI@kernel.org>
-References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
- <20210311020142.125722-1-kai.huang@intel.com>
- <YEvbcrTZyiUAxZAu@google.com>
- <YEyX4V7BcS3MZNzp@kernel.org>
- <20210315201236.de3cd9389f853a418ec53e86@intel.com>
+        id S229696AbhCONTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:19:12 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35193 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229815AbhCONSy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:18:54 -0400
+X-UUID: b94396fd39be487289a9bf11a0e5cd36-20210315
+X-UUID: b94396fd39be487289a9bf11a0e5cd36-20210315
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 919804783; Mon, 15 Mar 2021 21:18:50 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 15 Mar 2021 21:18:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Mar 2021 21:18:49 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>
+Subject: [PATCH v4] irqchip/irq-mst: Support polarity configuration
+Date:   Mon, 15 Mar 2021 21:18:48 +0800
+Message-ID: <20210315131848.31840-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315201236.de3cd9389f853a418ec53e86@intel.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 08:12:36PM +1300, Kai Huang wrote:
-> On Sat, 13 Mar 2021 12:45:53 +0200 Jarkko Sakkinen wrote:
-> > On Fri, Mar 12, 2021 at 01:21:54PM -0800, Sean Christopherson wrote:
-> > > On Thu, Mar 11, 2021, Kai Huang wrote:
-> > > > From: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > 
-> > > > EREMOVE takes a page and removes any association between that page and
-> > > > an enclave.  It must be run on a page before it can be added into
-> > > > another enclave.  Currently, EREMOVE is run as part of pages being freed
-> > > > into the SGX page allocator.  It is not expected to fail.
-> > > > 
-> > > > KVM does not track how guest pages are used, which means that SGX
-> > > > virtualization use of EREMOVE might fail.
-> > > > 
-> > > > Break out the EREMOVE call from the SGX page allocator.  This will allow
-> > > > the SGX virtualization code to use the allocator directly.  (SGX/KVM
-> > > > will also introduce a more permissive EREMOVE helper).
-> > > > 
-> > > > Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
-> > > > more specific that it is used to free EPC page assigned to one enclave.
-> > > > Print an error message when EREMOVE fails to explicitly call out EPC
-> > > > page is leaked, and requires machine reboot to get leaked pages back.
-> > > > 
-> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > > > ---
-> > > > v2->v3:
-> > > > 
-> > > >  - Fixed bug during copy/paste which results in SECS page and va pages are not
-> > > >    correctly freed in sgx_encl_release() (sorry for the mistake).
-> > > >  - Added Jarkko's Acked-by.
-> > > 
-> > > That Acked-by should either be dropped or moved above Co-developed-by to make
-> > > checkpatch happy.
-> > > 
-> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > 
-> > Oops, my bad. Yup, ack should be removed.
-> > 
-> > /Jarkko
-> 
-> Hi Jarkko,
-> 
-> Your reply of your concern of this patch to the cover-letter
-> 
-> https://lore.kernel.org/lkml/YEkJXu262YDa8ZaK@kernel.org/
-> 
-> reminds me to do more sanity check of whether removing EREMOVE in
-> sgx_free_epc_page() will impact other code path or not, and I think
-> sgx_encl_release() is not the only place should be changed:
-> 
-> - sgx_encl_shrink() needs to call sgx_encl_free_epc_page(), since when this is
-> called, the VA page can be already valid -- there are other failures can
-> trigger sgx_encl_shrink().
+Support irq polarity configuration and save and restore the config
+when system suspend and resume.
 
-You right about this, good catch.
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/irqchip/irq-mst-intc.c | 94 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 91 insertions(+), 3 deletions(-)
 
-Shrink needs to always do EREMOVE as grow has done EPA, which changes
-EPC page state.
+diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
+index 143657b0cf28..a2ab3f837b96 100644
+--- a/drivers/irqchip/irq-mst-intc.c
++++ b/drivers/irqchip/irq-mst-intc.c
+@@ -13,15 +13,27 @@
+ #include <linux/of_irq.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/syscore_ops.h>
+ 
+-#define INTC_MASK	0x0
+-#define INTC_EOI	0x20
++#define MST_INTC_MAX_IRQS	64
++
++#define INTC_MASK		0x0
++#define INTC_REV_POLARITY	0x10
++#define INTC_EOI		0x20
++
++#ifdef CONFIG_PM_SLEEP
++static LIST_HEAD(mst_intc_list);
++#endif
+ 
+ struct mst_intc_chip_data {
+ 	raw_spinlock_t	lock;
+ 	unsigned int	irq_start, nr_irqs;
+ 	void __iomem	*base;
+ 	bool		no_eoi;
++#ifdef CONFIG_PM_SLEEP
++	struct list_head entry;
++	u16 saved_polarity_conf[DIV_ROUND_UP(MST_INTC_MAX_IRQS, 16)];
++#endif
+ };
+ 
+ static void mst_set_irq(struct irq_data *d, u32 offset)
+@@ -78,6 +90,20 @@ static void mst_intc_eoi_irq(struct irq_data *d)
+ 	irq_chip_eoi_parent(d);
+ }
+ 
++static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
++{
++	if (type != IRQ_TYPE_EDGE_RISING && type != IRQ_TYPE_EDGE_FALLING &&
++	    type != IRQ_TYPE_LEVEL_HIGH && type != IRQ_TYPE_LEVEL_LOW)
++		return -EINVAL;
++
++	if (type == IRQ_TYPE_LEVEL_LOW || type == IRQ_TYPE_EDGE_FALLING)
++		mst_set_irq(data, INTC_REV_POLARITY);
++
++	type = IRQ_TYPE_LEVEL_HIGH;
++
++	return irq_chip_set_type_parent(data, type);
++}
++
+ static struct irq_chip mst_intc_chip = {
+ 	.name			= "mst-intc",
+ 	.irq_mask		= mst_intc_mask_irq,
+@@ -87,13 +113,62 @@ static struct irq_chip mst_intc_chip = {
+ 	.irq_set_irqchip_state	= irq_chip_set_parent_state,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.irq_set_vcpu_affinity	= irq_chip_set_vcpu_affinity_parent,
+-	.irq_set_type		= irq_chip_set_type_parent,
++	.irq_set_type		= mst_irq_chip_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.flags			= IRQCHIP_SET_TYPE_MASKED |
+ 				  IRQCHIP_SKIP_SET_WAKE |
+ 				  IRQCHIP_MASK_ON_SUSPEND,
+ };
+ 
++#ifdef CONFIG_PM_SLEEP
++static void mst_intc_polarity_save(struct mst_intc_chip_data *cd)
++{
++	int i;
++	void __iomem *addr = cd->base + INTC_REV_POLARITY;
++
++	for (i = 0; i < DIV_ROUND_UP(cd->nr_irqs, 16); i++)
++		cd->saved_polarity_conf[i] = readw_relaxed(addr + i * 4);
++}
++
++static void mst_intc_polarity_restore(struct mst_intc_chip_data *cd)
++{
++	int i;
++	void __iomem *addr = cd->base + INTC_REV_POLARITY;
++
++	for (i = 0; i < DIV_ROUND_UP(cd->nr_irqs, 16); i++)
++		writew_relaxed(cd->saved_polarity_conf[i], addr + i * 4);
++}
++
++static void mst_irq_resume(void)
++{
++	struct mst_intc_chip_data *cd;
++
++	list_for_each_entry(cd, &mst_intc_list, entry)
++		mst_intc_polarity_restore(cd);
++}
++
++static int mst_irq_suspend(void)
++{
++	struct mst_intc_chip_data *cd;
++
++	list_for_each_entry(cd, &mst_intc_list, entry)
++		mst_intc_polarity_save(cd);
++	return 0;
++}
++
++static struct syscore_ops mst_irq_syscore_ops = {
++	.suspend	= mst_irq_suspend,
++	.resume		= mst_irq_resume,
++};
++
++static int __init mst_irq_pm_init(void)
++{
++	register_syscore_ops(&mst_irq_syscore_ops);
++	return 0;
++}
++late_initcall(mst_irq_pm_init);
++#endif
++
+ static int mst_intc_domain_translate(struct irq_domain *d,
+ 				     struct irq_fwspec *fwspec,
+ 				     unsigned long *hwirq,
+@@ -145,6 +220,15 @@ static int mst_intc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+ 	parent_fwspec = *fwspec;
+ 	parent_fwspec.fwnode = domain->parent->fwnode;
+ 	parent_fwspec.param[1] = cd->irq_start + hwirq;
++
++	/*
++	 * mst-intc latch the interrupt request if it's edge triggered,
++	 * so the output signal to parent GIC is always level sensitive.
++	 * And if the irq signal is active low, configure it to active high
++	 * to meet GIC SPI spec in mst_irq_chip_set_type via REV_POLARITY bit.
++	 */
++	parent_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
++
+ 	return irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, &parent_fwspec);
+ }
+ 
+@@ -193,6 +277,10 @@ static int __init mst_intc_of_init(struct device_node *dn,
+ 		return -ENOMEM;
+ 	}
+ 
++#ifdef CONFIG_PM_SLEEP
++	INIT_LIST_HEAD(&cd->entry);
++	list_add_tail(&cd->entry, &mst_intc_list);
++#endif
+ 	return 0;
+ }
+ 
+-- 
+2.18.0
 
-> - sgx_encl_add_page() should call sgx_encl_free_epc_page() in "err_out_free:"
-> label, since the EPC page can be already valid when error happened, i.e. when
-> EEXTEND fails.
-
-Yes, correct, good work!
-
-> Other places should be OK per my check, but I'd prefer to just replacing all
-> sgx_free_epc_page() call sites in driver with sgx_encl_free_epc_page(), with
-> one exception: sgx_alloc_va_page(), which calls sgx_free_epc_page() when EPA
-> fails, in which case EREMOVE is not required for sure.
-
-I would not unless they require it.
-
-> Your idea, please?
-> 
-> Btw, introducing a driver wrapper of sgx_free_epc_page() does make sense to me,
-> because virtualization has a counterpart in sgx/virt.c too.
-
-It does make sense to use sgx_free_epc_page() everywhere where it's
-the right thing to call and here's why.
-
-If there is some unrelated regression that causes EPC page not get
-uninitialized when it actually should, doing extra EREMOVE could mask
-those bugs. I.e. it can postpone a failure, which can make a bug harder
-to backtrace.
-
-Jarkko
