@@ -2,120 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E9933B573
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D67B33B4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhCONy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230176AbhCONxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE93264EB6;
-        Mon, 15 Mar 2021 13:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816398;
-        bh=S5XiGYEdYWex8KJD0TxuldqiutPHm2atiw9CRDWoP1c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lau1WZOL4R9VMMCkrgajL72S06iDupsf6KArGI+yX6Qy5i7y9vjmOYQjKQ5tQe857
-         cSk2RL5QVgu+/6pBDdPcSXATLzx+KpTA+F9sAq/9mWOoKG5ftcdB1t60GmNpWt7UkB
-         PFUG5VK3f68vFVWe50JacVOycJpXrWzMEFO6HMxU=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/75] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
-Date:   Mon, 15 Mar 2021 14:51:35 +0100
-Message-Id: <20210315135208.944227908@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229772AbhCONwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:52:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhCONvp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:51:45 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FDY8eY110249;
+        Mon, 15 Mar 2021 09:51:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eOGjjfwBRqIXEaoAxvH/exvBFolj5BMfaXKZ0b6//co=;
+ b=JRVlcYaZTgOnUePfZF2Li6wE+/qlkCB+Vt9W4UipJVvSBIzcxEn0ks4lb4w/JiHZ0cM4
+ xFwlBDuGIo3Rw8CIMKOgCXAoH0OLdnor1rea5A9K/MlBS7uuCzNERJC22usIWfmQ9ghk
+ JXYLICuoDzDo1Qio0U1OOpWtezMWI5PDEcmWBxec3uL1Sbn7kgA3ieDDrd/UntYNyVJq
+ RX36AJC4+AzHjrwBpVO6aYuq++5avPPd1PN6jr5xLbDUisNJHGs2cBHy3JoeaL4ZJX63
+ Fwtt7qBgLGww261dClQ5y82A8aj7jHsy6dDB5yhiLPmfYGQbevv70ezCpiC+4CHZolaG 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqqe7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 09:51:42 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12FDcMlE132376;
+        Mon, 15 Mar 2021 09:51:42 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqqe6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 09:51:42 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12FDn5KE027569;
+        Mon, 15 Mar 2021 13:51:39 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 378n1890k9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 13:51:39 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12FDpLN837683526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 13:51:21 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58C4442049;
+        Mon, 15 Mar 2021 13:51:37 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06DF742041;
+        Mon, 15 Mar 2021 13:51:37 +0000 (GMT)
+Received: from [9.145.154.43] (unknown [9.145.154.43])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Mar 2021 13:51:36 +0000 (GMT)
+Subject: Re: [PATCH v2 1/2] gcov: fix clang-11+ support
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>, stable@vger.kernel.org
+References: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
+ <20210312224132.3413602-1-ndesaulniers@google.com>
+ <20210312224132.3413602-2-ndesaulniers@google.com>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <67b313b0-3254-b394-7aa3-69113fe32838@linux.ibm.com>
+Date:   Mon, 15 Mar 2021 14:51:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210312224132.3413602-2-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-15_05:2021-03-15,2021-03-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1011 phishscore=0
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103150096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On 12.03.2021 23:41, Nick Desaulniers wrote:
+> LLVM changed the expected function signatures for llvm_gcda_start_file()
+> and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
+> or newer may have noticed their kernels failing to boot due to a panic
+> when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
+> the function signatures so calling these functions doesn't panic the
+> kernel.
+> 
+> Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
+> Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
+> Cc: stable@vger.kernel.org # 5.4
+> Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Looks good to me (minus the code duplication - but that's IMO acceptable
+since it's cleaned up again with patch 2).
 
-[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
+Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
 
-While sampling for marked events, currently we record the sample only
-if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
-set. SIAR_VALID bit is used for fetching the instruction address from
-Sampled Instruction Address Register(SIAR). But there are some
-usecases, where the user is interested only in the PMU stats at each
-counter overflow and the exact IP of the overflow event is not
-required. Dropping SIAR invalid samples will fail to record some of
-the counter overflows in such cases.
+That said, I'm currently thinking of adding a compile time check that
+performs a dry-run gcov_info => gcda conversion in user space to detect
+these kind of issues before kernels fail unpredictably [1]. I'm
+confident that this could work for the GCC gcov kernel code, not sure
+about the Clang version though. But if it's possible I guess it would
+make sense to extend this to include the Clang code as well.
 
-Example of such usecase is dumping the PMU stats (event counts) after
-some regular amount of instructions/events from the userspace (ex: via
-ptrace). Here counter overflow is indicated to userspace via signal
-handler, and captured by monitoring and enabling I/O signaling on the
-event file descriptor. In these cases, we expect to get
-sample/overflow indication after each specified sample_period.
+Note that this check wouldn't work for cross-compiles since the build
+machine must be able to run code for the target machine.
 
-Perf event attribute will not have PERF_SAMPLE_IP set in the
-sample_type if exact IP of the overflow event is not requested. So
-while profiling if SAMPLE_IP is not set, just record the counter
-overflow irrespective of SIAR_VALID check.
+[1]
+https://lore.kernel.org/lkml/1c7a49e7-0e27-561b-a2f9-d42a83dc4c29@linux.ibm.com/
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-[mpe: Reflow comment and if formatting]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index e593e7f856ed..7a80e1cff6e2 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2008,7 +2008,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 			left += period;
- 			if (left <= 0)
- 				left = period;
--			record = siar_valid(regs);
-+
-+			/*
-+			 * If address is not requested in the sample via
-+			 * PERF_SAMPLE_IP, just record that sample irrespective
-+			 * of SIAR valid check.
-+			 */
-+			if (event->attr.sample_type & PERF_SAMPLE_IP)
-+				record = siar_valid(regs);
-+			else
-+				record = 1;
-+
- 			event->hw.last_period = event->hw.sample_period;
- 		}
- 		if (left < 0x80000000LL)
-@@ -2026,9 +2036,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
- 	 * these cases.
- 	 */
--	if (event->attr.exclude_kernel && record)
--		if (is_kernel_addr(mfspr(SPRN_SIAR)))
--			record = 0;
-+	if (event->attr.exclude_kernel &&
-+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
-+	    is_kernel_addr(mfspr(SPRN_SIAR)))
-+		record = 0;
- 
- 	/*
- 	 * Finally record data if requested.
+Regards,
+  Peter
+
 -- 
-2.30.1
-
-
-
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
