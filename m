@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD0033BC31
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4862933BBF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238624AbhCOOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S233736AbhCOOVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232875AbhCOOAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DD3B61477;
-        Mon, 15 Mar 2021 13:59:43 +0000 (UTC)
+        id S232889AbhCOOAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D9164F58;
+        Mon, 15 Mar 2021 13:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816785;
-        bh=ls/Kw0AxmQ04kBfbKoNboAsuPICaRMnN/G4moFqOlBY=;
+        s=korg; t=1615816788;
+        bh=2kspGpLfUEBLgLAq1ZGvCCgsmP9b4EWHvwylP07uFQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zoLD86b2E55SjGp4pXwJhQw1vhFkiMZ5eynf/rDuRvDl0raakLorIsmjtxNo83c51
-         zQ4tGtA3DdoSzLcNU67j1pNJ0Bvv4vUT+sZdh6ysamEjQOHzWqPCwNLy+30dXYyaaX
-         qHqVmY86WLW7yzmymMsbwxJG5J2Hg+snk1QZm/tQ=
+        b=1cspSdNTpwLoN3nVyqkXvL1HqPqc17rOnd87Og09NkI7gfFIToXZOvgzHSRRXmo7e
+         1MR59RRpwVViXD08hWpiP2MAl6p5lcNtSg3nE2T43vPos3Z37HSfyuHJnvaMZOn1dD
+         uvgGq6swUUmNbks99ZNuC/A/EX4MtfXEVTfjAEQg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Bjoern Walk <bwalk@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 066/120] s390/dasd: fix hanging DASD driver unbind
-Date:   Mon, 15 Mar 2021 14:56:57 +0100
-Message-Id: <20210315135722.132681825@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 068/120] mmc: core: Fix partition switch time for eMMC
+Date:   Mon, 15 Mar 2021 14:56:59 +0100
+Message-Id: <20210315135722.204924913@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -43,49 +42,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit 7d365bd0bff3c0310c39ebaffc9a8458e036d666 upstream.
+commit 66fbacccbab91e6e55d9c8f1fc0910a8eb6c81f7 upstream.
 
-In case of an unbind of the DASD device driver the function
-dasd_generic_remove() is called which shuts down the device.
-Among others this functions removes the int_handler from the cdev.
-During shutdown the device cancels all outstanding IO requests and waits
-for completion of the clear request.
-Unfortunately the clear interrupt will never be received when there is no
-interrupt handler connected.
+Avoid the following warning by always defining partition switch time:
 
-Fix by moving the int_handler removal after the call to the state machine
-where no request or interrupt is outstanding.
+ [    3.209874] mmc1: unspecified timeout for CMD6 - use generic
+ [    3.222780] ------------[ cut here ]------------
+ [    3.233363] WARNING: CPU: 1 PID: 111 at drivers/mmc/core/mmc_ops.c:575 __mmc_switch+0x200/0x204
 
+Reported-by: Paul Fertser <fercerpav@gmail.com>
+Fixes: 1c447116d017 ("mmc: mmc: Fix partition switch timeout for some eMMCs")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/168bbfd6-0c5b-5ace-ab41-402e7937c46e@intel.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Tested-by: Bjoern Walk <bwalk@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/block/dasd.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mmc/core/mmc.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/s390/block/dasd.c
-+++ b/drivers/s390/block/dasd.c
-@@ -3426,8 +3426,6 @@ void dasd_generic_remove(struct ccw_devi
- 	struct dasd_device *device;
- 	struct dasd_block *block;
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -426,10 +426,6 @@ static int mmc_decode_ext_csd(struct mmc
  
--	cdev->handler = NULL;
--
- 	device = dasd_device_from_cdev(cdev);
- 	if (IS_ERR(device)) {
- 		dasd_remove_sysfs_files(cdev);
-@@ -3446,6 +3444,7 @@ void dasd_generic_remove(struct ccw_devi
- 	 * no quite down yet.
- 	 */
- 	dasd_set_target_state(device, DASD_STATE_NEW);
-+	cdev->handler = NULL;
- 	/* dasd_delete_device destroys the device reference. */
- 	block = device->block;
- 	dasd_delete_device(device);
+ 		/* EXT_CSD value is in units of 10ms, but we store in ms */
+ 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
+-		/* Some eMMC set the value too low so set a minimum */
+-		if (card->ext_csd.part_time &&
+-		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
+-			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
+ 
+ 		/* Sleep / awake timeout in 100ns units */
+ 		if (sa_shift > 0 && sa_shift <= 0x17)
+@@ -619,6 +615,17 @@ static int mmc_decode_ext_csd(struct mmc
+ 		card->ext_csd.data_sector_size = 512;
+ 	}
+ 
++	/*
++	 * GENERIC_CMD6_TIME is to be used "unless a specific timeout is defined
++	 * when accessing a specific field", so use it here if there is no
++	 * PARTITION_SWITCH_TIME.
++	 */
++	if (!card->ext_csd.part_time)
++		card->ext_csd.part_time = card->ext_csd.generic_cmd6_time;
++	/* Some eMMC set the value too low so set a minimum */
++	if (card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
++		card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
++
+ 	/* eMMC v5 or later */
+ 	if (card->ext_csd.rev >= 7) {
+ 		memcpy(card->ext_csd.fwrev, &ext_csd[EXT_CSD_FIRMWARE_VERSION],
 
 
