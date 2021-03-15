@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DD533BD3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C63633BDB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240042AbhCOOdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S240064AbhCOOd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233136AbhCOOAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233135AbhCOOAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3961D64F45;
-        Mon, 15 Mar 2021 14:00:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CF464F46;
+        Mon, 15 Mar 2021 14:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816813;
-        bh=NX9WK/2pq7pVxaxWADhAwZ9yVx6pQzPj+THYddYS6tU=;
+        s=korg; t=1615816815;
+        bh=y9MWJwAHKI1yTKJrTrQ3s9kibterPfHI/FArkPmAavI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kg9mzvXB5NOIBi+E/KRbgeBF4CW/oDPBHYFbd2KXUemURSJPH9TATa30GMPVgC+sS
-         0Q9k/GZAoIVYSq3yrQw68DdwTbmsTPZvNLn+WaPZixP3pHYuxM3fMc77+I2Dymm8Ea
-         s3msF56h5nvxXfeq3Fxb69hp0cHofP8ycbfYt8sE=
+        b=lz0tAfCnb9XxMWdu+sJFWHsv2dT/1cHaYfOMF0tv0ETEVYhMF59afE5k2jkNqAaz5
+         JAPpchYh1n6XGQsDa7sOcBVqc7JO3qiEMLyMcSOLysY/n7wv9vc7/bxkeODIVaMTDW
+         53tsABmKohJ4j+tKvv2iP07SfUCYsKfCfXrPl+Zk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
+        syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>,
+        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 4.19 085/120] usbip: fix vudc to check for stream socket
-Date:   Mon, 15 Mar 2021 14:57:16 +0100
-Message-Id: <20210315135722.746459233@linuxfoundation.org>
+Subject: [PATCH 4.19 086/120] usbip: fix stub_dev usbip_sockfd_store() races leading to gpf
+Date:   Mon, 15 Mar 2021 14:57:17 +0100
+Message-Id: <20210315135722.779571726@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -44,53 +47,132 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
+commit 9380afd6df70e24eacbdbde33afc6a3950965d22 upstream.
 
-Fix usbip_sockfd_store() to validate the passed in file descriptor is
-a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
-sock_recvmsg() can't detect end of stream.
+usbip_sockfd_store() is invoked when user requests attach (import)
+detach (unimport) usb device from usbip host. vhci_hcd sends import
+request and usbip_sockfd_store() exports the device if it is free
+for export.
 
+Export and unexport are governed by local state and shared state
+- Shared state (usbip device status, sockfd) - sockfd and Device
+  status are used to determine if stub should be brought up or shut
+  down.
+- Local state (tcp_socket, rx and tx thread task_struct ptrs)
+  A valid tcp_socket controls rx and tx thread operations while the
+  device is in exported state.
+- While the device is exported, device status is marked used and socket,
+  sockfd, and thread pointers are valid.
+
+Export sequence (stub-up) includes validating the socket and creating
+receive (rx) and transmit (tx) threads to talk to the client to provide
+access to the exported device. rx and tx threads depends on local and
+shared state to be correct and in sync.
+
+Unexport (stub-down) sequence shuts the socket down and stops the rx and
+tx threads. Stub-down sequence relies on local and shared states to be
+in sync.
+
+There are races in updating the local and shared status in the current
+stub-up sequence resulting in crashes. These stem from starting rx and
+tx threads before local and global state is updated correctly to be in
+sync.
+
+1. Doesn't handle kthread_create() error and saves invalid ptr in local
+   state that drives rx and tx threads.
+2. Updates tcp_socket and sockfd,  starts stub_rx and stub_tx threads
+   before updating usbip_device status to SDEV_ST_USED. This opens up a
+   race condition between the threads and usbip_sockfd_store() stub up
+   and down handling.
+
+Fix the above problems:
+- Stop using kthread_get_run() macro to create/start threads.
+- Create threads and get task struct reference.
+- Add kthread_create() failure handling and bail out.
+- Hold usbip_device lock to update local and shared states after
+  creating rx and tx threads.
+- Update usbip_device status to SDEV_ST_USED.
+- Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
+- Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
+  and status) is complete.
+
+Credit goes to syzbot and Tetsuo Handa for finding and root-causing the
+kthread_get_run() improper error handling problem and others. This is a
+hard problem to find and debug since the races aren't seen in a normal
+case. Fuzzing forces the race window to be small enough for the
+kthread_get_run() error path bug and starting threads before updating the
+local and shared state bug in the stub-up sequence.
+
+Tested with syzbot reproducer:
+- https://syzkaller.appspot.com/text?tag=ReproC&x=14801034d00000
+
+Fixes: 9720b4bc76a83807 ("staging/usbip: convert to kthread")
 Cc: stable@vger.kernel.org
-Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Reported-by: syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
+Link: https://lore.kernel.org/r/268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/usbip/stub_dev.c |   32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -12,6 +12,7 @@
- #include <linux/usb/ch9.h>
- #include <linux/sysfs.h>
- #include <linux/kthread.h>
-+#include <linux/file.h>
- #include <linux/byteorder/generic.h>
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -46,6 +46,8 @@ static ssize_t usbip_sockfd_store(struct
+ 	int sockfd = 0;
+ 	struct socket *socket;
+ 	int rv;
++	struct task_struct *tcp_rx = NULL;
++	struct task_struct *tcp_tx = NULL;
  
- #include "usbip_common.h"
-@@ -138,6 +139,13 @@ static ssize_t usbip_sockfd_store(struct
- 			goto unlock_ud;
+ 	if (!sdev) {
+ 		dev_err(dev, "sdev is null\n");
+@@ -80,20 +82,36 @@ static ssize_t usbip_sockfd_store(struct
+ 			goto sock_err;
  		}
  
-+		if (socket->type != SOCK_STREAM) {
-+			dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+				socket->type);
-+			ret = -EINVAL;
-+			goto sock_err;
+-		sdev->ud.tcp_socket = socket;
+-		sdev->ud.sockfd = sockfd;
+-
++		/* unlock and create threads and get tasks */
+ 		spin_unlock_irq(&sdev->ud.lock);
++		tcp_rx = kthread_create(stub_rx_loop, &sdev->ud, "stub_rx");
++		if (IS_ERR(tcp_rx)) {
++			sockfd_put(socket);
++			return -EINVAL;
 +		}
++		tcp_tx = kthread_create(stub_tx_loop, &sdev->ud, "stub_tx");
++		if (IS_ERR(tcp_tx)) {
++			kthread_stop(tcp_rx);
++			sockfd_put(socket);
++			return -EINVAL;
++		}
+ 
+-		sdev->ud.tcp_rx = kthread_get_run(stub_rx_loop, &sdev->ud,
+-						  "stub_rx");
+-		sdev->ud.tcp_tx = kthread_get_run(stub_tx_loop, &sdev->ud,
+-						  "stub_tx");
++		/* get task structs now */
++		get_task_struct(tcp_rx);
++		get_task_struct(tcp_tx);
+ 
++		/* lock and update sdev->ud state */
+ 		spin_lock_irq(&sdev->ud.lock);
++		sdev->ud.tcp_socket = socket;
++		sdev->ud.sockfd = sockfd;
++		sdev->ud.tcp_rx = tcp_rx;
++		sdev->ud.tcp_tx = tcp_tx;
+ 		sdev->ud.status = SDEV_ST_USED;
+ 		spin_unlock_irq(&sdev->ud.lock);
+ 
++		wake_up_process(sdev->ud.tcp_rx);
++		wake_up_process(sdev->ud.tcp_tx);
 +
- 		udc->ud.tcp_socket = socket;
+ 	} else {
+ 		dev_info(dev, "stub down\n");
  
- 		spin_unlock_irq(&udc->ud.lock);
-@@ -177,6 +185,8 @@ static ssize_t usbip_sockfd_store(struct
- 
- 	return count;
- 
-+sock_err:
-+	sockfd_put(socket);
- unlock_ud:
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
 
 
