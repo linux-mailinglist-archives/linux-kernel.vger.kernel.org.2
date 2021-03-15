@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136C333B5F0
+	by mail.lfdr.de (Postfix) with ESMTP id 84D5D33B5F1
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhCON4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
+        id S231892AbhCON4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230527AbhCONxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC24E64F00;
-        Mon, 15 Mar 2021 13:53:48 +0000 (UTC)
+        id S231145AbhCONxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 725DB64F07;
+        Mon, 15 Mar 2021 13:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816430;
-        bh=UYKgxHE6T97zILt8zQKZHoMeqdQy3Xk+IkyqbMBYZPc=;
+        s=korg; t=1615816431;
+        bh=FaW9x8HhE6as/IO5W+lcpoDoipNfhCCAyi0HIq0I0cY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTdmw5xTdyuGYcIjnVBfaQf83ZY4rY81iH3tPMbA309eN/mBczN/LEX5wHSGcb4Cp
-         F4mDK0tgKednhcGgMbb+WhxUv6GpuSuppu2hXyi7eqlZZBuvRNvEo1iwLyYrl4Iotu
-         SzK85vqpajilRutBZtat0Tu1gyqe34t2Vrd0WLmU=
+        b=nH0xGVCdK8EQwY/xrwv54s5PKJE6j80ETIiv5ayV/ANPvodLukretkdEc2ZDcLeqj
+         NsFffjR1kNIHrrUMvYuffD9I4dUBMFLCI/9SQdrBy79DCjZRuKadTg4kwi11N7f7b8
+         rXvO9vXsKDObUwd8eXs3p30qiWfEDXxtRCWBex9k=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.9 34/78] xhci: Improve detection of device initiated wake signal.
-Date:   Mon, 15 Mar 2021 14:51:57 +0100
-Message-Id: <20210315135213.190867751@linuxfoundation.org>
+        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 35/78] USB: serial: io_edgeport: fix memory leak in edge_startup
+Date:   Mon, 15 Mar 2021 14:51:58 +0100
+Message-Id: <20210315135213.222503765@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -41,69 +43,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
+commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
 
-A xHC USB 3 port might miss the first wake signal from a USB 3 device
-if the port LFPS reveiver isn't enabled fast enough after xHC resume.
+sysbot found memory leak in edge_startup().
+The problem was that when an error was received from the usb_submit_urb(),
+nothing was cleaned up.
 
-xHC host will anyway be resumed by a PME# signal, but will go back to
-suspend if no port activity is seen.
-The device resends the U3 LFPS wake signal after a 100ms delay, but
-by then host is already suspended, starting all over from the
-beginning of this issue.
-
-USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
-needs to delay 100ms before resending the wake.
-
-Don't suspend immediately if port activity isn't detected in resume.
-Instead add a retry. If there is no port activity then delay for 120ms,
-and re-check for port activity.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
+Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
+Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci.c |   16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1022,6 +1022,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 	struct usb_hcd		*secondary_hcd;
- 	int			retval = 0;
- 	bool			comp_timer_running = false;
-+	bool			pending_portevent = false;
+--- a/drivers/usb/serial/io_edgeport.c
++++ b/drivers/usb/serial/io_edgeport.c
+@@ -2959,26 +2959,32 @@ static int edge_startup(struct usb_seria
+ 				response = -ENODEV;
+ 			}
  
- 	if (!hcd->state)
- 		return 0;
-@@ -1155,13 +1156,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 
-  done:
- 	if (retval == 0) {
--		/* Resume root hubs only when have pending events. */
--		if (xhci_pending_portevent(xhci)) {
-+		/*
-+		 * Resume roothubs only if there are pending events.
-+		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
-+		 * the first wake signalling failed, give it that chance.
-+		 */
-+		pending_portevent = xhci_pending_portevent(xhci);
-+		if (!pending_portevent) {
-+			msleep(120);
-+			pending_portevent = xhci_pending_portevent(xhci);
-+		}
-+
-+		if (pending_portevent) {
- 			usb_hcd_resume_root_hub(xhci->shared_hcd);
- 			usb_hcd_resume_root_hub(hcd);
- 		}
- 	}
+-			usb_free_urb(edge_serial->interrupt_read_urb);
+-			kfree(edge_serial->interrupt_in_buffer);
 -
- 	/*
- 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
- 	 * be re-initialized Always after a system resume. Ports are subject
+-			usb_free_urb(edge_serial->read_urb);
+-			kfree(edge_serial->bulk_in_buffer);
+-
+-			kfree(edge_serial);
+-
+-			return response;
++			goto error;
+ 		}
+ 
+ 		/* start interrupt read for this edgeport this interrupt will
+ 		 * continue as long as the edgeport is connected */
+ 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
+ 								GFP_KERNEL);
+-		if (response)
++		if (response) {
+ 			dev_err(ddev, "%s - Error %d submitting control urb\n",
+ 				__func__, response);
++
++			goto error;
++		}
+ 	}
+ 	return response;
++
++error:
++	usb_free_urb(edge_serial->interrupt_read_urb);
++	kfree(edge_serial->interrupt_in_buffer);
++
++	usb_free_urb(edge_serial->read_urb);
++	kfree(edge_serial->bulk_in_buffer);
++
++	kfree(edge_serial);
++
++	return response;
+ }
+ 
+ 
 
 
