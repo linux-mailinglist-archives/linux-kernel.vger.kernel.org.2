@@ -2,132 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F93033BF62
+	by mail.lfdr.de (Postfix) with ESMTP id BB2C633BF63
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhCOPDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:03:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238439AbhCOPDo (ORCPT
+        id S233064AbhCOPEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:04:01 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:51795 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239019AbhCOPDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:03:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615820624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tQS7ZiyS9Sed7OnVFwINJrQq7RX27EFmwFkt5eXsXEQ=;
-        b=LLDMO9x9E/oo4iWq03tcg9cS8Uo513ue5+Imobpvf7yNLjPbx+Mpd32U5PSC3vWZMXXp2C
-        kUk+Jl+S/YHrPR/EGvu31yZuhlR7YZrk94u2nit1zE6YhP0KaNONJDw4R7nqWQ6TxmqtWd
-        qS/00aX1DaZSGJcF4o+wz4QpR27FIL4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-XCV0EwtfNp64fQlXQgaIqQ-1; Mon, 15 Mar 2021 11:03:42 -0400
-X-MC-Unique: XCV0EwtfNp64fQlXQgaIqQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E6EF1015C84;
-        Mon, 15 Mar 2021 15:03:40 +0000 (UTC)
-Received: from x1.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D44318A69;
-        Mon, 15 Mar 2021 15:03:40 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 09:03:39 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210315090339.54546e91@x1.home.shazbot.org>
-In-Reply-To: <20210315145238.6sg5deblr2z2pupu@pali>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
-        <20210312173452.3855-5-ameynarkhede03@gmail.com>
-        <20210314235545.girtrazsdxtrqo2q@pali>
-        <20210315134323.llz2o7yhezwgealp@archlinux>
-        <20210315135226.avwmnhkfsgof6ihw@pali>
-        <20210315083409.08b1359b@x1.home.shazbot.org>
-        <20210315145238.6sg5deblr2z2pupu@pali>
-Organization: Red Hat
+        Mon, 15 Mar 2021 11:03:49 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 373C02385;
+        Mon, 15 Mar 2021 11:03:47 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 15 Mar 2021 11:03:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=imv4IetqNlL67VMIjffr1KT6NlK
+        C85EkumX2HdaLpqQ=; b=iLddbCBnHq2pKqGeEzFQaj68uwOm2kDuuedkz6fwWrI
+        xlFIpqIOgF/E4HeeYiKmLuOYqW5rx22rHwX1kgRYKGZ3gXMTnopODCXuse6Jr+Sa
+        MnOYMwl9NkAdmOwl5j8NqDLqgbwhAnJJId+cEOxeJjGAZrjyMzQSYO/L+apAOLV9
+        OUnOEoTroWFxEBjY6fpYmcnucwM1tCNljN9ttUcZaGkes+32f5pO5C+VojfA66V4
+        98uebtcO20452m+kM3xcbpYIHlnzXLqA0d2LVsHpw43aKXIGyDwAfCqKKC548Fuj
+        1lVE4PQO3aLGpO7juduPMA0gwCq4WN8q6BuQGfMod+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=imv4Ie
+        tqNlL67VMIjffr1KT6NlKC85EkumX2HdaLpqQ=; b=D7oG4rMpBZSgdfyypVnnrU
+        Um7i+BemRlI+fPRMioITdWTfqeBDICwVebIXIyswa0xRiA0KuVkdm+FMhq+5OFVJ
+        We//tLopWcv1IIq+DTKApUO9bAXiOMyh2CQgQKlsd0zjH1sDYSlLnKENGAK3OUP/
+        1gceNs4qel8JsQba72pO5/rhh+h3e62nCxqAz4crJymg5LgAQs1cqCkL25hlcfpz
+        I5jfpMFN5XAIgrsnz/RF/zbezkQZ7Vv7sh81a4iaL/Q+oN8dDQu1Hrtexve5TAn0
+        q2SEFGfBKyqeroJjx/QIX4V56jSS1W+Ln2i+Rkz2bN1unVpftrXeGQxAqNRe6bVg
+        ==
+X-ME-Sender: <xms:UXdPYJFS5MDvL6Q216fhJJttxPIYIu4YPMMcO8UEaF1BoR2KZkalDw>
+    <xme:UXdPYOTuhoed_Jf7kK9ARIyKT9ehBI43lJTbZv1QXK5tb10e-VwtWh4YOQQiPmjvf
+    MHKRDB2YAt5c5_GimQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:UXdPYICEaYJjvJ5gCM4qYBhXUnJ5OOjwbo1gdWcj6om8fxQidyETOw>
+    <xmx:UXdPYG1Xozsliz2O950mfgjMC5XJdypsgMslTRysggOcEg205apSeg>
+    <xmx:UXdPYOUwk1JVsax-YkmKfZ5wAEeDEUPVUGNqi5SgqPT9Q44KrIO4aQ>
+    <xmx:UndPYI6QFFnThVOFKpXrASgXvIE5IlD9agnR0TY4V0Aag2TAeBIg4A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9F9EB1080063;
+        Mon, 15 Mar 2021 11:03:45 -0400 (EDT)
+Date:   Mon, 15 Mar 2021 16:03:43 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: beelink-x2: Add power button
+Message-ID: <20210315150343.uzq46th6eecdr4e2@gilmour>
+References: <20210306203611.15534-1-jernej.skrabec@siol.net>
+ <20210308130506.v35gjviwknr5hat5@gilmour>
+ <2517400.0zBCEEo8qi@kista>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mfhruzbnsooaoye6"
+Content-Disposition: inline
+In-Reply-To: <2517400.0zBCEEo8qi@kista>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 15:52:38 +0100
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-> On Monday 15 March 2021 08:34:09 Alex Williamson wrote:
-> > On Mon, 15 Mar 2021 14:52:26 +0100
-> > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> >  =20
-> > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote: =20
-> > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > warm reset respectively.   =20
+--mfhruzbnsooaoye6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Thu, Mar 11, 2021 at 10:59:35PM +0100, Jernej =C5=A0krabec wrote:
+> Hi!
+>=20
+> Dne ponedeljek, 08. marec 2021 ob 14:05:06 CET je Maxime Ripard napisal(a=
+):
+> > Hi
+> >=20
+> > On Sat, Mar 06, 2021 at 09:36:11PM +0100, Jernej Skrabec wrote:
+> > > Beelink X2 has power button. Add node for it.
 > > >=20
-> > > No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is just an=
-other
-> > > type of reset, which is currently implemented only for PCIe hot plug
-> > > bridges and for PowerPC PowerNV platform and it just call PCI seconda=
-ry
-> > > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > > kernel and therefore drivers do not export this type of reset via any
-> > > kernel function (yet). =20
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > ---
+> > >  arch/arm/boot/dts/sun8i-h3-beelink-x2.dts | 11 +++++++++++
+> > >  1 file changed, 11 insertions(+)
+> > >=20
+> > > diff --git a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts b/arch/arm/boo=
+t/dts/
+> sun8i-h3-beelink-x2.dts
+> > > index 62b5280ec093..4a2cb072ecf6 100644
+> > > --- a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
+> > > +++ b/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
+> > > @@ -111,6 +111,17 @@ spdif_out: spdif-out {
+> > >  		#sound-dai-cells =3D <0>;
+> > >  		compatible =3D "linux,spdif-dit";
+> > >  	};
+> > > +
+> > > +	r_gpio_keys {
 > >=20
-> > Warm reset is beyond the scope of this series, but could be implemented
-> > in a compatible way to fit within the pci_reset_fn_methods[] array
-> > defined here. =20
+> > Underscores are not valid for node names (and will trigger a dtc warning
+> > when running with W=3D1).
 >=20
-> Ok!
->=20
-> > Note that with this series the resets available through
-> > pci_reset_function() and the per device reset attribute is sysfs remain
-> > exactly the same as they are currently.  The bus and slot reset
-> > methods used here are limited to devices where only a single function is
-> > affected by the reset, therefore it is not like the patch you proposed
-> > which performed a reset irrespective of the downstream devices.  This
-> > series only enables selection of the existing methods.  Thanks,
-> >=20
-> > Alex
-> >  =20
->=20
-> But with this patch series, there is still an issue with PCI secondary
-> bus reset mechanism as exported sysfs attribute does not do that
-> remove-reset-rescan procedure. As discussed in other thread, this reset
-> let device in unconfigured / broken state.
+> Unless I'm doing something wrong, I didn't get any warning with "make dtb=
+s=20
+> W=3D1". In fact many H3 boards have a node with this name and not a singl=
+e=20
+> warning is produced with this command for underscores (there are other=20
+> warnings though).
 
-No, there's not:
+It looks like I've been remembering it wrong, and it's actually W=3D2 that
+reports it, but it's here nonetheless :)
 
-int pci_reset_function(struct pci_dev *dev)
-{
-        int rc;
+Maxime
 
-        if (!dev->reset_fn)
-                return -ENOTTY;
+--mfhruzbnsooaoye6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-        pci_dev_lock(dev);
->>>     pci_dev_save_and_disable(dev);
+-----BEGIN PGP SIGNATURE-----
 
-        rc =3D __pci_reset_function_locked(dev);
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE93TwAKCRDj7w1vZxhR
+xYexAQDb6dkfEktXz1olTmB8ij8tEMvdw1+q+P4jn663TrYYlAEAwOCcYZI9M/W4
+PYGJSL4AaL7FgNeesPXOs7AB7A0KygU=
+=znPS
+-----END PGP SIGNATURE-----
 
->>>     pci_dev_restore(dev);
-        pci_dev_unlock(dev);
-
-        return rc;
-}
-
-The remove/re-scan was discussed primarily because your patch performed
-a bus reset regardless of what devices were affected by that reset and
-it's difficult to manage the scope where multiple devices are affected.
-Here, the bus and slot reset functions will fail unless the scope is
-limited to the single device triggering this reset.  Thanks,
-
-Alex
-
+--mfhruzbnsooaoye6--
