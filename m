@@ -2,283 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B857133C4DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE3C33C4E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhCOR4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:56:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42459 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233696AbhCORsk (ORCPT
+        id S231270AbhCOR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:56:06 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:27741 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhCORsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 13:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615830340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KMlw8kEbLmJctuWyQkKPAopUkCOBdbm2IyIhxHiX2Nc=;
-        b=YYHycnhoRl1w0K3TYSdIGosLORuTk1PBkjkFdPir0n7zWuvZFeIo39sOTZ1Wfh6/6m9aFr
-        XZgKtQmsqDNb6kb8Osde0F+SCHrYf4sCE6jOwlpCZxggtCFcRZ26RdIBlboMh9OsDuG8s9
-        UM6oiACVCSQlOiEZ/z9cemEuilK227Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-HbiOmtGQOQyqsBhywS7cIQ-1; Mon, 15 Mar 2021 13:43:31 -0400
-X-MC-Unique: HbiOmtGQOQyqsBhywS7cIQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B34A94EE2;
-        Mon, 15 Mar 2021 17:43:29 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.207.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CA745D75A;
-        Mon, 15 Mar 2021 17:43:26 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-Date:   Mon, 15 Mar 2021 19:43:16 +0200
-Message-Id: <20210315174316.477511-3-mlevitsk@redhat.com>
-In-Reply-To: <20210315174316.477511-1-mlevitsk@redhat.com>
-References: <20210315174316.477511-1-mlevitsk@redhat.com>
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 12FHiMgi024481;
+        Tue, 16 Mar 2021 02:44:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12FHiMgi024481
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615830263;
+        bh=KNyDKKgxnqSVpV4t4S2247pneiCYUCh4fjqdyjwwm+0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=seT7XqgbfoC6y++lDPEj8oAN80IX9tbKc6DfHtGjpaMMT+8TVxx2r9iXQZwUXvPw6
+         ghmfK6nRCc5n2VtqpV/MD0LADAyj9GEDl8zxjTIxnhdXbhgOSBKimejiuwijHhX+wg
+         a4iRsTWj5h6ogMFKnHSt7w5qtGsFW66TdYqqJKskQJ1hT78TePKTn+DdC36xE1hZmf
+         26SDLR9UOeyPV7vYKyRbBRkJ1Q57lIRGsrFZNFgvtSSTW6Igz6sN0zFUipEuVO9fu2
+         PzjGrSvx5SwfXj9ybm6mBrtLShp5PYGUxISSHkPtLUSRqLQJOaFvHdIWHDKvN8UuVT
+         fSGqToqD5C7WA==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so14801697pjb.0;
+        Mon, 15 Mar 2021 10:44:23 -0700 (PDT)
+X-Gm-Message-State: AOAM531/qZtMJpGYHcnjdi+Q5PgM5rjYWJVKLn4OnVirfu1ZvDIu7hqP
+        69agBRvnjnE855k6g3YQJXNSyQaJ1o3b/9+SDAs=
+X-Google-Smtp-Source: ABdhPJxIBVrlOLJYXkXSSEqOrvs/bPM3LRRLcdZo/fpVfVvTXjWlEww6ZKBbbaBiyMpi53jIpTMo8ZxOpAUgLVpu2/Y=
+X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
+ a9-20020a170902b589b02900e62875aa4cmr12686472pls.71.1615830262408; Mon, 15
+ Mar 2021 10:44:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <cover.1615354376.git.viresh.kumar@linaro.org> <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7> <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com> <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com> <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+In-Reply-To: <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 16 Mar 2021 02:43:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
+Message-ID: <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently to support Intel->AMD migration, if CPU vendor is GenuineIntel,
-we emulate full 64 value for MSR_IA32_SYSENTER_EIP/MSR_IA32_SYSENTER_ESP msrs,
-and we also emulate sysenter/sysexit instruction in long mode.
+On Mon, Mar 15, 2021 at 3:40 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 14-03-21, 20:16, Frank Rowand wrote:
+> > On 3/12/21 11:11 PM, Frank Rowand wrote:
+> > > On 3/12/21 1:13 AM, Viresh Kumar wrote:
+> > >> On 12-03-21, 01:09, Frank Rowand wrote:
+> > >>> I suggested having the .dtso files include the .dts file because that is a relatively
+> > >>> small and easy change to test.  What would probably make more sense is the rename
+> > >>> the existing overlay .dts files to be .dtso files and then for each overlay .dtso
+> > >>> file create a new .dts file that #includes the corresponding .dtso file.  This is
+> > >>> more work and churn, but easier to document that the .dts files are a hack that is
+> > >>> needed so that the corresponding .dtb.S files will be generated.
+> > >>
+> > >> What about creating links instead then ?
+> > >>
+> > >
+> > > I don't really like the idea of using links here.
+> > >
+> > > Maybe it is best to make the changes needed to allow the unittest
+> > > overlays to be .dtso instead of .dts.
+> > >
+> > > Off the top of my head:
+> > >
+> > >   scripts/Makefile.lib:
+> > >      The rule for %.dtb.S invokes cmd_dt_S_dtb, which puts the
+> > >      overlay data in section .dtb.init.rodata, with a label
+> > >      pointing to the beginning of the overlay __dtb_XXX_begin and
+> > >      a label pointing to the end of the overlay __dtb_XXX_end,
+> > >      for the overlay named XXX.  I _think_ that you could simply
+> > >      add a corresponding rule for %.dtbo.S using a new command
+> > >      cmd_dt_S_dtbo (the same as cmd_dt_S_dtb, except use labels
+> > >      __dtbo_XXX_begin and __dtbo_XXX_end).
+> >
+> > If you do the above, please put it in drivers/of/unittest-data/Makefile
+> > instead of scripts/Makefile.lib because it is unittest.c specific and
+> > not meant to be anywhere else in the kernel.
+>
+> What about doing this then in unittest's Makefile instead (which I
+> already suggested earlier), that will make everything work just fine
+> without any other changes ?
+>
+> +# Required for of unittest files as they can't be renamed to .dtso
+> +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+> +       $(call if_changed_dep,dtc)
+>
+> --
+> viresh
 
-(Emulator does still refuse to emulate sysenter in 64 bit mode, on the ground
-that the code for this wasn't tested and likely there are no users of this)
 
-However when virtual vmload/vmsave is enabled, the vmload instruction will
-update these 32 bit msrs without triggering their msr intercept,
-which will lead to having stale values in our shadow copy of these msrs,
-which are in turn only updated when those msrs are intercepted.
+If those rules are only needed by drivers/of/unittest-data/Makefile,
+they should not be located in scripts/Makefile.lib.
 
-Fix/optimize this by doing the following:
 
-1. Enable the MSR intercepts for these MSRs iff vendor=GenuineIntel
-   (This is both a tiny optimization and also will ensure that when guest
-   cpu vendor is AMD, the msrs will be 32 bit wide as AMD defined).
 
-2. Store only high 32 bit part of these msrs on interception and combine
-   it with hardware msr value on intercepted read/writes iff vendor=GenuineIntel.
+But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
+if these are doing bad things.
+They seem to be overlay files even though the file name suffix is .dts
 
-3. Disable vmload/vmsave virtualization if vendor=GenuineIntel.
-   (It is somewhat insane to set vendor=GenuineIntel and still enable
-   SVM for the guest but well whatever).
-   Then zero the high 32 bit parts when we intercept and emulate vmload.
-   And since we now read the low 32 bit part from the VMCB, it will be
-   correct.
 
-Thanks a lot to Paulo Bonzini for helping me fix this in the most correct way.
 
-This patch fixes nested migration of 32 bit nested guests which was broken due
-to incorrect cached values of these msrs being read if L1 changed these
-msrs with vmload prior to L2 entry.
+$ find drivers -name '*.dts'
+drivers/staging/pi433/Documentation/devicetree/pi433-overlay.dts
+drivers/staging/mt7621-dts/gbpc2.dts
+drivers/staging/mt7621-dts/gbpc1.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
+drivers/of/unittest-data/overlay_1.dts
+drivers/of/unittest-data/testcases.dts
+drivers/of/unittest-data/overlay_bad_add_dup_node.dts
+drivers/of/unittest-data/overlay_bad_symbol.dts
+drivers/of/unittest-data/overlay_0.dts
+drivers/of/unittest-data/overlay_11.dts
+drivers/of/unittest-data/overlay_gpio_03.dts
+drivers/of/unittest-data/overlay_gpio_04a.dts
+drivers/of/unittest-data/overlay_gpio_04b.dts
+drivers/of/unittest-data/overlay_5.dts
+drivers/of/unittest-data/overlay_bad_add_dup_prop.dts
+drivers/of/unittest-data/overlay_gpio_01.dts
+drivers/of/unittest-data/overlay_10.dts
+drivers/of/unittest-data/overlay_7.dts
+drivers/of/unittest-data/overlay_bad_phandle.dts
+drivers/of/unittest-data/overlay_3.dts
+drivers/of/unittest-data/overlay_6.dts
+drivers/of/unittest-data/overlay_8.dts
+drivers/of/unittest-data/overlay_12.dts
+drivers/of/unittest-data/overlay_gpio_02a.dts
+drivers/of/unittest-data/overlay_gpio_02b.dts
+drivers/of/unittest-data/overlay_4.dts
+drivers/of/unittest-data/overlay.dts
+drivers/of/unittest-data/overlay_9.dts
+drivers/of/unittest-data/overlay_2.dts
+drivers/of/unittest-data/overlay_15.dts
+drivers/of/unittest-data/overlay_base.dts
+drivers/of/unittest-data/overlay_13.dts
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 97 ++++++++++++++++++++++++++++--------------
- arch/x86/kvm/svm/svm.h |  7 +--
- 2 files changed, 69 insertions(+), 35 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 271196400495f..8bf243e0b1f7c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -95,6 +95,8 @@ static const struct svm_direct_access_msrs {
- } direct_access_msrs[MAX_DIRECT_ACCESS_MSRS] = {
- 	{ .index = MSR_STAR,				.always = true  },
- 	{ .index = MSR_IA32_SYSENTER_CS,		.always = true  },
-+	{ .index = MSR_IA32_SYSENTER_EIP,		.always = false },
-+	{ .index = MSR_IA32_SYSENTER_ESP,		.always = false },
- #ifdef CONFIG_X86_64
- 	{ .index = MSR_GS_BASE,				.always = true  },
- 	{ .index = MSR_FS_BASE,				.always = true  },
-@@ -1258,16 +1260,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
- 	if (kvm_vcpu_apicv_active(vcpu))
- 		avic_init_vmcb(svm);
- 
--	/*
--	 * If hardware supports Virtual VMLOAD VMSAVE then enable it
--	 * in VMCB and clear intercepts to avoid #VMEXIT.
--	 */
--	if (vls) {
--		svm_clr_intercept(svm, INTERCEPT_VMLOAD);
--		svm_clr_intercept(svm, INTERCEPT_VMSAVE);
--		svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
--	}
--
- 	if (vgif) {
- 		svm_clr_intercept(svm, INTERCEPT_STGI);
- 		svm_clr_intercept(svm, INTERCEPT_CLGI);
-@@ -2133,9 +2125,11 @@ static int vmload_vmsave_interception(struct kvm_vcpu *vcpu, bool vmload)
- 
- 	ret = kvm_skip_emulated_instruction(vcpu);
- 
--	if (vmload)
-+	if (vmload) {
- 		nested_svm_vmloadsave(vmcb12, svm->vmcb);
--	else
-+		svm->sysenter_eip_hi = 0;
-+		svm->sysenter_esp_hi = 0;
-+	} else
- 		nested_svm_vmloadsave(svm->vmcb, vmcb12);
- 
- 	kvm_vcpu_unmap(vcpu, &map, true);
-@@ -2676,11 +2670,18 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	case MSR_IA32_SYSENTER_CS:
- 		msr_info->data = svm->vmcb01.ptr->save.sysenter_cs;
- 		break;
-+
- 	case MSR_IA32_SYSENTER_EIP:
--		msr_info->data = svm->sysenter_eip;
-+		msr_info->data = (u32)svm->vmcb01.ptr->save.sysenter_eip;
-+		if (guest_cpuid_is_intel(vcpu))
-+			msr_info->data |= (u64)svm->sysenter_eip_hi << 32;
-+
- 		break;
- 	case MSR_IA32_SYSENTER_ESP:
--		msr_info->data = svm->sysenter_esp;
-+		msr_info->data = svm->vmcb01.ptr->save.sysenter_esp;
-+		if (guest_cpuid_is_intel(vcpu))
-+			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
-+
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-@@ -2885,12 +2886,20 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		svm->vmcb01.ptr->save.sysenter_cs = data;
- 		break;
- 	case MSR_IA32_SYSENTER_EIP:
--		svm->sysenter_eip = data;
--		svm->vmcb01.ptr->save.sysenter_eip = data;
-+		svm->vmcb01.ptr->save.sysenter_eip = (u32)data;
-+		/*
-+		 * We only intercept the MSR_IA32_SYSENTER_{EIP|ESP} msrs
-+		 * when we spoof an Intel vendor ID (for cross vendor migration).
-+		 * In this case we use this intercept to track the high
-+		 * 32 bit part of these msrs to support Intel's
-+		 * implementation of SYSENTER/SYSEXIT.
-+		 */
-+		svm->sysenter_eip_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
-+
- 		break;
- 	case MSR_IA32_SYSENTER_ESP:
--		svm->sysenter_esp = data;
--		svm->vmcb01.ptr->save.sysenter_esp = data;
-+		svm->vmcb01.ptr->save.sysenter_esp = (u32)data;
-+		svm->sysenter_esp_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-@@ -4009,24 +4018,48 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 			vcpu->arch.reserved_gpa_bits &= ~(1UL << (best->ebx & 0x3f));
- 	}
- 
--	if (!kvm_vcpu_apicv_active(vcpu))
--		return;
-+	if (kvm_vcpu_apicv_active(vcpu)) {
-+		/*
-+		 * AVIC does not work with an x2APIC mode guest. If the X2APIC feature
-+		 * is exposed to the guest, disable AVIC.
-+		 */
-+		if (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC))
-+			kvm_request_apicv_update(vcpu->kvm, false,
-+						 APICV_INHIBIT_REASON_X2APIC);
- 
--	/*
--	 * AVIC does not work with an x2APIC mode guest. If the X2APIC feature
--	 * is exposed to the guest, disable AVIC.
--	 */
--	if (guest_cpuid_has(vcpu, X86_FEATURE_X2APIC))
--		kvm_request_apicv_update(vcpu->kvm, false,
--					 APICV_INHIBIT_REASON_X2APIC);
-+		/*
-+		 * Currently, AVIC does not work with nested virtualization.
-+		 * So, we disable AVIC when cpuid for SVM is set in the L1 guest.
-+		 */
-+		if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
-+			kvm_request_apicv_update(vcpu->kvm, false,
-+						 APICV_INHIBIT_REASON_NESTED);
-+	}
- 
- 	/*
--	 * Currently, AVIC does not work with nested virtualization.
--	 * So, we disable AVIC when cpuid for SVM is set in the L1 guest.
-+	 * If we are emulating an Intel CPU we need to intercept
-+	 * MSR_IA32_SYSENTER_EIP/MSR_IA32_SYSENTER_RSP to know their
-+	 * full 64 bit values since on AMD these are 32 bit.
-+	 *
-+	 * Also we have to enable VMLOAD interception to not allow it
-+	 * to overwrite these MSRs withouth KVM knowing (msr intercept
-+	 * doesn't affect VMLOAD)
-+	 *
- 	 */
--	if (nested && guest_cpuid_has(vcpu, X86_FEATURE_SVM))
--		kvm_request_apicv_update(vcpu->kvm, false,
--					 APICV_INHIBIT_REASON_NESTED);
-+	if (!guest_cpuid_is_intel(vcpu)) {
-+		/*
-+		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
-+		 * in VMCB and clear intercepts to avoid #VMEXIT.
-+		 */
-+		if (vls) {
-+			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
-+			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
-+			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-+		}
-+		/* No need to intercept these msrs either */
-+		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
-+		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
-+	}
- }
- 
- static bool svm_has_wbinvd_exit(void)
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8e276c4fb33df..c71737f4abab8 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -28,7 +28,7 @@ static const u32 host_save_user_msrs[] = {
- };
- #define NR_HOST_SAVE_USER_MSRS ARRAY_SIZE(host_save_user_msrs)
- 
--#define MAX_DIRECT_ACCESS_MSRS	18
-+#define MAX_DIRECT_ACCESS_MSRS	20
- #define MSRPM_OFFSETS	16
- extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
- extern bool npt_enabled;
-@@ -116,8 +116,9 @@ struct vcpu_svm {
- 	struct kvm_vmcb_info *current_vmcb;
- 	struct svm_cpu_data *svm_data;
- 	u32 asid;
--	uint64_t sysenter_esp;
--	uint64_t sysenter_eip;
-+	u32 sysenter_esp_hi;
-+	u32 sysenter_eip_hi;
-+
- 	uint64_t tsc_aux;
- 
- 	u64 msr_decfg;
+
+
+
 -- 
-2.26.2
-
+Best Regards
+Masahiro Yamada
