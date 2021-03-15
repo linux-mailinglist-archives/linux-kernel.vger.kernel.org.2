@@ -2,163 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ECB33AFE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CC833AFE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhCOKWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:22:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34016 "EHLO mx2.suse.de"
+        id S229714AbhCOKXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:23:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34450 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhCOKWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:22:34 -0400
+        id S229878AbhCOKXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:23:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC76DAD72;
-        Mon, 15 Mar 2021 10:22:32 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 11:22:29 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 7E3A1AE27;
+        Mon, 15 Mar 2021 10:23:44 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 11:23:41 +0100
 From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
         Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <20210315102224.GA24699@linux>
-References: <20210309175546.5877-1-osalvador@suse.de>
- <20210309175546.5877-2-osalvador@suse.de>
- <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+Subject: Re: [PATCH v4 0/4] Make alloc_contig_range handle Hugetlb pages
+Message-ID: <20210315102336.GA25101@linux>
+References: <20210310150853.13541-1-osalvador@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+In-Reply-To: <20210310150853.13541-1-osalvador@suse.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 08:06:53PM +0100, David Hildenbrand wrote:
-> This looks essentially good to me, except some parts in
-> mhp_supports_memmap_on_memory()
+On Wed, Mar 10, 2021 at 04:08:49PM +0100, Oscar Salvador wrote:
+> v3 -> v4:
+>  - Addressed some feedback from David and Michal
+>  - Make more clear what hugetlb_lock protects in isolate_or_dissolve_huge_page
+>  - Start reporting proper error codes from isolate_migratepages_{range,block}
+>  - Bail out earlier in __alloc_contig_migrate_range on -ENOMEM
+>  - Addressed internal feedback from Vastlimil wrt. compaction code changes
 > 
-> > +bool mhp_supports_memmap_on_memory(unsigned long size)
-> > +{
-> > +	unsigned long pageblock_size = PFN_PHYS(pageblock_nr_pages);
-> > +	unsigned long remaining_mem = size - PMD_SIZE;
-
-Hi David, thanks for the review!
-
-> This looks weird. I think what you want to test is that
+> v2 -> v3:
+>  - Drop usage of high-level generic helpers in favour of
+>    low-level approach (per Michal)
+>  - Check for the page to be marked as PageHugeFreed
+>  - Add a one-time retry in case someone grabbed the free huge page
+>    from under us
 > 
+> v1 -> v2:
+>  - Adressed feedback by Michal
+>  - Restrict the allocation to a node with __GFP_THISNODE
+>  - Drop PageHuge check in alloc_and_dissolve_huge_page
+>  - Re-order comments in isolate_or_dissolve_huge_page
+>  - Extend comment in isolate_migratepages_block
+>  - Place put_page right after we got the page, otherwise
+>    dissolve_free_huge_page will fail
 > 
-> a) "nr_vmemmap_pages * sizeof(struct page)" spans complete PMDs (IOW, we
-> won't map too much via the altmap when populating a PMD in the vmemmap)
+>  RFC -> v1:
+>  - Drop RFC
+>  - Addressed feedback from David and Mike
+>  - Fence off gigantic pages as there is a cyclic dependency between
+>    them and alloc_contig_range
+>  - Re-organize the code to make race-window smaller and to put
+>    all details in hugetlb code
+>  - Drop nodemask initialization. First a node will be tried and then we
+>    will back to other nodes containing memory (N_MEMORY). Details in
+>    patch#1's changelog
+>  - Count new page as surplus in case we failed to dissolve the old page
+>    and the new one. Details in patch#1.
 > 
-> b) "remaining = size - nr_vmemmap_pages * sizeof(struct page)" spans
-> complete pageblock.
-
-We do not know the nr_vmemmap_pages at this point in time, although it is
-easy to pre-compute.
-
-For every section we populate, we use PMD_SIZE. So, PMD_SIZE/PAGE_SIZE lays
-the nr_vmemmap_pages that are used for populating a single section.
-
-But let me explain the reasoning I use in the current code:
-
-I will enumarate the assumptions that must hold true in order to support the
-feature together with their check:
-
-- We span a single memory block
-
-  size == memory_block_size_bytes()
-
-- The vmemmap pages span a complete PMD and no more than a PMD.
-
-  !(PMD_SIZE % sizeof(struct page))
-
-- The vmemmap pages and the pages exposed to the buddy have to cover full
-  pageblocks
-
-  remaining_mem = size - PMD_SIZE;
-  IS_ALIGNED(remaining_mem, pageblock_size)
-
-  Although this check only covers the range without the vmemmap pages, one could
-  argue that since we use only a PMD_SIZE at a time, we know that PMD_SIZE is
-  pageblock aligned, so the vmemmap range is PMD_SIZE as well.
-
-Now, I see how this might be confusing and rather incomplete.
-So I guess a better and more clear way to write it would be:
-
- bool mhp_supports_memmap_on_memory(unsigned long size)
- {
-         unsigned long nr_vmemmap_pages = PMD_SIZE / PAGE_SIZE;
-         unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-         unsigned long remaining_size = size - vmemmap_size;
-
-         return memmap_on_memory &&
-                IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-                size == memory_block_size_bytes() &&
-                !(PMD_SIZE % vmemmap_size) &&
-                IS_ALIGNED(vmemmap_size, pageblock_size) &&
-                remaining_size &&
-                IS_ALIGNED(remaining_size, pageblock_size);
-  }
-                
-Note that above check is only for a single section, but if assumptions hold true
-for a single section, it will for many as well.
-We could be orthodox and do:
-
- bool mhp_supports_memmap_on_memory(unsigned long size)
- {
-         unsigned long nr_sections = (1ULL << SECTION_SHIFT) / memory_block_size_bytes;
-         unsigned long nr_vmemmap_pages = (PMD_SIZE / PAGE_SIZE) * nr_sections;
-         unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-         unsigned long remaining_size = size - vmemmap_size;
-
-         return memmap_on_memory &&
-                IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-                size == memory_block_size_bytes() &&
-                !(PMD_SIZE % vmemmap_size) &&
-                IS_ALIGNED(vmemmap_size, pageblock_size) &&
-                remaining_size &&
-                IS_ALIGNED(remaining_size, pageblock_size);
-  }
-        
-to check for all sections, but I do not think it is necessary.
-
-What do you think?
-	
-> I suggest a restructuring, compressing the information like:
+> Cover letter:
 > 
-> "
-> Besides having arch support and the feature enabled at runtime, we need a
-> few more assumptions to hold true:
+>  alloc_contig_range lacks the hability for handling HugeTLB pages.
+>  This can be problematic for some users, e.g: CMA and virtio-mem, where those
+>  users will fail the call if alloc_contig_range ever sees a HugeTLB page, even
+>  when those pages lay in ZONE_MOVABLE and are free.
+>  That problem can be easily solved by replacing the page in the free hugepage
+>  pool.
 > 
-> a) We span a single memory block: memory onlining/offlining happens in
-> memory block granularity. We don't want the vmemmap of online memory blocks
-> to reside on offline memory blocks. In the future, we might want to support
-> variable-sized memory blocks to make the feature more versatile.
+>  In-use HugeTLB are no exception though, as those can be isolated and migrated
+>  as any other LRU or Movable page.
 > 
-> b) The vmemmap pages span complete PMDs: We don't want vmemmap code to
-> populate memory from the altmap for unrelated parts (i.e., other memory
-> blocks).
+>  This patchset aims for improving alloc_contig_range->isolate_migratepages_block,
+>  so HugeTLB pages can be recognized and handled.
 > 
-> c) The vmemmap pages (and thereby the pages that will be exposed to the
-> buddy) have to cover full pageblocks: memory onlining/offlining code
-> requires applicable ranges to be page-aligned, for example, to set the
-> migratetypes properly.
-> "
+>  Since we also need to start reporting errors down the chain (e.g: -ENOMEM due to
+>  not be able to allocate a new hugetlb page), isolate_migratepages_{range,block}
+>  interfaces  need to change to start reporting error codes instead of the pfn == 0
+>  vs pfn != 0 scheme it is using right now.
+>  From now on, isolate_migratepages_block will not return the next pfn to be scanned
+>  anymore, but -EINTR, -ENOMEM or 0, so we the next pfn to be scanned will be recorded
+>  in cc->migrate_pfn field (as it is already done in isolate_migratepages_range()).
+> 
+>  Below is an insight from David (thanks), where the problem can clearly be seen:
+> 
+>  "Start a VM with 4G. Hotplug 1G via virtio-mem and online it to
+>   ZONE_MOVABLE. Allocate 512 huge pages.
+> 
+>   [root@localhost ~]# cat /proc/meminfo
+>   MemTotal:        5061512 kB
+>   MemFree:         3319396 kB
+>   MemAvailable:    3457144 kB
+>   ...
+>   HugePages_Total:     512
+>   HugePages_Free:      512
+>   HugePages_Rsvd:        0
+>   HugePages_Surp:        0
+>   Hugepagesize:       2048 kB
+> 
+>   The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging
+>   1G via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+> 
+>   [  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+>   [  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+>   [  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+>   [  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+>   [  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+>   [  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+>   [  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+>   [  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+>   [  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+>   [  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy"
+> 
+>  And then with this patchset running:
+> 
+>  "Same experiment with ZONE_MOVABLE:
+> 
+>   a) Free huge pages: all memory can get unplugged again.
+> 
+>   b) Allocated/populated but idle huge pages: all memory can get unplugged
+>      again.
+> 
+>   c) Allocated/populated but all 512 huge pages are read/written in a
+>      loop: all memory can get unplugged again, but I get a single
+> 
+>   [  121.192345] alloc_contig_range: [180000, 188000) PFNs busy
+> 
+>   Most probably because it happened to try migrating a huge page while it
+>   was busy. As virtio-mem retries on ZONE_MOVABLE a couple of times, it
+>   can deal with this temporary failure.
+> 
+>   Last but not least, I did something extreme:
+> 
+>   # cat /proc/meminfo
+>   MemTotal:        5061568 kB
+>   MemFree:          186560 kB
+>   MemAvailable:     354524 kB
+>   ...
+>   HugePages_Total:    2048
+>   HugePages_Free:     2048
+>   HugePages_Rsvd:        0
+>   HugePages_Surp:        0
+> 
+>   Triggering unplug would require to dissolve+alloc - which now fails when
+>   trying to allocate an additional ~512 huge pages (1G).
+> 
+>   As expected, I can properly see memory unplug not fully succeeding. + I
+>   get a fairly continuous stream of
+> 
+>   [  226.611584] alloc_contig_range: [19f400, 19f800) PFNs busy
+>   ...
+> 
+>   But more importantly, the hugepage count remains stable, as configured
+>   by the admin (me):
+> 
+>   HugePages_Total:    2048
+>   HugePages_Free:     2048
+>   HugePages_Rsvd:        0
+>   HugePages_Surp:        0"
+> 
+> Oscar Salvador (4):
+>   mm,page_alloc: Bail out earlier on -ENOMEM in
+>     alloc_contig_migrate_range
+>   mm,compaction: Let isolate_migratepages_{range,block} return error
+>     codes
+>   mm: Make alloc_contig_range handle free hugetlb pages
+>   mm: Make alloc_contig_range handle in-use hugetlb pages
+> 
+>  include/linux/hugetlb.h |   7 +++
+>  mm/compaction.c         |  89 ++++++++++++++++++++++++----------
+>  mm/hugetlb.c            | 125 +++++++++++++++++++++++++++++++++++++++++++++++-
+>  mm/internal.h           |   2 +-
+>  mm/page_alloc.c         |  15 ++++--
+>  mm/vmscan.c             |   5 +-
+>  6 files changed, 209 insertions(+), 34 deletions(-)
 
-I am fine with the above, I already added it, thanks.
-
-> Do we have to special case / protect against the vmemmap optimization for
-> hugetlb pages? Or is that already blocked somehow and I missed it?
-
-Yes, hugetlb-vmemmap feature disables vmemmap on PMD population [1]
-
-[1] https://patchwork.kernel.org/project/linux-mm/patch/20210308102807.59745-7-songmuchun@bytedance.com/
+Kindly ping :-)
 
 
 -- 
