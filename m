@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C871533BE65
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B5433BCB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhCOOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
+        id S233233AbhCOO2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234592AbhCOOE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3608464EE3;
-        Mon, 15 Mar 2021 14:04:23 +0000 (UTC)
+        id S233073AbhCOOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BADB164F0C;
+        Mon, 15 Mar 2021 14:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817064;
-        bh=zkW3X2cjuHyAapqmSQFKgFaH8zGEnwvw4p/lYgJa3kc=;
+        s=korg; t=1615816820;
+        bh=vl73W6qv2GnwmmNAiIt3sPxQ4yI16j8TmO6sb1RErJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=THUTm2s1yR9EIbYBUm1nJhq++S58lossXtcdChNqkZ5nZKbMCmkjfGCfbwCk5uh8o
-         uNKwR53GU9Qo3wMeH7DoJomlbr/zc1nO+Dsn9DgiU2CnsMg0/v6DanepvlXV1FAXUl
-         IkfkpP98abxEIR7EuMDI8DeqxUUhZGQJBCpRylQo=
+        b=JjQzn50t6TJyWoYn0V6FoDayQbyGCP+sFAsbhWjbhETPO43SEzYVpoaKZ5yze5Dl5
+         JxFjwxkMODgCiLTXs1ySCyX2hsGR0AeRB+IF66C1tYe7sLfmyFJa8lWz8DqrutWfVi
+         2YX+EvQqjX/OcLFD9PYH6GyB8cvFj9EaUof+WR4s=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.10 270/290] x86/sev-es: Introduce ip_within_syscall_gap() helper
-Date:   Mon, 15 Mar 2021 14:56:03 +0100
-Message-Id: <20210315135551.141688745@linuxfoundation.org>
+        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH 5.4 132/168] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
+Date:   Mon, 15 Mar 2021 14:56:04 +0100
+Message-Id: <20210315135554.679707650@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +40,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Lee Gibson <leegib@gmail.com>
 
-commit 78a81d88f60ba773cbe890205e1ee67f00502948 upstream.
+commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
 
-Introduce a helper to check whether an exception came from the syscall
-gap and use it in the SEV-ES code. Extend the check to also cover the
-compatibility SYSCALL entry path.
+Function r8712_sitesurvey_cmd calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # 5.10+
-Link: https://lkml.kernel.org/r/20210303141716.29223-2-joro@8bytes.org
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/entry/entry_64_compat.S |    2 ++
- arch/x86/include/asm/proto.h     |    1 +
- arch/x86/include/asm/ptrace.h    |   15 +++++++++++++++
- arch/x86/kernel/traps.c          |    3 +--
- 4 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -210,6 +210,8 @@ SYM_CODE_START(entry_SYSCALL_compat)
- 	/* Switch to the kernel stack */
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 
-+SYM_INNER_LABEL(entry_SYSCALL_compat_safe_stack, SYM_L_GLOBAL)
+--- a/drivers/staging/rtl8712/rtl871x_cmd.c
++++ b/drivers/staging/rtl8712/rtl871x_cmd.c
+@@ -197,8 +197,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
+ 	psurveyPara->ss_ssidlen = 0;
+ 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
+ 	if ((pssid != NULL) && (pssid->SsidLength)) {
+-		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
+-		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
++		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
 +
- 	/* Construct struct pt_regs on stack */
- 	pushq	$__USER32_DS		/* pt_regs->ss */
- 	pushq	%r8			/* pt_regs->sp */
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -25,6 +25,7 @@ void __end_SYSENTER_singlestep_region(vo
- void entry_SYSENTER_compat(void);
- void __end_entry_SYSENTER_compat(void);
- void entry_SYSCALL_compat(void);
-+void entry_SYSCALL_compat_safe_stack(void);
- void entry_INT80_compat(void);
- #ifdef CONFIG_XEN_PV
- void xen_entry_INT80_compat(void);
---- a/arch/x86/include/asm/ptrace.h
-+++ b/arch/x86/include/asm/ptrace.h
-@@ -94,6 +94,8 @@ struct pt_regs {
- #include <asm/paravirt_types.h>
- #endif
- 
-+#include <asm/proto.h>
-+
- struct cpuinfo_x86;
- struct task_struct;
- 
-@@ -175,6 +177,19 @@ static inline bool any_64bit_mode(struct
- #ifdef CONFIG_X86_64
- #define current_user_stack_pointer()	current_pt_regs()->sp
- #define compat_user_stack_pointer()	current_pt_regs()->sp
-+
-+static inline bool ip_within_syscall_gap(struct pt_regs *regs)
-+{
-+	bool ret = (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
-+		    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack);
-+
-+#ifdef CONFIG_IA32_EMULATION
-+	ret = ret || (regs->ip >= (unsigned long)entry_SYSCALL_compat &&
-+		      regs->ip <  (unsigned long)entry_SYSCALL_compat_safe_stack);
-+#endif
-+
-+	return ret;
-+}
- #endif
- 
- static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -686,8 +686,7 @@ asmlinkage __visible noinstr struct pt_r
- 	 * In the SYSCALL entry path the RSP value comes from user-space - don't
- 	 * trust it and switch to the current kernel stack
- 	 */
--	if (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
--	    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
-+	if (ip_within_syscall_gap(regs)) {
- 		sp = this_cpu_read(cpu_current_top_of_stack);
- 		goto sync;
++		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
++		psurveyPara->ss_ssidlen = cpu_to_le32(len);
  	}
+ 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
+ 	r8712_enqueue_cmd(pcmdpriv, ph2c);
 
 
