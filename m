@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305C033C59B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA1333C59F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhCOS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbhCOS1b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:27:31 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22960C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:31 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id w65so35429400oie.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YBq3gzSWM4PAYPU03bItAvmuL/jkDE66lmjkbZXjRp8=;
-        b=an85zbY+atXgMmpRQQBVfLZXYZx7DbYuH6si3dsaJ4RZ750Mj6Pj9AV8KmzMw8NoBm
-         c/6EqiaKL3RPUCd55n0wSCiRx68GVJECcqxYEexFcnhJ2QSIqSKjD/5zZAklkIHyRrd6
-         zdb/qGWJL4AtNo0AkKQ4GSqDRNBV4m6edi9Z3YAYZm0v5zJgWW/B/eX7Dk574k4pxXNE
-         Q2UPBuzzhaummRHcKdd/AI1MXXqogFcfZHpGxMw3pxfWNkCTb6LiLosFs79FAi/Wdnn0
-         REWTqaTseDkF6WuhlPrDigCc9L4gB6Q8waiklbrWRchYn8lCd9/4iKfA04y1LUNKi+JF
-         KnVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YBq3gzSWM4PAYPU03bItAvmuL/jkDE66lmjkbZXjRp8=;
-        b=mSDxOqeh6xc29QQAiMan3CrlM0uSirIjPLbtjxYWe2kIPitz/tflUYFJz/TlU9JZqU
-         x5w1MJLlpqGKRB4XdYvlBT41It2oeS4HCEYRDx5EDP1gs52eXF+sMSjPG6d5AUa0dWIm
-         1tiTipIcfvj7OTorCar6+5pUo9sJnTC/JkdtzXPt9r9egQEcUG6meR/bixkemo2QsSUT
-         AEL43sCTuGHO5kYOk6RUQpaTusqhk0tUFGpAQUp8HTE/OMJk/5mMAYGv3s94MLoCStwd
-         9HM6hEbnYn1/ZvD6WsiBcQ4SDzkhqKcR4B3zPnSwiPMqSB+ldLgxLyIRxM/0Iup+Bdy8
-         dhXQ==
-X-Gm-Message-State: AOAM532xVpBaCsNpJog2LPxfZDdGrCwWOu7RlNolJbAiu6a+oOakAk+k
-        ZH1wb5jBoTe/E064+Rb4TwDXL9Sn0wN15RRmv6Q=
-X-Google-Smtp-Source: ABdhPJzUvNXxxTNXCmAj+6pzsw62g0KyCooJD4yymr3eHweuglmQ2mI2iPUzEuPjQMKBqm+SAgUsJOzl+wwI9LYJLSU=
-X-Received: by 2002:aca:af10:: with SMTP id y16mr331070oie.120.1615832850600;
- Mon, 15 Mar 2021 11:27:30 -0700 (PDT)
+        id S232227AbhCOS2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229806AbhCOS1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:27:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEE3F64F42;
+        Mon, 15 Mar 2021 18:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615832866;
+        bh=qoYDstJDuKBPusQErDzsKJ7v8otxcmd+GoIi3yjBdvs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DbkMKoXKBITh8xp1IDTw5UlEpIGgV3TC9Xt3eDaxf9ytfDqJqotl2s7hcr/e9rSwG
+         O/PltwnQVJXFw3mjbY83DCoF1TtLzlc93Ivgk51slyXBzBuKJt7HT/kq8fdkXpCbMy
+         EgVZfCSGdfMvfF5WoUFMSizIOJ6Z3Ew58eH1ywnpXmYdw/5U7/oewvwId5G+4oW0Bq
+         I3avcRVRfRF75g77uZJRpGQnY0q4K0ENr9aLPIC3unksxUnnKZB4gr4Jrqsh6yeTfv
+         A/3MQd1NGXr7ygmsckhrOrZJGiXW8wim+e1OJKj2If3ZhbCNBR7tm9KF0fCwkuQ4Oy
+         j5DvAkYpAw+/w==
+Received: by mail-ej1-f41.google.com with SMTP id dx17so67996214ejb.2;
+        Mon, 15 Mar 2021 11:27:45 -0700 (PDT)
+X-Gm-Message-State: AOAM5310jR4im5n2Da3fx0qeYBy174KtJahtgaOlTNvCVhXwZ8NQ03hn
+        SLoFD/wIfI7jsD2bDXaWTXlCQEnyMaWuRypY+Q==
+X-Google-Smtp-Source: ABdhPJzJml081H6SIYahYqA8uEEgm/OD0od3fSnVnZVgt4FXBjqGqhAOSfDHPUGyU/lLLWSzdhf5vI72e94Y+2JcZVE=
+X-Received: by 2002:a17:906:7806:: with SMTP id u6mr4851146ejm.130.1615832864582;
+ Mon, 15 Mar 2021 11:27:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1615796522-21363-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1615796522-21363-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 15 Mar 2021 14:27:19 -0400
-Message-ID: <CADnq5_MEqZZV1qRWzJM0PefBjCAnEDODzgrXn_8C3qzWqmZJYA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com> <20210312154357.1561730-12-sebastian.reichel@collabora.com>
+In-Reply-To: <20210312154357.1561730-12-sebastian.reichel@collabora.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 15 Mar 2021 12:27:33 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+TLt0ousbggKGF5wEdJYLqofxt9a-qDqLCkq0AE_y2Rg@mail.gmail.com>
+Message-ID: <CAL_Jsq+TLt0ousbggKGF5wEdJYLqofxt9a-qDqLCkq0AE_y2Rg@mail.gmail.com>
+Subject: Re: [PATCH 11/38] dt-bindings: power: supply: sbs-manager: Convert to
+ DT schema format
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Mon, Mar 15, 2021 at 4:22 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
+On Fri, Mar 12, 2021 at 8:45 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
 >
-> Fix the following coccicheck warnings:
+> Convert the binding to DT schema format.
 >
-> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c:358:69-74: WARNING:
-> conversion to bool not needed here.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../bindings/power/supply/sbs,sbs-manager.txt |  66 -----------
+>  .../power/supply/sbs,sbs-manager.yaml         | 111 ++++++++++++++++++
+>  2 files changed, 111 insertions(+), 66 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-> index 3e6f760..e153109 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-> @@ -355,7 +355,7 @@ void mpc3_set_output_gamma(
->                 next_mode = LUT_RAM_A;
->
->         mpc3_power_on_ogam_lut(mpc, mpcc_id, true);
-> -       mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A ? true:false);
-> +       mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A);
->
->         if (next_mode == LUT_RAM_A)
->                 mpc3_program_luta(mpc, mpcc_id, params);
+
+
+> diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+> new file mode 100644
+> index 000000000000..592c476d83e6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+> @@ -0,0 +1,111 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/supply/sbs,sbs-manager.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SBS compliant manger
+> +
+> +maintainers:
+> +  - Sebastian Reichel <sre@kernel.org>
+> +
+> +allOf:
+> +  - $ref: power-supply.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - lltc,ltc1760
+> +          - enum:
+> +              - sbs,sbs-manager
+> +      - items:
+> +          - const: sbs,sbs-manager
+> +
+> +  reg:
+> +    const: 0xa
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +dependencies:
+> +  '#gpio-cells': [gpio-controller]
+> +  gpio-controller: ['#gpio-cells']
+
+The core schema should capture these dependencies.
+
+> +
+> +patternProperties:
+> +  "^i2c@[1-4]$":
+> +    type: object
+> +
+> +    allOf:
+> +      - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      batman: battery-manager@a {
+> +        compatible = "lltc,ltc1760", "sbs,sbs-manager";
+> +        reg = <0x0a>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +
+> +        i2c@1 {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          reg = <1>;
+> +
+> +          battery@b {
+> +            compatible = "ti,bq20z65", "sbs,sbs-battery";
+> +            reg = <0x0b>;
+> +            sbs,battery-detect-gpios = <&batman 1 1>;
+> +          };
+> +        };
+> +
+> +        i2c@2 {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          reg = <2>;
+> +
+> +          battery@b {
+> +            compatible = "ti,bq20z65", "sbs,sbs-battery";
+> +            reg = <0x0b>;
+> +            sbs,battery-detect-gpios = <&batman 2 1>;
+> +          };
+> +        };
+> +
+> +        i2c@3 {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          reg = <3>;
+> +
+> +          battery@b {
+> +            compatible = "ti,bq20z65", "sbs,sbs-battery";
+> +            reg = <0x0b>;
+> +            sbs,battery-detect-gpios = <&batman 3 1>;
+> +          };
+> +        };
+> +      };
+> +    };
 > --
-> 1.8.3.1
+> 2.30.1
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
