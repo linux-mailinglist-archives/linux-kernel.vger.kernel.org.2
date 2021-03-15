@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6E333BC45
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8152833BC76
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhCOOYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:24:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S234184AbhCOOZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231990AbhCOOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 520F764F18;
-        Mon, 15 Mar 2021 14:00:02 +0000 (UTC)
+        id S232952AbhCOOAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF90164F5D;
+        Mon, 15 Mar 2021 14:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816803;
-        bh=enOh4DF4ELE20QCSde+JnHmzf2w8hW8NSNxMlRnX/uI=;
+        s=korg; t=1615816805;
+        bh=1LANfikIH4WX96lOTe4tjEdD+qWcOW6ze56Lfeyz/Dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZTwnIIq+XSLs2DKoxcjT2ZcPjDyVRMXXz0yWiPTRIa07Q5FTrMPlIG8xkq3N5C18
-         wzw92TZ+oFZnv2YZjLQZleoB8CW0zDSzPry5MkULGqJYepGdAlQmCPf8ee7zNsPm8V
-         Vf9+DrRw4+qmR1qC4bnZt0Ii1dZdg0F+ruaBz3xg=
+        b=1JWr7WXcYtuHfvJfwGjIsgweDcKkZd0zST+CVVGrRiq3hRKrhAFms3WBkKwASRXdq
+         1A9N0m0KXqbkyN7uEdD87sxTLSM/nx/HKh27rLyRPCAwF3iuXheWXOURtqoEtdGDeY
+         7eWNiIVEzkVxUU8HEkpRzAhcCRS+Iw4m/ksmYu2c=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
         Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 134/306] platform/x86: amd-pmc: put device on error paths
-Date:   Mon, 15 Mar 2021 14:53:17 +0100
-Message-Id: <20210315135512.178419088@linuxfoundation.org>
+Subject: [PATCH 5.11 135/306] Platform: OLPC: Fix probe error handling
+Date:   Mon, 15 Mar 2021 14:53:18 +0100
+Message-Id: <20210315135512.214850549@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,69 +42,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pan Bian <bianpan2016@163.com>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-[ Upstream commit 745ed17a04f966406c8c27c8f992544336c06013 ]
+[ Upstream commit cec551ea0d41c679ed11d758e1a386e20285b29d ]
 
-Put the PCI device rdev on error paths to fix potential reference count
-leaks.
+Reset ec_priv if probe ends unsuccessfully.
 
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210121045005.73342-1-bianpan2016@163.com
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Link: https://lore.kernel.org/r/20210126073740.10232-2-lkundrak@v3.sk
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/amd-pmc.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/platform/olpc/olpc-ec.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
-index ef8342572463..b9da58ee9b1e 100644
---- a/drivers/platform/x86/amd-pmc.c
-+++ b/drivers/platform/x86/amd-pmc.c
-@@ -210,31 +210,39 @@ static int amd_pmc_probe(struct platform_device *pdev)
- 	dev->dev = &pdev->dev;
+diff --git a/drivers/platform/olpc/olpc-ec.c b/drivers/platform/olpc/olpc-ec.c
+index f64b82824db2..2db7113383fd 100644
+--- a/drivers/platform/olpc/olpc-ec.c
++++ b/drivers/platform/olpc/olpc-ec.c
+@@ -426,11 +426,8 @@ static int olpc_ec_probe(struct platform_device *pdev)
  
- 	rdev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(0, 0));
--	if (!rdev || !pci_match_id(pmc_pci_ids, rdev))
-+	if (!rdev || !pci_match_id(pmc_pci_ids, rdev)) {
-+		pci_dev_put(rdev);
- 		return -ENODEV;
-+	}
+ 	/* get the EC revision */
+ 	err = olpc_ec_cmd(EC_FIRMWARE_REV, NULL, 0, &ec->version, 1);
+-	if (err) {
+-		ec_priv = NULL;
+-		kfree(ec);
+-		return err;
+-	}
++	if (err)
++		goto error;
  
- 	dev->cpu_id = rdev->device;
- 	err = pci_write_config_dword(rdev, AMD_PMC_SMU_INDEX_ADDRESS, AMD_PMC_BASE_ADDR_LO);
- 	if (err) {
- 		dev_err(dev->dev, "error writing to 0x%x\n", AMD_PMC_SMU_INDEX_ADDRESS);
-+		pci_dev_put(rdev);
- 		return pcibios_err_to_errno(err);
+ 	config.dev = pdev->dev.parent;
+ 	config.driver_data = ec;
+@@ -440,12 +437,16 @@ static int olpc_ec_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ec->dcon_rdev)) {
+ 		dev_err(&pdev->dev, "failed to register DCON regulator\n");
+ 		err = PTR_ERR(ec->dcon_rdev);
+-		kfree(ec);
+-		return err;
++		goto error;
  	}
  
- 	err = pci_read_config_dword(rdev, AMD_PMC_SMU_INDEX_DATA, &val);
--	if (err)
-+	if (err) {
-+		pci_dev_put(rdev);
- 		return pcibios_err_to_errno(err);
-+	}
+ 	ec->dbgfs_dir = olpc_ec_setup_debugfs();
  
- 	base_addr_lo = val & AMD_PMC_BASE_ADDR_HI_MASK;
++	return 0;
++
++error:
++	ec_priv = NULL;
++	kfree(ec);
+ 	return err;
+ }
  
- 	err = pci_write_config_dword(rdev, AMD_PMC_SMU_INDEX_ADDRESS, AMD_PMC_BASE_ADDR_HI);
- 	if (err) {
- 		dev_err(dev->dev, "error writing to 0x%x\n", AMD_PMC_SMU_INDEX_ADDRESS);
-+		pci_dev_put(rdev);
- 		return pcibios_err_to_errno(err);
- 	}
- 
- 	err = pci_read_config_dword(rdev, AMD_PMC_SMU_INDEX_DATA, &val);
--	if (err)
-+	if (err) {
-+		pci_dev_put(rdev);
- 		return pcibios_err_to_errno(err);
-+	}
- 
- 	base_addr_hi = val & AMD_PMC_BASE_ADDR_LO_MASK;
- 	pci_dev_put(rdev);
 -- 
 2.30.1
 
