@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1226E33BB88
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D3B33BB96
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237415AbhCOORv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S232753AbhCOOSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232747AbhCON7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7164764F67;
-        Mon, 15 Mar 2021 13:59:21 +0000 (UTC)
+        id S232588AbhCON7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8EC64F1E;
+        Mon, 15 Mar 2021 13:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816762;
-        bh=f0RumDQbUyftW0X7m32zmBMDsyrOdcMRyHWj8KYVyXI=;
+        s=korg; t=1615816763;
+        bh=pfIAXWKZmuag7c469syRF6DCSzceqdP9NHUCv7Jq1hU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LvQ9m7HWS19YU8a6nW2B2Xe1G37McFnjlvyeTOExCqEk5sEIN1nLncJR+xjvBCo8c
-         TO+cejVXncLZvFRj1XFwt6kIGpcPHCEJ3ilKGz2HejxJIGOi3DSNM1gn0crk4j9xJj
-         w5cbos+r1W8gVgwcU+QdwPGbHyi0KA5tFOBOGhMg=
+        b=mzAWz6pK4QBXnBQTAQ3H4W+CGCHdyQ6isr5vMPhKVGGrqjttsIovEUxk2ewg910kG
+         QLZKeV22HoafjaGeWh4F5gwDGXHEwl7f0wKvDD1N6nbYZt4GNWLQOcJNrU0wjr/0Ql
+         dMgDXJNIwETFPw8bwXg9oNYoqH35v6l+N0rvYrbU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 44/95] ALSA: usb-audio: Fix "cannot get freq eq" errors on Dell AE515 sound bar
-Date:   Mon, 15 Mar 2021 14:57:14 +0100
-Message-Id: <20210315135741.715937307@linuxfoundation.org>
+        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 4.14 45/95] Revert 95ebabde382c ("capabilities: Dont allow writing ambiguous v3 file capabilities")
+Date:   Mon, 15 Mar 2021 14:57:15 +0100
+Message-Id: <20210315135741.754216761@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -40,32 +40,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit fec60c3bc5d1713db2727cdffc638d48f9c07dc3 upstream.
+commit 3b0c2d3eaa83da259d7726192cf55a137769012f upstream.
 
-Dell AE515 sound bar (413c:a506) spews the error messages when the
-driver tries to read the current sample frequency, hence it needs to
-be on the list in snd_usb_get_sample_rate_quirk().
+It turns out that there are in fact userspace implementations that
+care and this recent change caused a regression.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211551
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210304083021.2152-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+https://github.com/containers/buildah/issues/3071
+
+As the motivation for the original change was future development,
+and the impact is existing real world code just revert this change
+and allow the ambiguity in v3 file caps.
+
+Cc: stable@vger.kernel.org
+Fixes: 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ security/commoncap.c |   12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1155,6 +1155,7 @@ bool snd_usb_get_sample_rate_quirk(struc
- 	case USB_ID(0x1de7, 0x0114): /* Phoenix Audio MT202pcs */
- 	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
- 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
-+	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
- 		return true;
- 	}
- 	return false;
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -507,8 +507,7 @@ int cap_convert_nscap(struct dentry *den
+ 	__u32 magic, nsmagic;
+ 	struct inode *inode = d_backing_inode(dentry);
+ 	struct user_namespace *task_ns = current_user_ns(),
+-		*fs_ns = inode->i_sb->s_user_ns,
+-		*ancestor;
++		*fs_ns = inode->i_sb->s_user_ns;
+ 	kuid_t rootid;
+ 	size_t newsize;
+ 
+@@ -531,15 +530,6 @@ int cap_convert_nscap(struct dentry *den
+ 	if (nsrootid == -1)
+ 		return -EINVAL;
+ 
+-	/*
+-	 * Do not allow allow adding a v3 filesystem capability xattr
+-	 * if the rootid field is ambiguous.
+-	 */
+-	for (ancestor = task_ns->parent; ancestor; ancestor = ancestor->parent) {
+-		if (from_kuid(ancestor, rootid) == 0)
+-			return -EINVAL;
+-	}
+-
+ 	newsize = sizeof(struct vfs_ns_cap_data);
+ 	nscap = kmalloc(newsize, GFP_ATOMIC);
+ 	if (!nscap)
 
 
