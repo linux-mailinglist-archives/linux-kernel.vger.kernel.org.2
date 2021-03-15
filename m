@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62E433BA12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57C133BB52
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhCOOHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:07:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S236774AbhCOOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41AB364F36;
-        Mon, 15 Mar 2021 13:58:05 +0000 (UTC)
+        id S232516AbhCON7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29E64F3A;
+        Mon, 15 Mar 2021 13:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816686;
-        bh=HHA26jaEx0TVIHhjA6y4M+tOOuCMpp/jBGSy2ZKii+8=;
+        s=korg; t=1615816723;
+        bh=DDDeyg45GvOn03ZoQxqrenV4AUdjU6WKHIuQ+dJVNAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0j9jTEUrlvZTx84esilYoEtlswEjkxvTZ373m9Ggmo6jE4QK7MXtMx3toJ0dYhszG
-         nhf/WtKxZRv2bEgb/chdMZwJzFP7MZFoNkGLo9QN8CZNSwl3ayLobT8GLS376tRAfn
-         CPZsr0L9Re9PiNwcIz/CeyNqUtoD3e38AsWuM7dc=
+        b=eScxqGm3vVyvcJXqDo12AJJZiJmsO4+DAAvvMXwLIuAeN8XxulNovas2srasuefce
+         20P9P7gq/67H8D1m6VA4sGQOWmRuEuOrNfo+7V63C3orlPxoOwizdIJZTBFlPCgdu/
+         MNHs92htSKITp/2XrlOybln+vtZT3cEmaPi3sS1o=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wong Vee Khee <vee.khee.wong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 055/290] stmmac: intel: Fixes clock registration error seen for multiple interfaces
-Date:   Mon, 15 Mar 2021 14:52:28 +0100
-Message-Id: <20210315135543.794433623@linuxfoundation.org>
+        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
+        Eddie Shklaer <eddies@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.11 086/306] mlxsw: spectrum_ethtool: Add an external speed to PTYS register
+Date:   Mon, 15 Mar 2021 14:52:29 +0100
+Message-Id: <20210315135510.558953173@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Wong Vee Khee <vee.khee.wong@intel.com>
+From: Danielle Ratson <danieller@nvidia.com>
 
-commit 8eb37ab7cc045ec6305a6a1a9c32374695a1a977 upstream.
+commit ae9b24ddb69b4e31cda1b5e267a5a08a1db11717 upstream.
 
-Issue seen when enumerating multiple Intel mGbE interfaces in EHL.
+Currently, only external bits are added to the PTYS register, whereas
+there is one external bit that is wrongly marked as internal, and so was
+recently removed from the register.
 
-[    6.898141] intel-eth-pci 0000:00:1d.2: enabling device (0000 -> 0002)
-[    6.900971] intel-eth-pci 0000:00:1d.2: Fail to register stmmac-clk
-[    6.906434] intel-eth-pci 0000:00:1d.2: User ID: 0x51, Synopsys ID: 0x52
+Add that bit to the PTYS register again, as this bit is no longer
+internal.
 
-We fix it by making the clock name to be unique following the format
-of stmmac-pci_name(pci_dev) so that we can differentiate the clock for
-these Intel mGbE interfaces in EHL platform as follow:
+Its removal resulted in '100000baseLR4_ER4/Full' link mode no longer
+being supported, causing a regression on some setups.
 
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.1
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.2
-  /sys/kernel/debug/clk/stmmac-0000:00:1e.4
-
-Fixes: 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to contain all Intel platform")
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 5bf01b571cf4 ("mlxsw: spectrum_ethtool: Remove internal speeds from PTYS register")
+Signed-off-by: Danielle Ratson <danieller@nvidia.com>
+Reported-by: Eddie Shklaer <eddies@nvidia.com>
+Tested-by: Eddie Shklaer <eddies@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlxsw/reg.h              |    1 +
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c |    5 +++++
+ drivers/net/ethernet/mellanox/mlxsw/switchx2.c         |    3 ++-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -233,6 +233,7 @@ static void common_default_data(struct p
- static int intel_mgbe_common_data(struct pci_dev *pdev,
- 				  struct plat_stmmacenet_data *plat)
- {
-+	char clk_name[20];
- 	int ret;
- 	int i;
+--- a/drivers/net/ethernet/mellanox/mlxsw/reg.h
++++ b/drivers/net/ethernet/mellanox/mlxsw/reg.h
+@@ -4430,6 +4430,7 @@ MLXSW_ITEM32(reg, ptys, ext_eth_proto_ca
+ #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4		BIT(20)
+ #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4		BIT(21)
+ #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4		BIT(22)
++#define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4	BIT(23)
+ #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_CR		BIT(27)
+ #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_KR		BIT(28)
+ #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_SR		BIT(29)
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
+@@ -1171,6 +1171,11 @@ static const struct mlxsw_sp1_port_link_
+ 		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT,
+ 		.speed		= SPEED_100000,
+ 	},
++	{
++		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
++		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT,
++		.speed		= SPEED_100000,
++	},
+ };
  
-@@ -300,8 +301,10 @@ static int intel_mgbe_common_data(struct
- 	plat->eee_usecs_rate = plat->clk_ptp_rate;
- 
- 	/* Set system clock */
-+	sprintf(clk_name, "%s-%s", "stmmac", pci_name(pdev));
-+
- 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
--						   "stmmac-clk", NULL, 0,
-+						   clk_name, NULL, 0,
- 						   plat->clk_ptp_rate);
- 
- 	if (IS_ERR(plat->stmmac_clk)) {
+ #define MLXSW_SP1_PORT_LINK_MODE_LEN ARRAY_SIZE(mlxsw_sp1_port_link_mode)
+--- a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
+@@ -613,7 +613,8 @@ static const struct mlxsw_sx_port_link_m
+ 	{
+ 		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4 |
+ 				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4 |
+-				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4,
++				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4 |
++				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
+ 		.speed		= 100000,
+ 	},
+ };
 
 
