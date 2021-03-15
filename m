@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E36733B85A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3133B94F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhCOOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34042 "EHLO mail.kernel.org"
+        id S234857AbhCOOFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhCON44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8181B64EEE;
-        Mon, 15 Mar 2021 13:56:55 +0000 (UTC)
+        id S232029AbhCON5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC9B64EF9;
+        Mon, 15 Mar 2021 13:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816616;
-        bh=zvC60x0TDrgUee+EUTxBvbrcxT8cqVWicznokVysHn0=;
+        s=korg; t=1615816656;
+        bh=x/IlDJ8JHbbMUkHRvRPdn/2xOomMcPYzXEQhNmMiNiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jzv223T2jdY8U+PjpTlrHr3Q+qN5kKC70m1OsnJnY5SGoi6Z2m//fMYHlqa4CwuDR
-         UOn4brgBApI7Te4ZoximKrU70OaVjMHIN5i5W18UlgAIQYpwZznbfGTAeBR7FcWqjO
-         y5xGK76MkhvMgF4zfk1y/cIwxtVYD2xXZMm63MTk=
+        b=vjGoIPJIsdiU6VizT5eIpLJBMKfGJalpSB/RH68pMPX3+35L4UUy1G/Ujn6MT92EJ
+         YeIrbY70fPhnJrdiOsy0KVK1Mg1q3+pwGo9A0BjRyrdjXq2tEWz+gqX86rc9kEHyiv
+         DBHx4ywF2jlBIkDBI3k0FOLn7rFB7WxblFA9eCYM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH 5.10 015/290] can: tcan4x5x: tcan4x5x_init(): fix initialization - clear MRAM before entering Normal Mode
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 045/306] sh_eth: fix TRSCER mask for SH771x
 Date:   Mon, 15 Mar 2021 14:51:48 +0100
-Message-Id: <20210315135542.459949146@linuxfoundation.org>
+Message-Id: <20210315135509.171912878@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +41,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-commit 2712625200ed69c642b9abc3a403830c4643364c upstream.
+commit 8c91bc3d44dfef8284af384877fbe61117e8b7d1 upstream.
 
-This patch prevents a potentially destructive race condition. The
-device is fully operational on the bus after entering Normal Mode, so
-zeroing the MRAM after entering this mode may lead to loss of
-information, e.g. new received messages.
+According  to  the SH7710, SH7712, SH7713 Group User's Manual: Hardware,
+Rev. 3.00, the TRSCER register actually has only bit 7 valid (and named
+differently), with all the other bits reserved. Apparently, this was not
+the case with some early revisions of the manual as we have the other
+bits declared (and set) in the original driver.  Follow the suit and add
+the explicit sh_eth_cpu_data::trscer_err_mask initializer for SH771x...
 
-This patch fixes the problem by first initializing the MRAM, then
-bringing the device into Normale Mode.
-
-Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
-Link: https://lore.kernel.org/r/20210226163440.313628-1-torin@maxiluxsystems.com
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/tcan4x5x.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/renesas/sh_eth.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -328,14 +328,14 @@ static int tcan4x5x_init(struct m_can_cl
- 	if (ret)
- 		return ret;
- 
-+	/* Zero out the MCAN buffers */
-+	m_can_init_ram(cdev);
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -1089,6 +1089,9 @@ static struct sh_eth_cpu_data sh771x_dat
+ 			  EESIPR_CEEFIP | EESIPR_CELFIP |
+ 			  EESIPR_RRFIP | EESIPR_RTLFIP | EESIPR_RTSFIP |
+ 			  EESIPR_PREIP | EESIPR_CERFIP,
 +
- 	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
- 				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
- 	if (ret)
- 		return ret;
- 
--	/* Zero out the MCAN buffers */
--	m_can_init_ram(cdev);
--
- 	return ret;
- }
- 
++	.trscer_err_mask = DESC_I_RINT8,
++
+ 	.tsu		= 1,
+ 	.dual_port	= 1,
+ };
 
 
