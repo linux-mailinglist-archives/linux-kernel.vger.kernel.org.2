@@ -2,47 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778A133BDB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D701F33BC1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239662AbhCOOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
+        id S238336AbhCOOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233249AbhCOOBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1546264F21;
-        Mon, 15 Mar 2021 14:00:48 +0000 (UTC)
+        id S229942AbhCOOAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC5664F0C;
+        Mon, 15 Mar 2021 14:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816851;
-        bh=F7ooJGIPfcpYwlEUhOQ2t4Gu4YpBSugLrYGOn/zF/y4=;
+        s=korg; t=1615816801;
+        bh=Jxe9prs1CF4dxDsqTe6EZaGsQXBFlpoScv7ixbKpeVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hsVYpUF/r4s5iyUNf3E4ygKXs/yjtrTm1OVI08CsYq3STOWSNEI30dVsZr+V4sucM
-         I1rtasTdlVWcVxdUeSzfYg/18BwP3wYKC0195pD2cTS3t6ZfRT97XxXmRnD9j0Sb4y
-         2+SLO2l7PKH8dUSppjxcqjUpKJMq+f1z6Tqv11ug=
+        b=XMWLaOPY2lPedDvUySH2okmILKkJKvgx/lByQgcDuZc2rvDfHxtJWZeUcPSeyUq6h
+         shkCTy09TnuUVkf6M0QdCMXnha5LRfjl3lm30hYT/quvp2YMK2PxHg4UeAF/uWA3FY
+         4WyEW+dDO9OK4kLWJ9CqXOB+WorpThLTrcTlXEWc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 110/120] stop_machine: mark helpers __always_inline
-Date:   Mon, 15 Mar 2021 14:57:41 +0100
-Message-Id: <20210315135723.585169706@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.14 72/95] staging: comedi: addi_apci_1032: Fix endian problem for COS sample
+Date:   Mon, 15 Mar 2021 14:57:42 +0100
+Message-Id: <20210315135742.638486629@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,83 +40,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-[ Upstream commit cbf78d85079cee662c45749ef4f744d41be85d48 ]
+commit 25317f428a78fde71b2bf3f24d05850f08a73a52 upstream.
 
-With clang-13, some functions only get partially inlined, with a
-specialized version referring to a global variable.  This triggers a
-harmless build-time check for the intel-rng driver:
+The Change-Of-State (COS) subdevice supports Comedi asynchronous
+commands to read 16-bit change-of-state values.  However, the interrupt
+handler is calling `comedi_buf_write_samples()` with the address of a
+32-bit integer `&s->state`.  On bigendian architectures, it will copy 2
+bytes from the wrong end of the 32-bit integer.  Fix it by transferring
+the value via a 16-bit integer.
 
-WARNING: modpost: drivers/char/hw_random/intel-rng.o(.text+0xe): Section mismatch in reference from the function stop_machine() to the function .init.text:intel_rng_hw_init()
-The function stop_machine() references
-the function __init intel_rng_hw_init().
-This is often because stop_machine lacks a __init
-annotation or the annotation of intel_rng_hw_init is wrong.
-
-In this instance, an easy workaround is to force the stop_machine()
-function to be inline, along with related interfaces that did not show the
-same behavior at the moment, but theoretically could.
-
-The combination of the two patches listed below triggers the behavior in
-clang-13, but individually these commits are correct.
-
-Link: https://lkml.kernel.org/r/20210225130153.1956990-1-arnd@kernel.org
-Fixes: fe5595c07400 ("stop_machine: Provide stop_machine_cpuslocked()")
-Fixes: ee527cd3a20c ("Use stop_machine_run in the Intel RNG driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Prarit Bhargava <prarit@redhat.com>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6bb45f2b0c86 ("staging: comedi: addi_apci_1032: use comedi_buf_write_samples()")
+Cc: <stable@vger.kernel.org> # 3.19+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-2-abbotti@mev.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/stop_machine.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/staging/comedi/drivers/addi_apci_1032.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/stop_machine.h b/include/linux/stop_machine.h
-index 6d3635c86dbe..ccdaa8fd5657 100644
---- a/include/linux/stop_machine.h
-+++ b/include/linux/stop_machine.h
-@@ -138,7 +138,7 @@ int stop_machine_from_inactive_cpu(cpu_stop_fn_t fn, void *data,
- 				   const struct cpumask *cpus);
- #else	/* CONFIG_SMP || CONFIG_HOTPLUG_CPU */
+--- a/drivers/staging/comedi/drivers/addi_apci_1032.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1032.c
+@@ -269,6 +269,7 @@ static irqreturn_t apci1032_interrupt(in
+ 	struct apci1032_private *devpriv = dev->private;
+ 	struct comedi_subdevice *s = dev->read_subdev;
+ 	unsigned int ctrl;
++	unsigned short val;
  
--static inline int stop_machine_cpuslocked(cpu_stop_fn_t fn, void *data,
-+static __always_inline int stop_machine_cpuslocked(cpu_stop_fn_t fn, void *data,
- 					  const struct cpumask *cpus)
- {
- 	unsigned long flags;
-@@ -149,14 +149,15 @@ static inline int stop_machine_cpuslocked(cpu_stop_fn_t fn, void *data,
- 	return ret;
- }
+ 	/* check interrupt is from this device */
+ 	if ((inl(devpriv->amcc_iobase + AMCC_OP_REG_INTCSR) &
+@@ -284,7 +285,8 @@ static irqreturn_t apci1032_interrupt(in
+ 	outl(ctrl & ~APCI1032_CTRL_INT_ENA, dev->iobase + APCI1032_CTRL_REG);
  
--static inline int stop_machine(cpu_stop_fn_t fn, void *data,
--			       const struct cpumask *cpus)
-+static __always_inline int
-+stop_machine(cpu_stop_fn_t fn, void *data, const struct cpumask *cpus)
- {
- 	return stop_machine_cpuslocked(fn, data, cpus);
- }
+ 	s->state = inl(dev->iobase + APCI1032_STATUS_REG) & 0xffff;
+-	comedi_buf_write_samples(s, &s->state, 1);
++	val = s->state;
++	comedi_buf_write_samples(s, &val, 1);
+ 	comedi_handle_events(dev, s);
  
--static inline int stop_machine_from_inactive_cpu(cpu_stop_fn_t fn, void *data,
--						 const struct cpumask *cpus)
-+static __always_inline int
-+stop_machine_from_inactive_cpu(cpu_stop_fn_t fn, void *data,
-+			       const struct cpumask *cpus)
- {
- 	return stop_machine(fn, data, cpus);
- }
--- 
-2.30.1
-
+ 	/* enable the interrupt */
 
 
