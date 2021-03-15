@@ -2,135 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB1F33C50B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DDE33C509
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhCOSAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:00:54 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52164 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230525AbhCOSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232353AbhCOSAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Mar 2021 14:00:21 -0400
-IronPort-SDR: pYzrd9wXxlJ8+b346RkGovAG8X2rgVBh6NJV66CIX1z8aHG7sJFZtcOrGrij7PYuSRXU40b1Z+
- MPhD0wGEEB6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="169047251"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="169047251"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 11:00:08 -0700
-IronPort-SDR: ELNcK7QfzGPQESYiCrMSnAufPriSvSGN3i2/A7Aj4rD70U8RwZ8TdFAiMA/8Qe7pgn0RjsC5o7
- H9u75oS+P2DQ==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="601517639"
-Received: from lguadamu-mobl1.amr.corp.intel.com (HELO [10.213.176.188]) ([10.213.176.188])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 11:00:06 -0700
-Subject: Re: [PATCH v1 00/14] Multigenerational LRU
-To:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>,
-        linux-kernel@vger.kernel.org, page-reclaim@google.com
-References: <20210313075747.3781593-1-yuzhao@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5f621dd6-4bbd-dbf7-8fa1-d63d9a5bfc16@intel.com>
-Date:   Mon, 15 Mar 2021 11:00:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231875AbhCOSAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:00:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DCEC06174A;
+        Mon, 15 Mar 2021 11:00:16 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 18:00:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615831213;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RDCQt+gtJU0SI5X2kIGrUovTAsueGVDmQPyLh0dffmo=;
+        b=28FU9tyf1NXLTTeq5+bEjwq0SRwhJwsN7f4lfCbBw8ZVPenZyi+EKlC0OYO3hFf+zFgfVo
+        RUaahMZlc2ouI+rMB2kO+q55dEC94Qu0bB/5WuOZTCTyx3G+nhcmsPg1V1XMJktwfIrY25
+        3b6gpbj38J9KflUPKdDf4cm2Qfm0/NDrbvSx2lbmEP72KM+H/L/ksTm4T2nO3CZEyy1XcM
+        weQ0m6LFchF/dQCOFook+E40eZoodIrIcXwWyZ/LxR9jwo/l+27CA+9kBs7tjQ+1p4PMrQ
+        lTdw2J5OyRJgcv8oGIYm7dgtcWo2EPUsQnMwsB7sik//gcgpYHq4/m26EEyqMg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615831213;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RDCQt+gtJU0SI5X2kIGrUovTAsueGVDmQPyLh0dffmo=;
+        b=Lc7vMkrdW4a9WnQ3bNaFcdLQD9S153F6+a5wGIomtWF7gfYhs/QP8pBXdt1t9bDie+FFbi
+        DLKnq8UFYamZXfBw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] objtool/x86: Use asm/nops.h
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210312115749.136357911@infradead.org>
+References: <20210312115749.136357911@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210313075747.3781593-1-yuzhao@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <161583121208.398.8769751653293178203.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 11:57 PM, Yu Zhao wrote:
-> Background
-> ==========
-> DRAM is a major factor in total cost of ownership, and improving
-> memory overcommit brings a high return on investment. Over the past
-> decade of research and experimentation in memory overcommit, we
-> observed a distinct trend across millions of servers and clients: the
-> size of page cache has been decreasing because of the growing
-> popularity of cloud storage. Nowadays anon pages account for more than
-> 90% of our memory consumption and page cache contains mostly
-> executable pages.
+The following commit has been merged into the x86/cpu branch of tip:
 
-This makes a compelling argument that current reclaim is not well
-optimized for anonymous memory with low rates of sharing.  Basically,
-anonymous rmap is very powerful, but we're not getting enough bang for
-our buck out of it.
+Commit-ID:     301cddc21a157a3072d789a3097857202e550a24
+Gitweb:        https://git.kernel.org/tip/301cddc21a157a3072d789a3097857202e550a24
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 12 Mar 2021 12:32:55 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 15 Mar 2021 16:37:37 +01:00
 
-I also understand that the workloads you reference are anonymous-heavy
-and that page cache isn't a *major* component.
+objtool/x86: Use asm/nops.h
 
-But, what does happens to page-cache-heavy workloads?  Does this just
-effectively force databases that want to use shmem over to hugetlbfs?
-How bad does this scanning get in the worst case if there's a lot of
-sharing?
+Since the kernel will rely on a single canonical set of NOPs, make sure
+objtool uses the exact same ones.
 
-I'm kinda surprised by this, but my 16GB laptop has a lot more page
-cache than I would have guessed:
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210312115749.136357911@infradead.org
+---
+ tools/arch/x86/include/asm/nops.h | 81 ++++++++++++++++++++++++++++++-
+ tools/objtool/arch/x86/decode.c   | 13 +++--
+ tools/objtool/sync-check.sh       |  1 +-
+ 3 files changed, 90 insertions(+), 5 deletions(-)
+ create mode 100644 tools/arch/x86/include/asm/nops.h
 
-> Active(anon):    4065088 kB
-> Inactive(anon):  3981928 kB
-> Active(file):    2260580 kB
-> Inactive(file):  3738096 kB
-> AnonPages:       6624776 kB
-> Mapped:           692036 kB
-> Shmem:            776276 kB
-
-Most of it isn't mapped, but it's far from all being used for text.
+diff --git a/tools/arch/x86/include/asm/nops.h b/tools/arch/x86/include/asm/nops.h
+new file mode 100644
+index 0000000..c1e5e81
+--- /dev/null
++++ b/tools/arch/x86/include/asm/nops.h
+@@ -0,0 +1,81 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_NOPS_H
++#define _ASM_X86_NOPS_H
++
++/*
++ * Define nops for use with alternative() and for tracing.
++ */
++
++#ifndef CONFIG_64BIT
++
++/*
++ * Generic 32bit nops from GAS:
++ *
++ * 1: nop
++ * 2: movl %esi,%esi
++ * 3: leal 0x0(%esi),%esi
++ * 4: leal 0x0(%esi,%eiz,1),%esi
++ * 5: leal %ds:0x0(%esi,%eiz,1),%esi
++ * 6: leal 0x0(%esi),%esi
++ * 7: leal 0x0(%esi,%eiz,1),%esi
++ * 8: leal %ds:0x0(%esi,%eiz,1),%esi
++ *
++ * Except 5 and 8, which are DS prefixed 4 and 7 resp, where GAS would emit 2
++ * nop instructions.
++ */
++#define BYTES_NOP1	0x90
++#define BYTES_NOP2	0x89,0xf6
++#define BYTES_NOP3	0x8d,0x76,0x00
++#define BYTES_NOP4	0x8d,0x74,0x26,0x00
++#define BYTES_NOP5	0x3e,BYTES_NOP4
++#define BYTES_NOP6	0x8d,0xb6,0x00,0x00,0x00,0x00
++#define BYTES_NOP7	0x8d,0xb4,0x26,0x00,0x00,0x00,0x00
++#define BYTES_NOP8	0x3e,BYTES_NOP7
++
++#else
++
++/*
++ * Generic 64bit nops from GAS:
++ *
++ * 1: nop
++ * 2: osp nop
++ * 3: nopl (%eax)
++ * 4: nopl 0x00(%eax)
++ * 5: nopl 0x00(%eax,%eax,1)
++ * 6: osp nopl 0x00(%eax,%eax,1)
++ * 7: nopl 0x00000000(%eax)
++ * 8: nopl 0x00000000(%eax,%eax,1)
++ */
++#define BYTES_NOP1	0x90
++#define BYTES_NOP2	0x66,BYTES_NOP1
++#define BYTES_NOP3	0x0f,0x1f,0x00
++#define BYTES_NOP4	0x0f,0x1f,0x40,0x00
++#define BYTES_NOP5	0x0f,0x1f,0x44,0x00,0x00
++#define BYTES_NOP6	0x66,BYTES_NOP5
++#define BYTES_NOP7	0x0f,0x1f,0x80,0x00,0x00,0x00,0x00
++#define BYTES_NOP8	0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00
++
++#endif /* CONFIG_64BIT */
++
++#ifdef __ASSEMBLY__
++#define _ASM_MK_NOP(x) .byte x
++#else
++#define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
++#endif
++
++#define ASM_NOP1 _ASM_MK_NOP(BYTES_NOP1)
++#define ASM_NOP2 _ASM_MK_NOP(BYTES_NOP2)
++#define ASM_NOP3 _ASM_MK_NOP(BYTES_NOP3)
++#define ASM_NOP4 _ASM_MK_NOP(BYTES_NOP4)
++#define ASM_NOP5 _ASM_MK_NOP(BYTES_NOP5)
++#define ASM_NOP6 _ASM_MK_NOP(BYTES_NOP6)
++#define ASM_NOP7 _ASM_MK_NOP(BYTES_NOP7)
++#define ASM_NOP8 _ASM_MK_NOP(BYTES_NOP8)
++
++#define ASM_NOP_MAX 8
++
++#ifndef __ASSEMBLY__
++extern const unsigned char * const x86_nops[];
++#endif
++
++#endif /* _ASM_X86_NOPS_H */
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 549813c..c117bfc 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -11,6 +11,9 @@
+ #include "../../../arch/x86/lib/inat.c"
+ #include "../../../arch/x86/lib/insn.c"
+ 
++#define CONFIG_64BIT 1
++#include <asm/nops.h>
++
+ #include <asm/orc_types.h>
+ #include <objtool/check.h>
+ #include <objtool/elf.h>
+@@ -596,11 +599,11 @@ void arch_initial_func_cfi_state(struct cfi_init_state *state)
+ const char *arch_nop_insn(int len)
+ {
+ 	static const char nops[5][5] = {
+-		/* 1 */ { 0x90 },
+-		/* 2 */ { 0x66, 0x90 },
+-		/* 3 */ { 0x0f, 0x1f, 0x00 },
+-		/* 4 */ { 0x0f, 0x1f, 0x40, 0x00 },
+-		/* 5 */ { 0x0f, 0x1f, 0x44, 0x00, 0x00 },
++		{ BYTES_NOP1 },
++		{ BYTES_NOP2 },
++		{ BYTES_NOP3 },
++		{ BYTES_NOP4 },
++		{ BYTES_NOP5 },
+ 	};
+ 
+ 	if (len < 1 || len > 5) {
+diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
+index 606a4b5..d232686 100755
+--- a/tools/objtool/sync-check.sh
++++ b/tools/objtool/sync-check.sh
+@@ -10,6 +10,7 @@ FILES="include/linux/objtool.h"
+ 
+ if [ "$SRCARCH" = "x86" ]; then
+ FILES="$FILES
++arch/x86/include/asm/nops.h
+ arch/x86/include/asm/inat_types.h
+ arch/x86/include/asm/orc_types.h
+ arch/x86/include/asm/emulate_prefix.h
