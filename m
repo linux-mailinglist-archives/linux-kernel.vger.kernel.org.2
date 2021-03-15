@@ -2,181 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E054833BB19
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3B333B778
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhCOOMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S232158AbhCOOAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:00:30 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:61440 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232348AbhCON61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C79964F06;
-        Mon, 15 Mar 2021 13:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816705;
-        bh=CFdK68bRiQtcxu9cW51TqKqftLMt8jefhAL5Plbd2RA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uM1I5YSGBcEq89TR/1ri3Fc4oxxs7zMyUUQ0d+hRkXRI8mGZUI1TFNkWuexmwn+Bt
-         P/yU/KLiPn0jMWNhknhC4sQnLKXEMO3BeBclE7IIN2i4eltSnVjNrmjbXixJix7t7K
-         7zvxj3pJZS/EeAFGUUDX/NnlmCbGt4m4n+J5Ndxw=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 058/168] media: rc: compile rc-cec.c into rc-core
-Date:   Mon, 15 Mar 2021 14:54:50 +0100
-Message-Id: <20210315135552.268594743@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231308AbhCONzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:55:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615816516; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3zQTK7Qxhk/xx9/OqKu/wFfp4csF7+T5fJSZ6U+Vvj4=;
+ b=cAfw3XuFCCYLxhuBCEjRYOcmyrR9GhjsRWR/7OiN4awbaFgyCl3X6ZEiFAMB7oS0d5QtEE7X
+ WBwSG4k/6D7nOpXZMotNM+3gxAtgk/uk+kwufXfxOVeuiioMwtFy9mYVPyHBVI2zdZgz9/CQ
+ 3tQGIfOQf6pxh8DEl5c+9eXYj0E=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604f672e1de5dd7b99134a9a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 13:54:54
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 44B94C4346A; Mon, 15 Mar 2021 13:54:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95A5FC4316A;
+        Mon, 15 Mar 2021 13:54:50 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 19:24:50 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+In-Reply-To: <1615361829-22370-1-git-send-email-pillair@codeaurora.org>
+References: <1615361829-22370-1-git-send-email-pillair@codeaurora.org>
+Message-ID: <c00116b0d570c3e739d3a7a6d10eb29a@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On 2021-03-10 13:07, Rakesh Pillai wrote:
+> Add the WPSS remoteproc node in dts for
+> PIL loading.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+> - This change is dependent on the below patch series
+> 1) https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+> 2) https://lore.kernel.org/patchwork/project/lkml/list/?series=488365
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 47 
+> +++++++++++++++++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 950ecb2..603f56b 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -26,6 +26,10 @@
+>  	status = "okay";
+>  };
+> 
+> +&remoteproc_wpss {
+> +	status = "okay";
+> +};
+> +
+>  &uart5 {
+>  	status = "okay";
+>  };
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 8af6d77..26dd466 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -53,6 +53,16 @@
+>  			no-map;
+>  			reg = <0x0 0x80b00000 0x0 0x100000>;
+>  		};
+> +
+> +		wlan_fw_mem: memory@80c00000 {
+> +			no-map;
+> +			reg = <0x0 0x80c00000 0x0 0xc00000>;
+> +		};
+> +
+> +		wpss_mem: memory@9ae00000 {
+> +			no-map;
+> +			reg = <0x0 0x9ae00000 0x0 0x1900000>;
+> +		};
 
-From: Hans Verkuil <hverkuil@xs4all.nl>
+The wpss mem shouldn't move into
+board specific dt.
 
-commit f09f9f93afad770a04b35235a0aa465fcc8d6e3d upstream.
+>  	};
+> 
+>  	cpus {
+> @@ -305,6 +315,43 @@
+>  			};
+>  		};
+> 
+> +		remoteproc_wpss: remoteproc@8a00000 {
+> +			compatible = "qcom,sc7280-wpss-pil";
 
-The rc-cec keymap is unusual in that it can't be built as a module,
-instead it is registered directly in rc-main.c if CONFIG_MEDIA_CEC_RC
-is set. This is because it can be called from drm_dp_cec_set_edid() via
-cec_register_adapter() in an asynchronous context, and it is not
-allowed to use request_module() to load rc-cec.ko in that case. Trying to
-do so results in a 'WARN_ON_ONCE(wait && current_is_async())'.
+please aim to add pas based
+support to boot wpss as well.
 
-Since this keymap is only used if CONFIG_MEDIA_CEC_RC is set, we
-just compile this keymap into the rc-core module and never as a
-separate module.
+> +			reg = <0 0x08a00000 0 0x10000>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 0 0>,
+> +					      <&wpss_smp2p_in 1 0>,
+> +					      <&wpss_smp2p_in 2 0>,
+> +					      <&wpss_smp2p_in 3 0>,
+> +					      <&wpss_smp2p_in 7 0>;
+> +			interrupt-names = "wdog", "fatal", "ready", "handover",
+> +					  "stop-ack", "shutdown-ack";
+> +
+> +			memory-region = <&wpss_mem>;
+> +
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 2c6d1fffa1d9 (drm: add support for DisplayPort CEC-Tunneling-over-AUX)
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/media/rc/Makefile         |    1 +
- drivers/media/rc/keymaps/Makefile |    1 -
- drivers/media/rc/keymaps/rc-cec.c |   28 +++++++++++-----------------
- drivers/media/rc/rc-main.c        |    6 ++++++
- include/media/rc-map.h            |    7 +++++++
- 5 files changed, 25 insertions(+), 18 deletions(-)
+looks like you missed adding clocks
+and power-domains mentioned in the
+bindings.
 
---- a/drivers/media/rc/Makefile
-+++ b/drivers/media/rc/Makefile
-@@ -5,6 +5,7 @@ obj-y += keymaps/
- obj-$(CONFIG_RC_CORE) += rc-core.o
- rc-core-y := rc-main.o rc-ir-raw.o
- rc-core-$(CONFIG_LIRC) += lirc_dev.o
-+rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
- rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
- obj-$(CONFIG_IR_NEC_DECODER) += ir-nec-decoder.o
- obj-$(CONFIG_IR_RC5_DECODER) += ir-rc5-decoder.o
---- a/drivers/media/rc/keymaps/Makefile
-+++ b/drivers/media/rc/keymaps/Makefile
-@@ -20,7 +20,6 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t
- 			rc-behold.o \
- 			rc-behold-columbus.o \
- 			rc-budget-ci-old.o \
--			rc-cec.o \
- 			rc-cinergy-1400.o \
- 			rc-cinergy.o \
- 			rc-d680-dmb.o \
---- a/drivers/media/rc/keymaps/rc-cec.c
-+++ b/drivers/media/rc/keymaps/rc-cec.c
-@@ -1,6 +1,16 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Keytable for the CEC remote control
-  *
-+ * This keymap is unusual in that it can't be built as a module,
-+ * instead it is registered directly in rc-main.c if CONFIG_MEDIA_CEC_RC
-+ * is set. This is because it can be called from drm_dp_cec_set_edid() via
-+ * cec_register_adapter() in an asynchronous context, and it is not
-+ * allowed to use request_module() to load rc-cec.ko in that case.
-+ *
-+ * Since this keymap is only used if CONFIG_MEDIA_CEC_RC is set, we
-+ * just compile this keymap into the rc-core module and never as a
-+ * separate module.
-+ *
-  * Copyright (c) 2015 by Kamil Debski
-  */
- 
-@@ -152,7 +162,7 @@ static struct rc_map_table cec[] = {
- 	/* 0x77-0xff: Reserved */
- };
- 
--static struct rc_map_list cec_map = {
-+struct rc_map_list cec_map = {
- 	.map = {
- 		.scan		= cec,
- 		.size		= ARRAY_SIZE(cec),
-@@ -160,19 +170,3 @@ static struct rc_map_list cec_map = {
- 		.name		= RC_MAP_CEC,
- 	}
- };
--
--static int __init init_rc_map_cec(void)
--{
--	return rc_map_register(&cec_map);
--}
--
--static void __exit exit_rc_map_cec(void)
--{
--	rc_map_unregister(&cec_map);
--}
--
--module_init(init_rc_map_cec);
--module_exit(exit_rc_map_cec);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Kamil Debski");
---- a/drivers/media/rc/rc-main.c
-+++ b/drivers/media/rc/rc-main.c
-@@ -2033,6 +2033,9 @@ static int __init rc_core_init(void)
- 
- 	led_trigger_register_simple("rc-feedback", &led_feedback);
- 	rc_map_register(&empty_map);
-+#ifdef CONFIG_MEDIA_CEC_RC
-+	rc_map_register(&cec_map);
-+#endif
- 
- 	return 0;
- }
-@@ -2042,6 +2045,9 @@ static void __exit rc_core_exit(void)
- 	lirc_dev_exit();
- 	class_unregister(&rc_class);
- 	led_trigger_unregister_simple(led_feedback);
-+#ifdef CONFIG_MEDIA_CEC_RC
-+	rc_map_unregister(&cec_map);
-+#endif
- 	rc_map_unregister(&empty_map);
- }
- 
---- a/include/media/rc-map.h
-+++ b/include/media/rc-map.h
-@@ -126,6 +126,13 @@ struct rc_map_list {
- 	struct rc_map map;
- };
- 
-+#ifdef CONFIG_MEDIA_CEC_RC
-+/*
-+ * rc_map_list from rc-cec.c
-+ */
-+extern struct rc_map_list cec_map;
-+#endif
-+
- /* Routines from rc-map.c */
- 
- /**
+> +			qcom,smem-states = <&wpss_smp2p_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>;
+> +			reset-names = "restart";
+> +
+> +			qcom,halt-regs = <&tcsr_mutex_regs 0x37000>;
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
+> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
+> +							     IRQ_TYPE_EDGE_RISING>;
+> +				mboxes = <&ipcc IPCC_CLIENT_WPSS
+> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +				label = "wpss";
+> +				qcom,remote-pid = <13>;
+> +			};
+> +		};
+> +
+>  		pdc: interrupt-controller@b220000 {
+>  			compatible = "qcom,sc7280-pdc", "qcom,pdc";
+>  			reg = <0 0x0b220000 0 0x30000>;
 
-
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
