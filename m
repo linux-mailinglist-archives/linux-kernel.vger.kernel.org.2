@@ -2,38 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C6133BB3D
+	by mail.lfdr.de (Postfix) with ESMTP id 7445233BB3C
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhCOOOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:14:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S236004AbhCOOOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232555AbhCON7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F11A64EEA;
-        Mon, 15 Mar 2021 13:58:48 +0000 (UTC)
+        id S232565AbhCON7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF9764F33;
+        Mon, 15 Mar 2021 13:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816730;
-        bh=OKkLkbCg2W00r81qQKKPpfcrBegDoduX/8K8hDlu5ao=;
+        s=korg; t=1615816731;
+        bh=FAEVE6XHouPTJcwLoC8YlshzinAWao+eLhloMA++pAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJZacJF+h1NodqpCBKPNcZcklqTzM4JTrMUdF8gav0LvDg2A5mmdPJ47zQc5HQMzw
-         ioDClEVkobjEsLvagquRSv6xvh7oE4Rm/RyQyBOr4gzNnoabM9tQQoz+r3C/Ufcmd5
-         TzGhuCOM4W6e9A7IrWlL6PWYdAkL7SlNm4fv54tw=
+        b=YWr8Jt3laxSuakzOUHLQIloDTAT1SVcJ13keNROp0K8ayxZ/SgQSxKWps9liEHKqL
+         Jjc+aeCfBSFTSJr9ubBdH/J9Cgee4OkYCTHq9JELu7Xg8F9bPUEtw5P3a4v7Eqvq57
+         OcKlOwMpeBsnlPQpnN5wzWuLgBtEroePRSPd3qAg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 032/120] perf traceevent: Ensure read cmdlines are null terminated.
-Date:   Mon, 15 Mar 2021 14:56:23 +0100
-Message-Id: <20210315135721.043891046@linuxfoundation.org>
+        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 4.19 033/120] s390/cio: return -EFAULT if copy_to_user() fails again
+Date:   Mon, 15 Mar 2021 14:56:24 +0100
+Message-Id: <20210315135721.076757562@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -47,36 +41,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Rogers <irogers@google.com>
+From: Wang Qing <wangqing@vivo.com>
 
-commit 137a5258939aca56558f3a23eb229b9c4b293917 upstream.
+commit 51c44babdc19aaf882e1213325a0ba291573308f upstream.
 
-Issue detected by address sanitizer.
+The copy_to_user() function returns the number of bytes remaining to be
+copied, but we want to return -EFAULT if the copy doesn't complete.
 
-Fixes: cd4ceb63438e9e28 ("perf util: Save pid-cmdline mapping into tracing header")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210226221431.1985458-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: e01bcdd61320 ("vfio: ccw: realize VFIO_DEVICE_GET_REGION_INFO ioctl")
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/1614600093-13992-1-git-send-email-wangqing@vivo.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/trace-event-read.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/s390/cio/vfio_ccw_ops.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/perf/util/trace-event-read.c
-+++ b/tools/perf/util/trace-event-read.c
-@@ -381,6 +381,7 @@ static int read_saved_cmdline(struct tep
- 		pr_debug("error reading saved cmdlines\n");
- 		goto out;
- 	}
-+	buf[ret] = '\0';
+--- a/drivers/s390/cio/vfio_ccw_ops.c
++++ b/drivers/s390/cio/vfio_ccw_ops.c
+@@ -341,7 +341,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
+ 		if (ret)
+ 			return ret;
  
- 	parse_saved_cmdline(pevent, buf, size);
- 	ret = 0;
+-		return copy_to_user((void __user *)arg, &info, minsz);
++		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+ 	}
+ 	case VFIO_DEVICE_GET_REGION_INFO:
+ 	{
+@@ -362,7 +362,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
+ 		if (ret)
+ 			return ret;
+ 
+-		return copy_to_user((void __user *)arg, &info, minsz);
++		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+ 	}
+ 	case VFIO_DEVICE_GET_IRQ_INFO:
+ 	{
 
 
