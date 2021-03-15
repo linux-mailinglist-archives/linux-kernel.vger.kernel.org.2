@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E1833B98F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACEE33B855
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbhCOOGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
+        id S233974AbhCOOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230119AbhCON5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B47D164EEE;
-        Mon, 15 Mar 2021 13:57:29 +0000 (UTC)
+        id S231793AbhCON4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3393664F05;
+        Mon, 15 Mar 2021 13:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816651;
-        bh=vZJxMxFVx53QcEFBym8JbE6COW0GyV+hS+ctikMbVCs=;
+        s=korg; t=1615816613;
+        bh=GX7TRr9Aru9vNLq9Z/G5bt7nZMGG5L96RFQ3gaIhgkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HyALGZnYDg/f6OUzDqWo/Bvu5+W5QUGuKyD7bjFmWWdcih4pHybBbqCqV5gCuG6Ep
-         3Lpr23CyUQ8zzZimhStwzeT9hrNh6VXvOs6/YgWgvqKTB4SzC9pz3aXWyMJ18zM/zt
-         cBri70RBrzwGmYY7Qd0c0kwl6IiWOx2o9qwfh0ZM=
+        b=IqcgpEjvAWXqakUoGApjNIjofjPWv7oGM9mE6hFwdd4Zu5cEOfjvYHTgvM/a6yFcG
+         1AQTcZptKeUKXefLDZ7o4wCkG3pwQQFcehvShi4FeI92ydCvJtCGZ8NnQFo3VeLmc9
+         dNQkjXTTsF5lya95EbR2EnZ/BjtlKTspTjHP+2GI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 042/306] Revert "mm, slub: consider rest of partial list if acquire_slab() fails"
-Date:   Mon, 15 Mar 2021 14:51:45 +0100
-Message-Id: <20210315135509.068870112@linuxfoundation.org>
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 013/290] can: flexcan: enable RX FIFO after FRZ/HALT valid
+Date:   Mon, 15 Mar 2021 14:51:46 +0100
+Message-Id: <20210315135542.399374375@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +41,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-commit 9b1ea29bc0d7b94d420f96a0f4121403efc3dd85 upstream.
+commit ec15e27cc8904605846a354bb1f808ea1432f853 upstream.
 
-This reverts commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf.
+RX FIFO enable failed could happen when do system reboot stress test:
 
-The kernel test robot reports a huge performance regression due to the
-commit, and the reason seems fairly straightforward: when there is
-contention on the page list (which is what causes acquire_slab() to
-fail), we do _not_ want to just loop and try again, because that will
-transfer the contention to the 'n->list_lock' spinlock we hold, and
-just make things even worse.
+[    0.303958] flexcan 5a8d0000.can: 5a8d0000.can supply xceiver not found, using dummy regulator
+[    0.304281] flexcan 5a8d0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
+[    0.314640] flexcan 5a8d0000.can: registering netdev failed
+[    0.320728] flexcan 5a8e0000.can: 5a8e0000.can supply xceiver not found, using dummy regulator
+[    0.320991] flexcan 5a8e0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
+[    0.331360] flexcan 5a8e0000.can: registering netdev failed
+[    0.337444] flexcan 5a8f0000.can: 5a8f0000.can supply xceiver not found, using dummy regulator
+[    0.337716] flexcan 5a8f0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
+[    0.348117] flexcan 5a8f0000.can: registering netdev failed
 
-This is admittedly likely a problem only on big machines - the kernel
-test robot report comes from a 96-thread dual socket Intel Xeon Gold
-6252 setup, but the regression there really is quite noticeable:
+RX FIFO should be enabled after the FRZ/HALT are valid. But the current
+code enable RX FIFO and FRZ/HALT at the same time.
 
-   -47.9% regression of stress-ng.rawpkt.ops_per_sec
-
-and the commit that was marked as being fixed (7ced37197196: "slub:
-Acquire_slab() avoid loop") actually did the loop exit early very
-intentionally (the hint being that "avoid loop" part of that commit
-message), exactly to avoid this issue.
-
-The correct thing to do may be to pick some kind of reasonable middle
-ground: instead of breaking out of the loop on the very first sign of
-contention, or trying over and over and over again, the right thing may
-be to re-try _once_, and then give up on the second failure (or pick
-your favorite value for "once"..).
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Link: https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
-Cc: Jann Horn <jannh@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Acked-by: Christoph Lameter <cl@linux.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e955cead03117 ("CAN: Add Flexcan CAN controller driver")
+Link: https://lore.kernel.org/r/20210218110037.16591-3-qiangqing.zhang@nxp.com
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slub.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1973,7 +1973,7 @@ static void *get_partial_node(struct kme
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1800,10 +1800,14 @@ static int register_flexcandev(struct ne
+ 	if (err)
+ 		goto out_chip_disable;
  
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
- 		if (!t)
--			continue; /* cmpxchg raced */
-+			break;
+-	/* set freeze, halt and activate FIFO, restrict register access */
++	/* set freeze, halt */
++	err = flexcan_chip_freeze(priv);
++	if (err)
++		goto out_chip_disable;
++
++	/* activate FIFO, restrict register access */
+ 	reg = priv->read(&regs->mcr);
+-	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
+-		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
++	reg |=  FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
+ 	priv->write(reg, &regs->mcr);
  
- 		available += objects;
- 		if (!object) {
+ 	/* Currently we only support newer versions of this core
 
 
