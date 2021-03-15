@@ -2,189 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8788A33BF97
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98D233BFA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhCOPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:19:28 -0400
-Received: from mail-dm6nam11on2052.outbound.protection.outlook.com ([40.107.223.52]:55218
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229973AbhCOPTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:19:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OIX98QNznGDBFeyDIOZ6OSmH639k9ov9IEdmr0/RzwehZvIzAdc3iSoJGgH+sQDtlev2OBSkbxrVZPldFnJ459ddjOHpgbdO9i3w7nQpVfhF9tRwDOaPg2PKreJDVBa3NBaYyJoowMdPsTiPMSaMgQxQV6AKXREMTUJ3KItnD5+FqVNGMCDCp13tHLASAjzG+9RKP+Vgal3lCPbbor5dI/qQV05N2S8vjMlFmI8MLwP/U6jYFVROu47Q2nawyIK8iWiTFGjm6zoCjukhoxCt3U+2J4wAuNWxzpAYpbCbhODVO+biW4c3HxotrNU7WR8/izFjBqK30zzHOiA1SxssLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O9kPa4isiLSB8miGBdzM14MwF6nzrdx9VRpECM+kxaQ=;
- b=UA/thBjP+QmXh0z7h/X46Q694DAzUdD1jDy5e8hl6cQ9RhaOa0i4ocg/ZqHhNUZE8/rGnizvuq0pPIKjPBgW0U9ELGc3cSi5runCJcitQDpeWkJbe6eIxJCXryZedVcWvgnpwtGasDoHuGWVRZn0Zmt/efgn+pmFAX9mH35ovY7CFuKGuN6XWEgSRNECx78BVUhvrGh4KEWs0sy6EIb8lY1tN0wKZF3HzGMl0d8CO5X9KMF04pZtBOw9c7+Ql0RoRpYoinQOmPGIe6pwox2uL1KOplZJV0zNLirq6aKRi3lmHfZ2Vfdz8Uwj7PMmks12AeaIwbV7rjJjfbh/XI8oKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O9kPa4isiLSB8miGBdzM14MwF6nzrdx9VRpECM+kxaQ=;
- b=NZ4/4Sy1QdUJYon0LM3034oA+PD6MGXDti9gx0AkzkuKyb2thZ5qxa0XiTplo/zoOzYaEKNiIRFumQeQVDR3p5vIJhVvezjzmwYx8s6pGcKwVaso63C6HS61xzzaLqWi03hbIqMxeJoELbG0KnSjks8K8akeBCXMTYeiq5N6hQWnbdZtAvi0nh8dqKwfFQ0GtBKkJ5odUPo1UydY0/WjNUMqy/X56nOQtkAV1JsApeMgj9V1M8b9cjGtPVBqFiM7xhUh+k0++/3mIxwpaOqyezNaupRhRmPmyU6PU5qS8RUvgM+SWL/NjMwu6jAQcO/kdvwdFCVlRrsNfs1gexzdhQ==
-Received: from MW4PR04CA0098.namprd04.prod.outlook.com (2603:10b6:303:83::13)
- by BN8PR12MB4771.namprd12.prod.outlook.com (2603:10b6:408:a5::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 15:19:09 +0000
-Received: from CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:83:cafe::9d) by MW4PR04CA0098.outlook.office365.com
- (2603:10b6:303:83::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
- Transport; Mon, 15 Mar 2021 15:19:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT045.mail.protection.outlook.com (10.13.175.181) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 15:19:07 +0000
-Received: from [10.25.96.88] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
- 2021 15:19:03 +0000
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-To:     Michael Walle <michael@walle.cc>, Mark Brown <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <robh@kernel.org>, <sharadg@nvidia.com>, <thierry.reding@gmail.com>
-References: <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
- <20210312113544.GB5348@sirena.org.uk>
- <6ed28bb5330879b1919aced5174f319f@walle.cc>
- <20210312120456.GD5348@sirena.org.uk>
- <684332700f8be9f77348a510eb6eba22@walle.cc>
- <20210312134642.GF5348@sirena.org.uk>
- <8cdf1cfa971945792b509a687a4de735@walle.cc>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <6af6439c-bdb8-cd0f-635d-069040ba5b65@nvidia.com>
-Date:   Mon, 15 Mar 2021 20:49:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S232958AbhCOPWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:22:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229703AbhCOPVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 11:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B00664E45;
+        Mon, 15 Mar 2021 15:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615821695;
+        bh=7eA2jOmALQBifeGCCZLfB7f+nnHFLR/kMJZ3ERyDZq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qFYFYh++JNd0c1XFJkfHGZvZpBKvSo61n4U0YVKTOfMkPmw75CJyBTO7XwforFA81
+         JBoPAro5qQ5Ge3+kKRz1/pznayHYr/IqW7ePpGnlGWnuHYmUqSj3fbLyORid8LU6bI
+         TkCo+s6JZNE1bFEaijEDhEZJHwaSM98Ifho/hxzGNpIjj2DldDQBDwTrPk7239vsPE
+         3MskxVRJbXrt9+GaKJwT3d3dXYF/QOf3Myab8BkiC48Ic2P5fSYVFTd0wn5BgKJHnU
+         xj5ruO2xcJiCJuySoBXLV4h7mCU5TQPDJziGXXWNQJ0fpBuVrY2PdI9gehO1eOiQQI
+         Wh+g+78H0terA==
+Date:   Mon, 15 Mar 2021 15:20:19 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, David Collins <collinsd@codeaurora.org>
+Subject: Re: [PATCH V2 0/5] Add PM7325/PM8350C/PMR735A regulator support
+Message-ID: <20210315152019.GB4595@sirena.org.uk>
+References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <8cdf1cfa971945792b509a687a4de735@walle.cc>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 978b7207-e4aa-44bc-8940-08d8e7c5ad41
-X-MS-TrafficTypeDiagnostic: BN8PR12MB4771:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB4771A8689FEC4809C63D1B72A76C9@BN8PR12MB4771.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kBUABiybkWxBonhgdAOdcpEF3wZg+Pzin3it1O/VdbKnYlExSS6z3j0rOpxoNbRCLmkHFpyW1Ecy0I4y7bVJjqvx31LL5upkkGRK3j9tze7xsShrrn2R1DoJgwLDq5HKkvVtHaJv6g/5aG/B0hMlwWKnAJ8AO20rn7gwnlrvXXzJy5cId3+hWWKEoBqu4nzpcXutabNS9mbJZr3g/lGd/5ntIM87LOLQfO0fG2UDBgRur5oGFqyDFXWcxMiRn4xTlkGBO1gtr06EVhDf3J+GGwhDaTLUkHYq85KOcTVuo7zSSsoHrfzFooIg+529ORObZ6FT4zbHwB0xasLawnWLxw7ghoYg+NIN9AZaC8UgsxTEf6XvC1/yuHx6Vw8HYN0nwYicazh/t3VorNp7RfXN7s8jFmOqC3PP9lRaOHlfWubkygdMK4LVdzFdVN0vK0RzoIMIbUndWs19jSaJOXeGtVT+JCNooarTfdZGnAd4yatXbUF31Cu0/uNM/F0C9iPqUvFHAVVS0C6/VirRMGJ6d+7acE6PKqYQgA6OPkYDjKUE15K4zbOIuDHc2S/bf1sghaXzP0AKTxuxkWwfPwfeTVE6issV/pmzki8c7xKvkqr5MCkGJos7r8tZpFMBG7zBBPjnSaZeAGZdquTTS0kFYom/YE+bTeXiSAd5hsFaqjQOlpVvycZlsx0DeE/wd8I0hdIUo2zYCQ7GE1ZOdDCwlMdyHEcHRs0TYF8/fiSeRf8=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(36840700001)(46966006)(110136005)(70586007)(36906005)(82310400003)(316002)(186003)(36756003)(16526019)(47076005)(54906003)(16576012)(70206006)(2906002)(86362001)(2616005)(31696002)(8936002)(4326008)(82740400003)(356005)(426003)(5660300002)(336012)(26005)(53546011)(36860700001)(478600001)(31686004)(8676002)(83380400001)(7636003)(34020700004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 15:19:07.3212
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 978b7207-e4aa-44bc-8940-08d8e7c5ad41
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB4771
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
+Content-Disposition: inline
+In-Reply-To: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+X-Cookie: Close cover before striking.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--24zk1gE8NUlDmwG9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/15/2021 5:35 PM, Michael Walle wrote:
-> External email: Use caution opening links or attachments
->
->
-> Am 2021-03-12 14:46, schrieb Mark Brown:
->> On Fri, Mar 12, 2021 at 01:30:02PM +0100, Michael Walle wrote:
->>
->>> The card calls set_sysclk(), which eventually ends up in the codec.
->>> The codec therefore, could figure out if it needs to configure the
->>> clock or if it can use its internal FLL.
->>> Is that what you mean?
->>
->> Yes.
->>
->>> But the set_sysclk() of the codec isn't even called, because the
->>> card itself already tries to call clk_set_rate() on the Codec's MCLK,
->>> which returns with an error [0].
->>
->> OK, so I think we need to push this down a level so that the clock
->> setting is implemented by the core/CODEC rather than by simple-card,
->> with the helpers being something the CODEC can opt out of.
->
-> Sameer, it looks like the proper fix should be to add the clock
-> support to your codec.
+On Mon, Mar 15, 2021 at 07:24:09PM +0530, satya priya wrote:
+> Below patches are already picked
+> [3/7] regulator: qcom-rpmh: Correct the pmic5_hfsmps515 buck
+> [6/7] regulator: qcom-rpmh: Use correct buck for S1C regulator
 
-I agree that complicated clock relationships should be handled within 
-the codec itself, however MCLK rate setting depends on "mclk-fs" factor 
-and this property is specified as part of simple-card/audio-graph-card 
-codec subnode. Right now codec, in general, does not have a way to know 
-this. The set_sysclk() callback takes rate argument and not the factor. 
-Moreover the same codec is used by other platform vendors too and unless 
-a new DT property is added for codec, runtime MCLK update based on the 
-scaling factor cannot be supported. This would mean that we will be 
-having two methods to specify "mclk-fs" factor, one from 
-simple-card/audio-graph-card and one from respective codec nodes, which 
-does not seem ideal.
+Please do not submit new versions of already applied patches, please
+submit incremental updates to the existing code.  Modifying existing
+commits creates problems for other users building on top of those
+commits so it's best practice to only change pubished git commits if
+absolutely essential.
 
-Also it does not seem consistent with the way we handle MCLK clock based 
-on where it is specified.
+--24zk1gE8NUlDmwG9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-   a) If specified in simple-card/audio-graph-card, MCLK clock 
-rate/enable/disable updates are allowed.
+-----BEGIN PGP SIGNATURE-----
 
-   b) If specified in codec device node, it is not expected to touch the 
-MCLK clock. This patch tried to treat it the same way as (a) does. 
-Advantage of this is, all codec drivers need not explicitly handle MCLK, 
-instead it is done at a central place. The platforms which use specific 
-machine drivers do the same and that is why probably the codec driver 
-patch was never required. It is about just setting MCLK clock as a 
-factor of sample rate, whenever the factor is available. I understand 
-that it is breaking your use case, but I am not sure if the usage of 
-set_sysclk() is consistent. I mean, it takes the "freq" argument. Does 
-it refer to MCLK rate or system-clock (sysclk) rate? MCLK and sysclk are 
-not really the same when codec PLL is involved. So I would like to 
-understand clearly about what "freq" argument means. Also when "mclk-fs" 
-factor is specified, is it related to MCLK or sysclk? My understanding 
-is that it should be strictly viewed as related to MCLK.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBPezMACgkQJNaLcl1U
+h9BF1Af+KEPuzg138g/HoYKia5LJ6Cdyk4fa3fVVHcVFXlsXmQHM22Mp3Tf28e/X
+lIM9+E/H0bTB24qIAAVKZvGizf34EIjD0ykWcEwQyObDqmuB9u7mtDCKiiy7HaOw
+J/Ia3B7o/QSrHaFQitLPytDIDN2PROBKhpB29QWj1rLSdnllgmjBv+vHLOj5VCC0
+FqZ/YroEo9Ii5GsFVp9lGmlrKjAjyDTVt9aXwMgJH3xrcTUfDgolLcdQPLxc8ssU
+pbwVLlWJ4FWYpqqjaEEFp942ThfCy6V4SPSNBSr6LJHhIYxtNVGEVkk1XT0GyKCZ
+0fiPtsP7Jd2dfi3rWc5kui9dEStp0Q==
+=TFHb
+-----END PGP SIGNATURE-----
 
-
-Does it help if a separate helper is used for audio-graph-card with 
-current change and reverting the simple-card to its previous state?
-Morimoto-san, does it affect any other users of audio-graph-card?
-
->
-> I've also looked at other users of "simple-audio-card" and
-> it looks like they will break too. For example,
-> - arch/arm64/boot/dts/rockchip/rk3399.dtsi
->     If I'm not mistaken, this will try to set the first clock
->     of hdmi@ff940000 there, which is "iahb".
-> - arch/arm/boot/dts/sun8i-a33.dtsi
->     There "&ccu CLK_BUS_CODEC" of codec@1c22e00 will be changed
->
-> And it doesn't stop there, it also sets the first clock
-> of the CPU endpoint, which I guess just works because .set_rate
-> is a noop for the most clocks which are used there.
-
-Yes this is a problem, unfortunately I missed checking some of the 
-simple-card examples. I wonder we should be specifically looking for 
-"mclk" clock here.
+--24zk1gE8NUlDmwG9--
