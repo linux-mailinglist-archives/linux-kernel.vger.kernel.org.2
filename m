@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A278333BE25
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE0C33BC60
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237033AbhCOOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49718 "EHLO mail.kernel.org"
+        id S234094AbhCOOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234466AbhCOODY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5646764EEF;
-        Mon, 15 Mar 2021 14:03:22 +0000 (UTC)
+        id S232799AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001CC64F2A;
+        Mon, 15 Mar 2021 13:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817004;
-        bh=53IlfbVNqOlyDdD4cFDUvx5We7nCRPWzMldJuRJZDQ8=;
+        s=korg; t=1615816778;
+        bh=F8v/l4JLCdnX/eiCX8y5Gw/EUzGL9RdcWID8SrzuYGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=miNxdrdQpySSLWLHhuMyUl0l/9w4jypCK3zYUPWBV8Ki5C7QXLUaEtLHnO9NONsO9
-         l8C3cAGxjqooG9hJy/GXy4WI2n0CqkH5DxVclzhKM3ZdZV35eo5bFzZpwm1MkgHucf
-         sdsXrWXVSI5d1lTWLv+ycKVWYVYpAYzN3u7Bs+NU=
+        b=VBYjHek8drdFd5ZTKsOHt85iKyysT22q91GXzZODnx5IBrEd5QHQHuqa61AGbVWnz
+         XKrbu5xVWW5DDlGGUc9brq1TG782GlIhO0oEnw+26ETBVFkdwaHSbS/vnvOcE+3tAa
+         odCtz16wQM7oEqtKPkdecAzQ22aOfpZUU8Jf2oKM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 242/290] cpufreq: qcom-hw: fix dereferencing freed memory data
+        stable@vger.kernel.org, Yorick de Wid <ydewid@gmail.com>
+Subject: [PATCH 5.4 103/168] Goodix Fingerprint device is not a modem
 Date:   Mon, 15 Mar 2021 14:55:35 +0100
-Message-Id: <20210315135550.188289628@linuxfoundation.org>
+Message-Id: <20210315135553.754818908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +40,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Yorick de Wid <ydewid@gmail.com>
 
-[ Upstream commit 02fc409540303801994d076fcdb7064bd634dbf3 ]
+commit 4d8654e81db7346f915eca9f1aff18f385cab621 upstream.
 
-Commit 67fc209b527d ("cpufreq: qcom-hw: drop devm_xxx() calls from
-init/exit hooks") introduces an issue of dereferencing freed memory
-'data'.  Fix it.
+The CDC ACM driver is false matching the Goodix Fingerprint device
+against the USB_CDC_ACM_PROTO_AT_V25TER.
 
-Fixes: 67fc209b527d ("cpufreq: qcom-hw: drop devm_xxx() calls from init/exit hooks")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The Goodix Fingerprint device is a biometrics sensor that should be
+handled in user-space. libfprint has some support for Goodix
+fingerprint sensors, although not for this particular one. It is
+possible that the vendor allocates a PID per OEM (Lenovo, Dell etc).
+If this happens to be the case then more devices from the same vendor
+could potentially match the ACM modem module table.
+
+Signed-off-by: Yorick de Wid <ydewid@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210213144901.53199-1-ydewid@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cpufreq/qcom-cpufreq-hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 2726e77c9e5a..5cdd20e38771 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -368,7 +368,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- error:
- 	kfree(data);
- unmap_base:
--	iounmap(data->base);
-+	iounmap(base);
- release_region:
- 	release_mem_region(res->start, resource_size(res));
- 	return ret;
--- 
-2.30.1
-
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1941,6 +1941,11 @@ static const struct usb_device_id acm_id
+ 	.driver_info = SEND_ZERO_PACKET,
+ 	},
+ 
++	/* Exclude Goodix Fingerprint Reader */
++	{ USB_DEVICE(0x27c6, 0x5395),
++	.driver_info = IGNORE_DEVICE,
++	},
++
+ 	/* control interfaces without any protocol set */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
+ 		USB_CDC_PROTO_NONE) },
 
 
