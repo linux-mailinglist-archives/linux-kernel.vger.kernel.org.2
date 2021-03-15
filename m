@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB8333A99A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B033A99C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCOCZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 22:25:21 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:57398 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhCOCY7 (ORCPT
+        id S229814AbhCOCZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 22:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229735AbhCOCZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 22:24:59 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.228])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 91A5F4001C7;
-        Mon, 15 Mar 2021 10:24:55 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V2] ata: sata_highbank: delete redundant print and fix return value
-Date:   Mon, 15 Mar 2021 10:24:49 +0800
-Message-Id: <1615775089-31211-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHx9IHktMQ0lNTR1DVkpNSk5MTE5LQk5DTU5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6My46GBw6Sj8QH1Y2FwMLPwFN
-        Kj4wFBBVSlVKTUpOTExOS0JNTEpPVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUNZV1kIAVlBSk5JSjcG
-X-HM-Tid: 0a7833b35becd991kuws91a5f4001c7
+        Sun, 14 Mar 2021 22:25:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DCBC061574;
+        Sun, 14 Mar 2021 19:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Zo25TViFb81hk3lk4Uw9qQi3ea6GhYd1rPSkag+BnRc=; b=GlMnf2+kuE1WGmRpU22/CTRWYP
+        qOCHzzAbZ8v+xxmcn8RxJi/7MlKBRewgV13BUDaapGvPHY9D1hfGtHchO9vpvg6TyQvV2CKj9L4lO
+        /+Nvv8PToafMk8+cj8XD0LrFyQ/+roVwtzuJhBAYCfEE8sC9nfvkeRKrBWW4XzPyTvqoDWyqLuU0C
+        kOpyMgLaafOu1ZGqkrJGL8HD5fhY6jCyUqRUxU/N2G1sCHbOnykrEvhFBLpAOcQKc6LG7JUiQDAFR
+        3WDNIlSymKF2ZYmW8nwRRQkNOABmdIpEdXm/ESoUzLyDX10F+umq4j6SNa4fZjO2ycf9u+dz7R5bb
+        Z8jDgLkg==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLcur-001FO4-EC; Mon, 15 Mar 2021 02:25:18 +0000
+Subject: Re: [PATCH] scsi: Mundane spelling fixes in the file qla1280.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mdr@sgi.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210315021610.2089087-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <410164a3-d00f-f2bf-3eb2-49a163add143@infradead.org>
+Date:   Sun, 14 Mar 2021 19:25:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210315021610.2089087-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_irq() has already checked and printed the return value, 
-the printing here is nothing special, and should corrected to < 0.
+On 3/14/21 7:16 PM, Bhaskar Chowdhury wrote:
+> 
+> s/quantites/quantities/
+> s/Unfortunely/Unfortunately/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Also, thhe return value should return a real error.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/ata/sata_highbank.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-index 64b2ef1..a43d42a
---- a/drivers/ata/sata_highbank.c
-+++ b/drivers/ata/sata_highbank.c
-@@ -469,10 +469,8 @@ static int ahci_highbank_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
--		dev_err(dev, "no irq\n");
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
- 	if (!hpriv) {
+> ---
+>  drivers/scsi/qla1280.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
+> index 46de2541af25..95008811b2d2 100644
+> --- a/drivers/scsi/qla1280.c
+> +++ b/drivers/scsi/qla1280.c
+> @@ -633,13 +633,13 @@ static int qla1280_read_nvram(struct scsi_qla_host *ha)
+>  	 * to be read a word (two bytes) at a time.
+>  	 *
+>  	 * The net result of this would be that the word (and
+> -	 * doubleword) quantites in the firmware would be correct, but
+> +	 * doubleword) quantities in the firmware would be correct, but
+>  	 * the bytes would be pairwise reversed.  Since most of the
+> -	 * firmware quantites are, in fact, bytes, we do an extra
+> +	 * firmware quantities are, in fact, bytes, we do an extra
+>  	 * le16_to_cpu() in the firmware read routine.
+>  	 *
+>  	 * The upshot of all this is that the bytes in the firmware
+> -	 * are in the correct places, but the 16 and 32 bit quantites
+> +	 * are in the correct places, but the 16 and 32 bit quantities
+>  	 * are still in little endian format.  We fix that up below by
+>  	 * doing extra reverses on them */
+>  	nv->isp_parameter = cpu_to_le16(nv->isp_parameter);
+> @@ -687,7 +687,7 @@ qla1280_info(struct Scsi_Host *host)
+>   * The mid-level driver tries to ensures that queuecommand never gets invoked
+>   * concurrently with itself or the interrupt handler (although the
+>   * interrupt handler may call this routine as part of request-completion
+> - * handling).   Unfortunely, it sometimes calls the scheduler in interrupt
+> + * handling).   Unfortunately, it sometimes calls the scheduler in interrupt
+>   * context which is a big NO! NO!.
+>   **************************************************************************/
+>  static int
+> --
+
+
 -- 
-2.7.4
+~Randy
 
