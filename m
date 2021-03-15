@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD0433BA07
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D0033BB45
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhCOOHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:07:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
+        id S232465AbhCOOOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232153AbhCON6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A074C64EEA;
-        Mon, 15 Mar 2021 13:58:08 +0000 (UTC)
+        id S232537AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15CA864EF2;
+        Mon, 15 Mar 2021 13:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816689;
-        bh=tnvY97k84FCuZTlndV/VfCQ55IreuQGDDrGmasdb/Dg=;
+        s=korg; t=1615816726;
+        bh=4dxnC+z2O23rt+e3NSTNQYUyj91ckyhJEtphZAoFisM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lwDWvt31csbJMlVnFZDdPxsJwLapKrRT8fw4JUmLOcMq+YgZyLs6e28wOe5a//ZM8
-         hpjaeA8gRSxNtdWKtwyt+sE3Enr8NgMNwmgBUAjIeMCYwitdWW9GK0V322+L3ukMnJ
-         4Z8izFgZWbBp+W1UicL5v1DBLm/KNvTCgOOMTdYQ=
+        b=oXYgtgrPtcSGFWr1Ev1ol2xW8hvQRf8oGEAjv7AGXbBpCKmeZDDl9GGk6JXXYLg8J
+         qi0jQBjG7ia93m95vXi03Bo7MxPKOEJ+G8Z5Hvg4qzvpeY08oH/H+6lsFqArbSnuSM
+         iXojKRvh6O1OeNatHDJ7PNhDcsTdyqcn/xeclEuk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 057/290] net: davicom: Fix regulator not turned off on failed probe
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.11 087/306] perf traceevent: Ensure read cmdlines are null terminated.
 Date:   Mon, 15 Mar 2021 14:52:30 +0100
-Message-Id: <20210315135543.857813815@linuxfoundation.org>
+Message-Id: <20210315135510.589878830@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +47,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Ian Rogers <irogers@google.com>
 
-commit ac88c531a5b38877eba2365a3f28f0c8b513dc33 upstream.
+commit 137a5258939aca56558f3a23eb229b9c4b293917 upstream.
 
-When the probe fails or requests to be defered, we must disable the
-regulator that was previously enabled.
+Issue detected by address sanitizer.
 
-Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: cd4ceb63438e9e28 ("perf util: Save pid-cmdline mapping into tracing header")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20210226221431.1985458-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/davicom/dm9000.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ tools/perf/util/trace-event-read.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/davicom/dm9000.c
-+++ b/drivers/net/ethernet/davicom/dm9000.c
-@@ -1452,7 +1452,7 @@ dm9000_probe(struct platform_device *pde
- 		if (ret) {
- 			dev_err(dev, "failed to request reset gpio %d: %d\n",
- 				reset_gpios, ret);
--			return -ENODEV;
-+			goto out_regulator_disable;
- 		}
- 
- 		/* According to manual PWRST# Low Period Min 1ms */
-@@ -1464,8 +1464,10 @@ dm9000_probe(struct platform_device *pde
- 
- 	if (!pdata) {
- 		pdata = dm9000_parse_dt(&pdev->dev);
--		if (IS_ERR(pdata))
--			return PTR_ERR(pdata);
-+		if (IS_ERR(pdata)) {
-+			ret = PTR_ERR(pdata);
-+			goto out_regulator_disable;
-+		}
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep
+ 		pr_debug("error reading saved cmdlines\n");
+ 		goto out;
  	}
++	buf[ret] = '\0';
  
- 	/* Init network device */
-@@ -1706,6 +1708,10 @@ out:
- 	dm9000_release_board(pdev, db);
- 	free_netdev(ndev);
- 
-+out_regulator_disable:
-+	if (!IS_ERR(power))
-+		regulator_disable(power);
-+
- 	return ret;
- }
- 
+ 	parse_saved_cmdline(pevent, buf, size);
+ 	ret = 0;
 
 
