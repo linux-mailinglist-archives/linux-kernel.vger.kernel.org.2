@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A833BB77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8ABB33BAEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbhCOORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S235788AbhCOOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232678AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4766264EF1;
-        Mon, 15 Mar 2021 13:59:05 +0000 (UTC)
+        id S231607AbhCON6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB8C64EEA;
+        Mon, 15 Mar 2021 13:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816746;
-        bh=nIwUgDOLL2c8zwazcszFb2BB1poTBLVOUSx3BnSxp2U=;
+        s=korg; t=1615816694;
+        bh=Xk9+kiKIVX/VLiSUJjoMtHK/Y9B9QpbPvXQS2I+efpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KbbEwyknlRf27SR99VJ7wjHsNdJmccihtGqNhSuWNs48be7eA3LpnTfQBahPJXd2M
-         eaSxqFFffRIK4FIWob4FX0ATUfJoPgCmMOxCjeHXLuCtp9sa6KrWD/DaRGiJnfFGLc
-         OCyB1rTI3bAK2CY9yIhr8ZL0w6kHF84qe/nAiGPU=
+        b=vj8PxwQnmkViV0ncNZQuJuo79ZfzFb8gqpsX8myi2IFf5D0PvIRyzA+ZNdo6ZM34O
+         gxroYs9jwJT/LdiLYwTzDHJ23j4kD3psnCFZVKSAOJr0X4U6fK10VVfH3Mb8ktHmR2
+         f21yC37f6q6Yq1naJu3SzC/XnZ1NgSh4Ls1Z6kZ4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 042/120] i2c: rcar: optimize cacheline to minimize HW race condition
+        stable@vger.kernel.org, Martin Kennedy <hurricos@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.14 03/95] ath9k: fix transmitting to stations in dynamic SMPS mode
 Date:   Mon, 15 Mar 2021 14:56:33 +0100
-Message-Id: <20210315135721.375066654@linuxfoundation.org>
+Message-Id: <20210315135740.369326267@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +41,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 25c2e0fb5fefb8d7847214cf114d94c7aad8e9ce ]
+commit 3b9ea7206d7e1fdd7419cbd10badd3b2c80d04b4 upstream.
 
-'flags' and 'io' are needed first, so they should be at the beginning of
-the private struct.
+When transmitting to a receiver in dynamic SMPS mode, all transmissions that
+use multiple spatial streams need to be sent using CTS-to-self or RTS/CTS to
+give the receiver's extra chains some time to wake up.
+This fixes the tx rate getting stuck at <= MCS7 for some clients, especially
+Intel ones, which make aggressive use of SMPS.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Martin Kennedy <hurricos@gmail.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210214184911.96702-1-nbd@nbd.name
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-rcar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/ath9k.h |    3 ++-
+ drivers/net/wireless/ath/ath9k/xmit.c  |    6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index f9029800d399..3ea2ceec676c 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -117,6 +117,7 @@ enum rcar_i2c_type {
- };
+--- a/drivers/net/wireless/ath/ath9k/ath9k.h
++++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+@@ -179,7 +179,8 @@ struct ath_frame_info {
+ 	s8 txq;
+ 	u8 keyix;
+ 	u8 rtscts_rate;
+-	u8 retries : 7;
++	u8 retries : 6;
++	u8 dyn_smps : 1;
+ 	u8 baw_tracked : 1;
+ 	u8 tx_power;
+ 	enum ath9k_key_type keytype:2;
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -1314,6 +1314,11 @@ static void ath_buf_set_rate(struct ath_
+ 				 is_40, is_sgi, is_sp);
+ 			if (rix < 8 && (tx_info->flags & IEEE80211_TX_CTL_STBC))
+ 				info->rates[i].RateFlags |= ATH9K_RATESERIES_STBC;
++			if (rix >= 8 && fi->dyn_smps) {
++				info->rates[i].RateFlags |=
++					ATH9K_RATESERIES_RTS_CTS;
++				info->flags |= ATH9K_TXDESC_CTSENA;
++			}
  
- struct rcar_i2c_priv {
-+	u32 flags;
- 	void __iomem *io;
- 	struct i2c_adapter adap;
- 	struct i2c_msg *msg;
-@@ -127,7 +128,6 @@ struct rcar_i2c_priv {
- 
- 	int pos;
- 	u32 icccr;
--	u32 flags;
- 	u8 recovery_icmcr;	/* protected by adapter lock */
- 	enum rcar_i2c_type devtype;
- 	struct i2c_client *slave;
--- 
-2.30.1
-
+ 			info->txpower[i] = ath_get_rate_txpower(sc, bf, rix,
+ 								is_40, false);
+@@ -2178,6 +2183,7 @@ static void setup_frame_info(struct ieee
+ 		fi->keyix = an->ps_key;
+ 	else
+ 		fi->keyix = ATH9K_TXKEYIX_INVALID;
++	fi->dyn_smps = sta && sta->smps_mode == IEEE80211_SMPS_DYNAMIC;
+ 	fi->keytype = keytype;
+ 	fi->framelen = framelen;
+ 	fi->tx_power = txpower;
 
 
