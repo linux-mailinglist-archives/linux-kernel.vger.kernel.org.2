@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6D033B01D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479E33B024
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhCOKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhCOKjd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:39:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23351C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:39:32 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 420AA1F45CDA
-Subject: Re: [PATCH 04/23] ASoC: cros_ec_codec: remove null pointer
- dereference warning
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Benson Leung <bleung@chromium.org>
-References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
- <20210312182246.5153-5-pierre-louis.bossart@linux.intel.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <dd3fd255-4397-80d6-2114-3b37b5be5c08@collabora.com>
-Date:   Mon, 15 Mar 2021 11:39:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229675AbhCOKlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhCOKlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:41:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D581964E12;
+        Mon, 15 Mar 2021 10:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615804873;
+        bh=jemw6Q+9tGFKBMg01Wj15A1Cf1dSvnBxLZLbIMDh/cs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UoKXRcRoKfKWLN+JjkIsnp2hEgi72G1v9sRFzRP5W9J8MctCTKE4a9WwTiNpw9RoL
+         wsxxXyklXfn1KXqesUl5D0QH4dcAQD6I3pm6qastJ1hn6fwunjzaBl6EJ88vGLH0aZ
+         rioFk7WnnW3Ayj/68ZdrqzbMUpnKVrKQF1mvlONAYORCJ58v1V+M9RlW+5u66NR4Zm
+         Vzqfg32a3e1TCF1+dOE5Ja9Ju59AZftQANad/pIr/ko4uev83XTm/qgHw1D89Q/3oU
+         DSoAvqRBIf4l68g6PBJkac2f7q2jDtSRaH99vurg4cnylgGkXICT7P5FQK7SlT3+OJ
+         l7i/4nmoU3dPg==
+Date:   Mon, 15 Mar 2021 16:11:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        linux-phy@lists.infradead.org, Vivek Unune <npcomplete13@gmail.com>
+Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
+Message-ID: <YE85xs+HX5UUXlXo@vkoul-mobl>
+References: <20201116074650.16070-1-zajec5@gmail.com>
+ <ed093ddb-da37-c3c4-cdd9-3b8e8db776bb@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210312182246.5153-5-pierre-louis.bossart@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed093ddb-da37-c3c4-cdd9-3b8e8db776bb@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre-Louis,
-
-Thank you for you patch.
-
-On 12/3/21 19:22, Pierre-Louis Bossart wrote:
-> Cppcheck complains of a possible issue:
+On 11-03-21, 21:31, Rafał Miłecki wrote:
+> Hi,
 > 
-> sound/soc/codecs/cros_ec_codec.c:98:10: warning: Possible null pointer
-> dereference: in [nullPointer]
->   memcpy(in, msg->data, insize);
->          ^
-> sound/soc/codecs/cros_ec_codec.c:162:34: note: Calling function
-> 'send_ec_host_command', 5th argument 'NULL' value is 0
->        (uint8_t *)&p, sizeof(p), NULL, 0);
->                                  ^
-> sound/soc/codecs/cros_ec_codec.c:98:10: note: Null pointer dereference
->   memcpy(in, msg->data, insize);
->          ^
+> On 16.11.2020 08:46, Rafał Miłecki wrote:
+> > From: Rafał Miłecki <rafal@milecki.pl>
+> > 
+> > 1. Change syntax from txt to yaml
+> > 2. Drop "Driver for" from the title
+> > 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
+> > 4. Specify license
+> > 
+> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> > ---
+> > I think this should go through linux-phy tree. Kishon, Vinod, can you
+> > take this patch?
+> > 
+> > This patch generates a false positive checkpatch.pl warning [0].
+> > Please ignore:
+> > WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+> > 
+> > [0] https://lkml.org/lkml/2020/2/18/1084
 > 
-> In practice the access to the pointer is protected by another
-> argument, but this is likely to fool other static analysis tools. Add
-> a test to avoid doing the memcpy if the pointer is NULL or the size is
-> zero.
+> Kishon, Vinod: I sent this patch back in December, it was Reviewed-by
+> Rob, but never accepted.
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Could you push this patch to the linux-phy.git?
 
-Looks good to me, so
+Can you please rebase and resent me this patch. I am trying to
+streamline patches now using phy ml and pw instance so that we dont miss
+anything..
 
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Thanks
 
-
-> ---
->  sound/soc/codecs/cros_ec_codec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> index c4772f82485a..a201d652aca2 100644
-> --- a/sound/soc/codecs/cros_ec_codec.c
-> +++ b/sound/soc/codecs/cros_ec_codec.c
-> @@ -94,7 +94,7 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
->  	if (ret < 0)
->  		goto error;
->  
-> -	if (insize)
-> +	if (in && insize)
->  		memcpy(in, msg->data, insize);
->  
->  	ret = 0;
-> 
+-- 
+~Vinod
