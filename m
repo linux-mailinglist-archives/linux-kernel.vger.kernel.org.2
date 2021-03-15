@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946FD33BBAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A5233BBB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237735AbhCOOTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S232892AbhCOOUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232685AbhCON7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F5164F1A;
-        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
+        id S232781AbhCON74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 321EF64EEF;
+        Mon, 15 Mar 2021 13:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816774;
-        bh=5EHHy+RI8mq93sT8v8wO7Z8g+xB42XGaRZ8h7umuZbU=;
+        s=korg; t=1615816776;
+        bh=6oitWgIH5mIY2SE+wNaQ6r+GtKwh0skbfozHpeWqKuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8MiS2zsLGQZ4E7kd4VuBAxUxv05LoZBDThBI/Oi/ectpgwj5sqkBlN8dkFw5iOdr
-         vT54vWzjOJ3AJ0Sd3Pa1TaNJhmIiKdsF3td/ATZaKbJN5DJSs4LXu58qWtOT1SbbkI
-         j0Fj1558Mol/fzs0wgf1D257P9ANNerVl96IzH6g=
+        b=gwdakz/8Gn7JJUy8nasTpPbAa9LtHMStKQNnecFdvqaeReUaVuUoqUvW6pSQmhhrv
+         XNlsFSB+UVwLWsdr+uq8w3de0J9zxVuFVcuP2vsdsDpQXRmPh/xbBVqjl54v8Ebd/n
+         YKV0YAn8TZtMwWuc88ZiXLIRBMV9pF8+6V7jO73w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 107/290] cifs: fix credit accounting for extra channel
-Date:   Mon, 15 Mar 2021 14:53:20 +0100
-Message-Id: <20210315135545.522200360@linuxfoundation.org>
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 108/290] net: hns3: fix error mask definition of flow director
+Date:   Mon, 15 Mar 2021 14:53:21 +0100
+Message-Id: <20210315135545.553699274@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,64 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-commit a249cc8bc2e2fed680047d326eb9a50756724198 upstream.
+[ Upstream commit ae85ddda0f1b341b2d25f5a5e0eff1d42b6ef3df ]
 
-With multichannel, operations like the queries
-from "ls -lR" can cause all credits to be used and
-errors to be returned since max_credits was not
-being set correctly on the secondary channels and
-thus the client was requesting 0 credits incorrectly
-in some cases (which can lead to not having
-enough credits to perform any operation on that
-channel).
+Currently, some bit filed definitions of flow director TCAM
+configuration command are incorrect. Since the wrong MSB is
+always 0, and these fields are assgined in order, so it still works.
 
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-CC: <stable@vger.kernel.org> # v5.8+
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix it by redefine them.
+
+Fixes: 117328680288 ("net: hns3: Add input key and action config support for flow director")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c |   10 +++++-----
- fs/cifs/sess.c    |    1 +
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -2629,6 +2629,11 @@ smbd_connected:
- 	tcp_ses->min_offload = volume_info->min_offload;
- 	tcp_ses->tcpStatus = CifsNeedNegotiate;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+index 096e26a2e16b..36690fc5c1af 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+@@ -1031,16 +1031,16 @@ struct hclge_fd_tcam_config_3_cmd {
+ #define HCLGE_FD_AD_DROP_B		0
+ #define HCLGE_FD_AD_DIRECT_QID_B	1
+ #define HCLGE_FD_AD_QID_S		2
+-#define HCLGE_FD_AD_QID_M		GENMASK(12, 2)
++#define HCLGE_FD_AD_QID_M		GENMASK(11, 2)
+ #define HCLGE_FD_AD_USE_COUNTER_B	12
+ #define HCLGE_FD_AD_COUNTER_NUM_S	13
+ #define HCLGE_FD_AD_COUNTER_NUM_M	GENMASK(20, 13)
+ #define HCLGE_FD_AD_NXT_STEP_B		20
+ #define HCLGE_FD_AD_NXT_KEY_S		21
+-#define HCLGE_FD_AD_NXT_KEY_M		GENMASK(26, 21)
++#define HCLGE_FD_AD_NXT_KEY_M		GENMASK(25, 21)
+ #define HCLGE_FD_AD_WR_RULE_ID_B	0
+ #define HCLGE_FD_AD_RULE_ID_S		1
+-#define HCLGE_FD_AD_RULE_ID_M		GENMASK(13, 1)
++#define HCLGE_FD_AD_RULE_ID_M		GENMASK(12, 1)
  
-+	if ((volume_info->max_credits < 20) || (volume_info->max_credits > 60000))
-+		tcp_ses->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
-+	else
-+		tcp_ses->max_credits = volume_info->max_credits;
-+
- 	tcp_ses->nr_targets = 1;
- 	tcp_ses->ignore_signature = volume_info->ignore_signature;
- 	/* thread spawned, put it on the list */
-@@ -4077,11 +4082,6 @@ static int mount_get_conns(struct smb_vo
- 
- 	*nserver = server;
- 
--	if ((vol->max_credits < 20) || (vol->max_credits > 60000))
--		server->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
--	else
--		server->max_credits = vol->max_credits;
--
- 	/* get a reference to a SMB session */
- 	ses = cifs_get_smb_ses(server, vol);
- 	if (IS_ERR(ses)) {
---- a/fs/cifs/sess.c
-+++ b/fs/cifs/sess.c
-@@ -224,6 +224,7 @@ cifs_ses_add_channel(struct cifs_ses *se
- 	vol.noautotune = ses->server->noautotune;
- 	vol.sockopt_tcp_nodelay = ses->server->tcp_nodelay;
- 	vol.echo_interval = ses->server->echo_interval / HZ;
-+	vol.max_credits = ses->server->max_credits;
- 
- 	/*
- 	 * This will be used for encoding/decoding user/domain/pw
+ struct hclge_fd_ad_config_cmd {
+ 	u8 stage;
+-- 
+2.30.1
+
 
 
