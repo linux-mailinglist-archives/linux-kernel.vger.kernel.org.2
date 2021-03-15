@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD88733BC65
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021B133BCE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhCOOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S235276AbhCOOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:30:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232676AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A50C364EFD;
-        Mon, 15 Mar 2021 13:59:04 +0000 (UTC)
+        id S232131AbhCON6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FAA964F37;
+        Mon, 15 Mar 2021 13:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816745;
-        bh=RKfLxMnZv9tg3Hc6sF4mpRfKZdwysk6g59YZPb7FI2Q=;
+        s=korg; t=1615816712;
+        bh=+ptmoKpV4hlB21msSzO9E3KSI8JK5/TGAUnVA56A/VI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RzBJOYFa2FsFPiOkR4UT2DuulcKRczIe5ylc02v6QOGxX1kuMvnd4YzLXXMPRq7Xs
-         tGQypEe9gN6I6qMEgpkIq/9jDFM7aNHGigrGat2owuaQ8Di1rmxS5xJOcjwwyqt3Uk
-         rscF9ow8v3X33kJ/lALzB9bTZCCgAkHwbRJcFliw=
+        b=Ue5NmdQEIzhK3+sB6qYEXQEBFHNL/ZUmo83qUVf3hUJr9v1Egi+PSjU9VUUAC3mvP
+         tZkgjHMq44vwiNTW/0ywUrnshKeWxWza5BiRj8rq51mQWSgx7C9bPnchr21av9rnPW
+         HEqm/hWGOX09dai6kUCA6gd+KRdjM6jxfV+koj5Y=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Holger=20Hoffst=C3=A4tte?= 
-        <holger@applied-asynchrony.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 099/306] drm/amd/display: Fix nested FPU context in dcn21_validate_bandwidth()
-Date:   Mon, 15 Mar 2021 14:52:42 +0100
-Message-Id: <20210315135510.998406518@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 070/290] net: phy: make mdio_bus_phy_suspend/resume as __maybe_unused
+Date:   Mon, 15 Mar 2021 14:52:43 +0100
+Message-Id: <20210315135544.273556234@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +41,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Holger Hoffstätte <holger@applied-asynchrony.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 15e8b95d5f7509e0b09289be8c422c459c9f0412 upstream.
+commit 7f654157f0aefba04cd7f6297351c87b76b47b89 upstream.
 
-Commit 41401ac67791 added FPU wrappers to dcn21_validate_bandwidth(),
-which was correct. Unfortunately a nested function alredy contained
-DC_FP_START()/DC_FP_END() calls, which results in nested FPU context
-enter/exit and complaints by kernel_fpu_begin_mask().
-This can be observed e.g. with 5.10.20, which backported 41401ac67791
-and now emits the following warning on boot:
+When CONFIG_PM_SLEEP is disabled, the compiler warns about unused
+functions:
 
-WARNING: CPU: 6 PID: 858 at arch/x86/kernel/fpu/core.c:129 kernel_fpu_begin_mask+0xa5/0xc0
-Call Trace:
- dcn21_calculate_wm+0x47/0xa90 [amdgpu]
- dcn21_validate_bandwidth_fp+0x15d/0x2b0 [amdgpu]
- dcn21_validate_bandwidth+0x29/0x40 [amdgpu]
- dc_validate_global_state+0x3c7/0x4c0 [amdgpu]
+drivers/net/phy/phy_device.c:273:12: error: unused function 'mdio_bus_phy_suspend' [-Werror,-Wunused-function]
+static int mdio_bus_phy_suspend(struct device *dev)
+drivers/net/phy/phy_device.c:293:12: error: unused function 'mdio_bus_phy_resume' [-Werror,-Wunused-function]
+static int mdio_bus_phy_resume(struct device *dev)
 
-The warning is emitted due to the additional DC_FP_START/END calls in
-patch_bounding_box(), which is inlined into dcn21_calculate_wm(),
-its only caller. Removing the calls brings the code in line with
-dcn20 and makes the warning disappear.
+The logic is intentional, so just mark these two as __maybe_unused
+and remove the incorrect #ifdef.
 
-Fixes: 41401ac67791 ("drm/amd/display: Add FPU wrappers to dcn21_validate_bandwidth()")
-Signed-off-by: Holger Hoffstätte <holger@applied-asynchrony.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Fixes: 4c0d2e96ba05 ("net: phy: consider that suspend2ram may cut off PHY power")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20210225145748.404410-1-arnd@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/net/phy/phy_device.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -1062,8 +1062,6 @@ static void patch_bounding_box(struct dc
- {
- 	int i;
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -230,7 +230,6 @@ static struct phy_driver genphy_driver;
+ static LIST_HEAD(phy_fixup_list);
+ static DEFINE_MUTEX(phy_fixup_lock);
  
--	DC_FP_START();
--
- 	if (dc->bb_overrides.sr_exit_time_ns) {
- 		for (i = 0; i < WM_SET_COUNT; i++) {
- 			  dc->clk_mgr->bw_params->wm_table.entries[i].sr_exit_time_us =
-@@ -1088,8 +1086,6 @@ static void patch_bounding_box(struct dc
- 				dc->bb_overrides.dram_clock_change_latency_ns / 1000.0;
- 		}
- 	}
--
--	DC_FP_END();
+-#ifdef CONFIG_PM
+ static bool mdio_bus_phy_may_suspend(struct phy_device *phydev)
+ {
+ 	struct device_driver *drv = phydev->mdio.dev.driver;
+@@ -270,7 +269,7 @@ out:
+ 	return !phydev->suspended;
  }
  
- void dcn21_calculate_wm(
+-static int mdio_bus_phy_suspend(struct device *dev)
++static __maybe_unused int mdio_bus_phy_suspend(struct device *dev)
+ {
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 
+@@ -290,7 +289,7 @@ static int mdio_bus_phy_suspend(struct d
+ 	return phy_suspend(phydev);
+ }
+ 
+-static int mdio_bus_phy_resume(struct device *dev)
++static __maybe_unused int mdio_bus_phy_resume(struct device *dev)
+ {
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 	int ret;
+@@ -316,7 +315,6 @@ no_resume:
+ 
+ static SIMPLE_DEV_PM_OPS(mdio_bus_phy_pm_ops, mdio_bus_phy_suspend,
+ 			 mdio_bus_phy_resume);
+-#endif /* CONFIG_PM */
+ 
+ /**
+  * phy_register_fixup - creates a new phy_fixup and adds it to the list
 
 
