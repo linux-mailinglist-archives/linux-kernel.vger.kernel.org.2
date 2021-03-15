@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EACB33BA02
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6BD33B935
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhCOOHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:07:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S234758AbhCOOFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:05:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35DDB64F34;
-        Mon, 15 Mar 2021 13:58:06 +0000 (UTC)
+        id S231904AbhCON5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB72D64F05;
+        Mon, 15 Mar 2021 13:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816687;
-        bh=d4rfcoWz0mdYhPVDiWZkY387rotkC6Hrp5EMs2A8oZ0=;
+        s=korg; t=1615816653;
+        bh=rzT91xFi5CSgXz3amxkHUuCpim2XmCzSMYdvJbcna9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zuo4zMyE9cYeElkKVxhkuNrvKLms0/VvBQcXc+5EdmimLSYuLSNV6FpfnIvxdh3BA
-         pIYUQyFy6fK7LcZKOFtAFJWZdU5rKXCxGsUcMZRZTQsBEIVI3J1tNd+MdOJsfw9Wiw
-         L8jK3siX9W6zGyxHdBliuSHF4l5KSNMaANVrIE9g=
+        b=fq17ApAWspDrXVqXoxDOfD27u+aJze5sHXnLi9GhNMypO0HNjE61x9udCjPP+FZyR
+         7IbHvr2ty25gyYLq+smSIwnOUEQ65K9ZR4uk8qqCyf5Jbtc130hdb/O/5hsAV9WjOa
+         d4mO2c6XKl30DK3v6x4GTkBgzSZa3kNS0rwNfD6U=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 064/306] cipso,calipso: resolve a number of problems with the DOI refcounts
-Date:   Mon, 15 Mar 2021 14:52:07 +0100
-Message-Id: <20210315135509.808403923@linuxfoundation.org>
+Subject: [PATCH 5.10 035/290] net: dsa: tag_rtl4_a: fix egress tags
+Date:   Mon, 15 Mar 2021 14:52:08 +0100
+Message-Id: <20210315135543.109508081@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,134 +43,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paul Moore <paul@paul-moore.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-commit ad5d07f4a9cd671233ae20983848874731102c08 upstream.
+commit 9eb8bc593a5eed167dac2029abef343854c5ba75 upstream.
 
-The current CIPSO and CALIPSO refcounting scheme for the DOI
-definitions is a bit flawed in that we:
+Commit 86dd9868b878 has several issues, but was accepted too soon
+before anyone could take a look.
 
-1. Don't correctly match gets/puts in netlbl_cipsov4_list().
-2. Decrement the refcount on each attempt to remove the DOI from the
-   DOI list, only removing it from the list once the refcount drops
-   to zero.
+- Double free. dsa_slave_xmit() will free the skb if the xmit function
+  returns NULL, but the skb is already freed by eth_skb_pad(). Use
+  __skb_put_padto() to avoid that.
+- Unnecessary allocation. It has been done by DSA core since commit
+  a3b0b6479700.
+- A u16 pointer points to skb data. It should be __be16 for network
+  byte order.
+- Typo in comments. "numer" -> "number".
 
-This patch fixes these problems by adding the missing "puts" to
-netlbl_cipsov4_list() and introduces a more conventional, i.e.
-not-buggy, refcounting mechanism to the DOI definitions.  Upon the
-addition of a DOI to the DOI list, it is initialized with a refcount
-of one, removing a DOI from the list removes it from the list and
-drops the refcount by one; "gets" and "puts" behave as expected with
-respect to refcounts, increasing and decreasing the DOI's refcount by
-one.
-
-Fixes: b1edeb102397 ("netlabel: Replace protocol/NetLabel linking with refrerence counts")
-Fixes: d7cce01504a0 ("netlabel: Add support for removing a CALIPSO DOI.")
-Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/cipso_ipv4.c            |   11 +----------
- net/ipv6/calipso.c               |   14 +++++---------
- net/netlabel/netlabel_cipso_v4.c |    3 +++
- 3 files changed, 9 insertions(+), 19 deletions(-)
+ net/dsa/tag_rtl4_a.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -519,16 +519,10 @@ int cipso_v4_doi_remove(u32 doi, struct
- 		ret_val = -ENOENT;
- 		goto doi_remove_return;
- 	}
--	if (!refcount_dec_and_test(&doi_def->refcount)) {
--		spin_unlock(&cipso_v4_doi_list_lock);
--		ret_val = -EBUSY;
--		goto doi_remove_return;
--	}
- 	list_del_rcu(&doi_def->list);
- 	spin_unlock(&cipso_v4_doi_list_lock);
+--- a/net/dsa/tag_rtl4_a.c
++++ b/net/dsa/tag_rtl4_a.c
+@@ -35,14 +35,12 @@ static struct sk_buff *rtl4a_tag_xmit(st
+ 				      struct net_device *dev)
+ {
+ 	struct dsa_port *dp = dsa_slave_to_port(dev);
++	__be16 *p;
+ 	u8 *tag;
+-	u16 *p;
+ 	u16 out;
  
--	cipso_v4_cache_invalidate();
--	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
-+	cipso_v4_doi_putdef(doi_def);
- 	ret_val = 0;
+ 	/* Pad out to at least 60 bytes */
+-	if (unlikely(eth_skb_pad(skb)))
+-		return NULL;
+-	if (skb_cow_head(skb, RTL4_A_HDR_LEN) < 0)
++	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
+ 		return NULL;
  
- doi_remove_return:
-@@ -585,9 +579,6 @@ void cipso_v4_doi_putdef(struct cipso_v4
+ 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
+@@ -53,13 +51,13 @@ static struct sk_buff *rtl4a_tag_xmit(st
+ 	tag = skb->data + 2 * ETH_ALEN;
  
- 	if (!refcount_dec_and_test(&doi_def->refcount))
- 		return;
--	spin_lock(&cipso_v4_doi_list_lock);
--	list_del_rcu(&doi_def->list);
--	spin_unlock(&cipso_v4_doi_list_lock);
+ 	/* Set Ethertype */
+-	p = (u16 *)tag;
++	p = (__be16 *)tag;
+ 	*p = htons(RTL4_A_ETHERTYPE);
  
- 	cipso_v4_cache_invalidate();
- 	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
---- a/net/ipv6/calipso.c
-+++ b/net/ipv6/calipso.c
-@@ -83,6 +83,9 @@ struct calipso_map_cache_entry {
+ 	out = (RTL4_A_PROTOCOL_RTL8366RB << 12) | (2 << 8);
+-	/* The lower bits is the port numer */
++	/* The lower bits is the port number */
+ 	out |= (u8)dp->index;
+-	p = (u16 *)(tag + 2);
++	p = (__be16 *)(tag + 2);
+ 	*p = htons(out);
  
- static struct calipso_map_cache_bkt *calipso_cache;
- 
-+static void calipso_cache_invalidate(void);
-+static void calipso_doi_putdef(struct calipso_doi *doi_def);
-+
- /* Label Mapping Cache Functions
-  */
- 
-@@ -444,15 +447,10 @@ static int calipso_doi_remove(u32 doi, s
- 		ret_val = -ENOENT;
- 		goto doi_remove_return;
- 	}
--	if (!refcount_dec_and_test(&doi_def->refcount)) {
--		spin_unlock(&calipso_doi_list_lock);
--		ret_val = -EBUSY;
--		goto doi_remove_return;
--	}
- 	list_del_rcu(&doi_def->list);
- 	spin_unlock(&calipso_doi_list_lock);
- 
--	call_rcu(&doi_def->rcu, calipso_doi_free_rcu);
-+	calipso_doi_putdef(doi_def);
- 	ret_val = 0;
- 
- doi_remove_return:
-@@ -508,10 +506,8 @@ static void calipso_doi_putdef(struct ca
- 
- 	if (!refcount_dec_and_test(&doi_def->refcount))
- 		return;
--	spin_lock(&calipso_doi_list_lock);
--	list_del_rcu(&doi_def->list);
--	spin_unlock(&calipso_doi_list_lock);
- 
-+	calipso_cache_invalidate();
- 	call_rcu(&doi_def->rcu, calipso_doi_free_rcu);
- }
- 
---- a/net/netlabel/netlabel_cipso_v4.c
-+++ b/net/netlabel/netlabel_cipso_v4.c
-@@ -575,6 +575,7 @@ list_start:
- 
- 		break;
- 	}
-+	cipso_v4_doi_putdef(doi_def);
- 	rcu_read_unlock();
- 
- 	genlmsg_end(ans_skb, data);
-@@ -583,12 +584,14 @@ list_start:
- list_retry:
- 	/* XXX - this limit is a guesstimate */
- 	if (nlsze_mult < 4) {
-+		cipso_v4_doi_putdef(doi_def);
- 		rcu_read_unlock();
- 		kfree_skb(ans_skb);
- 		nlsze_mult *= 2;
- 		goto list_start;
- 	}
- list_failure_lock:
-+	cipso_v4_doi_putdef(doi_def);
- 	rcu_read_unlock();
- list_failure:
- 	kfree_skb(ans_skb);
+ 	return skb;
 
 
