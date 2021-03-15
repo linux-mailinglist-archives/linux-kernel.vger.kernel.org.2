@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE42933BF77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E10033BF7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhCOPKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S231754AbhCOPLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbhCOPKk (ORCPT
+        with ESMTP id S232168AbhCOPLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:10:40 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3707BC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:10:40 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id a1so16648429ljp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:10:40 -0700 (PDT)
+        Mon, 15 Mar 2021 11:11:44 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9B2C06174A;
+        Mon, 15 Mar 2021 08:11:43 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id o14so5075333wrm.11;
+        Mon, 15 Mar 2021 08:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZKKaLOkrBz3/GtouDwoCOZ4KdSWppOkZ3d+IwHT4siU=;
-        b=c6eKxW5xWF2yHUtA3SSpLusB0wRtKknAR/Nh5Tr2gXXnW44RK0sLvd+3h6Pz93DHNY
-         w19hFNTgapAFNIKubbphTkJRAE6WEsngPV47qDO9cFouoUxk5Tvp9BGFJdOdZrmzON24
-         f3CoJSaBbg5BKn3HlofWSf/wJP5Q5X7y0oc9OVlbSrPzs+TZfazUn9F1N9s5lEpQ6Rk9
-         IxOin93qBmQgRxpjBvYq6CseUksefDrn58hpWGxrdLPXBrMLlb5BtCMtewlqhlgnNFld
-         77tzY1zS2wC0OoUy/or1jzRZzd0YBL+GYzvpbNGCH0VMuiivv3yqPkmII7SAsUDPaUdx
-         UGJA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O1N2OqCNFgom+EiBnr7giOeLHhpu49U0nM2JO0bzK6Y=;
+        b=PNVpVLv8w7xRnHc8vR8nTBZmEQD7w62/nBIY2M2TXfaQaHtfBUeqLIGCCGQhHxE3R7
+         dHSpV7Uo+5dZNatmaTmOCAhP2EPWEaYpokGQY5vDGZ5XDNl1GlRiLag0idOrMhZpNuRt
+         K2/yJ+4LluSiR/LBhee3auqHdiZO6oV+0rZkjCpcVVP4Czp/q0UC9c1Bu6C0mRpcHDrs
+         9QpfHe/XfHFqSBOZDxKqnDf2wSJqgIM0N6nEwfpyYc84CA7b2mpCCU+azoLZHe4l9JA/
+         UU7u0EggUg36o3NuB2U1cTqe4Mu4klKrCEW5CbupXUNKJoHseLJn9swx/AaSs9fl00HE
+         ujXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZKKaLOkrBz3/GtouDwoCOZ4KdSWppOkZ3d+IwHT4siU=;
-        b=PXCpxHPON/UUPqIIc2AK2iZsEwef9lnEv/OON8tSo0xUmM71M6ijPxPklkjZrccczC
-         /s3TZK9a6hqYVLcUkpNBS6ZhrH3Vy7Eq8+wRlR7kk0JhH0x6EhR5cRTR2CQbtLz6KFNV
-         a2R2sJO+8CZrAYu3Opce0KxK5A0gAhUZ6h+sJGe27FUz7iFOuBpoZSifbjI/xaCB/l/o
-         H0WJ2RAdqM+bcVtJd0Gtr9NdLn4YuMirSEieQgpVM7o1uCjKDXasQ6IdF0feP8J1TcV1
-         G6DZvSZ8fbxiNKm2T27ckwxHjZlgEI022BvXeFAtAnI4qyvX9T/NmarA00pMWTad79oN
-         WeMA==
-X-Gm-Message-State: AOAM533pe0dDDvpCEWtUQeMm+Tp+i6kT1hzAnELhIDzr3VzRE6Zf1SE9
-        u3cVkm6cxjGYyJb4fRiqdOhZqB/WgRFVCCYEiOARgQ==
-X-Google-Smtp-Source: ABdhPJzFKvnw8E5Zqkbhku2Z16o1dIIxQeveiTHejHx5D5hme652oeKJbanFEjDTx3Ueaw0f3mDtMGe8gxtiixlajpU=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr10417943ljj.467.1615821038699;
- Mon, 15 Mar 2021 08:10:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O1N2OqCNFgom+EiBnr7giOeLHhpu49U0nM2JO0bzK6Y=;
+        b=lSQJ195mWziMvDJJrGaSqWNEGwv+W7JxAzG770dCTDO2TJEGm7H2G40RLnHbATjd/k
+         oihvyKkgP34M3bJ+ShpltFiP6CGZgIIVNwNvsbswg9OcHxmkgJQrGtw/N5HQ7fYXpSDS
+         1fW+euYGJRn9htUDjj10ox5jkpioKJEr2gOBkBefCT10C8gO50py0DbaobzdYS0ZNeSB
+         abKvJG8tcKJJWzVOvZF7cRDlizmbocgh9Q93HWSMN3HRJA3F37cfCVDQkELD+/vL2t5i
+         pcFxn06mwDbHs9+a1+9aRMMkS0b6N90vFvutDNd9ShLFhCQt1MIIQPWQD7/VwVWic68z
+         6N+g==
+X-Gm-Message-State: AOAM531jEDH/emwLaS36jmpDsupCNqFWH5l5FvGCIzkMSZH7uo5ShNdh
+        /zI71uD9PeHh7JCPvG/p6ao=
+X-Google-Smtp-Source: ABdhPJx0d3wLt4w25ijZW9A6tFi435cnmHcws5+AVIQgxbeRWHzOWvTOwK2MFqTSMrWhDKzneBmblw==
+X-Received: by 2002:a5d:4312:: with SMTP id h18mr130179wrq.193.1615821102602;
+        Mon, 15 Mar 2021 08:11:42 -0700 (PDT)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id f22sm12536675wmc.33.2021.03.15.08.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 08:11:42 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v2 net-next] net: dsa: b53: mmap: Add device tree support
+Date:   Mon, 15 Mar 2021 16:11:40 +0100
+Message-Id: <20210315151140.12636-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210315082339.9787-1-sander@svanheule.net> <20210315082339.9787-3-sander@svanheule.net>
-In-Reply-To: <20210315082339.9787-3-sander@svanheule.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 15 Mar 2021 16:10:27 +0100
-Message-ID: <CACRpkdZ7zWQPBgQ+AjFM7up8x8HJES2EDfBKGmPU9LJwWzB8EA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: Add Realtek Otto GPIO support
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bert Vermeulen <bert@biot.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 9:26 AM Sander Vanheule <sander@svanheule.net> wrote:
+Add device tree support to b53_mmap.c while keeping platform devices support.
 
-> Realtek MIPS SoCs (platform name Otto) have GPIO controllers with up to
-> 64 GPIOs, divided over two banks. Each bank has a set of registers for
-> 32 GPIOs, with support for edge-triggered interrupts.
->
-> Each GPIO bank consists of four 8-bit GPIO ports (ABCD and EFGH). Most
-> registers pack one bit per GPIO, except for the IMR register, which
-> packs two bits per GPIO (AB-CD).
->
-> Although the byte order is currently assumed to have port A..D at offset
-> 0x0..0x3, this has been observed to be reversed on other, Lexra-based,
-> SoCs (e.g. RTL8196E/97D/97F).
->
-> Interrupt support is disabled for the fallback devicetree-compatible
-> 'realtek,otto-gpio'. This allows for quick support of GPIO banks in
-> which the byte order would be unknown. In this case, the port ordering
-> in the IMR registers may not match the reversed order in the other
-> registers (DCBA, and BA-DC or DC-BA).
->
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v2: add change suggested by Florian Fainelli (less "OF-centric") and replace
+  brcm,ports property with a ports child scan.
 
-Overall this is a beautiful driver and it makes use of all the generic
-frameworks I can think of. I don't see any reason not to merge
-it so:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+ drivers/net/dsa/b53/b53_mmap.c | 54 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-The following is some notes and nitpicks, nothing blocking any
-merge, more like discussion.
+diff --git a/drivers/net/dsa/b53/b53_mmap.c b/drivers/net/dsa/b53/b53_mmap.c
+index c628d0980c0b..94a4e3929ebf 100644
+--- a/drivers/net/dsa/b53/b53_mmap.c
++++ b/drivers/net/dsa/b53/b53_mmap.c
+@@ -16,6 +16,7 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/io.h>
+@@ -228,11 +229,64 @@ static const struct b53_io_ops b53_mmap_ops = {
+ 	.write64 = b53_mmap_write64,
+ };
+ 
++static int b53_mmap_probe_of(struct platform_device *pdev,
++			     struct b53_platform_data **ppdata)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct device_node *of_ports, *of_port;
++	struct b53_platform_data *pdata;
++	void __iomem *mem;
++
++	mem = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(mem))
++		return PTR_ERR(mem);
++
++	pdata = devm_kzalloc(dev, sizeof(struct b53_platform_data),
++			     GFP_KERNEL);
++	if (!pdata)
++		return -ENOMEM;
++
++	pdata->regs = mem;
++	pdata->chip_id = BCM63XX_DEVICE_ID;
++	pdata->big_endian = of_property_read_bool(np, "big-endian");
++
++	of_ports = of_get_child_by_name(np, "ports");
++	if (!of_ports) {
++		dev_err(dev, "no ports child node found\n");
++		return -EINVAL;
++	}
++
++	for_each_available_child_of_node(of_ports, of_port) {
++		u32 reg;
++
++		if (of_property_read_u32(of_port, "reg", &reg))
++			continue;
++
++		if (reg < B53_CPU_PORT)
++			pdata->enabled_ports |= BIT(reg);
++	}
++
++	*ppdata = pdata;
++
++	return 0;
++}
++
+ static int b53_mmap_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	struct b53_platform_data *pdata = pdev->dev.platform_data;
+ 	struct b53_mmap_priv *priv;
+ 	struct b53_device *dev;
++	int ret;
++
++	if (!pdata && np) {
++		ret = b53_mmap_probe_of(pdev, &pdata);
++		if (ret) {
++			dev_err(&pdev->dev, "OF probe error\n");
++			return ret;
++		}
++	}
+ 
+ 	if (!pdata)
+ 		return -EINVAL;
+-- 
+2.20.1
 
-> +enum realtek_gpio_flags {
-> +       GPIO_INTERRUPTS = BIT(0),
-> +};
-
-I suppose this looks like this because more flags will be introduced
-when you add more functionality to the driver. Otherwise it seems
-like overkill so a bool would suffice.
-
-I would add a comment /* TODO: this will be expanded */
-
-> +static inline u32 realtek_gpio_imr_bits(unsigned int pin, u32 value)
-> +{
-> +       return ((value & 0x3) << 2*(pin % 16));
-> +}
-
-I would explain a bit about this, obviouslt it is two bit per
-line, but it took me some time to parse, so a comment
-about the bit layout would be nice.
-
-> +       unsigned int offset = pin/16;
-
-Here that number appears again.
-
-The use of GPIO_GENERIC and GPIO irqchip is flawless
-and first class.
-
-Thanks!
-Linus Walleij
