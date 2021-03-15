@@ -2,187 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52D933AA4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0041B33AA58
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCOENe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 00:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S229570AbhCOES7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 00:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhCOENY (ORCPT
+        with ESMTP id S229445AbhCOESU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 00:13:24 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE84CC061574;
-        Sun, 14 Mar 2021 21:13:23 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so1323384pjb.0;
-        Sun, 14 Mar 2021 21:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+1w+xdSCd8Ke2WCXQw7fwupYKhFB/Db/6JOzUH5OA4M=;
-        b=g+ctDWlh6zYMatSsVYn+os8JlCDg+zT1zIcreuYUCZZx2d7/r6UUzSAilDC++21TUW
-         oVdjJAZNesCF9U+SSTaiF+lwQaT6/bpsm6RiqQi2y8w8gD6nPjiBKxbYOykx42rAdHRZ
-         3gXu55Ola/y9c7OJL2B0LbaIC/0ocNsE8wKyKr8eBpyQAFzoyabbAMJ4Aqc3KeImg/8P
-         dMusCYOf8lAr00J33lh+OaQTXjlCJG3aEMuHtS7xdNkUZBbGkrRsazgoQGkPgCGcd3HE
-         f/PEnxBaLhUV1gAMBJodts2owGOPkZEcTn8LN7gOeq/SjZljbwi2MV22CYaYUzgCDri9
-         2WKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+1w+xdSCd8Ke2WCXQw7fwupYKhFB/Db/6JOzUH5OA4M=;
-        b=Qxffsawp+WqYGcyRby4+sD1B2SGtEV3C4KVnivSxrgd6GUYrsgVQx8BUhgtP6zqxA8
-         Mq9P+dGcZmIhcl/Nob+Zhxeez46ex7q9Hv0BOMjpcJ8tQcoRiogqmy3E7XjQBrqh3OYP
-         fO9sshTft0HVqWtcCBYQFNnrlA1nkrD9FCtlQvIOtgdwhDukaZ+S39d7HiLhorv6VjmF
-         koQVIYIem7sPOx5aj6WKgvylOo9QR6nHVnExDO5G29dW7MuejT1z90QD19OwSRzYDCdl
-         qHFNq51K+TBoa2H7DQSzNPd5w9B2IlztK2Uy/lo/yCPBqNyvDc2biUu6V6Y1dceAUR5n
-         ihWA==
-X-Gm-Message-State: AOAM532OyWQBqcwP6eSwiVh+D3qdRjztLvWVQboQsKvOaULAGDlCV6sA
-        tLUrj8kYrgNpMlPs+IUtpSE=
-X-Google-Smtp-Source: ABdhPJwCbBh0zjqMzS3xS3CIOrsaScPdecGECVx6lKttcjkbocirJLUPy3jMIVpU1yq/2PHWK4+hdw==
-X-Received: by 2002:a17:902:e2d4:b029:e4:be01:1d9a with SMTP id l20-20020a170902e2d4b02900e4be011d9amr9651144plc.43.1615781603387;
-        Sun, 14 Mar 2021 21:13:23 -0700 (PDT)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id z27sm10613900pff.111.2021.03.14.21.13.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Mar 2021 21:13:23 -0700 (PDT)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Subject: [PATCH] exfat: improve write performance when dirsync enabled
-Date:   Mon, 15 Mar 2021 13:12:55 +0900
-Message-Id: <20210315041255.174167-1-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
+        Mon, 15 Mar 2021 00:18:20 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E26C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 21:18:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=UftIN6fE1u0QhqqkA/YhCC1AeNi+dCOkMNl2dhD5GNg=; b=aQapfMbog4owcKpXxlZ7YGkg+K
+        0Msw/DBt2m2T0TVBUnrA4OIk/ys0sVnZFehXPuJNhk4pE7PqfEPKE4ftpwvApZQvF+8GkieJecFHE
+        bMr5OZVz0ygqjN4hxg/90EmPfD6/e6f68L4/zDbPy1tTPWI4ZfiuC0OlH10qGiOHg5KrzrAVmikQc
+        FdRjA0l0KYwuzud+PC91htKGs0AWjV+VUK0CzakYtk3aZT7nSSL7hp+KHV3wPY+gvZ7imFcsgVDC4
+        Trs5ZWZn+ONibXi9nE5vFhtA++JJUXr/eJZSwLYscHYYScdfILQVvTiEZ8rTfDyzJzz2hZZY/lXun
+        vmN7bq/g==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLegK-001Fuv-Ii; Mon, 15 Mar 2021 04:18:17 +0000
+Subject: Re: [PATCH V2] drm: amd: pm: Mundane typo fixes in the file
+ amdgpu_pm.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
+        nirmoy.das@amd.com, kevin1.wang@amd.com, ray.huang@amd.com,
+        Xiaojian.Du@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210315032136.3669883-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <64472479-0f70-3875-d09a-29417cd8b48e@infradead.org>
+Date:   Sun, 14 Mar 2021 21:18:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315032136.3669883-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Degradation of write speed caused by frequent disk access for cluster
-bitmap update on every cluster allocation could be improved by
-selective syncing bitmap buffer. Change to flush bitmap buffer only
-for the directory related operations.
+On 3/14/21 8:21 PM, Bhaskar Chowdhury wrote:
+> 
+> s/"an minimum"/"a minimum"/
+> s/"an maxmum"/"a maximum"/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
----
- fs/exfat/balloc.c   | 4 ++--
- fs/exfat/dir.c      | 2 +-
- fs/exfat/exfat_fs.h | 4 ++--
- fs/exfat/fatent.c   | 4 ++--
- fs/exfat/inode.c    | 3 ++-
- fs/exfat/namei.c    | 2 +-
- 6 files changed, 10 insertions(+), 9 deletions(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
-index 78bc87d5a11b..cc5cffc4a769 100644
---- a/fs/exfat/balloc.c
-+++ b/fs/exfat/balloc.c
-@@ -141,7 +141,7 @@ void exfat_free_bitmap(struct exfat_sb_info *sbi)
- 	kfree(sbi->vol_amap);
- }
- 
--int exfat_set_bitmap(struct inode *inode, unsigned int clu)
-+int exfat_set_bitmap(struct inode *inode, unsigned int clu, bool sync)
- {
- 	int i, b;
- 	unsigned int ent_idx;
-@@ -154,7 +154,7 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
- 	b = BITMAP_OFFSET_BIT_IN_SECTOR(sb, ent_idx);
- 
- 	set_bit_le(b, sbi->vol_amap[i]->b_data);
--	exfat_update_bh(sbi->vol_amap[i], IS_DIRSYNC(inode));
-+	exfat_update_bh(sbi->vol_amap[i], sync);
- 	return 0;
- }
- 
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index e1d5536de948..7efb1c6d4808 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -320,7 +320,7 @@ int exfat_alloc_new_dir(struct inode *inode, struct exfat_chain *clu)
- 
- 	exfat_chain_set(clu, EXFAT_EOF_CLUSTER, 0, ALLOC_NO_FAT_CHAIN);
- 
--	ret = exfat_alloc_cluster(inode, 1, clu);
-+	ret = exfat_alloc_cluster(inode, 1, clu, IS_DIRSYNC(inode));
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index 169d0b602f5e..e77fe2f45cf2 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -389,7 +389,7 @@ int exfat_clear_volume_dirty(struct super_block *sb);
- #define exfat_get_next_cluster(sb, pclu) exfat_ent_get(sb, *(pclu), pclu)
- 
- int exfat_alloc_cluster(struct inode *inode, unsigned int num_alloc,
--		struct exfat_chain *p_chain);
-+		struct exfat_chain *p_chain, bool sync_bmap);
- int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain);
- int exfat_ent_get(struct super_block *sb, unsigned int loc,
- 		unsigned int *content);
-@@ -408,7 +408,7 @@ int exfat_count_num_clusters(struct super_block *sb,
- /* balloc.c */
- int exfat_load_bitmap(struct super_block *sb);
- void exfat_free_bitmap(struct exfat_sb_info *sbi);
--int exfat_set_bitmap(struct inode *inode, unsigned int clu);
-+int exfat_set_bitmap(struct inode *inode, unsigned int clu, bool sync);
- void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync);
- unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu);
- int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count);
-diff --git a/fs/exfat/fatent.c b/fs/exfat/fatent.c
-index fd6c7fd12762..e949e563443c 100644
---- a/fs/exfat/fatent.c
-+++ b/fs/exfat/fatent.c
-@@ -320,7 +320,7 @@ int exfat_zeroed_cluster(struct inode *dir, unsigned int clu)
- }
- 
- int exfat_alloc_cluster(struct inode *inode, unsigned int num_alloc,
--		struct exfat_chain *p_chain)
-+		struct exfat_chain *p_chain, bool sync_bmap)
- {
- 	int ret = -ENOSPC;
- 	unsigned int num_clusters = 0, total_cnt;
-@@ -388,7 +388,7 @@ int exfat_alloc_cluster(struct inode *inode, unsigned int num_alloc,
- 		}
- 
- 		/* update allocation bitmap */
--		if (exfat_set_bitmap(inode, new_clu)) {
-+		if (exfat_set_bitmap(inode, new_clu, sync_bmap)) {
- 			ret = -EIO;
- 			goto free_cluster;
- 		}
-diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
-index 730373e0965a..1803ef3220fd 100644
---- a/fs/exfat/inode.c
-+++ b/fs/exfat/inode.c
-@@ -179,7 +179,8 @@ static int exfat_map_cluster(struct inode *inode, unsigned int clu_offset,
- 			return -EIO;
- 		}
- 
--		ret = exfat_alloc_cluster(inode, num_to_be_allocated, &new_clu);
-+		ret = exfat_alloc_cluster(inode, num_to_be_allocated, &new_clu,
-+				inode_needs_sync(inode));
- 		if (ret)
- 			return ret;
- 
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index d9e8ec689c55..1f7b3dc66fcd 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -340,7 +340,7 @@ static int exfat_find_empty_entry(struct inode *inode,
- 		exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
- 
- 		/* allocate a cluster */
--		ret = exfat_alloc_cluster(inode, 1, &clu);
-+		ret = exfat_alloc_cluster(inode, 1, &clu, IS_DIRSYNC(inode));
- 		if (ret)
- 			return ret;
- 
+> ---
+>  Changes from V1:
+>   Randy's suggestion to adjust the subject line text
+>   And missed out a spell too,which now included
+> 
+>  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> index 5fa65f191a37..308249ae1a22 100644
+> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> @@ -3315,9 +3315,9 @@ static ssize_t amdgpu_hwmon_show_mclk_label(struct device *dev,
+>   *
+>   * - pwm1_max: pulse width modulation fan control maximum level (255)
+>   *
+> - * - fan1_min: an minimum value Unit: revolution/min (RPM)
+> + * - fan1_min: a minimum value Unit: revolution/min (RPM)
+>   *
+> - * - fan1_max: an maxmum value Unit: revolution/max (RPM)
+> + * - fan1_max: a maximum value Unit: revolution/max (RPM)
+>   *
+>   * - fan1_input: fan speed in RPM
+>   *
+> --
+
+
 -- 
-2.27.0.83.g0313f36
+~Randy
 
