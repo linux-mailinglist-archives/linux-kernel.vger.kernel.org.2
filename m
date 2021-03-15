@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8300233BDA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E25533BDA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240521AbhCOOiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
+        id S240701AbhCOOiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233493AbhCOOBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22DCC64F44;
-        Mon, 15 Mar 2021 14:01:49 +0000 (UTC)
+        id S233506AbhCOOBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE35064DAD;
+        Mon, 15 Mar 2021 14:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816911;
-        bh=b/wjv+TaXy3JctKRELBAG1GtOJTlYgRS9cSqdaiFkdY=;
+        s=korg; t=1615816913;
+        bh=M7EsEqAtFnvfj5oU+YriwkvpIGcbhpNTnd6ThIj0qoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kSKb9xv7CDA0+ERaMjKiLphRCwG/DpCg/XsFzccCKvXbSadqYgAufnDfGCAOA9n1k
-         4Tma1ntHwKdtGkaUN2W07/9r7DsvEX2sXsHezY3S8++08omQjlCmS8H2rk01Y6M6de
-         XABOvkZD0rWYk1hsG+EfRdMV/y9/IVS5vIeMsTBk=
+        b=A3ej6tPpwysDnlV1ZqXEH3rIjv+bONzlYf8cSMEH/KMIFgBuE2KX1X5IhoYMScshM
+         EPGd5R7EwnEK5+F2VT3Jsj6/H8ojC7ocTRE10MBiDu9DuRf43dEY/aMiwsLYomZLki
+         KNmOi7nMMqVnMizluA7vsM9M5g7z27Yxxq4NJh+0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 184/290] block: Discard page cache of zone reset target range
-Date:   Mon, 15 Mar 2021 14:54:37 +0100
-Message-Id: <20210315135548.137253859@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 185/290] block: Try to handle busy underlying device on discard
+Date:   Mon, 15 Mar 2021 14:54:38 +0100
+Message-Id: <20210315135548.169358717@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -44,101 +41,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+From: Jan Kara <jack@suse.cz>
 
-commit e5113505904ea1c1c0e1f92c1cfa91fbf4da1694 upstream.
+commit 56887cffe946bb0a90c74429fa94d6110a73119d upstream.
 
-When zone reset ioctl and data read race for a same zone on zoned block
-devices, the data read leaves stale page cache even though the zone
-reset ioctl zero clears all the zone data on the device. To avoid
-non-zero data read from the stale page cache after zone reset, discard
-page cache of reset target zones in blkdev_zone_mgmt_ioctl(). Introduce
-the helper function blkdev_truncate_zone_range() to discard the page
-cache. Ensure the page cache discarded by calling the helper function
-before and after zone reset in same manner as fallocate does.
+Commit 384d87ef2c95 ("block: Do not discard buffers under a mounted
+filesystem") made paths issuing discard or zeroout requests to the
+underlying device try to grab block device in exclusive mode. If that
+failed we returned EBUSY to userspace. This however caused unexpected
+fallout in userspace where e.g. FUSE filesystems issue discard requests
+from userspace daemons although the device is open exclusively by the
+kernel. Also shrinking of logical volume by LVM issues discard requests
+to a device which may be claimed exclusively because there's another LV
+on the same PV. So to avoid these userspace regressions, fall back to
+invalidate_inode_pages2_range() instead of returning EBUSY to userspace
+and return EBUSY only of that call fails as well (meaning that there's
+indeed someone using the particular device range we are trying to
+discard).
 
-This patch can be applied back to the stable kernel version v5.10.y.
-Rework is needed for older stable kernels.
-
-Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
-Cc: <stable@vger.kernel.org> # 5.10+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=211167
+Fixes: 384d87ef2c95 ("block: Do not discard buffers under a mounted filesystem")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Link: https://lore.kernel.org/r/20210311072546.678999-1-shinichiro.kawasaki@wdc.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-zoned.c |   38 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+ fs/block_dev.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -318,6 +318,22 @@ int blkdev_report_zones_ioctl(struct blo
- 	return 0;
- }
- 
-+static int blkdev_truncate_zone_range(struct block_device *bdev, fmode_t mode,
-+				      const struct blk_zone_range *zrange)
-+{
-+	loff_t start, end;
-+
-+	if (zrange->sector + zrange->nr_sectors <= zrange->sector ||
-+	    zrange->sector + zrange->nr_sectors > get_capacity(bdev->bd_disk))
-+		/* Out of range */
-+		return -EINVAL;
-+
-+	start = zrange->sector << SECTOR_SHIFT;
-+	end = ((zrange->sector + zrange->nr_sectors) << SECTOR_SHIFT) - 1;
-+
-+	return truncate_bdev_range(bdev, mode, start, end);
-+}
-+
- /*
-  * BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE and BLKFINISHZONE ioctl processing.
-  * Called from blkdev_ioctl.
-@@ -329,6 +345,7 @@ int blkdev_zone_mgmt_ioctl(struct block_
- 	struct request_queue *q;
- 	struct blk_zone_range zrange;
- 	enum req_opf op;
-+	int ret;
- 
- 	if (!argp)
- 		return -EINVAL;
-@@ -352,6 +369,11 @@ int blkdev_zone_mgmt_ioctl(struct block_
- 	switch (cmd) {
- 	case BLKRESETZONE:
- 		op = REQ_OP_ZONE_RESET;
-+
-+		/* Invalidate the page cache, including dirty pages. */
-+		ret = blkdev_truncate_zone_range(bdev, mode, &zrange);
-+		if (ret)
-+			return ret;
- 		break;
- 	case BLKOPENZONE:
- 		op = REQ_OP_ZONE_OPEN;
-@@ -366,8 +388,20 @@ int blkdev_zone_mgmt_ioctl(struct block_
- 		return -ENOTTY;
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -123,12 +123,21 @@ int truncate_bdev_range(struct block_dev
+ 		err = bd_prepare_to_claim(bdev, claimed_bdev,
+ 					  truncate_bdev_range);
+ 		if (err)
+-			return err;
++			goto invalidate;
  	}
- 
--	return blkdev_zone_mgmt(bdev, op, zrange.sector, zrange.nr_sectors,
--				GFP_KERNEL);
-+	ret = blkdev_zone_mgmt(bdev, op, zrange.sector, zrange.nr_sectors,
-+			       GFP_KERNEL);
+ 	truncate_inode_pages_range(bdev->bd_inode->i_mapping, lstart, lend);
+ 	if (claimed_bdev)
+ 		bd_abort_claiming(bdev, claimed_bdev, truncate_bdev_range);
+ 	return 0;
 +
++invalidate:
 +	/*
-+	 * Invalidate the page cache again for zone reset: writes can only be
-+	 * direct for zoned devices so concurrent writes would not add any page
-+	 * to the page cache after/during reset. The page cache may be filled
-+	 * again due to concurrent reads though and dropping the pages for
-+	 * these is fine.
++	 * Someone else has handle exclusively open. Try invalidating instead.
++	 * The 'end' argument is inclusive so the rounding is safe.
 +	 */
-+	if (!ret && cmd == BLKRESETZONE)
-+		ret = blkdev_truncate_zone_range(bdev, mode, &zrange);
-+
-+	return ret;
++	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
++					     lstart >> PAGE_SHIFT,
++					     lend >> PAGE_SHIFT);
  }
+ EXPORT_SYMBOL(truncate_bdev_range);
  
- static inline unsigned long *blk_alloc_zone_bitmap(int node,
 
 
