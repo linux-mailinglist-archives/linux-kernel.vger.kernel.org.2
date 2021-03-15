@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF4333BFC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC5533BFC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhCOPbo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Mar 2021 11:31:44 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31517 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231741AbhCOPbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:31:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-267-YYshquLuNiyLYx0KEZ2_ng-1; Mon, 15 Mar 2021 15:31:34 +0000
-X-MC-Unique: YYshquLuNiyLYx0KEZ2_ng-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 15 Mar 2021 15:31:27 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Mon, 15 Mar 2021 15:31:27 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bartosz Golaszewski' <brgl@bgdev.pl>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: RE: [PATCH v5 02/11] configfs: use (1UL << bit) for internal flags
-Thread-Topic: [PATCH v5 02/11] configfs: use (1UL << bit) for internal flags
-Thread-Index: AQHXGXuz8CFTZTXyV0K3e3EZ1vnDeKqFLTtg
-Date:   Mon, 15 Mar 2021 15:31:27 +0000
-Message-ID: <6bc83972093a4be4ad163069a437ec25@AcuMS.aculab.com>
-References: <20210315091400.13772-1-brgl@bgdev.pl>
- <20210315091400.13772-3-brgl@bgdev.pl>
-In-Reply-To: <20210315091400.13772-3-brgl@bgdev.pl>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231790AbhCOPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:32:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5241 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232793AbhCOPcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 11:32:14 -0400
+IronPort-SDR: mjwp7xOpTr0jK5nG0ii5deEU4Aul8gcGZo4s51S0JXcxD65t/BZ0Hw0OkjS3Xz6u6B2HdEozLo
+ cnXW5S5UuSkg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="188466643"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="188466643"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 08:32:14 -0700
+IronPort-SDR: P9k0Zu1em/slh/Vz8PXHSsk9pinyZZzyhknTEKvwEIvc/z0vqPmDw0Qy/t4KIHpUX2aEBo5ZS7
+ Cner+rNUoyNA==
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="601463686"
+Received: from lguadamu-mobl1.amr.corp.intel.com (HELO [10.213.176.188]) ([10.213.176.188])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 08:32:14 -0700
+Subject: Re: [PATCH v4 1/3] x86/sgx: Use sgx_free_epc_page() in
+ sgx_reclaim_pages()
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210313160119.1318533-1-jarkko@kernel.org>
+ <20210313160119.1318533-2-jarkko@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ab40db7a-234e-b28e-c235-0c720d2d6a5f@intel.com>
+Date:   Mon, 15 Mar 2021 08:32:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210313160119.1318533-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski
-> Sent: 15 March 2021 09:14
+On 3/13/21 8:01 AM, Jarkko Sakkinen wrote:
+> Replace the ad-hoc code with a sgx_free_epc_page(), in order to make sure
+> that all the relevant checks and book keeping is done, while freeing a
+> borrowed EPC page, and remove redundant code. EREMOVE inside
+> sgx_free_epc_page() does not change the semantics, as EREMOVE to an
+> uninitialize pages is a nop.
+
+  ^ uninitialized
+
+I know this is a short patch, but this changelog still falls a bit short
+for me.
+
+Why is this patch a part of _this_ series?  What *problem* does it
+solve, related to this series?
+
+It would also be nice to remind me why the EREMOVE is redundant.  Why
+didn't we need one before?  What put the page in the uninitialized
+state?  Is EREMOVE guaranteed to do nothing?  How expensive is it?
+
+
+
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 8df81a3ed945..65004fb8a91f 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -305,7 +305,6 @@ static void sgx_reclaim_pages(void)
+>  {
+>  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+>  	struct sgx_backing backing[SGX_NR_TO_SCAN];
+> -	struct sgx_epc_section *section;
+>  	struct sgx_encl_page *encl_page;
+>  	struct sgx_epc_page *epc_page;
+>  	pgoff_t page_index;
+> @@ -378,11 +377,7 @@ static void sgx_reclaim_pages(void)
+>  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+>  		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  
+> -		section = &sgx_epc_sections[epc_page->section];
+> -		spin_lock(&section->lock);
+> -		list_add_tail(&epc_page->list, &section->page_list);
+> -		section->free_cnt++;
+> -		spin_unlock(&section->lock);
+> +		sgx_free_epc_page(epc_page);
+>  	}
+>  }
+>  
 > 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> For better readability and maintenance: use the (1UL << bit) for flag
-> definitions.
-
-If the values ever get printed in hex the hex definitions are
-actually more useful.
-
-	David
-
-...
-> -#define CONFIGFS_ROOT		0x0001
-> -#define CONFIGFS_DIR		0x0002
-> -#define CONFIGFS_ITEM_ATTR	0x0004
-> -#define CONFIGFS_ITEM_BIN_ATTR	0x0008
-> -#define CONFIGFS_ITEM_LINK	0x0020
-> -#define CONFIGFS_USET_DIR	0x0040
-> -#define CONFIGFS_USET_DEFAULT	0x0080
-> -#define CONFIGFS_USET_DROPPING	0x0100
-> -#define CONFIGFS_USET_IN_MKDIR	0x0200
-> -#define CONFIGFS_USET_CREATING	0x0400
-> +#define CONFIGFS_ROOT			(1UL << 0)
-> +#define CONFIGFS_DIR			(1UL << 1)
-> +#define CONFIGFS_ITEM_ATTR		(1UL << 2)
-> +#define CONFIGFS_ITEM_BIN_ATTR		(1UL << 3)
-> +#define CONFIGFS_ITEM_LINK		(1UL << 5)
-> +#define CONFIGFS_USET_DIR		(1UL << 6)
-> +#define CONFIGFS_USET_DEFAULT		(1UL << 7)
-> +#define CONFIGFS_USET_DROPPING		(1UL << 8)
-> +#define CONFIGFS_USET_IN_MKDIR		(1UL << 9)
-> +#define CONFIGFS_USET_CREATING		(1UL << 10)
->  #define CONFIGFS_NOT_PINNED	(CONFIGFS_ITEM_ATTR | CONFIGFS_ITEM_BIN_ATTR)
-> 
->  extern struct mutex configfs_symlink_mutex;
-> --
-> 2.30.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
