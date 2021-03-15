@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850A733BBA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DA633BB81
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbhCOOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S237269AbhCOORd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231664AbhCON7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 157D964F39;
-        Mon, 15 Mar 2021 13:59:11 +0000 (UTC)
+        id S232727AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B1264F0D;
+        Mon, 15 Mar 2021 13:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816753;
-        bh=2p8c/X0Ovdx48uocGgWx8D2/3nGHORzywOWP2X/as+E=;
+        s=korg; t=1615816758;
+        bh=TH1BX0uJLmfFkY+s39TlZGKhxY+j/8Og+/xOMSTlLtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y2eN73jRrqGcwW6BlOgHqbMflxtBKv8BCVr1ubcl8WGobJIFXuDLtlIbbXvJpIi9x
-         PYGfU74LIXs4En4GdbtG+yE9z9D962hlktmwzDHFaxup240R0CPbh/CKpvTf47ZdMP
-         Jz13X1XNucsQTeXphy0nvqbcxsuTKw5rhjEZYNho=
+        b=vqLliiYePWAQKl4CGHJCgaRnX+ngAsjveYapMAnjTvJP0rsUAWTLpLnHrQ92MaF//
+         EqQQE/GkT5tJVRQ5fT1zQgbGjyPdv4NILump5X1vbej+3vaQGx5rrXsM3QUwP6MkSL
+         7KgHhyx1VfqW4UdOzbzOfHE+hDZp1If+tq6LQhuE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 38/95] PCI: mediatek: Add missing of_node_put() to fix reference leak
-Date:   Mon, 15 Mar 2021 14:57:08 +0100
-Message-Id: <20210315135741.525047049@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Abhishek Sahu <abhsahu@nvidia.com>
+Subject: [PATCH 4.14 41/95] ALSA: hda/hdmi: Cancel pending works before suspend
+Date:   Mon, 15 Mar 2021 14:57:11 +0100
+Message-Id: <20210315135741.619479914@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -43,63 +41,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 42814c438aac79746d310f413a27d5b0b959c5de ]
+commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
 
-The for_each_available_child_of_node helper internally makes use of the
-of_get_next_available_child() which performs an of_node_get() on each
-iteration when searching for next available child node.
+The per_pin->work might be still floating at the suspend, and this may
+hit the access to the hardware at an unexpected timing.  Cancel the
+work properly at the suspend callback for avoiding the buggy access.
 
-Should an available child node be found, then it would return a device
-node pointer with reference count incremented, thus early return from
-the middle of the loop requires an explicit of_node_put() to prevent
-reference count leak.
+Note that the bug doesn't trigger easily in the recent kernels since
+the work is queued only when the repoll count is set, and usually it's
+only at the resume callback, but it's still possible to hit in
+theory.
 
-To stop the reference leak, explicitly call of_node_put() before
-returning after an error occurred.
-
-Link: https://lore.kernel.org/r/20210120184810.3068794-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
+Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/host/pcie-mediatek.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/pci/host/pcie-mediatek.c b/drivers/pci/host/pcie-mediatek.c
-index c896bb9ef968..60c3110b5151 100644
---- a/drivers/pci/host/pcie-mediatek.c
-+++ b/drivers/pci/host/pcie-mediatek.c
-@@ -1042,14 +1042,14 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		err = of_pci_get_devfn(child);
- 		if (err < 0) {
- 			dev_err(dev, "failed to parse devfn: %d\n", err);
--			return err;
-+			goto error_put_node;
- 		}
- 
- 		slot = PCI_SLOT(err);
- 
- 		err = mtk_pcie_parse_port(pcie, child, slot);
- 		if (err)
--			return err;
-+			goto error_put_node;
- 	}
- 
- 	err = mtk_pcie_subsys_powerup(pcie);
-@@ -1065,6 +1065,9 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		mtk_pcie_subsys_powerdown(pcie);
- 
- 	return 0;
-+error_put_node:
-+	of_node_put(child);
-+	return err;
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2324,6 +2324,18 @@ static void generic_hdmi_free(struct hda
  }
  
- static int mtk_pcie_request_resources(struct mtk_pcie *pcie)
--- 
-2.30.1
-
+ #ifdef CONFIG_PM
++static int generic_hdmi_suspend(struct hda_codec *codec)
++{
++	struct hdmi_spec *spec = codec->spec;
++	int pin_idx;
++
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		cancel_delayed_work_sync(&per_pin->work);
++	}
++	return 0;
++}
++
+ static int generic_hdmi_resume(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -2347,6 +2359,7 @@ static const struct hda_codec_ops generi
+ 	.build_controls		= generic_hdmi_build_controls,
+ 	.unsol_event		= hdmi_unsol_event,
+ #ifdef CONFIG_PM
++	.suspend		= generic_hdmi_suspend,
+ 	.resume			= generic_hdmi_resume,
+ #endif
+ };
 
 
