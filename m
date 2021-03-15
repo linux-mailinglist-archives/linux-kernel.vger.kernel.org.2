@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C125133C754
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A75533C74E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhCOUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        id S233913AbhCOUBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbhCOUCM (ORCPT
+        with ESMTP id S233874AbhCOUA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:02:12 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4263EC06174A;
-        Mon, 15 Mar 2021 13:02:12 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id t18so9390869pjs.3;
-        Mon, 15 Mar 2021 13:02:12 -0700 (PDT)
+        Mon, 15 Mar 2021 16:00:28 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD9FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:00:27 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id p10so10556349ils.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=rL3vKYH4+4i5CC0aVunrWlzK1wduuZG220EJ/vhziQw=;
-        b=ELopI56GAtnJ9od1YG8FNmWchTUFYHQzQnDiLKLf6uFJ6rH401bfejAp18uGs91+1i
-         GWgTfleCV6Uh5T2r2Pxj6Web9vw7JQJTQu2ly9AYPV7FqhK9lHHqPEwCmSFLrXt7xO75
-         b7MBkKnfT2hK7IVL5qsXRpWHDJZz9q7PqyhnurW04j3isnCcgZt4m1zgzxGireYB/1MD
-         AhUISweOYG+oDxLUgzuZceLwibRCeMZ50hM9Gq0o67b8ySWu5W+45c89PUleZR0VCE1K
-         WiJ1orcF8r8PVYuF3sNOXmBrIltsrTZy9K2zlTsqmEG9jdkuJNhEhU/P44raIFgYXE/F
-         BPMQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SaSOoIxes03bHpWUooj+6+ewuXi/Vmtw63TM+HLF9L8=;
+        b=eS7HTA1CDl8ccn1pHkFmhPOk8/AlrZMfGwncoeCi7AQIQVOd79gAx9m6kj3QYnUb47
+         MxlkV2rY2JMLdkoIdm6yz4mCVdgGgetyBtzMRVAis1d1g73dH5hjfofSB1CR5qCKLvJo
+         8TfKD/SIC92DISesqp7OPW25vs9bXG6kB+vHRLoZ4u6MO5JhIyCxwu/3ntQp4DB3KcY9
+         yRKoTRYgguy5FukC/xT47rA0l5Se1jhjRTH91kzkMwMnCGiqwVsDtZYpZ9pRPOzF80yh
+         vugMKOjJHGWs/UcaarhoQpq1ZKnHzeFvik4XQlwrat8noWxZP5ZfA0mSZdFjFFFPEvn5
+         0D1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=rL3vKYH4+4i5CC0aVunrWlzK1wduuZG220EJ/vhziQw=;
-        b=p6RTGzxI0dZi5awuezpxYrVMqzEFyQOv+XGSkCPVtmepWiDyYCWfIh7YtgMRscmWtK
-         0mnZoHBDo3e3n5rykxLUw5HtQWQ1l6zaHI2v98EMdxTMVzHI+XQ3T9q53IHHRNwpn22p
-         FidjBi/Y3EKamo2lbvrM0AaR7ZIPQqrUEUq4Ubz3D57w6S58Y2s3Oif4Tn5vxE8e9q4R
-         N+5318ogL3HERLi+aERL+OQkIBxFRC/lx7gZPkt/IiZkySWo9gdMDsH8gN/EsW+7fGuv
-         PZAnt/uGaCSqB3+bv/JPGtofq8wNUXieRJgi8fhe9LNq37MY114quinFDW3Zw3gayAx/
-         nBtA==
-X-Gm-Message-State: AOAM533xxE4smeTxSX+voRE+ClRCqsnNQaVOGm8k3/yTWr+sivnRZjZB
-        bErVfyIfvZWVpcY8tA1+Drw=
-X-Google-Smtp-Source: ABdhPJybiLZqEI+XjPqVHFhLW3Gu6zqMwtmPntvElOc45gnu6cMWEQmVLZXXRngR/RiMCkr7ZNGVeQ==
-X-Received: by 2002:a17:90a:9d82:: with SMTP id k2mr807500pjp.48.1615838531534;
-        Mon, 15 Mar 2021 13:02:11 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id 11sm4712300pfn.146.2021.03.15.13.02.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Mar 2021 13:02:11 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:59:57 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Message-ID: <20210315195956.GA16172@Asurada-Nvidia>
-References: <20210315033504.23937-1-nicoleotsuka@gmail.com>
- <c57a805a-cf14-1d78-ae2a-dfce4f643db1@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SaSOoIxes03bHpWUooj+6+ewuXi/Vmtw63TM+HLF9L8=;
+        b=jAyOdXTJALNZERQa/5niYLUo2t8OGZ0+81XYwA+tSUkEA2REKGb+Rt51YNGmdHxpqy
+         1F1/kpfTBEm2ikcE67V5YK1aldqIKdTG0N68qv7ZxPb+irEiJhAZAkln1F+6G7vGQvmZ
+         ASInO1SF/wH//glY7X4HfqhlgVb5oUIRx1K6FrgVBcHxH3ETRwYbZJmpoGLdWRPQLw4v
+         bWpodT/lNhvWtZOo++RBUYfQnQCs0dtvTMd001k5GKf/6a9QJ5xnXOE7flTPbpToahUD
+         bE0GksJkfOcf2PG95tLqygSFzyWgnbGgqmhAw0D25On+e2upOaTBqgpogMWJ0glWoO5v
+         ANtA==
+X-Gm-Message-State: AOAM5330GanGAWpOlDFhqa7eTzdimXqem3zpYvqn2EsmabfugxMsnjic
+        b8CA7cD6+ds8uqVM05Uwp5/WnGUU4iMhfAw2DYk=
+X-Google-Smtp-Source: ABdhPJypLcpbSKR4xnoaFP9F3f6VMO35r0f7ds36bijQO3NVnMxR3QAoAM5VGva8qRnVO5/aYWJWaZoKjg1/sdQSXEE=
+X-Received: by 2002:a92:740c:: with SMTP id p12mr1052065ilc.9.1615838427364;
+ Mon, 15 Mar 2021 13:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c57a805a-cf14-1d78-ae2a-dfce4f643db1@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210314035757.2740146-1-ztong0001@gmail.com> <5d7a5e1c-35ab-58cb-ebcd-da5b280c802e@mev.co.uk>
+ <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk>
+In-Reply-To: <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Mon, 15 Mar 2021 16:00:16 -0400
+Message-ID: <CAA5qM4AJRYndkXSiW5Y4OCFcH97mf6UiiEEox+TQs8-N957mJA@mail.gmail.com>
+Subject: Re: [PATCH] staging: comedi: replace slash in name
+To:     Ian Abbott <abbotti@mev.co.uk>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        devel@driverdev.osuosl.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 09:53:09PM +0300, Dmitry Osipenko wrote:
-> 15.03.2021 06:35, Nicolin Chen пишет:
-> > This patch dumps all active mapping entries from pagetable
-> > to a debugfs directory named "mappings".
-> > 
-> > Ataching an example:
-> 
-> Attaching
-> 
-> > 
-> > SWGROUP: hc
-> > ASID: 0
-> > reg: 0x250
-> > PTB_ASID: 0xe0080004
-> > as->pd_dma: 0x80004000
-> > {
-> >         [1023] 0xf008000b (1)
-> >         {
-> >                 PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
-> >                 [#1023, #1023] | 0x5  | 0x0000000111a8d000 | 0x00000000fffff000 | 0x1000
-> >         }
-> > }
-> > Total PDE count: 1
-> > Total PTE count: 1
-> > 
-> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> > ---
-> 
-> Good to me, thanks.
-> 
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> 
-> > +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> > +		struct page *pt_page;
-> > +		u32 *addr;
-> > +		unsigned int i;
-> 
-> Unimportant nit: I'd keep lines arranged by length for consistency with
-> the rest of the code.
-> 
-> ...
-> > +	group_debug = devm_kcalloc(dev, soc->num_swgroups, sizeof(*group_debug), GFP_KERNEL);
-> 
-> Another nit: this is a long line, I'd split it into two lines to keep
-> coding style consistent and to improve readability for those who have a
-> side-by-side code viewing setup.
+Thanks Ian,
+I have submitted a v2 patch based on your suggestions.
+Thanks,
+- Tong
 
-Sending v5. Will add your Tested-by and Reviewed-by since there'd
-be no functional changes. Thanks!
+On Mon, Mar 15, 2021 at 6:48 AM Ian Abbott <abbotti@mev.co.uk> wrote:
+>
+> On 15/03/2021 10:44, Ian Abbott wrote:
+> > On 14/03/2021 03:57, Tong Zhang wrote:
+> >> request_irq() wont accept a name which contains slash so we need to
+> >> repalce it with something else -- otherwise it will trigger a warning
+> >> and the entry in /proc/irq/ will not be created
+> >>
+> >> [    1.565966] name 'pci-das6402/16'
+> >> [    1.566149] WARNING: CPU: 0 PID: 184 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
+> >> [    1.568923] RIP: 0010:__xlate_proc_name+0x93/0xb0
+> >> [    1.574200] Call Trace:
+> >> [    1.574722]  proc_mkdir+0x18/0x20
+> >> [    1.576629]  request_threaded_irq+0xfe/0x160
+> >> [    1.576859]  auto_attach+0x60a/0xc40 [cb_pcidas64]
+> >>
+> >> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> [snip]
+> > Userspace applications can use these strings to determine the board
+> > type, so changing the strings would break those applications.
+> >
+> > I suggest passing the comedi driver name "cb_pcidas" to request_irq()
+> > for now.
+>
+> Oops, I meant "cb_pcidas64".  But you could reach that via
+> dev->driver->driver_name if you want (where dev is the struct
+> comedi_device * parameter).
+>
+> --
+> -=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+> -=( registered in England & Wales.  Regd. number: 02862268.  )=-
+> -=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+> -=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
