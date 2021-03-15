@@ -2,219 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BEE33C1E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADED33C1EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhCOQcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:32:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233594AbhCOQby (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:31:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615825913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lPHTIHZ4eFEhzbf8Lue71aAKURfHh1P+gutymQ7cPuQ=;
-        b=A3+Ztm7/VALzhpf2xDJ+ksc9Vgj4kzUtCU5yLMi0AFdYZVmun8s18qXFVvNz2VG2Wn7pa6
-        iTQZ1yQCPtH1hbh/mjI56T9V1JwL9Fiqr3hLDkt0HNRLTTwFhGkT9qQR+2mFjErwELOA4b
-        z5QHP2URFjh0jEdSIULgFUXz9C2X5Y0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-Ypmk-dBLPR-EoIoUqlxNFQ-1; Mon, 15 Mar 2021 12:31:51 -0400
-X-MC-Unique: Ypmk-dBLPR-EoIoUqlxNFQ-1
-Received: by mail-ej1-f71.google.com with SMTP id e13so12222117ejd.21
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:31:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lPHTIHZ4eFEhzbf8Lue71aAKURfHh1P+gutymQ7cPuQ=;
-        b=ouXoRb3IO9Kqb2zuHTxib9USqNgEYqolaW2guXPnXq4QaXKzdh0s2ap72/gHwcun9Z
-         90jA5qayBpS++NFI+DGP68JLeMvBuZqRLVRS7ABkc1uzTAeXB/vvcAsZ4M9GlczdKG7B
-         vvIaiQwpeg64j/07rldpEONbSdCwVJ2ot82djchSIWbzZXvvDc743RB/GJdbtYyAFLcM
-         OS6QKfvqITGlxcXOO2pZAR1eMoUPamFn12ODf1mngQo5PwU7vPQFb6Kq5BoarxfJKIKQ
-         kIGHoimWWJ+MftwTf112R9EQ1/w9TebWYlGPbwvVMhd1ittkEon97Hm39763Xdz4uPMx
-         qmiw==
-X-Gm-Message-State: AOAM5311Kqu9N8Mqk5hUWDcEV+TtGMvIQ4I+IQTmztGGxh0k2r7ALR+M
-        lHZ+Zf9BwUgbXnshhj2ayBXuV6JWxBmPcaqnvsUMiIt/1KlONYc5ud2mS6XOgB3f+RBiEtf1pzH
-        wzjpITy8FlJGWQpuLRLiK2YHS
-X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr24314465eji.163.1615825910688;
-        Mon, 15 Mar 2021 09:31:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyoY00PBixaBAq+e0MuGm3mxB4Ev2NqXWIQw0ejZ1fznG1bZlq2PV+RT10l48AjX9urbitjGQ==
-X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr24314448eji.163.1615825910517;
-        Mon, 15 Mar 2021 09:31:50 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id lu26sm7538546ejb.33.2021.03.15.09.31.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 09:31:50 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: pmc_atom: use callback for all dmi quirk
- entries
-To:     Henning Schild <henning.schild@siemens.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <ef5fe493-285d-145c-8d05-7f9bd0cb47c5@redhat.com>
- <20210315145855.17174-1-henning.schild@siemens.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8577f3a8-c5e4-3752-1bc1-5937ee164217@redhat.com>
-Date:   Mon, 15 Mar 2021 17:31:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231912AbhCOQcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233780AbhCOQcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:32:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6331064F2A;
+        Mon, 15 Mar 2021 16:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615825922;
+        bh=iwo+by8AySGGmHW/D8BGbdboYbUVduzmcnfSM8i4yqI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zo5DGjgEb+KZdOnvPRLKgdHlv3B25inChQcgjGYHXp8AzplO8TabMLfYjT/Ccmz0o
+         1cp/2IDbT74ivkPFSf6Uisml5wHb1ToqK1JRrs/Nemj5GyNuiwxWdQxxO1xhPrm3lI
+         dO1rpqxCH7ukRLd/ggPorCQ885P9zx8cvuGExdxEw3I3d9ojcrZh96ipsRbnm27aoe
+         0ZzT9E89a7YHggAOzzqsIsDL0rfyPKiZ//KALPKvnPdsdmHiRR3VaRc3hqguF6x+3s
+         Z1liXeug6LkIYG5X15x5y+LuGL6Ad04c7Vo0B2zSIqorZ2Ffj3R3VtL7tmu1tt0QXJ
+         zoepJNRQPxEmg==
+Date:   Mon, 15 Mar 2021 16:31:56 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com
+Subject: Re: [PATCH v5 32/36] KVM: arm64: Provide sanitized mmfr* registers
+ at EL2
+Message-ID: <20210315163155.GB3430@willie-the-truck>
+References: <20210315143536.214621-1-qperret@google.com>
+ <20210315143536.214621-33-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210315145855.17174-1-henning.schild@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315143536.214621-33-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/15/21 3:58 PM, Henning Schild wrote:
-> Introduce a global variable to remember the matching entry for later
-> printing. Also having a callback allows to stop matching after the first
-> hit.
+On Mon, Mar 15, 2021 at 02:35:32PM +0000, Quentin Perret wrote:
+> We will need to read sanitized values of mmfr{0,1}_el1 at EL2 soon, so
+> add them to the list of copied variables.
 > 
-> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > ---
->  drivers/platform/x86/pmc_atom.c | 26 ++++++++++++++++++++------
->  1 file changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-> index 38542d547f29..d0f74856cd8b 100644
-> --- a/drivers/platform/x86/pmc_atom.c
-> +++ b/drivers/platform/x86/pmc_atom.c
-> @@ -364,8 +364,16 @@ static void pmc_dbgfs_register(struct pmc_dev *pmc)
->  #endif /* CONFIG_DEBUG_FS */
->  
->  static bool pmc_clk_is_critical = true;
-> +static const struct dmi_system_id *dmi_critical;
->  
-> -static int siemens_clk_is_critical(const struct dmi_system_id *d)
-> +static int dmi_callback(const struct dmi_system_id *d)
-> +{
-> +	dmi_critical = d;
+>  arch/arm64/include/asm/kvm_cpufeature.h | 2 ++
+>  arch/arm64/kvm/sys_regs.c               | 2 ++
+>  2 files changed, 4 insertions(+)
 
-Don't introduce a global variable for this please. Instead just directly
-print the ident of the matching dmi_system_id here.
+Acked-by: Will Deacon <will@kernel.org>
 
-Regards,
-
-Hans
-
-
-> +
-> +	return 1;
-> +}
-> +
-> +static int dmi_callback_siemens(const struct dmi_system_id *d)
->  {
->  	u32 st_id;
->  
-> @@ -373,7 +381,7 @@ static int siemens_clk_is_critical(const struct dmi_system_id *d)
->  		goto out;
->  
->  	if (st_id == SIMATIC_IPC_IPC227E || st_id == SIMATIC_IPC_IPC277E)
-> -		return 1;
-> +		return dmi_callback(d);
->  
->  out:
->  	pmc_clk_is_critical = false;
-> @@ -388,6 +396,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk0 is used for an external HSIC USB HUB */
->  		.ident = "MPL CEC1x",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "MPL AG"),
->  			DMI_MATCH(DMI_PRODUCT_NAME, "CEC10 Family"),
-> @@ -396,6 +405,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk0 - 3 are used for the 4 ethernet controllers */
->  		.ident = "Lex 3I380D",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Lex BayTrail"),
->  			DMI_MATCH(DMI_PRODUCT_NAME, "3I380D"),
-> @@ -404,6 +414,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
->  		.ident = "Lex 2I385SW",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Lex BayTrail"),
->  			DMI_MATCH(DMI_PRODUCT_NAME, "2I385SW"),
-> @@ -412,6 +423,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
->  		.ident = "Beckhoff CB3163",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
->  			DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
-> @@ -420,6 +432,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
->  		.ident = "Beckhoff CB4063",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
->  			DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
-> @@ -428,6 +441,7 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
->  		.ident = "Beckhoff CB6263",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
->  			DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
-> @@ -436,13 +450,14 @@ static const struct dmi_system_id critclk_systems[] = {
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
->  		.ident = "Beckhoff CB6363",
-> +		.callback = dmi_callback,
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
->  			DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
->  		},
->  	},
->  	{
-> -		.callback = siemens_clk_is_critical,
-> +		.callback = dmi_callback_siemens,
->  		.ident = "SIEMENS AG",
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> @@ -457,7 +472,6 @@ static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
->  {
->  	struct platform_device *clkdev;
->  	struct pmc_clk_data *clk_data;
-> -	const struct dmi_system_id *d;
->  
->  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
->  	if (!clk_data)
-> @@ -468,8 +482,8 @@ static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
->  	if (dmi_check_system(critclk_systems)) {
->  		clk_data->critical = pmc_clk_is_critical;
->  		if (clk_data->critical) {
-> -			d = dmi_first_match(critclk_systems);
-> -			pr_info("%s critclks quirk enabled\n", d->ident);
-> +			pr_info("%s critclks quirk enabled\n",
-> +				dmi_critical->ident);
->  		}
->  	}
->  
-> 
-
+Will
