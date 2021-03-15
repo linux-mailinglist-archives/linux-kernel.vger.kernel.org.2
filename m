@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475DC33BC40
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AB733BC00
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238843AbhCOOXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S237815AbhCOOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231728AbhCOOAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A1664EED;
-        Mon, 15 Mar 2021 13:59:39 +0000 (UTC)
+        id S232906AbhCOOAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8CAB64EE9;
+        Mon, 15 Mar 2021 13:59:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816781;
-        bh=rElLvwVjgpB3AV+nOt9y1YtM07CDl3XX1n/UecxvaWE=;
+        s=korg; t=1615816783;
+        bh=jYTb5d7v2gYJDX3bUOyQV54hcXxLWvhGXSiovtS5onc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ER1UgEdjp0y+COvUfYh671mhSIWMQ3A5TtgcbKNzWACYqgYS5eJM5O0S7b0G2qyvM
-         w1PJ2odjF92WO0fFL7Xomyit/ja1WJ6/JygIzA1lVSLd9PTqEXhwrBNDVHdjJTSAS8
-         dJn1Jz5fZRn0DFPwF1nya/wKhAd+OkEO9eiUd/sg=
+        b=lmtxIz+ybuFHTx/lNEroFhYOexXBbYWPj/dgLtvVxer3mdEdor68nzhj/AZ6otLHv
+         Us+PgIkSDJNnRq4wQ5UIgb4VLaKtWFShg79SIHBHik6vxfoF2quYkD4jUC0F67SgKe
+         S9M01Bt9P2E+bHQtLdb3+NaYpC+nC03EvkwgUPQc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH 5.11 121/306] MIPS: kernel: Reserve exception base early to prevent corruption
-Date:   Mon, 15 Mar 2021 14:53:04 +0100
-Message-Id: <20210315135511.751508675@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 122/306] mptcp: always graft subflow socket to parent
+Date:   Mon, 15 Mar 2021 14:53:05 +0100
+Message-Id: <20210315135511.792253111@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -46,161 +44,150 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit bd67b711bfaa02cf19e88aa2d9edae5c1c1d2739 ]
+[ Upstream commit 866f26f2a9c33bc70eb0f07ffc37fd9424ffe501 ]
 
-BMIPS is one of the few platforms that do change the exception base.
-After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-with kernel_end") we started seeing BMIPS boards fail to boot with the
-built-in FDT being corrupted.
+Currently, incoming subflows link to the parent socket,
+while outgoing ones link to a per subflow socket. The latter
+is not really needed, except at the initial connect() time and
+for the first subflow.
 
-Before the cited commit, early allocations would be in the [kernel_end,
-RAM_END] range, but after commit they would be within [RAM_START +
-PAGE_SIZE, RAM_END].
+Always graft the outgoing subflow to the parent socket and
+free the unneeded ones early.
 
-The custom exception base handler that is installed by
-bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-memory region allocated by unflatten_and_copy_device_tree() thus
-corrupting the FDT used by the kernel.
+This allows some code cleanup, reduces the amount of memory
+used and will simplify the next patch
 
-To fix this, we need to perform an early reservation of the custom
-exception space. Additional we reserve the first 4k (1k for R3k) for
-either normal exception vector space (legacy CPUs) or special vectors
-like cache exceptions.
-
-Huge thanks to Serge for analysing and proposing a solution to this
-issue.
-
-Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/traps.h    |  3 +++
- arch/mips/kernel/cpu-probe.c     |  6 ++++++
- arch/mips/kernel/cpu-r3k-probe.c |  3 +++
- arch/mips/kernel/traps.c         | 10 +++++-----
- 4 files changed, 17 insertions(+), 5 deletions(-)
+ net/mptcp/protocol.c | 36 ++++++++++--------------------------
+ net/mptcp/protocol.h |  1 +
+ net/mptcp/subflow.c  |  3 +++
+ 3 files changed, 14 insertions(+), 26 deletions(-)
 
-diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-index 6a0864bb604d..9038b91e2d8c 100644
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@ -24,6 +24,9 @@ extern void (*board_ebase_setup)(void);
- extern void (*board_cache_error_setup)(void);
- 
- extern int register_nmi_notifier(struct notifier_block *nb);
-+extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
-+
-+#define VECTORSPACING 0x100	/* for EI/VI mode */
- 
- #define nmi_notifier(fn, pri)						\
- ({									\
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 31cb9199197c..21794db53c05 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -26,6 +26,7 @@
- #include <asm/elf.h>
- #include <asm/pgtable-bits.h>
- #include <asm/spram.h>
-+#include <asm/traps.h>
- #include <linux/uaccess.h>
- 
- #include "fpu-probe.h"
-@@ -1619,6 +1620,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_BMIPS3300;
- 		__cpu_name[cpu] = "Broadcom BMIPS3300";
- 		set_elf_platform(cpu, "bmips3300");
-+		reserve_exception_space(0x400, VECTORSPACING * 64);
- 		break;
- 	case PRID_IMP_BMIPS43XX: {
- 		int rev = c->processor_id & PRID_REV_MASK;
-@@ -1629,6 +1631,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS4380";
- 			set_elf_platform(cpu, "bmips4380");
- 			c->options |= MIPS_CPU_RIXI;
-+			reserve_exception_space(0x400, VECTORSPACING * 64);
- 		} else {
- 			c->cputype = CPU_BMIPS4350;
- 			__cpu_name[cpu] = "Broadcom BMIPS4350";
-@@ -1645,6 +1648,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS5000";
- 		set_elf_platform(cpu, "bmips5000");
- 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
-+		reserve_exception_space(0x1000, VECTORSPACING * 64);
- 		break;
- 	}
- }
-@@ -2124,6 +2128,8 @@ void cpu_probe(void)
- 	if (cpu == 0)
- 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
- #endif
-+
-+	reserve_exception_space(0, 0x1000);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
-index abdbbe8c5a43..af654771918c 100644
---- a/arch/mips/kernel/cpu-r3k-probe.c
-+++ b/arch/mips/kernel/cpu-r3k-probe.c
-@@ -21,6 +21,7 @@
- #include <asm/fpu.h>
- #include <asm/mipsregs.h>
- #include <asm/elf.h>
-+#include <asm/traps.h>
- 
- #include "fpu-probe.h"
- 
-@@ -158,6 +159,8 @@ void cpu_probe(void)
- 		cpu_set_fpu_opts(c);
- 	else
- 		cpu_set_nofpu_opts(c);
-+
-+	reserve_exception_space(0, 0x400);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index e0352958e2f7..808b8b61ded1 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2009,13 +2009,16 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
- 	nmi_exit();
- }
- 
--#define VECTORSPACING 0x100	/* for EI/VI mode */
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index b51872b9dd61..3cc7be259396 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -114,11 +114,7 @@ static int __mptcp_socket_create(struct mptcp_sock *msk)
+ 	list_add(&subflow->node, &msk->conn_list);
+ 	sock_hold(ssock->sk);
+ 	subflow->request_mptcp = 1;
 -
- unsigned long ebase;
- EXPORT_SYMBOL_GPL(ebase);
- unsigned long exception_handlers[32];
- unsigned long vi_handlers[64];
+-	/* accept() will wait on first subflow sk_wq, and we always wakes up
+-	 * via msk->sk_socket
+-	 */
+-	RCU_INIT_POINTER(msk->first->sk_wq, &sk->sk_socket->wq);
++	mptcp_sock_graft(msk->first, sk->sk_socket);
  
-+void reserve_exception_space(phys_addr_t addr, unsigned long size)
-+{
-+	memblock_reserve(addr, size);
-+}
-+
- void __init *set_except_vector(int n, void *addr)
+ 	return 0;
+ }
+@@ -2114,9 +2110,6 @@ static struct sock *mptcp_subflow_get_retrans(const struct mptcp_sock *msk)
+ void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
+ 		       struct mptcp_subflow_context *subflow)
  {
- 	unsigned long handler = (unsigned long) addr;
-@@ -2367,10 +2370,7 @@ void __init trap_init(void)
- 
- 	if (!cpu_has_mips_r2_r6) {
- 		ebase = CAC_BASE;
--		ebase_pa = virt_to_phys((void *)ebase);
- 		vec_size = 0x400;
+-	bool dispose_socket = false;
+-	struct socket *sock;
 -
--		memblock_reserve(ebase_pa, vec_size);
- 	} else {
- 		if (cpu_has_veic || cpu_has_vint)
- 			vec_size = 0x200 + VECTORSPACING*64;
+ 	list_del(&subflow->node);
+ 
+ 	lock_sock_nested(ssk, SINGLE_DEPTH_NESTING);
+@@ -2124,11 +2117,8 @@ void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
+ 	/* if we are invoked by the msk cleanup code, the subflow is
+ 	 * already orphaned
+ 	 */
+-	sock = ssk->sk_socket;
+-	if (sock) {
+-		dispose_socket = sock != sk->sk_socket;
++	if (ssk->sk_socket)
+ 		sock_orphan(ssk);
+-	}
+ 
+ 	subflow->disposable = 1;
+ 
+@@ -2146,8 +2136,6 @@ void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
+ 		__sock_put(ssk);
+ 	}
+ 	release_sock(ssk);
+-	if (dispose_socket)
+-		iput(SOCK_INODE(sock));
+ 
+ 	sock_put(ssk);
+ }
+@@ -2535,6 +2523,12 @@ static void __mptcp_destroy_sock(struct sock *sk)
+ 
+ 	pr_debug("msk=%p", msk);
+ 
++	/* dispose the ancillatory tcp socket, if any */
++	if (msk->subflow) {
++		iput(SOCK_INODE(msk->subflow));
++		msk->subflow = NULL;
++	}
++
+ 	/* be sure to always acquire the join list lock, to sync vs
+ 	 * mptcp_finish_join().
+ 	 */
+@@ -2585,20 +2579,10 @@ cleanup:
+ 	inet_csk(sk)->icsk_mtup.probe_timestamp = tcp_jiffies32;
+ 	list_for_each_entry(subflow, &mptcp_sk(sk)->conn_list, node) {
+ 		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
+-		bool slow, dispose_socket;
+-		struct socket *sock;
++		bool slow = lock_sock_fast(ssk);
+ 
+-		slow = lock_sock_fast(ssk);
+-		sock = ssk->sk_socket;
+-		dispose_socket = sock && sock != sk->sk_socket;
+ 		sock_orphan(ssk);
+ 		unlock_sock_fast(ssk, slow);
+-
+-		/* for the outgoing subflows we additionally need to free
+-		 * the associated socket
+-		 */
+-		if (dispose_socket)
+-			iput(SOCK_INODE(sock));
+ 	}
+ 	sock_orphan(sk);
+ 
+@@ -3040,7 +3024,7 @@ void mptcp_finish_connect(struct sock *ssk)
+ 	mptcp_rcv_space_init(msk, ssk);
+ }
+ 
+-static void mptcp_sock_graft(struct sock *sk, struct socket *parent)
++void mptcp_sock_graft(struct sock *sk, struct socket *parent)
+ {
+ 	write_lock_bh(&sk->sk_callback_lock);
+ 	rcu_assign_pointer(sk->sk_wq, &parent->wq);
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index dbf62e74fcc1..18fef4273bdc 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -460,6 +460,7 @@ void mptcp_subflow_shutdown(struct sock *sk, struct sock *ssk, int how);
+ void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
+ 		       struct mptcp_subflow_context *subflow);
+ void mptcp_subflow_reset(struct sock *ssk);
++void mptcp_sock_graft(struct sock *sk, struct socket *parent);
+ 
+ /* called with sk socket lock held */
+ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info *loc,
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index 9d28f6e3dc49..81b7be67d288 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -1165,6 +1165,9 @@ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info *loc,
+ 	if (err && err != -EINPROGRESS)
+ 		goto failed_unlink;
+ 
++	/* discard the subflow socket */
++	mptcp_sock_graft(ssk, sk->sk_socket);
++	iput(SOCK_INODE(sf));
+ 	return err;
+ 
+ failed_unlink:
 -- 
 2.30.1
 
