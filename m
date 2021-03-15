@@ -2,188 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820BD33AC51
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6BE33AC54
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCOHdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:33:35 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:44275 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhCOHdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:33:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615793611; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZzoafUkXqTQ8SlY2qyEpLES8Y6LCpnSFPTpiNb51gqA=;
- b=Avah+MVNnK2s0/dtNTux4GtWGp9sPvK5iyW+7UBOJa/lSp4Dv+oz4iax+sSDYQUJI1SqhZeN
- Tsz2a3+B7xrVCMNW1q3Z3eOF5UmILNPG2QSVW2ujMXQdoGK4w/VKnJtCZx0IcNzy+acAd4rc
- RHH7t/QxMZVeMw3UNH02XpKDDEY=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 604f0dc84db3bb68011745c5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 07:33:28
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B0A3EC433ED; Mon, 15 Mar 2021 07:33:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98232C433CA;
-        Mon, 15 Mar 2021 07:33:26 +0000 (UTC)
+        id S230084AbhCOHeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:34:08 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14338 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229679AbhCOHdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:33:44 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DzSm56Pybz8yRT;
+        Mon, 15 Mar 2021 15:31:49 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 15 Mar 2021 15:33:39 +0800
+Subject: Re: [PATCH 3/4] KVM: arm64: Fix address check for memory slot
+To:     Gavin Shan <gshan@redhat.com>, <kvmarm@lists.cs.columbia.edu>
+References: <20210315041844.64915-1-gshan@redhat.com>
+ <20210315041844.64915-4-gshan@redhat.com>
+CC:     <maz@kernel.org>, <will@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <shan.gavin@gmail.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <be57b9fb-89c4-9c32-f273-9f4bbe973b00@huawei.com>
+Date:   Mon, 15 Mar 2021 15:33:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210315041844.64915-4-gshan@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 15:33:26 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-6-avri.altman@wdc.com>
- <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
-Message-ID: <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 12:02, Can Guo wrote:
-> On 2021-03-02 21:24, Avri Altman wrote:
->> I host mode, the host is expected to send HPB-WRITE-BUFFER with
->> buffer-id = 0x1 when it inactivates a region.
->> 
->> Use the map-requests pool as there is no point in assigning a
->> designated cache for umap-requests.
->> 
->> Signed-off-by: Avri Altman <avri.altman@wdc.com>
->> ---
->>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->>  drivers/scsi/ufs/ufshpb.h |  1 +
->>  2 files changed, 15 insertions(+)
->> 
->> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->> index 6f4fd22eaf2f..0744feb4d484 100644
->> --- a/drivers/scsi/ufs/ufshpb.c
->> +++ b/drivers/scsi/ufs/ufshpb.c
->> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct 
->> ufshpb_lu *hpb,
->> 
->>  	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
->> 
->> +	hpb->stats.umap_req_cnt++;
->>  	return 0;
->>  }
->> 
->> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct 
->> ufshpb_lu *hpb,
->>  	return -EAGAIN;
->>  }
->> 
->> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
->> +					struct ufshpb_region *rgn)
->> +{
->> +	return ufshpb_issue_umap_req(hpb, rgn);
->> +}
->> +
->>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->>  {
->>  	return ufshpb_issue_umap_req(hpb, NULL);
->> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct 
->> ufshpb_lu *hpb,
->>  	struct ufshpb_subregion *srgn;
->>  	int srgn_idx;
->> 
->> +
->> +	if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
-> 
-> __ufshpb_evict_region() is called with rgn_state_lock held and IRQ 
-> disabled,
-> when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(), 
-> below
-> warning shall pop up every time, fix it?
-> 
-> void blk_execute_rq_nowait(struct request_queue *q, struct gendisk 
-> *bd_disk,
-> 		   struct request *rq, int at_head,
-> 			   rq_end_io_fn *done)
-> {
-> 	WARN_ON(irqs_disabled());
-> ...
-> 
+Hi Gavin,
 
-Moreover, since we are here with rgn_state_lock held and IRQ disabled,
-in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache, 
-GFP_KERNEL)
-has the GFP_KERNEL flag, scheduling while atomic???
+FYI, this has been fixed by Marc in commit 262b003d059c.
 
-Can Guo.
+Thanks,
+Keqian
 
-> Thanks.
-> Can Guo.
+On 2021/3/15 12:18, Gavin Shan wrote:
+> The last (IPA) page can't be specified when a new memory slot is
+> added. The error -EFAULT is returned when the memory slot is added
+> with the following parameters for the VM, which has 40-bits IPA
+> limit. The host has 4KB base page size. It's not correct because
+> the last (IPA) page is still usable.
 > 
->> +		return;
->> +
->>  	lru_info = &hpb->lru_info;
->> 
->>  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", 
->> rgn->rgn_idx);
->> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->>  ufshpb_sysfs_attr_show_func(map_req_cnt);
->> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->> 
->>  static struct attribute *hpb_dev_stat_attrs[] = {
->>  	&dev_attr_hit_cnt.attr,
->> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] = 
->> {
->>  	&dev_attr_rb_active_cnt.attr,
->>  	&dev_attr_rb_inactive_cnt.attr,
->>  	&dev_attr_map_req_cnt.attr,
->> +	&dev_attr_umap_req_cnt.attr,
->>  	NULL,
->>  };
->> 
->> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu 
->> *hpb)
->>  	hpb->stats.rb_active_cnt = 0;
->>  	hpb->stats.rb_inactive_cnt = 0;
->>  	hpb->stats.map_req_cnt = 0;
->> +	hpb->stats.umap_req_cnt = 0;
->>  }
->> 
->>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> index bd4308010466..84598a317897 100644
->> --- a/drivers/scsi/ufs/ufshpb.h
->> +++ b/drivers/scsi/ufs/ufshpb.h
->> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->>  	u64 rb_inactive_cnt;
->>  	u64 map_req_cnt;
->>  	u64 pre_req_cnt;
->> +	u64 umap_req_cnt;
->>  };
->> 
->>  struct ufshpb_lu {
+>    struct kvm_userspace_memory_region {
+>       __u32 slot;               /* 1            */
+>       __u32 flags;              /* 0            */
+>       __u64 guest_phys_addr;    /* 0xfffffff000 */
+>       __u64 memory_size;        /* 0x1000       */
+>       __u64 userspace_addr;
+>    };
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/kvm/mmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 286b603ed0d3..a5a8ade9fde4 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1313,7 +1313,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>  	 * Prevent userspace from creating a memory region outside of the IPA
+>  	 * space addressable by the KVM guest IPA space.
+>  	 */
+> -	if (memslot->base_gfn + memslot->npages >=
+> +	if (memslot->base_gfn + memslot->npages >
+>  	    (kvm_phys_size(kvm) >> PAGE_SHIFT))
+>  		return -EFAULT;
+>  
+> 
