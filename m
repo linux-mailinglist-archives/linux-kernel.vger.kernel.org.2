@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB89333BCCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06BB33BCD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbhCOO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S234865AbhCOO3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232960AbhCOOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B728864E89;
-        Mon, 15 Mar 2021 14:00:05 +0000 (UTC)
+        id S232989AbhCOOAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7463064F10;
+        Mon, 15 Mar 2021 14:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816807;
-        bh=OOca3kBORgZR7pDsF6UQXxGFhNJsYMQXZVOqWCCcrdc=;
+        s=korg; t=1615816808;
+        bh=IRd2fbfWB7PxKr72oQAlufixyevhTRLq+lbOG35j/Zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KHjQYgSwkGkfVcNpZL5vnvo+j6erWeP+9Z3X0ILiWTW8xigcUhTLKD6m6eZ5ELsXM
-         q+43FeBfG8UWxAUytWk9SrOvTX+OT+DUtNHoRm2JsJxRuG2kf3GJt7JNFFOuXIVlXY
-         PEzcek9R0YBa1RuTHdN8wYaLzP2nnLRIZIa5u6U4=
+        b=UVAcasN4OKzxY+xtDYDpbZwQD87NinsUfkfSpPXvivSdUyYzbN5uh/O+arho5G/BX
+         WBaSrpwrD8t9h6W4BosbJ+qaIX76jCfWk3UVTURGLXZtodOxLvJ+PUnCUjq6pVD9ju
+         34qbHzvEFNgAYMlNWOcf/eyI35kjfU45s0DDAq4A=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Karan Singhal <karan.singhal@acuitybrands.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 081/120] USB: serial: cp210x: add ID for Acuity Brands nLight Air Adapter
-Date:   Mon, 15 Mar 2021 14:57:12 +0100
-Message-Id: <20210315135722.616768209@linuxfoundation.org>
+Subject: [PATCH 4.19 082/120] USB: serial: cp210x: add some more GE USB IDs
+Date:   Mon, 15 Mar 2021 14:57:13 +0100
+Message-Id: <20210315135722.650821374@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,31 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Karan Singhal <karan.singhal@acuitybrands.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-commit ca667a33207daeaf9c62b106815728718def60ec upstream.
+commit 42213a0190b535093a604945db05a4225bf43885 upstream.
 
-IDs of nLight Air Adapter, Acuity Brands, Inc.:
-vid: 10c4
-pid: 88d8
+GE CS1000 has some more custom USB IDs for CP2102N; add them
+to the driver to have working auto-probing.
 
-Signed-off-by: Karan Singhal <karan.singhal@acuitybrands.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/cp210x.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
 --- a/drivers/usb/serial/cp210x.c
 +++ b/drivers/usb/serial/cp210x.c
-@@ -146,6 +146,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x10C4, 0x8857) },	/* CEL EM357 ZigBee USB Stick */
- 	{ USB_DEVICE(0x10C4, 0x88A4) }, /* MMB Networks ZigBee USB Device */
- 	{ USB_DEVICE(0x10C4, 0x88A5) }, /* Planet Innovation Ingeni ZigBee USB Device */
-+	{ USB_DEVICE(0x10C4, 0x88D8) }, /* Acuity Brands nLight Air Adapter */
- 	{ USB_DEVICE(0x10C4, 0x88FB) }, /* CESINEL MEDCAL STII Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8938) }, /* CESINEL MEDCAL S II Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8946) }, /* Ketra N1 Wireless Interface */
+@@ -203,6 +203,8 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
++	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
++	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
+ 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
 
 
