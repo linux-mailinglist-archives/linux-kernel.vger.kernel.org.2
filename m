@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C929033BEAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC6133BEB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241259AbhCOOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:48:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
+        id S241529AbhCOOtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237624AbhCOOVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:21:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E0BD64F09;
-        Mon, 15 Mar 2021 14:21:39 +0000 (UTC)
+        id S238121AbhCOOWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0056864F2C;
+        Mon, 15 Mar 2021 14:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615818100;
-        bh=ESmk/twYDuhYTynKRTakFxl6/B7BMo8BzhKOaxxnb1o=;
+        s=korg; t=1615818165;
+        bh=KUA8aZbA0k8mleu6Koucf+BTSvcqRTKBhGS9Iskz/AM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T2GHlL3KoYzesex+pOpUMVv46v5k1E0lC7Ra+x0AbXCylg3U9HUxoGxzS8CrRGZ+z
-         k8EGoujp0oukyeNm+h7riOzER7R+0j1+EGqu/aO7wnCvRNUfib5yf+lVxYEsoqsDDR
-         NJVFc4f1slnBoxHwrCOZtighKTXcOTC65RhyaU70=
+        b=xMOmWHzQ+uXKdLRd5qA7Jq7hghlOD4z2Eep7TpYcZZaD2weilDmjgo8bs7Ul0SIad
+         EXq9wCCoOK2+KhJP7KDQjt+MTas8DHCWZk2qyhzPd2zin48qNA8yW5lFAy1ZhnDh1u
+         3G6Xhweda/ZBTcnm/ZJSyTfoBmKvrMYN9GdofH1w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 276/290] KVM: x86: Ensure deadline timer has truly expired before posting its IRQ
-Date:   Mon, 15 Mar 2021 15:21:17 +0100
-Message-Id: <20210315135551.359947615@linuxfoundation.org>
+Subject: [PATCH 5.10 277/290] KVM: kvmclock: Fix vCPUs > 64 cant be online/hotpluged
+Date:   Mon, 15 Mar 2021 15:22:27 +0100
+Message-Id: <20210315135551.391322899@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -41,45 +43,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sean Christopherson <seanjc@google.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-commit beda430177f56656e7980dcce93456ffaa35676b upstream.
+commit d7eb79c6290c7ae4561418544072e0a3266e7384 upstream.
 
-When posting a deadline timer interrupt, open code the checks guarding
-__kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
-check in kvm_wait_lapic_expire().  The injection check will always fail
-since the interrupt has not yet be injected.  Moving the call after
-injection would also be wrong as that wouldn't actually delay delivery
-of the IRQ if it is indeed sent via posted interrupt.
+# lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                88
+On-line CPU(s) list:   0-63
+Off-line CPU(s) list:  64-87
 
-Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+# cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-5.10.0-rc3-tlinux2-0050+ root=/dev/mapper/cl-root ro
+rd.lvm.lv=cl/root rhgb quiet console=ttyS0 LANG=en_US .UTF-8 no-kvmclock-vsyscall
+
+# echo 1 > /sys/devices/system/cpu/cpu76/online
+-bash: echo: write error: Cannot allocate memory
+
+The per-cpu vsyscall pvclock data pointer assigns either an element of the
+static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory
+hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if
+kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in
+kvmclock_setup_percpu() which returns -ENOMEM. It's broken for no-vsyscall
+and sometimes you end up with vsyscall disabled if the host does something
+strange. This patch fixes it by allocating this dynamically memory
+unconditionally even if vsyscall is disabled.
+
+Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
+Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Message-Id: <1614130683-24137-1-git-send-email-wanpengli@tencent.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/lapic.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ arch/x86/kernel/kvmclock.c |   19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1641,7 +1641,16 @@ static void apic_timer_expired(struct kv
- 	}
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -269,21 +269,20 @@ static void __init kvmclock_init_mem(voi
  
- 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
--		kvm_wait_lapic_expire(vcpu);
-+		/*
-+		 * Ensure the guest's timer has truly expired before posting an
-+		 * interrupt.  Open code the relevant checks to avoid querying
-+		 * lapic_timer_int_injected(), which will be false since the
-+		 * interrupt isn't yet injected.  Waiting until after injecting
-+		 * is not an option since that won't help a posted interrupt.
-+		 */
-+		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
-+		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
-+			__kvm_wait_lapic_expire(vcpu);
- 		kvm_apic_inject_pending_timer_irqs(apic);
- 		return;
- 	}
+ static int __init kvm_setup_vsyscall_timeinfo(void)
+ {
+-#ifdef CONFIG_X86_64
+-	u8 flags;
++	kvmclock_init_mem();
+ 
+-	if (!per_cpu(hv_clock_per_cpu, 0) || !kvmclock_vsyscall)
+-		return 0;
++#ifdef CONFIG_X86_64
++	if (per_cpu(hv_clock_per_cpu, 0) && kvmclock_vsyscall) {
++		u8 flags;
+ 
+-	flags = pvclock_read_flags(&hv_clock_boot[0].pvti);
+-	if (!(flags & PVCLOCK_TSC_STABLE_BIT))
+-		return 0;
++		flags = pvclock_read_flags(&hv_clock_boot[0].pvti);
++		if (!(flags & PVCLOCK_TSC_STABLE_BIT))
++			return 0;
+ 
+-	kvm_clock.vdso_clock_mode = VDSO_CLOCKMODE_PVCLOCK;
++		kvm_clock.vdso_clock_mode = VDSO_CLOCKMODE_PVCLOCK;
++	}
+ #endif
+ 
+-	kvmclock_init_mem();
+-
+ 	return 0;
+ }
+ early_initcall(kvm_setup_vsyscall_timeinfo);
 
 
