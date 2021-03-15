@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C2233A96E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 02:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FE233A972
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 02:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhCOByP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 21:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhCOBxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 21:53:39 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC7EC061574;
-        Sun, 14 Mar 2021 18:53:39 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id f12so8131098qtq.4;
-        Sun, 14 Mar 2021 18:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4NjOSr9VN+TZ+xvY692RA2Rk4/8SWTbRIdGmK6sBVnI=;
-        b=XZqSVVmLbYt44JaCLhSlY1xv6p7EQ/7T07cVNA8uSS/YrRtnBKsrhIlaxsP2G9JkNe
-         okwBK4nJuh0LGx9hBvAb6z9qjnZOajC/K6OWfDk3rwZk3oNus32//RxlHUukilqVNK42
-         9WQtT6etr9KSts3028oYwaY08X8RHBj4dvG1hheUGrr4oZjCRhu6okfd1RKrc3LrPhQZ
-         V+2B8IS7MahaUHJbFTjzoWaTfcz6dHh5JJHEdZToDtwkzMgeCArwCOAvUCBGnnMzxPff
-         CRH4IKOghi4RW4ZQ8mszlIn7sUp3tkbDeb9VN1tmt+v+Lae6v4udXbnMFo5ZYQp5vhyp
-         ge9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4NjOSr9VN+TZ+xvY692RA2Rk4/8SWTbRIdGmK6sBVnI=;
-        b=RHgO7PqTRaVSqf0qmDbY3yHmlJS2Lw+29Av+icTrPhyjTg5nhfRwwqdGH9wmM0T3Pu
-         TPzlCZKSVvKnq/YYZrkn+RJnrzBqPwJE8m8h/74tDJynRCdFV0ygbKNgLQV5waQZ9dxG
-         jAsrCwNAtGkBpAdJEdgJET6qsMasQyl8DaRwinI2f1dT9erfGAnqn8b4TZ77SVooj/or
-         ouslIbcWIpjbJCK/hg2j1RwYelCT7pz+iIGhig0mvD/MOGd1DDeydVzhCwvsw3lYnvCg
-         ww8nnXAVS5ntZjEiz3jYfsp4Yo0RSLl+uwsrOSa4fYFB0zuGAhIlNre1DrSahAbPXcma
-         laAA==
-X-Gm-Message-State: AOAM531e41Z6gfnAM5QEwo9/X+Woke/D+kqf8MRSca3hGy8G7Ank0pEF
-        2Km34F91DH5or+WZV26bpVR759HJi3A4azjG
-X-Google-Smtp-Source: ABdhPJx6BICvmZ8ukaK6Eju/42JG7Dm8kbGUg4b/ZrtAqrW0y/mMBxBkIiOonCtVIMf7JYcdWYYGsg==
-X-Received: by 2002:ac8:5bd1:: with SMTP id b17mr21053346qtb.53.1615773217760;
-        Sun, 14 Mar 2021 18:53:37 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.69])
-        by smtp.gmail.com with ESMTPSA id x17sm4604638qtw.91.2021.03.14.18.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 18:53:36 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jdmason@kudzu.us, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] net: ethernet: neterion: Fix a typo in the file s2io.c
-Date:   Mon, 15 Mar 2021 07:23:22 +0530
-Message-Id: <20210315015322.1207647-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S229772AbhCOByt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 21:54:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhCOByj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 21:54:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 694E564E67;
+        Mon, 15 Mar 2021 01:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615773279;
+        bh=lXgcnPBVlamraWadB2YrJuA6DQw0vte++gFVcURPXbk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JjncW2uXz+eD1QSf5uKz3F3PKHK1WxWjMPMfVVBCBYVES0F7dbXs45BrEBCbEVaDm
+         X7z1NupuUm0x5CjZDcs3llPElLrGUfHwYdpCrMusXgr4NAUmScgK92Aj+7sccLFFCU
+         chnEyLM1ekNe1Ccuh5Szh0VhtkjZTKfLy/O0Bc3gV4ttGw+jN7CbWGlwaTK1EEDkvO
+         hzHZ1l1cn0s0zytltGpGEY3eKYFb8JRmxfpj1aT7puQ3FwqQEaOnkPT5zo2Q2jaOo3
+         iGyUrlYsMm08DTMxzjK/RlyFQzK3OQT0lFjWxh+D21z8YJSV6GS5FzZg2IvNXnEk7L
+         ZJV9Qak4UHFRA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id BC96A3C0C96; Mon, 15 Mar 2021 02:54:37 +0100 (CET)
+Date:   Mon, 15 Mar 2021 02:54:37 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] power: supply: bq27xxx: fix sign of current_now
+ for newer ICs
+Message-ID: <20210315015437.auc4smemdbxb4qlm@earth.universe>
+References: <20210303095420.29054-1-matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iknjunzcwyyvba4y"
+Content-Disposition: inline
+In-Reply-To: <20210303095420.29054-1-matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/structue/structure/
+--iknjunzcwyyvba4y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/ethernet/neterion/s2io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/net/ethernet/neterion/s2io.c b/drivers/net/ethernet/neterion/s2io.c
-index 8f2f091bce89..9cfcd5500462 100644
---- a/drivers/net/ethernet/neterion/s2io.c
-+++ b/drivers/net/ethernet/neterion/s2io.c
-@@ -6657,7 +6657,7 @@ static int s2io_change_mtu(struct net_device *dev, int new_mtu)
+On Wed, Mar 03, 2021 at 10:54:18AM +0100, Matthias Schiffer wrote:
+> Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now=
+")
+> changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
+> I'm now seeing negated values *with* that patch.
+>=20
+> The GTA04/Openmoko device that was used for testing uses a BQ27000 or
+> BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
+> Revert the behaviour for newer ICs.
+>=20
+> Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
 
- /**
-  * s2io_set_link - Set the LInk status
-- * @work: work struct containing a pointer to device private structue
-+ * @work: work struct containing a pointer to device private structure
-  * Description: Sets the link status for the adapter
-  */
+Thanks, queued.
 
---
-2.30.2
+-- Sebastian
 
+>=20
+> v2: no changes
+>=20
+>  drivers/power/supply/bq27xxx_battery.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/suppl=
+y/bq27xxx_battery.c
+> index 4c4a7b1c64c5..cb6ebd2f905e 100644
+> --- a/drivers/power/supply/bq27xxx_battery.c
+> +++ b/drivers/power/supply/bq27xxx_battery.c
+> @@ -1827,7 +1827,7 @@ static int bq27xxx_battery_current(struct bq27xxx_d=
+evice_info *di,
+>  		val->intval =3D curr * BQ27XXX_CURRENT_CONSTANT / BQ27XXX_RS;
+>  	} else {
+>  		/* Other gauges return signed value */
+> -		val->intval =3D -(int)((s16)curr) * 1000;
+> +		val->intval =3D (int)((s16)curr) * 1000;
+>  	}
+> =20
+>  	return 0;
+> --=20
+> 2.17.1
+>=20
+
+--iknjunzcwyyvba4y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBOvlcACgkQ2O7X88g7
++pqqhA//RZ/DeLWE2E9PSJs0pMdGLDhMyVlsj06Pya2mJslVVS9+vZD4gEDcojww
+7TAEbtsCOiDnEmnLkDy74wtSSAhS2DqHaR3wNXd8eRTT7pqG/7bfeZyaQsJIf27/
+1E2QMpgZHtRXObtqFa1aa7JJtgwYSJ2OmKj9jXVL9NjtxPGMxsh3MeJaddQOF2BI
+xw+jlxBhxwBvaWfZXbRGS03ZivzYKoYGRaqn/xYDrjxC961z7RPduKw6W4Wqs0Rl
+LGx1t17NTL7o1W1OnVSENCi4z6KAoTfPO3ivSR87QW68K8eKNt6g66mPoz7a7BT8
+yqYEPF0xdVaV7YASJzvfrEX5wNmX0bmsbNIy5azu1wpgi1TJGvNMhSdFnas6L9GA
+KXGyYstfuVnzlKKDkFIurqZB4/tsRoN3bvqU80Is0uIEhgEV0451ZzHkCxVyYLfy
+IYr1vbsCyxpPuHlfvpfOBfsNyCDFpmDEGqe9SKpqxz4cfRJf8B254zKwx+U6sUO9
+zu3X58qpUVZHxNEUuvyFJliS+3LFggg5CqOrGFjnWqg2a9hHqJF+PLW1fbRktvva
+5WPan1gsX7Hd0JBKkbB4ga/ulyp/au3arJMUaJ3Ma/dlLCyoVydOWt7aQcBainqW
+4b8GvfJOBAIIkf1uibTfS+2HNbvmNyT11AQJ16K8KqPGp+ahwkg=
+=IFpg
+-----END PGP SIGNATURE-----
+
+--iknjunzcwyyvba4y--
