@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1849433BCD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB89333BCCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbhCOO3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:29:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S234977AbhCOO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231722AbhCOOAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56B7364EED;
-        Mon, 15 Mar 2021 14:00:04 +0000 (UTC)
+        id S232960AbhCOOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B728864E89;
+        Mon, 15 Mar 2021 14:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816805;
-        bh=ZVveNTZOC9To2IBySsO7Ne8khllO+LB55e5NlwO6B6w=;
+        s=korg; t=1615816807;
+        bh=OOca3kBORgZR7pDsF6UQXxGFhNJsYMQXZVOqWCCcrdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xna4oqTuSruv1QnYuCPX68HZDi8q0lMAe+P+nq+JxnUK+5czNq3p07++7uehQEh88
-         nqB55wuiHz4NPfaqr8LwrSGphaQ8cIR7yPe1vpHjbSoIEWOpCYb96P1u43YunGLVP0
-         tpvyBIn9980FHtPJma4ssauWEOeEdRHXRgnqCoO4=
+        b=KHjQYgSwkGkfVcNpZL5vnvo+j6erWeP+9Z3X0ILiWTW8xigcUhTLKD6m6eZ5ELsXM
+         q+43FeBfG8UWxAUytWk9SrOvTX+OT+DUtNHoRm2JsJxRuG2kf3GJt7JNFFOuXIVlXY
+         PEzcek9R0YBa1RuTHdN8wYaLzP2nnLRIZIa5u6U4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Niv Sardi <xaiki@evilgiggle.com>,
+        stable@vger.kernel.org,
+        Karan Singhal <karan.singhal@acuitybrands.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 080/120] USB: serial: ch341: add new Product ID
-Date:   Mon, 15 Mar 2021 14:57:11 +0100
-Message-Id: <20210315135722.585424948@linuxfoundation.org>
+Subject: [PATCH 4.19 081/120] USB: serial: cp210x: add ID for Acuity Brands nLight Air Adapter
+Date:   Mon, 15 Mar 2021 14:57:12 +0100
+Message-Id: <20210315135722.616768209@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -41,103 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Niv Sardi <xaiki@evilgiggle.com>
+From: Karan Singhal <karan.singhal@acuitybrands.com>
 
-commit 5563b3b6420362c8a1f468ca04afe6d5f0a8d0a3 upstream.
+commit ca667a33207daeaf9c62b106815728718def60ec upstream.
 
-Add PID for CH340 that's found on cheap programmers.
+IDs of nLight Air Adapter, Acuity Brands, Inc.:
+vid: 10c4
+pid: 88d8
 
-The driver works flawlessly as soon as the new PID (0x9986) is added to it.
-These look like ANU232MI but ship with a ch341 inside. They have no special
-identifiers (mine only has the string "DB9D20130716" printed on the PCB and
-nothing identifiable on the packaging. The merchant i bought it from
-doesn't sell these anymore).
-
-the lsusb -v output is:
-Bus 001 Device 009: ID 9986:7523
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass          255 Vendor Specific Class
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x9986
-  idProduct          0x7523
-  bcdDevice            2.54
-  iManufacturer           0
-  iProduct                0
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength       0x0027
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower               96mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           3
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1
-      bInterfaceProtocol      2
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0020  1x 32 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0020  1x 32 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               1
-
-Signed-off-by: Niv Sardi <xaiki@evilgiggle.com>
+Signed-off-by: Karan Singhal <karan.singhal@acuitybrands.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ch341.c |    1 +
+ drivers/usb/serial/cp210x.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -85,6 +85,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x1a86, 0x7522) },
- 	{ USB_DEVICE(0x1a86, 0x7523) },
- 	{ USB_DEVICE(0x4348, 0x5523) },
-+	{ USB_DEVICE(0x9986, 0x7523) },
- 	{ },
- };
- MODULE_DEVICE_TABLE(usb, id_table);
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -146,6 +146,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x10C4, 0x8857) },	/* CEL EM357 ZigBee USB Stick */
+ 	{ USB_DEVICE(0x10C4, 0x88A4) }, /* MMB Networks ZigBee USB Device */
+ 	{ USB_DEVICE(0x10C4, 0x88A5) }, /* Planet Innovation Ingeni ZigBee USB Device */
++	{ USB_DEVICE(0x10C4, 0x88D8) }, /* Acuity Brands nLight Air Adapter */
+ 	{ USB_DEVICE(0x10C4, 0x88FB) }, /* CESINEL MEDCAL STII Network Analyzer */
+ 	{ USB_DEVICE(0x10C4, 0x8938) }, /* CESINEL MEDCAL S II Network Analyzer */
+ 	{ USB_DEVICE(0x10C4, 0x8946) }, /* Ketra N1 Wireless Interface */
 
 
