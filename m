@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2832B33B603
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A6C33B614
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhCON4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S230372AbhCON5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231344AbhCONyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7970364EB6;
-        Mon, 15 Mar 2021 13:54:02 +0000 (UTC)
+        id S231386AbhCONyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49C4A64E89;
+        Mon, 15 Mar 2021 13:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816444;
-        bh=+v8QAgvYgNIpdStiRG1288yKy4WwdsJSEJKqh8j7Gdg=;
+        s=korg; t=1615816449;
+        bh=dyxUvkeFFAfCa9HbSej9c83vTx3J2aDdsBEsBapoT2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MXyER5P3ojTmn801QCvsYW8WmOWXp8flFI1t4lquDX31cOO4woDhOVEE4RInWNZEO
-         SYTIm/SUIcOi64IvqS13k4Blr23XyH8o79WRQ9p/yMVxTOrVvUuKY5OfQb5Jsj4BdT
-         sIFRGO0Ust9h/qlaxApf+rH8iuwRORsH6dnL0qvE=
+        b=S79YEYXxElVZmHsRfKLO6Kes1BNhcZzWqSrSvk2sCD1dNRxXhX7Q3vQZ4G5x5XG9k
+         Up9CXp1PN+wdokLe/vgD7YLnFDvA+aWaKvLsUwE64PGgcdGMcD4UTpocSJDhrRiHdd
+         DOsS/FU2ErSx/U0dwrNDRdHPl7ImXp0kni+vhOc4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>,
-        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 4.9 42/78] usbip: fix stub_dev usbip_sockfd_store() races leading to gpf
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.4 51/75] staging: comedi: adv_pci1710: Fix endian problem for AI command data
 Date:   Mon, 15 Mar 2021 14:52:05 +0100
-Message-Id: <20210315135213.451506811@linuxfoundation.org>
+Message-Id: <20210315135209.914501090@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,134 +40,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 9380afd6df70e24eacbdbde33afc6a3950965d22 upstream.
+commit b2e78630f733a76508b53ba680528ca39c890e82 upstream.
 
-usbip_sockfd_store() is invoked when user requests attach (import)
-detach (unimport) usb device from usbip host. vhci_hcd sends import
-request and usbip_sockfd_store() exports the device if it is free
-for export.
+The analog input subdevice supports Comedi asynchronous commands that
+use Comedi's 16-bit sample format.  However, the calls to
+`comedi_buf_write_samples()` are passing the address of a 32-bit integer
+variable.  On bigendian machines, this will copy 2 bytes from the wrong
+end of the 32-bit value.  Fix it by changing the type of the variables
+holding the sample value to `unsigned short`.  The type of the `val`
+parameter of `pci1710_ai_read_sample()` is changed to `unsigned short *`
+accordingly.  The type of the `val` variable in `pci1710_ai_insn_read()`
+is also changed to `unsigned short` since its address is passed to
+`pci1710_ai_read_sample()`.
 
-Export and unexport are governed by local state and shared state
-- Shared state (usbip device status, sockfd) - sockfd and Device
-  status are used to determine if stub should be brought up or shut
-  down.
-- Local state (tcp_socket, rx and tx thread task_struct ptrs)
-  A valid tcp_socket controls rx and tx thread operations while the
-  device is in exported state.
-- While the device is exported, device status is marked used and socket,
-  sockfd, and thread pointers are valid.
-
-Export sequence (stub-up) includes validating the socket and creating
-receive (rx) and transmit (tx) threads to talk to the client to provide
-access to the exported device. rx and tx threads depends on local and
-shared state to be correct and in sync.
-
-Unexport (stub-down) sequence shuts the socket down and stops the rx and
-tx threads. Stub-down sequence relies on local and shared states to be
-in sync.
-
-There are races in updating the local and shared status in the current
-stub-up sequence resulting in crashes. These stem from starting rx and
-tx threads before local and global state is updated correctly to be in
-sync.
-
-1. Doesn't handle kthread_create() error and saves invalid ptr in local
-   state that drives rx and tx threads.
-2. Updates tcp_socket and sockfd,  starts stub_rx and stub_tx threads
-   before updating usbip_device status to SDEV_ST_USED. This opens up a
-   race condition between the threads and usbip_sockfd_store() stub up
-   and down handling.
-
-Fix the above problems:
-- Stop using kthread_get_run() macro to create/start threads.
-- Create threads and get task struct reference.
-- Add kthread_create() failure handling and bail out.
-- Hold usbip_device lock to update local and shared states after
-  creating rx and tx threads.
-- Update usbip_device status to SDEV_ST_USED.
-- Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
-- Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
-  and status) is complete.
-
-Credit goes to syzbot and Tetsuo Handa for finding and root-causing the
-kthread_get_run() improper error handling problem and others. This is a
-hard problem to find and debug since the races aren't seen in a normal
-case. Fuzzing forces the race window to be small enough for the
-kthread_get_run() error path bug and starting threads before updating the
-local and shared state bug in the stub-up sequence.
-
-Tested with syzbot reproducer:
-- https://syzkaller.appspot.com/text?tag=ReproC&x=14801034d00000
-
-Fixes: 9720b4bc76a83807 ("staging/usbip: convert to kthread")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org
+Fixes: a9c3a015c12f ("staging: comedi: adv_pci1710: use comedi_buf_write_samples()")
+Cc: <stable@vger.kernel.org> # 4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-4-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/stub_dev.c |   32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+ drivers/staging/comedi/drivers/adv_pci1710.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/usbip/stub_dev.c
-+++ b/drivers/usb/usbip/stub_dev.c
-@@ -60,6 +60,8 @@ static ssize_t store_sockfd(struct devic
- 	int sockfd = 0;
- 	struct socket *socket;
- 	int rv;
-+	struct task_struct *tcp_rx = NULL;
-+	struct task_struct *tcp_tx = NULL;
+--- a/drivers/staging/comedi/drivers/adv_pci1710.c
++++ b/drivers/staging/comedi/drivers/adv_pci1710.c
+@@ -351,11 +351,11 @@ static int pci171x_ai_eoc(struct comedi_
+ static int pci171x_ai_read_sample(struct comedi_device *dev,
+ 				  struct comedi_subdevice *s,
+ 				  unsigned int cur_chan,
+-				  unsigned int *val)
++				  unsigned short *val)
+ {
+ 	const struct boardtype *board = dev->board_ptr;
+ 	struct pci1710_private *devpriv = dev->private;
+-	unsigned int sample;
++	unsigned short sample;
+ 	unsigned int chan;
  
- 	if (!sdev) {
- 		dev_err(dev, "sdev is null\n");
-@@ -94,20 +96,36 @@ static ssize_t store_sockfd(struct devic
- 			goto sock_err;
- 		}
+ 	sample = inw(dev->iobase + PCI171X_AD_DATA_REG);
+@@ -395,7 +395,7 @@ static int pci171x_ai_insn_read(struct c
+ 	pci171x_ai_setup_chanlist(dev, s, &insn->chanspec, 1, 1);
  
--		sdev->ud.tcp_socket = socket;
--		sdev->ud.sockfd = sockfd;
--
-+		/* unlock and create threads and get tasks */
- 		spin_unlock_irq(&sdev->ud.lock);
-+		tcp_rx = kthread_create(stub_rx_loop, &sdev->ud, "stub_rx");
-+		if (IS_ERR(tcp_rx)) {
-+			sockfd_put(socket);
-+			return -EINVAL;
-+		}
-+		tcp_tx = kthread_create(stub_tx_loop, &sdev->ud, "stub_tx");
-+		if (IS_ERR(tcp_tx)) {
-+			kthread_stop(tcp_rx);
-+			sockfd_put(socket);
-+			return -EINVAL;
-+		}
+ 	for (i = 0; i < insn->n; i++) {
+-		unsigned int val;
++		unsigned short val;
  
--		sdev->ud.tcp_rx = kthread_get_run(stub_rx_loop, &sdev->ud,
--						  "stub_rx");
--		sdev->ud.tcp_tx = kthread_get_run(stub_tx_loop, &sdev->ud,
--						  "stub_tx");
-+		/* get task structs now */
-+		get_task_struct(tcp_rx);
-+		get_task_struct(tcp_tx);
+ 		/* start conversion */
+ 		outw(0, dev->iobase + PCI171X_SOFTTRG_REG);
+@@ -516,7 +516,7 @@ static void pci1710_handle_every_sample(
+ {
+ 	struct comedi_cmd *cmd = &s->async->cmd;
+ 	unsigned int status;
+-	unsigned int val;
++	unsigned short val;
+ 	int ret;
  
-+		/* lock and update sdev->ud state */
- 		spin_lock_irq(&sdev->ud.lock);
-+		sdev->ud.tcp_socket = socket;
-+		sdev->ud.sockfd = sockfd;
-+		sdev->ud.tcp_rx = tcp_rx;
-+		sdev->ud.tcp_tx = tcp_tx;
- 		sdev->ud.status = SDEV_ST_USED;
- 		spin_unlock_irq(&sdev->ud.lock);
+ 	status = inw(dev->iobase + PCI171X_STATUS_REG);
+@@ -576,7 +576,7 @@ static void pci1710_handle_fifo(struct c
+ 	}
  
-+		wake_up_process(sdev->ud.tcp_rx);
-+		wake_up_process(sdev->ud.tcp_tx);
-+
- 	} else {
- 		dev_info(dev, "stub down\n");
+ 	for (i = 0; i < devpriv->max_samples; i++) {
+-		unsigned int val;
++		unsigned short val;
+ 		int ret;
  
+ 		ret = pci171x_ai_read_sample(dev, s, s->async->cur_chan, &val);
 
 
