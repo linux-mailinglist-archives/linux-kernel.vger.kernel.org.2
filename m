@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969CD33C458
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5857F33C48D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhCORfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:35:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230526AbhCORfD (ORCPT
+        id S237060AbhCORhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:37:22 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55662 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236592AbhCORgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:35:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615829703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=30TBr3sK+ajEBQTkdVxs2gUMnCABPyOfPizE9SkmbsI=;
-        b=fe/osrTNzv/sXjJ53J4Dkn9HoHQgo6cGAXNkhWxegsdh5YY4YGdfXUaH5Iu4tkhJlglkS4
-        qDKTdXXvzB0QR9mQuXU8CLHRtOwN/2/9mtKnN8JUtmSqMxvzhBUlCjpzj3DUu8J5WykQVj
-        ypRl2gZm+F0cvTtnC+8vKUPsWINdHp0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-ym9K23_yPl6LoD-vytMdWg-1; Mon, 15 Mar 2021 13:34:59 -0400
-X-MC-Unique: ym9K23_yPl6LoD-vytMdWg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44221801597;
-        Mon, 15 Mar 2021 17:34:57 +0000 (UTC)
-Received: from krava (unknown [10.40.196.50])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 283DF5C5E0;
-        Mon, 15 Mar 2021 17:34:54 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 18:34:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2 09/27] perf parse-events: Create two hybrid hardware
- events
-Message-ID: <YE+avkajxbGJMOoM@krava>
-References: <20210311070742.9318-1-yao.jin@linux.intel.com>
- <20210311070742.9318-10-yao.jin@linux.intel.com>
- <YEu9zbr75p+OLY2o@krava>
- <65b8208c-ac5d-bdea-a11a-64d4a3d29562@linux.intel.com>
+        Mon, 15 Mar 2021 13:36:51 -0400
+X-UUID: 0ed98affa11d46a2966fa5275e872677-20210316
+X-UUID: 0ed98affa11d46a2966fa5275e872677-20210316
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1902592022; Tue, 16 Mar 2021 01:36:46 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 01:36:45 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 01:36:45 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Fei Shao <fshao@chromium.org>, Ran Bi <ran.bi@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v6 0/8] Add Support for MediaTek PMIC MT6359
+Date:   Tue, 16 Mar 2021 01:35:49 +0800
+Message-ID: <1615829757-3223-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65b8208c-ac5d-bdea-a11a-64d4a3d29562@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:04:56AM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 3/13/2021 3:15 AM, Jiri Olsa wrote:
-> > On Thu, Mar 11, 2021 at 03:07:24PM +0800, Jin Yao wrote:
-> > 
-> > SNIP
-> > 
-> > >    cycles: 4: 800933425 1002536659 1002536659
-> > >    cycles: 5: 800928573 1002528386 1002528386
-> > >    cycles: 6: 800924347 1002520527 1002520527
-> > >    cycles: 7: 800922009 1002513176 1002513176
-> > >    cycles: 8: 800919624 1002507326 1002507326
-> > >    cycles: 9: 800917204 1002500663 1002500663
-> > >    cycles: 10: 802096579 1002494280 1002494280
-> > >    cycles: 11: 802093770 1002486404 1002486404
-> > >    cycles: 12: 803284338 1002479491 1002479491
-> > >    cycles: 13: 803277609 1002469777 1002469777
-> > >    cycles: 14: 800875902 1002458861 1002458861
-> > >    cycles: 15: 800873241 1002451350 1002451350
-> > >    cycles: 0: 800837379 1002444645 1002444645
-> > >    cycles: 1: 800833400 1002438505 1002438505
-> > >    cycles: 2: 800829291 1002433698 1002433698
-> > >    cycles: 3: 800824390 1002427584 1002427584
-> > >    cycles: 4: 800819360 1002422099 1002422099
-> > >    cycles: 5: 800814787 1002415845 1002415845
-> > >    cycles: 6: 800810125 1002410301 1002410301
-> > >    cycles: 7: 800791893 1002386845 1002386845
-> > >    cycles: 12855737722 16040169029 16040169029
-> > >    cycles: 6406560625 8019379522 8019379522
-> > > 
-> > >     Performance counter stats for 'system wide':
-> > > 
-> > >        12,855,737,722      cpu_core/cycles/
-> > >         6,406,560,625      cpu_atom/cycles/
-> > 
-> > so we do that no_merge stuff for uncore pmus, why can't we do
-> > that in here? that'd seems like generic way
-> > 
-> > jirka
-> > 
-> 
-> We have set the "stat_config.no_merge = true;" in "[PATCH v2 08/27] perf
-> stat: Uniquify hybrid event name".
-> 
-> For hybrid hardware events, they have different configs. The config is
-> 0xDD000000AA (0x400000000 for core vs. 0xa00000000 for atom in this example)
-> 
-> We use perf_pmu__for_each_hybrid_pmu() to iterate all hybrid PMUs, generate
-> the configs and create the evsels for each hybrid PMU. This logic and the
-> code are not complex and easy to understand.
-> 
-> Uncore looks complicated. It has uncore alias concept which is for different
-> PMUs but with same prefix. Such as "uncore_cbox" for "uncore_cbox_0" to
-> "uncore_cbox_9". But the uncore alias concept doesn't apply to hybrid pmu
-> (we just have "cpu_core" and "cpu_atom" here). And actually I also don't
-> want to mix the core stuff with uncore stuff, that would be hard for
-> understanding.
-> 
-> Perhaps I misunderstand, correct me if I'm wrong.
+This patchset includes refactoring interrupt and adding support to MT6359 PMIC.
+MT6359 is the primary PMIC for MT6779 and probably other SOCs.
+The series[1] sent by Wen will continue to upstream in this patchset afterwards.
 
-not sure, I thought the merging stuff was more generic,
-because the change looks too specific for me, I'll try
-to check on it more deeply
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=306579
 
-jirka
+changes since v5:
+- rebase to Linux 5.12.
+- refine the code structure.
+- update the file date.
+
+Hsin-Hsiung Wang (6):
+  mfd: mt6358: refine interrupt code
+  rtc: mt6397: refine RTC_TC_MTH
+  dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
+  dt-bindings: regulator: Add document for MT6359 regulator
+  mfd: Add support for the MediaTek MT6359 PMIC
+  regulator: mt6359: Add support for MT6359P regulator
+
+Wen Su (2):
+  regulator: mt6359: Add support for MT6359 regulator
+  arm64: dts: mt6359: add PMIC MT6359 related nodes
+
+ .../devicetree/bindings/mfd/mt6397.txt        |    1 +
+ .../bindings/regulator/mt6359-regulator.yaml  |  169 +++
+ arch/arm64/boot/dts/mediatek/mt6359.dtsi      |  298 +++++
+ arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |    1 +
+ drivers/mfd/mt6358-irq.c                      |   89 +-
+ drivers/mfd/mt6397-core.c                     |   24 +
+ drivers/regulator/Kconfig                     |    9 +
+ drivers/regulator/Makefile                    |    1 +
+ drivers/regulator/mt6359-regulator.c          | 1036 +++++++++++++++++
+ drivers/rtc/rtc-mt6397.c                      |    2 +-
+ include/linux/mfd/mt6358/core.h               |    8 +-
+ include/linux/mfd/mt6359/core.h               |  133 +++
+ include/linux/mfd/mt6359/registers.h          |  529 +++++++++
+ include/linux/mfd/mt6359p/registers.h         |  249 ++++
+ include/linux/mfd/mt6397/core.h               |    1 +
+ include/linux/mfd/mt6397/rtc.h                |    1 +
+ include/linux/regulator/mt6359-regulator.h    |   59 +
+ 17 files changed, 2577 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt6359.dtsi
+ create mode 100644 drivers/regulator/mt6359-regulator.c
+ create mode 100644 include/linux/mfd/mt6359/core.h
+ create mode 100644 include/linux/mfd/mt6359/registers.h
+ create mode 100644 include/linux/mfd/mt6359p/registers.h
+ create mode 100644 include/linux/regulator/mt6359-regulator.h
+
+-- 
+2.18.0
 
