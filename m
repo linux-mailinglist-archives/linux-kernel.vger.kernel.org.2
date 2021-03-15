@@ -2,158 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD3C33C684
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDC933C68D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhCOTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhCOTJT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:09:19 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABD6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:09:18 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eaff:9701:b4db:50a7:6f83:328f] (unknown [IPv6:2a02:a03f:eaff:9701:b4db:50a7:6f83:328f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id F14B21DE339;
-        Mon, 15 Mar 2021 20:09:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1615835357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pskzclMkXR3IRzEZOEFMV+FedUz9vBjzoT3S2ZaEyiU=;
-        b=hoowfyuwXjQinpl+0faHCjkwmcG6kVRtut5FejL7IGhiY50Q0obkHABpSZKHILnnOjtQwr
-        mlxKwCdD8CQmNZ3E8pBncoCGXxUteSJPVoqQVhiBePT2d6daZcVo0PC3g4BcTuuuFk1vJG
-        X8YiGNMgfCX+E/bt20hRl1/bDtynMhCUebieJI5NeZ5Zre8gc/um6/goA0gXPgSjLfGk4g
-        zwAqLSVSTM0L/KTvBW/cjYv40Sfs5JoLI7XVzBB/KEYaBGG2Ib9stGy4nvBw89TFlC27wP
-        vlTlsQbzPtIKfvhYNqyn33sap6pv9hC9ps1VvqUhDu9d6Tao0rU0pqH3hAWAfg==
-Message-ID: <e9f0651e5fb52b7d56361ceb30b41759b6f2ec13.camel@svanheule.net>
-Subject: Re: [PATCH 2/2] gpio: Add Realtek Otto GPIO support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        id S231340AbhCOTKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:10:20 -0400
+Received: from mail-dm6nam10on2125.outbound.protection.outlook.com ([40.107.93.125]:50720
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233112AbhCOTJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:09:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=krvwE6ev8IeBMOAAg512MxzULc/zqecPyq+jauqeQrFWcOqyQPVa0IJOUznhpIJefbtUjcZcwl3ZcbjJJi3tr/44aDy9laD11zeeBZmk2y9KLCjjFnS2xfSjP+DihzXQ5EauUQ49Y1wPOZbeTv2kf7hwIR3tjMQhlRbyeXv0FGH4thPLB/MHSNsNVYHznbUS0fYALAVjO+MyqJqMsdbtscbMKpAXS67vjyVvVkI5NF6n/ah6dtHcsaNoKej7pumbdS7rKTde5eN8iAw2Oss6P74JhDPuWKc7+lN5NKbJdIB17dTM635TgsYR/dlmsOojBJvRflSMOakj0N55D8IHLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FeodEtCJkTalrKDDNO/gEa6gZnHQNV5fKkEVFbn/Osc=;
+ b=WOcMVQfUBMSCCtGM1kCk6icmZHK3v95nRfan7CwhFM1Cx9SLxvFlooeE6CmjND05u0KFcL7oXbsqkXM9I7ZODFXj0vSjxPQw2mU3Me23WJWbzMxslHwJjuLkTM/6EX4XS6T1AgHkj7NPMwa2sPIBqzsNXuFV+L7m3lKllUd6XD00663yhiw+IP1HChehvxvUn7D62UHcRf4P1lq8pZNbze5ILd0vWfIImxHwp5AoTl/fWbBeIurwNPC9ffT2iKaxTOUjWVR1QeWryrDpshDcmgd99d3aiTF4q14gkkMtiwpGpFoJGYTN98FMnhh2Gl0bUAE3FDwsdC3cg0crZtURbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FeodEtCJkTalrKDDNO/gEa6gZnHQNV5fKkEVFbn/Osc=;
+ b=KTMwnF5lruwajIVCZ8vwx810AYb+lMr5FYkwC4SKnbyYzjx4uHpYXWV68mOdkxhX/0GPRIPOY7HGuKu9wTkxaSePgKJkwDxKSh2eTtlm6aqUsUzhEGVnAKBj8M8oaR3Bt5ncTYK/ckqbNMV3WSkpM0kGDMzpAEbkaLYsL9XIK4Q=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1924.namprd21.prod.outlook.com (2603:10b6:303:7e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.2; Mon, 15 Mar
+ 2021 19:09:50 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c%8]) with mapi id 15.20.3977.004; Mon, 15 Mar 2021
+ 19:09:50 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wei Liu <wei.liu@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bert Vermeulen <bert@biot.com>
-Date:   Mon, 15 Mar 2021 20:09:15 +0100
-In-Reply-To: <CACRpkdZ7zWQPBgQ+AjFM7up8x8HJES2EDfBKGmPU9LJwWzB8EA@mail.gmail.com>
-References: <20210315082339.9787-1-sander@svanheule.net>
-         <20210315082339.9787-3-sander@svanheule.net>
-         <CACRpkdZ7zWQPBgQ+AjFM7up8x8HJES2EDfBKGmPU9LJwWzB8EA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Borislav Petkov <bp@suse.de>, Juergen Gross <jgross@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: RE: linux-next: manual merge of the hyperv tree with the tip tree
+Thread-Topic: linux-next: manual merge of the hyperv tree with the tip tree
+Thread-Index: AQHXGUw2HXFLF0nxy0Ol2pz6PV60caqFaq4Q
+Date:   Mon, 15 Mar 2021 19:09:49 +0000
+Message-ID: <MWHPR21MB159300D8C1C2DE9F47253097D76C9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210315143505.35af617b@canb.auug.org.au>
+In-Reply-To: <20210315143505.35af617b@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-15T19:09:48Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f07da129-79b9-4afb-bfe0-5b8374eb076f;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [174.246.49.55]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8ac5fbac-777f-40bf-1001-08d8e7e5e81f
+x-ms-traffictypediagnostic: MW4PR21MB1924:
+x-microsoft-antispam-prvs: <MW4PR21MB19246D898556871CBB04C8DDD76C9@MW4PR21MB1924.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZRoBHU6hVZgmug+nnDB+pr8WAoxS5zhDtx43m1SJnVOSNUBNcNGQJXFml1UWHEiMz7JqphAGkWzuw3zqwBOQ1eyHShYoFlqoUZAZI4YBL28EdkSc4ZBlB1i1Wrrwo1CZDFGLdrmkIgVD9BEqt3tD0qzCxVBhirKLEdrfxsUwq7MOD5xOA3Cz28qz2vdUyi0Lr2icyh3P5TMNzSr357Bd7K/Iuxz4vqbbPxqSuBVak10gr+UW3cbfrdAMMVVzJq7RrmMFlmnsLxS1VEKXQGbCWlVaW7sunatl/L8LlpwX3IerqlDuLTlN2gySLi9OYGryV/kdUIfwSW+pFnMj5mQ7tpJVQcYdEYLCBR8QAqIi6ibGH5FzzHghGxC+RHBTC873mqKYc4EyLVv8SdfOpgrHHS/58DYghsrNvnFjMedu8TYcc3RuCz3LKiPEgoog8fcAm8NfHMD4+EwZ8MP5TFNaFeE6Oon1yIBRSLAoLGm9+++6aXoaixKxSrl54/YgI8rMaT9ODX6i0qRUnY84StMUtyrcX2vnUmwhRF6Ewrq4TcKAcJHzkGFX6n7vXXtETzPP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(136003)(39860400002)(55016002)(4326008)(26005)(8936002)(316002)(71200400001)(8676002)(10290500003)(82950400001)(52536014)(82960400001)(110136005)(66446008)(8990500004)(66476007)(64756008)(66556008)(5660300002)(478600001)(9686003)(76116006)(53546011)(33656002)(7696005)(6506007)(86362001)(7416002)(2906002)(54906003)(83380400001)(66946007)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9I2FE0Wd1wpjszkmOrrBKZeWHhfCWAoAbJ1asLeRIPSw3MU/2y/3GNiib0aE?=
+ =?us-ascii?Q?7jB+FGwJK6NeMIV/Dfe82Q5PbEsuhlyXTykbV1coOn1W9Z2Uef+0BglQzjaK?=
+ =?us-ascii?Q?MSZ5SHb9rkX4RJJnFOxSNpUxR/0HVrHe+yA5tKu38vwoYUTIj8dUAAKuapaH?=
+ =?us-ascii?Q?rosQ8C77+rd2rjGEMOVxQekopJU8mFYDPrIXwykG2MgRM5508iJ7DQKy3gCW?=
+ =?us-ascii?Q?nlZY1zg4rDHjoCsHgw/XXm5tUycQ0lORA+iAUq630dK7U/DQf+RovR5Hl3WS?=
+ =?us-ascii?Q?QbApF3brO/Bu2r4c6vja98R+J/uFaFFs+KO/3xhSq9RU82qgzPGL3Or4YIpO?=
+ =?us-ascii?Q?oEF2Wm5dC8jguUOBedO/PSOqHoXUHh0uKR52vU7sr/GSGlj9MWib0sSh5lgA?=
+ =?us-ascii?Q?BkaK7M3doRcyvoDb7jLjP1EWDNBBEI9YdNIALpvQ/vrD1ZQ6mbt6SWkuj5+B?=
+ =?us-ascii?Q?ECkdfczsUD8njANzgYYi+TIBWvZm9nE1IMf6vCuWBMeZAqs5x/nmB4GNJTN7?=
+ =?us-ascii?Q?cbNFLiiJnPNa6M2q5NqZL4NK4cErVkdavmbBujM8asNvzf8Kbi603SLr3Htv?=
+ =?us-ascii?Q?DFEFTAZQ/HyLo7VCrc1j9mqemwhCz52ywtYhHHF7yzRpohtun43GNv7jH3VT?=
+ =?us-ascii?Q?xO9BktAQAJw7oKB2H/J4OkYmxEf1Fs74K/ymvwuMFs7luHNuYCzuiPfU6zoV?=
+ =?us-ascii?Q?rOkhfDKdbSQo0umSQVnrsFGr+Uv8XfrTCYQdYVzI7PMv40Mnk1x3h4wE4GA6?=
+ =?us-ascii?Q?53LJoFRgoIvjxwbPUTl9+tWdPlBMfAjEh4EjvUh08kqw5OQ6ClEYeof70QWR?=
+ =?us-ascii?Q?2YueFJU+bWIDCxdW7fPBldyQq/bb917fOXhWZoOdRrv4YNR2nHCstJr/h4EB?=
+ =?us-ascii?Q?h0KiBJ05aW89gkGnVBnmGoi3vKhdLVHinEEhQZGULwM4Fos6euBNTH1ElKLg?=
+ =?us-ascii?Q?3F5Dc/nJhqOvcKwsX0H8yYvXmnxT7zyoLSv01xmCC70GRna+cqcKEFhT3Yoy?=
+ =?us-ascii?Q?96mdgDtLY249XgTLM5/MTOcRtH5xsonkIk1Ezp9AT2RTpZc0Elb7GpKsCTEy?=
+ =?us-ascii?Q?7xKM5rMgmpUhMSbWAuCCOmSdOo5ENCro/vrA1M/kQTCLQ9IIHEftjYK/+HHx?=
+ =?us-ascii?Q?0ujbbDyFg1WDc8H1dJgWOl6lk7jm2HHObHyumgGyeWfioz3qE+QoqeRbkAFQ?=
+ =?us-ascii?Q?0DOuhtaHkOF920IhHhSkxcWgwnTqEhcWDWOL4hBbcjlAsfzKrM7aYNP6B9ow?=
+ =?us-ascii?Q?UlFVbjO0A2dddKZkqqZnRbyGnSg9dMXVrASeD6fW4Vo+SYxWdcW2ihWnDk1H?=
+ =?us-ascii?Q?hg5LphN3dLNgbVr1BZUWZOOJ?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ac5fbac-777f-40bf-1001-08d8e7e5e81f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2021 19:09:49.9832
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QvK/wOIT9vpWf1dsvowjm3W1hjms/VlvhZu8eoIkwbGaho7FzmqZ7RQIQSKRlOHP+PVQFP0eRpJMVCOucJB1gKMBNWoXdtNSeZq8wKGORB4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1924
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-15 at 16:10 +0100, Linus Walleij wrote:
-> On Mon, Mar 15, 2021 at 9:26 AM Sander Vanheule
-> <sander@svanheule.net> wrote:
-> 
-> > Realtek MIPS SoCs (platform name Otto) have GPIO controllers with
-> > up to
-> > 64 GPIOs, divided over two banks. Each bank has a set of registers
-> > for
-> > 32 GPIOs, with support for edge-triggered interrupts.
-> > 
-> > Each GPIO bank consists of four 8-bit GPIO ports (ABCD and EFGH).
-> > Most
-> > registers pack one bit per GPIO, except for the IMR register, which
-> > packs two bits per GPIO (AB-CD).
-> > 
-> > Although the byte order is currently assumed to have port A..D at
-> > offset
-> > 0x0..0x3, this has been observed to be reversed on other, Lexra-
-> > based,
-> > SoCs (e.g. RTL8196E/97D/97F).
-> > 
-> > Interrupt support is disabled for the fallback devicetree-
-> > compatible
-> > 'realtek,otto-gpio'. This allows for quick support of GPIO banks in
-> > which the byte order would be unknown. In this case, the port
-> > ordering
-> > in the IMR registers may not match the reversed order in the other
-> > registers (DCBA, and BA-DC or DC-BA).
-> > 
-> > Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> 
-> Overall this is a beautiful driver and it makes use of all the
-> generic
-> frameworks I can think of. I don't see any reason not to merge
-> it so:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au> Sent: Sunday, March 14, 2021 =
+8:35 PM
+>=20
+> Hi all,
+>=20
+> Today's linux-next merge of the hyperv tree got a conflict in:
+>=20
+>   arch/x86/include/asm/mshyperv.h
+>=20
+> between commit:
+>=20
+>   a0e2bf7cb700 ("x86/paravirt: Switch time pvops functions to use static_=
+call()")
+>=20
+> from the tip tree and commit:
+>=20
+>   eb3e1d370b4c ("clocksource/drivers/hyper-v: Handle sched_clock differen=
+ces inline")
+>=20
+> from the hyperv tree.
+>=20
+> I fixed it up (I used the latter version of this file and then applied th=
+e
+> following patch) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 15 Mar 2021 14:31:07 +1100
+> Subject: [PATCH] fix up for "x86/paravirt: Switch time pvops functions to=
+ use
+>  static_call()"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/clocksource/hyperv_timer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyp=
+erv_timer.c
+> index ce94f78eb851..1348afc6efbf 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -490,7 +490,7 @@ static __always_inline void hv_setup_sched_clock(void
+> *sched_clock)
+>  static __always_inline void hv_setup_sched_clock(void *sched_clock)
+>  {
+>  	/* We're on x86/x64 *and* using PV ops */
+> -	pv_ops.time.sched_clock =3D sched_clock;
+> +	paravirt_set_sched_clock(sched_clock);
+>  }
+>  #else /* !CONFIG_GENERIC_SCHED_CLOCK && !CONFIG_PARAVIRT */
+>  static __always_inline void hv_setup_sched_clock(void *sched_clock) {}
+> --
+> 2.30.0
+>=20
+> --
+> Cheers,
+> Stephen Rothwell
 
-Thanks for the review and the kind comments!
+Thanks.  That's the correct fix for the conflict.
 
-
-> 
-> The following is some notes and nitpicks, nothing blocking any
-> merge, more like discussion.
-> 
-> > +enum realtek_gpio_flags {
-> > +       GPIO_INTERRUPTS = BIT(0),
-> > +};
-> 
-> I suppose this looks like this because more flags will be introduced
-> when you add more functionality to the driver. Otherwise it seems
-> like overkill so a bool would suffice.
-> 
-> I would add a comment /* TODO: this will be expanded */
-> 
-
-That's correct, I would like this to be extendable. Like the commit
-message noted, some other SoC appear to have port order D-C-B-A. The
-current driver only supports the A-B-C-D port order, so a flag could be
-added to differentiate between A-first and D-first.
-
-Another flag that will be added in the future, is one to indicate that
-the GPIO block has extra interrupt control registers, located after the
-second GPIO bank.
-
-For example, the rtl9300-series appears to have both the reversed port
-order, and an extra "interrupt enable" register. This is not yet
-implemented, since I don't currently have a device with this type of
-SoC.
-
-
-> > +static inline u32 realtek_gpio_imr_bits(unsigned int pin, u32
-> > value)
-> > +{
-> > +       return ((value & 0x3) << 2*(pin % 16));
-> > +}
-> 
-> I would explain a bit about this, obviouslt it is two bit per
-> line, but it took me some time to parse, so a comment
-> about the bit layout would be nice.
-> 
-> > +       unsigned int offset = pin/16;
-> 
-> Here that number appears again.
-> 
-
-I've updated the patch (and added your Reviewed-by tags) for a v2.
-Hopefully this is now more obvious from the code and comments.
-
-Best,
-Sander
-
-> The use of GPIO_GENERIC and GPIO irqchip is flawless
-> and first class.
-> 
-> Thanks!
-> Linus Walleij
-
-
+Michael
