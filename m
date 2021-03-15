@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D1F33BCB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7D333BE70
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhCOO2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S239450AbhCOOqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8C164EF3;
-        Mon, 15 Mar 2021 14:00:22 +0000 (UTC)
+        id S234531AbhCOOEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE34E600EF;
+        Mon, 15 Mar 2021 14:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816823;
-        bh=uEJo1uYAUKC2yFLQgXzIXbHI3oV4iq54+jSSHrfHZM4=;
+        s=korg; t=1615817070;
+        bh=OHv1nKKCAKvIH2TaTT7goYf05R0q2NVr1eEY/WRP0Fw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=guQInOrkxRzpT6znpllHv1o+m3Rrj4y5wwA5qqy/8qnu4yAdBW/zGbMxWda0qunI5
-         fYSeFE0mW2wmBAblPVgDasYQbYVm8rnNzaJSH3CJKzDb6gQEDNweHeK0XaQNlPQ+2G
-         lLNBiJTFXkRaib1goue1bv0Qw27pxdtJIx2/9JLY=
+        b=ri2tikmfpNKvK19fcHtUpGhNxDwk9k//tNzFSJ4qs/2ssji42FBxUM8/pGUoZWc7i
+         O4hF9iGSfUfcm2cFHs73UEV3vJ8myvj+umpFFDI9ogOi1CeCkjcEuL/l+LRMZNyxBx
+         vQrRjUlpkBHZ4ru9rJwhSXv6VLoEucUjud36qH3g=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 134/168] staging: comedi: addi_apci_1032: Fix endian problem for COS sample
-Date:   Mon, 15 Mar 2021 14:56:06 +0100
-Message-Id: <20210315135554.747947375@linuxfoundation.org>
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 274/290] x86/sev-es: Use __copy_from_user_inatomic()
+Date:   Mon, 15 Mar 2021 14:56:07 +0100
+Message-Id: <20210315135551.288732589@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,146 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Joerg Roedel <jroedel@suse.de>
 
-commit 25317f428a78fde71b2bf3f24d05850f08a73a52 upstream.
+commit bffe30dd9f1f3b2608a87ac909a224d6be472485 upstream.
 
-The Change-Of-State (COS) subdevice supports Comedi asynchronous
-commands to read 16-bit change-of-state values.  However, the interrupt
-handler is calling `comedi_buf_write_samples()` with the address of a
-32-bit integer `&s->state`.  On bigendian architectures, it will copy 2
-bytes from the wrong end of the 32-bit integer.  Fix it by transferring
-the value via a 16-bit integer.
+The #VC handler must run in atomic context and cannot sleep. This is a
+problem when it tries to fetch instruction bytes from user-space via
+copy_from_user().
 
-Fixes: 6bb45f2b0c86 ("staging: comedi: addi_apci_1032: use comedi_buf_write_samples()")
-Cc: <stable@vger.kernel.org> # 3.19+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-2-abbotti@mev.co.uk
+Introduce a insn_fetch_from_user_inatomic() helper which uses
+__copy_from_user_inatomic() to safely copy the instruction bytes to
+kernel memory in the #VC handler.
+
+Fixes: 5e3427a7bc432 ("x86/sev-es: Handle instruction fetches from user-space")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org # v5.10+
+Link: https://lkml.kernel.org/r/20210303141716.29223-6-joro@8bytes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1032.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/insn-eval.h |  2 +
+ arch/x86/kernel/sev-es.c         |  2 +-
+ arch/x86/lib/insn-eval.c         | 66 +++++++++++++++++++++++++-------
+ 3 files changed, 55 insertions(+), 15 deletions(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1032.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1032.c
-@@ -260,6 +260,7 @@ static irqreturn_t apci1032_interrupt(in
- 	struct apci1032_private *devpriv = dev->private;
- 	struct comedi_subdevice *s = dev->read_subdev;
- 	unsigned int ctrl;
-+	unsigned short val;
+diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+index a0f839aa144d..98b4dae5e8bc 100644
+--- a/arch/x86/include/asm/insn-eval.h
++++ b/arch/x86/include/asm/insn-eval.h
+@@ -23,6 +23,8 @@ unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
+ int insn_get_code_seg_params(struct pt_regs *regs);
+ int insn_fetch_from_user(struct pt_regs *regs,
+ 			 unsigned char buf[MAX_INSN_SIZE]);
++int insn_fetch_from_user_inatomic(struct pt_regs *regs,
++				  unsigned char buf[MAX_INSN_SIZE]);
+ bool insn_decode(struct insn *insn, struct pt_regs *regs,
+ 		 unsigned char buf[MAX_INSN_SIZE], int buf_size);
  
- 	/* check interrupt is from this device */
- 	if ((inl(devpriv->amcc_iobase + AMCC_OP_REG_INTCSR) &
-@@ -275,7 +276,8 @@ static irqreturn_t apci1032_interrupt(in
- 	outl(ctrl & ~APCI1032_CTRL_INT_ENA, dev->iobase + APCI1032_CTRL_REG);
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index c3fd8fa79838..04a780abb512 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -258,7 +258,7 @@ static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
+ 	int res;
  
- 	s->state = inl(dev->iobase + APCI1032_STATUS_REG) & 0xffff;
--	comedi_buf_write_samples(s, &s->state, 1);
-+	val = s->state;
-+	comedi_buf_write_samples(s, &val, 1);
- 	comedi_handle_events(dev, s);
+ 	if (user_mode(ctxt->regs)) {
+-		res = insn_fetch_from_user(ctxt->regs, buffer);
++		res = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
+ 		if (!res) {
+ 			ctxt->fi.vector     = X86_TRAP_PF;
+ 			ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
+diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+index 4229950a5d78..bb0b3fe1e0a0 100644
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -1415,6 +1415,25 @@ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs)
+ 	}
+ }
  
- 	/* enable the interrupt */
++static unsigned long insn_get_effective_ip(struct pt_regs *regs)
++{
++	unsigned long seg_base = 0;
++
++	/*
++	 * If not in user-space long mode, a custom code segment could be in
++	 * use. This is true in protected mode (if the process defined a local
++	 * descriptor table), or virtual-8086 mode. In most of the cases
++	 * seg_base will be zero as in USER_CS.
++	 */
++	if (!user_64bit_mode(regs)) {
++		seg_base = insn_get_seg_base(regs, INAT_SEG_REG_CS);
++		if (seg_base == -1L)
++			return 0;
++	}
++
++	return seg_base + regs->ip;
++}
++
+ /**
+  * insn_fetch_from_user() - Copy instruction bytes from user-space memory
+  * @regs:	Structure with register values as seen when entering kernel mode
+@@ -1431,24 +1450,43 @@ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs)
+  */
+ int insn_fetch_from_user(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
+ {
+-	unsigned long seg_base = 0;
++	unsigned long ip;
+ 	int not_copied;
+ 
+-	/*
+-	 * If not in user-space long mode, a custom code segment could be in
+-	 * use. This is true in protected mode (if the process defined a local
+-	 * descriptor table), or virtual-8086 mode. In most of the cases
+-	 * seg_base will be zero as in USER_CS.
+-	 */
+-	if (!user_64bit_mode(regs)) {
+-		seg_base = insn_get_seg_base(regs, INAT_SEG_REG_CS);
+-		if (seg_base == -1L)
+-			return 0;
+-	}
++	ip = insn_get_effective_ip(regs);
++	if (!ip)
++		return 0;
++
++	not_copied = copy_from_user(buf, (void __user *)ip, MAX_INSN_SIZE);
+ 
++	return MAX_INSN_SIZE - not_copied;
++}
++
++/**
++ * insn_fetch_from_user_inatomic() - Copy instruction bytes from user-space memory
++ *                                   while in atomic code
++ * @regs:	Structure with register values as seen when entering kernel mode
++ * @buf:	Array to store the fetched instruction
++ *
++ * Gets the linear address of the instruction and copies the instruction bytes
++ * to the buf. This function must be used in atomic context.
++ *
++ * Returns:
++ *
++ * Number of instruction bytes copied.
++ *
++ * 0 if nothing was copied.
++ */
++int insn_fetch_from_user_inatomic(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
++{
++	unsigned long ip;
++	int not_copied;
++
++	ip = insn_get_effective_ip(regs);
++	if (!ip)
++		return 0;
+ 
+-	not_copied = copy_from_user(buf, (void __user *)(seg_base + regs->ip),
+-				    MAX_INSN_SIZE);
++	not_copied = __copy_from_user_inatomic(buf, (void __user *)ip, MAX_INSN_SIZE);
+ 
+ 	return MAX_INSN_SIZE - not_copied;
+ }
+-- 
+2.30.2
+
 
 
