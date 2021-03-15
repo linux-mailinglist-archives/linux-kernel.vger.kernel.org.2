@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DC433B58D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D6733B57C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhCONyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55892 "EHLO mail.kernel.org"
+        id S231487AbhCONyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230359AbhCONx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A07EA64EEA;
-        Mon, 15 Mar 2021 13:53:24 +0000 (UTC)
+        id S230200AbhCONxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA8A64EF0;
+        Mon, 15 Mar 2021 13:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816405;
-        bh=anEz+FV5rQBu38JhslWrT29hgWs+rK69w8HR3rmFtaA=;
+        s=korg; t=1615816399;
+        bh=5BBDTjHWatf4P1FaExInXz9MyqJaqKVSj1Ui7+f3W54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eoswRizMuycD8nDwAjY/IxuBd6dNHSm9h1vPrWmMOUC0X3q7KEPJSSwhm2GyXldn4
-         N3ni9Yew1HLGXAYyWrA2ldh4f6A0WcHb5jx2AC6xbUeFmdEmWOAADzPsMGlaFis7Vh
-         hsa1koUKaN/4Fer93XgP5LSaszpDBCl6Tbh5JeXk=
+        b=aT0SsoqPapa9HeUS3t8HGzyjXmUxOKD3sqcEW1iNWqj+K6T7YyIiWyk+DDw4/hFL/
+         rr3BBb/BpqzNEGyCTmvmjSfsEybo02gSvYVyAAGPwwfNh5EcEe06BtTJYcIcJuIkBe
+         JIshTQKXbLn8RP2DGK0iOTY5PsftBBiKn2tf4Szg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Abhishek Sahu <abhsahu@nvidia.com>
-Subject: [PATCH 4.4 25/75] ALSA: hda/hdmi: Cancel pending works before suspend
-Date:   Mon, 15 Mar 2021 14:51:39 +0100
-Message-Id: <20210315135209.070326750@linuxfoundation.org>
+        stable@vger.kernel.org, Maxim Mikityanskiy <maxtram95@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.9 17/78] media: usbtv: Fix deadlock on suspend
+Date:   Mon, 15 Mar 2021 14:51:40 +0100
+Message-Id: <20210315135212.630369905@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +42,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
 
-commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
+commit 8a7e27fd5cd696ba564a3f62cedef7269cfd0723 upstream.
 
-The per_pin->work might be still floating at the suspend, and this may
-hit the access to the hardware at an unexpected timing.  Cancel the
-work properly at the suspend callback for avoiding the buggy access.
+usbtv doesn't support power management, so on system suspend the
+.disconnect callback of the driver is called. The teardown sequence
+includes a call to snd_card_free. Its implementation waits until the
+refcount of the sound card device drops to zero, however, if its file is
+open, snd_card_file_add takes a reference, which can't be dropped during
+the suspend, because the userspace processes are already frozen at this
+point. snd_card_free waits for completion forever, leading to a hang on
+suspend.
 
-Note that the bug doesn't trigger easily in the recent kernels since
-the work is queued only when the repoll count is set, and usually it's
-only at the resume callback, but it's still possible to hit in
-theory.
+This commit fixes this deadlock condition by replacing snd_card_free
+with snd_card_free_when_closed, that doesn't wait until all references
+are released, allowing suspend to progress.
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
-Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 63ddf68de52e ("[media] usbtv: add audio support")
+Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/media/usb/usbtv/usbtv-audio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2239,6 +2239,18 @@ static void generic_hdmi_free(struct hda
- }
+--- a/drivers/media/usb/usbtv/usbtv-audio.c
++++ b/drivers/media/usb/usbtv/usbtv-audio.c
+@@ -398,7 +398,7 @@ void usbtv_audio_free(struct usbtv *usbt
+ 	cancel_work_sync(&usbtv->snd_trigger);
  
- #ifdef CONFIG_PM
-+static int generic_hdmi_suspend(struct hda_codec *codec)
-+{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_idx;
-+
-+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		cancel_delayed_work_sync(&per_pin->work);
-+	}
-+	return 0;
-+}
-+
- static int generic_hdmi_resume(struct hda_codec *codec)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -2262,6 +2274,7 @@ static const struct hda_codec_ops generi
- 	.build_controls		= generic_hdmi_build_controls,
- 	.unsol_event		= hdmi_unsol_event,
- #ifdef CONFIG_PM
-+	.suspend		= generic_hdmi_suspend,
- 	.resume			= generic_hdmi_resume,
- #endif
- };
+ 	if (usbtv->snd && usbtv->udev) {
+-		snd_card_free(usbtv->snd);
++		snd_card_free_when_closed(usbtv->snd);
+ 		usbtv->snd = NULL;
+ 	}
+ }
 
 
