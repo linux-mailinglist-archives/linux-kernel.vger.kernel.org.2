@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439C733C8D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FBA33C8DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhCOVwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S231958AbhCOVwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhCOVv4 (ORCPT
+        with ESMTP id S231877AbhCOVv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:51:56 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A7CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:56 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id a7so35024452iok.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:56 -0700 (PDT)
+        Mon, 15 Mar 2021 17:51:58 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C723FC061763
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:57 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id k2so35091335ioh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tkE3LmGUj01YPH3BPs1/nEBfeLQdWBdBqpXnFwRgcR4=;
-        b=hRSakI25uH/iqPFFwdYMutKVZkBqZDAiup5YEL0MEXGQQB8+ccGfQy8VEfOFnwdDUv
-         X3GT0uWFTky5HvlgFc3ReSioSYnABS6VYnZoKDacviUuSfibMUEm5B/icGkIAnTkGIPB
-         wH2d7OGxd0ZbUn+LFp5aGKzZje0rN77Ewhmp4f8cXL0RgML8D0eUA/bqcbfY6bFrD02f
-         jR/hAwSTk9hadNE/elS86jdJEnZjGzQQrJffrtXYsHaltpk8W1jawXj43qD/cwxK428y
-         Au3q2fQYRw/OpKDKQkm9nUpWFrD8oE+TusW68mH8W3dzPOPCN/pMUdB2NsgdipE6TnKG
-         ZZvQ==
+        bh=dYz46nd8LxGdX7fvsu6maJR2XM9zulyZ7ppS5hOn0SA=;
+        b=KAOd5kiIrxkZEhIbWKaKi/NmupuaMayU7csMeknMQUxH21tpxWsbeuR9rHD77Lknm0
+         KN9VTxpk8jyZEPjvbtNfyHIKMZuiT+O5/UX+LiVITxIogmODtSiOozK+pdqT15bx9Y2e
+         KbIJtY8O3/ujZ05FqvV03UYHE83jW6tH+waCtDtVxhUR/SQ8nfrPCK5Srt8TcpGx302N
+         6K0wH7D/qQj6kmnIPRFA88Kp9J4bBcqpjYHRr6biMS1SbCD12Ego0zaiINKtdRRjMYb8
+         RNYYv28ykbs6uUtVMwlZdAdkpiQwbQauMG1ssAuMuNMKtN4StHCpfo8ZB23YhASRBAKq
+         EpGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tkE3LmGUj01YPH3BPs1/nEBfeLQdWBdBqpXnFwRgcR4=;
-        b=MEfH3KP6hILA2/s9yf8GPxQTMUgnbXGDlAw5hSJQswRD7QfZ6IqzZe1pZnwGdJt+nc
-         I4sIojn/k7vAE3vpczS6+uN8qic1D3WXgiI/XCibNbi9n08DgnqyiwxB+G5anrVMYvCh
-         J+Ur7FArX7Il0f99GlqdSBFbo0+H3ZkWFAQ86tVnU3YD5tHgS3SVVBzUuIGUtFoMtbsC
-         0IAeYIQVCQjdqgGpDO1FOQd711FpdW8FAAW/2pt7p8L6BTXrfJJGw0NWZBYyTWku+aXr
-         JMOcrP45z3pnp5br6gqE6ygq/J+VX2Eh8VH0L3UxocrQJZWbhc52vqCXLMKzOtUzs9jc
-         qt9Q==
-X-Gm-Message-State: AOAM533WjWOqaeqSvyUOKg7Gf0ch9MKjxxv0p3XtBCWJTh9OG0LgPIzN
-        k6faM58vczk1nS2SgWeE5Nsm7w==
-X-Google-Smtp-Source: ABdhPJzLSrpXxf6+JBGpcYl2Loe/76e92bVm0CkHDmNdmQiQTZhb8iuqdr69zFP/mUWz8AapDN2KAw==
-X-Received: by 2002:a02:9645:: with SMTP id c63mr11445641jai.84.1615845116270;
-        Mon, 15 Mar 2021 14:51:56 -0700 (PDT)
+        bh=dYz46nd8LxGdX7fvsu6maJR2XM9zulyZ7ppS5hOn0SA=;
+        b=aAVTvkuhoTRSNm4060ygMx9hV79LCk3GZpHI3pQUyuU8mcU7VLRNlbaeriD2MYHtm/
+         cqSZLb9d7QT4EZB0fWHdu+u6b4hhWyo+ozBU4qCfX7lvorfGE27iIF+vRJVLoju9KltE
+         jFsiuUTsdvim0tHms0l7a8H0Q8JccJmZq4rri1YBtPmoaIQeEU3pL26DSam5cdZeQbgw
+         qLN/o0MVGoPhlDy0XvEKZIFew4h+Yf/4tydokAsHn3liBlL05o/7cuW6Du57XV5y5VHG
+         rIsUuLrraCeoBrkvtCzdEGRY/Vh4jGpS0QShhzuE3psjw6qoqLUjdr+jyfBH9u1sHOJV
+         kqLw==
+X-Gm-Message-State: AOAM531pszEoSNa7bcuEk6DqQA1Mz4+ZX+bu36i7upzPXs83OiiGCf27
+        Tk1yd4St3O7dENZ3gl9zFzd7gg==
+X-Google-Smtp-Source: ABdhPJw9tx8wxfPaeBvrUqf3t2M7EqJawUsKl3NDckGT/MYj9lhbGpSUZScVGzTuKUwPDQV/f7ScAQ==
+X-Received: by 2002:a5d:9917:: with SMTP id x23mr1204682iol.22.1615845117314;
+        Mon, 15 Mar 2021 14:51:57 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id y3sm7424625iot.15.2021.03.15.14.51.55
+        by smtp.gmail.com with ESMTPSA id y3sm7424625iot.15.2021.03.15.14.51.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 14:51:55 -0700 (PDT)
+        Mon, 15 Mar 2021 14:51:57 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     subashab@codeaurora.org, stranche@codeaurora.org,
         davem@davemloft.net, kuba@kernel.org
@@ -55,11 +55,10 @@ Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
         evgreen@chromium.org, cpratapa@codeaurora.org,
         David.Laight@ACULAB.COM, olteanv@gmail.com,
         alexander.duyck@gmail.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Duyck <alexanderduyck@fb.com>
-Subject: [PATCH net-next v6 1/6] net: qualcomm: rmnet: mark trailer field endianness
-Date:   Mon, 15 Mar 2021 16:51:46 -0500
-Message-Id: <20210315215151.3029676-2-elder@linaro.org>
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v6 2/6] net: qualcomm: rmnet: simplify some byte order logic
+Date:   Mon, 15 Mar 2021 16:51:47 -0500
+Message-Id: <20210315215151.3029676-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210315215151.3029676-1-elder@linaro.org>
 References: <20210315215151.3029676-1-elder@linaro.org>
@@ -69,35 +68,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fields in the checksum trailer structure used for QMAP protocol
-RX packets are all big-endian format, so define them that way.
+In rmnet_map_ipv4_ul_csum_header() and rmnet_map_ipv6_ul_csum_header()
+the offset within a packet at which checksumming should commence is
+calculated.  This calculation involves byte swapping and a forced type
+conversion that makes it hard to understand.
 
-It turns out these fields are never actually used by the RMNet code.
-The start offset is always assumed to be zero, and the length is
-taken from the other packet headers.  So making these fields
-explicitly big endian has no effect on the behavior of the code.
+Simplify this by computing the offset in host byte order, then
+converting the result when assigning it into the header field.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
 ---
- include/linux/if_rmnet.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v5: - Use skb_network_header_len() to decide the checksum offset.
 
-diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-index 9661416a9bb47..8c7845baf3837 100644
---- a/include/linux/if_rmnet.h
-+++ b/include/linux/if_rmnet.h
-@@ -32,8 +32,8 @@ struct rmnet_map_dl_csum_trailer {
- #else
- #error	"Please fix <asm/byteorder.h>"
- #endif
--	u16 csum_start_offset;
--	u16 csum_length;
-+	__be16 csum_start_offset;
-+	__be16 csum_length;
- 	__be16 csum_value;
- } __aligned(1);
+ .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+index 21d38167f9618..0bfe69698b278 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+@@ -197,12 +197,10 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
+ 			      struct rmnet_map_ul_csum_header *ul_header,
+ 			      struct sk_buff *skb)
+ {
+-	struct iphdr *ip4h = (struct iphdr *)iphdr;
+-	__be16 *hdr = (__be16 *)ul_header, offset;
++	__be16 *hdr = (__be16 *)ul_header;
++	struct iphdr *ip4h = iphdr;
+ 
+-	offset = htons((__force u16)(skb_transport_header(skb) -
+-				     (unsigned char *)iphdr));
+-	ul_header->csum_start_offset = offset;
++	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
+ 	ul_header->csum_insert_offset = skb->csum_offset;
+ 	ul_header->csum_enabled = 1;
+ 	if (ip4h->protocol == IPPROTO_UDP)
+@@ -239,12 +237,10 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
+ 			      struct rmnet_map_ul_csum_header *ul_header,
+ 			      struct sk_buff *skb)
+ {
+-	struct ipv6hdr *ip6h = (struct ipv6hdr *)ip6hdr;
+-	__be16 *hdr = (__be16 *)ul_header, offset;
++	__be16 *hdr = (__be16 *)ul_header;
++	struct ipv6hdr *ip6h = ip6hdr;
+ 
+-	offset = htons((__force u16)(skb_transport_header(skb) -
+-				     (unsigned char *)ip6hdr));
+-	ul_header->csum_start_offset = offset;
++	ul_header->csum_start_offset = htons(skb_network_header_len(skb));
+ 	ul_header->csum_insert_offset = skb->csum_offset;
+ 	ul_header->csum_enabled = 1;
  
 -- 
 2.27.0
