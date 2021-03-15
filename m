@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E404133BF6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959FD33BF6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhCOPGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhCOPFe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:05:34 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3C2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:05:32 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id f73-20020a9d03cf0000b02901b4d889bce0so5283256otf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pZQnZyrqFY28jgPfI3hD0i2MzFBu70J581ahh1orOdQ=;
-        b=DXvFhFSNldlg/sHML4WNqrrUZ8LKgUCpPS9WBc6E/U2NWuBcrI0im0Gk3ZgJTo9FFS
-         EyjWMNrn7ReCbLGft0UB7ffBYnoi9j6ZbUuFOT8hzIfYrUML66tFyf036ggfGfiI3Vz2
-         1i9cIJHRxxDtio3ilHRIlNOFCP7miYFOA/Rh8YKODEBEjkNuK8m9zf5mZPUO5UAu5RFB
-         yAAAYtJ3nX5LCkpIiXV6ZKEsiyyE0MnO76wWLJ3Ntdj8FdFnhyEy38dXQudw7LhwyEGn
-         u+IQxz1lA5M2VjqCyqgHwm2marD4Mk9IMVnwnRWHjqKkOUSV77Y3btQ+nZtMVRodLWLq
-         xO4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pZQnZyrqFY28jgPfI3hD0i2MzFBu70J581ahh1orOdQ=;
-        b=YnRMulDXhlK7e0GhQwCMMbvMOSjvthmn2xmdBiUC7QamfVqf3B5Kay5kztHVeP6x0T
-         1YDTef1dciox4aRV3fZzrXHwJMWe40/P/DSOSarQviHqP6YLuO/9JDAKdo7jHx0+GgK/
-         7AHOJiO6vg2ugLtfhXQ4NJCEkJ3YPpq9C3ivpEKWQZ59xQy0gAoJARal+j/RD+jldNmP
-         0YcJXmFxfgNWAhmpLGiAJg3fC7VH/3umfAwYUeUIw0jLhigwEU37wCvXaBboxRtXc0E6
-         9XR7K4/BKJrDg50XoT/3Lxgv9MyeG6pX/VG6YvlwNfQfqrh6vZ0RwhFU6R9MBA6aie2g
-         tWEQ==
-X-Gm-Message-State: AOAM531Vg9i7Q3c/QilvDPOEHYtkKaDcbE9YZIXw88eQMCrefidgs81O
-        gY7zl6Ka71tpw1XfC1mV19QhYWAcyeKHhenoZUw=
-X-Google-Smtp-Source: ABdhPJzrAEFT2o/9swfVF2swMUJVSSF3V+yAn05NjTJHsCllNpTc0GxkZW4A+DZd5St5/YDiV2jKRtTrkndE3Sm9L0A=
-X-Received: by 2002:a9d:20c3:: with SMTP id x61mr14343647ota.311.1615820731926;
- Mon, 15 Mar 2021 08:05:31 -0700 (PDT)
+        id S230521AbhCOPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237909AbhCOPHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 11:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4420664DDF;
+        Mon, 15 Mar 2021 15:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615820838;
+        bh=XWtY5TrlDj205yMxswmssJtQpzPjqYZvnSFgDjHYf3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IsiINWnEUVxh+ebkcsJHKfr1UHle02AB79BC4Ecuj470m0d1FrlR0Vv1w73TFnarl
+         vPhjPAeRL7y06AhpBr7n0E1amh+ULFyWc4vlsXPzK+Dr4v0iFhtRZLYcnUYMMgAnqD
+         Zp77IH5tUNHqJ3uYI+VmBHv2uNWz/WMeW/56H304AmsmmDQTZu5RySaZSN7ZxGSfrH
+         yd0NYnprVK1eex+/tnL2NaITJjOn+kLbe1DFodiG26/TXdi+gXeX864uw2HKaA1ESP
+         6Nof9zsC7bg9chj+/B3GZe93PzmWOFa9GvbDCReGcvTQ4hBM+QGp7eTbtMLrqi6MpE
+         6ABtBg/T1S6wA==
+Date:   Mon, 15 Mar 2021 17:07:14 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YE94InPHLWmOaH/b@unreal>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+ <20210312173452.3855-5-ameynarkhede03@gmail.com>
+ <20210314235545.girtrazsdxtrqo2q@pali>
+ <20210315134323.llz2o7yhezwgealp@archlinux>
+ <20210315135226.avwmnhkfsgof6ihw@pali>
+ <20210315083409.08b1359b@x1.home.shazbot.org>
 MIME-Version: 1.0
-References: <PSXP216MB0438E23D0F4C2DFF2D9B8686806D9@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
-In-Reply-To: <PSXP216MB0438E23D0F4C2DFF2D9B8686806D9@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 15 Mar 2021 11:05:21 -0400
-Message-ID: <CADnq5_Mqc3H07BtJbaGpt8XGnpXgaZvxDsS_e0cnZ++kWdQR-g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] amdgpu: use MMIO to init atombios if device is
- Thunderbolt / USB4 attached
-To:     Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315083409.08b1359b@x1.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 4:04 AM Nicholas Johnson
-<nicholas.johnson-opensource@outlook.com.au> wrote:
+On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
+> On Mon, 15 Mar 2021 14:52:26 +0100
+> Pali Rohár <pali@kernel.org> wrote:
 >
-> When using some Thunderbolt hosts using BIOS-assisted PCI enumeration
-> with IO BAR assigned, we get an atombios timeout, such as:
+> > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > warm reset respectively.
+> >
+> > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > type of reset, which is currently implemented only for PCIe hot plug
+> > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > kernel and therefore drivers do not export this type of reset via any
+> > kernel function (yet).
 >
-> [drm:atom_op_jump [amdgpu]] *ERROR* atombios stuck in loop for more than 20secs aborting
-> [drm:amdgpu_atom_execute_table_locked [amdgpu]] *ERROR* atombios stuck executing B456 (len 304, WS 4, PS 0) @ 0xB51B
-> [drm:amdgpu_atom_execute_table_locked [amdgpu]] *ERROR* atombios stuck executing B104 (len 183, WS 0, PS 8) @ 0xB17E
-> amdgpu 0000:08:00.0: amdgpu: gpu post error!
-> amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
-> amdgpu: probe of 0000:08:00.0 failed with error -22
->
-> A workaround is to use MMIO to access ATOMBIOS when device is
-> Thunderbolt / USB4 attached.
+> Warm reset is beyond the scope of this series, but could be implemented
+> in a compatible way to fit within the pci_reset_fn_methods[] array
+> defined here.  Note that with this series the resets available through
+> pci_reset_function() and the per device reset attribute is sysfs remain
+> exactly the same as they are currently.  The bus and slot reset
+> methods used here are limited to devices where only a single function is
+> affected by the reset, therefore it is not like the patch you proposed
+> which performed a reset irrespective of the downstream devices.  This
+> series only enables selection of the existing methods.  Thanks,
 
-Missing your signed-off-by.  Also, we can just remove the legacy IO
-callbacks altogether.  They are leftover from radeon and not required
-at all on amdgpu.
+Alex,
 
-Alex
+I asked the patch author here [1], but didn't get any response, maybe
+you can answer me. What is the use case scenario for this functionality?
 
+Thanks
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+[1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal
+
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
-> index 86add0f4e..5d16ec10d 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
-> @@ -1999,11 +1999,15 @@ int amdgpu_atombios_init(struct amdgpu_device *adev)
->         atom_card_info->reg_read = cail_reg_read;
->         atom_card_info->reg_write = cail_reg_write;
->         /* needed for iio ops */
-> -       if (adev->rio_mem) {
-> +       if (adev->rio_mem && !pci_is_thunderbolt_attached(adev->pdev)) {
->                 atom_card_info->ioreg_read = cail_ioreg_read;
->                 atom_card_info->ioreg_write = cail_ioreg_write;
->         } else {
-> -               DRM_DEBUG("PCI I/O BAR is not found. Using MMIO to access ATOM BIOS\n");
-> +               if (pci_is_thunderbolt_attached(adev->pdev))
-> +                       DRM_DEBUG("Device is attached via Thunderbolt / USB4. Using MMIO to access ATOM BIOS\n");
-> +               else
-> +                       DRM_DEBUG("PCI I/O BAR is not found. Using MMIO to access ATOM BIOS\n");
-> +
->                 atom_card_info->ioreg_read = cail_reg_read;
->                 atom_card_info->ioreg_write = cail_reg_write;
->         }
-> --
-> 2.30.2
+> Alex
 >
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
