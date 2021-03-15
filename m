@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E31933BC64
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B46733BC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhCOOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S237964AbhCOOW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232360AbhCON73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C585864F0C;
-        Mon, 15 Mar 2021 13:59:05 +0000 (UTC)
+        id S232929AbhCOOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A54864F6D;
+        Mon, 15 Mar 2021 13:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816747;
-        bh=+QnRPzzf1qvh82l53XUQmC1gcoNnuT5ofcbVJhLuIRI=;
+        s=korg; t=1615816797;
+        bh=08oL0oLXiYE0De0SgSdpidRFGQvV+jBUzg/iP7iGhW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZgBa8bJkMM+Cv0C6bay/+ZyZPcjctZH0bd/aiILPGJnYM0LIq70+vt70DYMraEmru
-         cPWUY+hkaQeMJYeIqp6lHeNGMZjvds8rSCht2ocp80jmbVXBLDpx1gMfGiolnG0kQi
-         ra49joEjp9we8gC1WiTo792cHo2oC+lk8sCoi7aU=
+        b=uB9XG7XxGSUxdmXukEhe+hbTrPj7+xxt/m30Vy0HHXNtODO2Hj1V1HbWxQ1aMn93p
+         CYI6RyBUqgkCHyka4aCwExP2qC1CA7GTva46hpN8+b8/+4DoYkWwOrz7P8Vkb1VAWi
+         MQ2pipesXP1bshRygi6XkEBmS84huoQBc2qyKPwM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 34/95] mmc: mediatek: fix race condition between msdc_request_timeout and irq
-Date:   Mon, 15 Mar 2021 14:57:04 +0100
-Message-Id: <20210315135741.393099144@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH 4.19 074/120] usb: dwc3: qcom: Honor wakeup enabled/disabled state
+Date:   Mon, 15 Mar 2021 14:57:05 +0100
+Message-Id: <20210315135722.401214691@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +42,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Chaotian Jing <chaotian.jing@mediatek.com>
+From: Matthias Kaehlcke <mka@chromium.org>
 
-[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
+commit 2664deb0930643149d61cddbb66ada527ae180bd upstream.
 
-when get request SW timeout, if CMD/DAT xfer done irq coming right now,
-then there is race between the msdc_request_timeout work and irq handler,
-and the host->cmd and host->data may set to NULL in irq handler. also,
-current flow ensure that only one path can go to msdc_request_done(), so
-no need check the return value of cancel_delayed_work().
+The dwc3-qcom currently enables wakeup interrupts unconditionally
+when suspending, however this should not be done when wakeup is
+disabled (e.g. through the sysfs attribute power/wakeup). Only
+enable wakeup interrupts when device_may_wakeup() returns true.
 
-Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
-Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210302103659.v2.1.I44954d9e1169f2cf5c44e6454d357c75ddfa99a2@changeid
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/usb/dwc3/dwc3-qcom.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 1a5d5c40324b..e51a62cff5ec 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -758,13 +758,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
- static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
- {
- 	unsigned long flags;
--	bool ret;
+--- a/drivers/usb/dwc3/dwc3-qcom.c
++++ b/drivers/usb/dwc3/dwc3-qcom.c
+@@ -234,8 +234,10 @@ static int dwc3_qcom_suspend(struct dwc3
+ 	for (i = qcom->num_clocks - 1; i >= 0; i--)
+ 		clk_disable_unprepare(qcom->clks[i]);
  
--	ret = cancel_delayed_work(&host->req_timeout);
--	if (!ret) {
--		/* delay work already running */
--		return;
--	}
-+	/*
-+	 * No need check the return value of cancel_delayed_work, as only ONE
-+	 * path will go here!
-+	 */
-+	cancel_delayed_work(&host->req_timeout);
++	if (device_may_wakeup(qcom->dev))
++		dwc3_qcom_enable_interrupts(qcom);
 +
- 	spin_lock_irqsave(&host->lock, flags);
- 	host->mrq = NULL;
- 	spin_unlock_irqrestore(&host->lock, flags);
-@@ -782,7 +782,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	bool done = false;
- 	bool sbc_error;
- 	unsigned long flags;
--	u32 *rsp = cmd->resp;
-+	u32 *rsp;
+ 	qcom->is_suspended = true;
+-	dwc3_qcom_enable_interrupts(qcom);
  
- 	if (mrq->sbc && cmd == mrq->cmd &&
- 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
-@@ -803,6 +803,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 	return 0;
+ }
+@@ -248,7 +250,8 @@ static int dwc3_qcom_resume(struct dwc3_
+ 	if (!qcom->is_suspended)
+ 		return 0;
  
- 	if (done)
- 		return true;
-+	rsp = cmd->resp;
+-	dwc3_qcom_disable_interrupts(qcom);
++	if (device_may_wakeup(qcom->dev))
++		dwc3_qcom_disable_interrupts(qcom);
  
- 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
- 
-@@ -984,7 +985,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
- static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 				struct mmc_request *mrq, struct mmc_data *data)
- {
--	struct mmc_command *stop = data->stop;
-+	struct mmc_command *stop;
- 	unsigned long flags;
- 	bool done;
- 	unsigned int check_data = events &
-@@ -1000,6 +1001,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 
- 	if (done)
- 		return true;
-+	stop = data->stop;
- 
- 	if (check_data || (stop && stop->error)) {
- 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
--- 
-2.30.1
-
+ 	for (i = 0; i < qcom->num_clocks; i++) {
+ 		ret = clk_prepare_enable(qcom->clks[i]);
 
 
