@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFA833BD41
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066FD33BC9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240116AbhCOOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
+        id S238955AbhCOO1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:27:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233278AbhCOOBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A978664F19;
-        Mon, 15 Mar 2021 14:00:56 +0000 (UTC)
+        id S233094AbhCOOAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFFF464F6C;
+        Mon, 15 Mar 2021 14:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816857;
-        bh=0/7THb51rLr6O46ogVRC0HvZOZOkuhi8Nh008It35pg=;
+        s=korg; t=1615816825;
+        bh=U5cMJotNJXpC3v6PATpeGfYfsNOLP3ELGYUfgo9TaFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qW82SmFGQZawmw8m3eWVvdBD2isDLqp5g2kcUqRvWNAboLowRtJLd6sCMLBKONUIa
-         sjKEN+rUdwWd+Ycw5jnfc4nmFv9Wk4C89By9pGNrjDW6nRAcwLvIM1tJjJmuKfUeaI
-         zvR9sgi5bbjhowSpvStdPNzBanL/1DafFnHkID0g=
+        b=CYpAwApSQ6B1m3wGbtKgHgyB99R6OzVNiSsU4GXMyn+hk4eJTSsihJZfdn2FkXg6T
+         6d6SbeIsHYpsf5nkMuthP2BTwOXYOo+TYmbvKukhJL8r0HIn3vH5Ods/MNxv8CJMlg
+         vbVbAIF24vUFPtp1i23K6FskTS94kXD7utadoEvs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Abhishek Sahu <abhsahu@nvidia.com>
-Subject: [PATCH 5.11 165/306] ALSA: hda/hdmi: Cancel pending works before suspend
+        stable@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 135/290] iommu/vt-d: Clear PRQ overflow only when PRQ is empty
 Date:   Mon, 15 Mar 2021 14:53:48 +0100
-Message-Id: <20210315135513.213734968@linuxfoundation.org>
+Message-Id: <20210315135546.470729126@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +42,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
+[ Upstream commit 28a77185f1cd0650b664f54614143aaaa3a7a615 ]
 
-The per_pin->work might be still floating at the suspend, and this may
-hit the access to the hardware at an unexpected timing.  Cancel the
-work properly at the suspend callback for avoiding the buggy access.
+It is incorrect to always clear PRO when it's set w/o first checking
+whether the overflow condition has been cleared. Current code assumes
+that if an overflow condition occurs it must have been cleared by earlier
+loop. However since the code runs in a threaded context, the overflow
+condition could occur even after setting the head to the tail under some
+extreme condition. To be sane, we should read both head/tail again when
+seeing a pending PRO and only clear PRO after all pending PRs have been
+handled.
 
-Note that the bug doesn't trigger easily in the recent kernels since
-the work is queued only when the repoll count is set, and usually it's
-only at the resume callback, but it's still possible to hit in
-theory.
-
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
-Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/linux-iommu/MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com/
+Link: https://lore.kernel.org/r/20210126080730.2232859-2-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/iommu/intel/svm.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2472,6 +2472,18 @@ static void generic_hdmi_free(struct hda
- }
- 
- #ifdef CONFIG_PM
-+static int generic_hdmi_suspend(struct hda_codec *codec)
-+{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_idx;
-+
-+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		cancel_delayed_work_sync(&per_pin->work);
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 43f392d27d31..b200a3acc6ed 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -1079,8 +1079,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+ 	 * Clear the page request overflow bit and wake up all threads that
+ 	 * are waiting for the completion of this handling.
+ 	 */
+-	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO)
+-		writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
++	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
++		pr_info_ratelimited("IOMMU: %s: PRQ overflow detected\n",
++				    iommu->name);
++		head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
++		tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
++		if (head == tail) {
++			writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
++			pr_info_ratelimited("IOMMU: %s: PRQ overflow cleared",
++					    iommu->name);
++		}
 +	}
-+	return 0;
-+}
-+
- static int generic_hdmi_resume(struct hda_codec *codec)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -2495,6 +2507,7 @@ static const struct hda_codec_ops generi
- 	.build_controls		= generic_hdmi_build_controls,
- 	.unsol_event		= hdmi_unsol_event,
- #ifdef CONFIG_PM
-+	.suspend		= generic_hdmi_suspend,
- 	.resume			= generic_hdmi_resume,
- #endif
- };
+ 
+ 	if (!completion_done(&iommu->prq_complete))
+ 		complete(&iommu->prq_complete);
+-- 
+2.30.1
+
 
 
