@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D050233C422
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770E633C423
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236003AbhCOR2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S236022AbhCOR2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235832AbhCOR2O (ORCPT
+        with ESMTP id S234455AbhCOR20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:28:14 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F4DC06174A;
-        Mon, 15 Mar 2021 10:28:14 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8115A316;
-        Mon, 15 Mar 2021 18:28:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615829292;
-        bh=0tDUrg5BPE+L6CK+xldLeDBVG745e69d2TIvietyZYY=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZJFU3icWTJDLcwPXPcPYQ9+dAG08yyfNzDUd4pXjzrjHU6u+W0ZXkWgNUhRd1pOMm
-         MMiMlxDTjVNPq21peDVa/+ZseMDRyHPmJzlywJluksd/BQ0+8Tytwdz4joT5gKEhZO
-         0LZDAHjSTcZdYzVAuVoA6SYAZuV1iXXx5Vn4OPlQ=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH v2 18/18] media: i2c: max9286: Rework comments in .bound()
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
- <20210315131512.133720-19-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <3067efad-a563-842f-5cf8-d38dfe0a96e1@ideasonboard.com>
-Date:   Mon, 15 Mar 2021 17:28:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 15 Mar 2021 13:28:26 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC60FC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id y13so7049639pfr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5VwZiNoaOawmugGkW3BliGlJHY74MeBZt4r2sMGeVQQ=;
+        b=l7HPfSehLhWpD22iEktgmCx0tfo9/0CXqzTE6AuX6c3/5225P6lXKuk1wJ6XO5mJGB
+         j9LyL7+uH01vGynQcMUX/DSW3aPwjvKsnHDabzLeL8nPJ7VF7NQPm1XuwiOMzrWuKnoG
+         LqkuIan1qCRQ55XWhGn9uzB0DXbKts3oUufc8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5VwZiNoaOawmugGkW3BliGlJHY74MeBZt4r2sMGeVQQ=;
+        b=If7ICjHZ3UGCzeLBLv7p4ADTda25PZGykKSoKL5XA/JjV+VQeRk0b3y4GX+nXcx/II
+         P6Yc8wXmxfVpd6cgGQzLD0pwuDG19JAW1BQnCrMPDzVjIjKmbcTsEFLdykpm0X8IbHoZ
+         OmzDGOjj1X09qQCdCwzkZOpOX4MytK79yyL+Fe7pHZrFCgWBi1b4xCpLabI9wK5PS6YZ
+         AY+jUN546+l3c/Mm7ehK990Rz5+RPgp6NLSgaHmyQq0hLnTyBJQiKlmynlXqnCwpLQS2
+         1Xz9gnYLNyM3bejmwp4MbuOmXkaOSqqjVfwGcUogfSRjyFE5VXT3Y873Yuci9KlLUQa2
+         AJNQ==
+X-Gm-Message-State: AOAM533ciq2NMDbGQbHKo0Yj4xp+55vg46cxCf8VULASVIjDG//ZjRxX
+        /TAiVCbn/lVG76QNx1qzy4UjRQ==
+X-Google-Smtp-Source: ABdhPJxjnHWrPSehNTyXbsunhO6js/f/y7LcLoTrzXtGC7Of1Nx7WsQ3+07t7nraq6yi5lTJdFnVmQ==
+X-Received: by 2002:a62:3847:0:b029:202:ad05:4476 with SMTP id f68-20020a6238470000b0290202ad054476mr10941066pfa.67.1615829305471;
+        Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n9sm205492pjq.38.2021.03.15.10.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 10:28:24 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 10:28:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v5 1/7] mm: Restore init_on_* static branch defaults
+Message-ID: <202103151027.88B63D0@keescook>
+References: <20210309214301.678739-1-keescook@chromium.org>
+ <20210309214301.678739-2-keescook@chromium.org>
+ <20210310155602.e005171dbecbc0be442f8aad@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210315131512.133720-19-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310155602.e005171dbecbc0be442f8aad@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/2021 13:15, Jacopo Mondi wrote:
-> Re-phrase a comment in .bound() callback to make it clear we register
-> a subdev notifier and remove a redundant comment about disabling i2c
-> auto-ack.
+On Wed, Mar 10, 2021 at 03:56:02PM -0800, Andrew Morton wrote:
+> On Tue,  9 Mar 2021 13:42:55 -0800 Kees Cook <keescook@chromium.org> wrote:
 > 
-> No functional changes intended.
+> > Choosing the initial state of static branches changes the assembly layout
+> > (if the condition is expected to be likely, inline, or unlikely, out of
+> > line via a jump). The _TRUE/_FALSE defines for CONFIG_INIT_ON_*_DEFAULT_ON
+> > were accidentally removed. These need to stay so that the CONFIG controls
+> > the pessimization of the resulting static branch NOP/JMP locations.
 > 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Changelog doesn't really explain why anyone would want to apply this
+> patch.  This is especially important for -stable patches.
+> 
+> IOW, what is the user visible effect of the bug?
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Yeah, that's a good point, and in writing more details I decided this
+wasn't actually worth a stable patch, and should just get folded into
+later patches.
 
-> ---
->  drivers/media/i2c/max9286.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index b6347639901e..16b2cb9b44a2 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -556,9 +556,9 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  		subdev->name, src_pad, index);
->  
->  	/*
-> -	 * We can only register v4l2_async_notifiers, which do not provide a
-> -	 * means to register a complete callback. bound_sources allows us to
-> -	 * identify when all remote serializers have completed their probe.
-> +	 * As we register a subdev notifiers we won't get a .complete() callback
-> +	 * here, so we have to use bound_sources to identify when all remote
-> +	 * serializers have probed.
->  	 */
->  	if (priv->bound_sources != priv->source_mask)
->  		return 0;
-> @@ -581,16 +581,12 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	/*
->  	 * All enabled sources have probed and enabled their reverse control
->  	 * channels:
-> +	 * - The reverse channel amplitude stays high
->  	 * - Verify all configuration links are properly detected
-> -	 * - Disable auto-ack as communication on the control channel are now
-> -	 *   stable.
-> +	 * - Disable auto-ack as communications on the control channel are now
-> +	 *   stable
->  	 */
->  	max9286_check_config_link(priv, priv->source_mask);
-> -
-> -	/*
-> -	 * Re-configure I2C with local acknowledge disabled after cameras have
-> -	 * probed.
-> -	 */
->  	max9286_configure_i2c(priv, false);
->  
->  	return max9286_set_pixelrate(priv);
-> 
+Thanks for the sanity-check!
 
+-- 
+Kees Cook
