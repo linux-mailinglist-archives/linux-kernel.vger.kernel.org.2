@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A1233C546
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8805333C549
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhCOSIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbhCOSIb (ORCPT
+        id S230114AbhCOSK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:10:28 -0400
+Received: from p3plsmtpa11-06.prod.phx3.secureserver.net ([68.178.252.107]:45524
+        "EHLO p3plsmtpa11-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230147AbhCOSKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:08:31 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6674FC06174A;
-        Mon, 15 Mar 2021 11:08:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v4so6157197wrp.13;
-        Mon, 15 Mar 2021 11:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RUp3kK/vs0s8QVZh6opESHEvJ1dSF1ozGcrVeW85OH4=;
-        b=fnnAtggmTLVRuIzCK+ICY6vKph/CLXzdOkjoOj8MhjctnkqwJwIbxgCeOx9BNAVNC3
-         AL5fRwLYfFLlUzWuN0SIdq5K9zlDecTwLVOZWguJRrqh/kPERkN+s3ifLCjm9sCI9fP5
-         XoWj96z17xuJ7asP2iA+tiNejRazgZqGG1B1HhcFDCBQzRypluXHPuQwW+lWMwJbp5uu
-         hU66Hp2Q2HSIfuhzFri47Y0R5X/Fb1dRxmnYmyikfu6F+FNULu2fXS9tbduw9juQHZYz
-         QEePv8ihrIKaA7IZbV6tMdVR5EHF4aK5X0mJ5L/7zi+ST5KuNJhdkKekTkFQtV5/Wfln
-         zFPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RUp3kK/vs0s8QVZh6opESHEvJ1dSF1ozGcrVeW85OH4=;
-        b=pbRx+oYokuIgl/4b2VbFptcaYsiaTOm9qm9je4c3i6Miu8BE7MAzBnrUsipuVmr4xJ
-         y42VlKphsx/mTJx4O/vcmRvk7UR/okuyEjUpx4deV4ZvHgmTXalx64Wa33AlaNNF05RU
-         bYXbk0dxRB+eP2e9osyiR/waAQtkZaksQV7hgpIttXwKRdVv72NTWjxEZUl2mdm+gZIi
-         9cmbOpFRczXjxJSWLr70d6vp92bodX50Wsuj/IIukvCDnLucHwTjfCMS7KgtO5XQucIq
-         SCH3axUXsGDi/onIFiUnqvZgw57rT3XYxumNhHPks54SKPkNZN1ZqAwm2axTL4Nww+4e
-         j4+Q==
-X-Gm-Message-State: AOAM530i606TodXRTKFGM/gkDZhAlVCauMmYKlwVj5iUZ0lvDyr5c88/
-        4WmzyuqbKQ8d/0r54pBo3V0=
-X-Google-Smtp-Source: ABdhPJy86KuXUUpTWzkwMOrYx0gjLQbrUhLC0VBPQbKJ1o7CtOKdy/ZNg9rwlvjq4i6qAaUdqBcMEw==
-X-Received: by 2002:adf:ecca:: with SMTP id s10mr846686wro.324.1615831710202;
-        Mon, 15 Mar 2021 11:08:30 -0700 (PDT)
-Received: from ?IPv6:2a02:168:6806:0:499d:3dca:5498:583? ([2a02:168:6806:0:499d:3dca:5498:583])
-        by smtp.gmail.com with ESMTPSA id i8sm19943610wrx.43.2021.03.15.11.08.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 11:08:29 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: turris-omnia: fix hardware buffer management
-To:     Rui Salvaterra <rsalvaterra@gmail.com>, andrew@lunn.ch,
-        gregory.clement@bootlin.com, kabel@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210217153038.1068170-1-rsalvaterra@gmail.com>
-From:   Klaus Kudielka <klaus.kudielka@gmail.com>
-Message-ID: <95422d4a-8eaa-1cd9-137a-55313474127c@gmail.com>
-Date:   Mon, 15 Mar 2021 19:08:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 15 Mar 2021 14:10:02 -0400
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id LrfEllU8vhFMzLrfFlrIHj; Mon, 15 Mar 2021 11:10:02 -0700
+X-CMAE-Analysis: v=2.4 cv=MNClJOVl c=1 sm=1 tr=0 ts=604fa2fa
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=28_-FdfHECPUQo66F5MA:9 a=CjuIK1q_8ugA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Jakub Kicinski'" <kuba@kernel.org>
+Cc:     "'Andrew Lunn'" <andrew@lunn.ch>, <arndb@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
+        "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
+References: <20210215193821.3345-1-don@thebollingers.org>       <YDl3f8MNWdZWeOBh@lunn.ch>      <000901d70cb2$b2848420$178d8c60$@thebollingers.org>     <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>     <YD1ScQ+w8+1H//Y+@lunn.ch>      <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>     <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>     <YEL3ksdKIW7cVRh5@lunn.ch>      <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>     <YEvILa9FK8qQs5QK@lunn.ch>      <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org> <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Mon, 15 Mar 2021 11:09:59 -0700
+Message-ID: <001201d719c6$6ac826c0$40587440$@thebollingers.org>
 MIME-Version: 1.0
-In-Reply-To: <20210217153038.1068170-1-rsalvaterra@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQKX2ThEytgxSBCv+zte4L/P7xUGAgJF1IfoAfArhLgBgnHheQD1wSRRAcnMEPsCilAQ5QM6jzKkAZTVJ60CU9Q9IAIn9Rn1Ajfd1BUB/Wl5Hqg/v1Nw
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfIW5HYrvwji0eD8ILQajFORLv6Qwoeg2AYuKR5ZWkFuUcdgaNyVXEFz8rYZR9YMNFdBwTA3us4gXuJ/zxd1toTdVtxEvhwKkSJXQPFpBFWfwgHQCVo4W
+ IVoYSODukTwn3TlPSwzvxKYNp6gHOEWTmnbOD1bmnmdVBQd7DgXcMP1HUrTsohe3lj3mIX40E6jaPuL+E3i34X8Sz5FFwpqvQ5vAiP+ZZBfneRxAaQmuEoBa
+ fiQKKovUHWNHG/Il9BDYOc1cN1CwjJ22VTGt9lx36plY+gTSer3fscixMb/kA9PqE9Yv0BVGroeu8tMZ0ZIthRlELBaWq8QtxORVurQ5MjN9yIrKwIQQJ4Jr
+ fcWVSNjcyART2BhrH0uJyBQQoRbaYwW3SwCo66wyGr5abG93P9Q88ScjFMP8SF34b57Rrdmaang+KNxQYgvAYnI6MAQO4/7TAxZY3t8P+lUBruU1I+jVI1vZ
+ WF6YjfYwcRAY7hUAwKl41F2Ack8AwN5tP/YHotZA9x6zzAcpF8LAE4RGiTbWZtxKta1qurAlk0KODiEBTRgH6AFbrPZEj4FO5KOKnHQ5iLemXqUBvrsQ3d5J
+ Ynws5l1yUQeM5MzTNwpaubaD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.02.21 16:30, Rui Salvaterra wrote:
-> Hardware buffer management has never worked on the Turris Omnia, as the
-> required MBus window hadn't been reserved. Fix thusly.
->
-> Fixes: 018b88eee1a2 ("ARM: dts: turris-omnia: enable HW buffer management")
->
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+On Mon, 15 Mar 2021 10:40 -0800 Jakub Kicinski wrote:
+> On Sat, 13 Mar 2021 13:35:56 -0800 Don Bollinger wrote:
+> > > away parts of the bottom end and replace it with a different KAPI,
+> > > and nobody will notice? In fact, this is probably how it was
+> > > designed. Anybody
+> >
+> > Actually everyone who touches this code would notice, each
+> > implementation would have to be modified, with literally no benefit to
+this
+> community.
+> 
+> You keep saying that kernel API is "of no benefit to this community"
+> yet you don't want to accept the argument that your code is of no benefit
+to
+> the upstream community.
 
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
+I have offered, in every response, to collaborate with the simple
+integration to use optoe as the default upstream driver to access the module
+EEPROMs.  optoe would be superior to the existing default routines in sfp.c
+and would allow multiple existing vendor specific upstream drivers to adopt
+the default.  That would reduce the code base they maintain and provide
+better access to module eeproms.  I already adopted the existing EEPROM api
+to make that integration easy (nvmem).  I'm reluctant to submit the changes
+to sfp.c because I have no expertise in that stack and no platform to test
+it on.
 
-(Without this patch, I get a bunch of error messages during 5.11 boot)
+> 
+> > optoe does not undermine the netlink KAPI that Moshe is working on.
+> 
+> It does, although it may be hard to grasp for a vendor who can just EoL a
+> product at will once nobody is paying for it. We aim to provide uniform
+> support for all networking devices and an infinite backward compatibility
+> guarantee.
+
+I aim to provide uniform support for module EEPROM devices, with no less
+reason to expect an infinite backward compatibility guarantee.  (Infinite is
+a bit much, that technology will inevitably become uninteresting to my
+community as well as yours.)
+
+> 
+> People will try to use optoe-based tools on the upstream drivers and they
+> won't work. Realistically we will need to support both APIs.
+
+I assume they "won't work" because of new requirements or newly discovered
+defects.  At that point optoe would be fixed by people who care, just like
+any other upstream code.  If your stack adopts optoe, through Moshe's KAPI,
+then both communities benefit from ongoing support to maintain and enhance
+EEPROM access.  If your stack does not adopt optoe, then my community will
+manage the support, since they need and use the code.
+
+As for "both APIs", the first API is Moshe's, which we both support
+(politically and technically).  The second is nvmem, which is supported by
+the EEPROM driver folks, led by the support for the at24 driver.  I'm
+calling the routines they created for this purpose, I'm not creating a new
+API.
+
+Bottom line:  "Realistically we will need to support both APIs" even if
+optoe does not get accepted.
+
+> 
+> > If your community is interested, it could adopt optoe, WITH your KAPI,
+> > to consolidate and improve module EEPROM access for mainstream netdev
+> > consumers.  I am eager to collaborate on the fairly simple
+> > integration.
+> 
+> Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Please move on.
+
+My community still has useful code that they would like in the upstream
+kernel.
+
+Don
 
