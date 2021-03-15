@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F9333BA40
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AF733B9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbhCOOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:08:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S234986AbhCOOGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231272AbhCON6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A5D64F23;
-        Mon, 15 Mar 2021 13:58:09 +0000 (UTC)
+        id S232103AbhCON5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D6B64EF0;
+        Mon, 15 Mar 2021 13:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816690;
-        bh=HHA26jaEx0TVIHhjA6y4M+tOOuCMpp/jBGSy2ZKii+8=;
+        s=korg; t=1615816654;
+        bh=x/IlDJ8JHbbMUkHRvRPdn/2xOomMcPYzXEQhNmMiNiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qC5GjrRNzQ/LYTuk8SUYX5LcEE7q39g1frbdLB//PUnJagZI5J+uRqBU4W1+L4bQp
-         xVs+24nt2R9A7Qiam6t+q7zPM1iQulqyKFSX/ljQFmVgkHWWwiHD/cy8PnOfx9kCC+
-         nqhCt/4do356yJLk6U/Yw1fxuRZZ+osb954S0Pro=
+        b=GQ24duU7HEtILaYfofiyZ0Bm/lD/n0altTitP0Tmp4R7ILKX0SKCRovUax9nLRN/S
+         uL28TNh0QGFRQGxbkFCOuiDJRc2alaRgGAOdBgklBl9Nc+ERt8mF2DbDkgcwGWOQmo
+         SDDxf8wZy8GvCN7Fkw9p9xLW3vhebcGdIQs3nvR8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wong Vee Khee <vee.khee.wong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 066/306] stmmac: intel: Fixes clock registration error seen for multiple interfaces
+Subject: [PATCH 5.10 036/290] sh_eth: fix TRSCER mask for SH771x
 Date:   Mon, 15 Mar 2021 14:52:09 +0100
-Message-Id: <20210315135509.872037958@linuxfoundation.org>
+Message-Id: <20210315135543.140854196@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +41,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Wong Vee Khee <vee.khee.wong@intel.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-commit 8eb37ab7cc045ec6305a6a1a9c32374695a1a977 upstream.
+commit 8c91bc3d44dfef8284af384877fbe61117e8b7d1 upstream.
 
-Issue seen when enumerating multiple Intel mGbE interfaces in EHL.
+According  to  the SH7710, SH7712, SH7713 Group User's Manual: Hardware,
+Rev. 3.00, the TRSCER register actually has only bit 7 valid (and named
+differently), with all the other bits reserved. Apparently, this was not
+the case with some early revisions of the manual as we have the other
+bits declared (and set) in the original driver.  Follow the suit and add
+the explicit sh_eth_cpu_data::trscer_err_mask initializer for SH771x...
 
-[    6.898141] intel-eth-pci 0000:00:1d.2: enabling device (0000 -> 0002)
-[    6.900971] intel-eth-pci 0000:00:1d.2: Fail to register stmmac-clk
-[    6.906434] intel-eth-pci 0000:00:1d.2: User ID: 0x51, Synopsys ID: 0x52
-
-We fix it by making the clock name to be unique following the format
-of stmmac-pci_name(pci_dev) so that we can differentiate the clock for
-these Intel mGbE interfaces in EHL platform as follow:
-
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.1
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.2
-  /sys/kernel/debug/clk/stmmac-0000:00:1e.4
-
-Fixes: 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to contain all Intel platform")
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/renesas/sh_eth.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -233,6 +233,7 @@ static void common_default_data(struct p
- static int intel_mgbe_common_data(struct pci_dev *pdev,
- 				  struct plat_stmmacenet_data *plat)
- {
-+	char clk_name[20];
- 	int ret;
- 	int i;
- 
-@@ -300,8 +301,10 @@ static int intel_mgbe_common_data(struct
- 	plat->eee_usecs_rate = plat->clk_ptp_rate;
- 
- 	/* Set system clock */
-+	sprintf(clk_name, "%s-%s", "stmmac", pci_name(pdev));
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -1089,6 +1089,9 @@ static struct sh_eth_cpu_data sh771x_dat
+ 			  EESIPR_CEEFIP | EESIPR_CELFIP |
+ 			  EESIPR_RRFIP | EESIPR_RTLFIP | EESIPR_RTSFIP |
+ 			  EESIPR_PREIP | EESIPR_CERFIP,
 +
- 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
--						   "stmmac-clk", NULL, 0,
-+						   clk_name, NULL, 0,
- 						   plat->clk_ptp_rate);
- 
- 	if (IS_ERR(plat->stmmac_clk)) {
++	.trscer_err_mask = DESC_I_RINT8,
++
+ 	.tsu		= 1,
+ 	.dual_port	= 1,
+ };
 
 
