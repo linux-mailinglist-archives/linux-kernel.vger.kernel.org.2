@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9029633B606
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136C333B5F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhCON45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57146 "EHLO mail.kernel.org"
+        id S231874AbhCON4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231232AbhCONx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE58A64EB6;
-        Mon, 15 Mar 2021 13:53:55 +0000 (UTC)
+        id S230527AbhCONxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC24E64F00;
+        Mon, 15 Mar 2021 13:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816437;
-        bh=jnyP4GWxRl0BtFPVXYC88d9eUBnT4IJZlOB5QQ4qsF4=;
+        s=korg; t=1615816430;
+        bh=UYKgxHE6T97zILt8zQKZHoMeqdQy3Xk+IkyqbMBYZPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+gehH+qbz1KJTSh3pb/+yxYlJfcE+qbSPJ6WzWYwnPIi8gODIfxNp8Nkr8glq9z/
-         5rCzyqqjURjxO/LznNqZ2XINuEpVrZ+zxtm1OCi4POdGhlVZ44XS5FmO0b1LO/I98H
-         DD9Qs/DKuJhh+W3S16j3W/O0ml4wTbSQbKcNoY6E=
+        b=dTdmw5xTdyuGYcIjnVBfaQf83ZY4rY81iH3tPMbA309eN/mBczN/LEX5wHSGcb4Cp
+         F4mDK0tgKednhcGgMbb+WhxUv6GpuSuppu2hXyi7eqlZZBuvRNvEo1iwLyYrl4Iotu
+         SzK85vqpajilRutBZtat0Tu1gyqe34t2Vrd0WLmU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.4 43/75] staging: rtl8192u: fix ->ssid overflow in r8192_wx_set_scan()
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.9 34/78] xhci: Improve detection of device initiated wake signal.
 Date:   Mon, 15 Mar 2021 14:51:57 +0100
-Message-Id: <20210315135209.660960848@linuxfoundation.org>
+Message-Id: <20210315135213.190867751@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 87107518d7a93fec6cdb2559588862afeee800fb upstream.
+commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
 
-We need to cap len at IW_ESSID_MAX_SIZE (32) to avoid memory corruption.
-This can be controlled by the user via the ioctl.
+A xHC USB 3 port might miss the first wake signal from a USB 3 device
+if the port LFPS reveiver isn't enabled fast enough after xHC resume.
 
-Fixes: 5f53d8ca3d5d ("Staging: add rtl8192SU wireless usb driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YEHoAWMOSZBUw91F@mwanda
+xHC host will anyway be resumed by a PME# signal, but will go back to
+suspend if no port activity is seen.
+The device resends the U3 LFPS wake signal after a 100ms delay, but
+by then host is already suspended, starting all over from the
+beginning of this issue.
+
+USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
+needs to delay 100ms before resending the wake.
+
+Don't suspend immediately if port activity isn't detected in resume.
+Instead add a retry. If there is no port activity then delay for 120ms,
+and re-check for port activity.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8192u/r8192U_wx.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/rtl8192u/r8192U_wx.c
-+++ b/drivers/staging/rtl8192u/r8192U_wx.c
-@@ -341,8 +341,10 @@ static int r8192_wx_set_scan(struct net_
- 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1022,6 +1022,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
+ 	struct usb_hcd		*secondary_hcd;
+ 	int			retval = 0;
+ 	bool			comp_timer_running = false;
++	bool			pending_portevent = false;
  
- 		if (req->essid_len) {
--			ieee->current_network.ssid_len = req->essid_len;
--			memcpy(ieee->current_network.ssid, req->essid, req->essid_len);
-+			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
+ 	if (!hcd->state)
+ 		return 0;
+@@ -1155,13 +1156,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
+ 
+  done:
+ 	if (retval == 0) {
+-		/* Resume root hubs only when have pending events. */
+-		if (xhci_pending_portevent(xhci)) {
++		/*
++		 * Resume roothubs only if there are pending events.
++		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
++		 * the first wake signalling failed, give it that chance.
++		 */
++		pending_portevent = xhci_pending_portevent(xhci);
++		if (!pending_portevent) {
++			msleep(120);
++			pending_portevent = xhci_pending_portevent(xhci);
++		}
 +
-+			ieee->current_network.ssid_len = len;
-+			memcpy(ieee->current_network.ssid, req->essid, len);
++		if (pending_portevent) {
+ 			usb_hcd_resume_root_hub(xhci->shared_hcd);
+ 			usb_hcd_resume_root_hub(hcd);
  		}
  	}
- 
+-
+ 	/*
+ 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
+ 	 * be re-initialized Always after a system resume. Ports are subject
 
 
