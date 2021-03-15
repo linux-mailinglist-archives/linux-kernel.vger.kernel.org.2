@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACC333B5EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C80033B5EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhCON4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57088 "EHLO mail.kernel.org"
+        id S231685AbhCONzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhCONxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A4364EED;
-        Mon, 15 Mar 2021 13:53:47 +0000 (UTC)
+        id S230468AbhCONxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E5764DAD;
+        Mon, 15 Mar 2021 13:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816428;
-        bh=/RrIS0wPRJ2jKcDUj/WI2DqVdqay1L2H+3QyBkhJEdg=;
+        s=korg; t=1615816423;
+        bh=+qXyopVlb6I52eh4Prd0dbNBohQZskhhj/Q2fdKsKLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VYhZoa+e1rP6YVugoko5WRgfE5LNitdUKpx4CspBb5RXBmIxxYplmeOKdDLJA7vov
-         kg96RvSSVhzPdv1FnWuwvQ5nnX/qgqfdhAu+AMRUo6uELm/aEMVjqy98h/R20XT8bC
-         /Z1m8085zaWzVSvnNuE44I8y+pp4M1azLYvd0i0s=
+        b=v+8LtCcLrmqyfLKDDeTebK4UXTORkDiuOnm4EDgI8Uc6BTLH3zagZxi/15fYKrgsN
+         7Bqh8HXyDVEyoA+Re70dy9gbpKbpghcbWJGXFDizyviN5Y34IlqicK/hXvXemoSfka
+         smWDL7fnvnG0jy6iLh0Dctt3xkMekIt2o0MEfPZI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Karan Singhal <karan.singhal@acuitybrands.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 38/75] USB: serial: cp210x: add ID for Acuity Brands nLight Air Adapter
-Date:   Mon, 15 Mar 2021 14:51:52 +0100
-Message-Id: <20210315135209.496755423@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Lawrence <joe.lawrence@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Manoj Gupta <manojgupta@google.com>
+Subject: [PATCH 4.9 30/78] scripts/recordmcount.{c,pl}: support -ffunction-sections .text.* section names
+Date:   Mon, 15 Mar 2021 14:51:53 +0100
+Message-Id: <20210315135213.061571101@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,31 +42,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Karan Singhal <karan.singhal@acuitybrands.com>
+From: Joe Lawrence <joe.lawrence@redhat.com>
 
-commit ca667a33207daeaf9c62b106815728718def60ec upstream.
+commit 9c8e2f6d3d361439cc6744a094f1c15681b55269 upstream.
 
-IDs of nLight Air Adapter, Acuity Brands, Inc.:
-vid: 10c4
-pid: 88d8
+When building with -ffunction-sections, the compiler will place each
+function into its own ELF section, prefixed with ".text".  For example,
+a simple test module with functions test_module_do_work() and
+test_module_wq_func():
 
-Signed-off-by: Karan Singhal <karan.singhal@acuitybrands.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+  % objdump --section-headers test_module.o | awk '/\.text/{print $2}'
+  .text
+  .text.test_module_do_work
+  .text.test_module_wq_func
+  .init.text
+  .exit.text
+
+Adjust the recordmcount scripts to look for ".text" as a section name
+prefix.  This will ensure that those functions will be included in the
+__mcount_loc relocations:
+
+  % objdump --reloc --section __mcount_loc test_module.o
+  OFFSET           TYPE              VALUE
+  0000000000000000 R_X86_64_64       .text.test_module_do_work
+  0000000000000008 R_X86_64_64       .text.test_module_wq_func
+  0000000000000010 R_X86_64_64       .init.text
+
+Link: http://lkml.kernel.org/r/1542745158-25392-2-git-send-email-joe.lawrence@redhat.com
+
+Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+[Manoj: Resolve conflict on 4.4.y/4.9.y because of missing 42c269c88dc1]
+Signed-off-by: Manoj Gupta <manojgupta@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/cp210x.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -142,6 +142,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x10C4, 0x8857) },	/* CEL EM357 ZigBee USB Stick */
- 	{ USB_DEVICE(0x10C4, 0x88A4) }, /* MMB Networks ZigBee USB Device */
- 	{ USB_DEVICE(0x10C4, 0x88A5) }, /* Planet Innovation Ingeni ZigBee USB Device */
-+	{ USB_DEVICE(0x10C4, 0x88D8) }, /* Acuity Brands nLight Air Adapter */
- 	{ USB_DEVICE(0x10C4, 0x88FB) }, /* CESINEL MEDCAL STII Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8938) }, /* CESINEL MEDCAL S II Network Analyzer */
- 	{ USB_DEVICE(0x10C4, 0x8946) }, /* Ketra N1 Wireless Interface */
+---
+ scripts/recordmcount.c  |    2 +-
+ scripts/recordmcount.pl |   13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+--- a/scripts/recordmcount.c
++++ b/scripts/recordmcount.c
+@@ -362,7 +362,7 @@ static uint32_t (*w2)(uint16_t);
+ static int
+ is_mcounted_section_name(char const *const txtname)
+ {
+-	return strcmp(".text",           txtname) == 0 ||
++	return strncmp(".text",          txtname, 5) == 0 ||
+ 		strcmp(".ref.text",      txtname) == 0 ||
+ 		strcmp(".sched.text",    txtname) == 0 ||
+ 		strcmp(".spinlock.text", txtname) == 0 ||
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -140,6 +140,11 @@ my %text_sections = (
+      ".text.unlikely" => 1,
+ );
+ 
++# Acceptable section-prefixes to record.
++my %text_section_prefixes = (
++     ".text." => 1,
++);
++
+ # Note: we are nice to C-programmers here, thus we skip the '||='-idiom.
+ $objdump = 'objdump' if (!$objdump);
+ $objcopy = 'objcopy' if (!$objcopy);
+@@ -505,6 +510,14 @@ while (<IN>) {
+ 
+ 	# Only record text sections that we know are safe
+ 	$read_function = defined($text_sections{$1});
++	if (!$read_function) {
++	    foreach my $prefix (keys %text_section_prefixes) {
++	        if (substr($1, 0, length $prefix) eq $prefix) {
++	            $read_function = 1;
++	            last;
++	        }
++	    }
++	}
+ 	# print out any recorded offsets
+ 	update_funcs();
+ 
 
 
