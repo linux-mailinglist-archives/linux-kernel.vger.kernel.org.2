@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAE733B85E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E8833B862
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhCOODG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:03:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34306 "EHLO mail.kernel.org"
+        id S234326AbhCOODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231151AbhCON5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2A8D64F07;
-        Mon, 15 Mar 2021 13:57:02 +0000 (UTC)
+        id S231299AbhCON5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B84364F0C;
+        Mon, 15 Mar 2021 13:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816625;
-        bh=0M05p8XucEh6JAWReMiGEgzdUJCQTvigP4r5AdxlDuE=;
+        s=korg; t=1615816626;
+        bh=QBRAwhpye3waUYbqT08YlDboSZ3WWwEkgwyh6D7dgjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XH8MbYq8sOvzBPcuYxgAH1eAAqaqbfDowWWQJt2y2HT9JstE+Fh0N0p7INQGeSPzP
-         Ro/gI5X8dnZjsIcShSr6aYRxeIQR0C7O8M5FPtCt65CSOigeXN/NjfBR+u5jUtV48L
-         4k7Gr1d/q4eFMV8jS0b9bsyozKI2+FxkpHpa26FM=
+        b=WNjbfgobUwf7/VvMxVtq+9zVhhMCLD+XzI+JzGih7MNW9DGH3pTwCgmQxDcNFKilT
+         XvZJSMTMi5Sj/yVTX4hVvQ2iRV64fwHAJ3zjM+OeBSOwpLEs0f3fnmUvgHKPEi1Xnj
+         /BAz3oxsSgPHDKqZxITQzAyvxvwOhezi0/qt+tV4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH 5.11 027/306] net: always use icmp{,v6}_ndo_send from ndo_start_xmit
-Date:   Mon, 15 Mar 2021 14:51:30 +0100
-Message-Id: <20210315135508.539413443@linuxfoundation.org>
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 028/306] net: phy: fix save wrong speed and duplex problem if autoneg is on
+Date:   Mon, 15 Mar 2021 14:51:31 +0100
+Message-Id: <20210315135508.570816874@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -47,186 +42,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-commit 4372339efc06bc2a796f4cc9d0a7a929dfda4967 upstream.
+commit d9032dba5a2b2bbf0fdce67c8795300ec9923b43 upstream.
 
-There were a few remaining tunnel drivers that didn't receive the prior
-conversion to icmp{,v6}_ndo_send. Knowing now that this could lead to
-memory corrution (see ee576c47db60 ("net: icmp: pass zeroed opts from
-icmp{,v6}_ndo_send before sending") for details), there's even more
-imperative to have these all converted. So this commit goes through the
-remaining cases that I could find and does a boring translation to the
-ndo variety.
+If phy uses generic driver and autoneg is on, enter command
+"ethtool -s eth0 speed 50" will not change phy speed actually, but
+command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
+has been set to 50 and no update later.
 
-The Fixes: line below is the merge that originally added icmp{,v6}_
-ndo_send and converted the first batch of icmp{,v6}_send users. The
-rationale then for the change applies equally to this patch. It's just
-that these drivers were left out of the initial conversion because these
-network devices are hiding in net/ rather than in drivers/net/.
+And duplex setting has same problem too.
 
-Cc: Florian Westphal <fw@strlen.de>
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Fixes: 803381f9f117 ("Merge branch 'icmp-account-for-NAT-when-sending-icmps-from-ndo-layer'")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
+However, if autoneg is on, phy only changes speed and duplex according to
+phydev->advertising, but not phydev->speed and phydev->duplex. So in this
+case, phydev->speed and phydev->duplex don't need to be set in function
+phy_ethtool_ksettings_set() if autoneg is on.
+
+Fixes: 51e2a3846eab ("PHY: Avoid unnecessary aneg restarts")
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_tunnel.c  |    5 ++---
- net/ipv4/ip_vti.c     |    6 +++---
- net/ipv6/ip6_gre.c    |   16 ++++++++--------
- net/ipv6/ip6_tunnel.c |   10 +++++-----
- net/ipv6/ip6_vti.c    |    6 +++---
- net/ipv6/sit.c        |    2 +-
- 6 files changed, 22 insertions(+), 23 deletions(-)
+ drivers/net/phy/phy.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -502,8 +502,7 @@ static int tnl_update_pmtu(struct net_de
- 		if (!skb_is_gso(skb) &&
- 		    (inner_iph->frag_off & htons(IP_DF)) &&
- 		    mtu < pkt_size) {
--			memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
--			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
-+			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
- 			return -E2BIG;
- 		}
- 	}
-@@ -527,7 +526,7 @@ static int tnl_update_pmtu(struct net_de
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -276,14 +276,16 @@ int phy_ethtool_ksettings_set(struct phy
  
- 		if (!skb_is_gso(skb) && mtu >= IPV6_MIN_MTU &&
- 					mtu < pkt_size) {
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 			return -E2BIG;
- 		}
- 	}
---- a/net/ipv4/ip_vti.c
-+++ b/net/ipv4/ip_vti.c
-@@ -238,13 +238,13 @@ static netdev_tx_t vti_xmit(struct sk_bu
- 	if (skb->len > mtu) {
- 		skb_dst_update_pmtu_no_confirm(skb, mtu);
- 		if (skb->protocol == htons(ETH_P_IP)) {
--			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
--				  htonl(mtu));
-+			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
-+				      htonl(mtu));
- 		} else {
- 			if (mtu < IPV6_MIN_MTU)
- 				mtu = IPV6_MIN_MTU;
+ 	phydev->autoneg = autoneg;
  
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		}
+-	phydev->speed = speed;
++	if (autoneg == AUTONEG_DISABLE) {
++		phydev->speed = speed;
++		phydev->duplex = duplex;
++	}
  
- 		dst_release(dst);
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -678,8 +678,8 @@ static int prepare_ip6gre_xmit_ipv6(stru
+ 	linkmode_copy(phydev->advertising, advertising);
  
- 		tel = (struct ipv6_tlv_tnl_enc_lim *)&skb_network_header(skb)[offset];
- 		if (tel->encap_limit == 0) {
--			icmpv6_send(skb, ICMPV6_PARAMPROB,
--				    ICMPV6_HDR_FIELD, offset + 2);
-+			icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
-+					ICMPV6_HDR_FIELD, offset + 2);
- 			return -1;
- 		}
- 		*encap_limit = tel->encap_limit - 1;
-@@ -805,8 +805,8 @@ static inline int ip6gre_xmit_ipv4(struc
- 	if (err != 0) {
- 		/* XXX: send ICMP error even if DF is not set. */
- 		if (err == -EMSGSIZE)
--			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
--				  htonl(mtu));
-+			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
-+				      htonl(mtu));
- 		return -1;
- 	}
+ 	linkmode_mod_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
+ 			 phydev->advertising, autoneg == AUTONEG_ENABLE);
  
-@@ -837,7 +837,7 @@ static inline int ip6gre_xmit_ipv6(struc
- 			  &mtu, skb->protocol);
- 	if (err != 0) {
- 		if (err == -EMSGSIZE)
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		return -1;
- 	}
+-	phydev->duplex = duplex;
+ 	phydev->master_slave_set = cmd->base.master_slave_cfg;
+ 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
  
-@@ -1063,10 +1063,10 @@ static netdev_tx_t ip6erspan_tunnel_xmit
- 		/* XXX: send ICMP error even if DF is not set. */
- 		if (err == -EMSGSIZE) {
- 			if (skb->protocol == htons(ETH_P_IP))
--				icmp_send(skb, ICMP_DEST_UNREACH,
--					  ICMP_FRAG_NEEDED, htonl(mtu));
-+				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
-+					      ICMP_FRAG_NEEDED, htonl(mtu));
- 			else
--				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		}
- 
- 		goto tx_err;
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -1332,8 +1332,8 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
- 
- 				tel = (void *)&skb_network_header(skb)[offset];
- 				if (tel->encap_limit == 0) {
--					icmpv6_send(skb, ICMPV6_PARAMPROB,
--						ICMPV6_HDR_FIELD, offset + 2);
-+					icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
-+							ICMPV6_HDR_FIELD, offset + 2);
- 					return -1;
- 				}
- 				encap_limit = tel->encap_limit - 1;
-@@ -1385,11 +1385,11 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
- 		if (err == -EMSGSIZE)
- 			switch (protocol) {
- 			case IPPROTO_IPIP:
--				icmp_send(skb, ICMP_DEST_UNREACH,
--					  ICMP_FRAG_NEEDED, htonl(mtu));
-+				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
-+					      ICMP_FRAG_NEEDED, htonl(mtu));
- 				break;
- 			case IPPROTO_IPV6:
--				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 				break;
- 			default:
- 				break;
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@ -521,10 +521,10 @@ vti6_xmit(struct sk_buff *skb, struct ne
- 			if (mtu < IPV6_MIN_MTU)
- 				mtu = IPV6_MIN_MTU;
- 
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		} else {
--			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
--				  htonl(mtu));
-+			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
-+				      htonl(mtu));
- 		}
- 
- 		err = -EMSGSIZE;
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -987,7 +987,7 @@ static netdev_tx_t ipip6_tunnel_xmit(str
- 			skb_dst_update_pmtu_no_confirm(skb, mtu);
- 
- 		if (skb->len > mtu && !skb_is_gso(skb)) {
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 			ip_rt_put(rt);
- 			goto tx_error;
- 		}
 
 
