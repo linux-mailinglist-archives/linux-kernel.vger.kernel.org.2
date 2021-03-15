@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227CF33C56C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E9433C570
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhCOSUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        id S231214AbhCOSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231981AbhCOSTi (ORCPT
+        with ESMTP id S232013AbhCOSU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:19:38 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C1EC06174A;
-        Mon, 15 Mar 2021 11:19:38 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so5600487oto.2;
-        Mon, 15 Mar 2021 11:19:38 -0700 (PDT)
+        Mon, 15 Mar 2021 14:20:28 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0365FC06174A;
+        Mon, 15 Mar 2021 11:20:28 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 101-20020a9d04ee0000b02901b506659320so5594623otm.7;
+        Mon, 15 Mar 2021 11:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JeDHtCDxywj9r6bA/2S0wPWpH9Q9pfJGq85V9QGOnw8=;
-        b=TF7MqunSHLZhiqjjd5eKS6a1ZWsfyx6blhMKMqPybtS5JPw4NzQcK2xItEXkpphYPJ
-         8QWlhHoSOyzKbsUYUrrJ8yHht6KEqZrPPGtbwD5vToVHROi8GIgPXOsTOd91WY4e1f1w
-         4dj7qN2iBYJ/+ATjMLTpc+Cd0PZSe4yCx+UkRyBpQrdLKcZBlvac67lr3gUbQksGfNZe
-         obIT8L8nKImSEVfNCG/qXXqb5HIOC1JKKJyaqEEExdW3l/qu1sO96+BI0qs5nrTte4rF
-         MraIQVxq0DmDE4LXZFC+Qfacc+wu3XVpX6PVV5O/9IEdRCE5UULjnCCNRpKeAvJ0PE76
-         3c1Q==
+        bh=qgTmUjpAgS3oY88pdR8n43/ojqKRMNQdI1zf/7d2y7M=;
+        b=lsQmoe0RiNR+jpApt3STJZDJUtuFImFAiD9QoNiIYO6y20pPJBBar89/PeF1lajqvL
+         PE7PckeqNmolEc+09hLVnPOND3Za2nv2LkTxqd6t3zH06khxIPHswaeCyIczUsgedHsz
+         tPVgkgaXNewd5XxYvAXYPUSLy76NwaYlMKXLtiZz9Q+npnXLheUux0fBJ0LojMSSrf+x
+         RB1UFaGgSlaKkf2hbUz6Ij6zYbm6cdvJMN6gfbG29PGUAJ0zjJ+XWLG2o6k6jWTg9/x8
+         sy1+PSc1bdle27kJf40dpjWGmx3A0CBvObWwJeUS7mER2VPdWKy1M9X+JVISVC39gL9U
+         ZZlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JeDHtCDxywj9r6bA/2S0wPWpH9Q9pfJGq85V9QGOnw8=;
-        b=R8K0lSfAv+zjx+RoPAKF0HrX0YyVoZro4uvep+Yb0uKIiOwYdznd7FiGJl5+zAcqm1
-         2PY1nXV+WsHCC1ioZiCxSyKsywxTBk8AzjbFsr3CS9bAZquT5PoxeqAPLESeS7AUnl0W
-         X89Gza861EJ3TFW33Tb3CtRFkutBYXE+Xbm/fPfCexZomBC4EZJc+TkbIfWE//33BMk0
-         tvH39IQI2NCEUIkMkMvn/SP00es0BFc8FDfZiIrh8sB0Qh+NK6O9VHCHV2uEnGoAVVmr
-         Z9dhvXh5+d3ZoS/1/SnIBtonHNHtXfkoNROD6S/r6t+oTNYXI9gy+kM1se+F5S/auk8n
-         Dg2w==
-X-Gm-Message-State: AOAM531bA/9zOohSMAJtmOTcx7w22YmASJJy18CTWfUJL3o5I4NS9Sqs
-        oo2861BBE4PmBaV5xBKimRSlMX+f76ksEnsJDRY=
-X-Google-Smtp-Source: ABdhPJyAxg+bB/x4V9sYZuqgUOEM6BOJkUKpErYFa5jBJaxeSIB/YQj4BCsKJcWuMzSE93UQTMd/eX9jCImPxzpIB5k=
-X-Received: by 2002:a9d:760a:: with SMTP id k10mr333800otl.23.1615832377776;
- Mon, 15 Mar 2021 11:19:37 -0700 (PDT)
+        bh=qgTmUjpAgS3oY88pdR8n43/ojqKRMNQdI1zf/7d2y7M=;
+        b=gB0ySSvOFWd6lUlurqsAV558ug0YzhGWChAp1J+MbmV+EDiPcCZuOl56A4YS+rgpbx
+         KcSJX1qUpLPErxwhfzFiHUsmrHq52WYqs6x2+1/yq7g5nUh5TNVfay+CCWGlQ823bmoh
+         JUDeVuxOfk42RwQX3DNQrHQ3WabVz7riOAlfVd3YJlG5wiXhF3FHqV8AJ+5MYgUIXEXz
+         h/oyDNaKsWjsCOqeZk67NAbh4+QEOtAbMveM4iarf/paVcB5P8ZB2qEEne9mFvrO7SGj
+         8KnUFB1IWZYBRKHBAMXUtnD/1rnGKnHL4o9MLvjFO0mUToByAvlKOfGcqd+x6UKqHAhW
+         57IQ==
+X-Gm-Message-State: AOAM533ye2y17DrQBYf0fHrOESrIKm3Ex1zooTUANUbdW/VM6oy2tZVK
+        p96baNBOYj6bNNtVrK6HPJ8MMQg93HQA5AxAIsU=
+X-Google-Smtp-Source: ABdhPJx5cwRZYD3x24+Y5vxu1axyhaBEq/xyonkkb7s5PsBur0DZqElaGFhhHFoWwp6u9qxGfa8lqI29fRn0xWQV1J0=
+X-Received: by 2002:a9d:20c3:: with SMTP id x61mr309400ota.311.1615832427497;
+ Mon, 15 Mar 2021 11:20:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210312100842.127242-1-colin.king@canonical.com>
-In-Reply-To: <20210312100842.127242-1-colin.king@canonical.com>
+References: <20210311163417.59967-1-colin.king@canonical.com>
+In-Reply-To: <20210311163417.59967-1-colin.king@canonical.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 15 Mar 2021 14:19:26 -0400
-Message-ID: <CADnq5_PUo9cLui_B81Kn2LB8jmyZG2HsgWLQ=WqOWP+_wqcfsw@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/pm: Fix spelling mistake "disble" -> "disable"
+Date:   Mon, 15 Mar 2021 14:20:16 -0400
+Message-ID: <CADnq5_PH0q+mAAjSyL5_067aT0gqVMO1XZHBP_zsG41WY89Reg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove redundant initialization of
+ variable result
 To:     Colin King <colin.king@canonical.com>
-Cc:     Evan Quan <evan.quan@amd.com>,
+Cc:     Harry Wentland <harry.wentland@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
@@ -70,30 +71,33 @@ Applied.  Thanks!
 
 Alex
 
-On Fri, Mar 12, 2021 at 5:08 AM Colin King <colin.king@canonical.com> wrote:
+On Thu, Mar 11, 2021 at 11:34 AM Colin King <colin.king@canonical.com> wrote:
 >
 > From: Colin Ian King <colin.king@canonical.com>
 >
-> There is a spelling mistake in an assert message. Fix it.
+> The variable result is being initialized with a value that is
+> never read and it is being updated later with a new value.  The
+> initialization is redundant and can be removed.
 >
+> Addresses-Coverity: ("Unused value")
 > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 2 +-
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-> index 0d725b66fb78..7edafef095a3 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-> @@ -1300,7 +1300,7 @@ static int smu7_start_dpm(struct pp_hwmgr *hwmgr)
->                                 (0 == smum_send_msg_to_smc(hwmgr,
->                                                 PPSMC_MSG_PCIeDPM_Disable,
->                                                 NULL)),
-> -                               "Failed to disble pcie DPM during DPM Start Function!",
-> +                               "Failed to disable pcie DPM during DPM Start Function!",
->                                 return -EINVAL);
->         }
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> index 099f43709060..47e6c33f73cb 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> @@ -4281,7 +4281,7 @@ void dp_set_panel_mode(struct dc_link *link, enum dp_panel_mode panel_mode)
 >
+>                 if (edp_config_set.bits.PANEL_MODE_EDP
+>                         != panel_mode_edp) {
+> -                       enum dc_status result = DC_ERROR_UNEXPECTED;
+> +                       enum dc_status result;
+>
+>                         edp_config_set.bits.PANEL_MODE_EDP =
+>                         panel_mode_edp;
 > --
 > 2.30.2
 >
