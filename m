@@ -2,97 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF7E33C7FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438D433C801
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhCOUr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhCOUrE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:47:04 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7CEC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:47:04 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso142878pji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MjoMbH2IgXQqrLsfNTjFPTA182WJmfI1LoyU1nvk9uw=;
-        b=WMF8eJj+uuAS0WTr4cYS95+QiRXz9ym4ox14ST2bkKtpLHBMgzId5Q04lOwxiCFpgm
-         xe8YF+YxAdSdH02avnMEz5XCysml4P4pB9FbC9f8pzJXvNIks7RUNFCwt/Nuue/Qh4P0
-         JrqybpT8rDrsx4VJ3C6xHBBkcuA3m8Dqn1rC8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MjoMbH2IgXQqrLsfNTjFPTA182WJmfI1LoyU1nvk9uw=;
-        b=sEe7EwGutoQnVSdlfmyfbJdlF9E3I+p9FMasMUVO+tvplL82mNZQ2w5713Mw0aoONW
-         LAom9VwiwaTPhu7GCTw9C9ZSX+8A795GvMB24XMbXu/dYbtJ/7alQ99NvTOAXKaE+qX5
-         DVcvRI6JeHkX/aN5HtmVCF4+Jy3AkBqMlBCIa7njMtBze+9aqNrhWBOmB0cwuiiRad8W
-         XjZLKKfJUDntXFWoKK1VzfKPk9GOCFgwqU3S0DTjOc54OIWzPCtAWkBsb+ZwMh/IXwnP
-         0nOOumIINT9CGChxzg4BdbAzgzmuSxgg8aWAXTxzeeV7RkjPnrmNm/HAnGrwdcfO/MeI
-         Bo1A==
-X-Gm-Message-State: AOAM531sKsKy8Z4AqY5kqIvIHaWAN1jMAHvGgSBx+SQhRRP2kaE9XLb4
-        Cbf06oCZxPmQWaRwwjmPM/3SBw==
-X-Google-Smtp-Source: ABdhPJx6i599Wgyk/PeP+I/z6+hTTyj/H5/EsWQ7ulD31DTiITATmfpNYeNBuzLSw1q3MyNWxftgYw==
-X-Received: by 2002:a17:90a:e542:: with SMTP id ei2mr965694pjb.134.1615841223685;
-        Mon, 15 Mar 2021 13:47:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j21sm14368091pfc.114.2021.03.15.13.47.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:47:03 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 13:47:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     menglong8.dong@gmail.com
-Cc:     ebiederm@xmission.com, gustavoars@kernel.org,
-        viro@zeniv.linux.org.uk, zhang.yunkai@zte.com.cn, pcc@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] signal: remove duplicate include in signal.h
-Message-ID: <202103151346.F7FE09F43D@keescook>
-References: <20210313111108.366380-1-zhang.yunkai@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210313111108.366380-1-zhang.yunkai@zte.com.cn>
+        id S232040AbhCOUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:49:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19707 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231406AbhCOUtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 16:49:14 -0400
+IronPort-SDR: IeBpTL43ynqJ08ZQ1//7LKqjEaKxEmbHWgNnMQXG6wxzUM0sTD3a2blJxgaJqNc30DSqbBe4JB
+ +Pwon9hZOnbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189244228"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="189244228"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 13:49:05 -0700
+IronPort-SDR: hb/B6bd1N4xOX+hbkb5feq6aM+P9hIEhhOW/bxzFI/Q6VNYxzDOBEuha5ledvt7zpmPotgNnEh
+ 2eY/m2y4dw1w==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="439872407"
+Received: from vamcfadd-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.129.148])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 13:49:01 -0700
+Date:   Tue, 16 Mar 2021 09:48:59 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-Id: <20210316094859.7b5947b743a81dff7434615c@intel.com>
+In-Reply-To: <YE9mVUF0KOPNSfA9@kernel.org>
+References: <cover.1615250634.git.kai.huang@intel.com>
+        <d2ebcffeb9193d26a1305e08fe1aa1347feb1c62.1615250634.git.kai.huang@intel.com>
+        <YEvg2vNfiDYoc9u3@google.com>
+        <YE0M/VoETPw7YZIy@kernel.org>
+        <YE0NeChRjBlldQ8H@kernel.org>
+        <YE4M8JGGl9Xyx51/@kernel.org>
+        <YE4rVnfQ9y7CnVvr@kernel.org>
+        <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
+        <YE9beKYDaG1sMWq+@kernel.org>
+        <YE9mVUF0KOPNSfA9@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 03:11:08AM -0800, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> 
-> 'linux/string.h' included in 'signal.h' is duplicated.
-> It is also included in the 7th line.
-> 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Mon, 15 Mar 2021 15:51:17 +0200 Jarkko Sakkinen wrote:
+> On Mon, Mar 15, 2021 at 03:04:59PM +0200, Jarkko Sakkinen wrote:
+> > On Mon, Mar 15, 2021 at 04:13:17PM +1300, Kai Huang wrote:
+> > > On Sun, 14 Mar 2021 17:27:18 +0200 Jarkko Sakkinen wrote:
+> > > > On Sun, Mar 14, 2021 at 05:25:26PM +0200, Jarkko Sakkinen wrote:
+> > > > > On Sat, Mar 13, 2021 at 09:07:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > > On Sat, Mar 13, 2021 at 09:05:36PM +0200, Jarkko Sakkinen wrote:
+> > > > > > > On Fri, Mar 12, 2021 at 01:44:58PM -0800, Sean Christopherson wrote:
+> > > > > > > > On Tue, Mar 09, 2021, Kai Huang wrote:
+> > > > > > > > > Modify sgx_init() to always try to initialize the virtual EPC driver,
+> > > > > > > > > even if the SGX driver is disabled.  The SGX driver might be disabled
+> > > > > > > > > if SGX Launch Control is in locked mode, or not supported in the
+> > > > > > > > > hardware at all.  This allows (non-Linux) guests that support non-LC
+> > > > > > > > > configurations to use SGX.
+> > > > > > > > > 
+> > > > > > > > > Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > > > > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > > > > > > ---
+> > > > > > > > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+> > > > > > > > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > index 44fe91a5bfb3..8c922e68274d 100644
+> > > > > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > > > > > > > @@ -712,7 +712,15 @@ static int __init sgx_init(void)
+> > > > > > > > >  		goto err_page_cache;
+> > > > > > > > >  	}
+> > > > > > > > >  
+> > > > > > > > > -	ret = sgx_drv_init();
+> > > > > > > > > +	/*
+> > > > > > > > > +	 * Always try to initialize the native *and* KVM drivers.
+> > > > > > > > > +	 * The KVM driver is less picky than the native one and
+> > > > > > > > > +	 * can function if the native one is not supported on the
+> > > > > > > > > +	 * current system or fails to initialize.
+> > > > > > > > > +	 *
+> > > > > > > > > +	 * Error out only if both fail to initialize.
+> > > > > > > > > +	 */
+> > > > > > > > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
+> > > > > > > > 
+> > > > > > > > I love this code.
+> > > > > > > > 
+> > > > > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > > > > 
+> > > > > > > I'm still wondering why this code let's go through when sgx_drv_init()
+> > > > > > > succeeds and sgx_vepc_init() fails.
+> > > > > > > 
+> > > > > > > The inline comment explains only the mirrored case (which does make
+> > > > > > > sense).
+> > > > > > 
+> > > > > > I.e. if sgx_drv_init() succeeds, I'd expect that sgx_vepc_init() must
+> > > > > > succeed. Why expect legitly anything else?
+> > > > >  
+> > > > > Apologies coming with these ideas at this point, but here is what this
+> > > > > led me.
+> > > > > 
+> > > > > I think that the all this complexity comes from a bad code structure.
+> > > > > 
+> > > > > So, what is essentially happening here:
+> > > > > 
+> > > > > - We essentially want to make EPC always work.
+> > > > > - Driver optionally.
+> > > > > 
+> > > > > So what this sums to is something like:
+> > > > > 
+> > > > >         ret = sgx_epc_init();
+> > > > >         if (ret) {
+> > > > >                 pr_err("EPC initialization failed.\n");
+> > > > >                 return ret;
+> > > > >         }
+> > > > > 
+> > > > >         ret = sgx_drv_init();
+> > > > >         if (ret)
+> > > > >                 pr_info("Driver could not be initialized.\n");
+> > > > > 
+> > > > >         /* continue */
+> > > > > 
+> > > > > I.e. I think there should be a single EPC init, which does both EPC
+> > > > > bootstrapping and vepc, and driver initialization comes after that.
+> > > > 
+> > > > In other words, from SGX point of view, the thing that KVM needs is
+> > > > to cut out EPC and driver part into different islands. How this is now
+> > > > implemented in the current patch set is half-way there but not yet what
+> > > > it should be.
+> > > 
+> > > Well conceptually, SGX virtualization and SGX driver are two independently
+> > > functionalities can be enabled separately, although they both requires some
+> > > come functionalities, such as /dev/sgx_provision, which we have moved to
+> > > sgx/main.c exactly for this purpose. THerefore, conceptually, it is bad to make
+> > > assumption that, if SGX virtualization initialization succeeded, SGX driver
+> > > must succeed -- we can potentially add more staff in SGX virtualization in the
+> > > future..
+> > > 
+> > > If the name sgx_vepc_init() confuses you, I can rename it to sgx_virt_init().
+> > 
+> > I don't understand what would be the bad thing here. Can you open that
+> > up please? I'm neither capable of predicting the future...
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Conceptually they are two different functionalities, and doesn't depend on each
+other. Why calling SGX driver initialization only when SGX virtualization
+succeeded?
 
--Kees
+We might want to add reclaiming EPC page (VMM EPC oversubscription) from KVM
+guest in the future, which may bring more initialization staff sgx_vepc_init(),
+and those new staff should not impact SGX driver.
 
-> ---
->  include/linux/signal.h | 1 -
->  1 file changed, 1 deletion(-)
+I don't see your approach is any better, both from concept and flexibility.
+
+Like I said, we can rename to sgx_virt_init() to be more generic, but I
+strongly disagree your approach.
+
 > 
-> diff --git a/include/linux/signal.h b/include/linux/signal.h
-> index 205526c4003a..c371d3a3ff61 100644
-> --- a/include/linux/signal.h
-> +++ b/include/linux/signal.h
-> @@ -124,7 +124,6 @@ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
->  #define sigmask(sig)	(1UL << ((sig) - 1))
->  
->  #ifndef __HAVE_ARCH_SIG_SETOPS
-> -#include <linux/string.h>
->  
->  #define _SIG_SET_BINOP(name, op)					\
->  static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
-> -- 
-> 2.25.1
+> Right, so since vepc_init() does only just device file initialization the
+> current function structure is fine. I totally forgot that sgx_drv_init()
+> does not call EPC initialization when I wrote the above :-) We refactored
+> during the inital cycle the driver so many times that I sometimes fix up
+> thing, sorry about.
 > 
+> To meld this into code:
+> 
+>         ret = sgx_vepc_init();
+>         if (ret != -ENODEV) {
+>                 pr_err("vEPC initialization failed with %d.\n", ret);
+>                 return ret;
+>         }
+> 
+>         ret = sgx_drv_init();
+>         if (ret != ENODEV)
+>                 pr_info("Driver initialization failed %d.\n", ret);
 
--- 
-Kees Cook
+Hmm.. Let's say an extreme case: misc_register() failed in sgx_vepc_init(), due
+to -ENOMEM. Then OOM kill gets involved, and kills bunch of apps. And then In
+this case, theoretically, misc_register() in sgx_drv_init() doesn't need to
+fail.
+
+The point is really SGX driver and SGX virt are two independent
+functionalities, so don't make dependency on them, manually. Plus I don't see
+any benefit of your approach, but only cons.
+
+> 
+> This would also give more accurate information how far the initialization
+> went.
+> 
+> /Jarkko
