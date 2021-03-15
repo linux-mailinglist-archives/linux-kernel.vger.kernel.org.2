@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E335533BB16
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483A833BB77
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235985AbhCOOMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S236977AbhCOORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232324AbhCON6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1376A64EF8;
-        Mon, 15 Mar 2021 13:58:11 +0000 (UTC)
+        id S232678AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4766264EF1;
+        Mon, 15 Mar 2021 13:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816693;
-        bh=3cWWKdetzTELxSKkWdCy7Oe8CV16NjJnVcx8Zur5Y+M=;
+        s=korg; t=1615816746;
+        bh=nIwUgDOLL2c8zwazcszFb2BB1poTBLVOUSx3BnSxp2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tZvoJf7J94099NKAPtDKbwvSnuJz8VjDwV2YXuN/RYuwWoYLKdwZY9dDouycoUelJ
-         dPgiHbYsJOxyu6lr9+ooZL6D9HJY3yIKKQzK1PPYm7iHNuGPvI4wSgP4LFWg2HJPtA
-         vZhKYeFbmH3/EcmQZb1OevCs0h/FXJBmVOvxOFh4=
+        b=KbbEwyknlRf27SR99VJ7wjHsNdJmccihtGqNhSuWNs48be7eA3LpnTfQBahPJXd2M
+         eaSxqFFffRIK4FIWob4FX0ATUfJoPgCmMOxCjeHXLuCtp9sa6KrWD/DaRGiJnfFGLc
+         OCyB1rTI3bAK2CY9yIhr8ZL0w6kHF84qe/nAiGPU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zbynek Michl <zbynek.michl@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 02/95] ethernet: alx: fix order of calls on resume
-Date:   Mon, 15 Mar 2021 14:56:32 +0100
-Message-Id: <20210315135740.332073111@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 042/120] i2c: rcar: optimize cacheline to minimize HW race condition
+Date:   Mon, 15 Mar 2021 14:56:33 +0100
+Message-Id: <20210315135721.375066654@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit a4dcfbc4ee2218abd567d81d795082d8d4afcdf6 upstream.
+[ Upstream commit 25c2e0fb5fefb8d7847214cf114d94c7aad8e9ce ]
 
-netif_device_attach() will unpause the queues so we can't call
-it before __alx_open(). This went undetected until
-commit b0999223f224 ("alx: add ability to allocate and free
-alx_napi structures") but now if stack tries to xmit immediately
-on resume before __alx_open() we'll crash on the NAPI being null:
+'flags' and 'io' are needed first, so they should be at the beginning of
+the private struct.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000198
- CPU: 0 PID: 12 Comm: ksoftirqd/0 Tainted: G           OE 5.10.0-3-amd64 #1 Debian 5.10.13-1
- Hardware name: Gigabyte Technology Co., Ltd. To be filled by O.E.M./H77-D3H, BIOS F15 11/14/2013
- RIP: 0010:alx_start_xmit+0x34/0x650 [alx]
- Code: 41 56 41 55 41 54 55 53 48 83 ec 20 0f b7 57 7c 8b 8e b0
-0b 00 00 39 ca 72 06 89 d0 31 d2 f7 f1 89 d2 48 8b 84 df
- RSP: 0018:ffffb09240083d28 EFLAGS: 00010297
- RAX: 0000000000000000 RBX: ffffa04d80ae7800 RCX: 0000000000000004
- RDX: 0000000000000000 RSI: ffffa04d80afa000 RDI: ffffa04e92e92a00
- RBP: 0000000000000042 R08: 0000000000000100 R09: ffffa04ea3146700
- R10: 0000000000000014 R11: 0000000000000000 R12: ffffa04e92e92100
- R13: 0000000000000001 R14: ffffa04e92e92a00 R15: ffffa04e92e92a00
- FS:  0000000000000000(0000) GS:ffffa0508f600000(0000) knlGS:0000000000000000
- i915 0000:00:02.0: vblank wait timed out on crtc 0
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000198 CR3: 000000004460a001 CR4: 00000000001706f0
- Call Trace:
-  dev_hard_start_xmit+0xc7/0x1e0
-  sch_direct_xmit+0x10f/0x310
-
-Cc: <stable@vger.kernel.org> # 4.9+
-Fixes: bc2bebe8de8e ("alx: remove WoL support")
-Reported-by: Zbynek Michl <zbynek.michl@gmail.com>
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=983595
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Tested-by: Zbynek Michl <zbynek.michl@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/atheros/alx/main.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/atheros/alx/main.c
-+++ b/drivers/net/ethernet/atheros/alx/main.c
-@@ -1904,13 +1904,16 @@ static int alx_resume(struct device *dev
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index f9029800d399..3ea2ceec676c 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -117,6 +117,7 @@ enum rcar_i2c_type {
+ };
  
- 	if (!netif_running(alx->dev))
- 		return 0;
--	netif_device_attach(alx->dev);
+ struct rcar_i2c_priv {
++	u32 flags;
+ 	void __iomem *io;
+ 	struct i2c_adapter adap;
+ 	struct i2c_msg *msg;
+@@ -127,7 +128,6 @@ struct rcar_i2c_priv {
  
- 	rtnl_lock();
- 	err = __alx_open(alx, true);
- 	rtnl_unlock();
-+	if (err)
-+		return err;
-+
-+	netif_device_attach(alx->dev);
- 
--	return err;
-+	return 0;
- }
- 
- static SIMPLE_DEV_PM_OPS(alx_pm_ops, alx_suspend, alx_resume);
+ 	int pos;
+ 	u32 icccr;
+-	u32 flags;
+ 	u8 recovery_icmcr;	/* protected by adapter lock */
+ 	enum rcar_i2c_type devtype;
+ 	struct i2c_client *slave;
+-- 
+2.30.1
+
 
 
