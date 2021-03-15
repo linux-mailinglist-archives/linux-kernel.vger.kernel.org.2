@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F78833C810
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F14233C814
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhCOU6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhCOU6S (ORCPT
+        id S233053AbhCOU7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:59:44 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42438 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232240AbhCOU7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:58:18 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80B5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:17 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 15so17929131ljj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Gws+gEAPzAxYfrRQwqDKewKbX80S4jZnS6vikGwglJk=;
-        b=IeoRTuXOWpLBFpGSSswcLrO3VzlTKlqDhlP+sriejTxdrukWDsBOx/iuc9Tsv7KTX7
-         KYxFOTAPwdkCZ4HxXWtTnSOhFWIxryjTcFVUQmSv3D5h40x5CEemQWcwR4eyxHN0ryHF
-         YS4BehP9Dvd5MWtrnPHd9hnHOzwtR4cChpoVs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Gws+gEAPzAxYfrRQwqDKewKbX80S4jZnS6vikGwglJk=;
-        b=qbGs9jlea2WfitaBPijCQ1T7PoEipLyWiBIp75RiUVZJhzXf0MOhMFfXkId4cUAkBh
-         vzJnpr0CLH30LTfbX6+LfyVSmuWEcwFV+Iy2I/zw1QA5C+sToA4YqIQv6QVUeHkIIPlc
-         qI+Q3A8DpE2ffgmEWmLi6iKXsaSdi4dNWebF3Q7LBmfRYpMGPdRFS1Zb/8BKBZ065hDo
-         ej3ASeA5Ci/1AUFhR7/Ksoh8rU3AqJBQWwXCiXJJHRDMgYK7kPhtLVMxklnZqgaNI4ND
-         lf2XtEKu8+g3RSBHPNQi3SAROSGUmoCa81yOY+wUxptqu663hT40ACyh39q5ivK6ifdr
-         DLuw==
-X-Gm-Message-State: AOAM532VVeIIZH5xXL5oFoLWVsGUr6W+5Oo6aTldsoeoZ/PjwpTrMNcP
-        3/MQ9l5+IF45SXnvEr8z72PvNJCuVS4rTA==
-X-Google-Smtp-Source: ABdhPJxafmFsCpxHkDYrSnr4rhsDOin6mTDxzfCQ1K9fDFwxciJxd9s6yEa2Uh+jcvZU8BP3CukiEQ==
-X-Received: by 2002:a2e:8959:: with SMTP id b25mr528669ljk.245.1615841896085;
-        Mon, 15 Mar 2021 13:58:16 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id m7sm2742670lfg.285.2021.03.15.13.58.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 13:58:15 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id x4so52347540lfu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:14 -0700 (PDT)
-X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr8634354lfu.41.1615841894494;
- Mon, 15 Mar 2021 13:58:14 -0700 (PDT)
+        Mon, 15 Mar 2021 16:59:14 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12FKx5F3115937;
+        Mon, 15 Mar 2021 15:59:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615841945;
+        bh=UoF3cldJyikro6utsBYNtr1jTBmig21JZkMN3IlKsys=;
+        h=From:To:CC:Subject:Date;
+        b=hK+xJkiURaN2Fv5+HlpWoMqYp6FagUS0NmqR82+0z1jMWDMZYApr9+hU8V6CwtwLK
+         U0XRIHgilJ0TjG5C0HPSx2kwulF8pJfu5uPODoqZzIzcqMF0gm4RofGnYwwiOJ7XiH
+         1nGJMleUmySctvvScF7ht/tnNE0+MXlSPRmTy7yg=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12FKx4b7118738
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 15 Mar 2021 15:59:04 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
+ Mar 2021 15:59:04 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 15 Mar 2021 15:59:04 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12FKx4dR098491;
+        Mon, 15 Mar 2021 15:59:04 -0500
+Received: from localhost ([10.250.34.48])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 12FKx42r064830;
+        Mon, 15 Mar 2021 15:59:04 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] remoteproc: pru: Fix firmware loading crashes on K3 SoCs
+Date:   Mon, 15 Mar 2021 15:58:59 -0500
+Message-ID: <20210315205859.19590-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
- <202103120329.VU4uJ0yZ-lkp@intel.com> <CAHk-=whmwEJ-4tGamqOCw4BDJ-yjYrLRYxaFq5YurVc-XXO+hg@mail.gmail.com>
- <db88186a-d6af-33c9-f1fb-10b673b8fdd6@intel.com> <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
- <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com> <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
- <YE/ERLHBdjJ19TYT@audible.transient.net>
-In-Reply-To: <YE/ERLHBdjJ19TYT@audible.transient.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Mar 2021 13:57:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
-Message-ID: <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
-Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size mismatch
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 1:32 PM Jamie Heilman
-<jamie@audible.transient.net> wrote:
->
-> fwiw, https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=850202
+The K3 PRUs are 32-bit processors and in general have some limitations
+in using the standard ARMv8 memcpy function for loading firmware segments,
+so the driver already uses a custom memcpy implementation. This added
+logic however is limited to only IRAMs at the moment, but the loading
+into Data RAMs is not completely ok either and does generate a kernel
+crash for unaligned accesses.
 
-Yup, that seems to be the exact same thing from 4 years ago.
+Fix these crashes by removing the existing IRAM logic limitation and
+extending the custom memcpy usage to Data RAMs as well for all K3 SoCs.
 
-But it looks like nothing ever came out of it. It probably stayed
-within the Debian bugzilla, and didn't go to upstream dash
-maintainers.
+Fixes: 1d39f4d19921 ("remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs")
+Signed-off-by: Suman Anna <s-anna@ti.com>
+---
+ drivers/remoteproc/pru_rproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It does look like dash is actually actively maintained, and it's even
-a kernel maintainer that does it: Herbert Xu seems to maintain the
-dash tree and I see commits from January.
+diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+index 2667919d76b3..16979c1cd2f4 100644
+--- a/drivers/remoteproc/pru_rproc.c
++++ b/drivers/remoteproc/pru_rproc.c
+@@ -585,7 +585,7 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
+ 			break;
+ 		}
+ 
+-		if (pru->data->is_k3 && is_iram) {
++		if (pru->data->is_k3) {
+ 			ret = pru_rproc_memcpy(ptr, elf_data + phdr->p_offset,
+ 					       filesz);
+ 			if (ret) {
+-- 
+2.30.1
 
-So maybe we can get it fixed by just cc'ing Herbert.
-
-Herbert, easy test-case:
-
-    $ [ "!" = ".size" ]
-
-works, but
-
-    $ [ "!"  = ".size" -a "b" = ".LPBX0," ]
-
-causes
-
-    dash: 6: [: =: unexpected operator
-
-because for some reason that "-a" ends up (wild handwaving here about
-what is going on) re-parsing the first expression, and ignoring the
-quoting around "!" when it does so.
-
-I verified that the bug still exists in that current dash source tree,
-but I didn't dig any deeper than that "wild handwaving guess" as to
-what is actually going on.
-
-                Linus
