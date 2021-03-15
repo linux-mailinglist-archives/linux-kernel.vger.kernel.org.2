@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E4633B580
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE55A33B5AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhCONyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55860 "EHLO mail.kernel.org"
+        id S231634AbhCONy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhCONxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D679464EEE;
-        Mon, 15 Mar 2021 13:53:21 +0000 (UTC)
+        id S230398AbhCONxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8201964EEC;
+        Mon, 15 Mar 2021 13:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816403;
-        bh=dMn7XsKtA1xK+QI9+vobxM8LkEqT1GfUZUUKSTSHkMU=;
+        s=korg; t=1615816411;
+        bh=REA0xzN68j/FvKbx8JxSFI1oQ+aizigW8TARD6o/CQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZF8/Y4q966t+lstBFb+pwNiQcQZtdPf7gGoHXinU2oljTQhRAb75VYwcdpWJhD9KJ
-         kHl5nXA80U2Qbz68K4CLw4qyn+jpVrN+/GY1GcbXygL4LK1ZOGwCn8Cuzd02NmeoxJ
-         A/YCoRyrP9uF1lyagzOvPUQjqZfh4VL7xplbiHWk=
+        b=NC4nqGkq80NJOGd52UmhhR2gLSZuTKupvZwbSd1MZ0QQrnvh4jDQpxSUPo4+ueJ3O
+         eudOhHLNU2uDmqb0qwmpcVmsxfFYRPFxDTgZ2YKZ/jJMyVCNoM32b9oHj2xwR+ywX0
+         Kxnh0xWaJ1W0qG6xxblKz6aDBWWgT28iMTGjmXn8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 19/78] mmc: mxs-mmc: Fix a resource leak in an error handling path in mxs_mmc_probe()
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Bjoern Walk <bwalk@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.4 28/75] s390/dasd: fix hanging DASD driver unbind
 Date:   Mon, 15 Mar 2021 14:51:42 +0100
-Message-Id: <20210315135212.694397782@linuxfoundation.org>
+Message-Id: <20210315135209.180886348@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
+commit 7d365bd0bff3c0310c39ebaffc9a8458e036d666 upstream.
 
-If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
-call.
+In case of an unbind of the DASD device driver the function
+dasd_generic_remove() is called which shuts down the device.
+Among others this functions removes the int_handler from the cdev.
+During shutdown the device cancels all outstanding IO requests and waits
+for completion of the clear request.
+Unfortunately the clear interrupt will never be received when there is no
+interrupt handler connected.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix by moving the int_handler removal after the call to the state machine
+where no request or interrupt is outstanding.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Tested-by: Bjoern Walk <bwalk@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/mxs-mmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/block/dasd.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index c8b8ac66ff7e..687fd68fbbcd 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -651,7 +651,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+--- a/drivers/s390/block/dasd.c
++++ b/drivers/s390/block/dasd.c
+@@ -3286,8 +3286,6 @@ void dasd_generic_remove(struct ccw_devi
+ 	struct dasd_device *device;
+ 	struct dasd_block *block;
  
- 	ret = mmc_of_parse(mmc);
- 	if (ret)
--		goto out_clk_disable;
-+		goto out_free_dma;
- 
- 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
- 
--- 
-2.30.1
-
+-	cdev->handler = NULL;
+-
+ 	device = dasd_device_from_cdev(cdev);
+ 	if (IS_ERR(device)) {
+ 		dasd_remove_sysfs_files(cdev);
+@@ -3306,6 +3304,7 @@ void dasd_generic_remove(struct ccw_devi
+ 	 * no quite down yet.
+ 	 */
+ 	dasd_set_target_state(device, DASD_STATE_NEW);
++	cdev->handler = NULL;
+ 	/* dasd_delete_device destroys the device reference. */
+ 	block = device->block;
+ 	dasd_delete_device(device);
 
 
