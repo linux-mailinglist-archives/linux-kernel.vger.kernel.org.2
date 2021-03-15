@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B1E33C1F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06B533C1FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhCOQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233600AbhCOQcV (ORCPT
+        id S233773AbhCOQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:33:41 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:41178 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233564AbhCOQdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:32:21 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8EFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:32:21 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id bx7so18071767edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ixT7lt5BrAuCBjFWttRkcgqX2EIsHZfZNO+ujvqZKGU=;
-        b=MoQuS05o89pXE+Um/K+hgAEvgQ2pqhfdrIIb5zeWlehO+jfzshSzn1Q3dJ7R0wkJGk
-         tEQnArZOHyPOfNb6M3u9dWBOJ2XUO89R9VGAim0UzjIGNUczMByY5iUzhPXCeaKa3b3d
-         TgX7SNBHiwe6+Ia9dSxRYV3vGKBdTbCj8bZSLo66XqzJeGib9gRjYoyYmkHf9zKIGFYc
-         Am4fe+kHone6zAbNtG2jShxZtpBX/i+1NFNv24g41T/bVQO2+oQDZ3EamcrNPaiRNEEc
-         jZowbWo+v41uowU1WOFf6hYvlw119QNs+OOQ5Wo/EP1u3LHRZy8K975Pwp/739mgRzkX
-         e1tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ixT7lt5BrAuCBjFWttRkcgqX2EIsHZfZNO+ujvqZKGU=;
-        b=NJjjLOf6RIyGoWOgoy501QZHomKlNgglcISnPvRsII1AfVHqaw3kWPE8PV8pC99gOx
-         bpWHgNHSAxU9rzkd7br1XdNqDZ6JHkxl/vr8Bhy2jKPSjhxkYU6T40uehpC+SSZOslIO
-         kTFuIVGq0ZBqXGHxAjslVg2dUfCsiSWA5333lSogP2HecfRgRiNBh4uBgSqZv2mgVtY7
-         YU5LQif28TzIqmR9/ZsSi+F62MBMX7W1NTwvcIosAiCcAFR1aRRUE14FcmBVp6brxTvd
-         5vdk/8aVzBPtLctS5r/cdfMU5IdBdZheIDms1KD8tZ0Bg/zqyECDzRNbyHow4iGLsN3O
-         saEQ==
-X-Gm-Message-State: AOAM531ArztrKEB/LqstuD1Hvw1VFRbm3LP3eKT6VjnmlkbvBCKNsw1u
-        AHtnCX9fdhQ8BYrAo3n5QYQDs4y5Ti0FTOhm2lSPoXLojhk=
-X-Google-Smtp-Source: ABdhPJzHR/hUKU/y5ARhl1rfnFYkKP154YUZ3oGCF5PcRMZ9JehRIUt1NI1XZfQJhFL6uUDeHFE5zP4aEF2LkEO6p38=
-X-Received: by 2002:aa7:cf02:: with SMTP id a2mr30582714edy.59.1615825940033;
- Mon, 15 Mar 2021 09:32:20 -0700 (PDT)
+        Mon, 15 Mar 2021 12:33:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=25tvzr6LDKuaRWZ7Kq1InXgjrQLBkOCY64hHowQXZig=; b=jd/7txTKwBaK4XM4L4pEdPfaXK
+        j77z2FSuQPygPyzOaNtQeB/WuPI0mEHeLQ5XoVaOvM0peJGMT0rSFK7QLdYPovQdiR6d9crYwP30V
+        U3qzhU7lI4cnhPY5eLbFwsQgHc3dgrwJ+5RCrXGFRhWPpVYBx20B8JOfELVsToLgjg+JhMv9AAQoV
+        QXi+qBm+8NQLJ8YR2We0YcMp4QAshPbXnXH9nMM7W7FgIHCSgDMML5rQNraVpwyWQFm6LURTNIcjG
+        M4ZrRp9VjFELAy3KrIPg5y1v+lSFYwe8hnogW0iDZtEp5btt8nr/QzFZs11lfwZQdVaCWefOipyWS
+        LCYU1tFQ==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lLq9a-0000OV-Kj; Mon, 15 Mar 2021 10:33:15 -0600
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-8-logang@deltatee.com>
+ <20210313023657.GC3402637@iweiny-DESK2.sc.intel.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <e9a6689a-3cb7-aa30-33e7-b27015754b73@deltatee.com>
+Date:   Mon, 15 Mar 2021 10:33:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210315135541.921894249@linuxfoundation.org> <20210315135544.659848571@linuxfoundation.org>
- <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
-In-Reply-To: <6abd9dd3-e14b-f690-f967-15fb58dffae8@denx.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 15 Mar 2021 17:32:09 +0100
-Message-ID: <CAMpxmJV1kbam7mhb7mM111Or8fnpTEo14EczCJ5Efw+45xBUcQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 081/290] gpiolib: Read "gpio-line-names" from a
- firmware node
-To:     Marek Vasut <marex@denx.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Stable # 4 . 20+" <stable@vger.kernel.org>,
-        Roman Guskov <rguskov@dh-electronics.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210313023657.GC3402637@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, ira.weiny@intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH v2 07/11] dma-mapping: Add flags to dma_map_ops to
+ indicate PCI P2PDMA support
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 4:01 PM Marek Vasut <marex@denx.de> wrote:
->
-> On 3/15/21 2:52 PM, gregkh@linuxfoundation.org wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
-> >
-> > On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
-> > see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
-> > pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
-> > and iterates over all of its DT subnodes when registering each GPIO
-> > bank gpiochip. Each gpiochip has:
-> >
-> >    - gpio_chip.parent = dev,
-> >      where dev is the device node of the pin controller
-> >    - gpio_chip.of_node = np,
-> >      which is the OF node of the GPIO bank
-> >
-> > Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
-> > i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
-> >
-> > The original code behaved correctly, as it extracted the "gpio-line-names"
-> > from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
-> >
-> > To achieve the same behaviour, read property from the firmware node.
->
-> There seem to be some discussion going on around this patch, so please
-> postpone backporting until that is settled. Same for v5.11 backport. I
-> hope Andy/Bartosz agrees ?
 
-Yes, this patch broke at least the testing module and we're working to
-determine if it breaks DT drivers too.
 
-Bart
+On 2021-03-12 7:36 p.m., Ira Weiny wrote:
+> On Thu, Mar 11, 2021 at 04:31:37PM -0700, Logan Gunthorpe wrote:
+>  
+>> +int dma_pci_p2pdma_supported(struct device *dev)
+>    ^^^
+>   bool?
+
+Sure.
+
+> 
+>> +{
+>> +	const struct dma_map_ops *ops = get_dma_ops(dev);
+>> +
+>> +	return !ops || ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED;
+> 
+> Is this logic correct?  I would have expected.
+> 
+> 	return (ops && ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED);
+
+
+If ops is NULL then the operations in kernel/dma/direct.c are used and
+support is added to those in patch 6. So it is correct as written.
+
+Logan
