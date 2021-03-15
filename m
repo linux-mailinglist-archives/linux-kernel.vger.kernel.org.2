@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6972A33BDFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E2133BDEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbhCOOlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:41:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
+        id S237310AbhCOOk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:40:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234030AbhCOOCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0928464EEE;
-        Mon, 15 Mar 2021 14:02:47 +0000 (UTC)
+        id S233844AbhCOOCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA78364E83;
+        Mon, 15 Mar 2021 14:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816968;
-        bh=Q7fOIOhYYEgWEapd03u/hAGSKrUrhyVrhseD34/Bq5s=;
+        s=korg; t=1615816950;
+        bh=I5/Ju2sqpmZF9GUUl8cG9iEELjgWoaYlwhzX40Zzz+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W1/2nq3GhWWFz9dBFBkCZGTPOqKgimj249CCDdecF1aNGJWE/NxS9qha6/MoQfF4B
-         BVK6lbRNLVJ2hRPW9vG17ljuLCv3HWKw7saVpP1fOyVUD+xk/fkYe3Ib1Qwg90t7TO
-         JUhIT6Da2IPuRvWAK5prZs/jXNrLEumkNCGHxAMA=
+        b=Lp8XVwZoNwH/7NyzGLAMkudtEhl3CNS17lz4WWNWsH8qs47H5Ut2B4eeYvjW57EiP
+         D4UCE9FbE2z/nrmeqbGxT5uLsuPjpwt7NoFUOp/mB+CAKiIYWHp46XfvcQuZn4qbyl
+         k3P+kRbWowVeSkC0XaOnUXdDXoPiH74Nyn1ztV6I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.11 236/306] staging: comedi: pcl818: Fix endian problem for AI command data
-Date:   Mon, 15 Mar 2021 14:54:59 +0100
-Message-Id: <20210315135515.617064905@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 5.10 207/290] usb: renesas_usbhs: Clear PIPECFG for re-enabling pipe with other EPNUM
+Date:   Mon, 15 Mar 2021 14:55:00 +0100
+Message-Id: <20210315135548.925921517@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 148e34fd33d53740642db523724226de14ee5281 upstream.
+commit b1d25e6ee57c2605845595b6c61340d734253eb3 upstream.
 
-The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the call to
-`comedi_buf_write_samples()` is passing the address of a 32-bit integer
-parameter.  On bigendian machines, this will copy 2 bytes from the wrong
-end of the 32-bit value.  Fix it by changing the type of the parameter
-holding the sample value to `unsigned short`.
+According to the datasheet, this controller has a restriction
+which "set an endpoint number so that combinations of the DIR bit and
+the EPNUM bits do not overlap.". However, since the udc core driver is
+possible to assign a bulk pipe as an interrupt endpoint, an endpoint
+number may not match the pipe number. After that, when user rebinds
+another gadget driver, this driver broke the restriction because
+the driver didn't clear any configuration in usb_ep_disable().
 
-[Note: the bug was introduced in commit edf4537bcbf5 ("staging: comedi:
-pcl818: use comedi_buf_write_samples()") but the patch applies better to
-commit d615416de615 ("staging: comedi: pcl818: introduce
-pcl818_ai_write_sample()").]
+Example:
+ # modprobe g_ncm
+ Then, EP3 = pipe 3, EP4 = pipe 4, EP5 = pipe 6
+ # rmmod g_ncm
+ # modprobe g_hid
+ Then, EP3 = pipe 6, EP4 = pipe 7.
+ So, pipe 3 and pipe 6 are set as EP3.
 
-Fixes: d615416de615 ("staging: comedi: pcl818: introduce pcl818_ai_write_sample()")
-Cc: <stable@vger.kernel.org> # 4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-10-abbotti@mev.co.uk
+So, clear PIPECFG register in usbhs_pipe_free().
+
+Fixes: dfb87b8bfe09 ("usb: renesas_usbhs: gadget: fix re-enabling pipe without re-connecting")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1615168538-26101-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/pcl818.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/renesas_usbhs/pipe.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/staging/comedi/drivers/pcl818.c
-+++ b/drivers/staging/comedi/drivers/pcl818.c
-@@ -423,7 +423,7 @@ static int pcl818_ai_eoc(struct comedi_d
+--- a/drivers/usb/renesas_usbhs/pipe.c
++++ b/drivers/usb/renesas_usbhs/pipe.c
+@@ -746,6 +746,8 @@ struct usbhs_pipe *usbhs_pipe_malloc(str
  
- static bool pcl818_ai_write_sample(struct comedi_device *dev,
- 				   struct comedi_subdevice *s,
--				   unsigned int chan, unsigned int val)
-+				   unsigned int chan, unsigned short val)
+ void usbhs_pipe_free(struct usbhs_pipe *pipe)
  {
- 	struct pcl818_private *devpriv = dev->private;
- 	struct comedi_cmd *cmd = &s->async->cmd;
++	usbhsp_pipe_select(pipe);
++	usbhsp_pipe_cfg_set(pipe, 0xFFFF, 0);
+ 	usbhsp_put_pipe(pipe);
+ }
+ 
 
 
