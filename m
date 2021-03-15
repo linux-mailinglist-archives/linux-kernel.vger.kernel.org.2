@@ -2,109 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B0633C7D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1708633C7DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhCOUgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:36:14 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:12593 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231981AbhCOUgJ (ORCPT
+        id S232642AbhCOUiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhCOUit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:36:09 -0400
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Mar 2021 13:36:09 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 15 Mar 2021 13:36:08 -0700
-Received: by gurus-linux.localdomain (Postfix, from userid 383780)
-        id BF4D719B3; Mon, 15 Mar 2021 13:36:08 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 13:36:08 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joe Perches <joe@perches.com>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/3] regmap-irq: Add support for POLARITY_HI and
- POLARITY_LO config regs
-Message-ID: <20210315203608.GB8977@codeaurora.org>
-References: <cover.1615423027.git.gurus@codeaurora.org>
- <4b77a308ccdabbe96ed68623bd6eead9510e1fc9.1615423027.git.gurus@codeaurora.org>
- <20210312121916.GE5348@sirena.org.uk>
- <20210315203336.GA8977@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315203336.GA8977@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        Mon, 15 Mar 2021 16:38:49 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5FC06174A;
+        Mon, 15 Mar 2021 13:38:49 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id t85so7319790pfc.13;
+        Mon, 15 Mar 2021 13:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JI5gjZqD2xEbJnqMP+YxSmCk5ElN95HtSiD6k6zxrCs=;
+        b=fFTYrpvM5ORm3shjjJorGw/YfeEq+dLrmMr7fCTrbm5TV6KZpL3IxXzb+tzn9zr0FQ
+         UhNzWFyQ1NdiseZFF9spqEf8ShasJJgNkYk1urY5W7LhBeEH4yXPsZUkBd4cuwpcQSgG
+         NXmAEtBtAFwNfInkQIf4/lQRwjTmaKOu6ggP3AGQqpYiTSYd2tSg6Y6YhY4LXJGrUMCo
+         vv+SBUEWLKy68bfI9W6qwY/RtkT22Xt+Q3YXWV9PAfeOy5dLadaD9sJ0/qujwLdrCngW
+         ayKwHPvndIR8CCvCaNrGtdS1sUxglxDoNl1Zj8u0wdwidocQxBqaIb5zfNuwKw2Z/PU+
+         F2yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JI5gjZqD2xEbJnqMP+YxSmCk5ElN95HtSiD6k6zxrCs=;
+        b=d2Q6YkJjzk38A4m2H3AlmZ8IiOFUwrbJmVgBhhJjASHLuqOzgUxT7m65Tczho7LNMd
+         8eHvXfpeoLRNZz2cOGlllrCMNUMR3yZPsUjzRz8/sEbAhZPv+HK9GyIS9PL4ZS4tcVFB
+         48i8gPFARccbPXev/94TkccNCeHAP3I3fSQvkMzP6jECOHecuKFDyeaIC/pu8deNOH3H
+         tow30TCsy+UDe76tAgHOFtad7JQ0xIX8P4QrGj2c+fbQb1m/7MSJ8zG/qml3WRa9rY9v
+         13YYphD8XrnjziMehWBB2Bcdg6PLGbdQLEq+c/QVaw4jaF1PnMTyjBQwzgR20AAbCopK
+         zRPg==
+X-Gm-Message-State: AOAM530KNRBEhf/bG8lgFvhqSdR9mhSw6veLtwSGV3Yk7HzZsHR/QOlC
+        D/0WinrKm3HCrpZcRrRTVQU=
+X-Google-Smtp-Source: ABdhPJyH9KRRilmgJCb752bMDst7wp3eGhZJGUFdzlaK6g+zBevlaFvofwnwBDdT2j/AluZPlqyQxQ==
+X-Received: by 2002:a63:fc12:: with SMTP id j18mr779988pgi.334.1615840728663;
+        Mon, 15 Mar 2021 13:38:48 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id x19sm14183014pfi.220.2021.03.15.13.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 13:38:48 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
+        digetx@gmail.com
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
+Date:   Mon, 15 Mar 2021 13:36:31 -0700
+Message-Id: <20210315203631.24990-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:33:36PM -0700, Guru Das Srinagesh wrote:
-> On Fri, Mar 12, 2021 at 12:19:16PM +0000, Mark Brown wrote:
-> > On Wed, Mar 10, 2021 at 04:39:53PM -0800, Guru Das Srinagesh wrote:
-> > > If an interrupt is already configured as either edge- or
-> > > level-triggered, setting the corresponding bit for it in the POLARITY_HI
-> > > register further configures it as rising-edge or level-high triggered
-> > > (as the case may be), while setting the same bit in POLARITY_LO further
-> > > configures it as falling-edge or level-low triggered.
-> > 
-> > I think you probably need to bring these three fields together into a
-> > single virtual field and then map the values within that field using
-> > the existing type stuff.
-> 
-> Sure, how about this scheme then, for patches 2 and 3 in this series?
-> (Patch 1 will remain the same, pending your review of it.)
-> 
-> Since I do need to write to two extra registers, I'll need two
-> register_base's and two buffers to hold their data. This can be
-> generalized to "extra config registers" in the framework as follows:
-> 
-> - Add these two fields to `struct regmap_irq_chip`:
-> 
-> 	unsigned int *extra_config_base; /* Points to array of extra regs */
-> 	int num_extra_config_regs;	 /* = ARRAY_SIZE(array above) */
-> 
-> - Add this field to `struct regmap_irq_chip_data`:
-> 
-> 	unsigned int **extra_config_buf;
->   	/* Will be dynamically allocated to size of:
->   	 * [chip->num_extra_config_regs][chip->num_regs]
->   	 */
-> 
-> - Add a new function callback in `struct regmap_irq_chip`:
-> 
-> 	int (*configure_extra_regs)(void *irq_drv_data, unsigned int
-> 	type)
-> 
->   This callback will be called at the end of regmap_irq_set_type():
->   	
->   	if (d->chip->configure_extra_regs)
-> 		d->chip->configure_extra_regs();
-> 
->   The callback, defined in the client driver, will specifically address
->   the changes to regmap_irq_set_type() made in patches 2 and 3 of this
->   series, viz. overriding how type_buf is to be handled, plus the
->   populating of polarity_*_buf's (rechristened as extra_config_bufs in
->   this proposed new scheme).
-> 
-> This new scheme thus makes v2 more generic. I thought I'd discuss this
-> with you before implementing it as v3 RFC. Could you please let me know
-> your thoughts?
+This patch dumps all active mapping entries from pagetable
+to a debugfs directory named "mappings".
 
-Typo. I meant:
+Attaching an example:
 
-This new scheme thus makes *v3* more generic. I thought I'd discuss this
-with you before implementing it as *v4* RFC. 
+SWGROUP: hc
+ASID: 0
+reg: 0x250
+PTB_ASID: 0xe0080004
+as->pd_dma: 0x80004000
+{
+        [1023] 0xf008000b (1)
+        {
+                PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
+                [#1023, #1023] | 0x5  | 0x0000000111a8d000 | 0x00000000fffff000 | 0x1000
+        }
+}
+Total PDE count: 1
+Total PTE count: 1
 
-Guru Das.
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+
+Changelog
+v5:
+ * Fixed a typo in commit message
+ * Splitted a long line into two lines
+ * Rearranged variable defines by length
+ * Added Tested-by and Reviewed-by from Dmitry
+v4: https://lkml.org/lkml/2021/3/14/429
+ * Changed %d to %u for unsigned variables
+ * Fixed print format mismatch warnings on ARM32
+v3: https://lkml.org/lkml/2021/3/14/30
+ * Fixed PHYS and IOVA print formats
+ * Changed variables to unsigned int type
+ * Changed the table outputs to be compact
+v2: https://lkml.org/lkml/2021/3/9/1382
+ * Expanded mutex range to the entire function
+ * Added as->lock to protect pagetable walkthrough
+ * Replaced devm_kzalloc with devm_kcalloc for group_debug
+ * Added "PTE RANGE" and "SIZE" columns to group contiguous mappings
+ * Dropped as->count check; added WARN_ON when as->count mismatches pd[pd_index]
+v1: https://lkml.org/lkml/2020/9/26/70
+
+ drivers/iommu/tegra-smmu.c | 181 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 176 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 97eb62f667d2..b728cae63314 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -19,6 +19,11 @@
+ #include <soc/tegra/ahb.h>
+ #include <soc/tegra/mc.h>
+ 
++struct tegra_smmu_group_debug {
++	const struct tegra_smmu_swgroup *group;
++	void *priv;
++};
++
+ struct tegra_smmu_group {
+ 	struct list_head list;
+ 	struct tegra_smmu *smmu;
+@@ -47,6 +52,8 @@ struct tegra_smmu {
+ 	struct dentry *debugfs;
+ 
+ 	struct iommu_device iommu;	/* IOMMU Core code handle */
++
++	struct tegra_smmu_group_debug *group_debug;
+ };
+ 
+ struct tegra_smmu_as {
+@@ -152,6 +159,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
+ 
+ #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
+ 				 SMMU_PDE_NONSECURE)
++#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
++				 SMMU_PTE_NONSECURE)
++#define SMMU_PTE_ATTR_SHIFT	(29)
+ 
+ static unsigned int iova_pd_index(unsigned long iova)
+ {
+@@ -163,6 +173,12 @@ static unsigned int iova_pt_index(unsigned long iova)
+ 	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
+ }
+ 
++static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
++{
++	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
++	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
++}
++
+ static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
+ {
+ 	addr >>= 12;
+@@ -334,7 +350,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
+ }
+ 
+ static const struct tegra_smmu_swgroup *
+-tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
++tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
+ {
+ 	const struct tegra_smmu_swgroup *group = NULL;
+ 	unsigned int i;
+@@ -342,6 +358,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+ 	for (i = 0; i < smmu->soc->num_swgroups; i++) {
+ 		if (smmu->soc->swgroups[i].swgroup == swgroup) {
+ 			group = &smmu->soc->swgroups[i];
++			if (index)
++				*index = i;
+ 			break;
+ 		}
+ 	}
+@@ -350,19 +368,22 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
+ }
+ 
+ static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
+-			      unsigned int asid)
++			      struct tegra_smmu_as *as)
+ {
+ 	const struct tegra_smmu_swgroup *group;
++	unsigned int asid = as->id;
+ 	unsigned int i;
+ 	u32 value;
+ 
+-	group = tegra_smmu_find_swgroup(smmu, swgroup);
++	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
+ 	if (group) {
+ 		value = smmu_readl(smmu, group->reg);
+ 		value &= ~SMMU_ASID_MASK;
+ 		value |= SMMU_ASID_VALUE(asid);
+ 		value |= SMMU_ASID_ENABLE;
+ 		smmu_writel(smmu, value, group->reg);
++		if (smmu->group_debug)
++			smmu->group_debug[i].priv = as;
+ 	} else {
+ 		pr_warn("%s group from swgroup %u not found\n", __func__,
+ 				swgroup);
+@@ -389,13 +410,15 @@ static void tegra_smmu_disable(struct tegra_smmu *smmu, unsigned int swgroup,
+ 	unsigned int i;
+ 	u32 value;
+ 
+-	group = tegra_smmu_find_swgroup(smmu, swgroup);
++	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
+ 	if (group) {
+ 		value = smmu_readl(smmu, group->reg);
+ 		value &= ~SMMU_ASID_MASK;
+ 		value |= SMMU_ASID_VALUE(asid);
+ 		value &= ~SMMU_ASID_ENABLE;
+ 		smmu_writel(smmu, value, group->reg);
++		if (smmu->group_debug)
++			smmu->group_debug[i].priv = NULL;
+ 	}
+ 
+ 	for (i = 0; i < smmu->soc->num_clients; i++) {
+@@ -499,7 +522,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+ 		if (err)
+ 			goto disable;
+ 
+-		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
++		tegra_smmu_enable(smmu, fwspec->ids[index], as);
+ 	}
+ 
+ 	if (index == 0)
+@@ -1058,8 +1081,141 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
+ 
+ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+ 
++static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
++{
++	struct tegra_smmu_group_debug *group_debug = s->private;
++	const struct tegra_smmu_swgroup *group;
++	struct tegra_smmu_as *as;
++	struct tegra_smmu *smmu;
++	unsigned int pd_index;
++	unsigned int pt_index;
++	unsigned long flags;
++	u64 pte_count = 0;
++	u32 pde_count = 0;
++	u32 val, ptb_reg;
++	u32 *pd;
++
++	if (!group_debug || !group_debug->priv || !group_debug->group)
++		return 0;
++
++	group = group_debug->group;
++	as = group_debug->priv;
++	smmu = as->smmu;
++
++	mutex_lock(&smmu->lock);
++
++	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
++	if (!val)
++		goto unlock;
++
++	pd = page_address(as->pd);
++	if (!pd)
++		goto unlock;
++
++	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n",
++		   group->name, as->id, group->reg);
++
++	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
++	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
++
++	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: %pad\n",
++		   ptb_reg, &as->pd_dma);
++	seq_puts(s, "{\n");
++
++	spin_lock_irqsave(&as->lock, flags);
++
++	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
++		struct page *pt_page;
++		unsigned int i;
++		u32 *addr;
++
++		/* An empty PDE should not have a pte use count */
++		WARN_ON_ONCE(!pd[pd_index] ^ !as->count[pd_index]);
++
++		/* Skip this empty PDE */
++		if (!pd[pd_index])
++			continue;
++
++		pde_count++;
++		pte_count += as->count[pd_index];
++		seq_printf(s, "\t[%u] 0x%x (%d)\n",
++			   pd_index, pd[pd_index], as->count[pd_index]);
++		pt_page = as->pts[pd_index];
++		addr = page_address(pt_page);
++
++		seq_puts(s, "\t{\n");
++		seq_printf(s, "\t\t%-14s | %-4s | %-10s%s | %-10s%s | %-11s\n",
++			   "PTE RANGE", "ATTR",
++			   "PHYS", sizeof(phys_addr_t) > 4 ? "        " : "",
++			   "IOVA", sizeof(dma_addr_t)  > 4 ? "        " : "",
++			   "SIZE");
++		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
++			size_t size = SMMU_SIZE_PT;
++			dma_addr_t iova;
++			phys_addr_t pa;
++
++			i = 1;
++
++			if (!addr[pt_index])
++				continue;
++
++			iova = pd_pt_index_iova(pd_index, pt_index);
++			pa = SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR);
++
++			/* Check contiguous mappings and increase size */
++			while (pt_index + i < SMMU_NUM_PTE) {
++				dma_addr_t next_iova;
++				phys_addr_t next_pa;
++
++				if (!addr[pt_index + i])
++					break;
++
++				next_iova = pd_pt_index_iova(pd_index, pt_index + i);
++				next_pa = SMMU_PFN_PHYS(addr[pt_index + i] & ~SMMU_PTE_ATTR);
++
++				/* Break at the end of a linear mapping */
++				if ((next_iova - iova != SMMU_SIZE_PT * i) ||
++				    (next_pa - pa != SMMU_SIZE_PT * i))
++					break;
++
++				i++;
++			}
++
++			seq_printf(s, "\t\t[#%-4u, #%-4u] | 0x%-2x | %pa | %pad | 0x%-9zx\n",
++				   pt_index, pt_index + i - 1,
++				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
++				   &pa, &iova, size * i);
++		}
++		seq_puts(s, "\t}\n");
++	}
++
++	spin_unlock_irqrestore(&as->lock, flags);
++
++	seq_puts(s, "}\n");
++	seq_printf(s, "Total PDE count: %u\n", pde_count);
++	seq_printf(s, "Total PTE count: %llu\n", pte_count);
++
++unlock:
++	mutex_unlock(&smmu->lock);
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
++
+ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
+ {
++	const struct tegra_smmu_soc *soc = smmu->soc;
++	struct tegra_smmu_group_debug *group_debug;
++	struct device *dev = smmu->dev;
++	struct dentry *d;
++	unsigned int i;
++
++	group_debug = devm_kcalloc(dev, soc->num_swgroups,
++				   sizeof(*group_debug), GFP_KERNEL);
++	if (!group_debug)
++		return;
++
+ 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
+ 	if (!smmu->debugfs)
+ 		return;
+@@ -1068,6 +1224,21 @@ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
+ 			    &tegra_smmu_swgroups_fops);
+ 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
+ 			    &tegra_smmu_clients_fops);
++	d = debugfs_create_dir("mappings", smmu->debugfs);
++
++	for (i = 0; i < soc->num_swgroups; i++) {
++		const struct tegra_smmu_swgroup *group = &soc->swgroups[i];
++
++		if (!group->name)
++			continue;
++
++		group_debug[i].group = group;
++
++		debugfs_create_file(group->name, 0444, d, &group_debug[i],
++				    &tegra_smmu_mappings_fops);
++	}
++
++	smmu->group_debug = group_debug;
+ }
+ 
+ static void tegra_smmu_debugfs_exit(struct tegra_smmu *smmu)
+-- 
+2.17.1
+
