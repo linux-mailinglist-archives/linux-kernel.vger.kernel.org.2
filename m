@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D37F33B9FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF41933BA46
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235218AbhCOOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57222 "EHLO mail.kernel.org"
+        id S235629AbhCOOIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhCONyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5B2601FD;
-        Mon, 15 Mar 2021 13:54:03 +0000 (UTC)
+        id S231737AbhCON6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3DE164F0C;
+        Mon, 15 Mar 2021 13:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816444;
-        bh=qGJDHKHscL4c0vYzroDgIRcH/wbB5wiswAGnbwBhUBU=;
+        s=korg; t=1615816678;
+        bh=u5OynKd7iO5/IG2I3kk480sm9gyr1EaQo0TwBUcaQCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g00CDtrH5OrZ0RTBojFzYH1H05xJkxh2RXiGBPXL62UQ7ipup9qjn2mUdH3MrifVx
-         fRVnGsCICNI5pZEFuFdKRiRpQDvbPPTZ0K5tbTesp2Id5pUiiTQCM7tpUsfCkNbPq7
-         HPU9IDeVwQqJFkiKQtxVhPeZ0LOsW+IzRRVq8MBU=
+        b=HuDydGiRs5PLnVkjZTjNAAMeCzO7l3MXNCJMXVZbvW5iDwzhA75wYEX2OdW/AyrFY
+         LtlIfX+t8J4WTTvWGf2VCAnqNkh0h6jWTn3oSTP0QrLC3++nuu7aMYnlRXFbxbO28z
+         tSSsdu2lcR9037tbQhhKXfQc/VRjv8qhyv6MQRWs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Lee Gibson <leegib@gmail.com>
-Subject: [PATCH 4.4 48/75] staging: rtl8192e: Fix possible buffer overflow in _rtl92e_wx_set_scan
+        stable@vger.kernel.org, Maximilian Heyne <mheyne@amazon.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 059/306] net: sched: avoid duplicates in classes dump
 Date:   Mon, 15 Mar 2021 14:52:02 +0100
-Message-Id: <20210315135209.816279539@linuxfoundation.org>
+Message-Id: <20210315135509.639132900@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lee Gibson <leegib@gmail.com>
+From: Maximilian Heyne <mheyne@amazon.de>
 
-commit 8687bf9ef9551bcf93897e33364d121667b1aadf upstream.
+commit bfc2560563586372212b0a8aeca7428975fa91fe upstream.
 
-Function _rtl92e_wx_set_scan calls memcpy without checking the length.
-A user could control that length and trigger a buffer overflow.
-Fix by checking the length is within the maximum allowed size.
+This is a follow up of commit ea3274695353 ("net: sched: avoid
+duplicates in qdisc dump") which has fixed the issue only for the qdisc
+dump.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Lee Gibson <leegib@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210226145157.424065-1-leegib@gmail.com
+The duplicate printing also occurs when dumping the classes via
+  tc class show dev eth0
+
+Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ net/sched/sch_api.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-@@ -419,9 +419,10 @@ static int _rtl92e_wx_set_scan(struct ne
- 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -2167,7 +2167,7 @@ static int tc_dump_tclass_qdisc(struct Q
  
- 		if (req->essid_len) {
--			ieee->current_network.ssid_len = req->essid_len;
--			memcpy(ieee->current_network.ssid, req->essid,
--			       req->essid_len);
-+			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+
-+			ieee->current_network.ssid_len = len;
-+			memcpy(ieee->current_network.ssid, req->essid, len);
- 		}
- 	}
+ static int tc_dump_tclass_root(struct Qdisc *root, struct sk_buff *skb,
+ 			       struct tcmsg *tcm, struct netlink_callback *cb,
+-			       int *t_p, int s_t)
++			       int *t_p, int s_t, bool recur)
+ {
+ 	struct Qdisc *q;
+ 	int b;
+@@ -2178,7 +2178,7 @@ static int tc_dump_tclass_root(struct Qd
+ 	if (tc_dump_tclass_qdisc(root, skb, tcm, cb, t_p, s_t) < 0)
+ 		return -1;
  
+-	if (!qdisc_dev(root))
++	if (!qdisc_dev(root) || !recur)
+ 		return 0;
+ 
+ 	if (tcm->tcm_parent) {
+@@ -2213,13 +2213,13 @@ static int tc_dump_tclass(struct sk_buff
+ 	s_t = cb->args[0];
+ 	t = 0;
+ 
+-	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t) < 0)
++	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t, true) < 0)
+ 		goto done;
+ 
+ 	dev_queue = dev_ingress_queue(dev);
+ 	if (dev_queue &&
+ 	    tc_dump_tclass_root(dev_queue->qdisc_sleeping, skb, tcm, cb,
+-				&t, s_t) < 0)
++				&t, s_t, false) < 0)
+ 		goto done;
+ 
+ done:
 
 
