@@ -2,91 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656AE33B095
+	by mail.lfdr.de (Postfix) with ESMTP id C2F4533B096
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCOLDS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Mar 2021 07:03:18 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:36369 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhCOLCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:02:50 -0400
-Received: by mail-ua1-f50.google.com with SMTP id o8so4052205uar.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:02:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=luUI1y7TeItItv6lcgdhrz6xW5IIMYrJljt0a6PyOsI=;
-        b=QMGYeBfh5K5suOQHKk08KYOG7nvjNGI45JmN0dheVXqlj2JhxV2WgUE7EBn0U5yYnM
-         VFgFCFnghT9/T48VYiZ6ZNrVkNppp9gS8eUTuIZxBs7TcaUv0MJvkqR8LbXO3iMHMxqG
-         MUywhEG5W+s55fGT7BomX8TSvQ6+6u36rIuR/U0EN95EDpEwCkYM48KZw0PRldHh2ltq
-         UIzV5CRDN27TD95GzcyRu4t6Riy6wc9inPceJ6rfHz+tCDp/Da6nyi1l3tf0/z7t/8P4
-         ANXlv1wUsFxgxOeDPedB++TikczYqGoFohWpW8E5L9Z3udnrCISfjagMlmYIYEFpSmeP
-         lwOw==
-X-Gm-Message-State: AOAM531l6TNf6KlnjcbVR3fSmio02yNN7UwNR6nam89NNHeGuAmfzx6w
-        9Z6K1Efa5XKSamyhhNBVUiAhnfM3aneSL7lKDvVJiM5p
-X-Google-Smtp-Source: ABdhPJwPc7mvd0FdJocPWpgaceI9gdWFckR56CTV+7TuC43r6wmKuXqJ5ZeaHIO9vTmiuBEaxjh+uUOW0JKpCIRDJ6w=
-X-Received: by 2002:ab0:20b3:: with SMTP id y19mr4290646ual.2.1615806168140;
- Mon, 15 Mar 2021 04:02:48 -0700 (PDT)
+        id S230046AbhCOLDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:03:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35450 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229985AbhCOLDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:03:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F8B6AE3C;
+        Mon, 15 Mar 2021 11:03:07 +0000 (UTC)
+Subject: Re: [PATCH v4 2/4] mm,compaction: Let
+ isolate_migratepages_{range,block} return error codes
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210310150853.13541-1-osalvador@suse.de>
+ <20210310150853.13541-3-osalvador@suse.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <f9d4ab06-4abd-c81a-74d9-b557019605a4@suse.cz>
+Date:   Mon, 15 Mar 2021 12:03:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210315104409.1598822-1-geert@linux-m68k.org>
- <CAMuHMdVJFprsj9njwv13jWTBELuq8RcXOmR7AoR9dqDdydLcNQ@mail.gmail.com> <2c123f94-ceae-80c0-90e2-21909795eb76@csgroup.eu>
-In-Reply-To: <2c123f94-ceae-80c0-90e2-21909795eb76@csgroup.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Mar 2021 12:02:37 +0100
-Message-ID: <CAMuHMdUMjN9TW-ggAgOtj3V36kzNCfoG5o-Bcj=Lk9diJciS=g@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.12-rc3
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210310150853.13541-3-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On 3/10/21 4:08 PM, Oscar Salvador wrote:
+> Currently, isolate_migratepages_{range,block} and their callers use
+> a pfn == 0 vs pfn != 0 scheme to let the caller know whether there was
+> any error during isolation.
+> This does not work as soon as we need to start reporting different error
+> codes and make sure we pass them down the chain, so they are properly
+> interpreted by functions like e.g: alloc_contig_range.
+> 
+> Let us rework isolate_migratepages_{range,block} so we can report error
+> codes.
+> Since isolate_migratepages_block will stop returning the next pfn to be
+> scanned, we reuse the cc->migrate_pfn field to keep track of that.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-On Mon, Mar 15, 2021 at 11:55 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 15/03/2021 à 11:49, Geert Uytterhoeven a écrit :
-> > On Mon, Mar 15, 2021 at 11:46 AM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> >> JFYI, when comparing v5.12-rc3[1] to v5.12-rc2[3], the summaries are:
-> >>    - build errors: +2/-2
-> >
-> >> 2 error regressions:
-> >>    + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_248' declared with attribute error: BUILD_BUG failed:  => 320:38
-> >>    + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_249' declared with attribute error: BUILD_BUG failed:  => 320:38
-> >
-> > powerpc-gcc4.9/ppc64_book3e_allmodconfig
-> >
-> > So we traded implicit declaration errors:
-> >
-> >    - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
-> > error: implicit declaration of function 'disable_kernel_vsx'
-> > [-Werror=implicit-function-declaration]: 674:2 =>
-> >    - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
-> > error: implicit declaration of function 'enable_kernel_vsx'
-> > [-Werror=implicit-function-declaration]: 638:2 =>
-> >
-> > for compile-time assertions.
-> >
->
-> You are missing https://github.com/linuxppc/linux/commit/eed5fae00593ab9d261a0c1ffc1bdb786a87a55a
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Which is not part of v5.12-rc3.
+> ---
+>  mm/compaction.c | 48 ++++++++++++++++++++++++------------------------
+>  mm/internal.h   |  2 +-
+>  mm/page_alloc.c |  7 +++----
+>  3 files changed, 28 insertions(+), 29 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f4476e68e..5769753a8f60 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -787,15 +787,16 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>   *
+>   * Isolate all pages that can be migrated from the range specified by
+>   * [low_pfn, end_pfn). The range is expected to be within same pageblock.
+> - * Returns zero if there is a fatal signal pending, otherwise PFN of the
+> - * first page that was not scanned (which may be both less, equal to or more
+> - * than end_pfn).
+> + * Returns -EINTR in case we need to abort when we have too many isolated pages
+> + * due to e.g: signal pending, async mode or having still pages to migrate, or 0.
+> + * cc->migrate_pfn will contain the next pfn to scan (which may be both less,
+> + * equal to or more that end_pfn).
+>   *
+>   * The pages are isolated on cc->migratepages list (not required to be empty),
+>   * and cc->nr_migratepages is updated accordingly. The cc->migrate_pfn field
+>   * is neither read nor updated.
+>   */
+> -static unsigned long
+> +static int
+>  isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  			unsigned long end_pfn, isolate_mode_t isolate_mode)
+>  {
+> @@ -810,6 +811,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  	unsigned long next_skip_pfn = 0;
+>  	bool skip_updated = false;
+>  
+> +	cc->migrate_pfn = low_pfn;
+> +
+>  	/*
+>  	 * Ensure that there are not too many pages isolated from the LRU
+>  	 * list by either parallel reclaimers or compaction. If there are,
+> @@ -818,16 +821,16 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  	while (unlikely(too_many_isolated(pgdat))) {
+>  		/* stop isolation if there are still pages not migrated */
+>  		if (cc->nr_migratepages)
+> -			return 0;
+> +			return -EINTR;
+>  
+>  		/* async migration should just abort */
+>  		if (cc->mode == MIGRATE_ASYNC)
+> -			return 0;
+> +			return -EINTR;
+>  
+>  		congestion_wait(BLK_RW_ASYNC, HZ/10);
+>  
+>  		if (fatal_signal_pending(current))
+> -			return 0;
+> +			return -EINTR;
+>  	}
+>  
+>  	cond_resched();
+> @@ -1130,7 +1133,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  	if (nr_isolated)
+>  		count_compact_events(COMPACTISOLATED, nr_isolated);
+>  
+> -	return low_pfn;
+> +	cc->migrate_pfn = low_pfn;
+> +
+> +	return 0;
+>  }
+>  
+>  /**
+> @@ -1139,15 +1144,15 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>   * @start_pfn: The first PFN to start isolating.
+>   * @end_pfn:   The one-past-last PFN.
+>   *
+> - * Returns zero if isolation fails fatally due to e.g. pending signal.
+> - * Otherwise, function returns one-past-the-last PFN of isolated page
+> - * (which may be greater than end_pfn if end fell in a middle of a THP page).
+> + * Returns -EINTR in case isolation fails fatally due to e.g. pending signal,
+> + * or 0.
+>   */
+> -unsigned long
+> +int
+>  isolate_migratepages_range(struct compact_control *cc, unsigned long start_pfn,
+>  							unsigned long end_pfn)
+>  {
+>  	unsigned long pfn, block_start_pfn, block_end_pfn;
+> +	int ret = 0;
+>  
+>  	/* Scan block by block. First and last block may be incomplete */
+>  	pfn = start_pfn;
+> @@ -1166,17 +1171,17 @@ isolate_migratepages_range(struct compact_control *cc, unsigned long start_pfn,
+>  					block_end_pfn, cc->zone))
+>  			continue;
+>  
+> -		pfn = isolate_migratepages_block(cc, pfn, block_end_pfn,
+> -							ISOLATE_UNEVICTABLE);
+> +		ret = isolate_migratepages_block(cc, pfn, block_end_pfn,
+> +						 ISOLATE_UNEVICTABLE);
+>  
+> -		if (!pfn)
+> +		if (ret)
+>  			break;
+>  
+>  		if (cc->nr_migratepages >= COMPACT_CLUSTER_MAX)
+>  			break;
+>  	}
+>  
+> -	return pfn;
+> +	return ret;
+>  }
+>  
+>  #endif /* CONFIG_COMPACTION || CONFIG_CMA */
+> @@ -1847,7 +1852,7 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>  	 */
+>  	for (; block_end_pfn <= cc->free_pfn;
+>  			fast_find_block = false,
+> -			low_pfn = block_end_pfn,
+> +			cc->migrate_pfn = low_pfn = block_end_pfn,
+>  			block_start_pfn = block_end_pfn,
+>  			block_end_pfn += pageblock_nr_pages) {
+>  
+> @@ -1889,10 +1894,8 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>  		}
+>  
+>  		/* Perform the isolation */
+> -		low_pfn = isolate_migratepages_block(cc, low_pfn,
+> -						block_end_pfn, isolate_mode);
+> -
+> -		if (!low_pfn)
+> +		if (isolate_migratepages_block(cc, low_pfn, block_end_pfn,
+> +						isolate_mode))
+>  			return ISOLATE_ABORT;
+>  
+>  		/*
+> @@ -1903,9 +1906,6 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>  		break;
+>  	}
+>  
+> -	/* Record where migration scanner will be restarted. */
+> -	cc->migrate_pfn = low_pfn;
+> -
+>  	return cc->nr_migratepages ? ISOLATE_SUCCESS : ISOLATE_NONE;
+>  }
+>  
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 9902648f2206..e670abb1154c 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -261,7 +261,7 @@ struct capture_control {
+>  unsigned long
+>  isolate_freepages_range(struct compact_control *cc,
+>  			unsigned long start_pfn, unsigned long end_pfn);
+> -unsigned long
+> +int
+>  isolate_migratepages_range(struct compact_control *cc,
+>  			   unsigned long low_pfn, unsigned long end_pfn);
+>  int find_suitable_fallback(struct free_area *area, unsigned int order,
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 94467f1b85ff..2184e3ef4116 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8477,11 +8477,10 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  
+>  		if (list_empty(&cc->migratepages)) {
+>  			cc->nr_migratepages = 0;
+> -			pfn = isolate_migratepages_range(cc, pfn, end);
+> -			if (!pfn) {
+> -				ret = -EINTR;
+> +			ret = isolate_migratepages_range(cc, pfn, end);
+> +			if (ret)
+>  				break;
+> -			}
+> +			pfn = cc->migrate_pfn;
+>  			tries = 0;
+>  		} else if (++tries == 5) {
+>  			ret = -EBUSY;
+> 
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
