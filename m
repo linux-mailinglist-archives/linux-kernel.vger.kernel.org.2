@@ -2,92 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D0133AC01
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BC333ABF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhCOHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:07:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:10118 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhCOHHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:07:10 -0400
-IronPort-SDR: GfalYTpPF8DeaZhPp9UVaCEUQY6EBZ/Thgwkmfj7hRKawPIFSDsnEnPL3kgSdki6bGQBliOF+4
- fQ03aD1QQLAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="168316620"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="168316620"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 00:07:08 -0700
-IronPort-SDR: GCFa2BMOPedcW6+MnZ3KjwQ3ndhYC29uTSMdHLp8OKWgmccx0DpqeiXxA1L+TBu2vYLZ9sMfY+
- oGkDKWhxGF4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="604749740"
-Received: from local-michael-cet-test.sh.intel.com ([10.239.159.166])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Mar 2021 00:07:06 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v4 3/3] KVM: nVMX: Add CET entry/exit load bits to evmcs unsupported list
-Date:   Mon, 15 Mar 2021 15:18:41 +0800
-Message-Id: <20210315071841.7045-4-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20210315071841.7045-1-weijiang.yang@intel.com>
-References: <20210315071841.7045-1-weijiang.yang@intel.com>
+        id S229985AbhCOHEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:04:04 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:46478 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhCOHDn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:03:43 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210315070340epoutp01c0b25a3bd252db297c5af7f43aab7273~schmoojiU2647326473epoutp01I
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:03:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210315070340epoutp01c0b25a3bd252db297c5af7f43aab7273~schmoojiU2647326473epoutp01I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615791820;
+        bh=K0AMjK6xDxixk6h8BOyJRSQvpEFk16GWw8ahalOQEnM=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=EWduoRZ/P3kXSAEERc1yDnkuhAIIFeLfECZ0r6/hi1hr3ztJGz0j5qAXss2vXY3Tl
+         Q60cUkS2XVVjKCBv8zQItYTYNlquUbHLkhnixQIKzybK3zbSLDYjK6bFHx7GWbfTCv
+         KgPYkVfWf/nkm4s78uFB0CN73CmP3qCJ6/tCNxk8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210315070338epcas1p102ddff01d5b1e83377c4971132643c1e~schkJk7pu0105201052epcas1p1h;
+        Mon, 15 Mar 2021 07:03:38 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DzS7W6qMqz4x9Py; Mon, 15 Mar
+        2021 07:03:35 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        29.A7.59147.3C60F406; Mon, 15 Mar 2021 16:03:31 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210315070329epcas1p4a707a7b961b172fdd615c06731e6c61c~schbpogdT1473614736epcas1p4O;
+        Mon, 15 Mar 2021 07:03:29 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210315070329epsmtrp14610096271e6cf9a179a9383ee6a4288~schbpAfdO2428224282epsmtrp1h;
+        Mon, 15 Mar 2021 07:03:29 +0000 (GMT)
+X-AuditID: b6c32a38-e53ff7000000e70b-d8-604f06c32441
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BD.8B.13470.0C60F406; Mon, 15 Mar 2021 16:03:28 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210315070328epsmtip2a118853963d9fef374eafed02c16d7d1~schbaaAUr1820518205epsmtip27;
+        Mon, 15 Mar 2021 07:03:28 +0000 (GMT)
+Subject: Re: [PATCH] PM / devfreq: unlock mutex and free devfreq struct in
+ error path
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <aa65398e-6de6-92df-3c27-a8a7f43eda10@samsung.com>
+Date:   Mon, 15 Mar 2021 16:20:05 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
+MIME-Version: 1.0
+In-Reply-To: <20210312184534.6423-1-lukasz.luba@arm.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdljTQPcwm3+Cwe9HGhZnm96wW1zeNYfN
+        4nPvEUaLhU0t7Ba3G1ewObB6rJm3htGjb8sqRo/Pm+QCmKOybTJSE1NSixRS85LzUzLz0m2V
+        vIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOAVioplCXmlAKFAhKLi5X07WyK8ktLUhUy
+        8otLbJVSC1JyCiwL9IoTc4tL89L1kvNzrQwNDIxMgQoTsjM29K9gLHjNWXFw4162Bsbv7F2M
+        nBwSAiYSez/fYu1i5OIQEtjBKPFk93MWCOcTo8SFa03sEM43Romm1w1wLdM2zmYGsYUE9jJK
+        vJwZD1H0nlHi6YSHQEUcHMIC4RJHtiaD1IgIxEssPPQBrJdZwFzi796zLCA2m4CWxP4XN9hA
+        bH4BRYmrPx4zgti8AnYS3T3nwepZBFQlNpzdBRYXFQiTOLmtBapGUOLkzCdgczgFLCTu9kxl
+        hpgvLnHryXwmCFteYvvbOcwgt0kI/GSXmNexhRniAReJG8d2M0LYwhKvjm+BekxK4mV/G5Rd
+        LbHy5BE2iOYORokt+y+wQiSMJfYvncwE8iSzgKbE+l36EGFFiZ2/5zJCLOaTePe1hxWkREKA
+        V6KjTQiiRFni8oO7TBC2pMTi9k62CYxKs5C8MwvJC7OQvDALYdkCRpZVjGKpBcW56anFhgUm
+        yJG9iRGcGrUsdjDOfftB7xAjEwfjIUYJDmYlEd7POr4JQrwpiZVVqUX58UWlOanFhxhNgQE8
+        kVlKNDkfmJzzSuINTY2MjY0tTAzNTA0NlcR5kwwexAsJpCeWpGanphakFsH0MXFwSjUwifwV
+        +35uWofKPoeTQbqvFHe21tgK1V7x28k55y6PrPRpvi0hOieZRW5U+E2ql/v9JUqVSfX3pE1t
+        J92+Cmrkcaf0iKY9qGJ/1HveYbtxsvdVvhzLx8avFl0KiTi2VCxgXsjhLdYP8q2Nl25oPuLX
+        vb9dtPjiP7ZLoc65NTr1kx3vq9uYHvJe2XH10IpL18S+t9z4bnZa5drR21t2BVypKj5rumub
+        zt8KxxWXVbyn/6x9ppzKo15gGLXgHdPVTB0da45fZoEfuovFWpd6CDXvU7rIPbPyzi2RGsPD
+        PltPOp8J2l0SW61ysdJp15XqQ/eCT9w0NPSxSnmsPs/u+P30rj3L4q96st93Ud78P8JIiaU4
+        I9FQi7moOBEArBVa/BYEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsWy7bCSvO4BNv8Eg2uXLC3ONr1ht7i8aw6b
+        xefeI4wWC5ta2C1uN65gc2D1WDNvDaNH35ZVjB6fN8kFMEdx2aSk5mSWpRbp2yVwZWzoX8FY
+        8Jqz4uDGvWwNjN/Zuxg5OSQETCSmbZzN3MXIxSEksJtR4tjJ3WwQCUmJaRePAiU4gGxhicOH
+        iyFq3jJKTPp5gAkkLiwQLnFkazJIuYhAvMSEB9fBZjILmEv83XuWBaK+m1Hixd4XYAk2AS2J
+        /S9ugM3nF1CUuPrjMSOIzStgJ9Hdcx6shkVAVWLD2V1gcVGBMImdSx4zQdQISpyc+YQFxOYU
+        sJC42zOVGWKZusSfeZegbHGJW0/mM0HY8hLb385hnsAoPAtJ+ywkLbOQtMxC0rKAkWUVo2Rq
+        QXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwlGhp7mDcvuqD3iFGJg7GQ4wSHMxKIryfdXwT
+        hHhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamBSNKvIvB+x
+        cYLJ24QGHr/ZDQuCdFd+8StP2sfCKDgv51qrXu2s29skwycn/FZo7tg/1+jG/P5l/mJHXj9n
+        W/D3aJxPyNS4Bf5C0/OuMyzMOPmqc1OARNOj+Kwji/gc/G4sPXBpd6t2m+3m5es1zGZaqrMc
+        3DxxV3KR/Dm5j+urS2pOCmxR7d35d59Rq8tSqdKo8CUvt6n4X8r2u++QlOORdM3iw7UjHKVr
+        ljh1dyueSvp2rs32TCPjkren57sb6ZnPnr/rgN+aDsFFW7q905mzrknl3vrqpLp/HtsnrnVL
+        medtOsDcsTvq1j3TB959Mxuv3muf3yNhOXfr7KyTk7+8eNqxvd7jn9G5owpNNy+xKrEUZyQa
+        ajEXFScCANZ7F8EBAwAA
+X-CMS-MailID: 20210315070329epcas1p4a707a7b961b172fdd615c06731e6c61c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210312184551epcas1p2fe579b2a736cac2814b8a236869c4c27
+References: <CGME20210312184551epcas1p2fe579b2a736cac2814b8a236869c4c27@epcas1p2.samsung.com>
+        <20210312184534.6423-1-lukasz.luba@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nested guest doesn't support CET when KVM is running as an intermediate
-layer between two Hyper-Vs for now, so mask out related CET entry/exit
-load bits. Relevant enabling patches will be posted as a separate patch
-series.
+Hi Lukasz,
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- arch/x86/kvm/vmx/evmcs.c | 4 ++--
- arch/x86/kvm/vmx/evmcs.h | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+On 3/13/21 3:45 AM, Lukasz Luba wrote:
+> The devfreq->lock is held for time of setup. Release the lock in the
+> error path, before jumping to the end of the function.
+> 
+> Change the goto destination which frees the allocated memory.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/devfreq/devfreq.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index b6d3e7db0b09..99b2eeedc238 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -822,7 +822,8 @@ struct devfreq *devfreq_add_device(struct device *dev,
+>  
+>  	if (devfreq->profile->timer < 0
+>  		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+> -		goto err_out;
+> +		mutex_unlock(&devfreq->lock);
+> +		goto err_dev;
+>  	}
+>  
+>  	if (!devfreq->profile->max_state && !devfreq->profile->freq_table) {
+> 
 
-diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
-index 41f24661af04..9f81db51fd8b 100644
---- a/arch/x86/kvm/vmx/evmcs.c
-+++ b/arch/x86/kvm/vmx/evmcs.c
-@@ -351,11 +351,11 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
- 	switch (msr_index) {
- 	case MSR_IA32_VMX_EXIT_CTLS:
- 	case MSR_IA32_VMX_TRUE_EXIT_CTLS:
--		ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
- 		break;
- 	case MSR_IA32_VMX_ENTRY_CTLS:
- 	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
--		ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
- 		break;
- 	case MSR_IA32_VMX_PROCBASED_CTLS2:
- 		ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
-index bd41d9462355..25588694eb04 100644
---- a/arch/x86/kvm/vmx/evmcs.h
-+++ b/arch/x86/kvm/vmx/evmcs.h
-@@ -59,8 +59,10 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
- 	 SECONDARY_EXEC_SHADOW_VMCS |					\
- 	 SECONDARY_EXEC_TSC_SCALING |					\
- 	 SECONDARY_EXEC_PAUSE_LOOP_EXITING)
--#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
--#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL)
-+#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | \
-+					VM_EXIT_LOAD_CET_STATE)
-+#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | \
-+					 VM_ENTRY_LOAD_CET_STATE)
- #define EVMCS1_UNSUPPORTED_VMFUNC (VMX_VMFUNC_EPTP_SWITCHING)
- 
- #if IS_ENABLED(CONFIG_HYPERV)
+Looks good to me. But, need to add the following information
+and please use capital letter of the first character of patch title. Thanks.
+
+Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+
+Also, need to send it to stable lkml.
+
 -- 
-2.26.2
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
