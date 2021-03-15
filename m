@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9380533B705
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2ED33B6D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhCON7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58978 "EHLO mail.kernel.org"
+        id S232422AbhCON6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhCONys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAE4E64DAD;
-        Mon, 15 Mar 2021 13:54:45 +0000 (UTC)
+        id S231345AbhCONym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85FBB64F3F;
+        Mon, 15 Mar 2021 13:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816487;
-        bh=l69FUftW8NIve7NEWCJlehUULKtIpdKpxh9a8jGzzag=;
+        s=korg; t=1615816481;
+        bh=9qnZvzzN/f+RXvncp2+igTK2OLeYBHrWIvYcYec0Jv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HBqo0K3yR3ohCB63Y8tgESBdjOX570CssOtyG3Ov2+e7U7QO8QvSrGsXojsrKNsW6
-         nEr0LSc9aTMmtuYkpbZClImh6UFYVL69YicAp7iq65pp4FX0ty8P4lbxuuenojNvQH
-         OV1c2h4p4PeLuS3vqc5tm+iUi5BVt2mZrEAeEn8c=
+        b=SRuc8Z41Xtd3/m1UAqUoe7p9NCekZ0WzQXu6ihD9j2GkPxBiS5uRE3wPcXHlclpIG
+         T12xyC89mHJGeZecF7eOzqKdiN3xcGCtEUm2OIbjt9C5eW3QovlTlNvajxceOj7z68
+         Kt4t4UJy4JPdwCkzLzJ442lEePV4FZwJH+GyiDVk=
 From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 4.4 72/75] iio: imu: adis16400: fix memory leak
-Date:   Mon, 15 Mar 2021 14:52:26 +0100
-Message-Id: <20210315135210.609231437@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 64/78] prctl: fix PR_SET_MM_AUXV kernel stack leak
+Date:   Mon, 15 Mar 2021 14:52:27 +0100
+Message-Id: <20210315135214.162644461@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-commit 9c0530e898f384c5d279bfcebd8bb17af1105873 upstream.
+[ Upstream commit c995f12ad8842dbf5cfed113fb52cdd083f5afd1 ]
 
-In adis_update_scan_mode_burst, if adis->buffer allocation fails release
-the adis->xfer.
+Doing a
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-[krzk: backport applied to adis16400_buffer.c instead of adis_buffer.c]
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
+
+will copy 1 byte from userspace to (quite big) on-stack array
+and then stash everything to mm->saved_auxv.
+AT_NULL terminator will be inserted at the very end.
+
+/proc/*/auxv handler will find that AT_NULL terminator
+and copy original stack contents to userspace.
+
+This devious scheme requires CAP_SYS_RESOURCE.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis16400_buffer.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/sys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/adis16400_buffer.c
-+++ b/drivers/iio/imu/adis16400_buffer.c
-@@ -37,8 +37,11 @@ int adis16400_update_scan_mode(struct ii
- 		return -ENOMEM;
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 546cdc911dad..76b3d9262644 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1910,7 +1910,7 @@ static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
+ 	 * up to the caller to provide sane values here, otherwise userspace
+ 	 * tools which use this vector might be unhappy.
+ 	 */
+-	unsigned long user_auxv[AT_VECTOR_SIZE];
++	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
  
- 	adis->buffer = kzalloc(burst_length + sizeof(u16), GFP_KERNEL);
--	if (!adis->buffer)
-+	if (!adis->buffer) {
-+		kfree(adis->xfer);
-+		adis->xfer = NULL;
- 		return -ENOMEM;
-+	}
- 
- 	tx = adis->buffer + burst_length;
- 	tx[0] = ADIS_READ_REG(ADIS16400_GLOB_CMD);
+ 	if (len > sizeof(user_auxv))
+ 		return -EINVAL;
+-- 
+2.30.1
+
 
 
