@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6F733BDFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7781D33BE19
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237903AbhCOOle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:41:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49294 "EHLO mail.kernel.org"
+        id S238600AbhCOOmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234015AbhCOOCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9778464E83;
-        Mon, 15 Mar 2021 14:02:46 +0000 (UTC)
+        id S234317AbhCOODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA1664EEF;
+        Mon, 15 Mar 2021 14:03:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816967;
-        bh=Z6zOcIPe8C4x6d3GhlWcunOtUQl88DPN2oo6keWNqv4=;
+        s=korg; t=1615816991;
+        bh=XFnEJAJEGP1dMB9+leoyqbn0dOzO/j7o4mhWP36zdiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IIOPrjVp7vjRI+9TPFdnVMtKqR8l5PXYUVc5tGPu1Od/czavIOYD+TXeZHTf95L7m
-         fkpc+dRNb7oyYLSENn09W57r73G8TKaBvGq6VtNBpxxp4CuZwJPfjsitWYaGqHT4Dt
-         CryFDHFYq8FZTbfp3NNBjiDhRTO19cb8gc0pSP8Q=
+        b=BwlcehKWP5ruTcdaqkGv+BJ2TlNlmm0Sp/3atSXPh/t2gG8OgU4jAthm5NDOX/+6t
+         r7opNO9Bj69hTYqlhKAxQ6rKE692dMJ9pUcChYW2PnPwpMUgjOZNOVSBX0njuIdEFP
+         ain1kBryFo7Wsn6lPqTmbBUjgaONzDvRwFrhB33M=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.10 218/290] usbip: fix vudc to check for stream socket
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 248/306] NFSv4.2: fix return value of _nfs4_get_security_label()
 Date:   Mon, 15 Mar 2021 14:55:11 +0100
-Message-Id: <20210315135549.336845919@linuxfoundation.org>
+Message-Id: <20210315135516.028281292@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
+[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
 
-Fix usbip_sockfd_store() to validate the passed in file descriptor is
-a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
-sock_recvmsg() can't detect end of stream.
+An xattr 'get' handler is expected to return the length of the value on
+success, yet _nfs4_get_security_label() (and consequently also
+nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
+just 0 on success.
 
-Cc: stable@vger.kernel.org
-Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by returning label.len instead, which contains the length of
+the result.
+
+Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/nfs/nfs4proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -138,6 +138,13 @@ static ssize_t usbip_sockfd_store(struct
- 			goto unlock_ud;
- 		}
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index fc8bbfd9beb3..7eb44f37558c 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5972,7 +5972,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
+ 		return ret;
+ 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
+ 		return -ENOENT;
+-	return 0;
++	return label.len;
+ }
  
-+		if (socket->type != SOCK_STREAM) {
-+			dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+				socket->type);
-+			ret = -EINVAL;
-+			goto sock_err;
-+		}
-+
- 		udc->ud.tcp_socket = socket;
- 
- 		spin_unlock_irq(&udc->ud.lock);
-@@ -177,6 +184,8 @@ static ssize_t usbip_sockfd_store(struct
- 
- 	return count;
- 
-+sock_err:
-+	sockfd_put(socket);
- unlock_ud:
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
+ static int nfs4_get_security_label(struct inode *inode, void *buf,
+-- 
+2.30.1
+
 
 
