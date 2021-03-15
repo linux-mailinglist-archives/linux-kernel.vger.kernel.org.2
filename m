@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F3033BDA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C47533BD55
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240651AbhCOOiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:38:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S236045AbhCOOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233301AbhCOOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B274B64F0F;
-        Mon, 15 Mar 2021 14:00:41 +0000 (UTC)
+        id S233408AbhCOOBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC4664E4D;
+        Mon, 15 Mar 2021 14:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816843;
-        bh=QqIb48+Ukc15hLW4U4uQXWuOsnlZR//HBG724wX1G3E=;
+        s=korg; t=1615816874;
+        bh=/Ddd2zPl42t0KPISs+Dxeg/qgBi4KA8gGxKbfY4SnUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V2m5ekUXMCo4nd8uIBZEyS7pK8PSf6J6fj0FB10/BQoJx17Isq//PJgv0D5tCuElD
-         IA3qaQ5n27lw6JgrCqlTFtbV11Wz5fyorflWqi9I+1iRFqlNgG3wxcNr0wOL85OG8n
-         LjiIcvlENXN96ht5XkBpNubghrXs1sGpSoXfv974=
+        b=qGR8Q++AJpaR5qaqdBApDgqF1xdqnpbGcgzC3/XIdr+5+C8VIs7xJhbk/Kv7npEkK
+         QbWpNaam60Y4ZvDdpE8Wrs1PH/AamD6zlC/MFgt5On1zIzXIQTonAz6jLfjEvj8DSt
+         3sGWSoGaNVMDkmL9PNxryOdQE5HTFiCITKqsQUJw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 146/290] iommu/amd: Fix performance counter initialization
-Date:   Mon, 15 Mar 2021 14:53:59 +0100
-Message-Id: <20210315135546.844302411@linuxfoundation.org>
+        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.11 177/306] Revert 95ebabde382c ("capabilities: Dont allow writing ambiguous v3 file capabilities")
+Date:   Mon, 15 Mar 2021 14:54:00 +0100
+Message-Id: <20210315135513.599831367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,117 +40,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-[ Upstream commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b ]
+commit 3b0c2d3eaa83da259d7726192cf55a137769012f upstream.
 
-Certain AMD platforms enable power gating feature for IOMMU PMC,
-which prevents the IOMMU driver from updating the counter while
-trying to validate the PMC functionality in the init_iommu_perf_ctr().
-This results in disabling PMC support and the following error message:
+It turns out that there are in fact userspace implementations that
+care and this recent change caused a regression.
 
-    "AMD-Vi: Unable to read/write to IOMMU perf counter"
+https://github.com/containers/buildah/issues/3071
 
-To workaround this issue, disable power gating temporarily by programming
-the counter source to non-zero value while validating the counter,
-and restore the prior state afterward.
+As the motivation for the original change was future development,
+and the impact is existing real world code just revert this change
+and allow the ambiguity in v3 file caps.
 
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Link: https://lore.kernel.org/r/20210208122712.5048-1-suravee.suthikulpanit@amd.com
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iommu/amd/init.c | 45 ++++++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 11 deletions(-)
+ security/commoncap.c |   12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index c842545368fd..3c215f0a6052 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -12,6 +12,7 @@
- #include <linux/acpi.h>
- #include <linux/list.h>
- #include <linux/bitmap.h>
-+#include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
- #include <linux/interrupt.h>
-@@ -254,6 +255,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
- static int amd_iommu_enable_interrupts(void);
- static int __init iommu_go_to_state(enum iommu_init_state state);
- static void init_device_table_dma(void);
-+static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
-+				u8 fxn, u64 *value, bool is_write);
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -500,8 +500,7 @@ int cap_convert_nscap(struct dentry *den
+ 	__u32 magic, nsmagic;
+ 	struct inode *inode = d_backing_inode(dentry);
+ 	struct user_namespace *task_ns = current_user_ns(),
+-		*fs_ns = inode->i_sb->s_user_ns,
+-		*ancestor;
++		*fs_ns = inode->i_sb->s_user_ns;
+ 	kuid_t rootid;
+ 	size_t newsize;
  
- static bool amd_iommu_pre_enabled = true;
+@@ -524,15 +523,6 @@ int cap_convert_nscap(struct dentry *den
+ 	if (nsrootid == -1)
+ 		return -EINVAL;
  
-@@ -1717,13 +1720,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
- 
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
+-	/*
+-	 * Do not allow allow adding a v3 filesystem capability xattr
+-	 * if the rootid field is ambiguous.
+-	 */
+-	for (ancestor = task_ns->parent; ancestor; ancestor = ancestor->parent) {
+-		if (from_kuid(ancestor, rootid) == 0)
+-			return -EINVAL;
+-	}
 -
--static void init_iommu_perf_ctr(struct amd_iommu *iommu)
-+static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
- {
-+	int retry;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg = 0;
-+	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
- 
- 	if (!iommu_feature(iommu, FEATURE_PC))
- 		return;
-@@ -1731,17 +1732,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	amd_iommu_pc_present = true;
- 
- 	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
- 		goto pc_false;
- 
--	/* Check if the performance counters can be written to */
--	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
--	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
--	    (val != val2))
-+	/*
-+	 * Disable power gating by programing the performance counter
-+	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
-+	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
-+	 * which never get incremented during this init phase.
-+	 * (Note: The event is also deprecated.)
-+	 */
-+	val = 20;
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
- 		goto pc_false;
- 
-+	/* Check if the performance counters can be written to */
-+	val = 0xabcd;
-+	for (retry = 5; retry; retry--) {
-+		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
-+		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
-+		    val2)
-+			break;
-+
-+		/* Wait about 20 msec for power gating to disable and retry. */
-+		msleep(20);
-+	}
-+
- 	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
-+		goto pc_false;
-+
-+	if (val != val2)
- 		goto pc_false;
- 
- 	pci_info(pdev, "IOMMU performance counters supported\n");
--- 
-2.30.1
-
+ 	newsize = sizeof(struct vfs_ns_cap_data);
+ 	nscap = kmalloc(newsize, GFP_ATOMIC);
+ 	if (!nscap)
 
 
