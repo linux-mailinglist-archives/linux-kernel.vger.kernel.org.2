@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484A933BE5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A19CE33BC28
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239046AbhCOOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52480 "EHLO mail.kernel.org"
+        id S238499AbhCOOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhCOOE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1218364F0A;
-        Mon, 15 Mar 2021 14:04:20 +0000 (UTC)
+        id S232766AbhCOOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D1BE64F5C;
+        Mon, 15 Mar 2021 13:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817062;
-        bh=t6RUt6HUzB0MgaDyS9B4bHBo4NehUJSKVH0UAGG2iL0=;
+        s=korg; t=1615816792;
+        bh=31kDPtM0zHYIOc9UVzxVZTWXEYvH7Rx6TGQp70apgAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=irN83YvP4IeyYc8IV7OhdY/gcPSsiheo7SCVRHc7yV2eajuu+a00XAa4rBQtQRWG3
-         AfllZd/yys2koJ/vnMHIcMSWjBJR7XupI7oUOZuED3C5Qq2kSM55HoUkYFCB0O2TyV
-         s8c2ZoqCKbsmJA2/ArvNVrtG/4ABxZjsaNn4CPJI=
+        b=qF8gfT11rWMiILF2JJWLpi4JfVTzHDSRrdLSSpHijuCvVH87bgD6sCESF6sMTQKS+
+         tiM4cS/KaNpV/UQaAZlyu8DjHbJ7aYNUIbzKkWdNPOiOWJsRXZw/2TJaj9bnJCq3jA
+         qkwVPtM9nMHPrWxPu5YgDRqv5gSC5QNHm9R0aaKU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.11 282/306] powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
+        stable@vger.kernel.org, Forest Crossman <cyrozap@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 113/168] usb: xhci: Fix ASMedia ASM1042A and ASM3242 DMA addressing
 Date:   Mon, 15 Mar 2021 14:55:45 +0100
-Message-Id: <20210315135517.220340775@linuxfoundation.org>
+Message-Id: <20210315135554.071525001@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +41,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Forest Crossman <cyrozap@gmail.com>
 
-commit bd73758803c2eedc037c2268b65a19542a832594 upstream.
+commit b71c669ad8390dd1c866298319ff89fe68b45653 upstream.
 
-Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
-when CONFIG_VSX is not set, to avoid following build failure.
+I've confirmed that both the ASMedia ASM1042A and ASM3242 have the same
+problem as the ASM1142 and ASM2142/ASM3142, where they lose some of the
+upper bits of 64-bit DMA addresses. As with the other chips, this can
+cause problems on systems where the upper bits matter, and adding the
+XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
 
-  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
-  In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
-                   from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
-                   from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
-  ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
-     64 |   enable_kernel_vsx(); \
-        |   ^~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
-    640 |  DC_FP_START();
-        |  ^~~~~~~~~~~
-  ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
-     75 |   disable_kernel_vsx(); \
-        |   ^~~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
-    676 |  DC_FP_END();
-        |  ^~~~~~~~~
-  cc1: some warnings being treated as errors
-  make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
-
-This works because the caller is checking if VSX is available using
-cpu_has_feature():
-
-  #define DC_FP_START() { \
-  	if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
-  		preempt_disable(); \
-  		enable_kernel_vsx(); \
-  	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
-  		preempt_disable(); \
-  		enable_kernel_altivec(); \
-  	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
-  		preempt_disable(); \
-  		enable_kernel_fp(); \
-  	} \
-
-When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP)
-constant folds to 'false' so the call to enable_kernel_vsx() is
-discarded and the build succeeds.
-
-Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
-Cc: stable@vger.kernel.org # v5.6+
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Incorporate some discussion comments into the change log]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu
+Cc: stable@vger.kernel.org
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210311115353.2137560-4-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/switch_to.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/host/xhci-pci.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/switch_to.h
-+++ b/arch/powerpc/include/asm/switch_to.h
-@@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(vo
- {
- 	msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
- }
-+#else
-+static inline void enable_kernel_vsx(void)
-+{
-+	BUILD_BUG();
-+}
-+
-+static inline void disable_kernel_vsx(void)
-+{
-+	BUILD_BUG();
-+}
- #endif
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -62,6 +62,7 @@
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
+ #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+ #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
++#define PCI_DEVICE_ID_ASMEDIA_3242_XHCI			0x3242
  
- #ifdef CONFIG_SPE
+ static const char hcd_name[] = "xhci_hcd";
+ 
+@@ -258,11 +259,14 @@ static void xhci_pci_quirks(struct devic
+ 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
+ 		xhci->quirks |= XHCI_BROKEN_STREAMS;
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
++		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI) {
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
++		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
++	}
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+ 	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
+-	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_3242_XHCI))
+ 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
 
 
