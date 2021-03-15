@@ -2,122 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3B333C6AC
+	by mail.lfdr.de (Postfix) with ESMTP id E8D7D33C6AD
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhCOTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbhCOTR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:17:58 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E274FC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:17:57 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 75so7531065otn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jaDJIbozHDomrvNHrqpon9HkLzG9r5TbsaSE94cHoXY=;
-        b=n2V75PXggd6ZrjEgxJY17yUaCpyHvKCxlE1N8m6Y1gEka8kJuhPnBs9/VdgWyyet9J
-         1nUuQ2uXPGXBTs+6pxODo5CLF6rmeB/JdE8wq1nxO7onQBFPT1+DZHGSV9AK31OKElMe
-         dN83YB+3uSr3Ii44IQhW+HzStDj8seXFzDcji+rCH1DNsLCxRlmbFmU6ufDcO0yUDKPY
-         R8Fae2qMuu3taYVmcPXfsMkGyoaa12dWDAlFHwzKRWWvoUs8at/9iXdGXJhKV28rNDF2
-         dohtG1PlWiXCNoQ8hPvTNfNGAxy2J86VunLFwdbIAfzzpqhY8vWwHiXKLg8rYHMW0UTB
-         aRKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jaDJIbozHDomrvNHrqpon9HkLzG9r5TbsaSE94cHoXY=;
-        b=SBr3JiYwhVepr0FuFV8cadGZVUUoRn8xTA19bbBm4BEQ1OR10ocbR7s6M8P59iorIq
-         gkmt7tm1vQoPTOjEmcqnsMtryPwTDioDf/7mx/LGIRC1ejXaJntNgg6gWqWQMC/mdBL0
-         gvtXf9x7eD8EDhlrd8DEm8S+jFXkqu1+xsCaDPG0YFq5soer6aMJpwKj9oQFH99Vd/yU
-         zz0+zqOpStlJGdZPghGROJzep1dY5FqfpiOyx9Ewuwa+MWWNpgjUScfMxbIMyfjLShml
-         zWCIEyQfieldtwfJFEmmmI7PVUoE89jqzktSb4a/V3eXHw2EzR1sTlMffa9tpPX2fohm
-         3haw==
-X-Gm-Message-State: AOAM532hvZ4uMF/feovGnQPvoeTsJRQupCRlcwoYpojCV5EEuwpE6W57
-        F36D3lQesXdvoVTyaDUgH8gYTbwXRRNVbT1fuKba2Q==
-X-Google-Smtp-Source: ABdhPJw7m9FtaQnuJGDdSC12kGTvOQr6etwvoPeE1fqnJsiPEMefAdL97cCH5GhLabo/CTgr3Rcss3VDoANIwhdOJbk=
-X-Received: by 2002:a05:6830:1513:: with SMTP id k19mr479331otp.51.1615835877310;
- Mon, 15 Mar 2021 12:17:57 -0700 (PDT)
+        id S233313AbhCOTST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:18:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:37152 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhCOTSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:18:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63E451FB;
+        Mon, 15 Mar 2021 12:18:12 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA8743F718;
+        Mon, 15 Mar 2021 12:18:10 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: Re: [PATCH v3 6/7] sched/fair: Filter out locally-unsolvable misfit imbalances
+In-Reply-To: <CAKfTPtAZmOp+c4LR0jKSP=cSUOnu0O_ubGUMnpEKh-cPc89qZw@mail.gmail.com>
+References: <20210311120527.167870-1-valentin.schneider@arm.com> <20210311120527.167870-7-valentin.schneider@arm.com> <CAKfTPtAZmOp+c4LR0jKSP=cSUOnu0O_ubGUMnpEKh-cPc89qZw@mail.gmail.com>
+Date:   Mon, 15 Mar 2021 19:18:04 +0000
+Message-ID: <87v99srztf.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210310163024.393578-1-caleb@connolly.tech> <20210310163024.393578-2-caleb@connolly.tech>
-In-Reply-To: <20210310163024.393578-2-caleb@connolly.tech>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Tue, 16 Mar 2021 00:47:46 +0530
-Message-ID: <CAH=2Ntz71eezQrELqgjZu+mMvS5ANSsupyUYR6QU6-VS99K-Sw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: sm8150: add other QUP nodes
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Caleb,
+On 15/03/21 16:13, Vincent Guittot wrote:
+> On Thu, 11 Mar 2021 at 13:05, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>>
+>> Consider the following (hypothetical) asymmetric CPU capacity topology,
+>> with some amount of capacity pressure (RT | DL | IRQ | thermal):
+>>
+>>   DIE [          ]
+>>   MC  [    ][    ]
+>>        0  1  2  3
+>>
+>>   | CPU | capacity_orig | capacity |
+>>   |-----+---------------+----------|
+>>   |   0 |           870 |      860 |
+>>   |   1 |           870 |      600 |
+>>   |   2 |          1024 |      850 |
+>>   |   3 |          1024 |      860 |
+>>
+>> If CPU1 has a misfit task, then CPU0, CPU2 and CPU3 are valid candidates to
+>> grant the task an uplift in CPU capacity. Consider CPU0 and CPU3 as
+>> sufficiently busy, i.e. don't have enough spare capacity to accommodate
+>> CPU1's misfit task. This would then fall on CPU2 to pull the task.
+>>
+>> This currently won't happen, because CPU2 will fail
+>>
+>>   capacity_greater(capacity_of(CPU2), sg->sgc->max_capacity)
+>
+> which has been introduced by the previous patch: patch5
+>
+>>
+>> in update_sd_pick_busiest(), where 'sg' is the [0, 1] group at DIE
+>> level. In this case, the max_capacity is that of CPU0's, which is at this
+>> point in time greater than that of CPU2's. This comparison doesn't make
+>> much sense, given that the only CPUs we should care about in this scenario
+>> are CPU1 (the CPU with the misfit task) and CPU2 (the load-balance
+>> destination CPU).
+>>
+>> Aggregate a misfit task's load into sgs->group_misfit_task_load only if
+>> env->dst_cpu would grant it a capacity uplift. Separately track whether a
+>> sched_group contains a misfit task to still classify it as
+>> group_misfit_task and not pick it as busiest group when pulling from a
+>
+> Could you give more details about why we should keep tracking the
+> group as misfit ? Do you have a UC in mind ?
+>
 
-On Wed, 10 Mar 2021 at 22:02, Caleb Connolly <caleb@connolly.tech> wrote:
->
-> Add the first and third qupv3 nodes used to hook
-> up peripherals on some devices.
->
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> ---
->  arch/arm64/boot/dts/qcom/sm8150.dtsi | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index e5bb17bc2f46..03e05d98daf2 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -577,6 +577,18 @@ gcc: clock-controller@100000 {
->                                  <&sleep_clk>;
->                 };
->
-> +               qupv3_id_0: geniqup@8c0000 {
-> +                       compatible = "qcom,geni-se-qup";
-> +                       reg = <0x0 0x008c0000 0x0 0x6000>;
-> +                       clock-names = "m-ahb", "s-ahb";
-> +                       clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
-> +                                <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-> +                       #address-cells = <2>;
-> +                       #size-cells = <2>;
-> +                       ranges;
-> +                       status = "disabled";
-> +               };
-> +
->                 qupv3_id_1: geniqup@ac0000 {
->                         compatible = "qcom,geni-se-qup";
->                         reg = <0x0 0x00ac0000 0x0 0x6000>;
-> @@ -598,6 +610,19 @@ uart2: serial@a90000 {
->                         };
->                 };
->
-> +               qupv3_id_2: geniqup@cc0000 {
-> +                       compatible = "qcom,geni-se-qup";
-> +                       reg = <0x0 0x00cc0000 0x0 0x6000>;
-> +
-> +                       clock-names = "m-ahb", "s-ahb";
-> +                       clocks = <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
-> +                                <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
-> +                       #address-cells = <2>;
-> +                       #size-cells = <2>;
-> +                       ranges;
-> +                       status = "disabled";
-> +               };
-> +
->                 config_noc: interconnect@1500000 {
->                         compatible = "qcom,sm8150-config-noc";
->                         reg = <0 0x01500000 0 0x7400>;
+As stated the current behaviour is to classify groups as group_misfit_task
+regardless of the dst_cpu's capacity. When we see a group_misfit_task
+candidate group misfit task with higher per-CPU capacity than the local
+group, we don't pick it as busiest.
 
-LGTM, so:
-Reviewed-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+I initially thought not marking those as group_misfit_task was the right
+thing to do, as they could then be classified as group_fully_busy or
+group_has_spare. Consider:
+
+  DIE [          ]
+  MC  [    ][    ]
+       0  1  2  3
+       L  L  B  B
+
+  arch_scale_capacity(L) < arch_scale_capacity(B)
+
+  CPUs 0-1 are idle / lightly loaded
+  CPU2 has a misfit task and a few very small tasks
+  CPU3 has a few very small tasks
+
+When CPU0 is running load_balance() at DIE level, right now we'll classify
+the [2-3] group as group_misfit_task and not pick it as busiest because the
+local group has a lower CPU capacity.
+
+If we didn't do that, we could leave the misfit task alone and pull some
+small task(s) from CPU2 or CPU3, which would be a good thing to
+do. However, by allowing a group containing a misfit task to be picked as
+the busiest group when a CPU of lower capacity is pulling, we run the risk
+of the misfit task itself being downmigrated - e.g. if we repeatedly
+increment the sd->nr_balance_failed counter and do an active balance (maybe
+because the small tasks were unfortunately cache_hot()).
+
+It's less than ideal, but I considered not downmigrating misfit tasks was
+the thing to prioritize (and FWIW it also maintains current behaviour).
+
+
+Another approach would be to add task utilization vs CPU capacity checks in
+detach_tasks() and need_active_balance() to prevent downmigration when
+env->imbalance_type < group_misfit_task. This may go against the busiest
+group selection heuristics however (misfit tasks could be the main
+contributors to the imbalance, but we end up not moving them).
+
+
+>> lower-capacity CPU (which is the current behaviour and prevents
+>> down-migration).
+>>
+>> Since find_busiest_queue() can now iterate over CPUs with a higher capacity
+>> than the local CPU's, add a capacity check there.
+>>
+>> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+
+>> @@ -8447,10 +8454,21 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>>                         continue;
+>>
+>>                 /* Check for a misfit task on the cpu */
+>> -               if (sd_has_asym_cpucapacity(env->sd) &&
+>> -                   sgs->group_misfit_task_load < rq->misfit_task_load) {
+>> -                       sgs->group_misfit_task_load = rq->misfit_task_load;
+>> -                       *sg_status |= SG_OVERLOAD;
+>> +               if (!sd_has_asym_cpucapacity(env->sd) ||
+>> +                   !rq->misfit_task_load)
+>> +                       continue;
+>> +
+>> +               *sg_status |= SG_OVERLOAD;
+>> +               sgs->group_has_misfit_task = true;
+>> +
+>> +               /*
+>> +                * Don't attempt to maximize load for misfit tasks that can't be
+>> +                * granted a CPU capacity uplift.
+>> +                */
+>> +               if (cpu_capacity_greater(env->dst_cpu, i)) {
+>> +                       sgs->group_misfit_task_load = max(
+>> +                               sgs->group_misfit_task_load,
+>> +                               rq->misfit_task_load);
+>
+> Please encapsulate all this misfit specific code in a dedicated
+> function which will be called from update_sg_lb_stats
+>
+
+Will do.
