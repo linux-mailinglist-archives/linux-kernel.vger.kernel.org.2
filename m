@@ -2,66 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D22233A9B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F208733A9AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhCOCtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 22:49:07 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:38160 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhCOCtE (ORCPT
+        id S229717AbhCOClf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 22:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhCOClK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 22:49:04 -0400
-X-Greylist: delayed 569 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Mar 2021 22:49:04 EDT
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 74C50E0203;
-        Mon, 15 Mar 2021 10:39:30 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        Sun, 14 Mar 2021 22:41:10 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BA5C061574;
+        Sun, 14 Mar 2021 19:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=rF5z7Q+U0V4ejfuGqUkuiEbAV/n5/ukND9oRxweN5dw=; b=O6z3bGxscsata/eNsYkWMtcK9A
+        Z4h4fE1tp0W3wV2kHHrSNGsofccwPIfl4EMpCo01ejiRtLpy62eJI0qtz716sCt3cI1Vy20LGEYFk
+        oFjy0gOW0E/V8F8uDXj927/LrLcMDo+OXgZ+Z1GFKlIoHz96hosUp3h9RyXzI/CffiZiGrA+cFhmV
+        CDJklLV3pBKoBCpUSCWNurAL/mek/abYrYaY7chy4w6wK9c7jVaJjpNmxtfy5uNflCAhGXovhneMc
+        nQsS38D7wcSSjHauwK7jS42qEtFxp9ceqRotevS4GwP/iPLlOuHYLaVHXqWyXn4p/UXgxyPIspjuW
+        kMTDOCnQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLd9x-001FSc-74; Mon, 15 Mar 2021 02:40:52 +0000
+Subject: Re: [PATCH] net: ethernet: neterion: Fix a typo in the file s2io.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jdmason@kudzu.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V3] ata: sata_highbank: delete redundant print and fix return value
-Date:   Mon, 15 Mar 2021 10:39:14 +0800
-Message-Id: <1615775955-4400-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQx9PGUIdQkgaGR5DVkpNSk5MTE5CTEtNQk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6GDo4Hz8OTFY*PCpWMDJR
-        Vk0aCjZVSlVKTUpOTExOQkxKTk9CVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKTk9JNwY+
-X-HM-Tid: 0a7833c0b5332c17kusn74c50e0203
+References: <20210315015322.1207647-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <53f6db88-d549-3275-d100-9e8cfe9e23ea@infradead.org>
+Date:   Sun, 14 Mar 2021 19:40:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210315015322.1207647-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_irq() has already checked and printed the return value, 
-the printing here is nothing special, and should corrected to < 0.
+On 3/14/21 6:53 PM, Bhaskar Chowdhury wrote:
+> 
+> s/structue/structure/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Also, thhe return value should return a real error.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/ata/sata_highbank.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> ---
+>  drivers/net/ethernet/neterion/s2io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/neterion/s2io.c b/drivers/net/ethernet/neterion/s2io.c
+> index 8f2f091bce89..9cfcd5500462 100644
+> --- a/drivers/net/ethernet/neterion/s2io.c
+> +++ b/drivers/net/ethernet/neterion/s2io.c
+> @@ -6657,7 +6657,7 @@ static int s2io_change_mtu(struct net_device *dev, int new_mtu)
+> 
+>  /**
+>   * s2io_set_link - Set the LInk status
+> - * @work: work struct containing a pointer to device private structue
+> + * @work: work struct containing a pointer to device private structure
+>   * Description: Sets the link status for the adapter
+>   */
+> 
+> --
 
-diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-index 64b2ef1..4438ee6
---- a/drivers/ata/sata_highbank.c
-+++ b/drivers/ata/sata_highbank.c
-@@ -469,10 +469,8 @@ static int ahci_highbank_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
--		dev_err(dev, "no irq\n");
--		return -EINVAL;
--	}
-+	if (irq < 0)
-+		return irq;
- 
- 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
- 	if (!hpriv) {
+
 -- 
-2.7.4
+~Randy
 
