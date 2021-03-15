@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5065C33C303
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584AD33C30B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhCOQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:59:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234778AbhCOQ6w (ORCPT
+        id S234973AbhCOQ7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:59:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56034 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234140AbhCOQ7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:58:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615827532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q6aA+wae6vAkyvGM3B2yBBd2LbIPXzseOAaDvzuOi6I=;
-        b=Tjv+m3dhWUGEloV548JnvQhK97uPYsb955y/BueNGYJozv0mMIbLmmz1QNFhnVgOGCLHuB
-        LXFn82rHmF7ZidzF1tHFotK5Tweh/nD6c5XChMmglHDSeDXwl/d9tWhhOma3r7eTV5hVMn
-        NO/VQyYI4/4gD68fcB/V9GDpj8Rshw8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-D-w66EmSPqSuN1XRmkNOXA-1; Mon, 15 Mar 2021 12:58:40 -0400
-X-MC-Unique: D-w66EmSPqSuN1XRmkNOXA-1
-Received: by mail-wm1-f72.google.com with SMTP id b20so2750083wmj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:58:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q6aA+wae6vAkyvGM3B2yBBd2LbIPXzseOAaDvzuOi6I=;
-        b=VTXgD4KojJSGDFYKi1aEy+52veouBmCKEoTAzcpPXYryT3XkajWY8YNV3Zqqj1BOWU
-         soYFz2doU7dtwXKdJITgWxwaQekr8mQeJ6Vp9qZVUnmYcSvbObSjbg9r/kwxknVHE0Pi
-         4rRQrj78mYmCtSkz4lcjAxy4tPx4JopX05OM1YDMWcfxdQVR0BWIYhDzxohKOuo2Xbpq
-         wUYMvZ6A2Xvvjolp0pT5g2TbuwsdSJc0jXwj8/ZxCXWr7SQMvVaBqdwnJCNU84Sh80hb
-         OP0wI5XFGdjuV8YMebuCr6q0PARTGaHu52uiUtE8c4n3sjeOgCytfRrgPRKgtBU83aKE
-         RvxQ==
-X-Gm-Message-State: AOAM530NUvK+Ba7I1Co/oZhB1d1vVjfkX/Cs46FrMxHNeg6TCLC6SuO5
-        xZURpiLMOWPmP2dnryN9OlVS5c3rho33MdymUotpbeDhDuy8ocW9gGmVP6kXF/J0JMkh9IRdygr
-        7RvlnrCieB4NP95eVXDjDFXo=
-X-Received: by 2002:adf:cd8c:: with SMTP id q12mr566287wrj.185.1615827518993;
-        Mon, 15 Mar 2021 09:58:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxf8ZZkQAvzrafu/QCYVzh/aotrIe8BtfHIGGCSksBVGk9W497j1C6xZhgVqF3BvGiPeDV/+w==
-X-Received: by 2002:adf:cd8c:: with SMTP id q12mr566275wrj.185.1615827518814;
-        Mon, 15 Mar 2021 09:58:38 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id n1sm555664wro.36.2021.03.15.09.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 09:58:38 -0700 (PDT)
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/page_alloc: try oom if reclaim is unable to make forward progress
-Date:   Mon, 15 Mar 2021 16:58:37 +0000
-Message-Id: <20210315165837.789593-1-atomlin@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 15 Mar 2021 12:59:06 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FGYU6C155550;
+        Mon, 15 Mar 2021 12:59:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/aMOEnE9e033jBmsFRzzqkt6+ubrNZPIPNO8BScYaWE=;
+ b=r4z3FvJZAc/VirHcGxoRxFnRoYcgdmQSPa2sAtyJxp6zRjC+lCHbY0Np8QA59/75PRa9
+ E8vQBYe/oa+rAK9BeYAA3G4iarQLoPR8H8qOfr6xeyYm1MLRuE1rCeVbzPvCjnaaiCZw
+ 3KUJnXP3hq1ZTOHHFc8xzgYtiJxI3Xt29R3vy53LoTTKQTGZP6K2oC06WXtXO5Bbzzgj
+ 4VYWNfZ3DnuWnLvPNu3w/N/37dhoT55hUsjjSjDQh+/6lZZPQWftUzcm9VVWbraCRFaV
+ 5LNnMEk64u871EMge399zQUoJ3z9qHKDsDgxXozXgTpOSY1jm0RbCle18Z64JR2tOwR5 hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37aa8rb1qs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 12:59:01 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12FGYULv155516;
+        Mon, 15 Mar 2021 12:59:00 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37aa8rb1q9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 12:59:00 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12FGkpoL021172;
+        Mon, 15 Mar 2021 16:58:59 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma02wdc.us.ibm.com with ESMTP id 378n1a0rah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Mar 2021 16:58:59 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12FGwwQ010748232
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 16:58:58 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 124E3BE053;
+        Mon, 15 Mar 2021 16:58:58 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2619BE058;
+        Mon, 15 Mar 2021 16:58:56 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Mar 2021 16:58:56 +0000 (GMT)
+Subject: Re: [PATCH] rpadlpar: fix potential drc_name corruption in store
+ functions
+To:     Michael Ellerman <michaele@au1.ibm.com>,
+        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mmc@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210310223021.423155-1-tyreld@linux.ibm.com>
+ <20210313091751.GM6564@kitsune.suse.cz>
+ <a67af978-1c47-c66b-47f0-3d754da738f9@linux.ibm.com>
+ <87o8fl3z80.fsf@mpe.ellerman.id.au>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <6b1728cf-c9b7-68fe-f338-3b79210357f2@linux.ibm.com>
+Date:   Mon, 15 Mar 2021 09:58:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <87o8fl3z80.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-15_08:2021-03-15,2021-03-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103150113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the situation where direct reclaim is required to make progress for
-compaction but no_progress_loops is already over the limit of
-MAX_RECLAIM_RETRIES consider invoking the oom killer.
+On 3/14/21 7:52 PM, Michael Ellerman wrote:
+> Tyrel Datwyler <tyreld@linux.ibm.com> writes:
+>> On 3/13/21 1:17 AM, Michal Suchánek wrote:
+>>> On Wed, Mar 10, 2021 at 04:30:21PM -0600, Tyrel Datwyler wrote:
+>>>> Both add_slot_store() and remove_slot_store() try to fix up the drc_name
+>>>> copied from the store buffer by placing a NULL terminator at nbyte + 1
+>>>> or in place of a '\n' if present. However, the static buffer that we
+>>>> copy the drc_name data into is not zeored and can contain anything past
+>>>> the n-th byte. This is problematic if a '\n' byte appears in that buffer
+>>>> after nbytes and the string copied into the store buffer was not NULL
+>>>> terminated to start with as the strchr() search for a '\n' byte will mark
+>>>> this incorrectly as the end of the drc_name string resulting in a drc_name
+>>>> string that contains garbage data after the n-th byte. The following
+>>>> debugging shows an example of the drmgr utility writing "PHB 4543" to
+>>>> the add_slot sysfs attribute, but add_slot_store logging a corrupted
+>>>> string value.
+>>>>
+>>>> [135823.702864] drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+>>>> [135823.702879] add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+>>>>
+>>>> Fix this by NULL terminating the string when we copy it into our static
+>>>> buffer by coping nbytes + 1 of data from the store buffer. The code has
+>>> Why is it OK to copy nbytes + 1 and why is it expected that the buffer
+>>> contains a nul after the content?
+>>
+>> It is my understanding that the store function buffer is allocated as a
+>> zeroed-page which the kernel copies up to at most (PAGE_SIZE - 1) of user data
+>> into. Anything after nbytes would therefore be zeroed.
+> 
+> I think that's true, but it would be nice if we didn't have to rely on
+> that obscure detail in order for this code to be correct & understandable.
 
-Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
----
- mm/page_alloc.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+I think its a security guarantee, but I guess barring a comment that explicitly
+outlines the correctness it probably isn't obvious.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7a2c89b21115..8d748b1b8d1e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4181,6 +4181,16 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
- 	return NULL;
- }
- 
-+static inline bool
-+should_try_oom(int no_progress_loops,
-+		enum compact_result last_compact_result)
-+{
-+	if (no_progress_loops > MAX_RECLAIM_RETRIES && last_compact_result
-+			== COMPACT_SKIPPED)
-+		return true;
-+	return false;
-+}
-+
- static inline bool
- should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
- 		     enum compact_result compact_result,
-@@ -4547,10 +4557,11 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
- 	 * Make sure we converge to OOM if we cannot make any progress
- 	 * several times in the row.
- 	 */
--	if (*no_progress_loops > MAX_RECLAIM_RETRIES) {
--		/* Before OOM, exhaust highatomic_reserve */
--		return unreserve_highatomic_pageblock(ac, true);
--	}
-+	if (*no_progress_loops > MAX_RECLAIM_RETRIES)
-+		result false;
-+	/* Last chance before OOM, try draining highatomic_reserve once */
-+	else if (*no_progress_loops == MAX_RECLAIM_RETRIES)
-+		return unreserve_highatomic_pageblock(ac, true)
- 
- 	/*
- 	 * Keep reclaiming pages while there is a chance this will lead
-@@ -4822,6 +4833,8 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 				 did_some_progress > 0, &no_progress_loops))
- 		goto retry;
- 
-+	if (should_try_oom(no_progress_loops, compact_result))
-+		goto oom:
- 	/*
- 	 * It doesn't make any sense to retry for the compaction if the order-0
- 	 * reclaim is not able to make any progress because the current
-@@ -4839,6 +4852,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	if (check_retry_cpuset(cpuset_mems_cookie, ac))
- 		goto retry_cpuset;
- 
-+oom:
- 	/* Reclaim has failed us, start killing things */
- 	page = __alloc_pages_may_oom(gfp_mask, order, ac, &did_some_progress);
- 	if (page)
--- 
-2.26.2
+> 
+>>> Isn't it much saner to just nul terminate the string after copying?
+>>
+>> At the cost of an extra line of code, sure.
+> 
+> Is there a reason we can't use strscpy()? That should deal with all the
+> corner cases around the string copy, and then all you have to do is look
+> for a newline and turn it into nul.
+
+Fine with me. I'll spin v2 with strscpy().
+
+-Tyrel
+
+> 
+> cheers
+> 
 
