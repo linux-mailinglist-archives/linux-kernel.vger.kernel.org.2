@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892DB33BCD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8D433BD49
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235207AbhCOO3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:29:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
+        id S233200AbhCOOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232957AbhCOOAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D4C64F66;
-        Mon, 15 Mar 2021 14:00:03 +0000 (UTC)
+        id S232387AbhCOOBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 665F464F1A;
+        Mon, 15 Mar 2021 14:00:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816805;
-        bh=OlOpvOU5GIyrAwrw0RBzVM1WlqGG14kk1BefBGU9pzM=;
+        s=korg; t=1615816838;
+        bh=BoFeJl2b2IAlMXRiME3GRR8ptyLtIUx1y864mnsLlQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQMnGx/rXikM1c1+1LrJEAkE7glZ1DrvMqSAHJbcYorMgJplYHzCcP+6do03BAR6G
-         DLkgzw0tkVaX2KA9RkLIBIEd+BK77fyk/1oP9PA4o+d0YzBkIpZl+DETo/NoMi0OsS
-         +cGtIzz1ISzusK2P1lQGl9XQNq5H+QTaPfYJ1bFg=
+        b=kQlja6sbIDefNW+pCA5teZKvWDne0zLL5jcReDFhNODVd++arvCrPjTjp8sYwrm2W
+         WAB4LV67ITzgo27IMPFOU3CISieqYC2EursVM1xm4HxmjGsT/J/EtJ+OoNuuZBUu6x
+         k6uOhUOUOsI/Y16+RRuuKup9NNx2vVnkRtU1PCk4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Per Forlin <per.forlin@axis.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hinko Kocevar <hinko.kocevar@ess.eu>,
+        Hedi Berriche <hedi.berriche@hpe.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 124/290] net: dsa: tag_ar9331: let DSA core deal with TX reallocation
-Date:   Mon, 15 Mar 2021 14:53:37 +0100
-Message-Id: <20210315135546.108648395@linuxfoundation.org>
+Subject: [PATCH 5.11 155/306] PCI/ERR: Retain status from error notification
+Date:   Mon, 15 Mar 2021 14:53:38 +0100
+Message-Id: <20210315135512.875485335@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +45,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 86c4ad9a7876777c12fd5a7010152e4141fcb94d ]
+[ Upstream commit 387c72cdd7fb6bef650fb078d0f6ae9682abf631 ]
 
-Now that we have a central TX reallocation procedure that accounts for
-the tagger's needed headroom in a generic way, we can remove the
-skb_cow_head call.
+Overwriting the frozen detected status with the result of the link reset
+loses the NEED_RESET result that drivers are depending on for error
+handling to report the .slot_reset() callback. Retain this status so
+that subsequent error handling has the correct flow.
 
-Cc: Per Forlin <per.forlin@axis.com>
-Cc: Oleksij Rempel <linux@rempel-privat.de>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Oleksij Rempel <linux@rempel-privat.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/r/20210104230300.1277180-4-kbusch@kernel.org
+Reported-by: Hinko Kocevar <hinko.kocevar@ess.eu>
+Tested-by: Hedi Berriche <hedi.berriche@hpe.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Sean V Kelley <sean.v.kelley@intel.com>
+Acked-by: Hedi Berriche <hedi.berriche@hpe.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/tag_ar9331.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/pci/pcie/err.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/net/dsa/tag_ar9331.c b/net/dsa/tag_ar9331.c
-index 55b00694cdba..002cf7f952e2 100644
---- a/net/dsa/tag_ar9331.c
-+++ b/net/dsa/tag_ar9331.c
-@@ -31,9 +31,6 @@ static struct sk_buff *ar9331_tag_xmit(struct sk_buff *skb,
- 	__le16 *phdr;
- 	u16 hdr;
- 
--	if (skb_cow_head(skb, AR9331_HDR_LEN) < 0)
--		return NULL;
--
- 	phdr = skb_push(skb, AR9331_HDR_LEN);
- 
- 	hdr = FIELD_PREP(AR9331_HDR_VERSION_MASK, AR9331_HDR_VERSION);
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index 510f31f0ef6d..4798bd6de97d 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -198,8 +198,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	pci_dbg(bridge, "broadcast error_detected message\n");
+ 	if (state == pci_channel_io_frozen) {
+ 		pci_walk_bridge(bridge, report_frozen_detected, &status);
+-		status = reset_subordinates(bridge);
+-		if (status != PCI_ERS_RESULT_RECOVERED) {
++		if (reset_subordinates(bridge) != PCI_ERS_RESULT_RECOVERED) {
+ 			pci_warn(bridge, "subordinate device reset failed\n");
+ 			goto failed;
+ 		}
 -- 
 2.30.1
 
