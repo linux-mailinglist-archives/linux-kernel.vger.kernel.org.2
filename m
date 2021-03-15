@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724C333BBA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A558A33BBB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhCOOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S237781AbhCOOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232496AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D2C264F60;
-        Mon, 15 Mar 2021 13:59:30 +0000 (UTC)
+        id S232608AbhCON7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3028964EF3;
+        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816771;
-        bh=f/SalJyee8+GeT1xcSqOnFDZYd4raLachmV8vPv0UtI=;
+        s=korg; t=1615816774;
+        bh=2L7puG+yzZ4TW/Os7JW9fjafcAwTAHMZ6V+iNCv1x6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SmXqu9Thkp81FwbZ6le0Zw8I+RQ974ABVCluArFm/AqKPYOvTSf9P5+UJ+cfKRsXm
-         8WFEXX2APHbEzJkcGyqCuREtiE1yFJKbkVZY74ulUwIGyThOgHYA7JVkdoZlEE3QKa
-         OaOtJ+YoIDH4WZrshFLpDwSbDOux1eL99gUfTtcg=
+        b=RZaIYZ5y85MPxS8U0SG/sfv0pen7ES1GgPXG3M2mY7Hjxgz031di3Wm4S7tERemiM
+         ZuioAOrUpdOiDPxAZ6838ZTsPEjpfdw8G5qjPSUFAnku+7nLIPXDq7hyjn+J74nNTP
+         VeVjQ6mNth5tBZI50qhBx/O//j2eZpxk2odTS1m4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.14 50/95] USB: gadget: u_ether: Fix a configfs return code
-Date:   Mon, 15 Mar 2021 14:57:20 +0100
-Message-Id: <20210315135741.919624690@linuxfoundation.org>
+        stable@vger.kernel.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 4.14 52/95] usb: gadget: f_uac1: stop playback on function disable
+Date:   Mon, 15 Mar 2021 14:57:22 +0100
+Message-Id: <20210315135741.981252235@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -41,38 +40,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
+commit cc2ac63d4cf72104e0e7f58bb846121f0f51bb19 upstream.
 
-If the string is invalid, this should return -EINVAL instead of 0.
+There is missing playback stop/cleanup in case of
+gadget's ->disable callback that happens on
+events like USB host resetting or gadget disconnection
 
-Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
+Fixes: 0591bc236015 ("usb: gadget: add f_uac1 variant based on a new u_audio api")
+Cc: <stable@vger.kernel.org> # 4.13+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-3-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/f_uac1.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/gadget/function/u_ether_configfs.h
-+++ b/drivers/usb/gadget/function/u_ether_configfs.h
-@@ -172,12 +172,11 @@ out:									\
- 						size_t len)		\
- 	{								\
- 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
--		int ret;						\
-+		int ret = -EINVAL;					\
- 		u8 val;							\
- 									\
- 		mutex_lock(&opts->lock);				\
--		ret = sscanf(page, "%02hhx", &val);			\
--		if (ret > 0) {						\
-+		if (sscanf(page, "%02hhx", &val) > 0) {			\
- 			opts->_n_ = val;				\
- 			ret = len;					\
- 		}							\
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -503,6 +503,7 @@ static void f_audio_disable(struct usb_f
+ 	uac1->as_out_alt = 0;
+ 	uac1->as_in_alt = 0;
+ 
++	u_audio_stop_playback(&uac1->g_audio);
+ 	u_audio_stop_capture(&uac1->g_audio);
+ }
+ 
 
 
