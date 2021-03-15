@@ -2,209 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96A333C59A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C033C59B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhCOS1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S232515AbhCOS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhCOS1O (ORCPT
+        with ESMTP id S231728AbhCOS1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:27:14 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115F5C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:14 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id iy2so23518313qvb.22
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:14 -0700 (PDT)
+        Mon, 15 Mar 2021 14:27:31 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22960C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:31 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w65so35429400oie.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:27:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YJ4LYikLJ6LnYtflKHwYLFORojLmasAvwJZ1SOdvg4k=;
-        b=R4U454aE0SCZ0ShHHqVFDB7cWipimWRK+MqPBvlPKTI+UubfEhsJ9LeScntpFJUV9D
-         G0dPrTC6J2LQiXlDhpjXkuLLXoC+VQb37WFsMpn/rtQA8SdEvBd7QuUfyLR0ojoYTfq2
-         mU0ln5HmEE546LUukBzF8jH+yHNDveMOs315Ksl0K5Tts2L733Y6L2obPOrNpAEyJ9Hl
-         ycmnxWP3kFJlmSPNDj97YvC5zxTdCo5jxpvDztsTslptRRoxm3hTuko9N2cGYpyrkKBl
-         MDgpOPi6Bp5YeWZtLFKQm89ebCxaeR6/PRTUn7Gd6p39r1zuXhJxeOE6vdUC9lIaVbVL
-         n/kA==
+        bh=YBq3gzSWM4PAYPU03bItAvmuL/jkDE66lmjkbZXjRp8=;
+        b=an85zbY+atXgMmpRQQBVfLZXYZx7DbYuH6si3dsaJ4RZ750Mj6Pj9AV8KmzMw8NoBm
+         c/6EqiaKL3RPUCd55n0wSCiRx68GVJECcqxYEexFcnhJ2QSIqSKjD/5zZAklkIHyRrd6
+         zdb/qGWJL4AtNo0AkKQ4GSqDRNBV4m6edi9Z3YAYZm0v5zJgWW/B/eX7Dk574k4pxXNE
+         Q2UPBuzzhaummRHcKdd/AI1MXXqogFcfZHpGxMw3pxfWNkCTb6LiLosFs79FAi/Wdnn0
+         REWTqaTseDkF6WuhlPrDigCc9L4gB6Q8waiklbrWRchYn8lCd9/4iKfA04y1LUNKi+JF
+         KnVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YJ4LYikLJ6LnYtflKHwYLFORojLmasAvwJZ1SOdvg4k=;
-        b=sTlMeOrJnpx4MSy5ee3g8t6JIcirKF9LvqLeVxIezXxV4tHNCvbaFepTxL3e6TC2k0
-         OcKFG920zZKVGR6z/58wdSGhQsKyWbTluye6xNoIvPOAySahx8dviTdtSgyaXXfQ/iMc
-         J+S0Wr3kCd5RIDR0DWrzjQc7dkRp3LrcUsd1B1zPTq45zfJUXa98jcWsXikdveB0ol2L
-         PC8/pZE69VYzhxc6pWsRDVGxBw3kknlAroxyT0T164Bkd40S8Vk1XF8ZjlD65Ra+zRkd
-         q8Ne1KyX0C7Ccwx9PXFDOg1nfYo8tt4PjcM/nxeqhqCsx0QnDHL7VEcnjsBiKwhFHcQr
-         rVYA==
-X-Gm-Message-State: AOAM530TD87Gd5d4mVhtLNTe030h6hk4OkBz4FcwPyD3oAXzwCE3aLav
-        EWRmClijM+dWJxJlbmonanL8Ln4tDR/GHnFr4jAlQM6SmPhXuVaZAt/al11cAuC4Yv/g53qeE5E
-        4BSoG2esoM4vJGWY4M+LPSmUeg1cRP+cVum1GBbQOWxo8hOTyqTQdFB4oSjAs4Q95QQbpFOTm
-X-Google-Smtp-Source: ABdhPJwbVQiLfVe2Db5rkIEg6KzSZtaX141pcPBDUyBP93Xmq6wAChQpbIRa1w7i0Lz1G5vf2ZWzAU3ZLQ+8
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:888a:4e22:67:844a])
- (user=bgardon job=sendgmr) by 2002:a0c:b89a:: with SMTP id
- y26mr12061368qvf.49.1615832833135; Mon, 15 Mar 2021 11:27:13 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 11:26:43 -0700
-In-Reply-To: <20210315182643.2437374-1-bgardon@google.com>
-Message-Id: <20210315182643.2437374-5-bgardon@google.com>
-Mime-Version: 1.0
-References: <20210315182643.2437374-1-bgardon@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2 4/4] KVM: x86/mmu: Store the address space ID in the TDP iterator
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        kernel test robot <lkp@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBq3gzSWM4PAYPU03bItAvmuL/jkDE66lmjkbZXjRp8=;
+        b=mSDxOqeh6xc29QQAiMan3CrlM0uSirIjPLbtjxYWe2kIPitz/tflUYFJz/TlU9JZqU
+         x5w1MJLlpqGKRB4XdYvlBT41It2oeS4HCEYRDx5EDP1gs52eXF+sMSjPG6d5AUa0dWIm
+         1tiTipIcfvj7OTorCar6+5pUo9sJnTC/JkdtzXPt9r9egQEcUG6meR/bixkemo2QsSUT
+         AEL43sCTuGHO5kYOk6RUQpaTusqhk0tUFGpAQUp8HTE/OMJk/5mMAYGv3s94MLoCStwd
+         9HM6hEbnYn1/ZvD6WsiBcQ4SDzkhqKcR4B3zPnSwiPMqSB+ldLgxLyIRxM/0Iup+Bdy8
+         dhXQ==
+X-Gm-Message-State: AOAM532xVpBaCsNpJog2LPxfZDdGrCwWOu7RlNolJbAiu6a+oOakAk+k
+        ZH1wb5jBoTe/E064+Rb4TwDXL9Sn0wN15RRmv6Q=
+X-Google-Smtp-Source: ABdhPJzUvNXxxTNXCmAj+6pzsw62g0KyCooJD4yymr3eHweuglmQ2mI2iPUzEuPjQMKBqm+SAgUsJOzl+wwI9LYJLSU=
+X-Received: by 2002:aca:af10:: with SMTP id y16mr331070oie.120.1615832850600;
+ Mon, 15 Mar 2021 11:27:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <1615796522-21363-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615796522-21363-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 15 Mar 2021 14:27:19 -0400
+Message-ID: <CADnq5_MEqZZV1qRWzJM0PefBjCAnEDODzgrXn_8C3qzWqmZJYA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Store the address space ID in the TDP iterator so that it can be
-retrieved without having to bounce through the root shadow page.  This
-streamlines the code and fixes a Sparse warning about not properly using
-rcu_dereference() when grabbing the ID from the root on the fly.
+Applied.  Thanks!
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
- arch/x86/kvm/mmu/tdp_iter.c     |  6 +-----
- arch/x86/kvm/mmu/tdp_iter.h     |  3 ++-
- arch/x86/kvm/mmu/tdp_mmu.c      | 23 +++++------------------
- 4 files changed, 13 insertions(+), 24 deletions(-)
+Alex
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index ec4fc28b325a..1f6f98c76bdf 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -78,6 +78,11 @@ static inline struct kvm_mmu_page *sptep_to_sp(u64 *sptep)
- 	return to_shadow_page(__pa(sptep));
- }
- 
-+static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
-+{
-+	return sp->role.smm ? 1 : 0;
-+}
-+
- static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
- {
- 	/*
-diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-index f7f94ea65243..b3ed302c1a35 100644
---- a/arch/x86/kvm/mmu/tdp_iter.c
-+++ b/arch/x86/kvm/mmu/tdp_iter.c
-@@ -49,6 +49,7 @@ void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
- 	iter->root_level = root_level;
- 	iter->min_level = min_level;
- 	iter->pt_path[iter->root_level - 1] = (tdp_ptep_t)root_pt;
-+	iter->as_id = kvm_mmu_page_as_id(sptep_to_sp(root_pt));
- 
- 	tdp_iter_restart(iter);
- }
-@@ -169,8 +170,3 @@ void tdp_iter_next(struct tdp_iter *iter)
- 	iter->valid = false;
- }
- 
--tdp_ptep_t tdp_iter_root_pt(struct tdp_iter *iter)
--{
--	return iter->pt_path[iter->root_level - 1];
--}
--
-diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-index 8eb424d17c91..b1748b988d3a 100644
---- a/arch/x86/kvm/mmu/tdp_iter.h
-+++ b/arch/x86/kvm/mmu/tdp_iter.h
-@@ -36,6 +36,8 @@ struct tdp_iter {
- 	int min_level;
- 	/* The iterator's current level within the paging structure */
- 	int level;
-+	/* The address space ID, i.e. SMM vs. regular. */
-+	int as_id;
- 	/* A snapshot of the value at sptep */
- 	u64 old_spte;
- 	/*
-@@ -62,7 +64,6 @@ tdp_ptep_t spte_to_child_pt(u64 pte, int level);
- void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
- 		    int min_level, gfn_t next_last_level_gfn);
- void tdp_iter_next(struct tdp_iter *iter);
--tdp_ptep_t tdp_iter_root_pt(struct tdp_iter *iter);
- void tdp_iter_restart(struct tdp_iter *iter);
- 
- #endif /* __KVM_X86_MMU_TDP_ITER_H */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 38b6b6936171..462b1f71c77f 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -203,11 +203,6 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 				u64 old_spte, u64 new_spte, int level,
- 				bool shared);
- 
--static int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
--{
--	return sp->role.smm ? 1 : 0;
--}
--
- static void handle_changed_spte_acc_track(u64 old_spte, u64 new_spte, int level)
- {
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-@@ -497,10 +492,6 @@ static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
- 					   struct tdp_iter *iter,
- 					   u64 new_spte)
- {
--	u64 *root_pt = tdp_iter_root_pt(iter);
--	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
--	int as_id = kvm_mmu_page_as_id(root);
--
- 	lockdep_assert_held_read(&kvm->mmu_lock);
- 
- 	/*
-@@ -514,8 +505,8 @@ static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
- 		      new_spte) != iter->old_spte)
- 		return false;
- 
--	handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
--			    iter->level, true);
-+	handle_changed_spte(kvm, iter->as_id, iter->gfn, iter->old_spte,
-+			    new_spte, iter->level, true);
- 
- 	return true;
- }
-@@ -569,10 +560,6 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
- 				      u64 new_spte, bool record_acc_track,
- 				      bool record_dirty_log)
- {
--	tdp_ptep_t root_pt = tdp_iter_root_pt(iter);
--	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
--	int as_id = kvm_mmu_page_as_id(root);
--
- 	lockdep_assert_held_write(&kvm->mmu_lock);
- 
- 	/*
-@@ -586,13 +573,13 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
- 
- 	WRITE_ONCE(*rcu_dereference(iter->sptep), new_spte);
- 
--	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
--			      iter->level, false);
-+	__handle_changed_spte(kvm, iter->as_id, iter->gfn, iter->old_spte,
-+			      new_spte, iter->level, false);
- 	if (record_acc_track)
- 		handle_changed_spte_acc_track(iter->old_spte, new_spte,
- 					      iter->level);
- 	if (record_dirty_log)
--		handle_changed_spte_dirty_log(kvm, as_id, iter->gfn,
-+		handle_changed_spte_dirty_log(kvm, iter->as_id, iter->gfn,
- 					      iter->old_spte, new_spte,
- 					      iter->level);
- }
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+On Mon, Mar 15, 2021 at 4:22 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c:358:69-74: WARNING:
+> conversion to bool not needed here.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
+> index 3e6f760..e153109 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
+> @@ -355,7 +355,7 @@ void mpc3_set_output_gamma(
+>                 next_mode = LUT_RAM_A;
+>
+>         mpc3_power_on_ogam_lut(mpc, mpcc_id, true);
+> -       mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A ? true:false);
+> +       mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A);
+>
+>         if (next_mode == LUT_RAM_A)
+>                 mpc3_program_luta(mpc, mpcc_id, params);
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
