@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8FE33AFF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D407C33AFFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCOK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:29:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229766AbhCOK3F (ORCPT
+        id S229771AbhCOK3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:29:47 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52778 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCOK3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:29:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615804144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jwF8RAl+1g43eoJOxovVcbsfQd2fGWQqousfI+ksZ8M=;
-        b=YmEtO55DZHpkWWJQp0TUIVA7HmH5QX1qigsWEWxtYoC+NZwIxqSvQobVSSNoROpc163S4i
-        EF+i5Sljd+RU3dwB+oLHzvELwP1txzGwnTk3MMCHBwHm1Ipj8CF0UIUqJ50jBeKhzBxCZC
-        pc6HqEeRzqRSDzqeF6xqTJRYGmh9U+I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-q0NtpvIGMNeTAY-3RMkoag-1; Mon, 15 Mar 2021 06:29:02 -0400
-X-MC-Unique: q0NtpvIGMNeTAY-3RMkoag-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93EA081A281;
-        Mon, 15 Mar 2021 10:29:00 +0000 (UTC)
-Received: from [10.36.112.200] (ovpn-112-200.ams2.redhat.com [10.36.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 339991048100;
-        Mon, 15 Mar 2021 10:28:57 +0000 (UTC)
-Subject: Re: [PATCH v4 0/4] Make alloc_contig_range handle Hugetlb pages
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210310150853.13541-1-osalvador@suse.de>
- <c7ba5bba-77fb-6c43-2067-2ebc83b014da@redhat.com>
- <20210315102740.GB25101@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a6b47162-d975-afef-473f-dccb677fefe6@redhat.com>
-Date:   Mon, 15 Mar 2021 11:28:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 06:29:21 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FAOSeA184510;
+        Mon, 15 Mar 2021 10:29:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=/c0n/pNLCQxVjHIFVGolGuBy2iMkoLfoqgD0gx6c1fE=;
+ b=OZzmftkehPJ0b6U2iPnCp1Sy95yGvUrdgEe5+V9nFHpWaTYEpcmnLu1RkTDF9koc+EIz
+ i9DV8sYw+npLyJr71CdwG23pvuIge8kGnuycQyz9zEOuHPlI8RCumYrK2j4wAXfpFQmz
+ ZNIlF+alobWNLgQf0faDfyLDBVr0FX1zan2w7z0OjBNGzHiAs0d6SWwIyeXNADaAcmnf
+ ro5YM8sLKDvg9oTIEYJU6xgUdeR5g0mcsjZit6t6V26l8SgEfblHZZfBLXyiLTxbetsC
+ VBxAJOCUjs9ox4mfa0IM6yGa9MNagfQ5KdkfPlVuZCFc3IuzmR8+xodWstJ9Vq7y5xSq BQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37a4ekg92h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 10:29:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FAJZBV142177;
+        Mon, 15 Mar 2021 10:29:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 37979yp63q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 10:29:12 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12FAT9u9018451;
+        Mon, 15 Mar 2021 10:29:09 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 15 Mar 2021 10:29:09 +0000
+Date:   Mon, 15 Mar 2021 13:29:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        gorcunov@openvz.org, security@kernel.org
+Subject: Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack leak
+Message-ID: <20210315102901.GP21246@kadam>
+References: <YE53QiJuxsCUeoiu@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210315102740.GB25101@linux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE53QiJuxsCUeoiu@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103150070
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103150070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 11:27, Oscar Salvador wrote:
-> On Mon, Mar 15, 2021 at 10:06:40AM +0100, David Hildenbrand wrote:
->>
->> BTW, I stumbled yesterday over
->>
->> alloc_contig_pages()->pfn_range_valid_contig():
->>
->> 	if (page_count(page) > 0)
->> 		rerurn false;
->> 	if (PageHuge(page))
->> 		return false;
->>
->> As used by memtrace and for gigantic pages. We can now
->>
->> a) Drop these check completely, as it's best-effort only and racy.
->> alloc_contig_pages()/alloc_contig_range() will handle it properly.
->>
->> b) Similarly, check for gigantic pages and/or movability/migratability.
->>
->> Dropping both checks might be the right thing to do: might significantly
->> increase allocation chances -- as we actually end up migrating busy pages
->> ...
+On Sun, Mar 14, 2021 at 11:51:14PM +0300, Alexey Dobriyan wrote:
+> 	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
 > 
-> Oh, sorry David, my mail client tricked me and I did not see this till now.
-> 
-> I will have a look, but I would like to collect some more feedback from all
-> pieces before going any further and write a new version.
-> Vlastimil patch#1 and patch#2 and he was ok with them, but let see what others
-> think as well.
+> will copy 1 byte from userspace to (quite big) on-stack array
+> and then stash everything to mm->saved_auxv.
 
-Planning on having a detailed look at the patches. Fairly busy though 
-... :(
+What?  It won't save everything, only the 1 byte.  What am I not seeing?
 
--- 
-Thanks,
+kernel/sys.c
+  2073  static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
+  2074                            unsigned long len)
+  2075  {
+  2076          /*
+  2077           * This doesn't move the auxiliary vector itself since it's pinned to
+  2078           * mm_struct, but it permits filling the vector with new values.  It's
+  2079           * up to the caller to provide sane values here, otherwise userspace
+  2080           * tools which use this vector might be unhappy.
+  2081           */
+  2082          unsigned long user_auxv[AT_VECTOR_SIZE] = {};
+  2083  
+  2084          if (len > sizeof(user_auxv))
+  2085                  return -EINVAL;
+  2086  
+  2087          if (copy_from_user(user_auxv, (const void __user *)addr, len))
+                                   ^^^^^^^^^                             ^^^
+Copies one byte from user space.
 
-David / dhildenb
+  2088                  return -EFAULT;
+  2089  
+  2090          /* Make sure the last entry is always AT_NULL */
+  2091          user_auxv[AT_VECTOR_SIZE - 2] = 0;
+  2092          user_auxv[AT_VECTOR_SIZE - 1] = 0;
+  2093  
+  2094          BUILD_BUG_ON(sizeof(user_auxv) != sizeof(mm->saved_auxv));
+  2095  
+  2096          task_lock(current);
+  2097          memcpy(mm->saved_auxv, user_auxv, len);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Saves one byte to mm->saved_auxv.
+
+  2098          task_unlock(current);
+  2099  
+  2100          return 0;
+  2101  }
+
+regards,
+dan carpenter
 
