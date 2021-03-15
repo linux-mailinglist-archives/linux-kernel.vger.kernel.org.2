@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5CE33BE29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C7D33BE0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237861AbhCOOnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
+        id S238164AbhCOOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhCOOD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC4264EF9;
-        Mon, 15 Mar 2021 14:03:26 +0000 (UTC)
+        id S234208AbhCOODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3516264EF8;
+        Mon, 15 Mar 2021 14:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817008;
-        bh=pTG3Z6rK5ZitXlHEQVGe3NxxqXCpy4yN/VknZ6bwVPc=;
+        s=korg; t=1615816984;
+        bh=fnqaDvOIl3flW8dj93DMlB+IT7SBjVMZaIWlYPB2ZlM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XEYoWASxjvcMpO+CbDt2qPJD17WaWKpJSV0ryrFeSerdgV8olONqmVlwwkI73lKyg
-         +a+bW4Dx8tHip6t8NRRtCQAXCBZ45kgDnYK8EeHxHn7jjYN61vgbKhpGYrEBDLGgXU
-         NlNx7CN+v5sv+lX1cFE3ABrd120+MP9ORoR1I1qE=
+        b=gzaIqF2wyqOsi+Yq/gnmFh9qvh9cnmRyLlfW5nhJBxcTIiJcTrEAHfnJJDkMb9thW
+         OGOGr32kvJtJa+ElYkv+ri0cZ8lJ1m4B1skIARwqkvU5WjV++JD6mo/KOaZQEw9PKi
+         j4OQad/5mjDz6kPqssNC9bPzw0Wj+4+UREsb1a4I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kris Karas <bugs-a17@moonlit-rail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 257/306] net: expand textsearch ts_state to fit skb_seq_state
-Date:   Mon, 15 Mar 2021 14:55:20 +0100
-Message-Id: <20210315135516.336444112@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.10 228/290] staging: rtl8188eu: fix potential memory corruption in rtw_check_beacon_data()
+Date:   Mon, 15 Mar 2021 14:55:21 +0100
+Message-Id: <20210315135549.685226320@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,87 +40,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Willem de Bruijn <willemb@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b228c9b058760500fda5edb3134527f629fc2dc3 ]
+commit d4ac640322b06095128a5c45ba4a1e80929fe7f3 upstream.
 
-The referenced commit expands the skb_seq_state used by
-skb_find_text with a 4B frag_off field, growing it to 48B.
+The "ie_len" is a value in the 1-255 range that comes from the user.  We
+have to cap it to ensure that it's not too large or it could lead to
+memory corruption.
 
-This exceeds container ts_state->cb, causing a stack corruption:
-
-[   73.238353] Kernel panic - not syncing: stack-protector: Kernel stack
-is corrupted in: skb_find_text+0xc5/0xd0
-[   73.247384] CPU: 1 PID: 376 Comm: nping Not tainted 5.11.0+ #4
-[   73.252613] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-2 04/01/2014
-[   73.260078] Call Trace:
-[   73.264677]  dump_stack+0x57/0x6a
-[   73.267866]  panic+0xf6/0x2b7
-[   73.270578]  ? skb_find_text+0xc5/0xd0
-[   73.273964]  __stack_chk_fail+0x10/0x10
-[   73.277491]  skb_find_text+0xc5/0xd0
-[   73.280727]  string_mt+0x1f/0x30
-[   73.283639]  ipt_do_table+0x214/0x410
-
-The struct is passed between skb_find_text and its callbacks
-skb_prepare_seq_read, skb_seq_read and skb_abort_seq read through
-the textsearch interface using TS_SKB_CB.
-
-I assumed that this mapped to skb->cb like other .._SKB_CB wrappers.
-skb->cb is 48B. But it maps to ts_state->cb, which is only 40B.
-
-skb->cb was increased from 40B to 48B after ts_state was introduced,
-in commit 3e3850e989c5 ("[NETFILTER]: Fix xfrm lookup in
-ip_route_me_harder/ip6_route_me_harder").
-
-Increase ts_state.cb[] to 48 to fit the struct.
-
-Also add a BUILD_BUG_ON to avoid a repeat.
-
-The alternative is to directly add a dependency from textsearch onto
-linux/skbuff.h, but I think the intent is textsearch to have no such
-dependencies on its callers.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=211911
-Fixes: 97550f6fa592 ("net: compound page support in skb_seq_read")
-Reported-by: Kris Karas <bugs-a17@moonlit-rail.com>
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9a7fe54ddc3a ("staging: r8188eu: Add source files for new driver - part 1")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YEHyQCrFZKTXyT7J@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/textsearch.h | 2 +-
- net/core/skbuff.c          | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/staging/rtl8188eu/core/rtw_ap.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/textsearch.h b/include/linux/textsearch.h
-index 13770cfe33ad..6673e4d4ac2e 100644
---- a/include/linux/textsearch.h
-+++ b/include/linux/textsearch.h
-@@ -23,7 +23,7 @@ struct ts_config;
- struct ts_state
- {
- 	unsigned int		offset;
--	char			cb[40];
-+	char			cb[48];
- };
+--- a/drivers/staging/rtl8188eu/core/rtw_ap.c
++++ b/drivers/staging/rtl8188eu/core/rtw_ap.c
+@@ -791,6 +791,7 @@ int rtw_check_beacon_data(struct adapter
+ 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _SSID_IE_, &ie_len,
+ 		       pbss_network->ie_length - _BEACON_IE_OFFSET_);
+ 	if (p && ie_len > 0) {
++		ie_len = min_t(int, ie_len, sizeof(pbss_network->ssid.ssid));
+ 		memset(&pbss_network->ssid, 0, sizeof(struct ndis_802_11_ssid));
+ 		memcpy(pbss_network->ssid.ssid, p + 2, ie_len);
+ 		pbss_network->ssid.ssid_length = ie_len;
+@@ -811,6 +812,7 @@ int rtw_check_beacon_data(struct adapter
+ 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _SUPPORTEDRATES_IE_, &ie_len,
+ 		       pbss_network->ie_length - _BEACON_IE_OFFSET_);
+ 	if (p) {
++		ie_len = min_t(int, ie_len, NDIS_802_11_LENGTH_RATES_EX);
+ 		memcpy(supportRate, p + 2, ie_len);
+ 		supportRateNum = ie_len;
+ 	}
+@@ -819,6 +821,8 @@ int rtw_check_beacon_data(struct adapter
+ 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _EXT_SUPPORTEDRATES_IE_,
+ 		       &ie_len, pbss_network->ie_length - _BEACON_IE_OFFSET_);
+ 	if (p) {
++		ie_len = min_t(int, ie_len,
++			       NDIS_802_11_LENGTH_RATES_EX - supportRateNum);
+ 		memcpy(supportRate + supportRateNum, p + 2, ie_len);
+ 		supportRateNum += ie_len;
+ 	}
+@@ -934,6 +938,7 @@ int rtw_check_beacon_data(struct adapter
  
- /**
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 28b8242f18d7..2b784d62a9fe 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3622,6 +3622,8 @@ unsigned int skb_find_text(struct sk_buff *skb, unsigned int from,
- 	struct ts_state state;
- 	unsigned int ret;
+ 		pht_cap->mcs.rx_mask[0] = 0xff;
+ 		pht_cap->mcs.rx_mask[1] = 0x0;
++		ie_len = min_t(int, ie_len, sizeof(pmlmepriv->htpriv.ht_cap));
+ 		memcpy(&pmlmepriv->htpriv.ht_cap, p + 2, ie_len);
+ 	}
  
-+	BUILD_BUG_ON(sizeof(struct skb_seq_state) > sizeof(state.cb));
-+
- 	config->get_next_block = skb_ts_get_next_block;
- 	config->finish = skb_ts_finish;
- 
--- 
-2.30.1
-
 
 
