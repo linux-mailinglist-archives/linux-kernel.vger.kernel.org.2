@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213DB33C76D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE3B33C776
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhCOUHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:07:22 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:34067 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhCOUG6 (ORCPT
+        id S234077AbhCOUKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233755AbhCOUJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:06:58 -0400
-Received: by mail-pg1-f178.google.com with SMTP id l2so21128640pgb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:06:58 -0700 (PDT)
+        Mon, 15 Mar 2021 16:09:42 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A26C06174A;
+        Mon, 15 Mar 2021 13:09:42 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id mj10so68428124ejb.5;
+        Mon, 15 Mar 2021 13:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XFZxaapEfrnceu1DR1QvIoySAx6HSdaqEW24Vu33n7o=;
+        b=dOVrq4x9RRGKeAZWpe0l6ucz5AeUQM7VDOh2ZWfjnRiPbT2yn2dKYXq5KwqqY47S4i
+         T2anIK/nBWZyUyZE/zAOwzdBDLRI42837cM6YIxU050itPRlkKly2qRNITaaen86ZiUS
+         M1aQsDJ+hcPGmkKyfRf+XEOPS9HUtSX+4Ed5bhBnHX7xxgpFamBaZaAOflVlt8xOt21s
+         2w8irqDcrmPyybrj57acXyGq6AHPbLTH1DdZRXyZBjlnJOJWjNVlJcyGfzlfKzW9JWa8
+         /wZ2wyJM4AQeqfq48fK0EdNaAcsYrYFOPiKdm0AybyQK72dNcliSiuQijvpDWpfJ3Vei
+         9PiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=OOVcujQsXQLxPa5Y1WXIcDvGuW02nNmnNAEglQlFDyU=;
-        b=SBALJyM8aFf4OzjMTlo/EHscjRC/91xoHznnodJtx4eIk2i+73V250Z492m5geCb9b
-         XJOwZbHiCVH2FATuY5EMjpWTwfTkT5GmzEQqnKTQjbimaIwsL8T5T5bC2IByR/3EeIDz
-         zTk/bDP9mlgbh+WJ9pKkUk2Ttz8qOXvB9XvFvIBod2p2bM5VRPRVTt73KbrD5kM1v/gL
-         m2XHpn+Eny7M1CrWoma51k8bLuAl4diwVGxjyu/hN5Nw9CoQGfqMfFmFME7SUOmToBUi
-         Vib4lcZEvJ/DKTGTbAniKIvKCtdgpUrNTXPbaboFPIWtRmDVRp6bOtIdL2xvjgMWvkVt
-         penA==
-X-Gm-Message-State: AOAM532rJKYGqvymzshJ1Q980s9xqnK8+QGB0Dcp4Sbf7uR1z9KWF6H+
-        f9IDqm7Sb8sObsJSFkpD6/I=
-X-Google-Smtp-Source: ABdhPJz6XTIHU70leFou7rkSzJV/UsJaZKb7fQhQeHNU9vcyrWdwjL8KJeZxNuOxCFlGeNslUp8muQ==
-X-Received: by 2002:a62:92cc:0:b029:1fa:515d:808f with SMTP id o195-20020a6292cc0000b02901fa515d808fmr25548284pfd.43.1615838817895;
-        Mon, 15 Mar 2021 13:06:57 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id ge16sm450600pjb.43.2021.03.15.13.06.56
+        bh=XFZxaapEfrnceu1DR1QvIoySAx6HSdaqEW24Vu33n7o=;
+        b=S/Wm2M02ze2OaTZ0KQuVe4GvijM5T0UE2fZL5QSCW5jUbwxC/BTVfarWsNeKMYKtKD
+         MJ6m3Kb6Q87mhYff+CitT5LKTMAHepDUEysOiGSxNS55snOQ110rDca5VqOVXjiCQ9Iy
+         +riX7FqCeErhchgJQ3wWhtcsjEPCzJjVltK45bfVLmI0LntEmMM0HznaG52l9n3JVoKl
+         jGeZ0VJmHzzJ1YRVayC+9DCrfa8zddkQ1cwubLiwJGdv6imMznd0lAPjBWR2OHIv0vn2
+         ZU5fDLKU77tDNzjIdvnPg9CHke/7VSKe4rUn8hyEq5hxErmZhHIHBuq5Bvar1UCpUck9
+         vJ3A==
+X-Gm-Message-State: AOAM530oTcZcYmgUpKTfW8NwFGO3KosMXPSSzaU9911aWf0osgCHyxcp
+        WIVBV0dl6bhjvi/dxJ1+NYA=
+X-Google-Smtp-Source: ABdhPJwMRUIBF5tThWFDvF1cvUf3QS3BRDtqjRPx8hgfPLPM8Na+4GdEa3fdfpEQizG7fxOz+AVQEA==
+X-Received: by 2002:a17:906:2786:: with SMTP id j6mr9901004ejc.157.1615838981122;
+        Mon, 15 Mar 2021 13:09:41 -0700 (PDT)
+Received: from skbuf ([188.25.219.167])
+        by smtp.gmail.com with ESMTPSA id r5sm8839502eds.49.2021.03.15.13.09.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:06:56 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 905FC40106; Mon, 15 Mar 2021 20:06:55 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 20:06:55 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v3 2/2] modules: add CONFIG_MODPROBE_PATH
-Message-ID: <20210315200655.GX4332@42.do-not-panic.com>
-References: <20210313212528.2956377-1-linux@rasmusvillemoes.dk>
- <20210313212528.2956377-3-linux@rasmusvillemoes.dk>
+        Mon, 15 Mar 2021 13:09:40 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 22:09:39 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag
+ operations
+Message-ID: <20210315200939.irwyiru6m62g4a7f@skbuf>
+References: <20210315170940.2414854-1-dqfext@gmail.com>
+ <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210313212528.2956377-3-linux@rasmusvillemoes.dk>
+In-Reply-To: <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 10:25:28PM +0100, Rasmus Villemoes wrote:
-> Allow the developer to specifiy the initial value of the
-> modprobe_path[] string. This can be used to set it to the empty string
-> initially, thus effectively disabling request_module() during early
-> boot until userspace writes a new value via the
-> /proc/sys/kernel/modprobe interface. [1]
+On Mon, Mar 15, 2021 at 01:03:10PM -0700, Florian Fainelli wrote:
 > 
-> When building a custom kernel (often for an embedded target), it's
-> normal to build everything into the kernel that is needed for booting,
-> and indeed the initramfs often contains no modules at all, so every
-> such request_module() done before userspace init has mounted the real
-> rootfs is a waste of time.
 > 
-> This is particularly useful when combined with the previous patch,
-> which made the initramfs unpacking asynchronous - for that to work, it
-> had to make any usermodehelper call wait for the unpacking to finish
-> before attempting to invoke the userspace helper. By eliminating all
-> such (known-to-be-futile) calls of usermodehelper, the initramfs
-> unpacking and the {device,late}_initcalls can proceed in parallel for
-> much longer.
+> On 3/15/2021 10:09 AM, DENG Qingfang wrote:
+> > Support port MDB and bridge flag operations.
+> > 
+> > As the hardware can manage multicast forwarding itself, offload_fwd_mark
+> > can be unconditionally set to true.
+> > 
+> > Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> > ---
+> > Changes since RFC:
+> >   Replaced BR_AUTO_MASK with BR_FLOOD | BR_LEARNING
+> > 
+> >  drivers/net/dsa/mt7530.c | 124 +++++++++++++++++++++++++++++++++++++--
+> >  drivers/net/dsa/mt7530.h |   1 +
+> >  net/dsa/tag_mtk.c        |  14 +----
+> >  3 files changed, 122 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> > index 2342d4528b4c..f765984330c9 100644
+> > --- a/drivers/net/dsa/mt7530.c
+> > +++ b/drivers/net/dsa/mt7530.c
+> > @@ -1000,8 +1000,9 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
+> >  	mt7530_write(priv, MT7530_PVC_P(port),
+> >  		     PORT_SPEC_TAG);
+> >  
+> > -	/* Unknown multicast frame forwarding to the cpu port */
+> > -	mt7530_rmw(priv, MT7530_MFC, UNM_FFP_MASK, UNM_FFP(BIT(port)));
+> > +	/* Disable flooding by default */
+> > +	mt7530_rmw(priv, MT7530_MFC, BC_FFP_MASK | UNM_FFP_MASK | UNU_FFP_MASK,
+> > +		   BC_FFP(BIT(port)) | UNM_FFP(BIT(port)) | UNU_FFP(BIT(port)));
 > 
-> For a relatively slow ppc board I'm working on, the two patches
-> combined lead to 0.2s faster boot - but more importantly, the fact
-> that the initramfs unpacking proceeds completely in the background
-> while devices get probed means I get to handle the gpio watchdog in
-> time without getting reset.
-> 
-> [1] __request_module() already has an early -ENOENT return when
-> modprobe_path is the empty string.
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Acked-by: Jessica Yu <jeyu@kernel.org>
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> It's not clear to me why this is appropriate especially when the ports
+> operated in standalone mode, can you expand a bit more on this?
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-
-  Luis
+We are in the function called "mt753x_cpu_port_enable" here. It's ok to
+apply this config for the CPU port.
