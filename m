@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D652A33BE7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11EB33BCFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240009AbhCOOr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S235106AbhCOObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:31:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233104AbhCOOAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4B364F25;
-        Mon, 15 Mar 2021 14:00:07 +0000 (UTC)
+        id S233127AbhCOOAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E20F664F13;
+        Mon, 15 Mar 2021 14:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816808;
-        bh=GTeUtwzfq/978IFxOmeHTwhMilYuUVY1oe7gQEu1PeU=;
+        s=korg; t=1615816810;
+        bh=6QsA3z8I06ZYH6oCcr108UQjnXDSrmEOYb3taYZi5CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMr/0ECDpoT3/pXCX501Ho9dkVT3G2k5FW0AH50l0AgAcZ71rDw+xzi0V0zy07JeI
-         aqrX7wIyFI20USY7WuCo5M8Am/pSVbekWlEz2kOszwvDrxJhYDv2GYI+Zg/uyhbmAI
-         ZLOjiHXrIRo/sY6/lEXiOprzQ2OLVjPeJS8OeVvc=
+        b=ufj7HvmXk4hMSkm33uB/508xGOP7oWJBhAa4604M4dSyV8BaWxUpAYEn7n68vT2On
+         ohJ7rAs514f+AlmFq22/x9xAQYa9N/a/NXl52Q087aMSp2qcUHUr3eSm218xLePQFn
+         V/WzmEyaWZK8BL1EgRRbQ7h8A4cDdW3xOGB5oXFA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 137/306] spi: stm32: make spurious and overrun interrupts visible
-Date:   Mon, 15 Mar 2021 14:53:20 +0100
-Message-Id: <20210315135512.278014099@linuxfoundation.org>
+Subject: [PATCH 5.11 138/306] powerpc: improve handling of unrecoverable system reset
+Date:   Mon, 15 Mar 2021 14:53:21 +0100
+Message-Id: <20210315135512.309857307@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,58 +42,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit c64e7efe46b7de21937ef4b3594d9b1fc74f07df ]
+[ Upstream commit 11cb0a25f71818ca7ab4856548ecfd83c169aa4d ]
 
-We do not expect to receive spurious interrupts so rise a warning
-if it happens.
+If an unrecoverable system reset hits in process context, the system
+does not have to panic. Similar to machine check, call nmi_exit()
+before die().
 
-RX overrun is an error condition that signals a corrupted RX
-stream both in dma and in irq modes. Report the error and
-abort the transfer in either cases.
-
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1612551572-495-9-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210130130852.2952424-26-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ arch/powerpc/kernel/traps.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6eeb39669a86..53c4311cc6ab 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -928,8 +928,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 		mask |= STM32H7_SPI_SR_RXP;
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 3ec7b443fe6b..4be05517f2db 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -503,8 +503,11 @@ void system_reset_exception(struct pt_regs *regs)
+ 		die("Unrecoverable nested System Reset", regs, SIGABRT);
+ #endif
+ 	/* Must die if the interrupt is not recoverable */
+-	if (!(regs->msr & MSR_RI))
++	if (!(regs->msr & MSR_RI)) {
++		/* For the reason explained in die_mce, nmi_exit before die */
++		nmi_exit();
+ 		die("Unrecoverable System Reset", regs, SIGABRT);
++	}
  
- 	if (!(sr & mask)) {
--		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
--			sr, ier);
-+		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
-+			 sr, ier);
- 		spin_unlock_irqrestore(&spi->lock, flags);
- 		return IRQ_NONE;
- 	}
-@@ -956,15 +956,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_OVR) {
--		dev_warn(spi->dev, "Overrun: received value discarded\n");
--		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
--			stm32h7_spi_read_rxfifo(spi, false);
--		/*
--		 * If overrun is detected while using DMA, it means that
--		 * something went wrong, so stop the current transfer
--		 */
--		if (spi->cur_usedma)
--			end = true;
-+		dev_err(spi->dev, "Overrun: RX data lost\n");
-+		end = true;
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_EOT) {
+ 	if (saved_hsrrs) {
+ 		mtspr(SPRN_HSRR0, hsrr0);
 -- 
 2.30.1
 
