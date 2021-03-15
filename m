@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF8D33AD73
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFBC33AD78
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhCOIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
+        id S229646AbhCOIbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:31:33 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:49879 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhCOIaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:30:55 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229553AbhCOIbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:31:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615797082; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6sAJztk8VeY5vdyxWEOgHKZBVT2GTUCfpMZSijJe5uQ=;
+ b=fBWs+00CMNWCLmUiWmRAnBjYoljAb9IOt80FRKvhDpakI2wQ2jPyuAWwMLoE7Sb30hFqjUni
+ V5SFGkHw3td/eyRZ4RMIwbDtxGn+7efPrAXBJL25f1B8aLN7i65FYIVOxUVYAp5MeWvwBI6F
+ yxeVTDiUOUSUoiw+ebzPtox9LzU=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 604f1b4de2200c0a0d3d3f40 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:31:09
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 107D3C43464; Mon, 15 Mar 2021 08:31:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2795A64E89;
-        Mon, 15 Mar 2021 08:30:55 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lLicn-001bcl-2Z; Mon, 15 Mar 2021 08:30:53 +0000
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1157DC433CA;
+        Mon, 15 Mar 2021 08:31:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
+Content-Type: text/plain; charset=US-ASCII;
  format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 15 Mar 2021 08:30:52 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v4 5/6] KVM: arm64: GICv4.1: Restore VLPI pending state to
- physical side
-In-Reply-To: <20210313083900.234-6-lushenming@huawei.com>
-References: <20210313083900.234-1-lushenming@huawei.com>
- <20210313083900.234-6-lushenming@huawei.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <d9047922808df340feca2f257cfb8a3d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 16:31:08 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 08/10] scsi: ufshpb: Limit the number of inflight map
+ requests
+In-Reply-To: <20210302132503.224670-9-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-9-avri.altman@wdc.com>
+Message-ID: <b71279bee1cc9b2ffba5e4f8c90fdce9@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-13 08:38, Shenming Lu wrote:
-> From: Zenghui Yu <yuzenghui@huawei.com>
-> 
-> When setting the forwarding path of a VLPI (switch to the HW mode),
-> we can also transfer the pending state from irq->pending_latch to
-> VPT (especially in migration, the pending states of VLPIs are restored
-> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
-> a VLPI to pending.
-> 
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-v4.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
-> b/arch/arm64/kvm/vgic/vgic-v4.c
-> index ac029ba3d337..3b82ab80c2f3 100644
-> --- a/arch/arm64/kvm/vgic/vgic-v4.c
-> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
-> @@ -449,6 +449,24 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, 
-> int virq,
->  	irq->host_irq	= virq;
->  	atomic_inc(&map.vpe->vlpi_count);
-> 
-> +	/* Transfer pending state */
-> +	if (irq->pending_latch) {
-> +		unsigned long flags;
-> +
-> +		ret = irq_set_irqchip_state(irq->host_irq,
-> +					    IRQCHIP_STATE_PENDING,
-> +					    irq->pending_latch);
-> +		WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
-> +
-> +		/*
-> +		 * Clear pending_latch and communicate this state
-> +		 * change via vgic_queue_irq_unlock.
-> +		 */
-> +		raw_spin_lock_irqsave(&irq->irq_lock, flags);
-> +		irq->pending_latch = false;
-> +		vgic_queue_irq_unlock(kvm, irq, flags);
-> +	}
-> +
->  out:
->  	mutex_unlock(&its->its_lock);
->  	return ret;
+On 2021-03-02 21:25, Avri Altman wrote:
+> in host control mode the host is the originator of map requests. To not
 
-The read side of the pending state isn't locked, but the write side is.
-I'd rather you lock the whole sequence for peace of mind.
+in -> In
 
 Thanks,
+Can Guo.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> flood the device with map requests, use a simple throttling mechanism
+> that limits the number of inflight map requests.
+> 
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 11 +++++++++++
+>  drivers/scsi/ufs/ufshpb.h |  1 +
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 89a930e72cff..74da69727340 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -21,6 +21,7 @@
+>  #define READ_TO_MS 1000
+>  #define READ_TO_EXPIRIES 100
+>  #define POLLING_INTERVAL_MS 200
+> +#define THROTTLE_MAP_REQ_DEFAULT 1
+> 
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+> @@ -750,6 +751,14 @@ static struct ufshpb_req
+> *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+>  	struct ufshpb_req *map_req;
+>  	struct bio *bio;
+> 
+> +	if (hpb->is_hcm &&
+> +	    hpb->num_inflight_map_req >= THROTTLE_MAP_REQ_DEFAULT) {
+> +		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
+> +			 "map_req throttle. inflight %d throttle %d",
+> +			 hpb->num_inflight_map_req, THROTTLE_MAP_REQ_DEFAULT);
+> +		return NULL;
+> +	}
+> +
+>  	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN);
+>  	if (!map_req)
+>  		return NULL;
+> @@ -764,6 +773,7 @@ static struct ufshpb_req
+> *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+> 
+>  	map_req->rb.srgn_idx = srgn->srgn_idx;
+>  	map_req->rb.mctx = srgn->mctx;
+> +	hpb->num_inflight_map_req++;
+> 
+>  	return map_req;
+>  }
+> @@ -773,6 +783,7 @@ static void ufshpb_put_map_req(struct ufshpb_lu 
+> *hpb,
+>  {
+>  	bio_put(map_req->bio);
+>  	ufshpb_put_req(hpb, map_req);
+> +	hpb->num_inflight_map_req--;
+>  }
+> 
+>  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index b49e9a34267f..d83ab488688a 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -212,6 +212,7 @@ struct ufshpb_lu {
+>  	struct ufshpb_req *pre_req;
+>  	int num_inflight_pre_req;
+>  	int throttle_pre_req;
+> +	int num_inflight_map_req;
+>  	struct list_head lh_pre_req_free;
+>  	int cur_read_id;
+>  	int pre_req_min_tr_len;
