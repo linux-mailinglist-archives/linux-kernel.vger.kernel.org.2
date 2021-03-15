@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D340933C54A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C5E33C54E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhCOSK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhCOSKS (ORCPT
+        id S230112AbhCOSNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:13:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46117 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhCOSMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:10:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48F7C06174A;
-        Mon, 15 Mar 2021 11:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2u7R/nEmMLjpbIw1cf7EstUt//SFRpdL2WMEtrso3hQ=; b=AfinbzWr9Gp7wDjUuemJcOVQkZ
-        pmr42l1b5SwV4cZXn6dBxVxH1cqhunwgnGOv74lXIcW8xKJN7GQP9tmWIPwktR7PPN9CfjH7JDIOr
-        LwJWpNCjS9GeoVgfUYfh8bMqgeh+VokvAyjcFRKuthQu39ZozkTiBH2m7boq6sWJXwVmRXw8YoDIF
-        lOv0K/neQrREfoa498UA877YYM86NVeN2QCo8p/Hh3juN1Br0naDTpsmOw0r8BE9gisLcUQiDYJU1
-        69HU8BNICzjnWkByI9+XcqiN6Fbn9HGzpfOYfAloLAFRfz0G1h3cUuTrcrcSizI3NHV2+pK1pbLNH
-        AzHQ9oag==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLrfK-00GeJZ-NU; Mon, 15 Mar 2021 18:10:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DACDB301324;
-        Mon, 15 Mar 2021 19:10:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CDBFE2BF450C1; Mon, 15 Mar 2021 19:10:05 +0100 (CET)
-Date:   Mon, 15 Mar 2021 19:10:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-Message-ID: <YE+i/VWITCCb37tD@hirez.programming.kicks-ass.net>
-References: <CA+icZUWSCS6vAQOXoG6nsW+Dbnogivzf+rmegCTMjz5hjE5cKQ@mail.gmail.com>
- <20210313084923.GA16144@zn.tnic>
- <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
- <20210313121541.GC16144@zn.tnic>
- <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
- <20210313124919.GD16144@zn.tnic>
- <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
- <20210313132927.GF16144@zn.tnic>
- <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
- <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
+        Mon, 15 Mar 2021 14:12:41 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lLrho-0006Wk-68
+        for linux-kernel@vger.kernel.org; Mon, 15 Mar 2021 18:12:40 +0000
+Received: by mail-ed1-f72.google.com with SMTP id m8so10666935edv.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:12:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c8ribixbYX8SKmA0or3fkXjW13OP+Yed566mFRzrUVg=;
+        b=LIMUCmLQgr+8p9ap03vOy+b6w+qvh1cfEBKiWDsV3h+jjkcobcdIS70s3E/2bA8QZR
+         iMpaKIQxUHVZCpfKDSenQ2FFwLBw5anGGihTbHvnMqtu1pi7cPnB2M5KR9sz7i8nskG5
+         1uQp3oE9io+mWRMK0dYN0UlURn3tgWn6zHrDgw+cM/wnN3Sboq+EzYGQ9a+vcBMAPAHD
+         Pqzthx6YFqli9Qb/I3CFoa6iUnY89mq6jMzJLzS7gRbJQvCYupZpatkuoPGl+q6/muOe
+         p4Xgq6VGFEiexY0NdDV0Fd/xX1yL/pVnFnsFPOozzit/jtOAEHi3uYkP8t42b0OjwEoG
+         BxgA==
+X-Gm-Message-State: AOAM5321DIQanZHntUyGwQH7t4hiJupNTNBoAydAr2z6PePdLEKx2HMu
+        iTjI/aRvHzfhkUL6L6BQP8mwGk08sj9m6f27VnkGhxSURQNlDK3iR19eN2hr+gH05Y6hf6Rf14e
+        2/nTpoieSSrXIQFaa0fgatAfagu1WdGDeUelCqU6i7g==
+X-Received: by 2002:a17:906:151a:: with SMTP id b26mr5342973ejd.492.1615831959910;
+        Mon, 15 Mar 2021 11:12:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLNjczp4bktcKOOXDHSL62TIadcqezY+3FpRHHLlaOEd82iwOk0aGnz/RtbQcwfWXJ/Okoww==
+X-Received: by 2002:a17:906:151a:: with SMTP id b26mr5342963ejd.492.1615831959799;
+        Mon, 15 Mar 2021 11:12:39 -0700 (PDT)
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id v25sm8523926edr.18.2021.03.15.11.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 11:12:39 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     marcan@marcan.st, arnd@kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] tty: serial: samsung_tty: remove spinlock flags in interrupt handlers
+Date:   Mon, 15 Mar 2021 19:12:12 +0100
+Message-Id: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 06:04:41PM +0100, Sedat Dilek wrote:
+Since interrupt handler is called with disabled local interrupts, there
+is no need to use the spinlock primitives disabling interrupts as well.
 
-> make V=1 -j4 LLVM=1 LLVM_IAS=1
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/tty/serial/samsung_tty.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-So for giggles I checked, neither GCC nor LLVM seem to emit prefix NOPs
-when building with -march=sandybridge, they always use MOPL.
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 80df842bf4c7..d9e4b67a12a0 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -715,13 +715,12 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
+ 	struct s3c24xx_uart_dma *dma = ourport->dma;
+ 	struct tty_struct *tty = tty_port_tty_get(&ourport->port.state->port);
+ 	struct tty_port *t = &port->state->port;
+-	unsigned long flags;
+ 	struct dma_tx_state state;
+ 
+ 	utrstat = rd_regl(port, S3C2410_UTRSTAT);
+ 	rd_regl(port, S3C2410_UFSTAT);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	spin_lock(&port->lock);
+ 
+ 	if (!(utrstat & S3C2410_UTRSTAT_TIMEOUT)) {
+ 		s3c64xx_start_rx_dma(ourport);
+@@ -750,7 +749,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
+ 	wr_regl(port, S3C2410_UTRSTAT, S3C2410_UTRSTAT_TIMEOUT);
+ 
+ finish:
+-	spin_unlock_irqrestore(&port->lock, flags);
++	spin_unlock(&port->lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -846,11 +845,10 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
+ {
+ 	struct s3c24xx_uart_port *ourport = dev_id;
+ 	struct uart_port *port = &ourport->port;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	spin_lock(&port->lock);
+ 	s3c24xx_serial_rx_drain_fifo(ourport);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	spin_unlock(&port->lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -934,13 +932,12 @@ static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
+ {
+ 	struct s3c24xx_uart_port *ourport = id;
+ 	struct uart_port *port = &ourport->port;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	spin_lock(&port->lock);
+ 
+ 	s3c24xx_serial_tx_chars(ourport);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	spin_unlock(&port->lock);
+ 	return IRQ_HANDLED;
+ }
+ 
+-- 
+2.25.1
 
-Furthermore, the kernel explicitly sets: -falign-jumps=1
--falign-loops=1, which, when not specified, default to 16 or so.
-
-This means that your userspace is *littered* with NOPL, even when you
-build your entire distro from source with -march=sandybridge.
-(arch/gentoo FTW I suppose).
-
-(The only good new is that recent LLVM has a pass to use alternative
-instruction encoding in order to grow a basic block in size in order to
-minimize the amount of NOP it needs to emit at the end in order to
-satisfy the jump/loop alignment.)
-
-So if you *really* deeply care about NOP performance on your SNB, start
-by teaching LLVM about prefix NOPs and rebuild your complete userspace.
-At that point, you can do some trivial patches to the kernel to make it
-use -march=sandybridge and prefix NOPs too.
-
-Until that time, the vast majority of NOPs your CPU will execute will be
-NOPL.
