@@ -2,84 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D56B33A9E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F2733A9D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCODSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbhCODRr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:17:47 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC1FC061574;
-        Sun, 14 Mar 2021 20:17:46 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d23so11373504plq.2;
-        Sun, 14 Mar 2021 20:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=A3oSUi/UHyvODn2iAEgaYMBdI8ZfE1MGKpYHvzVlBD8=;
-        b=Mcz2Kz/8NugpP2eOCFKYqqihaLdnfTlrIToa2jAfUAFtK8nF+8b5+HMC0iZWV7WwH9
-         /gxJ460YRfAVfGqYFc+Cy8cMBcaQNN5n3Olq2FT95PiriNijtQPNgWARGlZQssZ/MvOA
-         dI8d45hy7m5c/ryJv6ydeStBb9t9tjMczP0qgqFsuNMn0oBSUYk+EvQrJfvXQ1abJkdD
-         D6f3SD25UB8Qqw6rzjgAmmdwxDCzXf/tn+1qCE2A109GgnOGnMgeG40JMkkLE7s56ywi
-         pAmNRIYxEYIQ9D4DCKoaTBzNxhmjTg8F3iOkXfb3fP1Sq2Ka4AVhUqaKNUpkfeXX7TXU
-         1kmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=A3oSUi/UHyvODn2iAEgaYMBdI8ZfE1MGKpYHvzVlBD8=;
-        b=fBxdIOl1+XZ/vQYunfa304eHnvBpFG4NPie35jWJeDKIj7ReaEIoOncn4w2WXnyYBW
-         ATaBehslVjXsHlLVhndTr1oUxU2qonKlLhZEop2OpMaYP43GI1teU5eGGNCSXWGuFlr4
-         VSsGEDNXepXaVJVqlpgkCzOdy1O8blbMpH4MDP/PDoOpk6iiSkwAZGxfLCeDAujdvois
-         ItOtiueET70tQhTZlW528thRsRi0oER3ebEmi0I2zfJSrxoqytVfHOxTovXFqzWn0aEs
-         JXDczhIhBwTVQhkrn0AI/QQvtg7EwhwRuVVaNKkBZ9TGE1qL+pDbH6hI7Px0y1zoSwKw
-         RGCA==
-X-Gm-Message-State: AOAM530A5SlweLUtzqzDOB4pGRtnz0eGtCdf6VNRFx0ZfFRE26abAfwM
-        3+Pb5pk+4Rd9DTuVqjrJFty8Qc1kaAwF7A==
-X-Google-Smtp-Source: ABdhPJw8csEJ+/wV3Fc9v2//Qr1oJRddD+wFWsM0q5sBkVsiD35ZB1Yido7lA7a3WSDEcn6yYgIKZA==
-X-Received: by 2002:a17:90a:ea96:: with SMTP id h22mr10351284pjz.24.1615778265901;
-        Sun, 14 Mar 2021 20:17:45 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id k15sm11855229pgt.23.2021.03.14.20.17.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 14 Mar 2021 20:17:45 -0700 (PDT)
-Date:   Sun, 14 Mar 2021 20:15:31 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Message-ID: <20210315031530.GA15245@Asurada-Nvidia>
-References: <20210314080653.29374-1-nicoleotsuka@gmail.com>
- <e1d3eef7-3d7e-b26d-79d2-f87969ac11f8@gmail.com>
+        id S229764AbhCODQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:16:37 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:36211 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229679AbhCODQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 23:16:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615778174; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=nGk2N7p+SUGqciovQZuInQOaZz0NQeAuvjf80+XT74I=;
+ b=U7Q7xKU5ELvhf2wNz6SzmZLdcnQW9O0x9oEBzUh5yawUOt57hoUFHoKdaPvsnXjVm8xGPn+c
+ yu1Wk6xxLl9zYkSSTXVT2yaCUqxXEyiIb1mOs8ArK6MUNZMwyTIjV5pyJeTdWKIws/6mLCab
+ umIcEve0gmLbbHtw0S1CRM1ssnE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 604ed176e3fca7d0a6ec6e11 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 03:16:06
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0D73AC43464; Mon, 15 Mar 2021 03:16:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7805DC433CA;
+        Mon, 15 Mar 2021 03:16:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e1d3eef7-3d7e-b26d-79d2-f87969ac11f8@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Date:   Mon, 15 Mar 2021 11:16:04 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 03/10] scsi: ufshpb: Add region's reads counter
+In-Reply-To: <20210302132503.224670-4-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-4-avri.altman@wdc.com>
+Message-ID: <343d6b0d7802b58bec6e3c06e6f9be57@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 06:08:00PM +0300, Dmitry Osipenko wrote:
-> 14.03.2021 11:06, Nicolin Chen пишет:
-> > +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> > +		struct page *pt_page;
-> > +		u32 *addr;
-> > +		int i;
-> 
-> unsigned int
-> 
-> and then printf specifiers also should be %u
+Hi Avri,
 
-Fixing it, using your previous changes too. Thanks!
+On 2021-03-02 21:24, Avri Altman wrote:
+> In host control mode, reads are the major source of activation trials.
+> Keep track of those reads counters, for both active as well inactive
+> regions.
+> 
+> We reset the read counter upon write - we are only interested in 
+> "clean"
+> reads.  less intuitive however, is that we also reset it upon region's
+> deactivation.  Region deactivation is often due to the fact that
+> eviction took place: a region become active on the expense of another.
+> This is happening when the max-active-regions limit has crossed. If we
+> don’t reset the counter, we will trigger a lot of trashing of the HPB
+> database, since few reads (or even one) to the region that was
+> deactivated, will trigger a re-activation trial.
+> 
+> Keep those counters normalized, as we are using those reads as a
+> comparative score, to make various decisions.
+> If during consecutive normalizations an active region has exhaust its
+> reads - inactivate it.
+> 
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 102 ++++++++++++++++++++++++++++++++------
+>  drivers/scsi/ufs/ufshpb.h |   5 ++
+>  2 files changed, 92 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 044fec9854a0..a8f8d13af21a 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -16,6 +16,8 @@
+>  #include "ufshpb.h"
+>  #include "../sd.h"
+> 
+> +#define ACTIVATION_THRESHOLD 4 /* 4 IOs */
+> +
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+>  static mempool_t *ufshpb_mctx_pool;
+> @@ -554,6 +556,21 @@ static int ufshpb_issue_pre_req(struct ufshpb_lu
+> *hpb, struct scsi_cmnd *cmd,
+>  	return ret;
+>  }
+> 
+> +static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
+> rgn_idx,
+> +				      int srgn_idx)
+> +{
+> +	struct ufshpb_region *rgn;
+> +	struct ufshpb_subregion *srgn;
+> +
+> +	rgn = hpb->rgn_tbl + rgn_idx;
+> +	srgn = rgn->srgn_tbl + srgn_idx;
+> +
+> +	list_del_init(&rgn->list_inact_rgn);
+> +
+> +	if (list_empty(&srgn->list_act_srgn))
+> +		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+> +}
+> +
+>  /*
+>   * This function will set up HPB read command using host-side L2P map 
+> data.
+>   */
+> @@ -600,12 +617,44 @@ int ufshpb_prep(struct ufs_hba *hba, struct
+> ufshcd_lrb *lrbp)
+>  		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>  				 transfer_len);
+>  		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +
+> +		if (hpb->is_hcm) {
+> +			spin_lock_irqsave(&rgn->rgn_lock, flags);
+
+rgn_lock is never used in IRQ contexts, so no need of irqsave and
+irqrestore everywhere, which can impact performance. Please correct
+me if I am wrong.
+
+Meanwhile, have you ever initialized the rgn_lock before use it???
+
+Thanks,
+Can Guo.
+
+> +			rgn->reads = 0;
+> +			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> +		}
+> +
+>  		return 0;
+>  	}
+> 
+>  	if (!ufshpb_is_support_chunk(hpb, transfer_len))
+>  		return 0;
+> 
+> +	if (hpb->is_hcm) {
+> +		bool activate = false;
+> +		/*
+> +		 * in host control mode, reads are the main source for
+> +		 * activation trials.
+> +		 */
+> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
+> +		rgn->reads++;
+> +		if (rgn->reads == ACTIVATION_THRESHOLD)
+> +			activate = true;
+> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> +		if (activate) {
+> +			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> +			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
+> +			hpb->stats.rb_active_cnt++;
+> +			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+> +			dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+> +				"activate region %d-%d\n", rgn_idx, srgn_idx);
+> +		}
+> +
+> +		/* keep those counters normalized */
+> +		if (rgn->reads > hpb->entries_per_srgn)
+> +			schedule_work(&hpb->ufshpb_normalization_work);
+> +	}
+> +
+>  	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>  	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>  				   transfer_len)) {
+> @@ -745,21 +794,6 @@ static int ufshpb_clear_dirty_bitmap(struct 
+> ufshpb_lu *hpb,
+>  	return 0;
+>  }
+> 
+> -static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
+> rgn_idx,
+> -				      int srgn_idx)
+> -{
+> -	struct ufshpb_region *rgn;
+> -	struct ufshpb_subregion *srgn;
+> -
+> -	rgn = hpb->rgn_tbl + rgn_idx;
+> -	srgn = rgn->srgn_tbl + srgn_idx;
+> -
+> -	list_del_init(&rgn->list_inact_rgn);
+> -
+> -	if (list_empty(&srgn->list_act_srgn))
+> -		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+> -}
+> -
+>  static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int 
+> rgn_idx)
+>  {
+>  	struct ufshpb_region *rgn;
+> @@ -1079,6 +1113,14 @@ static void __ufshpb_evict_region(struct 
+> ufshpb_lu *hpb,
+> 
+>  	ufshpb_cleanup_lru_info(lru_info, rgn);
+> 
+> +	if (hpb->is_hcm) {
+> +		unsigned long flags;
+> +
+> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
+> +		rgn->reads = 0;
+> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> +	}
+> +
+>  	for_each_sub_region(rgn, srgn_idx, srgn)
+>  		ufshpb_purge_active_subregion(hpb, srgn);
+>  }
+> @@ -1523,6 +1565,31 @@ static void
+> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+>  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>  }
+> 
+> +static void ufshpb_normalization_work_handler(struct work_struct 
+> *work)
+> +{
+> +	struct ufshpb_lu *hpb;
+> +	int rgn_idx;
+> +	unsigned long flags;
+> +
+> +	hpb = container_of(work, struct ufshpb_lu, 
+> ufshpb_normalization_work);
+> +
+> +	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
+> +		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
+> +
+> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
+> +		rgn->reads = (rgn->reads >> 1);
+> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> +
+> +		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
+> +			continue;
+> +
+> +		/* if region is active but has no reads - inactivate it */
+> +		spin_lock(&hpb->rsp_list_lock);
+> +		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
+> +		spin_unlock(&hpb->rsp_list_lock);
+> +	}
+> +}
+> +
+>  static void ufshpb_map_work_handler(struct work_struct *work)
+>  {
+>  	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu, 
+> map_work);
+> @@ -1913,6 +1980,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+> *hba, struct ufshpb_lu *hpb)
+>  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
+> 
+>  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+> +	if (hpb->is_hcm)
+> +		INIT_WORK(&hpb->ufshpb_normalization_work,
+> +			  ufshpb_normalization_work_handler);
+> 
+>  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+>  			  sizeof(struct ufshpb_req), 0, 0, NULL);
+> @@ -2012,6 +2082,8 @@ static void ufshpb_discard_rsp_lists(struct
+> ufshpb_lu *hpb)
+> 
+>  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>  {
+> +	if (hpb->is_hcm)
+> +		cancel_work_sync(&hpb->ufshpb_normalization_work);
+>  	cancel_work_sync(&hpb->map_work);
+>  }
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index 8119b1a3d1e5..bd4308010466 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -121,6 +121,10 @@ struct ufshpb_region {
+>  	struct list_head list_lru_rgn;
+>  	unsigned long rgn_flags;
+>  #define RGN_FLAG_DIRTY 0
+> +
+> +	/* region reads - for host mode */
+> +	spinlock_t rgn_lock;
+> +	unsigned int reads;
+>  };
+> 
+>  #define for_each_sub_region(rgn, i, srgn)				\
+> @@ -211,6 +215,7 @@ struct ufshpb_lu {
+> 
+>  	/* for selecting victim */
+>  	struct victim_select_info lru_info;
+> +	struct work_struct ufshpb_normalization_work;
+> 
+>  	/* pinned region information */
+>  	u32 lu_pinned_start;
