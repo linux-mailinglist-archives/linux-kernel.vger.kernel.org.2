@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA3233BB5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727B833BACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbhCOOP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S235709AbhCOOKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:10:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232354AbhCON7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43F6064F21;
-        Mon, 15 Mar 2021 13:58:53 +0000 (UTC)
+        id S232289AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D6364F06;
+        Mon, 15 Mar 2021 13:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816734;
-        bh=TStzguN8wu1qXZtmeffgcLVn5wkfZGDMBEcur1ttMCU=;
+        s=korg; t=1615816697;
+        bh=SRaxMHf8UgfcqAC0BnwYzxqGT0xz4b4gwipGqXpHJnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=udDVzIVT2YEdH68cWvBCe9iuQW04iCkPGHm+LbIJ/stHyITDKoWRXU6JEWSZNZMuV
-         2OXzmrlh5qGYpnhyJydbmvbyspx4XltnNU2PQ8HaybhnahPr0FM62DXTbhXlFZb4WX
-         KA0iBtWGMXJMn0fkLgwovr4tZgBK7wmjcsF//NRA=
+        b=xZRNVKKpBix7HklWj+w4o4fbd22WrGtZexKLI9+RdyJTlZCuGunAW/lX65Uf0FGQc
+         sJzXiAbT3zMiFRJXglNEckU23l0pQigtEDwIm2xHzooTefrcfBQA0bwwZgyV2uCOl4
+         TI+zs0l+pWZyzv+DDRwyzxyHLcTvZnFz+N8BVtvU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.11 092/306] s390/cio: return -EFAULT if copy_to_user() fails again
+        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 062/290] r8169: fix r8168fp_adjust_ocp_cmd function
 Date:   Mon, 15 Mar 2021 14:52:35 +0100
-Message-Id: <20210315135510.761333531@linuxfoundation.org>
+Message-Id: <20210315135544.008956536@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Wang Qing <wangqing@vivo.com>
+From: Hayes Wang <hayeswang@realtek.com>
 
-commit 51c44babdc19aaf882e1213325a0ba291573308f upstream.
+commit abbf9a0ef8848dca58c5b97750c1c59bbee45637 upstream.
 
-The copy_to_user() function returns the number of bytes remaining to be
-copied, but we want to return -EFAULT if the copy doesn't complete.
+The (0xBAF70000 & 0x00FFF000) << 6 should be (0xf70 << 18).
 
-Fixes: e01bcdd61320 ("vfio: ccw: realize VFIO_DEVICE_GET_REGION_INFO ioctl")
-Signed-off-by: Wang Qing <wangqing@vivo.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Link: https://lore.kernel.org/r/1614600093-13992-1-git-send-email-wangqing@vivo.com
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: 561535b0f239 ("r8169: fix OCP access on RTL8117")
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/cio/vfio_ccw_ops.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/realtek/r8169_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/cio/vfio_ccw_ops.c
-+++ b/drivers/s390/cio/vfio_ccw_ops.c
-@@ -543,7 +543,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
- 		if (ret)
- 			return ret;
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -1042,7 +1042,7 @@ static void r8168fp_adjust_ocp_cmd(struc
+ {
+ 	/* based on RTL8168FP_OOBMAC_BASE in vendor driver */
+ 	if (tp->mac_version == RTL_GIGA_MAC_VER_52 && type == ERIAR_OOB)
+-		*cmd |= 0x7f0 << 18;
++		*cmd |= 0xf70 << 18;
+ }
  
--		return copy_to_user((void __user *)arg, &info, minsz);
-+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- 	}
- 	case VFIO_DEVICE_GET_REGION_INFO:
- 	{
-@@ -561,7 +561,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
- 		if (ret)
- 			return ret;
- 
--		return copy_to_user((void __user *)arg, &info, minsz);
-+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
- 	}
- 	case VFIO_DEVICE_GET_IRQ_INFO:
- 	{
+ DECLARE_RTL_COND(rtl_eriar_cond)
 
 
