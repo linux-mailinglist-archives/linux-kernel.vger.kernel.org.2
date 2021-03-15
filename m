@@ -2,187 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA0333C809
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F78833C810
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhCOUy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S232565AbhCOU6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhCOUyo (ORCPT
+        with ESMTP id S231837AbhCOU6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:54:44 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B4FC06174A;
-        Mon, 15 Mar 2021 13:54:43 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id y6so18930933eds.1;
-        Mon, 15 Mar 2021 13:54:43 -0700 (PDT)
+        Mon, 15 Mar 2021 16:58:18 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80B5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:17 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 15so17929131ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=38A15GNx1/N58gH7S4h5rE+apX8WICvL1/xV4PvZLew=;
-        b=niIt2v9c4KJnHtqwNwkkZsu83qsifivcP9ZNkBSO2UzJxuJGxpeMcanZq1VQzTgFBj
-         x3Gkde54nMtpP0okh+bUyVfTQm+suVZHP3oXZT0B8n3yeIbi/3Obq5HEU8HwvdpN4cu3
-         6cqNYdeZBo8/zPviclEI1o6cOcMgZ2/qtzE62ICHfyQGkX06HSEkcXmTPxS7Hpu4cIle
-         sbBYoIIMUzVEgJq7i1hE0cLhkkPeuNLWatrEputHd84JgfZsT+s6bOjJ1JpO1gcQPR1l
-         L+/yrUQyiS0yi4fsyPtZx9oEIZIFLaBvMQiCaUYT72mpdKcTOpX24pQyyXHID/PW5FKI
-         IcyA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Gws+gEAPzAxYfrRQwqDKewKbX80S4jZnS6vikGwglJk=;
+        b=IeoRTuXOWpLBFpGSSswcLrO3VzlTKlqDhlP+sriejTxdrukWDsBOx/iuc9Tsv7KTX7
+         KYxFOTAPwdkCZ4HxXWtTnSOhFWIxryjTcFVUQmSv3D5h40x5CEemQWcwR4eyxHN0ryHF
+         YS4BehP9Dvd5MWtrnPHd9hnHOzwtR4cChpoVs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=38A15GNx1/N58gH7S4h5rE+apX8WICvL1/xV4PvZLew=;
-        b=F2oxQNemM6bTenFDtXkjg3TkQ0ybT4JciTx3vJPwUNoWZgJrFWeMqQGMZAEAdue8mw
-         Nl3iRcFYa4M6Q3ElRwj03KjvyV4dHdSc2a7xK4c77CNj9NcyGxKtslDlEXCsAtQom8DT
-         7Ml7fNkqDbk/koxNEOWnLNe61/AHzPb4Waq0CTpkB/kHmXfro/UxvH/PKForhJji9F78
-         tA1ixUP1JL9PznOhyInAxZ4eAp3FhXWSZW+KiAwIW4OzXv7NibhDDo/sh+0/beOitrYm
-         MhW/bx59DNPCqHBpTDhcEZUX5NbzJBtbCSmNrcUZJVL2ucGAodLElKD9BLVZG7MoIeOJ
-         Cf6Q==
-X-Gm-Message-State: AOAM530qsTrr6jzQ9tUZRQ2mOufXz8MyKXaZXy8oIZlwXOJxsQNHN0Ei
-        Cuy+Ne+KMYvibtvM4hiy0jU=
-X-Google-Smtp-Source: ABdhPJz22dzA3+6BANERbChcgx+w3bnMkCp3n1/WqmQflApE9CkK9VB5KhlJwBVzk7cg2aL9fyNKJA==
-X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr11187131edc.14.1615841682665;
-        Mon, 15 Mar 2021 13:54:42 -0700 (PDT)
-Received: from skbuf ([188.25.219.167])
-        by smtp.gmail.com with ESMTPSA id bm10sm8901947edb.2.2021.03.15.13.54.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:54:42 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 22:54:40 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-Message-ID: <20210315205440.lb6hcrvzxtqxdb5x@skbuf>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Gws+gEAPzAxYfrRQwqDKewKbX80S4jZnS6vikGwglJk=;
+        b=qbGs9jlea2WfitaBPijCQ1T7PoEipLyWiBIp75RiUVZJhzXf0MOhMFfXkId4cUAkBh
+         vzJnpr0CLH30LTfbX6+LfyVSmuWEcwFV+Iy2I/zw1QA5C+sToA4YqIQv6QVUeHkIIPlc
+         qI+Q3A8DpE2ffgmEWmLi6iKXsaSdi4dNWebF3Q7LBmfRYpMGPdRFS1Zb/8BKBZ065hDo
+         ej3ASeA5Ci/1AUFhR7/Ksoh8rU3AqJBQWwXCiXJJHRDMgYK7kPhtLVMxklnZqgaNI4ND
+         lf2XtEKu8+g3RSBHPNQi3SAROSGUmoCa81yOY+wUxptqu663hT40ACyh39q5ivK6ifdr
+         DLuw==
+X-Gm-Message-State: AOAM532VVeIIZH5xXL5oFoLWVsGUr6W+5Oo6aTldsoeoZ/PjwpTrMNcP
+        3/MQ9l5+IF45SXnvEr8z72PvNJCuVS4rTA==
+X-Google-Smtp-Source: ABdhPJxafmFsCpxHkDYrSnr4rhsDOin6mTDxzfCQ1K9fDFwxciJxd9s6yEa2Uh+jcvZU8BP3CukiEQ==
+X-Received: by 2002:a2e:8959:: with SMTP id b25mr528669ljk.245.1615841896085;
+        Mon, 15 Mar 2021 13:58:16 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id m7sm2742670lfg.285.2021.03.15.13.58.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 13:58:15 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id x4so52347540lfu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 13:58:14 -0700 (PDT)
+X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr8634354lfu.41.1615841894494;
+ Mon, 15 Mar 2021 13:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
+ <202103120329.VU4uJ0yZ-lkp@intel.com> <CAHk-=whmwEJ-4tGamqOCw4BDJ-yjYrLRYxaFq5YurVc-XXO+hg@mail.gmail.com>
+ <db88186a-d6af-33c9-f1fb-10b673b8fdd6@intel.com> <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
+ <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com> <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
+ <YE/ERLHBdjJ19TYT@audible.transient.net>
+In-Reply-To: <YE/ERLHBdjJ19TYT@audible.transient.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 15 Mar 2021 13:57:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
+Message-ID: <CAHk-=wj6OiV_sSZbqz-ZPnL7=NboN-3VQYM6brVCfq2px0EAqg@mail.gmail.com>
+Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size mismatch
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kuldeep,
+On Mon, Mar 15, 2021 at 1:32 PM Jamie Heilman
+<jamie@audible.transient.net> wrote:
+>
+> fwiw, https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=850202
 
-On Mon, Mar 15, 2021 at 05:45:18PM +0530, Kuldeep Singh wrote:
-> Convert the Freescale DSPI binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> ---
-> Hi Rob,
-> This patch is checked with following commands with no warnings observed.
-> make distclean; make allmodconfig;
-> make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
-> make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-> 
->  .../bindings/spi/fsl,spi-fsl-dspi.yaml        | 131 ++++++++++++++++++
->  .../devicetree/bindings/spi/spi-fsl-dspi.txt  |  65 ---------
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 132 insertions(+), 66 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-> new file mode 100644
-> index 000000000000..15ffc83bdba6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-> @@ -0,0 +1,131 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/fsl,spi-fsl-dspi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale DSPI Controller
-> +
-> +maintainers:
-> +  - Vladimir Oltean <olteanv@gmail.com>
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - fsl,vf610-dspi
-> +          - fsl,ls1021a-v1.0-dspi
-> +          - fsl,ls1028a-dspi
-> +          - fsl,ls2085a-dspi
-> +          - fsl,lx2160a-dspi
-> +      - items:
-> +          - enum:
-> +              - fsl,ls1012a-dspi
-> +              - fsl,ls1028a-dspi
-> +              - fsl,ls1043a-dspi
-> +              - fsl,ls1046a-dspi
-> +              - fsl,ls1088a-dspi
-> +          - const: fsl,ls1021a-v1.0-dspi
-> +      - items:
-> +          - enum:
-> +              - fsl,ls2080a-dspi
-> +              - fsl,lx2160a-dspi
-> +          - const: fsl,ls2085a-dspi
+Yup, that seems to be the exact same thing from 4 years ago.
 
-Can this simply be:
-  compatible:
-    oneOf:
-      - enum:
-          - fsl,vf610-dspi
-          - fsl,ls1021a-v1.0-dspi
-          - fsl,ls1012a-dspi
-          - fsl,ls1028a-dspi
-          - fsl,ls1043a-dspi
-          - fsl,ls1046a-dspi
-          - fsl,ls1088a-dspi
-          - fsl,ls2080a-dspi
-          - fsl,ls2085a-dspi
-          - fsl,lx2160a-dspi
-?
+But it looks like nothing ever came out of it. It probably stayed
+within the Debian bugzilla, and didn't go to upstream dash
+maintainers.
 
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        spi@2100000 {
-> +            compatible = "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi";
+It does look like dash is actually actively maintained, and it's even
+a kernel maintainer that does it: Herbert Xu seems to maintain the
+dash tree and I see commits from January.
 
-This doesn't need the "fsl,ls1021a-v1.0-dspi" compatible, can you please
-remove it?
+So maybe we can get it fixed by just cc'ing Herbert.
 
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0x0 0x2100000 0x0 0x10000>;
-> +            interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> +            clock-names = "dspi";
-> +            clocks = <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(2)>;
-> +            dmas = <&edma0 0 62>, <&edma0 0 60>;
-> +            dma-names = "tx", "rx";
-> +            spi-num-chipselects = <4>;
-> +            little-endian;
-> +
-> +            flash@0 {
-> +                compatible = "jedec,spi-nor";
-> +                spi-max-frequency = <10000000>;
-> +                reg = <0>;
-> +            };
-> +        };
-> +    };
+Herbert, easy test-case:
 
-(...)
+    $ [ "!" = ".size" ]
 
-> -Optional property:
-> -- big-endian: If present the dspi device's registers are implemented
-> -  in big endian mode.
+works, but
 
-I don't see "big-endian" being covered in any common yaml, could you
-please not delete it? The driver calls of_device_is_big_endian.
+    $ [ "!"  = ".size" -a "b" = ".LPBX0," ]
+
+causes
+
+    dash: 6: [: =: unexpected operator
+
+because for some reason that "-a" ends up (wild handwaving here about
+what is going on) re-parsing the first expression, and ignoring the
+quoting around "!" when it does so.
+
+I verified that the bug still exists in that current dash source tree,
+but I didn't dig any deeper than that "wild handwaving guess" as to
+what is actually going on.
+
+                Linus
