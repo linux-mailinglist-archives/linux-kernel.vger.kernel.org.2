@@ -2,312 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7411B33C453
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969CD33C458
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhCORe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232538AbhCORec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:34:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF8364F04;
-        Mon, 15 Mar 2021 17:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615829671;
-        bh=4GfuINCzYwZ3uu8DGDsOOapKLzM+8+b4SCXVGYz2FkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bzBJ3Wf5PqJIF+symSPwiWyQg69/d16FSybwXTfqlhtGX69WJw2qCy6AjvO6KxEFp
-         aeufCQLpqRFLD4Q4i+GUmsmcJ1tDciAsHbGJqsYHXnwkHAHqXjMqV9ki3VoSyuoLBK
-         C/Ykh5w6UtwTug8Rax5GrmhfqzmFNYAS64kxvnG+rYiSqyHdcpp0KlVgaK0Bcbxioa
-         f+pmePCg4JXG/iedOFfiXzqyarGdLJx2+SpsJ3XxxePpObbdBIruLL8gYtZ3EDvNaw
-         7ID9gKwLkkh+uQ4bUSamhvmSFk+7dOvZFxC5gApeJ5UpstnWEo30hyyk5I5vhbz/ul
-         JiZWcTSm3zT7w==
-Date:   Mon, 15 Mar 2021 10:34:24 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        David Howells <dhowells@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] kbuild: check the minimum assembler version in
- Kconfig
-Message-ID: <20210315173424.huknxyignnzqhxnt@archlinux-ax161>
-References: <20210315161257.788477-1-masahiroy@kernel.org>
- <20210315161257.788477-2-masahiroy@kernel.org>
+        id S232223AbhCORfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:35:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59228 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230526AbhCORfD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:35:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615829703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=30TBr3sK+ajEBQTkdVxs2gUMnCABPyOfPizE9SkmbsI=;
+        b=fe/osrTNzv/sXjJ53J4Dkn9HoHQgo6cGAXNkhWxegsdh5YY4YGdfXUaH5Iu4tkhJlglkS4
+        qDKTdXXvzB0QR9mQuXU8CLHRtOwN/2/9mtKnN8JUtmSqMxvzhBUlCjpzj3DUu8J5WykQVj
+        ypRl2gZm+F0cvTtnC+8vKUPsWINdHp0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-ym9K23_yPl6LoD-vytMdWg-1; Mon, 15 Mar 2021 13:34:59 -0400
+X-MC-Unique: ym9K23_yPl6LoD-vytMdWg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44221801597;
+        Mon, 15 Mar 2021 17:34:57 +0000 (UTC)
+Received: from krava (unknown [10.40.196.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 283DF5C5E0;
+        Mon, 15 Mar 2021 17:34:54 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 18:34:54 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 09/27] perf parse-events: Create two hybrid hardware
+ events
+Message-ID: <YE+avkajxbGJMOoM@krava>
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-10-yao.jin@linux.intel.com>
+ <YEu9zbr75p+OLY2o@krava>
+ <65b8208c-ac5d-bdea-a11a-64d4a3d29562@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315161257.788477-2-masahiroy@kernel.org>
+In-Reply-To: <65b8208c-ac5d-bdea-a11a-64d4a3d29562@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:12:56AM +0900, Masahiro Yamada wrote:
-> Documentation/process/changes.rst defines the minimum assembler version
-> (binutils version), but we have never checked it in the build time.
+On Mon, Mar 15, 2021 at 10:04:56AM +0800, Jin, Yao wrote:
+> Hi Jiri,
 > 
-> Kbuild never invokes 'as' directly because all assembly files in the
-> kernel tree are *.S, hence must be preprocessed. I do not expect
-> raw assembly source files (*.s) would be added to the kernel tree.
+> On 3/13/2021 3:15 AM, Jiri Olsa wrote:
+> > On Thu, Mar 11, 2021 at 03:07:24PM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > >    cycles: 4: 800933425 1002536659 1002536659
+> > >    cycles: 5: 800928573 1002528386 1002528386
+> > >    cycles: 6: 800924347 1002520527 1002520527
+> > >    cycles: 7: 800922009 1002513176 1002513176
+> > >    cycles: 8: 800919624 1002507326 1002507326
+> > >    cycles: 9: 800917204 1002500663 1002500663
+> > >    cycles: 10: 802096579 1002494280 1002494280
+> > >    cycles: 11: 802093770 1002486404 1002486404
+> > >    cycles: 12: 803284338 1002479491 1002479491
+> > >    cycles: 13: 803277609 1002469777 1002469777
+> > >    cycles: 14: 800875902 1002458861 1002458861
+> > >    cycles: 15: 800873241 1002451350 1002451350
+> > >    cycles: 0: 800837379 1002444645 1002444645
+> > >    cycles: 1: 800833400 1002438505 1002438505
+> > >    cycles: 2: 800829291 1002433698 1002433698
+> > >    cycles: 3: 800824390 1002427584 1002427584
+> > >    cycles: 4: 800819360 1002422099 1002422099
+> > >    cycles: 5: 800814787 1002415845 1002415845
+> > >    cycles: 6: 800810125 1002410301 1002410301
+> > >    cycles: 7: 800791893 1002386845 1002386845
+> > >    cycles: 12855737722 16040169029 16040169029
+> > >    cycles: 6406560625 8019379522 8019379522
+> > > 
+> > >     Performance counter stats for 'system wide':
+> > > 
+> > >        12,855,737,722      cpu_core/cycles/
+> > >         6,406,560,625      cpu_atom/cycles/
+> > 
+> > so we do that no_merge stuff for uncore pmus, why can't we do
+> > that in here? that'd seems like generic way
+> > 
+> > jirka
+> > 
 > 
-> Therefore, we always use $(CC) as the assembler driver, and commit
-> aa824e0c962b ("kbuild: remove AS variable") removed 'AS'. However,
-> we are still interested in the version of the assembler acting behind.
+> We have set the "stat_config.no_merge = true;" in "[PATCH v2 08/27] perf
+> stat: Uniquify hybrid event name".
 > 
-> As usual, the --version option prints the version string.
+> For hybrid hardware events, they have different configs. The config is
+> 0xDD000000AA (0x400000000 for core vs. 0xa00000000 for atom in this example)
 > 
->   $ as --version | head -n 1
->   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+> We use perf_pmu__for_each_hybrid_pmu() to iterate all hybrid PMUs, generate
+> the configs and create the evsels for each hybrid PMU. This logic and the
+> code are not complex and easy to understand.
 > 
-> But, we do not have $(AS). So, we can add the -Wa prefix so that
-> $(CC) passes --version down to the backing assembler.
+> Uncore looks complicated. It has uncore alias concept which is for different
+> PMUs but with same prefix. Such as "uncore_cbox" for "uncore_cbox_0" to
+> "uncore_cbox_9". But the uncore alias concept doesn't apply to hybrid pmu
+> (we just have "cpu_core" and "cpu_atom" here). And actually I also don't
+> want to mix the core stuff with uncore stuff, that would be hard for
+> understanding.
 > 
->   $ gcc -Wa,--version | head -n 1
->   gcc: fatal error: no input files
->   compilation terminated.
-> 
-> OK, we need to input something to satisfy gcc.
-> 
->   $ gcc -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
->   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
-> 
-> The combination of Clang and GNU assembler works in the same way:
-> 
->   $ clang -no-integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
->   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
-> 
-> Clang with the integrated assembler fails like this:
-> 
->   $ clang -integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
->   clang: error: unsupported argument '--version' to option 'Wa,'
-> 
-> For the last case, checking the error message is fragile. If the
-> proposal for -Wa,--version support [1] is accepted, this may not be
-> even an error in the future.
-> 
-> One easy way is to check if -integrated-as is present in the passed
-> arguments. We did not pass -integrated-as to CLANG_FLAGS before, but
-> we can make it explicit.
-> 
-> Nathan pointed out -integrated-as is the default for all of the
-> architectures/targets that the kernel cares about, but it goes
-> along with "explicit is better than implicit" policy. [2]
-> 
-> With all this in my mind, I implemented scripts/as-version.sh to
-> check the assembler version in Kconfig time.
-> 
->   $ scripts/as-version.sh gcc
->   GNU 23501
->   $ scripts/as-version.sh clang -no-integrated-as
->   GNU 23501
->   $ scripts/as-version.sh clang -integrated-as
->   LLVM 0
-> 
-> [1]: https://github.com/ClangBuiltLinux/linux/issues/1320
-> [2]: https://lore.kernel.org/linux-kbuild/20210307044253.v3h47ucq6ng25iay@archlinux-ax161/
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Perhaps I misunderstand, correct me if I'm wrong.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+not sure, I thought the merging stuff was more generic,
+because the change looks too specific for me, I'll try
+to check on it more deeply
 
-> ---
-> 
-> Changes in v2:
->   - Check -integrated-as option instead of error message.
->   - Add LC_ALL=C just in case.
-> 
->   The Italian locale did not tweak the message from 'as --version'
->   but we never know what would happen on locale.
-> 
->   $ LC_MESSAGES=it_IT.UTF-8 ld --version | head -n 1
->   ld di GNU (GNU Binutils for Debian) 2.35.2
->   $ LC_MESSAGES=it_IT.UTF-8 as --version | head -n 1
->   GNU assembler (GNU Binutils for Debian) 2.35.2
-> 
->  Makefile                |  4 +-
->  arch/Kconfig            |  3 +-
->  init/Kconfig            | 12 ++++++
->  scripts/Kconfig.include |  6 +++
->  scripts/as-version.sh   | 82 +++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 104 insertions(+), 3 deletions(-)
->  create mode 100755 scripts/as-version.sh
-> 
-> diff --git a/Makefile b/Makefile
-> index cc5b7e39fde4..2b161f5a5a66 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -580,7 +580,9 @@ ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->  ifneq ($(CROSS_COMPILE),)
->  CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
->  endif
-> -ifneq ($(LLVM_IAS),1)
-> +ifeq ($(LLVM_IAS),1)
-> +CLANG_FLAGS	+= -integrated-as
-> +else
->  CLANG_FLAGS	+= -no-integrated-as
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
->  CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index ecfd3520b676..555b4f09a9b2 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -631,8 +631,7 @@ config ARCH_SUPPORTS_LTO_CLANG_THIN
->  config HAS_LTO_CLANG
->  	def_bool y
->  	# Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
-> -	depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
-> -	depends on $(success,test $(LLVM_IAS) -eq 1)
-> +	depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD && AS_IS_LLVM
->  	depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
->  	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
->  	depends on ARCH_SUPPORTS_LTO_CLANG
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 5f5c776ef192..019c1874e609 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -41,6 +41,18 @@ config CLANG_VERSION
->  	default $(cc-version) if CC_IS_CLANG
->  	default 0
->  
-> +config AS_IS_GNU
-> +	def_bool $(success,test "$(as-name)" = GNU)
-> +
-> +config AS_IS_LLVM
-> +	def_bool $(success,test "$(as-name)" = LLVM)
-> +
-> +config AS_VERSION
-> +	int
-> +	# Use clang version if this is the integrated assembler
-> +	default CLANG_VERSION if AS_IS_LLVM
-> +	default $(as-version)
-> +
->  config LD_IS_BFD
->  	def_bool $(success,test "$(ld-name)" = BFD)
->  
-> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-> index 58fdb5308725..0496efd6e117 100644
-> --- a/scripts/Kconfig.include
-> +++ b/scripts/Kconfig.include
-> @@ -45,6 +45,12 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
->  cc-name := $(shell,set -- $(cc-info) && echo $1)
->  cc-version := $(shell,set -- $(cc-info) && echo $2)
->  
-> +# Get the assembler name, version, and error out if it is not supported.
-> +as-info := $(shell,$(srctree)/scripts/as-version.sh $(CC) $(CLANG_FLAGS))
-> +$(error-if,$(success,test -z "$(as-info)"),Sorry$(comma) this assembler is not supported.)
-> +as-name := $(shell,set -- $(as-info) && echo $1)
-> +as-version := $(shell,set -- $(as-info) && echo $2)
-> +
->  # Get the linker name, version, and error out if it is not supported.
->  ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
->  $(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
-> diff --git a/scripts/as-version.sh b/scripts/as-version.sh
-> new file mode 100755
-> index 000000000000..953ff000bcbc
-> --- /dev/null
-> +++ b/scripts/as-version.sh
-> @@ -0,0 +1,82 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Print the assembler name and its version in a 5 or 6-digit form.
-> +# Also, perform the minimum version check.
-> +# (If it is the integrated assembler, return 0 as the version, and
-> +# skip the version check.)
-> +
-> +set -e
-> +
-> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
-> +get_canonical_version()
-> +{
-> +	IFS=.
-> +	set -- $1
-> +
-> +	# If the 2nd or 3rd field is missing, fill it with a zero.
-> +	#
-> +	# The 4th field, if present, is ignored.
-> +	# This occurs in development snapshots as in 2.35.1.20201116
-> +	echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
-> +}
-> +
-> +# Clang failes to handle -Wa,--version fails unless -no-integrated-as is given.
-> +# We check -(f)integrated-as, expecting it is explicitly passed in for the
-> +# integrated assembler case.
-> +check_integrated_as()
-> +{
-> +	while [ $# -gt 0 ]; do
-> +		if [ "$1" = -integrated-as -o "$1" = -fintegrated-as ]; then
-> +			# For the intergrated assembler, we do not check the
-> +			# version here. It is the same as the clang version, and
-> +			# it has been already checked by scripts/cc-version.sh.
-> +			echo LLVM 0
-> +			exit 0
-> +		fi
-> +		shift
-> +	done
-> +}
-> +
-> +check_integrated_as "$@"
-> +
-> +orig_args="$@"
-> +
-> +# Get the first line of the --version output.
-> +IFS='
-> +'
-> +set -- $(LC_ALL=C "$@" -Wa,--version -c -x assembler /dev/null -o /dev/null 2>&1)
-> +
-> +# Split the line on spaces.
-> +IFS=' '
-> +set -- $1
-> +
-> +min_tool_version=$(dirname $0)/min-tool-version.sh
-> +
-> +if [ "$1" = GNU -a "$2" = assembler ]; then
-> +	shift $(($# - 1))
-> +	version=$1
-> +	min_version=$($min_tool_version binutils)
-> +	name=GNU
-> +else
-> +	echo "$orig_args: unknown assembler invoked" >&2
-> +	exit 1
-> +fi
-> +
-> +# Some distributions append a package release number, as in 2.34-4.fc32
-> +# Trim the hyphen and any characters that follow.
-> +version=${version%-*}
-> +
-> +cversion=$(get_canonical_version $version)
-> +min_cversion=$(get_canonical_version $min_version)
-> +
-> +if [ "$cversion" -lt "$min_cversion" ]; then
-> +	echo >&2 "***"
-> +	echo >&2 "*** Assembler is too old."
-> +	echo >&2 "***   Your $name assembler version:    $version"
-> +	echo >&2 "***   Minimum $name assembler version: $min_version"
-> +	echo >&2 "***"
-> +	exit 1
-> +fi
-> +
-> +echo $name $cversion
-> -- 
-> 2.27.0
-> 
+jirka
+
