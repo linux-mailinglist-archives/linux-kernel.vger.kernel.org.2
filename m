@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FB733C50C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1C033C528
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhCOSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:00:56 -0400
-Received: from mx01-sz.bfs.de ([194.94.69.67]:57568 "EHLO mx01-sz.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232432AbhCOSAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:00:36 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-sz.bfs.de (Postfix) with ESMTPS id 6E6BD20424;
-        Mon, 15 Mar 2021 19:00:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1615831232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CkaN9AZ03poPxA7f4gJYYTjbp5p4x6TZ6uzceZecgPM=;
-        b=RTkj8QuRR6OMZINbRxJfdfF9SrjOrhIY0tJf90GrEGiXYOF+bEjbxEhYP9V6F8YWltVG5R
-        jRYJtycEInEtGW+8YItSdICvqbbx+/kzEg3z8DNYGBywbsbvuUH1EouREaoPx8gS1THfaX
-        IW+mBQn7opOK84G5oLwMAGpufGfCVPzbBPH0swxg7EF8d7EXeF5qL66nFSwCAQlZfsJQ3T
-        P8rIIMIHL3bVc3e/CQRZPC4g+RknZWKbOpxifktgafD88C6A6ltdv/+gkgxtE11EZbhBwU
-        zNvBWO11G9n7Lz8vuUykDxWNyac/ctDllEpWpgcElsdm4JFVU7cXq5jo33e8dw==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2176.2; Mon, 15 Mar
- 2021 19:00:31 +0100
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
- 15.01.2176.009; Mon, 15 Mar 2021 19:00:31 +0100
-From:   Walter Harms <wharms@bfs.de>
-To:     Alejandro Colomar <alx.manpages@gmail.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
-CC:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: AW: [RFC v3 04/17] arch_prctl.2: SYNOPSIS: Remove unused includes
-Thread-Topic: [RFC v3 04/17] arch_prctl.2: SYNOPSIS: Remove unused includes
-Thread-Index: AQHXGD7XAxTSL2NJaE+7W5iBTQCmt6qFVHc7
-Date:   Mon, 15 Mar 2021 18:00:31 +0000
-Message-ID: <be6a5420c2de4cd5a772a878a173fd09@bfs.de>
-References: <20210214133907.157320-1-alx.manpages@gmail.com>,<20210313192526.350200-5-alx.manpages@gmail.com>
-In-Reply-To: <20210313192526.350200-5-alx.manpages@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-26032.001
-x-tm-as-result: No-10-3.260300-5.000000
-x-tmase-matchedrid: CDTSlS88fVTRubRCcrbc5grcxrzwsv5u3dCmvEa6IiGoLZarzrrPmY8c
-        NcoztgfFQVZ/emx6g8Y8CQr3JqGFgWbK2Lp4BaXTs35egIUyB0yNY/pqxovzxWww+4tkH8hH/eb
-        8AiQy4VrAt83TuKuapBv4L0374LF/3huBcHFqgEv1P1OLgOxuG9Mtvp2vZ9b08YXezpzoZTpAwV
-        xIwdMCgWe4Wa1eP/asXl5aEpWgX5dEVewvaIzmdXYZxYoZm58F9e5am3m57X1wh5cseF+Y9lMe5
-        Blkpry7rdoLblq9S5rZsNA4lAbe+0kjllSXrjtQgxsfzkNRlfLdB/CxWTRRuwihQpoXbuXFx/mZ
-        2/tYMNdk6kcSjxdDoZky1yTNkSniULYWWJ6MTvne3IkDeq6Pe3VdQuCkdZvmVs3mQrPFErZ4Nj9
-        8aMLOkXuBattE+CJ0qcFxC+mrhy1WwS3yrrDBJd6uf8BQDO/7JXUq4O4yYIf6svlVb6h9lw==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10-3.260300-5.000000
-x-tmase-version: SMEX-14.0.0.3080-8.6.1012-26032.001
-x-tm-snts-smtp: DF8E54FA244AE94B072DC9C21BA856F55E500E6D160883E88D602C86E137F0B82000:9
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S233534AbhCOSDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhCOSCy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:02:54 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C08C06174A;
+        Mon, 15 Mar 2021 11:02:53 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so17039006wmj.2;
+        Mon, 15 Mar 2021 11:02:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U3aH1dWCtd1BJ5vsp+a7HWjVOCqUvhB5pzQy/Fhe2ag=;
+        b=TWNdJrW2jJpXaP5vrj3tJJQKLuWWTUtx1Cox8DZNd3RXKIIdl+tVmcAy73Hl504/De
+         0gClSiwK0OzWJwQzofzVK65hkSNIRDKFVS6yGk+zZDxkS74iPxj8DCU6d6Rp83B1k7aE
+         gTr1PPQlq467xu/Dj0/0FaHINM5bGQlbsJ0noajxCcmcf6m8uzRgFpinqxiYOM5OaHK3
+         wwwmLHJxWGg0zIIp8sKuFFjVMqMkkEHLWOX5sAnRxekKmD+EWT4/K68rN30P6umVQes9
+         V0VjFVxWqzIDEMDLncOSGilOELM5F9pHqXoXaxv5qQDKZvf+alV/ehB2NTe8C5eoG7NE
+         2YQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=U3aH1dWCtd1BJ5vsp+a7HWjVOCqUvhB5pzQy/Fhe2ag=;
+        b=chrKuqIqgzWD8TIjGkzu/q51KsxPlN8nZ22Z9BJdoYXmnkM1Sln1GTlJhUMzcGjeRv
+         N80WdGcnais1LMQgINg25nLPVimPUEB9PZIYRt+0z+4j8y1EE3ff2457l46Tdem72Xm/
+         eQnIiN8JLYLtsIM2mvIwUpJSjxe+DwHKANnqoKZjUK8eP7l3nVvSc+/WNmZeoglj1KJq
+         UqqtDT7r4nym4GZp8Nt7/JtCAe+Ur7BqX8DgKAZJJ5Osn0SzrxUljLgitjHwwezohG84
+         YXiwasEbQ8tUHX94RLuB9QZ70Dkgg76Uu9HJLfVjTr0laiv+C3P07Shfr1uUfLngGzrm
+         f7bw==
+X-Gm-Message-State: AOAM530GoJ1ca7nEkfzCcBvSJx0uahCf1A/BpUHcYKd+dbMmQXaVTirf
+        vqEdBryQyMra3znVTGgqBHS9nKXMooGCug==
+X-Google-Smtp-Source: ABdhPJxRdsmzkKnJkTBiI/kSNQNND4Uh3tD34/Jx/6Y4XMCpbTYA1zM8hy6pFmgCS9cjxsnJVRg78w==
+X-Received: by 2002:a7b:ca44:: with SMTP id m4mr835960wml.103.1615831372265;
+        Mon, 15 Mar 2021 11:02:52 -0700 (PDT)
+Received: from [192.168.8.155] ([148.252.132.232])
+        by smtp.gmail.com with ESMTPSA id r2sm18880903wrt.8.2021.03.15.11.02.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 11:02:51 -0700 (PDT)
+To:     Jordy Zomer <jordy@pwning.systems>, axboe@kernel.dk
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210315174425.2201225-1-jordy@pwning.systems>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Subject: Re: [PATCH] Fix use-after-free in io_wqe_inc_running() due to wq
+ already being free'd
+Message-ID: <65a85dd1-a9b0-30a1-13b9-559270f31264@gmail.com>
+Date:   Mon, 15 Mar 2021 17:58:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-16.37 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
-         BAYES_HAM(-2.87)[99.44%];
-         WHITELIST_LOCAL_IP(-15.00)[10.129.90.31];
-         NEURAL_HAM(-0.00)[-1.000];
-         FREEMAIL_TO(0.00)[gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-Authentication-Results: mx01-sz.bfs.de;
-        none
-X-Spam-Status: No, score=-16.37
+In-Reply-To: <20210315174425.2201225-1-jordy@pwning.systems>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have learned the other way around:
-#include <sys/prctl.h>
-Is a general system header to use that may include
-the asm/prctrl.h what should never be included by
-userspace programms.
+On 15/03/2021 17:44, Jordy Zomer wrote:
+> My syzkaller instance reported a use-after-free bug in io_wqe_inc_running.
+> I tried fixing this by checking if wq isn't NULL in io_wqe_worker.
+> If it does; return an -EFAULT. This because create_io_worker() will clean-up the worker if there's an error.
+> 
+> If you want I could send you the syzkaller reproducer and crash-logs :)
 
-jm2c,
-re,
- wh
-________________________________________
-Von: Alejandro Colomar <alx.manpages@gmail.com>
-Gesendet: Samstag, 13. M=E4rz 2021 20:25:14
-An: mtk.manpages@gmail.com
-Cc: Alejandro Colomar; linux-man@vger.kernel.org; libc-alpha@sourceware.org=
-; linux-kernel@vger.kernel.org; Florian Weimer
-Betreff: [RFC v3 04/17] arch_prctl.2: SYNOPSIS: Remove unused includes
+Yes, please.
 
-WARNUNG: Diese E-Mail kam von au=DFerhalb der Organisation. Klicken Sie nic=
-ht auf Links oder =F6ffnen Sie keine Anh=E4nge, es sei denn, Sie kennen den=
- Absender und wissen, dass der Inhalt sicher ist.
+Haven't looked up properly, but looks that wq==NULL should
+never happen, so the fix is a bit racy.
 
+> 
+> Best Regards,
+> 
+> Jordy Zomer
+> 
+> Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+> ---
+>  fs/io-wq.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/io-wq.c b/fs/io-wq.c
+> index 0ae9ecadf295..9ed92d88a088 100644
+> --- a/fs/io-wq.c
+> +++ b/fs/io-wq.c
+> @@ -482,6 +482,10 @@ static int io_wqe_worker(void *data)
+>  	char buf[TASK_COMM_LEN];
+>  
+>  	worker->flags |= (IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
+> +
+> +	if (wq == NULL)
+> +		return -EFAULT;
+> +
+>  	io_wqe_inc_running(worker);
+>  
+>  	sprintf(buf, "iou-wrk-%d", wq->task_pid);
+> 
 
-AFAICS, there's no reason to include that.
-All of the macros that this function uses
-are already defined in the other headers.
-
-Cc: glibc <libc-alpha@sourceware.org>
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- man2/arch_prctl.2 | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/man2/arch_prctl.2 b/man2/arch_prctl.2
-index 8706cd1ec..d1b9e16f9 100644
---- a/man2/arch_prctl.2
-+++ b/man2/arch_prctl.2
-@@ -28,7 +28,6 @@ arch_prctl \- set architecture-specific thread state
- .SH SYNOPSIS
- .nf
- .BR "#include <asm/prctl.h>" "        /* Definition of " ARCH_* " constant=
-s */"
--.B #include <sys/prctl.h>
- .BR "#include <sys/syscall.h>" "      /* Definition of " SYS_* " constants=
- */"
- .B #include <unistd.h>
- .PP
---
-2.30.2
-
+-- 
+Pavel Begunkov
