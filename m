@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878E633BC13
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B262333BE9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238159AbhCOOWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S241055AbhCOOsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232896AbhCOOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 254C664F1E;
-        Mon, 15 Mar 2021 13:59:50 +0000 (UTC)
+        id S234481AbhCOODp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1746B64EF1;
+        Mon, 15 Mar 2021 14:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816791;
-        bh=j/cRpuSaTG/ikfUPjVyiZeucg2SiJvxu/HB5bNElkEs=;
+        s=korg; t=1615817024;
+        bh=WtmMRBEZ6HyeP+mdN5x/IA7nqV4P4wPW+6UIcR7l5l8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XVuqkgxg+Zs7FN2U67SNW6xTcJ1pgpu8GcF4OZb6D+94oLM196mrXSiPUjGfdxyV9
-         Wq47T7PtyoTdxI8bQfrAIn01LqL1PL9dVT5HWbpFqn07PCayYuSNMTDiWyu8gcfDi6
-         YZSsogxcFHkLWjnrxxbfiRcgGBQQAZnQwUsOi00Q=
+        b=lkfdOJxx6ZKa9B+EQe92wda+ULiKdzTdrqkzKd3mb7Lr8PhTtsPBSWw77vKE6Y0RT
+         D+QnIWay3Y4uXmvP8CD5RvlGVkvaqAN1+Hx5UlTvWHNKDOHiWhM+wPny0+vlqtjXNg
+         Kio9Ej1oWIf2Z29eQHBWpPXTMMboEwO3fP6WD0Yw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 112/168] xhci: Improve detection of device initiated wake signal.
-Date:   Mon, 15 Mar 2021 14:55:44 +0100
-Message-Id: <20210315135554.041760279@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Salter <msalter@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 252/290] arm64: mm: use a 48-bit ID map when possible on 52-bit VA builds
+Date:   Mon, 15 Mar 2021 14:55:45 +0100
+Message-Id: <20210315135550.534088596@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +42,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
+[ Upstream commit 7ba8f2b2d652cd8d8a2ab61f4be66973e70f9f88 ]
 
-A xHC USB 3 port might miss the first wake signal from a USB 3 device
-if the port LFPS reveiver isn't enabled fast enough after xHC resume.
+52-bit VA kernels can run on hardware that is only 48-bit capable, but
+configure the ID map as 52-bit by default. This was not a problem until
+recently, because the special T0SZ value for a 52-bit VA space was never
+programmed into the TCR register anwyay, and because a 52-bit ID map
+happens to use the same number of translation levels as a 48-bit one.
 
-xHC host will anyway be resumed by a PME# signal, but will go back to
-suspend if no port activity is seen.
-The device resends the U3 LFPS wake signal after a 100ms delay, but
-by then host is already suspended, starting all over from the
-beginning of this issue.
+This behavior was changed by commit 1401bef703a4 ("arm64: mm: Always update
+TCR_EL1 from __cpu_set_tcr_t0sz()"), which causes the unsupported T0SZ
+value for a 52-bit VA to be programmed into TCR_EL1. While some hardware
+simply ignores this, Mark reports that Amberwing systems choke on this,
+resulting in a broken boot. But even before that commit, the unsupported
+idmap_t0sz value was exposed to KVM and used to program TCR_EL2 incorrectly
+as well.
 
-USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
-needs to delay 100ms before resending the wake.
+Given that we already have to deal with address spaces being either 48-bit
+or 52-bit in size, the cleanest approach seems to be to simply default to
+a 48-bit VA ID map, and only switch to a 52-bit one if the placement of the
+kernel in DRAM requires it. This is guaranteed not to happen unless the
+system is actually 52-bit VA capable.
 
-Don't suspend immediately if port activity isn't detected in resume.
-Instead add a retry. If there is no port activity then delay for 120ms,
-and re-check for port activity.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 90ec95cda91a ("arm64: mm: Introduce VA_BITS_MIN")
+Reported-by: Mark Salter <msalter@redhat.com>
+Link: http://lore.kernel.org/r/20210310003216.410037-1-msalter@redhat.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20210310171515.416643-2-ardb@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c |   16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/mmu_context.h | 5 +----
+ arch/arm64/kernel/head.S             | 2 +-
+ arch/arm64/mm/mmu.c                  | 2 +-
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1088,6 +1088,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 	struct usb_hcd		*secondary_hcd;
- 	int			retval = 0;
- 	bool			comp_timer_running = false;
-+	bool			pending_portevent = false;
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index 0672236e1aea..4e2ba9477845 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -65,10 +65,7 @@ extern u64 idmap_ptrs_per_pgd;
  
- 	if (!hcd->state)
- 		return 0;
-@@ -1226,13 +1227,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 
-  done:
- 	if (retval == 0) {
--		/* Resume root hubs only when have pending events. */
--		if (xhci_pending_portevent(xhci)) {
-+		/*
-+		 * Resume roothubs only if there are pending events.
-+		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
-+		 * the first wake signalling failed, give it that chance.
-+		 */
-+		pending_portevent = xhci_pending_portevent(xhci);
-+		if (!pending_portevent) {
-+			msleep(120);
-+			pending_portevent = xhci_pending_portevent(xhci);
-+		}
-+
-+		if (pending_portevent) {
- 			usb_hcd_resume_root_hub(xhci->shared_hcd);
- 			usb_hcd_resume_root_hub(hcd);
- 		}
- 	}
+ static inline bool __cpu_uses_extended_idmap(void)
+ {
+-	if (IS_ENABLED(CONFIG_ARM64_VA_BITS_52))
+-		return false;
 -
- 	/*
- 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
- 	 * be re-initialized Always after a system resume. Ports are subject
+-	return unlikely(idmap_t0sz != TCR_T0SZ(VA_BITS));
++	return unlikely(idmap_t0sz != TCR_T0SZ(vabits_actual));
+ }
+ 
+ /*
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index e7550a5289fe..78cdd6b24172 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -334,7 +334,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+ 	 */
+ 	adrp	x5, __idmap_text_end
+ 	clz	x5, x5
+-	cmp	x5, TCR_T0SZ(VA_BITS)	// default T0SZ small enough?
++	cmp	x5, TCR_T0SZ(VA_BITS_MIN) // default T0SZ small enough?
+ 	b.ge	1f			// .. then skip VA range extension
+ 
+ 	adr_l	x6, idmap_t0sz
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index f0125bb09fa3..6aabf1eced31 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -40,7 +40,7 @@
+ #define NO_BLOCK_MAPPINGS	BIT(0)
+ #define NO_CONT_MAPPINGS	BIT(1)
+ 
+-u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
++u64 idmap_t0sz = TCR_T0SZ(VA_BITS_MIN);
+ u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
+ 
+ u64 __section(".mmuoff.data.write") vabits_actual;
+-- 
+2.30.1
+
 
 
