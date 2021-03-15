@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44BD33BB8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19B633BB0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhCOOSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S235890AbhCOOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:11:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232718AbhCON7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE99064F73;
-        Mon, 15 Mar 2021 13:59:13 +0000 (UTC)
+        id S231453AbhCON6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D7E64F04;
+        Mon, 15 Mar 2021 13:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816754;
-        bh=xoQR4W2eLoVMf5THu+qO2cIW0s+W03v4FSCbI0tO2nk=;
+        s=korg; t=1615816703;
+        bh=XaLBq42/E+mlwlGI2vk6zUz1rdgx0t7/XCw3YyfywR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PNbv31vbsA2MIPkDEjs3nVATRbjvI8veuhYoPTKRVqKGXfaxD2wqPv7rCda8P0SPf
-         JIUSD7N+IEUJeq69Ygf83EZUSYRpgF2yiWS63N4ONVrkEALsQBpp9rXcrq4V1bevyf
-         I9+OpiZWm4u6VUdbqpGxTUg+rL02k4fY0z2PKMUU=
+        b=ZjKc0tP4dioMz9UzTLWosxoFm6zi0xlhvNnO9YwBz5qTSL1/ioh+MSK19+ok6zcgZ
+         8gm/GBoarQTYCMRAoJNKRGtm5dbsMwJE8/lmW1bRPMm1F7QC3Opgoqunah+4gLbQWj
+         rVYNQyC1jRKbvaRqJhR2yE6YQLG8gNDdHCtkKQcw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 047/120] powerpc: improve handling of unrecoverable system reset
+        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Andre Naujoks <nautsch2@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.14 08/95] can: skb: can_skb_set_owner(): fix ref counting if socket was closed before setting skb ownership
 Date:   Mon, 15 Mar 2021 14:56:38 +0100
-Message-Id: <20210315135721.528845841@linuxfoundation.org>
+Message-Id: <20210315135740.544203010@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +44,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 11cb0a25f71818ca7ab4856548ecfd83c169aa4d ]
+commit e940e0895a82c6fbaa259f2615eb52b57ee91a7e upstream.
 
-If an unrecoverable system reset hits in process context, the system
-does not have to panic. Similar to machine check, call nmi_exit()
-before die().
+There are two ref count variables controlling the free()ing of a socket:
+- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
+- struct sock::sk_wmem_alloc - which accounts the memory allocated by
+  the skbs in the send path.
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210130130852.2952424-26-npiggin@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In case there are still TX skbs on the fly and the socket() is closed,
+the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
+clones an "echo" skb, calls sock_hold() on the original socket and
+references it. This produces the following back trace:
+
+| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
+| refcount_t: addition on 0; use-after-free.
+| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
+| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
+| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+| Backtrace:
+| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
+| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
+| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
+| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
+| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
+| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
+| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
+| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
+| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
+| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
+| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
+| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
+
+To fix this problem, only set skb ownership to sockets which have still
+a ref count > 0.
+
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Andre Naujoks <nautsch2@gmail.com>
+Link: https://lore.kernel.org/r/20210226092456.27126-1-o.rempel@pengutronix.de
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/traps.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/linux/can/skb.h |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 1b2d84cb373b..2379c4bf3979 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -433,8 +433,11 @@ void system_reset_exception(struct pt_regs *regs)
- 		die("Unrecoverable nested System Reset", regs, SIGABRT);
- #endif
- 	/* Must die if the interrupt is not recoverable */
--	if (!(regs->msr & MSR_RI))
-+	if (!(regs->msr & MSR_RI)) {
-+		/* For the reason explained in die_mce, nmi_exit before die */
-+		nmi_exit();
- 		die("Unrecoverable System Reset", regs, SIGABRT);
-+	}
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -49,8 +49,12 @@ static inline void can_skb_reserve(struc
  
- 	if (!nested)
- 		nmi_exit();
--- 
-2.30.1
-
+ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+ {
+-	if (sk) {
+-		sock_hold(sk);
++	/* If the socket has already been closed by user space, the
++	 * refcount may already be 0 (and the socket will be freed
++	 * after the last TX skb has been freed). So only increase
++	 * socket refcount if the refcount is > 0.
++	 */
++	if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
+ 		skb->destructor = sock_efree;
+ 		skb->sk = sk;
+ 	}
 
 
