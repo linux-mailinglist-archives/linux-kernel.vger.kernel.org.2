@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0933C42F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCAC33C4F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbhCORaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:30:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30988 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236394AbhCORaG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:30:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615829405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=49lfJRWKKEBpIbOKRaFlvzL+cvb95zX4ZYi+xzBTlg4=;
-        b=C2ybYC/JppgFOkRCu1aMp2PCKYtdaDaaQ9bIbbd12cDlI8owMOr/E+BUgr79GjMIAahHLx
-        1kZ48RxsSvSJXo7zKPPmySBL5f1puaDHzaoevon2pQ11ieqW0h92tGvq7WFeFfOcDdFFjl
-        FOrQdJ66SN2DwXO6eO1G8A25fz7VXGs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-WgrTz7zbO2ezphuvKbZh_w-1; Mon, 15 Mar 2021 13:30:02 -0400
-X-MC-Unique: WgrTz7zbO2ezphuvKbZh_w-1
-Received: by mail-ed1-f70.google.com with SMTP id q25so1579094eds.16
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:30:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=49lfJRWKKEBpIbOKRaFlvzL+cvb95zX4ZYi+xzBTlg4=;
-        b=cBHyhf629dnvgYdFTm79OhM7w3Tfqo7IXS4P3EHEQ2Txv95GkP5uRvBeECOyZCx9f4
-         xLBa3icw9sjwxBDxUSwi/a/nABtgEqF7JdMxQ3POTagccc1dlGs4zpqgxFHGcJD5grY1
-         Uq1BBpX/e776EDMYLMyUy2km2+C2aCBiUExjwdUMuJ5PN/s1viaB2LcTn3SwkcNsyr4E
-         kBkOLh7TKK3a/CyEMJZz2p9Gxfmyq4V73lpm8JAbVLB1y1cXqqyLuTi0/Su+xQRdyMd2
-         v80oE/Ykvn+8wiSzR6oHC9wRosjhIkWLpauQx0rMGQcENmexwAMFSeEHE7USGH/NDY8Y
-         Aowg==
-X-Gm-Message-State: AOAM5337Vx8GfB9u1QOVEFMRR93zaZUK3qJvoWFI0ErB91ST36HXlq7m
-        UgXVdNDnMa9Iq3gl0f+TYovpy00oaWq/hxic/bNnBEpQ7X6y+M4eAXeBJvbhVBl4hKR8B7GPrLI
-        amSItt3soyrOn50JoqLnTBaYT
-X-Received: by 2002:a17:907:d10:: with SMTP id gn16mr14108909ejc.304.1615829401651;
-        Mon, 15 Mar 2021 10:30:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWcyiDNAeGBQsoY9WcHB0zHRZpCln4m3pBXhyKhHaDLYYLjNpzoNz75Ddz7iz/ieveaKhzcw==
-X-Received: by 2002:a17:907:d10:: with SMTP id gn16mr14108876ejc.304.1615829401480;
-        Mon, 15 Mar 2021 10:30:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.gmail.com with ESMTPSA id y17sm7810001ejf.116.2021.03.15.10.30.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 10:30:00 -0700 (PDT)
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-To:     Tobin Feldman-Fitzthum <tobin@linux.ibm.com>, natet@google.com
-Cc:     Dov Murik <dovmurik@linux.vnet.ibm.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com, rientjes@google.com,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Laszlo Ersek <lersek@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>
-References: <20210224085915.28751-1-natet@google.com>
- <7829472d-741c-1057-c61f-321fcfb5bdcd@linux.ibm.com>
- <35dde628-f1a8-c3bf-9c7d-7789166b0ee1@redhat.com>
- <adb84c91-1651-94b6-0084-f86296e96530@linux.ibm.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <69004ca1-93a7-6a7e-b349-05f857756334@redhat.com>
-Date:   Mon, 15 Mar 2021 18:29:59 +0100
+        id S232077AbhCOR41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:56:27 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49471 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231909AbhCORsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:48:41 -0400
+IronPort-SDR: LyMUd7N00xTB6KZQqPb26mPw4an8l7YeBlpsAK4vol4jW0WiDxDKWP+OmN/JxQFaBoTBd6HiwZ
+ IgpO0Iv1HTbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="274171851"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="274171851"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 10:46:00 -0700
+IronPort-SDR: v8t5y50ubkXves4zafwbQVR32hXp6Mt5VX4zMLdh7feUVv5AskleWaXsAgrqYunr/+jqDs14wF
+ zEIeZvVMn3Bg==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="438962876"
+Received: from pwells-mobl2.amr.corp.intel.com (HELO [10.212.5.38]) ([10.212.5.38])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 10:45:59 -0700
+Subject: Re: [PATCH v4 0/5] soundwire: add static port map support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org, vkoul@kernel.org
+Cc:     robh@kernel.org, devicetree@vger.kernel.org,
+        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210315165650.13392-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c7bbbcb3-cc82-9422-9736-7d5393970fb3@linux.intel.com>
+Date:   Mon, 15 Mar 2021 12:10:46 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <adb84c91-1651-94b6-0084-f86296e96530@linux.ibm.com>
+In-Reply-To: <20210315165650.13392-1-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/21 18:05, Tobin Feldman-Fitzthum wrote:
->>
->> I can answer this part.  I think this will actually be simpler than 
->> with auxiliary vCPUs.  There will be a separate pair of VM+vCPU file 
->> descriptors within the same QEMU process, and some code to set up the 
->> memory map using KVM_SET_USER_MEMORY_REGION.
->>
->> However, the code to run this VM will be very small as the VM does not 
->> have to do MMIO, interrupts, live migration (of itself), etc.  It just 
->> starts up and communicates with QEMU using a mailbox at a 
->> predetermined address.
+
+
+On 3/15/21 11:56 AM, Srinivas Kandagatla wrote:
+> In some cases, SoundWire device ports are statically mapped to Controller
+> ports during design, however there is no way to expose this information
+> to the controller. Controllers like Qualcomm ones use this info to setup
+> static bandwidth parameters for those ports.
 > 
-> We've been starting up our Migration Handler via OVMF. I'm not sure if 
-> this would work with a minimal setup in QEMU.
+> A generic port allocation is not possible in this cases!
+> This patch adds a new member m_port_map to SoundWire device so that
+> it can populate the static master port map and share it with controller
+> to be able to setup correct bandwidth parameters.
+> 
+> As a user of this feature this patchset also adds new bindings for
+> wsa881x smart speaker which has 4 ports which are statically mapped
+> to the 3 output and 1 input port of the controller.
+> 
+> Tested it on DB845c and SM8250 MTP.
+> 
+> thanks,
+> srini
 
-Yeah, the way to start up the migration handler would be completely 
-different, you'd have to do so very early (probably SEC).
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Paolo
-
+> Changes since v3:
+> 	- updated kernel doc for more clarity on m_port_map
+> 
+> Srinivas Kandagatla (5):
+>    soundwire: add static port mapping support
+>    soundwire: qcom: update port map allocation bit mask
+>    soundwire: qcom: add static port map support
+>    ASoC: dt-bindings: wsa881x: add bindings for port mapping
+>    ASoC: codecs: wsa881x: add static port map support
+> 
+>   .../bindings/sound/qcom,wsa881x.yaml          |  9 ++++++
+>   drivers/soundwire/qcom.c                      | 31 +++++++++++++++----
+>   include/linux/soundwire/sdw.h                 |  2 ++
+>   sound/soc/codecs/wsa881x.c                    |  7 +++++
+>   4 files changed, 43 insertions(+), 6 deletions(-)
+> 
