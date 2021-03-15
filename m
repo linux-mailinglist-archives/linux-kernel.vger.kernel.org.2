@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C127333C62D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1948C33C62E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhCOSxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232707AbhCOSxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:53:13 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC569C06174A;
-        Mon, 15 Mar 2021 11:53:12 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a1so17507272ljp.2;
-        Mon, 15 Mar 2021 11:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v2HjbGIhGvuWN/p4wjJ96KHLGD4o/ABRVFbl69eEBO8=;
-        b=K198jd8GCrMhGQV9zHTqbNijO9zf7hECliU2GYTo/l1yBT48UGhVAoSMrAYZOdidSR
-         xL9r3gSdZzY62O/15Jac0+puQ0X4IIdemWdotS5KqAyzXnVFVpyHJDTrEJTNRteemBIh
-         cnIFpJzmNnfaOaU2OevoS6zWzDFL20smLwAojHiU4RppLAcatpcpyWrov06OJZPXGrV8
-         WkYTND0+aNAxRbUantlOmxsS+ZHgfValm+k5J/rzAxXkO0eEaUrqZsuYiOi0/04vNmKi
-         aS6V/tdU0TRbkt4v6vJpR0drVnH04yp3UC6+TB16K6aFlWX0JH0NJLL+1ofkmuXquoiB
-         w0KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v2HjbGIhGvuWN/p4wjJ96KHLGD4o/ABRVFbl69eEBO8=;
-        b=Rr91BYgj+UZX7Qabz0hA73pbyzD9pyzBNEnfe71cbzGkcS9A7V1p14y+22S+Oimdqs
-         LI9Ji+rfTSf7U6DJ9BkG4SLmfJXxaXg/AzwRwxK2bcVWlKv/BlM24vXQT68l1tS5d0d9
-         BI3ohLalz/iGAKtYXAodnwzMs6HW8OFb/myKISEkXJa5GY62BKQwltCnpugQnZ43dOPz
-         FrZryfEazpgOTTzamfxJEs3GrzJ1oiNhxAwLpzxLmu1siy4Id43CloUn41SOJcd/yjcg
-         iUTEgqaQuaIt+EqxiBKvwFI2V9crCMEhLLhCHlcbhBeCspzyiR80MIDSefQVufqmrZv4
-         1wTg==
-X-Gm-Message-State: AOAM5300Cic5XMuD9mkLP6eu7cJ8zBAuQLXOcyTLyUCNFySZGPcEbFft
-        KuoDHion9f3a6fqJksIvVJVMU2zxt0U=
-X-Google-Smtp-Source: ABdhPJy6jYga547W+kZ7ssngsB7IOF5Ki+SxAtWST/8lNgbHXrv8fNeEegpch9MQwzZE9m7KN0eocw==
-X-Received: by 2002:a05:651c:339:: with SMTP id b25mr263022ljp.406.1615834391036;
-        Mon, 15 Mar 2021 11:53:11 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id f9sm2764475lft.242.2021.03.15.11.53.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 11:53:10 -0700 (PDT)
-Subject: Re: [PATCH v4] iommu/tegra-smmu: Add pagetable mappings to debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210315033504.23937-1-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c57a805a-cf14-1d78-ae2a-dfce4f643db1@gmail.com>
-Date:   Mon, 15 Mar 2021 21:53:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232910AbhCOSxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232701AbhCOSxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:53:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC9D64E61;
+        Mon, 15 Mar 2021 18:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615834414;
+        bh=I/C5JsE0km0+j4siEIBkM6jWf4KUJ3smXtoWYnUceEk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K/yoqIYs8ult9ZaBc1vO0zCXU6+iWRWYWcqDLZihMz/21Hj4Wy/htWvM6CfAf4Qc6
+         m8NwZBzJAwD/n8rB2rb2Rhl8jClNYKCYlgX4My0C4bELzXVSwo5YnCIysNN12Z4D2K
+         jnVwYLtsSOLgoJ2n6F1TCLqPVm49t1aSE4NeeFE0lbUV3c6GcRRlN+XYIVNocCgucB
+         hSKRFDMq7EoCMVHeUEvY31qVNEwfY/jYMTBmBomfjV4lPj8Yv4QND4d1xXOTGs3UBO
+         9F45bp24HVlh1Gvqjz9VGEO5otHVsQl3gd9t+3blsPt4zTjk/pVcyMOWDJPdJLL3bw
+         0UKi27M10rixw==
+Date:   Mon, 15 Mar 2021 11:53:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
+Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+Message-ID: <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
+        <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210315033504.23937-1-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.03.2021 06:35, Nicolin Chen пишет:
-> This patch dumps all active mapping entries from pagetable
-> to a debugfs directory named "mappings".
-> 
-> Ataching an example:
+On Mon, 15 Mar 2021 11:10:18 +0800 Yunsheng Lin wrote:
+> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
+>   */
+>  struct pfifo_fast_priv {
+>  	struct skb_array q[PFIFO_FAST_BANDS];
+> +
+> +	/* protect against data race between enqueue/dequeue and
+> +	 * qdisc->empty setting
+> +	 */
+> +	spinlock_t lock;
+>  };
+>  
+>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
+> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
+>  	unsigned int pkt_len = qdisc_pkt_len(skb);
+>  	int err;
+>  
+> -	err = skb_array_produce(q, skb);
+> +	spin_lock(&priv->lock);
+> +	err = __ptr_ring_produce(&q->ring, skb);
+> +	WRITE_ONCE(qdisc->empty, false);
+> +	spin_unlock(&priv->lock);
+>  
+>  	if (unlikely(err)) {
+>  		if (qdisc_is_percpu_stats(qdisc))
+> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  	struct sk_buff *skb = NULL;
+>  	int band;
+>  
+> +	spin_lock(&priv->lock);
+>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>  		struct skb_array *q = band2list(priv, band);
+>  
+> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  	} else {
+>  		WRITE_ONCE(qdisc->empty, true);
+>  	}
+> +	spin_unlock(&priv->lock);
+>  
+>  	return skb;
+>  }
 
-Attaching
-
-> 
-> SWGROUP: hc
-> ASID: 0
-> reg: 0x250
-> PTB_ASID: 0xe0080004
-> as->pd_dma: 0x80004000
-> {
->         [1023] 0xf008000b (1)
->         {
->                 PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
->                 [#1023, #1023] | 0x5  | 0x0000000111a8d000 | 0x00000000fffff000 | 0x1000
->         }
-> }
-> Total PDE count: 1
-> Total PTE count: 1
-> 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
-
-Good to me, thanks.
-
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-
-> +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> +		struct page *pt_page;
-> +		u32 *addr;
-> +		unsigned int i;
-
-Unimportant nit: I'd keep lines arranged by length for consistency with
-the rest of the code.
-
-...
-> +	group_debug = devm_kcalloc(dev, soc->num_swgroups, sizeof(*group_debug), GFP_KERNEL);
-
-Another nit: this is a long line, I'd split it into two lines to keep
-coding style consistent and to improve readability for those who have a
-side-by-side code viewing setup.
+I thought pfifo was supposed to be "lockless" and this change
+re-introduces a lock between producer and consumer, no?
