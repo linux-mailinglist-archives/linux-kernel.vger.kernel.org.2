@@ -2,236 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0C733C557
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6397C33C55B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhCOSOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:14:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhCOSOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:14:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9447664DF0;
-        Mon, 15 Mar 2021 18:14:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615832081;
-        bh=PsJNs1xz8Lw0JYp0Ii3n0KV7iakaqISjoVHYI6sUiQ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VkUc79ctzOxurzRpmYUNTqIBPxCT2XVA8VxtZxe9mGQLXXW+Rj1sQvKVJJGgWXLeI
-         hQL7rew0xdjjfn+EkMMLXDCi84Gy0xp63a0g5dMRcaPo07rIWTFfj0bu7ngyVXQFPh
-         2V9/8XR0TPy9P3vHOZ/9yYVd5zD8kifsqwGEv+V1sDy6TkwwPLVJFZ5rHZtZ93m9sS
-         0UTfk7PTm7pZGQ5BvbY+ZfP8pNPAWGOZoo4SWGBvhKNGy7J86O3exbCnX14UPjEseS
-         ETdMyTVV1xkMSiQsOePIGIzX77pJ+I2/6v3u0iJP11chz2Tw45VLF37fB98v5TTaqP
-         qbzTRmK12TUcw==
-Date:   Mon, 15 Mar 2021 11:14:35 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>
-Subject: Re: [PATCH v2 2/2] gcov: clang: drop support for clang-10 and older
-Message-ID: <20210315181435.ta56n3r4dusdpl2p@archlinux-ax161>
-References: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
- <20210312224132.3413602-1-ndesaulniers@google.com>
- <20210312224132.3413602-3-ndesaulniers@google.com>
+        id S230227AbhCOSQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232031AbhCOSQR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:16:17 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0164CC06174A;
+        Mon, 15 Mar 2021 11:16:17 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id l2so20954250pgb.1;
+        Mon, 15 Mar 2021 11:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N7gXh8If5lLSf1WxWeVi7tx6btQcwG11a3RaI0iXEjI=;
+        b=uuMxU7VNbmDo+baQMlzi65YLpPhkRIYur8VUqEFbKk4c38qae3zU8Adjiedbj4vCge
+         O9o3Q6wa1J/WWEzzUTMjtyhj6CpurGADfhIsGsIvViZVcaSX3NaJuHPu994N0ApsikS/
+         cfDtH2xi3cBxubVwunRN7CKxHdY6xx0AkFa4gPYFbzEyC4u5KEU1MHrfRoWOPXLUhb9Z
+         Cs158JnD1XS+7HdgeUreI4rfnDcCwOro5oRvLT0V92XthUqUiuDZzL2dxcCTbbUqH5c8
+         WH+2ZQqUQaSqCbREVLIhe53TM7J0wRcWwIh60lUfvd8fXfI7qgAOrOhOVKt7eLtLaJoN
+         +HGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N7gXh8If5lLSf1WxWeVi7tx6btQcwG11a3RaI0iXEjI=;
+        b=OhvWsbus8kkSCsHDWtkYobrmNTWVgIoH5nS4mwsbjnxEBCv0gtfrKlNuPcL4zid2NW
+         tSdVkP+a8hdQD7RMBvyE8/mssEGxUFfCIktVqEdy6BtuFdkWAwaAjpY5Bp5FP3K9S5SM
+         QrAp6xsoLf+KUn9pwBDcAWreprQDXvQdtcmwAq8oQWi+OhB/afVOJk5wskYtR72+fu7w
+         5I/j5aThJxyjP/nk6bf1IbseRGWQ+lJ7ENuhTnB0fxhTbVfMIUP4KmLhvKn/r5j00RSF
+         n3cT3YLGNbJkLX4L/3JFT9lKBG5iaaJYIZOfrKJhZd023ZTKm60Mg32llKNZq5gVtiCI
+         1KjA==
+X-Gm-Message-State: AOAM532Z7rmGXkGXXVtIo/tIzlb2loasho7PuY+g6s+/9ZjGO3k5WavX
+        EzEJ/GONGvjSjVlRUWd+L86MmLhgRnVXa/1ttPDmMezepQt0cw==
+X-Google-Smtp-Source: ABdhPJw3alc5qqFKGQJPh1tDzn1eBVQRLupqnrLTL2qF/XOJf5/y8VM1JRrWHY5lq01mpISfsJuuGz2skwQSj2wOYcQ=
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
+ g136-20020a62528e0000b02901f5c5eea487mr25185217pfb.7.1615832176481; Mon, 15
+ Mar 2021 11:16:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312224132.3413602-3-ndesaulniers@google.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 15 Mar 2021 20:16:00 +0200
+Message-ID: <CAHp75VcopwQgUQVF_uGwddzioTJqddwuft11+HBwH25e1kQEyw@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 02:41:32PM -0800, Nick Desaulniers wrote:
-> LLVM changed the expected function signatures for llvm_gcda_start_file()
-> and llvm_gcda_emit_function() in the clang-11 release. Drop the older
-> implementations and require folks to upgrade their compiler if they're
-> interested in GCOV support.
-> 
-> Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-> Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Mon, Mar 15, 2021 at 8:12 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Since interrupt handler is called with disabled local interrupts, there
+> is no need to use the spinlock primitives disabling interrupts as well.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Thanks!
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
-> For an easier time reviewing this series, reviewers may want to apply
-> these patches, then check the overall diff with `git diff origin/HEAD`.
-> 
->  kernel/gcov/Kconfig |  1 +
->  kernel/gcov/clang.c | 85 ---------------------------------------------
->  2 files changed, 1 insertion(+), 85 deletions(-)
-> 
-> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> index f62de2dea8a3..58f87a3092f3 100644
-> --- a/kernel/gcov/Kconfig
-> +++ b/kernel/gcov/Kconfig
-> @@ -4,6 +4,7 @@ menu "GCOV-based kernel profiling"
->  config GCOV_KERNEL
->  	bool "Enable gcov-based kernel profiling"
->  	depends on DEBUG_FS
-> +	depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
->  	select CONSTRUCTORS
->  	default n
->  	help
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index 8743150db2ac..14de5644b5cc 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -75,9 +75,6 @@ struct gcov_fn_info {
->  
->  	u32 num_counters;
->  	u64 *counters;
-> -#if CONFIG_CLANG_VERSION < 110000
-> -	const char *function_name;
-> -#endif
->  };
->  
->  static struct gcov_info *current_info;
-> @@ -107,16 +104,6 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
+>  drivers/tty/serial/samsung_tty.c | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index 80df842bf4c7..d9e4b67a12a0 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -715,13 +715,12 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
+>         struct s3c24xx_uart_dma *dma = ourport->dma;
+>         struct tty_struct *tty = tty_port_tty_get(&ourport->port.state->port);
+>         struct tty_port *t = &port->state->port;
+> -       unsigned long flags;
+>         struct dma_tx_state state;
+>
+>         utrstat = rd_regl(port, S3C2410_UTRSTAT);
+>         rd_regl(port, S3C2410_UFSTAT);
+>
+> -       spin_lock_irqsave(&port->lock, flags);
+> +       spin_lock(&port->lock);
+>
+>         if (!(utrstat & S3C2410_UTRSTAT_TIMEOUT)) {
+>                 s3c64xx_start_rx_dma(ourport);
+> @@ -750,7 +749,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_dma(void *dev_id)
+>         wr_regl(port, S3C2410_UTRSTAT, S3C2410_UTRSTAT_TIMEOUT);
+>
+>  finish:
+> -       spin_unlock_irqrestore(&port->lock, flags);
+> +       spin_unlock(&port->lock);
+>
+>         return IRQ_HANDLED;
 >  }
->  EXPORT_SYMBOL(llvm_gcov_init);
->  
-> -#if CONFIG_CLANG_VERSION < 110000
-> -void llvm_gcda_start_file(const char *orig_filename, const char version[4],
-> -		u32 checksum)
-> -{
-> -	current_info->filename = orig_filename;
-> -	memcpy(&current_info->version, version, sizeof(current_info->version));
-> -	current_info->checksum = checksum;
-> -}
-> -EXPORT_SYMBOL(llvm_gcda_start_file);
-> -#else
->  void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
+> @@ -846,11 +845,10 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
 >  {
->  	current_info->filename = orig_filename;
-> @@ -124,29 +111,7 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
->  	current_info->checksum = checksum;
+>         struct s3c24xx_uart_port *ourport = dev_id;
+>         struct uart_port *port = &ourport->port;
+> -       unsigned long flags;
+>
+> -       spin_lock_irqsave(&port->lock, flags);
+> +       spin_lock(&port->lock);
+>         s3c24xx_serial_rx_drain_fifo(ourport);
+> -       spin_unlock_irqrestore(&port->lock, flags);
+> +       spin_unlock(&port->lock);
+>
+>         return IRQ_HANDLED;
 >  }
->  EXPORT_SYMBOL(llvm_gcda_start_file);
-> -#endif
-> -
-> -#if CONFIG_CLANG_VERSION < 110000
-> -void llvm_gcda_emit_function(u32 ident, const char *function_name,
-> -		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
-> -{
-> -	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> -
-> -	if (!info)
-> -		return;
->  
-> -	INIT_LIST_HEAD(&info->head);
-> -	info->ident = ident;
-> -	info->checksum = func_checksum;
-> -	info->use_extra_checksum = use_extra_checksum;
-> -	info->cfg_checksum = cfg_checksum;
-> -	if (function_name)
-> -		info->function_name = kstrdup(function_name, GFP_KERNEL);
-> -
-> -	list_add_tail(&info->head, &current_info->functions);
-> -}
-> -EXPORT_SYMBOL(llvm_gcda_emit_function);
-> -#else
->  void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
->  		u8 use_extra_checksum, u32 cfg_checksum)
+> @@ -934,13 +932,12 @@ static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
 >  {
-> @@ -163,7 +128,6 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
->  	list_add_tail(&info->head, &current_info->functions);
+>         struct s3c24xx_uart_port *ourport = id;
+>         struct uart_port *port = &ourport->port;
+> -       unsigned long flags;
+>
+> -       spin_lock_irqsave(&port->lock, flags);
+> +       spin_lock(&port->lock);
+>
+>         s3c24xx_serial_tx_chars(ourport);
+>
+> -       spin_unlock_irqrestore(&port->lock, flags);
+> +       spin_unlock(&port->lock);
+>         return IRQ_HANDLED;
 >  }
->  EXPORT_SYMBOL(llvm_gcda_emit_function);
-> -#endif
->  
->  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
->  {
-> @@ -326,7 +290,6 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
->  	}
->  }
->  
-> -#if CONFIG_CLANG_VERSION < 110000
->  static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  {
->  	size_t cv_size; /* counter values size */
-> @@ -335,47 +298,15 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  	if (!fn_dup)
->  		return NULL;
->  	INIT_LIST_HEAD(&fn_dup->head);
-> -
-> -	fn_dup->function_name = kstrdup(fn->function_name, GFP_KERNEL);
-> -	if (!fn_dup->function_name)
-> -		goto err_name;
-> -
-> -	cv_size = fn->num_counters * sizeof(fn->counters[0]);
-> -	fn_dup->counters = vmalloc(cv_size);
-> -	if (!fn_dup->counters)
-> -		goto err_counters;
-> -	memcpy(fn_dup->counters, fn->counters, cv_size);
-> -
-> -	return fn_dup;
-> -
-> -err_counters:
-> -	kfree(fn_dup->function_name);
-> -err_name:
-> -	kfree(fn_dup);
-> -	return NULL;
-> -}
-> -#else
-> -static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> -{
-> -	size_t cv_size; /* counter values size */
-> -	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
-> -			GFP_KERNEL);
-> -	if (!fn_dup)
-> -		return NULL;
-> -	INIT_LIST_HEAD(&fn_dup->head);
-> -
->  	cv_size = fn->num_counters * sizeof(fn->counters[0]);
->  	fn_dup->counters = vmalloc(cv_size);
->  	if (!fn_dup->counters) {
->  		kfree(fn_dup);
->  		return NULL;
->  	}
-> -
->  	memcpy(fn_dup->counters, fn->counters, cv_size);
-> -
->  	return fn_dup;
->  }
-> -#endif
->  
->  /**
->   * gcov_info_dup - duplicate profiling data set
-> @@ -416,21 +347,6 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
->   * gcov_info_free - release memory for profiling data set duplicate
->   * @info: profiling data set duplicate to free
->   */
-> -#if CONFIG_CLANG_VERSION < 110000
-> -void gcov_info_free(struct gcov_info *info)
-> -{
-> -	struct gcov_fn_info *fn, *tmp;
-> -
-> -	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
-> -		kfree(fn->function_name);
-> -		vfree(fn->counters);
-> -		list_del(&fn->head);
-> -		kfree(fn);
-> -	}
-> -	kfree(info->filename);
-> -	kfree(info);
-> -}
-> -#else
->  void gcov_info_free(struct gcov_info *info)
->  {
->  	struct gcov_fn_info *fn, *tmp;
-> @@ -443,7 +359,6 @@ void gcov_info_free(struct gcov_info *info)
->  	kfree(info->filename);
->  	kfree(info);
->  }
-> -#endif
->  
->  #define ITER_STRIDE	PAGE_SIZE
->  
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
+>
+> --
+> 2.25.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
