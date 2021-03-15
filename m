@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7DA33BBC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCA533BBBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhCOOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:20:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S231912AbhCOOU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232628AbhCON7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3943364EFC;
-        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
+        id S232775AbhCON74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5D8464EF0;
+        Mon, 15 Mar 2021 13:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816774;
-        bh=20NaSGLvTYKwMt1yutcaUGuc6VgU+tHjTLCYqQx3qRQ=;
+        s=korg; t=1615816775;
+        bh=PTIV3Q+ldmGS5yR7bJr3pPecoqqWfaeNBLeyEKfVCc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bXJPH1dspsrUZH/5zl+LY3f03xS+6YFaZ8DH1Yl6RapSNPtCtcR4bDRjVkIeAmcYf
-         6lS9IezBIrTs7bHDol/MMDTmP59N4kl4sQo5r+NmxK55qaEMgKu5zE/uW5wkilPekS
-         4jNVoLVNqAdBFOMJQllbelMbU8VbRZw4Vb8+OUA4=
+        b=mAEBkGzpJx3VISrMOSW2YyzgXQ9hvTnGed/ixntMFwWnFMvYT5MK9KiLxSmQ3AGv+
+         wJuIVpBfif1A82IdEaG4w3D+9xsSrSo0RsVL0ef0iGhJKLhptFp2Pug5R3GvcVBe4S
+         3bEA+xRRjuEUGn2bqSwO9lkhiFP3nkvmue3u2jrE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 100/168] software node: Fix node registration
-Date:   Mon, 15 Mar 2021 14:55:32 +0100
-Message-Id: <20210315135553.655781092@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 101/168] mmc: core: Fix partition switch time for eMMC
+Date:   Mon, 15 Mar 2021 14:55:33 +0100
+Message-Id: <20210315135553.695158157@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,34 +42,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit 8891123f9cbb9c1ee531e5a87fa116f0af685c48 upstream.
+commit 66fbacccbab91e6e55d9c8f1fc0910a8eb6c81f7 upstream.
 
-Software node can not be registered before its parent.
+Avoid the following warning by always defining partition switch time:
 
-Fixes: 80488a6b1d3c ("software node: Add support for static node descriptors")
-Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+ [    3.209874] mmc1: unspecified timeout for CMD6 - use generic
+ [    3.222780] ------------[ cut here ]------------
+ [    3.233363] WARNING: CPU: 1 PID: 111 at drivers/mmc/core/mmc_ops.c:575 __mmc_switch+0x200/0x204
+
+Reported-by: Paul Fertser <fercerpav@gmail.com>
+Fixes: 1c447116d017 ("mmc: mmc: Fix partition switch timeout for some eMMCs")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/168bbfd6-0c5b-5ace-ab41-402e7937c46e@intel.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/swnode.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mmc/core/mmc.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -812,6 +812,9 @@ int software_node_register(const struct
- 	if (software_node_to_swnode(node))
- 		return -EEXIST;
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -423,10 +423,6 @@ static int mmc_decode_ext_csd(struct mmc
  
-+	if (node->parent && !parent)
-+		return -EINVAL;
+ 		/* EXT_CSD value is in units of 10ms, but we store in ms */
+ 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
+-		/* Some eMMC set the value too low so set a minimum */
+-		if (card->ext_csd.part_time &&
+-		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
+-			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
+ 
+ 		/* Sleep / awake timeout in 100ns units */
+ 		if (sa_shift > 0 && sa_shift <= 0x17)
+@@ -616,6 +612,17 @@ static int mmc_decode_ext_csd(struct mmc
+ 		card->ext_csd.data_sector_size = 512;
+ 	}
+ 
++	/*
++	 * GENERIC_CMD6_TIME is to be used "unless a specific timeout is defined
++	 * when accessing a specific field", so use it here if there is no
++	 * PARTITION_SWITCH_TIME.
++	 */
++	if (!card->ext_csd.part_time)
++		card->ext_csd.part_time = card->ext_csd.generic_cmd6_time;
++	/* Some eMMC set the value too low so set a minimum */
++	if (card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
++		card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
 +
- 	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0));
- }
- EXPORT_SYMBOL_GPL(software_node_register);
+ 	/* eMMC v5 or later */
+ 	if (card->ext_csd.rev >= 7) {
+ 		memcpy(card->ext_csd.fwrev, &ext_csd[EXT_CSD_FIRMWARE_VERSION],
 
 
