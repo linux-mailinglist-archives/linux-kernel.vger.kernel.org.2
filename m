@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F096733B029
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEEC33B02B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhCOKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:42:23 -0400
-Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:50896 "EHLO
-        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229728AbhCOKmH (ORCPT
+        id S229658AbhCOKny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:43:54 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:53749 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCOKne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:42:07 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 798A6C4A18
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:42:06 +0000 (GMT)
-Received: (qmail 9896 invoked from network); 15 Mar 2021 10:42:06 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Mar 2021 10:42:06 -0000
-Date:   Mon, 15 Mar 2021 10:42:05 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210315104204.GB3697@techsingularity.net>
-References: <20210312124609.33d4d4ba@carbon>
- <20210312145814.GA2577561@casper.infradead.org>
- <20210312160350.GW3697@techsingularity.net>
- <20210312210823.GE2577561@casper.infradead.org>
- <20210313131648.GY3697@techsingularity.net>
- <20210313163949.GI2577561@casper.infradead.org>
- <7D8C62E1-77FD-4B41-90D7-253D13715A6F@oracle.com>
- <20210313193343.GJ2577561@casper.infradead.org>
- <20210314125231.GA3697@techsingularity.net>
- <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
+        Mon, 15 Mar 2021 06:43:34 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 1C50A2223A;
+        Mon, 15 Mar 2021 11:43:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615805013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jCM+EVVq0CWc5+9HvUpHIQ1PrIbojDXOLOIwgPt/xc8=;
+        b=wAVGM/qmN+S3ZAaoNfPf7QsBV3haTUQGT23CnQ000vPpFI9mzZD1zEz21yWWb3lpaN3wTq
+        N/3Rvt4H7hjTn7hLiUIJtKe16qRx1Ze5hUUTJJQkpoxKq8DoHx4D6NtXn93DqwXCrewDRZ
+        4yX7E9A0k8yjuTY4XLJ6JQkHKfjPcrQ=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 11:43:32 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH v4 2/4] mtd: spi-nor: implement OTP support for Winbond
+ and similar flashes
+In-Reply-To: <5f820284-8c48-e111-c46d-f53bb5ed17cb@microchip.com>
+References: <20210306000535.9890-1-michael@walle.cc>
+ <20210306000535.9890-3-michael@walle.cc>
+ <5f820284-8c48-e111-c46d-f53bb5ed17cb@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <0ef810128e33f581d05ee394893e683d@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 03:22:02PM +0000, Chuck Lever III wrote:
-> >> Anyway, I'm not arguing against a bulk allocator, nor even saying this
-> >> is a bad interface.  It just maybe could be better.
-> >> 
-> > 
-> > I think it puts more responsibility on the caller to use the API correctly
-> > but I also see no value in arguing about it further because there is no
-> > supporting data either way (I don't have routine access to a sufficiently
-> > fast network to generate the data). I can add the following patch and let
-> > callers figure out which interface is preferred. If one of the interfaces
-> > is dead in a year, it can be removed.
-> > 
-> > As there are a couple of ways the arrays could be used, I'm leaving it
-> > up to Jesper and Chuck which interface they want to use. In particular,
-> > it would be preferred if the array has no valid struct pages in it but
-> > it's up to them to judge how practical that is.
+Am 2021-03-15 09:31, schrieb Tudor.Ambarus@microchip.com:
+> On 3/6/21 2:05 AM, Michael Walle wrote:
+>> +       nor->dirmap.rdesc = NULL;
 > 
-> I'm interested to hear from Jesper.
-> 
-> My two cents (US):
-> 
-> If svc_alloc_arg() is the /only/ consumer that wants to fill
-> a partially populated array of page pointers, then there's no
-> code-duplication benefit to changing the synopsis of
-> alloc_pages_bulk() at this point.
-> 
-> Also, if the consumers still have to pass in the number of
-> pages the array needs, rather than having the bulk allocator
-> figure it out, then there's not much additional benefit, IMO.
-> 
-> Ideally (for SUNRPC) alloc_pages_bulk() would take a pointer
-> to a sparsely-populated array and the total number of elements
-> in that array, and fill in the NULL elements. The return value
-> would be "success -- all elements are populated" or "failure --
-> some elements remain NULL".
-> 
+> why can't we use dirmap?
 
-If the array API interface was expected to handle sparse arrays, it would
-make sense to define nr_pages are the number of pages that need to be
-in the array instead of the number of pages to allocate. The preamble
-would skip the first N number of allocated pages and decrement nr_pages
-accordingly before the watermark check. The return value would then be the
-last populated array element and the caller decides if that is enough to
-proceed or if the API needs to be called again. There is a slight risk
-that with a spare array that only needed 1 page in reality would fail
-the watermark check but on low memory, allocations take more work anyway.
-That definition of nr_pages would avoid the potential buffer overrun but
-both you and Jesper would need to agree that it's an appropriate API.
+Dirmap is used if the controller supports (transparent)
+memory mapped access, right?
 
--- 
-Mel Gorman
-SUSE Labs
+As you see I'm not familiar with that, nor does my
+controller has support for it, well at least the driver,
+the controller supports it actually.
+
+But it also seems like how the flash is accessed is
+set up in
+
+   spi_nor_probe()
+     spi_nor_create_read_dirmap()
+
+And because the read opcode has to be changed, that isn't
+possible.
+
+Plese correct me if I'm wrong.
+
+-michael
