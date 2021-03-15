@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229C333BDBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A372333BD9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240192AbhCOOhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:37:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47742 "EHLO mail.kernel.org"
+        id S240450AbhCOOh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:37:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232349AbhCOOBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAC7264E89;
-        Mon, 15 Mar 2021 14:01:45 +0000 (UTC)
+        id S233191AbhCOOBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13B9E64EF8;
+        Mon, 15 Mar 2021 14:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816907;
-        bh=nzF2+Ac+ZX7dpNx3h28V4HmbX4N/sSYTFFXDDkmkFwI=;
+        s=korg; t=1615816909;
+        bh=FTAwELuj2EcQRMLn9mlwt2MunR7r3AyeDut4nIGaRjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBI/H3ffjZO+YtXafmb/kQdFkdM68RGtDqQgy1OwN/Vo/+rLJNf+B0HJwAz8nUKqc
-         +J+LVw0f2O0LAoXZnWERR/Wtq4OjhEI+WE80ldPYQTJUs/al8Z0plnlYq6G9sizAEo
-         HSVnYtr+SLKkS+OKIIvVdVIjcxcEfwjqkQYBwseo=
+        b=rC7qsszv565+rLEVBc1n2GeCQ18P+X852i5FA3EmbNTO7CqP5a/wodkVl9rVVGx40
+         7G1X9EUsyfxSSfULBUH0XRNg6BQIU1j+aDEJCOYGEymdllHGJdqDIqIFqlh/V+3NEM
+         QTwQEGESqB2uQE+QCs0A8ylT8SclImH3aPo6GE60=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-Subject: [PATCH 5.11 194/306] USB: gadget: udc: s3c2410_udc: fix return value check in s3c2410_udc_probe()
-Date:   Mon, 15 Mar 2021 14:54:17 +0100
-Message-Id: <20210315135514.181530714@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.11 195/306] USB: gadget: u_ether: Fix a configfs return code
+Date:   Mon, 15 Mar 2021 14:54:18 +0100
+Message-Id: <20210315135514.221199882@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -43,38 +41,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 414c20df7d401bcf1cb6c13d2dd944fb53ae4acf upstream.
+commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
 
-In case of error, the function devm_platform_ioremap_resource()
-returns ERR_PTR() and never returns NULL. The NULL test in the
-return value check should be replaced with IS_ERR().
+If the string is invalid, this should return -EINVAL instead of 0.
 
-Fixes: 188db4435ac6 ("usb: gadget: s3c: use platform resources")
+Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
 Cc: stable <stable@vger.kernel.org>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20210305034927.3232386-1-weiyongjun1@huawei.com
+Acked-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/s3c2410_udc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/gadget/udc/s3c2410_udc.c
-+++ b/drivers/usb/gadget/udc/s3c2410_udc.c
-@@ -1773,8 +1773,8 @@ static int s3c2410_udc_probe(struct plat
- 	udc_info = dev_get_platdata(&pdev->dev);
- 
- 	base_addr = devm_platform_ioremap_resource(pdev, 0);
--	if (!base_addr) {
--		retval = -ENOMEM;
-+	if (IS_ERR(base_addr)) {
-+		retval = PTR_ERR(base_addr);
- 		goto err_mem;
- 	}
- 
+--- a/drivers/usb/gadget/function/u_ether_configfs.h
++++ b/drivers/usb/gadget/function/u_ether_configfs.h
+@@ -169,12 +169,11 @@ out:									\
+ 						size_t len)		\
+ 	{								\
+ 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
+-		int ret;						\
++		int ret = -EINVAL;					\
+ 		u8 val;							\
+ 									\
+ 		mutex_lock(&opts->lock);				\
+-		ret = sscanf(page, "%02hhx", &val);			\
+-		if (ret > 0) {						\
++		if (sscanf(page, "%02hhx", &val) > 0) {			\
+ 			opts->_n_ = val;				\
+ 			ret = len;					\
+ 		}							\
 
 
