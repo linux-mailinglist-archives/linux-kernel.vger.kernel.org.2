@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B3133BB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADC433BB43
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhCOONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S231637AbhCOOOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232597AbhCON7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6710664F25;
-        Mon, 15 Mar 2021 13:58:54 +0000 (UTC)
+        id S232605AbhCON7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD0664F0D;
+        Mon, 15 Mar 2021 13:58:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816735;
-        bh=Bmx3KOJBYYoPNczQQuo7vTa/SwT5fCvIwJqqd6fl1Pw=;
+        s=korg; t=1615816737;
+        bh=CItlQUAyUgrNxFHqww8cOQnFk16YPb2U7KaeooOTORE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NvVzSgj/Epvks/HCZOonCLnmFabQSDroWVseVM/cbdAxsoxlCGCLyrp1nQ6Ac/YEa
-         /ZREVqSUC5B7t4RybfcMNTGFXK1jduaPFEYcRt1Emdf6VZ4EHliGn1J4P8KrwlJSn1
-         bJ8D0ZY135PuLLEGZhAYu5c29wu6h+GznCoc42l0=
+        b=p4A7waRfe6yxeA7aCDenrhl0KUsMZ1k9l9FuFkMqVdOYp3xdP0eR0EIx08Oaof2c2
+         j7EMaYmTyIRP/2cBNJGH0Da9HgnkXXWXd+RYCHYYzU0dARtoWMF/o7539+OdxKmkjB
+         TpKt0FPuQFJr9HoaN8DdOJ83y2xHuxUwE7x9ZTEE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com,
-        Daniel Vetter <daniel.vetter@intel.com>,
+        stable@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 4.14 27/95] drm/compat: Clear bounce structures
-Date:   Mon, 15 Mar 2021 14:56:57 +0100
-Message-Id: <20210315135741.165872302@linuxfoundation.org>
+Subject: [PATCH 4.14 28/95] drm: meson_drv add shutdown function
+Date:   Mon, 15 Mar 2021 14:56:58 +0100
+Message-Id: <20210315135741.198194285@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -43,79 +44,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Artem Lapkin <art@khadas.com>
 
-commit de066e116306baf3a6a62691ac63cfc0b1dabddb upstream.
+commit fa0c16caf3d73ab4d2e5d6fa2ef2394dbec91791 upstream.
 
-Some of them have gaps, or fields we don't clear. Native ioctl code
-does full copies plus zero-extends on size mismatch, so nothing can
-leak. But compat is more hand-rolled so need to be careful.
+Problem: random stucks on reboot stage about 1/20 stuck/reboots
+// debug kernel log
+[    4.496660] reboot: kernel restart prepare CMD:(null)
+[    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+[    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+...STUCK...
 
-None of these matter for performance, so just memset.
+Solution: add shutdown function to meson_drm driver
+// debug kernel log
+[    5.231896] reboot: kernel restart prepare CMD:(null)
+[    5.246135] [drm:meson_drv_shutdown]
+...
+[    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+[    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+[    5.338331] reboot: Restarting system
+[    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
+bl31 reboot reason: 0xd
+bl31 reboot reason: 0x0
+system cmd  1.
+...REBOOT...
 
-Also I didn't fix up the CONFIG_DRM_LEGACY or CONFIG_DRM_AGP ioctl, those
-are security holes anyway.
+Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
+and Odroid boards, WeTek Play2 (GXBB)
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reported-by: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com # vblank ioctl
-Cc: syzbot+620cf21140fc7e772a5d@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210222100643.400935-1-daniel.vetter@ffwll.ch
-(cherry picked from commit e926c474ebee404441c838d18224cd6f246a71b7)
+Fixes: bbbe775ec5b5 ("drm: Add support for Amlogic Meson Graphic Controller")
+Signed-off-by: Artem Lapkin <art@khadas.com>
+Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210302042202.3728113-1-art@khadas.com
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_ioc32.c |   11 +++++++++++
+ drivers/gpu/drm/meson/meson_drv.c |   11 +++++++++++
  1 file changed, 11 insertions(+)
 
---- a/drivers/gpu/drm/drm_ioc32.c
-+++ b/drivers/gpu/drm/drm_ioc32.c
-@@ -96,6 +96,8 @@ static int compat_drm_version(struct fil
- 	if (copy_from_user(&v32, (void __user *)arg, sizeof(v32)))
- 		return -EFAULT;
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -361,6 +361,16 @@ static int meson_probe_remote(struct pla
+ 	return count;
+ }
  
-+	memset(&v, 0, sizeof(v));
++static void meson_drv_shutdown(struct platform_device *pdev)
++{
++	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
++	struct drm_device *drm = priv->drm;
 +
- 	v = (struct drm_version) {
- 		.name_len = v32.name_len,
- 		.name = compat_ptr(v32.name),
-@@ -134,6 +136,9 @@ static int compat_drm_getunique(struct f
++	DRM_DEBUG_DRIVER("\n");
++	drm_kms_helper_poll_fini(drm);
++	drm_atomic_helper_shutdown(drm);
++}
++
+ static int meson_drv_probe(struct platform_device *pdev)
+ {
+ 	struct component_match *match = NULL;
+@@ -405,6 +415,7 @@ MODULE_DEVICE_TABLE(of, dt_match);
  
- 	if (copy_from_user(&uq32, (void __user *)arg, sizeof(uq32)))
- 		return -EFAULT;
-+
-+	memset(&uq, 0, sizeof(uq));
-+
- 	uq = (struct drm_unique){
- 		.unique_len = uq32.unique_len,
- 		.unique = compat_ptr(uq32.unique),
-@@ -260,6 +265,8 @@ static int compat_drm_getclient(struct f
- 	if (copy_from_user(&c32, argp, sizeof(c32)))
- 		return -EFAULT;
- 
-+	memset(&client, 0, sizeof(client));
-+
- 	client.idx = c32.idx;
- 
- 	err = drm_ioctl_kernel(file, drm_getclient, &client, DRM_UNLOCKED);
-@@ -842,6 +849,8 @@ static int compat_drm_wait_vblank(struct
- 	if (copy_from_user(&req32, argp, sizeof(req32)))
- 		return -EFAULT;
- 
-+	memset(&req, 0, sizeof(req));
-+
- 	req.request.type = req32.request.type;
- 	req.request.sequence = req32.request.sequence;
- 	req.request.signal = req32.request.signal;
-@@ -879,6 +888,8 @@ static int compat_drm_mode_addfb2(struct
- 	struct drm_mode_fb_cmd2 req64;
- 	int err;
- 
-+	memset(&req64, 0, sizeof(req64));
-+
- 	if (copy_from_user(&req64, argp,
- 			   offsetof(drm_mode_fb_cmd232_t, modifier)))
- 		return -EFAULT;
+ static struct platform_driver meson_drm_platform_driver = {
+ 	.probe      = meson_drv_probe,
++	.shutdown   = meson_drv_shutdown,
+ 	.driver     = {
+ 		.name	= "meson-drm",
+ 		.of_match_table = dt_match,
 
 
