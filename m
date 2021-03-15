@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0640433B977
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A8833B96E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234889AbhCOOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:06:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35112 "EHLO mail.kernel.org"
+        id S234002AbhCOOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231875AbhCON5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C3664F00;
-        Mon, 15 Mar 2021 13:57:31 +0000 (UTC)
+        id S231820AbhCON4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E857964EB6;
+        Mon, 15 Mar 2021 13:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816652;
-        bh=4XO+rk9Gxt18WrpwvZFSEeayy8S9hgOCPfoykukvOYc=;
+        s=korg; t=1615816615;
+        bh=Hh6bLwOHaaKuMgUMulZHgJrRFgg8MV3VXJXtKBYwGcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wLVhP7v9Jfm9vKlLa2uXGf7o4XeVwfgZwfMbscyTAVUMLiivuzCFUM4x9NjquiYRu
-         1cEU9+X6tHLYwYqaGkUlntpXkB7RktScmm2iRWvYOPqf2wwesZetR1w2pZJlVjDl6l
-         eKsafMIDnZr6BMVGrXTMXCU/y7WKzxb60TKHaRMo=
+        b=khv7x2FSG5vNlh/byEOvaQmhD14ID9pfzlHGlOnSSl+MoSmiuS0E3QaA/qCKKMZxd
+         qiYyDar6AGoRn3TAr8peD+zJTD38k5N1vZHh0OPhsWVRJjHiLWhVTIrzX468U9nAxr
+         BaBALbJBboaqdyg8BvA19VfsbfMeiMzeDCuUYwy8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 043/306] docs: networking: drop special stable handling
-Date:   Mon, 15 Mar 2021 14:51:46 +0100
-Message-Id: <20210315135509.101372603@linuxfoundation.org>
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 014/290] can: flexcan: invoke flexcan_chip_freeze() to enter freeze mode
+Date:   Mon, 15 Mar 2021 14:51:47 +0100
+Message-Id: <20210315135542.429568171@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,131 +41,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-commit dbbe7c962c3a8163bf724dbc3c9fdfc9b16d3117 upstream.
+commit c63820045e2000f05657467a08715c18c9f490d9 upstream.
 
-Leave it to Greg.
+Invoke flexcan_chip_freeze() to enter freeze mode, since need poll
+freeze mode acknowledge.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e955cead03117 ("CAN: Add Flexcan CAN controller driver")
+Link: https://lore.kernel.org/r/20210218110037.16591-4-qiangqing.zhang@nxp.com
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/networking/netdev-FAQ.rst       |   72 ++------------------------
- Documentation/process/stable-kernel-rules.rst |    6 --
- Documentation/process/submitting-patches.rst  |    5 -
- 3 files changed, 6 insertions(+), 77 deletions(-)
+ drivers/net/can/flexcan.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/Documentation/networking/netdev-FAQ.rst
-+++ b/Documentation/networking/netdev-FAQ.rst
-@@ -142,73 +142,13 @@ Please send incremental versions on top
- the patches the way they would look like if your latest patch series was to be
- merged.
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1375,10 +1375,13 @@ static int flexcan_chip_start(struct net
  
--How can I tell what patches are queued up for backporting to the various stable releases?
-------------------------------------------------------------------------------------------
--Normally Greg Kroah-Hartman collects stable commits himself, but for
--networking, Dave collects up patches he deems critical for the
--networking subsystem, and then hands them off to Greg.
--
--There is a patchworks queue that you can see here:
--
--  https://patchwork.kernel.org/bundle/netdev/stable/?state=*
--
--It contains the patches which Dave has selected, but not yet handed off
--to Greg.  If Greg already has the patch, then it will be here:
--
--  https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
--
--A quick way to find whether the patch is in this stable-queue is to
--simply clone the repo, and then git grep the mainline commit ID, e.g.
--::
--
--  stable-queue$ git grep -l 284041ef21fdf2e
--  releases/3.0.84/ipv6-fix-possible-crashes-in-ip6_cork_release.patch
--  releases/3.4.51/ipv6-fix-possible-crashes-in-ip6_cork_release.patch
--  releases/3.9.8/ipv6-fix-possible-crashes-in-ip6_cork_release.patch
--  stable/stable-queue$
--
--I see a network patch and I think it should be backported to stable. Should I request it via stable@vger.kernel.org like the references in the kernel's Documentation/process/stable-kernel-rules.rst file say?
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--No, not for networking.  Check the stable queues as per above first
--to see if it is already queued.  If not, then send a mail to netdev,
--listing the upstream commit ID and why you think it should be a stable
--candidate.
--
--Before you jump to go do the above, do note that the normal stable rules
--in :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
--still apply.  So you need to explicitly indicate why it is a critical
--fix and exactly what users are impacted.  In addition, you need to
--convince yourself that you *really* think it has been overlooked,
--vs. having been considered and rejected.
--
--Generally speaking, the longer it has had a chance to "soak" in
--mainline, the better the odds that it is an OK candidate for stable.  So
--scrambling to request a commit be added the day after it appears should
--be avoided.
--
--I have created a network patch and I think it should be backported to stable. Should I add a Cc: stable@vger.kernel.org like the references in the kernel's Documentation/ directory say?
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--No.  See above answer.  In short, if you think it really belongs in
--stable, then ensure you write a decent commit log that describes who
--gets impacted by the bug fix and how it manifests itself, and when the
--bug was introduced.  If you do that properly, then the commit will get
--handled appropriately and most likely get put in the patchworks stable
--queue if it really warrants it.
--
--If you think there is some valid information relating to it being in
--stable that does *not* belong in the commit log, then use the three dash
--marker line as described in
--:ref:`Documentation/process/submitting-patches.rst <the_canonical_patch_format>`
--to temporarily embed that information into the patch that you send.
--
--Are all networking bug fixes backported to all stable releases?
-+Are there special rules regarding stable submissions on netdev?
- ---------------------------------------------------------------
--Due to capacity, Dave could only take care of the backports for the
--last two stable releases. For earlier stable releases, each stable
--branch maintainer is supposed to take care of them. If you find any
--patch is missing from an earlier stable branch, please notify
--stable@vger.kernel.org with either a commit ID or a formal patch
--backported, and CC Dave and other relevant networking developers.
-+While it used to be the case that netdev submissions were not supposed
-+to carry explicit ``CC: stable@vger.kernel.org`` tags that is no longer
-+the case today. Please follow the standard stable rules in
-+:ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`,
-+and make sure you include appropriate Fixes tags!
+ 	flexcan_set_bittiming(dev);
  
- Is the comment style convention different for the networking content?
- ---------------------------------------------------------------------
---- a/Documentation/process/stable-kernel-rules.rst
-+++ b/Documentation/process/stable-kernel-rules.rst
-@@ -35,12 +35,6 @@ Rules on what kind of patches are accept
- Procedure for submitting patches to the -stable tree
- ----------------------------------------------------
++	/* set freeze, halt */
++	err = flexcan_chip_freeze(priv);
++	if (err)
++		goto out_chip_disable;
++
+ 	/* MCR
+ 	 *
+-	 * enable freeze
+-	 * halt now
+ 	 * only supervisor access
+ 	 * enable warning int
+ 	 * enable individual RX masking
+@@ -1387,9 +1390,8 @@ static int flexcan_chip_start(struct net
+ 	 */
+ 	reg_mcr = priv->read(&regs->mcr);
+ 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
+-	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
+-		FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_IRMQ | FLEXCAN_MCR_IDAM_C |
+-		FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
++	reg_mcr |= FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_IRMQ |
++		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
  
-- - If the patch covers files in net/ or drivers/net please follow netdev stable
--   submission guidelines as described in
--   :ref:`Documentation/networking/netdev-FAQ.rst <netdev-FAQ>`
--   after first checking the stable networking queue at
--   https://patchwork.kernel.org/bundle/netdev/stable/?state=*
--   to ensure the requested patch is not already queued up.
-  - Security patches should not be handled (solely) by the -stable review
-    process but should follow the procedures in
-    :ref:`Documentation/admin-guide/security-bugs.rst <securitybugs>`.
---- a/Documentation/process/submitting-patches.rst
-+++ b/Documentation/process/submitting-patches.rst
-@@ -250,11 +250,6 @@ should also read
- :ref:`Documentation/process/stable-kernel-rules.rst <stable_kernel_rules>`
- in addition to this file.
- 
--Note, however, that some subsystem maintainers want to come to their own
--conclusions on which patches should go to the stable trees.  The networking
--maintainer, in particular, would rather not see individual developers
--adding lines like the above to their patches.
--
- If changes affect userland-kernel interfaces, please send the MAN-PAGES
- maintainer (as listed in the MAINTAINERS file) a man-pages patch, or at
- least a notification of the change, so that some information makes its way
+ 	/* MCR
+ 	 *
 
 
