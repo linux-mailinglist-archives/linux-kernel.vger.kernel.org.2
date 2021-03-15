@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA5133BE71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F8733BCE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239463AbhCOOq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:46:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53082 "EHLO mail.kernel.org"
+        id S235404AbhCOOaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234643AbhCOOEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4E5C64EF9;
-        Mon, 15 Mar 2021 14:04:39 +0000 (UTC)
+        id S232953AbhCOOAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EED64F5F;
+        Mon, 15 Mar 2021 14:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817081;
-        bh=YLrLZWd9bqysywbk0zeXsYYl+s/6QqVWmtVC29uteLI=;
+        s=korg; t=1615816805;
+        bh=y9MWJwAHKI1yTKJrTrQ3s9kibterPfHI/FArkPmAavI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyBl4bqlgFhFgfSLcXu9snBJf1wOgYAX6ziX1Oww7RFBB6dgCij1mFh4MgBjzBMIb
-         BikY6fgLAkt7sRiK16JHGL6B4VefllYtlCyurmHOWKFE0COBvN1OUrv/pu6iYH6QjI
-         UN/tVEbatZAiF4HB8k8X0bRFqWaa3JvC8kDZWDw0=
+        b=ssl27O8mMTkDoCTF9PDVfHT/vflimG6oy5KXYnJFc7Z9qW7ivyn8IM9Mk9KabShK4
+         8rQ/SigR+zeexh4nalZF9PVNjccWnHp9VEc4zv6gLMk31pVUl++09fR0RdL6GB6Oth
+         AZ8UQDvOX+o+SjJTD+eMvePJlQ4Jwl1Gl4MNR5qQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.11 290/306] x86/sev-es: Use __copy_from_user_inatomic()
-Date:   Mon, 15 Mar 2021 14:55:53 +0100
-Message-Id: <20210315135517.488727059@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>,
+        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.4 122/168] usbip: fix stub_dev usbip_sockfd_store() races leading to gpf
+Date:   Mon, 15 Mar 2021 14:55:54 +0100
+Message-Id: <20210315135554.366271344@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,137 +45,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit bffe30dd9f1f3b2608a87ac909a224d6be472485 upstream.
+commit 9380afd6df70e24eacbdbde33afc6a3950965d22 upstream.
 
-The #VC handler must run in atomic context and cannot sleep. This is a
-problem when it tries to fetch instruction bytes from user-space via
-copy_from_user().
+usbip_sockfd_store() is invoked when user requests attach (import)
+detach (unimport) usb device from usbip host. vhci_hcd sends import
+request and usbip_sockfd_store() exports the device if it is free
+for export.
 
-Introduce a insn_fetch_from_user_inatomic() helper which uses
-__copy_from_user_inatomic() to safely copy the instruction bytes to
-kernel memory in the #VC handler.
+Export and unexport are governed by local state and shared state
+- Shared state (usbip device status, sockfd) - sockfd and Device
+  status are used to determine if stub should be brought up or shut
+  down.
+- Local state (tcp_socket, rx and tx thread task_struct ptrs)
+  A valid tcp_socket controls rx and tx thread operations while the
+  device is in exported state.
+- While the device is exported, device status is marked used and socket,
+  sockfd, and thread pointers are valid.
 
-Fixes: 5e3427a7bc432 ("x86/sev-es: Handle instruction fetches from user-space")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # v5.10+
-Link: https://lkml.kernel.org/r/20210303141716.29223-6-joro@8bytes.org
+Export sequence (stub-up) includes validating the socket and creating
+receive (rx) and transmit (tx) threads to talk to the client to provide
+access to the exported device. rx and tx threads depends on local and
+shared state to be correct and in sync.
+
+Unexport (stub-down) sequence shuts the socket down and stops the rx and
+tx threads. Stub-down sequence relies on local and shared states to be
+in sync.
+
+There are races in updating the local and shared status in the current
+stub-up sequence resulting in crashes. These stem from starting rx and
+tx threads before local and global state is updated correctly to be in
+sync.
+
+1. Doesn't handle kthread_create() error and saves invalid ptr in local
+   state that drives rx and tx threads.
+2. Updates tcp_socket and sockfd,  starts stub_rx and stub_tx threads
+   before updating usbip_device status to SDEV_ST_USED. This opens up a
+   race condition between the threads and usbip_sockfd_store() stub up
+   and down handling.
+
+Fix the above problems:
+- Stop using kthread_get_run() macro to create/start threads.
+- Create threads and get task struct reference.
+- Add kthread_create() failure handling and bail out.
+- Hold usbip_device lock to update local and shared states after
+  creating rx and tx threads.
+- Update usbip_device status to SDEV_ST_USED.
+- Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
+- Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
+  and status) is complete.
+
+Credit goes to syzbot and Tetsuo Handa for finding and root-causing the
+kthread_get_run() improper error handling problem and others. This is a
+hard problem to find and debug since the races aren't seen in a normal
+case. Fuzzing forces the race window to be small enough for the
+kthread_get_run() error path bug and starting threads before updating the
+local and shared state bug in the stub-up sequence.
+
+Tested with syzbot reproducer:
+- https://syzkaller.appspot.com/text?tag=ReproC&x=14801034d00000
+
+Fixes: 9720b4bc76a83807 ("staging/usbip: convert to kthread")
+Cc: stable@vger.kernel.org
+Reported-by: syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/insn-eval.h |    2 +
- arch/x86/kernel/sev-es.c         |    2 -
- arch/x86/lib/insn-eval.c         |   66 ++++++++++++++++++++++++++++++---------
- 3 files changed, 55 insertions(+), 15 deletions(-)
+ drivers/usb/usbip/stub_dev.c |   32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
---- a/arch/x86/include/asm/insn-eval.h
-+++ b/arch/x86/include/asm/insn-eval.h
-@@ -23,6 +23,8 @@ unsigned long insn_get_seg_base(struct p
- int insn_get_code_seg_params(struct pt_regs *regs);
- int insn_fetch_from_user(struct pt_regs *regs,
- 			 unsigned char buf[MAX_INSN_SIZE]);
-+int insn_fetch_from_user_inatomic(struct pt_regs *regs,
-+				  unsigned char buf[MAX_INSN_SIZE]);
- bool insn_decode(struct insn *insn, struct pt_regs *regs,
- 		 unsigned char buf[MAX_INSN_SIZE], int buf_size);
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -46,6 +46,8 @@ static ssize_t usbip_sockfd_store(struct
+ 	int sockfd = 0;
+ 	struct socket *socket;
+ 	int rv;
++	struct task_struct *tcp_rx = NULL;
++	struct task_struct *tcp_tx = NULL;
  
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -258,7 +258,7 @@ static enum es_result vc_decode_insn(str
- 	int res;
+ 	if (!sdev) {
+ 		dev_err(dev, "sdev is null\n");
+@@ -80,20 +82,36 @@ static ssize_t usbip_sockfd_store(struct
+ 			goto sock_err;
+ 		}
  
- 	if (user_mode(ctxt->regs)) {
--		res = insn_fetch_from_user(ctxt->regs, buffer);
-+		res = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
- 		if (!res) {
- 			ctxt->fi.vector     = X86_TRAP_PF;
- 			ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -1415,6 +1415,25 @@ void __user *insn_get_addr_ref(struct in
- 	}
- }
+-		sdev->ud.tcp_socket = socket;
+-		sdev->ud.sockfd = sockfd;
+-
++		/* unlock and create threads and get tasks */
+ 		spin_unlock_irq(&sdev->ud.lock);
++		tcp_rx = kthread_create(stub_rx_loop, &sdev->ud, "stub_rx");
++		if (IS_ERR(tcp_rx)) {
++			sockfd_put(socket);
++			return -EINVAL;
++		}
++		tcp_tx = kthread_create(stub_tx_loop, &sdev->ud, "stub_tx");
++		if (IS_ERR(tcp_tx)) {
++			kthread_stop(tcp_rx);
++			sockfd_put(socket);
++			return -EINVAL;
++		}
  
-+static unsigned long insn_get_effective_ip(struct pt_regs *regs)
-+{
-+	unsigned long seg_base = 0;
+-		sdev->ud.tcp_rx = kthread_get_run(stub_rx_loop, &sdev->ud,
+-						  "stub_rx");
+-		sdev->ud.tcp_tx = kthread_get_run(stub_tx_loop, &sdev->ud,
+-						  "stub_tx");
++		/* get task structs now */
++		get_task_struct(tcp_rx);
++		get_task_struct(tcp_tx);
+ 
++		/* lock and update sdev->ud state */
+ 		spin_lock_irq(&sdev->ud.lock);
++		sdev->ud.tcp_socket = socket;
++		sdev->ud.sockfd = sockfd;
++		sdev->ud.tcp_rx = tcp_rx;
++		sdev->ud.tcp_tx = tcp_tx;
+ 		sdev->ud.status = SDEV_ST_USED;
+ 		spin_unlock_irq(&sdev->ud.lock);
+ 
++		wake_up_process(sdev->ud.tcp_rx);
++		wake_up_process(sdev->ud.tcp_tx);
 +
-+	/*
-+	 * If not in user-space long mode, a custom code segment could be in
-+	 * use. This is true in protected mode (if the process defined a local
-+	 * descriptor table), or virtual-8086 mode. In most of the cases
-+	 * seg_base will be zero as in USER_CS.
-+	 */
-+	if (!user_64bit_mode(regs)) {
-+		seg_base = insn_get_seg_base(regs, INAT_SEG_REG_CS);
-+		if (seg_base == -1L)
-+			return 0;
-+	}
-+
-+	return seg_base + regs->ip;
-+}
-+
- /**
-  * insn_fetch_from_user() - Copy instruction bytes from user-space memory
-  * @regs:	Structure with register values as seen when entering kernel mode
-@@ -1431,24 +1450,43 @@ void __user *insn_get_addr_ref(struct in
-  */
- int insn_fetch_from_user(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
- {
--	unsigned long seg_base = 0;
-+	unsigned long ip;
- 	int not_copied;
+ 	} else {
+ 		dev_info(dev, "stub down\n");
  
--	/*
--	 * If not in user-space long mode, a custom code segment could be in
--	 * use. This is true in protected mode (if the process defined a local
--	 * descriptor table), or virtual-8086 mode. In most of the cases
--	 * seg_base will be zero as in USER_CS.
--	 */
--	if (!user_64bit_mode(regs)) {
--		seg_base = insn_get_seg_base(regs, INAT_SEG_REG_CS);
--		if (seg_base == -1L)
--			return 0;
--	}
-+	ip = insn_get_effective_ip(regs);
-+	if (!ip)
-+		return 0;
-+
-+	not_copied = copy_from_user(buf, (void __user *)ip, MAX_INSN_SIZE);
-+
-+	return MAX_INSN_SIZE - not_copied;
-+}
-+
-+/**
-+ * insn_fetch_from_user_inatomic() - Copy instruction bytes from user-space memory
-+ *                                   while in atomic code
-+ * @regs:	Structure with register values as seen when entering kernel mode
-+ * @buf:	Array to store the fetched instruction
-+ *
-+ * Gets the linear address of the instruction and copies the instruction bytes
-+ * to the buf. This function must be used in atomic context.
-+ *
-+ * Returns:
-+ *
-+ * Number of instruction bytes copied.
-+ *
-+ * 0 if nothing was copied.
-+ */
-+int insn_fetch_from_user_inatomic(struct pt_regs *regs, unsigned char buf[MAX_INSN_SIZE])
-+{
-+	unsigned long ip;
-+	int not_copied;
- 
-+	ip = insn_get_effective_ip(regs);
-+	if (!ip)
-+		return 0;
- 
--	not_copied = copy_from_user(buf, (void __user *)(seg_base + regs->ip),
--				    MAX_INSN_SIZE);
-+	not_copied = __copy_from_user_inatomic(buf, (void __user *)ip, MAX_INSN_SIZE);
- 
- 	return MAX_INSN_SIZE - not_copied;
- }
 
 
