@@ -2,306 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A0733ADC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A60233ADCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhCOIlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:41:07 -0400
-Received: from z11.mailgun.us ([104.130.96.11]:59014 "EHLO z11.mailgun.us"
+        id S229523AbhCOImJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:42:09 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:42262 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhCOIku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:40:50 -0400
+        id S229614AbhCOIlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:41:39 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615797650; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=D343vyk7sN5gqMThpAfrMHUVyL6cAi7zARSJojR8pC8=;
- b=rZnOnIyMcyXupPosAdilwTH9/m9sSATY9kP0rWz0/8TRpqHm3WCvmBRFMSZxkXDfKff9JPp0
- MXFPHJ15h+qP3bWxpXEmn5RgeJliGqjWNVP9HBwf02dINbf7Touo+O4MgCrkq4cjzja47XHu
- Es+ihcRfx8zvhYbixEIcgWr8laI=
-X-Mailgun-Sending-Ip: 104.130.96.11
+ s=smtp; t=1615797699; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=9Yz2prTldpg06djW1uSjsLo9RAV7sQVLS2v0kM5ni7Y=; b=h9AXSWUewqS8o2mV63V0g32C2M1WgssTDF3sqfrmGVOPHVpD+9+N0roE9aPMSRZ2C81MO5JL
+ hS6QejlNg4hP4gIO6eJHc1FS+QBg5HcU4tsdeagSlsgjS/6OqaugvH4Ec7qSfNHXCooYHcTD
+ 3yvryJHzp5AA2rWQTdRR50ko0vo=
+X-Mailgun-Sending-Ip: 69.72.42.2
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 604f1d8de3fca7d0a6996b6c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:40:45
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 604f1dc05d70193f8863aeba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:41:36
  GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3D6AC43463; Mon, 15 Mar 2021 08:40:44 +0000 (UTC)
+        id 24727C43461; Mon, 15 Mar 2021 08:41:36 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 606EBC433ED;
-        Mon, 15 Mar 2021 08:40:43 +0000 (UTC)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C5D0C43463;
+        Mon, 15 Mar 2021 08:41:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C5D0C43463
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Aditya Srivastava <yashsri421@gmail.com>, siva8118@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        amitkarwar@gmail.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/10] rsi: fix comment syntax in file headers
+References: <20210314201818.27380-1-yashsri421@gmail.com>
+        <CAKXUXMzH-cUVeuCT6eM_0iHzgKpzvZUPO6pKNpD0yUp2td09Ug@mail.gmail.com>
+Date:   Mon, 15 Mar 2021 10:41:30 +0200
+In-Reply-To: <CAKXUXMzH-cUVeuCT6eM_0iHzgKpzvZUPO6pKNpD0yUp2td09Ug@mail.gmail.com>
+        (Lukas Bulwahn's message of "Mon, 15 Mar 2021 09:01:56 +0100")
+Message-ID: <87a6r4u7ut.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 15 Mar 2021 16:40:43 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 03/10] scsi: ufshpb: Add region's reads counter
-In-Reply-To: <20210302132503.224670-4-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-4-avri.altman@wdc.com>
-Message-ID: <1d5380f5d1395b5733a68b902d60c24a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:24, Avri Altman wrote:
-> In host control mode, reads are the major source of activation trials.
-> Keep track of those reads counters, for both active as well inactive
-> regions.
-> 
-> We reset the read counter upon write - we are only interested in 
-> "clean"
-> reads.  less intuitive however, is that we also reset it upon region's
-> deactivation.  Region deactivation is often due to the fact that
-> eviction took place: a region become active on the expense of another.
-> This is happening when the max-active-regions limit has crossed. If we
-> don’t reset the counter, we will trigger a lot of trashing of the HPB
-> database, since few reads (or even one) to the region that was
-> deactivated, will trigger a re-activation trial.
-> 
-> Keep those counters normalized, as we are using those reads as a
-> comparative score, to make various decisions.
-> If during consecutive normalizations an active region has exhaust its
-> reads - inactivate it.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 102 ++++++++++++++++++++++++++++++++------
->  drivers/scsi/ufs/ufshpb.h |   5 ++
->  2 files changed, 92 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 044fec9854a0..a8f8d13af21a 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -16,6 +16,8 @@
->  #include "ufshpb.h"
->  #include "../sd.h"
-> 
-> +#define ACTIVATION_THRESHOLD 4 /* 4 IOs */
-> +
->  /* memory management */
->  static struct kmem_cache *ufshpb_mctx_cache;
->  static mempool_t *ufshpb_mctx_pool;
-> @@ -554,6 +556,21 @@ static int ufshpb_issue_pre_req(struct ufshpb_lu
-> *hpb, struct scsi_cmnd *cmd,
->  	return ret;
->  }
-> 
-> +static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
-> rgn_idx,
-> +				      int srgn_idx)
-> +{
-> +	struct ufshpb_region *rgn;
-> +	struct ufshpb_subregion *srgn;
-> +
-> +	rgn = hpb->rgn_tbl + rgn_idx;
-> +	srgn = rgn->srgn_tbl + srgn_idx;
-> +
-> +	list_del_init(&rgn->list_inact_rgn);
-> +
-> +	if (list_empty(&srgn->list_act_srgn))
-> +		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
-> +}
-> +
->  /*
->   * This function will set up HPB read command using host-side L2P map 
-> data.
->   */
-> @@ -600,12 +617,44 @@ int ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->  		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
->  				 transfer_len);
->  		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +		if (hpb->is_hcm) {
-> +			spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +			rgn->reads = 0;
-> +			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +		}
-> +
->  		return 0;
->  	}
-> 
->  	if (!ufshpb_is_support_chunk(hpb, transfer_len))
->  		return 0;
-> 
-> +	if (hpb->is_hcm) {
-> +		bool activate = false;
-> +		/*
-> +		 * in host control mode, reads are the main source for
-> +		 * activation trials.
-> +		 */
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads++;
-> +		if (rgn->reads == ACTIVATION_THRESHOLD)
-> +			activate = true;
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +		if (activate) {
-> +			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
-> +			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
-> +			hpb->stats.rb_active_cnt++;
-> +			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
-> +			dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
-> +				"activate region %d-%d\n", rgn_idx, srgn_idx);
-> +		}
-> +
-> +		/* keep those counters normalized */
-> +		if (rgn->reads > hpb->entries_per_srgn)
-> +			schedule_work(&hpb->ufshpb_normalization_work);
-> +	}
-> +
->  	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->  	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
->  				   transfer_len)) {
-> @@ -745,21 +794,6 @@ static int ufshpb_clear_dirty_bitmap(struct 
-> ufshpb_lu *hpb,
->  	return 0;
->  }
-> 
-> -static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
-> rgn_idx,
-> -				      int srgn_idx)
-> -{
-> -	struct ufshpb_region *rgn;
-> -	struct ufshpb_subregion *srgn;
-> -
-> -	rgn = hpb->rgn_tbl + rgn_idx;
-> -	srgn = rgn->srgn_tbl + srgn_idx;
-> -
-> -	list_del_init(&rgn->list_inact_rgn);
-> -
-> -	if (list_empty(&srgn->list_act_srgn))
-> -		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
-> -}
-> -
->  static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int 
-> rgn_idx)
->  {
->  	struct ufshpb_region *rgn;
-> @@ -1079,6 +1113,14 @@ static void __ufshpb_evict_region(struct 
-> ufshpb_lu *hpb,
-> 
->  	ufshpb_cleanup_lru_info(lru_info, rgn);
-> 
-> +	if (hpb->is_hcm) {
-> +		unsigned long flags;
-> +
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads = 0;
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +	}
-> +
->  	for_each_sub_region(rgn, srgn_idx, srgn)
->  		ufshpb_purge_active_subregion(hpb, srgn);
->  }
-> @@ -1523,6 +1565,31 @@ static void
-> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
->  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->  }
-> 
-> +static void ufshpb_normalization_work_handler(struct work_struct 
-> *work)
-> +{
-> +	struct ufshpb_lu *hpb;
-> +	int rgn_idx;
-> +	unsigned long flags;
-> +
-> +	hpb = container_of(work, struct ufshpb_lu, 
-> ufshpb_normalization_work);
-> +
-> +	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
-> +		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
-> +
-> +		spin_lock_irqsave(&rgn->rgn_lock, flags);
-> +		rgn->reads = (rgn->reads >> 1);
-> +		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> +
-> +		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
-> +			continue;
-> +
-> +		/* if region is active but has no reads - inactivate it */
-> +		spin_lock(&hpb->rsp_list_lock);
-> +		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-Miss a hpb->stats.rb_inactive_cnt++ here?
+> On Sun, Mar 14, 2021 at 9:18 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
+>>
+>> The opening comment mark '/**' is used for highlighting the beginning of
+>> kernel-doc comments.
+>> There are files in drivers/net/wireless/rsi which follow this syntax in
+>> their file headers, i.e. start with '/**' like comments, which causes
+>> unexpected warnings from kernel-doc.
+>>
+>> E.g., running scripts/kernel-doc -none on drivers/net/wireless/rsi/rsi_coex.h
+>> causes this warning:
+>> "warning: wrong kernel-doc identifier on line:
+>>  * Copyright (c) 2018 Redpine Signals Inc."
+>>
+>> Similarly for other files too.
+>>
+>> Provide a simple fix by replacing the kernel-doc like comment syntax with
+>> general format, i.e. "/*", to prevent kernel-doc from parsing it.
+>>
+>
+> Aditya, thanks for starting to clean up the repository following your
+> investigation on kernel-doc warnings.
+>
+> The changes to all those files look sound.
+>
+> However I think these ten patches are really just _one change_, and
+> hence, all can be put into a single commit.
 
-Thanks,
-Can Guo.
+I agree, this is one logical change to a single driver so one patch will
+suffice. I think for cleanup changes like this one patch per driver is a
+good approach.
 
-> +		spin_unlock(&hpb->rsp_list_lock);
-> +	}
-> +}
-> +
->  static void ufshpb_map_work_handler(struct work_struct *work)
->  {
->  	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu, 
-> map_work);
-> @@ -1913,6 +1980,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
-> *hba, struct ufshpb_lu *hpb)
->  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
-> 
->  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
-> +	if (hpb->is_hcm)
-> +		INIT_WORK(&hpb->ufshpb_normalization_work,
-> +			  ufshpb_normalization_work_handler);
-> 
->  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
->  			  sizeof(struct ufshpb_req), 0, 0, NULL);
-> @@ -2012,6 +2082,8 @@ static void ufshpb_discard_rsp_lists(struct
-> ufshpb_lu *hpb)
-> 
->  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->  {
-> +	if (hpb->is_hcm)
-> +		cancel_work_sync(&hpb->ufshpb_normalization_work);
->  	cancel_work_sync(&hpb->map_work);
->  }
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index 8119b1a3d1e5..bd4308010466 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -121,6 +121,10 @@ struct ufshpb_region {
->  	struct list_head list_lru_rgn;
->  	unsigned long rgn_flags;
->  #define RGN_FLAG_DIRTY 0
-> +
-> +	/* region reads - for host mode */
-> +	spinlock_t rgn_lock;
-> +	unsigned int reads;
->  };
-> 
->  #define for_each_sub_region(rgn, i, srgn)				\
-> @@ -211,6 +215,7 @@ struct ufshpb_lu {
-> 
->  	/* for selecting victim */
->  	struct victim_select_info lru_info;
-> +	struct work_struct ufshpb_normalization_work;
-> 
->  	/* pinned region information */
->  	u32 lu_pinned_start;
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
