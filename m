@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DBC33B654
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8319B33B6CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhCON5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57310 "EHLO mail.kernel.org"
+        id S232394AbhCON6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231270AbhCONyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 981F364F15;
-        Mon, 15 Mar 2021 13:54:14 +0000 (UTC)
+        id S231374AbhCONyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDC964E89;
+        Mon, 15 Mar 2021 13:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816455;
-        bh=SjQOFmZRxdZ310GW2oTd2Oj43EblcbOGN673ggQ5FW4=;
+        s=korg; t=1615816457;
+        bh=qGJDHKHscL4c0vYzroDgIRcH/wbB5wiswAGnbwBhUBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oO7E7I+zL/e/kxlDk7dNqQ5vnc7pxRKLOJIySq5mdK1/ds114A7ngFOYVhnaI5mSe
-         AaWNR7WFLNKGcu3nuNSY4O/aPIxWlEQA7kcgtD7wpeyg8jFLzPu8aLKRttOT1Cb3+T
-         EG65ElkYNZzMs7rLS0X9ao4faVzw9w0jTGxogCcA=
+        b=eJvS6Xa+A4w3YT5vm3artWF3YCl8Zs7i67NkLQhvqYtPkzRF0feus50VIjMqUTZ7l
+         +XsVmM819X/fn1NW2+uFiRkNtqpoVca8VoVCLVMDG1elrhOf3wceA54tOVOehXDbE8
+         +kp3WhHy3Upx7+sjW8rNgcaDmy2ST4M/MiqnMybs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
-Subject: [PATCH 4.9 49/78] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
-Date:   Mon, 15 Mar 2021 14:52:12 +0100
-Message-Id: <20210315135213.680885903@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Lee Gibson <leegib@gmail.com>
+Subject: [PATCH 4.9 50/78] staging: rtl8192e: Fix possible buffer overflow in _rtl92e_wx_set_scan
+Date:   Mon, 15 Mar 2021 14:52:13 +0100
+Message-Id: <20210315135213.718176624@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -42,34 +43,36 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Lee Gibson <leegib@gmail.com>
 
-commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
+commit 8687bf9ef9551bcf93897e33364d121667b1aadf upstream.
 
-Function r8712_sitesurvey_cmd calls memcpy without checking the length.
+Function _rtl92e_wx_set_scan calls memcpy without checking the length.
 A user could control that length and trigger a buffer overflow.
 Fix by checking the length is within the maximum allowed size.
 
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Lee Gibson <leegib@gmail.com>
-Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
 Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210226145157.424065-1-leegib@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/rtl8712/rtl871x_cmd.c
-+++ b/drivers/staging/rtl8712/rtl871x_cmd.c
-@@ -239,8 +239,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
- 	psurveyPara->ss_ssidlen = 0;
- 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
- 	if ((pssid != NULL) && (pssid->SsidLength)) {
--		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
--		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
-+		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -419,9 +419,10 @@ static int _rtl92e_wx_set_scan(struct ne
+ 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+ 
+ 		if (req->essid_len) {
+-			ieee->current_network.ssid_len = req->essid_len;
+-			memcpy(ieee->current_network.ssid, req->essid,
+-			       req->essid_len);
++			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
 +
-+		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
-+		psurveyPara->ss_ssidlen = cpu_to_le32(len);
++			ieee->current_network.ssid_len = len;
++			memcpy(ieee->current_network.ssid, req->essid, len);
+ 		}
  	}
- 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
- 	r8712_enqueue_cmd(pcmdpriv, ph2c);
+ 
 
 
