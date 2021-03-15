@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D0B33BD60
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E57E33BD70
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbhCOOes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S236181AbhCOOfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:35:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233452AbhCOOBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233455AbhCOOBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B3E64F1E;
-        Mon, 15 Mar 2021 14:01:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB44764F2A;
+        Mon, 15 Mar 2021 14:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816892;
-        bh=Wv3ykn6IIN7P5T4fDdFyXgqnYKZoGNVkgDy3kpC6dBQ=;
+        s=korg; t=1615816893;
+        bh=Y7KqdrFoVQtcaYQsWHhBptJOg9bSZb1WGzExBGJQKww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dDRl0JEsoUH0a/NTD3RNoIhhJe057VAl4feg5J6OYmvGeIjYsQxrsdGEEZyUKTRNi
-         wilYSBgTKDY2hlPgPhW65GczMHeqc2fHLRFi7F5MNxsedv8fUVSkDF+Pi/IGm3tiqi
-         iOQB50ejkEmRT4SSVss3bx0uxnhB9g13rH9jorYI=
+        b=er9LZtau4286/8jpQqQAEcdGDHH7irgpe2eHX2h943GeiWxWqWdTGwr9o2meKQorr
+         GeLumPe+inmG48coFMCwvC9lP7abJaO8IghrgcdY0sJM0chh+54MHshyUCxqdqQ7UD
+         VgVrn1lVU44pjH+JyGUOFoKbw/IjkLtOxBQQBxVs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Abhishek Sahu <abhsahu@nvidia.com>
-Subject: [PATCH 5.10 172/290] ALSA: hda/hdmi: Cancel pending works before suspend
-Date:   Mon, 15 Mar 2021 14:54:25 +0100
-Message-Id: <20210315135547.711876844@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 173/290] ALSA: hda/conexant: Add quirk for mute LED control on HP ZBook G5
+Date:   Mon, 15 Mar 2021 14:54:26 +0100
+Message-Id: <20210315135547.743714954@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,55 +42,145 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
+commit 56b26497bb4b7ff970612dc25a8a008c34463f7b upstream.
 
-The per_pin->work might be still floating at the suspend, and this may
-hit the access to the hardware at an unexpected timing.  Cancel the
-work properly at the suspend callback for avoiding the buggy access.
+The mute and mic-mute LEDs on HP ZBook Studio G5 are controlled via
+GPIO bits 0x10 and 0x20, respectively, and we need the extra setup for
+those.
 
-Note that the bug doesn't trigger easily in the recent kernels since
-the work is queued only when the repoll count is set, and usually it's
-only at the resume callback, but it's still possible to hit in
-theory.
+As the similar code is already present for other HP models but with
+different GPIO pins, this patch factors out the common helper code and
+applies those GPIO values for each model.
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
-Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211893
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210306095018.11746-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/pci/hda/patch_conexant.c |   62 +++++++++++++++++++++++++++++------------
+ 1 file changed, 45 insertions(+), 17 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2475,6 +2475,18 @@ static void generic_hdmi_free(struct hda
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -149,6 +149,21 @@ static int cx_auto_vmaster_mute_led(stru
+ 	return 0;
  }
  
- #ifdef CONFIG_PM
-+static int generic_hdmi_suspend(struct hda_codec *codec)
++static void cxt_init_gpio_led(struct hda_codec *codec)
 +{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_idx;
++	struct conexant_spec *spec = codec->spec;
++	unsigned int mask = spec->gpio_mute_led_mask | spec->gpio_mic_led_mask;
 +
-+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		cancel_delayed_work_sync(&per_pin->work);
++	if (mask) {
++		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_MASK,
++				    mask);
++		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DIRECTION,
++				    mask);
++		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
++				    spec->gpio_led);
 +	}
-+	return 0;
 +}
 +
- static int generic_hdmi_resume(struct hda_codec *codec)
+ static int cx_auto_init(struct hda_codec *codec)
  {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -2498,6 +2510,7 @@ static const struct hda_codec_ops generi
- 	.build_controls		= generic_hdmi_build_controls,
- 	.unsol_event		= hdmi_unsol_event,
- #ifdef CONFIG_PM
-+	.suspend		= generic_hdmi_suspend,
- 	.resume			= generic_hdmi_resume,
- #endif
+ 	struct conexant_spec *spec = codec->spec;
+@@ -156,6 +171,7 @@ static int cx_auto_init(struct hda_codec
+ 	if (!spec->dynamic_eapd)
+ 		cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, true);
+ 
++	cxt_init_gpio_led(codec);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
+ 
+ 	return 0;
+@@ -215,6 +231,7 @@ enum {
+ 	CXT_FIXUP_HP_SPECTRE,
+ 	CXT_FIXUP_HP_GATE_MIC,
+ 	CXT_FIXUP_MUTE_LED_GPIO,
++	CXT_FIXUP_HP_ZBOOK_MUTE_LED,
+ 	CXT_FIXUP_HEADSET_MIC,
+ 	CXT_FIXUP_HP_MIC_NO_PRESENCE,
+ };
+@@ -654,31 +671,36 @@ static int cxt_gpio_micmute_update(struc
+ 	return 0;
+ }
+ 
+-
+-static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
+-				const struct hda_fixup *fix, int action)
++static void cxt_setup_mute_led(struct hda_codec *codec,
++			       unsigned int mute, unsigned int mic_mute)
+ {
+ 	struct conexant_spec *spec = codec->spec;
+-	static const struct hda_verb gpio_init[] = {
+-		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x03 },
+-		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03 },
+-		{}
+-	};
+ 
+-	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++	spec->gpio_led = 0;
++	spec->mute_led_polarity = 0;
++	if (mute) {
+ 		snd_hda_gen_add_mute_led_cdev(codec, cxt_gpio_mute_update);
+-		spec->gpio_led = 0;
+-		spec->mute_led_polarity = 0;
+-		spec->gpio_mute_led_mask = 0x01;
+-		spec->gpio_mic_led_mask = 0x02;
++		spec->gpio_mute_led_mask = mute;
++	}
++	if (mic_mute) {
+ 		snd_hda_gen_add_micmute_led_cdev(codec, cxt_gpio_micmute_update);
++		spec->gpio_mic_led_mask = mic_mute;
+ 	}
+-	snd_hda_add_verbs(codec, gpio_init);
+-	if (spec->gpio_led)
+-		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
+-				    spec->gpio_led);
+ }
+ 
++static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		cxt_setup_mute_led(codec, 0x01, 0x02);
++}
++
++static void cxt_fixup_hp_zbook_mute_led(struct hda_codec *codec,
++					const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		cxt_setup_mute_led(codec, 0x10, 0x20);
++}
+ 
+ /* ThinkPad X200 & co with cxt5051 */
+ static const struct hda_pintbl cxt_pincfg_lenovo_x200[] = {
+@@ -839,6 +861,10 @@ static const struct hda_fixup cxt_fixups
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cxt_fixup_mute_led_gpio,
+ 	},
++	[CXT_FIXUP_HP_ZBOOK_MUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cxt_fixup_hp_zbook_mute_led,
++	},
+ 	[CXT_FIXUP_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cxt_fixup_headset_mic,
+@@ -917,6 +943,7 @@ static const struct snd_pci_quirk cxt506
+ 	SND_PCI_QUIRK(0x103c, 0x8299, "HP 800 G3 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x829a, "HP 800 G3 DM", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x8402, "HP ProBook 645 G4", CXT_FIXUP_MUTE_LED_GPIO),
++	SND_PCI_QUIRK(0x103c, 0x8427, "HP ZBook Studio G5", CXT_FIXUP_HP_ZBOOK_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8455, "HP Z2 G4", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x8456, "HP Z2 G4 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x8457, "HP Z2 G4 mini", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+@@ -956,6 +983,7 @@ static const struct hda_model_fixup cxt5
+ 	{ .id = CXT_FIXUP_MUTE_LED_EAPD, .name = "mute-led-eapd" },
+ 	{ .id = CXT_FIXUP_HP_DOCK, .name = "hp-dock" },
+ 	{ .id = CXT_FIXUP_MUTE_LED_GPIO, .name = "mute-led-gpio" },
++	{ .id = CXT_FIXUP_HP_ZBOOK_MUTE_LED, .name = "hp-zbook-mute-led" },
+ 	{ .id = CXT_FIXUP_HP_MIC_NO_PRESENCE, .name = "hp-mic-fix" },
+ 	{}
  };
 
 
