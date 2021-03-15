@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531F833B54D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DCC33B52E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhCONx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55720 "EHLO mail.kernel.org"
+        id S230439AbhCONxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhCONxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8ACC64EF5;
-        Mon, 15 Mar 2021 13:53:09 +0000 (UTC)
+        id S229893AbhCONxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BACBD64EFC;
+        Mon, 15 Mar 2021 13:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816390;
-        bh=E9xxVFU9WM2Haqe5DA3QX8Z94AogIAoi8bwnBjQ/Xqg=;
+        s=korg; t=1615816384;
+        bh=OXnWKWN1H4WtRWucWVhg9d6TejNIKWrkYLsfjxNWZes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bA1oPFHZQXQ0sAs0YPNC/3BiF8VI+RdO/d2Qv75p5c7FkFgJ5HEyfv1Lf/u9nV7Nm
-         74f106tZSLbIYegVltaxe2jxqZK1Ov3XI9lHHaUG/w6rkWwqIo60XNMhBPsSwsnhqG
-         QsSR+2H5oC/MyS4CpvGZZWmy9WMd7CPxxPX+6eJM=
+        b=js7jyqGoDDUofVqqJj64Cz3e3f2UCOCZFX1HBJ6O1edpl2pdkLSGkyobBFFesCurs
+         oqmTMJqUeqVzfik0gL3wUwhSfP2cO6Aoj757Cu1+LmAH+9aOeo/K/4//mF5lLnKfMF
+         KPyWUL9xsXB/n1o1S06F5RNKnamDLQXNJI/8h6xc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 17/75] net: davicom: Fix regulator not turned off on driver removal
-Date:   Mon, 15 Mar 2021 14:51:31 +0100
-Message-Id: <20210315135208.819184944@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.9 09/78] netfilter: x_tables: gpf inside xt_find_revision()
+Date:   Mon, 15 Mar 2021 14:51:32 +0100
+Message-Id: <20210315135212.373435847@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +42,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit cf9e60aa69ae6c40d3e3e4c94dd6c8de31674e9b upstream.
+commit 8e24edddad152b998b37a7f583175137ed2e04a5 upstream.
 
-We must disable the regulator that was enabled in the probe function.
+nested target/match_revfn() calls work with xt[NFPROTO_UNSPEC] lists
+without taking xt[NFPROTO_UNSPEC].mutex. This can race with module unload
+and cause host to crash:
 
-Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+general protection fault: 0000 [#1]
+Modules linked in: ... [last unloaded: xt_cluster]
+CPU: 0 PID: 542455 Comm: iptables
+RIP: 0010:[<ffffffff8ffbd518>]  [<ffffffff8ffbd518>] strcmp+0x18/0x40
+RDX: 0000000000000003 RSI: ffff9a5a5d9abe10 RDI: dead000000000111
+R13: ffff9a5a5d9abe10 R14: ffff9a5a5d9abd8c R15: dead000000000100
+(VvS: %R15 -- &xt_match,  %RDI -- &xt_match.name,
+xt_cluster unregister match in xt[NFPROTO_UNSPEC].match list)
+Call Trace:
+ [<ffffffff902ccf44>] match_revfn+0x54/0xc0
+ [<ffffffff902ccf9f>] match_revfn+0xaf/0xc0
+ [<ffffffff902cd01e>] xt_find_revision+0x6e/0xf0
+ [<ffffffffc05a5be0>] do_ipt_get_ctl+0x100/0x420 [ip_tables]
+ [<ffffffff902cc6bf>] nf_getsockopt+0x4f/0x70
+ [<ffffffff902dd99e>] ip_getsockopt+0xde/0x100
+ [<ffffffff903039b5>] raw_getsockopt+0x25/0x50
+ [<ffffffff9026c5da>] sock_common_getsockopt+0x1a/0x20
+ [<ffffffff9026b89d>] SyS_getsockopt+0x7d/0xf0
+ [<ffffffff903cbf92>] system_call_fastpath+0x25/0x2a
+
+Fixes: 656caff20e1 ("netfilter 04/09: x_tables: fix match/target revision lookup")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/davicom/dm9000.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/netfilter/x_tables.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/davicom/dm9000.c
-+++ b/drivers/net/ethernet/davicom/dm9000.c
-@@ -144,6 +144,8 @@ struct board_info {
- 	u32		wake_state;
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -272,6 +272,7 @@ static int match_revfn(u8 af, const char
+ 	const struct xt_match *m;
+ 	int have_rev = 0;
  
- 	int		ip_summed;
-+
-+	struct regulator *power_supply;
- };
++	mutex_lock(&xt[af].mutex);
+ 	list_for_each_entry(m, &xt[af].match, list) {
+ 		if (strcmp(m->name, name) == 0) {
+ 			if (m->revision > *bestp)
+@@ -280,6 +281,7 @@ static int match_revfn(u8 af, const char
+ 				have_rev = 1;
+ 		}
+ 	}
++	mutex_unlock(&xt[af].mutex);
  
- /* debug code */
-@@ -1494,6 +1496,8 @@ dm9000_probe(struct platform_device *pde
+ 	if (af != NFPROTO_UNSPEC && !have_rev)
+ 		return match_revfn(NFPROTO_UNSPEC, name, revision, bestp);
+@@ -292,6 +294,7 @@ static int target_revfn(u8 af, const cha
+ 	const struct xt_target *t;
+ 	int have_rev = 0;
  
- 	db->dev = &pdev->dev;
- 	db->ndev = ndev;
-+	if (!IS_ERR(power))
-+		db->power_supply = power;
++	mutex_lock(&xt[af].mutex);
+ 	list_for_each_entry(t, &xt[af].target, list) {
+ 		if (strcmp(t->name, name) == 0) {
+ 			if (t->revision > *bestp)
+@@ -300,6 +303,7 @@ static int target_revfn(u8 af, const cha
+ 				have_rev = 1;
+ 		}
+ 	}
++	mutex_unlock(&xt[af].mutex);
  
- 	spin_lock_init(&db->lock);
- 	mutex_init(&db->addr_lock);
-@@ -1775,10 +1779,13 @@ static int
- dm9000_drv_remove(struct platform_device *pdev)
+ 	if (af != NFPROTO_UNSPEC && !have_rev)
+ 		return target_revfn(NFPROTO_UNSPEC, name, revision, bestp);
+@@ -313,12 +317,10 @@ int xt_find_revision(u8 af, const char *
  {
- 	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct board_info *dm = to_dm9000_board(ndev);
+ 	int have_rev, best = -1;
  
- 	unregister_netdev(ndev);
--	dm9000_release_board(pdev, netdev_priv(ndev));
-+	dm9000_release_board(pdev, dm);
- 	free_netdev(ndev);		/* free device structure */
-+	if (dm->power_supply)
-+		regulator_disable(dm->power_supply);
+-	mutex_lock(&xt[af].mutex);
+ 	if (target == 1)
+ 		have_rev = target_revfn(af, name, revision, &best);
+ 	else
+ 		have_rev = match_revfn(af, name, revision, &best);
+-	mutex_unlock(&xt[af].mutex);
  
- 	dev_dbg(&pdev->dev, "released and freed device\n");
- 	return 0;
+ 	/* Nothing at all?  Return 0 to try loading module. */
+ 	if (best == -1) {
 
 
