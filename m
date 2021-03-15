@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE11033A91B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 01:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636CE33A922
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 01:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhCOAiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 20:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S229532AbhCOArT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 20:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhCOAhv (ORCPT
+        with ESMTP id S229488AbhCOAq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 20:37:51 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A1FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 17:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=38vnoiIBOpESzfxEzG3nj/BXtJ6NAK+uvQW+9Jymr90=; b=o7dJPAxQEyNHYvJBMVEFxYCZvt
-        GlzMmNEll8MvN8KC1a8KTY4xWLe+5Q4BtB8mhTtudk6UhN8y7NGPpb9hpQnmiyeglrtWzHO8kvhHS
-        HN0xE2UmQmrWr4TRCf77Fkg79Mrp/ANzfsabi/8dp1Df+c81a6F7Pl372Pb+wQpVe321q5t9Ykcys
-        xPHO0/4+emwlb8X2Uk0OHLfBobaP7ZqoC8nwa79bRF0SdyyJaYKWfRbueCdWr1+0r37c3ckbNMLrj
-        hr6ukL2KFqetU3oJhMFN2WGFIM9f4rH1PRs0C8TI2y+agX7kXzj0pAtIR9Zo3VAR4iTuY/1svVzOZ
-        l1NflJ8Q==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLbEs-001F1y-GK; Mon, 15 Mar 2021 00:37:42 +0000
-Subject: Re: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the
- file head_fsl_booke.S
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        akpm@linux-foundation.org, rppt@kernel.org, oss@buserror.net,
-        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210314220436.3417083-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f8dc3cbe-54f4-1da1-b14f-4735d28aad13@infradead.org>
-Date:   Sun, 14 Mar 2021 17:37:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 14 Mar 2021 20:46:58 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4820C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 17:46:58 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id t16so6302916ott.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 17:46:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vyZ6O3YiaYxzFmZQxJKT3OMafYwYaK1e74woeq3EBtc=;
+        b=nMXk4Ve5Bz8QwKAwVDxcLjrze0dXxceif1jDO2cmG8P/Y6Z9rqoh5mNhyGr1iuX/9K
+         MLoy9uOC73DMMUFqdz+0PqIAO7vHAGTxfANAJyToGA0pED72knryJ6meypJit1Yv+1Os
+         QHo3FVJvRcufiWu7b8dsfo8L3MlZEOz0d98/Hb4kxqvmHMvP5JGfu1TpNVUIYaTDWpl+
+         RoRRo+fUmkInjOTgo9BMdePSM5B0On4YaN0Q97TVEaqVUwjqPMXWUsfkMA27ObxfBj6Q
+         7ru63BVVXaQ2NTbaG56zQouIg1a2fXsCp3lLSe0xc3M708C5Xn6qQDURU/ANAfgAqlot
+         qQfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vyZ6O3YiaYxzFmZQxJKT3OMafYwYaK1e74woeq3EBtc=;
+        b=LrZCehPmBbtjmK6lTKA+m+HQguJ8ztXIQpUze4mV1PiVhXZXuJ2uaVkkJVjKm+j4jB
+         n439DGhqSNU0hMQMjlS+ITZccF1ztbuP+q9B4FjBsLV53566VLWLFskNvLQaZWHGLHE4
+         EO/9n+TYsdbJtC+mPTzWD/kq3uEzfM10fETe/itBiKZDy4MRvQ49gRQPDchxIT2cQax/
+         vME5PNidGaMRMsgDFX9NpcAhcHj3jW5DIIFWy4ZYxUb/QJUE4ING3dFLyGuCyvsuNAjs
+         A9PEh1QEPaz8EUdBuZixchR/tNirORDfiRIPTfCSxPLX89HydNZDJpd9RlyFVqpA5diz
+         gjEQ==
+X-Gm-Message-State: AOAM530hKdAZ40WCtruNUVbvX6KxKVvl23fP2+1PJet4QOLxZLYXouJz
+        +XYRCzqrhWyT1fdIjlQIbm4=
+X-Google-Smtp-Source: ABdhPJw0TxDavpLAYcvq4zJCbpxjxmJNmx0hCxtyvdbtZwA6xrGQxUYOqM0vrbzHRjgUqRxhJyS1ow==
+X-Received: by 2002:a9d:760a:: with SMTP id k10mr12205341otl.23.1615769217941;
+        Sun, 14 Mar 2021 17:46:57 -0700 (PDT)
+Received: from madhuleo.lan (cpe-24-27-52-237.austin.res.rr.com. [24.27.52.237])
+        by smtp.googlemail.com with ESMTPSA id p67sm5955294oih.21.2021.03.14.17.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 17:46:57 -0700 (PDT)
+From:   Madhumitha Prabakaran <madhumithabiw@gmail.com>
+To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        sbrivio@redhat.com, briana.oursler@gmail.com, rapiz@foxmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>
+Subject: [PATCH v2] staging: vt6655: Rename two dimensional array declaration
+Date:   Sun, 14 Mar 2021 19:46:41 -0500
+Message-Id: <20210315004641.378933-1-madhumithabiw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210314220436.3417083-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/14/21 3:04 PM, Bhaskar Chowdhury wrote:
-> 
-> Trivial spelling fixes throughout the file.
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/powerpc/kernel/head_fsl_booke.S | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
-> index fdd4d274c245..c6fcfca0b0d7 100644
-> --- a/arch/powerpc/kernel/head_fsl_booke.S
-> +++ b/arch/powerpc/kernel/head_fsl_booke.S
-> @@ -403,7 +403,7 @@ interrupt_base:
->  	EXCEPTION(0x2900, AP_UNAVAIL, AuxillaryProcessorUnavailable, \
->  		  unknown_exception, EXC_XFER_STD)
-> 
-> -	/* Decrementer Interrupt */
-> +	/* Decremented Interrupt */
+Rename two dimensional array declaration to fix checkpatch warning: Avoid
+Camelcase and make the declaration more readable and understandable
 
-No, the comment matches the macro (or whatever that is).
+Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
+---
+Changes in v2: Improve commit message
+---
+ drivers/staging/vt6655/baseband.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->  	DECREMENTER_EXCEPTION
-> 
->  	/* Fixed Internal Timer Interrupt */
-
-
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 1aa675241599..d89163299172 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -52,7 +52,7 @@
+ /*---------------------  Static Variables  --------------------------*/
+ 
+ #define CB_VT3253_INIT_FOR_RFMD 446
+-static const unsigned char byVT3253InitTab_RFMD[CB_VT3253_INIT_FOR_RFMD][2] = {
++static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] = {
+ 	{0x00, 0x30},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -2002,8 +2002,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		if (by_local_id <= REV_ID_VT3253_A1) {
+ 			for (ii = 0; ii < CB_VT3253_INIT_FOR_RFMD; ii++)
+ 				result &= bb_write_embedded(priv,
+-					byVT3253InitTab_RFMD[ii][0],
+-					byVT3253InitTab_RFMD[ii][1]);
++					by_vt3253_init_tab_rfmd[ii][0],
++					by_vt3253_init_tab_rfmd[ii][1]);
+ 
+ 		} else {
+ 			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
 -- 
-~Randy
+2.25.1
 
