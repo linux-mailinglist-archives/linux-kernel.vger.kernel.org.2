@@ -2,147 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA7533AE29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429E833AE2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhCOJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCOJCA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:02:00 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA395C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:01:59 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id lr13so64859333ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 02:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e2sBs6NiXFEBjEW5EKicEDQG80m64//Jqveh+rRtB44=;
-        b=rtOek8t/l0dOFFYOaAgvr/GxPcxuWGJZDn1GUtVOmCnYNUEjbeIDDtNAvDjHMuWvj4
-         iPaiy7rj0s+kAhnC2BwwiCXA4AUT91cSe+/mCEKTfMvdiDQ1c6UHCuQdvKYAwg4i2Nn0
-         6RXR/u4y5Lgs3qGqKT6ARrPDCUsNDKf2TAFDKPY7YeIphqhVK9n+sdM7W+YXa79QRYfU
-         9M3beg7L32c1HbTaLBGIfBQjrXbqmtjmYHYilpzLQLBC0AQ82Gxh8qeBUk04kM5NCX6B
-         UkKWX3WdGNQhgjfw+IchlH/1lymmAq6s0Aa859kmVkqIdgd8pcb4/+u/oiQFvn/lu1bs
-         qKPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2sBs6NiXFEBjEW5EKicEDQG80m64//Jqveh+rRtB44=;
-        b=lxrprL7i/9QClSsySrrr1Ogrk/2HGAtFo1J/kjYvfckX4DlRGfXCmTtdvxQhsVwdOz
-         uoByJkqOLeJXUkFnrBbPm4s+tb/jM8L6Sob2Jtn/Oj7pfr5XYCr15XbVOKQvtBwcp+Vk
-         JFnVkX+Oez6+9rpTh+dtet+aziyot4irRB1SJROt6x1qHQGeRRLmfEhyUtBEwKBJrgRf
-         ngqKwKDVtW4dg7L7x+XMXWokIGXBsWynkz9NhoHQneHBGS7Z8tSnPxX0M0V5vaxO9+ex
-         UXbIEHFvk/pc/OgtL4i8flNl7qxRV6IdBkrI1iVms9u78cP954a04nmg46BpF2VdJ9TR
-         t5yg==
-X-Gm-Message-State: AOAM532SBxrboxkSMY2Hl3LWXMoMSYQmTqkeUQ8v/p51KX0wgb38Jnbk
-        7wAzaxnZj+1lzM0Ma59Rk22ZVLuAqTKwTvhaZMkIfI4OyL2HOg==
-X-Google-Smtp-Source: ABdhPJz+l2yQBZkd11UpA8i0+HaQV8ndMsfdW4Wo6PIKv963xVVZSLZsZViialetAI1yDKjwcuZU/GXtejH5Mu3dAgI=
-X-Received: by 2002:a17:906:7842:: with SMTP id p2mr2450233ejm.87.1615798918325;
- Mon, 15 Mar 2021 02:01:58 -0700 (PDT)
+        id S229540AbhCOJEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:04:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:53910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhCOJDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:03:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A5961FB;
+        Mon, 15 Mar 2021 02:03:55 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72B4E3F70D;
+        Mon, 15 Mar 2021 02:03:53 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 09:03:43 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v6 37/37] firmware: arm_scmi: add dynamic scmi devices
+ creation
+Message-ID: <20210315090343.GH30179@e120937-lin>
+References: <20210202221555.41167-1-cristian.marussi@arm.com>
+ <20210202221555.41167-38-cristian.marussi@arm.com>
+ <20210315083327.p6gculrdl3vlavhp@bogus>
 MIME-Version: 1.0
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 15 Mar 2021 10:01:47 +0100
-Message-ID: <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware node
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Marek Vasut <marex@denx.de>,
-        Roman Guskov <rguskov@dh-electronics.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315083327.p6gculrdl3vlavhp@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
-> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
-> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
-> and iterates over all of its DT subnodes when registering each GPIO
-> bank gpiochip. Each gpiochip has:
->
->   - gpio_chip.parent = dev,
->     where dev is the device node of the pin controller
->   - gpio_chip.of_node = np,
->     which is the OF node of the GPIO bank
->
-> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
-> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
->
-> The original code behaved correctly, as it extracted the "gpio-line-names"
-> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
->
-> To achieve the same behaviour, read property from the firmware node.
->
-> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
-> Reported-by: Marek Vasut <marex@denx.de>
-> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 3bc25a9c4cd6..ba88011cc79d 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -367,22 +367,18 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
->   *
->   * Looks for device property "gpio-line-names" and if it exists assigns
->   * GPIO line names for the chip. The memory allocated for the assigned
-> - * names belong to the underlying software node and should not be released
-> + * names belong to the underlying firmware node and should not be released
->   * by the caller.
->   */
->  static int devprop_gpiochip_set_names(struct gpio_chip *chip)
->  {
->         struct gpio_device *gdev = chip->gpiodev;
-> -       struct device *dev = chip->parent;
-> +       struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
->         const char **names;
->         int ret, i;
->         int count;
->
-> -       /* GPIO chip may not have a parent device whose properties we inspect. */
-> -       if (!dev)
-> -               return 0;
-> -
-> -       count = device_property_string_array_count(dev, "gpio-line-names");
-> +       count = fwnode_property_string_array_count(fwnode, "gpio-line-names");
->         if (count < 0)
->                 return 0;
->
-> @@ -396,7 +392,7 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
->         if (!names)
->                 return -ENOMEM;
->
-> -       ret = device_property_read_string_array(dev, "gpio-line-names",
-> +       ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
->                                                 names, count);
->         if (ret < 0) {
->                 dev_warn(&gdev->dev, "failed to read GPIO line names\n");
+Hi
+
+On Mon, Mar 15, 2021 at 08:33:27AM +0000, Sudeep Holla wrote:
+> Hi Cristian,
+> 
+> Sorry for the delay.
+> 
+
+No worries.
+
+> On Tue, Feb 02, 2021 at 10:15:55PM +0000, Cristian Marussi wrote:
+> > Having added the support for SCMI protocols as modules in order to let
+> > vendors extend the SCMI core with their own additions it seems odd to
+> > then force SCMI drivers built on top to use a static device table to
+> > declare their devices since this way any new SCMI drivers addition
+> > would need the core SCMI device table to be updated too.
+> >
+> > Remove the static core device table and let SCMI drivers to simply declare
+> > which device/protocol pair they need at initialization time: the core will
+> > then take care to generate such devices dynamically during platform
+> > initialization or at module loading time, as long as the requested
+> > underlying protocol is defined in the DT.
+> >
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> > v4 --> v5
+> > - using klist instead of custom lists
+> > v3 --> v4
+> > - add a few comments
+> > ---
+> >  drivers/firmware/arm_scmi/bus.c    |  30 +++
+> >  drivers/firmware/arm_scmi/common.h |   5 +
+> >  drivers/firmware/arm_scmi/driver.c | 309 +++++++++++++++++++++++++----
+> >  3 files changed, 310 insertions(+), 34 deletions(-)
+> >
+> > diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
+> > index 88e5057f4e85..88149a46e6d9 100644
+> > --- a/drivers/firmware/arm_scmi/bus.c
+> > +++ b/drivers/firmware/arm_scmi/bus.c
+> > @@ -51,6 +51,31 @@ static int scmi_dev_match(struct device *dev, struct device_driver *drv)
+> >  	return 0;
+> >  }
+> >
+> > +static int scmi_match_by_id_table(struct device *dev, void *data)
+> > +{
+> > +	struct scmi_device *sdev = to_scmi_dev(dev);
+> > +	struct scmi_device_id *id_table = data;
+> > +
+> > +	return sdev->protocol_id == id_table->protocol_id &&
+> > +		!strcmp(sdev->name, id_table->name);
+> > +}
+> > +
+> > +struct scmi_device *scmi_find_child_dev(struct device *parent,
+> > +					int prot_id, const char *name)
+> > +{
+> > +	struct scmi_device_id id_table;
+> > +	struct device *dev;
+> > +
+> > +	id_table.protocol_id = prot_id;
+> > +	id_table.name = name;
+> > +
+> > +	dev = device_find_child(parent, &id_table, scmi_match_by_id_table);
+> > +	if (!dev)
+> > +		return NULL;
+> > +
+> > +	return to_scmi_dev(dev);
+> > +}
+> > +
+> >  const struct scmi_protocol *scmi_get_protocol(int protocol_id)
+> >  {
+> >  	const struct scmi_protocol *proto;
+> > @@ -114,6 +139,10 @@ int scmi_driver_register(struct scmi_driver *driver, struct module *owner,
+> >  {
+> >  	int retval;
+> >
+> > +	retval = scmi_request_protocol_device(driver->id_table);
+> > +	if (retval)
+> > +		return retval;
+> > +
+> >  	driver->driver.bus = &scmi_bus_type;
+> >  	driver->driver.name = driver->name;
+> >  	driver->driver.owner = owner;
+> > @@ -130,6 +159,7 @@ EXPORT_SYMBOL_GPL(scmi_driver_register);
+> >  void scmi_driver_unregister(struct scmi_driver *driver)
+> >  {
+> >  	driver_unregister(&driver->driver);
+> > +	scmi_unrequest_protocol_device(driver->id_table);
+> >  }
+> >  EXPORT_SYMBOL_GPL(scmi_driver_unregister);
+> >
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index 1e2046c61d43..9a0519db4865 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -307,6 +307,11 @@ struct scmi_transport_ops {
+> >  	bool (*poll_done)(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer);
+> >  };
+> >
+> > +int scmi_request_protocol_device(const struct scmi_device_id *id_table);
+> > +void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table);
+> 
+> Sorry for being pedantic, I don't like these names. I would prefer
+> something like scmi_protocol_device_{create,destroy/delete}_request.
+> The action the function does needs to be at the end of the function name.
+> Atleast that is something I follow. I haven't checked all the previous
+> patches, just this function made to look at both the name style and the
+> name itself.
+> 
+Ok.
+
+> 
+> > +struct scmi_device *scmi_find_child_dev(struct device *parent,
+> > +					int prot_id, const char *name);
+> > +
+> 
+> scmi_child_dev_find based on what I mentioned above. Please change all
+> other non-static functions even if I have not mentioned. Try to cover
+> all the new functions introduced in this series, existing ones we can
+> take up later.
+> 
+
+Ok I'll do.
+
+> >  /**
+> >   * struct scmi_desc - Description of SoC integration
+> >   *
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index dcdfd94b47f7..9fc979e3b16f 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -21,6 +21,7 @@
+> >  #include <linux/io.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/ktime.h>
+> > +#include <linux/list.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of_address.h>
+> >  #include <linux/of_device.h>
+> > @@ -56,6 +57,14 @@ static DEFINE_MUTEX(scmi_list_mutex);
+> >  /* Track the unique id for the transfers for debug & profiling purpose */
+> >  static atomic_t transfer_last_id;
+> >
+> > +static DEFINE_IDR(scmi_requested_devices);
+> > +static DEFINE_MUTEX(scmi_requested_devices_mtx);
+> > +
+> > +struct scmi_requested_dev {
+> > +	const struct scmi_device_id *id_table;
+> > +	struct list_head node;
+> > +};
+> > +
+> >  /**
+> >   * struct scmi_xfers_info - Structure to manage transfer information
+> >   *
+> > @@ -113,6 +122,8 @@ struct scmi_protocol_instance {
+> >   * @protocols_mtx: A mutex to protect protocols instances initialization.
+> >   * @protocols_imp: List of protocols implemented, currently maximum of
+> >   *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
+> > + * @active_protocols: IDR storing device_nodes for protocols actually defined
+> > + *		      in the DT and confirmed as implemented by fw.
+> >   * @notify_priv: Pointer to private data structure specific to notifications.
+> >   * @node: List head
+> >   * @users: Number of users of this instance
+> > @@ -130,6 +141,7 @@ struct scmi_info {
+> >  	/* Ensure mutual exclusive access to protocols instance array */
+> >  	struct mutex protocols_mtx;
+> >  	u8 *protocols_imp;
+> > +	struct idr active_protocols;
+> >  	void *notify_priv;
+> >  	struct list_head node;
+> >  	int users;
+> > @@ -936,6 +948,13 @@ static void scmi_devm_put_protocol(struct scmi_device *sdev, u8 protocol_id)
+> >  	WARN_ON(ret);
+> >  }
+> >
+> > +static inline
+> > +struct scmi_handle *scmi_handle_get_from_info(struct scmi_info *info)
+> > +{
+> > +	info->users++;
+> 
+> Doesn't it race with anything ? I have already forgotten how this is used
+> and in what context this gets called.
+> 
+> > +	return &info->handle;
+> > +}
+> > +
+> >  /**
+> >   * scmi_handle_get() - Get the SCMI handle for a device
+> >   *
+> > @@ -957,8 +976,7 @@ struct scmi_handle *scmi_handle_get(struct device *dev)
+> >  	list_for_each(p, &scmi_list) {
+> >  		info = list_entry(p, struct scmi_info, node);
+> >  		if (dev->parent == info->dev) {
+> > -			handle = &info->handle;
+> > -			info->users++;
+> > +			handle = scmi_handle_get_from_info(info);
+> 
+> Ah here it is. Any particular reasons for moving it to separate function ?
+> 
+
+Answering both of the above, users++ is protected by scmi_list_mutex as it
+was already and the reason for moving the get in a separate function is to
+able to call it with mutex alrady acquired, so both here from scmi_handle_get(),
+which acquires itself that mutex, BUT also from scmi_request_protocol_device()
+which acquires already the mutex while scanning the list of all the existing
+scmi instances; it is a sort of get_handle_unlocked but since I changed
+also the param from dev to info (since I have it already) I named it get_from_info
+instead. I could add a get_from_info_unlocked(0 to clarify the intent.
+
+I'll rework all of the above and post the whole series on top of for-next-scmi +
+Jonathan immutable branch locally merged.
+
+Thanks
+
+Cristian
+
 > --
-> 2.30.1
->
-
-Hi Andy!
-
-Unfortunately while this may fix the particular use-case on STM32, it
-breaks all other users as the 'gpio-line-names' property doesn't live
-on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
-
-How about we first look for this property on the latter and only if
-it's not present descend down to the former fwnode?
-
-Bart
+> Regards,
+> Sudeep
