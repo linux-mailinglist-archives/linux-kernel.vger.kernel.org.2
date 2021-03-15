@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB6433B308
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2409A33B30B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCOMo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:44:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33306 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhCOMoa (ORCPT
+        id S229964AbhCOMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCOMpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:44:30 -0400
-Received: from mail-wm1-f72.google.com ([209.85.128.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lLmaD-0004mJ-7W
-        for linux-kernel@vger.kernel.org; Mon, 15 Mar 2021 12:44:29 +0000
-Received: by mail-wm1-f72.google.com with SMTP id c7so8144173wml.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:44:29 -0700 (PDT)
+        Mon, 15 Mar 2021 08:45:10 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F739C061574;
+        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so14305005pjq.5;
+        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
+        b=nI9YuUb80LbZ4aMJ4gAdGs/DVPvxa/+Iht0lFG4mE1wiv3LVrfpnzodFVINjFGBw//
+         0OShEOCpoUWrk/mcpQcwZaqSahKjfrTl0yZFpQ8DoZj07FSqKSbcb1eNbmeELqOgLmrD
+         0Y7L23jQdaDVEZHzfCTc9j0q+XMFt8kl8R5YH1tSCPcfFxQyHs+90E4ZeC6NsT076kB+
+         2IC4qdTCwjvu+0iTpDqHxSM3STNh43b6lJHjgGr8fi+fDLu98+KjS6C/Zsgss8ZgZ5Pg
+         r4mNixLJFXoaseF4EwVzaKdGWxJWRzapLMxhK5BEOTO+FU5NH40BogP71aieCysM+tTX
+         NDBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T5a037nmqIB7Yu7L87kcFosW5V8/NbvTQS1sAPH8huw=;
-        b=EC3AkRUea0MgJyzD/pMyw5gogXWuRgi2ldXqv91NHKbxS6oEAaOi7tj4LftNVgFHrE
-         jNc3vhnOxgJfTUGE8aDvV/zDe3w3rD6EudyiVRs3h3l9BVWkrACwqqXuITJwh9GdVFpQ
-         wE0ma5y0O1h2MI/9WLhV17B98Gtsi6wgr9AJ6sDchAUWZ3h6QqM+NQSTj7e4o3+J6G/5
-         fyqc1ScjLXtjcfXGi+tsIwDqq6Pg6qOOWPbibjIjlMz9vy4+EO89fa5M2U5NqPPMqR8D
-         KH27LZ77THjNHJYhIz3RAFm5o2qN6CyVOVC1AJEzeevi/enMXjFZRLMgED41LtnW1DkM
-         j/IA==
-X-Gm-Message-State: AOAM533wO2JEQp2jZ8VygVh4E3xI6iYqzYTSVnyvlvizN9L2aOeq/rFO
-        Pi0AFYawyJ/Jek8G6YGmdD1S4MRFLD/xqMoIT+q191JSJpVOkULYaxLyVOq3wZNMcw8OfNgQ+dN
-        hiDj2NseRFXOv2sh4Q1l+PXhuJI9dc1fgc1obinECTA==
-X-Received: by 2002:a05:6000:147:: with SMTP id r7mr27866529wrx.25.1615812268971;
-        Mon, 15 Mar 2021 05:44:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxWzPQtr1vP5aONwJdcyAtOlrXSzQrb6WrBvdgSxGpSiLPBrMHezlrN8I8lYlXgw8viyOJRA==
-X-Received: by 2002:a05:6000:147:: with SMTP id r7mr27866520wrx.25.1615812268878;
-        Mon, 15 Mar 2021 05:44:28 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id n4sm12311444wmq.40.2021.03.15.05.44.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
+        b=X8bg0kD8IominaBsTAgiyQNAXMSIH5/ON24hbFEV8XlL89g9Sv5fI67jpZUPcDHFjO
+         /RhhaZPLZTsj96ggixpcG23t7/Y7FNlGOFmIQ3/MgLJ3HI4qNvblGa1PLDCD2bwrI0rX
+         ZXPNYk1dW4Nd2GWJ64ibgvj0m23gK/zLC6pXLyCXxaomIVWbP9MyLg9YVZNrP9BlxnxC
+         S+Dgy1ZJwA12BaGJhsEiVqoek/mgxsaHC+JVXPj4d2Lmn1gSQFunnROCyiCIqfllq1wx
+         P5OqKdXffRlNLL/+sRTsIBYbW+r6NtxAvxPMV8uhLUVIjjKaoBQsv7j2bU6aWolnI03l
+         tEBQ==
+X-Gm-Message-State: AOAM530IoVOtZxzMLb0CS6klYtdfDNrPWqTPMROiqRXSFRZbw5ubsIop
+        EXrRxdHOt3FsSd/KUCZDx6F7XalOtePVMw==
+X-Google-Smtp-Source: ABdhPJwLwV4QPZ0DpOvzSJcznbEsVxi6UL35OHvQuLLdazbvan1dz6j18iCP0y6lpNCzSb87XI5oIg==
+X-Received: by 2002:a17:902:a707:b029:e6:52fd:a14d with SMTP id w7-20020a170902a707b02900e652fda14dmr12075311plq.34.1615812309795;
+        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
+Received: from masabert ([202.12.244.3])
+        by smtp.gmail.com with ESMTPSA id a19sm13523055pfc.65.2021.03.15.05.45.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:44:28 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 3/3] dt-bindings: add vendor prefix for AESOP
-Date:   Mon, 15 Mar 2021 13:44:23 +0100
-Message-Id: <20210315124423.115039-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315124423.115039-1-krzysztof.kozlowski@canonical.com>
-References: <20210315124423.115039-1-krzysztof.kozlowski@canonical.com>
+        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
+Received: by masabert (Postfix, from userid 1000)
+        id 763E723603DE; Mon, 15 Mar 2021 21:45:07 +0900 (JST)
+From:   Masanari Iida <standby24x7@gmail.com>
+To:     linux-kernel@vger.kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] samples: bpf: Fix a spelling typo in do_hbm_test.sh
+Date:   Mon, 15 Mar 2021 21:44:54 +0900
+Message-Id: <20210315124454.1744594-1-standby24x7@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vendor prefix for AESOP Embedded Forum (http://www.aesop.or.kr).
+This patch fixes a spelling typo in do_hbm_test.sh
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ samples/bpf/do_hbm_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index c20194b54315..8f167ee52904 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -57,6 +57,8 @@ patternProperties:
-     description: Advantech Corporation
-   "^aeroflexgaisler,.*":
-     description: Aeroflex Gaisler AB
-+  "^aesop,.*":
-+    description: AESOP Embedded Forum
-   "^al,.*":
-     description: Annapurna Labs
-   "^alcatel,.*":
+diff --git a/samples/bpf/do_hbm_test.sh b/samples/bpf/do_hbm_test.sh
+index 21790ea5c460..38e4599350db 100755
+--- a/samples/bpf/do_hbm_test.sh
++++ b/samples/bpf/do_hbm_test.sh
+@@ -10,7 +10,7 @@
+ Usage() {
+   echo "Script for testing HBM (Host Bandwidth Manager) framework."
+   echo "It creates a cgroup to use for testing and load a BPF program to limit"
+-  echo "egress or ingress bandwidht. It then uses iperf3 or netperf to create"
++  echo "egress or ingress bandwidth. It then uses iperf3 or netperf to create"
+   echo "loads. The output is the goodput in Mbps (unless -D was used)."
+   echo ""
+   echo "USAGE: $name [out] [-b=<prog>|--bpf=<prog>] [-c=<cc>|--cc=<cc>]"
 -- 
-2.25.1
+2.25.0
 
