@@ -2,107 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113F633C331
+	by mail.lfdr.de (Postfix) with ESMTP id 2215433C332
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhCORBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234806AbhCORBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:01:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E790E64D9D;
-        Mon, 15 Mar 2021 17:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615827699;
-        bh=XZi122AEwWqMj9ZZvX8bMJnPSkj+5a7gkjWIRRfb/CU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PU/i5m3ktp2+u0LV2ng5ubQko8BQTNYwC8oH77rIUeWFethPfizyDHZJ7kg5J9JDH
-         fefW0YFTxENH9St6Yw3CPnDMziw0oHa6O5pDbK9J1e2ska7lWn34WWnMixQzlFtv41
-         FXhGQYpSEIouonp1bTdKF3BKCCScBXfbKRAE0D5LitzG9zJ2boQH50Yy5i5wPvtyB1
-         l6gW/DcFs8YgsE/cbGjcc9LSUdOTLXNupoReYd5JPAb8xxWHGkmklvgyFP1I5KxHC7
-         vbj6mbYmAQ4ljsuEwDzLmoC684rEn85CbNHBxQfX2BqpKyOgi7VeU83c2mW7nwniSs
-         Y13WQwjtm1oLQ==
-Date:   Mon, 15 Mar 2021 17:01:33 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH v5 29/36] KVM: arm64: Use page-table to track page
- ownership
-Message-ID: <20210315170133.GH3430@willie-the-truck>
-References: <20210315143536.214621-1-qperret@google.com>
- <20210315143536.214621-30-qperret@google.com>
- <20210315163618.GF3430@willie-the-truck>
- <YE+Q/vFpSaAO5vZS@google.com>
+        id S234677AbhCORB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235230AbhCORBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:01:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A52C06174A;
+        Mon, 15 Mar 2021 10:01:52 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so14732742pjh.1;
+        Mon, 15 Mar 2021 10:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4LvijN3bMifiTb/0lgyYh4xxnVtEvA5pDE32AW+xU0=;
+        b=uEQGdwQp2ak3InwMuxkKEOPJ0WuupFVWKkCc/lpIAOv209E9tvBFpLy4YnQpBc8Tfl
+         eEu8jYzomYxIrhde2wlrgkddZ5Wqn8QjvMMFj4XouSVp+C4G/gx3lPlOAkAJ4ygl1Kj9
+         2wSAiCviiAp9jX7AJBh/YSZzdwaMxmpdeDKpbywSdeA31LR5FnPwd1XfrktF/U8wghN9
+         QpzSvrHJBehCJG6RXWiUoTVamAw4tYtB4v82R3HsngO2iluXqpMBOC0D8ibQ5IkHmjf+
+         HxUgdQ7345vVukw5y+8U6iJU9HkIJlvIX2ILs7X9A8FuB7eMPBU+va5wol/qZzcBQYGw
+         I21Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4LvijN3bMifiTb/0lgyYh4xxnVtEvA5pDE32AW+xU0=;
+        b=IyjXWVct+1Iz0Xv2k23Pzus/keAg3DSDAxZFVLw5JhGz7bWpPvcFY9dx0R/3RbCFvM
+         VHEMr9D55D+EcJHb2UfG2V6oSTTcFtBl7lyrre4RTVj9gTfzHCK0PQ9/7li9bw0kx4rV
+         0lSZD90lLIERsUss123JZRRSyy2dWhdHgWqj9Vv7GElqKq7EI9BJWN1VShNd2rVGhs8Y
+         dCJeq4ZeYWCJORTbNc9ia+3qzaNrlKCIDy/z5bMDwsfvY9TgTu8UQyRC8ugCIjyX7fpj
+         /pYNp9eF2bxKdAF0sFZQPaHA3UDRQ7NVM4nDuP+3gglhGRDkLuMT09ZvLfQqo3aAmhCA
+         2XVg==
+X-Gm-Message-State: AOAM531hdQ0au4AUtoyb/FE6mqfj2JqSz7YFqBN1UueVWthrS0U9SvHU
+        5Wiml2ian3EMtn8UuPHQjZQ=
+X-Google-Smtp-Source: ABdhPJyDIkdABKsaucW86vRXx7R6hQzqtSddilHZNYedmrFS7IEZ6svFxREdahgLJxdftAj8OxutwQ==
+X-Received: by 2002:a17:90a:7103:: with SMTP id h3mr49966pjk.82.1615827712517;
+        Mon, 15 Mar 2021 10:01:52 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id t6sm176083pjs.26.2021.03.15.10.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 10:01:51 -0700 (PDT)
+From:   LGA1150 <dqfext@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH net-next] net: dsa: rtl8366rb: support bridge offloading
+Date:   Tue, 16 Mar 2021 01:01:44 +0800
+Message-Id: <20210315170144.2081099-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE+Q/vFpSaAO5vZS@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 04:53:18PM +0000, Quentin Perret wrote:
-> On Monday 15 Mar 2021 at 16:36:19 (+0000), Will Deacon wrote:
-> > On Mon, Mar 15, 2021 at 02:35:29PM +0000, Quentin Perret wrote:
-> > > As the host stage 2 will be identity mapped, all the .hyp memory regions
-> > > and/or memory pages donated to protected guestis will have to marked
-> > > invalid in the host stage 2 page-table. At the same time, the hypervisor
-> > > will need a way to track the ownership of each physical page to ensure
-> > > memory sharing or donation between entities (host, guests, hypervisor) is
-> > > legal.
-> > > 
-> > > In order to enable this tracking at EL2, let's use the host stage 2
-> > > page-table itself. The idea is to use the top bits of invalid mappings
-> > > to store the unique identifier of the page owner. The page-table owner
-> > > (the host) gets identifier 0 such that, at boot time, it owns the entire
-> > > IPA space as the pgd starts zeroed.
-> > > 
-> > > Provide kvm_pgtable_stage2_set_owner() which allows to modify the
-> > > ownership of pages in the host stage 2. It re-uses most of the map()
-> > > logic, but ends up creating invalid mappings instead. This impacts
-> > > how we do refcount as we now need to count invalid mappings when they
-> > > are used for ownership tracking.
-> > > 
-> > > Signed-off-by: Quentin Perret <qperret@google.com>
-> > > ---
-> > >  arch/arm64/include/asm/kvm_pgtable.h |  21 +++++
-> > >  arch/arm64/kvm/hyp/pgtable.c         | 127 ++++++++++++++++++++++-----
-> > >  2 files changed, 124 insertions(+), 24 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> > > index 4ae19247837b..683e96abdc24 100644
-> > > --- a/arch/arm64/include/asm/kvm_pgtable.h
-> > > +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> > > @@ -238,6 +238,27 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
-> > >  			   u64 phys, enum kvm_pgtable_prot prot,
-> > >  			   void *mc);
-> > >  
-> > > +/**
-> > > + * kvm_pgtable_stage2_set_owner() - Annotate invalid mappings with metadata
-> > > + *				    encoding the ownership of a page in the
-> > > + *				    IPA space.
-> > 
-> > The function does more than this, though, as it will also go ahead and unmap
-> > existing valid mappings which I think should be mentioned here, no?
-> 
-> Right, I see why you mean. How about:
-> 
-> 'Unmap and annotate pages in the IPA space to track ownership'
+From: DENG Qingfang <dqfext@gmail.com>
 
-I think I'd go with:
+Use port isolation registers to configure bridge offloading.
+Remove the VLAN init, as we have proper CPU tag and bridge offloading
+support now.
 
-'Unmap pages and annotate the invalid mappings with ownership metadata for
- the unmapped IPA range.'
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+---
+Changes since RFC:
+  Fix build error
 
-as it's the page-table which is annotated, not the actual pages (which could
-potentially be mapped by other page-tables).
+ drivers/net/dsa/rtl8366rb.c | 71 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 65 insertions(+), 6 deletions(-)
 
-Will
+diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
+index a89093bc6c6a..bbcfdd84f0e9 100644
+--- a/drivers/net/dsa/rtl8366rb.c
++++ b/drivers/net/dsa/rtl8366rb.c
+@@ -300,6 +300,12 @@
+ #define RTL8366RB_INTERRUPT_STATUS_REG	0x0442
+ #define RTL8366RB_NUM_INTERRUPT		14 /* 0..13 */
+ 
++/* Port isolation registers */
++#define RTL8366RB_PORT_ISO_BASE		0x0F08
++#define RTL8366RB_PORT_ISO(pnum)	(RTL8366RB_PORT_ISO_BASE + (pnum))
++#define RTL8366RB_PORT_ISO_EN		BIT(0)
++#define RTL8366RB_PORT_ISO_PORTS_MASK	GENMASK(7, 1)
++
+ /* bits 0..5 enable force when cleared */
+ #define RTL8366RB_MAC_FORCE_CTRL_REG	0x0F11
+ 
+@@ -835,6 +841,15 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		return ret;
+ 
++	/* Isolate user ports */
++	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
++		ret = regmap_write(smi->map, RTL8366RB_PORT_ISO(i),
++				   RTL8366RB_PORT_ISO_EN |
++				   BIT(RTL8366RB_PORT_NUM_CPU + 1));
++		if (ret)
++			return ret;
++	}
++
+ 	/* Set up the "green ethernet" feature */
+ 	ret = rtl8366rb_jam_table(rtl8366rb_green_jam,
+ 				  ARRAY_SIZE(rtl8366rb_green_jam), smi, false);
+@@ -963,10 +978,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
+ 			return ret;
+ 	}
+ 
+-	ret = rtl8366_init_vlan(smi);
+-	if (ret)
+-		return ret;
+-
+ 	ret = rtl8366rb_setup_cascaded_irq(smi);
+ 	if (ret)
+ 		dev_info(smi->dev, "no interrupt support\n");
+@@ -977,8 +988,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
+ 		return -ENODEV;
+ 	}
+ 
+-	ds->configure_vlan_while_not_filtering = false;
+-
+ 	return 0;
+ }
+ 
+@@ -1127,6 +1136,54 @@ rtl8366rb_port_disable(struct dsa_switch *ds, int port)
+ 	rb8366rb_set_port_led(smi, port, false);
+ }
+ 
++static int
++rtl8366rb_port_bridge_join(struct dsa_switch *ds, int port,
++			   struct net_device *bridge)
++{
++	struct realtek_smi *smi = ds->priv;
++	unsigned int port_bitmap = 0;
++	int ret, i;
++
++	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
++		if (i == port)
++			continue;
++		if (dsa_to_port(ds, i)->bridge_dev != bridge)
++			continue;
++		ret = regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
++					 0, BIT(port + 1));
++		if (ret)
++			return ret;
++
++		port_bitmap |= BIT(i);
++	}
++
++	return regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
++				  0, port_bitmap << 1);
++}
++
++static void
++rtl8366rb_port_bridge_leave(struct dsa_switch *ds, int port,
++			    struct net_device *bridge)
++{
++	struct realtek_smi *smi = ds->priv;
++	unsigned int port_bitmap = 0;
++	int i;
++
++	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
++		if (i == port)
++			continue;
++		if (dsa_to_port(ds, i)->bridge_dev != bridge)
++			continue;
++		regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
++				   BIT(port + 1), 0);
++
++		port_bitmap |= BIT(i);
++	}
++
++	regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
++			   port_bitmap << 1, 0);
++}
++
+ static int rtl8366rb_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
+ {
+ 	struct realtek_smi *smi = ds->priv;
+@@ -1510,6 +1567,8 @@ static const struct dsa_switch_ops rtl8366rb_switch_ops = {
+ 	.get_strings = rtl8366_get_strings,
+ 	.get_ethtool_stats = rtl8366_get_ethtool_stats,
+ 	.get_sset_count = rtl8366_get_sset_count,
++	.port_bridge_join = rtl8366rb_port_bridge_join,
++	.port_bridge_leave = rtl8366rb_port_bridge_leave,
+ 	.port_vlan_filtering = rtl8366_vlan_filtering,
+ 	.port_vlan_add = rtl8366_vlan_add,
+ 	.port_vlan_del = rtl8366_vlan_del,
+-- 
+2.25.1
+
