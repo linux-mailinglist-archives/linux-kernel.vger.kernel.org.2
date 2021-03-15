@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1DB33BDAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584CB33BC91
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239520AbhCOOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S236699AbhCOO04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:26:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233234AbhCOOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4800E64F43;
-        Mon, 15 Mar 2021 14:00:46 +0000 (UTC)
+        id S233040AbhCOOAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A738E64F72;
+        Mon, 15 Mar 2021 14:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816847;
-        bh=uM3Q+PZIupZOsbCw6xpRUJtr3CTQDwRMj31R5SrWZ0c=;
+        s=korg; t=1615816816;
+        bh=Gas6jNwe4RZf/YuPzedLbOaoOR2AJwngDVXRdb0fRHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PMgXrgGEm2gEw1ksmaBBMe45jLAqY7atvukPjSSghGNr6daWd8KsKwlcb55j4omM6
-         /pO3nsRbVfhSVyks+Af2Y/9RSSPNBY2WS5O1kS3yfw+Xk+r3Ksxa93i3ZilCg0XuPQ
-         4yulUdNf8a0P1pERf9USTysIZ09+zYW9RpEj0U0w=
+        b=hsJ9iTTZBn5c6dS9w0P4IR1zFqYgDsUcDPJa4TqVmfIobM6vY0NcL34L0X72/GOrX
+         0cgVEw50GISQYIaqJSIZaLEtn3ZQB/Pj8LgwOedoSPduwbuCQK4DqNZ7PP+FSwCI7/
+         szv0l2ub6vDYzIkoayt+TB847bRxjDTy4Z+dFcsA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Feng <linf@wangsu.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 159/306] sysctl.c: fix underflow value setting risk in vm_table
-Date:   Mon, 15 Mar 2021 14:53:42 +0100
-Message-Id: <20210315135513.009729925@linuxfoundation.org>
+Subject: [PATCH 5.10 130/290] ath11k: fix AP mode for QCA6390
+Date:   Mon, 15 Mar 2021 14:53:43 +0100
+Message-Id: <20210315135546.296784144@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,71 +41,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lin Feng <linf@wangsu.com>
+From: Kalle Valo <kvalo@codeaurora.org>
 
-[ Upstream commit 3b3376f222e3ab58367d9dd405cafd09d5e37b7c ]
+[ Upstream commit 77d7e87128d4dfb400df4208b2812160e999c165 ]
 
-Apart from subsystem specific .proc_handler handler, all ctl_tables with
-extra1 and extra2 members set should use proc_dointvec_minmax instead of
-proc_dointvec, or the limit set in extra* never work and potentially echo
-underflow values(negative numbers) is likely make system unstable.
+Commit c134d1f8c436 ("ath11k: Handle errors if peer creation fails") completely
+broke AP mode on QCA6390:
 
-Especially vfs_cache_pressure and zone_reclaim_mode, -1 is apparently not
-a valid value, but we can set to them.  And then kernel may crash.
+kernel: [  151.230734] ath11k_pci 0000:06:00.0: failed to create peer after vdev start delay: -22
+wpa_supplicant[2307]: Failed to set beacon parameters
+wpa_supplicant[2307]: Interface initialization failed
+wpa_supplicant[2307]: wlan0: interface state UNINITIALIZED->DISABLED
+wpa_supplicant[2307]: wlan0: AP-DISABLED
+wpa_supplicant[2307]: wlan0: Unable to setup interface.
+wpa_supplicant[2307]: Failed to initialize AP interface
 
-# echo -1 > /proc/sys/vm/vfs_cache_pressure
+This was because commit c134d1f8c436 ("ath11k: Handle errors if peer creation
+fails") added error handling for ath11k_peer_create(), which had been failing
+all along but was unnoticed due to the missing error handling. The actual bug
+was introduced already in commit aa44b2f3ecd4 ("ath11k: start vdev if a bss peer is
+already created").
 
-Link: https://lkml.kernel.org/r/20201223105535.2875-1-linf@wangsu.com
-Signed-off-by: Lin Feng <linf@wangsu.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+ath11k_peer_create() was failing because for AP mode the peer is created
+already earlier op_add_interface() and we should skip creation here, but the
+check for modes was wrong.  Fixing that makes AP mode work again.
+
+This shouldn't affect IPQ8074 nor QCN9074 as they have hw_params.vdev_start_delay disabled.
+
+Tested-on: QCA6390 hw2.0 PCI WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
+
+Fixes: c134d1f8c436 ("ath11k: Handle errors if peer creation fails")
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1614006849-25764-1-git-send-email-kvalo@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sysctl.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath11k/mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index c9fbdd848138..62fbd09b5dc1 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2962,7 +2962,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &block_dump,
- 		.maxlen		= sizeof(block_dump),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 	},
- 	{
-@@ -2970,7 +2970,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &sysctl_vfs_cache_pressure,
- 		.maxlen		= sizeof(sysctl_vfs_cache_pressure),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 	},
- #if defined(HAVE_ARCH_PICK_MMAP_LAYOUT) || \
-@@ -2980,7 +2980,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &sysctl_legacy_va_layout,
- 		.maxlen		= sizeof(sysctl_legacy_va_layout),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 	},
- #endif
-@@ -2990,7 +2990,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &node_reclaim_mode,
- 		.maxlen		= sizeof(node_reclaim_mode),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 	},
- 	{
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index f3c5023f8a45..ee0edd918560 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -5262,8 +5262,8 @@ ath11k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	if (ab->hw_params.vdev_start_delay &&
+-	    (arvif->vdev_type == WMI_VDEV_TYPE_AP ||
+-	    arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)) {
++	    arvif->vdev_type != WMI_VDEV_TYPE_AP &&
++	    arvif->vdev_type != WMI_VDEV_TYPE_MONITOR) {
+ 		param.vdev_id = arvif->vdev_id;
+ 		param.peer_type = WMI_PEER_TYPE_DEFAULT;
+ 		param.peer_addr = ar->mac_addr;
 -- 
 2.30.1
 
