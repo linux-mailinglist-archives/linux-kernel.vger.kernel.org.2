@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C00033B863
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E4E33B898
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhCOODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34054 "EHLO mail.kernel.org"
+        id S230330AbhCOOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhCON5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A22FA64EED;
-        Mon, 15 Mar 2021 13:56:55 +0000 (UTC)
+        id S231807AbhCON5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7799964F05;
+        Mon, 15 Mar 2021 13:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816617;
-        bh=YFrVHkSmnBUXIH4k+iOLP0UXegrJ1zI1zz5bKlhSZvs=;
+        s=korg; t=1615816619;
+        bh=/+tUiVkxhsq5nvMtpV03ucQMrUlxNoCwFo1NCUVR0HM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sB9M6bDhEZH+s58O2rtKB/rrXQ2lSRceWwCDcLP1v6trikGVxdc0w/My8LAa20+SQ
-         23iic83kksoxxstibJe3yFvccTOc8eXs9SIQyxzOrbejyesiyRBzBCg8uTs6Zpx2Wc
-         UewFLWyFzjrWF7NMNWtHOeGCjTnfeFe/mJRTAxgQ=
+        b=RE2Zg5X//lmBZ0TZ/EdysH24qOBImVCtperUFB5l0LghtA+/In7iYWpmS3NTILX5r
+         0yGIhMSsUtKa9vm+STESWFNuUOJmXOj2VbEI68myyMFBI3FijxO/U+MVrLc4mCiSXv
+         678y3oRHEzboihCqI5uzPVAIjsjFcbBGL7KV71d8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 023/306] tcp: Fix sign comparison bug in getsockopt(TCP_ZEROCOPY_RECEIVE)
-Date:   Mon, 15 Mar 2021 14:51:26 +0100
-Message-Id: <20210315135508.410372732@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Pavel Emelyanov <xemul@parallels.com>,
+        Qingyu Li <ieatmuttonchuan@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 024/306] tcp: add sanity tests to TCP_QUEUE_SEQ
+Date:   Mon, 15 Mar 2021 14:51:27 +0100
+Message-Id: <20210315135508.445397367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -43,47 +43,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Arjun Roy <arjunroy@google.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 2107d45f17bedd7dbf4178462da0ac223835a2a7 upstream.
+commit 8811f4a9836e31c14ecdf79d9f3cb7c5d463265d upstream.
 
-getsockopt(TCP_ZEROCOPY_RECEIVE) has a bug where we read a
-user-provided "len" field of type signed int, and then compare the
-value to the result of an "offsetofend" operation, which is unsigned.
+Qingyu Li reported a syzkaller bug where the repro
+changes RCV SEQ _after_ restoring data in the receive queue.
 
-Negative values provided by the user will be promoted to large
-positive numbers; thus checking that len < offsetofend() will return
-false when the intention was that it return true.
+mprotect(0x4aa000, 12288, PROT_READ)    = 0
+mmap(0x1ffff000, 4096, PROT_NONE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x1ffff000
+mmap(0x20000000, 16777216, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x20000000
+mmap(0x21000000, 4096, PROT_NONE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x21000000
+socket(AF_INET6, SOCK_STREAM, IPPROTO_IP) = 3
+setsockopt(3, SOL_TCP, TCP_REPAIR, [1], 4) = 0
+connect(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = 0
+setsockopt(3, SOL_TCP, TCP_REPAIR_QUEUE, [1], 4) = 0
+sendmsg(3, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="0x0000000000000003\0\0", iov_len=20}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 20
+setsockopt(3, SOL_TCP, TCP_REPAIR, [0], 4) = 0
+setsockopt(3, SOL_TCP, TCP_QUEUE_SEQ, [128], 4) = 0
+recvfrom(3, NULL, 20, 0, NULL, NULL)    = -1 ECONNRESET (Connection reset by peer)
 
-Note that while len is originally checked for negative values earlier
-on in do_tcp_getsockopt(), subsequent calls to get_user() re-read the
-value from userspace which may have changed in the meantime.
+syslog shows:
+[  111.205099] TCP recvmsg seq # bug 2: copied 80, seq 0, rcvnxt 80, fl 0
+[  111.207894] WARNING: CPU: 1 PID: 356 at net/ipv4/tcp.c:2343 tcp_recvmsg_locked+0x90e/0x29a0
 
-Therefore, re-add the check for negative values after the call to
-get_user in the handler code for TCP_ZEROCOPY_RECEIVE.
+This should not be allowed. TCP_QUEUE_SEQ should only be used
+when queues are empty.
 
-Fixes: c8856c051454 ("tcp-zerocopy: Return inq along with tcp receive zerocopy.")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Arjun Roy <arjunroy@google.com>
-Link: https://lore.kernel.org/r/20210225232628.4033281-1-arjunroy.kdev@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This patch fixes this case, and the tx path as well.
+
+Fixes: ee9952831cfd ("tcp: Initial repair mode")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Pavel Emelyanov <xemul@parallels.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=212005
+Reported-by: Qingyu Li <ieatmuttonchuan@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv4/tcp.c |   23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
 --- a/net/ipv4/tcp.c
 +++ b/net/ipv4/tcp.c
-@@ -4088,7 +4088,8 @@ static int do_tcp_getsockopt(struct sock
+@@ -3431,16 +3431,23 @@ static int do_tcp_setsockopt(struct sock
+ 		break;
  
- 		if (get_user(len, optlen))
- 			return -EFAULT;
--		if (len < offsetofend(struct tcp_zerocopy_receive, length))
-+		if (len < 0 ||
-+		    len < offsetofend(struct tcp_zerocopy_receive, length))
- 			return -EINVAL;
- 		if (len > sizeof(zc)) {
- 			len = sizeof(zc);
+ 	case TCP_QUEUE_SEQ:
+-		if (sk->sk_state != TCP_CLOSE)
++		if (sk->sk_state != TCP_CLOSE) {
+ 			err = -EPERM;
+-		else if (tp->repair_queue == TCP_SEND_QUEUE)
+-			WRITE_ONCE(tp->write_seq, val);
+-		else if (tp->repair_queue == TCP_RECV_QUEUE) {
+-			WRITE_ONCE(tp->rcv_nxt, val);
+-			WRITE_ONCE(tp->copied_seq, val);
+-		}
+-		else
++		} else if (tp->repair_queue == TCP_SEND_QUEUE) {
++			if (!tcp_rtx_queue_empty(sk))
++				err = -EPERM;
++			else
++				WRITE_ONCE(tp->write_seq, val);
++		} else if (tp->repair_queue == TCP_RECV_QUEUE) {
++			if (tp->rcv_nxt != tp->copied_seq) {
++				err = -EPERM;
++			} else {
++				WRITE_ONCE(tp->rcv_nxt, val);
++				WRITE_ONCE(tp->copied_seq, val);
++			}
++		} else {
+ 			err = -EINVAL;
++		}
+ 		break;
+ 
+ 	case TCP_REPAIR_OPTIONS:
 
 
