@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B5F33BB91
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB4E33BB29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbhCOOSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S236360AbhCOOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232566AbhCON7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F00364F72;
-        Mon, 15 Mar 2021 13:59:22 +0000 (UTC)
+        id S232465AbhCON65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC6F764F3F;
+        Mon, 15 Mar 2021 13:58:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816763;
-        bh=Nz2xwJi6XdbnD7TBFUYIxggCsFZU+PO1l6tYi0kS0qA=;
+        s=korg; t=1615816714;
+        bh=kIE7+JWYHo6gcimnVLboVMJ0lGJorM7c6yvFGIdYEUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iIrVDTl/T2ti5/pvylYIgy7ijlGR8ZduvTyMWKHtAj5Z+ud1Vv237FgKLLYd6JU4X
-         L0XrBrddFNMx19K7k85Jl4A/o6UlDFFPgMqY5niJTVwrc32n//EP5WoWDqNpGj1419
-         i+yUlm+LvQprcXVMfTNJ5FM8J2atlePz/a43akFw=
+        b=CTmQqT2ztL1SO5C0+Cq/KXPZiTOsl6max8/6JAzWSWmZyYtUyGDIELDe/au+oAa3y
+         u1BAZRWmqV1M3LR0qZG6SMr1r2ZP41hiegDzRevG4Zv/nsMN42OC+xFPsugNJscV4R
+         SHtao8JfWzBfu40J/301Ivog3KpaSkslQ7u5thRU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 052/120] PCI: mediatek: Add missing of_node_put() to fix reference leak
-Date:   Mon, 15 Mar 2021 14:56:43 +0100
-Message-Id: <20210315135721.694658178@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+        Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 14/95] Revert "mm, slub: consider rest of partial list if acquire_slab() fails"
+Date:   Mon, 15 Mar 2021 14:56:44 +0100
+Message-Id: <20210315135740.737668913@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +45,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 42814c438aac79746d310f413a27d5b0b959c5de ]
+commit 9b1ea29bc0d7b94d420f96a0f4121403efc3dd85 upstream.
 
-The for_each_available_child_of_node helper internally makes use of the
-of_get_next_available_child() which performs an of_node_get() on each
-iteration when searching for next available child node.
+This reverts commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf.
 
-Should an available child node be found, then it would return a device
-node pointer with reference count incremented, thus early return from
-the middle of the loop requires an explicit of_node_put() to prevent
-reference count leak.
+The kernel test robot reports a huge performance regression due to the
+commit, and the reason seems fairly straightforward: when there is
+contention on the page list (which is what causes acquire_slab() to
+fail), we do _not_ want to just loop and try again, because that will
+transfer the contention to the 'n->list_lock' spinlock we hold, and
+just make things even worse.
 
-To stop the reference leak, explicitly call of_node_put() before
-returning after an error occurred.
+This is admittedly likely a problem only on big machines - the kernel
+test robot report comes from a 96-thread dual socket Intel Xeon Gold
+6252 setup, but the regression there really is quite noticeable:
 
-Link: https://lore.kernel.org/r/20210120184810.3068794-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   -47.9% regression of stress-ng.rawpkt.ops_per_sec
+
+and the commit that was marked as being fixed (7ced37197196: "slub:
+Acquire_slab() avoid loop") actually did the loop exit early very
+intentionally (the hint being that "avoid loop" part of that commit
+message), exactly to avoid this issue.
+
+The correct thing to do may be to pick some kind of reasonable middle
+ground: instead of breaking out of the loop on the very first sign of
+contention, or trying over and over and over again, the right thing may
+be to re-try _once_, and then give up on the second failure (or pick
+your favorite value for "once"..).
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
+Cc: Jann Horn <jannh@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Acked-by: Christoph Lameter <cl@linux.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pcie-mediatek.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index ca06d8bc01e7..066e9e00de11 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -1089,14 +1089,14 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		err = of_pci_get_devfn(child);
- 		if (err < 0) {
- 			dev_err(dev, "failed to parse devfn: %d\n", err);
--			return err;
-+			goto error_put_node;
- 		}
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1846,7 +1846,7 @@ static void *get_partial_node(struct kme
  
- 		slot = PCI_SLOT(err);
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			continue; /* cmpxchg raced */
++			break;
  
- 		err = mtk_pcie_parse_port(pcie, child, slot);
- 		if (err)
--			return err;
-+			goto error_put_node;
- 	}
- 
- 	err = mtk_pcie_subsys_powerup(pcie);
-@@ -1112,6 +1112,9 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
- 		mtk_pcie_subsys_powerdown(pcie);
- 
- 	return 0;
-+error_put_node:
-+	of_node_put(child);
-+	return err;
- }
- 
- static int mtk_pcie_request_resources(struct mtk_pcie *pcie)
--- 
-2.30.1
-
+ 		available += objects;
+ 		if (!object) {
 
 
