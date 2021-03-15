@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396AB33BE8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2761F33BDE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240661AbhCOOr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49204 "EHLO mail.kernel.org"
+        id S237003AbhCOOjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233950AbhCOOCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3719C64E83;
-        Mon, 15 Mar 2021 14:02:37 +0000 (UTC)
+        id S233712AbhCOOCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AD3964EF0;
+        Mon, 15 Mar 2021 14:02:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816959;
-        bh=ZGHqpYg9bmFhxcT4Y1kLePiSwzu/r6PtAwOwk3qAU0U=;
+        s=korg; t=1615816940;
+        bh=rmC7IlEqG/sf97jfBeF9COqnucpg5NZszwxabt3aGbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yomws4iiMF4FALMlqGwuGID26TxJCR2e2kC7WXkIHaasBNmfIK6ZA6wYWXMK5r7KH
-         ki1cCE/R4dexF7o1Mr8NfO5n0fa4lx1NMUwmQE2YgkfZ+jN24CeNiPNJ/WEANyQv3H
-         LekfB3mqLkoEA2AYQmIII7OYTTxnZoQaoE/Zsybo=
+        b=n4toczZmzThCgtFoDzqb1yUYkm7kcbdfy3iegvVDfY7pQBn8NgjNSR8HCZmT0tofo
+         GuLbhp0ny5zAQ1bg/MmglTqV0/I4+BpT014P4Jav06BHR8CHctR6Pw9ffudVdl1SDL
+         YcNCqZhjC1wLmqIumoc8DJxyAzI98+2PHP82YuQ8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.11 229/306] staging: comedi: addi_apci_1500: Fix endian problem for command sample
-Date:   Mon, 15 Mar 2021 14:54:52 +0100
-Message-Id: <20210315135515.365079077@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@freescale.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 5.10 200/290] usb: gadget: f_uac2: always increase endpoint max_packet_size by one audio slot
+Date:   Mon, 15 Mar 2021 14:54:53 +0100
+Message-Id: <20210315135548.676247745@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +41,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit ac0bbf55ed3be75fde1f8907e91ecd2fd589bde3 upstream.
+commit 789ea77310f0200c84002884ffd628e2baf3ad8a upstream.
 
-The digital input subdevice supports Comedi asynchronous commands that
-read interrupt status information.  This uses 16-bit Comedi samples (of
-which only the bottom 8 bits contain status information).  However, the
-interrupt handler is calling `comedi_buf_write_samples()` with the
-address of a 32-bit variable `unsigned int status`.  On a bigendian
-machine, this will copy 2 bytes from the wrong end of the variable.  Fix
-it by changing the type of the variable to `unsigned short`.
+As per UAC2 Audio Data Formats spec (2.3.1.1 USB Packets),
+if the sampling rate is a constant, the allowable variation
+of number of audio slots per virtual frame is +/- 1 audio slot.
 
-Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Cc: <stable@vger.kernel.org> #4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-3-abbotti@mev.co.uk
+It means that endpoint should be able to accept/send +1 audio
+slot.
+
+Previous endpoint max_packet_size calculation code
+was adding sometimes +1 audio slot due to DIV_ROUND_UP
+behaviour which was rounding up to closest integer.
+However this doesn't work if the numbers are divisible.
+
+It had no any impact with Linux hosts which ignore
+this issue, but in case of more strict Windows it
+caused rejected enumeration
+
+Thus always add +1 audio slot to endpoint's max packet size
+
+Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+Cc: Peter Chen <peter.chen@freescale.com>
+Cc: <stable@vger.kernel.org> #v4.3+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-2-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/usb/gadget/function/f_uac2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -208,7 +208,7 @@ static irqreturn_t apci1500_interrupt(in
- 	struct comedi_device *dev = d;
- 	struct apci1500_private *devpriv = dev->private;
- 	struct comedi_subdevice *s = dev->read_subdev;
--	unsigned int status = 0;
-+	unsigned short status = 0;
- 	unsigned int val;
+--- a/drivers/usb/gadget/function/f_uac2.c
++++ b/drivers/usb/gadget/function/f_uac2.c
+@@ -478,7 +478,7 @@ static int set_ep_max_packet_size(const
+ 	}
  
- 	val = inl(devpriv->amcc + AMCC_OP_REG_INTCSR);
-@@ -238,14 +238,14 @@ static irqreturn_t apci1500_interrupt(in
- 	 *
- 	 *    Mask     Meaning
- 	 * ----------  ------------------------------------------
--	 * 0x00000001  Event 1 has occurred
--	 * 0x00000010  Event 2 has occurred
--	 * 0x00000100  Counter/timer 1 has run down (not implemented)
--	 * 0x00001000  Counter/timer 2 has run down (not implemented)
--	 * 0x00010000  Counter 3 has run down (not implemented)
--	 * 0x00100000  Watchdog has run down (not implemented)
--	 * 0x01000000  Voltage error
--	 * 0x10000000  Short-circuit error
-+	 * 0b00000001  Event 1 has occurred
-+	 * 0b00000010  Event 2 has occurred
-+	 * 0b00000100  Counter/timer 1 has run down (not implemented)
-+	 * 0b00001000  Counter/timer 2 has run down (not implemented)
-+	 * 0b00010000  Counter 3 has run down (not implemented)
-+	 * 0b00100000  Watchdog has run down (not implemented)
-+	 * 0b01000000  Voltage error
-+	 * 0b10000000  Short-circuit error
- 	 */
- 	comedi_buf_write_samples(s, &status, 1);
- 	comedi_handle_events(dev, s);
+ 	max_size_bw = num_channels(chmask) * ssize *
+-		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
++		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
+ 	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
+ 						    max_size_ep));
+ 
 
 
