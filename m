@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFD533BEB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6199233BEAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241496AbhCOOtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:49:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238483AbhCOOXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:23:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1BC64F40;
-        Mon, 15 Mar 2021 14:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615818198;
-        bh=ZWO8bpuiQCpUywG7wjB5krr6QXLKHQRgBv2Zoiscf3U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T88GO/cyLT/RTFm05MvBRmjM+wX0p5ykZk+3tVfECtdOuYuBEXu0nNReJIysTNBk0
-         c5cIFw7M8TUMIxksThGEkezDpLRoLEaBUg3g9mVD+Bm21ww25ehjSz+e8L6dU7fuaU
-         VpK4SbCWufoXodgWI0hvbloLmF4vrze20a2HPN4I=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-Subject: [PATCH 5.10 290/290] RDMA/umem: Use ib_dma_max_seg_size instead of dma_get_max_seg_size
-Date:   Mon, 15 Mar 2021 15:22:40 +0100
-Message-Id: <20210315135551.845274252@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135551.391322899@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
- <20210315135551.391322899@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241332AbhCOOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238250AbhCOOW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:22:59 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA547C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:22:58 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id d25so16409275vsr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8GX6YPqUCABnjYLSFPPUAEp9Fl0OXx9Bs7VEy7wBMuA=;
+        b=fOFqWfoTqTvWH20gm5Qsm3Zqkw7ZWL185o17OFNTuL4W3gA1hPwHjQL59LgC5oah8r
+         q1HgmHMD0gBAjo358LTDMyZLzbMaYUQe53lp+fEzhAzkqEkTcm+0PBgw2XCL6+hcpOzs
+         foGVwNBMx9Q3nFMcPGcVFVcygEhwDmbybkRwo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8GX6YPqUCABnjYLSFPPUAEp9Fl0OXx9Bs7VEy7wBMuA=;
+        b=gpHRIBEaTZAY2LkVBnDY39zs8SvwjLCEdnLB/2pRy2xXsrtKq0LZrt6g3g8aIOO9bX
+         Rd/RTlAV3rZ5tFL0/B0U0dKXgmpKWtagiMnDQOPfiGSjRmUD2c51wYviw4zh9ysyGje9
+         mGqPs19wtqGeaDLlEdbVniBhe1FdGHs8tH9sJOvKPlwpZ9NrkLM2BxhYSa6OJar3YB+Z
+         XINGLPA89DUTdo5UaG6hHZAPET4ov8dwZ2YFnoEw1gRcO0JJxwvpcls4SBTx2PtyKPe0
+         3a29fDLswirQ6aCtdIE/eTk7OPFe/Zuikf86HSgA8yfDb+Bw9myClhl9iLa50dPwwxMS
+         OzaA==
+X-Gm-Message-State: AOAM531KWIX3L7hiOZ50jMthbZ3/270TmrquXUnhdkwxeYy+Dq8mW4Gx
+        RXVQI6uHKOvdArpWOeB3bTSpX5B9J/v0oEQGrIQvsA==
+X-Google-Smtp-Source: ABdhPJy80S62TYH446SnI2LZQ/PxsdsXi7v+ge/cuIc0NExNcBR2+/ZqSTd3t4NhH+ijehYn2r4eD89vp/0rhfRO3eg=
+X-Received: by 2002:a67:f7d2:: with SMTP id a18mr10097003vsp.21.1615818177919;
+ Mon, 15 Mar 2021 07:22:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
+ <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com> <2857440.1615815708@warthog.procyon.org.uk>
+In-Reply-To: <2857440.1615815708@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 15 Mar 2021 15:22:47 +0100
+Message-ID: <CAJfpegujN1KA=bS55RobUGphfUbY7BAnPke+dPdUnZbcWudwxQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 0/3] vfs: Use an xarray instead of inserted bookmarks
+ to scan mount list
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Mon, Mar 15, 2021 at 2:41 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > >  (2) We can use the file position to represent the mnt_id and can jump to
+> > >      it directly - ie. using seek() to jump to a mount object by its ID.
+> >
+> > What happens if the mount at the current position is removed?
+>
+> umount_tree() requires the namespace_sem to be writelocked, so that should be
+> fine as the patches currently read-lock that whilst doing /proc/*/mount*
+>
+> I'm assuming that kern_unmount() won't be a problem as it is there to deal
+> with mounts made by kern_mount() which don't get added to the mount list
+> (mnt_ns is MNT_NS_INTERNAL).  kern_unmount_array() seems to be the same
+> because overlayfs gives it mounts generated by clone_private_mount().  It
+> might be worth putting a WARN_ON() in kern_unmount() to require this.
+>
+> When reading through proc, m_start() calls xas_find() which returns the entry
+> at the starting index or, if not present, the next higher entry.
 
-From: Christoph Hellwig <hch@lst.de>
+This will break the property of new mounts always being added to the
+end of the list.  That's likely a regression for nerural based parsers
+(i.e. people), probably less so for machine parsers.
 
-commit b116c702791a9834e6485f67ca6267d9fdf59b87 upstream.
+Thanks,
+Miklos
 
-RDMA ULPs must not call DMA mapping APIs directly but instead use the
-ib_dma_* wrappers.
-
-Fixes: 0c16d9635e3a ("RDMA/umem: Move to allocate SG table from pages")
-Link: https://lore.kernel.org/r/20201106181941.1878556-3-hch@lst.de
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/infiniband/core/umem.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -220,10 +220,10 @@ struct ib_umem *ib_umem_get(struct ib_de
- 
- 		cur_base += ret * PAGE_SIZE;
- 		npages -= ret;
--		sg = __sg_alloc_table_from_pages(
--			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
--			dma_get_max_seg_size(device->dma_device), sg, npages,
--			GFP_KERNEL);
-+		sg = __sg_alloc_table_from_pages(&umem->sg_head, page_list, ret,
-+				0, ret << PAGE_SHIFT,
-+				ib_dma_max_seg_size(device), sg, npages,
-+				GFP_KERNEL);
- 		umem->sg_nents = umem->sg_head.nents;
- 		if (IS_ERR(sg)) {
- 			unpin_user_pages_dirty_lock(page_list, ret, 0);
-
-
+>
+> David
+>
