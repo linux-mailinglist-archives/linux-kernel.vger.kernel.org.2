@@ -2,203 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BABA33AC67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAB733AC65
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhCOHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:42:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43320 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230020AbhCOHmR (ORCPT
+        id S229925AbhCOHmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:42:25 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:61422 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhCOHmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:42:17 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12F7YPHM036228;
-        Mon, 15 Mar 2021 03:41:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=1suujmnuk7iwngbrEAP041QiNnwt+bgAxX3kTWojIgU=;
- b=SiJRBu7w7tJbCTR94ZvlW0oBISMT71afAqT25+u47Wyh4SkZV0YTnqkSg7XHGX7Y9yzt
- /TtCt5fj12RL0SxJQZHv9HpTNXNm9/4VJ5Ap4xAIkN7/IR24qKh2YGX6ROIFy0+XgAHe
- Hxj4k683/6Mer7Vw40LMj5nQA4T5whzMEakEkQYiY8e/sGDr98rrhYRxM8WcJ5GOPc+0
- wUZCsdYi+aB4tiEh/ZZVPlL46tQzDNOmWfHrclOzfcF+ep1lnO6uwWhVpS1i0nTr/Bgc
- 7h96R9zpupt0p+mfvvggoYJiVSZEfaywdtRpINK1P6PSo3/uKSZtozCfwddvYONvaEsa qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqcyuc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 03:41:51 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12F7aovV046339;
-        Mon, 15 Mar 2021 03:41:51 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379yhqcytu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 03:41:50 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12F7d9IZ020956;
-        Mon, 15 Mar 2021 07:41:48 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 378n188tn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 07:41:48 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12F7fjIK25297216
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 07:41:45 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20AED52054;
-        Mon, 15 Mar 2021 07:41:45 +0000 (GMT)
-Received: from [9.79.177.97] (unknown [9.79.177.97])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 26A5F52051;
-        Mon, 15 Mar 2021 07:41:41 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 2/4] tools/perf: Add dynamic headers for perf report
- columns
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <YEtlHzsJ4z19pB/M@krava>
-Date:   Mon, 15 Mar 2021 13:11:38 +0530
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        jolsa@kernel.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
-        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, peterz@infradead.org
+        Mon, 15 Mar 2021 03:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615794127; x=1647330127;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=jF12rWGeTIRbzNsanFmagHJc80PV2OHHDP9cF1bm8wI=;
+  b=pmyLwbYyINjt9GmOqIBiBlcVJUwQ5dOdbB5ooBmFc9PyBoWuKGSJWVZm
+   M9zWgXwUeazQcG9FcOlxNEWf2qnL0x+oHlHIEojL9K1FonYhfvilq7k1J
+   2oe7qHofC6pWDyIqkLtVZ0oMI4Lg2dn+lFKczO9DlFa1qefg+5IbdiGc1
+   6GWbAzICnrAF7xAuo0d9UEfZFpdQI+DFJ7ghBIfETmcXcnqSRyglNrjFn
+   3GRgJIupn2PrAaLfmXLHAyNTOtA3LPS777MqptjV+89HkI1xol0KZcNDG
+   aHFC6tkfydPEQAzPTNfoeIij+OcItxdhOZvOhTgtyGbjIJtfy+1i4G8ym
+   w==;
+IronPort-SDR: ArFNOFeCfPmFB6d66M+aDc8gmuvBr5RjvBRE58Ya+OhL+76/Dt9sO+y5xuzT5S6usU/S6oFP+3
+ Y08C8Peve1Kws5spxd7JnBCydoXdNPCq3S36wMYxgBGYMAhU1Y6BwqRP29xNB++saHynJi0h6V
+ ABNUWpgliGt93uWC3pz3gKHs1tEh9jOXucngOqRlJPpK9i8hCBNG/3lzkLU3Qd8MOjL9RUlWfC
+ tXfSKsJ9j8rIF9HUSmEABSkYVXFq/yKSIif1exnQsbgN2uiE8Z+EPIJQdeg531NFH8nepo/qpE
+ 4Sc=
+X-IronPort-AV: E=Sophos;i="5.81,249,1610380800"; 
+   d="scan'208";a="162130045"
+Received: from mail-dm6nam12lp2177.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.177])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Mar 2021 15:42:06 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jENxUk1gDTKAoQu9W8A0VFU/YjS3PyMWeBGRO3hA7CVTeGqce7K1e4MoS67PPB0OeIxEbuGiBsm0O6R6+fA9zk0Ij1kzjYccJF7oqwktMW9+lP2jx4WKBUbxK7IvNPPpsjVZevCwU0kl6bwKdspbpVZduAcHrqOIA9YQ+s2DvWTcG9i1MH0wqFMFFhKm5lGy6FBN9Vor0h7Evh2flYQuHUg2egNramC2TITojyqLQYuWCzYRtD/TbJFwcDjobXlC7NRwK0D99fgAsFZZtd0F4Gv791KM9RfHjSo1mfj2373VV5hC24bHaHZWrfsvf8yOQSduOntBp1HhrXg++8pUGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nc2GUNzJj+GkA6rrTXv2Ep1irTB1xPNTTl9VDXgd0QA=;
+ b=aHOgMED7WLYPoGvj0DAl5bRNIUa/SBdcaX/C44AB1ERbvCjaNNKkE2g75eil8Ew8MjpZuiZvhS1RuBQy58aMQea8R+JDQATg9tmntLdroKAzqZhAGuInSKvc65Q1apAegZpa1LS37546dkjJVQJ5Dn6pv6IukphkSFcfFVeE7MnKcB9s17OOyxTY/x/hbxmRcA3ap4PBxy9TMMjHBQ6D9s6WvywmI9yetZYbOnD4VtYJ8z0aiSHB/xy8IzPtcJg2Alg7a1rHSOp53OIyBWoZy6N0sQhxPmxhfA29i2cHQ28Ou307XseEGmBIZC1AumUiMLNgDRxS7vnugBH+O7ZCdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nc2GUNzJj+GkA6rrTXv2Ep1irTB1xPNTTl9VDXgd0QA=;
+ b=Ipbnj+iBsvEqH08ATstdOn3j/nSLyijMr6lnkLEi35PWFzQ183IZvz0B9VVt6uql6xyFmz3mm1+UCxJ0Z6XkBIJXfVureKdKki7KxgsRPgffSnndP8d+RNkMyT7S3n3hoQH8pGOPqQpsh01U6tl7pUZGQixd/++t09OuEN4ILFA=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB5084.namprd04.prod.outlook.com (2603:10b6:5:16::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.31; Mon, 15 Mar 2021 07:42:03 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
+ 07:42:03 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+Thread-Topic: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+Thread-Index: AQHXD2ex1y1f5g2rP02e5lIjKmzR26qEV78AgABmXTA=
+Date:   Mon, 15 Mar 2021 07:42:03 +0000
+Message-ID: <DM6PR04MB657550C10928D3FA748213DFFC6C9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-7-avri.altman@wdc.com>
+ <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
+In-Reply-To: <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f25a3590-7144-4ee4-cbaa-08d8e785d39b
+x-ms-traffictypediagnostic: DM6PR04MB5084:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR04MB5084081574CDC3A153E0B7ACFC6C9@DM6PR04MB5084.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6gUZJ1M9eMnNJiwUyxgs3bfpvx0lVZvDfe2Io/TIjK+oQVqA26AmCxMKKRdot21GP1/FmRqZfffqpwACjVFYBGHWguVoCLOskM57IZqo8Cyl4xsTvU74PsDNbF+S4dqhdIzaZOaNYsgi9qLcQsz8V4/xR32sgYNhJodufWj8pn4BEf0BdcINYYQG2znaOh/861/sQunK58n8ypt2ih55twFaa2i98WUKbnrWn1nj0s0pUf1Xz7sDr2TkV8wTkyK8C50VVw1egd14iflOhFtbUaeVv13NhejL5mNMkIQD5lp+P+fWK1qt/P+Ftqkhh+dHtaLSY1E9XcPpQYy/QHnD8K4lj39LxDvpRZuyF9bU/uTpVYUWFmf83QGviX0ylxhtnF6f0G6UJwvDdbSncLsWbf0xgGWWikqJ1gGwdGLHJGu/eI4Rg1arZ8iyx4oleIOcirbvGk+UBmJMIkhiNmrx4oWSkGuUtvbuSuDGzxjnoib4BgQgYbLDSoFkvbCfONlsiEfzd/H5H3ICjMAZm5DMcaGoY4gV4/CgUNBKq6I12ncOSHkwqlhOQdi6utKFKuOg
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(366004)(376002)(4326008)(186003)(6916009)(55016002)(7416002)(9686003)(6506007)(7696005)(66946007)(26005)(4744005)(71200400001)(66556008)(66476007)(64756008)(316002)(66446008)(2906002)(76116006)(8676002)(5660300002)(52536014)(86362001)(8936002)(478600001)(54906003)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SLHUUapM+mJIVJRk+UnPSbmxMv80jwBziGOiMgggxsyVz3McxbrFesk28zRV?=
+ =?us-ascii?Q?wE5aTbNzZUqUG4NPwqoWIVMiYV0OT7qFp8XDmzrWsX7Zx4bkcGv0XxqfqKHE?=
+ =?us-ascii?Q?xJUsLsxjYE5fZZZPDjU+93E5fVeM+OdxsPN0viMXKLi2/mJMeeARTIjYy7qa?=
+ =?us-ascii?Q?n9x0tjt3KwdI2zSSf2SQrP6PyeqkKar7mF5vg9waZhwTpAsh31+nJewkm3D9?=
+ =?us-ascii?Q?bvsPtd8xGiH9ABa9G2M/+rv0rSgH+8myHSEY6YRXXl7Gtj1F/FHM5pgcFtbH?=
+ =?us-ascii?Q?c4Ecmq0DNaI4yiu9oAFRswkpYNnL12yihergaP0z10ZIC0BD1Ja/JUN8n57I?=
+ =?us-ascii?Q?mM4Z6HOOQ3qJA2rtI0cNSNlShKkXvVquCHVpiDiF0CZ3jVETafxSXL6C9ewk?=
+ =?us-ascii?Q?Yc96Iwq53m05+++O+LejO4SH5n6V8pGKNTA6skl5bzp7zM3osH7OjVKUeCLc?=
+ =?us-ascii?Q?iC0HfvoNCIBe4L2JCTblw2k7EjZ8VE0Ta6dJjm8Fe53ca9XMDx0I+Wru3fX1?=
+ =?us-ascii?Q?2fJq3rO51CyjSPE7t1NY0chX//c4NTLL45ZH87p0++ypOBopnPLfrVSXLY4c?=
+ =?us-ascii?Q?Qo/5Bj2j7mN+J3XXvbdvqyqt7ccjk4Wvq+QvsOG8fU0Xku6dUq2sLd8kWLox?=
+ =?us-ascii?Q?E4UCnkhPAmewtx1h9ZOYbTzLK2SA9XXBii4/RFLUkknURuuPXu30NTmdpA2C?=
+ =?us-ascii?Q?5ESNyY+/t2H59s+dynpLSxI3x6zYPnEDAxpq8K788zF11uo4/9+2l84PMViu?=
+ =?us-ascii?Q?phogT2Gr0dklLFo+yMGsDPoKMdh2zjGMVf+3t8dI6yAleqrkKX0wKMI6+9DS?=
+ =?us-ascii?Q?cyBuIBCLtZAGrRoOurSUVvhz2cZDs/inc78nKRkjQJF5QwmmyCjJl09AeozD?=
+ =?us-ascii?Q?RvPRq6O1lE+ncAJTJXznzmVZr9gzOqjj+U7Aq0GwTFWqhhLcJBNoctHz0hcL?=
+ =?us-ascii?Q?xQb862hwYbKiq2GbWJpD/UReh71xETK8H93sYUlik7AbZv1Fu2Qc+rMeRypr?=
+ =?us-ascii?Q?+7LLO34ip+zwtY2Nxa3GCZA/Mf03baX1XatXFMCY8jNAocCYGNhD05HCiAXU?=
+ =?us-ascii?Q?l5HLmeUdLPNwDeMTnt4ylU8JeRc2RXIFlC9cFEpiUcvismrNW4QqzDzATZKd?=
+ =?us-ascii?Q?/BJl05cAw0d15FFNlyLCi0evnIDvgH7onZ26OXpgpkN0ZMCMe0muSFTKKjfv?=
+ =?us-ascii?Q?0qsCCGi51pSBON0au02ORTlfy0K5mMzUb4m9aNYkOvoMq74sERlJ9keHW5+7?=
+ =?us-ascii?Q?9Pz+WnO4gYAgWiGWSlTitUkoD/FVfelHkZA01ffFaynRtX4dPkKcQIL7mMI6?=
+ =?us-ascii?Q?Xog=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <82153A58-31F2-44ED-9326-EF1F74ADDA91@linux.vnet.ibm.com>
-References: <1615298640-1529-1-git-send-email-atrajeev@linux.vnet.ibm.com>
- <1615298640-1529-3-git-send-email-atrajeev@linux.vnet.ibm.com>
- <YEtlHzsJ4z19pB/M@krava>
-To:     Jiri Olsa <jolsa@redhat.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-15_03:2021-03-15,2021-03-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1015 phishscore=0
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103150050
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f25a3590-7144-4ee4-cbaa-08d8e785d39b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2021 07:42:03.8739
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: biHi1B4rk0E+OJ4VrCDl8hu1rHGINnrSEz/sKFLbFikmSCJZ91HxfwvyNCGIBFpVuUmh02HP1vfzWulMIpJ7JQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On 12-Mar-2021, at 6:27 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+> > +static void ufshpb_reset_work_handler(struct work_struct *work)
+> > +{
+> > +     struct ufshpb_lu *hpb;
 >=20
-> On Tue, Mar 09, 2021 at 09:03:58AM -0500, Athira Rajeev wrote:
->> Currently the header string for different columns in perf report
->> is fixed. Some fields of perf sample could have different meaning
->> for different architectures than the meaning conveyed by the header
->> string. An example is the new field 'var2_w' of perf_sample_weight
->> structure. This is presently captured as 'Local INSTR Latency' in
->> perf mem report. But this could be used to denote a different latency
->> cycle in another architecture.
->>=20
->> Introduce a weak function arch_perf_header_entry__add() to set
->> the arch specific header string for the fields which can contain =
-dynamic
->> header. If the architecture do not have this function, fall back to =
-the
->> default header string value.
->>=20
->> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
->> ---
->> tools/perf/util/event.h |  1 +
->> tools/perf/util/sort.c  | 19 ++++++++++++++++++-
->> 2 files changed, 19 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
->> index f603edbbbc6f..89b149e2e70a 100644
->> --- a/tools/perf/util/event.h
->> +++ b/tools/perf/util/event.h
->> @@ -427,5 +427,6 @@ void  cpu_map_data__synthesize(struct =
-perf_record_cpu_map_data *data, struct per
->>=20
->> void arch_perf_parse_sample_weight(struct perf_sample *data, const =
-__u64 *array, u64 type);
->> void arch_perf_synthesize_sample_weight(const struct perf_sample =
-*data, __u64 *array, u64 type);
->> +const char *arch_perf_header_entry__add(const char *se_header);
->>=20
->> #endif /* __PERF_RECORD_H */
->> diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
->> index 0d5ad42812b9..741a6df29fa0 100644
->> --- a/tools/perf/util/sort.c
->> +++ b/tools/perf/util/sort.c
->> @@ -25,6 +25,7 @@
->> #include <traceevent/event-parse.h>
->> #include "mem-events.h"
->> #include "annotate.h"
->> +#include "event.h"
->> #include "time-utils.h"
->> #include "cgroup.h"
->> #include "machine.h"
->> @@ -45,6 +46,7 @@
->> regex_t		ignore_callees_regex;
->> int		have_ignore_callees =3D 0;
->> enum sort_mode	sort__mode =3D SORT_MODE__NORMAL;
->> +const char	*dynamic_headers[] =3D {"local_ins_lat"};
->>=20
->> /*
->>  * Replaces all occurrences of a char used with the:
->> @@ -1816,6 +1818,16 @@ struct sort_dimension {
->> 	int			taken;
->> };
->>=20
->> +const char * __weak arch_perf_header_entry__add(const char =
-*se_header)
+>          struct ufshpb_lu *hpb =3D container_of(work, struct ufshpb_lu,
+> ufshpb_lun_reset_work);
 >=20
-> no need for the __add suffix in here
+> > +     struct victim_select_info *lru_info;
 >=20
-> jirka
+>          struct victim_select_info *lru_info =3D &hpb->lru_info;
 >=20
+> This can save some lines.
+Done.
 
-Thanks Jiri for the review.
-
-I will include this change in next version.
-
-Thanks
-Athira
-
->> +{
->> +	return se_header;
->> +}
->> +
->> +static void sort_dimension_add_dynamic_header(struct sort_dimension =
-*sd)
->> +{
->> +	sd->entry->se_header =3D =
-arch_perf_header_entry__add(sd->entry->se_header);
->> +}
->> +
->> #define DIM(d, n, func) [d] =3D { .name =3D n, .entry =3D &(func) }
->>=20
->> static struct sort_dimension common_sort_dimensions[] =3D {
->> @@ -2739,11 +2751,16 @@ int sort_dimension__add(struct perf_hpp_list =
-*list, const char *tok,
->> 			struct evlist *evlist,
->> 			int level)
->> {
->> -	unsigned int i;
->> +	unsigned int i, j;
->>=20
->> 	for (i =3D 0; i < ARRAY_SIZE(common_sort_dimensions); i++) {
->> 		struct sort_dimension *sd =3D =
-&common_sort_dimensions[i];
->>=20
->> +		for (j =3D 0; j < ARRAY_SIZE(dynamic_headers); j++) {
->> +			if (!strcmp(dynamic_headers[j], sd->name))
->> +				sort_dimension_add_dynamic_header(sd);
->> +		}
->> +
->> 		if (strncasecmp(tok, sd->name, strlen(tok)))
->> 			continue;
->>=20
->> --=20
->> 1.8.3.1
-
+Thanks,
+Avri
+>=20
+> Thanks,
+> Can Guo.
+>=20
