@@ -2,283 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C687733B227
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AB233B224
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCOMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:08:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhCOMHy (ORCPT
+        id S230092AbhCOMIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229830AbhCOMHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:07:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615810074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMY/gt5XSciN6cQxAWuIihEs18mKZz1X5H8/RDx4gWM=;
-        b=YYzCk+lzU/HHSH+TojLu4sBwj3a/yDJFvup7RMLy22DMLmkw7Tw2BiScAK2nCKnICmJMuQ
-        kvgybfV4gE7jt4PSA5GMHWfl3+rUhw1+ZOuI+phD0zsJUhxjp3ckN8M7nLGd7dG6gKRAfI
-        J4ZRCs/VQxgAukzlCsRs1ier3qzVTmY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-ZF6FC_whPi2H-3mRCduqRw-1; Mon, 15 Mar 2021 08:07:52 -0400
-X-MC-Unique: ZF6FC_whPi2H-3mRCduqRw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12F3993920;
-        Mon, 15 Mar 2021 12:07:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7C9710190A7;
-        Mon, 15 Mar 2021 12:07:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 1/3] vfs: Use an xarray in the mount namespace to handle
- /proc/mounts list
-From:   David Howells <dhowells@redhat.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Matthew Wilcox <willy@infradead.org>, dhowells@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Ian Kent <raven@themaw.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 15 Mar 2021 12:07:47 +0000
-Message-ID: <161581006790.2850696.15507933486273306779.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
-References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 15 Mar 2021 08:07:47 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2FFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:07:46 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id q25so56410652lfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xcBEaoMgOUg6Oq+1NZ62LHPAUIVElSEob3K7B1GsgBA=;
+        b=fnukcSh6bz8KDNhtKbz34zCgeiqi2Wit0RLRnJO2jCJzPRTPlNg7l1ilMm5hOIYhgZ
+         4yFTgcNbi2hqFx01FWQwquRN5uLKXA/yb+J+PjomR69PnmiK4oG33+3c010SeyqY3b1V
+         Tj14GcgJ/xu+TmpjZDPgR48G+e1seHknp2rQPkBt1l9vOBwZUmaypRcFcwwVe11oUPrd
+         p2jR4PGu8G5H+noyCy8uUsmt2m4alcAI8kpq7Xv/8GztX8H/BcbPSY1CqtUxhsAYJpnr
+         0zoc3x3RZzudcIrlR6bKHnNcchzny8xqNiNxrPv5AO9oG3NvemR4g1kuDiKqmRnUuhtZ
+         F9KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xcBEaoMgOUg6Oq+1NZ62LHPAUIVElSEob3K7B1GsgBA=;
+        b=smU1fikdekUiJwI9Ba+iEDZ43sB/hmkYVD7nR7nDDASSQOYUkFtQao1Igg2KVoyHDG
+         CqPaMgXwyiHLqwlj9OVB9g1z8usoygDCNCdASEDWW7LcN76WBUnnehmkfz1TTaQUMuSF
+         HYbTb/EuvZ8aemamk/yTnPX+wcDjWtfeXrngDBiQF51DncNLl1lCvuMQowjusz/JG027
+         RACVzZoaaeb5vha0zJOH3ZYGktBTto5Cm+apkB+p/JaCkIOI8TLg3gu7bkwCoHL7asw+
+         TePE4kcsaIQdQp7P2sxjtgLjgJbYE6oR0xi2Y7kLNGmGpfx4kdtslcDTnn+VzuC0Ou1n
+         WHsw==
+X-Gm-Message-State: AOAM533YiZnwL2kFZ5JMDCNXSQC98ccP2vjbG7RaQJVpKwzhEpGGLURo
+        DzNam9nKv7LCxz/TuVD8+jZU+Q==
+X-Google-Smtp-Source: ABdhPJx7lPgJ8wy+Ez31fyuhgQCC28oY7wc9fb7gDEwMPYVgovdXw1VtMnh+D+uQSvEDn+jgeySKuQ==
+X-Received: by 2002:ac2:5d52:: with SMTP id w18mr7553649lfd.28.1615810065040;
+        Mon, 15 Mar 2021 05:07:45 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y14sm2639094lfl.165.2021.03.15.05.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 05:07:44 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 7EFB910246E; Mon, 15 Mar 2021 15:07:48 +0300 (+03)
+Date:   Mon, 15 Mar 2021 15:07:48 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mika Penttila <mika.penttila@nextfour.com>
+Subject: Re: [PATCH v3] mm: huge_memory: a new debugfs interface for
+ splitting THP tests.
+Message-ID: <20210315120748.nuw5vk6grmfacact@box>
+References: <20210312005712.116888-1-zi.yan@sent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312005712.116888-1-zi.yan@sent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an xarray to the mount namespace and use this to perform a mnt_id to
-mount object mapping for the namespace.  Make use of xa_reserve() to
-perform preallocation before taking the mount_lock.
+On Thu, Mar 11, 2021 at 07:57:12PM -0500, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> We do not have a direct user interface of splitting the compound page
+> backing a THP
 
-This will allow the set of mount objects in a namespace to be iterated
-using xarray iteration and without the need to insert and remove fake
-mounts as bookmarks - which cause issues for other trawlers of the list.
+But we do. You expand it.
 
-As a bonus, if we want to allow it, lseek() can be used to start at a
-particular mount - though there's no easy way to limit the return to just a
-single entry or enforce a failure if that mount doesn't exist, but a later
-one does.
+> and there is no need unless we want to expose the THP
+> implementation details to users. Make <debugfs>/split_huge_pages accept
+> a new command to do that.
+> 
+> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
+> <debugfs>/split_huge_pages, THPs within the given virtual address range
+> from the process with the given pid are split. It is used to test
+> split_huge_page function. In addition, a selftest program is added to
+> tools/testing/selftests/vm to utilize the interface by splitting
+> PMD THPs and PTE-mapped THPs.
+> 
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>
-cc: Miklos Szeredi <miklos@szeredi.hu>
-cc: Matthew Wilcox <willy@infradead.org>
----
+Okay, makes sense.
 
- fs/mount.h     |    2 +
- fs/namespace.c |   81 ++++++++++++++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 74 insertions(+), 9 deletions(-)
+But it doesn't cover non-mapped THPs. tmpfs may have file backed by THP
+that mapped nowhere. Do we want to cover this case too?
 
-diff --git a/fs/mount.h b/fs/mount.h
-index 0b6e08cf8afb..455f4d293a65 100644
---- a/fs/mount.h
-+++ b/fs/mount.h
-@@ -4,6 +4,7 @@
- #include <linux/poll.h>
- #include <linux/ns_common.h>
- #include <linux/fs_pin.h>
-+#include <linux/xarray.h>
- 
- struct mnt_namespace {
- 	struct ns_common	ns;
-@@ -14,6 +15,7 @@ struct mnt_namespace {
- 	 * - taking namespace_sem for read AND taking .ns_lock.
- 	 */
- 	struct list_head	list;
-+	struct xarray		mounts_by_id; /* List of mounts by mnt_id */
- 	spinlock_t		ns_lock;
- 	struct user_namespace	*user_ns;
- 	struct ucounts		*ucounts;
-diff --git a/fs/namespace.c b/fs/namespace.c
-index 56bb5a5fdc0d..5c9bcaeac4de 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -901,6 +901,57 @@ void mnt_change_mountpoint(struct mount *parent, struct mountpoint *mp, struct m
- 	mnt_add_count(old_parent, -1);
- }
- 
-+/*
-+ * Reserve slots in the mnt_id-to-mount mapping in a namespace.  This gets the
-+ * memory allocation done upfront.
-+ */
-+static int reserve_mnt_id_one(struct mount *mnt, struct mnt_namespace *ns)
-+{
-+	struct mount *m;
-+	int ret;
-+
-+	ret = xa_reserve(&ns->mounts_by_id, mnt->mnt_id, GFP_KERNEL);
-+	if (ret < 0)
-+		return ret;
-+
-+	list_for_each_entry(m, &mnt->mnt_list, mnt_list) {
-+		ret = xa_reserve(&ns->mounts_by_id, m->mnt_id, GFP_KERNEL);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int reserve_mnt_id_list(struct hlist_head *tree_list)
-+{
-+	struct mount *child;
-+	int ret;
-+
-+	hlist_for_each_entry(child, tree_list, mnt_hash) {
-+		ret = reserve_mnt_id_one(child, child->mnt_parent->mnt_ns);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return 0;
-+}
-+
-+static void add_mnt_to_ns(struct mount *m, struct mnt_namespace *ns)
-+{
-+	void *x;
-+
-+	m->mnt_ns = ns;
-+	x = xa_store(&ns->mounts_by_id, m->mnt_id, m, GFP_ATOMIC);
-+	WARN(xa_err(x), "Couldn't store mnt_id %x\n", m->mnt_id);
-+}
-+
-+static void remove_mnt_from_ns(struct mount *mnt)
-+{
-+	if (mnt->mnt_ns && mnt->mnt_ns != MNT_NS_INTERNAL)
-+		xa_erase(&mnt->mnt_ns->mounts_by_id, mnt->mnt_id);
-+	mnt->mnt_ns = NULL;
-+}
-+
- /*
-  * vfsmount lock must be held for write
-  */
-@@ -914,8 +965,9 @@ static void commit_tree(struct mount *mnt)
- 	BUG_ON(parent == mnt);
- 
- 	list_add_tail(&head, &mnt->mnt_list);
--	list_for_each_entry(m, &head, mnt_list)
--		m->mnt_ns = n;
-+	list_for_each_entry(m, &head, mnt_list) {
-+		add_mnt_to_ns(m, n);
-+	}
- 
- 	list_splice(&head, n->list.prev);
- 
-@@ -1529,7 +1581,7 @@ static void umount_tree(struct mount *mnt, enum umount_tree_flags how)
- 			ns->mounts--;
- 			__touch_mnt_namespace(ns);
- 		}
--		p->mnt_ns = NULL;
-+		remove_mnt_from_ns(p);
- 		if (how & UMOUNT_SYNC)
- 			p->mnt.mnt_flags |= MNT_SYNC_UMOUNT;
- 
-@@ -2144,6 +2196,13 @@ static int attach_recursive_mnt(struct mount *source_mnt,
- 		err = count_mounts(ns, source_mnt);
- 		if (err)
- 			goto out;
-+
-+		/* Reserve id-to-mount mapping slots in the namespace we're
-+		 * going to use.
-+		 */
-+		err = reserve_mnt_id_one(source_mnt, dest_mnt->mnt_ns);
-+		if (err)
-+			goto out;
- 	}
- 
- 	if (IS_MNT_SHARED(dest_mnt)) {
-@@ -2151,6 +2210,8 @@ static int attach_recursive_mnt(struct mount *source_mnt,
- 		if (err)
- 			goto out;
- 		err = propagate_mnt(dest_mnt, dest_mp, source_mnt, &tree_list);
-+		if (!err && !moving)
-+			err = reserve_mnt_id_list(&tree_list);
- 		lock_mount_hash();
- 		if (err)
- 			goto out_cleanup_ids;
-@@ -3260,6 +3321,7 @@ static void dec_mnt_namespaces(struct ucounts *ucounts)
- 
- static void free_mnt_ns(struct mnt_namespace *ns)
- {
-+	WARN_ON(!xa_empty(&ns->mounts_by_id));
- 	if (!is_anon_ns(ns))
- 		ns_free_inum(&ns->ns);
- 	dec_mnt_namespaces(ns->ucounts);
-@@ -3306,6 +3368,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns, bool a
- 	INIT_LIST_HEAD(&new_ns->list);
- 	init_waitqueue_head(&new_ns->poll);
- 	spin_lock_init(&new_ns->ns_lock);
-+	xa_init(&new_ns->mounts_by_id);
- 	new_ns->user_ns = get_user_ns(user_ns);
- 	new_ns->ucounts = ucounts;
- 	return new_ns;
-@@ -3362,7 +3425,7 @@ struct mnt_namespace *copy_mnt_ns(unsigned long flags, struct mnt_namespace *ns,
- 	p = old;
- 	q = new;
- 	while (p) {
--		q->mnt_ns = new_ns;
-+		add_mnt_to_ns(q, new_ns);
- 		new_ns->mounts++;
- 		if (new_fs) {
- 			if (&p->mnt == new_fs->root.mnt) {
-@@ -3404,7 +3467,7 @@ struct dentry *mount_subtree(struct vfsmount *m, const char *name)
- 		mntput(m);
- 		return ERR_CAST(ns);
- 	}
--	mnt->mnt_ns = ns;
-+	add_mnt_to_ns(mnt, ns);
- 	ns->root = mnt;
- 	ns->mounts++;
- 	list_add(&mnt->mnt_list, &ns->list);
-@@ -3583,7 +3646,7 @@ SYSCALL_DEFINE3(fsmount, int, fs_fd, unsigned int, flags,
- 		goto err_path;
- 	}
- 	mnt = real_mount(newmount.mnt);
--	mnt->mnt_ns = ns;
-+	add_mnt_to_ns(mnt, ns);
- 	ns->root = mnt;
- 	ns->mounts = 1;
- 	list_add(&mnt->mnt_list, &ns->list);
-@@ -4193,7 +4256,7 @@ static void __init init_mount_tree(void)
- 	if (IS_ERR(ns))
- 		panic("Can't allocate initial namespace");
- 	m = real_mount(mnt);
--	m->mnt_ns = ns;
-+	add_mnt_to_ns(m, ns);
- 	ns->root = m;
- 	ns->mounts = 1;
- 	list_add(&m->mnt_list, &ns->list);
-@@ -4270,7 +4333,7 @@ void kern_unmount(struct vfsmount *mnt)
- {
- 	/* release long term mount so mount point can be released */
- 	if (!IS_ERR_OR_NULL(mnt)) {
--		real_mount(mnt)->mnt_ns = NULL;
-+		remove_mnt_from_ns(real_mount(mnt));
- 		synchronize_rcu();	/* yecchhh... */
- 		mntput(mnt);
- 	}
-@@ -4283,7 +4346,7 @@ void kern_unmount_array(struct vfsmount *mnt[], unsigned int num)
- 
- 	for (i = 0; i < num; i++)
- 		if (mnt[i])
--			real_mount(mnt[i])->mnt_ns = NULL;
-+			remove_mnt_from_ns(real_mount(mnt[i]));
- 	synchronize_rcu_expedited();
- 	for (i = 0; i < num; i++)
- 		mntput(mnt[i]);
+Maybe have PID:<pid>,<vaddr_start>,<vaddr_end> and
+FILE:<path>,<off_start>,<off_end> ?
 
-
+-- 
+ Kirill A. Shutemov
