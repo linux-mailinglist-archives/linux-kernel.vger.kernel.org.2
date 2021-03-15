@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A8633BD3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE1333BC8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239950AbhCOOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
+        id S234383AbhCOO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233244AbhCOOBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 082B564F3A;
-        Mon, 15 Mar 2021 14:00:49 +0000 (UTC)
+        id S233062AbhCOOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEECB64EEF;
+        Mon, 15 Mar 2021 14:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816851;
-        bh=Dp2YzIEslFX58KqusQUqq6n8tKRltEpnHGHHvqBAL1E=;
+        s=korg; t=1615816820;
+        bh=C6GhsRzq9C4Gk4A9yHPHso2D/z4lVh3ebbwnHATMeRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=056YbQqz6J80u0b9LIvxpfyHB/Z4dZD99pRWcVu4P38/xU+KG0Es6JgycXmOBFXkV
-         npb+Y5VR9F+Ub2GyIIQcFTF705zD9Pnhs3669hMeisU38irRm7fPUy+jP3ytii361f
-         gb8uKe2iVjPqWvNij16wQ2Qo6Dgxqk+yG6F/whdY=
+        b=OfA4OTGUgJmqhOqovCYZ0bFbKas3UzsYAlCHps5po4Fu3PRLEKMkoFmVLzuohE4gA
+         bjhoIW65QCcr++HaA5D4PsyYvq+VjRcoy1k5JuMPYQHJwwJlj51hQVwiIHi6wGUBuX
+         pq/xTDVD8pfJZRBfgkd0bHz2TEwztDGT/F8MhgUI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 161/306] scsi: target: core: Add cmd length set before cmd complete
-Date:   Mon, 15 Mar 2021 14:53:44 +0100
-Message-Id: <20210315135513.081420778@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 132/290] i2c: rcar: optimize cacheline to minimize HW race condition
+Date:   Mon, 15 Mar 2021 14:53:45 +0100
+Message-Id: <20210315135546.366274155@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +44,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-[ Upstream commit 1c73e0c5e54d5f7d77f422a10b03ebe61eaed5ad ]
+[ Upstream commit 25c2e0fb5fefb8d7847214cf114d94c7aad8e9ce ]
 
-TCM doesn't properly handle underflow case for service actions. One way to
-prevent it is to always complete command with
-target_complete_cmd_with_length(), however it requires access to data_sg,
-which is not always available.
+'flags' and 'io' are needed first, so they should be at the beginning of
+the private struct.
 
-This change introduces target_set_cmd_data_length() function which allows
-to set command data length before completing it.
-
-Link: https://lore.kernel.org/r/20210209072202.41154-2-a.miloserdov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_transport.c | 15 +++++++++++----
- include/target/target_core_backend.h   |  1 +
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index fca4bd079d02..8a4d58fdc9fe 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -879,11 +879,9 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
- }
- EXPORT_SYMBOL(target_complete_cmd);
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 824586d7ee56..ad6630e3cc77 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -119,6 +119,7 @@ enum rcar_i2c_type {
+ };
  
--void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+void target_set_cmd_data_length(struct se_cmd *cmd, int length)
- {
--	if ((scsi_status == SAM_STAT_GOOD ||
--	     cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) &&
--	    length < cmd->data_length) {
-+	if (length < cmd->data_length) {
- 		if (cmd->se_cmd_flags & SCF_UNDERFLOW_BIT) {
- 			cmd->residual_count += cmd->data_length - length;
- 		} else {
-@@ -893,6 +891,15 @@ void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int len
+ struct rcar_i2c_priv {
++	u32 flags;
+ 	void __iomem *io;
+ 	struct i2c_adapter adap;
+ 	struct i2c_msg *msg;
+@@ -129,7 +130,6 @@ struct rcar_i2c_priv {
  
- 		cmd->data_length = length;
- 	}
-+}
-+EXPORT_SYMBOL(target_set_cmd_data_length);
-+
-+void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+{
-+	if (scsi_status == SAM_STAT_GOOD ||
-+	    cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) {
-+		target_set_cmd_data_length(cmd, length);
-+	}
- 
- 	target_complete_cmd(cmd, scsi_status);
- }
-diff --git a/include/target/target_core_backend.h b/include/target/target_core_backend.h
-index 6336780d83a7..ce2fba49c95d 100644
---- a/include/target/target_core_backend.h
-+++ b/include/target/target_core_backend.h
-@@ -72,6 +72,7 @@ int	transport_backend_register(const struct target_backend_ops *);
- void	target_backend_unregister(const struct target_backend_ops *);
- 
- void	target_complete_cmd(struct se_cmd *, u8);
-+void	target_set_cmd_data_length(struct se_cmd *, int);
- void	target_complete_cmd_with_length(struct se_cmd *, u8, int);
- 
- void	transport_copy_sense_to_cmd(struct se_cmd *, unsigned char *);
+ 	int pos;
+ 	u32 icccr;
+-	u32 flags;
+ 	u8 recovery_icmcr;	/* protected by adapter lock */
+ 	enum rcar_i2c_type devtype;
+ 	struct i2c_client *slave;
 -- 
 2.30.1
 
