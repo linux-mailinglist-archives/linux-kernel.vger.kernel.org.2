@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770E633C423
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8408833C429
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbhCOR2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S236129AbhCOR3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234455AbhCOR20 (ORCPT
+        with ESMTP id S234455AbhCOR2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:28:26 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC60FC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id y13so7049639pfr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
+        Mon, 15 Mar 2021 13:28:40 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9E4C06174A;
+        Mon, 15 Mar 2021 10:28:40 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id o3so2361737pfh.11;
+        Mon, 15 Mar 2021 10:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5VwZiNoaOawmugGkW3BliGlJHY74MeBZt4r2sMGeVQQ=;
-        b=l7HPfSehLhWpD22iEktgmCx0tfo9/0CXqzTE6AuX6c3/5225P6lXKuk1wJ6XO5mJGB
-         j9LyL7+uH01vGynQcMUX/DSW3aPwjvKsnHDabzLeL8nPJ7VF7NQPm1XuwiOMzrWuKnoG
-         LqkuIan1qCRQ55XWhGn9uzB0DXbKts3oUufc8=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5gnEZY9mFGBFMfKq49DrvBCMPyNX5q5pukAl05EuTws=;
+        b=O7d04w+g65wkjQSjN9kSHAW+hdiPAjBi25iwq/uLbh6IS3zxrFqvpnAi/VTkz+CizL
+         rfXV7/1plKzg4JvtsRMv8DGn32fjDN1MFrf/pgOFWvht0nh2KxM0BnxS7ZecU87zvVsK
+         5/Gl67eKcYe4Eo9s6/AgYVkrP1SHoBJHETrmAW92wsWf8eX+eH6W3rcSN3wMJAGInsFW
+         EQlK0GwegHsZvWA8rzmwsEwYo8N6NIC162Ecdby0XzavyBh0gGSB7KX2I34F23qYDcVY
+         wrwhZjNYxnWdsFznV5bZTGO3H5853/Z9czTvnQm3CDnlWgreKBHFMFr6325do7ABhNG3
+         dhnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5VwZiNoaOawmugGkW3BliGlJHY74MeBZt4r2sMGeVQQ=;
-        b=If7ICjHZ3UGCzeLBLv7p4ADTda25PZGykKSoKL5XA/JjV+VQeRk0b3y4GX+nXcx/II
-         P6Yc8wXmxfVpd6cgGQzLD0pwuDG19JAW1BQnCrMPDzVjIjKmbcTsEFLdykpm0X8IbHoZ
-         OmzDGOjj1X09qQCdCwzkZOpOX4MytK79yyL+Fe7pHZrFCgWBi1b4xCpLabI9wK5PS6YZ
-         AY+jUN546+l3c/Mm7ehK990Rz5+RPgp6NLSgaHmyQq0hLnTyBJQiKlmynlXqnCwpLQS2
-         1Xz9gnYLNyM3bejmwp4MbuOmXkaOSqqjVfwGcUogfSRjyFE5VXT3Y873Yuci9KlLUQa2
-         AJNQ==
-X-Gm-Message-State: AOAM533ciq2NMDbGQbHKo0Yj4xp+55vg46cxCf8VULASVIjDG//ZjRxX
-        /TAiVCbn/lVG76QNx1qzy4UjRQ==
-X-Google-Smtp-Source: ABdhPJxjnHWrPSehNTyXbsunhO6js/f/y7LcLoTrzXtGC7Of1Nx7WsQ3+07t7nraq6yi5lTJdFnVmQ==
-X-Received: by 2002:a62:3847:0:b029:202:ad05:4476 with SMTP id f68-20020a6238470000b0290202ad054476mr10941066pfa.67.1615829305471;
-        Mon, 15 Mar 2021 10:28:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n9sm205492pjq.38.2021.03.15.10.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 10:28:24 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 10:28:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v5 1/7] mm: Restore init_on_* static branch defaults
-Message-ID: <202103151027.88B63D0@keescook>
-References: <20210309214301.678739-1-keescook@chromium.org>
- <20210309214301.678739-2-keescook@chromium.org>
- <20210310155602.e005171dbecbc0be442f8aad@linux-foundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5gnEZY9mFGBFMfKq49DrvBCMPyNX5q5pukAl05EuTws=;
+        b=VFxMMs9IctzNG9bXOilzS8tuZNqKxhkQ+PLgli+U1Z2QDSrgr6fK/QZwcoefqQ7dMl
+         fk/X8C55Le0oWxKP2r7BAmk3hW19ZHfIstDeAtDuraIVqCt6pQ1UfyF5hQX30bHwPkFz
+         GPt6msvwvaBLbj7VlJli/3hKVLOY6hOoov3Hxzh3dSgF9+kW28jHCruIoDZZCwUYaUu3
+         nIaMTf4rfHqGI4wlXe/y7MEWfDptYwBSz8ygYcBXxk6bYCLOwcjtyUc6qFoRuTAF65cA
+         onJYRqnHPJLmZKMlCCDzT9dehCQ+gtavpMmA2YzVJgkqm/9O3oR6Gl88t9/VyMFdLTFn
+         jGfA==
+X-Gm-Message-State: AOAM532kR/GG3jRAHVrvQzRDBpFJuGh2aXgTjeDFsP1RuKyAzLXn+5ws
+        +tnDPDbzk1dZH3Z+xkxK+75T4ae8CixDMQ==
+X-Google-Smtp-Source: ABdhPJxCyPkvAC/1zsx3cLBzAVQAvVUt6KZS6L9LBmrU/jVzsbM4wwPNP8IatVlzERw24Tf6Vbq2Tg==
+X-Received: by 2002:a63:f70f:: with SMTP id x15mr170946pgh.109.1615829319543;
+        Mon, 15 Mar 2021 10:28:39 -0700 (PDT)
+Received: from ?IPv6:2405:201:600d:a089:d096:1684:81a3:45b7? ([2405:201:600d:a089:d096:1684:81a3:45b7])
+        by smtp.gmail.com with ESMTPSA id c24sm229672pjv.18.2021.03.15.10.28.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 10:28:39 -0700 (PDT)
+Subject: Re: [PATCH 00/10] rsi: fix comment syntax in file headers
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     siva8118@gmail.com, linux-kernel-mentees@lists.linuxfoundation.org,
+        amitkarwar@gmail.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210314201818.27380-1-yashsri421@gmail.com>
+ <CAKXUXMzH-cUVeuCT6eM_0iHzgKpzvZUPO6pKNpD0yUp2td09Ug@mail.gmail.com>
+ <87a6r4u7ut.fsf@codeaurora.org>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <643c93f6-1c01-a18d-6ef6-d4d0fb5304fa@gmail.com>
+Date:   Mon, 15 Mar 2021 22:58:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310155602.e005171dbecbc0be442f8aad@linux-foundation.org>
+In-Reply-To: <87a6r4u7ut.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 03:56:02PM -0800, Andrew Morton wrote:
-> On Tue,  9 Mar 2021 13:42:55 -0800 Kees Cook <keescook@chromium.org> wrote:
+On 15/3/21 2:11 pm, Kalle Valo wrote:
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 > 
-> > Choosing the initial state of static branches changes the assembly layout
-> > (if the condition is expected to be likely, inline, or unlikely, out of
-> > line via a jump). The _TRUE/_FALSE defines for CONFIG_INIT_ON_*_DEFAULT_ON
-> > were accidentally removed. These need to stay so that the CONFIG controls
-> > the pessimization of the resulting static branch NOP/JMP locations.
+>> On Sun, Mar 14, 2021 at 9:18 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
+>>>
+>>> The opening comment mark '/**' is used for highlighting the beginning of
+>>> kernel-doc comments.
+>>> There are files in drivers/net/wireless/rsi which follow this syntax in
+>>> their file headers, i.e. start with '/**' like comments, which causes
+>>> unexpected warnings from kernel-doc.
+>>>
+>>> E.g., running scripts/kernel-doc -none on drivers/net/wireless/rsi/rsi_coex.h
+>>> causes this warning:
+>>> "warning: wrong kernel-doc identifier on line:
+>>>  * Copyright (c) 2018 Redpine Signals Inc."
+>>>
+>>> Similarly for other files too.
+>>>
+>>> Provide a simple fix by replacing the kernel-doc like comment syntax with
+>>> general format, i.e. "/*", to prevent kernel-doc from parsing it.
+>>>
+>>
+>> Aditya, thanks for starting to clean up the repository following your
+>> investigation on kernel-doc warnings.
+>>
+>> The changes to all those files look sound.
+>>
+>> However I think these ten patches are really just _one change_, and
+>> hence, all can be put into a single commit.
 > 
-> Changelog doesn't really explain why anyone would want to apply this
-> patch.  This is especially important for -stable patches.
+> I agree, this is one logical change to a single driver so one patch will
+> suffice. I think for cleanup changes like this one patch per driver is a
+> good approach.
 > 
-> IOW, what is the user visible effect of the bug?
 
-Yeah, that's a good point, and in writing more details I decided this
-wasn't actually worth a stable patch, and should just get folded into
-later patches.
+Thanks for the feedback Lukas and Kalle. I will be sending the
+modified v2.
 
-Thanks for the sanity-check!
-
--- 
-Kees Cook
+Thanks
+Aditya
