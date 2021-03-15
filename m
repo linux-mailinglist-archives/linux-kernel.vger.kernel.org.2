@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ADB33B810
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB70133B904
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhCOOCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33462 "EHLO mail.kernel.org"
+        id S234638AbhCOOFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhCON4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DA464EEC;
-        Mon, 15 Mar 2021 13:56:44 +0000 (UTC)
+        id S231983AbhCON51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7365264DAD;
+        Mon, 15 Mar 2021 13:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816606;
-        bh=qOnis5ASUbtP4DBaEjgypEoRm67TjZW/8eJm0wxkdp4=;
+        s=korg; t=1615816647;
+        bh=hkkl8bLmIp1Yh4LBayoLD0RW3RsbGjJ000u/KnO1o8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lrXtmtVSqN2Vp3UCSymhIWNuHLkF58R+eKAvZQC6++gu3f1q43JO/ePjTUmcxnpyH
-         dlOIbz2GgbT3LYD5qn7jRKaqVOzub9lLApaEN9TRcWfg5icuevH0whzmtGredAKMqT
-         H6zOVo8MFYGUfvMClvJd/TXMlM3+PctOYSkmO1jI=
+        b=XJF/2ysirqp7/e5secQyrJZauuyxcqckIhxYE9HjOAuvAKqnSR6Hd/uKkPCC2Hg+3
+         Tu4f9F/wu1z4CcYQvIiSFMZvjT6xgbSUl+JrvwIQ/oJReBlB6MVGS2OVk/gNsBQ9Kf
+         qRvmipccxnkuyJCkYmAJaKqVJFGGnKe4QznpZ+lw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Balazs Nemeth <bnemeth@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 009/290] net: avoid infinite loop in mpls_gso_segment when mpls_hlen == 0
-Date:   Mon, 15 Mar 2021 14:51:42 +0100
-Message-Id: <20210315135542.257552702@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.11 040/306] cifs: fix credit accounting for extra channel
+Date:   Mon, 15 Mar 2021 14:51:43 +0100
+Message-Id: <20210315135508.996723064@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +42,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Balazs Nemeth <bnemeth@redhat.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit d348ede32e99d3a04863e9f9b28d224456118c27 upstream.
+commit a249cc8bc2e2fed680047d326eb9a50756724198 upstream.
 
-A packet with skb_inner_network_header(skb) == skb_network_header(skb)
-and ETH_P_MPLS_UC will prevent mpls_gso_segment from pulling any headers
-from the packet. Subsequently, the call to skb_mac_gso_segment will
-again call mpls_gso_segment with the same packet leading to an infinite
-loop. In addition, ensure that the header length is a multiple of four,
-which should hold irrespective of the number of stacked labels.
+With multichannel, operations like the queries
+from "ls -lR" can cause all credits to be used and
+errors to be returned since max_credits was not
+being set correctly on the secondary channels and
+thus the client was requesting 0 credits incorrectly
+in some cases (which can lead to not having
+enough credits to perform any operation on that
+channel).
 
-Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+CC: <stable@vger.kernel.org> # v5.8+
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mpls/mpls_gso.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/cifs/connect.c |   10 +++++-----
+ fs/cifs/sess.c    |    1 +
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
---- a/net/mpls/mpls_gso.c
-+++ b/net/mpls/mpls_gso.c
-@@ -14,6 +14,7 @@
- #include <linux/netdev_features.h>
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
-+#include <net/mpls.h>
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -1405,6 +1405,11 @@ smbd_connected:
+ 	tcp_ses->min_offload = ctx->min_offload;
+ 	tcp_ses->tcpStatus = CifsNeedNegotiate;
  
- static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
- 				       netdev_features_t features)
-@@ -27,6 +28,8 @@ static struct sk_buff *mpls_gso_segment(
++	if ((ctx->max_credits < 20) || (ctx->max_credits > 60000))
++		tcp_ses->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
++	else
++		tcp_ses->max_credits = ctx->max_credits;
++
+ 	tcp_ses->nr_targets = 1;
+ 	tcp_ses->ignore_signature = ctx->ignore_signature;
+ 	/* thread spawned, put it on the list */
+@@ -2806,11 +2811,6 @@ static int mount_get_conns(struct smb3_f
  
- 	skb_reset_network_header(skb);
- 	mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
-+	if (unlikely(!mpls_hlen || mpls_hlen % MPLS_HLEN))
-+		goto out;
- 	if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
- 		goto out;
+ 	*nserver = server;
  
+-	if ((ctx->max_credits < 20) || (ctx->max_credits > 60000))
+-		server->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
+-	else
+-		server->max_credits = ctx->max_credits;
+-
+ 	/* get a reference to a SMB session */
+ 	ses = cifs_get_smb_ses(server, ctx);
+ 	if (IS_ERR(ses)) {
+--- a/fs/cifs/sess.c
++++ b/fs/cifs/sess.c
+@@ -230,6 +230,7 @@ cifs_ses_add_channel(struct cifs_sb_info
+ 	ctx.noautotune = ses->server->noautotune;
+ 	ctx.sockopt_tcp_nodelay = ses->server->tcp_nodelay;
+ 	ctx.echo_interval = ses->server->echo_interval / HZ;
++	ctx.max_credits = ses->server->max_credits;
+ 
+ 	/*
+ 	 * This will be used for encoding/decoding user/domain/pw
 
 
