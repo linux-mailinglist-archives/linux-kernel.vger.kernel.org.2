@@ -2,197 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FDD33BF4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3687333BF53
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238165AbhCOPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:00:37 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:43129 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbhCOPAX (ORCPT
+        id S232136AbhCOPBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232208AbhCOPBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:00:23 -0400
+        Mon, 15 Mar 2021 11:01:22 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE3BC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:01:22 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id w11so7915263iol.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615820423; x=1647356423;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=vz8bh1TIcb8YUPIQ707G/A5kNUPOqo9Buwx7hhjsjfk=;
-  b=qFQThFgX71IhWzkTAGBSKlDbs3843PGPTf4raUk+rR70gT/QSTwvYs4V
-   hgprsu09gzC8HHiCgUgM9xZm1mZilAGCxweihQnPS914FzilPIqz41Bd/
-   XpZlK6C8ZnxN/jylx84eXlGz9REFfLcjDoTON2Zr2w8ugDiD0/CeHvGnx
-   A=;
-IronPort-HdrOrdr: A9a23:WObm/qwYfTeu5U7EMhOkKrPw1r1zdoIgy1knxilNYDZSddGVkN
- 3roeQD2XbP+VUscVwphNzoAsO9aFzG85od2+QsFJODeCWjh2eyNoFl6uLZowHIPyHl7OZS2e
- NBXsFFZuHYK0N1hcH78wGkE9AmqeP3lZyAvuvVw3dzQQwCUcgJhDtRMQqDF10zeQ8uP/YEPa
- CB7clKrSfIQxUqR/m8b0NrY8Hz4+TRlJT8YQMXbiRXijWzsQ==
-X-IronPort-AV: E=Sophos;i="5.81,249,1610409600"; 
-   d="scan'208";a="97431294"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 15 Mar 2021 15:00:22 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 87D9DA069E;
-        Mon, 15 Mar 2021 15:00:19 +0000 (UTC)
-Received: from u8a88181e7b2355.ant.amazon.com (10.43.160.180) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Mar 2021 15:00:12 +0000
-From:   Hanna Hawa <hhhawa@amazon.com>
-To:     <tony@atomide.com>, <haojian.zhuang@linaro.org>,
-        <linus.walleij@linaro.org>
-CC:     <dwmw@amazon.co.uk>, <benh@amazon.com>, <ronenk@amazon.com>,
-        <talel@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
-        <tgershi@amazon.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hhhawa@amazon.com>
-Subject: [PATCH 2/2] pinctrl: pinctrl-single: fix pcs_pin_dbg_show() when bits_per_mux != 0
-Date:   Mon, 15 Mar 2021 16:59:44 +0200
-Message-ID: <20210315145944.20412-3-hhhawa@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210315145944.20412-1-hhhawa@amazon.com>
-References: <20210315145944.20412-1-hhhawa@amazon.com>
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qr6M9k58brJYdvN05SKIsQmxlwEePXhuPBmSxDhzvoA=;
+        b=YDcwyse7Foo6mbEoUuV3/jrtAcNKqtoN92aFs3bRNaB+KM+sWqyyU1UkqeKjrKPa4J
+         yKfrLOY+6I0yaWfe//LWJp5CitOIkoLBXfysdPxqhj68FLXyFwUdh0o+HKsSHhSZKKny
+         hlCs7aLND5/CcQH/Ya30/eYfLckNJ41UWkasOl0VQUKmSMx8d6TIAZW4L7rLwEj6INPr
+         D15exDP1M8orEZoA4FBHBGVXKksHLBIy8a/EJhYAzB9nvtzzUhMbYtxu4Nt6zB3OuoBI
+         hhzZdkebUgFd4tUEp80lL7ztogDjctyoZaPI1EBqVUkB2ZXgSMScA48BLsa/FtCjZjPk
+         CPIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qr6M9k58brJYdvN05SKIsQmxlwEePXhuPBmSxDhzvoA=;
+        b=hfaNa+c+Dks+eOemwKjgCbpwuBKAAdW7O10nqZ92i+gJGZep/EJQlgNCXy3+RI26xq
+         WGDoLI12E2SH0STkSpv35BIMREZL0Tlno3ZqzqR6At57Z5je9zkx0CTXV1rPQhw0zfKR
+         9JD3PKdYgZSuc5Ur+OJCa+iww01nWV4+nt36Z7hnJFxMse/ayJEnJOqeZe+cnbolyvQg
+         Pz8Os06MbhwwIXsDGY06WUOGNg1H+2b5Ku8cpB5cQg1dfQTYBvari+bzp89cIayZas+g
+         4AHlcus2N5lo+DtMXhhAe+m4huR2IUY0HHxMX1mYnqrIoN1/x8P2Q8D9P6vsreriqwhQ
+         Gbbw==
+X-Gm-Message-State: AOAM532oTzgrk/8ge8SC96g4KdkvUEj2k4B4X7eW/w1LlqX/fRxJEboi
+        mseC8W2l15jdoul5A3tmaw/Kqg==
+X-Google-Smtp-Source: ABdhPJwx5+BZaYgUGnaQ7vn8gu3PFXP/bv5pmAQ8GqiJ9ZDK+DLN8UHQ/pWj/BD1X5D994ooKqfUPg==
+X-Received: by 2002:a6b:db15:: with SMTP id t21mr7558473ioc.133.1615820481764;
+        Mon, 15 Mar 2021 08:01:21 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f15sm7987692ilj.24.2021.03.15.08.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 08:01:21 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     alexander.duyck@gmail.com, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: ipa: make ipa_table_hash_support() inline
+Date:   Mon, 15 Mar 2021 10:01:18 -0500
+Message-Id: <20210315150118.1770939-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.180]
-X-ClientProxiedBy: EX13D32UWB002.ant.amazon.com (10.43.161.139) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An SError was detected when trying to print the supported pins in a
-pinctrl device which supports multiple pins per register. This change
-fixes the pcs_pin_dbg_show() in pinctrl-single driver when
-bits_per_mux != 0. In addition move offset calculation and pin offset in
-register to common function.
+In review, Alexander Duyck suggested that ipa_table_hash_support()
+was trivial enough that it could be implemented as a static inline
+function in the header file.  But the patch had already been
+accepted.  Implement his suggestion.
 
-Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/pinctrl/pinctrl-single.c | 66 ++++++++++++++++++++++----------
- 1 file changed, 45 insertions(+), 21 deletions(-)
+ drivers/net/ipa/ipa_table.c | 5 -----
+ drivers/net/ipa/ipa_table.h | 5 ++++-
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 8a7922459896..0288bf430916 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -270,20 +270,53 @@ static void __maybe_unused pcs_writel(unsigned val, void __iomem *reg)
- 	writel(val, reg);
- }
+diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
+index baaab3dd0e63c..7450e27068f19 100644
+--- a/drivers/net/ipa/ipa_table.c
++++ b/drivers/net/ipa/ipa_table.c
+@@ -239,11 +239,6 @@ static void ipa_table_validate_build(void)
  
-+static unsigned int pcs_pin_reg_offset_get(struct pcs_device *pcs,
-+					   unsigned int pin)
-+{
-+	unsigned int offset, mux_bytes;
-+
-+	mux_bytes = pcs->width / BITS_PER_BYTE;
-+
-+	if (pcs->bits_per_mux) {
-+		unsigned int pin_offset_bytes;
-+
-+		pin_offset_bytes = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
-+		offset = (pin_offset_bytes / mux_bytes) * mux_bytes;
-+	} else {
-+		offset = pin * mux_bytes;
-+	}
-+
-+	return offset;
-+}
-+
-+static unsigned int pcs_pin_shift_reg_get(struct pcs_device *pcs,
-+					  unsigned int pin)
-+{
-+	return ((pin % (pcs->width / pcs->bits_per_pin)) * pcs->bits_per_pin);
-+}
-+
- static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
- 					struct seq_file *s,
- 					unsigned pin)
+ #endif /* !IPA_VALIDATE */
+ 
+-bool ipa_table_hash_support(struct ipa *ipa)
+-{
+-	return ipa->version != IPA_VERSION_4_2;
+-}
+-
+ /* Zero entry count means no table, so just return a 0 address */
+ static dma_addr_t ipa_table_addr(struct ipa *ipa, bool filter_mask, u16 count)
  {
- 	struct pcs_device *pcs;
--	unsigned val, mux_bytes;
-+	unsigned int val;
- 	unsigned long offset;
- 	size_t pa;
+diff --git a/drivers/net/ipa/ipa_table.h b/drivers/net/ipa/ipa_table.h
+index 1a68d20f19d6a..889c2e93b1223 100644
+--- a/drivers/net/ipa/ipa_table.h
++++ b/drivers/net/ipa/ipa_table.h
+@@ -55,7 +55,10 @@ static inline bool ipa_filter_map_valid(struct ipa *ipa, u32 filter_mask)
+  * ipa_table_hash_support() - Return true if hashed tables are supported
+  * @ipa:	IPA pointer
+  */
+-bool ipa_table_hash_support(struct ipa *ipa);
++static inline bool ipa_table_hash_support(struct ipa *ipa)
++{
++	return ipa->version != IPA_VERSION_4_2;
++}
  
- 	pcs = pinctrl_dev_get_drvdata(pctldev);
- 
--	mux_bytes = pcs->width / BITS_PER_BYTE;
--	offset = pin * mux_bytes;
--	val = pcs->read(pcs->base + offset);
-+	offset = pcs_pin_reg_offset_get(pcs, pin);
-+
-+	if (pcs->bits_per_mux) {
-+		unsigned int pin_shift_in_reg = pcs_pin_shift_reg_get(pcs, pin);
-+
-+		val = pcs->read(pcs->base + offset)
-+			& (pcs->fmask << pin_shift_in_reg);
-+	} else {
-+		val = pcs->read(pcs->base + offset);
-+	}
-+
- 	pa = pcs->res->start + offset;
- 
- 	seq_printf(s, "%zx %08x %s ", pa, val, DRIVER_NAME);
-@@ -384,7 +417,6 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
- 	struct pcs_device *pcs = pinctrl_dev_get_drvdata(pctldev);
- 	struct pcs_gpiofunc_range *frange = NULL;
- 	struct list_head *pos, *tmp;
--	int mux_bytes = 0;
- 	unsigned data;
- 
- 	/* If function mask is null, return directly. */
-@@ -392,29 +424,27 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
- 		return -ENOTSUPP;
- 
- 	list_for_each_safe(pos, tmp, &pcs->gpiofuncs) {
-+		u32 offset;
-+
- 		frange = list_entry(pos, struct pcs_gpiofunc_range, node);
- 		if (pin >= frange->offset + frange->npins
- 			|| pin < frange->offset)
- 			continue;
--		mux_bytes = pcs->width / BITS_PER_BYTE;
- 
--		if (pcs->bits_per_mux) {
--			int byte_num, offset, pin_shift;
-+		offset = pcs_pin_reg_offset_get(pcs, pin);
- 
--			byte_num = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
--			offset = (byte_num / mux_bytes) * mux_bytes;
--			pin_shift = pin % (pcs->width / pcs->bits_per_pin) *
--				    pcs->bits_per_pin;
-+		if (pcs->bits_per_mux) {
-+			int pin_shift = pcs_pin_shift_reg_get(pcs, pin);
- 
- 			data = pcs->read(pcs->base + offset);
- 			data &= ~(pcs->fmask << pin_shift);
- 			data |= frange->gpiofunc << pin_shift;
- 			pcs->write(data, pcs->base + offset);
- 		} else {
--			data = pcs->read(pcs->base + pin * mux_bytes);
-+			data = pcs->read(pcs->base + offset);
- 			data &= ~pcs->fmask;
- 			data |= frange->gpiofunc;
--			pcs->write(data, pcs->base + pin * mux_bytes);
-+			pcs->write(data, pcs->base + offset);
- 		}
- 		break;
- 	}
-@@ -726,14 +756,8 @@ static int pcs_allocate_pin_table(struct pcs_device *pcs)
- 	for (i = 0; i < pcs->desc.npins; i++) {
- 		unsigned offset;
- 		int res;
--		int byte_num;
- 
--		if (pcs->bits_per_mux) {
--			byte_num = (pcs->bits_per_pin * i) / BITS_PER_BYTE;
--			offset = (byte_num / mux_bytes) * mux_bytes;
--		} else {
--			offset = i * mux_bytes;
--		}
-+		offset = pcs_pin_reg_offset_get(pcs, i);
- 		res = pcs_add_pin(pcs, offset);
- 		if (res < 0) {
- 			dev_err(pcs->dev, "error adding pins: %i\n", res);
+ /**
+  * ipa_table_reset() - Reset filter and route tables entries to "none"
 -- 
-2.17.1
+2.27.0
 
