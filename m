@@ -2,511 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8076B33C2F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4361233C2F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbhCOQ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:59:08 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:9690 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234692AbhCOQ6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:58:30 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12FGmgbO030888;
-        Mon, 15 Mar 2021 11:57:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Z26VntpwOHPJvXq7Vp3tqOp6PzY59TySfJcNtmxxkxo=;
- b=Qbbh0JlhC36rxZ7sPbZ6VHiBWAWEhZ57VhBW2jtNejYHSqgB5HIIWyQby3HS2Iu3g4a4
- MSbZCILXlu/9Qs8dQrKZBuxDTIRltOtl8XgmwaipspVp3Tu5RT0hLLZH4YQRHIvRIdzr
- 7GceY68qrduFnxoGiLU0b1a2xHhD4GGILBhXWCW+xLvrdq2OdF61XZcLVzbb+ekDR/aW
- K3BUIu4r7pM8lqrMcFa3DRIavQw+giMbcCxMpRGsnCWCVqXFMBIz6iVmhwxgzz0r+Hxe
- IgYspGqpK6f7+Dml4YbfJTOsXepdXiIzkiHmJ6jzDzyI0/laTjJJmHHOQqZl1rdSftZZ Fg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3790bs2bkq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 15 Mar 2021 11:57:28 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
- 2021 16:57:07 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 15 Mar 2021 16:57:07 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3E00611CB;
-        Mon, 15 Mar 2021 16:57:07 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 2/4] ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
+        id S235101AbhCOQ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234688AbhCOQ6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:58:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3306464F33;
+        Mon, 15 Mar 2021 16:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615827504;
+        bh=s5rgpSxnuIUuM/NC/umTECT+sHUHQPMB1mMDx31988M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F45mpRhqgT16Jp+PZF7OgjUuqjwRVATzTwfhxUa8uG3mHlTSHcrfZyQ/apV57Mz3H
+         oIkI90SM2EDwzHbWdo64KZhfdx1CGNK9Zkg4GEPcupBNyNzlewkS8Y8xSBH3uvBPkS
+         hRGi3me332HWT7htmU1XaSMyRO3nR3getXYBM5i6+5Smc6qXhpTys261WSICUNFsRb
+         g/MN9P9mM2ZRP1Ct2H1Enbbma5C55fD+nAibmION/LgXbAkO7EEdf7oYEBI0nnaxHv
+         Isyrz92aBZrsBhBO+TNobQfhrMZXI5ltHxWAYHJ/ZLy20Q7xvyLb64mp1pL807fDOa
+         fNl6FcEA3xsAQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] regulator: bd9571mwv: Miscellaneous fixes and improvements
 Date:   Mon, 15 Mar 2021 16:57:04 +0000
-Message-ID: <20210315165706.3629-3-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315165706.3629-1-vitalyr@opensource.cirrus.com>
-References: <20210315165706.3629-1-vitalyr@opensource.cirrus.com>
+Message-Id: <161582739233.20279.12170851873434705801.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210312130242.3390038-1-geert+renesas@glider.be>
+References: <20210312130242.3390038-1-geert+renesas@glider.be>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103150114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+On Fri, 12 Mar 2021 14:02:39 +0100, Geert Uytterhoeven wrote:
+> *** BLURB HERE ***
+> 
+> Geert Uytterhoeven (3):
+>   regulator: bd9571mwv: Fix AVS and DVFS voltage range
+>   regulator: bd9571mwv: Fix regulator name printed on registration
+>     failure
+>   regulator: bd9571mwv: Convert device attribute to sysfs_emit()
+> 
+> [...]
 
-Minor changes, clean up code, remove unnecessary
-initialization of variables, reduced number of
-warnings from ./scripts/checkpatch.pl from 19 to 0
+Applied to
 
-Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Thanks!
 
-Changes in v1:
-- Fixed warning (Reported-by: kernel test robot <lkp@intel.com>)
+[1/3] regulator: bd9571mwv: Fix AVS and DVFS voltage range
+      commit: 3b6e7088afc919f5b52e4d2de8501ad34d35b09b
+[2/3] regulator: bd9571mwv: Fix regulator name printed on registration failure
+      commit: 9cbc23f7d51fb0b1363bdfdd0b770aa7b5982f2f
+[3/3] regulator: bd9571mwv: Convert device attribute to sysfs_emit()
+      commit: 1deceabbdc0dd3162def1e26acb2e57a93275909
 
-Changes in v2:
-- No Changes
----
- sound/pci/hda/patch_cirrus.c | 147 +++++++++++++++++------------------
- 1 file changed, 72 insertions(+), 75 deletions(-)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index 6c062c7ab76a..7dd48f0ff000 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -127,7 +127,7 @@ enum {
-  * 1 DAC => HP(sense) / Speakers,
-  * 1 ADC <= LineIn(sense) / MicIn / DMicIn,
-  * 1 SPDIF OUT => SPDIF Trasmitter(sense)
--*/
-+ */
- #define CS4210_DAC_NID		0x02
- #define CS4210_ADC_NID		0x03
- #define CS4210_VENDOR_NID	0x0B
-@@ -146,6 +146,7 @@ enum {
- static inline int cs_vendor_coef_get(struct hda_codec *codec, unsigned int idx)
- {
- 	struct cs_spec *spec = codec->spec;
-+
- 	snd_hda_codec_write(codec, spec->vendor_nid, 0,
- 			    AC_VERB_SET_COEF_INDEX, idx);
- 	return snd_hda_codec_read(codec, spec->vendor_nid, 0,
-@@ -156,6 +157,7 @@ static inline void cs_vendor_coef_set(struct hda_codec *codec, unsigned int idx,
- 				      unsigned int coef)
- {
- 	struct cs_spec *spec = codec->spec;
-+
- 	snd_hda_codec_write(codec, spec->vendor_nid, 0,
- 			    AC_VERB_SET_COEF_INDEX, idx);
- 	snd_hda_codec_write(codec, spec->vendor_nid, 0,
-@@ -192,6 +194,7 @@ static void cs_automute(struct hda_codec *codec)
- static bool is_active_pin(struct hda_codec *codec, hda_nid_t nid)
- {
- 	unsigned int val;
-+
- 	val = snd_hda_codec_get_pincfg(codec, nid);
- 	return (get_defcfg_connect(val) != AC_JACK_PORT_NONE);
- }
-@@ -210,7 +213,7 @@ static void init_input_coef(struct hda_codec *codec)
- 			coef |= 1 << 3; /* DMIC1 2 chan on, GPIO0 off
- 					 * No effect if SPDIF_OUT2 is
- 					 * selected in IDX_SPDIF_CTL.
--					*/
-+					 */
- 
- 		cs_vendor_coef_set(codec, IDX_BEEP_CFG, coef);
- 	}
-@@ -284,13 +287,6 @@ static const struct hda_verb cs_errata_init_verbs[] = {
- 	{0x11, AC_VERB_SET_COEF_INDEX, 0x0001},
- 	{0x11, AC_VERB_SET_PROC_COEF, 0x0008},
- 	{0x11, AC_VERB_SET_PROC_STATE, 0x00},
--
--#if 0 /* Don't to set to D3 as we are in power-up sequence */
--	{0x07, AC_VERB_SET_POWER_STATE, 0x03}, /* S/PDIF Rx: D3 */
--	{0x08, AC_VERB_SET_POWER_STATE, 0x03}, /* S/PDIF Tx: D3 */
--	/*{0x01, AC_VERB_SET_POWER_STATE, 0x03},*/ /* AFG: D3 This is already handled */
--#endif
--
- 	{} /* terminator */
- };
- 
-@@ -378,8 +374,10 @@ static int cs_parse_auto_config(struct hda_codec *codec)
- 	/* keep the ADCs powered up when it's dynamically switchable */
- 	if (spec->gen.dyn_adc_switch) {
- 		unsigned int done = 0;
-+
- 		for (i = 0; i < spec->gen.input_mux.num_items; i++) {
- 			int idx = spec->gen.dyn_adc_idx[i];
-+
- 			if (done & (1 << idx))
- 				continue;
- 			snd_hda_gen_fix_pin_power(codec,
-@@ -513,6 +511,7 @@ static void cs420x_fixup_gpio_13(struct hda_codec *codec,
- {
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		struct cs_spec *spec = codec->spec;
-+
- 		spec->gpio_eapd_hp = 2; /* GPIO1 = headphones */
- 		spec->gpio_eapd_speaker = 8; /* GPIO3 = speakers */
- 		spec->gpio_mask = spec->gpio_dir =
-@@ -525,6 +524,7 @@ static void cs420x_fixup_gpio_23(struct hda_codec *codec,
- {
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		struct cs_spec *spec = codec->spec;
-+
- 		spec->gpio_eapd_hp = 4; /* GPIO2 = headphones */
- 		spec->gpio_eapd_speaker = 8; /* GPIO3 = speakers */
- 		spec->gpio_mask = spec->gpio_dir =
-@@ -669,6 +669,7 @@ static void cs4208_fixup_gpio0(struct hda_codec *codec,
- {
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		struct cs_spec *spec = codec->spec;
-+
- 		spec->gpio_eapd_hp = 0;
- 		spec->gpio_eapd_speaker = 1;
- 		spec->gpio_mask = spec->gpio_dir =
-@@ -823,7 +824,7 @@ static int patch_cs4208(struct hda_codec *codec)
-  * 1 DAC => HP(sense) / Speakers,
-  * 1 ADC <= LineIn(sense) / MicIn / DMicIn,
-  * 1 SPDIF OUT => SPDIF Trasmitter(sense)
--*/
-+ */
- 
- /* CS4210 board names */
- static const struct hda_model_fixup cs421x_models[] = {
-@@ -866,6 +867,7 @@ static void cs421x_fixup_sense_b(struct hda_codec *codec,
- 				 const struct hda_fixup *fix, int action)
- {
- 	struct cs_spec *spec = codec->spec;
-+
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE)
- 		spec->sense_b = 1;
- }
-@@ -891,9 +893,9 @@ static const struct hda_verb cs421x_coef_init_verbs[] = {
- 	{0x0B, AC_VERB_SET_PROC_STATE, 1},
- 	{0x0B, AC_VERB_SET_COEF_INDEX, CS421X_IDX_DEV_CFG},
- 	/*
--	    Disable Coefficient Index Auto-Increment(DAI)=1,
--	    PDREF=0
--	*/
-+	 *  Disable Coefficient Index Auto-Increment(DAI)=1,
-+	 *  PDREF=0
-+	 */
- 	{0x0B, AC_VERB_SET_PROC_COEF, 0x0001 },
- 
- 	{0x0B, AC_VERB_SET_COEF_INDEX, CS421X_IDX_ADC_CFG},
-@@ -980,12 +982,12 @@ static int cs421x_boost_vol_put(struct snd_kcontrol *kcontrol,
- 
- 	coef &= ~0x0003;
- 	coef |= (vol & 0x0003);
--	if (original_coef == coef)
--		return 0;
--	else {
-+	if (original_coef != coef) {
- 		cs_vendor_coef_set(codec, CS421X_IDX_SPK_CTL, coef);
- 		return 1;
- 	}
-+
-+	return 0;
- }
- 
- static const struct snd_kcontrol_new cs421x_speaker_boost_ctl = {
-@@ -1024,8 +1026,8 @@ static void cs4210_pinmux_init(struct hda_codec *codec)
- 	    is_active_pin(codec, CS421X_DMIC_PIN_NID)) {
- 
- 		/*
--		    GPIO or SENSE_B forced - disconnect the DMIC pin.
--		*/
-+		 *  GPIO or SENSE_B forced - disconnect the DMIC pin.
-+		 */
- 		def_conf = snd_hda_codec_get_pincfg(codec, CS421X_DMIC_PIN_NID);
- 		def_conf &= ~AC_DEFCFG_PORT_CONN;
- 		def_conf |= (AC_JACK_PORT_NONE << AC_DEFCFG_PORT_CONN_SHIFT);
-@@ -1064,6 +1066,7 @@ static void parse_cs421x_digital(struct hda_codec *codec)
- 
- 	for (i = 0; i < cfg->dig_outs; i++) {
- 		hda_nid_t nid = cfg->dig_out_pins[i];
-+
- 		if (get_wcaps(codec, nid) & AC_WCAP_UNSOL_CAP) {
- 			spec->spdif_detect = 1;
- 			snd_hda_jack_detect_enable_callback(codec, nid,
-@@ -1142,9 +1145,9 @@ static int cs421x_parse_auto_config(struct hda_codec *codec)
- 
- #ifdef CONFIG_PM
- /*
--	Manage PDREF, when transitioning to D3hot
--	(DAC,ADC) -> D3, PDREF=1, AFG->D3
--*/
-+ *	Manage PDREF, when transitioning to D3hot
-+ *	(DAC,ADC) -> D3, PDREF=1, AFG->D3
-+ */
- static int cs421x_suspend(struct hda_codec *codec)
- {
- 	struct cs_spec *spec = codec->spec;
-@@ -1195,10 +1198,10 @@ static int patch_cs4210(struct hda_codec *codec)
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
- 	/*
--	    Update the GPIO/DMIC/SENSE_B pinmux before the configuration
--	    is auto-parsed. If GPIO or SENSE_B is forced, DMIC input
--	    is disabled.
--	*/
-+	 *  Update the GPIO/DMIC/SENSE_B pinmux before the configuration
-+	 *   is auto-parsed. If GPIO or SENSE_B is forced, DMIC input
-+	 *   is disabled.
-+	 */
- 	cs4210_pinmux_init(codec);
- 
- 	err = cs421x_parse_auto_config(codec);
-@@ -1502,8 +1505,8 @@ static const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
-  */
- static void cs8409_enable_i2c_clock(struct hda_codec *codec, unsigned int enable)
- {
--	unsigned int retval = 0;
--	unsigned int newval = 0;
-+	unsigned int retval;
-+	unsigned int newval;
- 
- 	retval = cs_vendor_coef_get(codec, 0x0);
- 	newval = (enable) ? (retval | 0x8) : (retval & 0xfffffff7);
-@@ -1698,13 +1701,13 @@ static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kcontrol,
- 	}
- 	switch (nid) {
- 	case CS8409_CS42L42_HP_PIN_NID:
--		if (chs & 1)
-+		if (chs & BIT(0))
- 			*valp++ = spec->cs42l42_hp_volume[0];
--		if (chs & 2)
-+		if (chs & BIT(1))
- 			*valp++ = spec->cs42l42_hp_volume[1];
- 		break;
- 	case CS8409_CS42L42_AMIC_PIN_NID:
--		if (chs & 1)
-+		if (chs & BIT(0))
- 			*valp++ = spec->cs42l42_hs_mic_volume[0];
- 		break;
- 	default:
-@@ -1722,19 +1725,19 @@ static int cs8409_cs42l42_volume_put(struct snd_kcontrol *kcontrol,
- 	int chs = get_amp_channels(kcontrol);
- 	long *valp = ucontrol->value.integer.value;
- 	int change = 0;
--	char vol = 0;
-+	char vol;
- 
- 	snd_hda_power_up(codec);
- 	switch (nid) {
- 	case CS8409_CS42L42_HP_PIN_NID:
- 		mutex_lock(&spec->cs8409_i2c_mux);
--		if (chs & 1) {
-+		if (chs & BIT(0)) {
- 			vol = -(*valp);
- 			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
- 				CS8409_CS42L42_REG_HS_VOLUME_CHA, vol, 1);
- 			valp++;
- 		}
--		if (chs & 2) {
-+		if (chs & BIT(1)) {
- 			vol = -(*valp);
- 			change |= cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
- 				CS8409_CS42L42_REG_HS_VOLUME_CHB, vol, 1);
-@@ -1743,7 +1746,7 @@ static int cs8409_cs42l42_volume_put(struct snd_kcontrol *kcontrol,
- 		break;
- 	case CS8409_CS42L42_AMIC_PIN_NID:
- 		mutex_lock(&spec->cs8409_i2c_mux);
--		if (chs & 1) {
-+		if (chs & BIT(0)) {
- 			change = cs8409_i2c_write(
- 				codec, CS42L42_I2C_ADDR,
- 				CS8409_CS42L42_REG_AMIC_VOLUME, (char)*valp, 1);
-@@ -1907,7 +1910,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	int reg_cdc_status;
- 	int reg_hs_status;
- 	int reg_ts_status;
--	int type = 0;
-+	int type;
- 	struct hda_jack_tbl *jk;
- 
- 	/* jack_unsol_event() will be called every time gpio line changing state.
-@@ -1984,7 +1987,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	if (status_changed) {
- 
- 		snd_hda_set_pin_ctl(codec, CS8409_CS42L42_SPK_PIN_NID,
--				(spec->cs42l42_hp_jack_in)?0 : PIN_OUT);
-+				spec->cs42l42_hp_jack_in ? 0 : PIN_OUT);
- 
- 		/* Report jack*/
- 		jk = snd_hda_jack_tbl_get_mst(codec, CS8409_CS42L42_HP_PIN_NID, 0);
-@@ -2072,18 +2075,18 @@ static void cs8409_enable_ur(struct hda_codec *codec, int flag)
- 	/* GPIO4 INT# and GPIO3 WAKE# */
- 	snd_hda_codec_write(codec, codec->core.afg,
- 			0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
--			flag?(GPIO3_INT | GPIO4_INT) : 0);
-+			flag ? (GPIO3_INT | GPIO4_INT) : 0);
- 
- 	snd_hda_codec_write(codec, codec->core.afg,
- 			0, AC_VERB_SET_UNSOLICITED_ENABLE,
--			flag?AC_UNSOL_ENABLED : 0);
-+			flag ? AC_UNSOL_ENABLED : 0);
- 
- }
- 
- /* Vendor specific HW configuration
-  * PLL, ASP, I2C, SPI, GPIOs, DMIC etc...
-  */
--static int cs8409_cs42l42_hw_init(struct hda_codec *codec)
-+static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- {
- 	const struct cs8409_cir_param *seq = cs8409_cs42l42_hw_cfg;
- 	struct cs_spec *spec = codec->spec;
-@@ -2123,14 +2126,16 @@ static int cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	if (spec->cs42l42_volume_init) {
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--					CS8409_CS42L42_REG_HS_VOLUME_CHA, -spec->cs42l42_hp_volume[0],
-+					CS8409_CS42L42_REG_HS_VOLUME_CHA,
-+					-spec->cs42l42_hp_volume[0],
- 					1);
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--					CS8409_CS42L42_REG_HS_VOLUME_CHB, -spec->cs42l42_hp_volume[1],
-+					CS8409_CS42L42_REG_HS_VOLUME_CHB,
-+					-spec->cs42l42_hp_volume[1],
- 					1);
--		cs8409_i2c_write(
--					codec, CS42L42_I2C_ADDR,
--					CS8409_CS42L42_REG_AMIC_VOLUME, spec->cs42l42_hs_mic_volume[0],
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
-+					CS8409_CS42L42_REG_AMIC_VOLUME,
-+					spec->cs42l42_hs_mic_volume[0],
- 					1);
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 	}
-@@ -2141,15 +2146,11 @@ static int cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 
- 	/* Enable Unsolicited Response */
- 	cs8409_enable_ur(codec, 1);
--
--	return 1;
- }
- 
- static int cs8409_cs42l42_init(struct hda_codec *codec)
- {
--	int ret = 0;
--
--	ret = snd_hda_gen_init(codec);
-+	int ret = snd_hda_gen_init(codec);
- 
- 	if (!ret) {
- 		/* On Dell platforms with suspend D3 mode support we
-@@ -2181,9 +2182,9 @@ static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
- 
- static int cs8409_cs42l42_fixup(struct hda_codec *codec)
- {
--	int err = 0;
-+	int err;
- 	struct cs_spec *spec = codec->spec;
--	unsigned int pincap = 0;
-+	int caps;
- 
- 	/* Basic initial sequence for specific hw configuration */
- 	snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
-@@ -2198,25 +2199,25 @@ static int cs8409_cs42l42_fixup(struct hda_codec *codec)
- 	 * capabilities. We have to override pin capabilities,
- 	 * otherwise they will not be created as input devices.
- 	 */
--	_snd_hdac_read_parm(&codec->core,
--			CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP, &pincap);
--
--	snd_hdac_override_parm(&codec->core,
-+	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
-+			AC_PAR_PIN_CAP);
-+	if (caps >= 0)
-+		snd_hdac_override_parm(&codec->core,
- 			CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
--			(pincap | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
-+			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
- 
--	_snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
--			AC_PAR_PIN_CAP, &pincap);
--
--	snd_hdac_override_parm(&codec->core,
-+	caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
-+			AC_PAR_PIN_CAP);
-+	if (caps >= 0)
-+		snd_hdac_override_parm(&codec->core,
- 			CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
--			(pincap | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
-+			(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
- 
- 	snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
--			(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+		(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
- 
- 	snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
--			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+		(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
- 
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
-@@ -2238,7 +2239,7 @@ static int cs8409_cs42l42_fixup(struct hda_codec *codec)
- 
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
- 
--	return err;
-+	return 0;
- }
- 
- static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-@@ -2247,11 +2248,8 @@ static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
- 	struct hda_codec *codec = container_of(dev, struct hda_codec, core);
- 	struct cs_spec *spec = codec->spec;
- 
--	unsigned int nid = 0;
--	unsigned int verb = 0;
--
--	nid = ((cmd >> 20) & 0x07f);
--	verb = ((cmd >> 8) & 0x0fff);
-+	unsigned int nid = ((cmd >> 20) & 0x07f);
-+	unsigned int verb = ((cmd >> 8) & 0x0fff);
- 
- 	/* CS8409 pins have no AC_PINSENSE_PRESENCE
- 	 * capabilities. We have to intercept 2 calls for pins 0x24 and 0x34
-@@ -2327,9 +2325,6 @@ static int patch_cs8409(struct hda_codec *codec)
- 		spec->cs42l42_mic_jack_in = 0;
- 
- 		err = cs8409_cs42l42_fixup(codec);
--
--		if (err > 0)
--			err = cs8409_cs42l42_hw_init(codec);
- 		break;
- 
- 	default:
-@@ -2338,10 +2333,12 @@ static int patch_cs8409(struct hda_codec *codec)
- 				codec->bus->pci->subsystem_device);
- 		break;
- 	}
--	if (err < 0)
--		cs_free(codec);
--	else
-+
-+	if (!err) {
-+		cs8409_cs42l42_hw_init(codec);
- 		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
-+	} else
-+		cs_free(codec);
- 
- 	return err;
- }
--- 
-2.25.1
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
