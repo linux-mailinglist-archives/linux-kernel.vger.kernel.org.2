@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780C433B6E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA05E33B6BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhCON7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58660 "EHLO mail.kernel.org"
+        id S231920AbhCON6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231224AbhCONyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E946964F33;
-        Mon, 15 Mar 2021 13:54:41 +0000 (UTC)
+        id S229734AbhCONyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89B71601FD;
+        Mon, 15 Mar 2021 13:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816483;
-        bh=RQtF6aHqWz8EBVznGslYSQ6SzT6WihpDLg7h8pkNDpI=;
+        s=korg; t=1615816475;
+        bh=SEVZex+iMtIMnHaVKDJ+db6LZ6v5n3DbzkkoXEavBns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xf38cCiPJO2RHcNI0/ipWZnFFCbRKAMFLOZIk20pRZtwPe8OOW/Hp6sYScq1FTM0V
-         rZ6ogHtbEd8jCcpx9y2J6RMPQAMM1kgTv9ItwM7greiGPsdByNDnccPtR86bts1cvH
-         CcCKwWz2eXlX9QXq+XDZne+cG8PymOejY4m2XOjE=
+        b=KHxcK6qKTYhJL+JW+HScAOHo789ucR/6Xmh6qCybYlAnai2iCAokTU56H7ElPvHQG
+         RjfwW540oFG9l9Lp5yw0x9PCIE7vfUqF3mf5s0xisey5c8fG32vm0SLdSlk6IO9/I7
+         0h3J98jrXfeV1+jQ3L7U+9V3uhj4Lxg4PQ1WpyQc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>
-Subject: [PATCH 4.4 70/75] KVM: arm64: Fix exclusive limit for IPA size
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 61/78] NFSv4.2: fix return value of _nfs4_get_security_label()
 Date:   Mon, 15 Mar 2021 14:52:24 +0100
-Message-Id: <20210315135210.547754615@linuxfoundation.org>
+Message-Id: <20210315135214.073272615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Marc Zyngier <maz@kernel.org>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-Commit 262b003d059c6671601a19057e9fe1a5e7f23722 upstream.
+[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
 
-When registering a memslot, we check the size and location of that
-memslot against the IPA size to ensure that we can provide guest
-access to the whole of the memory.
+An xattr 'get' handler is expected to return the length of the value on
+success, yet _nfs4_get_security_label() (and consequently also
+nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
+just 0 on success.
 
-Unfortunately, this check rejects memslot that end-up at the exact
-limit of the addressing capability for a given IPA size. For example,
-it refuses the creation of a 2GB memslot at 0x8000000 with a 32bit
-IPA space.
+Fix this by returning label.len instead, which contains the length of
+the result.
 
-Fix it by relaxing the check to accept a memslot reaching the
-limit of the IPA space.
-
-Fixes: c3058d5da222 ("arm/arm64: KVM: Ensure memslots are within KVM_PHYS_SIZE")
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org # 4.4, 4.9
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Link: https://lore.kernel.org/r/20210311100016.3830038-3-maz@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kvm/mmu.c |    2 +-
+ fs/nfs/nfs4proc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/kvm/mmu.c
-+++ b/arch/arm/kvm/mmu.c
-@@ -1789,7 +1789,7 @@ int kvm_arch_prepare_memory_region(struc
- 	 * Prevent userspace from creating a memory region outside of the IPA
- 	 * space addressable by the KVM guest IPA space.
- 	 */
--	if (memslot->base_gfn + memslot->npages >=
-+	if (memslot->base_gfn + memslot->npages >
- 	    (KVM_PHYS_SIZE >> PAGE_SHIFT))
- 		return -EFAULT;
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 2abdb2070c87..0cebe0ca03b2 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5218,7 +5218,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
+ 		return ret;
+ 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
+ 		return -ENOENT;
+-	return 0;
++	return label.len;
+ }
  
+ static int nfs4_get_security_label(struct inode *inode, void *buf,
+-- 
+2.30.1
+
 
 
