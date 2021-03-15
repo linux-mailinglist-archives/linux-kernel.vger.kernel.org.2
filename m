@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7777833BBC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9424433BB9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhCOOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:20:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S237616AbhCOOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232814AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCE8064F18;
-        Mon, 15 Mar 2021 13:59:26 +0000 (UTC)
+        id S232468AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DF5D64F2F;
+        Mon, 15 Mar 2021 13:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816767;
-        bh=/Ddd2zPl42t0KPISs+Dxeg/qgBi4KA8gGxKbfY4SnUE=;
+        s=korg; t=1615816769;
+        bh=DWkUTZJPYEwdrYvkqTCumpJfYkrmCHUOc9flC5P+QQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U7vyhzPXR1hXVWbOjatxr+DMmeLXQoxDH8GtB8xmIsVvdbxp7i0xhpesD0/SWc0tO
-         CYd3Ut5fRIREZ/Mtx0on9OmieBEJf7D4rsfW9SsldTDlV0o+PWVIhqQC7H1vCkD7sM
-         JTLTF+zng2i7DhnCQsUMFX3MKB23Nc7BiHNlA1UU=
+        b=bm+PdGW23dQGkv6ZWYiEOuJukYM3b/vXVxJUVu7bsxSeriYWm90NAOLhQvrDpeTTV
+         50qtjk41wUTx3Y/rNJ7bwzErCNboR0cLonAvOu2jMGfB0NGj4vycjc7q4W2LUE656k
+         pY//qRZpVZxja407+xE/gXwLB4tatqhNDOVu4wKI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.4 096/168] Revert 95ebabde382c ("capabilities: Dont allow writing ambiguous v3 file capabilities")
-Date:   Mon, 15 Mar 2021 14:55:28 +0100
-Message-Id: <20210315135553.525307621@linuxfoundation.org>
+        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.4 097/168] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
+Date:   Mon, 15 Mar 2021 14:55:29 +0100
+Message-Id: <20210315135553.559811335@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -40,54 +42,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Andrey Konovalov <andreyknvl@google.com>
 
-commit 3b0c2d3eaa83da259d7726192cf55a137769012f upstream.
+commit 86c83365ab76e4b43cedd3ce07a07d32a4dc79ba upstream.
 
-It turns out that there are in fact userspace implementations that
-care and this recent change caused a regression.
+When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
+implementation from include/linux/mm.h is used. That definition doesn't
+account for KASAN tags, which leads to no tags on page_alloc allocations.
 
-https://github.com/containers/buildah/issues/3071
+Provide an arm64-specific definition for page_to_virt() when
+CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
 
-As the motivation for the original change was future development,
-and the impact is existing real world code just revert this change
-and allow the ambiguity in v3 file caps.
-
-Cc: stable@vger.kernel.org
-Fixes: 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/commoncap.c |   12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ arch/arm64/include/asm/memory.h |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -500,8 +500,7 @@ int cap_convert_nscap(struct dentry *den
- 	__u32 magic, nsmagic;
- 	struct inode *inode = d_backing_inode(dentry);
- 	struct user_namespace *task_ns = current_user_ns(),
--		*fs_ns = inode->i_sb->s_user_ns,
--		*ancestor;
-+		*fs_ns = inode->i_sb->s_user_ns;
- 	kuid_t rootid;
- 	size_t newsize;
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -315,6 +315,11 @@ static inline void *phys_to_virt(phys_ad
+ #define ARCH_PFN_OFFSET		((unsigned long)PHYS_PFN_OFFSET)
  
-@@ -524,15 +523,6 @@ int cap_convert_nscap(struct dentry *den
- 	if (nsrootid == -1)
- 		return -EINVAL;
- 
--	/*
--	 * Do not allow allow adding a v3 filesystem capability xattr
--	 * if the rootid field is ambiguous.
--	 */
--	for (ancestor = task_ns->parent; ancestor; ancestor = ancestor->parent) {
--		if (from_kuid(ancestor, rootid) == 0)
--			return -EINVAL;
--	}
--
- 	newsize = sizeof(struct vfs_ns_cap_data);
- 	nscap = kmalloc(newsize, GFP_ATOMIC);
- 	if (!nscap)
+ #if !defined(CONFIG_SPARSEMEM_VMEMMAP) || defined(CONFIG_DEBUG_VIRTUAL)
++#define page_to_virt(x)	({						\
++	__typeof__(x) __page = x;					\
++	void *__addr = __va(page_to_phys(__page));			\
++	(void *)__tag_set((const void *)__addr, page_kasan_tag(__page));\
++})
+ #define virt_to_page(x)		pfn_to_page(virt_to_pfn(x))
+ #else
+ #define page_to_virt(x)	({						\
 
 
