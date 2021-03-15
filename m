@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6336333C5BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E8833C5C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCOSeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:34:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53830 "EHLO mail.kernel.org"
+        id S231423AbhCOSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:34:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231307AbhCOSdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:33:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D7B64F42;
-        Mon, 15 Mar 2021 18:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615833217;
-        bh=HVQWGqz8y8OqhhYyK2J1S+Va64nH3a8Cr9xCQdP2MqQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uAtWa8bOXn0C+MmuWGMXduycNNH402Y8ouR/4SD8TQmTPDv5iPINim3vk6cFbQqDb
-         Yz0dxH/oLIadSqaHmMXjc67Uh4+DsqS5uVnpj40/NXbrMKJq0zX758GPEb2FALADXQ
-         56MDIJpAILAP+bhCWL2l4L8hX/x6zq7Igg7W52b3oPCvt1NEkN/06klJ5UNFQxIyje
-         ch0f0DkgHwXTiuyV13Zedrp/XS0rlg8vDTs6+sUPnq1nj90K2cZxtZ90x6VcOagaxP
-         xuMyo5HPKT7Uknw1Q85xviKiJuCEADnB4bC6nkCJp4Rth/vst144aZwGI9A2wh3BXc
-         Vf/H3SReK8uBw==
-Received: by mail-ej1-f54.google.com with SMTP id jt13so68041394ejb.0;
-        Mon, 15 Mar 2021 11:33:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532QJtI6jaszytuqaxnmPZQ1Ed0+dgKz/7Cu3+3OOEckGnwxuRGw
-        9SluR1Q/XDsH/h5ViMYSl8+E2O7HPbSWNh3NWA==
-X-Google-Smtp-Source: ABdhPJxI8/L+zDadqd2570zHOVYzPJl6UwW+Gh82WpewxDvgzPQMkPdZYN0C3TpR4gZ++HAnrYfx6sEr/K4R6Pbynbs=
-X-Received: by 2002:a17:906:2312:: with SMTP id l18mr25811201eja.468.1615833215265;
- Mon, 15 Mar 2021 11:33:35 -0700 (PDT)
+        id S232041AbhCOSeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:34:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615833258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H+y7FsHAfr9H0V0nZlpCJwqn4arhOTDKupfGhSsi4L0=;
+        b=KjlbibSfXB7NG662v+nqeUvX9bQmFZ6Tn4FZ8LSyV2Dy1wShX6HyGPkQ/3oP/oi8ltOa82
+        p4LArpJEH3uiUS4qK5AotGb4JiNd6JM5FPMBGV9OllfNYp2H0+Bq9mcfUIPNFQ81bOWovM
+        7fmYs578Xsmg19z3fl9mWp/3G2HomOI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2014DAE8F;
+        Mon, 15 Mar 2021 18:34:18 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 19:34:15 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YE+op0MZKG41EALi@blackbook>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+ <20210304231946.2766648-2-vipinsh@google.com>
+ <YEpod5X29YqMhW/g@blackbook>
+ <YEu74hkEPEyvxC85@google.com>
 MIME-Version: 1.0
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com> <20210312154357.1561730-17-sebastian.reichel@collabora.com>
-In-Reply-To: <20210312154357.1561730-17-sebastian.reichel@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 15 Mar 2021 12:33:23 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLn9Mo_hTuCEPapNz3cFHbC8NKHH0npYrnV+dC85pBAsQ@mail.gmail.com>
-Message-ID: <CAL_JsqLn9Mo_hTuCEPapNz3cFHbC8NKHH0npYrnV+dC85pBAsQ@mail.gmail.com>
-Subject: Re: [PATCH 16/38] dt-bindings: power: supply: tps65217: Convert to DT
- schema format
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="s/zzXfvrLmfa0Un9"
+Content-Disposition: inline
+In-Reply-To: <YEu74hkEPEyvxC85@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 8:44 AM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
->
-> Convert the binding to DT schema format.
->
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../power/supply/tps65217-charger.yaml        | 43 +++++++++++++++++++
->  .../power/supply/tps65217_charger.txt         | 17 --------
->  2 files changed, 43 insertions(+), 17 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
->  delete mode 100644 Documentation/devicetree/bindings/power/supply/tps65217_charger.txt
->
-> diff --git a/Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml b/Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
-> new file mode 100644
-> index 000000000000..a33408c3a407
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
-> @@ -0,0 +1,43 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/power/supply/tps65217-charger.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: TPS65217 Charger
-> +
-> +maintainers:
-> +  - Sebastian Reichel <sre@kernel.org>
-> +
-> +allOf:
-> +  - $ref: power-supply.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,tps65217-charger
-> +
-> +  interrupts:
-> +    minItems: 2
-> +    maxItems: 2
 
-We've lost info that was in the original binding. You could do
-something like this:
+--s/zzXfvrLmfa0Un9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-items:
-  - description: USB charger
-    const: 0
-  - description: AC charger
-    const: 1
+On Fri, Mar 12, 2021 at 11:07:14AM -0800, Vipin Sharma <vipinsh@google.com>=
+ wrote:
+> We should be fine without atomic64_t because we are using unsigned
+> long and not 64 bit explicitly. This will work on both 32 and 64 bit
+> machines.
+I see.
 
-(Usually the interrupt values would be out of scope of the binding,
-but I guess here it makes some sense.)
+> But I will add READ_ONCE and WRITE_ONCE because of potential chances of
+> load tearing and store tearing.
+>=20
+> Do you agree?
+Yes.
 
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: USB
-> +      - const: AC
-> +
-> +required:
-> +  - compatible
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pmic {
-> +      charger {
-> +        compatible = "ti,tps65217-charger";
-> +        interrupts = <0>, <1>;
-> +        interrupt-names = "USB", "AC";
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/power/supply/tps65217_charger.txt b/Documentation/devicetree/bindings/power/supply/tps65217_charger.txt
-> deleted file mode 100644
-> index a11072c5a866..000000000000
-> --- a/Documentation/devicetree/bindings/power/supply/tps65217_charger.txt
-> +++ /dev/null
-> @@ -1,17 +0,0 @@
-> -TPS65217 Charger
-> -
-> -Required Properties:
-> --compatible: "ti,tps65217-charger"
-> --interrupts: TPS65217 interrupt numbers for the AC and USB charger input change.
-> -             Should be <0> for the USB charger and <1> for the AC adapter.
-> --interrupt-names: Should be "USB" and "AC"
-> -
-> -This node is a subnode of the tps65217 PMIC.
-> -
-> -Example:
-> -
-> -       tps65217-charger {
-> -               compatible = "ti,tps65217-charger";
-> -               interrupts = <0>, <1>;
-> -               interrupt-names = "USB", "AC";
-> -       };
-> --
-> 2.30.1
->
+> This was only here to avoid multiple reads of capacity and making sure
+> if condition and seq_print will see the same value.
+Aha.
+
+> Also, I was not aware of load and store tearing of properly aligned
+> and machine word size variables. I will add READ_ONCE and WRITE_ONCE
+> at other places.
+Yeah, although it's theoretical, I think it also serves well to annotate
+such unsychronized accesses.
+
+Thanks,
+Michal
+
+--s/zzXfvrLmfa0Un9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPqKEACgkQia1+riC5
+qSihOg//SpH6gNPHIcbQ+iF47BrOX3zJwft1PTn3D8d3byIaot3/Sym+j12ttkQU
+xstX/U3Mvimyouy50DFaYLiQ+EWMOPm8dzEw2nPOQFrL0bT6cjRdFnAzH7Y2m87c
+GufRjzeGwn8H2dRTPHiUjc+ETQhdjIRUOL5yUgoJkDGmV1m63j4rQUS5JXoHuW/i
+WH8ePRhc4SlGS/Ifgu3/+g0a3z+K46umCrHA9//BHI5gPyuvobyCdwIjrFekSDAq
+5vWwp6YGavoX5ZoZALUpokgcZR/iVRhTpt5m6psuYFhb+i+sWi/jYVgAeGSzZgCU
+G9uvFogZrPASTAHTss+MwdXoKUWWckG33D5MA8RtTXobewWrO7GcpTCFb79Mm0pF
+JzdVgBuMMuphLjkXHgQnSX8wHQQ7R545TuaSLXZBM9AqDPFjScEwdi68qRKPqopt
+wqqL64XiFnoICLnZjFpp11cL1gccY4cHYo71eNrVA1bdscO1iiO/c5xPbh9JD6cX
+I/cwAksf9R+bW+XUWrgsDvx9VuCiWfhEtiT/obqgDyHEQfE7JtgVX2IDN1o1pLcM
++aGLPoyU/4Nc6aK898xqpJdzY/kCNB73YUuhdgH8lf1tY1P0myDTTivn7+XqZXd3
+hfMM6u+AdaUZhqymfylaEnTpQpBH4VfRAsBS0SnFuUnT93GnkqU=
+=+zv/
+-----END PGP SIGNATURE-----
+
+--s/zzXfvrLmfa0Un9--
