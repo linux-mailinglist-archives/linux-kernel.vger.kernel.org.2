@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9158733BB18
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A3433BAF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhCOOMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S235762AbhCOOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232330AbhCON6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8027164F16;
-        Mon, 15 Mar 2021 13:58:23 +0000 (UTC)
+        id S232125AbhCON5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F83764F09;
+        Mon, 15 Mar 2021 13:57:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816704;
-        bh=lYI+fxC0x0wtugthTFEwxqBaDX2lnENLz29pCkVtjPY=;
+        s=korg; t=1615816669;
+        bh=fjUUu17dwnZ0NHecHECeOCQ3UxojkbVmQ0VRqEx5UfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tilEB6kimJEU3SyDUv+MaQe5tpcZMyq6aKtieC53iEFVNzJdtdw0dlb43bHXxUg5f
-         zhMXDNiCgvXrwqiryq+h2KXSrGbSMuUgru8bTPnbD/b0VnaleG0tMdbdIGDa705n9W
-         X487l5v26OF6WWgClaKqF2qQHv59F6SKUFvz73cc=
+        b=JZ7WfhIUgIxdhba6/D+4WEZoxztAUXlxyKACt98/ZxP8404B/XVPHe1vruRQKtBTk
+         eJ9bXkHGhboRCJmTizFrl5lfuIieqBVCerjbu7USTpY6allaTYR/oUBuTSF7QRaU8N
+         wMqszojEDPZU6j7fH3YG0A/iVE5ogHSvAbeqIH9w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        stable@vger.kernel.org, "Kevin(Yudong) Yang" <yyd@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 075/306] s390/qeth: fix notification for pending buffers during teardown
+Subject: [PATCH 5.10 045/290] net/mlx4_en: update moderation when config reset
 Date:   Mon, 15 Mar 2021 14:52:18 +0100
-Message-Id: <20210315135510.180474061@linuxfoundation.org>
+Message-Id: <20210315135543.447181545@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +44,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Kevin(Yudong) Yang <yyd@google.com>
 
-commit 7eefda7f353ef86ad82a2dc8329e8a3538c08ab6 upstream.
+commit 00ff801bb8ce6711e919af4530b6ffa14a22390a upstream.
 
-The cited commit reworked the state machine for pending TX buffers.
-In qeth_iqd_tx_complete() it turned PENDING into a transient state, and
-uses NEED_QAOB for buffers that get parked while waiting for their QAOB
-completion.
+This patch fixes a bug that the moderation config will not be
+applied when calling mlx4_en_reset_config. For example, when
+turning on rx timestamping, mlx4_en_reset_config() will be called,
+causing the NIC to forget previous moderation config.
 
-But it missed to adjust the check in qeth_tx_complete_buf(). So if
-qeth_tx_complete_pending_bufs() is called during teardown to drain
-the parked TX buffers, we no longer raise a notification for af_iucv.
+This fix is in phase with a previous fix:
+commit 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss
+after set_ringparam is called")
 
-Instead of updating the checked state, just move this code into
-qeth_tx_complete_pending_bufs() itself. This also gets rid of the
-special-case in the common TX completion path.
+Tested: Before this patch, on a host with NIC using mlx4, run
+netserver and stream TCP to the host at full utilization.
+$ sar -I SUM 1
+                 INTR    intr/s
+14:03:56          sum  48758.00
 
-Fixes: 8908f36d20d8 ("s390/qeth: fix af_iucv notification race")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+After rx hwtstamp is enabled:
+$ sar -I SUM 1
+14:10:38          sum 317771.00
+We see the moderation is not working properly and issued 7x more
+interrupts.
+
+After the patch, and turned on rx hwtstamp, the rate of interrupts
+is as expected:
+$ sar -I SUM 1
+14:52:11          sum  49332.00
+
+Fixes: 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss after set_ringparam is called")
+Signed-off-by: Kevin(Yudong) Yang <yyd@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+CC: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/net/qeth_core_main.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c  |    2 ++
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    |    1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/s390/net/qeth_core_main.c
-+++ b/drivers/s390/net/qeth_core_main.c
-@@ -1386,9 +1386,6 @@ static void qeth_tx_complete_buf(struct
- 	struct qeth_qdio_out_q *queue = buf->q;
- 	struct sk_buff *skb;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -47,7 +47,7 @@
+ #define EN_ETHTOOL_SHORT_MASK cpu_to_be16(0xffff)
+ #define EN_ETHTOOL_WORD_MASK  cpu_to_be32(0xffffffff)
  
--	if (atomic_read(&buf->state) == QETH_QDIO_BUF_PENDING)
--		qeth_notify_skbs(queue, buf, TX_NOTIFY_GENERALERROR);
--
- 	/* Empty buffer? */
- 	if (buf->next_element_to_fill == 0)
- 		return;
-@@ -1461,6 +1458,9 @@ static void qeth_tx_complete_pending_buf
- 			QETH_CARD_TEXT(card, 5, "fp");
- 			QETH_CARD_TEXT_(card, 5, "%lx", (long) buf);
+-static int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
+ {
+ 	int i, t;
+ 	int err = 0;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -3559,6 +3559,8 @@ int mlx4_en_reset_config(struct net_devi
+ 			en_err(priv, "Failed starting port\n");
+ 	}
  
-+			if (drain)
-+				qeth_notify_skbs(queue, buf,
-+						 TX_NOTIFY_GENERALERROR);
- 			qeth_tx_complete_buf(buf, drain, 0);
++	if (!err)
++		err = mlx4_en_moderation_update(priv);
+ out:
+ 	mutex_unlock(&mdev->state_lock);
+ 	kfree(tmp);
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -795,6 +795,7 @@ void mlx4_en_ptp_overflow_check(struct m
+ #define DEV_FEATURE_CHANGED(dev, new_features, feature) \
+ 	((dev->features & feature) ^ (new_features & feature))
  
- 			list_del(&buf->list_entry);
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv);
+ int mlx4_en_reset_config(struct net_device *dev,
+ 			 struct hwtstamp_config ts_config,
+ 			 netdev_features_t new_features);
 
 
