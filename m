@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AD533BB5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62E433BA12
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236858AbhCOOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S235602AbhCOOHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232475AbhCON66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD21F64F46;
-        Mon, 15 Mar 2021 13:58:38 +0000 (UTC)
+        id S232252AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41AB364F36;
+        Mon, 15 Mar 2021 13:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816719;
-        bh=+ptmoKpV4hlB21msSzO9E3KSI8JK5/TGAUnVA56A/VI=;
+        s=korg; t=1615816686;
+        bh=HHA26jaEx0TVIHhjA6y4M+tOOuCMpp/jBGSy2ZKii+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=maB2mYVaf17f2k8Otaqxnfr4GBAimshdWxTjNuWRKNPuManisIw6lZp7N3FTV2p0i
-         6UgKhP5iW2p8trCa7Q0HA8CTaJEfSAt198lFmNloNnYua82CcOchqh6MELim+e68FF
-         LztDi+OCDQF8kZC704oOvcCxF0H0AurR6GAQ/M98=
+        b=0j9jTEUrlvZTx84esilYoEtlswEjkxvTZ373m9Ggmo6jE4QK7MXtMx3toJ0dYhszG
+         nhf/WtKxZRv2bEgb/chdMZwJzFP7MZFoNkGLo9QN8CZNSwl3ayLobT8GLS376tRAfn
+         CPZsr0L9Re9PiNwcIz/CeyNqUtoD3e38AsWuM7dc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 084/306] net: phy: make mdio_bus_phy_suspend/resume as __maybe_unused
-Date:   Mon, 15 Mar 2021 14:52:27 +0100
-Message-Id: <20210315135510.491807314@linuxfoundation.org>
+        stable@vger.kernel.org, Wong Vee Khee <vee.khee.wong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 055/290] stmmac: intel: Fixes clock registration error seen for multiple interfaces
+Date:   Mon, 15 Mar 2021 14:52:28 +0100
+Message-Id: <20210315135543.794433623@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +43,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Wong Vee Khee <vee.khee.wong@intel.com>
 
-commit 7f654157f0aefba04cd7f6297351c87b76b47b89 upstream.
+commit 8eb37ab7cc045ec6305a6a1a9c32374695a1a977 upstream.
 
-When CONFIG_PM_SLEEP is disabled, the compiler warns about unused
-functions:
+Issue seen when enumerating multiple Intel mGbE interfaces in EHL.
 
-drivers/net/phy/phy_device.c:273:12: error: unused function 'mdio_bus_phy_suspend' [-Werror,-Wunused-function]
-static int mdio_bus_phy_suspend(struct device *dev)
-drivers/net/phy/phy_device.c:293:12: error: unused function 'mdio_bus_phy_resume' [-Werror,-Wunused-function]
-static int mdio_bus_phy_resume(struct device *dev)
+[    6.898141] intel-eth-pci 0000:00:1d.2: enabling device (0000 -> 0002)
+[    6.900971] intel-eth-pci 0000:00:1d.2: Fail to register stmmac-clk
+[    6.906434] intel-eth-pci 0000:00:1d.2: User ID: 0x51, Synopsys ID: 0x52
 
-The logic is intentional, so just mark these two as __maybe_unused
-and remove the incorrect #ifdef.
+We fix it by making the clock name to be unique following the format
+of stmmac-pci_name(pci_dev) so that we can differentiate the clock for
+these Intel mGbE interfaces in EHL platform as follow:
 
-Fixes: 4c0d2e96ba05 ("net: phy: consider that suspend2ram may cut off PHY power")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20210225145748.404410-1-arnd@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+  /sys/kernel/debug/clk/stmmac-0000:00:1d.1
+  /sys/kernel/debug/clk/stmmac-0000:00:1d.2
+  /sys/kernel/debug/clk/stmmac-0000:00:1e.4
+
+Fixes: 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to contain all Intel platform")
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/phy_device.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -230,7 +230,6 @@ static struct phy_driver genphy_driver;
- static LIST_HEAD(phy_fixup_list);
- static DEFINE_MUTEX(phy_fixup_lock);
- 
--#ifdef CONFIG_PM
- static bool mdio_bus_phy_may_suspend(struct phy_device *phydev)
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -233,6 +233,7 @@ static void common_default_data(struct p
+ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 				  struct plat_stmmacenet_data *plat)
  {
- 	struct device_driver *drv = phydev->mdio.dev.driver;
-@@ -270,7 +269,7 @@ out:
- 	return !phydev->suspended;
- }
- 
--static int mdio_bus_phy_suspend(struct device *dev)
-+static __maybe_unused int mdio_bus_phy_suspend(struct device *dev)
- {
- 	struct phy_device *phydev = to_phy_device(dev);
- 
-@@ -290,7 +289,7 @@ static int mdio_bus_phy_suspend(struct d
- 	return phy_suspend(phydev);
- }
- 
--static int mdio_bus_phy_resume(struct device *dev)
-+static __maybe_unused int mdio_bus_phy_resume(struct device *dev)
- {
- 	struct phy_device *phydev = to_phy_device(dev);
++	char clk_name[20];
  	int ret;
-@@ -316,7 +315,6 @@ no_resume:
+ 	int i;
  
- static SIMPLE_DEV_PM_OPS(mdio_bus_phy_pm_ops, mdio_bus_phy_suspend,
- 			 mdio_bus_phy_resume);
--#endif /* CONFIG_PM */
+@@ -300,8 +301,10 @@ static int intel_mgbe_common_data(struct
+ 	plat->eee_usecs_rate = plat->clk_ptp_rate;
  
- /**
-  * phy_register_fixup - creates a new phy_fixup and adds it to the list
+ 	/* Set system clock */
++	sprintf(clk_name, "%s-%s", "stmmac", pci_name(pdev));
++
+ 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
+-						   "stmmac-clk", NULL, 0,
++						   clk_name, NULL, 0,
+ 						   plat->clk_ptp_rate);
+ 
+ 	if (IS_ERR(plat->stmmac_clk)) {
 
 
