@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AB233B224
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9D233B22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhCOMIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbhCOMHr (ORCPT
+        id S230505AbhCOMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:08:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230437AbhCOMIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:07:47 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2FFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:07:46 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id q25so56410652lfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xcBEaoMgOUg6Oq+1NZ62LHPAUIVElSEob3K7B1GsgBA=;
-        b=fnukcSh6bz8KDNhtKbz34zCgeiqi2Wit0RLRnJO2jCJzPRTPlNg7l1ilMm5hOIYhgZ
-         4yFTgcNbi2hqFx01FWQwquRN5uLKXA/yb+J+PjomR69PnmiK4oG33+3c010SeyqY3b1V
-         Tj14GcgJ/xu+TmpjZDPgR48G+e1seHknp2rQPkBt1l9vOBwZUmaypRcFcwwVe11oUPrd
-         p2jR4PGu8G5H+noyCy8uUsmt2m4alcAI8kpq7Xv/8GztX8H/BcbPSY1CqtUxhsAYJpnr
-         0zoc3x3RZzudcIrlR6bKHnNcchzny8xqNiNxrPv5AO9oG3NvemR4g1kuDiKqmRnUuhtZ
-         F9KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xcBEaoMgOUg6Oq+1NZ62LHPAUIVElSEob3K7B1GsgBA=;
-        b=smU1fikdekUiJwI9Ba+iEDZ43sB/hmkYVD7nR7nDDASSQOYUkFtQao1Igg2KVoyHDG
-         CqPaMgXwyiHLqwlj9OVB9g1z8usoygDCNCdASEDWW7LcN76WBUnnehmkfz1TTaQUMuSF
-         HYbTb/EuvZ8aemamk/yTnPX+wcDjWtfeXrngDBiQF51DncNLl1lCvuMQowjusz/JG027
-         RACVzZoaaeb5vha0zJOH3ZYGktBTto5Cm+apkB+p/JaCkIOI8TLg3gu7bkwCoHL7asw+
-         TePE4kcsaIQdQp7P2sxjtgLjgJbYE6oR0xi2Y7kLNGmGpfx4kdtslcDTnn+VzuC0Ou1n
-         WHsw==
-X-Gm-Message-State: AOAM533YiZnwL2kFZ5JMDCNXSQC98ccP2vjbG7RaQJVpKwzhEpGGLURo
-        DzNam9nKv7LCxz/TuVD8+jZU+Q==
-X-Google-Smtp-Source: ABdhPJx7lPgJ8wy+Ez31fyuhgQCC28oY7wc9fb7gDEwMPYVgovdXw1VtMnh+D+uQSvEDn+jgeySKuQ==
-X-Received: by 2002:ac2:5d52:: with SMTP id w18mr7553649lfd.28.1615810065040;
-        Mon, 15 Mar 2021 05:07:45 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y14sm2639094lfl.165.2021.03.15.05.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:07:44 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 7EFB910246E; Mon, 15 Mar 2021 15:07:48 +0300 (+03)
-Date:   Mon, 15 Mar 2021 15:07:48 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mika Penttila <mika.penttila@nextfour.com>
-Subject: Re: [PATCH v3] mm: huge_memory: a new debugfs interface for
- splitting THP tests.
-Message-ID: <20210315120748.nuw5vk6grmfacact@box>
-References: <20210312005712.116888-1-zi.yan@sent.com>
+        Mon, 15 Mar 2021 08:08:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615810083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WV8Qo1wCC5wakuqg7LiPHipA4SNifOTUXpzARroenTg=;
+        b=DZgT1SusWwr2XKnCfOxIX1sw7L2XdqxYhDRdN/Qi15MIMgWWO0yLLrnNCV9MsQtTWe0HZ6
+        rK5qz7MlQ/FCC7bmrJMBrDbdx8dF4t2Cawdn6VkxIXe0S5C1kezI5TTGAXJu276J954VDQ
+        wls4u5EVozC4ndzRhH+R3BPo6RvQxu0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-KJheqZhaMduAdwSih0IuAA-1; Mon, 15 Mar 2021 08:08:00 -0400
+X-MC-Unique: KJheqZhaMduAdwSih0IuAA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A95F2100C660;
+        Mon, 15 Mar 2021 12:07:58 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E7E919701;
+        Mon, 15 Mar 2021 12:07:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 2/3] vfs: Use the mounts_to_id array to do /proc/mounts and
+ co.
+From:   David Howells <dhowells@redhat.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Matthew Wilcox <willy@infradead.org>, dhowells@redhat.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 15 Mar 2021 12:07:56 +0000
+Message-ID: <161581007628.2850696.11692651942358302102.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
+References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312005712.116888-1-zi.yan@sent.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 07:57:12PM -0500, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> We do not have a direct user interface of splitting the compound page
-> backing a THP
+Use the mounts_to_id xarray added to the mount namespace to perform
+iteration over the mounts in a namespace on behalf of /proc/mounts and
+similar.
 
-But we do. You expand it.
+Since it doesn't trawl a standard list_head, but rather uses xarray, this
+could be done under the RCU read lock only.  To do this, we would need to
+hide mounts that are in the process of being inserted into the tree by
+marking them in the xarray itself or using a mount flag.
 
-> and there is no need unless we want to expose the THP
-> implementation details to users. Make <debugfs>/split_huge_pages accept
-> a new command to do that.
-> 
-> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
-> <debugfs>/split_huge_pages, THPs within the given virtual address range
-> from the process with the given pid are split. It is used to test
-> split_huge_page function. In addition, a selftest program is added to
-> tools/testing/selftests/vm to utilize the interface by splitting
-> PMD THPs and PTE-mapped THPs.
-> 
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Alexander Viro <viro@zeniv.linux.org.uk>
+cc: Miklos Szeredi <miklos@szeredi.hu>
+cc: Matthew Wilcox <willy@infradead.org>
+---
 
-Okay, makes sense.
+ fs/mount.h          |    2 +-
+ fs/namespace.c      |   40 +++++++++++++++++-----------------------
+ fs/proc_namespace.c |    3 ---
+ 3 files changed, 18 insertions(+), 27 deletions(-)
 
-But it doesn't cover non-mapped THPs. tmpfs may have file backed by THP
-that mapped nowhere. Do we want to cover this case too?
+diff --git a/fs/mount.h b/fs/mount.h
+index 455f4d293a65..114e7d603995 100644
+--- a/fs/mount.h
++++ b/fs/mount.h
+@@ -130,7 +130,7 @@ struct proc_mounts {
+ 	struct mnt_namespace *ns;
+ 	struct path root;
+ 	int (*show)(struct seq_file *, struct vfsmount *);
+-	struct mount cursor;
++	struct xa_state xas;
+ };
+ 
+ extern const struct seq_operations mounts_op;
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 5c9bcaeac4de..d19fde0654f7 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1334,6 +1334,7 @@ struct vfsmount *mnt_clone_internal(const struct path *path)
+ }
+ 
+ #ifdef CONFIG_PROC_FS
++#if 0
+ static struct mount *mnt_list_next(struct mnt_namespace *ns,
+ 				   struct list_head *p)
+ {
+@@ -1351,47 +1352,40 @@ static struct mount *mnt_list_next(struct mnt_namespace *ns,
+ 
+ 	return ret;
+ }
++#endif
+ 
+ /* iterator; we want it to have access to namespace_sem, thus here... */
+ static void *m_start(struct seq_file *m, loff_t *pos)
+ {
+-	struct proc_mounts *p = m->private;
+-	struct list_head *prev;
++	struct proc_mounts *state = m->private;
++	void *entry;
+ 
+ 	down_read(&namespace_sem);
+-	if (!*pos) {
+-		prev = &p->ns->list;
+-	} else {
+-		prev = &p->cursor.mnt_list;
++	state->xas = (struct xa_state) __XA_STATE(&state->ns->mounts_by_id, *pos, 0, 0);
+ 
+-		/* Read after we'd reached the end? */
+-		if (list_empty(prev))
+-			return NULL;
+-	}
++	entry = xas_find(&state->xas, ULONG_MAX);
++	while (entry && xas_invalid(entry))
++		entry = xas_next_entry(&state->xas, ULONG_MAX);
+ 
+-	return mnt_list_next(p->ns, prev);
++	return entry;
+ }
+ 
+ static void *m_next(struct seq_file *m, void *v, loff_t *pos)
+ {
+-	struct proc_mounts *p = m->private;
++	struct proc_mounts *state = m->private;
+ 	struct mount *mnt = v;
++	void *entry;
++
++	*pos = mnt->mnt_id + 1;
++	entry = xas_next_entry(&state->xas, ULONG_MAX);
++	while (entry && xas_invalid(entry))
++		entry = xas_next_entry(&state->xas, ULONG_MAX);
+ 
+-	++*pos;
+-	return mnt_list_next(p->ns, &mnt->mnt_list);
++	return entry;
+ }
+ 
+ static void m_stop(struct seq_file *m, void *v)
+ {
+-	struct proc_mounts *p = m->private;
+-	struct mount *mnt = v;
+-
+-	lock_ns_list(p->ns);
+-	if (mnt)
+-		list_move_tail(&p->cursor.mnt_list, &mnt->mnt_list);
+-	else
+-		list_del_init(&p->cursor.mnt_list);
+-	unlock_ns_list(p->ns);
+ 	up_read(&namespace_sem);
+ }
+ 
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index 392ef5162655..9ae07f1904e6 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -283,8 +283,6 @@ static int mounts_open_common(struct inode *inode, struct file *file,
+ 	p->ns = ns;
+ 	p->root = root;
+ 	p->show = show;
+-	INIT_LIST_HEAD(&p->cursor.mnt_list);
+-	p->cursor.mnt.mnt_flags = MNT_CURSOR;
+ 
+ 	return 0;
+ 
+@@ -301,7 +299,6 @@ static int mounts_release(struct inode *inode, struct file *file)
+ 	struct seq_file *m = file->private_data;
+ 	struct proc_mounts *p = m->private;
+ 	path_put(&p->root);
+-	mnt_cursor_del(p->ns, &p->cursor);
+ 	put_mnt_ns(p->ns);
+ 	return seq_release_private(inode, file);
+ }
 
-Maybe have PID:<pid>,<vaddr_start>,<vaddr_end> and
-FILE:<path>,<off_start>,<off_end> ?
 
--- 
- Kirill A. Shutemov
