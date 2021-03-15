@@ -2,145 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21E833C15D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350A933C164
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCOQN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhCOQNA (ORCPT
+        id S231520AbhCOQO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:14:59 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:20216 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhCOQOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:13:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AC0C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:12:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=+6eGNAxCCzsinN613dBMc6kAMFAKurkVTuSRV93npR0=; b=qCgL+p+XAMigWTVPPgTX5urLQr
-        Rag0TjvQJqm0DsVz0EgYoxmViqiPZt2ql39zh+lYctQuZiJ26MCKKKV27/ZSwPrhWB+l86bzC791Q
-        KPES6F47Pu+PGQ3OrrHpARZLcB1W8nR3/dBod2iOPylxc8aJ5rcxPu5RVlTevnAeyqmGI+Eth+3xP
-        ci7KUuC0raXqtgNWPvbYx4VfYX+luKm5r7cWJvLea2uBBZZhTrDZlUhtc9SAG9Y+CofJBvaO+lLpZ
-        0Zhd4sS1enNetXo3WPAvKJupaOv5eFSiK6pTA6bfZRCQv6xUCrsUPD8qPYh798P6DpcNJrtam/K4f
-        it0hwPCQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLppu-00GKNt-8l; Mon, 15 Mar 2021 16:12:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BBE3830700B;
-        Mon, 15 Mar 2021 17:12:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7AF412D8B225F; Mon, 15 Mar 2021 17:12:53 +0100 (CET)
-Date:   Mon, 15 Mar 2021 17:12:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, tony.luck@intel.com
-Cc:     "Liang, Kan" <kan.liang@intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/cpu: Resort and comment Intel models
-Message-ID: <YE+HhS8i0gshHD3W@hirez.programming.kicks-ass.net>
+        Mon, 15 Mar 2021 12:14:41 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 12FGD7XF030890;
+        Tue, 16 Mar 2021 01:13:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 12FGD7XF030890
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615824788;
+        bh=S3/ZJqs3oYqCsCN9gt+RIQZZsklAqK8OVlEl3S2Jwx4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RcYj/4XDc0hmNx6rgD/fARIVJJQQ7Od9DW2/BDlnuKToZJFZxh/b/yMqJQOMsc2+n
+         /MQUYlhoQjbF6pcjc8dFzX2W5uxOyHzWQjQFByCqrcr5rw1bq1Kx8s+mjy6ty9Qy7s
+         GjVNEotsP5+7VTL1zKOvQ6QMRSdTcZmfjHQWM0OdkfOstzU6xKX0/JmZAxqQwxemf0
+         fJPM5SnaPTvrYFsUTHXZ+MN3Fd4WsRxZPRc80Y/Y8XXlfw/bG1tvc7OTIj2RH/ZH/u
+         KxWYSrXtGLqkpVFDBQ8FofASNUkFI1KlkcZwJ4DLNM233tKDhgdFDNOLG+o5/6B0UA
+         mXkZ2wVFyXrrQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] kbuild: collect minimum tool versions into scripts/min-tool-version.sh
+Date:   Tue, 16 Mar 2021 01:12:55 +0900
+Message-Id: <20210315161257.788477-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernel build uses various tools, many of which are provided by the
+same software suite, for example, LLVM and Binutils.
 
-The INTEL_FAM6 list has become a mess again. Try and bring some sanity
-back into it.
+When you raise the minimum version of Clang/LLVM, you need to update
+clang_min_version in scripts/cc-version.sh and also lld_min_version in
+scripts/ld-version.sh.
 
-Where previously we had one microarch per year and a number of SKUs
-within that, this no longer seems to be the case. We now get dfferent
-uarch names that share a 'core' design.
+Kbuild can handle CC=clang and LD=ld.lld independently, but it does not
+make much sense to maintain their versions separately.
 
-Add the core name starting at skylake and reorder to keep the cores in
-chronological order. Furthermore, Intel marketed the names {Amber,
-Coffee, Whiskey} Lake, but those are in fact steppings of Kaby Lake, add
-comments for them.
+Let's create a central place of minimum tool versions so you do not need
+to touch multiple files. scripts/min-tool-version.sh prints the minimum
+version of the given tool.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 ---
-Note: we don't seem to have CANNONLAKE perf support.
 
- arch/x86/include/asm/intel-family.h | 50 +++++++++++++++++++++----------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+Changes in v2:
+  - Use case ... esac
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index 9abe842dbd84..b15262f1f645 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -32,7 +32,9 @@
-  *		_EP	- 2 socket server parts
-  *		_EX	- 4+ socket server parts
-  *
-- * The #define line may optionally include a comment including platform names.
-+ * The #define line may optionally include a comment including platform or core
-+ * names. An exception is made for kabylake where steppings seem to have gotten
-+ * their own names :-(
-  */
+ scripts/cc-version.sh       | 20 +++++--------------
+ scripts/ld-version.sh       | 11 ++++-------
+ scripts/min-tool-version.sh | 39 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 48 insertions(+), 22 deletions(-)
+ create mode 100755 scripts/min-tool-version.sh
+
+diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
+index 3f2ee885b116..f1952c522466 100755
+--- a/scripts/cc-version.sh
++++ b/scripts/cc-version.sh
+@@ -6,18 +6,6 @@
  
- /* Wildcard match for FAM6 so X86_MATCH_INTEL_FAM6_MODEL(ANY) works */
-@@ -69,35 +71,39 @@
- #define INTEL_FAM6_BROADWELL_X		0x4F
- #define INTEL_FAM6_BROADWELL_D		0x56
+ set -e
  
--#define INTEL_FAM6_SKYLAKE_L		0x4E
--#define INTEL_FAM6_SKYLAKE		0x5E
--#define INTEL_FAM6_SKYLAKE_X		0x55
--#define INTEL_FAM6_KABYLAKE_L		0x8E
--#define INTEL_FAM6_KABYLAKE		0x9E
-+#define INTEL_FAM6_SKYLAKE_L		0x4E	/* Sky Lake             */
-+#define INTEL_FAM6_SKYLAKE		0x5E	/* Sky Lake             */
-+#define INTEL_FAM6_SKYLAKE_X		0x55	/* Sky Lake             */
+-# When you raise the minimum compiler version, please update
+-# Documentation/process/changes.rst as well.
+-gcc_min_version=4.9.0
+-clang_min_version=10.0.1
+-icc_min_version=16.0.3 # temporary
+-
+-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+-# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+-if [ "$SRCARCH" = arm64 ]; then
+-	gcc_min_version=5.1.0
+-fi
+-
+ # Print the compiler name and some version components.
+ get_compiler_info()
+ {
+@@ -48,18 +36,20 @@ set -- $(get_compiler_info "$@")
  
--#define INTEL_FAM6_CANNONLAKE_L		0x66
-+#define INTEL_FAM6_KABYLAKE_L		0x8E	/* Sky Lake             */
-+/*                 AMBERLAKE_L		0x8E	   Sky Lake -- s: 9     */
-+/*                 COFFEELAKE_L		0x8E	   Sky Lake -- s: 10    */
-+/*                 WHISKEYLAKE_L	0x8E       Sky Lake -- s: 11,12 */
+ name=$1
  
--#define INTEL_FAM6_ICELAKE_X		0x6A
--#define INTEL_FAM6_ICELAKE_D		0x6C
--#define INTEL_FAM6_ICELAKE		0x7D
--#define INTEL_FAM6_ICELAKE_L		0x7E
--#define INTEL_FAM6_ICELAKE_NNPI		0x9D
-+#define INTEL_FAM6_KABYLAKE		0x9E	/* Sky Lake             */
-+/*                 COFFEELAKE		0x9E	   Sky Lake -- s: 10-13 */
- 
--#define INTEL_FAM6_TIGERLAKE_L		0x8C
--#define INTEL_FAM6_TIGERLAKE		0x8D
-+#define INTEL_FAM6_COMETLAKE		0xA5	/* Sky Lake             */
-+#define INTEL_FAM6_COMETLAKE_L		0xA6	/* Sky Lake             */
- 
--#define INTEL_FAM6_COMETLAKE		0xA5
--#define INTEL_FAM6_COMETLAKE_L		0xA6
-+#define INTEL_FAM6_CANNONLAKE_L		0x66	/* Palm Cove */
- 
--#define INTEL_FAM6_ROCKETLAKE		0xA7
-+#define INTEL_FAM6_ICELAKE_X		0x6A	/* Sunny Cove */
-+#define INTEL_FAM6_ICELAKE_D		0x6C	/* Sunny Cove */
-+#define INTEL_FAM6_ICELAKE		0x7D	/* Sunny Cove */
-+#define INTEL_FAM6_ICELAKE_L		0x7E	/* Sunny Cove */
-+#define INTEL_FAM6_ICELAKE_NNPI		0x9D	/* Sunny Cove */
- 
--#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F
-+#define INTEL_FAM6_LAKEFIELD		0x8A	/* Sunny Cove / Tremont */
- 
--/* Hybrid Core/Atom Processors */
-+#define INTEL_FAM6_ROCKETLAKE		0xA7	/* Cypress Cove */
- 
--#define	INTEL_FAM6_LAKEFIELD		0x8A
--#define INTEL_FAM6_ALDERLAKE		0x97
--#define INTEL_FAM6_ALDERLAKE_L		0x9A
-+#define INTEL_FAM6_TIGERLAKE_L		0x8C	/* Willow Cove */
-+#define INTEL_FAM6_TIGERLAKE		0x8D	/* Willow Cove */
-+#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F	/* Willow Cove */
++min_tool_version=$(dirname $0)/min-tool-version.sh
 +
-+#define INTEL_FAM6_ALDERLAKE		0x97	/* Golden Cove / Gracemont */
-+#define INTEL_FAM6_ALDERLAKE_L		0x9A	/* Golden Cove / Gracemont */
+ case "$name" in
+ GCC)
+ 	version=$2.$3.$4
+-	min_version=$gcc_min_version
++	min_version=$($min_tool_version gcc)
+ 	;;
+ Clang)
+ 	version=$2.$3.$4
+-	min_version=$clang_min_version
++	min_version=$($min_tool_version llvm)
+ 	;;
+ ICC)
+ 	version=$(($2 / 100)).$(($2 % 100)).$3
+-	min_version=$icc_min_version
++	min_version=$($min_tool_version icc)
+ 	;;
+ *)
+ 	echo "$orig_args: unknown compiler" >&2
+diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+index 1bf3aadde9de..a78b804b680c 100755
+--- a/scripts/ld-version.sh
++++ b/scripts/ld-version.sh
+@@ -6,11 +6,6 @@
  
- /* "Small Core" Processors (Atom) */
+ set -e
  
+-# When you raise the minimum linker version, please update
+-# Documentation/process/changes.rst as well.
+-bfd_min_version=2.23.0
+-lld_min_version=10.0.1
+-
+ # Convert the version string x.y.z to a canonical 5 or 6-digit form.
+ get_canonical_version()
+ {
+@@ -35,10 +30,12 @@ set -- $(LC_ALL=C "$@" --version)
+ IFS=' '
+ set -- $1
+ 
++min_tool_version=$(dirname $0)/min-tool-version.sh
++
+ if [ "$1" = GNU -a "$2" = ld ]; then
+ 	shift $(($# - 1))
+ 	version=$1
+-	min_version=$bfd_min_version
++	min_version=$($min_tool_version binutils)
+ 	name=BFD
+ 	disp_name="GNU ld"
+ elif [ "$1" = GNU -a "$2" = gold ]; then
+@@ -51,7 +48,7 @@ else
+ 
+ 	if [ "$1" = LLD ]; then
+ 		version=$2
+-		min_version=$lld_min_version
++		min_version=$($min_tool_version llvm)
+ 		name=LLD
+ 		disp_name=LLD
+ 	else
+diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+new file mode 100755
+index 000000000000..d22cf91212b0
+--- /dev/null
++++ b/scripts/min-tool-version.sh
+@@ -0,0 +1,39 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Print the minimum supported version of the given tool.
++# When you raise the minimum version, please update
++# Documentation/process/changes.rst as well.
++
++set -e
++
++if [ $# != 1 ]; then
++	echo "Usage: $0 toolname" >&2
++	exit 1
++fi
++
++case "$1" in
++binutils)
++	echo 2.23.0
++	;;
++gcc)
++	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
++	# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
++	if [ "$SRCARCH" = arm64 ]; then
++		echo 5.1.0
++	else
++		echo 4.9.0
++	fi
++	;;
++icc)
++	# temporary
++	echo 16.0.3
++	;;
++llvm)
++	echo 10.0.1
++	;;
++*)
++	echo "$1: unknown tool" >&2
++	exit 1
++	;;
++esac
+-- 
+2.27.0
+
