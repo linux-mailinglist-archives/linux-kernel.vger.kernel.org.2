@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBBC33AD80
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCB233AD91
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhCOIcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:32:03 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:51006 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhCOIb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:31:29 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 46E0C203140;
-        Mon, 15 Mar 2021 09:31:27 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E2FB4201336;
-        Mon, 15 Mar 2021 09:31:22 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5328D40291;
-        Mon, 15 Mar 2021 09:31:17 +0100 (CET)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     abel.vesa@nxp.com, shawnguo@kernel.org, ping.bai@nxp.com
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] clk: imx8mq: Correct the pcie1 sels
-Date:   Mon, 15 Mar 2021 16:17:48 +0800
-Message-Id: <1615796268-9011-2-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615796268-9011-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1615796268-9011-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229601AbhCOIeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhCOIdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:33:49 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008C1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:33:48 -0700 (PDT)
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eaff:9701:b4db:50a7:6f83:328f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 8FD461DDFE8;
+        Mon, 15 Mar 2021 09:25:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1615796719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FZ56iwiiZoD3tUjDSEOTnYxVXn0KyETY3D2NjRBz+jE=;
+        b=mMYMO2EYhs5QLe5fJKtfgbmJHf/G196OZ7SK1iGzW0Fba1AT+0oQ5XqgB6OZn36/qICzZG
+        hyb3RTfwV5nRLfHbOzJpa1r4iVwmasJRr4kU5C9f4D6x3HTUE/gMhI3fAckgxNdvrjzh78
+        fvM2P6e9/Vk1aLe9ErmnHFu0PFidMCdnObwuRgTBtm+2UA+u1SKFBhZ9Z27P0FQuJpv3vv
+        8fuMOju/0zjiWfoUFt3dYph50wYmFLLS7H+ob9LSTXwPXrdFvthoVnZb8Yom6lqdhC3BeH
+        tzNh8fGA+dMMJc1VFIQD3ET2/SK56fkE5HUA/cLTjj8SB7s7EXzNvVbeaKhHJA==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>,
+        Bert Vermeulen <bert@biot.com>
+Subject: [PATCH 0/2] Add Realtek Otto GPIO support
+Date:   Mon, 15 Mar 2021 09:23:38 +0100
+Message-Id: <20210315082339.9787-1-sander@svanheule.net>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- The sys2_pll_50m should be one of the clock sels of PCIE_AUX clock.
-Change the sys2_pll_500m to sys2_pll_50m.
-- Correct one mis-spell of the imx8mq_pcie1_ctrl_sels definition, from
-"sys2_pll_250m" to "sys2_pll_333m".
+Add support for the GPIO controller employed by Realtek in multiple series of
+MIPS SoCs. These include the supported RTL838x and RTL839x series.
+The register layout also matches the one found in GPIO controllers of
+other (Lexra-based) SoCs such as RTL8196E, RTL8197D, and RTL8197F.
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/clk/imx/clk-imx8mq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+For the platform name 'otto', I am not aware of any official resources as to
+what hardware this specifically applies to. However, in all of the GPL archives
+we've received, from vendors using compatible SoCs in their design, the
+platform under the MIPS architecture is referred to by this name.
 
-diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
-index 4dd4ae9d022b..c66c196f396c 100644
---- a/drivers/clk/imx/clk-imx8mq.c
-+++ b/drivers/clk/imx/clk-imx8mq.c
-@@ -113,12 +113,12 @@ static const char * const imx8mq_disp_dtrc_sels[] = {"osc_25m", "vpu_pll_out", "
- static const char * const imx8mq_disp_dc8000_sels[] = {"osc_25m", "vpu_pll_out", "sys1_pll_800m", "sys2_pll_1000m", "sys1_pll_160m", "sys2_pll_100m", "sys3_pll_out", "audio_pll2_out", };
- 
- static const char * const imx8mq_pcie1_ctrl_sels[] = {"osc_25m", "sys2_pll_250m", "sys2_pll_200m", "sys1_pll_266m",
--					       "sys1_pll_800m", "sys2_pll_500m", "sys2_pll_250m", "sys3_pll_out", };
-+					       "sys1_pll_800m", "sys2_pll_500m", "sys2_pll_333m", "sys3_pll_out", };
- 
- static const char * const imx8mq_pcie1_phy_sels[] = {"osc_25m", "sys2_pll_100m", "sys2_pll_500m", "clk_ext1", "clk_ext2",
- 					      "clk_ext3", "clk_ext4", };
- 
--static const char * const imx8mq_pcie1_aux_sels[] = {"osc_25m", "sys2_pll_200m", "sys2_pll_500m", "sys3_pll_out",
-+static const char * const imx8mq_pcie1_aux_sels[] = {"osc_25m", "sys2_pll_200m", "sys2_pll_50m", "sys3_pll_out",
- 					      "sys2_pll_100m", "sys1_pll_80m", "sys1_pll_160m", "sys1_pll_200m", };
- 
- static const char * const imx8mq_dc_pixel_sels[] = {"osc_25m", "video_pll1_out", "audio_pll2_out", "audio_pll1_out", "sys1_pll_800m", "sys2_pll_1000m", "sys3_pll_out", "clk_ext4", };
+The GPIO ports have been tested on a Zyxel GS1900-8 (RTL8380M), and
+Zyxel GS1900-48 (RTL8393M). Furthermore, the GPIO ports and interrupt
+controller have been tested on a Netgear GS110TPPv1 (RTL8381M).
+
+Sander Vanheule (2):
+  dt-bindings: gpio: Binding for Realtek Otto GPIO
+  gpio: Add Realtek Otto GPIO support
+
+ .../bindings/gpio/gpio-realtek-otto.yaml      |  80 +++++
+ drivers/gpio/Kconfig                          |  12 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-realtek-otto.c              | 320 ++++++++++++++++++
+ 4 files changed, 413 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-realtek-otto.yaml
+ create mode 100644 drivers/gpio/gpio-realtek-otto.c
+
 -- 
-2.17.1
+2.30.2
 
