@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D9833AB4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E070A33AB55
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhCOFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 01:54:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47198 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhCOFyo (ORCPT
+        id S229699AbhCOF43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 01:56:29 -0400
+Received: from www381.your-server.de ([78.46.137.84]:56206 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhCOFz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 01:54:44 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12F5sTrL045733;
-        Mon, 15 Mar 2021 00:54:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615787669;
-        bh=yxTzeyuJ1u64hRuS0S+cMJtTYAD67t7PxhEhg06Gyvk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=cR76ZBixRK2EIqS93rWlL2mwXhnuKcgA3lDW4/mkVrm1qY4jVb9wKr70AWDe5+pj4
-         UihI0QUXT9rPPmw2VWzqBU+wUy/usjQN05pUa4COAL9MtBVoyBFiXIr2cPFmWkf6Wj
-         oUtE8GSRFQv+8v4zZq0Q457Cb2fSsIlyNwRD0dw8=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12F5sTWb091893
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 15 Mar 2021 00:54:29 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
- Mar 2021 00:54:29 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 15 Mar 2021 00:54:29 -0500
-Received: from [10.250.235.121] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12F5sPZK079162;
-        Mon, 15 Mar 2021 00:54:26 -0500
-Subject: Re: [PATCH v2 0/2] AM64: Add USB support
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210310112758.1982-1-a-govindraju@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <b6a4609e-3b62-fd92-bdb7-ce7c0db1a73c@ti.com>
-Date:   Mon, 15 Mar 2021 11:24:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 15 Mar 2021 01:55:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=IkS7ZuA8VoKHngBBwqAzIVCXTQiYiHJGfANbczzqcLE=; b=UDczlLy35ac1fu1ljGMSRYoN2S
+        +9sL9QhBPmqp5KcQYespc0HPIdXWwYCzEtJJZwEs3lsM+VWz3MdQI86iBxSEn9zXWIsOPYr8b+rJy
+        cFse3+Btd5GGu6ckDf1ZFM/5AQHUVVsBTGG6u7xL0ZShajT4Bboabwm/Qt11HpfD32w2o/P/HdH+O
+        mgeMW566navEw7mr6GA8szputEE+mZgDC8j6OTKSadu+dPJhQxa5c1jpLP0Fym25H5hEh4IarYQA7
+        ssBSiXNT/4c7wxF+aIUee1FPhym6894dzRpAT1IAb2MnH3oQQiNlneEwjqUQcuoy7cP6Ot3si1xba
+        pHTx0dVQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lLgCn-00030V-QM; Mon, 15 Mar 2021 06:55:53 +0100
+Received: from [2001:a61:2aea:a901:9e5c:8eff:fe01:8578]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lLgCn-000N93-KS; Mon, 15 Mar 2021 06:55:53 +0100
+Subject: Re: [PATCH v2] iio:dac:max517.c: Use devm_iio_device_register()
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        ardeleanalex@gmail.com, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210314093356.10609-1-dmugil2000@gmail.com>
+ <20210314175709.34301-1-dmugil2000@gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <707e5ff3-c38a-c0fe-e6b9-1e054cc46606@metafoo.de>
+Date:   Mon, 15 Mar 2021 06:55:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210310112758.1982-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20210314175709.34301-1-dmugil2000@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26108/Sun Mar 14 13:05:46 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/14/21 6:57 PM, Mugilraj Dhavachelvan wrote:
+> Use devm_iio_device_register() to avoid remove function and
+> drop explicit call to iio_device_unregister().
+>
+> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+>
+> changes v1->v2:
+> 	-As sugested by Alexandru removed i2c_set_clientdata() because the stored
+> 	 data will be never used.
+
+Hi,
+
+This looks good!
+
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+
+One thing process wise. I know it is tempting to send version 2 as a 
+reply to version 1, but this way it is also easy for the messages to get 
+lost in longer threads. At least for the IIO mailinglist we have decided 
+that it is best to send new versions of a patch series as their own 
+threads so that they stand own and get noticed.
+
+- Lars
+
+> ---
+>   drivers/iio/dac/max517.c | 10 +---------
+>   1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/drivers/iio/dac/max517.c b/drivers/iio/dac/max517.c
+> index 7e01838ef4d0..00f0062a0298 100644
+> --- a/drivers/iio/dac/max517.c
+> +++ b/drivers/iio/dac/max517.c
+> @@ -153,7 +153,6 @@ static int max517_probe(struct i2c_client *client,
+>   	if (!indio_dev)
+>   		return -ENOMEM;
+>   	data = iio_priv(indio_dev);
+> -	i2c_set_clientdata(client, indio_dev);
+>   	data->client = client;
+>   
+>   	/* establish that the iio_dev is a child of the i2c device */
+> @@ -189,13 +188,7 @@ static int max517_probe(struct i2c_client *client,
+>   			data->vref_mv[chan] = platform_data->vref_mv[chan];
+>   	}
+>   
+> -	return iio_device_register(indio_dev);
+> -}
+> -
+> -static int max517_remove(struct i2c_client *client)
+> -{
+> -	iio_device_unregister(i2c_get_clientdata(client));
+> -	return 0;
+> +	return devm_iio_device_register(&client->dev, indio_dev);
+>   }
+>   
+>   static const struct i2c_device_id max517_id[] = {
+> @@ -214,7 +207,6 @@ static struct i2c_driver max517_driver = {
+>   		.pm	= &max517_pm_ops,
+>   	},
+>   	.probe		= max517_probe,
+> -	.remove		= max517_remove,
+>   	.id_table	= max517_id,
+>   };
+>   module_i2c_driver(max517_driver);
 
 
-On 10/03/21 4:57 pm, Aswath Govindraju wrote:
-> The following series of patches, add USB support for AM642 evm.
-> 
-> USB test logs,
-> https://pastebin.ubuntu.com/p/Qrbb7SGv8N/
-> 
-> Changes since v1:
-> - Rebased the patches on top of ti-k3-dts-next
-> - Added test logs
-
-Would prefer simple data transfer tests in the log but other than that
-for the patches itself
-
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-> 
-> Aswath Govindraju (2):
->   arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
->   arm64: dts: ti: k3-am642-evm: Add USB support
-> 
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
->  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
