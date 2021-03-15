@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10D733B34A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D658D33B34F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhCONGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:06:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34930 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhCONGg (ORCPT
+        id S229889AbhCONHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhCONHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:06:36 -0400
-Date:   Mon, 15 Mar 2021 13:06:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615813595;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmEUMC1Chi8vr697S3PnQ6o1wes6jaRKnUR7MvTS0to=;
-        b=q2X9NLmWjdXmr6N/CXFpfC4i1xDBaZ4RT/k1x6eVV+UT0fCwHj5eXrhWPHszkBBMcErBSx
-        6mie7ZM4tJJVgeL0byymNeq+Fvx9NrqJ9+A3McDi0TzJ03Kj4j8iGrh2R6KsVyEhJfe1PD
-        5r+I6mx7PrWwwfmuJZ0yppZo7eZzFYIfFzKwWQiqxmZJs3JfgWoJ5COsBV0nw6fsn0vlZ7
-        UuBKkX+xkr8vT9tXllsWq9Dqvcf6IB5dqINoBO6y8QTMiP93qOcJf4Ri4S+grlR4DqapF6
-        DD6U5rlVUMMpxx5U13NlOfX++i6jmzFX7nH79g2i1RjhB9aRAuZQqYUac/AdrQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615813595;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmEUMC1Chi8vr697S3PnQ6o1wes6jaRKnUR7MvTS0to=;
-        b=KiApcbFPOs8dMQMpAdUFxM1tOVPIccXYi1ZrUGtnAnA8J83NsGgRraQBBUqW0uYTO0tyNh
-        LyP05xZ6ULOSHrBA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] tools/x86/kcpuid: Add AMD Secure Encryption leaf
-Cc:     Borislav Petkov <bp@suse.de>, Feng Tang <feng.tang@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210313140118.17010-1-bp@alien8.de>
-References: <20210313140118.17010-1-bp@alien8.de>
+        Mon, 15 Mar 2021 09:07:37 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7C0C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:07:37 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id g14so7670740qvn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IM3zY04AmOlCtvAVnSd9iG5x1ewD+6ByijIwRWgL5V8=;
+        b=BnYqxhM866S7OSAVje66mLcPnSbKq7XImiRkeGfZno3pjvUPnBR1MrMA6PinWYBy8M
+         sQFlHjlzpygxq21VMvPDvfuEwdyEwNqhlhFPJS7qUSJQzOEzQ7Ci0xafNzFFmVmWzc9f
+         fftSeKpcP7DJ4/SPdSpB5X1H/wCZwAFYJHD0cHhdBs6GMEVCw5XdluJhJ2twOeRlKsWo
+         6oLJXmXOnA/CyGjDKmRHpb0KjxJzb3wwMk0cDl/pv0Bq6Sgsr4MNNsxaffg3TxdXza01
+         OTCum00SOZT2gC+PZfH5cihdqejRaIbFRS9wFRZMIA5wN8uZo4a3s2EFyZysRWK/m8ew
+         c1hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IM3zY04AmOlCtvAVnSd9iG5x1ewD+6ByijIwRWgL5V8=;
+        b=De20C+1FxICM0HyidIxafjW1hETy3y6Hcx27nYiZ+xirFDzyi3e71fDVMqGYjwq+kg
+         ISz9gz+I/L5+OUJt6dqyJGXzSZ1j+QJ997lDUqPlbqYu9pG0rM8T5I/PlZeV2vJDUY2m
+         mxB8l6pheIN/BAklckGUaya5d3n2PwHShpUbEYgOhvcBY3mTwkJAqrpPWU7Bk+IfJn9q
+         ovA+ZpfmjTvv48OtjHVPVMVaY+2vkAW0Yuv+tUaR8WW1N/OFbhsBPZTWj7qT3da28K3u
+         avqUmDKDjbA8KcWKaWlSwR74zuhHx24EOwh1ZqV6s/R4TUSIeyX8+glTXikpw2MuSP+P
+         9jTg==
+X-Gm-Message-State: AOAM5329oTOGCK34cC52gM7bywzfWDxKTHi3G0sFUWFHaxCrTejUVA3o
+        SA2GhZyWKBbnAvFtpYNVa0MXyFr2NJCHqnsGOUOozg==
+X-Google-Smtp-Source: ABdhPJwJbYDM4vf8RRkgFjAw/ezp5E66jTEphKKfCiWUo2N3D3fQbX/zuAV4uxWssANVFHhV8Z2wCW6vutN8X3C2YCU=
+X-Received: by 2002:a05:6214:326:: with SMTP id j6mr10679488qvu.13.1615813656317;
+ Mon, 15 Mar 2021 06:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <161581359465.398.1247628750440397555.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
+ <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
+In-Reply-To: <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 15 Mar 2021 14:07:23 +0100
+Message-ID: <CACT4Y+b8cNr1zv=RFPLXf9vY==BSktM1vb9gOfcWyBEaojZ1-A@mail.gmail.com>
+Subject: Re: NULL deref in integrity_inode_get
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On Mon, Mar 15, 2021 at 1:41 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> Hi Dmitry,
+>
+> On Mon, 2021-03-15 at 11:58 +0100, Dmitry Vyukov wrote:
+> > Hi,
+> >
+> > I am trying to boot 5.12-rc3 with this config:
+> > https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
+> >
+> > in qemu:
+> > qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
+> > max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
+> > wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
+> >  -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
+> >    -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
+> > nic,model=virtio-net-pci   -object
+> > memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
+> >   -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
+> > root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
+> > panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
+> > vm_pid -m 2G -cpu host
+> >
+> > But it crashes on NULL deref in integrity_inode_get during boot:
+> >
+> > Run /sbin/init as init process
+> > BUG: kernel NULL pointer dereference, address: 000000000000001c
+> > #PF: supervisor read access in kernel mode
+> > #PF: error_code(0x0000) - not-present page
+> > PGD 0 P4D 0
+> > Oops: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+> > RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
+> > Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
+> > 3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
+> > 1c 4cf
+> > RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
+> > RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
+> > RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
+> > R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
+> > R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
+> > FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > PKRU: 55555554
+> > Call Trace:
+> >  integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
+> >  process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
+> >  ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
+> >  security_bprm_check+0x7d/0xa0 security/security.c:845
+> >  search_binary_handler fs/exec.c:1708 [inline]
+> >  exec_binprm fs/exec.c:1761 [inline]
+> >  bprm_execve fs/exec.c:1830 [inline]
+> >  bprm_execve+0x764/0x19a0 fs/exec.c:1792
+> >  kernel_execve+0x370/0x460 fs/exec.c:1973
+> >  try_to_run_init_process+0x14/0x4e init/main.c:1366
+> >  kernel_init+0x11d/0x1b8 init/main.c:1477
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> > Modules linked in:
+> > CR2: 000000000000001c
+> > ---[ end trace 22d601a500de7d79 ]---
+>
+> It looks like integrity_inode_get() fails to alloc memory.   Only on
+> failure to verify the integrity of a file would an error be returned.
+> I think that is what you would want to happen.  Without an "appraise"
+> policy, this shouldn't happen.
 
-Commit-ID:     2d4177c01b4e7496c7d47b31865f8c85bffb3604
-Gitweb:        https://git.kernel.org/tip/2d4177c01b4e7496c7d47b31865f8c85bffb3604
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Sat, 13 Mar 2021 14:56:16 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 15 Mar 2021 14:01:25 +01:00
-
-tools/x86/kcpuid: Add AMD Secure Encryption leaf
-
-Add the 0x8000001f leaf's fields.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lkml.kernel.org/r/20210313140118.17010-1-bp@alien8.de
----
- tools/arch/x86/kcpuid/cpuid.csv | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
-index f4a5b85..dd94c07 100644
---- a/tools/arch/x86/kcpuid/cpuid.csv
-+++ b/tools/arch/x86/kcpuid/cpuid.csv
-@@ -378,3 +378,13 @@
- 0x80000008,    0,  EAX,    7:0, phy_adr_bits, Physical Address Bits
- 0x80000008,    0,  EAX,   15:8, lnr_adr_bits, Linear Address Bits
- 0x80000007,    0,  EBX,      9, wbnoinvd, WBNOINVD
-+
-+# 8000001F: AMD Secure Encryption
-+0x8000001F,	0, EAX, 0, sme,	Secure Memory Encryption
-+0x8000001F,	0, EAX, 1, sev,	Secure Encrypted Virtualization
-+0x8000001F,	0, EAX, 2, vmpgflush, VM Page Flush MSR
-+0x8000001F,	0, EAX, 3, seves, SEV Encrypted State
-+0x8000001F,	0, EBX, 5:0, c-bit, Page table bit number used to enable memory encryption
-+0x8000001F,	0, EBX, 11:6, mem_encrypt_physaddr_width, Reduction of physical address space in bits with SME enabled
-+0x8000001F,	0, ECX, 31:0, num_encrypted_guests, Maximum ASID value that may be used for an SEV-enabled guest
-+0x8000001F,	0, EDX, 31:0, minimum_sev_asid, Minimum ASID value that must be used for an SEV-enabled, SEV-ES-disabled guest
+It happens at the very boot. I think the cache is NULL.
