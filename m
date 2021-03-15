@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DF133C882
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2293533C887
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhCOVe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232981AbhCOVd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:33:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 284D064F37;
-        Mon, 15 Mar 2021 21:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1615844037;
-        bh=PiOdIRfh5JF1oWZaCo8Qfv/rudcJe097U45aNhFQGME=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0AqCdwOpDTjZY8SdduINB81Nj55YiNDb4N7gNvZZFukeCqV+weylXPdSY5JhCMr9c
-         C9XZC0TGsWG6w+urAyq4W8jPmlNkMR1Y6dp6piiWhatCAcIrrrxM35/EkMPUBK4VHq
-         e/M6PL4lj6Mn8C5WkM5r6HSOqBshYzSgXsG8u4w4=
-Date:   Mon, 15 Mar 2021 14:33:56 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
-Message-Id: <20210315143356.ce87a0be2b4b2a273d6c49b9@linux-foundation.org>
-In-Reply-To: <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
-References: <20210313212528.2956377-1-linux@rasmusvillemoes.dk>
-        <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232912AbhCOVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:36:34 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41514 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhCOVgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 17:36:05 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C7458316;
+        Mon, 15 Mar 2021 22:36:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615844164;
+        bh=OKXwsoWOva8CxqYRDjKdME5vOD+J25qkJxxU4SMQlRw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TT5z+dzqbN+kSqrKB4gPE0Q36f1t7Otr+QqkcU3YWh1gUCJS3UqC50BCLAduEqMnf
+         cRiiOY/G+dWXKGGiJiFLexDZTGjPlQmJAaVrH4vwTC3OGSv/ogWqIhg4k/pUSlQbP2
+         yMqU2+svWPz8ToXvmHnQThMKOm2Jru96O5JKsWPo=
+Date:   Mon, 15 Mar 2021 23:35:28 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 01/18] media: i2c: rdamc21: Fix warning on u8 cast
+Message-ID: <YE/TICclRHGaf8be@pendragon.ideasonboard.com>
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-2-jacopo+renesas@jmondi.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210315131512.133720-2-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 22:25:27 +0100 Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+Hi Jacopo,
 
-> Most of the boot process doesn't actually need anything from the
-> initramfs, until of course PID1 is to be executed. So instead of doing
-> the decompressing and populating of the initramfs synchronously in
-> populate_rootfs() itself, push that off to a worker thread.
-> 
-> This is primarily motivated by an embedded ppc target, where unpacking
-> even the rather modest sized initramfs takes 0.6 seconds, which is
-> long enough that the external watchdog becomes unhappy that it doesn't
-> get attention soon enough. By doing the initramfs decompression in a
-> worker thread, we get to do the device_initcalls and hence start
-> petting the watchdog much sooner.
-> 
-> Normal desktops might benefit as well. On my mostly stock Ubuntu
-> kernel, my initramfs is a 26M xz-compressed blob, decompressing to
-> around 126M. That takes almost two seconds:
-> 
-> [    0.201454] Trying to unpack rootfs image as initramfs...
-> [    1.976633] Freeing initrd memory: 29416K
-> 
-> Before this patch, these lines occur consecutively in dmesg. With this
-> patch, the timestamps on these two lines is roughly the same as above,
-> but with 172 lines inbetween - so more than one cpu has been kept busy
-> doing work that would otherwise only happen after the
-> populate_rootfs() finished.
-> 
-> Should one of the initcalls done after rootfs_initcall time (i.e.,
-> device_ and late_ initcalls) need something from the initramfs (say, a
-> kernel module or a firmware blob), it will simply wait for the
-> initramfs unpacking to be done before proceeding, which should in
-> theory make this completely safe.
-> 
-> But if some driver pokes around in the filesystem directly and not via
-> one of the official kernel interfaces (i.e. request_firmware*(),
-> call_usermodehelper*) that theory may not hold - also, I certainly
-> might have missed a spot when sprinkling wait_for_initramfs(). So
-> there is an escape hatch in the form of an initramfs_async= command
-> line parameter.
+Thank you for the patch.
 
-This seems sensible.  And nice.
+On Mon, Mar 15, 2021 at 02:14:55PM +0100, Jacopo Mondi wrote:
+> Sparse reports a warning on a cast to u8 of a 16 bits constant.
+> 
+> drivers/media/i2c/rdacm21.c:348:62: warning: cast truncates bits
+> from constant value (300a becomes a)
+> 
+> Even if the behaviour is intended, silence the sparse warning replacing
+> the cast with a bitwise & operation.
+> 
+> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Are you sure that you've found all the code paths that require that
-initramfs be ready?  You have one in init/main, one in the bowels of
-the firmware loader and one in UML.  How do we know that there are no
-other such places?
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Also, all this doesn't buy anything for uniprocessor machines.  Is
-there a simple way of making it all go away if !CONFIG_SMP?
+> ---
+>  drivers/media/i2c/rdacm21.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index dcc21515e5a4..179d107f494c 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -345,7 +345,7 @@ static int ov10640_initialize(struct rdacm21_device *dev)
+>  	/* Read OV10640 ID to test communications. */
+>  	ov490_write_reg(dev, OV490_SCCB_SLAVE0_DIR, OV490_SCCB_SLAVE_READ);
+>  	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_HIGH, OV10640_CHIP_ID >> 8);
+> -	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, (u8)OV10640_CHIP_ID);
+> +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, OV10640_CHIP_ID & 0xff);
+>  
+>  	/* Trigger SCCB slave transaction and give it some time to complete. */
+>  	ov490_write_reg(dev, OV490_HOST_CMD, OV490_HOST_CMD_TRIGGER);
 
+-- 
+Regards,
+
+Laurent Pinchart
