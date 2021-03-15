@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703B733BC03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BC733BC43
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237876AbhCOOWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
+        id S229872AbhCOOYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhCOOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95CF664F3D;
-        Mon, 15 Mar 2021 13:59:41 +0000 (UTC)
+        id S232836AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E3164F26;
+        Mon, 15 Mar 2021 13:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816782;
-        bh=BvxI0wRfFYOh1MeCP2HjwsswuL8Ryk2SyyE2OFOKivY=;
+        s=korg; t=1615816783;
+        bh=vLurVrrrwyChHe5fVfuDmI4OBPbtMESKyA6XtpQN/5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C58ja9MsqsRKBXaEQGSwI4bSHuKR6By9ZPNqs++JRrkYuxkjgcSbK5Rv4sUZkJQJg
-         dvKWR78LeS55KsjYoY49jYvNejGyM5qytPaElhuGXBRys3fhSg4Km6QmOVnEE7aK8J
-         1cnzc0GauXlU8NUYY6mY3gO8goGshQcW+0y2gfC4=
+        b=vKcW1fgpM6aLneQBcCN1/LTfLXIQHNmq3HGC0BwG3LeWURyjc7XN9tJzRqLJZHph4
+         54LI+WNyV7lYDcKY1yCEhfZKFUwJuEk6IxLI9Z4j1FRAY3e7Et0sqLUnOFD6wf2aRi
+         cQouM1vSz9qN+BUHgIWsAetGF4j9fDPTBLikU9/w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 064/120] ALSA: usb-audio: Apply the control quirk to Plantronics headsets
-Date:   Mon, 15 Mar 2021 14:56:55 +0100
-Message-Id: <20210315135722.070502447@linuxfoundation.org>
+        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 4.19 065/120] Revert 95ebabde382c ("capabilities: Dont allow writing ambiguous v3 file capabilities")
+Date:   Mon, 15 Mar 2021 14:56:56 +0100
+Message-Id: <20210315135722.100875537@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -40,43 +40,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 06abcb18b3a021ba1a3f2020cbefb3ed04e59e72 upstream.
+commit 3b0c2d3eaa83da259d7726192cf55a137769012f upstream.
 
-Other Plantronics headset models seem requiring the same workaround as
-C320-M to add the 20ms delay for the control messages, too.  Apply the
-workaround generically for devices with the vendor ID 0x047f.
+It turns out that there are in fact userspace implementations that
+care and this recent change caused a regression.
 
-Note that the problem didn't surface before 5.11 just with luck.
-Since 5.11 got a big code rewrite about the stream handling, the
-parameter setup procedure has changed, and this seemed triggering the
-problem more often.
+https://github.com/containers/buildah/issues/3071
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182552
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210304085009.4770-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+As the motivation for the original change was future development,
+and the impact is existing real world code just revert this change
+and allow the ambiguity in v3 file caps.
+
+Cc: stable@vger.kernel.org
+Fixes: 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ security/commoncap.c |   12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1340,10 +1340,10 @@ void snd_usb_ctl_msg_quirk(struct usb_de
- 		msleep(20);
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -506,8 +506,7 @@ int cap_convert_nscap(struct dentry *den
+ 	__u32 magic, nsmagic;
+ 	struct inode *inode = d_backing_inode(dentry);
+ 	struct user_namespace *task_ns = current_user_ns(),
+-		*fs_ns = inode->i_sb->s_user_ns,
+-		*ancestor;
++		*fs_ns = inode->i_sb->s_user_ns;
+ 	kuid_t rootid;
+ 	size_t newsize;
  
- 	/*
--	 * Plantronics C320-M needs a delay to avoid random
--	 * microhpone failures.
-+	 * Plantronics headsets (C320, C320-M, etc) need a delay to avoid
-+	 * random microhpone failures.
- 	 */
--	if (chip->usb_id == USB_ID(0x047f, 0xc025)  &&
-+	if (USB_ID_VENDOR(chip->usb_id) == 0x047f &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		msleep(20);
+@@ -530,15 +529,6 @@ int cap_convert_nscap(struct dentry *den
+ 	if (nsrootid == -1)
+ 		return -EINVAL;
  
+-	/*
+-	 * Do not allow allow adding a v3 filesystem capability xattr
+-	 * if the rootid field is ambiguous.
+-	 */
+-	for (ancestor = task_ns->parent; ancestor; ancestor = ancestor->parent) {
+-		if (from_kuid(ancestor, rootid) == 0)
+-			return -EINVAL;
+-	}
+-
+ 	newsize = sizeof(struct vfs_ns_cap_data);
+ 	nscap = kmalloc(newsize, GFP_ATOMIC);
+ 	if (!nscap)
 
 
