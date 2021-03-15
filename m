@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB92633BE4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5F833BE27
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238794AbhCOOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51322 "EHLO mail.kernel.org"
+        id S237489AbhCOOnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233818AbhCOOEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E89E064F14;
-        Mon, 15 Mar 2021 14:04:04 +0000 (UTC)
+        id S229494AbhCOOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6411664E89;
+        Mon, 15 Mar 2021 14:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817046;
-        bh=VAI+JS20/fut6PfLINwRKqo3fVIlRUWYxvJi9LvGuD4=;
+        s=korg; t=1615817005;
+        bh=wIIcVitSW8NYeM9iSd+AC5hGv/p8vMp9aaRKoOswoyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CqiT+lUUoqjMECW1tAKB2WN/otEIN7mJ1j6FyLJbXbBDedSUoiPg33+zUXovLt3Q8
-         JedE9LUTO9NGDevLqvMiXPNnj0tu796WU1uLwRC9aYDgBzYOLQbEl10/5+oBMY2a/7
-         tul1G1hYN751tF6qRXqd7obza7Vo3CgMO+sSd/yQ=
+        b=wg4JExTZ53fWgYefiLmq/Ex/PqigJLKnXJdypAVnUqFclOH2xw21PoNlQFpR/A3iq
+         cBWyvS+RAeyUcmqz5hLG+BOtWfvmVOor5urZoWG6p5ahzO6ZdvvXmT9hflxbWGi7vi
+         wV3eKLS+1Yg7VG5bF8HxrlAR38r9R79NvYnTggTk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.11 273/306] sched/membarrier: fix missing local execution of ipi_sync_rq_state()
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 243/290] cpufreq: qcom-hw: Fix return value check in qcom_cpufreq_hw_cpu_init()
 Date:   Mon, 15 Mar 2021 14:55:36 +0100
-Message-Id: <20210315135516.889665733@linuxfoundation.org>
+Message-Id: <20210315135550.217702473@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit ce29ddc47b91f97e7f69a0fb7cbb5845f52a9825 upstream.
+[ Upstream commit 536eb97abeba857126ad055de5923fa592acef25 ]
 
-The function sync_runqueues_membarrier_state() should copy the
-membarrier state from the @mm received as parameter to each runqueue
-currently running tasks using that mm.
+In case of error, the function ioremap() returns NULL pointer
+not ERR_PTR(). The IS_ERR() test in the return value check
+should be replaced with NULL test.
 
-However, the use of smp_call_function_many() skips the current runqueue,
-which is unintended. Replace by a call to on_each_cpu_mask().
-
-Fixes: 227a4aadc75b ("sched/membarrier: Fix p->mm->membarrier_state racy load")
-Reported-by: Nadav Amit <nadav.amit@gmail.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org # 5.4.x+
-Link: https://lore.kernel.org/r/74F1E842-4A84-47BF-B6C2-5407DFDD4A4A@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 67fc209b527d ("cpufreq: qcom-hw: drop devm_xxx() calls from init/exit hooks")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/membarrier.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/cpufreq/qcom-cpufreq-hw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -471,9 +471,7 @@ static int sync_runqueues_membarrier_sta
+diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+index 5cdd20e38771..6de07556665b 100644
+--- a/drivers/cpufreq/qcom-cpufreq-hw.c
++++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+@@ -317,9 +317,9 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
  	}
- 	rcu_read_unlock();
  
--	preempt_disable();
--	smp_call_function_many(tmpmask, ipi_sync_rq_state, mm, 1);
--	preempt_enable();
-+	on_each_cpu_mask(tmpmask, ipi_sync_rq_state, mm, true);
+ 	base = ioremap(res->start, resource_size(res));
+-	if (IS_ERR(base)) {
++	if (!base) {
+ 		dev_err(dev, "failed to map resource %pR\n", res);
+-		ret = PTR_ERR(base);
++		ret = -ENOMEM;
+ 		goto release_region;
+ 	}
  
- 	free_cpumask_var(tmpmask);
- 	cpus_read_unlock();
+-- 
+2.30.1
+
 
 
