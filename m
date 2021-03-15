@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A42333C431
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD7F33C43A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbhCORan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:30:43 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44828 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232341AbhCORab (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:30:31 -0400
-X-UUID: a0fdd4afc34a41ba9d67db60143e695c-20210316
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=r9FRBMB1nJgQB9Ktvs2Hm5ModFYF6hmKvuOFmqaVDZY=;
-        b=qRIIXsyi78HDLRPozDRbPgfNSeUL3FO10caPN1G3q7ZRRSdBrmajXULm+zMLDOge2CmtFyZhOzLyRK/rTCX9h4kkjOGhhI1ZWQmaxlmviyplZk+MNr8dvHWupuYKVUe6x6d/42JOUiXuCfEHQwUBgiK6SHXH57xtZCW2ejhQtWA=;
-X-UUID: a0fdd4afc34a41ba9d67db60143e695c-20210316
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1224446361; Tue, 16 Mar 2021 01:30:27 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Mar 2021 01:30:25 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 01:30:25 +0800
-Message-ID: <1615829425.2591.1.camel@mtksdaap41>
-Subject: Re: [PATCH v7 2/4] dt-bindings: spmi: document binding for the
- Mediatek SPMI controller
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, "Rob Herring" <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Stephen Boyd" <sboyd@kernel.org>
-Date:   Tue, 16 Mar 2021 01:30:25 +0800
-In-Reply-To: <1615818177.192018.876373.nullmailer@robh.at.kernel.org>
-References: <1615658453-3989-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1615658453-3989-3-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1615818177.192018.876373.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S235109AbhCORcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:32:20 -0400
+Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:47329
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232429AbhCORcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:32:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zr+JVVEXOqPewYRzlQfB4kpK0fU0IIg86gxw27ByT2XXxMKWJmZvCV06FljPvXe70t9OHVSVKK8VJR6MgewEMlQ8AYJtRvPEfS9vW/2DQgauOmWlY0OskdmKNHB5kHuXXUIAL6z959APJ/QYWDpyl6TPIcC47+GJkEYHOCjq/gpruo1JEBGDDrQeiLxpJOQHiBHEj/VrMWQL0MSChHYWbJFHcAWCOQO49qbg8MkZlqcuHMHpxMXKMzvfWamlDIuzAWl8Qt5loHpxG5j+0CokNAzOf4olNvx5MeFq8Ukro2yxBYn4pQpmcXihwFNy/pPy5EyFo1Fmevda/RwfeW/sOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5oGUU9FrGDPBJrcsFlu0FQEMpJAUhkcuGG5C95NB4OQ=;
+ b=Ds60C2pedFS1YUuuqvcUzF57gb5t0cxx4jUiEZLUGWbA/4oHo7TuU8PXeD4q/epe6ewRSqfLfNzL8FNe1AHz+foGCb8FtRjXickOf6oXGyvmXBSEr4lswnf3tcSRvZkP6ByZ9VVo9aDJkf7JM3vAMqSQElkrQaiEKPXWZGvJoark5ZXCIB4JwKIP64ALbik7ROej2b8ymXpFBfHjY3nH/0X0LsEtQzqB2Uti+rAwWqzvwiIpWiir0h7o4lu+bfrODrRaR5P6EQ//0MGqqsh05hAp++IlLSIMnmK6zM1nszbXYQbIUt5UtPVf4c6SdiBeks2nUQ1qklvxV74pw1yRHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5oGUU9FrGDPBJrcsFlu0FQEMpJAUhkcuGG5C95NB4OQ=;
+ b=sQfI7wfQ5yJZE7LgfaDNC06UVY78z/f7jJmDiA8OjD9Um9m+RjxHeC+h8a3K6EYgHefcgjoKsXIr2uIPTrtRzyCgxFIph/fFphCZlwxm7L9YR9g9HTwwzph1UP3ax78VHsQSNUyy74SgZkDqEVldVoSiKwATEHlurWHUzdwxpYKlfygzwnYCitqdUe8+Ku/2ZEtNrMxVezyHwabspl/LoBtMRQMuOKn8Uskg9V+RehmJS9E61EhdHMhKAFQfyZHp/EuRNWR/56hpMwbBLvMUrp8x3Ukk9FORrZpmzLCo+6h6pVj8zaE4dGvkUg+1bvPbiKEnHQ/TFzpSCHcuXaCCIw==
+Received: from DM6PR11CA0069.namprd11.prod.outlook.com (2603:10b6:5:14c::46)
+ by BL0PR12MB2562.namprd12.prod.outlook.com (2603:10b6:207:42::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Mon, 15 Mar
+ 2021 17:32:10 +0000
+Received: from DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:14c:cafe::1) by DM6PR11CA0069.outlook.office365.com
+ (2603:10b6:5:14c::46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
+ Transport; Mon, 15 Mar 2021 17:32:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT054.mail.protection.outlook.com (10.13.173.95) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 17:32:10 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
+ 2021 17:32:09 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
+ 2021 17:32:08 +0000
+Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Mar 2021 17:32:05 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC:     <oder_chiou@realtek.com>, <michael@walle.cc>,
+        <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <thierry.reding@gmail.com>,
+        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 0/2] Do not handle MCLK device clock in simple-card-utils
+Date:   Mon, 15 Mar 2021 23:01:30 +0530
+Message-ID: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f65f2469-beae-45eb-07cc-08d8e7d84387
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2562:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB25621B9D9C0A47EA115FB283A76C9@BL0PR12MB2562.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kTfXLGik8hxAQqwswAd6HcG9I8kA+PbZHlM4xT869Es68sRagDux1curvjEgDrkP6SNhXxXbtfy+AkbGn5/duuTEKC9XweBF21BQ4eqA8p+4Yu4/bH5f6wlPK4GIjG9h5QiKxL1RUslO3GalEVgdIWD/5sU2E2aOSGKnT03RG7+YFjjjvTydb5WTvXF1fOjexKf8Y4YvS8+p1RF4md55C1xs4BrCIVogTFc4nhzB0d+NHX324dFvmqjgBykWIt//cpaTAATofE3uy6kqbcDOKOsEZuPzOTPaO4upwkZH00KFqvbDyfTHgIx8mZifg/EWqYyoQHqnrN+AiH/WjhbrjtO1C/HxlBpg6GR6rUeshMxiHxiBk1wiBtgt6AsQTUodvKj7Yn0yQwfv2x76IPNXaK5uERhLMIHE4+V+snMsihZJ4YuW39rHOtAcz5pG1cprtUxq+mtE5HgMeNhrd2w75cXMPvc4kBUl6/bbtrGZZ3x78q/7Vvtz5IymU4Qn7/KcOiy/2a0X/VImTybdOm5+HY+A5rxarCUV1q0hYNNfTwec1T+F5LvYQLqQkmkO+ZcDLZFSJljXwqljyZshz7tGbDo5OYY3PWZWFuDOuPbU+tWdpdZB7vzuQ7dBu7a8OyqDwW8A/ZiVDVVQqjCEmjC1z7DcIy0AR4Q69XX40dDZTTYW+Ea9TbiF572Yqfqy24nN
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(36840700001)(46966006)(186003)(34020700004)(356005)(478600001)(316002)(54906003)(8676002)(2616005)(426003)(6666004)(107886003)(2906002)(110136005)(4326008)(7696005)(86362001)(82310400003)(36860700001)(7636003)(5660300002)(70206006)(47076005)(36756003)(8936002)(26005)(336012)(83380400001)(82740400003)(70586007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 17:32:10.3830
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f65f2469-beae-45eb-07cc-08d8e7d84387
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2562
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFNpcg0KDQpPbiBNb24sIDIwMjEtMDMtMTUgYXQgMDg6MjIgLTA2MDAsIFJvYiBIZXJyaW5n
-IHdyb3RlOg0KPiBPbiBTdW4sIDE0IE1hciAyMDIxIDAyOjAwOjUxICswODAwLCBIc2luLUhzaXVu
-ZyBXYW5nIHdyb3RlOg0KPiA+IFRoaXMgYWRkcyBkb2N1bWVudGF0aW9uIGZvciB0aGUgU1BNSSBj
-b250cm9sbGVyIGZvdW5kIG9uIE1lZGlhdGVrIFNvQ3MuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1i
-eTogSHNpbi1Ic2l1bmcgV2FuZyA8aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4g
-UmV2aWV3ZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+ID4gLS0tDQo+ID4g
-Y2hhbmdlcyBzaW5jZSB2NjoNCj4gPiAtIG5vIGNoYW5nZXMuDQo+ID4gLS0tDQo+ID4gIC4uLi9i
-aW5kaW5ncy9zcG1pL210ayxzcG1pLW10ay1wbWlmLnlhbWwgICAgICB8IDc0ICsrKysrKysrKysr
-KysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDc0IGluc2VydGlvbnMoKykNCj4gPiAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcG1pL210
-ayxzcG1pLW10ay1wbWlmLnlhbWwNCj4gPiANCj4gDQo+IE15IGJvdCBmb3VuZCBlcnJvcnMgcnVu
-bmluZyAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJyBvbiB5b3VyIHBhdGNoOg0KPiANCj4geWFtbGxp
-bnQgd2FybmluZ3MvZXJyb3JzOg0KPiANCj4gZHRzY2hlbWEvZHRjIHdhcm5pbmdzL2Vycm9yczoN
-Cj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRrLXBt
-aWYuZXhhbXBsZS5kdHM6MTk6MTg6IGZhdGFsIGVycm9yOiBkdC1iaW5kaW5ncy9jbG9jay9tdDgx
-OTItY2xrLmg6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCj4gICAgMTkgfCAgICAgICAgICNp
-bmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxOTItY2xrLmg+DQo+ICAgICAgIHwgICAgICAg
-ICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiBjb21waWxhdGlv
-biB0ZXJtaW5hdGVkLg0KPiBtYWtlWzFdOiAqKiogW3NjcmlwdHMvTWFrZWZpbGUubGliOjM0OTog
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYu
-ZXhhbXBsZS5kdC55YW1sXSBFcnJvciAxDQo+IG1ha2VbMV06ICoqKiBXYWl0aW5nIGZvciB1bmZp
-bmlzaGVkIGpvYnMuLi4uDQo+IG1ha2U6ICoqKiBbTWFrZWZpbGU6MTM4MDogZHRfYmluZGluZ19j
-aGVja10gRXJyb3IgMg0KPiANCj4gU2VlIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0
-Y2gvMTQ1MjUyOQ0KPiANCj4gVGhpcyBjaGVjayBjYW4gZmFpbCBpZiB0aGVyZSBhcmUgYW55IGRl
-cGVuZGVuY2llcy4gVGhlIGJhc2UgZm9yIGEgcGF0Y2gNCj4gc2VyaWVzIGlzIGdlbmVyYWxseSB0
-aGUgbW9zdCByZWNlbnQgcmMxLg0KPiANCj4gSWYgeW91IGFscmVhZHkgcmFuICdtYWtlIGR0X2Jp
-bmRpbmdfY2hlY2snIGFuZCBkaWRuJ3Qgc2VlIHRoZSBhYm92ZQ0KPiBlcnJvcihzKSwgdGhlbiBt
-YWtlIHN1cmUgJ3lhbWxsaW50JyBpcyBpbnN0YWxsZWQgYW5kIGR0LXNjaGVtYSBpcyB1cCB0bw0K
-PiBkYXRlOg0KPiANCj4gcGlwMyBpbnN0YWxsIGR0c2NoZW1hIC0tdXBncmFkZQ0KPiANCj4gUGxl
-YXNlIGNoZWNrIGFuZCByZS1zdWJtaXQuDQo+IA0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQpU
-aGlzIHNlcmllcyBpcyBiYXNlZCBvbiBXZWl5aSdzIHBhdGNoZXMuDQpodHRwczovL3BhdGNod29y
-ay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtbWVkaWF0ZWsvcGF0Y2gvMTYwODY0MjU4Ny0xNTYz
-NC03LWdpdC1zZW5kLWVtYWlsLXdlaXlpLmx1QG1lZGlhdGVrLmNvbS8NCg0KDQo=
+With commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
+simple-card-utils can control MCLK clock for rate updates or enable/disable.
+But this is breaking some platforms where it is expected that codec drivers
+would actually handle the MCLK clock. One such example is following platform.
+  - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
+
+In above case codec, wm8904, is using internal PLL and configures sysclk
+based on fixed MCLK input. In such cases it is expected that, required PLL
+output or sysclk, is just passed via set_sysclk() callback and card driver
+need not actually update MCLK rate. Instead, codec can take ownership of
+this clock and do the necessary configuration.
+
+So the original commit is reverted and codec driver for rt5659 is updated
+to fix my board which has this codec.
+
+Sameer Pujar (2):
+  ASoC: simple-card-utils: Do not handle device clock
+  ASoC: rt5659: Update MCLK rate in set_sysclk()
+
+ sound/soc/codecs/rt5659.c             |  5 +++++
+ sound/soc/generic/simple-card-utils.c | 13 +++++++------
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+-- 
+2.7.4
 
