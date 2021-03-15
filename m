@@ -2,100 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E72633C392
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABAF33C39A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhCORJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S235378AbhCORJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbhCORJN (ORCPT
+        with ESMTP id S234810AbhCORJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:09:13 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A662FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:09:10 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k2so34208288ioh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:09:10 -0700 (PDT)
+        Mon, 15 Mar 2021 13:09:49 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AF0C06174A;
+        Mon, 15 Mar 2021 10:09:49 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id bt4so9148570pjb.5;
+        Mon, 15 Mar 2021 10:09:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PM0AOv7hR2q7y6qMzYZR/71bbo2GAhaoJjNSG+Jn9vI=;
-        b=XPVddlj/y9FfagcJIbWAAqZ3K8DsC1HETVSpnea00/4CXVu4LWPuBklrfJjIaw5r2g
-         PoVpawn/vSW5ZDVCgGFCI3w6ubw86AtUhIBdr1DoOrF/ZVwV3/ImN9I3kTp6RjGPR7cT
-         Clyo/B4oGI8gyDMlwW31NFSz5gFoQOtG+yN+L8SN8fzkDRWJkxRN8FH/DX7QRCTCxM/A
-         oNkMos357ahqhb7wgx7eqQnBAupzYwqY9NgJn49bt73nQdn5FvAI8RBsygXvvtCOAEz3
-         XBJY1JQf58qtNMP6fCZKOHfyWXh7Fi2CKpYzg60DlMt9MFRLA7AlxjgDy/vD3j3ytDF+
-         Ex6w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gVx9Pv6PF+gvg4bUX5R/A8d5/YPrI5l7pmHtd3cE+qE=;
+        b=QeuiYMZQbXOp1ZPqMRl0R797j0LbFfYcmg55F/EhdPYt/+GYF6XrcfEYGCI2/6kiN3
+         oy5J6pK1YcjaziwXvDZufwJ3dRJfO1MPrULpPBs/o5VCzZ28cZ6ttAKaFRLkGrwj+aNe
+         1sSLd/N7yTtGPUmXMHWdKN/6107JrnjuYC9/yBm5FHULCkQzGMgRzTVc+pRNxUPJyoN0
+         o4/8hHjW0YH3+YVE5qJfIlE617ouI+3GDsa2/MzD2Uy7Wbzfbko5C41ppZU7jjPnWF4R
+         V6gO1vcxNQxCOgQzQ2ymcDKHRw0HeqVSWyS2IawMu0orn3EjR43yXn6FhYYwU+3mqWMU
+         d6UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PM0AOv7hR2q7y6qMzYZR/71bbo2GAhaoJjNSG+Jn9vI=;
-        b=HItHvnbzOadPmL0M/3lqoS7mL7ANeoDh59zo85GiXP4AqQ7qjOsy/ZfyioVD+28c5/
-         Y+brl/V970dM4rbEDpDAvIuX3DqcbOS2MQaMA2vV8qZGRz0sq8n5Uios59Ov/PFIlhhM
-         mVhwt1r5U4IV/YkbtsHRF5K0B8OIQC3wdanEuXbK13SFdEDJJWF/cnfYcNfNwWPOdwRK
-         cLVgVaVsXGdXS3LRVazn5tfsxyxXlzcfTB6FF1rx9Bb9gvVBpGyHvnLLI9l1T+GhREc+
-         Zt6VdmWPfYvndypWItI4oTknbs3Cizim2OmPGhe8hPfvcXvtq2askzcaBGVRsBCnV/6x
-         kLAw==
-X-Gm-Message-State: AOAM531+cSI7VdCKxeOaLU559swTjzfxpIQn9n1eRPFjIYWexw4V2ld7
-        T52ooJbOJUgibrMcug2nKl4zp9coCO4ch3lb6HQg9w==
-X-Google-Smtp-Source: ABdhPJwo0RLf07s4jCWFCOBKdsbS3gt1d6KD2G+UGPHhDUd6hNzjV9TWdeVk+RyqVLPTMceCsBlrLVTGl4DHnqIUjVc=
-X-Received: by 2002:a6b:7f4d:: with SMTP id m13mr426365ioq.134.1615828149903;
- Mon, 15 Mar 2021 10:09:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gVx9Pv6PF+gvg4bUX5R/A8d5/YPrI5l7pmHtd3cE+qE=;
+        b=iWVOJ3UffTuryZh67S5ilKl7Nv0VRzEqEAdV/wIQOCTIgGSYcvmixeA4RrBaQn8yOv
+         HoqHCWkqFKwkIfVrmCtPml4zDql0s2kum1E3f9ke42U7Bx+VmPSMh7M9Ync4YAuzkWBE
+         D8KFeUplBnl6qs8x+TG2S4kdz4C4bgwX4DUnCIJDvcvJmRoPY8OYam2qPMYARtCJYneH
+         hSo/h5TEe67Caj5QgfXTPEx1pqBLot4MJglJ/1EWWC2KcjbcpwoJR5Sbj1ZK3W6KexQW
+         zuOIkA0Vjti0M23WqS6F+hwvpOOK2vDm3YXiRVt4NLw8SNRh1tXp14O3YLw3KTAUvtl2
+         3hsQ==
+X-Gm-Message-State: AOAM533ljL2pLX20pQd2QX1+1EdE2oIc5VBEHFVozwP6RI9HdLGxPIuB
+        Lgs/GMdjmu+OZqpxUgUKOPQ=
+X-Google-Smtp-Source: ABdhPJywCavdQIXmIQDkguNJ+qt5BapJfqmaDbzyt7G1QhVz3ck1507LWgBrfyNKqGtjgVxyo8SrSg==
+X-Received: by 2002:a17:902:aa0c:b029:e5:da5f:5f66 with SMTP id be12-20020a170902aa0cb02900e5da5f5f66mr12798299plb.81.1615828188892;
+        Mon, 15 Mar 2021 10:09:48 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id 186sm15221799pfb.143.2021.03.15.10.09.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 10:09:48 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>
+Subject: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag operations
+Date:   Tue, 16 Mar 2021 01:09:40 +0800
+Message-Id: <20210315170940.2414854-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210311231658.1243953-1-bgardon@google.com> <20210311231658.1243953-2-bgardon@google.com>
- <YEuKx6ZveaT5RgAs@google.com> <cc472f99-f9f0-8a63-c38b-31a650b4a39c@redhat.com>
-In-Reply-To: <cc472f99-f9f0-8a63-c38b-31a650b4a39c@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 15 Mar 2021 10:08:59 -0700
-Message-ID: <CANgfPd9SeD4Vt3MW5HsipvrZmYsO8XyP4bU=ni7u8Ws84rXKzA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Shier <pshier@google.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 7:43 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 12/03/21 16:37, Sean Christopherson wrote:
-> > On Thu, Mar 11, 2021, Ben Gardon wrote:
-> >> The pt passed into handle_removed_tdp_mmu_page does not need RCU
-> >> protection, as it is not at any risk of being freed by another thread at
-> >> that point. However, the implicit cast from tdp_sptep_t to u64 * dropped
-> >> the __rcu annotation without a proper rcu_derefrence. Fix this by
-> >> passing the pt as a tdp_ptep_t and then rcu_dereferencing it in
-> >> the function.
-> >>
-> >> Suggested-by: Sean Christopherson <seanjc@google.com>
-> >> Reported-by: kernel test robot <lkp@xxxxxxxxx>
-> >
-> > Should be <lkp@intel.com>.  Looks like you've been taking pointers from Paolo :-)
+Support port MDB and bridge flag operations.
 
-I'll update that in v2. I was a little confused because I was looking
-at the report archived on Spinics, where all the domains are xxxxxxxx.
-Didn't notice that all the emails had been redacted like that.
+As the hardware can manage multicast forwarding itself, offload_fwd_mark
+can be unconditionally set to true.
 
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+---
+Changes since RFC:
+  Replaced BR_AUTO_MASK with BR_FLOOD | BR_LEARNING
 
->
-> The day someone starts confusing employers in CCs you should tell them
-> "I see you have constructed a new email sending alias.  Your skills are
-> now complete".
->
-> Paolo
->
-> > https://lkml.org/lkml/2019/6/17/1210
-> >
-> > Other than that,
-> >
-> > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> >
-> >> Signed-off-by: Ben Gardon <bgardon@google.com>
-> >
->
+ drivers/net/dsa/mt7530.c | 124 +++++++++++++++++++++++++++++++++++++--
+ drivers/net/dsa/mt7530.h |   1 +
+ net/dsa/tag_mtk.c        |  14 +----
+ 3 files changed, 122 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 2342d4528b4c..f765984330c9 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1000,8 +1000,9 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
+ 	mt7530_write(priv, MT7530_PVC_P(port),
+ 		     PORT_SPEC_TAG);
+ 
+-	/* Unknown multicast frame forwarding to the cpu port */
+-	mt7530_rmw(priv, MT7530_MFC, UNM_FFP_MASK, UNM_FFP(BIT(port)));
++	/* Disable flooding by default */
++	mt7530_rmw(priv, MT7530_MFC, BC_FFP_MASK | UNM_FFP_MASK | UNU_FFP_MASK,
++		   BC_FFP(BIT(port)) | UNM_FFP(BIT(port)) | UNU_FFP(BIT(port)));
+ 
+ 	/* Set CPU port number */
+ 	if (priv->id == ID_MT7621)
+@@ -1138,6 +1139,56 @@ mt7530_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ 	mt7530_rmw(priv, MT7530_SSP_P(port), FID_PST_MASK, stp_state);
+ }
+ 
++static int
++mt7530_port_pre_bridge_flags(struct dsa_switch *ds, int port,
++			     struct switchdev_brport_flags flags,
++			     struct netlink_ext_ack *extack)
++{
++	if (flags.mask & ~(BR_LEARNING | BR_FLOOD | BR_MCAST_FLOOD |
++			   BR_BCAST_FLOOD))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int
++mt7530_port_bridge_flags(struct dsa_switch *ds, int port,
++			 struct switchdev_brport_flags flags,
++			 struct netlink_ext_ack *extack)
++{
++	struct mt7530_priv *priv = ds->priv;
++
++	if (flags.mask & BR_LEARNING)
++		mt7530_rmw(priv, MT7530_PSC_P(port), SA_DIS,
++			   flags.val & BR_LEARNING ? 0 : SA_DIS);
++
++	if (flags.mask & BR_FLOOD)
++		mt7530_rmw(priv, MT7530_MFC, UNU_FFP(BIT(port)),
++			   flags.val & BR_FLOOD ? UNU_FFP(BIT(port)) : 0);
++
++	if (flags.mask & BR_MCAST_FLOOD)
++		mt7530_rmw(priv, MT7530_MFC, UNM_FFP(BIT(port)),
++			   flags.val & BR_MCAST_FLOOD ? UNM_FFP(BIT(port)) : 0);
++
++	if (flags.mask & BR_BCAST_FLOOD)
++		mt7530_rmw(priv, MT7530_MFC, BC_FFP(BIT(port)),
++			   flags.val & BR_BCAST_FLOOD ? BC_FFP(BIT(port)) : 0);
++
++	return 0;
++}
++
++static int
++mt7530_port_set_mrouter(struct dsa_switch *ds, int port, bool mrouter,
++			struct netlink_ext_ack *extack)
++{
++	struct mt7530_priv *priv = ds->priv;
++
++	mt7530_rmw(priv, MT7530_MFC, UNM_FFP(BIT(port)),
++		   mrouter ? UNM_FFP(BIT(port)) : 0);
++
++	return 0;
++}
++
+ static int
+ mt7530_port_bridge_join(struct dsa_switch *ds, int port,
+ 			struct net_device *bridge)
+@@ -1349,6 +1400,59 @@ mt7530_port_fdb_dump(struct dsa_switch *ds, int port,
+ 	return 0;
+ }
+ 
++static int
++mt7530_port_mdb_add(struct dsa_switch *ds, int port,
++		    const struct switchdev_obj_port_mdb *mdb)
++{
++	struct mt7530_priv *priv = ds->priv;
++	const u8 *addr = mdb->addr;
++	u16 vid = mdb->vid;
++	u8 port_mask = 0;
++	int ret;
++
++	mutex_lock(&priv->reg_mutex);
++
++	mt7530_fdb_write(priv, vid, 0, addr, 0, STATIC_EMP);
++	if (!mt7530_fdb_cmd(priv, MT7530_FDB_READ, NULL))
++		port_mask = (mt7530_read(priv, MT7530_ATRD) >> PORT_MAP)
++			    & PORT_MAP_MASK;
++
++	port_mask |= BIT(port);
++	mt7530_fdb_write(priv, vid, port_mask, addr, -1, STATIC_ENT);
++	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
++
++	mutex_unlock(&priv->reg_mutex);
++
++	return ret;
++}
++
++static int
++mt7530_port_mdb_del(struct dsa_switch *ds, int port,
++		    const struct switchdev_obj_port_mdb *mdb)
++{
++	struct mt7530_priv *priv = ds->priv;
++	const u8 *addr = mdb->addr;
++	u16 vid = mdb->vid;
++	u8 port_mask = 0;
++	int ret;
++
++	mutex_lock(&priv->reg_mutex);
++
++	mt7530_fdb_write(priv, vid, 0, addr, 0, STATIC_EMP);
++	if (!mt7530_fdb_cmd(priv, MT7530_FDB_READ, NULL))
++		port_mask = (mt7530_read(priv, MT7530_ATRD) >> PORT_MAP)
++			    & PORT_MAP_MASK;
++
++	port_mask &= ~BIT(port);
++	mt7530_fdb_write(priv, vid, port_mask, addr, -1,
++			 port_mask ? STATIC_ENT : STATIC_EMP);
++	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
++
++	mutex_unlock(&priv->reg_mutex);
++
++	return ret;
++}
++
+ static int
+ mt7530_vlan_cmd(struct mt7530_priv *priv, enum mt7530_vlan_cmd cmd, u16 vid)
+ {
+@@ -2492,9 +2596,13 @@ mt7530_setup(struct dsa_switch *ds)
+ 			ret = mt753x_cpu_port_enable(ds, i);
+ 			if (ret)
+ 				return ret;
+-		} else
++		} else {
+ 			mt7530_port_disable(ds, i);
+ 
++			/* Disable learning by default on all user ports */
++			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
++		}
++
+ 		/* Enable consistent egress tag */
+ 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
+ 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+@@ -2656,9 +2764,12 @@ mt7531_setup(struct dsa_switch *ds)
+ 			ret = mt753x_cpu_port_enable(ds, i);
+ 			if (ret)
+ 				return ret;
+-		} else
++		} else {
+ 			mt7530_port_disable(ds, i);
+ 
++			/* Disable learning by default on all user ports */
++			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
++		}
+ 		/* Enable consistent egress tag */
+ 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
+ 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+@@ -3385,11 +3496,16 @@ static const struct dsa_switch_ops mt7530_switch_ops = {
+ 	.port_change_mtu	= mt7530_port_change_mtu,
+ 	.port_max_mtu		= mt7530_port_max_mtu,
+ 	.port_stp_state_set	= mt7530_stp_state_set,
++	.port_pre_bridge_flags	= mt7530_port_pre_bridge_flags,
++	.port_bridge_flags	= mt7530_port_bridge_flags,
++	.port_set_mrouter	= mt7530_port_set_mrouter,
+ 	.port_bridge_join	= mt7530_port_bridge_join,
+ 	.port_bridge_leave	= mt7530_port_bridge_leave,
+ 	.port_fdb_add		= mt7530_port_fdb_add,
+ 	.port_fdb_del		= mt7530_port_fdb_del,
+ 	.port_fdb_dump		= mt7530_port_fdb_dump,
++	.port_mdb_add		= mt7530_port_mdb_add,
++	.port_mdb_del		= mt7530_port_mdb_del,
+ 	.port_vlan_filtering	= mt7530_port_vlan_filtering,
+ 	.port_vlan_add		= mt7530_port_vlan_add,
+ 	.port_vlan_del		= mt7530_port_vlan_del,
+diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
+index e4a4c8d1fbc8..fd7b66776c4e 100644
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -34,6 +34,7 @@ enum mt753x_id {
+ /* Registers to mac forward control for unknown frames */
+ #define MT7530_MFC			0x10
+ #define  BC_FFP(x)			(((x) & 0xff) << 24)
++#define  BC_FFP_MASK			BC_FFP(~0)
+ #define  UNM_FFP(x)			(((x) & 0xff) << 16)
+ #define  UNM_FFP_MASK			UNM_FFP(~0)
+ #define  UNU_FFP(x)			(((x) & 0xff) << 8)
+diff --git a/net/dsa/tag_mtk.c b/net/dsa/tag_mtk.c
+index 59748487664f..f9b2966d1936 100644
+--- a/net/dsa/tag_mtk.c
++++ b/net/dsa/tag_mtk.c
+@@ -24,9 +24,6 @@ static struct sk_buff *mtk_tag_xmit(struct sk_buff *skb,
+ 	struct dsa_port *dp = dsa_slave_to_port(dev);
+ 	u8 xmit_tpid;
+ 	u8 *mtk_tag;
+-	unsigned char *dest = eth_hdr(skb)->h_dest;
+-	bool is_multicast_skb = is_multicast_ether_addr(dest) &&
+-				!is_broadcast_ether_addr(dest);
+ 
+ 	/* Build the special tag after the MAC Source Address. If VLAN header
+ 	 * is present, it's required that VLAN header and special tag is
+@@ -55,10 +52,6 @@ static struct sk_buff *mtk_tag_xmit(struct sk_buff *skb,
+ 	mtk_tag[0] = xmit_tpid;
+ 	mtk_tag[1] = (1 << dp->index) & MTK_HDR_XMIT_DP_BIT_MASK;
+ 
+-	/* Disable SA learning for multicast frames */
+-	if (unlikely(is_multicast_skb))
+-		mtk_tag[1] |= MTK_HDR_XMIT_SA_DIS;
+-
+ 	/* Tag control information is kept for 802.1Q */
+ 	if (xmit_tpid == MTK_HDR_XMIT_UNTAGGED) {
+ 		mtk_tag[2] = 0;
+@@ -74,9 +67,6 @@ static struct sk_buff *mtk_tag_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	u16 hdr;
+ 	int port;
+ 	__be16 *phdr;
+-	unsigned char *dest = eth_hdr(skb)->h_dest;
+-	bool is_multicast_skb = is_multicast_ether_addr(dest) &&
+-				!is_broadcast_ether_addr(dest);
+ 
+ 	if (unlikely(!pskb_may_pull(skb, MTK_HDR_LEN)))
+ 		return NULL;
+@@ -102,9 +92,7 @@ static struct sk_buff *mtk_tag_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	if (!skb->dev)
+ 		return NULL;
+ 
+-	/* Only unicast or broadcast frames are offloaded */
+-	if (likely(!is_multicast_skb))
+-		skb->offload_fwd_mark = 1;
++	skb->offload_fwd_mark = 1;
+ 
+ 	return skb;
+ }
+-- 
+2.25.1
+
