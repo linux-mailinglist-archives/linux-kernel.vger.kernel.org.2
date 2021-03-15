@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C068C33BCB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97D533BC92
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhCOO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S236732AbhCOO1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:27:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233074AbhCOOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7648F64EF2;
-        Mon, 15 Mar 2021 14:00:19 +0000 (UTC)
+        id S233077AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACA2664F5E;
+        Mon, 15 Mar 2021 14:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816820;
-        bh=rmXW1BrrexEFnDJF9MaWbYvftiMtUytwwrL7bvFJhVo=;
+        s=korg; t=1615816821;
+        bh=Cm/Nn7sjPvLLKzeR3Jxp5wSWHSo4ZMfsZNjZY6+goL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bjYAQaLkfH6NbJ7e86+g5cUaA3BhWyvWlbrvVbzmgvn08ba7MAmU1tebLUeY7ppBq
-         GDvVvCdUf4OajuWkSeQo3vhaaK3RBZBDYcmN8V6SoUeWwVONRpP+RuLBzeZTaSZt+k
-         BXP/mRoKkOCocjJ4NrwaNeZCTpgZuaYfTY8jKoNY=
+        b=hNqa8KlR5x9m4Rn9Efrkk+8g7UkjHUveFq67Lz1xs8gBy/O1kuywdqy2LvcuV+Gl4
+         PtAx5P7zfAU6yw0EHgNGMNXtPtUk8L314ZscRk6fP3b/k11RrHs1+q6iYD9XJnYpE4
+         VP/h4csxeM49LFV1fLnl0VG/kVotoYeNAuwfuxzo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.19 089/120] staging: rtl8192u: fix ->ssid overflow in r8192_wx_set_scan()
-Date:   Mon, 15 Mar 2021 14:57:20 +0100
-Message-Id: <20210315135722.883689101@linuxfoundation.org>
+Subject: [PATCH 4.19 090/120] staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()
+Date:   Mon, 15 Mar 2021 14:57:21 +0100
+Message-Id: <20210315135722.923359350@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,34 +42,35 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 87107518d7a93fec6cdb2559588862afeee800fb upstream.
+commit 74b6b20df8cfe90ada777d621b54c32e69e27cd7 upstream.
 
-We need to cap len at IW_ESSID_MAX_SIZE (32) to avoid memory corruption.
-This can be controlled by the user via the ioctl.
+This code has a check to prevent read overflow but it needs another
+check to prevent writing beyond the end of the ->ssid[] array.
 
-Fixes: 5f53d8ca3d5d ("Staging: add rtl8192SU wireless usb driver")
+Fixes: a2c60d42d97c ("staging: r8188eu: Add files for new driver - part 16")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YEHoAWMOSZBUw91F@mwanda
+Link: https://lore.kernel.org/r/YEHymwsnHewzoam7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8192u/r8192U_wx.c |    6 ++++--
+ drivers/staging/rtl8188eu/os_dep/ioctl_linux.c |    6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/rtl8192u/r8192U_wx.c
-+++ b/drivers/staging/rtl8192u/r8192U_wx.c
-@@ -333,8 +333,10 @@ static int r8192_wx_set_scan(struct net_
- 		struct iw_scan_req *req = (struct iw_scan_req *)b;
- 
- 		if (req->essid_len) {
--			ieee->current_network.ssid_len = req->essid_len;
--			memcpy(ieee->current_network.ssid, req->essid, req->essid_len);
-+			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+
-+			ieee->current_network.ssid_len = len;
-+			memcpy(ieee->current_network.ssid, req->essid, len);
- 		}
- 	}
- 
+--- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+@@ -1161,9 +1161,11 @@ static int rtw_wx_set_scan(struct net_de
+ 						break;
+ 					}
+ 					sec_len = *(pos++); len -= 1;
+-					if (sec_len > 0 && sec_len <= len) {
++					if (sec_len > 0 &&
++					    sec_len <= len &&
++					    sec_len <= 32) {
+ 						ssid[ssid_index].SsidLength = sec_len;
+-						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
++						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
+ 						ssid_index++;
+ 					}
+ 					pos += sec_len;
 
 
