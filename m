@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F43A33B5AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B921533B59C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhCONzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
+        id S231544AbhCONyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230403AbhCONxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BF7264EE3;
-        Mon, 15 Mar 2021 13:53:31 +0000 (UTC)
+        id S230373AbhCONx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D3264E89;
+        Mon, 15 Mar 2021 13:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816412;
-        bh=7DPVG0wh9dc/B/sLUehEe+Qi2nod6MHLUsvS7K4+Bvk=;
+        s=korg; t=1615816407;
+        bh=qoDi2vTsop8woPakjQoyEeGBNQtQbU2oPDlNnDr0eQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aOn13logs7ChJfnQiF8xHiGx4l/5og/oAJiLl7nudLiWuNhadJAjXLRVMwHqgE8ww
-         5z0QaUIAnRKEuQvlYi6OhziJVgrKj1mGa5Qo0D5Uo89ngdvfuwUBIUm1xhk7i4RWDm
-         opNPQ57VqBvnYYvUchzsecohVZ/uaHe5ChmyvmWs=
+        b=FH/mga2N1GjfJvH1+oeAT7//XsGckVljJnXz6IfvAzNq7mzHEfOMm3WWhV7a3c8Y5
+         FqiEUxU3w3nOzM17HoqIbk5yUwEsCXf/FRhaiG0RZhdsLVC6koLuC/DUb1NbrZHfO/
+         il544oJzV1Sog+ipBPQsxG+GoBivUpwwSn1WL/Kc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.4 29/75] mmc: core: Fix partition switch time for eMMC
-Date:   Mon, 15 Mar 2021 14:51:43 +0100
-Message-Id: <20210315135209.210199995@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 21/78] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
+Date:   Mon, 15 Mar 2021 14:51:44 +0100
+Message-Id: <20210315135212.763259976@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +42,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-commit 66fbacccbab91e6e55d9c8f1fc0910a8eb6c81f7 upstream.
+[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
 
-Avoid the following warning by always defining partition switch time:
+While sampling for marked events, currently we record the sample only
+if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
+set. SIAR_VALID bit is used for fetching the instruction address from
+Sampled Instruction Address Register(SIAR). But there are some
+usecases, where the user is interested only in the PMU stats at each
+counter overflow and the exact IP of the overflow event is not
+required. Dropping SIAR invalid samples will fail to record some of
+the counter overflows in such cases.
 
- [    3.209874] mmc1: unspecified timeout for CMD6 - use generic
- [    3.222780] ------------[ cut here ]------------
- [    3.233363] WARNING: CPU: 1 PID: 111 at drivers/mmc/core/mmc_ops.c:575 __mmc_switch+0x200/0x204
+Example of such usecase is dumping the PMU stats (event counts) after
+some regular amount of instructions/events from the userspace (ex: via
+ptrace). Here counter overflow is indicated to userspace via signal
+handler, and captured by monitoring and enabling I/O signaling on the
+event file descriptor. In these cases, we expect to get
+sample/overflow indication after each specified sample_period.
 
-Reported-by: Paul Fertser <fercerpav@gmail.com>
-Fixes: 1c447116d017 ("mmc: mmc: Fix partition switch timeout for some eMMCs")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/168bbfd6-0c5b-5ace-ab41-402e7937c46e@intel.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Perf event attribute will not have PERF_SAMPLE_IP set in the
+sample_type if exact IP of the overflow event is not requested. So
+while profiling if SAMPLE_IP is not set, just record the counter
+overflow irrespective of SIAR_VALID check.
+
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+[mpe: Reflow comment and if formatting]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/mmc.c |   15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -400,10 +400,6 @@ static int mmc_decode_ext_csd(struct mmc
- 
- 		/* EXT_CSD value is in units of 10ms, but we store in ms */
- 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
--		/* Some eMMC set the value too low so set a minimum */
--		if (card->ext_csd.part_time &&
--		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
--			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
- 
- 		/* Sleep / awake timeout in 100ns units */
- 		if (sa_shift > 0 && sa_shift <= 0x17)
-@@ -585,6 +581,17 @@ static int mmc_decode_ext_csd(struct mmc
- 		card->ext_csd.data_sector_size = 512;
- 	}
- 
-+	/*
-+	 * GENERIC_CMD6_TIME is to be used "unless a specific timeout is defined
-+	 * when accessing a specific field", so use it here if there is no
-+	 * PARTITION_SWITCH_TIME.
-+	 */
-+	if (!card->ext_csd.part_time)
-+		card->ext_csd.part_time = card->ext_csd.generic_cmd6_time;
-+	/* Some eMMC set the value too low so set a minimum */
-+	if (card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
-+		card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 1f1ac446ace9..f2d8f35c181f 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2010,7 +2010,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 			left += period;
+ 			if (left <= 0)
+ 				left = period;
+-			record = siar_valid(regs);
 +
- 	/* eMMC v5 or later */
- 	if (card->ext_csd.rev >= 7) {
- 		memcpy(card->ext_csd.fwrev, &ext_csd[EXT_CSD_FIRMWARE_VERSION],
++			/*
++			 * If address is not requested in the sample via
++			 * PERF_SAMPLE_IP, just record that sample irrespective
++			 * of SIAR valid check.
++			 */
++			if (event->attr.sample_type & PERF_SAMPLE_IP)
++				record = siar_valid(regs);
++			else
++				record = 1;
++
+ 			event->hw.last_period = event->hw.sample_period;
+ 		}
+ 		if (left < 0x80000000LL)
+@@ -2028,9 +2038,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
+ 	 * these cases.
+ 	 */
+-	if (event->attr.exclude_kernel && record)
+-		if (is_kernel_addr(mfspr(SPRN_SIAR)))
+-			record = 0;
++	if (event->attr.exclude_kernel &&
++	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
++	    is_kernel_addr(mfspr(SPRN_SIAR)))
++		record = 0;
+ 
+ 	/*
+ 	 * Finally record data if requested.
+-- 
+2.30.1
+
 
 
