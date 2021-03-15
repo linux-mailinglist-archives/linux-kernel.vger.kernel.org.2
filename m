@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6AA33BDEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5256533BD7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237384AbhCOOki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48920 "EHLO mail.kernel.org"
+        id S236219AbhCOOg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233643AbhCOOCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3324864EEF;
-        Mon, 15 Mar 2021 14:02:03 +0000 (UTC)
+        id S233465AbhCOOBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15B7864F3A;
+        Mon, 15 Mar 2021 14:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816924;
-        bh=j/cRpuSaTG/ikfUPjVyiZeucg2SiJvxu/HB5bNElkEs=;
+        s=korg; t=1615816898;
+        bh=m0eptkftbLSjQQQ0ZaN37gBHuvMAVpnT1UwmsFU+owc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWh19LU8MTzQDcCumCBBTpxOz/3FASqwYNsI7v0a651igXsrU1VNhRYdpKes7Doqq
-         yyal/lq+b/bQq6rroHm+mzoDVKDjBuvktqEOc6xneKhKEs99FzQYzdXMVDfnEwUhhD
-         /uviVtyac23upq0jNrAjW+NqV9fd/CH4lB6mLMZw=
+        b=cuHGO3nJp+I9O/HxbYDdU2gw7uXsKBoSi12WnQGImvMYVz6eBdAmLo/VgnnNSKF+F
+         vD0ajJJWu/diX53dbDGbLz6dQdKwZuzsukHhdQm/BhkXiIoxgbZbJPyZnIpcQKolsp
+         xQNj9G3Ajlzu8tmAPWGT0hxDi/BJ7x62uIm0M97Y=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.11 205/306] xhci: Improve detection of device initiated wake signal.
-Date:   Mon, 15 Mar 2021 14:54:28 +0100
-Message-Id: <20210315135514.565777322@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Abhishek Sahu <abhsahu@nvidia.com>
+Subject: [PATCH 5.10 176/290] ALSA: hda: Flush pending unsolicited events before suspend
+Date:   Mon, 15 Mar 2021 14:54:29 +0100
+Message-Id: <20210315135547.857180943@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
+commit 13661fc48461282e43fe8f76bf5bf449b3d40687 upstream.
 
-A xHC USB 3 port might miss the first wake signal from a USB 3 device
-if the port LFPS reveiver isn't enabled fast enough after xHC resume.
+The HD-audio controller driver processes the unsolicited events via
+its work asynchronously, and this might be pending when the system
+goes to suspend.  When a lengthy event handling like ELD byte reads is
+running, this might trigger unexpected accesses among suspend/resume
+procedure, typically seen with Nvidia driver that still requires the
+handling via unsolicited event verbs for ELD updates.
 
-xHC host will anyway be resumed by a PME# signal, but will go back to
-suspend if no port activity is seen.
-The device resends the U3 LFPS wake signal after a 100ms delay, but
-by then host is already suspended, starting all over from the
-beginning of this issue.
+This patch adds the flush of unsol_work to assure that pending events
+are processed before going into suspend.
 
-USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
-needs to delay 100ms before resending the wake.
-
-Don't suspend immediately if port activity isn't detected in resume.
-Instead add a retry. If there is no port activity then delay for 120ms,
-and re-check for port activity.
-
+Buglink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
+Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
+Link: https://lore.kernel.org/r/20210310112809.9215-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci.c |   16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_intel.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1088,6 +1088,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 	struct usb_hcd		*secondary_hcd;
- 	int			retval = 0;
- 	bool			comp_timer_running = false;
-+	bool			pending_portevent = false;
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1026,6 +1026,8 @@ static int azx_prepare(struct device *de
+ 	chip = card->private_data;
+ 	chip->pm_prepared = 1;
  
- 	if (!hcd->state)
- 		return 0;
-@@ -1226,13 +1227,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
- 
-  done:
- 	if (retval == 0) {
--		/* Resume root hubs only when have pending events. */
--		if (xhci_pending_portevent(xhci)) {
-+		/*
-+		 * Resume roothubs only if there are pending events.
-+		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
-+		 * the first wake signalling failed, give it that chance.
-+		 */
-+		pending_portevent = xhci_pending_portevent(xhci);
-+		if (!pending_portevent) {
-+			msleep(120);
-+			pending_portevent = xhci_pending_portevent(xhci);
-+		}
++	flush_work(&azx_bus(chip)->unsol_work);
 +
-+		if (pending_portevent) {
- 			usb_hcd_resume_root_hub(xhci->shared_hcd);
- 			usb_hcd_resume_root_hub(hcd);
- 		}
- 	}
--
- 	/*
- 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
- 	 * be re-initialized Always after a system resume. Ports are subject
+ 	/* HDA controller always requires different WAKEEN for runtime suspend
+ 	 * and system suspend, so don't use direct-complete here.
+ 	 */
 
 
