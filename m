@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2409A33B30B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2582333B30E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCOMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        id S229540AbhCOMrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCOMpK (ORCPT
+        with ESMTP id S229494AbhCOMrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:45:10 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F739C061574;
-        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so14305005pjq.5;
-        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
-        b=nI9YuUb80LbZ4aMJ4gAdGs/DVPvxa/+Iht0lFG4mE1wiv3LVrfpnzodFVINjFGBw//
-         0OShEOCpoUWrk/mcpQcwZaqSahKjfrTl0yZFpQ8DoZj07FSqKSbcb1eNbmeELqOgLmrD
-         0Y7L23jQdaDVEZHzfCTc9j0q+XMFt8kl8R5YH1tSCPcfFxQyHs+90E4ZeC6NsT076kB+
-         2IC4qdTCwjvu+0iTpDqHxSM3STNh43b6lJHjgGr8fi+fDLu98+KjS6C/Zsgss8ZgZ5Pg
-         r4mNixLJFXoaseF4EwVzaKdGWxJWRzapLMxhK5BEOTO+FU5NH40BogP71aieCysM+tTX
-         NDBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
-        b=X8bg0kD8IominaBsTAgiyQNAXMSIH5/ON24hbFEV8XlL89g9Sv5fI67jpZUPcDHFjO
-         /RhhaZPLZTsj96ggixpcG23t7/Y7FNlGOFmIQ3/MgLJ3HI4qNvblGa1PLDCD2bwrI0rX
-         ZXPNYk1dW4Nd2GWJ64ibgvj0m23gK/zLC6pXLyCXxaomIVWbP9MyLg9YVZNrP9BlxnxC
-         S+Dgy1ZJwA12BaGJhsEiVqoek/mgxsaHC+JVXPj4d2Lmn1gSQFunnROCyiCIqfllq1wx
-         P5OqKdXffRlNLL/+sRTsIBYbW+r6NtxAvxPMV8uhLUVIjjKaoBQsv7j2bU6aWolnI03l
-         tEBQ==
-X-Gm-Message-State: AOAM530IoVOtZxzMLb0CS6klYtdfDNrPWqTPMROiqRXSFRZbw5ubsIop
-        EXrRxdHOt3FsSd/KUCZDx6F7XalOtePVMw==
-X-Google-Smtp-Source: ABdhPJwLwV4QPZ0DpOvzSJcznbEsVxi6UL35OHvQuLLdazbvan1dz6j18iCP0y6lpNCzSb87XI5oIg==
-X-Received: by 2002:a17:902:a707:b029:e6:52fd:a14d with SMTP id w7-20020a170902a707b02900e652fda14dmr12075311plq.34.1615812309795;
-        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
-Received: from masabert ([202.12.244.3])
-        by smtp.gmail.com with ESMTPSA id a19sm13523055pfc.65.2021.03.15.05.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
-Received: by masabert (Postfix, from userid 1000)
-        id 763E723603DE; Mon, 15 Mar 2021 21:45:07 +0900 (JST)
-From:   Masanari Iida <standby24x7@gmail.com>
-To:     linux-kernel@vger.kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org
-Cc:     Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH] samples: bpf: Fix a spelling typo in do_hbm_test.sh
-Date:   Mon, 15 Mar 2021 21:44:54 +0900
-Message-Id: <20210315124454.1744594-1-standby24x7@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        Mon, 15 Mar 2021 08:47:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D253C061574;
+        Mon, 15 Mar 2021 05:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=k8kBd5XUDTT977pE3SWgeErOtsPBNTbq9YiM/WW5MBU=; b=WzJfxcPs+Wb6LWt63nadK8c89g
+        3kznciq1z0qw7lt7hNytHeFeAlG8pDIBT0ZprwO/b2Uu1uyW6XyVSyRmluZKR5Jl/A4clxkNCkI3E
+        NojWIHTgZ7QeX9QA5+AoPQNWWz5kDJmUA7uqE041i/ucAbT+o42RNK3AZegm5Nwxh50IrYmXpDCUQ
+        gWBKqkf992UbcGiS5AXOOp1noQr8abEa+LsEj6taEXQWBknyRVUPKdVxHfCwXFEUXySdaCfhXsY4Q
+        mabYu8E3Ty2rSilfFzGBjj6DEeu2u7dMdOtSHWZbUV6QpXJ/cUh2CXlAEN26DDOya0aZ3r0NFsPpc
+        k9lbM4hw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLmcO-000AnN-Q0; Mon, 15 Mar 2021 12:46:47 +0000
+Date:   Mon, 15 Mar 2021 12:46:44 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 0/3] vfs: Use an xarray instead of inserted
+ bookmarks to scan mount list
+Message-ID: <20210315124644.GU2577561@casper.infradead.org>
+References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a spelling typo in do_hbm_test.sh
+On Mon, Mar 15, 2021 at 12:07:39PM +0000, David Howells wrote:
+> 
+> Hi Al, Miklós,
+> 
+> Can we consider replacing the "insert cursor" approach we're currently
+> using for proc files to scan the current namespace's mount list[1] with
+> something that uses an xarray of mounts indexed by mnt_id?
+> 
+> This has some advantages:
+> 
+>  (1) It's simpler.  We don't need to insert dummy mount objects as
+>      bookmarks into the mount list and code that's walking the list doesn't
+>      have to carefully step over them.
+> 
+>  (2) We can use the file position to represent the mnt_id and can jump to
+>      it directly - ie. using seek() to jump to a mount object by its ID.
+> 
+>  (3) It might make it easier to use RCU in future to dump mount entries
+>      rather than having to take namespace_sem.  xarray provides for the
+>      possibility of tagging entries to say that they're viewable to avoid
+>      dumping incomplete mount objects.
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- samples/bpf/do_hbm_test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Usually one fully constructs the object, then inserts it into the XArray.
 
-diff --git a/samples/bpf/do_hbm_test.sh b/samples/bpf/do_hbm_test.sh
-index 21790ea5c460..38e4599350db 100755
---- a/samples/bpf/do_hbm_test.sh
-+++ b/samples/bpf/do_hbm_test.sh
-@@ -10,7 +10,7 @@
- Usage() {
-   echo "Script for testing HBM (Host Bandwidth Manager) framework."
-   echo "It creates a cgroup to use for testing and load a BPF program to limit"
--  echo "egress or ingress bandwidht. It then uses iperf3 or netperf to create"
-+  echo "egress or ingress bandwidth. It then uses iperf3 or netperf to create"
-   echo "loads. The output is the goodput in Mbps (unless -D was used)."
-   echo ""
-   echo "USAGE: $name [out] [-b=<prog>|--bpf=<prog>] [-c=<cc>|--cc=<cc>]"
--- 
-2.25.0
+> But there are a number of disadvantages:
+> 
+>  (1) We have to allocate memory to maintain the xarray, which becomes more
+>      of a problem as mnt_id values get scattered.
+
+mnt_id values don't seem to get particularly scattered.  They're allocated
+using an IDA, so they stay small (unlike someone using idr_alloc_cyclic
+;-).
 
