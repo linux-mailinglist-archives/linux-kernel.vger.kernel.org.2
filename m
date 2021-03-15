@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A281333BB1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676F333BB80
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbhCOOMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
+        id S237252AbhCOORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232369AbhCON6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B166564EFD;
-        Mon, 15 Mar 2021 13:58:25 +0000 (UTC)
+        id S232730AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF25164EED;
+        Mon, 15 Mar 2021 13:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816706;
-        bh=LyZorVn6WLDSyc0Nci62hLuKDihJ7RYna7Li6BTwZHg=;
+        s=korg; t=1615816758;
+        bh=0tFYE3MtH4RazdZlGrhlquZE9L0mDp7osAYvpz8Ww1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YSYv/Dsxu+2q4Jm2ztsCx9h+2XFlPMRZfXFs9YZKvNErYZjNowTqiBbMfKfHyuVRR
-         rmnZVnQuZYtzfD55zpQLPEKJGCi3gkFT8gZwHsgO3UI4LPYa3sOlQS7WtAc2/a/xbX
-         /+7yS9suc88pXGYaK7tjH20BDgJqJRCg5MIBl1ko=
+        b=I50eQtcvIWo81rdeqao5QIBWENdgsoEJA1AKU8SiJBktjyQTvUFnQOKZh8W3hSQ8U
+         BPqhbnCOlozkK6tOQ3i90WjcRwtBW0rGyPUFtjEKNG9iQfB7vmyeWsrO7pPpi1t5V0
+         3HkiCpv0g53/GdAPZOEV4nncAYnH4ugvjqxDt7ZQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.14 10/95] can: flexcan: enable RX FIFO after FRZ/HALT valid
+        stable@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 049/120] sparc32: Limit memblock allocation to low memory
 Date:   Mon, 15 Mar 2021 14:56:40 +0100
-Message-Id: <20210315135740.606787146@linuxfoundation.org>
+Message-Id: <20210315135721.590718391@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Andreas Larsson <andreas@gaisler.com>
 
-commit ec15e27cc8904605846a354bb1f808ea1432f853 upstream.
+[ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
 
-RX FIFO enable failed could happen when do system reboot stress test:
+Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
+memblocks instead of bootmem, but also made high memory available via
+memblock allocation which does not work together with e.g. phys_to_virt
+and can lead to kernel panic.
 
-[    0.303958] flexcan 5a8d0000.can: 5a8d0000.can supply xceiver not found, using dummy regulator
-[    0.304281] flexcan 5a8d0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
-[    0.314640] flexcan 5a8d0000.can: registering netdev failed
-[    0.320728] flexcan 5a8e0000.can: 5a8e0000.can supply xceiver not found, using dummy regulator
-[    0.320991] flexcan 5a8e0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
-[    0.331360] flexcan 5a8e0000.can: registering netdev failed
-[    0.337444] flexcan 5a8f0000.can: 5a8f0000.can supply xceiver not found, using dummy regulator
-[    0.337716] flexcan 5a8f0000.can (unnamed net_device) (uninitialized): Could not enable RX FIFO, unsupported core
-[    0.348117] flexcan 5a8f0000.can: registering netdev failed
+This changes back to only low memory being allocatable in the early
+stages, now using memblock allocation.
 
-RX FIFO should be enabled after the FRZ/HALT are valid. But the current
-code enable RX FIFO and FRZ/HALT at the same time.
-
-Fixes: e955cead03117 ("CAN: Add Flexcan CAN controller driver")
-Link: https://lore.kernel.org/r/20210218110037.16591-3-qiangqing.zhang@nxp.com
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/sparc/mm/init_32.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1217,10 +1217,14 @@ static int register_flexcandev(struct ne
- 	if (err)
- 		goto out_chip_disable;
+diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+index 92634d4e440c..89a9244f2cf0 100644
+--- a/arch/sparc/mm/init_32.c
++++ b/arch/sparc/mm/init_32.c
+@@ -199,6 +199,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
+ 	size = memblock_phys_mem_size() - memblock_reserved_size();
+ 	*pages_avail = (size >> PAGE_SHIFT) - high_pages;
  
--	/* set freeze, halt and activate FIFO, restrict register access */
-+	/* set freeze, halt */
-+	err = flexcan_chip_freeze(priv);
-+	if (err)
-+		goto out_chip_disable;
++	/* Only allow low memory to be allocated via memblock allocation */
++	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
 +
-+	/* activate FIFO, restrict register access */
- 	reg = flexcan_read(&regs->mcr);
--	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
--		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
-+	reg |=  FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
- 	flexcan_write(reg, &regs->mcr);
+ 	return max_pfn;
+ }
  
- 	/* Currently we only support newer versions of this core
+-- 
+2.30.1
+
 
 
