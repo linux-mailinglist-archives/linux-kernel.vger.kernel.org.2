@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2C233B737
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39D333B73E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhCON7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59286 "EHLO mail.kernel.org"
+        id S232772AbhCON7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhCONy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D52C64EE3;
-        Mon, 15 Mar 2021 13:54:57 +0000 (UTC)
+        id S229729AbhCONzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:55:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4029F64F01;
+        Mon, 15 Mar 2021 13:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816498;
-        bh=UH8wfHJUhGSjAHiImjldg67Vme/we82x4qabwkFo8aU=;
+        s=korg; t=1615816501;
+        bh=z90pGu7p3BOrQPmS8E6uLrmVTmfzYnYHQMcVmptljWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XNh45/hbnEuzN6d6qXJUJNtyvM3Ta/FKOrCZAmWlNR142RmNv06O0sB6Tq4jYynTa
-         oqQlWRiPB4BVYMtcCIA/mr+AqYL+65l8Xjnzj1bf1UOaB+Sc2SDKQTNXEdDldbIyxC
-         /NrSR2LHpyeATjhsVWP+uR2pZakO/iJ+Do2V/TPw=
+        b=zs7gjBwMFuCOTn3sU6wExWD45OlzrFN4ij/CLiPUyFzv5eJRKuIaeadQpCgULJmO1
+         ZDxzaNP7Z+ww6myFS+lZqTuZ/HPROEQsDM0JrfOaYin9qn2Rniz5+U+meDFxOgVKNc
+         9OHbNdBZuJnEku85FJVq1RMKvjqSMW93oxrC3j/A=
 From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>
-Subject: [PATCH 4.9 73/78] KVM: arm64: Fix exclusive limit for IPA size
-Date:   Mon, 15 Mar 2021 14:52:36 +0100
-Message-Id: <20210315135214.454159692@linuxfoundation.org>
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 4.9 74/78] iio: imu: adis16400: release allocated memory on failure
+Date:   Mon, 15 Mar 2021 14:52:37 +0100
+Message-Id: <20210315135214.486187760@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -42,43 +43,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Marc Zyngier <maz@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Commit 262b003d059c6671601a19057e9fe1a5e7f23722 upstream.
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-When registering a memslot, we check the size and location of that
-memslot against the IPA size to ensure that we can provide guest
-access to the whole of the memory.
+commit ab612b1daf415b62c58e130cb3d0f30b255a14d0 upstream.
 
-Unfortunately, this check rejects memslot that end-up at the exact
-limit of the addressing capability for a given IPA size. For example,
-it refuses the creation of a 2GB memslot at 0x8000000 with a 32bit
-IPA space.
+In adis_update_scan_mode, if allocation for adis->buffer fails,
+previously allocated adis->xfer needs to be released.
 
-Fix it by relaxing the check to accept a memslot reaching the
-limit of the IPA space.
-
-Fixes: c3058d5da222 ("arm/arm64: KVM: Ensure memslots are within KVM_PHYS_SIZE")
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org # 4.4, 4.9
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Link: https://lore.kernel.org/r/20210311100016.3830038-3-maz@kernel.org
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/kvm/mmu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/imu/adis_buffer.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/arch/arm/kvm/mmu.c
-+++ b/arch/arm/kvm/mmu.c
-@@ -1834,7 +1834,7 @@ int kvm_arch_prepare_memory_region(struc
- 	 * Prevent userspace from creating a memory region outside of the IPA
- 	 * space addressable by the KVM guest IPA space.
- 	 */
--	if (memslot->base_gfn + memslot->npages >=
-+	if (memslot->base_gfn + memslot->npages >
- 	    (KVM_PHYS_SIZE >> PAGE_SHIFT))
- 		return -EFAULT;
+--- a/drivers/iio/imu/adis_buffer.c
++++ b/drivers/iio/imu/adis_buffer.c
+@@ -39,8 +39,11 @@ int adis_update_scan_mode(struct iio_dev
+ 		return -ENOMEM;
  
+ 	adis->buffer = kzalloc(indio_dev->scan_bytes * 2, GFP_KERNEL);
+-	if (!adis->buffer)
++	if (!adis->buffer) {
++		kfree(adis->xfer);
++		adis->xfer = NULL;
+ 		return -ENOMEM;
++	}
+ 
+ 	rx = adis->buffer;
+ 	tx = rx + scan_count;
 
 
