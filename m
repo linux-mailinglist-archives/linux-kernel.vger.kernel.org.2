@@ -2,172 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1034C33B4F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9980D33B50B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhCONwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
+        id S230055AbhCONxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhCONvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:51:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8A0964D9E;
-        Mon, 15 Mar 2021 13:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615816303;
-        bh=+BIlPAZ2Vr8nw75QH4LHz5LqpPdXI0+6isk0ygUkL3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qseNXZnkK9rROY8OB4iQubMB9JDLhkaaxooFBeEKM3coajSvaULa/u/T2t/OU94t0
-         oMUqB5PGbYDCDI8WAgJjDKaL3aDDs5M/d4s5FL5NTSrOIBkjSMeuqPv2p44doO+nDQ
-         RDTxKT0dZSxzrC1CFS8CVDY9zj1BpSedcWtY7EvZIOKOwQxkG/jqDM8PYQIZh2V9bR
-         QYwdkupTIRNmpqVhuTcOtcb2Kse1+BObzwSJxRtBqvQ5i080CHfN7gulShypikw5dG
-         gNHh8Me63fkQSJfj/uQ+f47fRRLW0HJhWukjym3ERxXOG/gEzrbBYhsFk4bm5UHC2n
-         wchXdu6VelJUg==
-Date:   Mon, 15 Mar 2021 15:51:17 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-ID: <YE9mVUF0KOPNSfA9@kernel.org>
-References: <cover.1615250634.git.kai.huang@intel.com>
- <d2ebcffeb9193d26a1305e08fe1aa1347feb1c62.1615250634.git.kai.huang@intel.com>
- <YEvg2vNfiDYoc9u3@google.com>
- <YE0M/VoETPw7YZIy@kernel.org>
- <YE0NeChRjBlldQ8H@kernel.org>
- <YE4M8JGGl9Xyx51/@kernel.org>
- <YE4rVnfQ9y7CnVvr@kernel.org>
- <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
- <YE9beKYDaG1sMWq+@kernel.org>
+        id S229729AbhCONwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C76D64EE5;
+        Mon, 15 Mar 2021 13:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615816363;
+        bh=jOpDPpgEsA13zoS/dxdsfNX/nyqPhE7M1ix198zZL+8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sgCdxp2CyC66y8i4YHP3y0WOwjWbgyHkkCu2exumbAFjadL3OOaWoNmbOQ+PT5+0Z
+         pBhEkw0yFl4BOSh7YrFUDFGkNMxLw1d7QJ5D6bFfq+20DLcC8JZTPf41Rnp0XeMfb7
+         R1bnbC9POAymNYnk3IxPIotaFiTwoy6DUjTqC7nU=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Andre Naujoks <nautsch2@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.4 04/75] can: skb: can_skb_set_owner(): fix ref counting if socket was closed before setting skb ownership
+Date:   Mon, 15 Mar 2021 14:51:18 +0100
+Message-Id: <20210315135208.407815122@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE9beKYDaG1sMWq+@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 03:04:59PM +0200, Jarkko Sakkinen wrote:
-> On Mon, Mar 15, 2021 at 04:13:17PM +1300, Kai Huang wrote:
-> > On Sun, 14 Mar 2021 17:27:18 +0200 Jarkko Sakkinen wrote:
-> > > On Sun, Mar 14, 2021 at 05:25:26PM +0200, Jarkko Sakkinen wrote:
-> > > > On Sat, Mar 13, 2021 at 09:07:36PM +0200, Jarkko Sakkinen wrote:
-> > > > > On Sat, Mar 13, 2021 at 09:05:36PM +0200, Jarkko Sakkinen wrote:
-> > > > > > On Fri, Mar 12, 2021 at 01:44:58PM -0800, Sean Christopherson wrote:
-> > > > > > > On Tue, Mar 09, 2021, Kai Huang wrote:
-> > > > > > > > Modify sgx_init() to always try to initialize the virtual EPC driver,
-> > > > > > > > even if the SGX driver is disabled.  The SGX driver might be disabled
-> > > > > > > > if SGX Launch Control is in locked mode, or not supported in the
-> > > > > > > > hardware at all.  This allows (non-Linux) guests that support non-LC
-> > > > > > > > configurations to use SGX.
-> > > > > > > > 
-> > > > > > > > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > > > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > > > > > > > ---
-> > > > > > > >  arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
-> > > > > > > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > index 44fe91a5bfb3..8c922e68274d 100644
-> > > > > > > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > > > > > > @@ -712,7 +712,15 @@ static int __init sgx_init(void)
-> > > > > > > >  		goto err_page_cache;
-> > > > > > > >  	}
-> > > > > > > >  
-> > > > > > > > -	ret = sgx_drv_init();
-> > > > > > > > +	/*
-> > > > > > > > +	 * Always try to initialize the native *and* KVM drivers.
-> > > > > > > > +	 * The KVM driver is less picky than the native one and
-> > > > > > > > +	 * can function if the native one is not supported on the
-> > > > > > > > +	 * current system or fails to initialize.
-> > > > > > > > +	 *
-> > > > > > > > +	 * Error out only if both fail to initialize.
-> > > > > > > > +	 */
-> > > > > > > > +	ret = !!sgx_drv_init() & !!sgx_vepc_init();
-> > > > > > > 
-> > > > > > > I love this code.
-> > > > > > > 
-> > > > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > > > > 
-> > > > > > I'm still wondering why this code let's go through when sgx_drv_init()
-> > > > > > succeeds and sgx_vepc_init() fails.
-> > > > > > 
-> > > > > > The inline comment explains only the mirrored case (which does make
-> > > > > > sense).
-> > > > > 
-> > > > > I.e. if sgx_drv_init() succeeds, I'd expect that sgx_vepc_init() must
-> > > > > succeed. Why expect legitly anything else?
-> > > >  
-> > > > Apologies coming with these ideas at this point, but here is what this
-> > > > led me.
-> > > > 
-> > > > I think that the all this complexity comes from a bad code structure.
-> > > > 
-> > > > So, what is essentially happening here:
-> > > > 
-> > > > - We essentially want to make EPC always work.
-> > > > - Driver optionally.
-> > > > 
-> > > > So what this sums to is something like:
-> > > > 
-> > > >         ret = sgx_epc_init();
-> > > >         if (ret) {
-> > > >                 pr_err("EPC initialization failed.\n");
-> > > >                 return ret;
-> > > >         }
-> > > > 
-> > > >         ret = sgx_drv_init();
-> > > >         if (ret)
-> > > >                 pr_info("Driver could not be initialized.\n");
-> > > > 
-> > > >         /* continue */
-> > > > 
-> > > > I.e. I think there should be a single EPC init, which does both EPC
-> > > > bootstrapping and vepc, and driver initialization comes after that.
-> > > 
-> > > In other words, from SGX point of view, the thing that KVM needs is
-> > > to cut out EPC and driver part into different islands. How this is now
-> > > implemented in the current patch set is half-way there but not yet what
-> > > it should be.
-> > 
-> > Well conceptually, SGX virtualization and SGX driver are two independently
-> > functionalities can be enabled separately, although they both requires some
-> > come functionalities, such as /dev/sgx_provision, which we have moved to
-> > sgx/main.c exactly for this purpose. THerefore, conceptually, it is bad to make
-> > assumption that, if SGX virtualization initialization succeeded, SGX driver
-> > must succeed -- we can potentially add more staff in SGX virtualization in the
-> > future..
-> > 
-> > If the name sgx_vepc_init() confuses you, I can rename it to sgx_virt_init().
-> 
-> I don't understand what would be the bad thing here. Can you open that
-> up please? I'm neither capable of predicting the future...
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Right, so since vepc_init() does only just device file initialization the
-current function structure is fine. I totally forgot that sgx_drv_init()
-does not call EPC initialization when I wrote the above :-) We refactored
-during the inital cycle the driver so many times that I sometimes fix up
-thing, sorry about.
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-To meld this into code:
+commit e940e0895a82c6fbaa259f2615eb52b57ee91a7e upstream.
 
-        ret = sgx_vepc_init();
-        if (ret != -ENODEV) {
-                pr_err("vEPC initialization failed with %d.\n", ret);
-                return ret;
-        }
+There are two ref count variables controlling the free()ing of a socket:
+- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
+- struct sock::sk_wmem_alloc - which accounts the memory allocated by
+  the skbs in the send path.
 
-        ret = sgx_drv_init();
-        if (ret != ENODEV)
-                pr_info("Driver initialization failed %d.\n", ret);
+In case there are still TX skbs on the fly and the socket() is closed,
+the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
+clones an "echo" skb, calls sock_hold() on the original socket and
+references it. This produces the following back trace:
 
-This would also give more accurate information how far the initialization
-went.
+| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
+| refcount_t: addition on 0; use-after-free.
+| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
+| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
+| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+| Backtrace:
+| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
+| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
+| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
+| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
+| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
+| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
+| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
+| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
+| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
+| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
+| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
+| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
 
-/Jarkko
+To fix this problem, only set skb ownership to sockets which have still
+a ref count > 0.
+
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Andre Naujoks <nautsch2@gmail.com>
+Link: https://lore.kernel.org/r/20210226092456.27126-1-o.rempel@pengutronix.de
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/can/skb.h |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -48,8 +48,12 @@ static inline void can_skb_reserve(struc
+ 
+ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+ {
+-	if (sk) {
+-		sock_hold(sk);
++	/* If the socket has already been closed by user space, the
++	 * refcount may already be 0 (and the socket will be freed
++	 * after the last TX skb has been freed). So only increase
++	 * socket refcount if the refcount is > 0.
++	 */
++	if (sk && atomic_inc_not_zero(&sk->sk_refcnt)) {
+ 		skb->destructor = sock_efree;
+ 		skb->sk = sk;
+ 	}
+
+
