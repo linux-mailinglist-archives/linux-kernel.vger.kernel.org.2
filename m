@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2072033BF29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269A333BF2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241807AbhCOOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
+        id S239262AbhCOOy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:54:56 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:36923 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240806AbhCOOwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:52:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEEB264E4D;
-        Mon, 15 Mar 2021 14:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615819961;
-        bh=G3ozJXmGXxAqgrO+D3whXaRr9LYu3Iu2YW+g7hNfPuo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OVrJ2ZTABExkLOf3T9pFk2hY164N3cDdTbU4yBvVpG2Ue5m1HjAjXktQ4GhdZcxTO
-         y2ufICjjv42ebbx3yl5/2eRtgGJj0Z7QEXFD9fW2HClpFzkvuXG5jLVSEXjz+8PQAg
-         uen2Y/yZaPmK/4SD+zERgnidBLItHlVSnkpSQT1sY6AuWcV5uvSDeEPQAB91Zkj8ES
-         4rWtL82GfDZDDd50I3rXsBa4AXMlz0ThGU1ku0NpmbfI0r6if0Qtx5brsvZeN1qzYq
-         +XqhVs+zdwXe4GhJ0TpEzBLqTcMDt/vYBbCrAaeQw8vd4J8cRi9wvcVPX9giO2GSqu
-         2NiMtcbp7KROA==
-Received: by pali.im (Postfix)
-        id 6538182E; Mon, 15 Mar 2021 15:52:38 +0100 (CET)
-Date:   Mon, 15 Mar 2021 15:52:38 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210315145238.6sg5deblr2z2pupu@pali>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
- <20210312173452.3855-5-ameynarkhede03@gmail.com>
- <20210314235545.girtrazsdxtrqo2q@pali>
- <20210315134323.llz2o7yhezwgealp@archlinux>
- <20210315135226.avwmnhkfsgof6ihw@pali>
- <20210315083409.08b1359b@x1.home.shazbot.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210315083409.08b1359b@x1.home.shazbot.org>
-User-Agent: NeoMutt/20180716
+        id S241584AbhCOOw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:52:56 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DzfXt3wJYz9tyTK;
+        Mon, 15 Mar 2021 15:52:46 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id vniJaSbpwf9e; Mon, 15 Mar 2021 15:52:46 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzfXt2SyJz9tyTJ;
+        Mon, 15 Mar 2021 15:52:46 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C8CD08B776;
+        Mon, 15 Mar 2021 15:52:51 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ABtNn8k4BisG; Mon, 15 Mar 2021 15:52:51 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 861B48B75B;
+        Mon, 15 Mar 2021 15:52:51 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 5E62F675E2; Mon, 15 Mar 2021 14:52:51 +0000 (UTC)
+Message-Id: <8038392f38d81f2ad169347efac29146f553b238.1615819955.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/mm: Remove unneeded #ifdef CONFIG_PPC_MEM_KEYS
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 15 Mar 2021 14:52:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 15 March 2021 08:34:09 Alex Williamson wrote:
-> On Mon, 15 Mar 2021 14:52:26 +0100
-> Pali Rohár <pali@kernel.org> wrote:
-> 
-> > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
-> > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > warm reset respectively.  
-> > 
-> > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
-> > type of reset, which is currently implemented only for PCIe hot plug
-> > bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > kernel and therefore drivers do not export this type of reset via any
-> > kernel function (yet).
-> 
-> Warm reset is beyond the scope of this series, but could be implemented
-> in a compatible way to fit within the pci_reset_fn_methods[] array
-> defined here.
+In fault.c, #ifdef CONFIG_PPC_MEM_KEYS is not needed because all
+functions are always defined, and arch_vma_access_permitted()
+always returns true when CONFIG_PPC_MEM_KEYS is not defined so
+access_pkey_error() will return false so bad_access_pkey()
+will never be called.
 
-Ok!
+Include linux/pkeys.h to get a definition of vma_pkeys() for
+bad_access_pkey().
 
-> Note that with this series the resets available through
-> pci_reset_function() and the per device reset attribute is sysfs remain
-> exactly the same as they are currently.  The bus and slot reset
-> methods used here are limited to devices where only a single function is
-> affected by the reset, therefore it is not like the patch you proposed
-> which performed a reset irrespective of the downstream devices.  This
-> series only enables selection of the existing methods.  Thanks,
-> 
-> Alex
-> 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/fault.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-But with this patch series, there is still an issue with PCI secondary
-bus reset mechanism as exported sysfs attribute does not do that
-remove-reset-rescan procedure. As discussed in other thread, this reset
-let device in unconfigured / broken state.
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index bb368257b55c..f1b3f5922f90 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -32,6 +32,7 @@
+ #include <linux/context_tracking.h>
+ #include <linux/hugetlb.h>
+ #include <linux/uaccess.h>
++#include <linux/pkeys.h>
+ 
+ #include <asm/firmware.h>
+ #include <asm/interrupt.h>
+@@ -87,7 +88,6 @@ static noinline int bad_area(struct pt_regs *regs, unsigned long address)
+ 	return __bad_area(regs, address, SEGV_MAPERR);
+ }
+ 
+-#ifdef CONFIG_PPC_MEM_KEYS
+ static noinline int bad_access_pkey(struct pt_regs *regs, unsigned long address,
+ 				    struct vm_area_struct *vma)
+ {
+@@ -127,7 +127,6 @@ static noinline int bad_access_pkey(struct pt_regs *regs, unsigned long address,
+ 
+ 	return 0;
+ }
+-#endif
+ 
+ static noinline int bad_access(struct pt_regs *regs, unsigned long address)
+ {
+@@ -234,7 +233,6 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ 	return false;
+ }
+ 
+-#ifdef CONFIG_PPC_MEM_KEYS
+ static bool access_pkey_error(bool is_write, bool is_exec, bool is_pkey,
+ 			      struct vm_area_struct *vma)
+ {
+@@ -248,7 +246,6 @@ static bool access_pkey_error(bool is_write, bool is_exec, bool is_pkey,
+ 
+ 	return false;
+ }
+-#endif
+ 
+ static bool access_error(bool is_write, bool is_exec, struct vm_area_struct *vma)
+ {
+@@ -492,11 +489,9 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+ 			return bad_area(regs, address);
+ 	}
+ 
+-#ifdef CONFIG_PPC_MEM_KEYS
+ 	if (unlikely(access_pkey_error(is_write, is_exec,
+ 				       (error_code & DSISR_KEYFAULT), vma)))
+ 		return bad_access_pkey(regs, address, vma);
+-#endif /* CONFIG_PPC_MEM_KEYS */
+ 
+ 	if (unlikely(access_error(is_write, is_exec, vma)))
+ 		return bad_access(regs, address);
+-- 
+2.25.0
+
