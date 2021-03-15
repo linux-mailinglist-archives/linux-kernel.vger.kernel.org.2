@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A295833BC81
+	by mail.lfdr.de (Postfix) with ESMTP id 09FFF33BC80
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhCOO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S234400AbhCOO0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233029AbhCOOAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233034AbhCOOAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:00:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 813D964F1E;
-        Mon, 15 Mar 2021 14:00:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 493ED64F38;
+        Mon, 15 Mar 2021 14:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816813;
-        bh=w4QaNXjUDjaiped9JuQNsCoByJ8C/CItVMR5fDiL4kw=;
+        s=korg; t=1615816815;
+        bh=7+xiyjyfbCc/RzfNkjeCk5MZNcx31IYxdwWdpFIj0Sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NK02AoV9l26j14XnbK71vMGEwl9+z2LYp2i+Gre841Na9gisx5F9J8tDxyS4/N+Kp
-         LkxjOo7I9uwXY4+s6HXrWp9IqRBUPs2xOwv/iI6pFc/WU+RPsoynsSDxfH85w7cEFu
-         bpFYafFIuTyyTQJTM+jEQLS3NFTHw1b6uOaHs/9Q=
+        b=eJDSYZo66KbQKdNmvYNStVpfUT3lRBkpQt9tY9pFkKCiCFYCL9/NwumLWMbOzJsIT
+         xk4aC2GN96qiDKn4+3AUFr8qNVspIyVztG4Nq56JVWSozXbW4ObamPqc7ODWwuelQf
+         REuRZBi/CnvzPf5U708Rv9n3nBXU5pxSWsAX22/M=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 140/306] HID: logitech-dj: add support for the new lightspeed connection iteration
-Date:   Mon, 15 Mar 2021 14:53:23 +0100
-Message-Id: <20210315135512.371613741@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 141/306] powerpc/64: Fix stack trace not displaying final frame
+Date:   Mon, 15 Mar 2021 14:53:24 +0100
+Message-Id: <20210315135512.409359198@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,55 +41,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Filipe Laíns <lains@riseup.net>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit fab3a95654eea01d6b0204995be8b7492a00d001 ]
+[ Upstream commit e3de1e291fa58a1ab0f471a4b458eff2514e4b5f ]
 
-This new connection type is the new iteration of the Lightspeed
-connection and will probably be used in some of the newer gaming
-devices. It is currently use in the G Pro X Superlight.
+In commit bf13718bc57a ("powerpc: show registers when unwinding
+interrupt frames") we changed our stack dumping logic to show the full
+registers whenever we find an interrupt frame on the stack.
 
-This patch should be backported to older versions, as currently the
-driver will panic when seing the unsupported connection. This isn't
-an issue when using the receiver that came with the device, as Logitech
-has been using different PIDs when they change the connection type, but
-is an issue when using a generic receiver (well, generic Lightspeed
-receiver), which is the case of the one in the Powerplay mat. Currently,
-the only generic Ligthspeed receiver we support, and the only one that
-exists AFAIK, is ther Powerplay.
+However we didn't notice that on 64-bit this doesn't show the final
+frame, ie. the interrupt that brought us in from userspace, whereas on
+32-bit it does.
 
-As it stands, the driver will panic when seeing a G Pro X Superlight
-connected to the Powerplay receiver and won't send any input events to
-userspace! The kernel will warn about this so the issue should be easy
-to identify, but it is still very worrying how hard it will fail :(
+That is due to confusion about the size of that last frame. The code
+in show_stack() calls validate_sp(), passing it STACK_INT_FRAME_SIZE
+to check the sp is at least that far below the top of the stack.
 
-[915977.398471] logitech-djreceiver 0003:046D:C53A.0107: unusable device of type UNKNOWN (0x0f) connected on slot 1
+However on 64-bit that size is too large for the final frame, because
+it includes the red zone, but we don't allocate a red zone for the
+first frame.
 
-Signed-off-by: Filipe Laíns <lains@riseup.net>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+So add a new define that encodes the correct size for 32-bit and
+64-bit, and use it in show_stack().
+
+This results in the full trace being shown on 64-bit, eg:
+
+  sysrq: Trigger a crash
+  Kernel panic - not syncing: sysrq triggered crash
+  CPU: 0 PID: 83 Comm: sh Not tainted 5.11.0-rc2-gcc-8.2.0-00188-g571abcb96b10-dirty #649
+  Call Trace:
+  [c00000000a1c3ac0] [c000000000897b70] dump_stack+0xc4/0x114 (unreliable)
+  [c00000000a1c3b00] [c00000000014334c] panic+0x178/0x41c
+  [c00000000a1c3ba0] [c00000000094e600] sysrq_handle_crash+0x40/0x50
+  [c00000000a1c3c00] [c00000000094ef98] __handle_sysrq+0xd8/0x210
+  [c00000000a1c3ca0] [c00000000094f820] write_sysrq_trigger+0x100/0x188
+  [c00000000a1c3ce0] [c0000000005559dc] proc_reg_write+0x10c/0x1b0
+  [c00000000a1c3d10] [c000000000479950] vfs_write+0xf0/0x360
+  [c00000000a1c3d60] [c000000000479d9c] ksys_write+0x7c/0x140
+  [c00000000a1c3db0] [c00000000002bf5c] system_call_exception+0x19c/0x2c0
+  [c00000000a1c3e10] [c00000000000d35c] system_call_common+0xec/0x278
+  --- interrupt: c00 at 0x7fff9fbab428
+  NIP:  00007fff9fbab428 LR: 000000001000b724 CTR: 0000000000000000
+  REGS: c00000000a1c3e80 TRAP: 0c00   Not tainted  (5.11.0-rc2-gcc-8.2.0-00188-g571abcb96b10-dirty)
+  MSR:  900000000280f033 <SF,HV,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002884  XER: 00000000
+  IRQMASK: 0
+  GPR00: 0000000000000004 00007fffc3cb8960 00007fff9fc59900 0000000000000001
+  GPR04: 000000002a4b32d0 0000000000000002 0000000000000063 0000000000000063
+  GPR08: 000000002a4b32d0 0000000000000000 0000000000000000 0000000000000000
+  GPR12: 0000000000000000 00007fff9fcca9a0 0000000000000000 0000000000000000
+  GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000100b8fd0
+  GPR20: 000000002a4b3485 00000000100b8f90 0000000000000000 0000000000000000
+  GPR24: 000000002a4b0440 00000000100e77b8 0000000000000020 000000002a4b32d0
+  GPR28: 0000000000000001 0000000000000002 000000002a4b32d0 0000000000000001
+  NIP [00007fff9fbab428] 0x7fff9fbab428
+  LR [000000001000b724] 0x1000b724
+  --- interrupt: c00
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210209141627.2898485-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-logitech-dj.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/powerpc/include/asm/ptrace.h | 3 +++
+ arch/powerpc/kernel/asm-offsets.c | 2 +-
+ arch/powerpc/kernel/process.c     | 2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-index fcdc922bc973..271bd8d24339 100644
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -995,7 +995,12 @@ static void logi_hidpp_recv_queue_notif(struct hid_device *hdev,
- 		workitem.reports_supported |= STD_KEYBOARD;
- 		break;
- 	case 0x0d:
--		device_type = "eQUAD Lightspeed 1_1";
-+		device_type = "eQUAD Lightspeed 1.1";
-+		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
-+		workitem.reports_supported |= STD_KEYBOARD;
-+		break;
-+	case 0x0f:
-+		device_type = "eQUAD Lightspeed 1.2";
- 		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
- 		workitem.reports_supported |= STD_KEYBOARD;
- 		break;
+diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+index 58f9dc060a7b..8236c5e749e4 100644
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -70,6 +70,9 @@ struct pt_regs
+ };
+ #endif
+ 
++
++#define STACK_FRAME_WITH_PT_REGS (STACK_FRAME_OVERHEAD + sizeof(struct pt_regs))
++
+ #ifdef __powerpc64__
+ 
+ /*
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index b12d7c049bfe..989006b5ad0f 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -309,7 +309,7 @@ int main(void)
+ 
+ 	/* Interrupt register frame */
+ 	DEFINE(INT_FRAME_SIZE, STACK_INT_FRAME_SIZE);
+-	DEFINE(SWITCH_FRAME_SIZE, STACK_FRAME_OVERHEAD + sizeof(struct pt_regs));
++	DEFINE(SWITCH_FRAME_SIZE, STACK_FRAME_WITH_PT_REGS);
+ 	STACK_PT_REGS_OFFSET(GPR0, gpr[0]);
+ 	STACK_PT_REGS_OFFSET(GPR1, gpr[1]);
+ 	STACK_PT_REGS_OFFSET(GPR2, gpr[2]);
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index a66f435dabbf..b65a73e4d642 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -2176,7 +2176,7 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+ 		 * See if this is an exception frame.
+ 		 * We look for the "regshere" marker in the current frame.
+ 		 */
+-		if (validate_sp(sp, tsk, STACK_INT_FRAME_SIZE)
++		if (validate_sp(sp, tsk, STACK_FRAME_WITH_PT_REGS)
+ 		    && stack[STACK_FRAME_MARKER] == STACK_FRAME_REGS_MARKER) {
+ 			struct pt_regs *regs = (struct pt_regs *)
+ 				(sp + STACK_FRAME_OVERHEAD);
 -- 
 2.30.1
 
