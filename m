@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57C133BB52
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C44733BA09
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhCOOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S235560AbhCOOHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:07:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232516AbhCON7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29E64F3A;
-        Mon, 15 Mar 2021 13:58:42 +0000 (UTC)
+        id S231602AbhCON6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AEA264EF8;
+        Mon, 15 Mar 2021 13:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816723;
-        bh=DDDeyg45GvOn03ZoQxqrenV4AUdjU6WKHIuQ+dJVNAk=;
+        s=korg; t=1615816688;
+        bh=MYT5fajR3Hw2J9wLkjq1CiCcmSKoOGtNHViFqyTJo78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eScxqGm3vVyvcJXqDo12AJJZiJmsO4+DAAvvMXwLIuAeN8XxulNovas2srasuefce
-         20P9P7gq/67H8D1m6VA4sGQOWmRuEuOrNfo+7V63C3orlPxoOwizdIJZTBFlPCgdu/
-         MNHs92htSKITp/2XrlOybln+vtZT3cEmaPi3sS1o=
+        b=u4vqY1h+94DRd5rUbyb4IFoW4NGcR973QWtyw2b7chIgNP5cm9TYTxMFgepeoD9+g
+         vxUYGMhCddWpVJt5ZAaK3nWmYB/uqDpDUGYo0mmfRRN6aN3AckpjnaRbzf5IhDG/34
+         SrZjCwa0DSXvf4BDQkDd265BTr9JCXFzOZ3XtCrU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
-        Eddie Shklaer <eddies@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 086/306] mlxsw: spectrum_ethtool: Add an external speed to PTYS register
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 056/290] net: lapbether: Remove netif_start_queue / netif_stop_queue
 Date:   Mon, 15 Mar 2021 14:52:29 +0100
-Message-Id: <20210315135510.558953173@linuxfoundation.org>
+Message-Id: <20210315135543.826235082@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +42,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Danielle Ratson <danieller@nvidia.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-commit ae9b24ddb69b4e31cda1b5e267a5a08a1db11717 upstream.
+commit f7d9d4854519fdf4d45c70a4d953438cd88e7e58 upstream.
 
-Currently, only external bits are added to the PTYS register, whereas
-there is one external bit that is wrongly marked as internal, and so was
-recently removed from the register.
+For the devices in this driver, the default qdisc is "noqueue",
+because their "tx_queue_len" is 0.
 
-Add that bit to the PTYS register again, as this bit is no longer
-internal.
+In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
+"noqueue" qdisc are specially handled. Packets are transmitted without
+being queued after a "dev->flags & IFF_UP" check. However, it's possible
+that even if this check succeeds, "ops->ndo_stop" may still have already
+been called. This is because in "__dev_close_many", "ops->ndo_stop" is
+called before clearing the "IFF_UP" flag.
 
-Its removal resulted in '100000baseLR4_ER4/Full' link mode no longer
-being supported, causing a regression on some setups.
+If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
+"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
+checks "netif_xmit_stopped" and finds that the queue is already stopped.
+In this case, it will complain that:
+"Virtual device ... asks to queue packet!"
 
-Fixes: 5bf01b571cf4 ("mlxsw: spectrum_ethtool: Remove internal speeds from PTYS register")
-Signed-off-by: Danielle Ratson <danieller@nvidia.com>
-Reported-by: Eddie Shklaer <eddies@nvidia.com>
-Tested-by: Eddie Shklaer <eddies@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+To prevent "__dev_queue_xmit" from generating this complaint, we should
+not call "netif_stop_queue" in "ops->ndo_stop".
+
+We also don't need to call "netif_start_queue" in "ops->ndo_open",
+because after a netdev is allocated and registered, the
+"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
+to call "netif_start_queue" to clear it.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/reg.h              |    1 +
- drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c |    5 +++++
- drivers/net/ethernet/mellanox/mlxsw/switchx2.c         |    3 ++-
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/wan/lapbether.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/reg.h
-+++ b/drivers/net/ethernet/mellanox/mlxsw/reg.h
-@@ -4430,6 +4430,7 @@ MLXSW_ITEM32(reg, ptys, ext_eth_proto_ca
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4		BIT(20)
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4		BIT(21)
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4		BIT(22)
-+#define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4	BIT(23)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_CR		BIT(27)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_KR		BIT(28)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_SR		BIT(29)
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
-@@ -1171,6 +1171,11 @@ static const struct mlxsw_sp1_port_link_
- 		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT,
- 		.speed		= SPEED_100000,
- 	},
-+	{
-+		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
-+		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT,
-+		.speed		= SPEED_100000,
-+	},
- };
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -283,7 +283,6 @@ static int lapbeth_open(struct net_devic
+ 		return -ENODEV;
+ 	}
  
- #define MLXSW_SP1_PORT_LINK_MODE_LEN ARRAY_SIZE(mlxsw_sp1_port_link_mode)
---- a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-@@ -613,7 +613,8 @@ static const struct mlxsw_sx_port_link_m
- 	{
- 		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4 |
- 				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4 |
--				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4,
-+				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4 |
-+				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
- 		.speed		= 100000,
- 	},
- };
+-	netif_start_queue(dev);
+ 	return 0;
+ }
+ 
+@@ -291,8 +290,6 @@ static int lapbeth_close(struct net_devi
+ {
+ 	int err;
+ 
+-	netif_stop_queue(dev);
+-
+ 	if ((err = lapb_unregister(dev)) != LAPB_OK)
+ 		pr_err("lapb_unregister error: %d\n", err);
+ 
 
 
