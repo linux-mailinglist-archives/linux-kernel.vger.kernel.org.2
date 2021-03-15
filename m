@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ADA33AA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A02C33AA1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCODh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        id S229599AbhCODqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhCODhu (ORCPT
+        with ESMTP id S229488AbhCODpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:37:50 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84615C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:37:50 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id c6so8215174qtc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:37:50 -0700 (PDT)
+        Sun, 14 Mar 2021 23:45:41 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B84C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:45:40 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so13989085pjg.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:45:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jsNszPZXedsfKo/NVYJH3mt7sz+6/7d3/2iK40T3H3E=;
-        b=n4tbZ1hUmWc0FvQk9jHWHSZnJpStEDGWoPWQPelBX1kOfx+uHJaj3r7K2yC32VdJCN
-         +dpp6Ef513EBFnSnjoRVA5/YaMVJV5BSfSPtf7j0h6x5D0WAhNNriiQYHOuRBzigD4ye
-         fA0rd9g9ix6q5F+g6DfbF5lgFFexSs+L53W+4wSCP5hKap8BhKsztS4QRFQX7q4WqfpE
-         q05wEA15tNQ0HtBd9+S6BvMJnUxAhfWbv6ENOnbe9WbZzODXHyHjGjXoP1saOr2kn4KP
-         NnjTA9aFxVOqNYOgN2+c3ZGv96z0X681GnvfWvKxwLBqtZzmWPjezuM0275tnupLcuwF
-         h+MA==
+        bh=AZXwTrKTQx/OD6J1Cdgr6noLCkJcjXYe7PmZkNPxSLw=;
+        b=GW+3M0F4XTrVee2/9JkZlTXDDFvjDx9LnhyGu3Fz7YcGkOtCZjg6/M345D7nHUgOxv
+         RMb9CEfp4fuasgYTcW9hx/wI5G9vJN0G3L0Az6g7Dtlyys6soNQ+Rp7Wk8FvocVSBIxG
+         tOg8Mijm6o7NzOt8q74VMyruY3+LxGhRTsVjgxAHVYm0ytdPNgVICCtufQ16aXgUr6VI
+         Eq//xgdPhgfXbmaz+wct4yZKow3TIn4pdG07xNjmv0hpLMFMGJ74iAvWeSOa53XL0o3A
+         5cgYRKcP55NJRyPcNQXcWFUP6y4ZjDfCuDlLUNl+twexj/oCBufOGaVVYmTnTqjkyqhz
+         5hWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jsNszPZXedsfKo/NVYJH3mt7sz+6/7d3/2iK40T3H3E=;
-        b=cxetqLZJhcTWCckQZe+hAiBuyPX2o9zZy5mdl7Ih1QJLa/tC8zgcxl460zdML+g1V5
-         hjS4wuDKJFLxRQBH9N71F+YMjniutQrv+q+EryBi5BOElC+diVpwuRj1oGlyig8FWOJ+
-         Hyv/E27LY4nZBAAbBAKe3FU09lzRVn5TSO8L7LpInDPG+IB/0nNsqas7lkf6Tzd3jjiz
-         ZbdogdiBHMICwJ7Trk0V0nGbTySshB9tehqZLKMyHAXsnlBzVHB7hnv8qMtMmkuE9t38
-         ekWRdfpVMuWnkMzNVd9Qp6vqVwF6ZtQS440a5spMJq4BcOvLDo7bK1EesLOG4af0Qz4A
-         aAig==
-X-Gm-Message-State: AOAM531TpcqWa9eEnU7qGMWVqI+vnvdraUQqiwBnnYbKBMF8q9AdmQVt
-        c1/Vjkg1tclj1WXt8ePv5tNyj1F7vQmNkhGi
-X-Google-Smtp-Source: ABdhPJzpYoy1WskwOMaatABheKu2F3MpLTCwIufz8o/2TUz+wcty9ZMoQUTgwT2g6edB7+o3vLy76Q==
-X-Received: by 2002:a05:622a:193:: with SMTP id s19mr21275482qtw.366.1615779469848;
-        Sun, 14 Mar 2021 20:37:49 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.55.217])
-        by smtp.gmail.com with ESMTPSA id d70sm11906310qkg.30.2021.03.14.20.37.44
+        bh=AZXwTrKTQx/OD6J1Cdgr6noLCkJcjXYe7PmZkNPxSLw=;
+        b=ZIBw7ov6KoETPn5ImwZ9ZqwEf9b27YOXL9Rik0znPYjjfUMMRohAG2fJcN+vV1tEQj
+         IFtIoZFxgaSwrr5z7AWsdm/nbme5IK8DJAVTVkrv6stcO7rZEB32vIBx/vcFJdrTFcBB
+         wo9+IxMSq1IYmGNfzHfVNI/+5kc1QmMPCH0mgEjLHakeQrhXo2kUUmYUcF8cbQ+3i86G
+         8ir8v+ZPktO4keo49ZjmafcuwGIHQK7i+A8FwxeKqEnBJF5+60r+bKBOqr0HQRpZskOR
+         ac84+aXZO7tlj9Hl3StEAdCzllDhLAHOQ1Vs6ibZQU6b/SDZRnuCwF7rZXBXUW5w5hLg
+         hAlA==
+X-Gm-Message-State: AOAM532ibLKKfo384N1VTI8TU0Pn3l/eL2adtCeuUHTP0jWepkmngHGz
+        egia9mZSXGaYcQPmmXuVDdA=
+X-Google-Smtp-Source: ABdhPJzPpq5RIU2aIz5fDXpDTCJ1X17Eoipi87SCTLHI72uyBaqOG78NBM2kPoYCy8F5mcqtwbzYdQ==
+X-Received: by 2002:a17:90a:7045:: with SMTP id f63mr10517644pjk.35.1615779940495;
+        Sun, 14 Mar 2021 20:45:40 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:9e10:6493:2d45:37bd:648d])
+        by smtp.gmail.com with ESMTPSA id e11sm11761771pfm.24.2021.03.14.20.45.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 20:37:49 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        rppt@kernel.org, akpm@linux-foundation.org,
-        christophe.leroy@csgroup.eu, oss@buserror.net, npiggin@gmail.com,
-        unixbhaskar@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the file head_fsl_booke.S
-Date:   Mon, 15 Mar 2021 09:07:32 +0530
-Message-Id: <20210315033732.4173500-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sun, 14 Mar 2021 20:45:40 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: drop extraneous register load from initialize_mmu
+Date:   Sun, 14 Mar 2021 20:45:33 -0700
+Message-Id: <20210315034533.20643-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/virutal/virtual/
-s/mismach/mismatch/
+Commit a9f2fc628e3a ("xtensa: cleanup MMU setup and kernel layout macros")
+removed the use of a2 in the beginning of the initialize_mmu macro, but
+left the register load that is no longer used. Remove it as well.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- As Randy pointed out I was changing the predefined macro name,so, reverted
- or leave it alone.
- Michael,sorry to run down a cold weave in your spine with my stupdity,this is
- okay.
+ arch/xtensa/include/asm/initialize_mmu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/powerpc/kernel/head_fsl_booke.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
-index 3f4a40cccef5..a955403247f1 100644
---- a/arch/powerpc/kernel/head_fsl_booke.S
-+++ b/arch/powerpc/kernel/head_fsl_booke.S
-@@ -113,7 +113,7 @@ _ENTRY(_start);
-
- 1:
- 	/*
--	 * We have the runtime (virutal) address of our base.
-+	 * We have the runtime (virtual) address of our base.
- 	 * We calculate our shift of offset from a 64M page.
- 	 * We could map the 64M page we belong to at PAGE_OFFSET and
- 	 * get going from there.
-@@ -497,7 +497,7 @@ END_BTB_FLUSH_SECTION
- #endif
- #endif
-
--	bne	2f			/* Bail if permission/valid mismach */
-+	bne	2f			/* Bail if permission/valid mismatch */
-
- 	/* Jump to common tlb load */
- 	b	finish_tlb_load
-@@ -592,7 +592,7 @@ END_BTB_FLUSH_SECTION
- #endif
- #endif
-
--	bne	2f			/* Bail if permission mismach */
-+	bne	2f			/* Bail if permission mismatch */
-
- 	/* Jump to common TLB load point */
- 	b	finish_tlb_load
---
-2.30.2
+diff --git a/arch/xtensa/include/asm/initialize_mmu.h b/arch/xtensa/include/asm/initialize_mmu.h
+index 05cb13dfe6f4..9793b49fc641 100644
+--- a/arch/xtensa/include/asm/initialize_mmu.h
++++ b/arch/xtensa/include/asm/initialize_mmu.h
+@@ -73,7 +73,7 @@
+ 	_j	2f
+ 
+ 	.align	4
+-1:	movi	a2, 0x10000000
++1:
+ 
+ #if CONFIG_KERNEL_LOAD_ADDRESS < 0x40000000ul
+ #define TEMP_MAPPING_VADDR 0x40000000
+-- 
+2.20.1
 
