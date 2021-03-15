@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E828233B4B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B2E33B4BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhCONhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhCONhi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:37:38 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF79C06174A;
-        Mon, 15 Mar 2021 06:37:38 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d23so12106121plq.2;
-        Mon, 15 Mar 2021 06:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fiSNz4Bld/PQvfFvdTn55/ssLR/DWX7rfzFxr95WxDc=;
-        b=eOv37JZH0OP/C/ioUhVtLwq7FJAL27YlfPn6YNIrDEqXc+Q8bS7NQn40DR1fAHdvwn
-         uoxTKoUA9IsT9FcrTFq34tPRCQnw0qU8lQqqELwNXk6cPZKilRGcTSDS0Msun5k2uGiC
-         AXidZ8Uxu2Q1aDy06pFPX8+EJIwbmTi5KKjNG0ZSmi21AA8EbvUYmekUD47Lh579G74M
-         S6bX7yK3EhxASOBOS5WCleSZ5L7kHcZdBw9yMwYeCiyA68Ggtx7noGi/c/9OASxc1kev
-         YrpPupYrV4w/P9rOHhoyzsXAkoCcx6bbiP6DKA6f2CLXUL7rgTGQhXhz26B9ePMG4wKE
-         yVCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fiSNz4Bld/PQvfFvdTn55/ssLR/DWX7rfzFxr95WxDc=;
-        b=lI4YD3HSSQYg1Zd7wVbqX2LJX83BAqtt2x1+xOo23mlAJplra7Ct04FF6bM8sntTVv
-         8GZMaCB1bC0f6QvP+/3Pj3IVXMnNzWMW3zJKsN4/eq1E3RiQbth1B74Bz0VD7w6KytAU
-         HtKnRYfNJT1UiOvnMCog4waoq44lfQ8nfpLpoNrFlRH8M0y+AnUAOBOACb9ws+drZc++
-         Q6iAkCzj8/JUny+Kr8TB5Fbsi8F3Aq/XjxjipqFTvAjyhkrazEUfvSHbcCPEK0JecpY6
-         f/Zngx7D8tK1g91Lao+uQAXbqjFaum8/Lt1cM6eg24qj+TK/E64hCkhczfzNpkajtxB7
-         0/kA==
-X-Gm-Message-State: AOAM532c6rXyPm+8A7yyqFfHAgcZfu6EiMaL4EW3EIHa+MLL/3LHstkf
-        7Nkhwq102acJhwAlbFBR7nc=
-X-Google-Smtp-Source: ABdhPJwYElLS4W4P9UWY2WllTnYNoyDeMolaoAwDW5b7WyepJGoB6xBbtGk2c8sNknfglK21kPEaeA==
-X-Received: by 2002:a17:90a:4104:: with SMTP id u4mr12639092pjf.81.1615815457605;
-        Mon, 15 Mar 2021 06:37:37 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:89b:3eb5:a73b:575c:3e6f:f296])
-        by smtp.googlemail.com with ESMTPSA id z11sm13925851pgj.22.2021.03.15.06.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 06:37:37 -0700 (PDT)
-From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-Cc:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: iio: ad9832: kernel-doc fixes
-Date:   Mon, 15 Mar 2021 19:07:11 +0530
-Message-Id: <20210315133711.26860-1-dmugil2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S229579AbhCONi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:38:58 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:63133 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhCONiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:38:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615815534; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=t2G4Y1dnZ78kKpozKsw/Dxs3XcY6dgOA3b8R4Tyiq2k=;
+ b=MA9Ea9UNzRhFqLm8H8KWiv15i060r966Fy4DEKTkS8a5T3M+S7+ZmPRMOy36YnzRhf1ldhNR
+ ArtNT74oURALt15p/RK7Tgh9gljMTP5TD8VYIgK3qVIZ1t0jeqZe+iKXIbW3ilb7qPvxStIw
+ FEZA72tWZ2EuXuIXWd+XXcuN+hY=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604f63671de5dd7b99009a56 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 13:38:47
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 958FFC433ED; Mon, 15 Mar 2021 13:38:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6170C433CA;
+        Mon, 15 Mar 2021 13:38:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 19:08:45 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org,
+        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: Add SC7280 WPSS
+ support
+In-Reply-To: <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
+References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org>
+ <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
+Message-ID: <1cb4a183234f00c0077b5a95c475a4cc@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes a W=1 warning.
--Added ``:`` to lock parameter in 'ad9832_state' description.
--It's a reference comment so removed /**
+On 2021-03-10 12:58, Rakesh Pillai wrote:
+> Add WPSS PIL loading support for SC7280 SoCs.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>  .../bindings/remoteproc/qcom,hexagon-v56.txt       | 35 
+> ++++++++++++----------
+>  1 file changed, 20 insertions(+), 15 deletions(-)
+> 
+> diff --git
+> a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+> b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+> index 1337a3d..edad5e8 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+> @@ -9,6 +9,7 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
+>  	Definition: must be one of:
+>  		    "qcom,qcs404-cdsp-pil",
+>  		    "qcom,sdm845-adsp-pil"
+> +		    "qcom,sc7280-wpss-pil"
+> 
+>  - reg:
+>  	Usage: required
+> @@ -24,7 +25,13 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
+>  - interrupt-names:
+>  	Usage: required
+>  	Value type: <stringlist>
+> -	Definition: must be "wdog", "fatal", "ready", "handover", "stop-ack"
+> +	Definition: The interrupts needed depends on the compatible string
+> +	qcom,sdm845-adsp-pil:
+> +	qcom,qcs404-cdsp-pil:
+> +		must be "wdog", "fatal", "ready", "handover", "stop-ack"
+> +	qcom,sc7280-wpss-pil:
+> +		must be "wdog", "fatal", "ready", "handover", "stop-ack"
+> +		"shutdown-ack"
+> 
+>  - clocks:
+>  	Usage: required
+> @@ -35,19 +42,17 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
+>  - clock-names:
+>  	Usage: required for SDM845 ADSP
+>  	Value type: <stringlist>
+> -	Definition: List of clock input name strings sorted in the same
+> -		    order as the clocks property. Definition must have
+> -		    "xo", "sway_cbcr", "lpass_ahbs_aon_cbcr",
+> -		    "lpass_ahbm_aon_cbcr", "qdsp6ss_xo", "qdsp6ss_sleep"
+> -		    and "qdsp6ss_core".
+> -
+> -- clock-names:
+> -	Usage: required for QCS404 CDSP
+> -	Value type: <stringlist>
+> -	Definition: List of clock input name strings sorted in the same
+> -		    order as the clocks property. Definition must have
+> -		    "xo", "sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
+> -		    "q6ss_master", "q6_axim".
+> +	Definition: The clocks needed depends on the compatible string
+> +	qcom,sdm845-adsp-pil:
+> +		must be "xo", "sway_cbcr", "lpass_ahbs_aon_cbcr",
+> +		"lpass_ahbm_aon_cbcr", "qdsp6ss_xo", "qdsp6ss_sleep",
+> +		"qdsp6ss_core"
+> +	qcom,qcs404-cdsp-pil:
+> +		must be "xo", "sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
+> +		"q6ss_master", "q6_axim"
+> +	qcom,sc7280-wpss-pil:
+> +		must be "gcc_wpss_ahb_bdg_mst_clk", "gcc_wpss_ahb_clk",
+> +		"gcc_wpss_rscp_clk"
+> 
+>  - power-domains:
 
-Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
----
- drivers/staging/iio/frequency/ad9832.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+IIRC wpss requires both cx and mx. So you'll
+need to add driver code to support multiple
+power-domains.
 
-diff --git a/drivers/staging/iio/frequency/ad9832.c b/drivers/staging/iio/frequency/ad9832.c
-index 74308a2e72db..e31ebba47a3c 100644
---- a/drivers/staging/iio/frequency/ad9832.c
-+++ b/drivers/staging/iio/frequency/ad9832.c
-@@ -86,7 +86,7 @@
-  * @freq_msg:		tuning word spi message
-  * @phase_xfer:		tuning word spi transfer
-  * @phase_msg:		tuning word spi message
-- * @lock		protect sensor state
-+ * @lock:		protect sensor state
-  * @data:		spi transmit buffer
-  * @phase_data:		tuning word spi transmit buffer
-  * @freq_data:		tuning word spi transmit buffer
-@@ -248,7 +248,7 @@ static ssize_t ad9832_write(struct device *dev, struct device_attribute *attr,
- 	return ret ? ret : len;
- }
- 
--/**
-+/*
-  * see dds.h for further information
-  */
- 
+>  	Usage: required
+> @@ -65,7 +70,7 @@ on the Qualcomm Technology Inc. Hexagon v56 core.
+>          Definition: must be "pdc_sync" and "cc_lpass"
+> 
+>  - reset-names:
+> -        Usage: required for QCS404 CDSP
+> +        Usage: required for QCS404 CDSP, SC7280 WPSS
+>          Value type: <stringlist>
+>          Definition: must be "restart"
+
 -- 
-2.25.1
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
