@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E8833B862
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F0E33B860
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhCOODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34280 "EHLO mail.kernel.org"
+        id S234279AbhCOODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhCON5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231348AbhCON5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B84364F0C;
-        Mon, 15 Mar 2021 13:57:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 194E964EF3;
+        Mon, 15 Mar 2021 13:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816626;
-        bh=QBRAwhpye3waUYbqT08YlDboSZ3WWwEkgwyh6D7dgjs=;
+        s=korg; t=1615816628;
+        bh=MRxnbr6GCvzlsTlzldQEnZM3HHwrm9aBD+N7NzrjEOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WNjbfgobUwf7/VvMxVtq+9zVhhMCLD+XzI+JzGih7MNW9DGH3pTwCgmQxDcNFKilT
-         XvZJSMTMi5Sj/yVTX4hVvQ2iRV64fwHAJ3zjM+OeBSOwpLEs0f3fnmUvgHKPEi1Xnj
-         /BAz3oxsSgPHDKqZxITQzAyvxvwOhezi0/qt+tV4=
+        b=XKKRi1xOX9X/S0TqTF+yaHlWbZMRkMwqqJkoGY315Z3eBI/WArq6sG1kFkfEzvUlX
+         VpvcWfQ62/w4jSZKaXPA4iZQllZ5Ah+j2+7RsGn6gfTfv8ORXW0wdJmFY7CDCH2sJR
+         vmLIF039t8MMyreDipziQtTRiEAFnSH6/T+xdnjI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 028/306] net: phy: fix save wrong speed and duplex problem if autoneg is on
-Date:   Mon, 15 Mar 2021 14:51:31 +0100
-Message-Id: <20210315135508.570816874@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Heiko Carstens <hca@linux.ibm.com>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH 5.11 029/306] selftests/bpf: Use the last page in test_snprintf_btf on s390
+Date:   Mon, 15 Mar 2021 14:51:32 +0100
+Message-Id: <20210315135508.613058716@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,51 +42,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-commit d9032dba5a2b2bbf0fdce67c8795300ec9923b43 upstream.
+commit 42a382a466a967dc053c73b969cd2ac2fec502cf upstream.
 
-If phy uses generic driver and autoneg is on, enter command
-"ethtool -s eth0 speed 50" will not change phy speed actually, but
-command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
-has been set to 50 and no update later.
+test_snprintf_btf fails on s390, because NULL points to a readable
+struct lowcore there. Fix by using the last page instead.
 
-And duplex setting has same problem too.
+Error message example:
 
-However, if autoneg is on, phy only changes speed and duplex according to
-phydev->advertising, but not phydev->speed and phydev->duplex. So in this
-case, phydev->speed and phydev->duplex don't need to be set in function
-phy_ethtool_ksettings_set() if autoneg is on.
+    printing fffffffffffff000 should generate error, got (361)
 
-Fixes: 51e2a3846eab ("PHY: Avoid unnecessary aneg restarts")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 076a95f5aff2 ("selftests/bpf: Add bpf_snprintf_btf helper tests")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210227051726.121256-1-iii@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/phy.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/netif_receive_skb.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -276,14 +276,16 @@ int phy_ethtool_ksettings_set(struct phy
+--- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
++++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+@@ -16,6 +16,13 @@ bool skip = false;
+ #define STRSIZE			2048
+ #define EXPECTED_STRSIZE	256
  
- 	phydev->autoneg = autoneg;
++#if defined(bpf_target_s390)
++/* NULL points to a readable struct lowcore on s390, so take the last page */
++#define BADPTR			((void *)0xFFFFFFFFFFFFF000ULL)
++#else
++#define BADPTR			0
++#endif
++
+ #ifndef ARRAY_SIZE
+ #define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
+ #endif
+@@ -113,11 +120,11 @@ int BPF_PROG(trace_netif_receive_skb, st
+ 	}
  
--	phydev->speed = speed;
-+	if (autoneg == AUTONEG_DISABLE) {
-+		phydev->speed = speed;
-+		phydev->duplex = duplex;
-+	}
- 
- 	linkmode_copy(phydev->advertising, advertising);
- 
- 	linkmode_mod_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
- 			 phydev->advertising, autoneg == AUTONEG_ENABLE);
- 
--	phydev->duplex = duplex;
- 	phydev->master_slave_set = cmd->base.master_slave_cfg;
- 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
+ 	/* Check invalid ptr value */
+-	p.ptr = 0;
++	p.ptr = BADPTR;
+ 	__ret = bpf_snprintf_btf(str, STRSIZE, &p, sizeof(p), 0);
+ 	if (__ret >= 0) {
+-		bpf_printk("printing NULL should generate error, got (%d)",
+-			   __ret);
++		bpf_printk("printing %llx should generate error, got (%d)",
++			   (unsigned long long)BADPTR, __ret);
+ 		ret = -ERANGE;
+ 	}
  
 
 
