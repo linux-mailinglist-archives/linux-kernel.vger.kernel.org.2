@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B3633BE82
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10A933BDFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240301AbhCOOrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49068 "EHLO mail.kernel.org"
+        id S237895AbhCOOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233781AbhCOOC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EED664DAD;
-        Mon, 15 Mar 2021 14:02:25 +0000 (UTC)
+        id S234012AbhCOOCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBEF364E89;
+        Mon, 15 Mar 2021 14:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816946;
-        bh=TdUoMvo2H0GDPyoDwerfi7adSNUUcIwNIB/j/sYxhY0=;
+        s=korg; t=1615816967;
+        bh=P2QOQYIZikTPjf1XFpcVc68IDWfLnmcVV5erqVDP8Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aeKyr83Sb/AZVSCukaJzsS8XzB13lEL+lxG3qsaNWQaLKf8qTWVVFARqPVWevaf3a
-         hLPFiA8mP4gS29y5uE6XUrG9oA/6VA4CmieUE0UBtb7a2ZYn8t3oJHRfx1HqwMUSjk
-         SfHVY3KtdvhT44Xijunt2zWYXVrOqNOrYWUYJq6I=
+        b=ryUmYoTWppNMEki16eFiZMcYIMWPCCfVQfRklv8nxoE6ejYJioIF2LOXSPuZkx07k
+         DbVAZ2UPWuoQcdb1m8/4FaHJXIpskgzq1ZyAcZgBmH3lHaHTX5kE6+zjlyaK3hoa/y
+         lbyMPhQsti98JdWCYlOQH+rf9z1ZXs9MZyxFgNpc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 5.10 204/290] usb: dwc3: qcom: add ACPI device id for sc8180x
-Date:   Mon, 15 Mar 2021 14:54:57 +0100
-Message-Id: <20210315135548.817625315@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.11 235/306] staging: comedi: pcl711: Fix endian problem for AI command data
+Date:   Mon, 15 Mar 2021 14:54:58 +0100
+Message-Id: <20210315135515.585897862@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 1edbff9c80ed32071fffa7dbaaea507fdb21ff2d upstream.
+commit a084303a645896e834883f2c5170d044410dfdb3 upstream.
 
-It enables USB Host support for sc8180x ACPI boot, both the standalone
-one and the one behind URS (USB Role Switch).  And they share the
-the same dwc3_acpi_pdata with sdm845.
+The analog input subdevice supports Comedi asynchronous commands that
+use Comedi's 16-bit sample format.  However, the call to
+`comedi_buf_write_samples()` is passing the address of a 32-bit integer
+variable.  On bigendian machines, this will copy 2 bytes from the wrong
+end of the 32-bit value.  Fix it by changing the type of the variable
+holding the sample value to `unsigned short`.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Link: https://lore.kernel.org/r/20210301075745.20544-1-shawn.guo@linaro.org
-Cc: stable <stable@vger.kernel.org>
+Fixes: 1f44c034de2e ("staging: comedi: pcl711: use comedi_buf_write_samples()")
+Cc: <stable@vger.kernel.org> # 3.19+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-9-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/dwc3-qcom.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/comedi/drivers/pcl711.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -935,6 +935,8 @@ static const struct dwc3_acpi_pdata sdm8
- static const struct acpi_device_id dwc3_qcom_acpi_match[] = {
- 	{ "QCOM2430", (unsigned long)&sdm845_acpi_pdata },
- 	{ "QCOM0304", (unsigned long)&sdm845_acpi_urs_pdata },
-+	{ "QCOM0497", (unsigned long)&sdm845_acpi_urs_pdata },
-+	{ "QCOM04A6", (unsigned long)&sdm845_acpi_pdata },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, dwc3_qcom_acpi_match);
+--- a/drivers/staging/comedi/drivers/pcl711.c
++++ b/drivers/staging/comedi/drivers/pcl711.c
+@@ -184,7 +184,7 @@ static irqreturn_t pcl711_interrupt(int
+ 	struct comedi_device *dev = d;
+ 	struct comedi_subdevice *s = dev->read_subdev;
+ 	struct comedi_cmd *cmd = &s->async->cmd;
+-	unsigned int data;
++	unsigned short data;
+ 
+ 	if (!dev->attached) {
+ 		dev_err(dev->class_dev, "spurious interrupt\n");
 
 
