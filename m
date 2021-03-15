@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595C733BD07
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064E133BDA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhCOObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S240614AbhCOOiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233213AbhCOOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DB0964E4D;
-        Mon, 15 Mar 2021 14:00:37 +0000 (UTC)
+        id S233299AbhCOOBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC62064EF3;
+        Mon, 15 Mar 2021 14:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816838;
-        bh=+n5j4zE8rJl1Cmjns4artfJB5xevLJlGOLOqMrFyzmM=;
+        s=korg; t=1615816839;
+        bh=w4QaNXjUDjaiped9JuQNsCoByJ8C/CItVMR5fDiL4kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WOrQ5BV7VoYyg70f7DNEFiX6fS8MxCWXLr8FreqryWuBw6QuWqILDK+5R+v+5iubQ
-         ok46imb0U//JHo3yc4VFINKPOPbcD6pIbMMLEMs0H+R0aK7InXzACKiEKL+kM03heb
-         ODLEn+c0nZS9PCmtkiMTkMXjJJg0rW9eTcJsfT7I=
+        b=jFTFgKeTqYkLIe3Gh9h+OJnTv6zShfSBjJi6noCCqsdRmAm1rN/XxpjuEJZiUK8Jw
+         qScuke+OJlTnGH275VVnAvWxXvbG8WYC/Tfg6ZA2zMswHSB2XajPUgok2H4aPq3NtL
+         slOJWSElXcMEHEjEXI//FHzZEVMkuBbCD3vxpzLk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 143/290] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
-Date:   Mon, 15 Mar 2021 14:53:56 +0100
-Message-Id: <20210315135546.747176098@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 144/290] HID: logitech-dj: add support for the new lightspeed connection iteration
+Date:   Mon, 15 Mar 2021 14:53:57 +0100
+Message-Id: <20210315135546.778815639@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,78 +42,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Filipe Laíns <lains@riseup.net>
 
-[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
+[ Upstream commit fab3a95654eea01d6b0204995be8b7492a00d001 ]
 
-While sampling for marked events, currently we record the sample only
-if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
-set. SIAR_VALID bit is used for fetching the instruction address from
-Sampled Instruction Address Register(SIAR). But there are some
-usecases, where the user is interested only in the PMU stats at each
-counter overflow and the exact IP of the overflow event is not
-required. Dropping SIAR invalid samples will fail to record some of
-the counter overflows in such cases.
+This new connection type is the new iteration of the Lightspeed
+connection and will probably be used in some of the newer gaming
+devices. It is currently use in the G Pro X Superlight.
 
-Example of such usecase is dumping the PMU stats (event counts) after
-some regular amount of instructions/events from the userspace (ex: via
-ptrace). Here counter overflow is indicated to userspace via signal
-handler, and captured by monitoring and enabling I/O signaling on the
-event file descriptor. In these cases, we expect to get
-sample/overflow indication after each specified sample_period.
+This patch should be backported to older versions, as currently the
+driver will panic when seing the unsupported connection. This isn't
+an issue when using the receiver that came with the device, as Logitech
+has been using different PIDs when they change the connection type, but
+is an issue when using a generic receiver (well, generic Lightspeed
+receiver), which is the case of the one in the Powerplay mat. Currently,
+the only generic Ligthspeed receiver we support, and the only one that
+exists AFAIK, is ther Powerplay.
 
-Perf event attribute will not have PERF_SAMPLE_IP set in the
-sample_type if exact IP of the overflow event is not requested. So
-while profiling if SAMPLE_IP is not set, just record the counter
-overflow irrespective of SIAR_VALID check.
+As it stands, the driver will panic when seeing a G Pro X Superlight
+connected to the Powerplay receiver and won't send any input events to
+userspace! The kernel will warn about this so the issue should be easy
+to identify, but it is still very worrying how hard it will fail :(
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-[mpe: Reflow comment and if formatting]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
+[915977.398471] logitech-djreceiver 0003:046D:C53A.0107: unusable device of type UNKNOWN (0x0f) connected on slot 1
+
+Signed-off-by: Filipe Laíns <lains@riseup.net>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/hid/hid-logitech-dj.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 426baa4de602..ded4a3efd3f0 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2112,7 +2112,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 			left += period;
- 			if (left <= 0)
- 				left = period;
--			record = siar_valid(regs);
-+
-+			/*
-+			 * If address is not requested in the sample via
-+			 * PERF_SAMPLE_IP, just record that sample irrespective
-+			 * of SIAR valid check.
-+			 */
-+			if (event->attr.sample_type & PERF_SAMPLE_IP)
-+				record = siar_valid(regs);
-+			else
-+				record = 1;
-+
- 			event->hw.last_period = event->hw.sample_period;
- 		}
- 		if (left < 0x80000000LL)
-@@ -2130,9 +2140,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
- 	 * these cases.
- 	 */
--	if (event->attr.exclude_kernel && record)
--		if (is_kernel_addr(mfspr(SPRN_SIAR)))
--			record = 0;
-+	if (event->attr.exclude_kernel &&
-+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
-+	    is_kernel_addr(mfspr(SPRN_SIAR)))
-+		record = 0;
- 
- 	/*
- 	 * Finally record data if requested.
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index fcdc922bc973..271bd8d24339 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -995,7 +995,12 @@ static void logi_hidpp_recv_queue_notif(struct hid_device *hdev,
+ 		workitem.reports_supported |= STD_KEYBOARD;
+ 		break;
+ 	case 0x0d:
+-		device_type = "eQUAD Lightspeed 1_1";
++		device_type = "eQUAD Lightspeed 1.1";
++		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
++		workitem.reports_supported |= STD_KEYBOARD;
++		break;
++	case 0x0f:
++		device_type = "eQUAD Lightspeed 1.2";
+ 		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
+ 		workitem.reports_supported |= STD_KEYBOARD;
+ 		break;
 -- 
 2.30.1
 
