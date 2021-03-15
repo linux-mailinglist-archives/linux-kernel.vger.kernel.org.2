@@ -2,142 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BF433C919
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A47033C927
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhCOWJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:09:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:24979 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhCOWJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:09:36 -0400
-IronPort-SDR: 92spJeBzHVX1Wqwx0W/3ytlPnt6+cBuFFYzv/tjVsTNJGUirjzRzyW800UHKZQdWCTwpRTgEjE
- ZYjbRX5ZATmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189252800"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="189252800"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 15:09:34 -0700
-IronPort-SDR: h8R33qztUP4g3UWFP1eMSDTvke59umLwYr2NaDzDujI4j9ez+ZOoIOyvqjxkBlv7P+E+GuGOUu
- g5ZI9i5IL7Kw==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="522298432"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 15:09:34 -0700
-Date:   Mon, 15 Mar 2021 15:11:55 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        jacob.jun.pan@intel.com
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <20210315151155.383a7e6e@jacob-builder>
-In-Reply-To: <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
-References: <20210302081705.1990283-1-vipinsh@google.com>
-        <20210302081705.1990283-3-vipinsh@google.com>
-        <20210303185513.27e18fce@jacob-builder>
-        <YEB8i6Chq4K/GGF6@google.com>
-        <YECfhCJtHUL9cB2L@slm.duckdns.org>
-        <20210312125821.22d9bfca@jacob-builder>
-        <YEvZ4muXqiSScQ8i@google.com>
-        <20210312145904.4071a9d6@jacob-builder>
-        <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
-        <20210313085701.1fd16a39@jacob-builder>
-        <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229945AbhCOWNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:13:21 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41990 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhCOWNG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 18:13:06 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E1A82316;
+        Mon, 15 Mar 2021 23:13:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615846385;
+        bh=73c9i3x/pZaVNcLHX/PwQ73wX2ErVRnjivgwz2iKHoQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ckPK2DNP7sWGYN/x56bTYCBuTD8ctf1HNtCkv9MBhmpsk7nmxgeIvWAJQ14j4Xp5A
+         JUFt+lWapV4xAlJl9uK9wRD8/yd1qeKlQtsNg3NGO0McyNmZC60rYFAYxq3XFkWNnQ
+         HcteAA9/OoWaIEl1afjlYJ7l/1A1wXXaKmQNKL/E=
+Date:   Tue, 16 Mar 2021 00:12:29 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
+ files
+Message-ID: <YE/bzbU4jbgd6uNW@pendragon.ideasonboard.com>
+References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7>
+ <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
+ <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
+ <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+ <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
+Hi Yamada-san,
 
-On Sat, 13 Mar 2021 13:05:36 -0500, Tejun Heo <tj@kernel.org> wrote:
-
-> Hello,
+On Tue, Mar 16, 2021 at 02:43:45AM +0900, Masahiro Yamada wrote:
+> On Mon, Mar 15, 2021 at 3:40 PM Viresh Kumar wrote:
+> > On 14-03-21, 20:16, Frank Rowand wrote:
+> > > On 3/12/21 11:11 PM, Frank Rowand wrote:
+> > > > On 3/12/21 1:13 AM, Viresh Kumar wrote:
+> > > >> On 12-03-21, 01:09, Frank Rowand wrote:
+> > > >>> I suggested having the .dtso files include the .dts file because that is a relatively
+> > > >>> small and easy change to test.  What would probably make more sense is the rename
+> > > >>> the existing overlay .dts files to be .dtso files and then for each overlay .dtso
+> > > >>> file create a new .dts file that #includes the corresponding .dtso file.  This is
+> > > >>> more work and churn, but easier to document that the .dts files are a hack that is
+> > > >>> needed so that the corresponding .dtb.S files will be generated.
+> > > >>
+> > > >> What about creating links instead then ?
+> > > >>
+> > > >
+> > > > I don't really like the idea of using links here.
+> > > >
+> > > > Maybe it is best to make the changes needed to allow the unittest
+> > > > overlays to be .dtso instead of .dts.
+> > > >
+> > > > Off the top of my head:
+> > > >
+> > > >   scripts/Makefile.lib:
+> > > >      The rule for %.dtb.S invokes cmd_dt_S_dtb, which puts the
+> > > >      overlay data in section .dtb.init.rodata, with a label
+> > > >      pointing to the beginning of the overlay __dtb_XXX_begin and
+> > > >      a label pointing to the end of the overlay __dtb_XXX_end,
+> > > >      for the overlay named XXX.  I _think_ that you could simply
+> > > >      add a corresponding rule for %.dtbo.S using a new command
+> > > >      cmd_dt_S_dtbo (the same as cmd_dt_S_dtb, except use labels
+> > > >      __dtbo_XXX_begin and __dtbo_XXX_end).
+> > >
+> > > If you do the above, please put it in drivers/of/unittest-data/Makefile
+> > > instead of scripts/Makefile.lib because it is unittest.c specific and
+> > > not meant to be anywhere else in the kernel.
+> >
+> > What about doing this then in unittest's Makefile instead (which I
+> > already suggested earlier), that will make everything work just fine
+> > without any other changes ?
+> >
+> > +# Required for of unittest files as they can't be renamed to .dtso
+> > +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+> > +       $(call if_changed_dep,dtc)
+> >
 > 
-> On Sat, Mar 13, 2021 at 08:57:01AM -0800, Jacob Pan wrote:
-> > Isn't PIDs controller doing the charge/uncharge? I was under the
-> > impression that each resource can be independently charged/uncharged,
-> > why it affects other resources? Sorry for the basic question.  
+> If those rules are only needed by drivers/of/unittest-data/Makefile,
+> they should not be located in scripts/Makefile.lib.
 > 
-> Yeah, PID is an exception as we needed the initial migration to seed new
-> cgroups and it gets really confusing with other ways to observe the
-> processes - e.g. if you follow the original way of creating a cgroup,
-> forking and then moving the seed process into the target cgroup, if we
-> don't migrate the pid charge together, the numbers wouldn't agree and the
-> seeder cgroup may end up running out of pids if there are any
-> restrictions.
-> 
-Thanks for explaining. Unfortunately, it seems IOASIDs has a similar needs
-in terms of migrating the charge.
+> But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
+> if these are doing bad things.
+> They seem to be overlay files even though the file name suffix is .dts
 
-> > I also didn't quite get the limitation on cgroup v2 migration, this is
-> > much simpler than memcg. Could you give me some pointers?  
-> 
-> Migration itself doesn't have restrictions but all resources are
-> distributed on the same hierarchy, so the controllers are supposed to
-> follow the same conventions that can be implemented by all controllers.
-> 
-Got it, I guess that is the behavior required by the unified hierarchy.
-Cgroup v1 would be ok? But I am guessing we are not extending on v1?
+That is correct, they are overlays. I have no issue with those files
+being renamed to .dtso if that can help (but I haven't checked if that
+would have any adverse effect on the R-Car DU driver).
 
-> > BTW, since the IOASIDs are used to tag DMA and bound with guest
-> > process(mm) for shared virtual addressing. fork() cannot be supported,
-> > so I guess clone is not a solution here.  
-> 
-> Can you please elaborate what wouldn't work? The new spawning into a new
-> cgroup w/ clone doesn't really change the usage model. It's just a neater
-> way to seed a new cgroup. If you're saying that the overall usage model
-> doesn't fit the needs of IOASIDs, it likely shouldn't be a cgroup
-> controller.
-> 
-The IOASIDs are programmed into devices to generate DMA requests tagged
-with them. The IOMMU has a per device IOASID table with each entry has two
-pointers:
- - the PGD of the guest process.
- - the PGD of the host process
+These files are there to ensure backward compatibility with older DT
+bindings. The change was made 3 years ago and I wouldn't object to
+dropping this completely, but I understand I may not be the most
+cautious person when it comes to ensuring DT backward compatibility :-)
 
-The result of this 2 stage/nested translation is that we can share virtual
-address (SVA) between guest process and DMA. The host process needs to
-allocate multiple IOASIDs since one IOASID is needed for each guest process
-who wants SVA.
+> $ find drivers -name '*.dts'
+> drivers/staging/pi433/Documentation/devicetree/pi433-overlay.dts
+> drivers/staging/mt7621-dts/gbpc2.dts
+> drivers/staging/mt7621-dts/gbpc1.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
+> drivers/of/unittest-data/overlay_1.dts
+> drivers/of/unittest-data/testcases.dts
+> drivers/of/unittest-data/overlay_bad_add_dup_node.dts
+> drivers/of/unittest-data/overlay_bad_symbol.dts
+> drivers/of/unittest-data/overlay_0.dts
+> drivers/of/unittest-data/overlay_11.dts
+> drivers/of/unittest-data/overlay_gpio_03.dts
+> drivers/of/unittest-data/overlay_gpio_04a.dts
+> drivers/of/unittest-data/overlay_gpio_04b.dts
+> drivers/of/unittest-data/overlay_5.dts
+> drivers/of/unittest-data/overlay_bad_add_dup_prop.dts
+> drivers/of/unittest-data/overlay_gpio_01.dts
+> drivers/of/unittest-data/overlay_10.dts
+> drivers/of/unittest-data/overlay_7.dts
+> drivers/of/unittest-data/overlay_bad_phandle.dts
+> drivers/of/unittest-data/overlay_3.dts
+> drivers/of/unittest-data/overlay_6.dts
+> drivers/of/unittest-data/overlay_8.dts
+> drivers/of/unittest-data/overlay_12.dts
+> drivers/of/unittest-data/overlay_gpio_02a.dts
+> drivers/of/unittest-data/overlay_gpio_02b.dts
+> drivers/of/unittest-data/overlay_4.dts
+> drivers/of/unittest-data/overlay.dts
+> drivers/of/unittest-data/overlay_9.dts
+> drivers/of/unittest-data/overlay_2.dts
+> drivers/of/unittest-data/overlay_15.dts
+> drivers/of/unittest-data/overlay_base.dts
+> drivers/of/unittest-data/overlay_13.dts
 
-The DMA binding among device-IOMMU-process is setup via a series of user
-APIs (e.g. via VFIO).
+-- 
+Regards,
 
-If a process calls fork(), the children does not inherit the IOASIDs and
-their bindings. Children who wish to use SVA has to call those APIs to
-establish the binding for themselves.
-
-Therefore, if a host process allocates 10 IOASIDs then does a
-fork()/clone(), it cannot charge 10 IOASIDs in the new cgroup. i.e. the 10
-IOASIDs stays with the process wherever it goes.
-
-I feel this fit in the domain model, true?
-
-> Thanks.
-> 
-
-
-Thanks,
-
-Jacob
+Laurent Pinchart
