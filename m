@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F2433B514
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D3A33B519
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCONxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
+        id S230260AbhCONxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhCONwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B7E64EF1;
-        Mon, 15 Mar 2021 13:52:47 +0000 (UTC)
+        id S229536AbhCONwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A27E764EB6;
+        Mon, 15 Mar 2021 13:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816368;
-        bh=OWJwJ/RfU9eoP+lt2ixvaneMue5Og0CGiVdowaQOylU=;
+        s=korg; t=1615816375;
+        bh=90rt/R300T0yeBDlUv1j8R/0HAAsGEgXlH838DM2RxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=00yE1A52SCRC0DQ3PBMdwF3xJYnoHdCMXgwkQWtm6jEqT86zv6Z/ktUT2frBZ6JWK
-         XFslbUVlyO7D0O1IBIxtXvhK+OIkodCvkgMvEvarf8fVOgEHeG6vmejHcxQC4I/jdY
-         vTi2q+j4pkVutOgMB7Rvv1NOew0QtD3BhlNx8/v8=
+        b=S9HU1iczRehOurdhG3sGQCWoPWl/twu/+t2YAZ9Dn+OrSKe0lrsHscN3zOM6XubZS
+         RTuHBZy/Ii1IchI7P/ucxva9kZ8+bGYdANAopzmxfV1eUnp1G2Xfpo8WNG7gWRHjB8
+         KxF5hT3ofeCIoVWbBP8AxsSmwcGwMpdqtLuRkiAg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.9 01/78] uapi: nfnetlink_cthelper.h: fix userspace compilation error
+        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+        Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 10/75] Revert "mm, slub: consider rest of partial list if acquire_slab() fails"
 Date:   Mon, 15 Mar 2021 14:51:24 +0100
-Message-Id: <20210315135212.109105280@linuxfoundation.org>
+Message-Id: <20210315135208.602406622@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,33 +45,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dmitry V. Levin <ldv@altlinux.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit c33cb0020ee6dd96cc9976d6085a7d8422f6dbed upstream.
+commit 9b1ea29bc0d7b94d420f96a0f4121403efc3dd85 upstream.
 
-Apparently, <linux/netfilter/nfnetlink_cthelper.h> and
-<linux/netfilter/nfnetlink_acct.h> could not be included into the same
-compilation unit because of a cut-and-paste typo in the former header.
+This reverts commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf.
 
-Fixes: 12f7a505331e6 ("netfilter: add user-space connection tracking helper infrastructure")
-Cc: <stable@vger.kernel.org> # v3.6
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+The kernel test robot reports a huge performance regression due to the
+commit, and the reason seems fairly straightforward: when there is
+contention on the page list (which is what causes acquire_slab() to
+fail), we do _not_ want to just loop and try again, because that will
+transfer the contention to the 'n->list_lock' spinlock we hold, and
+just make things even worse.
+
+This is admittedly likely a problem only on big machines - the kernel
+test robot report comes from a 96-thread dual socket Intel Xeon Gold
+6252 setup, but the regression there really is quite noticeable:
+
+   -47.9% regression of stress-ng.rawpkt.ops_per_sec
+
+and the commit that was marked as being fixed (7ced37197196: "slub:
+Acquire_slab() avoid loop") actually did the loop exit early very
+intentionally (the hint being that "avoid loop" part of that commit
+message), exactly to avoid this issue.
+
+The correct thing to do may be to pick some kind of reasonable middle
+ground: instead of breaking out of the loop on the very first sign of
+contention, or trying over and over and over again, the right thing may
+be to re-try _once_, and then give up on the second failure (or pick
+your favorite value for "once"..).
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
+Cc: Jann Horn <jannh@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Acked-by: Christoph Lameter <cl@linux.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/uapi/linux/netfilter/nfnetlink_cthelper.h |    2 +-
+ mm/slub.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-+++ b/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-@@ -4,7 +4,7 @@
- #define NFCT_HELPER_STATUS_DISABLED	0
- #define NFCT_HELPER_STATUS_ENABLED	1
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1682,7 +1682,7 @@ static void *get_partial_node(struct kme
  
--enum nfnl_acct_msg_types {
-+enum nfnl_cthelper_msg_types {
- 	NFNL_MSG_CTHELPER_NEW,
- 	NFNL_MSG_CTHELPER_GET,
- 	NFNL_MSG_CTHELPER_DEL,
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			continue; /* cmpxchg raced */
++			break;
+ 
+ 		available += objects;
+ 		if (!object) {
 
 
