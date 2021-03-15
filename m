@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE0133BFE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DF733BFF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhCOPeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:34:25 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:33894 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhCOPeO (ORCPT
+        id S232025AbhCOPe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhCOPe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:34:14 -0400
-Received: by mail-ot1-f52.google.com with SMTP id n23so7213964otq.1;
-        Mon, 15 Mar 2021 08:34:14 -0700 (PDT)
+        Mon, 15 Mar 2021 11:34:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8110C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:34:26 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id n16so57568332lfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJFHgQj3Rz5NWDR4XSLYMVinHkl1IuvWsJnnQR1mi3o=;
+        b=J/c5I95b0Hba1H+HkbeBYx+R2Rk7dFsvCoVzEzi3+2GnM3eyQu3OpehyaAz+HW9hQe
+         Ldn06hcbwYPP0+HMNIrrA1Dwdf5sS8vIWDJoDuw3QLvYFZLZT4LHlXcAwpdpLyt6ofD2
+         jOktV+J4PoWD/g19bu5zgmCRZW6oqbDRwW8sw7w12XO5kZnMnG5qCCT+mubiCdHspL4a
+         Q8JFZJuKLz4G/SuT3FdBtjMrF3feGMs4gOYvdNHhpN+gNizyWDDz+aJP1bbmWjCLzD1g
+         EOsDiK7OlGGWVJhfYstvNy4xkocD0V6Cc75qOQN8FeDVp6zY3k4Ki2ZO+KobFthjaJtv
+         8moA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w2PzQp98xEVljnuInqGfZNpkRUMzLCMEZ5M6TM/sg/0=;
-        b=qBerCCiV3UsDsZgvgOxDfEzsfqmXUDUQK3HBe1tQ95dv1tPDCyvnzOSKZ+Sr43glfr
-         a9n2GkVti5+kSPrBeAfpJEzSrU6OYodGVXwtgv0LFGd4mUyOoApmchSdFiXa0sKAkKQh
-         miouKQqZs7+f0mVWScpFvRxN8XuZCAyUVyjptsN7tnvDvdURoVDpCIwi7JMeaI65gWUc
-         T2rp/EVh418R94Ih36RlIzWKKjxewe99PENV9sPu77SgbX62lwsUWkGdgQVyZEeaDFMm
-         y1KmOZTezNPfm0nIaL5Wm1bEFmthJcBlpGukkASc+vtSjNtcQDF8lEbpxwJBWe7stJ62
-         BOcA==
-X-Gm-Message-State: AOAM533o98jipz/LPxH6O72JI2uzvsfiltQYink8xglh6Xu7EntBhXkO
-        cgm5ztmcGGanZjuo0su/U0HQnQy3uN1YNgRLtQ0=
-X-Google-Smtp-Source: ABdhPJyl/cbr7pq28PHZ/0h31pXlvj6SfsiJtApwzlRSUKiFzC/UHOEFF4rEujy7pXbWO9dTlmsXetPUp2PHgNx7OEE=
-X-Received: by 2002:a9d:3422:: with SMTP id v31mr14466855otb.260.1615822453930;
- Mon, 15 Mar 2021 08:34:13 -0700 (PDT)
+        bh=DJFHgQj3Rz5NWDR4XSLYMVinHkl1IuvWsJnnQR1mi3o=;
+        b=gK1tCG3joRpDxmTsLaEk7JzoTtwnuWBC1J3p47RetOU15IwpUWaXWWxgPWbiyoIeZV
+         qOqte0YlZeyTlJZReKO/wBkFH7LiIC9cyb45R1gTQpeXScLzuKRSxQAC/7M7uEwIBOYy
+         jJy8aseFgrObfoWACTnA96NWvOhvHwaFwSGU9N1MYXAZKemjvh0ZW11bCcGODiaWDcFr
+         5rXir2nG35nv9x9bCW69pdtL0OWhHJHRVQZk/3bzH0Uf0CgxaQs88NqZqudkEP8QiWMY
+         qE+BmUpZbktNvrejk3wV/35G/ylM7tT1i/E6FM73BjMNEipikzxUgjz/59MlWBf+WL8p
+         vFyg==
+X-Gm-Message-State: AOAM533419IPxMS+dRw9/SvgapF3T5xkCPqyqSguM2esR2IJwcTosZrf
+        BKt89Ucbesk9Nb5DbNVoohn6cbG4GRv+r+OQA1g2LA==
+X-Google-Smtp-Source: ABdhPJyjJ697DuzYBqPKGfRJQy1wCGsisSNBPedw8isfy+DeNQi4QyEJS57Qs7aQBPxaqr20Enm6gNFFos+br2ql1YU=
+X-Received: by 2002:a19:548:: with SMTP id 69mr8249366lff.465.1615822465329;
+ Mon, 15 Mar 2021 08:34:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210314000439.3138941-1-luzmaximilian@gmail.com>
-In-Reply-To: <20210314000439.3138941-1-luzmaximilian@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 15 Mar 2021 16:34:02 +0100
-Message-ID: <CAJZ5v0hY=NgKAU+N_kaya=q3Vk6SnkRTfXuiiP0ttoxHq+pRTA@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Run platform power transition on initial D0 entry
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210306125122.15043-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210306125122.15043-1-baijiaju1990@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 15 Mar 2021 16:34:14 +0100
+Message-ID: <CACRpkdajavmT20-w0Bahj_AvJRXQnfSiwkY-Vevm_dXD6VLaaw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: ti: fix error return code of ti_iodelay_probe()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 1:06 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> On some devices and platforms, the initial platform (e.g. ACPI) power
-> state is not in sync with the power state of the PCI device.
->
-> This seems like it is, for all intents and purposes, an issue with the
-> device firmware (e.g. ACPI). On some devices, specifically Microsoft
-> Surface Books 2 and 3, we encounter ACPI code akin to the following
-> power resource, corresponding to a PCI device:
->
->     PowerResource (PRP5, 0x00, 0x0000)
->     {
->         // Initialized to zero, i.e. off. There is no logic for checking
->         // the actual state dynamically.
->         Name (_STA, Zero)
->
->         Method (_ON, 0, Serialized)
->         {
->             // ... code omitted ...
->             _STA = One
->         }
->
->         Method (_OFF, 0, Serialized)
->         {
->             // ... code omitted ...
->             _STA = Zero
->         }
->     }
->
-> This resource is initialized to 'off' and does not have any logic for
-> checking its actual state, i.e. the state of the corresponding PCI
-> device. The stored state of this resource can only be changed by running
-> the (platform/ACPI) power transition functions (i.e. _ON and _OFF).
+On Sat, Mar 6, 2021 at 1:51 PM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
 
-Well, there is _STA that returns "off" initially, so the OS should set
-the initial state of the device to D3cold and transition it into D0 as
-appropriate (i.e. starting with setting all of the power resources
-used by it to "on").
-
-> This means that, at boot, the PCI device power state is out of sync with
-> the power state of the corresponding ACPI resource.
+> When ti_iodelay_pinconf_init_dev() fails, no error return code of
+> ti_iodelay_probe() is assigned.
+> To fix this bug, ret is assigned with the return value of
+> ti_iodelay_pinconf_init_dev(), and then ret is checked.
 >
-> During initial bring-up of a PCI device, pci_enable_device_flags()
-> updates its PCI core state (from initially 'unknown') by reading from
-> its PCI_PM_CTRL register. It does, however, not check if the platform
-> (here ACPI) state is in sync with/valid for the actual device state and
-> needs updating.
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-Well, that's inconsistent.
+Patch applied!
 
-Also, it is rather pointless to update the device's power state at
-this point, because nothing between this point and the later
-do_pci_enable_device() call in this function requires its
-current_state to be up to date AFAICS.
-
-Have you tried to drop the power state update from
-pci_enable_device_flags()?  [Note that we're talking about relatively
-old code here and it looks like that code is not necessary any more.]
-
-Either it should be possible to do that and all should work, or there
-is a good reason to make current_state reflect the real current power
-state of the device upfront, but then that should be done by putting
-it into D0 diractly at that point rather than later.
-
-Calling pci_power_up(dev) instead of pci_set_power_state(dev, PCI_D0)
-when current_state is already 0 only pokes at the power resources,
-because pci_raw_set_power_state() will do nothing then, but that is a
-rather less-than-straightforward way of doing this.  Moreover, the
-ordering of actions mandated by the spec is to set power resources to
-"on" first and then write to the PMCSR, not the other way around.
+Yours,
+Linus Walleij
