@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B027633C4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E8533C4B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhCORkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231469AbhCORjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D4964E41;
-        Mon, 15 Mar 2021 17:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615829993;
-        bh=BF8fKi0zRFRY8lXFZo5FrirrACZ5Eu+O5IwYFeCpOWE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=difkjHhkqev7l9NY+6NUHqdecSdavAPgVqcZH0tZxvb4d7uWwnOU9Q8KMyq4XYzGn
-         lCjFpA7pdioMR8Zg/w9N8eo/zlHE17E/K2eJFFk2MPucd+s1tskv1QCsykBI3O9siA
-         q0CQDcejAU4QbyhcBo60H+9vpbyaC/SPySwe7GUOoomkZ9/jaYbWRqOIq+d4ephIFQ
-         zbv+W7j6OFgoNOmpumSdUrpRUidl09kqEj/Op3YYnnWJO6vD7mDlYw388JrNFBAmil
-         qbMOFWBG817umhok0DjUQzLI+0ByBq4KdPRE2aytkbFtsVOAhX42u44Tc1R1SZIUMT
-         07Ext6tvBqxPA==
-Date:   Mon, 15 Mar 2021 10:39:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Don Bollinger" <don@thebollingers.org>
-Cc:     "'Andrew Lunn'" <andrew@lunn.ch>, <arndb@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
-        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
-        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
-        "'netdev'" <netdev@vger.kernel.org>,
-        "'Moshe Shemesh'" <moshe@nvidia.com>
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
-References: <20210215193821.3345-1-don@thebollingers.org>
-        <YDl3f8MNWdZWeOBh@lunn.ch>
-        <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
-        <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>
-        <YD1ScQ+w8+1H//Y+@lunn.ch>
-        <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
-        <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>
-        <YEL3ksdKIW7cVRh5@lunn.ch>
-        <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
-        <YEvILa9FK8qQs5QK@lunn.ch>
-        <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
+        id S236421AbhCORk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:40:58 -0400
+Received: from mail-bn8nam08on2043.outbound.protection.outlook.com ([40.107.100.43]:59936
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231144AbhCORk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:40:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OhzT2erI3b8UE4gsbqc5kcFtDZ3xTVcEhqXqHUJ5jEGE/atW8ctNXS3BmVHPTkEx5UEcLjdtTz+GPyAurGBGg68HD0GpNDqOHsmQnx7Cqha1PlnaVpgWb+oUSmKAQgIBQM5yw8Cw2npsmi5hAKVkG+I53XDlVSHpgVCggLnEY7ThWvppgNJXWCkSVXnk1yBJInFUdnkEF+nJrbhCOcoQxT15VGToLxaSakeFDDlNFCaM/e+1x+BDEVj8pgEsZzkReeSHPGfN6aPebdCXJV3oeEnV9Z9iXzlIcZy9b9SzHHC5y3GJHa7t7z8Qdx4yO4SOt9C4Vtz4rJ3NqltOfV/lqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q5sS/Dj8AJ/uXnIEtZtTrZI/sVg5Ng7Q0vmV4JoyQo4=;
+ b=M74UIccmEuIn5IBMMoM+0RjcKLwkyXsfKX9xsCpNgjwKJGkv4AxEbcojCYu4Hfx5YRG3YwtQ1N+GWv8ygoScImkmm+ELlt9pA64vvPbMFx+KrKNwL7CPtirqAuRqbDoSaU85Gft7B3IPR53fOwZM9dj/ldOMqLFMmFAvosmlTTM2zgoTsH43Urgct1CSslu4i7siweKBs4UXANo08lmHfS3dzfB7HyeYc+x9pIK4ay4hr0slPQvov91+TSgkLQ9a/g9vUsgqC/9B/hHoppGWwmYEDCrOYkuTeNoBZ8wI4df6z9RnDZHR7sVn6smuLQoNL8MNt1USh0xPESoBAl+oJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q5sS/Dj8AJ/uXnIEtZtTrZI/sVg5Ng7Q0vmV4JoyQo4=;
+ b=aRlNHY3Lt3++0yZ9zxRqEUe6oujzZ1xf++G2kt5U97y4LUr58xl99mRZX4ee+jwgR+GvV8TKCRGSTk3waFq1xjoBPthU8pvpXlTUZk2R4PHoUBTxAsIk8wQG48Cs33YfpN7D3yMloHwHcuRodZGkUESD8xBLMw5jctVflai9wHOX5su0yS43a2jEwPCXqJcur5S/vDg4i0C5kF8YoHxm4Y6wfbtUizYFiebilGgNK76241xZrPRpbUrQnDSDuJ1PFeuj7cEkWjCtJ88ZozwVG6eOCtyuPXH1Pnf/5g6BE8QQ4CQZiS6rTBio5RRzFIhdcY4ievTQ5pq5ZgQiYuhLhg==
+Received: from DM5PR19CA0026.namprd19.prod.outlook.com (2603:10b6:3:9a::12) by
+ DM6PR12MB4532.namprd12.prod.outlook.com (2603:10b6:5:2af::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.31; Mon, 15 Mar 2021 17:40:25 +0000
+Received: from DM6NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:9a:cafe::e) by DM5PR19CA0026.outlook.office365.com
+ (2603:10b6:3:9a::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend
+ Transport; Mon, 15 Mar 2021 17:40:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT009.mail.protection.outlook.com (10.13.173.20) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 17:40:25 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
+ 2021 17:40:24 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
+ 2021 17:40:24 +0000
+Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Mar 2021 17:40:22 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <thierry.reding@gmail.com>, <robh+dt@kernel.org>
+CC:     <jonathanh@nvidia.com>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v2] arm64: tegra: Move clocks from RT5658 endpoint to device node
+Date:   Mon, 15 Mar 2021 23:10:15 +0530
+Message-ID: <1615830015-9195-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: df998727-fb9f-46c2-c82f-08d8e7d96a7a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4532:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4532D1117DD242F6807769CFA76C9@DM6PR12MB4532.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZYkmVpXY/wjl8qqC7v8oahJatJ0J3vj1UVUET3GfpoKRvajPrRnju/dqPFz4KL8WRNYarDdOfh5NLZQ1eUk1QV1hfgFUpXCUvse2YMedundMRLy9AVZlqJXgoZIwhmQlkbmSVJ+Si8EN5bBU/ipWJkQly3DeLqN3gmZYRv4bR8OBh6VnEX1aOu36k5BG3nx1M4yBBGyaHO7e1gf8jlVBE0k2733XocFZsFMZuoGiEKoYSO7MoT10Qg6eqs9m/VCU7uxvGheYJbpnh3XOOai+asOsx0bwz9BSswBlQmRtW5qjnUkBFgOPLwnHaFnP+vQiZHoHiE7lLdgIrL19CzmC6un6LFM8h6YNIi8jYKzOIatqZ5Zyq5wkzWYBKaBnohBNEfuo0Rl8eCpsATUfR+VWDqZanEQNbMUr/JMDoh6w4LS0ZRklQEKGNUUi0TfEptXXvwBTIx8fUG8cxKVqBWIa/dORNLb1APl63FdBT+9Gox2UOvf23KHN1uLIELunGTc/1uPHpJ2I7JeiXj6vWgQzbvh5VcQ/jurdDthMgwFItLF8K6V+wbTX8Ld5/93qdt5SSbGsVfiyWGvgRVTOrU8C9TcsZMDDcStNNYo7rxTAu+o3TWANb5+i+f3dJTJam3qE3Yt9A2K46Gojcph/HUd/gGfvzWw1BBCPQzR7JiCVD8n3RUqb9ZAJEjdGEpMBE1xG
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(346002)(36840700001)(46966006)(426003)(36756003)(82740400003)(7636003)(54906003)(83380400001)(107886003)(86362001)(36860700001)(336012)(4326008)(316002)(70586007)(8936002)(478600001)(82310400003)(356005)(186003)(2616005)(5660300002)(47076005)(70206006)(8676002)(7696005)(2906002)(26005)(6666004)(110136005)(34020700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 17:40:25.2106
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: df998727-fb9f-46c2-c82f-08d8e7d96a7a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4532
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 13:35:56 -0800 Don Bollinger wrote:
-> > away parts of the bottom end and replace it with a different KAPI, and
-> > nobody will notice? In fact, this is probably how it was designed. Anybody  
-> 
-> Actually everyone who touches this code would notice, each implementation
-> would have to be modified, with literally no benefit to this community.
+An endpoint is not a device and it is recommended to use clocks property
+in device node. RT5658 Codec binding already specifies the usage of
+clocks property. Thus move the clocks from endpoint to device node.
 
-You keep saying that kernel API is "of no benefit to this community"
-yet you don't want to accept the argument that your code is of no
-benefit to the upstream community.
+Fixes: 5b4f6323096a ("arm64: tegra: Audio graph sound card for Jetson AGX Xavier")
+Suggested-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+---
+ Changelog:
+   v1 -> v2: Added "clock-names" property as rt5659 driver specifically looks
+             for this clock name.
+ 
+ arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> optoe does not undermine the netlink KAPI that Moshe is working on.  
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
+index b079420..8dd2871 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
+@@ -651,6 +651,8 @@
+ 				reg = <0x1a>;
+ 				interrupt-parent = <&gpio>;
+ 				interrupts = <TEGRA194_MAIN_GPIO(S, 5) GPIO_ACTIVE_HIGH>;
++				clocks = <&bpmp TEGRA194_CLK_AUD_MCLK>;
++				clock-names = "mclk";
+ 				realtek,jd-src = <2>;
+ 				sound-name-prefix = "CVB-RT";
+ 
+@@ -658,7 +660,6 @@
+ 					rt5658_ep: endpoint {
+ 						remote-endpoint = <&i2s1_dap_ep>;
+ 						mclk-fs = <256>;
+-						clocks = <&bpmp TEGRA194_CLK_AUD_MCLK>;
+ 					};
+ 				};
+ 			};
+-- 
+2.7.4
 
-It does, although it may be hard to grasp for a vendor who can just EoL
-a product at will once nobody is paying for it. We aim to provide
-uniform support for all networking devices and an infinite backward
-compatibility guarantee.
-
-People will try to use optoe-based tools on the upstream drivers and
-they won't work. Realistically we will need to support both APIs.
-
-> If your community is interested, it could adopt optoe, WITH your
-> KAPI, to consolidate and improve module EEPROM access for mainstream
-> netdev consumers.  I am eager to collaborate on the fairly simple
-> integration.
-
-Nacked-by: Jakub Kicinski <kuba@kernel.org>
-
-Please move on.
