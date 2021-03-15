@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9424433BB9E
+	by mail.lfdr.de (Postfix) with ESMTP id DFE1E33BB9F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237616AbhCOOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
+        id S232730AbhCOOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232468AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232471AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DF5D64F2F;
-        Mon, 15 Mar 2021 13:59:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC38464EF9;
+        Mon, 15 Mar 2021 13:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816769;
-        bh=DWkUTZJPYEwdrYvkqTCumpJfYkrmCHUOc9flC5P+QQs=;
+        s=korg; t=1615816771;
+        bh=wmSJzdMwCOzPUjx8SWQUQRJX27s79VJqdKjOsW4Yauo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bm+PdGW23dQGkv6ZWYiEOuJukYM3b/vXVxJUVu7bsxSeriYWm90NAOLhQvrDpeTTV
-         50qtjk41wUTx3Y/rNJ7bwzErCNboR0cLonAvOu2jMGfB0NGj4vycjc7q4W2LUE656k
-         pY//qRZpVZxja407+xE/gXwLB4tatqhNDOVu4wKI=
+        b=cFWl8XWXDgLEcp8ku3QJUmOGkmzTGeVGMe3jn/bkubzjn1GPkqcEQTXiQp+vo7Gfo
+         Em5r3i96nzH9yfGUteFiQvWkq3DmfV9X8racc6NxHRlS65jZ7+noZ1TeweVtU4ApW7
+         gW5z82GGnn5AcDZ8trhekwaS83JnSIBb0+nm44kM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 097/168] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
-Date:   Mon, 15 Mar 2021 14:55:29 +0100
-Message-Id: <20210315135553.559811335@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Bjoern Walk <bwalk@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 098/168] s390/dasd: fix hanging DASD driver unbind
+Date:   Mon, 15 Mar 2021 14:55:30 +0100
+Message-Id: <20210315135553.591815804@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -42,41 +43,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Andrey Konovalov <andreyknvl@google.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 86c83365ab76e4b43cedd3ce07a07d32a4dc79ba upstream.
+commit 7d365bd0bff3c0310c39ebaffc9a8458e036d666 upstream.
 
-When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
-implementation from include/linux/mm.h is used. That definition doesn't
-account for KASAN tags, which leads to no tags on page_alloc allocations.
+In case of an unbind of the DASD device driver the function
+dasd_generic_remove() is called which shuts down the device.
+Among others this functions removes the int_handler from the cdev.
+During shutdown the device cancels all outstanding IO requests and waits
+for completion of the clear request.
+Unfortunately the clear interrupt will never be received when there is no
+interrupt handler connected.
 
-Provide an arm64-specific definition for page_to_virt() when
-CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
+Fix by moving the int_handler removal after the call to the state machine
+where no request or interrupt is outstanding.
 
-Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Tested-by: Bjoern Walk <bwalk@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/memory.h |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/s390/block/dasd.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -315,6 +315,11 @@ static inline void *phys_to_virt(phys_ad
- #define ARCH_PFN_OFFSET		((unsigned long)PHYS_PFN_OFFSET)
+--- a/drivers/s390/block/dasd.c
++++ b/drivers/s390/block/dasd.c
+@@ -3522,8 +3522,6 @@ void dasd_generic_remove(struct ccw_devi
+ 	struct dasd_device *device;
+ 	struct dasd_block *block;
  
- #if !defined(CONFIG_SPARSEMEM_VMEMMAP) || defined(CONFIG_DEBUG_VIRTUAL)
-+#define page_to_virt(x)	({						\
-+	__typeof__(x) __page = x;					\
-+	void *__addr = __va(page_to_phys(__page));			\
-+	(void *)__tag_set((const void *)__addr, page_kasan_tag(__page));\
-+})
- #define virt_to_page(x)		pfn_to_page(virt_to_pfn(x))
- #else
- #define page_to_virt(x)	({						\
+-	cdev->handler = NULL;
+-
+ 	device = dasd_device_from_cdev(cdev);
+ 	if (IS_ERR(device)) {
+ 		dasd_remove_sysfs_files(cdev);
+@@ -3542,6 +3540,7 @@ void dasd_generic_remove(struct ccw_devi
+ 	 * no quite down yet.
+ 	 */
+ 	dasd_set_target_state(device, DASD_STATE_NEW);
++	cdev->handler = NULL;
+ 	/* dasd_delete_device destroys the device reference. */
+ 	block = device->block;
+ 	dasd_delete_device(device);
 
 
