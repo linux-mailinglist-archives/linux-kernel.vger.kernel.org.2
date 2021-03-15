@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F4133B68A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8318A33B6C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhCON6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:58:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
+        id S232304AbhCON6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhCONya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7246E64EE3;
-        Mon, 15 Mar 2021 13:54:25 +0000 (UTC)
+        id S231398AbhCONyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8850864EF3;
+        Mon, 15 Mar 2021 13:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816466;
-        bh=KA5lgiQDxsghnz5TVajIikeYslzRNzr57tlHqw7sVAk=;
+        s=korg; t=1615816460;
+        bh=SjQzFgZNl0ceigZk74ClIsEtdipV2riX7BXRcPhYQa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8g/LjJ8ZoGlbFmfD3lL7FkD/KWahRFdPZGHKl2Po+ruXknDLHaSXtXEMM/ldI54R
-         tX/DCxr5Kb1a27JKuuzcNEVmW8gkK3J+raYhh3+xBL1U9GbA2M3JmJmfM0O5b3Ht5l
-         04afIHG5C2ihPLLeyAVV2nvzbPffA5ft6TMkwd5I=
+        b=f8MMfg74Bz3oK/VCuqZGr5gDwnV4HN6P4movutyKM8Fakl6bJ+5BUhNyvO0znwVdT
+         q3jBsmvUf8RTBj4IZcnhdoA/49WkuzU8C18Z5ETazfl6OGGQa+wsuM1xKMoslmtN4F
+         k/eXJN2dN6DJu1kE58PgMmO9wJ58EGIb9Z9Ohmvs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 61/75] alpha: add $(src)/ rather than $(obj)/ to make source file path
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.9 52/78] staging: comedi: addi_apci_1500: Fix endian problem for command sample
 Date:   Mon, 15 Mar 2021 14:52:15 +0100
-Message-Id: <20210315135210.252431959@linuxfoundation.org>
+Message-Id: <20210315135213.787357076@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +40,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 5ed78e5523fd9ba77b8444d380d54da1f88c53fc upstream.
+commit ac0bbf55ed3be75fde1f8907e91ecd2fd589bde3 upstream.
 
-$(ev6-y)divide.S is a source file, not a build-time generated file.
-So, it should be prefixed with $(src)/ rather than $(obj)/.
+The digital input subdevice supports Comedi asynchronous commands that
+read interrupt status information.  This uses 16-bit Comedi samples (of
+which only the bottom 8 bits contain status information).  However, the
+interrupt handler is calling `comedi_buf_write_samples()` with the
+address of a 32-bit variable `unsigned int status`.  On a bigendian
+machine, this will copy 2 bytes from the wrong end of the variable.  Fix
+it by changing the type of the variable to `unsigned short`.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: a8c66b684efa ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
+Cc: <stable@vger.kernel.org> #4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-3-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/alpha/lib/Makefile |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/comedi/drivers/addi_apci_1500.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/arch/alpha/lib/Makefile
-+++ b/arch/alpha/lib/Makefile
-@@ -46,11 +46,11 @@ AFLAGS___remqu.o =       -DREM
- AFLAGS___divlu.o = -DDIV       -DINTSIZE
- AFLAGS___remlu.o =       -DREM -DINTSIZE
+--- a/drivers/staging/comedi/drivers/addi_apci_1500.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
+@@ -217,7 +217,7 @@ static irqreturn_t apci1500_interrupt(in
+ 	struct comedi_device *dev = d;
+ 	struct apci1500_private *devpriv = dev->private;
+ 	struct comedi_subdevice *s = dev->read_subdev;
+-	unsigned int status = 0;
++	unsigned short status = 0;
+ 	unsigned int val;
  
--$(obj)/__divqu.o: $(obj)/$(ev6-y)divide.S
-+$(obj)/__divqu.o: $(src)/$(ev6-y)divide.S
- 	$(cmd_as_o_S)
--$(obj)/__remqu.o: $(obj)/$(ev6-y)divide.S
-+$(obj)/__remqu.o: $(src)/$(ev6-y)divide.S
- 	$(cmd_as_o_S)
--$(obj)/__divlu.o: $(obj)/$(ev6-y)divide.S
-+$(obj)/__divlu.o: $(src)/$(ev6-y)divide.S
- 	$(cmd_as_o_S)
--$(obj)/__remlu.o: $(obj)/$(ev6-y)divide.S
-+$(obj)/__remlu.o: $(src)/$(ev6-y)divide.S
- 	$(cmd_as_o_S)
+ 	val = inl(devpriv->amcc + AMCC_OP_REG_INTCSR);
+@@ -247,14 +247,14 @@ static irqreturn_t apci1500_interrupt(in
+ 	 *
+ 	 *    Mask     Meaning
+ 	 * ----------  ------------------------------------------
+-	 * 0x00000001  Event 1 has occurred
+-	 * 0x00000010  Event 2 has occurred
+-	 * 0x00000100  Counter/timer 1 has run down (not implemented)
+-	 * 0x00001000  Counter/timer 2 has run down (not implemented)
+-	 * 0x00010000  Counter 3 has run down (not implemented)
+-	 * 0x00100000  Watchdog has run down (not implemented)
+-	 * 0x01000000  Voltage error
+-	 * 0x10000000  Short-circuit error
++	 * 0b00000001  Event 1 has occurred
++	 * 0b00000010  Event 2 has occurred
++	 * 0b00000100  Counter/timer 1 has run down (not implemented)
++	 * 0b00001000  Counter/timer 2 has run down (not implemented)
++	 * 0b00010000  Counter 3 has run down (not implemented)
++	 * 0b00100000  Watchdog has run down (not implemented)
++	 * 0b01000000  Voltage error
++	 * 0b10000000  Short-circuit error
+ 	 */
+ 	comedi_buf_write_samples(s, &status, 1);
+ 	comedi_handle_events(dev, s);
 
 
