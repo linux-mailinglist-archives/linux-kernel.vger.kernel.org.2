@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516D333B9A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48A433B880
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhCOOGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35038 "EHLO mail.kernel.org"
+        id S234501AbhCOODp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232036AbhCON5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1ED364EEE;
-        Mon, 15 Mar 2021 13:57:36 +0000 (UTC)
+        id S231760AbhCON5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C2E64F01;
+        Mon, 15 Mar 2021 13:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816658;
-        bh=ob/5UBIdqefGaH8gWQxFUNVoOaqfG+WizVmhBsqMYtI=;
+        s=korg; t=1615816618;
+        bh=i5kk/hM9hB1ybFBjKO9kXNeWoWRQ6eg16y6EqfJXVAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VigCAVSXd7jBR2bb9JE96BToLOWT5KvrnpC/oj/Q8bcBoAKAdiyfrl+IhNxwz2nbU
-         HAgDR5WgsaIzpm4JgjJxxJ+l6Y8m1HcOdG33JEKjf8LjBPR9DCgUBDLLjJ26CLn6Lr
-         asrJe/qcJYUvONHCagbzEFt6C3eNonQmRAxyPbQI=
+        b=UnM+xPIiAhx2QllT9zRpxBi09JZ1P471G4mcuYqHWhgco8YyNfe2VpfMTIXCoVIAw
+         BNZczvDyKwdp5dfHXeaqoUGuDQXckdpMhB5BTM+tru8SD6xJ9MGw3X6UjXy7xoY4K8
+         YawB1DX5SOA/Aucg1NKt5KwPhbsmSpvyZ4dae0yE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 046/306] net: enetc: dont overwrite the RSS indirection table when initializing
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arjun Roy <arjunroy@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 016/290] tcp: Fix sign comparison bug in getsockopt(TCP_ZEROCOPY_RECEIVE)
 Date:   Mon, 15 Mar 2021 14:51:49 +0100
-Message-Id: <20210315135509.204811334@linuxfoundation.org>
+Message-Id: <20210315135542.489803245@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,145 +43,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Arjun Roy <arjunroy@google.com>
 
-commit c646d10dda2dcde82c6ce5a474522621ab2b8b19 upstream.
+commit 2107d45f17bedd7dbf4178462da0ac223835a2a7 upstream.
 
-After the blamed patch, all RX traffic gets hashed to CPU 0 because the
-hashing indirection table set up in:
+getsockopt(TCP_ZEROCOPY_RECEIVE) has a bug where we read a
+user-provided "len" field of type signed int, and then compare the
+value to the result of an "offsetofend" operation, which is unsigned.
 
-enetc_pf_probe
--> enetc_alloc_si_resources
-   -> enetc_configure_si
-      -> enetc_setup_default_rss_table
+Negative values provided by the user will be promoted to large
+positive numbers; thus checking that len < offsetofend() will return
+false when the intention was that it return true.
 
-is overwritten later in:
+Note that while len is originally checked for negative values earlier
+on in do_tcp_getsockopt(), subsequent calls to get_user() re-read the
+value from userspace which may have changed in the meantime.
 
-enetc_pf_probe
--> enetc_init_port_rss_memory
+Therefore, re-add the check for negative values after the call to
+get_user in the handler code for TCP_ZEROCOPY_RECEIVE.
 
-which zero-initializes the entire port RSS table in order to avoid ECC errors.
-
-The trouble really is that enetc_init_port_rss_memory really neads
-enetc_alloc_si_resources to be called, because it depends upon
-enetc_alloc_cbdr and enetc_setup_cbdr. But that whole enetc_configure_si
-thing could have been better thought out, it has nothing to do in a
-function called "alloc_si_resources", especially since its counterpart,
-"free_si_resources", does nothing to unwind the configuration of the SI.
-
-The point is, we need to pull out enetc_configure_si out of
-enetc_alloc_resources, and move it after enetc_init_port_rss_memory.
-This allows us to set up the default RSS indirection table after
-initializing the memory.
-
-Fixes: 07bf34a50e32 ("net: enetc: initialize the RFS and RSS memories")
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c8856c051454 ("tcp-zerocopy: Return inq along with tcp receive zerocopy.")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Arjun Roy <arjunroy@google.com>
+Link: https://lore.kernel.org/r/20210225232628.4033281-1-arjunroy.kdev@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c    |   11 +++--------
- drivers/net/ethernet/freescale/enetc/enetc.h    |    1 +
- drivers/net/ethernet/freescale/enetc/enetc_pf.c |    7 +++++++
- drivers/net/ethernet/freescale/enetc/enetc_vf.c |    7 +++++++
- 4 files changed, 18 insertions(+), 8 deletions(-)
+ net/ipv4/tcp.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1058,13 +1058,12 @@ static int enetc_setup_default_rss_table
- 	return 0;
- }
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3829,7 +3829,8 @@ static int do_tcp_getsockopt(struct sock
  
--static int enetc_configure_si(struct enetc_ndev_priv *priv)
-+int enetc_configure_si(struct enetc_ndev_priv *priv)
- {
- 	struct enetc_si *si = priv->si;
- 	struct enetc_hw *hw = &si->hw;
- 	int err;
- 
--	enetc_setup_cbdr(hw, &si->cbd_ring);
- 	/* set SI cache attributes */
- 	enetc_wr(hw, ENETC_SICAR0,
- 		 ENETC_SICAR_RD_COHERENT | ENETC_SICAR_WR_COHERENT);
-@@ -1112,6 +1111,8 @@ int enetc_alloc_si_resources(struct enet
- 	if (err)
- 		return err;
- 
-+	enetc_setup_cbdr(&si->hw, &si->cbd_ring);
-+
- 	priv->cls_rules = kcalloc(si->num_fs_entries, sizeof(*priv->cls_rules),
- 				  GFP_KERNEL);
- 	if (!priv->cls_rules) {
-@@ -1119,14 +1120,8 @@ int enetc_alloc_si_resources(struct enet
- 		goto err_alloc_cls;
- 	}
- 
--	err = enetc_configure_si(priv);
--	if (err)
--		goto err_config_si;
--
- 	return 0;
- 
--err_config_si:
--	kfree(priv->cls_rules);
- err_alloc_cls:
- 	enetc_clear_cbdr(&si->hw);
- 	enetc_free_cbdr(priv->dev, &si->cbd_ring);
---- a/drivers/net/ethernet/freescale/enetc/enetc.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.h
-@@ -292,6 +292,7 @@ void enetc_get_si_caps(struct enetc_si *
- void enetc_init_si_rings_params(struct enetc_ndev_priv *priv);
- int enetc_alloc_si_resources(struct enetc_ndev_priv *priv);
- void enetc_free_si_resources(struct enetc_ndev_priv *priv);
-+int enetc_configure_si(struct enetc_ndev_priv *priv);
- 
- int enetc_open(struct net_device *ndev);
- int enetc_close(struct net_device *ndev);
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -1108,6 +1108,12 @@ static int enetc_pf_probe(struct pci_dev
- 		goto err_init_port_rss;
- 	}
- 
-+	err = enetc_configure_si(priv);
-+	if (err) {
-+		dev_err(&pdev->dev, "Failed to configure SI\n");
-+		goto err_config_si;
-+	}
-+
- 	err = enetc_alloc_msix(priv);
- 	if (err) {
- 		dev_err(&pdev->dev, "MSIX alloc failed\n");
-@@ -1136,6 +1142,7 @@ err_phylink_create:
- 	enetc_mdiobus_destroy(pf);
- err_mdiobus_create:
- 	enetc_free_msix(priv);
-+err_config_si:
- err_init_port_rss:
- err_init_port_rfs:
- err_alloc_msix:
---- a/drivers/net/ethernet/freescale/enetc/enetc_vf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_vf.c
-@@ -171,6 +171,12 @@ static int enetc_vf_probe(struct pci_dev
- 		goto err_alloc_si_res;
- 	}
- 
-+	err = enetc_configure_si(priv);
-+	if (err) {
-+		dev_err(&pdev->dev, "Failed to configure SI\n");
-+		goto err_config_si;
-+	}
-+
- 	err = enetc_alloc_msix(priv);
- 	if (err) {
- 		dev_err(&pdev->dev, "MSIX alloc failed\n");
-@@ -187,6 +193,7 @@ static int enetc_vf_probe(struct pci_dev
- 
- err_reg_netdev:
- 	enetc_free_msix(priv);
-+err_config_si:
- err_alloc_msix:
- 	enetc_free_si_resources(priv);
- err_alloc_si_res:
+ 		if (get_user(len, optlen))
+ 			return -EFAULT;
+-		if (len < offsetofend(struct tcp_zerocopy_receive, length))
++		if (len < 0 ||
++		    len < offsetofend(struct tcp_zerocopy_receive, length))
+ 			return -EINVAL;
+ 		if (len > sizeof(zc)) {
+ 			len = sizeof(zc);
 
 
