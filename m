@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D1833B027
+	by mail.lfdr.de (Postfix) with ESMTP id F096733B029
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCOKmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:42:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:59322 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhCOKl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:41:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EF0E1FB;
-        Mon, 15 Mar 2021 03:41:58 -0700 (PDT)
-Received: from [10.57.55.99] (unknown [10.57.55.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7EED3F70D;
-        Mon, 15 Mar 2021 03:41:57 -0700 (PDT)
-Subject: Re: [PATCH] arm64: csum: cast to the proper type
-To:     Alex Elder <elder@linaro.org>, catalin.marinas@arm.com,
-        will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210315012650.1221328-1-elder@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <031a3734-c677-5d42-2329-81f5f6ba1cfe@arm.com>
-Date:   Mon, 15 Mar 2021 10:41:52 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229596AbhCOKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:42:23 -0400
+Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:50896 "EHLO
+        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229728AbhCOKmH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:42:07 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 798A6C4A18
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:42:06 +0000 (GMT)
+Received: (qmail 9896 invoked from network); 15 Mar 2021 10:42:06 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Mar 2021 10:42:06 -0000
+Date:   Mon, 15 Mar 2021 10:42:05 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210315104204.GB3697@techsingularity.net>
+References: <20210312124609.33d4d4ba@carbon>
+ <20210312145814.GA2577561@casper.infradead.org>
+ <20210312160350.GW3697@techsingularity.net>
+ <20210312210823.GE2577561@casper.infradead.org>
+ <20210313131648.GY3697@techsingularity.net>
+ <20210313163949.GI2577561@casper.infradead.org>
+ <7D8C62E1-77FD-4B41-90D7-253D13715A6F@oracle.com>
+ <20210313193343.GJ2577561@casper.infradead.org>
+ <20210314125231.GA3697@techsingularity.net>
+ <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210315012650.1221328-1-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 01:26, Alex Elder wrote:
-> The last line of ip_fast_csum() calls csum_fold(), forcing the
-> type of the argument passed to be u32.  But csum_fold() takes a
-> __wsum argument (which is __u32 __bitwise for arm64).  As long
-> as we're forcing the cast, cast it to the right type.
+On Sun, Mar 14, 2021 at 03:22:02PM +0000, Chuck Lever III wrote:
+> >> Anyway, I'm not arguing against a bulk allocator, nor even saying this
+> >> is a bad interface.  It just maybe could be better.
+> >> 
+> > 
+> > I think it puts more responsibility on the caller to use the API correctly
+> > but I also see no value in arguing about it further because there is no
+> > supporting data either way (I don't have routine access to a sufficiently
+> > fast network to generate the data). I can add the following patch and let
+> > callers figure out which interface is preferred. If one of the interfaces
+> > is dead in a year, it can be removed.
+> > 
+> > As there are a couple of ways the arrays could be used, I'm leaving it
+> > up to Jesper and Chuck which interface they want to use. In particular,
+> > it would be preferred if the array has no valid struct pages in it but
+> > it's up to them to judge how practical that is.
+> 
+> I'm interested to hear from Jesper.
+> 
+> My two cents (US):
+> 
+> If svc_alloc_arg() is the /only/ consumer that wants to fill
+> a partially populated array of page pointers, then there's no
+> code-duplication benefit to changing the synopsis of
+> alloc_pages_bulk() at this point.
+> 
+> Also, if the consumers still have to pass in the number of
+> pages the array needs, rather than having the bulk allocator
+> figure it out, then there's not much additional benefit, IMO.
+> 
+> Ideally (for SUNRPC) alloc_pages_bulk() would take a pointer
+> to a sparsely-populated array and the total number of elements
+> in that array, and fill in the NULL elements. The return value
+> would be "success -- all elements are populated" or "failure --
+> some elements remain NULL".
+> 
 
-Oddly, the commit adding the cast does specifically speak about 
-converting to __wsum, so I'm not sure what happened there... :/
+If the array API interface was expected to handle sparse arrays, it would
+make sense to define nr_pages are the number of pages that need to be
+in the array instead of the number of pages to allocate. The preamble
+would skip the first N number of allocated pages and decrement nr_pages
+accordingly before the watermark check. The return value would then be the
+last populated array element and the caller decides if that is enough to
+proceed or if the API needs to be called again. There is a slight risk
+that with a spare array that only needed 1 page in reality would fail
+the watermark check but on low memory, allocations take more work anyway.
+That definition of nr_pages would avoid the potential buffer overrun but
+both you and Jesper would need to agree that it's an appropriate API.
 
-Anyway, this seems to make sense.
-
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
-> 
-> With this patch in place, quite a few "different base types" sparse
-> warnings go away on a full arm64 kernel build.  More specifically:
->    warning: incorrect type in argument 1 (different base types)
->       expected restricted __wsum [usertype] csum
->       got unsigned int [usertype]
-> 
-> 					-Alex
-> 
->   arch/arm64/include/asm/checksum.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/checksum.h b/arch/arm64/include/asm/checksum.h
-> index 93a161b3bf3fe..dc52b733675db 100644
-> --- a/arch/arm64/include/asm/checksum.h
-> +++ b/arch/arm64/include/asm/checksum.h
-> @@ -37,7 +37,7 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
->   	} while (--n > 0);
->   
->   	sum += ((sum >> 32) | (sum << 32));
-> -	return csum_fold((__force u32)(sum >> 32));
-> +	return csum_fold((__force __wsum)(sum >> 32));
->   }
->   #define ip_fast_csum ip_fast_csum
->   
-> 
+-- 
+Mel Gorman
+SUSE Labs
