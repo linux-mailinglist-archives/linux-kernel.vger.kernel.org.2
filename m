@@ -2,72 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1961C33B3A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 409B933B3AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhCONSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhCONRz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:17:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32946C06174A;
-        Mon, 15 Mar 2021 06:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=7Jrclnurpg02FW6SBK78iFY06pC4oqxMEZmAxzr40dg=; b=mLAmtzek/OysmlUkK2D+l/+ViO
-        P0JQHzdgMfu6NrsqY8zXpk6RTX/5nmNEn7oIDRUqEQM84J8B3lrsZGvkP5HHPKPkl0ZkPlrOGt31T
-        xLmeHPnJjSHqB50gbfaDl7P7BEhGCQo+FHsuI7rB0HWgJzaaV2BLxt752pSmbcJtzi+bcZ+w405PR
-        LUlCDthgLnKXM3rZxlWrYs+w7Fn7g+5hBePLZj+wRC9iUihLEQ2IQwyRZYa6GyFvoC+9pAMFj/oHO
-        jpdlTTW3D7CA4MMjxR5B+DrHb0PQVjhMQ/4QM/do1x1T9WIERqk5XF/F184c6va0yydPKlm5RGM5o
-        4zjRyPUg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLn63-000DJ6-7o; Mon, 15 Mar 2021 13:17:26 +0000
-Date:   Mon, 15 Mar 2021 13:17:23 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Kent <raven@themaw.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 0/3] vfs: Use an xarray instead of inserted
- bookmarks to scan mount list
-Message-ID: <20210315131723.GW2577561@casper.infradead.org>
-References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
- <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com>
+        id S229524AbhCONTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:19:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229917AbhCONSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92F5364EF1;
+        Mon, 15 Mar 2021 13:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615814319;
+        bh=GvxsnE6byjDsoGTHrozcWzN6uDeo+qEdNuMCVIrRz+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BWuEFpJIbTNNOcseevdmRaVa3Wqk5wkC+Rc8hf7ybYLroW2XMMuxD4MxDoVzdSiFp
+         GH37uv+wPEPh1lGZJ9ZADM1YEr0q6TsNY/HhHTAlNqYp/0XnwC62Rgj186/CmU4giP
+         RWME8x054W+gsc5ox+dHAHd4O71Rq3Zn6LhCC2RSU/FfAYTQ4Kqv2xk1gQ1vJhBF9O
+         Nizf5w4s3OF2mmWNLBqrE8yChZ8fi1VvXFQYP65hnqMqzNMKnh7IUzzZOKZqe7Sr+8
+         ceYgfvCLLRgc+Bm24bf/uPj6K03IXMzCxHC3fnRSa8cSGyYWtB/2vvC0GwWvZhHb1G
+         Pc27vvK+g4uwA==
+Date:   Mon, 15 Mar 2021 15:18:13 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YE9elQfTZHo/9TJI@kernel.org>
+References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
+ <20210311020142.125722-1-kai.huang@intel.com>
+ <YEvbcrTZyiUAxZAu@google.com>
+ <YEyX4V7BcS3MZNzp@kernel.org>
+ <20210315201236.de3cd9389f853a418ec53e86@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com>
+In-Reply-To: <20210315201236.de3cd9389f853a418ec53e86@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:14:35PM +0100, Miklos Szeredi wrote:
-> On Mon, Mar 15, 2021 at 1:07 PM David Howells <dhowells@redhat.com> wrote:
-> >
-> >
-> > Hi Al, Miklós,
-> >
-> > Can we consider replacing the "insert cursor" approach we're currently
-> > using for proc files to scan the current namespace's mount list[1] with
-> > something that uses an xarray of mounts indexed by mnt_id?
-> >
-> > This has some advantages:
-> >
-> >  (1) It's simpler.  We don't need to insert dummy mount objects as
-> >      bookmarks into the mount list and code that's walking the list doesn't
-> >      have to carefully step over them.
-> >
-> >  (2) We can use the file position to represent the mnt_id and can jump to
-> >      it directly - ie. using seek() to jump to a mount object by its ID.
+On Mon, Mar 15, 2021 at 08:12:36PM +1300, Kai Huang wrote:
+> On Sat, 13 Mar 2021 12:45:53 +0200 Jarkko Sakkinen wrote:
+> > On Fri, Mar 12, 2021 at 01:21:54PM -0800, Sean Christopherson wrote:
+> > > On Thu, Mar 11, 2021, Kai Huang wrote:
+> > > > From: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > 
+> > > > EREMOVE takes a page and removes any association between that page and
+> > > > an enclave.  It must be run on a page before it can be added into
+> > > > another enclave.  Currently, EREMOVE is run as part of pages being freed
+> > > > into the SGX page allocator.  It is not expected to fail.
+> > > > 
+> > > > KVM does not track how guest pages are used, which means that SGX
+> > > > virtualization use of EREMOVE might fail.
+> > > > 
+> > > > Break out the EREMOVE call from the SGX page allocator.  This will allow
+> > > > the SGX virtualization code to use the allocator directly.  (SGX/KVM
+> > > > will also introduce a more permissive EREMOVE helper).
+> > > > 
+> > > > Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
+> > > > more specific that it is used to free EPC page assigned to one enclave.
+> > > > Print an error message when EREMOVE fails to explicitly call out EPC
+> > > > page is leaked, and requires machine reboot to get leaked pages back.
+> > > > 
+> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > Co-developed-by: Kai Huang <kai.huang@intel.com>
+> > > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > ---
+> > > > v2->v3:
+> > > > 
+> > > >  - Fixed bug during copy/paste which results in SECS page and va pages are not
+> > > >    correctly freed in sgx_encl_release() (sorry for the mistake).
+> > > >  - Added Jarkko's Acked-by.
+> > > 
+> > > That Acked-by should either be dropped or moved above Co-developed-by to make
+> > > checkpatch happy.
+> > > 
+> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > 
+> > Oops, my bad. Yup, ack should be removed.
+> > 
+> > /Jarkko
 > 
-> What happens if the mount at the current position is removed?
+> Hi Jarkko,
+> 
+> Your reply of your concern of this patch to the cover-letter
+> 
+> https://lore.kernel.org/lkml/YEkJXu262YDa8ZaK@kernel.org/
+> 
+> reminds me to do more sanity check of whether removing EREMOVE in
+> sgx_free_epc_page() will impact other code path or not, and I think
+> sgx_encl_release() is not the only place should be changed:
+> 
+> - sgx_encl_shrink() needs to call sgx_encl_free_epc_page(), since when this is
+> called, the VA page can be already valid -- there are other failures can
+> trigger sgx_encl_shrink().
 
-xa_find() will move to the next one.
+You right about this, good catch.
+
+Shrink needs to always do EREMOVE as grow has done EPA, which changes
+EPC page state.
+
+> - sgx_encl_add_page() should call sgx_encl_free_epc_page() in "err_out_free:"
+> label, since the EPC page can be already valid when error happened, i.e. when
+> EEXTEND fails.
+
+Yes, correct, good work!
+
+> Other places should be OK per my check, but I'd prefer to just replacing all
+> sgx_free_epc_page() call sites in driver with sgx_encl_free_epc_page(), with
+> one exception: sgx_alloc_va_page(), which calls sgx_free_epc_page() when EPA
+> fails, in which case EREMOVE is not required for sure.
+
+I would not unless they require it.
+
+> Your idea, please?
+> 
+> Btw, introducing a driver wrapper of sgx_free_epc_page() does make sense to me,
+> because virtualization has a counterpart in sgx/virt.c too.
+
+It does make sense to use sgx_free_epc_page() everywhere where it's
+the right thing to call and here's why.
+
+If there is some unrelated regression that causes EPC page not get
+uninitialized when it actually should, doing extra EREMOVE could mask
+those bugs. I.e. it can postpone a failure, which can make a bug harder
+to backtrace.
+
+Jarkko
