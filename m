@@ -2,77 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FC633B08C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746BE33B091
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhCOLCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:02:13 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:44831 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhCOLBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:01:41 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DzYPz3dmwz9tyQv;
-        Mon, 15 Mar 2021 12:01:27 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Yu5e6q0CTUoz; Mon, 15 Mar 2021 12:01:27 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzYPz2D0Rz9tyQt;
-        Mon, 15 Mar 2021 12:01:27 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 104538B773;
-        Mon, 15 Mar 2021 12:01:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3iqYG8FYfEae; Mon, 15 Mar 2021 12:01:31 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A4B018B75B;
-        Mon, 15 Mar 2021 12:01:26 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1860165D4D; Mon, 15 Mar 2021 11:01:26 +0000 (UTC)
-Message-Id: <9881c68fbca004f9ea18fc9473f630e11ccd6417.1615806071.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/asm-offsets: GPR14 is not needed either
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, rashmicy@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 15 Mar 2021 11:01:26 +0000 (UTC)
+        id S229868AbhCOLCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:02:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33220 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229699AbhCOLCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:02:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615806135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S/oWGawpXGhyQCD9KmbcPNHKcWmsnOSDhuC/sNGQZGI=;
+        b=CrnWFDtveGdiLUbmvbydLmBN6TLTE7QMgQOJ12yZT8Vt6lkPCeWQZKw9Uo56yX3EiQOJaM
+        6seAr11sAfbiAXgrs4UluURXSFstinoxjQjqDztwldNQ4DI0kNUMSahBp27aoaIfYqCiqs
+        s8GYxEosPmumVk9z97/dJLNzjBiXlHg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-qvOD4KKGPR6eRv3F4sKkhQ-1; Mon, 15 Mar 2021 07:02:13 -0400
+X-MC-Unique: qvOD4KKGPR6eRv3F4sKkhQ-1
+Received: by mail-wm1-f72.google.com with SMTP id s192so8026292wme.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:02:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S/oWGawpXGhyQCD9KmbcPNHKcWmsnOSDhuC/sNGQZGI=;
+        b=iEilIDzetY945telBFKDRLlRutAnt7DjVH8T0qiOLQVwOnTa6aaQ9/av/tbhE1kW9I
+         Pq3sWzxdoodUQny5w777PIDlGgzTZyB2Kl0C3r+TrrVXhBaIq80ToeYG/vFWZUatxN+L
+         qh3pw6oVPUOIE4c6ufTbYBwFi8cixTYNY7wnzdAV8Ub3QUUVYHchwc97jjZl96mGInkw
+         c6RVpPLXwPkQs+bMQ+Pr/CGzkl9BeOVCPdbnvyr3ODpIoaJsOpVEFwajHg3uOzXysig3
+         Vm1qAFUfRE6NMEYwyR/tQRqByr7tt/CT24y+q/wHyqyNagoqhI3Hp36an0cnn71CwIw9
+         2zmQ==
+X-Gm-Message-State: AOAM533nBruhVRVoaSixTJUUDEJFf968rF3Pvfj5lmsKNYaNoH/4Bp0c
+        jk9glxvEVF4p/DTnC1/3Xi8hBqe6dsxJ4w/9Ouo5DGDiTRgvT89zpNg4mvxj2BY6o4ANJRc0z3I
+        v5l8XMpsam7i96doZBnTVgszO
+X-Received: by 2002:a05:6000:24b:: with SMTP id m11mr26777659wrz.393.1615806132233;
+        Mon, 15 Mar 2021 04:02:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxngqoRvyImvtrS1gTlOBvENXh/6EdwVXEpl38+sSZZ8VElzUNwwM/9wN8W829CrCnbUyofg==
+X-Received: by 2002:a05:6000:24b:: with SMTP id m11mr26777627wrz.393.1615806132028;
+        Mon, 15 Mar 2021 04:02:12 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id a13sm16170382wrp.31.2021.03.15.04.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 04:02:11 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 12:02:09 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v6 11/22] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210315110209.xuaq5q3a2zp4u3g5@steredhat>
+References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
+ <20210307180204.3465806-1-arseny.krasnov@kaspersky.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210307180204.3465806-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit aac6a91fea93 ("powerpc/asm: Remove unused symbols in
-asm-offsets.c") removed GPR15 to GPR31 but kept GPR14,
-probably because it pops up in a couple of comments when doing
-a grep.
+On Sun, Mar 07, 2021 at 09:02:01PM +0300, Arseny Krasnov wrote:
+>This adds transport callback and it's logic for SEQPACKET dequeue.
+>Callback fetches RW packets from rx queue of socket until whole record
+>is copied(if user's buffer is full, user is not woken up). This is done
+>to not stall sender, because if we wake up user and it leaves syscall,
+>nobody will send credit update for rest of record, and sender will wait
+>for next enter of read syscall at receiver's side. So if user buffer is
+>full, we just send credit update and drop data. If during copy SEQ_BEGIN
+>was found(and not all data was copied), copying is restarted by reset
+>user's iov iterator(previous unfinished data is dropped).
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> include/linux/virtio_vsock.h            |  13 +++
+> include/uapi/linux/virtio_vsock.h       |  16 ++++
+> net/vmw_vsock/virtio_transport_common.c | 116 ++++++++++++++++++++++++
+> 3 files changed, 145 insertions(+)
+>
+>diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>index dc636b727179..466a5832d2f5 100644
+>--- a/include/linux/virtio_vsock.h
+>+++ b/include/linux/virtio_vsock.h
+>@@ -18,6 +18,12 @@ enum {
+> 	VSOCK_VQ_MAX    = 3,
+> };
+>
+>+struct virtio_vsock_seqpack_state {
+>+	u32 user_read_seq_len;
+>+	u32 user_read_copied;
+>+	u32 curr_rx_msg_id;
+>+};
+>+
+> /* Per-socket state (accessed via vsk->trans) */
+> struct virtio_vsock_sock {
+> 	struct vsock_sock *vsk;
+>@@ -36,6 +42,8 @@ struct virtio_vsock_sock {
+> 	u32 rx_bytes;
+> 	u32 buf_alloc;
+> 	struct list_head rx_queue;
+>+
+>+	struct virtio_vsock_seqpack_state seqpacket_state;
 
-However, it was never used either, so remove it as well.
+Following 'virtio_vsock_seq_hdr', maybe we can shorten in:
 
-Fixes: aac6a91fea93 ("powerpc/asm: Remove unused symbols in asm-offsets.c")
-Cc: Rashmica Gupta <rashmicy@gmail.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/asm-offsets.c | 3 ---
- 1 file changed, 3 deletions(-)
+         struct virtio_vsock_seq_state seq_state;
 
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index f3a662201a9f..4d230c5c7099 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -323,9 +323,6 @@ int main(void)
- 	STACK_PT_REGS_OFFSET(GPR11, gpr[11]);
- 	STACK_PT_REGS_OFFSET(GPR12, gpr[12]);
- 	STACK_PT_REGS_OFFSET(GPR13, gpr[13]);
--#ifndef CONFIG_PPC64
--	STACK_PT_REGS_OFFSET(GPR14, gpr[14]);
--#endif /* CONFIG_PPC64 */
- 	/*
- 	 * Note: these symbols include _ because they overlap with special
- 	 * register names
--- 
-2.25.0
+The rest LGTM.
 
