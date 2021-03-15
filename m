@@ -2,176 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0618A33AFBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA98D33AFBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhCOKPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:15:16 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:34764 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229868AbhCOKPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:15:09 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12FAEaHp016787
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 11:14:36 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.172])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12FAEahv032325;
-        Mon, 15 Mar 2021 11:14:36 +0100
-Date:   Mon, 15 Mar 2021 11:14:34 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        "Gerd Haeussler" <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Michael Haener <michael.haener@siemens.com>
-Subject: Re: [PATCH v2 4/4] platform/x86: pmc_atom: improve critclk_systems
- matching for Siemens PCs
-Message-ID: <20210315111434.413137b5@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210315095710.7140-5-henning.schild@siemens.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
-        <20210315095710.7140-5-henning.schild@siemens.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229874AbhCOKPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhCOKOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:14:42 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B816C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:14:42 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id c76-20020a1c9a4f0000b029010c94499aedso19888541wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=So7Sq781A1ayPY0NQcU/yfj8RcUkjakOhLcaEWlMRK4=;
+        b=LIwaOHbmdOXVmOFip+Pt4d6F2/YZM/eLtPX75E7O4vlRA2sjKChWt+qSZ7hlvaHEc3
+         5PuHbGulKAr71RAz1ouqqE8IAorwKCLTJrXxE4fixKwl/L9dNTSu2DdsDm7DjnRUO6Iy
+         Yu+5IjM278yGAzcv6FYc7XIXjj1eeigG5vkW1ak2NAKgNDT4dRhHfc6hyFmBcClcLgGb
+         dmxQqo6jg3PQBLE1NP+aY1XBNdQbrPjfoqDIVr0hp/RKxzXZIOBdIpl5UU7vF5cu885y
+         6cHgS4Y51HSVMLHxegDkq3KBuBJyMHG/c7i/pEGVAfV52s/0JgVZOUhBQc/TBg1qEHbU
+         RrUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=So7Sq781A1ayPY0NQcU/yfj8RcUkjakOhLcaEWlMRK4=;
+        b=YlEd/2LC+NoUAcb9aWt73+9frx6hk/zurnrHwEBYmkvua/pUV0xSUaBRp3SSHi7fYY
+         PJ9oe3ZpNx/TO4PbyYq7Jrmhtu45Mccs55yy4d5f2mh8IBzU7QPu2x60AFDUxm0uEgc/
+         z0xNdqwsB29LeAo/vq/LHffKwuOuf/rYU/buwGDxJm+tnq3fcSSUCoKdMJOXP1lfZ5g+
+         UC/gOjp4RPaA7oU6XcnUlzy2Y3AhkuDh+lwxujyLB04oRf7j7ci46WjGylQbsgpNJUmP
+         meRwlbk/TWWEpqLwXprKmlURnmiy7VWjBp0Jpx3UBSDhRWDHuYeLD6X3cmm06eWMlSoh
+         WoCQ==
+X-Gm-Message-State: AOAM531qkhx7K9pUryvMui6dSFrsMSYP/5/FLHSzHv/mjSdSQqW2zfpQ
+        U1zcLluRl+reKebqXxp+GFY=
+X-Google-Smtp-Source: ABdhPJziM+yqT1i0A+Paka7NOxDCJ8fwYZzhAp0jfWCHoiVM42G0HUK1qVzq0MTUyCkgin1fO0Jf1g==
+X-Received: by 2002:a05:600c:4112:: with SMTP id j18mr25273837wmi.143.1615803281225;
+        Mon, 15 Mar 2021 03:14:41 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.229])
+        by smtp.gmail.com with ESMTPSA id d29sm17745519wra.51.2021.03.15.03.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 03:14:40 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 11:14:38 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 03/15] staging: rtl8723bs: remove unused code blocks
+ conditioned by never set CONFIG_QOS_OPTIMIZATION
+Message-ID: <a63664946ac3c79832b7e97c42e825ac5c1ab252.1615801721.git.fabioaiuto83@gmail.com>
+References: <cover.1615801721.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1615801721.git.fabioaiuto83@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 15 Mar 2021 10:57:10 +0100
-schrieb Henning Schild <henning.schild@siemens.com>:
+remove conditional code blocks checked by unused CONFIG_QOS_OPTIMIZATION
 
-> Siemens industrial PCs unfortunately can not always be properly
-> identified the way we used to. An earlier commit introduced code that
-> allows proper identification without looking at DMI strings that could
-> differ based on product branding.
-> Switch over to that proper way and revert commits that used to collect
-> the machines based on unstable strings.
-> 
-> Fixes: 648e921888ad ("clk: x86: Stop marking clocks as
-> CLK_IS_CRITICAL") Fixes: e8796c6c69d1 ("platform/x86: pmc_atom: Add
-> Siemens CONNECT ...") Fixes: f110d252ae79 ("platform/x86: pmc_atom:
-> Add Siemens SIMATIC ...") Fixes: ad0d315b4d4e ("platform/x86:
-> pmc_atom: Add Siemens SIMATIC ...") Tested-by: Michael Haener
-> <michael.haener@siemens.com> Signed-off-by: Henning Schild
-> <henning.schild@siemens.com> ---
->  drivers/platform/x86/pmc_atom.c | 47
-> +++++++++++++++++++-------------- 1 file changed, 27 insertions(+),
-> 20 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/pmc_atom.c
-> b/drivers/platform/x86/pmc_atom.c index ca684ed760d1..38542d547f29
-> 100644 --- a/drivers/platform/x86/pmc_atom.c
-> +++ b/drivers/platform/x86/pmc_atom.c
-> @@ -13,6 +13,7 @@
->  #include <linux/io.h>
->  #include <linux/platform_data/x86/clk-pmc-atom.h>
->  #include <linux/platform_data/x86/pmc_atom.h>
-> +#include <linux/platform_data/x86/simatic-ipc.h>
->  #include <linux/platform_device.h>
->  #include <linux/pci.h>
->  #include <linux/seq_file.h>
-> @@ -362,6 +363,23 @@ static void pmc_dbgfs_register(struct pmc_dev
-> *pmc) }
->  #endif /* CONFIG_DEBUG_FS */
->  
-> +static bool pmc_clk_is_critical = true;
-> +
-> +static int siemens_clk_is_critical(const struct dmi_system_id *d)
-> +{
-> +	u32 st_id;
-> +
-> +	if (dmi_walk(simatic_ipc_find_dmi_entry_helper, &st_id))
-> +		goto out;
-> +
-> +	if (st_id == SIMATIC_IPC_IPC227E || st_id ==
-> SIMATIC_IPC_IPC277E)
-> +		return 1;
-> +
-> +out:
-> +	pmc_clk_is_critical = false;
-> +	return 1;
-> +}
-> +
->  /*
->   * Some systems need one or more of their pmc_plt_clks to be
->   * marked as critical.
-> @@ -424,24 +442,10 @@ static const struct dmi_system_id
-> critclk_systems[] = { },
->  	},
->  	{
-> -		.ident = "SIMATIC IPC227E",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> -			DMI_MATCH(DMI_PRODUCT_VERSION, "6ES7647-8B"),
-> -		},
-> -	},
-> -	{
-> -		.ident = "SIMATIC IPC277E",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> -			DMI_MATCH(DMI_PRODUCT_VERSION, "6AV7882-0"),
-> -		},
-> -	},
-> -	{
-> -		.ident = "CONNECT X300",
-> +		.callback = siemens_clk_is_critical,
-> +		.ident = "SIEMENS AG",
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> -			DMI_MATCH(DMI_PRODUCT_VERSION,
-> "A5E45074588"), },
->  	},
->  
-> @@ -453,7 +457,7 @@ static int pmc_setup_clks(struct pci_dev *pdev,
-> void __iomem *pmc_regmap, {
->  	struct platform_device *clkdev;
->  	struct pmc_clk_data *clk_data;
-> -	const struct dmi_system_id *d =
-> dmi_first_match(critclk_systems);
-> +	const struct dmi_system_id *d;
->  
->  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
->  	if (!clk_data)
-> @@ -461,9 +465,12 @@ static int pmc_setup_clks(struct pci_dev *pdev,
-> void __iomem *pmc_regmap, 
->  	clk_data->base = pmc_regmap; /* offset is added by client */
->  	clk_data->clks = pmc_data->clks;
-> -	if (d) {
-> -		clk_data->critical = true;
-> -		pr_info("%s critclks quirk enabled\n", d->ident);
-> +	if (dmi_check_system(critclk_systems)) {
+cleaning required in TODO file:
 
-Had to switch to check_system to get the callback to work.
+find and remove code blocks guarded by never set CONFIG_FOO defines
 
-> +		clk_data->critical = pmc_clk_is_critical;
-> +		if (clk_data->critical) {
-> +			d = dmi_first_match(critclk_systems);
-> +			pr_info("%s critclks quirk enabled\n",
-> d->ident);
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Now need a double match here just to print the ident. Not too happy
-with that but proposing it like this to keep the ident printing.
-
-I guess it could be improved by not printing the ident or having a
-global variable and global callback to remember the ident to print
-later. I would propose to not print the ident if the double-match does
-not find traction.
-
-Henning
-
-> +		}
->  	}
->  
->  	clkdev = platform_device_register_data(&pdev->dev,
-> "clk-pmc-atom",
+diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+index d643e9a59e6b..270f93e90e07 100644
+--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
++++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+@@ -121,11 +121,7 @@ int rtw_mc2u_disable = 0;
+ 
+ static int rtw_80211d;
+ 
+-#ifdef CONFIG_QOS_OPTIMIZATION
+-static int rtw_qos_opt_enable = 1;/* 0: disable, 1:enable */
+-#else
+ static int rtw_qos_opt_enable;/* 0: disable, 1:enable */
+-#endif
+ module_param(rtw_qos_opt_enable, int, 0644);
+ 
+ static char *ifname = "wlan%d";
+-- 
+2.20.1
 
