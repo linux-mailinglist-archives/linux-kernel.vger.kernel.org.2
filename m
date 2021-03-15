@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7AB33BE03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5B333BE86
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237064AbhCOOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49350 "EHLO mail.kernel.org"
+        id S240449AbhCOOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234062AbhCOOCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BC3F64EED;
-        Mon, 15 Mar 2021 14:02:51 +0000 (UTC)
+        id S233863AbhCOOCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FA364DAD;
+        Mon, 15 Mar 2021 14:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816972;
-        bh=IvsItkjW/gMBGmCudavZrmUOENIZH6+DGkeJsg1nkHA=;
+        s=korg; t=1615816952;
+        bh=xKgkFWzxlPRIvHIuGIVg8npd7F6MBl11aaKZJp0K8E0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u5/Bq8afxW3xBsgaDunwyYsXD8srkJFrZB1iJP4+BJ0Alr0EsNuMq/upTmyB2YkRD
-         JY/SJR/6DyBUbRFyL7fRrtuEo3mYtcQ1A7YwyXBZTBpcPHU3p5lrfuuthUAC8anx0w
-         DvgQIcorIBeAKcncs+qSY2d0VexfIhlpvrdq82UI=
+        b=frAYc2E4nXyAYMU1upd7beMHApai5WKgveQ2u2s721CnepkbqL8JRoldJSAFfbWAo
+         cugefwDHnJmbpvjWT7QgLslaJWYePaQlwORakOCkQiae9dQiA9XQH6/rdhD33CCEGi
+         nhH8+qhXc5+uNYjJM16Y0dupvDNtJg8z3PEZLtBc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sven Schuchmann <schuchmann@schleissheimer.de>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 238/306] net: phy: ti: take into account all possible interrupt sources
+        stable@vger.kernel.org, Bernhard <bernhard.gebetsberger@gmx.at>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 208/290] usb: xhci: do not perform Soft Retry for some xHCI hosts
 Date:   Mon, 15 Mar 2021 14:55:01 +0100
-Message-Id: <20210315135515.689176826@linuxfoundation.org>
+Message-Id: <20210315135548.961675918@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,111 +42,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+From: Stanislaw Gruszka <stf_xl@wp.pl>
 
-[ Upstream commit 73f476aa1975bae6a792b340f5b26ffcfba869a6 ]
+commit a4a251f8c23518899d2078c320cf9ce2fa459c9f upstream.
 
-The previous implementation of .handle_interrupt() did not take into
-account the fact that all the interrupt status registers should be
-acknowledged since multiple interrupt sources could be asserted.
+On some systems rt2800usb and mt7601u devices are unable to operate since
+commit f8f80be501aa ("xhci: Use soft retry to recover faster from
+transaction errors")
 
-Fix this by reading all the status registers before exiting with
-IRQ_NONE or triggering the PHY state machine.
+Seems that some xHCI controllers can not perform Soft Retry correctly,
+affecting those devices.
 
-Fixes: 1d1ae3c6ca3f ("net: phy: ti: implement generic .handle_interrupt() callback")
-Reported-by: Sven Schuchmann <schuchmann@schleissheimer.de>
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-Link: https://lore.kernel.org/r/20210226153020.867852-1-ciorneiioana@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To avoid the problem add xhci->quirks flag that restore pre soft retry
+xhci behaviour for affected xHCI controllers. Currently those are
+AMD_PROMONTORYA_4 and AMD_PROMONTORYA_2, since it was confirmed
+by the users: on those xHCI hosts issue happen and is gone after
+disabling Soft Retry.
+
+[minor commit message rewording for checkpatch -Mathias]
+
+Fixes: f8f80be501aa ("xhci: Use soft retry to recover faster from transaction errors")
+Cc: <stable@vger.kernel.org> # 4.20+
+Reported-by: Bernhard <bernhard.gebetsberger@gmx.at>
+Tested-by: Bernhard <bernhard.gebetsberger@gmx.at>
+Signed-off-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202541
+Link: https://lore.kernel.org/r/20210311115353.2137560-2-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/dp83822.c   |  9 +++++----
- drivers/net/phy/dp83tc811.c | 11 ++++++-----
- 2 files changed, 11 insertions(+), 9 deletions(-)
+ drivers/usb/host/xhci-pci.c  |    5 +++++
+ drivers/usb/host/xhci-ring.c |    3 ++-
+ drivers/usb/host/xhci.h      |    1 +
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index fff371ca1086..423952cb9e1c 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -290,6 +290,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -295,6 +295,11 @@ static void xhci_pci_quirks(struct devic
+ 	     pdev->device == 0x9026)
+ 		xhci->quirks |= XHCI_RESET_PLL_ON_DISCONNECT;
  
- static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
- {
-+	bool trigger_machine = false;
- 	int irq_status;
++	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
++	    (pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_2 ||
++	     pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4))
++		xhci->quirks |= XHCI_NO_SOFT_RETRY;
++
+ 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+ 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+ 				"QUIRK: Resetting on resume");
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2307,7 +2307,8 @@ static int process_bulk_intr_td(struct x
+ 		remaining	= 0;
+ 		break;
+ 	case COMP_USB_TRANSACTION_ERROR:
+-		if ((ep_ring->err_count++ > MAX_SOFT_RETRY) ||
++		if (xhci->quirks & XHCI_NO_SOFT_RETRY ||
++		    (ep_ring->err_count++ > MAX_SOFT_RETRY) ||
+ 		    le32_to_cpu(slot_ctx->tt_info) & TT_SLOT)
+ 			break;
+ 		*status = 0;
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1879,6 +1879,7 @@ struct xhci_hcd {
+ #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
+ #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
+ #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
++#define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
  
- 	/* The MISR1 and MISR2 registers are holding the interrupt status in
-@@ -305,7 +306,7 @@ static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
- 		return IRQ_NONE;
- 	}
- 	if (irq_status & ((irq_status & GENMASK(7, 0)) << 8))
--		goto trigger_machine;
-+		trigger_machine = true;
- 
- 	irq_status = phy_read(phydev, MII_DP83822_MISR2);
- 	if (irq_status < 0) {
-@@ -313,11 +314,11 @@ static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
- 		return IRQ_NONE;
- 	}
- 	if (irq_status & ((irq_status & GENMASK(7, 0)) << 8))
--		goto trigger_machine;
-+		trigger_machine = true;
- 
--	return IRQ_NONE;
-+	if (!trigger_machine)
-+		return IRQ_NONE;
- 
--trigger_machine:
- 	phy_trigger_machine(phydev);
- 
- 	return IRQ_HANDLED;
-diff --git a/drivers/net/phy/dp83tc811.c b/drivers/net/phy/dp83tc811.c
-index 688fadffb249..7ea32fb77190 100644
---- a/drivers/net/phy/dp83tc811.c
-+++ b/drivers/net/phy/dp83tc811.c
-@@ -264,6 +264,7 @@ static int dp83811_config_intr(struct phy_device *phydev)
- 
- static irqreturn_t dp83811_handle_interrupt(struct phy_device *phydev)
- {
-+	bool trigger_machine = false;
- 	int irq_status;
- 
- 	/* The INT_STAT registers 1, 2 and 3 are holding the interrupt status
-@@ -279,7 +280,7 @@ static irqreturn_t dp83811_handle_interrupt(struct phy_device *phydev)
- 		return IRQ_NONE;
- 	}
- 	if (irq_status & ((irq_status & GENMASK(7, 0)) << 8))
--		goto trigger_machine;
-+		trigger_machine = true;
- 
- 	irq_status = phy_read(phydev, MII_DP83811_INT_STAT2);
- 	if (irq_status < 0) {
-@@ -287,7 +288,7 @@ static irqreturn_t dp83811_handle_interrupt(struct phy_device *phydev)
- 		return IRQ_NONE;
- 	}
- 	if (irq_status & ((irq_status & GENMASK(7, 0)) << 8))
--		goto trigger_machine;
-+		trigger_machine = true;
- 
- 	irq_status = phy_read(phydev, MII_DP83811_INT_STAT3);
- 	if (irq_status < 0) {
-@@ -295,11 +296,11 @@ static irqreturn_t dp83811_handle_interrupt(struct phy_device *phydev)
- 		return IRQ_NONE;
- 	}
- 	if (irq_status & ((irq_status & GENMASK(7, 0)) << 8))
--		goto trigger_machine;
-+		trigger_machine = true;
- 
--	return IRQ_NONE;
-+	if (!trigger_machine)
-+		return IRQ_NONE;
- 
--trigger_machine:
- 	phy_trigger_machine(phydev);
- 
- 	return IRQ_HANDLED;
--- 
-2.30.1
-
+ 	unsigned int		num_active_eps;
+ 	unsigned int		limit_active_eps;
 
 
