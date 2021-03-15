@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9991833C470
+	by mail.lfdr.de (Postfix) with ESMTP id 4970D33C46F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbhCORgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S236588AbhCORgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236038AbhCORgR (ORCPT
+        with ESMTP id S230499AbhCORgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 13:36:17 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F41C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id lr13so67727300ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EFDC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:17 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h10so18299160edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=soZrX7bZGsiX5k9H3diOg1AsKg7GoSGDwOafVa3bJcc=;
-        b=hwmJINQF7BWP64sbdUotGVEehJ3UEFxD6qJgj/lsR+fUa6zttiqQjRIXop01F38E5w
-         /QhVdjEE8c/n5l0/rSHESvPKMj1ZkPogErGYzNecsIx8kNMPFjvND4W6ZwTZzZkXssA9
-         y6fSs78tXd5FbqzxSs3aUpAZSCkN0fXjJJRAQ=
+        bh=M1MckosJzUu2CQ3qgCveRtXT5Fl+1KQo++LPrJvuljw=;
+        b=axm/2YCstp+BXtdXpUb2XbtOyIVKPk9CpRa4p6uJWBdOkQMMiUDAbRh63DpKyhaVMS
+         kf2uw4Pj5MPykfKyoCpWmCpJXhAp+rUaBa96C7twwxPpKxIUc54nTx9OrgIzSx9eb2Rf
+         Ih2Fcyk7QP1JDaCHeu0/FEUQfhAi903kfhrXs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=soZrX7bZGsiX5k9H3diOg1AsKg7GoSGDwOafVa3bJcc=;
-        b=nyTZ5+qkDzSbPX8iiAyXRh81kU6Ypd78V8fa1RdGunjVVdvxbUnOOWGmGCauATtpnj
-         nhOEltSvPk0ZYrqVr/ha/7fUQgSQeO66uJ6A3Fo4+VFltm0nKsdmpehVztOA9Q43pdSS
-         iIxrdCaK5SLwJrZ3MHBpUzh//7ylLUnpqElhP/KPlA0K9XReIoX5Dr3WuAc1OEGWChkK
-         zRQuh+tPkssV63mADku6t4JFBag1TSDl4kxD4CQksMQemm/F4QyEGBqZXYUk1HNIzjh5
-         0DE5YKLt4ssP/Y8D/Xrrp2K+ZlzMO7NRDXNmkOXsi2wxJP4YmglDLEdFKijYkcK+ZClP
-         wqvQ==
-X-Gm-Message-State: AOAM531yCViCQYxh5hgEdVvfxe0HxTJcO2+4DGZms9VMBATuNwCif2XY
-        58GQF0AYWbpE+uNS5F5GoGejmQ==
-X-Google-Smtp-Source: ABdhPJxCh52nkgCVDHtDPbJLaRJrEli0yWNDksq5LHcrE+89cBJRk/HvM9pDZTNZm9AdxeSj2P6Xvg==
-X-Received: by 2002:a17:906:2404:: with SMTP id z4mr24600130eja.14.1615829775599;
-        Mon, 15 Mar 2021 10:36:15 -0700 (PDT)
+        bh=M1MckosJzUu2CQ3qgCveRtXT5Fl+1KQo++LPrJvuljw=;
+        b=NRQJWYId+699sPPW5T2O26Aqv17Z69KG7miNlkILeim7EmIfvuExOkfId31ppuhavk
+         cqcDzD3iR/3Qrqkp54XkP2Leh1xNzG9j6cm7a4X84727bxC4BGQU6sNigE8sM2l68rgr
+         V/iV+bi89aVJjLNje59LclUXybeJJSanWsUUFQWL9R0xwZpNZgVUnuzwSh01aHxTxnZX
+         jdqANqUcnRxlsMbnRte8zut8uG8ENM1Nvz8isUBguNMjo6jpzzfzN0QE6XB1ROVmqq3t
+         +I49dyUXM4mje7W1ZJUaZza0HZv64L0/wLS0Lziy4ubWXlhLTO4b5kWXYfPCxybChutA
+         0l8g==
+X-Gm-Message-State: AOAM530ppOPvynuyNpfcxhaXO0x5+xVfVs3XwgKF3LknL9rXZqDqEamD
+        wmn/nO2QPh4BWcCIKoFNioeyXA==
+X-Google-Smtp-Source: ABdhPJzFRRDSiPs8VxbfEgQYAhB/5oJ/AuMUCFtBungtYrTzobl0TDtRZTdlEvDd+aql57jpbvGG5g==
+X-Received: by 2002:aa7:cd64:: with SMTP id ca4mr5164326edb.334.1615829776180;
+        Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id a3sm8109239ejv.40.2021.03.15.10.36.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 10:36:15 -0700 (PDT)
+        Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -52,9 +52,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v4 07/11] media: uvcvideo: Use dev->name for querycap()
-Date:   Mon, 15 Mar 2021 18:36:05 +0100
-Message-Id: <20210315173609.1547857-8-ribalda@chromium.org>
+Subject: [PATCH v4 08/11] media: uvcvideo: Set unique vdev name based in type
+Date:   Mon, 15 Mar 2021 18:36:06 +0100
+Message-Id: <20210315173609.1547857-9-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210315173609.1547857-1-ribalda@chromium.org>
 References: <20210315173609.1547857-1-ribalda@chromium.org>
@@ -64,33 +64,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the device name for the card name instead of cap->card.
+All the entities must have a unique name. We can have a descriptive and
+unique name by appending the function and the entity->id.
 
-Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+This is even resilent to multi chain devices.
+
+Fixes v4l2-compliance:
+Media Controller ioctls:
+                fail: v4l2-test-media.cpp(205): v2_entity_names_set.find(key) != v2_entity_names_set.end()
+        test MEDIA_IOC_G_TOPOLOGY: FAIL
+                fail: v4l2-test-media.cpp(394): num_data_links != num_links
+	test MEDIA_IOC_ENUM_ENTITIES/LINKS: FAIL
+
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_driver.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 36eb48622d48..6c1b037a751b 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -617,13 +617,12 @@ static int uvc_v4l2_release(struct file *file)
- static int uvc_ioctl_querycap(struct file *file, void *fh,
- 			      struct v4l2_capability *cap)
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 35873cf2773d..73ab30891845 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2163,6 +2163,7 @@ int uvc_register_video_device(struct uvc_device *dev,
+ 			      const struct v4l2_ioctl_ops *ioctl_ops)
  {
--	struct video_device *vdev = video_devdata(file);
- 	struct uvc_fh *handle = file->private_data;
- 	struct uvc_video_chain *chain = handle->chain;
- 	struct uvc_streaming *stream = handle->stream;
+ 	int ret;
++	const char *name;
  
- 	strscpy(cap->driver, "uvcvideo", sizeof(cap->driver));
--	strscpy(cap->card, vdev->name, sizeof(cap->card));
-+	strscpy(cap->card, handle->stream->dev->name, sizeof(cap->card));
- 	usb_make_path(stream->dev->udev, cap->bus_info, sizeof(cap->bus_info));
- 	cap->capabilities = V4L2_CAP_DEVICE_CAPS | V4L2_CAP_STREAMING
- 			  | chain->caps;
+ 	/* Initialize the video buffers queue. */
+ 	ret = uvc_queue_init(queue, type, !uvc_no_drop_param);
+@@ -2190,16 +2191,20 @@ int uvc_register_video_device(struct uvc_device *dev,
+ 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+ 	default:
+ 		vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
++		name = "Video capture";
+ 		break;
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		vdev->device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_STREAMING;
++		name = "Video output";
+ 		break;
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 		vdev->device_caps = V4L2_CAP_META_CAPTURE | V4L2_CAP_STREAMING;
++		name = "Metadata";
+ 		break;
+ 	}
+ 
+-	strscpy(vdev->name, dev->name, sizeof(vdev->name));
++	snprintf(vdev->name, sizeof(vdev->name), "%s %u", name,
++		 stream->header.bTerminalLink);
+ 
+ 	/*
+ 	 * Set the driver data before calling video_register_device, otherwise
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
