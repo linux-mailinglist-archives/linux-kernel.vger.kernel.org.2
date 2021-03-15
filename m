@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72D433A9F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F5833A9FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhCODWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        id S229740AbhCOD1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhCODWD (ORCPT
+        with ESMTP id S229488AbhCOD0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:22:03 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2845C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:22:03 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id l15so7141565qvl.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:22:03 -0700 (PDT)
+        Sun, 14 Mar 2021 23:26:34 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589B5C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:26:34 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id l4so30419018qkl.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:26:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQcMG5LLxTg6nVFwEd1izOqUkx+QGUyBmxbcMRP29T4=;
-        b=lK3AtlER+6LnsHJB5aMPze3Ua1gnhBGD44EnvsvH9T4gnS9qP9a7gPthBvg4Obzkgv
-         2Wffxwga3H2+qhbIqKMizVdeWMPZ1OSugoaZP/nT4iJfX+0TDChHhX0H0+LUI0zZFYk6
-         O1PPwcGEJgk4f5R+sgS9SxkzUZG7tlsTUasCEFF+nw7mGNklsNolsVq4iBYFP6MJX7MM
-         pk21sMrglcsqqqto6J4uU94WzAUuR3O2yx+HTkwOz9OB8VzG/oOvW+HBti+EFTGVMVF/
-         KhHbjwKi6jm45cRByW1XRnYSvJPWGzW88FK4/391k0Zk3lU2XMoA37DpGOSKSXxJSga2
-         Zpyw==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uUydBSlgVr1bgB3fgHkH0tdR13fMyNSnZM4O4Ua8siU=;
+        b=BvHC6wmn8Od8FYfb70CSfrzWzH9+g60gVg6T8xdEtN0OpsZEysXuJRPnbhm6muZc1+
+         jU7ittciq2njAMXAJgIYtI7xw24t6PJXYUe2lD/AsI5lPNjzAUnjJnomlMPuyVyTLEPa
+         ap5tcjyZOp0GBlXo+55BmzJyqY7GEKT5RaN5oANyy54P676k0awclQ4zVp0G69aWJ/6B
+         PZxx6bDNi5AdBTqNCJDMYIt7YTrrC/+9uK7PzsDJIVar6qph/1cln6BC+MZ872h6zaSP
+         gQcBdvcaRMzTk+jILr/iUIJNfu2iDoQamyEXKJAOGsnCfE1dl6G+Q67KkNzFZZ6/ylfT
+         T/Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQcMG5LLxTg6nVFwEd1izOqUkx+QGUyBmxbcMRP29T4=;
-        b=TjO1uyAdBQ6SKlLfmGa5dWaq5E2tqEMo0QekRj+SJcNpWtphCG/mIqSDR99N/8Ufcx
-         lFJ88lb6DUCH0dldVTesLFcR3GN9cQ15pVDIfjoJJn3cbfyqMOzBHROaXfLOncWPTlSu
-         2XB40N24RTz7jyzzV7NTK+pm3kjr+au/2acc8YuZn4UsbxcF1ScEH9wMoCMoRMQqXtfn
-         jdJLwR92ulXPKXKynfq1qUoW2ijqydzjh3sWFrKDyIlCIpaIPSZuSAITzOkgFNHl9HEn
-         L57DHlUZXAUCuxAEjL9zsQWejFU4k/b1whMkhHJgnoWyqqsNtDSyJifARXcRgrI134PC
-         CL+A==
-X-Gm-Message-State: AOAM533AsAM7dHtUqVeBG33xWxF3CM439z5NKHC8AwSmww9lNfSgGGON
-        82mjTUGsSrLWX3VXEUC1daw=
-X-Google-Smtp-Source: ABdhPJyFJI/FWkYaSq+EV0B1lGJ/91vBmhZsHYT1zGgcWinemhjAv4EbeXzw9sNtw+NTbcnBf9J53A==
-X-Received: by 2002:ad4:4d92:: with SMTP id cv18mr8704294qvb.5.1615778522920;
-        Sun, 14 Mar 2021 20:22:02 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.55.217])
-        by smtp.gmail.com with ESMTPSA id t2sm10098763qtd.13.2021.03.14.20.21.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=uUydBSlgVr1bgB3fgHkH0tdR13fMyNSnZM4O4Ua8siU=;
+        b=CflNypG5Wd1YmhUlng2zdkW2uXp+UM6s3uZwAhGHUe3Y1EOYMsywhd1iWe4B4pjpRZ
+         ckCqz/Dj5mCHK/Q4j2TkKAtszsbP6eIgqIOWpGSt0sB0lu1uj14m4211j/95ySw5H7Z7
+         FC+MKygSLRRQ1f3GKvIokLEwJ1bLtahie2J4SPhQ/mss6bE1t+WHeFAzAU2WJTBLNcV2
+         ONBk5QX5WKQ4KjCJPP2MJz8I1e1TjgVS5RklQ5F2jkiJmyuxqHxRbp3O/uVsxlYj+lRg
+         6cihA3H7Jjd/JYsbZ/Mx8+VbGIPdLSfBQhsJKuW/hnKchd1r4EPX52dctGvJsIGWuljs
+         ykgQ==
+X-Gm-Message-State: AOAM5331qH6i7V6Js4s6WBcx1oFh5UvpQDs2gd0JmS899TZQMSrv+URF
+        WE1T723KeAnc623cQ/lq5Io=
+X-Google-Smtp-Source: ABdhPJwIQZPkmQnaF0KdIGFTrq0lUPYP1L8r1glWKTx+BK/GJN/htmXXPHS0UE3BVbWwJm3j4iQcrw==
+X-Received: by 2002:a37:9d8b:: with SMTP id g133mr22898960qke.10.1615778793668;
+        Sun, 14 Mar 2021 20:26:33 -0700 (PDT)
+Received: from ArchLinux ([156.146.55.217])
+        by smtp.gmail.com with ESMTPSA id b2sm1533993qtb.54.2021.03.14.20.26.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 20:22:02 -0700 (PDT)
+        Sun, 14 Mar 2021 20:26:32 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 08:56:19 +0530
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
-        nirmoy.das@amd.com, kevin1.wang@amd.com, ray.huang@amd.com,
-        Xiaojian.Du@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] drm: amd: pm: Mundane typo fixes in the file amdgpu_pm.c
-Date:   Mon, 15 Mar 2021 08:51:36 +0530
-Message-Id: <20210315032136.3669883-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, benh@kernel.crashing.org,
+        paulus@samba.org, akpm@linux-foundation.org, rppt@kernel.org,
+        oss@buserror.net, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the
+ file head_fsl_booke.S
+Message-ID: <YE7T2+/6AjOxshUV@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>, benh@kernel.crashing.org,
+        paulus@samba.org, akpm@linux-foundation.org, rppt@kernel.org,
+        oss@buserror.net, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210314220436.3417083-1-unixbhaskar@gmail.com>
+ <f8dc3cbe-54f4-1da1-b14f-4735d28aad13@infradead.org>
+ <87r1kh3zeu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0h8yTNnxCDFgEAPZ"
+Content-Disposition: inline
+In-Reply-To: <87r1kh3zeu.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/"an minimum"/"a minimum"/
-s/"an maxmum"/"a maximum"/
+--0h8yTNnxCDFgEAPZ
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Changes from V1:
-  Randy's suggestion to adjust the subject line text
-  And missed out a spell too,which now included
+On 13:48 Mon 15 Mar 2021, Michael Ellerman wrote:
+>Randy Dunlap <rdunlap@infradead.org> writes:
+>> On 3/14/21 3:04 PM, Bhaskar Chowdhury wrote:
+>>>
+>>> Trivial spelling fixes throughout the file.
+>>>
+>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>> ---
+>>>  arch/powerpc/kernel/head_fsl_booke.S | 8 ++++----
+>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+>>> index fdd4d274c245..c6fcfca0b0d7 100644
+>>> --- a/arch/powerpc/kernel/head_fsl_booke.S
+>>> +++ b/arch/powerpc/kernel/head_fsl_booke.S
+>>> @@ -403,7 +403,7 @@ interrupt_base:
+>>>  	EXCEPTION(0x2900, AP_UNAVAIL, AuxillaryProcessorUnavailable, \
+>>>  		  unknown_exception, EXC_XFER_STD)
+>>>
+>>> -	/* Decrementer Interrupt */
+>>> +	/* Decremented Interrupt */
+>>
+>> No, the comment matches the macro (or whatever that is).
+>
+>Right. I dropped this hunk. Please update your script or whatever to not
+>"correct" that spelling.
+>
+Hmmmm ...V2 on the way...
 
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>cheers
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 5fa65f191a37..308249ae1a22 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -3315,9 +3315,9 @@ static ssize_t amdgpu_hwmon_show_mclk_label(struct device *dev,
-  *
-  * - pwm1_max: pulse width modulation fan control maximum level (255)
-  *
-- * - fan1_min: an minimum value Unit: revolution/min (RPM)
-+ * - fan1_min: a minimum value Unit: revolution/min (RPM)
-  *
-- * - fan1_max: an maxmum value Unit: revolution/max (RPM)
-+ * - fan1_max: a maximum value Unit: revolution/max (RPM)
-  *
-  * - fan1_input: fan speed in RPM
-  *
---
-2.30.2
+--0h8yTNnxCDFgEAPZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBO09cACgkQsjqdtxFL
+KRXnkAgAoQe+fjFbsaDe//4BHrcEkDyQcBya7D6Bbo40PXbWS19N4uxxcA7w87u7
+KZkMnmnRzNR1Xyv1Eykde//1MmQBdGudjElLW51HqMi1G90a95I80GMjvNPEHhOw
++9Tnnh9zFGAueL3PzC7+V9jsFl3VbbCzEE0u7ppfvyNJ99FVTgtIcF0aBoZD6F49
+R0UyqVD8LRCQAuvkYeSpbYiD3fVnllflfsnM/Q1a4b2q2xLZHc7b/hOqbJXbVzRQ
+0K5pfHupQZDjrQJghr026ZcuZWP04RbZRQYW6Asn05iNsATlAaxBYdg7RoVRUANl
+XWIOeH3De6RAp04QNqOarSIAbSco9Q==
+=+yEE
+-----END PGP SIGNATURE-----
+
+--0h8yTNnxCDFgEAPZ--
