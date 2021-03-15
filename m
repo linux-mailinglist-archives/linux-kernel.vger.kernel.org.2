@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B2433BBC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D1633BBB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhCOOUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S229901AbhCOOUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231689AbhCON7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87C9B64EF1;
-        Mon, 15 Mar 2021 13:59:34 +0000 (UTC)
+        id S232784AbhCON74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 256D664EEC;
+        Mon, 15 Mar 2021 13:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816775;
-        bh=CAEfcweGMx59W+0rdp5/Jd1Z3q+7ctFyjY/NgBb2YbM=;
+        s=korg; t=1615816777;
+        bh=LXscjiXWZJ2WlE7Mtt3dJ7ZOLe/VyzM4lJVZMmH1jPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1lkc5a5VC45njv1HYZnIsrxHgLn1kSDBA1DbLO3NZVCZ0IWIycbSlapefGzfpKOiM
-         wx4XAK/nE+U3qGGBBIE7D5KbY9SnWkAzp0qXezh+kSb2Ah7ya518FdERy3rmaS1g4q
-         mqcqCINqsRJpatlMJ9+OsAYXbrfDxBp5ERzL7zlY=
+        b=xern2o/perd//ORQNz+fyKJJLKDIT4Kgcym57pLeDo4WhicQGmkHqVYNbTVzgAh4b
+         lhmCPFg6Z+YRO1fpFhw0/3aE7HU7Ww/wwgBO5N+ST58IUTiIDop5Ma7HrZ2/s5ZaVu
+         ihlA+k4Ys+EoJfMek9OUudaf25zIC7/DfekItxVA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Kempe <kempe@lysator.liu.se>,
-        John Ernberg <john.ernberg@actia.se>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 059/120] ALSA: usb: Add Plantronics C320-M USB ctrl msg delay quirk
-Date:   Mon, 15 Mar 2021 14:56:50 +0100
-Message-Id: <20210315135721.918121877@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Abhishek Sahu <abhsahu@nvidia.com>
+Subject: [PATCH 4.19 060/120] ALSA: hda/hdmi: Cancel pending works before suspend
+Date:   Mon, 15 Mar 2021 14:56:51 +0100
+Message-Id: <20210315135721.947705456@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,42 +41,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: John Ernberg <john.ernberg@actia.se>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit fc7c5c208eb7bc2df3a9f4234f14eca250001cb6 upstream.
+commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
 
-The microphone in the Plantronics C320-M headset will randomly
-fail to initialize properly, at least when using Microsoft Teams.
-Introducing a 20ms delay on the control messages appears to
-resolve the issue.
+The per_pin->work might be still floating at the suspend, and this may
+hit the access to the hardware at an unexpected timing.  Cancel the
+work properly at the suspend callback for avoiding the buggy access.
 
-Link: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1065
-Tested-by: Andreas Kempe <kempe@lysator.liu.se>
-Signed-off-by: John Ernberg <john.ernberg@actia.se>
+Note that the bug doesn't trigger easily in the recent kernels since
+the work is queued only when the repoll count is set, and usually it's
+only at the resume callback, but it's still possible to hit in
+theory.
+
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
+Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303181405.39835-1-john.ernberg@actia.se
+Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1338,6 +1338,14 @@ void snd_usb_ctl_msg_quirk(struct usb_de
- 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		msleep(20);
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2326,6 +2326,18 @@ static void generic_hdmi_free(struct hda
+ }
  
-+	/*
-+	 * Plantronics C320-M needs a delay to avoid random
-+	 * microhpone failures.
-+	 */
-+	if (chip->usb_id == USB_ID(0x047f, 0xc025)  &&
-+	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
-+		msleep(20);
+ #ifdef CONFIG_PM
++static int generic_hdmi_suspend(struct hda_codec *codec)
++{
++	struct hdmi_spec *spec = codec->spec;
++	int pin_idx;
 +
- 	/* Zoom R16/24, many Logitech(at least H650e/H570e/BCC950),
- 	 * Jabra 550a, Kingston HyperX needs a tiny delay here,
- 	 * otherwise requests like get/set frequency return
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		cancel_delayed_work_sync(&per_pin->work);
++	}
++	return 0;
++}
++
+ static int generic_hdmi_resume(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -2349,6 +2361,7 @@ static const struct hda_codec_ops generi
+ 	.build_controls		= generic_hdmi_build_controls,
+ 	.unsol_event		= hdmi_unsol_event,
+ #ifdef CONFIG_PM
++	.suspend		= generic_hdmi_suspend,
+ 	.resume			= generic_hdmi_resume,
+ #endif
+ };
 
 
