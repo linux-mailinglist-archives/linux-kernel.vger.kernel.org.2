@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F354633B032
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6FB33B035
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhCOKpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhCOKpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:45:13 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A41C061574;
-        Mon, 15 Mar 2021 03:45:12 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id v9so56066161lfa.1;
-        Mon, 15 Mar 2021 03:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cf/aVt0Fbhu5WfotxcxutYkGHVlDLmOpmLNNwK3sBZI=;
-        b=JRHUUhQSGb7+0j6CspMs/ldU2pmnNnbCn9NrSiMrCatZxgv/saxOBi+FE7tRR4acPo
-         kXbX5HeZSs3nWJ8IRz4szlu9ADAbJGeBf7bntPKONeYgAT7WmnMWyvVp128acMDSWGZ2
-         Xy2GkqzHrj4ehh2r8yvCGgxLiTTLzgwHSmAq+Vk/8zbreCfh/9RpHJy0U3kR4OgMyd0T
-         3Jpz9WxbDwLFrm05tf1aKbTsEb8KZA5m0B0c4b8rmgULcgYrZkkY19WKuOdM3uwFmmDK
-         VvJsvSuf4vzsFBbb258wNGIwLjDdo5QFZj6cA4lb7L9xSsuzgJK2ulqmGo8tXqP2sua/
-         6X4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cf/aVt0Fbhu5WfotxcxutYkGHVlDLmOpmLNNwK3sBZI=;
-        b=YD17oryqZckqLrB6PZdbBNHoB64AsxvAh0BJy1cOxnifMBuuQsW2vxfJbxbTwJTLFX
-         um++OQt5q0i1xeGBOK/vEXQ9C3cpT6GfHgE3VtwRHc2+0MriQTaPuIMF7HcziuvgbpdS
-         TZsvbcWstCw6iaoo5mZF7GJAWR55xanKd6ZgA8zEK+5Yo8S5Cz66sWtN18aEdZ1EkMfH
-         8DhmB6GDZ/YgX3deIAJpPMJPHc2cIUh3dQz9zbC4/LW15mKB6pFhySwwTg2Aocn7+Yyd
-         defoM0i8b2AcY3zwfB80p93TlhMz9BK6IwLzd67GMj9NUoK5b2ndxUp7JszCMyneCirb
-         c+wg==
-X-Gm-Message-State: AOAM531igwWgDYyNRHkDVoLTtEmmzSsukKLHtnjRRV8g7xlUO0p60TKa
-        ZT0SABDnMzaq5oVYB46RgHk=
-X-Google-Smtp-Source: ABdhPJyWV3azW1LepSI5Vg3RXAIDsYAFaCVM8bICRrBwtSl9boAGzvHH0mTgJhcRbclZbxpYjG1uew==
-X-Received: by 2002:a05:6512:38ca:: with SMTP id p10mr7662311lft.46.1615805110967;
-        Mon, 15 Mar 2021 03:45:10 -0700 (PDT)
-Received: from ?IPv6:2001:14ba:efe:51f0:9841:e955:b419:83eb? (db7-gd8f4kjz1nqy5ts1t-3.rev.dnainternet.fi. [2001:14ba:efe:51f0:9841:e955:b419:83eb])
-        by smtp.gmail.com with ESMTPSA id k29sm2607068lfj.125.2021.03.15.03.45.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 03:45:10 -0700 (PDT)
-Subject: Re: [PATCH v3] PCI: Add quirk for preventing bus reset on TI C667X
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     kw@linux.com, alex.williamson@redhat.com, bhelgaas@google.com,
-        kishon@ti.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, m-karicheri2@ti.com
-References: <20210312210917.GA2290948@bjorn-Precision-5520>
-From:   =?UTF-8?Q?Antti_J=c3=a4rvinen?= <antti.jarvinen@gmail.com>
-Message-ID: <e1802666-8f99-c7d6-b72c-3fcf960a87e4@gmail.com>
-Date:   Mon, 15 Mar 2021 12:45:09 +0200
+        id S230000AbhCOKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:45:35 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:17818 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhCOKpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:45:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615805119; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Ylc7MyxGKHBcPhryCW6d+Kcj0fWmkTz65X3rtbGl2n8=; b=ICh86YR/vVlZ9aFjFBOIqShSfQrEfelsXKnvgAuRyJyAo5CCZ3Gmv5mndcfCpBy2yL5t4E0Z
+ tPb8qH0OOef8ZRwBeOcXVKxErXtY5vK/9s4TiScBjcXXTzFxiJMFsiL70kHlWbcfrZqqatrw
+ wFBQXedY7ovh4k3aiXvgQhizm3g=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604f3abe1de5dd7b993e94f7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 10:45:18
+ GMT
+Sender: ylal=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EDF41C433ED; Mon, 15 Mar 2021 10:45:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.172] (unknown [49.206.45.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ylal)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66AC4C433CA;
+        Mon, 15 Mar 2021 10:45:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66AC4C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ylal@codeaurora.org
+Subject: Re: [PATCH] driver core: Use unbound workqueue for deferred probes
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, pkondeti@codeaurora.org,
+        neeraju@codeaurora.org
+References: <1614167749-22005-1-git-send-email-ylal@codeaurora.org>
+ <YDZKCk+it/7RpgUJ@kroah.com>
+ <a40db2a2-f58a-aaec-6976-977d4b9f9e0e@codeaurora.org>
+ <YDeNq+mBXDlHUlG4@kroah.com>
+From:   Yogesh Lal <ylal@codeaurora.org>
+Message-ID: <8061fa06-f101-e932-c67d-193e305d20b8@codeaurora.org>
+Date:   Mon, 15 Mar 2021 16:15:12 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210312210917.GA2290948@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YDeNq+mBXDlHUlG4@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 12.3.2021 23.09, Bjorn Helgaas wrote:
-> On Mon, Mar 08, 2021 at 02:21:30PM +0000, Antti Järvinen wrote:
->> Some TI KeyStone C667X devices do no support bus/hot reset. Its PCIESS
->> automatically disables LTSSM when secondary bus reset is received and
->> device stops working. Prevent bus reset by adding quirk_no_bus_reset to
->> the device. With this change device can be assigned to VMs with VFIO,
->> but it will leak state between VMs.
-> 
-> s/do no/do/not/ (also in the comment below)
-> 
-
-Should be fixed in v4 patch.
- 
-> Does the user get any indication of this leaking state?  I looked
-> through drivers/vfio and drivers/pci, but I haven't found anything
-> yet.
-> 
-
-I haven't seen any indication too. 
-
-Overall I think all devices having this quirk will leak state, as they
-don't get resetted.
-
-
-> We *could* log something in quirk_no_bus_reset(), but that would just
-> be noise for people who don't pass the device through to a VM.  So
-> maybe it would be nicer if we logged something when we actually *do*
-> pass it through to a VM.
-> 
->> Reference: https://e2e.ti.com/support/processors/f/791/t/954382
->> Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
->> ---
->>  drivers/pci/quirks.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
+On 2/25/2021 5:14 PM, Greg KH wrote:
+> On Thu, Feb 25, 2021 at 04:03:50PM +0530, Yogesh Lal wrote:
+>> Hi Greg,
 >>
->> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
->> index 653660e3ba9e..d9201ad1ca39 100644
->> --- a/drivers/pci/quirks.c
->> +++ b/drivers/pci/quirks.c
->> @@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
->>   */
->>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
->>  
->> +/*
->> + * Some TI keystone C667X devices do no support bus/hot reset.
->> + * Its PCIESS automatically disables LTSSM when secondary bus reset is
->> + * received and device stops working. Prevent bus reset by adding
->> + * quirk_no_bus_reset to the device. With this change device can be
->> + * assigned to VMs with VFIO, but it will leak state between VMs.
->> + * Reference https://e2e.ti.com/support/processors/f/791/t/954382
->> + */
->> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
->> +
->>  static void quirk_no_pm_reset(struct pci_dev *dev)
->>  {
->>  	/*
->> -- 
->> 2.17.1
 >>
+>> On 2/24/2021 6:13 PM, Greg KH wrote:
+>>> On Wed, Feb 24, 2021 at 05:25:49PM +0530, Yogesh Lal wrote:
+>>>> Queue deferred driver probes on unbounded workqueue, to allow
+>>>> scheduler better manage scheduling of long running probes.
+>>>
+>>> Really?  What does this change and help?  What is the visable affect of
+>>> this patch?  What problem does it solve?
+>>>
+>>
+>> We observed boot up improvement (~400 msec) when the deferred probe work is
+>> made unbound. This is due to scheduler moving the worker running deferred
+>> probe work to big CPUs. without this change, we see the worker is running on
+>> LITTLE CPU due to affinity.
+> 
+> Why is none of this information in the changelog text?  How are we
+> supposed to know this?  And is this 400msec out of 10 seconds or
+
+We wanted to  first understand the requirement of bounded deferred probe 
+why it was really required.
+
+> something else?  Also, this sounds like your "little" cpus are really
+> bad, you might want to look into fixing them first :)
+> 
+
+~600ms (deferred probe bound to little core) and ~200ms (deferred probe 
+queued on unbound wq).
+
+> But if you really want to make this go faster, do not deferr your probe!
+> Why not fix that problem in your drivers instead?
+> 
+
+Yes, we are exploring in that direction as well but want to get upstream 
+opinion and understand the usability of unbounded wq.
+
+>> Please let us now if there are any concerns/restrictions that deferred probe
+>> work should run only on pinned kworkers. Since this work runs deferred probe
+>> of several devices , the locality may not be that important
+> 
+> Can you prove that it is not important?  I know lots of gyrations are
+> done in some busses to keep probe happening on the same CPU for very
+> good reasons.  Changing that should not be done lightly as you will
+> break this.
+
+While debugging further and checking if probe are migrating found that 
+init thread can potentially migrate, as it has cpu affinity set to all 
+cpus, during driver probe (or there is something which prevents it, 
+which I am missing?) . Also, async probes use unbounded workqueue.
+So, using unbounded wq for deferred probes looks to be similar to these, 
+w.r.t. scheduling behavior.
+
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
