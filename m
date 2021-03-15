@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D94A33BE40
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CE033BC11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238290AbhCOOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50636 "EHLO mail.kernel.org"
+        id S238123AbhCOOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232823AbhCOODx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC0964EE3;
-        Mon, 15 Mar 2021 14:03:51 +0000 (UTC)
+        id S232932AbhCOOAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B7C564EF0;
+        Mon, 15 Mar 2021 13:59:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817032;
-        bh=h0X38WufXpodO7S6ZRiHR8VH9Ou1WWFstY9gyKBLm/M=;
+        s=korg; t=1615816798;
+        bh=OOca3kBORgZR7pDsF6UQXxGFhNJsYMQXZVOqWCCcrdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d1N8wMYu/kkQRT5XFV+40m5NHZ+l6BnellIDsUpVQJksSv2tOYZ9BL4rihkBDrDo2
-         Fv4n80K/Fs1VFM4lqYxlw4iwS3oA/nNM44LmUgc5MKqyg1qNJMsBcK6w3D0j+G0+KE
-         yHXlSIMnC0f5Jj9Ku5x8Pt7AD4rlrdox+tbR4tOk=
+        b=hgW8ulApHJMjQ4UbRDJHaOkCrsTSj1uacCy1t/ic+9mPVoyxasRpQa0kbqKWetTDo
+         1fEexukLJTmKrVAbxJPyg/zSvYYQOJUwpmovPEBQr3dDrQ0YWBJzGThaXdcSJdJ07B
+         qOw9Rsm0uRvTB8V+72cbYXtUGhh2yW5hrV7cVyuU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 256/290] powerpc/64s/exception: Clean up a missed SRR specifier
+        stable@vger.kernel.org,
+        Karan Singhal <karan.singhal@acuitybrands.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 117/168] USB: serial: cp210x: add ID for Acuity Brands nLight Air Adapter
 Date:   Mon, 15 Mar 2021 14:55:49 +0100
-Message-Id: <20210315135550.662085080@linuxfoundation.org>
+Message-Id: <20210315135554.200556826@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniel Axtens <dja@axtens.net>
+From: Karan Singhal <karan.singhal@acuitybrands.com>
 
-[ Upstream commit c080a173301ffc62cb6c76308c803c7fee05517a ]
+commit ca667a33207daeaf9c62b106815728718def60ec upstream.
 
-Nick's patch cleaning up the SRR specifiers in exception-64s.S missed
-a single instance of EXC_HV_OR_STD. Clean that up.
+IDs of nLight Air Adapter, Acuity Brands, Inc.:
+vid: 10c4
+pid: 88d8
 
-Caught by clang's integrated assembler.
-
-Fixes: 3f7fbd97d07d ("powerpc/64s/exception: Clean up SRR specifiers")
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210225031006.1204774-2-dja@axtens.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Karan Singhal <karan.singhal@acuitybrands.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/exceptions-64s.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
-index 3cde2fbd74fc..9d3b468bd2d7 100644
---- a/arch/powerpc/kernel/exceptions-64s.S
-+++ b/arch/powerpc/kernel/exceptions-64s.S
-@@ -470,7 +470,7 @@ DEFINE_FIXED_SYMBOL(\name\()_common_real)
- 
- 	ld	r10,PACAKMSR(r13)	/* get MSR value for kernel */
- 	/* MSR[RI] is clear iff using SRR regs */
--	.if IHSRR == EXC_HV_OR_STD
-+	.if IHSRR_IF_HVMODE
- 	BEGIN_FTR_SECTION
- 	xori	r10,r10,MSR_RI
- 	END_FTR_SECTION_IFCLR(CPU_FTR_HVMODE)
--- 
-2.30.1
-
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -146,6 +146,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x10C4, 0x8857) },	/* CEL EM357 ZigBee USB Stick */
+ 	{ USB_DEVICE(0x10C4, 0x88A4) }, /* MMB Networks ZigBee USB Device */
+ 	{ USB_DEVICE(0x10C4, 0x88A5) }, /* Planet Innovation Ingeni ZigBee USB Device */
++	{ USB_DEVICE(0x10C4, 0x88D8) }, /* Acuity Brands nLight Air Adapter */
+ 	{ USB_DEVICE(0x10C4, 0x88FB) }, /* CESINEL MEDCAL STII Network Analyzer */
+ 	{ USB_DEVICE(0x10C4, 0x8938) }, /* CESINEL MEDCAL S II Network Analyzer */
+ 	{ USB_DEVICE(0x10C4, 0x8946) }, /* Ketra N1 Wireless Interface */
 
 
