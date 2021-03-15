@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AFD33A947
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 02:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C917933A94B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 02:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhCOBTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 21:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S229657AbhCOBYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 21:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCOBTT (ORCPT
+        with ESMTP id S229476AbhCOBYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 21:19:19 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39319C061574;
-        Sun, 14 Mar 2021 18:19:19 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id j7so8100316qtx.5;
-        Sun, 14 Mar 2021 18:19:19 -0700 (PDT)
+        Sun, 14 Mar 2021 21:24:31 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94479C061574;
+        Sun, 14 Mar 2021 18:24:31 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id j17so7052215qvo.13;
+        Sun, 14 Mar 2021 18:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/Sqt+b6Mu59peMloIVI7xzaYZwvMRd5WGREUImc3KC0=;
-        b=Ak5un/D/dqfo2vpzRExKhLFmwM7Lp2Vwp3ebr28m/ymYAe7HMacoZFmEXRP/IAXrn7
-         7l4XmSlbrpxogZ7JnZHf5qMOGTsG1kXhavNgU2IwZVG6p+JttNiRT1Yg0EZSmWfdf72c
-         GlhJfMdRoXqIRO01SG6RmHJ2FUix2iUUE04X+pkKVeD5/DkKCKcf6+R+ZxusknJk0U5+
-         RHeyE+vIIJ69trMwH5WcXhbguzjVihX3bg59225EjzOX4uwNTsYVvt0M7I0LRv5kMiKP
-         o5mvRxQxLV7UhNhIKisYhd8cb13wXDNEwMcmTWmrxRDBChxnBeSTg5gE86coTVd7n4BR
-         LVqg==
+        bh=orU24esBfmIjzmtTPPk2+OuRTlGiyvN1neiXqqxZg/4=;
+        b=E8d5lvgvEmnFYEEMG6ennvvEo/EcPgtNYO6eY3I01UIQUzklE+3nscR62jWUuThKzu
+         j7kRTMTV3i3CWfZIRAQYoBS3037SLsCtyP0ibkPN6orn3rq9h1wzy0H/tCmVtWND/8uA
+         C8+9SKQfbOYdTqp8b9jSRm+QVuK1VqgVJn/5OTuFoGENlQP46sp9RIlDmBDkcRN3QQuE
+         DSDmPjubI5Ee3UOP96Av83kSY+5rCom6OrvdzRFwjyPhHZuIPBDhieUFjKGgf2Xz4NlJ
+         ++s4cly+px59l7l0nmH547uxnXs03lK4mFldrhqpQhgbzdZab/YOO8kMeUYptuzazbY9
+         bstw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/Sqt+b6Mu59peMloIVI7xzaYZwvMRd5WGREUImc3KC0=;
-        b=BUDc+NZAUL0BhygsMDXNuAcFzROoD0WBvH7YKmpb9rXP3IR1bafS80G5cnhNGEVkb4
-         ngB+QgEK+5wtd/QxiC9FU94c9KgvssAVQMggjxnuGetMxbMXk7bY7EhPYr82jPk6P8xR
-         tBKmz0zzMacSmQ3wJWTBv8tcNp4TZx3TpDRzVIDjAlPutGSzgTEgxy0y2ldDuo+AN5MV
-         UaxVYWxYZSHnrZ13H90AiHKBAlHUEFTH/+WaeegKa8iGSUZRg2N+U44xdfNR8IGvKq17
-         EuGach64xaL1EHQSjicZIIfCK84GzcWd/a9fIQl266D6Ajxo4m9kTwqCbIKhfo2qSsoF
-         3jxw==
-X-Gm-Message-State: AOAM533zMZXBHCGHWJpfpEv9P+OPM2eFtJ+LQOVFN/6s1jzu5WUWab3t
-        BX+1f6hF1HkDlmC/1y4QtR/q6FeDCelnA9+y
-X-Google-Smtp-Source: ABdhPJxn1mbmsfNwG+WGJ1POgSb3IU1XizJULcsF97M5kMIgIB7Phvy3GelIXBEL9kCwjbSo09L45w==
-X-Received: by 2002:ac8:431e:: with SMTP id z30mr20839521qtm.216.1615771158411;
-        Sun, 14 Mar 2021 18:19:18 -0700 (PDT)
+        bh=orU24esBfmIjzmtTPPk2+OuRTlGiyvN1neiXqqxZg/4=;
+        b=UpKvbobkdtlVOm9jxLjEJdcAqSJyD9fpdX7cjudFtPmYREHM0rouoM5F//ENN8k29K
+         5Lz1Ws7jnd0gv3PmGtirPCyDg37IRa4IaY8vG515rmZ3NUFIjkTSH2guAcn57tKjKzR2
+         Fd7OJRcnLLdY4vkGBHfNLUI6mS+qhBu4JHj8arYnR3ReB6LW6/2SG1IrMqSj0S1qhMtA
+         ljJVVG9/47sGQ7ScCLiuGXEp5FQSzcR3QVq5gGqTMzVHKfdQfvUTB/vo5Ba/+pjsMTOA
+         pKDqxKw2gILBcnCKeX0dBWwWSskMj7bcD9HH8NK3j32DQSC3WPmqsSZ2YVgiGmFtkncp
+         nxOA==
+X-Gm-Message-State: AOAM532vrJP7nf/7o+qzQfw47d6b/s4ywRVAxoSgyCpvD8vlMRKtqKoJ
+        sucEvkhWjzVAmDz9xH/ZxGI=
+X-Google-Smtp-Source: ABdhPJxmoW75eiEqwZCCGqXKXbaRONcVx9tsvpjP2LsJ2dEpUL/SJJkqyjUhee66zYKLnNbNlLWFTQ==
+X-Received: by 2002:a05:6214:1a4a:: with SMTP id fi10mr22394607qvb.5.1615771470688;
+        Sun, 14 Mar 2021 18:24:30 -0700 (PDT)
 Received: from localhost.localdomain ([37.19.198.69])
-        by smtp.gmail.com with ESMTPSA id h7sm11083518qkk.41.2021.03.14.18.19.15
+        by smtp.gmail.com with ESMTPSA id b17sm8837935qtp.73.2021.03.14.18.24.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Mar 2021 18:19:17 -0700 (PDT)
+        Sun, 14 Mar 2021 18:24:30 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] block: Few spelling fixes in the file blk-merge.c
-Date:   Mon, 15 Mar 2021 06:48:49 +0530
-Message-Id: <20210315011849.3964886-1-unixbhaskar@gmail.com>
+Subject: [PATCH] nfs: Fix a typo in the file nfs42xattr.c
+Date:   Mon, 15 Mar 2021 06:54:10 +0530
+Message-Id: <20210315012410.11725-1-unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,37 +63,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-s/trival/trivial/
-s/attributs/attributes/
+s/attribues/attributes/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- block/blk-merge.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfs/nfs42xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 808768f6b174..a39327e38276 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -283,7 +283,7 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
- 	/*
- 	 * Bio splitting may cause subtle trouble such as hang when doing sync
- 	 * iopoll in direct IO routine. Given performance gain of iopoll for
--	 * big IO can be trival, disable iopoll when split needed.
-+	 * big IO can be trivial, disable iopoll when split needed.
- 	 */
- 	bio->bi_opf &= ~REQ_HIPRI;
-
-@@ -675,7 +675,7 @@ void blk_rq_set_mixed_merge(struct request *rq)
- 	/*
- 	 * @rq will no longer represent mixable attributes for all the
- 	 * contained bios.  It will just track those of the first one.
--	 * Distributes the attributs to each bio.
-+	 * Distributes the attributes to each bio.
- 	 */
- 	for (bio = rq->bio; bio; bio = bio->bi_next) {
- 		WARN_ON_ONCE((bio->bi_opf & REQ_FAILFAST_MASK) &&
+diff --git a/fs/nfs/nfs42xattr.c b/fs/nfs/nfs42xattr.c
+index 6c2ce799150f..1c4d2a05b401 100644
+--- a/fs/nfs/nfs42xattr.c
++++ b/fs/nfs/nfs42xattr.c
+@@ -168,7 +168,7 @@ nfs4_xattr_entry_lru_del(struct nfs4_xattr_entry *entry)
+  *	   make it easier to copy the value after an RPC, even if
+  *	   the value will not be passed up to application (e.g.
+  *	   for a 'query' getxattr with NULL buffer).
+- * @len:   Length of the value. Can be 0 for zero-length attribues.
++ * @len:   Length of the value. Can be 0 for zero-length attributes.
+  *         @value and @pages will be NULL if @len is 0.
+  */
+ static struct nfs4_xattr_entry *
 --
 2.30.2
 
