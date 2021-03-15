@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8479D33BC35
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A363033BBE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238677AbhCOOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S236450AbhCOONB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232844AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DAC664F21;
-        Mon, 15 Mar 2021 13:59:27 +0000 (UTC)
+        id S232474AbhCON66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 174A464F2D;
+        Mon, 15 Mar 2021 13:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816768;
-        bh=02ckzVMLLa7/mqcJCbiSz5NJ52Ls+EyxHla1v14UTX8=;
+        s=korg; t=1615816719;
+        bh=mRisczX7i3MjtkYIK4Mw88BqES+z3THjadjcbswPhFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vd9jLNLA6d+f6dhob3+5Wfvxb7dPtPMGoZqvP0Y84afrdz0npBCZpNWfPbNpwqHTK
-         Pq0gqB5j9uXwGL1D20AUXxQyqzBYZjn023CSWgeF8LGel7wtUqzt8kxv84U8Dfe3Yu
-         d4z29ul3C7KR8RnIL1GiLU4OQTUyEjX+d5ommp7M=
+        b=ein9ldZo2qcqupf4DkVrDK7vkXS2yrhsRzJltYS9qWuZIR8h6+KCDUQ3JuIkJpRB3
+         gb/RKp3quyhysdxMeugeVnuk1gjc7Aqvp+PtX2T9oSaUueLXvBaB5d6yGfBtQKOaRM
+         2bSM1G9ZEcOLf52Zn2g+slxvqxs4y8VGFoP+p7RE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 055/120] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
-Date:   Mon, 15 Mar 2021 14:56:46 +0100
-Message-Id: <20210315135721.787469574@linuxfoundation.org>
+        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
+        Ramesh Babu B <ramesh.babu.b@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 17/95] net: stmmac: fix incorrect DMA channel intr enable setting of EQoS v4.10
+Date:   Mon, 15 Mar 2021 14:56:47 +0100
+Message-Id: <20210315135740.834147567@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
+commit 879c348c35bb5fb758dd881d8a97409c1862dae8 upstream.
 
-Avoid a potentially large stack frame and overflow by making
-"cpumask_t avail" a static variable. There is no concurrent
-access due to the existing locking.
+We introduce dwmac410_dma_init_channel() here for both EQoS v4.10 and
+above which use different DMA_CH(n)_Interrupt_Enable bit definitions for
+NIE and AIE.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 48863ce5940f ("stmmac: add DMA support for GMAC 4.xx")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Ramesh Babu B <ramesh.babu.b@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c |   19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-index c47bd581a08a..bce678c7179c 100644
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -751,7 +751,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
- static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
- {
- 	struct sclp_core_entry *core;
--	cpumask_t avail;
-+	static cpumask_t avail;
- 	bool configured;
- 	u16 core_id;
- 	int nr, i;
--- 
-2.30.1
-
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+@@ -115,6 +115,23 @@ static void dwmac4_dma_init_channel(void
+ 	       ioaddr + DMA_CHAN_INTR_ENA(chan));
+ }
+ 
++static void dwmac410_dma_init_channel(void __iomem *ioaddr,
++				      struct stmmac_dma_cfg *dma_cfg, u32 chan)
++{
++	u32 value;
++
++	/* common channel control register config */
++	value = readl(ioaddr + DMA_CHAN_CONTROL(chan));
++	if (dma_cfg->pblx8)
++		value = value | DMA_BUS_MODE_PBL;
++
++	writel(value, ioaddr + DMA_CHAN_CONTROL(chan));
++
++	/* Mask interrupts by writing to CSR7 */
++	writel(DMA_CHAN_INTR_DEFAULT_MASK_4_10,
++	       ioaddr + DMA_CHAN_INTR_ENA(chan));
++}
++
+ static void dwmac4_dma_init(void __iomem *ioaddr,
+ 			    struct stmmac_dma_cfg *dma_cfg,
+ 			    u32 dma_tx, u32 dma_rx, int atds)
+@@ -416,7 +433,7 @@ const struct stmmac_dma_ops dwmac4_dma_o
+ const struct stmmac_dma_ops dwmac410_dma_ops = {
+ 	.reset = dwmac4_dma_reset,
+ 	.init = dwmac4_dma_init,
+-	.init_chan = dwmac4_dma_init_channel,
++	.init_chan = dwmac410_dma_init_channel,
+ 	.init_rx_chan = dwmac4_dma_init_rx_chan,
+ 	.init_tx_chan = dwmac4_dma_init_tx_chan,
+ 	.axi = dwmac4_dma_axi,
 
 
