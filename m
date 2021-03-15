@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B543F33BE75
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D1F33BCD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239625AbhCOOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
+        id S235235AbhCOO3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231630AbhCON6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE69764F04;
-        Mon, 15 Mar 2021 13:58:07 +0000 (UTC)
+        id S232399AbhCON6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 784D764F1A;
+        Mon, 15 Mar 2021 13:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816688;
-        bh=RmiTjGr/R0DfF63LCOp6JPHByS43EkqYkA875oYey3U=;
+        s=korg; t=1615816708;
+        bh=zpNUKK/aPKyGPqxpwHHm0Ond1XIcDiwIFmzE1PWTR9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bnnz3dVUGzySUo28RTb13B/2kI4p3/vVWuyOiq/QRhig5FqNtqEeRWLUMdZZX5wFz
-         SEINzrq7puZGpndzBctfehTlLDZP2g03AIwfDEDurfkMUlfwd/8mW5Tw5eIOIwaEOk
-         bRY+RZLbJId+UYvjNhCYY4t+XFLXPXxa0hZG9Jvo=
+        b=u6TALwkKxTxTbMBVOPUQD0dsGnWKo7uJ/h3Ry4Y0pAqy102+1EO222zIQCJ9IhkHq
+         Tz3+y2uUinCDzM4kaptEH1eW4dyj0ruLuEjXnG55E9TpM5ClDSmbANsKCqR8sV66tM
+         QqVFYMETzyf+HynAvQlqjwPQGhUR7U8YGelRxOhk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 065/306] net: stmmac: Fix VLAN filter delete timeout issue in Intel mGBE SGMII
-Date:   Mon, 15 Mar 2021 14:52:08 +0100
-Message-Id: <20210315135509.841157981@linuxfoundation.org>
+        stable@vger.kernel.org, Antony Antony <antony@phenome.org>,
+        Shannon Nelson <snelson@pensando.io>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.11 077/306] ixgbe: fail to create xfrm offload of IPsec tunnel mode SA
+Date:   Mon, 15 Mar 2021 14:52:20 +0100
+Message-Id: <20210315135510.244205815@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,52 +43,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Antony Antony <antony@phenome.org>
 
-commit 9a7b3950c7e15968e23d83be215e95ccc7c92a53 upstream.
+commit d785e1fec60179f534fbe8d006c890e5ad186e51 upstream.
 
-For Intel mGbE controller, MAC VLAN filter delete operation will time-out
-if serdes power-down sequence happened first during driver remove() with
-below message.
+Based on talks and indirect references ixgbe IPsec offlod do not
+support IPsec tunnel mode offload. It can only support IPsec transport
+mode offload. Now explicitly fail when creating non transport mode SA
+with offload to avoid false performance expectations.
 
-[82294.764958] intel-eth-pci 0000:00:1e.4 eth2: stmmac_dvr_remove: removing driver
-[82294.778677] intel-eth-pci 0000:00:1e.4 eth2: Timeout accessing MAC_VLAN_Tag_Filter
-[82294.779997] intel-eth-pci 0000:00:1e.4 eth2: failed to kill vid 0081/0
-[82294.947053] intel-eth-pci 0000:00:1d.2 eth1: stmmac_dvr_remove: removing driver
-[82295.002091] intel-eth-pci 0000:00:1d.1 eth0: stmmac_dvr_remove: removing driver
-
-Therefore, we delay the serdes power-down to be after unregister_netdev()
-which triggers the VLAN filter delete.
-
-Fixes: b9663b7ca6ff ("net: stmmac: Enable SERDES power up/down sequence")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 63a67fe229ea ("ixgbe: add ipsec offload add and remove SA")
+Signed-off-by: Antony Antony <antony@phenome.org>
+Acked-by: Shannon Nelson <snelson@pensando.io>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c |    5 +++++
+ drivers/net/ethernet/intel/ixgbevf/ipsec.c     |    5 +++++
+ 2 files changed, 10 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5144,13 +5144,16 @@ int stmmac_dvr_remove(struct device *dev
- 	netdev_info(priv->dev, "%s: removing driver", __func__);
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
+@@ -575,6 +575,11 @@ static int ixgbe_ipsec_add_sa(struct xfr
+ 		return -EINVAL;
+ 	}
  
- 	stmmac_stop_all_dma(priv);
-+	stmmac_mac_set(priv, priv->ioaddr, false);
-+	netif_carrier_off(ndev);
-+	unregister_netdev(ndev);
++	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
++		netdev_err(dev, "Unsupported mode for ipsec offload\n");
++		return -EINVAL;
++	}
++
+ 	if (ixgbe_ipsec_check_mgmt_ip(xs)) {
+ 		netdev_err(dev, "IPsec IP addr clash with mgmt filters\n");
+ 		return -EINVAL;
+--- a/drivers/net/ethernet/intel/ixgbevf/ipsec.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ipsec.c
+@@ -272,6 +272,11 @@ static int ixgbevf_ipsec_add_sa(struct x
+ 		return -EINVAL;
+ 	}
  
-+	/* Serdes power down needs to happen after VLAN filter
-+	 * is deleted that is triggered by unregister_netdev().
-+	 */
- 	if (priv->plat->serdes_powerdown)
- 		priv->plat->serdes_powerdown(ndev, priv->plat->bsp_priv);
++	if (xs->props.mode != XFRM_MODE_TRANSPORT) {
++		netdev_err(dev, "Unsupported mode for ipsec offload\n");
++		return -EINVAL;
++	}
++
+ 	if (xs->xso.flags & XFRM_OFFLOAD_INBOUND) {
+ 		struct rx_sa rsa;
  
--	stmmac_mac_set(priv, priv->ioaddr, false);
--	netif_carrier_off(ndev);
--	unregister_netdev(ndev);
- #ifdef CONFIG_DEBUG_FS
- 	stmmac_exit_fs(ndev);
- #endif
 
 
