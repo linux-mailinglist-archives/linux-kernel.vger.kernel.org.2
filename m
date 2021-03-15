@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A890233AD7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B724233AD7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCOIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:31:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22729 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229570AbhCOIbZ (ORCPT
+        id S229692AbhCOIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:32:02 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50688 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCOIbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 04:31:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615797084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZKg5OJ0Wle9GUUJPspxr/sYEl3Le9qh1nxrGMT+1Rf8=;
-        b=APt0FYtDH2Y2SXzyABS/0QaP2VfRoF94ExPy/fwFO1GNklsxcpKFtrgbUlBfFzbOVEARrZ
-        i9r4k3TDBg6k3zwYUnJUoXwsLNeWHwDVVOd0BNHUXqzhbQ/Di+8+51OWF90B0JcI4DpGfc
-        aCQSxGJXztJQtWNho2Lk3GqbsQpNefo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-aFVIdB69NjiChjbvg0Tg4g-1; Mon, 15 Mar 2021 04:31:20 -0400
-X-MC-Unique: aFVIdB69NjiChjbvg0Tg4g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79845100C665;
-        Mon, 15 Mar 2021 08:31:19 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-245.pek2.redhat.com [10.72.12.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 77A355D745;
-        Mon, 15 Mar 2021 08:31:13 +0000 (UTC)
-Subject: Re: [PATCH] vhost: Fix vhost_vq_reset()
-To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org
-References: <20210312140913.788592-1-lvivier@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7bb4ee1a-d204-eb94-792f-ca250dacacea@redhat.com>
-Date:   Mon, 15 Mar 2021 16:31:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lLidD-000G6o-WC; Mon, 15 Mar 2021 09:31:20 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lLidD-000FZ1-Qu; Mon, 15 Mar 2021 09:31:19 +0100
+Subject: Re: [PATCH v2] bpf: Fix memory leak in copy_process()
+To:     qiang.zhang@windriver.com, ast@kernel.org, andrii@kernel.org
+Cc:     dvyukov@google.com, linux-kernel@vger.kernel.org,
+        syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com
+References: <20210315081847.16180-1-qiang.zhang@windriver.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cc15c3e3-2892-c285-13cd-1356bdce8f59@iogearbox.net>
+Date:   Mon, 15 Mar 2021 09:31:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210312140913.788592-1-lvivier@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210315081847.16180-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26108/Sun Mar 14 13:05:46 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/15/21 9:18 AM, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 
-ÔÚ 2021/3/12 ÏÂÎç10:09, Laurent Vivier Ð´µÀ:
-> vhost_reset_is_le() is vhost_init_is_le(), and in the case of
-> cross-endian legacy, vhost_init_is_le() depends on vq->user_be.
->
-> vq->user_be is set by vhost_disable_cross_endian().
->
-> But in vhost_vq_reset(), we have:
->
->      vhost_reset_is_le(vq);
->      vhost_disable_cross_endian(vq);
->
-> And so user_be is used before being set.
->
-> To fix that, reverse the lines order as there is no other dependency
-> between them.
->
-> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Hello Zqiang, please resend this patch with bpf@vger.kernel.org in Cc, so it
+actually reaches the rest of BPF community for review, thanks!
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
+> The syzbot report a memleak follow:
+> BUG: memory leak
+> unreferenced object 0xffff888101b41d00 (size 120):
+>    comm "kworker/u4:0", pid 8, jiffies 4294944270 (age 12.780s)
+>    backtrace:
+>      [<ffffffff8125dc56>] alloc_pid+0x66/0x560
+>      [<ffffffff81226405>] copy_process+0x1465/0x25e0
+>      [<ffffffff81227943>] kernel_clone+0xf3/0x670
+>      [<ffffffff812281a1>] kernel_thread+0x61/0x80
+>      [<ffffffff81253464>] call_usermodehelper_exec_work
+>      [<ffffffff81253464>] call_usermodehelper_exec_work+0xc4/0x120
+>      [<ffffffff812591c9>] process_one_work+0x2c9/0x600
+>      [<ffffffff81259ab9>] worker_thread+0x59/0x5d0
+>      [<ffffffff812611c8>] kthread+0x178/0x1b0
+>      [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+> 
+> unreferenced object 0xffff888110ef5c00 (size 232):
+>    comm "kworker/u4:0", pid 8414, jiffies 4294944270 (age 12.780s)
+>    backtrace:
+>      [<ffffffff8154a0cf>] kmem_cache_zalloc
+>      [<ffffffff8154a0cf>] __alloc_file+0x1f/0xf0
+>      [<ffffffff8154a809>] alloc_empty_file+0x69/0x120
+>      [<ffffffff8154a8f3>] alloc_file+0x33/0x1b0
+>      [<ffffffff8154ab22>] alloc_file_pseudo+0xb2/0x140
+>      [<ffffffff81559218>] create_pipe_files+0x138/0x2e0
+>      [<ffffffff8126c793>] umd_setup+0x33/0x220
+>      [<ffffffff81253574>] call_usermodehelper_exec_async+0xb4/0x1b0
+>      [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+> 
+> after the UMD process exits, the pipe_to_umh/pipe_from_umh and tgid
+> need to be release.
+> 
+> Fixes: d71fa5c9763c ("bpf: Add kernel module with user mode driver that populates bpffs.")
+> Reported-by: syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 > ---
->   drivers/vhost/vhost.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index a262e12c6dc2..5ccb0705beae 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -332,8 +332,8 @@ static void vhost_vq_reset(struct vhost_dev *dev,
->   	vq->error_ctx = NULL;
->   	vq->kick = NULL;
->   	vq->log_ctx = NULL;
-> -	vhost_reset_is_le(vq);
->   	vhost_disable_cross_endian(vq);
-> +	vhost_reset_is_le(vq);
->   	vq->busyloop_timeout = 0;
->   	vq->umem = NULL;
->   	vq->iotlb = NULL;
-
+>   v1->v2:
+>   Judge whether the pointer variable tgid is valid.
