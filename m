@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BEA33B681
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFBF33B563
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhCONyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
+        id S231268AbhCONyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhCONxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD33964E89;
-        Mon, 15 Mar 2021 13:53:12 +0000 (UTC)
+        id S230131AbhCONxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A21D164EE3;
+        Mon, 15 Mar 2021 13:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816394;
-        bh=/8R6R06lhlNFIZDBwF3ujdYr58JUCq8f0opCZTPs2JY=;
+        s=korg; t=1615816396;
+        bh=FgnwEirIJlCfuiFacdLl2MgN29DBDcntNFmOzOCqrtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zvFzEFd/kafs54uSrTGWLoyQgp9pR9bBScqJz0sAAxTqzBA5Mo+QDl2EmBVCKndDa
-         fuFY8m36cj9rNmcUd7OJQ0dDs/uOCopD9f+3trvg8lPKXhiUNPYlDV9F+Zrk/4rvje
-         Kjtj6+ibKvmxSYcqUO9aPG/6WSlv2V0LO17bnvzk=
+        b=uARKSVcXab0PzyDN8RQ+8+9uz2yYlzYAi4REEpRDuHEalfY+PDOk8XRYfEQA8rsS7
+         NYaY6639Q6pFYPCGAKwpMxoQ1pMk4l8lnxbCAxwhOaqCyZ4mHjgIoJd2wQmZM5dt/o
+         QYOatwIm6/IzUN8uJoVQvQWJxU9A6Btu/Jg3YgqE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
-        Martin Schiller <ms@dev.tdt.de>,
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 14/78] net: lapbether: Remove netif_start_queue / netif_stop_queue
-Date:   Mon, 15 Mar 2021 14:51:37 +0100
-Message-Id: <20210315135212.534633267@linuxfoundation.org>
+Subject: [PATCH 4.9 15/78] net: davicom: Fix regulator not turned off on failed probe
+Date:   Mon, 15 Mar 2021 14:51:38 +0100
+Message-Id: <20210315135212.566588976@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
 References: <20210315135212.060847074@linuxfoundation.org>
@@ -42,61 +41,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit f7d9d4854519fdf4d45c70a4d953438cd88e7e58 upstream.
+commit ac88c531a5b38877eba2365a3f28f0c8b513dc33 upstream.
 
-For the devices in this driver, the default qdisc is "noqueue",
-because their "tx_queue_len" is 0.
+When the probe fails or requests to be defered, we must disable the
+regulator that was previously enabled.
 
-In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
-"noqueue" qdisc are specially handled. Packets are transmitted without
-being queued after a "dev->flags & IFF_UP" check. However, it's possible
-that even if this check succeeds, "ops->ndo_stop" may still have already
-been called. This is because in "__dev_close_many", "ops->ndo_stop" is
-called before clearing the "IFF_UP" flag.
-
-If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
-"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
-checks "netif_xmit_stopped" and finds that the queue is already stopped.
-In this case, it will complain that:
-"Virtual device ... asks to queue packet!"
-
-To prevent "__dev_queue_xmit" from generating this complaint, we should
-not call "netif_stop_queue" in "ops->ndo_stop".
-
-We also don't need to call "netif_start_queue" in "ops->ndo_open",
-because after a netdev is allocated and registered, the
-"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
-to call "netif_start_queue" to clear it.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Acked-by: Martin Schiller <ms@dev.tdt.de>
+Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wan/lapbether.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -286,7 +286,6 @@ static int lapbeth_open(struct net_devic
- 		return -ENODEV;
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -1459,7 +1459,7 @@ dm9000_probe(struct platform_device *pde
+ 		if (ret) {
+ 			dev_err(dev, "failed to request reset gpio %d: %d\n",
+ 				reset_gpios, ret);
+-			return -ENODEV;
++			goto out_regulator_disable;
+ 		}
+ 
+ 		/* According to manual PWRST# Low Period Min 1ms */
+@@ -1471,8 +1471,10 @@ dm9000_probe(struct platform_device *pde
+ 
+ 	if (!pdata) {
+ 		pdata = dm9000_parse_dt(&pdev->dev);
+-		if (IS_ERR(pdata))
+-			return PTR_ERR(pdata);
++		if (IS_ERR(pdata)) {
++			ret = PTR_ERR(pdata);
++			goto out_regulator_disable;
++		}
  	}
  
--	netif_start_queue(dev);
- 	return 0;
+ 	/* Init network device */
+@@ -1715,6 +1717,10 @@ out:
+ 	dm9000_release_board(pdev, db);
+ 	free_netdev(ndev);
+ 
++out_regulator_disable:
++	if (!IS_ERR(power))
++		regulator_disable(power);
++
+ 	return ret;
  }
- 
-@@ -294,8 +293,6 @@ static int lapbeth_close(struct net_devi
- {
- 	int err;
- 
--	netif_stop_queue(dev);
--
- 	if ((err = lapb_unregister(dev)) != LAPB_OK)
- 		pr_err("lapb_unregister error: %d\n", err);
  
 
 
