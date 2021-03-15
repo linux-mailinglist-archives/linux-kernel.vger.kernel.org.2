@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A21F33B5FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4021833B605
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhCON4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57182 "EHLO mail.kernel.org"
+        id S231834AbhCON4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231287AbhCONyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 760BD64EF0;
-        Mon, 15 Mar 2021 13:54:00 +0000 (UTC)
+        id S231228AbhCONx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C43561606;
+        Mon, 15 Mar 2021 13:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816441;
-        bh=ilDVjpFpcGed4O/VAph3Y64HOjSdPgGV/4bbeQtf+DM=;
+        s=korg; t=1615816436;
+        bh=qZO2JAly925agLONcpsFi8OGk/10Ow5eu9EZjLdMrw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P22bq+xcR3DW4qlhgN+a8AYCtxO4OkIndYNmsVc6OiLUdJuCMY/i1E5ohY+6ENRYZ
-         AHPLhYGBWjWnchm24kGzQPEfnwuWiZT8VBzwAQCNY9Gn9htNMKTk9W+eT+qIFfpCaH
-         jbFbvqaGlUCIjlUamAC3UoQxeHPod0Cmbf7ZS86Q=
+        b=NnjN85oIfmK6LeaeNt52hP9Wi/W/S+fIyOEvoFmVI/6h96Su03HFX+o1qBgyAbBm9
+         mqI8pBr+3i5NJSPv/qwXgaRCmLU8U1ZDeeV+bsOg2wWMRDGeT6W7IpxmYa7xjVH0iD
+         aoAOqJVMobDT4EFfYF0OZlBnfeyCCbZosvfZYz3M=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.4 46/75] staging: rtl8188eu: fix potential memory corruption in rtw_check_beacon_data()
-Date:   Mon, 15 Mar 2021 14:52:00 +0100
-Message-Id: <20210315135209.753491210@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 38/78] USB: serial: cp210x: add some more GE USB IDs
+Date:   Mon, 15 Mar 2021 14:52:01 +0100
+Message-Id: <20210315135213.324157510@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-commit d4ac640322b06095128a5c45ba4a1e80929fe7f3 upstream.
+commit 42213a0190b535093a604945db05a4225bf43885 upstream.
 
-The "ie_len" is a value in the 1-255 range that comes from the user.  We
-have to cap it to ensure that it's not too large or it could lead to
-memory corruption.
+GE CS1000 has some more custom USB IDs for CP2102N; add them
+to the driver to have working auto-probing.
 
-Fixes: 9a7fe54ddc3a ("staging: r8188eu: Add source files for new driver - part 1")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YEHyQCrFZKTXyT7J@mwanda
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8188eu/core/rtw_ap.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/serial/cp210x.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/staging/rtl8188eu/core/rtw_ap.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_ap.c
-@@ -921,6 +921,7 @@ int rtw_check_beacon_data(struct adapter
- 	/* SSID */
- 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _SSID_IE_, &ie_len, (pbss_network->IELength - _BEACON_IE_OFFSET_));
- 	if (p && ie_len > 0) {
-+		ie_len = min_t(int, ie_len, sizeof(pbss_network->Ssid.Ssid));
- 		memset(&pbss_network->Ssid, 0, sizeof(struct ndis_802_11_ssid));
- 		memcpy(pbss_network->Ssid.Ssid, (p + 2), ie_len);
- 		pbss_network->Ssid.SsidLength = ie_len;
-@@ -939,6 +940,7 @@ int rtw_check_beacon_data(struct adapter
- 	/*  get supported rates */
- 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _SUPPORTEDRATES_IE_, &ie_len, (pbss_network->IELength - _BEACON_IE_OFFSET_));
- 	if (p !=  NULL) {
-+		ie_len = min_t(int, ie_len, NDIS_802_11_LENGTH_RATES_EX);
- 		memcpy(supportRate, p+2, ie_len);
- 		supportRateNum = ie_len;
- 	}
-@@ -946,6 +948,8 @@ int rtw_check_beacon_data(struct adapter
- 	/* get ext_supported rates */
- 	p = rtw_get_ie(ie + _BEACON_IE_OFFSET_, _EXT_SUPPORTEDRATES_IE_, &ie_len, pbss_network->IELength - _BEACON_IE_OFFSET_);
- 	if (p !=  NULL) {
-+		ie_len = min_t(int, ie_len,
-+			       NDIS_802_11_LENGTH_RATES_EX - supportRateNum);
- 		memcpy(supportRate+supportRateNum, p+2, ie_len);
- 		supportRateNum += ie_len;
- 	}
-@@ -1061,6 +1065,7 @@ int rtw_check_beacon_data(struct adapter
- 			pht_cap->supp_mcs_set[0] = 0xff;
- 			pht_cap->supp_mcs_set[1] = 0x0;
- 		}
-+		ie_len = min_t(int, ie_len, sizeof(pmlmepriv->htpriv.ht_cap));
- 		memcpy(&pmlmepriv->htpriv.ht_cap, p+2, ie_len);
- 	}
- 
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -200,6 +200,8 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
++	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
++	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
+ 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
 
 
