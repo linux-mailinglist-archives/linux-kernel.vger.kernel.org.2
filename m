@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07A033BB0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A19933BAEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235894AbhCOOLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35698 "EHLO mail.kernel.org"
+        id S235783AbhCOOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:10:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232085AbhCON5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D08A464EED;
-        Mon, 15 Mar 2021 13:57:43 +0000 (UTC)
+        id S232299AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 874E364F0D;
+        Mon, 15 Mar 2021 13:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816664;
-        bh=wXajcTNNbbgZvj7vVyXF5bBu54zG0aV+bKfA1wOFgDo=;
+        s=korg; t=1615816699;
+        bh=etdHtidwxzljVrBeF2zHsYOYnaLL7Kn+/lR3nWja0VE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zRRxAhRtKcdyybhKAPRKTgPjHvppiQIBpOcH7ECSiw9/A+TKydaZpKF0rUhv+pLxV
-         HeNzAOUJv9vMpZ3+AW/Ke1jMs7CzC7Zm6mPpPwpl3q3xCXA/89kVGsaKLBN/ELqe+Q
-         LqlgNL+HBGmQfOtlpLfUo5nDer9ccqIo7/wa3xSs=
+        b=Y+Djd9pGQlVlFQhZ5HCKYFzVMk1Tcog4fV1vgG5K8nks3XA2C+0ulSgp7vXC3NYdU
+         YbMo5fwrx5vTsFwb6/lhi1ygdPPIWO76catM3+ljQfLJH9V9NqAPywi2iU0q7hzexk
+         5/9Kgg2w3WfCxc/KIMCJeojpp4tNx7X/YCvU93CE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 042/290] net: enetc: remove bogus write to SIRXIDR from enetc_setup_rxbdr
+Subject: [PATCH 5.11 072/306] s390/qeth: fix memory leak after failed TX Buffer allocation
 Date:   Mon, 15 Mar 2021 14:52:15 +0100
-Message-Id: <20210315135543.351716525@linuxfoundation.org>
+Message-Id: <20210315135510.076202367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +42,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit 96a5223b918c8b79270fc0fec235a7ebad459098 upstream.
+commit e7a36d27f6b9f389e41d8189a8a08919c6835732 upstream.
 
-The Station Interface Receive Interrupt Detect Register (SIRXIDR)
-contains a 16-bit wide mask of 'interrupt detected' events for each ring
-associated with a port. Bit i is write-1-to-clean for RX ring i.
+When qeth_alloc_qdio_queues() fails to allocate one of the buffers that
+back an Output Queue, the 'out_freeoutqbufs' path will free all
+previously allocated buffers for this queue. But it misses to free the
+half-finished queue struct itself.
 
-I have no explanation whatsoever how this line of code came to be
-inserted in the blamed commit. I checked the downstream versions of that
-patch and none of them have it.
+Move the buffer allocation into qeth_alloc_output_queue(), and deal with
+such errors internally.
 
-The somewhat comical aspect of it is that we're writing a binary number
-to the SIRXIDR register, which is derived from enetc_bd_unused(rx_ring).
-Since the RX rings have 512 buffer descriptors, we end up writing 511 to
-this register, which is 0x1ff, so we are effectively clearing the
-'interrupt detected' event for rings 0-8.
-
-This register is not what is used for interrupt handling though - it
-only provides a summary for the entire SI. The hardware provides one
-separate Interrupt Detect Register per RX ring, which auto-clears upon
-read. So there doesn't seem to be any adverse effect caused by this
-bogus write.
-
-There is, however, one reason why this should be handled as a bugfix:
-next_to_clean _should_ be committed to hardware, just not to that
-register, and this was obscuring the fact that it wasn't. This is fixed
-in the next patch, and removing the bogus line now allows the fix patch
-to be backported beyond that point.
-
-Fixes: fd5736bf9f23 ("enetc: Workaround for MDIO register access issue")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Fixes: 0da9581ddb0f ("qeth: exploit asynchronous delivery of storage blocks")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/s390/net/qeth_core_main.c |   35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1252,7 +1252,6 @@ static void enetc_setup_rxbdr(struct ene
- 	rx_ring->idr = hw->reg + ENETC_SIRXIDR;
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -2630,15 +2630,28 @@ static void qeth_free_output_queue(struc
+ static struct qeth_qdio_out_q *qeth_alloc_output_queue(void)
+ {
+ 	struct qeth_qdio_out_q *q = kzalloc(sizeof(*q), GFP_KERNEL);
++	unsigned int i;
  
- 	enetc_refill_rx_ring(rx_ring, enetc_bd_unused(rx_ring));
--	enetc_wr(hw, ENETC_SIRXIDR, rx_ring->next_to_use);
+ 	if (!q)
+ 		return NULL;
  
- 	/* enable ring */
- 	enetc_rxbdr_wr(hw, idx, ENETC_RBMR, rbmr);
+-	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q)) {
+-		kfree(q);
+-		return NULL;
++	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q))
++		goto err_qdio_bufs;
++
++	for (i = 0; i < QDIO_MAX_BUFFERS_PER_Q; i++) {
++		if (qeth_init_qdio_out_buf(q, i))
++			goto err_out_bufs;
+ 	}
++
+ 	return q;
++
++err_out_bufs:
++	while (i > 0)
++		kmem_cache_free(qeth_qdio_outbuf_cache, q->bufs[--i]);
++	qdio_free_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q);
++err_qdio_bufs:
++	kfree(q);
++	return NULL;
+ }
+ 
+ static void qeth_tx_completion_timer(struct timer_list *timer)
+@@ -2651,7 +2664,7 @@ static void qeth_tx_completion_timer(str
+ 
+ static int qeth_alloc_qdio_queues(struct qeth_card *card)
+ {
+-	int i, j;
++	unsigned int i;
+ 
+ 	QETH_CARD_TEXT(card, 2, "allcqdbf");
+ 
+@@ -2685,13 +2698,6 @@ static int qeth_alloc_qdio_queues(struct
+ 		queue->coalesce_usecs = QETH_TX_COALESCE_USECS;
+ 		queue->max_coalesced_frames = QETH_TX_MAX_COALESCED_FRAMES;
+ 		queue->priority = QETH_QIB_PQUE_PRIO_DEFAULT;
+-
+-		/* give outbound qeth_qdio_buffers their qdio_buffers */
+-		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
+-			WARN_ON(queue->bufs[j]);
+-			if (qeth_init_qdio_out_buf(queue, j))
+-				goto out_freeoutqbufs;
+-		}
+ 	}
+ 
+ 	/* completion */
+@@ -2700,13 +2706,6 @@ static int qeth_alloc_qdio_queues(struct
+ 
+ 	return 0;
+ 
+-out_freeoutqbufs:
+-	while (j > 0) {
+-		--j;
+-		kmem_cache_free(qeth_qdio_outbuf_cache,
+-				card->qdio.out_qs[i]->bufs[j]);
+-		card->qdio.out_qs[i]->bufs[j] = NULL;
+-	}
+ out_freeoutq:
+ 	while (i > 0) {
+ 		qeth_free_output_queue(card->qdio.out_qs[--i]);
 
 
