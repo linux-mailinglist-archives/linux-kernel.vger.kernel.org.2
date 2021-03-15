@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB1933BB27
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A25D33BB78
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhCOOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S236994AbhCOORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232406AbhCON6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E5B64EEE;
-        Mon, 15 Mar 2021 13:58:28 +0000 (UTC)
+        id S232679AbhCON73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 341EF64F06;
+        Mon, 15 Mar 2021 13:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816710;
-        bh=Vr0sgJqWyvNZnVFR/n03t2Gv7d6qsk5EVb5smonF9Oo=;
+        s=korg; t=1615816747;
+        bh=588BgDknMzbDHS7zPOgtnxq0+noLDSWDQe9Z1AjJ8w0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PSwy3xkEViYcJeCPd6CxusuzSiD3lU1IJW4b4xWumMw9s9a0raiaL0vY90NqDwb7G
-         ivCIeu9Hc8cuGC3dUxba9FC/HPIU6b9TZDYsrqQA7BB8WmaYxWT/4YeoMXcLh7sqa1
-         iaFVmDqJQQPudMGFxyn2u+NpZ+d0rPM3DxPAE7iM=
+        b=SQpiQbNM/TvefCFvBomnVQQ3MHhkb13xThyenTiiXlBSNQ43PdRRvum5OyvwHu4dX
+         3s3eh17HTko178vl7L0avd2pTdkqBb/4B7dr0hDHzfzm1mi9rc4mOmezA1wkJOFLUf
+         YPGZvWBKWoMvzGDSBSniKsHepTSxw4b0U7Kk1KSY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yinjun Zhang <yinjun.zhang@corigine.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        Louis Peens <louis.peens@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 069/290] ethtool: fix the check logic of at least one channel for RX/TX
-Date:   Mon, 15 Mar 2021 14:52:42 +0100
-Message-Id: <20210315135544.237279519@linuxfoundation.org>
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Feifei Xu <Feifei.Xu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Georgios Toptsidis <gtoptsid@gmail.com>
+Subject: [PATCH 5.11 100/306] drm/amd/pm: correct the watermark settings for Polaris
+Date:   Mon, 15 Mar 2021 14:52:43 +0100
+Message-Id: <20210315135511.029768060@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +43,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Yinjun Zhang <yinjun.zhang@corigine.com>
+From: Evan Quan <evan.quan@amd.com>
 
-commit a4fc088ad4ff4a99d01978aa41065132b574b4b2 upstream.
+commit 48123d068fcb584838ce29912660c5e9490bad0e upstream.
 
-The command "ethtool -L <intf> combined 0" may clean the RX/TX channel
-count and skip the error path, since the attrs
-tb[ETHTOOL_A_CHANNELS_RX_COUNT] and tb[ETHTOOL_A_CHANNELS_TX_COUNT]
-are NULL in this case when recent ethtool is used.
+The "/ 10" should be applied to the right-hand operand instead of
+the left-hand one.
 
-Tested using ethtool v5.10.
-
-Fixes: 7be92514b99c ("ethtool: check if there is at least one channel for TX/RX in the core")
-Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@netronome.com>
-Signed-off-by: Louis Peens <louis.peens@netronome.com>
-Link: https://lore.kernel.org/r/20210225125102.23989-1-simon.horman@netronome.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Noticed-by: Georgios Toptsidis <gtoptsid@gmail.com>
+Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ethtool/channels.c |   26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/net/ethtool/channels.c
-+++ b/net/ethtool/channels.c
-@@ -116,10 +116,9 @@ int ethnl_set_channels(struct sk_buff *s
- 	struct ethtool_channels channels = {};
- 	struct ethnl_req_info req_info = {};
- 	struct nlattr **tb = info->attrs;
--	const struct nlattr *err_attr;
-+	u32 err_attr, max_rx_in_use = 0;
- 	const struct ethtool_ops *ops;
- 	struct net_device *dev;
--	u32 max_rx_in_use = 0;
- 	int ret;
- 
- 	ret = ethnl_parse_header_dev_get(&req_info,
-@@ -157,34 +156,35 @@ int ethnl_set_channels(struct sk_buff *s
- 
- 	/* ensure new channel counts are within limits */
- 	if (channels.rx_count > channels.max_rx)
--		err_attr = tb[ETHTOOL_A_CHANNELS_RX_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_RX_COUNT;
- 	else if (channels.tx_count > channels.max_tx)
--		err_attr = tb[ETHTOOL_A_CHANNELS_TX_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_TX_COUNT;
- 	else if (channels.other_count > channels.max_other)
--		err_attr = tb[ETHTOOL_A_CHANNELS_OTHER_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_OTHER_COUNT;
- 	else if (channels.combined_count > channels.max_combined)
--		err_attr = tb[ETHTOOL_A_CHANNELS_COMBINED_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_COMBINED_COUNT;
- 	else
--		err_attr = NULL;
-+		err_attr = 0;
- 	if (err_attr) {
- 		ret = -EINVAL;
--		NL_SET_ERR_MSG_ATTR(info->extack, err_attr,
-+		NL_SET_ERR_MSG_ATTR(info->extack, tb[err_attr],
- 				    "requested channel count exceeds maximum");
- 		goto out_ops;
- 	}
- 
- 	/* ensure there is at least one RX and one TX channel */
- 	if (!channels.combined_count && !channels.rx_count)
--		err_attr = tb[ETHTOOL_A_CHANNELS_RX_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_RX_COUNT;
- 	else if (!channels.combined_count && !channels.tx_count)
--		err_attr = tb[ETHTOOL_A_CHANNELS_TX_COUNT];
-+		err_attr = ETHTOOL_A_CHANNELS_TX_COUNT;
- 	else
--		err_attr = NULL;
-+		err_attr = 0;
- 	if (err_attr) {
- 		if (mod_combined)
--			err_attr = tb[ETHTOOL_A_CHANNELS_COMBINED_COUNT];
-+			err_attr = ETHTOOL_A_CHANNELS_COMBINED_COUNT;
- 		ret = -EINVAL;
--		NL_SET_ERR_MSG_ATTR(info->extack, err_attr, "requested channel counts would result in no RX or TX channel being configured");
-+		NL_SET_ERR_MSG_ATTR(info->extack, tb[err_attr],
-+				    "requested channel counts would result in no RX or TX channel being configured");
- 		goto out_ops;
- 	}
- 
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -5216,10 +5216,10 @@ static int smu7_set_watermarks_for_clock
+ 		for (j = 0; j < dep_sclk_table->count; j++) {
+ 			valid_entry = false;
+ 			for (k = 0; k < watermarks->num_wm_sets; k++) {
+-				if (dep_sclk_table->entries[i].clk / 10 >= watermarks->wm_clk_ranges[k].wm_min_eng_clk_in_khz &&
+-				    dep_sclk_table->entries[i].clk / 10 < watermarks->wm_clk_ranges[k].wm_max_eng_clk_in_khz &&
+-				    dep_mclk_table->entries[i].clk / 10 >= watermarks->wm_clk_ranges[k].wm_min_mem_clk_in_khz &&
+-				    dep_mclk_table->entries[i].clk / 10 < watermarks->wm_clk_ranges[k].wm_max_mem_clk_in_khz) {
++				if (dep_sclk_table->entries[i].clk >= watermarks->wm_clk_ranges[k].wm_min_eng_clk_in_khz / 10 &&
++				    dep_sclk_table->entries[i].clk < watermarks->wm_clk_ranges[k].wm_max_eng_clk_in_khz / 10 &&
++				    dep_mclk_table->entries[i].clk >= watermarks->wm_clk_ranges[k].wm_min_mem_clk_in_khz / 10 &&
++				    dep_mclk_table->entries[i].clk < watermarks->wm_clk_ranges[k].wm_max_mem_clk_in_khz / 10) {
+ 					valid_entry = true;
+ 					table->DisplayWatermark[i][j] = watermarks->wm_clk_ranges[k].wm_set_id;
+ 					break;
 
 
