@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFBD33BD0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F64E33BE78
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhCOOcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
+        id S239792AbhCOOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233217AbhCOOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CA364F23;
-        Mon, 15 Mar 2021 14:00:43 +0000 (UTC)
+        id S232541AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADFEC64EF0;
+        Mon, 15 Mar 2021 13:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816845;
-        bh=e+biyl84nGKnbtngIlTFtk/yIT2OJU8s+xalLhPS010=;
+        s=korg; t=1615816728;
+        bh=THw6yf0bfiJSFbYMutcyFRFhwf/AapyQAcjRb1E+Izo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DI0epbtiJyGSYlOizi1JUJaEZo4RZ5WCZ5QdbZZlYlGaJ6jA+MFs7ueEhAyLV9bF/
-         o+7TEwdxg+6MiACvAsKcxVs7YU9xgzvGEQMa9Tswwr8mq3jyp1jY4q79TnmsnTEn4C
-         lQR26ejq9S4cs/gyvc4+odNRAIk1I8RFKpB61luc=
+        b=tUlvEsvGxSHpkkcc07GQe8yZfMyais2jg1NiaY2Jm1Pk75MPSO0w+Vw22YwbrQpd6
+         MUjDn7lY9sKjy/cVCfhBzOeXdK1MsY1XHDri6rFoaW82LuWMZxYmufPAq8W/JZpaqX
+         5hbAVh95osBB87yPcUn8Ph4dkzFBvRpIW6bRLZOo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 149/168] block: rsxx: fix error return code of rsxx_pci_probe()
-Date:   Mon, 15 Mar 2021 14:56:21 +0100
-Message-Id: <20210315135555.236979509@linuxfoundation.org>
+        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 031/120] selftests: forwarding: Fix race condition in mirror installation
+Date:   Mon, 15 Mar 2021 14:56:22 +0100
+Message-Id: <20210315135721.006788020@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +43,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Danielle Ratson <danieller@nvidia.com>
 
-[ Upstream commit df66617bfe87487190a60783d26175b65d2502ce ]
+commit edcbf5137f093b5502f5f6b97cce3cbadbde27aa upstream.
 
-When create_singlethread_workqueue returns NULL to card->event_wq, no
-error return code of rsxx_pci_probe() is assigned.
+When mirroring to a gretap in hardware the device expects to be
+programmed with the egress port and all the encapsulating headers. This
+requires the driver to resolve the path the packet will take in the
+software data path and program the device accordingly.
 
-To fix this bug, st is assigned with -ENOMEM in this case.
+If the path cannot be resolved (in this case because of an unresolved
+neighbor), then mirror installation fails until the path is resolved.
+This results in a race that causes the test to sometimes fail.
 
-Fixes: 8722ff8cdbfa ("block: IBM RamSan 70/80 device driver")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Link: https://lore.kernel.org/r/20210310033017.4023-1-baijiaju1990@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by setting the neighbor's state to permanent, so that it is
+always valid.
+
+Fixes: b5b029399fa6d ("selftests: forwarding: mirror_gre_bridge_1d_vlan: Add STP test")
+Signed-off-by: Danielle Ratson <danieller@nvidia.com>
+Reviewed-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/rsxx/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 804d28faa97b..a1824bb08044 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -869,6 +869,7 @@ static int rsxx_pci_probe(struct pci_dev *dev,
- 	card->event_wq = create_singlethread_workqueue(DRIVER_NAME"_event");
- 	if (!card->event_wq) {
- 		dev_err(CARD_TO_DEV(card), "Failed card event setup.\n");
-+		st = -ENOMEM;
- 		goto failed_event_handler;
- 	}
+--- a/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
++++ b/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
+@@ -86,11 +86,20 @@ test_ip6gretap()
  
--- 
-2.30.1
-
+ test_gretap_stp()
+ {
++	# Sometimes after mirror installation, the neighbor's state is not valid.
++	# The reason is that there is no SW datapath activity related to the
++	# neighbor for the remote GRE address. Therefore whether the corresponding
++	# neighbor will be valid is a matter of luck, and the test is thus racy.
++	# Set the neighbor's state to permanent, so it would be always valid.
++	ip neigh replace 192.0.2.130 lladdr $(mac_get $h3) \
++		nud permanent dev br2
+ 	full_test_span_gre_stp gt4 $swp3.555 "mirror to gretap"
+ }
+ 
+ test_ip6gretap_stp()
+ {
++	ip neigh replace 2001:db8:2::2 lladdr $(mac_get $h3) \
++		nud permanent dev br2
+ 	full_test_span_gre_stp gt6 $swp3.555 "mirror to ip6gretap"
+ }
+ 
 
 
