@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6383D33BADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3F933BB12
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbhCOOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:10:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S235925AbhCOOL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232291AbhCON6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF22664F18;
-        Mon, 15 Mar 2021 13:58:16 +0000 (UTC)
+        id S232078AbhCON5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA61264F00;
+        Mon, 15 Mar 2021 13:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816698;
-        bh=5pqNJV/JYLDDSsb6qMPftkbdTJT+ZrpkwifHUzfAp/w=;
+        s=korg; t=1615816663;
+        bh=4Nkiujrb4DTKuM4K+DB/6rrb2FhW7Y8VQGEnIoBHqy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DGIvNTTnwE+1pPMJ0e64ofSHfXV0nvvd8PRVNizuqAp3RhKsQ1nINR0VcE9kJkxAD
-         Ys8TtBI8gszlUHhMGelEpkOkwzMCyGONXTlk82TYDaEP0+Ac7e8Svfm/Vj3zFuPLP/
-         yHwETELON6Q0bKTJgzLgcJkaas0PTeZlnBhMTxj8=
+        b=fObfanAkLuYnsHrVRvfCAp2tVUcGqywl90MK5xPCu2X1JOqfQO/BJWEbdASK0tbEc
+         //L99e+7sNj5L9vDdgdJ28DRn3hEn1lNfF7bqYL0BjodrOzKNHck48q5x5vQMnVzYi
+         uAFcXDAv1ZjV5cCVdOLLBppik8xoT31km5TH9AqY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 071/306] net: qrtr: fix error return code of qrtr_sendmsg()
+Subject: [PATCH 5.10 041/290] net: enetc: force the RGMII speed and duplex instead of operating in inband mode
 Date:   Mon, 15 Mar 2021 14:52:14 +0100
-Message-Id: <20210315135510.045510439@linuxfoundation.org>
+Message-Id: <20210315135543.317947345@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +44,150 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 179d0ba0c454057a65929c46af0d6ad986754781 upstream.
+commit c76a97218dcbb2cb7cec1404ace43ef96c87d874 upstream.
 
-When sock_alloc_send_skb() returns NULL to skb, no error return code of
-qrtr_sendmsg() is assigned.
-To fix this bug, rc is assigned with -ENOMEM in this case.
+The ENETC port 0 MAC supports in-band status signaling coming from a PHY
+when operating in RGMII mode, and this feature is enabled by default.
 
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+It has been reported that RGMII is broken in fixed-link, and that is not
+surprising considering the fact that no PHY is attached to the MAC in
+that case, but a switch.
+
+This brings us to the topic of the patch: the enetc driver should have
+not enabled the optional in-band status signaling for RGMII unconditionally,
+but should have forced the speed and duplex to what was resolved by
+phylink.
+
+Note that phylink does not accept the RGMII modes as valid for in-band
+signaling, and these operate a bit differently than 1000base-x and SGMII
+(notably there is no clause 37 state machine so no ACK required from the
+MAC, instead the PHY sends extra code words on RXD[3:0] whenever it is
+not transmitting something else, so it should be safe to leave a PHY
+with this option unconditionally enabled even if we ignore it). The spec
+talks about this here:
+https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/138/RGMIIv1_5F00_3.pdf
+
+Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/qrtr/qrtr.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/enetc/enetc_hw.h |   13 ++++-
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c |   53 ++++++++++++++++++++----
+ 2 files changed, 56 insertions(+), 10 deletions(-)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -958,8 +958,10 @@ static int qrtr_sendmsg(struct socket *s
- 	plen = (len + 3) & ~3;
- 	skb = sock_alloc_send_skb(sk, plen + QRTR_HDR_MAX_SIZE,
- 				  msg->msg_flags & MSG_DONTWAIT, &rc);
--	if (!skb)
-+	if (!skb) {
-+		rc = -ENOMEM;
- 		goto out_node;
+--- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
++++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+@@ -238,10 +238,17 @@ enum enetc_bdr_type {TX, RX};
+ #define ENETC_PM_IMDIO_BASE	0x8030
+ 
+ #define ENETC_PM0_IF_MODE	0x8300
+-#define ENETC_PMO_IFM_RG	BIT(2)
++#define ENETC_PM0_IFM_RG	BIT(2)
+ #define ENETC_PM0_IFM_RLP	(BIT(5) | BIT(11))
+-#define ENETC_PM0_IFM_RGAUTO	(BIT(15) | ENETC_PMO_IFM_RG | BIT(1))
+-#define ENETC_PM0_IFM_XGMII	BIT(12)
++#define ENETC_PM0_IFM_EN_AUTO	BIT(15)
++#define ENETC_PM0_IFM_SSP_MASK	GENMASK(14, 13)
++#define ENETC_PM0_IFM_SSP_1000	(2 << 13)
++#define ENETC_PM0_IFM_SSP_100	(0 << 13)
++#define ENETC_PM0_IFM_SSP_10	(1 << 13)
++#define ENETC_PM0_IFM_FULL_DPX	BIT(12)
++#define ENETC_PM0_IFM_IFMODE_MASK GENMASK(1, 0)
++#define ENETC_PM0_IFM_IFMODE_XGMII 0
++#define ENETC_PM0_IFM_IFMODE_GMII 2
+ #define ENETC_PSIDCAPR		0x1b08
+ #define ENETC_PSIDCAPR_MSK	GENMASK(15, 0)
+ #define ENETC_PSFCAPR		0x1b18
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -315,7 +315,7 @@ static void enetc_set_loopback(struct ne
+ 	u32 reg;
+ 
+ 	reg = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
+-	if (reg & ENETC_PMO_IFM_RG) {
++	if (reg & ENETC_PM0_IFM_RG) {
+ 		/* RGMII mode */
+ 		reg = (reg & ~ENETC_PM0_IFM_RLP) |
+ 		      (en ? ENETC_PM0_IFM_RLP : 0);
+@@ -494,13 +494,20 @@ static void enetc_configure_port_mac(str
+ 
+ static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
+ {
+-	/* set auto-speed for RGMII */
+-	if (enetc_port_rd(hw, ENETC_PM0_IF_MODE) & ENETC_PMO_IFM_RG ||
+-	    phy_interface_mode_is_rgmii(phy_mode))
+-		enetc_port_wr(hw, ENETC_PM0_IF_MODE, ENETC_PM0_IFM_RGAUTO);
++	u32 val;
++
++	if (phy_interface_mode_is_rgmii(phy_mode)) {
++		val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
++		val &= ~ENETC_PM0_IFM_EN_AUTO;
++		val &= ENETC_PM0_IFM_IFMODE_MASK;
++		val |= ENETC_PM0_IFM_IFMODE_GMII | ENETC_PM0_IFM_RG;
++		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
 +	}
  
- 	skb_reserve(skb, QRTR_HDR_MAX_SIZE);
+-	if (phy_mode == PHY_INTERFACE_MODE_USXGMII)
+-		enetc_port_wr(hw, ENETC_PM0_IF_MODE, ENETC_PM0_IFM_XGMII);
++	if (phy_mode == PHY_INTERFACE_MODE_USXGMII) {
++		val = ENETC_PM0_IFM_FULL_DPX | ENETC_PM0_IFM_IFMODE_XGMII;
++		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
++	}
+ }
+ 
+ static void enetc_mac_enable(struct enetc_hw *hw, bool en)
+@@ -939,6 +946,34 @@ static void enetc_pl_mac_config(struct p
+ 		phylink_set_pcs(priv->phylink, &pf->pcs->pcs);
+ }
+ 
++static void enetc_force_rgmii_mac(struct enetc_hw *hw, int speed, int duplex)
++{
++	u32 old_val, val;
++
++	old_val = val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
++
++	if (speed == SPEED_1000) {
++		val &= ~ENETC_PM0_IFM_SSP_MASK;
++		val |= ENETC_PM0_IFM_SSP_1000;
++	} else if (speed == SPEED_100) {
++		val &= ~ENETC_PM0_IFM_SSP_MASK;
++		val |= ENETC_PM0_IFM_SSP_100;
++	} else if (speed == SPEED_10) {
++		val &= ~ENETC_PM0_IFM_SSP_MASK;
++		val |= ENETC_PM0_IFM_SSP_10;
++	}
++
++	if (duplex == DUPLEX_FULL)
++		val |= ENETC_PM0_IFM_FULL_DPX;
++	else
++		val &= ~ENETC_PM0_IFM_FULL_DPX;
++
++	if (val == old_val)
++		return;
++
++	enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
++}
++
+ static void enetc_pl_mac_link_up(struct phylink_config *config,
+ 				 struct phy_device *phy, unsigned int mode,
+ 				 phy_interface_t interface, int speed,
+@@ -951,6 +986,10 @@ static void enetc_pl_mac_link_up(struct
+ 	if (priv->active_offloads & ENETC_F_QBV)
+ 		enetc_sched_speed_set(priv, speed);
+ 
++	if (!phylink_autoneg_inband(mode) &&
++	    phy_interface_mode_is_rgmii(interface))
++		enetc_force_rgmii_mac(&pf->si->hw, speed, duplex);
++
+ 	enetc_mac_enable(&pf->si->hw, true);
+ }
  
 
 
