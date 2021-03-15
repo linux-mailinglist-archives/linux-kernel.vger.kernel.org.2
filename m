@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E30B33BE0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A79D033BE26
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238088AbhCOOmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49440 "EHLO mail.kernel.org"
+        id S237161AbhCOOnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234148AbhCOODA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD80A64E89;
-        Mon, 15 Mar 2021 14:02:58 +0000 (UTC)
+        id S234471AbhCOODY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4406564E83;
+        Mon, 15 Mar 2021 14:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816979;
-        bh=0NRsVrDE7EWtRcFT0zTAxJTNzb7xxXoAYVoQRkYqv7o=;
+        s=korg; t=1615817004;
+        bh=65FGN8tFjwc5m23owKilo2IaNt4swdnOZ2xh3T4ygqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UJi6Pqi/wPG7AusSp230udpFkyMIkOvjxXAT093pYeQamI7botkzhQyAXh569rfpX
-         Ic4eB31ciTaGy/wmJyNwKsv0kNlXWIAAgF7QPFWWJWh4G5VULLrJkqePy4AzE7lFdf
-         /A/CkyHcYhhhQvATeXmJ/dU4do9catG2H3bEbj5U=
+        b=uxasuCUQ/ndmpM95igljsMRP3LY1snhXNkKh0se/D+FJgnBqaeFIvmFF3M2MvIVcf
+         3E7M0EQyvG6FBf05AJHE3ko7BhrEUHICMIgImrldpxYSlTVYA+zFKv6yWzNg6bgJLg
+         souTohcVgnvgO7lNbyL8LqX/3GBfi9kQqtcgHya4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 5.10 225/290] staging: rtl8192u: fix ->ssid overflow in r8192_wx_set_scan()
+        stable@vger.kernel.org, Dave Airlie <airlied@redhat.com>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 255/306] drm/nouveau: fix dma syncing for loops (v2)
 Date:   Mon, 15 Mar 2021 14:55:18 +0100
-Message-Id: <20210315135549.587932038@linuxfoundation.org>
+Message-Id: <20210315135516.263822597@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dave Airlie <airlied@redhat.com>
 
-commit 87107518d7a93fec6cdb2559588862afeee800fb upstream.
+[ Upstream commit 4042160c2e5433e0759782c402292a90b5bf458d ]
 
-We need to cap len at IW_ESSID_MAX_SIZE (32) to avoid memory corruption.
-This can be controlled by the user via the ioctl.
+The index variable should only be increased in one place.
 
-Fixes: 5f53d8ca3d5d ("Staging: add rtl8192SU wireless usb driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YEHoAWMOSZBUw91F@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Noticed this while trying to track down another oops.
+
+v2: use while loop.
+
+Fixes: f295c8cfec83 ("drm/nouveau: fix dma syncing warning with debugging on.")
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210311043527.5376-1-airlied@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8192u/r8192U_wx.c |    6 ++++--
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/rtl8192u/r8192U_wx.c
-+++ b/drivers/staging/rtl8192u/r8192U_wx.c
-@@ -331,8 +331,10 @@ static int r8192_wx_set_scan(struct net_
- 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index 7ea367a5444d..f1c9a22083be 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -556,7 +556,8 @@ nouveau_bo_sync_for_device(struct nouveau_bo *nvbo)
+ 	if (nvbo->force_coherent)
+ 		return;
  
- 		if (req->essid_len) {
--			ieee->current_network.ssid_len = req->essid_len;
--			memcpy(ieee->current_network.ssid, req->essid, req->essid_len);
-+			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+
-+			ieee->current_network.ssid_len = len;
-+			memcpy(ieee->current_network.ssid, req->essid, len);
- 		}
- 	}
+-	for (i = 0; i < ttm_dma->num_pages; ++i) {
++	i = 0;
++	while (i < ttm_dma->num_pages) {
+ 		struct page *p = ttm_dma->pages[i];
+ 		size_t num_pages = 1;
  
+@@ -587,7 +588,8 @@ nouveau_bo_sync_for_cpu(struct nouveau_bo *nvbo)
+ 	if (nvbo->force_coherent)
+ 		return;
+ 
+-	for (i = 0; i < ttm_dma->num_pages; ++i) {
++	i = 0;
++	while (i < ttm_dma->num_pages) {
+ 		struct page *p = ttm_dma->pages[i];
+ 		size_t num_pages = 1;
+ 
+-- 
+2.30.1
+
 
 
