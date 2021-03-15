@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356CA33C650
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0FC33C653
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhCOTDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:03:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50310 "EHLO mx2.suse.de"
+        id S232925AbhCOTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:03:54 -0400
+Received: from ms.lwn.net ([45.79.88.28]:43076 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhCOTDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:03:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5C0EAE3D;
-        Mon, 15 Mar 2021 19:03:13 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 12:03:07 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dvhart@infradead.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 1/2] futex: Fix irq mismatch in exit_pi_state_list()
-Message-ID: <20210315190307.vslsxmgtwn43crwc@offworld>
-References: <20210315050224.107056-1-dave@stgolabs.net>
- <20210315050224.107056-2-dave@stgolabs.net>
- <YE9dM6PB9ZpC8AfY@hirez.programming.kicks-ass.net>
+        id S232917AbhCOTDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:03:46 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 892742E5;
+        Mon, 15 Mar 2021 19:03:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 892742E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615835025; bh=QypNFyeA1Y53RZBH32uQ1ZH1dtdi/T309FCBH6S4fH0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Wa25vhrYYTPme8v9i8z/h4H+WCw9Du519YF597ebySIFfUh6SJsVVzTxf2yyixL+B
+         SsBN1xBVB7VCTQvowlwB1mMloRihUDmbX0OByHyHAkWBHzOQLPgILVHLvvlMNSRHkT
+         mjGQ4cwNK04rRknRmNvMZeV5bHdTPtAJ+yjNH0h6JjhEOeyZxig6Cw8yIIfpK9I4MA
+         EMvfb1uugVcskVKgEQcYvMsKrhfeqJg+O3HmagSX9TAuweeySVqGkX/GDyxeN1KDiI
+         MbyxHuxQTi9BcUs/+0v8xmxITu54PKZmR0lGF1EtdzwidAfhlpR3t/cB/J+sq8Uj3H
+         mhcweNPe30E1g==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, tj@kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH] docs: admin-guide: cgroup-v1: Fix typos in the file
+ memory.rst
+In-Reply-To: <20210313061029.28024-1-unixbhaskar@gmail.com>
+References: <20210313061029.28024-1-unixbhaskar@gmail.com>
+Date:   Mon, 15 Mar 2021 13:03:45 -0600
+Message-ID: <87im5s2q9a.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YE9dM6PB9ZpC8AfY@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20201120
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021, Peter Zijlstra wrote:
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
->Or am I reading this wrong?
+> s/overcommited/overcommitted/
+> s/Overcommiting/Overcommitting/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memory.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+> index 52688ae34461..0d574fd3f8e3 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -360,8 +360,8 @@ U != 0, K = unlimited:
+>
+>  U != 0, K < U:
+>      Kernel memory is a subset of the user memory. This setup is useful in
+> -    deployments where the total amount of memory per-cgroup is overcommited.
+> -    Overcommiting kernel memory limits is definitely not recommended, since the
+> +    deployments where the total amount of memory per-cgroup is overcommitted.
+> +    Overcommitting kernel memory limits is definitely not recommended, since the
+>      box can still run out of non-reclaimable memory.
 
-No, I read it wrong. Please ignore this patch, there are rather a few
-cases that do this trickery.
+Applied, thanks.
 
-Thanks,
-Davidlohr
+jon
