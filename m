@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6B233B8CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F7A33B7DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbhCOOE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34798 "EHLO mail.kernel.org"
+        id S233337AbhCOOBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:01:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhCON5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03DF064F05;
-        Mon, 15 Mar 2021 13:57:17 +0000 (UTC)
+        id S231130AbhCON4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65F0864EF8;
+        Mon, 15 Mar 2021 13:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816639;
-        bh=8GZ4p3TXLepViQ513HLpLPRkvv5/j8M+HDptTBlUlhg=;
+        s=korg; t=1615816600;
+        bh=YgK7z5OuoTYfHFxczuQxZsrqwMpzCQi6HapODk0JIQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u1sgJLaRyaCIu3PvTJYbMSAuKsTwj9AOcIm8lE6D0N2kDL/g0iKSUEI3bL4o7o2pD
-         hWWekJ0ofxB2HjJ1mfTsPvXyU70pcdJYM2HeiNMuwhDGVfye4wJevoTtz+Z1tmoptp
-         gjWK6w7xYed8mniGlLxF7Csx9x1ZwRjKgEhCXP9w=
+        b=wNOUiRgU7KyzGBS3TtWwV9VeHenGLyD5E6LruP8/4GygUzOSSUV20I57u+VIEc3Vn
+         g7O/ZquAV6bXgQqA48htqhxikF5Lq2vErF+RGANgv5NOWVA87cYF0e8UeuwwakxW+E
+         S/Lzpi1z68v8NxuDk/aYvy1LTAEQjDYqoUXOriiw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Wiesner <jwiesner@suse.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 035/306] ibmvnic: always store valid MAC address
-Date:   Mon, 15 Mar 2021 14:51:38 +0100
-Message-Id: <20210315135508.824885507@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Kennedy <hurricos@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.10 006/290] ath9k: fix transmitting to stations in dynamic SMPS mode
+Date:   Mon, 15 Mar 2021 14:51:39 +0100
+Message-Id: <20210315135542.156631808@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jiri Wiesner <jwiesner@suse.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit 67eb211487f0c993d9f402d1c196ef159fd6a3b5 upstream.
+commit 3b9ea7206d7e1fdd7419cbd10badd3b2c80d04b4 upstream.
 
-The last change to ibmvnic_set_mac(), 8fc3672a8ad3, meant to prevent
-users from setting an invalid MAC address on an ibmvnic interface
-that has not been brought up yet. The change also prevented the
-requested MAC address from being stored by the adapter object for an
-ibmvnic interface when the state of the ibmvnic interface is
-VNIC_PROBED - that is after probing has finished but before the
-ibmvnic interface is brought up. The MAC address stored by the
-adapter object is used and sent to the hypervisor for checking when
-an ibmvnic interface is brought up.
+When transmitting to a receiver in dynamic SMPS mode, all transmissions that
+use multiple spatial streams need to be sent using CTS-to-self or RTS/CTS to
+give the receiver's extra chains some time to wake up.
+This fixes the tx rate getting stuck at <= MCS7 for some clients, especially
+Intel ones, which make aggressive use of SMPS.
 
-The ibmvnic driver ignoring the requested MAC address when in
-VNIC_PROBED state caused LACP bonds (bonds in 802.3ad mode) with more
-than one slave to malfunction. The bonding code must be able to
-change the MAC address of its slaves before they are brought up
-during enslaving. The inability of kernels with 8fc3672a8ad3 to set
-the MAC addresses of bonding slaves is observable in the output of
-"ip address show". The MAC addresses of the slaves are the same as
-the MAC address of the bond on a working system whereas the slaves
-retain their original MAC addresses on a system with a malfunctioning
-LACP bond.
-
-Fixes: 8fc3672a8ad3 ("ibmvnic: fix ibmvnic_set_mac")
-Signed-off-by: Jiri Wiesner <jwiesner@suse.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Reported-by: Martin Kennedy <hurricos@gmail.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210214184911.96702-1-nbd@nbd.name
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath9k/ath9k.h |    3 ++-
+ drivers/net/wireless/ath/ath9k/xmit.c  |    6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1923,10 +1923,9 @@ static int ibmvnic_set_mac(struct net_de
- 	if (!is_valid_ether_addr(addr->sa_data))
- 		return -EADDRNOTAVAIL;
+--- a/drivers/net/wireless/ath/ath9k/ath9k.h
++++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+@@ -177,7 +177,8 @@ struct ath_frame_info {
+ 	s8 txq;
+ 	u8 keyix;
+ 	u8 rtscts_rate;
+-	u8 retries : 7;
++	u8 retries : 6;
++	u8 dyn_smps : 1;
+ 	u8 baw_tracked : 1;
+ 	u8 tx_power;
+ 	enum ath9k_key_type keytype:2;
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -1271,6 +1271,11 @@ static void ath_buf_set_rate(struct ath_
+ 				 is_40, is_sgi, is_sp);
+ 			if (rix < 8 && (tx_info->flags & IEEE80211_TX_CTL_STBC))
+ 				info->rates[i].RateFlags |= ATH9K_RATESERIES_STBC;
++			if (rix >= 8 && fi->dyn_smps) {
++				info->rates[i].RateFlags |=
++					ATH9K_RATESERIES_RTS_CTS;
++				info->flags |= ATH9K_TXDESC_CTSENA;
++			}
  
--	if (adapter->state != VNIC_PROBED) {
--		ether_addr_copy(adapter->mac_addr, addr->sa_data);
-+	ether_addr_copy(adapter->mac_addr, addr->sa_data);
-+	if (adapter->state != VNIC_PROBED)
- 		rc = __ibmvnic_set_mac(netdev, addr->sa_data);
--	}
- 
- 	return rc;
- }
+ 			info->txpower[i] = ath_get_rate_txpower(sc, bf, rix,
+ 								is_40, false);
+@@ -2114,6 +2119,7 @@ static void setup_frame_info(struct ieee
+ 		fi->keyix = an->ps_key;
+ 	else
+ 		fi->keyix = ATH9K_TXKEYIX_INVALID;
++	fi->dyn_smps = sta && sta->smps_mode == IEEE80211_SMPS_DYNAMIC;
+ 	fi->keytype = keytype;
+ 	fi->framelen = framelen;
+ 	fi->tx_power = txpower;
 
 
