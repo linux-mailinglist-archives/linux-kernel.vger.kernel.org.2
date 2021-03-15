@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDC233BEF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6809633BEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbhCOOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S240613AbhCOOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233396AbhCOOgt (ORCPT
+        with ESMTP id S237232AbhCOOgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:36:49 -0400
 Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB9CC0613E8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:37 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id i14so8253990wmq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC0FC0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:39 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id a65so2913248wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 07:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=mHH8Es+4fAlRYM4Ijk/d6yzRk425uhOb6R/MTFLjwSk=;
-        b=Beq9EHGg6u02WrMXoXiha76AJgeGR2zQYFWI3RMPQJ8SJPiBDvDJ2xvMRIKmzcyAPJ
-         UdkFex3yHx9cFx5yrKJXLWNvnHoy/uBfu1nZrSwaDmXrLFXBxW6+W5ed22sngMc58syG
-         np+9HkZ/7pbZEUpi4AtJa4M/Z2Me18qVCq1BStpWKDzWbRrAaeBTPVklx9FMlcr7Laoy
-         MRBsVtZpcer8oyNqQ3cLKBt61n9YmSymtcE8XlwMe2yekPSUedzYitLSMS7CtpGMrvpB
-         /GpMCQWS/OSbMjUqtSIatqCAg86kF5c+5NCA5VM56v/rAF6/dNyEi2smxz9rtCg3Ot4Y
-         0pMA==
+        bh=J1uZIE4CatR8RJ2mwUZGBIvYuAMTy17ux6AGbOX5tFk=;
+        b=quH1WWPr+L1SVwBqv31K38Go2mHpdC6nZ0w0GUgWu8lifd6IDz7tnxeCHBvwfxXcid
+         s/cfv6PNBlw7Tv1DYVDfMOsXnBOEXJFlXhMZyBMoZVhKnghB6bZBQ7RXezVsiD4bljVh
+         lJBqoO4Or/KxawhVR2OPnIGrxhVyjXNvg07Fc+ZEFDUsWiUlW9oHKY+QEXLr9k42aYSH
+         d2Cae4A8DBkXpZvxeLTGbGBr2odV4gqnrZpx31EngUzons5PvcQ6ycsc99xvdaHgxaKm
+         V/XOC0HOZ3lOrer8gP70svjqgVCAXPSm6Ym7SYFjCDsB/ZmUMa2sDLVxAtskeXAdYfBu
+         oHQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=mHH8Es+4fAlRYM4Ijk/d6yzRk425uhOb6R/MTFLjwSk=;
-        b=lzIpqiTqOVYC+gCIO/e0Vy/YFidI/FAxHAeAMmByAoAMxu2gXCgZUcCl1N8g45XdWX
-         iXQ7KDmaFcrx0dlrT/NrM1CcgKChgK2blLT/mFevv2i/10WLZqT0uasAUt66lPpJWl+0
-         +8tJFnUCgRa6Jhtu6MKPCczD5RcuyahR/sMdAVBsLj8UsLKu//G+mr5dl/+3kqphSdb+
-         8eWquZ2FU104be5ArELjks1xXS8EyLOzELk4RZ7JX1kAoIbXq/nVLov8Tm49ZVMByI9G
-         xYEf22PfEgHUcDB9dXmwqdyRSipC3e1055WObvV2cxIvbR97Nv5Z5x3RQw2rqp46hb5A
-         HgzQ==
-X-Gm-Message-State: AOAM533k4BOsyil1QmSqYYAvmhd2FphjPuKAH/weubJGYIDBUCk+9zn1
-        vg/KJ+mnopHmtT+n5bFNoOcDEP7AFU2c
-X-Google-Smtp-Source: ABdhPJy/rlP2MoLwwsRH3zKIividik0vk4TUyDoTo37xUZHzbmBcrMY6wwSXCy8hyEXmtWB85Uy6Tkpm2kEw
+        bh=J1uZIE4CatR8RJ2mwUZGBIvYuAMTy17ux6AGbOX5tFk=;
+        b=XTZlJgDDC4H5jpxUgTvJsASWUZVTadAQB6WhFh21VwUQJVTaFztxKBlYZWBLssWtHp
+         rp1M3YWnQnl/PsilKNoJ37oUhY6wDP3Z/oZxk9FRXqGZvaqKTHv6n9PHe/2VjWuky5Sk
+         nyndgzGOWQZRLUJYtNoJxqLdxfB4w1+pBMlzonxm3N7s8zJc9+8ZxiiqG6eX1sUDV8x9
+         RqwKkxh61Qjjk9yyMFCDABwGI987Q0QfkFQ11EU4UPq79UDRnozgRcQUnF4dWgtmCjar
+         B9WV9w+/pUk+NJ/K9WJ8iHHgkLgjm3rt4rhw2ZqspsCwmvy4D3y+fcFpRSv4VyCS7Csw
+         eHAw==
+X-Gm-Message-State: AOAM533Ir5QrQb/6Te1qG7o6ZPE0GrjOLbESaBT6pVSLU//mbXtxFCsx
+        MObsxirqbPqtud7jWZ4SSJOIRT8h9tiM
+X-Google-Smtp-Source: ABdhPJxe4+QHHGpZyqH28YWZv8YfJrDVsBARhsCBGZiD6vsppmOxHGv9C0FMe9dp3bfpi8X+Fs4PaGFGP24s
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a05:6000:191:: with SMTP id
- p17mr20999wrx.154.1615818996079; Mon, 15 Mar 2021 07:36:36 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 14:35:27 +0000
+ (user=qperret job=sendgmr) by 2002:a05:600c:2053:: with SMTP id
+ p19mr26380067wmg.87.1615818997861; Mon, 15 Mar 2021 07:36:37 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 14:35:28 +0000
 In-Reply-To: <20210315143536.214621-1-qperret@google.com>
-Message-Id: <20210315143536.214621-28-qperret@google.com>
+Message-Id: <20210315143536.214621-29-qperret@google.com>
 Mime-Version: 1.0
 References: <20210315143536.214621-1-qperret@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v5 27/36] KVM: arm64: Sort the hypervisor memblocks
+Subject: [PATCH v5 28/36] KVM: arm64: Always zero invalid PTEs
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -66,59 +66,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will soon need to check if a Physical Address belongs to a memblock
-at EL2, so make sure to sort them so this can be done efficiently.
+kvm_set_invalid_pte() currently only clears bit 0 from a PTE because
+stage2_map_walk_table_post() needs to be able to follow the anchor. In
+preparation for re-using bits 63-01 from invalid PTEs, make sure to zero
+it entirely by ensuring to cache the anchor's child upfront.
 
 Acked-by: Will Deacon <will@kernel.org>
+Suggested-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/reserved_mem.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm64/kvm/hyp/pgtable.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/kvm/hyp/reserved_mem.c b/arch/arm64/kvm/hyp/reserved_mem.c
-index fd42705a3c26..83ca23ac259b 100644
---- a/arch/arm64/kvm/hyp/reserved_mem.c
-+++ b/arch/arm64/kvm/hyp/reserved_mem.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/kvm_host.h>
- #include <linux/memblock.h>
-+#include <linux/sort.h>
- 
- #include <asm/kvm_host.h>
- 
-@@ -18,6 +19,23 @@ static unsigned int *hyp_memblock_nr_ptr = &kvm_nvhe_sym(hyp_memblock_nr);
- phys_addr_t hyp_mem_base;
- phys_addr_t hyp_mem_size;
- 
-+static int cmp_hyp_memblock(const void *p1, const void *p2)
-+{
-+	const struct memblock_region *r1 = p1;
-+	const struct memblock_region *r2 = p2;
-+
-+	return r1->base < r2->base ? -1 : (r1->base > r2->base);
-+}
-+
-+static void __init sort_memblock_regions(void)
-+{
-+	sort(hyp_memory,
-+	     *hyp_memblock_nr_ptr,
-+	     sizeof(struct memblock_region),
-+	     cmp_hyp_memblock,
-+	     NULL);
-+}
-+
- static int __init register_memblock_regions(void)
- {
- 	struct memblock_region *reg;
-@@ -29,6 +47,7 @@ static int __init register_memblock_regions(void)
- 		hyp_memory[*hyp_memblock_nr_ptr] = *reg;
- 		(*hyp_memblock_nr_ptr)++;
- 	}
-+	sort_memblock_regions();
- 
- 	return 0;
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index bdd6e3d4eeb6..f37b4179b880 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -156,10 +156,9 @@ static kvm_pte_t *kvm_pte_follow(kvm_pte_t pte, struct kvm_pgtable_mm_ops *mm_op
+ 	return mm_ops->phys_to_virt(kvm_pte_to_phys(pte));
  }
+ 
+-static void kvm_set_invalid_pte(kvm_pte_t *ptep)
++static void kvm_clear_pte(kvm_pte_t *ptep)
+ {
+-	kvm_pte_t pte = *ptep;
+-	WRITE_ONCE(*ptep, pte & ~KVM_PTE_VALID);
++	WRITE_ONCE(*ptep, 0);
+ }
+ 
+ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp,
+@@ -443,6 +442,7 @@ struct stage2_map_data {
+ 	kvm_pte_t			attr;
+ 
+ 	kvm_pte_t			*anchor;
++	kvm_pte_t			*childp;
+ 
+ 	struct kvm_s2_mmu		*mmu;
+ 	void				*memcache;
+@@ -532,7 +532,7 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+ 		 * There's an existing different valid leaf entry, so perform
+ 		 * break-before-make.
+ 		 */
+-		kvm_set_invalid_pte(ptep);
++		kvm_clear_pte(ptep);
+ 		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+ 		mm_ops->put_page(ptep);
+ 	}
+@@ -553,7 +553,8 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+ 	if (!kvm_block_mapping_supported(addr, end, data->phys, level))
+ 		return 0;
+ 
+-	kvm_set_invalid_pte(ptep);
++	data->childp = kvm_pte_follow(*ptep, data->mm_ops);
++	kvm_clear_pte(ptep);
+ 
+ 	/*
+ 	 * Invalidate the whole stage-2, as we may have numerous leaf
+@@ -599,7 +600,7 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 	 * will be mapped lazily.
+ 	 */
+ 	if (kvm_pte_valid(pte)) {
+-		kvm_set_invalid_pte(ptep);
++		kvm_clear_pte(ptep);
+ 		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+ 		mm_ops->put_page(ptep);
+ 	}
+@@ -615,19 +616,24 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
+ 				      struct stage2_map_data *data)
+ {
+ 	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
++	kvm_pte_t *childp;
+ 	int ret = 0;
+ 
+ 	if (!data->anchor)
+ 		return 0;
+ 
+-	mm_ops->put_page(kvm_pte_follow(*ptep, mm_ops));
+-	mm_ops->put_page(ptep);
+-
+ 	if (data->anchor == ptep) {
++		childp = data->childp;
+ 		data->anchor = NULL;
++		data->childp = NULL;
+ 		ret = stage2_map_walk_leaf(addr, end, level, ptep, data);
++	} else {
++		childp = kvm_pte_follow(*ptep, mm_ops);
+ 	}
+ 
++	mm_ops->put_page(childp);
++	mm_ops->put_page(ptep);
++
+ 	return ret;
+ }
+ 
+@@ -736,7 +742,7 @@ static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 	 * block entry and rely on the remaining portions being faulted
+ 	 * back lazily.
+ 	 */
+-	kvm_set_invalid_pte(ptep);
++	kvm_clear_pte(ptep);
+ 	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, addr, level);
+ 	mm_ops->put_page(ptep);
+ 
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
