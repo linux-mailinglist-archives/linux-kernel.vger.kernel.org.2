@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DE133C8D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9636C33C8D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbhCOVwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S231349AbhCOVwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhCOVv3 (ORCPT
+        with ESMTP id S229866AbhCOVvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:51:29 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5EDC06174A;
-        Mon, 15 Mar 2021 14:51:28 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 67E1822234;
-        Mon, 15 Mar 2021 22:51:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615845086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qbz18nJ52fhKTcYvqVifixwv65SjhEo6nJ/z7ymJrV0=;
-        b=QwgxxdZ63fdHtC0poTGN4eZlhN+ambTQ2Veti9bfvBQiBvBN4wyHDyw98IiAV+zGHVswPe
-        ZFfhSphnd25WlsBmUEnm2dr6IAYOwvfNphhQE3BGLJITeeJhHD9didZHjZ3QX0+4gBj81o
-        zAb+CBIyYdXWbq3M9hCd9sZFDDi+cuE=
+        Mon, 15 Mar 2021 17:51:55 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDDEC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:55 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id g27so35078053iox.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+3h28b0z5t+pu3hUlF/JbmCo8y9gS7Fj3VAcCI2xm/M=;
+        b=HUo2qadrm2mDoNodF998irnIV5gR1wbCCeNp4XDBF2ibAzRMxnGUdROWERxgZWMLkl
+         XP0syXbet2hL86tRGgQfb3wD9riHD0Cg6xGIdKzBYRFBzwR/nEp1VSnNt2V9uyRCf1yg
+         Fr+IZBekp15XNLzgUEKyKZR5eD2jhPZgWwgvf6hQGc4agyUWDM0wFig1v7NsP9pxtHlp
+         eMvm5k2gcead9bGQcYZnKdha59EJIVC1QnxZZx+qUcpQ0+uPfsiaBA5WL/sgIwtGsjgD
+         HjZnKM3UPQOCNL9qmo4enXMrjfnxq7xizQNTcSxIpIPriSxLIRgX0pnFRO93PhSyRaXJ
+         1n0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+3h28b0z5t+pu3hUlF/JbmCo8y9gS7Fj3VAcCI2xm/M=;
+        b=Y7c/giv4XyzAa27V0khQ1WpKAOtOWGmk/2InRCh9WCzdbwzoIlM/V7DPiHxkfPtbLx
+         RN/K87v2+1G7WlBm12RWiql9BjC+ug02+9aEFSFfFbaMNuQdNg71JyxgbNhOQMY+EhQj
+         Hu/g+A3GFlQVoTN7XS+UE1jetvhc3io+doQxJzC5Cimw9WTyIErohzUmH+FXQCNfUDOl
+         PFk7kUp+GTb/7k/L1V6HZ7N53m7ghi4JXTP6mm4+Ud/WDnZOFVOAkPJLyCZUngM5kxTT
+         askoBBXw1qEocUPJLTP9uibWrfjhhCmUWl0d0yaiMFObjxzUMZaJvLDglYLfGHJpAhs+
+         NhRA==
+X-Gm-Message-State: AOAM530/VaNAsGjHwOK1Nkqof5Rzaz+KlRfN1s548KJtztfdNVn6B2Qz
+        GEBCO36Q5Mg3VcfI0cLD7IvMHk0oRGeblly9
+X-Google-Smtp-Source: ABdhPJxA/koZsxWi9IP2AGJazPMgvZdQwOprnd4NlKqe1EtEQhmibHumb8dilXY7ywVZr8vIjbf0GQ==
+X-Received: by 2002:a02:c017:: with SMTP id y23mr11561344jai.3.1615845115134;
+        Mon, 15 Mar 2021 14:51:55 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id y3sm7424625iot.15.2021.03.15.14.51.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 14:51:54 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        David.Laight@ACULAB.COM, olteanv@gmail.com,
+        alexander.duyck@gmail.com, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v6 0/6] net: qualcomm: rmnet: stop using C bit-fields
+Date:   Mon, 15 Mar 2021 16:51:45 -0500
+Message-Id: <20210315215151.3029676-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 22:51:25 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
-In-Reply-To: <20210201222010.GA31234@bjorn-Precision-5520>
-References: <20210201222010.GA31234@bjorn-Precision-5520>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <d2c7ec0e416dd6bb6818892750bff6d7@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-02-01 23:20, schrieb Bjorn Helgaas:
-> On Mon, Feb 01, 2021 at 08:49:16PM +0100, Michael Walle wrote:
->> Am 2021-01-17 20:27, schrieb Michael Walle:
->> > Am 2021-01-16 00:57, schrieb Bjorn Helgaas:
->> > > On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
->> > > > Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
->> > > > > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
->> > > > > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
->> > >
->> > > > > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
->> > > > > > > that overlaps another BAR, a quirk might be the right fix. But my
->> > > > > > > guess is the device is working correctly per spec and there's
->> > > > > > > something wrong in how firmware/Linux is assigning things.  That would
->> > > > > > > mean we need a more generic fix that's not a quirk and not tied to the
->> > > > > > > Intel i210.
->> > > > > >
->> > > > > > Agreed, but as you already stated (and I've also found that in
->> > > > > > the PCI spec) the Expansion ROM address decoder can be shared by
->> > > > > > the other BARs and it shouldn't matter as long as the ExpROM BAR
->> > > > > > is disabled, which is the case here.
->> > > > >
->> > > > > My point is just that if this could theoretically affect devices
->> > > > > other than the i210, the fix should not be an i210-specific quirk.
->> > > > > I'll assume this is a general problem and wait for a generic PCI
->> > > > > core solution unless it's i210-specific.
->> > > >
->> > > > I guess the culprit here is that linux skips the programming of the
->> > > > BAR because of some broken Matrox card. That should have been a
->> > > > quirk instead, right? But I don't know if we want to change that, do
->> > > > we? How many other cards depend on that?
->> > >
->> > > Oh, right.  There's definitely some complicated history there that
->> > > makes me a little scared to change things.  But it's also unfortunate
->> > > if we have to pile quirks on top of quirks.
->> > >
->> > > > And still, how do we find out that the i210 is behaving correctly?
->> > > > In my opinion it is clearly not. You can change the ExpROM BAR value
->> > > > during runtime and it will start working (while keeping it
->> > > > disabled).  Am I missing something here?
->> > >
->> > > I agree; if the ROM BAR is disabled, I don't think it should matter at
->> > > all what it contains, so this does look like an i210 defect.
->> > >
->> > > Would you mind trying the patch below?  It should update the ROM BAR
->> > > value even when it is disabled.  With the current pci_enable_rom()
->> > > code that doesn't rely on the value read from the BAR, I *think* this
->> > > should be safe even on the Matrox and similar devices.
->> >
->> > Your patch will fix my issue:
->> >
->> > Tested-by: Michael Walle <michael@walle.cc>
->> 
->> any news on this?
-> 
-> Thanks for the reminder.  I was thinking this morning that I need to
-> get back to this.  I'm trying to convince myself that doing this
-> wouldn't break the problem fixed by 755528c860b0 ("Ignore disabled ROM
-> resources at setup").  So far I haven't quite succeeded.
+Version 6 is the same as version 5, but has been rebased on updated
+net-next/master.  With any luck, the patches I'm sending out this
+time won't contain garbage.
 
-ping #2 ;)
+Version 5 of this series responds to a suggestion made by Alexander
+Duyck, to determine the offset to the checksummed range of a packet
+using skb_network_header_len() on patch 2.  I have added his
+Reviewed-by tag to all (other) patches, and removed Bjorn's from
+patch 2.
 
--michael
+The change required some updates to the subsequent patches, and I
+reordered some assignments in a minor way in the last patch.
+
+I don't expect any more discussion on this series (but will respond
+if there is any).  So at this point I would really appreciate it
+if KS and/or Sean would offer a review, or at least acknowledge it.
+I presume you two are able to independently test the code as well,
+so I request that, and hope you are willing to do so.
+
+Version 4 of this series is here:
+  https://lore.kernel.org/netdev/20210315133455.1576188-1-elder@linaro.org
+
+					-Alex
+
+
+Alex Elder (6):
+  net: qualcomm: rmnet: mark trailer field endianness
+  net: qualcomm: rmnet: simplify some byte order logic
+  net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
+  net: qualcomm: rmnet: use masks instead of C bit-fields
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
+
+ .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 10 +--
+ .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
+ .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
+ .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 56 ++++++----------
+ include/linux/if_rmnet.h                      | 65 +++++++++----------
+ 5 files changed, 64 insertions(+), 90 deletions(-)
+
+-- 
+2.27.0
+
