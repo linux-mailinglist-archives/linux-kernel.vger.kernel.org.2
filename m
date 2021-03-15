@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AFD33BC77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A3133BD2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbhCOOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        id S239607AbhCOOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232424AbhCON6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B414964EF5;
-        Mon, 15 Mar 2021 13:58:32 +0000 (UTC)
+        id S233161AbhCOOAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91FE864F9B;
+        Mon, 15 Mar 2021 14:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816713;
-        bh=c70IG+VB8ncOdGxuRJ1obj0Jia9KWRQxTT5aMZpEW70=;
+        s=korg; t=1615816833;
+        bh=Q7fOIOhYYEgWEapd03u/hAGSKrUrhyVrhseD34/Bq5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvLfSvOUkRRXXnCMw/5lES0aq7OXNyKCajhfoghc4DsMGS386V21D7/JlIKZsjywG
-         vIKERyeS+6GqsbDpWK7bvllbSLu+//fEFSmvOAEK0RKggZaTYwGgwrbKnxZ7NkMzGN
-         Ktv9eC0FomuNqlHTxEfngB3jab4Yv/r1M7JOcfd0=
+        b=ucG3A0Ooi9k/b9AUzDvDWPNVHpdW46dQkfI9tyq7vSydq9d8yK+0EevyL9NdGGidq
+         +z7RGrYg2pupVhbxAOSO27mltXvt1H/GDhUCsoo9s0vy9rNw4wHrqcbnNelaJgirtY
+         xr+2EbQGlaYz9pGVMJvB+CwtHtg4eKbV1E42eujk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Heyne <mheyne@amazon.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 022/120] net: sched: avoid duplicates in classes dump
-Date:   Mon, 15 Mar 2021 14:56:13 +0100
-Message-Id: <20210315135720.725983786@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.4 142/168] staging: comedi: pcl818: Fix endian problem for AI command data
+Date:   Mon, 15 Mar 2021 14:56:14 +0100
+Message-Id: <20210315135555.006019466@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maximilian Heyne <mheyne@amazon.de>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit bfc2560563586372212b0a8aeca7428975fa91fe upstream.
+commit 148e34fd33d53740642db523724226de14ee5281 upstream.
 
-This is a follow up of commit ea3274695353 ("net: sched: avoid
-duplicates in qdisc dump") which has fixed the issue only for the qdisc
-dump.
+The analog input subdevice supports Comedi asynchronous commands that
+use Comedi's 16-bit sample format.  However, the call to
+`comedi_buf_write_samples()` is passing the address of a 32-bit integer
+parameter.  On bigendian machines, this will copy 2 bytes from the wrong
+end of the 32-bit value.  Fix it by changing the type of the parameter
+holding the sample value to `unsigned short`.
 
-The duplicate printing also occurs when dumping the classes via
-  tc class show dev eth0
+[Note: the bug was introduced in commit edf4537bcbf5 ("staging: comedi:
+pcl818: use comedi_buf_write_samples()") but the patch applies better to
+commit d615416de615 ("staging: comedi: pcl818: introduce
+pcl818_ai_write_sample()").]
 
-Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d615416de615 ("staging: comedi: pcl818: introduce pcl818_ai_write_sample()")
+Cc: <stable@vger.kernel.org> # 4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-10-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_api.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/comedi/drivers/pcl818.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -2048,7 +2048,7 @@ static int tc_dump_tclass_qdisc(struct Q
+--- a/drivers/staging/comedi/drivers/pcl818.c
++++ b/drivers/staging/comedi/drivers/pcl818.c
+@@ -423,7 +423,7 @@ static int pcl818_ai_eoc(struct comedi_d
  
- static int tc_dump_tclass_root(struct Qdisc *root, struct sk_buff *skb,
- 			       struct tcmsg *tcm, struct netlink_callback *cb,
--			       int *t_p, int s_t)
-+			       int *t_p, int s_t, bool recur)
+ static bool pcl818_ai_write_sample(struct comedi_device *dev,
+ 				   struct comedi_subdevice *s,
+-				   unsigned int chan, unsigned int val)
++				   unsigned int chan, unsigned short val)
  {
- 	struct Qdisc *q;
- 	int b;
-@@ -2059,7 +2059,7 @@ static int tc_dump_tclass_root(struct Qd
- 	if (tc_dump_tclass_qdisc(root, skb, tcm, cb, t_p, s_t) < 0)
- 		return -1;
- 
--	if (!qdisc_dev(root))
-+	if (!qdisc_dev(root) || !recur)
- 		return 0;
- 
- 	if (tcm->tcm_parent) {
-@@ -2094,13 +2094,13 @@ static int tc_dump_tclass(struct sk_buff
- 	s_t = cb->args[0];
- 	t = 0;
- 
--	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t) < 0)
-+	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t, true) < 0)
- 		goto done;
- 
- 	dev_queue = dev_ingress_queue(dev);
- 	if (dev_queue &&
- 	    tc_dump_tclass_root(dev_queue->qdisc_sleeping, skb, tcm, cb,
--				&t, s_t) < 0)
-+				&t, s_t, false) < 0)
- 		goto done;
- 
- done:
+ 	struct pcl818_private *devpriv = dev->private;
+ 	struct comedi_cmd *cmd = &s->async->cmd;
 
 
