@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5FE33BC96
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1F133BBFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238890AbhCOO1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:27:10 -0400
+        id S233885AbhCOOVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:52 -0400
 Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233082AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EDC64F34;
-        Mon, 15 Mar 2021 14:00:20 +0000 (UTC)
+        id S232894AbhCOOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4250964F64;
+        Mon, 15 Mar 2021 13:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816822;
-        bh=kqGk0XuYjjRsOWNK4lG836j9SdgxgTuwrNWE5f5K6Ik=;
+        s=korg; t=1615816790;
+        bh=c8KAdcG5B2JQKskhgtJjRsGY0l4cuauy7Qe4U1UDquQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fGhzQVTsQum5wkfcNaP8FBRui8c4XFVR9kdxsHrYJckzPzb6SRl1vxKxEPoiSqYX5
-         21HeRwh7jVl+dDEIUMhZZ0WEN28Vxl5krHvfVFvAmvoBqYzlZYMVY5X7elviiSgy8+
-         ds7cgJzEnu1LNeDmvG+nNKEa5avJo4VikjrVl9q8=
+        b=FXFAp21Z8K76fod3LEu7plseQBJ5BmxfjmFW6WoLERrzD0ao6DGErsKoQ86Oe5vGl
+         6Kt9DPTKPgC0UmybihPQZgyARn/qiKk4Y495NdeJOvwW8KWg1b+tymVV7LoBjxbdyp
+         bFGj3BeEgNIZKUVVw2d42WpHsLYx5CUYD0aUD2nY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 145/306] sparc64: Use arch_validate_flags() to validate ADI flag
-Date:   Mon, 15 Mar 2021 14:53:28 +0100
-Message-Id: <20210315135512.542095093@linuxfoundation.org>
+Subject: [PATCH 5.10 116/290] net: dsa: tag_qca: let DSA core deal with TX reallocation
+Date:   Mon, 15 Mar 2021 14:53:29 +0100
+Message-Id: <20210315135545.841674579@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,106 +45,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Khalid Aziz <khalid.aziz@oracle.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 147d8622f2a26ef34beacc60e1ed8b66c2fa457f ]
+[ Upstream commit 9bbda29ae1044bc4c1c01a5b7c44688c4765785f ]
 
-When userspace calls mprotect() to enable ADI on an address range,
-do_mprotect_pkey() calls arch_validate_prot() to validate new
-protection flags. arch_validate_prot() for sparc looks at the first
-VMA associated with address range to verify if ADI can indeed be
-enabled on this address range. This has two issues - (1) Address
-range might cover multiple VMAs while arch_validate_prot() looks at
-only the first VMA, (2) arch_validate_prot() peeks at VMA without
-holding mmap lock which can result in race condition.
+Now that we have a central TX reallocation procedure that accounts for
+the tagger's needed headroom in a generic way, we can remove the
+skb_cow_head call.
 
-arch_validate_flags() from commit c462ac288f2c ("mm: Introduce
-arch_validate_flags()") allows for VMA flags to be validated for all
-VMAs that cover the address range given by user while holding mmap
-lock. This patch updates sparc code to move the VMA check from
-arch_validate_prot() to arch_validate_flags() to fix above two
-issues.
-
-Suggested-by: Jann Horn <jannh@google.com>
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Khalid Aziz <khalid.aziz@oracle.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: John Crispin <john@phrozen.org>
+Cc: Alexander Lobakin <alobakin@pm.me>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/include/asm/mman.h | 54 +++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 25 deletions(-)
+ net/dsa/tag_qca.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
-index f94532f25db1..274217e7ed70 100644
---- a/arch/sparc/include/asm/mman.h
-+++ b/arch/sparc/include/asm/mman.h
-@@ -57,35 +57,39 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr)
- {
- 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
- 		return 0;
--	if (prot & PROT_ADI) {
--		if (!adi_capable())
--			return 0;
-+	return 1;
-+}
+diff --git a/net/dsa/tag_qca.c b/net/dsa/tag_qca.c
+index 1b9e8507112b..88181b52f480 100644
+--- a/net/dsa/tag_qca.c
++++ b/net/dsa/tag_qca.c
+@@ -34,9 +34,6 @@ static struct sk_buff *qca_tag_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	__be16 *phdr;
+ 	u16 hdr;
  
--		if (addr) {
--			struct vm_area_struct *vma;
-+#define arch_validate_flags(vm_flags) arch_validate_flags(vm_flags)
-+/* arch_validate_flags() - Ensure combination of flags is valid for a
-+ *	VMA.
-+ */
-+static inline bool arch_validate_flags(unsigned long vm_flags)
-+{
-+	/* If ADI is being enabled on this VMA, check for ADI
-+	 * capability on the platform and ensure VMA is suitable
-+	 * for ADI
-+	 */
-+	if (vm_flags & VM_SPARC_ADI) {
-+		if (!adi_capable())
-+			return false;
+-	if (skb_cow_head(skb, QCA_HDR_LEN) < 0)
+-		return NULL;
+-
+ 	skb_push(skb, QCA_HDR_LEN);
  
--			vma = find_vma(current->mm, addr);
--			if (vma) {
--				/* ADI can not be enabled on PFN
--				 * mapped pages
--				 */
--				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
--					return 0;
-+		/* ADI can not be enabled on PFN mapped pages */
-+		if (vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-+			return false;
- 
--				/* Mergeable pages can become unmergeable
--				 * if ADI is enabled on them even if they
--				 * have identical data on them. This can be
--				 * because ADI enabled pages with identical
--				 * data may still not have identical ADI
--				 * tags on them. Disallow ADI on mergeable
--				 * pages.
--				 */
--				if (vma->vm_flags & VM_MERGEABLE)
--					return 0;
--			}
--		}
-+		/* Mergeable pages can become unmergeable
-+		 * if ADI is enabled on them even if they
-+		 * have identical data on them. This can be
-+		 * because ADI enabled pages with identical
-+		 * data may still not have identical ADI
-+		 * tags on them. Disallow ADI on mergeable
-+		 * pages.
-+		 */
-+		if (vm_flags & VM_MERGEABLE)
-+			return false;
- 	}
--	return 1;
-+	return true;
- }
- #endif /* CONFIG_SPARC64 */
- 
+ 	memmove(skb->data, skb->data + QCA_HDR_LEN, 2 * ETH_ALEN);
 -- 
 2.30.1
 
