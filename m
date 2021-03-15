@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4847E33B113
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 242EA33B117
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCOL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:28:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21806 "EHLO
+        id S230137AbhCOL3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:29:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24134 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229807AbhCOL2g (ORCPT
+        by vger.kernel.org with ESMTP id S229807AbhCOL2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:28:36 -0400
+        Mon, 15 Mar 2021 07:28:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615807716;
+        s=mimecast20190719; t=1615807733;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6+Ab4d7pdKrk5yb3Huo0eOHzorz4U2kFO+nloggYgTE=;
-        b=OcUYvPCdxjkF2sc/qvdK0P4v6Pja5Sfm3ns5etFBiZeoVnPsGUpiIbSJrYU1uTvDy9Lp3x
-        8noaAOtJl6mW4gXstQxMX07GMX/W+VWbKZ7heSzZDtzQsZVo6X1v8KdBR3VtWt/Pyliq8P
-        1RJrYO4OihV/L/BFSP3iD/MxfKX5IaY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-SH_yfAV9MkGOGoKkK4WoxA-1; Mon, 15 Mar 2021 07:28:34 -0400
-X-MC-Unique: SH_yfAV9MkGOGoKkK4WoxA-1
-Received: by mail-wr1-f70.google.com with SMTP id y5so14954657wrp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:28:34 -0700 (PDT)
+        bh=k/i+8wDEvbmjTfeLtLR4DtORse2gYPTQ1pHIrK7qNYU=;
+        b=duNPgY7Sj3HxqYqoVoqh4Ws4ILjtOZkh/QMGs3TTykVK3ycc+MsmljCyFfUNxH/gFcm9NR
+        j4CrH3TvxAfnq3FvODIYh7c0I8jBwxtlk6wHhM46UGH4bWeKPH2lhv3puI1DsDmnUDjQ8O
+        2vuDRAuiHTC7xg1X6jmPd+51DvNbqAc=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-DHZfKrCnOJqko6-W41IAhA-1; Mon, 15 Mar 2021 07:28:50 -0400
+X-MC-Unique: DHZfKrCnOJqko6-W41IAhA-1
+Received: by mail-pg1-f200.google.com with SMTP id o9so2658125pgm.15
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:28:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6+Ab4d7pdKrk5yb3Huo0eOHzorz4U2kFO+nloggYgTE=;
-        b=g1QeJNH0F+iSuaYRFaNiw+yirdtz5spUA+AYojvzM5DnYnoeKUMs/6c6k9BWSJAff7
-         GO2oQUlFqiMbYvebw3wxWRhwCYE4vypCGDKhFEvxG1Fo48znvc2VEwfgLa9UgNxxwTuw
-         RySeqlW2FnLIZVBgfRinrR1/KqMpqNxAsyS7apyuZwSr/mn6yHMh9LGauBbV1Mks+4Wz
-         EEXxXJ9chJiFI0sfzqIDBuxXDZvmS/P8i4ii/O1C5IJkImvhj8QtU9IfxampLnjK5KP1
-         pG6I8kDTQEeSwlLiI8PCKZht/+yccLEuppguktVGBSUiyaTGpwAx3QQ6uMvwS3Kk2wKL
-         P/jg==
-X-Gm-Message-State: AOAM533Z5VowKJ//Kj0Ie74MYUvnDBT7F2VRlkS9caeDwnYG/7gpHtWT
-        CvqGnjCc2alY3sJQB2j3HE4UlFVrAbtW5VPTo4JNUWeoq+GF5UjLiYioduqP8pnDowJQffDcmn2
-        yji5M44tTUEiBEx5MucWcWzCj
-X-Received: by 2002:a1c:f30a:: with SMTP id q10mr26369014wmq.159.1615807713329;
-        Mon, 15 Mar 2021 04:28:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxB7EBmQowN5naQMkVQx5KsUpgIu5+ZOQSWr7rwjRrAdNKAoaTOGMg/KcI/Bgs8opSa6gMvzg==
-X-Received: by 2002:a1c:f30a:: with SMTP id q10mr26368990wmq.159.1615807713161;
-        Mon, 15 Mar 2021 04:28:33 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id 1sm12342744wmj.2.2021.03.15.04.28.32
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=k/i+8wDEvbmjTfeLtLR4DtORse2gYPTQ1pHIrK7qNYU=;
+        b=nA/AH56Zpq+8vRbIMqdFUoqm98J/nAYw9jxHubHZPBUbmqASNy+ZHDomeJhP6Q4yrd
+         mfD2duC37U+hes2d56/9rrIckgJdekuHQiJZHq5i6yolS8e7sycfAxOYBoGGdBclR8Uq
+         dCmkDf6MDcVe05ZcJmhQbgsCACS+11wdO2kB4QduALhMhfOZX+yuhHEpl3XaD3GFWhOJ
+         /iW/Yk1SqUOFLa6I2pFADVhWIX3SY08Wmm0UMxb9Iqur7NgOhFLTNqQA79m89tpvI5t/
+         jbF8yowDrtLnh4Q2IdrlhYLk/CARjW1THZCi1SQXGKgZt4qJVHTt5A6JPHtnF5eR/ovr
+         VKUg==
+X-Gm-Message-State: AOAM5308FmpLl+jDNerEZqUOG3ZDkLKYWUB6Lg4LNQAvfn2CYDEfa8nk
+        HLZHDzuDXTRrsrjHxikOvlAzM08r98TBKL1wfMNiPi/hglrFQzC9ibD5rsLMt6vIVozrUFU5R7Y
+        k3ddqnEMhIxlJMzj/8t2zxz0W
+X-Received: by 2002:a17:902:aa87:b029:e5:e1fc:be6 with SMTP id d7-20020a170902aa87b02900e5e1fc0be6mr11730374plr.4.1615807729835;
+        Mon, 15 Mar 2021 04:28:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmWpZTgaL3v2Mj5LM9VDdAu+NKLqarMrzFd4GFRQwFyf4fK7sC/SmQFyQwrbfXAQORInKilg==
+X-Received: by 2002:a17:902:aa87:b029:e5:e1fc:be6 with SMTP id d7-20020a170902aa87b02900e5e1fc0be6mr11730362plr.4.1615807729632;
+        Mon, 15 Mar 2021 04:28:49 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id t22sm11605800pjw.54.2021.03.15.04.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 04:28:32 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:28:30 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v6 16/22] vhost/vsock: SEQPACKET feature bit support
-Message-ID: <20210315112830.3yqqjnqcgym2sdpg@steredhat>
-References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
- <20210307180344.3466469-1-arseny.krasnov@kaspersky.com>
+        Mon, 15 Mar 2021 04:28:49 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 19:28:38 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Huang Jianan <huangjianan@oppo.com>
+Cc:     zhangshiming@oppo.com, guoweichao@oppo.com,
+        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] erofs: decompress in endio if possible
+Message-ID: <20210315112838.GB838000@xiangao.remote.csb>
+References: <20210305062219.557128-1-huangjianan@oppo.com>
+ <20210305095840.31025-1-huangjianan@oppo.com>
+ <20210305095840.31025-2-huangjianan@oppo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210307180344.3466469-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210305095840.31025-2-huangjianan@oppo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 09:03:41PM +0300, Arseny Krasnov wrote:
->This adds handling of SEQPACKET bit: if guest sets features with
->this bit cleared, then SOCK_SEQPACKET support will be disabled.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> drivers/vhost/vsock.c | 6 +++++-
-> 1 file changed, 5 insertions(+), 1 deletion(-)
+On Fri, Mar 05, 2021 at 05:58:40PM +0800, Huang Jianan via Linux-erofs wrote:
+> z_erofs_decompressqueue_endio may not be executed in the atomic
+> context, for example, when dm-verity is turned on. In this scenario,
+> data can be decompressed directly to get rid of additional kworker
+> scheduling overhead. Also, it makes no sense to apply synchronous
+> decompression for such case.
+> 
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> ---
+>  fs/erofs/internal.h |  2 ++
+>  fs/erofs/super.c    |  1 +
+>  fs/erofs/zdata.c    | 16 +++++++++++++---
+>  3 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 67a7ec945686..e325da7be237 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -53,6 +53,8 @@ struct erofs_fs_context {
+>  
+>  	/* threshold for decompression synchronously */
+>  	unsigned int max_sync_decompress_pages;
+> +	/* decide whether to decompress synchronously */
+> +	bool readahead_sync_decompress;
 
-I think is better to move this patch after we set the seqpackets ops,
-so we are really able to handle SEQPACKET traffic.
+I updated this as below:
 
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index 5e78fb719602..3b0a50e6de12 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -31,7 +31,8 @@
->
-> enum {
-> 	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
->-			       (1ULL << VIRTIO_F_ACCESS_PLATFORM)
->+			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
->+			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
-> };
->
-> enum {
->@@ -785,6 +786,9 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
-> 			goto err;
-> 	}
->
->+	if (features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
->+		vhost_transport.seqpacket_allow = true;
->+
-> 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
-> 		vq = &vsock->vqs[i];
-> 		mutex_lock(&vq->mutex);
->-- 
->2.25.1
->
+ 	/* current strategy of how to use managed cache */
+ 	unsigned char cache_strategy;
++	/* strategy of sync decompression (false - auto, true - force on) */
++	bool readahead_sync_decompress;
+ 
+ 	/* threshold for decompression synchronously */
+ 	unsigned int max_sync_decompress_pages;
+
+>  #endif
+>  	unsigned int mount_opt;
+>  };
+
+...
+
+> @@ -720,8 +723,14 @@ static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+>  		return;
+>  	}
+>  
+> -	if (!atomic_add_return(bios, &io->pending_bios))
+> -		queue_work(z_erofs_workqueue, &io->u.work);
+> +	if (!atomic_add_return(bios, &io->pending_bios)) {
+> +		if (in_atomic() || irqs_disabled()) {
+> +			queue_work(z_erofs_workqueue, &io->u.work);
+> +			sbi->ctx.readahead_sync_decompress = true;
+> +		} else {
+> +			z_erofs_decompressqueue_work(&io->u.work);
+> +		}
+> +	}
+
+Also updated this as below to return as early as possible:
+
+-	if (!atomic_add_return(bios, &io->pending_bios))
++	if (atomic_add_return(bios, &io->pending_bios))
++		return;
++	/* Use workqueue and sync decompression for atomic contexts only */
++	if (in_atomic() || irqs_disabled()) {
+ 		queue_work(z_erofs_workqueue, &io->u.work);
++		sbi->ctx.readahead_sync_decompress = true;
++		return;
++	}
++	z_erofs_decompressqueue_work(&io->u.work);
+ }
+
+Otherwise, it looks good to me. I've applied to dev-test
+for preliminary testing.
+
+Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+
+Thanks,
+Gao Xiang
 
