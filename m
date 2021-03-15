@@ -2,186 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2892B33B200
+	by mail.lfdr.de (Postfix) with ESMTP id AA0AD33B201
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCOMDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:03:13 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40964 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhCOMCl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:02:41 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12FC25qg102746;
-        Mon, 15 Mar 2021 07:02:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615809725;
-        bh=zip3QNfLNninBOCzv/e4IC8dXyImpfIC1+J6usKYJY4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eJvPkEgSyohoMZwPlQJbTArmivoNQr0+OtwpBldDzVuow9ZFwP9RRWleeBhFGcXCH
-         y3L5ez5FqrnWe1eJdBjMtpqxaIAsxn7jtUGgoKEhp/IXSxPaNF/wmLccEPeZTVXAjT
-         gsSg7Ove6wuU+il3hijqDSxC/q/VhVt/Q6jEkPKQ=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12FC255Q032756
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 15 Mar 2021 07:02:05 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
- Mar 2021 07:02:05 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 15 Mar 2021 07:02:04 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12FC1xvK088838;
-        Mon, 15 Mar 2021 07:02:02 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [RESEN DPATCH 2/2] arm64: dts: ti: k3-am642-evm/sk: Add OSPI flash DT node
-Date:   Mon, 15 Mar 2021 17:31:49 +0530
-Message-ID: <20210315120149.10606-2-vigneshr@ti.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315120149.10606-1-vigneshr@ti.com>
-References: <20210315120149.10606-1-vigneshr@ti.com>
+        id S230200AbhCOMDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229830AbhCOMCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:02:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBF1C64EE3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:02:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615809766;
+        bh=pKDYtf7UiwMwhGb5OugYKdHJp6nVCYTST0NZnpxnYBI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BQTMIuMkB1PrjurJ/suYgZwYbr4chEt2an6hzna72s6isJoMCGrvDJzqTNOZDmfjf
+         3TOGYvcAslkb0dox05Y24f9KWHtkxX+M5eeFYMFeoAT4apDJYPB83F6lTCSqoGbNIP
+         9urQiWBwjVcemXMOHTvkN5wBE0d+NXrGog2Tivj06XcZ6t6OxYrGSQrBEMxv4kDHr0
+         n2thsTzBAftIDKE8E6iUg7zkz1Jayy48+7tWLT061NZXgEKLdBTt0HETBzMFkjlnvn
+         3wMIK1FEPuJHu4+WVWyOWQghpjbQIcEvkW1IiLfkvbUKBhsVmuZK9QibmEFPLtkXRQ
+         FQimQ28uewQpw==
+Received: by mail-ot1-f42.google.com with SMTP id 101-20020a9d04ee0000b02901b506659320so4968645otm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:02:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530rjXtxy3CXtIcxvcvyaqu6vpTfIt4Zh0gfocu2mFjIlth77Yv9
+        oGOSA0K63CVo+1daja6xI/WuqsOgwinQKmsvhck=
+X-Google-Smtp-Source: ABdhPJx2aURTMFTXLhyY55yp8MnoGqDYXpEXtgJR6ZHPoqFptGwVbX8S62S/rOtwe+2lwHUXYTIM0xwmHDboagQSrE8=
+X-Received: by 2002:a9d:6e15:: with SMTP id e21mr13669773otr.77.1615809765969;
+ Mon, 15 Mar 2021 05:02:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210106103453.152275-1-andre.przywara@arm.com> <20210106103453.152275-4-andre.przywara@arm.com>
+In-Reply-To: <20210106103453.152275-4-andre.przywara@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 15 Mar 2021 13:02:35 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXENEpQMWXCxDa28mC0qqNubVFE42VvLPm-NDWTOpRtUiQ@mail.gmail.com>
+Message-ID: <CAMj1kXENEpQMWXCxDa28mC0qqNubVFE42VvLPm-NDWTOpRtUiQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/5] ARM: implement support for SMCCC TRNG entropy source
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both AM64 EVM and SK have a 512Mb S28HS512T Octal SPI NOR flash.
-Add DT node for the same.
+On Wed, 6 Jan 2021 at 11:35, Andre Przywara <andre.przywara@arm.com> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> Implement arch_get_random_seed_*() for ARM based on the firmware
+> or hypervisor provided entropy source described in ARM DEN0098.
+>
+> This will make the kernel's random number generator consume entropy
+> provided by this interface, at early boot, and periodically at
+> runtime when reseeding.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> [Andre: rework to be initialised by the SMCCC firmware driver]
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
----
+I think this one could be dropped into rmk's patch tracker now, right?
 
-Boot logs:
-https://pastebin.ubuntu.com/p/mNG7ryv3w6/
-https://pastebin.ubuntu.com/p/TZf9ZwSqqM/
 
-Resend:
-Rebase onto latest -next
-
-There is a warning related to dtbs_check which is because
-spi-cadence-quadspi.txt is not converted to YAML.
-
-v1: lore.kernel.org/r/20210309130514.11740-2-vigneshr@ti.com
-
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 36 +++++++++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts  | 36 +++++++++++++++++++++++++
- 2 files changed, 72 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 188f0eb687fb..2f187555d04a 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -210,6 +210,22 @@ AM64X_IOPAD(0x0148, PIN_OUTPUT, 4) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
- 			AM64X_IOPAD(0x0144, PIN_OUTPUT, 4) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
- 		>;
- 	};
-+
-+	ospi0_pins_default: ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
-+			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
-+			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
-+			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
-+			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
-+			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
-+			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
-+			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
-+			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
-+			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
-+			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
-+		>;
-+	};
- };
- 
- &main_uart0 {
-@@ -364,3 +380,23 @@ &tscadc0 {
- 	/* ADC is reserved for R5 usage */
- 	status = "reserved";
- };
-+
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index 8f9b1078b7b5..3a5bee4b0b0c 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -132,6 +132,22 @@ AM64X_IOPAD(0x0148, PIN_OUTPUT, 4) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
- 			AM64X_IOPAD(0x0144, PIN_OUTPUT, 4) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
- 		>;
- 	};
-+
-+	ospi0_pins_default: ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
-+			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
-+			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
-+			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
-+			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
-+			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
-+			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
-+			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
-+			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
-+			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
-+			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
-+		>;
-+	};
- };
- 
- &mcu_uart0 {
-@@ -248,3 +264,23 @@ cpsw3g_phy1: ethernet-phy@1 {
- &tscadc0 {
- 	status = "disabled";
- };
-+
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
--- 
-2.30.2
-
+> ---
+>  arch/arm/Kconfig                  |  4 ++
+>  arch/arm/include/asm/archrandom.h | 64 +++++++++++++++++++++++++++++++
+>  2 files changed, 68 insertions(+)
+>
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 138248999df7..bfe642510b0a 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -1644,6 +1644,10 @@ config STACKPROTECTOR_PER_TASK
+>           Enable this option to switch to a different method that uses a
+>           different canary value for each task.
+>
+> +config ARCH_RANDOM
+> +       def_bool y
+> +       depends on HAVE_ARM_SMCCC_DISCOVERY
+> +
+>  endmenu
+>
+>  menu "Boot options"
+> diff --git a/arch/arm/include/asm/archrandom.h b/arch/arm/include/asm/archrandom.h
+> index a8e84ca5c2ee..f3e96a5b65f8 100644
+> --- a/arch/arm/include/asm/archrandom.h
+> +++ b/arch/arm/include/asm/archrandom.h
+> @@ -2,9 +2,73 @@
+>  #ifndef _ASM_ARCHRANDOM_H
+>  #define _ASM_ARCHRANDOM_H
+>
+> +#ifdef CONFIG_ARCH_RANDOM
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/kernel.h>
+> +
+> +#define ARM_SMCCC_TRNG_MIN_VERSION     0x10000UL
+> +
+> +extern bool smccc_trng_available;
+> +
+> +static inline bool __init smccc_probe_trng(void)
+> +{
+> +       struct arm_smccc_res res;
+> +
+> +       arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_VERSION, &res);
+> +       if ((s32)res.a0 < 0)
+> +               return false;
+> +       if (res.a0 >= ARM_SMCCC_TRNG_MIN_VERSION) {
+> +               /* double check that the 32-bit flavor is available */
+> +               arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_FEATURES,
+> +                                    ARM_SMCCC_TRNG_RND32,
+> +                                    &res);
+> +               if ((s32)res.a0 >= 0)
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+> +
+> +static inline bool __must_check arch_get_random_long(unsigned long *v)
+> +{
+> +       return false;
+> +}
+> +
+> +static inline bool __must_check arch_get_random_int(unsigned int *v)
+> +{
+> +       return false;
+> +}
+> +
+> +static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
+> +{
+> +       struct arm_smccc_res res;
+> +
+> +       if (smccc_trng_available) {
+> +               arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND32, 8 * sizeof(*v), &res);
+> +
+> +               if (res.a0 != 0)
+> +                       return false;
+> +
+> +               *v = res.a3;
+> +               return true;
+> +       }
+> +
+> +       return false;
+> +}
+> +
+> +static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
+> +{
+> +       return arch_get_random_seed_long((unsigned long *)v);
+> +}
+> +
+> +
+> +#else /* !CONFIG_ARCH_RANDOM */
+> +
+>  static inline bool __init smccc_probe_trng(void)
+>  {
+>         return false;
+>  }
+>
+> +#endif /* CONFIG_ARCH_RANDOM */
+>  #endif /* _ASM_ARCHRANDOM_H */
+> --
+> 2.17.1
+>
