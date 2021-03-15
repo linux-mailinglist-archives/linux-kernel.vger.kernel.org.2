@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A11033BB4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED48033BB46
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbhCOOPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S235929AbhCOOOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232506AbhCON7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AAD564F77;
-        Mon, 15 Mar 2021 13:58:41 +0000 (UTC)
+        id S230407AbhCON7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C3E64EE9;
+        Mon, 15 Mar 2021 13:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816722;
-        bh=itJ8U0Bp7EtEKyhUtm3nAEiZShDwqJ9fXKGVeV80Vcc=;
+        s=korg; t=1615816724;
+        bh=cwa9O6gcJyxFsf7aw8GCQXL7kgj6DFA1kw0CV3UWM0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yjW15r5+xzwhitUXU5HzQqQIUcXT9rRv0OnIxisJt5clGKu2qhgKm/GkbXaPf1eCQ
-         EXlWlo8FdgosXGA3yGtAMebNrHW6bfE/Rt5XuFdBk6N3jJwBOJ0zlsV4bWK48lsOXw
-         yJUboHWpsoFIpbTsxP+okuu6WajDzpjSOM2MqJ00=
+        b=yWTYZcyt6+YnYSwo/Sy/EQFhczNOyCT9s/4LekSf8SqkL0e69mYz3wG414eWP+HYT
+         uU/vCDE5KmQS5P2gAywCjuU/bXE6YN8TF4bwv7SnbhbDJqWj3hma5pTCK8TFeENE1i
+         KlA6ygjfNXrZy0GQhgE53jpqY5fonJlsA+IoAY6I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Daniele Palmas <dnlplm@gmail.com>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com,
+        Paul Moore <paul@paul-moore.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 19/95] net: usb: qmi_wwan: allow qmimux add/del with master up
-Date:   Mon, 15 Mar 2021 14:56:49 +0100
-Message-Id: <20210315135740.904887392@linuxfoundation.org>
+Subject: [PATCH 4.14 20/95] cipso,calipso: resolve a number of problems with the DOI refcounts
+Date:   Mon, 15 Mar 2021 14:56:50 +0100
+Message-Id: <20210315135740.944952360@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -44,57 +43,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Paul Moore <paul@paul-moore.com>
 
-commit 6c59cff38e66584ae3ac6c2f0cbd8d039c710ba7 upstream.
+commit ad5d07f4a9cd671233ae20983848874731102c08 upstream.
 
-There's no reason for preventing the creation and removal
-of qmimux network interfaces when the underlying interface
-is up.
+The current CIPSO and CALIPSO refcounting scheme for the DOI
+definitions is a bit flawed in that we:
 
-This makes qmi_wwan mux implementation more similar to the
-rmnet one, simplifying userspace management of the same
-logical interfaces.
+1. Don't correctly match gets/puts in netlbl_cipsov4_list().
+2. Decrement the refcount on each attempt to remove the DOI from the
+   DOI list, only removing it from the list once the refcount drops
+   to zero.
 
-Fixes: c6adf77953bc ("net: usb: qmi_wwan: add qmap mux protocol support")
-Reported-by: Aleksander Morgado <aleksander@aleksander.es>
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Acked-by: Bjørn Mork <bjorn@mork.no>
+This patch fixes these problems by adding the missing "puts" to
+netlbl_cipsov4_list() and introduces a more conventional, i.e.
+not-buggy, refcounting mechanism to the DOI definitions.  Upon the
+addition of a DOI to the DOI list, it is initialized with a refcount
+of one, removing a DOI from the list removes it from the list and
+drops the refcount by one; "gets" and "puts" behave as expected with
+respect to refcounts, increasing and decreasing the DOI's refcount by
+one.
+
+Fixes: b1edeb102397 ("netlabel: Replace protocol/NetLabel linking with refrerence counts")
+Fixes: d7cce01504a0 ("netlabel: Add support for removing a CALIPSO DOI.")
+Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |   14 --------------
- 1 file changed, 14 deletions(-)
+ net/ipv4/cipso_ipv4.c            |   11 +----------
+ net/ipv6/calipso.c               |   14 +++++---------
+ net/netlabel/netlabel_cipso_v4.c |    3 +++
+ 3 files changed, 9 insertions(+), 19 deletions(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -378,13 +378,6 @@ static ssize_t add_mux_store(struct devi
- 		goto err;
+--- a/net/ipv4/cipso_ipv4.c
++++ b/net/ipv4/cipso_ipv4.c
+@@ -533,16 +533,10 @@ int cipso_v4_doi_remove(u32 doi, struct
+ 		ret_val = -ENOENT;
+ 		goto doi_remove_return;
  	}
- 
--	/* we don't want to modify a running netdev */
--	if (netif_running(dev->net)) {
--		netdev_err(dev->net, "Cannot change a running device\n");
--		ret = -EBUSY;
--		goto err;
+-	if (!refcount_dec_and_test(&doi_def->refcount)) {
+-		spin_unlock(&cipso_v4_doi_list_lock);
+-		ret_val = -EBUSY;
+-		goto doi_remove_return;
 -	}
--
- 	ret = qmimux_register_device(dev->net, mux_id);
- 	if (!ret) {
- 		info->flags |= QMI_WWAN_FLAG_MUX;
-@@ -414,13 +407,6 @@ static ssize_t del_mux_store(struct devi
- 	if (!rtnl_trylock())
- 		return restart_syscall();
+ 	list_del_rcu(&doi_def->list);
+ 	spin_unlock(&cipso_v4_doi_list_lock);
  
--	/* we don't want to modify a running netdev */
--	if (netif_running(dev->net)) {
--		netdev_err(dev->net, "Cannot change a running device\n");
--		ret = -EBUSY;
--		goto err;
+-	cipso_v4_cache_invalidate();
+-	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
++	cipso_v4_doi_putdef(doi_def);
+ 	ret_val = 0;
+ 
+ doi_remove_return:
+@@ -599,9 +593,6 @@ void cipso_v4_doi_putdef(struct cipso_v4
+ 
+ 	if (!refcount_dec_and_test(&doi_def->refcount))
+ 		return;
+-	spin_lock(&cipso_v4_doi_list_lock);
+-	list_del_rcu(&doi_def->list);
+-	spin_unlock(&cipso_v4_doi_list_lock);
+ 
+ 	cipso_v4_cache_invalidate();
+ 	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
+--- a/net/ipv6/calipso.c
++++ b/net/ipv6/calipso.c
+@@ -97,6 +97,9 @@ struct calipso_map_cache_entry {
+ 
+ static struct calipso_map_cache_bkt *calipso_cache;
+ 
++static void calipso_cache_invalidate(void);
++static void calipso_doi_putdef(struct calipso_doi *doi_def);
++
+ /* Label Mapping Cache Functions
+  */
+ 
+@@ -458,15 +461,10 @@ static int calipso_doi_remove(u32 doi, s
+ 		ret_val = -ENOENT;
+ 		goto doi_remove_return;
+ 	}
+-	if (!refcount_dec_and_test(&doi_def->refcount)) {
+-		spin_unlock(&calipso_doi_list_lock);
+-		ret_val = -EBUSY;
+-		goto doi_remove_return;
 -	}
--
- 	del_dev = qmimux_find_dev(dev, mux_id);
- 	if (!del_dev) {
- 		netdev_err(dev->net, "mux_id not present\n");
+ 	list_del_rcu(&doi_def->list);
+ 	spin_unlock(&calipso_doi_list_lock);
+ 
+-	call_rcu(&doi_def->rcu, calipso_doi_free_rcu);
++	calipso_doi_putdef(doi_def);
+ 	ret_val = 0;
+ 
+ doi_remove_return:
+@@ -522,10 +520,8 @@ static void calipso_doi_putdef(struct ca
+ 
+ 	if (!refcount_dec_and_test(&doi_def->refcount))
+ 		return;
+-	spin_lock(&calipso_doi_list_lock);
+-	list_del_rcu(&doi_def->list);
+-	spin_unlock(&calipso_doi_list_lock);
+ 
++	calipso_cache_invalidate();
+ 	call_rcu(&doi_def->rcu, calipso_doi_free_rcu);
+ }
+ 
+--- a/net/netlabel/netlabel_cipso_v4.c
++++ b/net/netlabel/netlabel_cipso_v4.c
+@@ -581,6 +581,7 @@ list_start:
+ 
+ 		break;
+ 	}
++	cipso_v4_doi_putdef(doi_def);
+ 	rcu_read_unlock();
+ 
+ 	genlmsg_end(ans_skb, data);
+@@ -589,12 +590,14 @@ list_start:
+ list_retry:
+ 	/* XXX - this limit is a guesstimate */
+ 	if (nlsze_mult < 4) {
++		cipso_v4_doi_putdef(doi_def);
+ 		rcu_read_unlock();
+ 		kfree_skb(ans_skb);
+ 		nlsze_mult *= 2;
+ 		goto list_start;
+ 	}
+ list_failure_lock:
++	cipso_v4_doi_putdef(doi_def);
+ 	rcu_read_unlock();
+ list_failure:
+ 	kfree_skb(ans_skb);
 
 
