@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B921533B59C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D0633B5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhCONyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55900 "EHLO mail.kernel.org"
+        id S231710AbhCONzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230373AbhCONx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D3264E89;
-        Mon, 15 Mar 2021 13:53:25 +0000 (UTC)
+        id S229862AbhCONxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 710EF64E89;
+        Mon, 15 Mar 2021 13:53:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816407;
-        bh=qoDi2vTsop8woPakjQoyEeGBNQtQbU2oPDlNnDr0eQk=;
+        s=korg; t=1615816415;
+        bh=FtIlBKzTfqgeGJmalhihGEyYPSM9sR2gGgMJ3OCec/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FH/mga2N1GjfJvH1+oeAT7//XsGckVljJnXz6IfvAzNq7mzHEfOMm3WWhV7a3c8Y5
-         FqiEUxU3w3nOzM17HoqIbk5yUwEsCXf/FRhaiG0RZhdsLVC6koLuC/DUb1NbrZHfO/
-         il544oJzV1Sog+ipBPQsxG+GoBivUpwwSn1WL/Kc=
+        b=2RxDrTIXgn/1Tz1qB3nnya4ln1VznaxPPdYitI02jNjP5FkuGEptSzQ02tJjLgYiV
+         LkbkCcJ+WmP+CglSI5nKxzmhJiKQ2XFYTfpYxy/wNRdy+iOOpb6Y2OylYmzWzcSWoo
+         Rzdbc/NZuU0NP6QUfP0ER7hdwGKTstxLt9HzgplI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 21/78] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
+        stable@vger.kernel.org, Joe Lawrence <joe.lawrence@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Manoj Gupta <manojgupta@google.com>
+Subject: [PATCH 4.4 30/75] scripts/recordmcount.{c,pl}: support -ffunction-sections .text.* section names
 Date:   Mon, 15 Mar 2021 14:51:44 +0100
-Message-Id: <20210315135212.763259976@linuxfoundation.org>
+Message-Id: <20210315135209.245759526@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +42,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Joe Lawrence <joe.lawrence@redhat.com>
 
-[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
+commit 9c8e2f6d3d361439cc6744a094f1c15681b55269 upstream.
 
-While sampling for marked events, currently we record the sample only
-if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
-set. SIAR_VALID bit is used for fetching the instruction address from
-Sampled Instruction Address Register(SIAR). But there are some
-usecases, where the user is interested only in the PMU stats at each
-counter overflow and the exact IP of the overflow event is not
-required. Dropping SIAR invalid samples will fail to record some of
-the counter overflows in such cases.
+When building with -ffunction-sections, the compiler will place each
+function into its own ELF section, prefixed with ".text".  For example,
+a simple test module with functions test_module_do_work() and
+test_module_wq_func():
 
-Example of such usecase is dumping the PMU stats (event counts) after
-some regular amount of instructions/events from the userspace (ex: via
-ptrace). Here counter overflow is indicated to userspace via signal
-handler, and captured by monitoring and enabling I/O signaling on the
-event file descriptor. In these cases, we expect to get
-sample/overflow indication after each specified sample_period.
+  % objdump --section-headers test_module.o | awk '/\.text/{print $2}'
+  .text
+  .text.test_module_do_work
+  .text.test_module_wq_func
+  .init.text
+  .exit.text
 
-Perf event attribute will not have PERF_SAMPLE_IP set in the
-sample_type if exact IP of the overflow event is not requested. So
-while profiling if SAMPLE_IP is not set, just record the counter
-overflow irrespective of SIAR_VALID check.
+Adjust the recordmcount scripts to look for ".text" as a section name
+prefix.  This will ensure that those functions will be included in the
+__mcount_loc relocations:
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-[mpe: Reflow comment and if formatting]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  % objdump --reloc --section __mcount_loc test_module.o
+  OFFSET           TYPE              VALUE
+  0000000000000000 R_X86_64_64       .text.test_module_do_work
+  0000000000000008 R_X86_64_64       .text.test_module_wq_func
+  0000000000000010 R_X86_64_64       .init.text
+
+Link: http://lkml.kernel.org/r/1542745158-25392-2-git-send-email-joe.lawrence@redhat.com
+
+Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+[Manoj: Resolve conflict on 4.4.y/4.9.y because of missing 42c269c88dc1]
+Signed-off-by: Manoj Gupta <manojgupta@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ scripts/recordmcount.c  |    2 +-
+ scripts/recordmcount.pl |   13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 1f1ac446ace9..f2d8f35c181f 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2010,7 +2010,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 			left += period;
- 			if (left <= 0)
- 				left = period;
--			record = siar_valid(regs);
-+
-+			/*
-+			 * If address is not requested in the sample via
-+			 * PERF_SAMPLE_IP, just record that sample irrespective
-+			 * of SIAR valid check.
-+			 */
-+			if (event->attr.sample_type & PERF_SAMPLE_IP)
-+				record = siar_valid(regs);
-+			else
-+				record = 1;
-+
- 			event->hw.last_period = event->hw.sample_period;
- 		}
- 		if (left < 0x80000000LL)
-@@ -2028,9 +2038,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
- 	 * these cases.
- 	 */
--	if (event->attr.exclude_kernel && record)
--		if (is_kernel_addr(mfspr(SPRN_SIAR)))
--			record = 0;
-+	if (event->attr.exclude_kernel &&
-+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
-+	    is_kernel_addr(mfspr(SPRN_SIAR)))
-+		record = 0;
+--- a/scripts/recordmcount.c
++++ b/scripts/recordmcount.c
+@@ -362,7 +362,7 @@ static uint32_t (*w2)(uint16_t);
+ static int
+ is_mcounted_section_name(char const *const txtname)
+ {
+-	return strcmp(".text",           txtname) == 0 ||
++	return strncmp(".text",          txtname, 5) == 0 ||
+ 		strcmp(".ref.text",      txtname) == 0 ||
+ 		strcmp(".sched.text",    txtname) == 0 ||
+ 		strcmp(".spinlock.text", txtname) == 0 ||
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -138,6 +138,11 @@ my %text_sections = (
+      ".text.unlikely" => 1,
+ );
  
- 	/*
- 	 * Finally record data if requested.
--- 
-2.30.1
-
++# Acceptable section-prefixes to record.
++my %text_section_prefixes = (
++     ".text." => 1,
++);
++
+ # Note: we are nice to C-programmers here, thus we skip the '||='-idiom.
+ $objdump = 'objdump' if (!$objdump);
+ $objcopy = 'objcopy' if (!$objcopy);
+@@ -503,6 +508,14 @@ while (<IN>) {
+ 
+ 	# Only record text sections that we know are safe
+ 	$read_function = defined($text_sections{$1});
++	if (!$read_function) {
++	    foreach my $prefix (keys %text_section_prefixes) {
++	        if (substr($1, 0, length $prefix) eq $prefix) {
++	            $read_function = 1;
++	            last;
++	        }
++	    }
++	}
+ 	# print out any recorded offsets
+ 	update_funcs();
+ 
 
 
