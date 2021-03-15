@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB4E33BB29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2816333BBB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236360AbhCOOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S232830AbhCOOUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232465AbhCON65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC6F764F3F;
-        Mon, 15 Mar 2021 13:58:32 +0000 (UTC)
+        id S231627AbhCON7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D54FA64F83;
+        Mon, 15 Mar 2021 13:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816714;
-        bh=kIE7+JWYHo6gcimnVLboVMJ0lGJorM7c6yvFGIdYEUU=;
+        s=korg; t=1615816765;
+        bh=a6ceXE+1bgi5Z1QgAaCKnCvMs9anHpQ5hzlxuq+FEXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CTmQqT2ztL1SO5C0+Cq/KXPZiTOsl6max8/6JAzWSWmZyYtUyGDIELDe/au+oAa3y
-         u1BAZRWmqV1M3LR0qZG6SMr1r2ZP41hiegDzRevG4Zv/nsMN42OC+xFPsugNJscV4R
-         SHtao8JfWzBfu40J/301Ivog3KpaSkslQ7u5thRU=
+        b=wGN627+geo14VnQ5GtOJWQCxHnvoKKFKcDGM8ItgK9H+CI1KIxyD+tBVHOF82vG3k
+         0Ho3yfLYAWnA06zBWP7FulOUk+WkM2UL629RBGFgxHRKMZx3JnI1UOnRaMnsgjCYJx
+         +qpfQf2C0C6k7yRLmjz+bPz7qInBVB4iBj1ZANuM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Jann Horn <jannh@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 14/95] Revert "mm, slub: consider rest of partial list if acquire_slab() fails"
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 053/120] PCI: Fix pci_register_io_range() memory leak
 Date:   Mon, 15 Mar 2021 14:56:44 +0100
-Message-Id: <20210315135740.737668913@linuxfoundation.org>
+Message-Id: <20210315135721.724444454@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +43,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 9b1ea29bc0d7b94d420f96a0f4121403efc3dd85 upstream.
+[ Upstream commit f6bda644fa3a7070621c3bf12cd657f69a42f170 ]
 
-This reverts commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf.
+Kmemleak reports:
 
-The kernel test robot reports a huge performance regression due to the
-commit, and the reason seems fairly straightforward: when there is
-contention on the page list (which is what causes acquire_slab() to
-fail), we do _not_ want to just loop and try again, because that will
-transfer the contention to the 'n->list_lock' spinlock we hold, and
-just make things even worse.
+  unreferenced object 0xc328de40 (size 64):
+    comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
+    hex dump (first 32 bytes):
+      00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
+      00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
 
-This is admittedly likely a problem only on big machines - the kernel
-test robot report comes from a 96-thread dual socket Intel Xeon Gold
-6252 setup, but the regression there really is quite noticeable:
+  backtrace:
+    [<ad758d10>] pci_register_io_range+0x3c/0x80
+    [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
+    [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
+    [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
+    [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
+    [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
 
-   -47.9% regression of stress-ng.rawpkt.ops_per_sec
+In case a PCI host driver's probe is deferred, the same I/O range may be
+allocated again, and be ignored, causing a memory leak.
 
-and the commit that was marked as being fixed (7ced37197196: "slub:
-Acquire_slab() avoid loop") actually did the loop exit early very
-intentionally (the hint being that "avoid loop" part of that commit
-message), exactly to avoid this issue.
+Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
+passed range already exists, so pci_register_io_range() will free it, and
+by (b) making pci_register_io_range() not consider -EEXIST an error
+condition.
 
-The correct thing to do may be to pick some kind of reasonable middle
-ground: instead of breaking out of the loop on the very first sign of
-contention, or trying over and over and over again, the right thing may
-be to re-try _once_, and then give up on the second failure (or pick
-your favorite value for "once"..).
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Link: https://lore.kernel.org/lkml/20210301080404.GF12822@xsang-OptiPlex-9020/
-Cc: Jann Horn <jannh@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Acked-by: Christoph Lameter <cl@linux.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210202100332.829047-1-geert+renesas@glider.be
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/slub.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/pci.c | 4 ++++
+ lib/logic_pio.c   | 3 +++
+ 2 files changed, 7 insertions(+)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1846,7 +1846,7 @@ static void *get_partial_node(struct kme
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 83fda1987d1f..9ebf32de8575 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3817,6 +3817,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
+ 	ret = logic_pio_register_range(range);
+ 	if (ret)
+ 		kfree(range);
++
++	/* Ignore duplicates due to deferred probing */
++	if (ret == -EEXIST)
++		ret = 0;
+ #endif
  
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
- 		if (!t)
--			continue; /* cmpxchg raced */
-+			break;
- 
- 		available += objects;
- 		if (!object) {
+ 	return ret;
+diff --git a/lib/logic_pio.c b/lib/logic_pio.c
+index 905027574e5d..774bb02fff10 100644
+--- a/lib/logic_pio.c
++++ b/lib/logic_pio.c
+@@ -27,6 +27,8 @@ static DEFINE_MUTEX(io_range_mutex);
+  * @new_range: pointer to the IO range to be registered.
+  *
+  * Returns 0 on success, the error code in case of failure.
++ * If the range already exists, -EEXIST will be returned, which should be
++ * considered a success.
+  *
+  * Register a new IO range node in the IO range list.
+  */
+@@ -49,6 +51,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
+ 	list_for_each_entry(range, &io_range_list, list) {
+ 		if (range->fwnode == new_range->fwnode) {
+ 			/* range already there */
++			ret = -EEXIST;
+ 			goto end_register;
+ 		}
+ 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
+-- 
+2.30.1
+
 
 
