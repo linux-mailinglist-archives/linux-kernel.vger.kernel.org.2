@@ -2,131 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F00533C43E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE5A33C437
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236218AbhCORcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:32:52 -0400
-Received: from mail-bn7nam10on2044.outbound.protection.outlook.com ([40.107.92.44]:58976
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233077AbhCORcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:32:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KtzDGzHu0QHmehjpZMVvfPKLSDIZfwSmqmQNzznSwufiP7MJ/bmQDjuFMilrKH7zEJpdW89eLfeIV1I8UxEoLseX+yyP0v/ynHVMs3zJKoaBqI0qvW7qalw/hVf0qprr8Y/eWH/vGX0OndY+aqtzvaESFftl/9UOaVJ2P2L2a97NZbRxHSvJ0iiHXQ7Iiai0VVC0V37FmxOO8rSPvUWY4T4LU/IvGP//GNZHKiN2JNXtLDuOgAnAfMXyFeBB2NyHAiUt2QmEdsfFI/zxbQZidcTZc0gDLXxm4w/2KqUKZ8W7jJZtMJ9WMSimEBqdzuhcEiwHXHFsuX6FeHbVHVJNGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gX3dcbBVRuDXDPsNrRgNLR40x0mRj8Ps8kCN/DWFSYE=;
- b=oa41KmBaEndl2lGDOGwFutj2+t+JDl05IZJ29in87kTEuhjJSt4ExCCK582g+kMRgIkioRJmzjCKZb4Qtvz+/0VfYMGaPfYBaYlfI64DKDFhyzimV4Ht6ekVy4DPNmnosGfvnCD0V6/ZlArLnOeW+C25jritT+951S2kgM2fuwktPGvgRxANk/TnvybhUlob1Qpe/2ys0I3yqHQ3gVAT0pv3CXo/lG0zGBxvtLizEv6buS6e+xeDvVIwlRAItYllfgDuynQnfCkFgEmbv3WW1kU1wpjbsXqWngr9fh/KU4SWLr3pD+q8bI7mEI8lhcM13vcTJFsioboLM4gGajdt4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gX3dcbBVRuDXDPsNrRgNLR40x0mRj8Ps8kCN/DWFSYE=;
- b=rkqQi/iA4/hc5Y+5Ab7qI9sD7rBeIu6AtECltBvUUyfFuuNnnkMBjiyci2hsWOxz85XzmuYp+P0GkIXpAWS+hqiqpw5olmoVCKjuANIDcbZzNBj89Wn9N8QE67gKxBUVshNa1c8Q3Fi1cqQ7d9fIVhZAXTtXRxX9+I+etHwR2abWIenrWKo5MBvHBp7OZwPEWMyH4lAe/USZu8fwbD9/TMe0AmBjZeRLwmHMuKDeKlCZjkjJ2PeKCJWgmAG6DgZCDqbw85cSto8NObbGanE1z442nipiommlB2iOiZg/oM8OxpdA2Kf6/hKdVgzVe22BNMISh1dt0LBDAibZdnQRKw==
-Received: from MWHPR1201CA0017.namprd12.prod.outlook.com
- (2603:10b6:301:4a::27) by BY5PR12MB4035.namprd12.prod.outlook.com
- (2603:10b6:a03:206::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 17:32:17 +0000
-Received: from CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:4a:cafe::66) by MWHPR1201CA0017.outlook.office365.com
- (2603:10b6:301:4a::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
- Transport; Mon, 15 Mar 2021 17:32:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT024.mail.protection.outlook.com (10.13.174.162) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 17:32:16 +0000
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
- 2021 17:32:16 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Mar 2021 17:32:12 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC:     <oder_chiou@realtek.com>, <michael@walle.cc>,
-        <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <thierry.reding@gmail.com>,
-        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 2/2] ASoC: rt5659: Update MCLK rate in set_sysclk()
-Date:   Mon, 15 Mar 2021 23:01:32 +0530
-Message-ID: <1615829492-8972-3-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
-References: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+        id S232416AbhCORcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234836AbhCORcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 13:32:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE55F64E98;
+        Mon, 15 Mar 2021 17:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615829527;
+        bh=VRcbQL7CvY6cs5rG3WUG31fwN9zEEEuuniKBvXrs38c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ITjF77TLcgpBt5MuUWlr0DwatVKlFdMISr/3LmxHyhyFvMKGp6gQn80vGywiW0w31
+         FpvxijhAGClviF7uDoWK4gaNArg84LppRmlLJXz+bXRoR+3VI0gmSLvMzM1Jm+MI2k
+         dg5X5Vzjqe7zn6MVXxbrVduAvjWqo4i+ifgAhjpEuiRoSMYr3tJI5wEWwJTNa/HqEi
+         0OCY1UxilLOOXcKbekTTfRzdVb+ikDVwpmIBG4uAdnDY+8YX6CRPv6nNkwRmeqlVBM
+         iNLMRzVpYdBXNd8lOlY0wv4gXJ3TXHPQLHcGR2m8m/W9g52M3h5dKTLxxL6HXZU8aJ
+         94TUcdCYK9HNg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 67894352261C; Mon, 15 Mar 2021 10:32:07 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 10:32:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Oliver Glitta <glittao@gmail.com>
+Subject: Re: [PATCH] [PATCH] mm, slub: enable slub_debug static key when
+ creating cache with explicit debug flags
+Message-ID: <20210315173207.GN2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210315153415.24404-1-vbabka@suse.cz>
+ <2d80f81a-ed85-a36f-6527-b75da3ae209e@google.com>
+ <e723d919-222a-0675-5aae-44dfe1ce005f@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a037048d-9276-4198-c566-08d8e7d84764
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4035:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4035D5EB452606DD5B6FC84BA76C9@BY5PR12MB4035.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +RHLJeQ8cvB8NcwzLVdwSf5iVm4xxJZIcSI2BMqAdyMgOf5yAl38wvDned3BSv/3urlT10X1h+3YRa1Rvdkux4s3bRPGJ8jT8CmTtd34aAILFQT+JZI0YWIzclKDzZAQclAnLfPiVYShgwUzNvz0gkFs2J4e05JZKljmwNH/ABaMacZIRpoJv1igxht1lM63exfEg4ijiynIZxIXS2XGwkrlEpiGSV5jP4hqAFtlkBYgyQVqMhvEvUI20ak4ZYvtg/bkbjwZE8ASZR0XqaYFpwxerHtFjMaFXaV9AoqEwY9Fk7Ph9EQA4PCRFwFxQjIMCcoKKdRZB+AcWWawMGby1/tniwl04iLyNnvMuUojCKVWuVtzkPqdbn7okpxmxFY0a5pSPmwzvEKGP5caGnAEq2e1/0qv9bD9GXloOTP4rUVDBHNjnxS2xUskosmcap9Wf7mwZmGp2fQp4zsjRwElw572yWa9I3LF5FAPEC3Jhviht563ZgVlza38GCXeGeQ7AHauTOIDXCk8ZEK2WflS19Si5G/nn9Gz1QsPdc4Kr3LWMWjC8tG6Gk5cSgEKpnsqvh9VyYQtYzNLhhHJqC2sl+OJ58hbZtQwxxDOZE+51eLM4a1+fCYkq50fP7IyJC5U+tLHTy+KZCCOpOn1sXmTMcTrQLZy97CwcajAydfBT9UG3NfVmDkPpjQc8z50PsEQ
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(396003)(346002)(46966006)(36840700001)(356005)(2906002)(7636003)(82740400003)(8936002)(36860700001)(83380400001)(82310400003)(316002)(107886003)(26005)(47076005)(6666004)(7696005)(2616005)(110136005)(4326008)(186003)(36756003)(478600001)(336012)(70586007)(70206006)(5660300002)(86362001)(54906003)(8676002)(34020700004)(426003)(36906005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 17:32:16.8574
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a037048d-9276-4198-c566-08d8e7d84764
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e723d919-222a-0675-5aae-44dfe1ce005f@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simple-card/audio-graph-card drivers do not handle MCLK clock when it
-is specified in the codec device node. The expectation here is that,
-the codec should actually own up the MCLK clock and do necessary setup
-in the driver.
+On Mon, Mar 15, 2021 at 06:28:42PM +0100, Vlastimil Babka wrote:
+> On 3/15/21 6:16 PM, David Rientjes wrote:
+> > On Mon, 15 Mar 2021, Vlastimil Babka wrote:
+> > 
+> >> Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+> >> introduced a static key to optimize the case where no debugging is enabled for
+> >> any cache. The static key is enabled when slub_debug boot parameter is passed,
+> >> or CONFIG_SLUB_DEBUG_ON enabled.
+> >> 
+> >> However, some caches might be created with one or more debugging flags
+> >> explicitly passed to kmem_cache_create(), and the commit missed this. Thus the
+> >> debugging functionality would not be actually performed for these caches unless
+> >> the static key gets enabled by boot param or config.
+> >> 
+> >> This patch fixes it by checking for debugging flags passed to
+> >> kmem_cache_create() and enabling the static key accordingly.
+> >> 
+> >> Note such explicit debugging flags should not be used outside of debugging and
+> >> testing as they will now enable the static key globally. btrfs_init_cachep()
+> >> creates a cache with SLAB_RED_ZONE but that's a mistake that's being corrected
+> >> [1]. rcu_torture_stats() creates a cache with SLAB_STORE_USER, but that is a
+> >> testing module so it's OK and will start working as intended after this patch.
+> >> 
+> >> Also note that in case of backports to kernels before v5.12 that don't have
+> >> 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
+> >> static_branch_enable_cpuslocked() should be used.
+> >> 
+> > 
+> > Since this affects 5.9+, is the plan to propose backports to stable with 
+> > static_branch_enable_cpuslocked() once this is merged?  (I notice the 
+> > absence of the stable tag here, which I believe is intended.)
+> 
+> I was thinking about it, and since the rcutorture user is only in -next (AFAICS)
+> and btrfs user was unintended, it didn't seem to meet stable criteria to me. But
+> I won't mind if it's backported.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Suggested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/soc/codecs/rt5659.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I had better ask...  Should rcutorture be doing something different?
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index b787515..0af9601 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -3430,12 +3430,17 @@ static int rt5659_set_component_sysclk(struct snd_soc_component *component, int
- {
- 	struct rt5659_priv *rt5659 = snd_soc_component_get_drvdata(component);
- 	unsigned int reg_val = 0;
-+	int ret;
- 
- 	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
- 		return 0;
- 
- 	switch (clk_id) {
- 	case RT5659_SCLK_S_MCLK:
-+		ret = clk_set_rate(rt5659->mclk, freq);
-+		if (ret)
-+			return ret;
-+
- 		reg_val |= RT5659_SCLK_SRC_MCLK;
- 		break;
- 	case RT5659_SCLK_S_PLL1:
--- 
-2.7.4
+							Thanx, Paul
 
+> >> [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
+> >> 
+> >> Reported-by: Oliver Glitta <glittao@gmail.com>
+> >> Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > 
+> > Acked-by: David Rientjes <rientjes@google.com>
+> 
+> Thanks!
+> 
+> >> ---
+> >>  mm/slub.c | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >> 
+> >> diff --git a/mm/slub.c b/mm/slub.c
+> >> index 350a37f30e60..cd6694ad1a0a 100644
+> >> --- a/mm/slub.c
+> >> +++ b/mm/slub.c
+> >> @@ -3827,6 +3827,15 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+> >>  
+> >>  static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+> >>  {
+> >> +#ifdef CONFIG_SLUB_DEBUG
+> >> +	/*
+> >> +	 * If no slub_debug was enabled globally, the static key is not yet
+> >> +	 * enabled by setup_slub_debug(). Enable it if the cache is being
+> >> +	 * created with any of the debugging flags passed explicitly.
+> >> +	 */
+> >> +	if (flags & SLAB_DEBUG_FLAGS)
+> >> +		static_branch_enable(&slub_debug_enabled);
+> >> +#endif
+> >>  	s->flags = kmem_cache_flags(s->size, flags, s->name);
+> >>  #ifdef CONFIG_SLAB_FREELIST_HARDENED
+> >>  	s->random = get_random_long();
+> > 
+> 
