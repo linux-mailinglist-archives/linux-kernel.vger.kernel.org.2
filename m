@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26C233BAEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD2733BB11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbhCOOKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S235917AbhCOOLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:11:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232262AbhCON6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B8CD64F0C;
-        Mon, 15 Mar 2021 13:58:15 +0000 (UTC)
+        id S232062AbhCON5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20FEE64F0D;
+        Mon, 15 Mar 2021 13:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816696;
-        bh=8xBIHKGi36KsqUwk6+5ujil96Cd17m+OsJBBrQQ0Npg=;
+        s=korg; t=1615816661;
+        bh=KyhRkJu76SQjITrL0Y+C/w9/g1Uj7Z66XJy9r1h2G1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPKx1nj60XJtrzroapeHFeD95AxV1+/k/Daq+LPHM1OTQYHE3RcSfiXZRRCvhZ0wI
-         lV9CoOqqa3fmBWza0jnu7L1KfJGw1F4wY6gUWOB86q1wNvbas6w4vG3/YlFDcaC9uw
-         Lm3b5DhRfhjoAMz6rKQXlsl8o+2ALFRxlForpLOU=
+        b=UatkTrI3mPOs6HsZSIbSlypRfWFd+Jsxw3gcpX7uqEZ3ojX+rZU2U9oEOSsPW0Nli
+         Vh2cXO9gXot/N/h7TAH99+0xJBXFlzSKIyc/81DYmK8QxVYHPc4ds/627g7gTtr78V
+         lSmOlRDYLbdBfNivGtis0D6Gnb0rb+PNfYebKZIY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        =?UTF-8?q?Markus=20Bl=C3=B6chl?= <Markus.Bloechl@ipetronik.com>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 070/306] net: enetc: allow hardware timestamping on TX queues with tc-etf enabled
+Subject: [PATCH 5.10 040/290] net: enetc: dont disable VLAN filtering in IFF_PROMISC mode
 Date:   Mon, 15 Mar 2021 14:52:13 +0100
-Message-Id: <20210315135510.012734740@linuxfoundation.org>
+Message-Id: <20210315135543.278204175@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +45,74 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 29d98f54a4fe1b6a9089bec8715a1b89ff9ad59c upstream.
+commit a74dbce9d4541888fe0d39afe69a3a95004669b4 upstream.
 
-The txtime is passed to the driver in skb->skb_mstamp_ns, which is
-actually in a union with skb->tstamp (the place where software
-timestamps are kept).
+Quoting from the blamed commit:
 
-Since commit b50a5c70ffa4 ("net: allow simultaneous SW and HW transmit
-timestamping"), __sock_recv_timestamp has some logic for making sure
-that the two calls to skb_tstamp_tx:
+    In promiscuous mode, it is more intuitive that all traffic is received,
+    including VLAN tagged traffic. It appears that it is necessary to set
+    the flag in PSIPVMR for that to be the case, so VLAN promiscuous mode is
+    also temporarily enabled. On exit from promiscuous mode, the setting
+    made by ethtool is restored.
 
-skb_tx_timestamp(skb) # Software timestamp in the driver
--> skb_tstamp_tx(skb, NULL)
+Intuitive or not, there isn't any definition issued by a standards body
+which says that promiscuity has anything to do with VLAN filtering - it
+only has to do with accepting packets regardless of destination MAC address.
 
-and
+In fact people are already trying to use this misunderstanding/bug of
+the enetc driver as a justification to transform promiscuity into
+something it never was about: accepting every packet (maybe that would
+be the "rx-all" netdev feature?):
+https://lore.kernel.org/netdev/20201110153958.ci5ekor3o2ekg3ky@ipetronik.com/
 
-skb_tstamp_tx(skb, &shhwtstamps) # Hardware timestamp in the driver
+This is relevant because there are use cases in the kernel (such as
+tc-flower rules with the protocol 802.1Q and a vlan_id key) which do not
+(yet) use the vlan_vid_add API to be compatible with VLAN-filtering NICs
+such as enetc, so for those, disabling rx-vlan-filter is currently the
+only right solution to make these setups work:
+https://lore.kernel.org/netdev/CA+h21hoxwRdhq4y+w8Kwgm74d4cA0xLeiHTrmT-VpSaM7obhkg@mail.gmail.com/
+The blamed patch has unintentionally introduced one more way for this to
+work, which is to enable IFF_PROMISC, however this is non-portable
+because port promiscuity is not meant to disable VLAN filtering.
+Therefore, it could invite people to write broken scripts for enetc, and
+then wonder why they are broken when migrating to other drivers that
+don't handle promiscuity in the same way.
 
-will both do the right thing and in a race-free manner, meaning that
-skb_tx_timestamp will deliver a cmsg with the software timestamp only,
-and skb_tstamp_tx with a non-NULL hwtstamps argument will deliver a cmsg
-with the hardware timestamp only.
-
-Why are races even possible? Well, because although the software timestamp
-skb->tstamp is private per skb, the hardware timestamp skb_hwtstamps(skb)
-lives in skb_shinfo(skb), an area which is shared between skbs and their
-clones. And skb_tstamp_tx works by cloning the packets when timestamping
-them, therefore attempting to perform hardware timestamping on an skb's
-clone will also change the hardware timestamp of the original skb. And
-the original skb might have been yet again cloned for software
-timestamping, at an earlier stage.
-
-So the logic in __sock_recv_timestamp can't be as simple as saying
-"does this skb have a hardware timestamp? if yes I'll send the hardware
-timestamp to the socket, otherwise I'll send the software timestamp",
-precisely because the hardware timestamp is shared.
-Instead, it's quite the other way around: __sock_recv_timestamp says
-"does this skb have a software timestamp? if yes, I'll send the software
-timestamp, otherwise the hardware one". This works because the software
-timestamp is not shared with clones.
-
-But that means we have a problem when we attempt hardware timestamping
-with skbs that don't have the skb->tstamp == 0. __sock_recv_timestamp
-will say "oh, yeah, this must be some sort of odd clone" and will not
-deliver the hardware timestamp to the socket. And this is exactly what
-is happening when we have txtime enabled on the socket: as mentioned,
-that is put in a union with skb->tstamp, so it is quite easy to mistake
-it.
-
-Do what other drivers do (intel igb/igc) and write zero to skb->tstamp
-before taking the hardware timestamp. It's of no use to us now (we're
-already on the TX confirmation path).
-
-Fixes: 0d08c9ec7d6e ("enetc: add support time specific departure base on the qos etf")
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Fixes: 7070eea5e95a ("enetc: permit configuration of rx-vlan-filter with ethtool")
+Cc: Markus Blöchl <Markus.Bloechl@ipetronik.com>
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -344,6 +344,12 @@ static void enetc_tstamp_tx(struct sk_bu
- 	if (skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS) {
- 		memset(&shhwtstamps, 0, sizeof(shhwtstamps));
- 		shhwtstamps.hwtstamp = ns_to_ktime(tstamp);
-+		/* Ensure skb_mstamp_ns, which might have been populated with
-+		 * the txtime, is not mistaken for a software timestamp,
-+		 * because this will prevent the dispatch of our hardware
-+		 * timestamp to the socket.
-+		 */
-+		skb->tstamp = ktime_set(0, 0);
- 		skb_tstamp_tx(skb, &shhwtstamps);
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -190,7 +190,6 @@ static void enetc_pf_set_rx_mode(struct
+ {
+ 	struct enetc_ndev_priv *priv = netdev_priv(ndev);
+ 	struct enetc_pf *pf = enetc_si_priv(priv->si);
+-	char vlan_promisc_simap = pf->vlan_promisc_simap;
+ 	struct enetc_hw *hw = &priv->si->hw;
+ 	bool uprom = false, mprom = false;
+ 	struct enetc_mac_filter *filter;
+@@ -203,16 +202,12 @@ static void enetc_pf_set_rx_mode(struct
+ 		psipmr = ENETC_PSIPMR_SET_UP(0) | ENETC_PSIPMR_SET_MP(0);
+ 		uprom = true;
+ 		mprom = true;
+-		/* Enable VLAN promiscuous mode for SI0 (PF) */
+-		vlan_promisc_simap |= BIT(0);
+ 	} else if (ndev->flags & IFF_ALLMULTI) {
+ 		/* enable multi cast promisc mode for SI0 (PF) */
+ 		psipmr = ENETC_PSIPMR_SET_MP(0);
+ 		mprom = true;
  	}
- }
+ 
+-	enetc_set_vlan_promisc(&pf->si->hw, vlan_promisc_simap);
+-
+ 	/* first 2 filter entries belong to PF */
+ 	if (!uprom) {
+ 		/* Update unicast filters */
 
 
