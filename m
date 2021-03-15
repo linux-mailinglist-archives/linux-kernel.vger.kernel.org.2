@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9A733BE77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C347533BBE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239739AbhCOOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
+        id S236395AbhCOOMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232105AbhCON6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C143364F26;
-        Mon, 15 Mar 2021 13:58:03 +0000 (UTC)
+        id S232493AbhCON67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CD7664EEC;
+        Mon, 15 Mar 2021 13:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816684;
-        bh=wdYP8A9YSW13Zm9rj4iecbtkbcaVWHR0gA37V1xYZGw=;
+        s=korg; t=1615816721;
+        bh=THw6yf0bfiJSFbYMutcyFRFhwf/AapyQAcjRb1E+Izo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnnfteiwzMNig/MtCnAe+84Zv3a8ySqDp6xJRjVB0K5BhmGNZmx+eIvtOWTX5btUS
-         TgEJymPJLe17PYwoM418OUIeg3J6HTaRFoKq0QIWt/d+G4b3b6bRCGlQhMh5Z9VBDr
-         fb5ka3UJysxvFvMX8FF+4Cin+oSA7MpqXSgo7OEE=
+        b=srGy4Dg3fMGFObdzgdwlVUwF1cqcSKaKQGA2Ltjzkl2SJ72w+82QKB/oWY+R7+FvD
+         dFiXSeeq/4r4YGFzM0tEzcOLBkdme+PLrsM1XI+gXugCXpyxt9CmnYYbNVTvV1PyFk
+         KOaWKjpGAFG1LS0tRY8lNa3XnrcxB3yW+r2LkhiY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 054/290] net: stmmac: Fix VLAN filter delete timeout issue in Intel mGBE SGMII
-Date:   Mon, 15 Mar 2021 14:52:27 +0100
-Message-Id: <20210315135543.756630933@linuxfoundation.org>
+        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.11 085/306] selftests: forwarding: Fix race condition in mirror installation
+Date:   Mon, 15 Mar 2021 14:52:28 +0100
+Message-Id: <20210315135510.524224335@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +43,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Danielle Ratson <danieller@nvidia.com>
 
-commit 9a7b3950c7e15968e23d83be215e95ccc7c92a53 upstream.
+commit edcbf5137f093b5502f5f6b97cce3cbadbde27aa upstream.
 
-For Intel mGbE controller, MAC VLAN filter delete operation will time-out
-if serdes power-down sequence happened first during driver remove() with
-below message.
+When mirroring to a gretap in hardware the device expects to be
+programmed with the egress port and all the encapsulating headers. This
+requires the driver to resolve the path the packet will take in the
+software data path and program the device accordingly.
 
-[82294.764958] intel-eth-pci 0000:00:1e.4 eth2: stmmac_dvr_remove: removing driver
-[82294.778677] intel-eth-pci 0000:00:1e.4 eth2: Timeout accessing MAC_VLAN_Tag_Filter
-[82294.779997] intel-eth-pci 0000:00:1e.4 eth2: failed to kill vid 0081/0
-[82294.947053] intel-eth-pci 0000:00:1d.2 eth1: stmmac_dvr_remove: removing driver
-[82295.002091] intel-eth-pci 0000:00:1d.1 eth0: stmmac_dvr_remove: removing driver
+If the path cannot be resolved (in this case because of an unresolved
+neighbor), then mirror installation fails until the path is resolved.
+This results in a race that causes the test to sometimes fail.
 
-Therefore, we delay the serdes power-down to be after unregister_netdev()
-which triggers the VLAN filter delete.
+Fix this by setting the neighbor's state to permanent, so that it is
+always valid.
 
-Fixes: b9663b7ca6ff ("net: stmmac: Enable SERDES power up/down sequence")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b5b029399fa6d ("selftests: forwarding: mirror_gre_bridge_1d_vlan: Add STP test")
+Signed-off-by: Danielle Ratson <danieller@nvidia.com>
+Reviewed-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5114,13 +5114,16 @@ int stmmac_dvr_remove(struct device *dev
- 	netdev_info(priv->dev, "%s: removing driver", __func__);
+--- a/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
++++ b/tools/testing/selftests/net/forwarding/mirror_gre_bridge_1d_vlan.sh
+@@ -86,11 +86,20 @@ test_ip6gretap()
  
- 	stmmac_stop_all_dma(priv);
-+	stmmac_mac_set(priv, priv->ioaddr, false);
-+	netif_carrier_off(ndev);
-+	unregister_netdev(ndev);
+ test_gretap_stp()
+ {
++	# Sometimes after mirror installation, the neighbor's state is not valid.
++	# The reason is that there is no SW datapath activity related to the
++	# neighbor for the remote GRE address. Therefore whether the corresponding
++	# neighbor will be valid is a matter of luck, and the test is thus racy.
++	# Set the neighbor's state to permanent, so it would be always valid.
++	ip neigh replace 192.0.2.130 lladdr $(mac_get $h3) \
++		nud permanent dev br2
+ 	full_test_span_gre_stp gt4 $swp3.555 "mirror to gretap"
+ }
  
-+	/* Serdes power down needs to happen after VLAN filter
-+	 * is deleted that is triggered by unregister_netdev().
-+	 */
- 	if (priv->plat->serdes_powerdown)
- 		priv->plat->serdes_powerdown(ndev, priv->plat->bsp_priv);
+ test_ip6gretap_stp()
+ {
++	ip neigh replace 2001:db8:2::2 lladdr $(mac_get $h3) \
++		nud permanent dev br2
+ 	full_test_span_gre_stp gt6 $swp3.555 "mirror to ip6gretap"
+ }
  
--	stmmac_mac_set(priv, priv->ioaddr, false);
--	netif_carrier_off(ndev);
--	unregister_netdev(ndev);
- #ifdef CONFIG_DEBUG_FS
- 	stmmac_exit_fs(ndev);
- #endif
 
 
