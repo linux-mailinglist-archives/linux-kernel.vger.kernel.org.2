@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90D733BD12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C233BD24
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239270AbhCOOcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S239467AbhCOOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231557AbhCOOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E844C64EFC;
-        Mon, 15 Mar 2021 14:00:39 +0000 (UTC)
+        id S233220AbhCOOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7876B64F26;
+        Mon, 15 Mar 2021 14:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816841;
-        bh=FwLOjnb8SmTgwqdDTLvLVy+E2DGtVWIqXkmTAeDapCk=;
+        s=korg; t=1615816842;
+        bh=B43GDS3I1qY2etSavp/5lN2sKvNurHCKTPwX72luz/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHsGfB0iM+YmvTUCfw5iEwrQXW/QjH8mwc3zS8Fya/5C5x8yjajsRe3CKbXQPz4Rf
-         yCXARmjYTBCjC6D3HLL2XgFBj0PMkguIyGx1cl1rBU9vbE84/wPaRxUL3be+yJHzLi
-         Hjq+Q+CJc8r88Vtewdz2CHLm25UbHpExEWMTp2Z4=
+        b=Ki+geed7XWTykT4cuxRtfbMTzCMFu//Ej4iogk9Oyvu3CmaJiODaMua7STYptk9qu
+         7Fi53jfRNFAb5bnu5UxzPPAvgS5FOpE7TjsaHL2a9mSK6ugyG6Z6USMXy1fJdNab5S
+         TIA1olyS4G8YNb1wacgaFNxXlewZuPbEixFIzVYI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 105/120] sh_eth: fix TRSCER mask for R7S72100
-Date:   Mon, 15 Mar 2021 14:57:36 +0100
-Message-Id: <20210315135723.412217568@linuxfoundation.org>
+Subject: [PATCH 4.19 106/120] NFSv4.2: fix return value of _nfs4_get_security_label()
+Date:   Mon, 15 Mar 2021 14:57:37 +0100
+Message-Id: <20210315135723.447125955@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,36 +44,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-[ Upstream commit 75be7fb7f978202c4c3a1a713af4485afb2ff5f6 ]
+[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
 
-According  to  the RZ/A1H Group, RZ/A1M Group User's Manual: Hardware,
-Rev. 4.00, the TRSCER register has bit 9 reserved, hence we can't use
-the driver's default TRSCER mask.  Add the explicit initializer for
-sh_eth_cpu_data::trscer_err_mask for R7S72100.
+An xattr 'get' handler is expected to return the length of the value on
+success, yet _nfs4_get_security_label() (and consequently also
+nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
+just 0 on success.
 
-Fixes: db893473d313 ("sh_eth: Add support for r7s72100")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this by returning label.len instead, which contains the length of
+the result.
+
+Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/renesas/sh_eth.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfs/nfs4proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
-index bc38f0aa4b31..24638cb157ca 100644
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -610,6 +610,8 @@ static struct sh_eth_cpu_data r7s72100_data = {
- 			  EESR_TDE,
- 	.fdr_value	= 0x0000070f,
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index d89a815f7c31..d63b248582d1 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5611,7 +5611,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
+ 		return ret;
+ 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
+ 		return -ENOENT;
+-	return 0;
++	return label.len;
+ }
  
-+	.trscer_err_mask = DESC_I_RINT8 | DESC_I_RINT5,
-+
- 	.no_psr		= 1,
- 	.apr		= 1,
- 	.mpr		= 1,
+ static int nfs4_get_security_label(struct inode *inode, void *buf,
 -- 
 2.30.1
 
