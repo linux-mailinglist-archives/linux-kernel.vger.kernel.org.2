@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4CD33B5FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13BC33B61E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhCON4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57152 "EHLO mail.kernel.org"
+        id S229913AbhCON5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:57:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231247AbhCONx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 326B964EEC;
-        Mon, 15 Mar 2021 13:53:57 +0000 (UTC)
+        id S231371AbhCONyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CEEA64DAD;
+        Mon, 15 Mar 2021 13:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816438;
-        bh=fpXfRSw+AbCJhjOt51PK3cz4STo8A38OHY1mXVwR5Vw=;
+        s=korg; t=1615816446;
+        bh=Jxe9prs1CF4dxDsqTe6EZaGsQXBFlpoScv7ixbKpeVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t1Y/fctpirzoxHLPhTmSgyOiRGWjoDhwp4OdW1NU18X2YpfFtiLfLNGjNL6EGDiOO
-         0Hc+WMxeLan7pW/zHf61GLenH7oq4gg65samfIo1pEptrEP+oSHqff5hBI4g8+syu9
-         N03HV5XmK2gftjPGl3bn3DVQskMvckRyWI868KRY=
+        b=OkID29cfNCT5ZEKL4CV6pzUM52/QR9Ds/fnv+ZxwFJ+Bdlu6fQk1NBgt1/azXbzcc
+         CcA3ZoKTh4gcuzLxmJyyDhbUxtFmoU0ZGAwPUXOjzHI8YATNMLa9MV7AE7sQVABCG4
+         37yk6F68xX2kVCM8AZhSGnWOx8ZVVxPxVtJc5QZ0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 4.9 39/78] usbip: fix stub_dev to check for stream socket
-Date:   Mon, 15 Mar 2021 14:52:02 +0100
-Message-Id: <20210315135213.353298819@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.4 49/75] staging: comedi: addi_apci_1032: Fix endian problem for COS sample
+Date:   Mon, 15 Mar 2021 14:52:03 +0100
+Message-Id: <20210315135209.852379982@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +40,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 47ccc8fc2c9c94558b27b6f9e2582df32d29e6e8 upstream.
+commit 25317f428a78fde71b2bf3f24d05850f08a73a52 upstream.
 
-Fix usbip_sockfd_store() to validate the passed in file descriptor is
-a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
-sock_recvmsg() can't detect end of stream.
+The Change-Of-State (COS) subdevice supports Comedi asynchronous
+commands to read 16-bit change-of-state values.  However, the interrupt
+handler is calling `comedi_buf_write_samples()` with the address of a
+32-bit integer `&s->state`.  On bigendian architectures, it will copy 2
+bytes from the wrong end of the 32-bit integer.  Fix it by transferring
+the value via a 16-bit integer.
 
-Cc: stable@vger.kernel.org
-Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/e942d2bd03afb8e8552bd2a5d84e18d17670d521.1615171203.git.skhan@linuxfoundation.org
+Fixes: 6bb45f2b0c86 ("staging: comedi: addi_apci_1032: use comedi_buf_write_samples()")
+Cc: <stable@vger.kernel.org> # 3.19+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20210223143055.257402-2-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/stub_dev.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/staging/comedi/drivers/addi_apci_1032.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/usbip/stub_dev.c
-+++ b/drivers/usb/usbip/stub_dev.c
-@@ -83,8 +83,16 @@ static ssize_t store_sockfd(struct devic
- 		}
+--- a/drivers/staging/comedi/drivers/addi_apci_1032.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1032.c
+@@ -269,6 +269,7 @@ static irqreturn_t apci1032_interrupt(in
+ 	struct apci1032_private *devpriv = dev->private;
+ 	struct comedi_subdevice *s = dev->read_subdev;
+ 	unsigned int ctrl;
++	unsigned short val;
  
- 		socket = sockfd_lookup(sockfd, &err);
--		if (!socket)
-+		if (!socket) {
-+			dev_err(dev, "failed to lookup sock");
- 			goto err;
-+		}
-+
-+		if (socket->type != SOCK_STREAM) {
-+			dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+				socket->type);
-+			goto sock_err;
-+		}
+ 	/* check interrupt is from this device */
+ 	if ((inl(devpriv->amcc_iobase + AMCC_OP_REG_INTCSR) &
+@@ -284,7 +285,8 @@ static irqreturn_t apci1032_interrupt(in
+ 	outl(ctrl & ~APCI1032_CTRL_INT_ENA, dev->iobase + APCI1032_CTRL_REG);
  
- 		sdev->ud.tcp_socket = socket;
- 		sdev->ud.sockfd = sockfd;
-@@ -114,6 +122,8 @@ static ssize_t store_sockfd(struct devic
+ 	s->state = inl(dev->iobase + APCI1032_STATUS_REG) & 0xffff;
+-	comedi_buf_write_samples(s, &s->state, 1);
++	val = s->state;
++	comedi_buf_write_samples(s, &val, 1);
+ 	comedi_handle_events(dev, s);
  
- 	return count;
- 
-+sock_err:
-+	sockfd_put(socket);
- err:
- 	spin_unlock_irq(&sdev->ud.lock);
- 	return -EINVAL;
+ 	/* enable the interrupt */
 
 
