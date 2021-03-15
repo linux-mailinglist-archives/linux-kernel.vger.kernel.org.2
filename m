@@ -2,188 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682C633B2F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189E033B2FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhCOMmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:42:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23069 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhCOMmG (ORCPT
+        id S229802AbhCOMns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:43:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33256 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhCOMnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:42:06 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-177-6OpnscJoP_CFeueYMNDZHg-1; Mon, 15 Mar 2021 12:42:03 +0000
-X-MC-Unique: 6OpnscJoP_CFeueYMNDZHg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 15 Mar 2021 12:42:02 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Mon, 15 Mar 2021 12:42:02 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tiezhu Yang' <yangtiezhu@loongson.cn>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: RE: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-Thread-Topic: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-Thread-Index: AQHXGZZkp8sV3w87mU2VG3u7laRZUqqE/LVw
-Date:   Mon, 15 Mar 2021 12:42:02 +0000
-Message-ID: <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com>
-References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
- <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
-In-Reply-To: <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 15 Mar 2021 08:43:20 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lLmZ5-0004h2-Ay
+        for linux-kernel@vger.kernel.org; Mon, 15 Mar 2021 12:43:19 +0000
+Received: by mail-wm1-f70.google.com with SMTP id v5so8135118wml.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:43:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ap5ykNmpsbJrdR3iXM5yH1laQEs7sajDaAHvKopsfYY=;
+        b=qIllMkk8m2ViJmkWyXxFFVFKZqJP0VixIKExB5k7BQs4ipoAGjBy+Vq2hz9e9+rPdc
+         DQ4XXgtclTH0wJSuttY1pzPxr1utn8RxailbHISAnsfX9PnOGwzNfhHOJQwxASiuoWax
+         7/a0fuHaDbI9BFaXDI8Vifw4qgj+pnm6X/zaiId+EqiFsllYcvT3/dIdi5zbFOw+CkuH
+         KfQU8GGHK/BFwqciA9OOxsSYUm+JLi/f3Q8e/nk+C9Msn8dIWhRu973gTrAnicNsR9Ck
+         28DW92r7fY1JcslssooIEsld74c24C73lQzLTC8oGbcANOgHYeZht17lrdYeezAyV+p8
+         GfvA==
+X-Gm-Message-State: AOAM533b0T6cKSx1FfaYMMtPMXgy2V/brcIvIj+clfCdwyrufVEcAmHa
+        MBGaspo+FZLQoy0oIJgJwkoAu2U9VzhVRLgfssGIQU5j4T+l+Du118zme3OHqkehP6wIE7zMEg4
+        EyoOnUWXAWMamNM/keumOQ3us5qaQUoKKVLn5s4J6gg==
+X-Received: by 2002:a1c:dd89:: with SMTP id u131mr25312318wmg.54.1615812199081;
+        Mon, 15 Mar 2021 05:43:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmU1m3dmd00t2dinw2OgM+pPhoIqpEjxFpRuHHFrZ/nlHv0DtmWmNj9mLulLOyG1tXv3t5pg==
+X-Received: by 2002:a1c:dd89:: with SMTP id u131mr25312303wmg.54.1615812198908;
+        Mon, 15 Mar 2021 05:43:18 -0700 (PDT)
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id r10sm14410094wmh.45.2021.03.15.05.43.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 05:43:18 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/3] ARM: dts: exynos: replace deprecated NTC/Murata compatibles
+Date:   Mon, 15 Mar 2021 13:43:11 +0100
+Message-Id: <20210315124313.114842-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVGllemh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+DQo+IFNlbnQ6IDE1IE1h
-cmNoIDIwMjEgMTI6MjYNCj4gT24gMDMvMTUvMjAyMSAwNDo0OSBBTSwgTWFjaWVqIFcuIFJvenlj
-a2kgd3JvdGU6DQo+ID4gT24gVHVlLCA5IE1hciAyMDIxLCBUaWV6aHUgWWFuZyB3cm90ZToNCj4g
-Pg0KPiA+PiBkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL2luY2x1ZGUvYXNtL2NoZWNrc3VtLmggYi9h
-cmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiA+PiBpbmRleCAxZTZjMTM1Li44MGVk
-ZGQ0IDEwMDY0NA0KPiA+PiAtLS0gYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0K
-PiA+PiArKysgYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiA+PiBAQCAtMTI4
-LDkgKzEyOCwxMyBAQCBzdGF0aWMgaW5saW5lIF9fc3VtMTYgaXBfZmFzdF9jc3VtKGNvbnN0IHZv
-aWQgKmlwaCwgdW5zaWduZWQgaW50IGlobCkNCj4gPj4NCj4gPj4gICBzdGF0aWMgaW5saW5lIF9f
-d3N1bSBjc3VtX3RjcHVkcF9ub2ZvbGQoX19iZTMyIHNhZGRyLCBfX2JlMzIgZGFkZHIsDQo+ID4+
-ICAgCQkJCQlfX3UzMiBsZW4sIF9fdTggcHJvdG8sDQo+ID4+IC0JCQkJCV9fd3N1bSBzdW0pDQo+
-ID4+ICsJCQkJCV9fd3N1bSBzdW1faW4pDQo+ID4+ICAgew0KPiA+PiAtCXVuc2lnbmVkIGxvbmcg
-dG1wID0gKF9fZm9yY2UgdW5zaWduZWQgbG9uZylzdW07DQo+ID4+ICsjaWZkZWYgX19jbGFuZ19f
-DQo+ID4+ICsJdW5zaWduZWQgbG9uZyBzdW0gPSAoX19mb3JjZSB1bnNpZ25lZCBsb25nKXN1bV9p
-bjsNCj4gPj4gKyNlbHNlDQo+ID4+ICsJX193c3VtIHN1bSA9IHN1bV9pbjsNCj4gPj4gKyNlbmRp
-Zg0KPiA+ICAgVGhpcyBsb29rcyBtdWNoIGJldHRlciB0byBtZSwgYnV0IEknZCBrZWVwIHRoZSB2
-YXJpYWJsZSBuYW1lcyB1bmNoYW5nZWQNCj4gPiBhcyBgc3VtX2luJyBpc24ndCB1c2VkIGJleW9u
-ZCB0aGUgaW5pdGlhbCBhc3NpZ25tZW50IGFueXdheSAoeW91J2xsIGhhdmUNCj4gPiB0byB1cGRh
-dGUgdGhlIHJlZmVyZW5jZXMgd2l0aCBhc20gb3BlcmFuZHMgYWNjb3JkaW5nbHkgb2YgY291cnNl
-KS4NCj4gPg0KPiA+ICAgSGF2ZSB5b3UgdmVyaWZpZWQgdGhhdCBjb2RlIHByb2R1Y2VkIGJ5IEdD
-QyByZW1haW5zIHRoZSBzYW1lIHdpdGggeW91cg0KPiA+IGNoYW5nZSBpbiBwbGFjZSBhcyBpdCB1
-c2VkIHRvIGJlIHVwIHRvIGNvbW1pdCAxOTg2ODhlZGJmNzc/ICBJIGNhbiBzZWUgbm8NCj4gPiBz
-dWNoIGluZm9ybWF0aW9uIGluIHRoZSBjb21taXQgZGVzY3JpcHRpb24gd2hldGhlciBoZXJlIG9y
-IGluIHRoZSBzYWlkDQo+ID4gY29tbWl0Lg0KPiA+DQo+ID4gICAgTWFjaWVqDQo+IA0KPiBIaSBN
-YWNpZWosDQo+IA0KPiBUaGFua3MgZm9yIHlvdXIgcmVwbHkuDQo+IA0KPiBnY2MgLS12ZXJzaW9u
-DQo+IGdjYyAoRGViaWFuIDEwLjIuMS02KSAxMC4yLjEgMjAyMTAxMTANCj4gDQo+IG5ldC9pcHY0
-L3RjcF9pcHY0LmMNCj4gdGNwX3Y0X3NlbmRfcmVzZXQoKQ0KPiAgICBjc3VtX3RjcHVkcF9ub2Zv
-bGQoKQ0KPiANCj4gb2JqZHVtcCAtZCB2bWxpbnV4ID4gdm1saW51eC5kdW1wDQo+IA0KPiAoMSkg
-QmVmb3JlIGNvbW1pdCAxOTg2ODhlZGJmNzcNCj4gKCJNSVBTOiBGaXggaW5saW5lIGFzbSBpbnB1
-dC9vdXRwdXQgdHlwZSBtaXNtYXRjaCBpbiBjaGVja3N1bS5oIHVzZWQNCj4gd2l0aCBDbGFuZyIp
-Og0KPiANCj4gZmZmZmZmZmY4MGFhODM1YzogICAgICAgMDAwMDQwMjUgICAgICAgIG1vdmUgICAg
-YTQsemVybw0KPiBmZmZmZmZmZjgwYWE4MzYwOiAgICAgICA5MjAyMDAxMiAgICAgICAgbGJ1ICAg
-ICB2MCwxOChzMCkNCj4gZmZmZmZmZmY4MGFhODM2NDogICAgICAgZGUxNDAwMzAgICAgICAgIGxk
-ICAgICAgczQsNDgoczApDQo+IGZmZmZmZmZmODBhYTgzNjg6ICAgICAgIDAwNjQxODJkICAgICAg
-ICBkYWRkdSAgIHYxLHYxLGEwDQo+IGZmZmZmZmZmODBhYTgzNmM6ICAgICAgIDMwNDIwMGZmICAg
-ICAgICBhbmRpICAgIHYwLHYwLDB4ZmYNCj4gZmZmZmZmZmY4MGFhODM3MDogICAgICAgOWM2NDAw
-MGMgICAgICAgIGx3dSAgICAgYTAsMTIodjEpDQo+IGZmZmZmZmZmODBhYTgzNzQ6ICAgICAgIDlj
-NjYwMDEwICAgICAgICBsd3UgICAgIGEyLDE2KHYxKQ0KPiBmZmZmZmZmZjgwYWE4Mzc4OiAgICAg
-ICBhZmE3MDAzOCAgICAgICAgc3cgICAgICBhMyw1NihzcCkNCj4gZmZmZmZmZmY4MGFhODM3Yzog
-ICAgICAgMjQwNzFhMDAgICAgICAgIGxpICAgICAgYTMsNjY1Ng0KPiBmZmZmZmZmZjgwYWE4Mzgw
-OiAgICAgICAwMDg2MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhMg0KPiBmZmZmZmZmZjgwYWE4
-Mzg0OiAgICAgICAwMDg3MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhMw0KPiBmZmZmZmZmZjgw
-YWE4Mzg4OiAgICAgICAwMDg4MjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhNA0KPiBmZmZmZmZm
-ZjgwYWE4MzhjOiAgICAgICAwMDA0MDgzYyAgICAgICAgZHNsbDMyICBhdCxhMCwweDANCj4gZmZm
-ZmZmZmY4MGFhODM5MDogICAgICAgMDA4MTIwMmQgICAgICAgIGRhZGR1ICAgYTAsYTAsYXQNCj4g
-ZmZmZmZmZmY4MGFhODM5NDogICAgICAgMDA4MTA4MmIgICAgICAgIHNsdHUgICAgYXQsYTAsYXQN
-Cj4gZmZmZmZmZmY4MGFhODM5ODogICAgICAgMDAwNDIwM2YgICAgICAgIGRzcmEzMiAgYTAsYTAs
-MHgwDQo+IGZmZmZmZmZmODBhYTgzOWM6ICAgICAgIDAwODEyMDIxICAgICAgICBhZGR1ICAgIGEw
-LGEwLGF0DQo+IA0KPiAoMikgQWZ0ZXIgY29tbWl0IDE5ODY4OGVkYmY3Nw0KPiAoIk1JUFM6IEZp
-eCBpbmxpbmUgYXNtIGlucHV0L291dHB1dCB0eXBlIG1pc21hdGNoIGluIGNoZWNrc3VtLmggdXNl
-ZA0KPiB3aXRoIENsYW5nIik6DQo+IA0KPiBmZmZmZmZmZjgwYWE4MzZjOiAgICAgICAwMDAwNDAy
-NSAgICAgICAgbW92ZSAgICBhNCx6ZXJvDQo+IGZmZmZmZmZmODBhYTgzNzA6ICAgICAgIDkyMDQw
-MDEyICAgICAgICBsYnUgICAgIGEwLDE4KHMwKQ0KPiBmZmZmZmZmZjgwYWE4Mzc0OiAgICAgICBk
-ZTE0MDAzMCAgICAgICAgbGQgICAgICBzNCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM3ODogICAg
-ICAgMDA2MjE4MmQgICAgICAgIGRhZGR1ICAgdjEsdjEsdjANCj4gZmZmZmZmZmY4MGFhODM3Yzog
-ICAgICAgMzA4NDAwZmYgICAgICAgIGFuZGkgICAgYTAsYTAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4
-MzgwOiAgICAgICA5YzYyMDAwYyAgICAgICAgbHd1ICAgICB2MCwxMih2MSkNCj4gZmZmZmZmZmY4
-MGFhODM4NDogICAgICAgOWM2NjAwMTAgICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZm
-ZmZmODBhYTgzODg6ICAgICAgIGFmYTcwMDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBm
-ZmZmZmZmZjgwYWE4MzhjOiAgICAgICAyNDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+
-IGZmZmZmZmZmODBhYTgzOTA6ICAgICAgIDAwNDYxMDJkICAgICAgICBkYWRkdSAgIHYwLHYwLGEy
-DQo+IGZmZmZmZmZmODBhYTgzOTQ6ICAgICAgIDAwNDcxMDJkICAgICAgICBkYWRkdSAgIHYwLHYw
-LGEzDQo+IGZmZmZmZmZmODBhYTgzOTg6ICAgICAgIDAwNDgxMDJkICAgICAgICBkYWRkdSAgIHYw
-LHYwLGE0DQo+IGZmZmZmZmZmODBhYTgzOWM6ICAgICAgIDAwMDIwODNjICAgICAgICBkc2xsMzIg
-IGF0LHYwLDB4MA0KPiBmZmZmZmZmZjgwYWE4M2EwOiAgICAgICAwMDQxMTAyZCAgICAgICAgZGFk
-ZHUgICB2MCx2MCxhdA0KPiBmZmZmZmZmZjgwYWE4M2E0OiAgICAgICAwMDQxMDgyYiAgICAgICAg
-c2x0dSAgICBhdCx2MCxhdA0KPiBmZmZmZmZmZjgwYWE4M2E4OiAgICAgICAwMDAyMTAzZiAgICAg
-ICAgZHNyYTMyICB2MCx2MCwweDANCj4gZmZmZmZmZmY4MGFhODNhYzogICAgICAgMDA0MTEwMjEg
-ICAgICAgIGFkZHUgICAgdjAsdjAsYXQNCj4gDQo+ICgzKSBXaXRoIHRoaXMgcGF0Y2g6DQo+IA0K
-PiBmZmZmZmZmZjgwYWE4MzVjOiAgICAgICAwMDAwNDAyNSAgICAgICAgbW92ZSAgICBhNCx6ZXJv
-DQo+IGZmZmZmZmZmODBhYTgzNjA6ICAgICAgIDkyMDIwMDEyICAgICAgICBsYnUgICAgIHYwLDE4
-KHMwKQ0KPiBmZmZmZmZmZjgwYWE4MzY0OiAgICAgICBkZTE0MDAzMCAgICAgICAgbGQgICAgICBz
-NCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM2ODogICAgICAgMDA2NDE4MmQgICAgICAgIGRhZGR1
-ICAgdjEsdjEsYTANCj4gZmZmZmZmZmY4MGFhODM2YzogICAgICAgMzA0MjAwZmYgICAgICAgIGFu
-ZGkgICAgdjAsdjAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4MzcwOiAgICAgICA5YzY0MDAwYyAgICAg
-ICAgbHd1ICAgICBhMCwxMih2MSkNCj4gZmZmZmZmZmY4MGFhODM3NDogICAgICAgOWM2NjAwMTAg
-ICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZmZmZmODBhYTgzNzg6ICAgICAgIGFmYTcw
-MDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBmZmZmZmZmZjgwYWE4MzdjOiAgICAgICAy
-NDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+IGZmZmZmZmZmODBhYTgzODA6ICAgICAg
-IDAwODYyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEyDQo+IGZmZmZmZmZmODBhYTgzODQ6ICAg
-ICAgIDAwODcyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEzDQo+IGZmZmZmZmZmODBhYTgzODg6
-ICAgICAgIDAwODgyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGE0DQo+IGZmZmZmZmZmODBhYTgz
-OGM6ICAgICAgIDAwMDQwODNjICAgICAgICBkc2xsMzIgIGF0LGEwLDB4MA0KPiBmZmZmZmZmZjgw
-YWE4MzkwOiAgICAgICAwMDgxMjAyZCAgICAgICAgZGFkZHUgICBhMCxhMCxhdA0KPiBmZmZmZmZm
-ZjgwYWE4Mzk0OiAgICAgICAwMDgxMDgyYiAgICAgICAgc2x0dSAgICBhdCxhMCxhdA0KPiBmZmZm
-ZmZmZjgwYWE4Mzk4OiAgICAgICAwMDA0MjAzZiAgICAgICAgZHNyYTMyICBhMCxhMCwweDANCj4g
-ZmZmZmZmZmY4MGFhODM5YzogICAgICAgMDA4MTIwMjEgICAgICAgIGFkZHUgICAgYTAsYTAsYXQN
-Cj4gDQo+ICg0KSBXaXRoIHRoZSBmb2xsb3dpbmcgY2hhbmdlcyBiYXNlZCBvbiBjb21taXQgMTk4
-Njg4ZWRiZjc3DQo+ICgiTUlQUzogRml4IGlubGluZSBhc20gaW5wdXQvb3V0cHV0IHR5cGUgbWlz
-bWF0Y2ggaW4gY2hlY2tzdW0uaCB1c2VkDQo+IHdpdGggQ2xhbmciKToNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiBiL2FyY2gvbWlwcy9pbmNs
-dWRlL2FzbS9jaGVja3N1bS5oDQo+IGluZGV4IDFlNmMxMzUuLmUxZjgwNDA3IDEwMDY0NA0KPiAt
-LS0gYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiArKysgYi9hcmNoL21pcHMv
-aW5jbHVkZS9hc20vY2hlY2tzdW0uaA0KPiBAQCAtMTMwLDcgKzEzMCwxMSBAQCBzdGF0aWMgaW5s
-aW5lIF9fd3N1bSBjc3VtX3RjcHVkcF9ub2ZvbGQoX19iZTMyDQo+IHNhZGRyLCBfX2JlMzIgZGFk
-ZHIsDQo+ICAgICAgICAgICAgICAgICAgICAgICBfX3UzMiBsZW4sIF9fdTggcHJvdG8sDQo+ICAg
-ICAgICAgICAgICAgICAgICAgICBfX3dzdW0gc3VtKQ0KPiAgIHsNCj4gKyNpZmRlZiBfX2NsYW5n
-X18NCj4gICAgICAgdW5zaWduZWQgbG9uZyB0bXAgPSAoX19mb3JjZSB1bnNpZ25lZCBsb25nKXN1
-bTsNCj4gKyNlbHNlDQo+ICsgICAgX193c3VtIHRtcCA9IHN1bTsNCj4gKyNlbmRpZg0KPiANCj4g
-ICAgICAgX19hc21fXygNCj4gICAgICAgIiAgICAuc2V0ICAgIHB1c2ggICAgICAgICMgY3N1bV90
-Y3B1ZHBfbm9mb2xkXG4iDQo+IA0KPiBmZmZmZmZmZjgwYWE4MzVjOiAgICAgICAwMDAwNDAyNSAg
-ICAgICAgbW92ZSAgICBhNCx6ZXJvDQo+IGZmZmZmZmZmODBhYTgzNjA6ICAgICAgIDkyMDIwMDEy
-ICAgICAgICBsYnUgICAgIHYwLDE4KHMwKQ0KPiBmZmZmZmZmZjgwYWE4MzY0OiAgICAgICBkZTE0
-MDAzMCAgICAgICAgbGQgICAgICBzNCw0OChzMCkNCj4gZmZmZmZmZmY4MGFhODM2ODogICAgICAg
-MDA2NDE4MmQgICAgICAgIGRhZGR1ICAgdjEsdjEsYTANCj4gZmZmZmZmZmY4MGFhODM2YzogICAg
-ICAgMzA0MjAwZmYgICAgICAgIGFuZGkgICAgdjAsdjAsMHhmZg0KPiBmZmZmZmZmZjgwYWE4Mzcw
-OiAgICAgICA5YzY0MDAwYyAgICAgICAgbHd1ICAgICBhMCwxMih2MSkNCj4gZmZmZmZmZmY4MGFh
-ODM3NDogICAgICAgOWM2NjAwMTAgICAgICAgIGx3dSAgICAgYTIsMTYodjEpDQo+IGZmZmZmZmZm
-ODBhYTgzNzg6ICAgICAgIGFmYTcwMDM4ICAgICAgICBzdyAgICAgIGEzLDU2KHNwKQ0KPiBmZmZm
-ZmZmZjgwYWE4MzdjOiAgICAgICAyNDA3MWEwMCAgICAgICAgbGkgICAgICBhMyw2NjU2DQo+IGZm
-ZmZmZmZmODBhYTgzODA6ICAgICAgIDAwODYyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEyDQo+
-IGZmZmZmZmZmODBhYTgzODQ6ICAgICAgIDAwODcyMDJkICAgICAgICBkYWRkdSAgIGEwLGEwLGEz
-DQo+IGZmZmZmZmZmODBhYTgzODg6ICAgICAgIDAwODgyMDJkICAgICAgICBkYWRkdSAgIGEwLGEw
-LGE0DQo+IGZmZmZmZmZmODBhYTgzOGM6ICAgICAgIDAwMDQwODNjICAgICAgICBkc2xsMzIgIGF0
-LGEwLDB4MA0KPiBmZmZmZmZmZjgwYWE4MzkwOiAgICAgICAwMDgxMjAyZCAgICAgICAgZGFkZHUg
-ICBhMCxhMCxhdA0KPiBmZmZmZmZmZjgwYWE4Mzk0OiAgICAgICAwMDgxMDgyYiAgICAgICAgc2x0
-dSAgICBhdCxhMCxhdA0KPiBmZmZmZmZmZjgwYWE4Mzk4OiAgICAgICAwMDA0MjAzZiAgICAgICAg
-ZHNyYTMyICBhMCxhMCwweDANCj4gZmZmZmZmZmY4MGFhODM5YzogICAgICAgMDA4MTIwMjEgICAg
-ICAgIGFkZHUgICAgYTAsYTAsYXQNCj4gDQo+IFRoZSBjb2RlIHByb2R1Y2VkIGJ5IEdDQyByZW1h
-aW5zIHRoZSBzYW1lIGJldHdlZW4gKDEpLCAoMykgYW5kICg0KSwNCj4gdGhlIGxhc3QgY2hhbmdl
-cyBsb29rcyBsaWtlIGJldHRlciAod2l0aCBsZXNzIGNoYW5nZXMgYmFzZWQgb24gY29tbWl0DQo+
-IDE5ODY4OGVkYmY3NyksIHNvIEkgd2lsbCBzZW5kIHYzIGxhdGVyLg0KDQpBcmVuJ3QgdGhvc2Ug
-YWxsIHRoZSBzYW1lIC0gYXBhcnQgZnJvbSByZWdpc3RlciBzZWxlY3Rpb24uDQpOb3QgdGhhdCBJ
-IGdyb2sgdGhlIG1pcHMgb3Bjb2Rlcy4NCkJ1dCB0aGF0IGNvZGUgaGFzIGhvcnJpZG5lc3Mgb24g
-aXRzIHNpZGUuDQoNClRoZSBvbmx5IG9idmlvdXMgZGlmZmVyZW5jZSBpcyB0aGF0IHNvbWV0aGlu
-ZyBlbHNlIGNoYW5nZXMgdGhlDQpjb2RlIG9mZnNldCBmcm9tIHh4eHg1YyB0byB4eHh4NmMuDQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
+The compatibles with "ntc" vendor prefix become deprecated and "murata"
+should be used.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ arch/arm/boot/dts/exynos3250-monk.dts   | 4 ++--
+ arch/arm/boot/dts/exynos3250-rinato.dts | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/exynos3250-monk.dts b/arch/arm/boot/dts/exynos3250-monk.dts
+index fae046e08a5d..8b41a9d5e2db 100644
+--- a/arch/arm/boot/dts/exynos3250-monk.dts
++++ b/arch/arm/boot/dts/exynos3250-monk.dts
+@@ -142,7 +142,7 @@ &adc {
+ 	assigned-clock-rates = <6000000>;
+ 
+ 	thermistor-ap {
+-		compatible = "ntc,ncp15wb473";
++		compatible = "murata,ncp15wb473";
+ 		pullup-uv = <1800000>;
+ 		pullup-ohm = <100000>;
+ 		pulldown-ohm = <100000>;
+@@ -150,7 +150,7 @@ thermistor-ap {
+ 	};
+ 
+ 	thermistor-battery {
+-		compatible = "ntc,ncp15wb473";
++		compatible = "murata,ncp15wb473";
+ 		pullup-uv = <1800000>;
+ 		pullup-ohm = <100000>;
+ 		pulldown-ohm = <100000>;
+diff --git a/arch/arm/boot/dts/exynos3250-rinato.dts b/arch/arm/boot/dts/exynos3250-rinato.dts
+index d64ccf4b7d32..c52b9cf4f74c 100644
+--- a/arch/arm/boot/dts/exynos3250-rinato.dts
++++ b/arch/arm/boot/dts/exynos3250-rinato.dts
+@@ -142,7 +142,7 @@ &adc {
+ 	assigned-clock-rates = <6000000>;
+ 
+ 	thermistor-ap {
+-		compatible = "ntc,ncp15wb473";
++		compatible = "murata,ncp15wb473";
+ 		pullup-uv = <1800000>;
+ 		pullup-ohm = <100000>;
+ 		pulldown-ohm = <100000>;
+@@ -150,7 +150,7 @@ thermistor-ap {
+ 	};
+ 
+ 	thermistor-battery {
+-		compatible = "ntc,ncp15wb473";
++		compatible = "murata,ncp15wb473";
+ 		pullup-uv = <1800000>;
+ 		pullup-ohm = <100000>;
+ 		pulldown-ohm = <100000>;
+-- 
+2.25.1
 
