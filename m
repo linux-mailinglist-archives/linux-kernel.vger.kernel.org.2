@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445BE33BD34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A2633BCB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239819AbhCOOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S232782AbhCOO2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:28:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhCOOBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC6AF64F3E;
-        Mon, 15 Mar 2021 14:00:51 +0000 (UTC)
+        id S233076AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C0E64F58;
+        Mon, 15 Mar 2021 14:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816853;
-        bh=pR1pufmG/MhLNeDLkodBt1al3UflGQbFvsUbvmTlshA=;
+        s=korg; t=1615816821;
+        bh=S1BbKy6q2HCjd0Xn0FIRamlpdFxiUnCa3lPMMw2415k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pskd2nAIZDhBlXuBx8xZfLUqyhYfTbXZEiIE6k+rMDb5FcyJUtpMCV8FlZIZfHLDj
-         XgzKy2Ay/vn9DBc9JEsl8ELQH9o/thEMF8fyKS6y3sFfG6ZQSVnQt8jfeSx82jNiTL
-         tvfkzI1v1TcRN1RXaLPctGJogQMJQcSUtDGhAjQI=
+        b=LdqTdNZ5s6vAGeky+0RJ/r2YSdVAIoChHaZ5fug43HxbWxDA0pJ8rkowuGG3n3Yh3
+         800Sm0/40zRBM50+pO/Mf7vWlrOtvhsH3uFObGlGxQslc9tF95nXW9488+A1lblQEl
+         JCft+6ndKRDHIIE2eWwigdPUC/FwUHRauFimWdA0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 162/306] scsi: target: core: Prevent underflow for service actions
-Date:   Mon, 15 Mar 2021 14:53:45 +0100
-Message-Id: <20210315135513.112271716@linuxfoundation.org>
+Subject: [PATCH 5.10 133/290] scsi: ufs: WB is only available on LUN #0 to #7
+Date:   Mon, 15 Mar 2021 14:53:46 +0100
+Message-Id: <20210315135546.397380613@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +43,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit 14d24e2cc77411301e906a8cf41884739de192de ]
+[ Upstream commit a2fca52ee640a04112ed9d9a137c940ea6ad288e ]
 
-TCM buffer length doesn't necessarily equal 8 + ADDITIONAL LENGTH which
-might be considered an underflow in case of Data-In size being greater than
-8 + ADDITIONAL LENGTH. So truncate buffer length to prevent underflow.
+Kernel stack violation when getting unit_descriptor/wb_buf_alloc_units from
+rpmb LUN. The reason is that the unit descriptor length is different per
+LU.
 
-Link: https://lore.kernel.org/r/20210209072202.41154-3-a.miloserdov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+The length of Normal LU is 45 while the one of rpmb LU is 35.
+
+int ufshcd_read_desc_param(struct ufs_hba *hba, ...)
+{
+	param_offset=41;
+	param_size=4;
+	buff_len=45;
+	...
+	buff_len=35 by rpmb LU;
+
+	if (is_kmalloc) {
+		/* Make sure we don't copy more data than available */
+		if (param_offset + param_size > buff_len)
+			param_size = buff_len - param_offset;
+			--> param_size = 250;
+		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+		--> memcpy(param_read_buf, desc_buf+41, 250);
+
+[  141.868974][ T9174] Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: wb_buf_alloc_units_show+0x11c/0x11c
+	}
+}
+
+Link: https://lore.kernel.org/r/20210111095927.1830311-1-jaegeuk@kernel.org
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_pr.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/scsi/ufs/ufs-sysfs.c | 3 ++-
+ drivers/scsi/ufs/ufs.h       | 6 ++++--
+ drivers/scsi/ufs/ufshcd.c    | 2 +-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
-index 14db5e568f22..d4cc43afe05b 100644
---- a/drivers/target/target_core_pr.c
-+++ b/drivers/target/target_core_pr.c
-@@ -3739,6 +3739,7 @@ core_scsi3_pri_read_keys(struct se_cmd *cmd)
- 	spin_unlock(&dev->t10_pr.registration_lock);
- 
- 	put_unaligned_be32(add_len, &buf[4]);
-+	target_set_cmd_data_length(cmd, 8 + add_len);
- 
- 	transport_kunmap_data_sg(cmd);
- 
-@@ -3757,7 +3758,7 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 	struct t10_pr_registration *pr_reg;
- 	unsigned char *buf;
- 	u64 pr_res_key;
--	u32 add_len = 16; /* Hardcoded to 16 when a reservation is held. */
-+	u32 add_len = 0;
- 
- 	if (cmd->data_length < 8) {
- 		pr_err("PRIN SA READ_RESERVATIONS SCSI Data Length: %u"
-@@ -3775,8 +3776,9 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 	pr_reg = dev->dev_pr_res_holder;
- 	if (pr_reg) {
- 		/*
--		 * Set the hardcoded Additional Length
-+		 * Set the Additional Length to 16 when a reservation is held
- 		 */
-+		add_len = 16;
- 		put_unaligned_be32(add_len, &buf[4]);
- 
- 		if (cmd->data_length < 22)
-@@ -3812,6 +3814,8 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 			  (pr_reg->pr_res_type & 0x0f);
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index bdcd27faa054..34b424ad96a2 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -785,7 +785,8 @@ static ssize_t _pname##_show(struct device *dev,			\
+ 	struct scsi_device *sdev = to_scsi_device(dev);			\
+ 	struct ufs_hba *hba = shost_priv(sdev->host);			\
+ 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
+-	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun))		\
++	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
++				_duname##_DESC_PARAM##_puname))		\
+ 		return -EINVAL;						\
+ 	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
+ 		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..07ca39008b84 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -551,13 +551,15 @@ struct ufs_dev_info {
+  * @return: true if the lun has a matching unit descriptor, false otherwise
+  */
+ static inline bool ufs_is_valid_unit_desc_lun(struct ufs_dev_info *dev_info,
+-		u8 lun)
++		u8 lun, u8 param_offset)
+ {
+ 	if (!dev_info || !dev_info->max_lu_supported) {
+ 		pr_err("Max General LU supported by UFS isn't initialized\n");
+ 		return false;
  	}
+-
++	/* WB is available only for the logical unit from 0 to 7 */
++	if (param_offset == UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS)
++		return lun < UFS_UPIU_MAX_WB_LUN_ID;
+ 	return lun == UFS_UPIU_RPMB_WLUN || (lun < dev_info->max_lu_supported);
+ }
  
-+	target_set_cmd_data_length(cmd, 8 + add_len);
-+
- err:
- 	spin_unlock(&dev->dev_reservation_lock);
- 	transport_kunmap_data_sg(cmd);
-@@ -3830,7 +3834,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	struct se_device *dev = cmd->se_dev;
- 	struct t10_reservation *pr_tmpl = &dev->t10_pr;
- 	unsigned char *buf;
--	u16 add_len = 8; /* Hardcoded to 8. */
-+	u16 len = 8; /* Hardcoded to 8. */
- 
- 	if (cmd->data_length < 6) {
- 		pr_err("PRIN SA REPORT_CAPABILITIES SCSI Data Length:"
-@@ -3842,7 +3846,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	if (!buf)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
- 
--	put_unaligned_be16(add_len, &buf[0]);
-+	put_unaligned_be16(len, &buf[0]);
- 	buf[2] |= 0x10; /* CRH: Compatible Reservation Hanlding bit. */
- 	buf[2] |= 0x08; /* SIP_C: Specify Initiator Ports Capable bit */
- 	buf[2] |= 0x04; /* ATP_C: All Target Ports Capable bit */
-@@ -3871,6 +3875,8 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	buf[4] |= 0x02; /* PR_TYPE_WRITE_EXCLUSIVE */
- 	buf[5] |= 0x01; /* PR_TYPE_EXCLUSIVE_ACCESS_ALLREG */
- 
-+	target_set_cmd_data_length(cmd, len);
-+
- 	transport_kunmap_data_sg(cmd);
- 
- 	return 0;
-@@ -4031,6 +4037,7 @@ core_scsi3_pri_read_full_status(struct se_cmd *cmd)
- 	 * Set ADDITIONAL_LENGTH
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 5a7cc2e42ffd..97d9d5d99adc 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3378,7 +3378,7 @@ static inline int ufshcd_read_unit_desc_param(struct ufs_hba *hba,
+ 	 * Unit descriptors are only available for general purpose LUs (LUN id
+ 	 * from 0 to 7) and RPMB Well known LU.
  	 */
- 	put_unaligned_be32(add_len, &buf[4]);
-+	target_set_cmd_data_length(cmd, 8 + add_len);
+-	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun))
++	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun, param_offset))
+ 		return -EOPNOTSUPP;
  
- 	transport_kunmap_data_sg(cmd);
- 
+ 	return ufshcd_read_desc_param(hba, QUERY_DESC_IDN_UNIT, lun,
 -- 
 2.30.1
 
