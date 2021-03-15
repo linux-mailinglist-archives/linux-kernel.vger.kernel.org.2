@@ -2,81 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29A733C9C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28E133C9CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhCOXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47936 "EHLO mail.kernel.org"
+        id S233909AbhCOXML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233397AbhCOXLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:11:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06BF364E07;
-        Mon, 15 Mar 2021 23:11:18 +0000 (UTC)
+        id S233597AbhCOXMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A90864F5F;
+        Mon, 15 Mar 2021 23:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615849878;
-        bh=cyt5+m+H54MVA06BZt1j4xvZoJYimo2TbsujhwdmfqY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=vBsskRe2rS+ejZ+ePVYbUtBliABoidDpSi6G1pcG5gTi4XUX25/C3YC8KV0CbGfEN
-         VUEv/i4iJzDjflOXFzPaXtSPZVy+U6O53VrQI5JSNuEN8+zjOeR5u3Wz8nFBYSzicY
-         LC3Pfj45R4SPIsVs3jZdw84fQpL1M9bQNvyE/D9kAKfUEHVBMiEjQB4PuPLNgEc0SN
-         wh/E1qYUZdhCp+nXCsptsEG29dTJ0OlUSoUsqxWJDO0M+8UTvxOk3vC8evkphEIkUc
-         dpzc/Z3iEElfeZ9qgEY/rTFZmo48JZFEj9SRJGzhYQPC+1gl9tAkmbxpBB1DcoL1iW
-         PlWqOernvxXDg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C315235239EE; Mon, 15 Mar 2021 16:11:17 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 16:11:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 06/10] softirq: Don't try waking ksoftirqd
- before it has been spawned
-Message-ID: <20210315231117.GP2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
- <20210304000019.22459-6-paulmck@kernel.org>
- <20210312113641.GA3646@lothringen>
+        s=k20201202; t=1615849919;
+        bh=abzZVSkTzdpC08WLb2c2fDosMgxwdN1K2LUNPPtj9/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oc7wo2EFRjY5MvWB7E539pJ0lsH7n/tF6H+K622BRQNHIKdnSFdmi/34L/Yid70uf
+         LnG2ceNNsWfaD8xuGx6XoRkIPSSyMjv6QangvUhDnMmrLmuCIbrm+LcVdbxjTt9kyd
+         r63G/Z7bPP+IXYm+VQSQPxlyfV2Ogk5QeB8c/AMi1OlG8cQLjfMznaNYLzSZQ1Up2C
+         XNR8qub2N3CAQZJ5raTvYMVg9ETNav8ockMn0g1uYX2p3+kpS7oLVzYqPS8jeVRb1A
+         3YMCxS+F25cAni1dLc70M81E0TuwmjjIkYnTU2yMjP38cmQg00cjMgIZ7I2XjXO/Op
+         UA4LNLkUevwaQ==
+Date:   Tue, 16 Mar 2021 01:11:34 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YE/ppohYu9AC68L+@kernel.org>
+References: <e1ca4131bc9f98cf50a1200efcf46080d6512fe7.1615250634.git.kai.huang@intel.com>
+ <20210311020142.125722-1-kai.huang@intel.com>
+ <YEvbcrTZyiUAxZAu@google.com>
+ <YEyX4V7BcS3MZNzp@kernel.org>
+ <20210315201236.de3cd9389f853a418ec53e86@intel.com>
+ <YE9elQfTZHo/9TJI@kernel.org>
+ <YE9e5JAP3agUByXr@kernel.org>
+ <20210316092934.d4dd7f2e65f507c3856341bc@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312113641.GA3646@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210316092934.d4dd7f2e65f507c3856341bc@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 12:36:41PM +0100, Frederic Weisbecker wrote:
-> On Wed, Mar 03, 2021 at 04:00:15PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Mar 16, 2021 at 09:29:34AM +1300, Kai Huang wrote:
+> On Mon, 15 Mar 2021 15:19:32 +0200 Jarkko Sakkinen wrote:
+> > On Mon, Mar 15, 2021 at 03:18:16PM +0200, Jarkko Sakkinen wrote:
+> > > On Mon, Mar 15, 2021 at 08:12:36PM +1300, Kai Huang wrote:
+> > > > On Sat, 13 Mar 2021 12:45:53 +0200 Jarkko Sakkinen wrote:
+> > > > > On Fri, Mar 12, 2021 at 01:21:54PM -0800, Sean Christopherson wrote:
+> > > > > > On Thu, Mar 11, 2021, Kai Huang wrote:
+> > > > > > > From: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > > 
+> > > > > > > EREMOVE takes a page and removes any association between that page and
+> > > > > > > an enclave.  It must be run on a page before it can be added into
+> > > > > > > another enclave.  Currently, EREMOVE is run as part of pages being freed
+> > > > > > > into the SGX page allocator.  It is not expected to fail.
+> > > > > > > 
+> > > > > > > KVM does not track how guest pages are used, which means that SGX
+> > > > > > > virtualization use of EREMOVE might fail.
+> > > > > > > 
+> > > > > > > Break out the EREMOVE call from the SGX page allocator.  This will allow
+> > > > > > > the SGX virtualization code to use the allocator directly.  (SGX/KVM
+> > > > > > > will also introduce a more permissive EREMOVE helper).
+> > > > > > > 
+> > > > > > > Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
+> > > > > > > more specific that it is used to free EPC page assigned to one enclave.
+> > > > > > > Print an error message when EREMOVE fails to explicitly call out EPC
+> > > > > > > page is leaked, and requires machine reboot to get leaked pages back.
+> > > > > > > 
+> > > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > > Co-developed-by: Kai Huang <kai.huang@intel.com>
+> > > > > > > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > > > > > > ---
+> > > > > > > v2->v3:
+> > > > > > > 
+> > > > > > >  - Fixed bug during copy/paste which results in SECS page and va pages are not
+> > > > > > >    correctly freed in sgx_encl_release() (sorry for the mistake).
+> > > > > > >  - Added Jarkko's Acked-by.
+> > > > > > 
+> > > > > > That Acked-by should either be dropped or moved above Co-developed-by to make
+> > > > > > checkpatch happy.
+> > > > > > 
+> > > > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > > 
+> > > > > Oops, my bad. Yup, ack should be removed.
+> > > > > 
+> > > > > /Jarkko
+> > > > 
+> > > > Hi Jarkko,
+> > > > 
+> > > > Your reply of your concern of this patch to the cover-letter
+> > > > 
+> > > > https://lore.kernel.org/lkml/YEkJXu262YDa8ZaK@kernel.org/
+> > > > 
+> > > > reminds me to do more sanity check of whether removing EREMOVE in
+> > > > sgx_free_epc_page() will impact other code path or not, and I think
+> > > > sgx_encl_release() is not the only place should be changed:
+> > > > 
+> > > > - sgx_encl_shrink() needs to call sgx_encl_free_epc_page(), since when this is
+> > > > called, the VA page can be already valid -- there are other failures can
+> > > > trigger sgx_encl_shrink().
+> > > 
+> > > You right about this, good catch.
+> > > 
+> > > Shrink needs to always do EREMOVE as grow has done EPA, which changes
+> > > EPC page state.
+> > > 
+> > > > - sgx_encl_add_page() should call sgx_encl_free_epc_page() in "err_out_free:"
+> > > > label, since the EPC page can be already valid when error happened, i.e. when
+> > > > EEXTEND fails.
+> > > 
+> > > Yes, correct, good work!
+> > > 
+> > > > Other places should be OK per my check, but I'd prefer to just replacing all
+> > > > sgx_free_epc_page() call sites in driver with sgx_encl_free_epc_page(), with
+> > > > one exception: sgx_alloc_va_page(), which calls sgx_free_epc_page() when EPA
+> > > > fails, in which case EREMOVE is not required for sure.
+> > > 
+> > > I would not unless they require it.
+> > > 
+> > > > Your idea, please?
+> > > > 
+> > > > Btw, introducing a driver wrapper of sgx_free_epc_page() does make sense to me,
+> > > > because virtualization has a counterpart in sgx/virt.c too.
+> > > 
+> > > It does make sense to use sgx_free_epc_page() everywhere where it's
+> > > the right thing to call and here's why.
+> > > 
+> > > If there is some unrelated regression that causes EPC page not get
+> > > uninitialized when it actually should, doing extra EREMOVE could mask
+> > > those bugs. I.e. it can postpone a failure, which can make a bug harder
+> > > to backtrace.
+> > > 
 > > 
-> > If there is heavy softirq activity, the softirq system will attempt
-> > to awaken ksoftirqd and will stop the traditional back-of-interrupt
-> > softirq processing.  This is all well and good, but only if the
-> > ksoftirqd kthreads already exist, which is not the case during early
-> > boot, in which case the system hangs.
-> > 
-> > One reproducer is as follows:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
-> > 
-> > This commit therefore adds a couple of existence checks for ksoftirqd
-> > and forces back-of-interrupt softirq processing when ksoftirqd does not
-> > yet exist.  With this change, the above test passes.
-> > 
-> > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Reported-by: Uladzislau Rezki <urezki@gmail.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > [ paulmck: Remove unneeded check per Sebastian Siewior feedback. ]
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > I.e. even though it is true that for correctly working code extra EREMOVE
+> > is nil functionality, it could change semantics for buggy code.
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> Thanks for feedback. Sorry I am not sure if I understand you. So if we don't
+> want to bring functionality change, we need to replace sgx_free_epc_page() in
+> all call sites with sgx_encl_free_epc_page(). To me for this patch only, it's
+> better not to bring any functional change, so I intend to replace all (I now
+> consider even leaving sgx_alloc_va_page() out is not good idea in *this*
+> patch). 
+> 
+> Or do you just want to replace sgx_free_epc_page() with
+> sgx_encl_free_epc_page() in sgx_encl_shrink() and sgx_encl_add_page(), as I
+> pointed above? In this way there will be functional change in this patch, and
+> we need to explicitly explain  why leaving others out is OK in commit message.
+> 
+> To me I prefer the former.
 
-Applied, thank you!
+But yes, I'm cool with your preference and I do get your argument, I just
+need to review it, and do not consider it as my patch :-)
 
-							Thanx, Paul
+/Jarkko
