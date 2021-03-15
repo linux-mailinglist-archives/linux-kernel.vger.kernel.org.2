@@ -2,177 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9770333AA32
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F7733AA35
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbhCOEDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 00:03:03 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:39436 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhCOECs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 00:02:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615780968; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FzkGtEiCs3DhjQCop3ose1gcyTSL0b8LhPOWRcnCDB8=;
- b=vWeU02q8PO9Q6nSr8K7pV+WibAKSM9nmneLk7aTJftlNUTQWsVKZmmks4GZiRiccQZncT1x1
- HGoSHNa7acfFFoYF4NS5JGwpmLbU0v3r/FrUHfF9DH0JJpYbcPsJWkN0eZyB6S7Y5H3pQWwl
- bFRy6BSFbnGXgYfO15jCniN/UfM=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 604edc5de3fca7d0a6fca6ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 04:02:37
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 21FC7C43466; Mon, 15 Mar 2021 04:02:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F062DC433CA;
-        Mon, 15 Mar 2021 04:02:34 +0000 (UTC)
+        id S229460AbhCOEDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 00:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhCOEDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 00:03:31 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161CFC0613D7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 21:03:31 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id bt4so8060877pjb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 21:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=c7OJnHCRmwFk8fofgO7P2TCmA9anENj2NKzvbROCVrw=;
+        b=hqFTPqznnNTRx313WjH/Y3rQxyT1qRk2tsjcNVxk6Hrjol4OfsLVJAACk5S5GCeBIN
+         DUPZ/2/BGxScEjnruZkDvsVu7pnsFXZ7N4zstn9qEl8Fgh/HQaGB5JV/pkl9Br3HoCOi
+         i64U4nBnHPt+1Xi5F2gQwMxITwYJMb1Um+iYOQ6ojSR1WU9DezeWcNfnJiJ8w11ERSEr
+         UChVNzm6vqvXvOO1iZ7xVRBakAg/WIocWyURqM6EHJjAujbHTyE6NgBKuUb+t/F7avLm
+         rWQq2i6tEhG/s1AIiG+/WUpZhYbj36Vuiav5Pq8c+WaDHPXcR8LK3WT+pRJ2r6gMw6bd
+         ep6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c7OJnHCRmwFk8fofgO7P2TCmA9anENj2NKzvbROCVrw=;
+        b=f7mLtislcq73eiKvlw9wWbrrEZLJg1D7NLNRVGzkq9keJVNSkYhyHspUG4EDSnuyQ2
+         hDy+mgi03CLpHgGZFjf+cDosvFFz65yOWl1KmHwhADsZ6jKZOMWm+1Vetv8cTMC5aJeU
+         TqTxzLDKdk6hhSB+YURy0PYvIEsHEEe7Cn5urNelPTSHu0wc9MTj0zW4aGuCg2Adz5rp
+         tClz+MGqCu0AWxsCi5BtDVvWX16OlI2QVPS1YSwP4f5j24Ctdy1b2U/8bydaF3GwryCB
+         lYSbHYGNmOm2h+GbrOlC3sge5CNyhKQBZeNVfT672PwpdQu1olyoSERSN8AeBPkXN5DN
+         wMpA==
+X-Gm-Message-State: AOAM533m7lkxmSWSvySGX1CkTOoJpAa8gp5sEZG6/5CqySeQ03KFgBqH
+        roYViG290EDn9mnNlBb0fkrvZQ==
+X-Google-Smtp-Source: ABdhPJxRDau7gIDAmMsnWR7FCOk4vgRj39P8KqGrKbOykRijnyhWvAXlMXcpaXxZjPuzVl/GOTJ9CQ==
+X-Received: by 2002:a17:902:7889:b029:e6:b9c3:bc0d with SMTP id q9-20020a1709027889b02900e6b9c3bc0dmr5992pll.23.1615781010271;
+        Sun, 14 Mar 2021 21:03:30 -0700 (PDT)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id r23sm9182422pje.38.2021.03.14.21.03.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 14 Mar 2021 21:03:29 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 09:33:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Qiang Yu <yuq825@gmail.com>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v3 11/15] drm/msm: Convert to use resource-managed OPP API
+Message-ID: <20210315040327.qwn4rt75yqs5datl@vireshk-i7>
+References: <20210314163408.22292-1-digetx@gmail.com>
+ <20210314163408.22292-12-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 12:02:34 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <20210302132503.224670-6-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-6-avri.altman@wdc.com>
-Message-ID: <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210314163408.22292-12-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:24, Avri Altman wrote:
-> I host mode, the host is expected to send HPB-WRITE-BUFFER with
-> buffer-id = 0x1 when it inactivates a region.
+On 14-03-21, 19:34, Dmitry Osipenko wrote:
+> From: Yangtao Li <tiny.windzz@gmail.com>
 > 
-> Use the map-requests pool as there is no point in assigning a
-> designated cache for umap-requests.
+> Use resource-managed OPP API to simplify code.
 > 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 6f4fd22eaf2f..0744feb4d484 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct ufshpb_lu 
-> *hpb,
-> 
->  	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
-> 
-> +	hpb->stats.umap_req_cnt++;
->  	return 0;
->  }
-> 
-> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct 
-> ufshpb_lu *hpb,
->  	return -EAGAIN;
->  }
-> 
-> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
-> +					struct ufshpb_region *rgn)
-> +{
-> +	return ufshpb_issue_umap_req(hpb, rgn);
-> +}
-> +
->  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->  {
->  	return ufshpb_issue_umap_req(hpb, NULL);
-> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct 
-> ufshpb_lu *hpb,
->  	struct ufshpb_subregion *srgn;
->  	int srgn_idx;
-> 
-> +
-> +	if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c   |  2 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c   |  2 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 11 +++------
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  2 --
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c |  2 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 23 +++++++------------
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h |  2 --
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c        | 30 +++++--------------------
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h        |  1 -
+>  drivers/gpu/drm/msm/dp/dp_display.c     |  5 +----
+>  drivers/gpu/drm/msm/dsi/dsi_host.c      | 13 ++++-------
+>  11 files changed, 25 insertions(+), 68 deletions(-)
 
-__ufshpb_evict_region() is called with rgn_state_lock held and IRQ 
-disabled,
-when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(), 
-below
-warning shall pop up every time, fix it?
+This patch has some updates in linux-next, which I don't have. Please
+get this merged with the drm tree over 5.13-rc1 later.
 
-void blk_execute_rq_nowait(struct request_queue *q, struct gendisk 
-*bd_disk,
-		   struct request *rq, int at_head,
-			   rq_end_io_fn *done)
-{
-	WARN_ON(irqs_disabled());
-...
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Thanks.
-Can Guo.
-
-> +		return;
-> +
->  	lru_info = &hpb->lru_info;
-> 
->  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", 
-> rgn->rgn_idx);
-> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->  ufshpb_sysfs_attr_show_func(map_req_cnt);
-> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
-> 
->  static struct attribute *hpb_dev_stat_attrs[] = {
->  	&dev_attr_hit_cnt.attr,
-> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
->  	&dev_attr_rb_active_cnt.attr,
->  	&dev_attr_rb_inactive_cnt.attr,
->  	&dev_attr_map_req_cnt.attr,
-> +	&dev_attr_umap_req_cnt.attr,
->  	NULL,
->  };
-> 
-> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu 
-> *hpb)
->  	hpb->stats.rb_active_cnt = 0;
->  	hpb->stats.rb_inactive_cnt = 0;
->  	hpb->stats.map_req_cnt = 0;
-> +	hpb->stats.umap_req_cnt = 0;
->  }
-> 
->  static void ufshpb_param_init(struct ufshpb_lu *hpb)
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index bd4308010466..84598a317897 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->  	u64 rb_inactive_cnt;
->  	u64 map_req_cnt;
->  	u64 pre_req_cnt;
-> +	u64 umap_req_cnt;
->  };
-> 
->  struct ufshpb_lu {
+-- 
+viresh
