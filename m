@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB7333C3FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CA533C401
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhCORUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:20:35 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:45578 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233060AbhCORUD (ORCPT
+        id S232080AbhCORUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:20:39 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38946 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhCORUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:20:03 -0400
-Received: by mail-pg1-f177.google.com with SMTP id p21so20845707pgl.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:20:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dhte2D5Jm2p++hI6/DrWwYoclUkYAfx2V2JV3XPR538=;
-        b=LTlkOr740YVIjuIokWpKFW+TSb7YZEN+6HxDrt6GeT6A0TO7icj5/jf0wgemIzArjx
-         0iJhSWCAttYexg+xVUGBHEZHlgEv4DJRyUPqYCANEiu7IbNU+ayCv0OFMlRw6XqToS72
-         BQgHDUyOzaEpeMICYQ5uuRBYVVq9RFmS2BcV0qXgqJ1iA2UAItXkYAa8pyUkiUvPaUAj
-         1iBjOmT3qwQiTdsNH6pVW0Bc7owQ6znoBq07d42ptDLBwGLSmPICh36Eqy9vrtArkQ9d
-         0Z0wiMYvGZ/K2FXmRtb1SFfLt+A0Ew/bn7iXrRVfCQC2v83LYWaL8RDzHaNmFhDiu4CK
-         6Acw==
-X-Gm-Message-State: AOAM532B8TJlf4oURBDkdoWuGdL7SjfmF1yifCZIZMum5er+M1SWaXDj
-        2Essz6u+vsLn+/xxaFazxaNbtW3vxlw=
-X-Google-Smtp-Source: ABdhPJz+HFlXqAvzFrT6KArU8kRmTwppYRUD/YWjHs1b5/oLIA6W9FdoN+bKKnZ9COU65k8zuu2VIQ==
-X-Received: by 2002:aa7:9614:0:b029:1fa:e77b:722 with SMTP id q20-20020aa796140000b02901fae77b0722mr11557622pfg.2.1615828802423;
-        Mon, 15 Mar 2021 10:20:02 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:4faf:1598:b15b:7e86? ([2601:647:4802:9070:4faf:1598:b15b:7e86])
-        by smtp.gmail.com with ESMTPSA id g22sm219063pju.30.2021.03.15.10.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 10:20:01 -0700 (PDT)
-Subject: Re: [PATCH] nvme/rdma: Fix a use after free in
- nvmet_rdma_write_data_done
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, hch@lst.de,
-        chaitanya.kulkarni@wdc.com, Israel Rukshin <israelr@mellanox.com>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210311054413.8731-1-lyl2019@mail.ustc.edu.cn>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <3ffd40a5-efe8-d3e6-9142-c3fbd3419f65@grimberg.me>
-Date:   Mon, 15 Mar 2021 10:20:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 15 Mar 2021 13:20:20 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BDE93316;
+        Mon, 15 Mar 2021 18:20:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615828819;
+        bh=EfmuDX1Homi+ciII042TtgOrjGfPcOAsZFWHSi2vgdg=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=XwALossDYbr2SBUlo68kqmYc9RdL1vRHiN95l19MQ/tNXIOeoa/trHKfOC5x6x9pu
+         j9wooIgQyrZgAZN0LchHYVXDIq3Dmdo4vaBf9uHxJmdWVgbU9KZqXvwmEYOmItnynk
+         pu9g3mQV3sav4dKaBs+yPX97/hSEacg4lH+ly96U=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2 11/18] media: i2c: rdacm21: Fix OV10640 powerdown
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-12-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <76196b54-304f-f17f-04af-67bcacd9d923@ideasonboard.com>
+Date:   Mon, 15 Mar 2021 17:20:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210311054413.8731-1-lyl2019@mail.ustc.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210315131512.133720-12-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jacopo,
 
-> In nvmet_rdma_write_data_done, rsp is recoverd by wc->wr_cqe
-> and freed by nvmet_rdma_release_rsp(). But after that, pr_info()
-> used the freed chunk's member object and could leak the freed
-> chunk address with wc->wr_cqe by computing the offset.
+On 15/03/2021 13:15, Jacopo Mondi wrote:
+> The OV10640 image sensor powerdown signal is controlled by the first
+> line of the OV490 GPIO pad #1, but the pad #0 identifier
+> OV490_GPIO_OUTPUT_VALUE0 was erroneously used. As a result the image
+> sensor powerdown signal was never asserted but was kept high by an
+> internal pull-up resistor, causing sporadic failures during the
+> image sensor startup phase.
 > 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> Fix this by using the correct GPIO pad identifier.
+> 
+> While at it also fix the GPIO signal handling sequence, as the reset
+> line was released before the powerdown one, and introduce the correct
+> delays in between the two operations.
+> 
+> Wait the mandatory 1 millisecond delay after the powerup lane is
+
+Technically you wait 1.5 milliseconds below - but I think that's fine
+here ;-)
+
+> asserted. The reset delay is not characterized in the chip manual if
+> not as "255 XVCLK + initialization". Wait for at least 3 milliseconds
+> to guarantee the SCCB bus is available.
+> 
+> This commit fixes a sporadic start-up error triggered by a failure to
+> read the OV10640 chip ID:
+> rdacm21 8-0054: OV10640 ID mismatch: (0x01)
+> 
+> Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+
+Sometime it might be nice to see this look more like the GPIO
+interfaces, but I think this is fine for now.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
 > ---
->   drivers/nvme/target/rdma.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/media/i2c/rdacm21.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-> index 06b6b742bb21..6c1f3ab7649c 100644
-> --- a/drivers/nvme/target/rdma.c
-> +++ b/drivers/nvme/target/rdma.c
-> @@ -802,9 +802,8 @@ static void nvmet_rdma_write_data_done(struct ib_cq *cq, struct ib_wc *wc)
->   		nvmet_req_uninit(&rsp->req);
->   		nvmet_rdma_release_rsp(rsp);
->   		if (wc->status != IB_WC_WR_FLUSH_ERR) {
-> -			pr_info("RDMA WRITE for CQE 0x%p failed with status %s (%d).\n",
-> -				wc->wr_cqe, ib_wc_status_msg(wc->status),
-> -				wc->status);
-> +			pr_info("RDMA WRITE for CQE failed with status %s (%d).\n",
-> +				ib_wc_status_msg(wc->status), wc->status);
-
-There is nothing wrong with this reference, wr_cqe is a valid reference
-and I think Israel added this for some extra information that may be
-useful to him.
-
-Israel? you ok with this removed?
-
->   			nvmet_rdma_error_comp(queue);
->   		}
->   		return;
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index 7bce55adfd7c..50a9b0d8255d 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -333,13 +333,15 @@ static int ov10640_initialize(struct rdacm21_device *dev)
+>  {
+>  	u8 val;
+>  
+> -	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
+> +	/* Power-up OV10640 by setting PWDNB and RESETB pins high. */
+>  	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0);
+>  	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
+>  	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0);
+>  	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
+> +
+> +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE1, OV490_SPWDN0);
+> +	usleep_range(1500, 3000);
+>  	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
+> -	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
+>  	usleep_range(3000, 5000);
+>  
+>  	/* Read OV10640 ID to test communications. */
 > 
+
