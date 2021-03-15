@@ -2,115 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406AD33B0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A99033B0CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCOLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhCOLPP (ORCPT
+        id S229896AbhCOLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:16:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38887 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229811AbhCOLPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:15:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F1BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=wYk19foR0NdhgMjWstK6udYO/Zyawyo/Qzqsxoi3rt4=; b=fzumvFOSL8Taz/qc1bDNhAW40H
-        O+nRKudLxtQDciVnnuZAs5TfWUKsg1m8CzjtBvztzeqXJbHTFoEbkoBXd2Ik3J/qAcJxP6O/gpt8U
-        6B9hZGLBCvQ0z7HEKKE0vGWoZtqnG85M3uUD7enjz2j9c/0ZqsTTxQW6tola/seuxLeuzAwjhPRbl
-        8FVa5jj9aSBfh1aw2GqKtgsAK9tOsUo4KFGkGmCSzqWgbyKQPrmQm6XCeHZx37AEocFluUZL2oUcl
-        WueMhIJoHmXkR5O/Qf1k2NB710/IdRYhb93xJrw9/cLWua6OR7yOblnvaCE61zwihQE1dlsoRaIfN
-        l3oU/2+Q==;
-Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLlBf-00FdvK-BP; Mon, 15 Mar 2021 11:15:08 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lLlBe-001qao-So; Mon, 15 Mar 2021 11:15:02 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, matejm98mthw@gmail.com,
-        Steven Barrett <steven@liquorix.net>, Mav <basic89@gmail.com>
-Subject: [PATCH] iommu/amd: Don't initialise remapping irqdomain if IOMMU is disabled
-Date:   Mon, 15 Mar 2021 11:15:02 +0000
-Message-Id: <20210315111502.440451-1-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 15 Mar 2021 07:15:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615806942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zTCAicjVpAPdaMgz3Js6yfA0Br4haFpS8XvtL+22h/g=;
+        b=WFK7olXteowD2JqylAI5LRpqhDzzL4U25LuA0NJTT4/4Fzj4BAhLWTyEpFxmLtzk1cz/1l
+        LYHeo4JKBE5SYPoKcT+exibYtKDOSh7kfWIafhizR8zuOoSUqP9t7zhzzikaePv6kPVIbT
+        nf2tyRPtKs5F5qcJkOhXDqsKGh7gwBM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-VjKB4l0qNs6BEDiP2RtfBw-1; Mon, 15 Mar 2021 07:15:41 -0400
+X-MC-Unique: VjKB4l0qNs6BEDiP2RtfBw-1
+Received: by mail-wr1-f72.google.com with SMTP id y5so14939749wrp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:15:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zTCAicjVpAPdaMgz3Js6yfA0Br4haFpS8XvtL+22h/g=;
+        b=fVJBxoRL9h9LYkG2UWKoIz3jW16jyL0aCK9F0DyVYnS01/whyKClvGg2tRc7xgJs3t
+         1oeCQhxMpexSOVpsmYC2l954Y21CEFbZIN+eCbM37wiVtGnRdrdVjj9bAuz0Hxk0Igg7
+         sct1mi9NSOZ0prx2wMKWYa/qcjToXcEzT25JVym8QDAwSekcv7E2LVJUaGHNTjGq5CYz
+         VBtEIYEkjEmcWMjGWgCZORMXw2dVGDpw3jUxJnV3Uor2a7z9ynK1E0UnwGa97SauXXr/
+         r0mEcxYEPtBumLbOl/S6pmbaDQhEcB1A+L6OwUVT+NpRQ+cxgw4mMSfUVuC4YDHgLJd6
+         gdTg==
+X-Gm-Message-State: AOAM531OcHDj817P7QkLSKMQzsabE7pGps7wKMtxjH7Wstr+QjXkVuU+
+        IZASpuxCyuLbbQRyPiXQde+oBEEoHbjdLe2NRveaCP4j20GJrPix6s18h5VX9Uw82nc4AWq8h3T
+        s7WWGc2Q2wK2ixPrJeghxm2wG
+X-Received: by 2002:a5d:6a86:: with SMTP id s6mr27930965wru.307.1615806938611;
+        Mon, 15 Mar 2021 04:15:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrXQ6HXQSOKtfo2XLAhaJtEOgAIv8MsWedRGd0O6PHJ2FIe7vMb6i/B9IXA4kIhs96rnRsqA==
+X-Received: by 2002:a5d:6a86:: with SMTP id s6mr27930940wru.307.1615806938386;
+        Mon, 15 Mar 2021 04:15:38 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id s11sm12731700wme.22.2021.03.15.04.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 04:15:38 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 12:15:35 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v6 13/22] virtio/vsock: add SEQPACKET receive logic
+Message-ID: <20210315111535.eujoemvhqxcjag2e@steredhat>
+References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
+ <20210307180253.3466110-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210307180253.3466110-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+On Sun, Mar 07, 2021 at 09:02:50PM +0300, Arseny Krasnov wrote:
+>This modifies current receive logic for SEQPACKET support:
+>1) Inserts 'SEQ_BEGIN' packet to socket's rx queue.
+>2) Inserts 'RW' packet to socket's rx queue, but without merging with
+>   buffer of last packet in queue.
+>3) Performs check for packet and socket types on receive(if mismatch,
+>   then reset connection).
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/virtio_transport_common.c | 63 +++++++++++++++++--------
+> 1 file changed, 44 insertions(+), 19 deletions(-)
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index 6fc78fec41c0..9d86375935ce 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -165,6 +165,14 @@ void virtio_transport_deliver_tap_pkt(struct virtio_vsock_pkt *pkt)
+> }
+> EXPORT_SYMBOL_GPL(virtio_transport_deliver_tap_pkt);
+>
+>+static u16 virtio_transport_get_type(struct sock *sk)
+>+{
+>+	if (sk->sk_type == SOCK_STREAM)
+>+		return VIRTIO_VSOCK_TYPE_STREAM;
+>+	else
+>+		return VIRTIO_VSOCK_TYPE_SEQPACKET;
+>+}
+>+
+> /* This function can only be used on connecting/connected sockets,
+>  * since a socket assigned to a transport is required.
+>  *
+>@@ -1062,25 +1070,27 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
+> 		goto out;
+> 	}
+>
+>-	/* Try to copy small packets into the buffer of last packet queued,
+>-	 * to avoid wasting memory queueing the entire buffer with a small
+>-	 * payload.
+>-	 */
+>-	if (pkt->len <= GOOD_COPY_LEN && !list_empty(&vvs->rx_queue)) {
+>-		struct virtio_vsock_pkt *last_pkt;
+>+	if (le16_to_cpu(pkt->hdr.type) == VIRTIO_VSOCK_TYPE_STREAM) {
+>+		/* Try to copy small packets into the buffer of last packet queued,
+>+		 * to avoid wasting memory queueing the entire buffer with a small
+>+		 * payload.
+>+		 */
+>+		if (pkt->len <= GOOD_COPY_LEN && !list_empty(&vvs->rx_queue)) {
+>+			struct virtio_vsock_pkt *last_pkt;
+>
+>-		last_pkt = list_last_entry(&vvs->rx_queue,
+>-					   struct virtio_vsock_pkt, list);
+>+			last_pkt = list_last_entry(&vvs->rx_queue,
+>+						   struct virtio_vsock_pkt, list);
+>
+>-		/* If there is space in the last packet queued, we copy the
+>-		 * new packet in its buffer.
+>-		 */
+>-		if (pkt->len <= last_pkt->buf_len - last_pkt->len) {
+>-			memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
+>-			       pkt->len);
+>-			last_pkt->len += pkt->len;
+>-			free_pkt = true;
+>-			goto out;
+>+			/* If there is space in the last packet queued, we copy the
+>+			 * new packet in its buffer.
+>+			 */
+>+			if (pkt->len <= last_pkt->buf_len - last_pkt->len) {
+>+				memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
+>+				       pkt->len);
+>+				last_pkt->len += pkt->len;
+>+				free_pkt = true;
+>+				goto out;
+>+			}
+> 		}
+> 	}
+>
+>@@ -1100,9 +1110,13 @@ virtio_transport_recv_connected(struct sock *sk,
+> 	int err = 0;
+>
+> 	switch (le16_to_cpu(pkt->hdr.op)) {
+>+	case VIRTIO_VSOCK_OP_SEQ_BEGIN:
+>+	case VIRTIO_VSOCK_OP_SEQ_END:
+> 	case VIRTIO_VSOCK_OP_RW:
+> 		virtio_transport_recv_enqueue(vsk, pkt);
+>-		sk->sk_data_ready(sk);
+>+
+>+		if (le16_to_cpu(pkt->hdr.op) != VIRTIO_VSOCK_OP_SEQ_BEGIN)
+>+			sk->sk_data_ready(sk);
+> 		return err;
+> 	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
+> 		sk->sk_write_space(sk);
+>@@ -1245,6 +1259,12 @@ virtio_transport_recv_listen(struct sock *sk, struct virtio_vsock_pkt *pkt,
+> 	return 0;
+> }
+>
+>+static bool virtio_transport_valid_type(u16 type)
+>+{
+>+	return (type == VIRTIO_VSOCK_TYPE_STREAM) ||
+>+	       (type == VIRTIO_VSOCK_TYPE_SEQPACKET);
+>+}
+>+
+> /* We are under the virtio-vsock's vsock->rx_lock or vhost-vsock's vq->mutex
+>  * lock.
+>  */
+>@@ -1270,7 +1290,7 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+> 					le32_to_cpu(pkt->hdr.buf_alloc),
+> 					le32_to_cpu(pkt->hdr.fwd_cnt));
+>
+>-	if (le16_to_cpu(pkt->hdr.type) != VIRTIO_VSOCK_TYPE_STREAM) {
+>+	if (!virtio_transport_valid_type(le16_to_cpu(pkt->hdr.type))) {
+> 		(void)virtio_transport_reset_no_sock(t, pkt);
+> 		goto free_pkt;
+> 	}
+>@@ -1287,6 +1307,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+> 		}
+> 	}
+>
+>+	if (virtio_transport_get_type(sk) != le16_to_cpu(pkt->hdr.type)) {
+>+		(void)virtio_transport_reset_no_sock(t, pkt);
 
-When the IOMMU is disabled, the driver still enumerates and initialises
-the hardware in order to turn it off. Because IRQ remapping setup is
-done early, the irqdomain is set up opportunistically.
+We must release the refcnt acquired by vsock_find_connected_socket() or 
+vsock_find_bound_socket(), so we need to add:
 
-In commit b34f10c2dc59 ("iommu/amd: Stop irq_remapping_select() matching
-when remapping is disabled") I already make the irq_remapping_select()
-function check the amd_iommu_irq_setup flag because that might get
-cleared only after the irqdomain setup is done, when the IVRS is parsed.
+                 sock_put(sk);
 
-However, in the case where 'amd_iommu=off' is passed on the command line,
-the IRQ remapping setup isn't done but the amd_iommu_irq_setup flag is
-still set by the early IRQ remap init code. Stop it doing that, by
-bailing out of amd_iommu_prepare() early when it's disabled.
 
-This avoids the crash in irq_remapping_select() as it dereferences the
-NULL amd_iommu_rlookup_table[]:
-
-[    0.243659] Switched APIC routing to physical x2apic.
-[    0.262206] BUG: kernel NULL pointer dereference, address: 0000000000000500
-[    0.262927] #PF: supervisor read access in kernel mode
-[    0.263390] #PF: error_code(0x0000) - not-present page
-[    0.263844] PGD 0 P4D 0
-[    0.264135] Oops: 0000 [#1] SMP PTI
-[    0.264460] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3 #831
-[    0.265069] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-[    0.265825] RIP: 0010:irq_remapping_select+0x57/0xb0
-[    0.266327] Code: 4b 0c 48 3d 30 e0 a7 9e 75 0d eb 35 48 8b 00 48 3d 30 e0 a7 9e 74 2a 0f b6 50 10 39 d1 75 ed 0f b7 40 12 48 8b 15 69 e3 d2 01 <48> 8b 14 c2 48 85 d2 74 0e b8 01 00 00 00 48 3b aa 90 04 00 00 74
-[    0.268412] RSP: 0000:ffffffff9e803db0 EFLAGS: 00010246
-[    0.268919] RAX: 00000000000000a0 RBX: ffffffff9e803df8 RCX: 0000000000000000
-[    0.269550] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff98120112fe79
-[    0.270245] RBP: ffff9812011c8218 R08: 0000000000000001 R09: 000000000000000a
-[    0.270922] R10: 000000000000000a R11: f000000000000000 R12: ffff9812011c8218
-[    0.271549] R13: ffff98120181ed88 R14: 0000000000000000 R15: 0000000000000000
-[    0.272221] FS:  0000000000000000(0000) GS:ffff98127dc00000(0000) knlGS:0000000000000000
-[    0.272997] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.273508] CR2: 0000000000000500 CR3: 0000000030810000 CR4: 00000000000006b0
-[    0.274178] Call Trace:
-[    0.274416]  irq_find_matching_fwspec+0x41/0xc0
-[    0.274812]  mp_irqdomain_create+0x65/0x150
-[    0.275251]  setup_IO_APIC+0x70/0x811
-
-Fixes: a1a785b57242 ("iommu/amd: Implement select() method on remapping irqdomain")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212017
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- drivers/iommu/amd/init.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 9126efcbaf2c..07edd837b076 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -2998,6 +2998,9 @@ int __init amd_iommu_prepare(void)
- {
- 	int ret;
- 
-+	if (amd_iommu_disabled)
-+		return -ENODEV;
-+
- 	amd_iommu_irq_remap = true;
- 
- 	ret = iommu_go_to_state(IOMMU_ACPI_FINISHED);
--- 
-2.29.2
+>+		goto free_pkt;
+>+	}
+>+
+> 	vsk = vsock_sk(sk);
+>
+> 	lock_sock(sk);
+>-- 
+>2.25.1
+>
 
