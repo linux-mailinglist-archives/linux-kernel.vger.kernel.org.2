@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E76533B513
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFC633B515
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhCONxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55396 "EHLO mail.kernel.org"
+        id S230175AbhCONxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:53:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhCONwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D713C64D9E;
-        Mon, 15 Mar 2021 13:52:47 +0000 (UTC)
+        id S229518AbhCONwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:52:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A41AD64EE5;
+        Mon, 15 Mar 2021 13:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816369;
-        bh=RtPS6I2sPdTd21blcm4L0KYzvV5RBFSeZhr/AUca1kk=;
+        s=korg; t=1615816371;
+        bh=fzpaGEBxyyFF+uV4zhAqlogc261/N5VCcc4VzvBNPMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gcsXKN/L3uZa0k+D188rYKrhJ7O/kKjEW+gllFQ9qUVVoWrZ5ZnD9v1V0yxCal4B3
-         +zQUujPSr0goLfhep00AKDNXNkv0rH4TuKT8hONWlOFAcl1mGJgqJi7ERH8eY5yI3G
-         2wHrPx2sFMN3CetaGbigtcMDxJc0SPWNpFqdXHi0=
+        b=cY63ucPZQsmcVBcX3isq6y6NdMocqBQN3h7VTR/U7ff968R1EKppEVEH6/w7VY0mJ
+         IdsWr/KoZW+p63ic6Y2wc1PutB3APbMUlIS3yLdxsus190MXz3c6u28mBkFgvNPpec
+         gIfvGz+ADXhb59q+uCVuvlTdVZZKcgPEgvOZETjU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.4 07/75] netfilter: x_tables: gpf inside xt_find_revision()
-Date:   Mon, 15 Mar 2021 14:51:21 +0100
-Message-Id: <20210315135208.505146721@linuxfoundation.org>
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.4 08/75] cifs: return proper error code in statfs(2)
+Date:   Mon, 15 Mar 2021 14:51:22 +0100
+Message-Id: <20210315135208.537855031@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
 References: <20210315135208.252034256@linuxfoundation.org>
@@ -42,89 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Paulo Alcantara <pc@cjr.nz>
 
-commit 8e24edddad152b998b37a7f583175137ed2e04a5 upstream.
+commit 14302ee3301b3a77b331cc14efb95bf7184c73cc upstream.
 
-nested target/match_revfn() calls work with xt[NFPROTO_UNSPEC] lists
-without taking xt[NFPROTO_UNSPEC].mutex. This can race with module unload
-and cause host to crash:
+In cifs_statfs(), if server->ops->queryfs is not NULL, then we should
+use its return value rather than always returning 0.  Instead, use rc
+variable as it is properly set to 0 in case there is no
+server->ops->queryfs.
 
-general protection fault: 0000 [#1]
-Modules linked in: ... [last unloaded: xt_cluster]
-CPU: 0 PID: 542455 Comm: iptables
-RIP: 0010:[<ffffffff8ffbd518>]  [<ffffffff8ffbd518>] strcmp+0x18/0x40
-RDX: 0000000000000003 RSI: ffff9a5a5d9abe10 RDI: dead000000000111
-R13: ffff9a5a5d9abe10 R14: ffff9a5a5d9abd8c R15: dead000000000100
-(VvS: %R15 -- &xt_match,  %RDI -- &xt_match.name,
-xt_cluster unregister match in xt[NFPROTO_UNSPEC].match list)
-Call Trace:
- [<ffffffff902ccf44>] match_revfn+0x54/0xc0
- [<ffffffff902ccf9f>] match_revfn+0xaf/0xc0
- [<ffffffff902cd01e>] xt_find_revision+0x6e/0xf0
- [<ffffffffc05a5be0>] do_ipt_get_ctl+0x100/0x420 [ip_tables]
- [<ffffffff902cc6bf>] nf_getsockopt+0x4f/0x70
- [<ffffffff902dd99e>] ip_getsockopt+0xde/0x100
- [<ffffffff903039b5>] raw_getsockopt+0x25/0x50
- [<ffffffff9026c5da>] sock_common_getsockopt+0x1a/0x20
- [<ffffffff9026b89d>] SyS_getsockopt+0x7d/0xf0
- [<ffffffff903cbf92>] system_call_fastpath+0x25/0x2a
-
-Fixes: 656caff20e1 ("netfilter 04/09: x_tables: fix match/target revision lookup")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/x_tables.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/cifs/cifsfs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -271,6 +271,7 @@ static int match_revfn(u8 af, const char
- 	const struct xt_match *m;
- 	int have_rev = 0;
+--- a/fs/cifs/cifsfs.c
++++ b/fs/cifs/cifsfs.c
+@@ -204,7 +204,7 @@ cifs_statfs(struct dentry *dentry, struc
+ 		rc = server->ops->queryfs(xid, tcon, buf);
  
-+	mutex_lock(&xt[af].mutex);
- 	list_for_each_entry(m, &xt[af].match, list) {
- 		if (strcmp(m->name, name) == 0) {
- 			if (m->revision > *bestp)
-@@ -279,6 +280,7 @@ static int match_revfn(u8 af, const char
- 				have_rev = 1;
- 		}
- 	}
-+	mutex_unlock(&xt[af].mutex);
+ 	free_xid(xid);
+-	return 0;
++	return rc;
+ }
  
- 	if (af != NFPROTO_UNSPEC && !have_rev)
- 		return match_revfn(NFPROTO_UNSPEC, name, revision, bestp);
-@@ -291,6 +293,7 @@ static int target_revfn(u8 af, const cha
- 	const struct xt_target *t;
- 	int have_rev = 0;
- 
-+	mutex_lock(&xt[af].mutex);
- 	list_for_each_entry(t, &xt[af].target, list) {
- 		if (strcmp(t->name, name) == 0) {
- 			if (t->revision > *bestp)
-@@ -299,6 +302,7 @@ static int target_revfn(u8 af, const cha
- 				have_rev = 1;
- 		}
- 	}
-+	mutex_unlock(&xt[af].mutex);
- 
- 	if (af != NFPROTO_UNSPEC && !have_rev)
- 		return target_revfn(NFPROTO_UNSPEC, name, revision, bestp);
-@@ -312,12 +316,10 @@ int xt_find_revision(u8 af, const char *
- {
- 	int have_rev, best = -1;
- 
--	mutex_lock(&xt[af].mutex);
- 	if (target == 1)
- 		have_rev = target_revfn(af, name, revision, &best);
- 	else
- 		have_rev = match_revfn(af, name, revision, &best);
--	mutex_unlock(&xt[af].mutex);
- 
- 	/* Nothing at all?  Return 0 to try loading module. */
- 	if (best == -1) {
+ static long cifs_fallocate(struct file *file, int mode, loff_t off, loff_t len)
 
 
