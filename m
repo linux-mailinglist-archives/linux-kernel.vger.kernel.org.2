@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A8833B96E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AE933B9CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhCOOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34010 "EHLO mail.kernel.org"
+        id S233696AbhCOOGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231820AbhCON4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E857964EB6;
-        Mon, 15 Mar 2021 13:56:53 +0000 (UTC)
+        id S229741AbhCON5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DC664DAD;
+        Mon, 15 Mar 2021 13:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816615;
-        bh=Hh6bLwOHaaKuMgUMulZHgJrRFgg8MV3VXJXtKBYwGcY=;
+        s=korg; t=1615816654;
+        bh=rzT91xFi5CSgXz3amxkHUuCpim2XmCzSMYdvJbcna9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khv7x2FSG5vNlh/byEOvaQmhD14ID9pfzlHGlOnSSl+MoSmiuS0E3QaA/qCKKMZxd
-         qiYyDar6AGoRn3TAr8peD+zJTD38k5N1vZHh0OPhsWVRJjHiLWhVTIrzX468U9nAxr
-         BaBALbJBboaqdyg8BvA19VfsbfMeiMzeDCuUYwy8=
+        b=oz4Tr9zGLazBR/5oNmUUyYs2kcKxDEaLU5vkIM7n1Tk9ZOVl9HAvH8q90BXBmgazU
+         ObbXih7N3vbB/oyfqO+RQ2VoZletW+yvO2ckUuFOBC4VdEocpp7ueXprn+qUCILVQR
+         8n9vhyb4JQBybc3R9MGsDwIXwqr1Flg2dxML1qyw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 014/290] can: flexcan: invoke flexcan_chip_freeze() to enter freeze mode
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 044/306] net: dsa: tag_rtl4_a: fix egress tags
 Date:   Mon, 15 Mar 2021 14:51:47 +0100
-Message-Id: <20210315135542.429568171@linuxfoundation.org>
+Message-Id: <20210315135509.134352719@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +43,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-commit c63820045e2000f05657467a08715c18c9f490d9 upstream.
+commit 9eb8bc593a5eed167dac2029abef343854c5ba75 upstream.
 
-Invoke flexcan_chip_freeze() to enter freeze mode, since need poll
-freeze mode acknowledge.
+Commit 86dd9868b878 has several issues, but was accepted too soon
+before anyone could take a look.
 
-Fixes: e955cead03117 ("CAN: Add Flexcan CAN controller driver")
-Link: https://lore.kernel.org/r/20210218110037.16591-4-qiangqing.zhang@nxp.com
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+- Double free. dsa_slave_xmit() will free the skb if the xmit function
+  returns NULL, but the skb is already freed by eth_skb_pad(). Use
+  __skb_put_padto() to avoid that.
+- Unnecessary allocation. It has been done by DSA core since commit
+  a3b0b6479700.
+- A u16 pointer points to skb data. It should be __be16 for network
+  byte order.
+- Typo in comments. "numer" -> "number".
+
+Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/flexcan.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ net/dsa/tag_rtl4_a.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1375,10 +1375,13 @@ static int flexcan_chip_start(struct net
+--- a/net/dsa/tag_rtl4_a.c
++++ b/net/dsa/tag_rtl4_a.c
+@@ -35,14 +35,12 @@ static struct sk_buff *rtl4a_tag_xmit(st
+ 				      struct net_device *dev)
+ {
+ 	struct dsa_port *dp = dsa_slave_to_port(dev);
++	__be16 *p;
+ 	u8 *tag;
+-	u16 *p;
+ 	u16 out;
  
- 	flexcan_set_bittiming(dev);
+ 	/* Pad out to at least 60 bytes */
+-	if (unlikely(eth_skb_pad(skb)))
+-		return NULL;
+-	if (skb_cow_head(skb, RTL4_A_HDR_LEN) < 0)
++	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
+ 		return NULL;
  
-+	/* set freeze, halt */
-+	err = flexcan_chip_freeze(priv);
-+	if (err)
-+		goto out_chip_disable;
-+
- 	/* MCR
- 	 *
--	 * enable freeze
--	 * halt now
- 	 * only supervisor access
- 	 * enable warning int
- 	 * enable individual RX masking
-@@ -1387,9 +1390,8 @@ static int flexcan_chip_start(struct net
- 	 */
- 	reg_mcr = priv->read(&regs->mcr);
- 	reg_mcr &= ~FLEXCAN_MCR_MAXMB(0xff);
--	reg_mcr |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT | FLEXCAN_MCR_SUPV |
--		FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_IRMQ | FLEXCAN_MCR_IDAM_C |
--		FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
-+	reg_mcr |= FLEXCAN_MCR_SUPV | FLEXCAN_MCR_WRN_EN | FLEXCAN_MCR_IRMQ |
-+		FLEXCAN_MCR_IDAM_C | FLEXCAN_MCR_MAXMB(priv->tx_mb_idx);
+ 	netdev_dbg(dev, "add realtek tag to package to port %d\n",
+@@ -53,13 +51,13 @@ static struct sk_buff *rtl4a_tag_xmit(st
+ 	tag = skb->data + 2 * ETH_ALEN;
  
- 	/* MCR
- 	 *
+ 	/* Set Ethertype */
+-	p = (u16 *)tag;
++	p = (__be16 *)tag;
+ 	*p = htons(RTL4_A_ETHERTYPE);
+ 
+ 	out = (RTL4_A_PROTOCOL_RTL8366RB << 12) | (2 << 8);
+-	/* The lower bits is the port numer */
++	/* The lower bits is the port number */
+ 	out |= (u8)dp->index;
+-	p = (u16 *)(tag + 2);
++	p = (__be16 *)(tag + 2);
+ 	*p = htons(out);
+ 
+ 	return skb;
 
 
