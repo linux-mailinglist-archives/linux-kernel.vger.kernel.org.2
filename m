@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491FA33BD16
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D437D33BD51
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239343AbhCOOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S235977AbhCOOeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233218AbhCOOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F32364EF2;
-        Mon, 15 Mar 2021 14:00:40 +0000 (UTC)
+        id S233401AbhCOOBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1999964D9E;
+        Mon, 15 Mar 2021 14:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816841;
-        bh=UXjvJ/kmV1CUUTL04/+RiehY5nWhHbbe602RiwrZrcc=;
+        s=korg; t=1615816873;
+        bh=23+1Wofn/x43v8T4KE32t44L6MJUrXyBVUc35mfI5A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fi7rn+UlkTpB8uWrMikYcnW4kPWUt7DIHpJSGC5cfu3O3pXAioz8dbPn7uTxV4nEp
-         tcWwwmyvi9Fo8ilB4atlHWO0jIdzbceBYGmKRqjx7lZWNct2QX6hdzQm32+XyERc6S
-         LEnXTJ66OrJueq9ldWDANLfnyQqOkKC0/aBKQhWo=
+        b=Yjt+heki6e3CRoTFw0LZqGgpQ1HKc36oAt5JxYkyDDqb5b5nqrjmKek7LsJA8v9wC
+         NcKQSDD6Gsyi41JX2aBc43DFKqA13GyXeThIdepDGfNhotg/3Tsw433W6HK15xJ2IE
+         rr8/WkSxXMP0kx7QSUq0TAyeIgzucNSL5anucRzE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 145/290] powerpc/64: Fix stack trace not displaying final frame
-Date:   Mon, 15 Mar 2021 14:53:58 +0100
-Message-Id: <20210315135546.810203864@linuxfoundation.org>
+        stable@vger.kernel.org, Beata Michalska <beata.michalska@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH 5.11 176/306] opp: Dont drop extra references to OPPs accidentally
+Date:   Mon, 15 Mar 2021 14:53:59 +0100
+Message-Id: <20210315135513.562551333@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,113 +41,151 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Beata Michalska <beata.michalska@arm.com>
 
-[ Upstream commit e3de1e291fa58a1ab0f471a4b458eff2514e4b5f ]
+commit 606a5d4227e4610399c61086ac55c46068a90b03 upstream.
 
-In commit bf13718bc57a ("powerpc: show registers when unwinding
-interrupt frames") we changed our stack dumping logic to show the full
-registers whenever we find an interrupt frame on the stack.
+We are required to call dev_pm_opp_put() from outside of the
+opp_table->lock as debugfs removal needs to happen lock-less to avoid
+circular dependency issues.
 
-However we didn't notice that on 64-bit this doesn't show the final
-frame, ie. the interrupt that brought us in from userspace, whereas on
-32-bit it does.
+commit cf1fac943c63 ("opp: Reduce the size of critical section in
+_opp_kref_release()") tried to fix that introducing a new routine
+_opp_get_next() which keeps returning OPPs that can be freed by the
+callers and this routine shall be called without holding the
+opp_table->lock.
 
-That is due to confusion about the size of that last frame. The code
-in show_stack() calls validate_sp(), passing it STACK_INT_FRAME_SIZE
-to check the sp is at least that far below the top of the stack.
+Though the commit overlooked the fact that the OPPs can be referenced by
+other users as well and this routine will end up dropping references
+which were taken by other users and hence freeing the OPPs prematurely.
 
-However on 64-bit that size is too large for the final frame, because
-it includes the red zone, but we don't allocate a red zone for the
-first frame.
+In effect, other users of the OPPs will end up having invalid pointers
+at hand. We didn't see any crash reports earlier as the exact situation
+never happened, though it is certainly possible.
 
-So add a new define that encodes the correct size for 32-bit and
-64-bit, and use it in show_stack().
+We need a way to mark which OPPs are no longer referenced by the OPP
+core, so we don't drop extra references to them accidentally.
 
-This results in the full trace being shown on 64-bit, eg:
+This commit adds another OPP flag, "removed", which is used to track
+this. And now we should never end up dropping extra references to the
+OPPs.
 
-  sysrq: Trigger a crash
-  Kernel panic - not syncing: sysrq triggered crash
-  CPU: 0 PID: 83 Comm: sh Not tainted 5.11.0-rc2-gcc-8.2.0-00188-g571abcb96b10-dirty #649
-  Call Trace:
-  [c00000000a1c3ac0] [c000000000897b70] dump_stack+0xc4/0x114 (unreliable)
-  [c00000000a1c3b00] [c00000000014334c] panic+0x178/0x41c
-  [c00000000a1c3ba0] [c00000000094e600] sysrq_handle_crash+0x40/0x50
-  [c00000000a1c3c00] [c00000000094ef98] __handle_sysrq+0xd8/0x210
-  [c00000000a1c3ca0] [c00000000094f820] write_sysrq_trigger+0x100/0x188
-  [c00000000a1c3ce0] [c0000000005559dc] proc_reg_write+0x10c/0x1b0
-  [c00000000a1c3d10] [c000000000479950] vfs_write+0xf0/0x360
-  [c00000000a1c3d60] [c000000000479d9c] ksys_write+0x7c/0x140
-  [c00000000a1c3db0] [c00000000002bf5c] system_call_exception+0x19c/0x2c0
-  [c00000000a1c3e10] [c00000000000d35c] system_call_common+0xec/0x278
-  --- interrupt: c00 at 0x7fff9fbab428
-  NIP:  00007fff9fbab428 LR: 000000001000b724 CTR: 0000000000000000
-  REGS: c00000000a1c3e80 TRAP: 0c00   Not tainted  (5.11.0-rc2-gcc-8.2.0-00188-g571abcb96b10-dirty)
-  MSR:  900000000280f033 <SF,HV,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002884  XER: 00000000
-  IRQMASK: 0
-  GPR00: 0000000000000004 00007fffc3cb8960 00007fff9fc59900 0000000000000001
-  GPR04: 000000002a4b32d0 0000000000000002 0000000000000063 0000000000000063
-  GPR08: 000000002a4b32d0 0000000000000000 0000000000000000 0000000000000000
-  GPR12: 0000000000000000 00007fff9fcca9a0 0000000000000000 0000000000000000
-  GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000100b8fd0
-  GPR20: 000000002a4b3485 00000000100b8f90 0000000000000000 0000000000000000
-  GPR24: 000000002a4b0440 00000000100e77b8 0000000000000020 000000002a4b32d0
-  GPR28: 0000000000000001 0000000000000002 000000002a4b32d0 0000000000000001
-  NIP [00007fff9fbab428] 0x7fff9fbab428
-  LR [000000001000b724] 0x1000b724
-  --- interrupt: c00
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210209141627.2898485-1-mpe@ellerman.id.au
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: v5.11+ <stable@vger.kernel.org> # v5.11+
+Fixes: cf1fac943c63 ("opp: Reduce the size of critical section in _opp_kref_release()")
+Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+[ Viresh: Almost rewrote entire patch, added new "removed" field,
+	  rewrote commit log and added the correct Fixes tag. ]
+Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/ptrace.h | 3 +++
- arch/powerpc/kernel/asm-offsets.c | 2 +-
- arch/powerpc/kernel/process.c     | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/opp/core.c |   48 +++++++++++++++++++++++++-----------------------
+ drivers/opp/opp.h  |    2 ++
+ 2 files changed, 27 insertions(+), 23 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-index e2c778c176a3..7bb064ad04d8 100644
---- a/arch/powerpc/include/asm/ptrace.h
-+++ b/arch/powerpc/include/asm/ptrace.h
-@@ -62,6 +62,9 @@ struct pt_regs
- };
- #endif
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1335,7 +1335,11 @@ static struct dev_pm_opp *_opp_get_next(
  
+ 	mutex_lock(&opp_table->lock);
+ 	list_for_each_entry(temp, &opp_table->opp_list, node) {
+-		if (dynamic == temp->dynamic) {
++		/*
++		 * Refcount must be dropped only once for each OPP by OPP core,
++		 * do that with help of "removed" flag.
++		 */
++		if (!temp->removed && dynamic == temp->dynamic) {
+ 			opp = temp;
+ 			break;
+ 		}
+@@ -1345,10 +1349,27 @@ static struct dev_pm_opp *_opp_get_next(
+ 	return opp;
+ }
+ 
+-bool _opp_remove_all_static(struct opp_table *opp_table)
++/*
++ * Can't call dev_pm_opp_put() from under the lock as debugfs removal needs to
++ * happen lock less to avoid circular dependency issues. This routine must be
++ * called without the opp_table->lock held.
++ */
++static void _opp_remove_all(struct opp_table *opp_table, bool dynamic)
+ {
+ 	struct dev_pm_opp *opp;
+ 
++	while ((opp = _opp_get_next(opp_table, dynamic))) {
++		opp->removed = true;
++		dev_pm_opp_put(opp);
 +
-+#define STACK_FRAME_WITH_PT_REGS (STACK_FRAME_OVERHEAD + sizeof(struct pt_regs))
++		/* Drop the references taken by dev_pm_opp_add() */
++		if (dynamic)
++			dev_pm_opp_put_opp_table(opp_table);
++	}
++}
 +
- #ifdef __powerpc64__
++bool _opp_remove_all_static(struct opp_table *opp_table)
++{
+ 	mutex_lock(&opp_table->lock);
  
- /*
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index c2722ff36e98..5c125255571c 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -307,7 +307,7 @@ int main(void)
+ 	if (!opp_table->parsed_static_opps) {
+@@ -1363,13 +1384,7 @@ bool _opp_remove_all_static(struct opp_t
  
- 	/* Interrupt register frame */
- 	DEFINE(INT_FRAME_SIZE, STACK_INT_FRAME_SIZE);
--	DEFINE(SWITCH_FRAME_SIZE, STACK_FRAME_OVERHEAD + sizeof(struct pt_regs));
-+	DEFINE(SWITCH_FRAME_SIZE, STACK_FRAME_WITH_PT_REGS);
- 	STACK_PT_REGS_OFFSET(GPR0, gpr[0]);
- 	STACK_PT_REGS_OFFSET(GPR1, gpr[1]);
- 	STACK_PT_REGS_OFFSET(GPR2, gpr[2]);
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index d421a2c7f822..1a1d2657fe8d 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -2170,7 +2170,7 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
- 		 * See if this is an exception frame.
- 		 * We look for the "regshere" marker in the current frame.
- 		 */
--		if (validate_sp(sp, tsk, STACK_INT_FRAME_SIZE)
-+		if (validate_sp(sp, tsk, STACK_FRAME_WITH_PT_REGS)
- 		    && stack[STACK_FRAME_MARKER] == STACK_FRAME_REGS_MARKER) {
- 			struct pt_regs *regs = (struct pt_regs *)
- 				(sp + STACK_FRAME_OVERHEAD);
--- 
-2.30.1
-
+ 	mutex_unlock(&opp_table->lock);
+ 
+-	/*
+-	 * Can't remove the OPP from under the lock, debugfs removal needs to
+-	 * happen lock less to avoid circular dependency issues.
+-	 */
+-	while ((opp = _opp_get_next(opp_table, false)))
+-		dev_pm_opp_put(opp);
+-
++	_opp_remove_all(opp_table, false);
+ 	return true;
+ }
+ 
+@@ -1382,25 +1397,12 @@ bool _opp_remove_all_static(struct opp_t
+ void dev_pm_opp_remove_all_dynamic(struct device *dev)
+ {
+ 	struct opp_table *opp_table;
+-	struct dev_pm_opp *opp;
+-	int count = 0;
+ 
+ 	opp_table = _find_opp_table(dev);
+ 	if (IS_ERR(opp_table))
+ 		return;
+ 
+-	/*
+-	 * Can't remove the OPP from under the lock, debugfs removal needs to
+-	 * happen lock less to avoid circular dependency issues.
+-	 */
+-	while ((opp = _opp_get_next(opp_table, true))) {
+-		dev_pm_opp_put(opp);
+-		count++;
+-	}
+-
+-	/* Drop the references taken by dev_pm_opp_add() */
+-	while (count--)
+-		dev_pm_opp_put_opp_table(opp_table);
++	_opp_remove_all(opp_table, true);
+ 
+ 	/* Drop the reference taken by _find_opp_table() */
+ 	dev_pm_opp_put_opp_table(opp_table);
+--- a/drivers/opp/opp.h
++++ b/drivers/opp/opp.h
+@@ -56,6 +56,7 @@ extern struct list_head opp_tables;
+  * @dynamic:	not-created from static DT entries.
+  * @turbo:	true if turbo (boost) OPP
+  * @suspend:	true if suspend OPP
++ * @removed:	flag indicating that OPP's reference is dropped by OPP core.
+  * @pstate: Device's power domain's performance state.
+  * @rate:	Frequency in hertz
+  * @level:	Performance level
+@@ -78,6 +79,7 @@ struct dev_pm_opp {
+ 	bool dynamic;
+ 	bool turbo;
+ 	bool suspend;
++	bool removed;
+ 	unsigned int pstate;
+ 	unsigned long rate;
+ 	unsigned int level;
 
 
