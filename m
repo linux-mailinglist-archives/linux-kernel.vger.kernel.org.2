@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3339033C58D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64D633C592
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhCOS0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        id S231663AbhCOS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhCOS0G (ORCPT
+        with ESMTP id S232013AbhCOS0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:26:06 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160E3C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:26:06 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id p24so7431176ota.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:26:06 -0700 (PDT)
+        Mon, 15 Mar 2021 14:26:49 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED98C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:26:49 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id b78so25079413qkg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 11:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YsO66aKCLruG+OQDzYO3UaHdDnPWEUf3gpDAl+0qUto=;
-        b=H3h8N00QtJBq6aCINRl2EmY80P2fXpk1NSs4P2th2wZyJLtIUcDiJy4k4Uge7GxCkF
-         LFfLkL93r8trVbjfB7e6LOPG8fcNdZmjDc1sPCZBFQqVgED0PAXDYXCsATgJAXhxmlCG
-         NM5+kIxQgEBuORUv/GLo/9XjsXP3nri8OdjYdAddjbR+qJLgb3XMsnEXzj/ZFJzKXpPb
-         HQL8yEiN+D3YS2eNQwgMJYPF52K2Yp7mmlPfOFgusDiYHpX5ZmrUWGs3PXbWrL+8Q8Yf
-         OVNNn6iLRlBKvuSa+my2Tsx0Lq2Byy9Eg6GPKSVipyjlFvGHBafP/Z+qegao1pjcbz8L
-         JQyw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Mx5f7S+/5wRWBEBjRnHorBN6dS5pzBj5+cDT45N3twk=;
+        b=PlpPMKkm7qu6wCcvrEVc6KzFMMrjwWRJ198xVmPtC9vIbZPfK6/sbqEIkegXWp8Btu
+         MuIQ892Ph6/RTX7ffhra72wj5jtXEQuuBFixDZKDxr+zuyxADYTvREp3L5e5OodF94AT
+         lJOhmjpkoeqmxNVRhGJ1hDxkMLk6kujS/9hJsmDQGmqUAMICEn1cY3LZCFyQrcnEhFjC
+         okjVPg9vp712MltmkyLQGkoMeCtT4u99CMNjOupbhTJNiAs05rhfyB099QZpl71tRl3R
+         6frsQawZnyoA3mdDyxlLQWcSkSJ3nEgD5sCr26s7oxJTLMq717hCj0SqxMVzHHJjuoL7
+         l7Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YsO66aKCLruG+OQDzYO3UaHdDnPWEUf3gpDAl+0qUto=;
-        b=NgTXADrqaC6C2P/bbk2Qa2SE8/IM7qaf06z9lrMetmt/EHrDVkNd/Xse6CvTWPXqlV
-         YGIpwa5kzpzQZHK5/adw2gBA93xXtFl1Q2fr56WPxdk71fv7vduvcidCdR1JI/j+dRit
-         EZclOatNGdfXBY9bzU4OKvOOHaF4bA2oSOOuh2y7lc+cFs3XcP7uOTXQMdnl4L+RNREJ
-         dnC7kR+m8TkCW2F4fgJdH5wHVarVhHUuSNx0lEnK8n3gFqMDrMPKhEYgKYjkGtgPa3oE
-         wtxxUSAxhGOBTLXvHmNZfioEewqnmavYPSZ1wEjfuGUUdMWVE9rZfaKQHwbysPm/f+PN
-         DH1g==
-X-Gm-Message-State: AOAM531QZ7lc0aKh6lkmMN2Lup9tjBz5gpt1DOo4xv+tF8ygmfgc9K8+
-        22AaPSDoIDNHQMR5eJE00upug5rGyT0h1pR9Q5s=
-X-Google-Smtp-Source: ABdhPJyUsTSW+BdKCvvTEcH5LcoX2K3PQpaJSRRXDSD8bvVou3k3bo3Hoj1OOOnXWMdVMMVSkGuKYBfmEdyyeBKg/vQ=
-X-Received: by 2002:a9d:20c3:: with SMTP id x61mr324341ota.311.1615832765510;
- Mon, 15 Mar 2021 11:26:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210315032136.3669883-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210315032136.3669883-1-unixbhaskar@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 15 Mar 2021 14:25:54 -0400
-Message-ID: <CADnq5_Mu=WrBZURETB_+7R=sStY6-vNN9OQ5B8whDTwsuk2tdQ@mail.gmail.com>
-Subject: Re: [PATCH V2] drm: amd: pm: Mundane typo fixes in the file amdgpu_pm.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Quan, Evan" <evan.quan@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Mx5f7S+/5wRWBEBjRnHorBN6dS5pzBj5+cDT45N3twk=;
+        b=OU6UkdbsEHrdnrkQGqKcSmgQnsvWzFBWg1RbDXACxpuY97LOsyPziRVsNeFXcjWa0v
+         l7zSmwP5LZDJqvbFR5BalX8bJkK3/tipoWSwCdj+trXUTh6fkfnzWmQk5pIrPkUWxfdT
+         X7e9IKdlpWsLo794d3cZGG2Hc8GVH0eQ8GSOAFTrvnDRdOuGPT+7JOeDkPttpRpKIG3e
+         7czufhPDzqzhWaDluUnY+kFushm3fGKSXtPRBlh1sVq5etSY+9BijjVrC4Nm0Th4epOO
+         lOXHyUJMOGqU88ishOMcw7zak+PsVBB3HgeTJNOomNFeVykyHe/Yd6UK4tn24SIqDVRa
+         uuMg==
+X-Gm-Message-State: AOAM532y0PBQBRY8F6tnkphW03pEmhn1wsfdPCd50C0ZBGGy9K/Wnm6f
+        n+QjTx3stImoBR+//wBwvbVOzD+pE6UTx2d57KAOBnzJ/rFo6FQqTNZIAotIi10mwN3eui1c8iR
+        Brnq44HXA1q7l4zPG69ngb5OZY2M8Dx7i0RI8nxz4lt6M9LRcAHWQH1y1i1XgoDQ0gkPgXPLg
+X-Google-Smtp-Source: ABdhPJyPnuqH28GMfLvsE6fntxec4xEAKml+R1kWf48drQz3przzmYm9EipdFRGFMISS6+0jw9PngSrS0NY1
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:888a:4e22:67:844a])
+ (user=bgardon job=sendgmr) by 2002:ad4:5ec9:: with SMTP id
+ jm9mr12014461qvb.56.1615832808291; Mon, 15 Mar 2021 11:26:48 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 11:26:39 -0700
+Message-Id: <20210315182643.2437374-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2 0/4] Fix RCU warnings in TDP MMU
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ben Gardon <bgardon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 11:22 PM Bhaskar Chowdhury
-<unixbhaskar@gmail.com> wrote:
->
->
-> s/"an minimum"/"a minimum"/
-> s/"an maxmum"/"a maximum"/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+The Linux Test Robot found a few RCU warnings in the TDP MMU:
+https://www.spinics.net/lists/kernel/msg3845500.html
+https://www.spinics.net/lists/kernel/msg3845521.html
 
-Applied.  Thanks!
+Fix these warnings and cleanup a hack in tdp_mmu_iter_cond_resched.
 
-Alex
+Tested by compiling as suggested in the test robot report and confirmed
+that the warnings go away with this series applied. Also ran
+kvm-unit-tests on an Intel Skylake machine with the TDP MMU enabled and
+confirmed that the series introduced no new failures.
 
-> ---
->  Changes from V1:
->   Randy's suggestion to adjust the subject line text
->   And missed out a spell too,which now included
->
->  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> index 5fa65f191a37..308249ae1a22 100644
-> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> @@ -3315,9 +3315,9 @@ static ssize_t amdgpu_hwmon_show_mclk_label(struct device *dev,
->   *
->   * - pwm1_max: pulse width modulation fan control maximum level (255)
->   *
-> - * - fan1_min: an minimum value Unit: revolution/min (RPM)
-> + * - fan1_min: a minimum value Unit: revolution/min (RPM)
->   *
-> - * - fan1_max: an maxmum value Unit: revolution/max (RPM)
-> + * - fan1_max: a maximum value Unit: revolution/max (RPM)
->   *
->   * - fan1_input: fan speed in RPM
->   *
-> --
-> 2.30.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Ben Gardon (4):
+  KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
+  KVM: x86/mmu: Fix RCU usage when atomically zapping SPTEs
+  KVM: x86/mmu: Factor out tdp_iter_return_to_root
+  KVM: x86/mmu: Store the address space ID in the TDP iterator
+
+ arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
+ arch/x86/kvm/mmu/tdp_iter.c     | 30 +++++++++++++++----------
+ arch/x86/kvm/mmu/tdp_iter.h     |  4 +++-
+ arch/x86/kvm/mmu/tdp_mmu.c      | 40 +++++++++++++--------------------
+ 4 files changed, 41 insertions(+), 38 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
