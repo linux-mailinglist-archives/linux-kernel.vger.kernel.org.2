@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD3F33BBD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB6A33BBD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbhCOOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S233776AbhCOOVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232813AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40AE564F0D;
-        Mon, 15 Mar 2021 13:59:39 +0000 (UTC)
+        id S232834AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EFA764F31;
+        Mon, 15 Mar 2021 13:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816780;
-        bh=FTAwELuj2EcQRMLn9mlwt2MunR7r3AyeDut4nIGaRjk=;
+        s=korg; t=1615816781;
+        bh=rmC7IlEqG/sf97jfBeF9COqnucpg5NZszwxabt3aGbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mva0MIEcbqp38I9uWerltgKcgjc1JmuuFkI+XXb7M0f65UUgeLdAxZMnR5tmw/pjq
-         jlazNSHHOj8tauZENBFL/flJQhrtCUSGXucRc4mZZeNnkNb4S2P8io6fDpZoMcejE8
-         QKbtioI3688UxulG2njkLbV6TfsNwW69KlKODr/U=
+        b=KqLyLFHNv+0DF8B6NiIRfEkg69Ha5xvGF+iSrXaEVfSLvhfSfvN0Uuj5WyNMbQD9e
+         ARJuiuWaiFjOTjy2fcni8fvpVjuizOtFrEzDcoxEckDZ5PYB5jauLujVDb7w/SC8Kk
+         OGdhpp5NsyvjCAZ44PvXtyy163kX5uualtKiVyGg=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 5.4 104/168] USB: gadget: u_ether: Fix a configfs return code
-Date:   Mon, 15 Mar 2021 14:55:36 +0100
-Message-Id: <20210315135553.786047105@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@freescale.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 5.4 105/168] usb: gadget: f_uac2: always increase endpoint max_packet_size by one audio slot
+Date:   Mon, 15 Mar 2021 14:55:37 +0100
+Message-Id: <20210315135553.817987765@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -41,38 +41,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
+commit 789ea77310f0200c84002884ffd628e2baf3ad8a upstream.
 
-If the string is invalid, this should return -EINVAL instead of 0.
+As per UAC2 Audio Data Formats spec (2.3.1.1 USB Packets),
+if the sampling rate is a constant, the allowable variation
+of number of audio slots per virtual frame is +/- 1 audio slot.
 
-Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
+It means that endpoint should be able to accept/send +1 audio
+slot.
+
+Previous endpoint max_packet_size calculation code
+was adding sometimes +1 audio slot due to DIV_ROUND_UP
+behaviour which was rounding up to closest integer.
+However this doesn't work if the numbers are divisible.
+
+It had no any impact with Linux hosts which ignore
+this issue, but in case of more strict Windows it
+caused rejected enumeration
+
+Thus always add +1 audio slot to endpoint's max packet size
+
+Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+Cc: Peter Chen <peter.chen@freescale.com>
+Cc: <stable@vger.kernel.org> #v4.3+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Link: https://lore.kernel.org/r/1614599375-8803-2-git-send-email-ruslan.bilovol@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/f_uac2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/u_ether_configfs.h
-+++ b/drivers/usb/gadget/function/u_ether_configfs.h
-@@ -169,12 +169,11 @@ out:									\
- 						size_t len)		\
- 	{								\
- 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
--		int ret;						\
-+		int ret = -EINVAL;					\
- 		u8 val;							\
- 									\
- 		mutex_lock(&opts->lock);				\
--		ret = sscanf(page, "%02hhx", &val);			\
--		if (ret > 0) {						\
-+		if (sscanf(page, "%02hhx", &val) > 0) {			\
- 			opts->_n_ = val;				\
- 			ret = len;					\
- 		}							\
+--- a/drivers/usb/gadget/function/f_uac2.c
++++ b/drivers/usb/gadget/function/f_uac2.c
+@@ -478,7 +478,7 @@ static int set_ep_max_packet_size(const
+ 	}
+ 
+ 	max_size_bw = num_channels(chmask) * ssize *
+-		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
++		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
+ 	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
+ 						    max_size_ep));
+ 
 
 
