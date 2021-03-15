@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A6F33BFA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E2033BFA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhCOPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S232148AbhCOPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhCOPVS (ORCPT
+        with ESMTP id S231211AbhCOPVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 11:21:18 -0400
 Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE1EC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:21:16 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id g9so9714402ilc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:21:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B98C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:21:17 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id h18so9709992ils.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 08:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HrzQhsRc599ph2zuSB7VP6Fml8kkJcZ8OjvvN5VFwSM=;
-        b=mOx3t/LV8m8lw+fAqMgEDSFeYFjtJ80xNdotUsL8CQKcHlLxMSHfn1+yiEAQaPC3/d
-         y2AKFpPjZqZ/sW0l9sMIX/U7lM2vIobiKYQc3XXFSGWLMpxGJI+Z3Jo56DcY0Ge7q2Hb
-         59eMuvail70J81AhVO2qs7ydvFHa4N7tLWSBoX4gsv+aypnJtkDt1vLNkpEyBJl714lp
-         g36os3gs9PQ7ElPtSi5hvdC0Ne4IpmKQyzjOcpiOFZ65dIs9DI4FOR1qdxHa43HyDPEp
-         /ipPoj4l6Bhrp626PBZ7E0DV/zuyap1AREfNe5+SgX4VljXrIoqe8rJ5ii3ntEK4XVp2
-         pULg==
+        bh=cdjWAvcEPqqoxOkQ5Yghff2TWeEJIKckZ0LUeD8YodY=;
+        b=SurpKAYomkVRJ20/mN9GqMSiw+B44DXbzIUGWYPcvOsSjgA3N6qN2NTJfO7MaQ7MoB
+         +LGP71XKF2EZOTuEHOj1pxxnEj+t2lxhjBeB3vDPHVyAFh3QAxSBn0aRHhCSkwhze/j5
+         TcQuKoJxBnCF3+KOAu5gca7qRnktHtxShGD4OqdLYvwyDDakO6A8d7agAvszOg6VgbQ8
+         wHoEYZMrQH7pTk/NlsPX9OX0eUtEsfxPXp7J+OwJYZZSkszYD09seU++nTwR87krEUFb
+         LTmvSYgMHSFVEC2wM/e3R0hjP85rbUY6NafS/IybZ/ivfCt1MLvcDaQAkzXus1QyURNF
+         Taow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HrzQhsRc599ph2zuSB7VP6Fml8kkJcZ8OjvvN5VFwSM=;
-        b=mkRKI2gZW/QqlH6aQ8RjTyHeHLfumOTOorisPlr+0u1cZ2XWXcrUIZJ7LTXKjjZVu4
-         HnpzSB37TDYQdToqaL1TnOXAecY86NzMxgUAtkQ8p+ftYFv5/C1B7hycrLN4DaBJkB9E
-         xybHEE20aJPYR4A+MQrB9n8ZuBrb599ddcJID3MqijmfV457BKqZtQ3kG01o55o5t6TO
-         Lb6R7ohScqVhWJLnqJ1SObFxxiVKp7TfRCFQO2rnN2H8umqVJlvHAhBr+RHbuj4Zj+0c
-         r/Zz6sldoncY0Bp/rauEH+cevavuDN48ccyzUQBz/YKHy798SIpxzuWSAS8V+YYBUIB6
-         Wang==
-X-Gm-Message-State: AOAM5336oCDcEIfGvioKgmfdR8MZRy7qGZWXjaEcbX3dht/eZ1oJa6x8
-        wCxWn1B8/xGzvD+Bjr0c1ug4HIP1mCpv7g==
-X-Google-Smtp-Source: ABdhPJydighsi2ivW7mHFtTlbTuLGKX5gow+eWRSmC4OMwyyrVsUuI9cm883lqIqStMz9mfUI6wHow==
-X-Received: by 2002:a05:6e02:2192:: with SMTP id j18mr99575ila.196.1615821676373;
-        Mon, 15 Mar 2021 08:21:16 -0700 (PDT)
+        bh=cdjWAvcEPqqoxOkQ5Yghff2TWeEJIKckZ0LUeD8YodY=;
+        b=sMBAaFUoB3LXzwY0tC4u/ZO1ZRxwFNyRIiC5GJPtSxAuYQD/crOIUiHUF+JdwirX0L
+         EMVpuTFPTvMKZGkJJkYHMHCryJV5H7X6LMGQMa+VP15/gChs1DtosmzqMoK3kz1fc2J4
+         uQk5I3kkwuefv5MYW71tJWjn78kdjEg4grgQ8gmY+q7iy0myoo+uGheGyWPubbJTMyKa
+         YlWzzeznt8lH9bHWySD8uykTJRseYaujDGLd053aqmPbuzLNCQzDDDZvlTfLVkbiZ/EF
+         7zwtCIz2vczB5oWeCNHO5KUxCX0IOV4zpGDJLt+PPVpGydI/vRBo5ds2e0cLLxx1Dxrs
+         +dQw==
+X-Gm-Message-State: AOAM530/ILZFOKBsCgHP5iMawcljXpGVkJMdZLvaRTO90+zTwfU+MFrT
+        ElkVlzwaLJ0Ikb66z4Mk1lHI0g==
+X-Google-Smtp-Source: ABdhPJx7sJ08iAydS2SYzucwjoDNvZZ97Wm0cI9av1bcHr0TvEVoJj4zzFgSwYCEpeRsSKWF06MfxA==
+X-Received: by 2002:a05:6e02:13cb:: with SMTP id v11mr72539ilj.105.1615821677254;
+        Mon, 15 Mar 2021 08:21:17 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l17sm8194275ilt.27.2021.03.15.08.21.15
+        by smtp.gmail.com with ESMTPSA id l17sm8194275ilt.27.2021.03.15.08.21.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Mar 2021 08:21:16 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
@@ -53,9 +53,9 @@ To:     davem@davemloft.net, kuba@kernel.org
 Cc:     manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
         evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/3] net: ipa: fix a duplicated tlv_type value
-Date:   Mon, 15 Mar 2021 10:21:10 -0500
-Message-Id: <20210315152112.1907968-2-elder@linaro.org>
+Subject: [PATCH net-next 2/3] net: ipa: fix another QMI message definition
+Date:   Mon, 15 Mar 2021 10:21:11 -0500
+Message-Id: <20210315152112.1907968-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210315152112.1907968-1-elder@linaro.org>
 References: <20210315152112.1907968-1-elder@linaro.org>
@@ -65,38 +65,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the ipa_indication_register_req_ei[] encoding array, the tlv_type
-associated with the ipa_mhi_ready_ind field is wrong.  It duplicates
-the value used for the data_usage_quota_reached field (0x11) and
-should use value 0x12 instead.  Fix this bug.
+The ipa_init_modem_driver_req_ei[] encoding array for the
+INIT_MODEM_DRIVER request message has some errors in it.
+
+First, the tlv_type associated with the hw_stats_quota_size field is
+wrong; it duplicates the valiue used for the hw_stats_quota_base_addr
+field (0x1f) and should use 0x20 instead.  The tlv_type value for
+the hw_stats_drop_size field also uses the same duplicate value; it
+should use 0x22 instead.
+
+Second, there is no definition for the hw_stats_drop_base_addr
+field.  It is an optional 32-bit enumerated type value.
+
+Finally, the hw_stats_quota_base_addr, hw_stats_quota_size, and
+hw_stats_drop_size fields are defined as enumerated types; they
+should be unsigned 4-byte values.
 
 Reported-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_qmi_msg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ipa/ipa_qmi_msg.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_qmi_msg.c b/drivers/net/ipa/ipa_qmi_msg.c
-index 73413371e3d3e..e00f829a783f6 100644
+index e00f829a783f6..e4a6efbe9bd00 100644
 --- a/drivers/net/ipa/ipa_qmi_msg.c
 +++ b/drivers/net/ipa/ipa_qmi_msg.c
-@@ -56,7 +56,7 @@ struct qmi_elem_info ipa_indication_register_req_ei[] = {
- 		.elem_size	=
- 			sizeof_field(struct ipa_indication_register_req,
- 				     ipa_mhi_ready_ind_valid),
--		.tlv_type	= 0x11,
-+		.tlv_type	= 0x12,
- 		.offset		= offsetof(struct ipa_indication_register_req,
- 					   ipa_mhi_ready_ind_valid),
+@@ -530,7 +530,7 @@ struct qmi_elem_info ipa_init_modem_driver_req_ei[] = {
+ 					   hw_stats_quota_base_addr_valid),
  	},
-@@ -66,7 +66,7 @@ struct qmi_elem_info ipa_indication_register_req_ei[] = {
+ 	{
+-		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
++		.data_type	= QMI_UNSIGNED_4_BYTE,
+ 		.elem_len	= 1,
  		.elem_size	=
- 			sizeof_field(struct ipa_indication_register_req,
- 				     ipa_mhi_ready_ind),
--		.tlv_type	= 0x11,
-+		.tlv_type	= 0x12,
- 		.offset		= offsetof(struct ipa_indication_register_req,
- 					   ipa_mhi_ready_ind),
+ 			sizeof_field(struct ipa_init_modem_driver_req,
+@@ -545,37 +545,57 @@ struct qmi_elem_info ipa_init_modem_driver_req_ei[] = {
+ 		.elem_size	=
+ 			sizeof_field(struct ipa_init_modem_driver_req,
+ 				     hw_stats_quota_size_valid),
+-		.tlv_type	= 0x1f,
++		.tlv_type	= 0x20,
+ 		.offset		= offsetof(struct ipa_init_modem_driver_req,
+ 					   hw_stats_quota_size_valid),
+ 	},
+ 	{
+-		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
++		.data_type	= QMI_UNSIGNED_4_BYTE,
+ 		.elem_len	= 1,
+ 		.elem_size	=
+ 			sizeof_field(struct ipa_init_modem_driver_req,
+ 				     hw_stats_quota_size),
+-		.tlv_type	= 0x1f,
++		.tlv_type	= 0x20,
+ 		.offset		= offsetof(struct ipa_init_modem_driver_req,
+ 					   hw_stats_quota_size),
+ 	},
++	{
++		.data_type	= QMI_OPT_FLAG,
++		.elem_len	= 1,
++		.elem_size	=
++			sizeof_field(struct ipa_init_modem_driver_req,
++				     hw_stats_drop_base_addr_valid),
++		.tlv_type	= 0x21,
++		.offset		= offsetof(struct ipa_init_modem_driver_req,
++					   hw_stats_drop_base_addr_valid),
++	},
++	{
++		.data_type	= QMI_UNSIGNED_4_BYTE,
++		.elem_len	= 1,
++		.elem_size	=
++			sizeof_field(struct ipa_init_modem_driver_req,
++				     hw_stats_drop_base_addr),
++		.tlv_type	= 0x21,
++		.offset		= offsetof(struct ipa_init_modem_driver_req,
++					   hw_stats_drop_base_addr),
++	},
+ 	{
+ 		.data_type	= QMI_OPT_FLAG,
+ 		.elem_len	= 1,
+ 		.elem_size	=
+ 			sizeof_field(struct ipa_init_modem_driver_req,
+ 				     hw_stats_drop_size_valid),
+-		.tlv_type	= 0x1f,
++		.tlv_type	= 0x22,
+ 		.offset		= offsetof(struct ipa_init_modem_driver_req,
+ 					   hw_stats_drop_size_valid),
+ 	},
+ 	{
+-		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
++		.data_type	= QMI_UNSIGNED_4_BYTE,
+ 		.elem_len	= 1,
+ 		.elem_size	=
+ 			sizeof_field(struct ipa_init_modem_driver_req,
+ 				     hw_stats_drop_size),
+-		.tlv_type	= 0x1f,
++		.tlv_type	= 0x22,
+ 		.offset		= offsetof(struct ipa_init_modem_driver_req,
+ 					   hw_stats_drop_size),
  	},
 -- 
 2.27.0
