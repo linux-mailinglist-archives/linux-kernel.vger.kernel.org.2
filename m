@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3396133BB8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F081D33BB4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhCOOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S232474AbhCOOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232724AbhCON7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AE8664F5F;
-        Mon, 15 Mar 2021 13:59:14 +0000 (UTC)
+        id S232527AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9BB64F06;
+        Mon, 15 Mar 2021 13:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816756;
-        bh=PutbLPfySmXgGXfCj/xiBvob+lHf6Yw9ssvPM9ZX8mU=;
+        s=korg; t=1615816725;
+        bh=I0xtAo1np7bMcLhrvmMjf/dDehU9BTJONjnWPU3Uw1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dvHPCyvovIzsjxQun6luEPiNjrrMZs957x7CBtiIDlslyhld3Y4Zn+9x3sX2QDFXS
-         zG3GCLFKLaeS6KexqFQK4vJUXioCznY/GB96cn4xPBxrVixuUZScmBQNGNDCuH7kDN
-         t+4UqdEUrlA/1yrlf8xbHeaFmjwh7BM1wcefFgLY=
+        b=UJyzos6blhnxDIBEF9SFs9x3kpI8MZlqY3QFzhnIJYvhsf/ApXaUdbfNDQJXSMfpb
+         LOVbMeviNSmUcPLnfWbLIqsm/CrK7i3C7Pp9wGGev02j0Ts6ANM2wFKI2v0IcnpFft
+         P1/nLmprNNTeEXNg6FjGYHhauEc4m8oays1y7d0o=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neil Roberts <nroberts@igalia.com>,
-        Steven Price <steven.price@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.11 106/306] drm/shmem-helper: Dont remove the offset in vm_area_struct pgoff
-Date:   Mon, 15 Mar 2021 14:52:49 +0100
-Message-Id: <20210315135511.230816332@linuxfoundation.org>
+        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.10 077/290] s390/cio: return -EFAULT if copy_to_user() fails again
+Date:   Mon, 15 Mar 2021 14:52:50 +0100
+Message-Id: <20210315135544.521135675@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +41,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Neil Roberts <nroberts@igalia.com>
+From: Wang Qing <wangqing@vivo.com>
 
-commit 11d5a4745e00e73745774671dbf2fb07bd6e2363 upstream.
+commit 51c44babdc19aaf882e1213325a0ba291573308f upstream.
 
-When mmapping the shmem, it would previously adjust the pgoff in the
-vm_area_struct to remove the fake offset that is added to be able to
-identify the buffer. This patch removes the adjustment and makes the
-fault handler use the vm_fault address to calculate the page offset
-instead. Although using this address is apparently discouraged, several
-DRM drivers seem to be doing it anyway.
+The copy_to_user() function returns the number of bytes remaining to be
+copied, but we want to return -EFAULT if the copy doesn't complete.
 
-The problem with removing the pgoff is that it prevents
-drm_vma_node_unmap from working because that searches the mapping tree
-by address. That doesn't work because all of the mappings are at offset
-0. drm_vma_node_unmap is being used by the shmem helpers when purging
-the buffer.
-
-This fixes a bug in Panfrost which is using drm_gem_shmem_purge. Without
-this the mapping for the purged buffer can still be accessed which might
-mean it would access random pages from other buffers
-
-v2: Don't check whether the unsigned page_offset is less than 0.
-
-Cc: stable@vger.kernel.org
-Fixes: 17acb9f35ed7 ("drm/shmem: Add madvise state and purge helpers")
-Signed-off-by: Neil Roberts <nroberts@igalia.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Signed-off-by: Steven Price <steven.price@arm.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210223155125.199577-3-nroberts@igalia.com
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: e01bcdd61320 ("vfio: ccw: realize VFIO_DEVICE_GET_REGION_INFO ioctl")
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/1614600093-13992-1-git-send-email-wangqing@vivo.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/s390/cio/vfio_ccw_ops.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -527,15 +527,19 @@ static vm_fault_t drm_gem_shmem_fault(st
- 	loff_t num_pages = obj->size >> PAGE_SHIFT;
- 	vm_fault_t ret;
- 	struct page *page;
-+	pgoff_t page_offset;
-+
-+	/* We don't use vmf->pgoff since that has the fake offset */
-+	page_offset = (vmf->address - vma->vm_start) >> PAGE_SHIFT;
+--- a/drivers/s390/cio/vfio_ccw_ops.c
++++ b/drivers/s390/cio/vfio_ccw_ops.c
+@@ -539,7 +539,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
+ 		if (ret)
+ 			return ret;
  
- 	mutex_lock(&shmem->pages_lock);
- 
--	if (vmf->pgoff >= num_pages ||
-+	if (page_offset >= num_pages ||
- 	    WARN_ON_ONCE(!shmem->pages) ||
- 	    shmem->madv < 0) {
- 		ret = VM_FAULT_SIGBUS;
- 	} else {
--		page = shmem->pages[vmf->pgoff];
-+		page = shmem->pages[page_offset];
- 
- 		ret = vmf_insert_page(vma, vmf->address, page);
+-		return copy_to_user((void __user *)arg, &info, minsz);
++		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
  	}
-@@ -591,9 +595,6 @@ int drm_gem_shmem_mmap(struct drm_gem_ob
- 	struct drm_gem_shmem_object *shmem;
- 	int ret;
+ 	case VFIO_DEVICE_GET_REGION_INFO:
+ 	{
+@@ -557,7 +557,7 @@ static ssize_t vfio_ccw_mdev_ioctl(struc
+ 		if (ret)
+ 			return ret;
  
--	/* Remove the fake offset */
--	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
--
- 	if (obj->import_attach) {
- 		/* Drop the reference drm_gem_mmap_obj() acquired.*/
- 		drm_gem_object_put(obj);
+-		return copy_to_user((void __user *)arg, &info, minsz);
++		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+ 	}
+ 	case VFIO_DEVICE_GET_IRQ_INFO:
+ 	{
 
 
