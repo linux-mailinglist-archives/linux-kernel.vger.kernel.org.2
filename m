@@ -2,123 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBF033AA0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 554B533AA0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhCODhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:37:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:57989 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhCODhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:37:10 -0400
-IronPort-SDR: e1r5JljvBOPGx4ajwvWAGHSN4QFUUiPzsOOpjvJ4s2FDYiBwDaPJWSHQ3FsMoxJJ+pfJqpOtbW
- TjGK9HhpZgOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="208925243"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="208925243"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 20:37:04 -0700
-IronPort-SDR: Ua5HwDV6UApRMkS6GpJy7024IbgwWZvc1n8Z/1mrpqRZNPs1sKhl2ZRqge/8Z4VBlDlGrBCv8O
- T3kDvZ9X2FlQ==
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="371499675"
-Received: from avaldezb-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.229.198])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 20:36:59 -0700
-Date:   Mon, 15 Mar 2021 16:36:56 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v2 08/25] x86/sgx: Expose SGX architectural definitions
- to the kernel
-Message-Id: <20210315163656.df89c4f52573724e492cc11d@intel.com>
-In-Reply-To: <YEvkEJkM0D7oZWE3@google.com>
-References: <cover.1615250634.git.kai.huang@intel.com>
-        <b60e1d665c17ed6430166d659bd0f547a53aea0f.1615250634.git.kai.huang@intel.com>
-        <YEvkEJkM0D7oZWE3@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229887AbhCODh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhCODhd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 23:37:33 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10E0C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:37:33 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id z13so31939309iox.8
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A6CY6cKc95xTq+TlSR1oRBY2LuTAiSqefWIbt2lRRJM=;
+        b=Ij/PZKQnNuHvmX7UXF1zWmqCCfLzDUCyKJgxu1E5SQJ3RLPSfLQ1L/Jh6HO7JizyOz
+         vSKBD3WJCRIe/4EBhifp2WsofgYnzZ6tbN7eYNyo1G/6xQ6j9aQlVf2imasgWeMUQpf7
+         vbOdd5jQlpmtZC4n1g03i07MQI8AOrDgRg/EEm5NjS+Pc3794vM/c59a+ca34zz2JBqd
+         chzFANTXdPnr313QcpyizyQ4JzgMMsipzcEisI/qsXS2wQLXFut3SDok8SPToABFjVB7
+         MiYiSifcRrLXOhsKjAZzQN/NIv5x4iYwa/pJ/twMor/9i00oxvvpLh8hmnR6IWKt1M5U
+         bj5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A6CY6cKc95xTq+TlSR1oRBY2LuTAiSqefWIbt2lRRJM=;
+        b=hrg9A53cT3jHwovGKMAlq6zL65NWQMm3kuZu8RiNQsO12lIxvyP385A2guTbG14KS1
+         WPAu3h33iYe9YysxQ/iwxUIahtv1aAlA9pLLT8omvkMRdq5QDwlHW3ZUIxhAaiJqhTGp
+         9TGV6K4kI39OE1qiYOwVCY4AY8k2UTBNVmfZll3KzzUGTLymdslz5ezPws74lMgFtsTG
+         zuFGnhcFoidrKdc+RD7p7WGrVQ0rBziVelvmrIlUG6yPJ0C0ki/+EJZu8U2figzX3xDW
+         ic+bdFVUPGZYSMH8HyCw2Wycu7jqat+eSl1tAW4M1mZxrTlWKMZWwqdFYM35anoi/Pgd
+         5gyw==
+X-Gm-Message-State: AOAM530p1N6BPgNdjtkMGahFg6xmCClhiF2H9DYzzsawCQKTgZxGrZ/j
+        DLjuwTepinvqF9qM1yqYF51WqA==
+X-Google-Smtp-Source: ABdhPJwKUPdTlbWTs97YHCpuc081aR0MY8JOLfj7riMvasMxJrce3DnhrHVKuVjoIZRdjcJzRK7rIw==
+X-Received: by 2002:a5d:9f4a:: with SMTP id u10mr6035206iot.186.1615779452941;
+        Sun, 14 Mar 2021 20:37:32 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:4d84:eb70:5c32:32b8])
+        by smtp.gmail.com with ESMTPSA id q207sm6643816iod.6.2021.03.14.20.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 20:37:32 -0700 (PDT)
+Date:   Sun, 14 Mar 2021 21:37:27 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
+Message-ID: <YE7Wd+0t3G/3hc/c@google.com>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-11-yuzhao@google.com>
+ <871rchw4x2.fsf@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rchw4x2.fsf@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 13:58:40 -0800 Sean Christopherson wrote:
-> On Tue, Mar 09, 2021, Kai Huang wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Expose SGX architectural structures, as KVM will use many of the
-> > architectural constants and structs to virtualize SGX.
-> > 
-> > Name the new header file as asm/sgx.h, rather than asm/sgx_arch.h, to
-> > have single header to provide SGX facilities to share with other kernel
-> > componments.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> 
-> Same checkpatch warning.  Probably doesn't matter.
+On Sun, Mar 14, 2021 at 07:02:01PM -0700, Andi Kleen wrote:
+> Yu Zhao <yuzhao@google.com> writes:
 
-Will change order to make checkpatch happy for this whole series.
+Hi Andi!
 
-Thanks for pointing out.
+Recovering the context a bit:
 
-> 
-> > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  .../cpu/sgx/arch.h => include/asm/sgx.h}      | 20 ++++++++++++++-----
-> >  arch/x86/kernel/cpu/sgx/encl.c                |  2 +-
-> >  arch/x86/kernel/cpu/sgx/sgx.h                 |  2 +-
-> >  tools/testing/selftests/sgx/defines.h         |  2 +-
-> >  4 files changed, 18 insertions(+), 8 deletions(-)
-> >  rename arch/x86/{kernel/cpu/sgx/arch.h => include/asm/sgx.h} (95%)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/include/asm/sgx.h
-> > similarity index 95%
-> > rename from arch/x86/kernel/cpu/sgx/arch.h
-> > rename to arch/x86/include/asm/sgx.h
-> > index abf99bb71fdc..d4ad35f6319a 100644
-> > --- a/arch/x86/kernel/cpu/sgx/arch.h
-> > +++ b/arch/x86/include/asm/sgx.h
-> > @@ -2,15 +2,20 @@
-> >  /**
-> >   * Copyright(c) 2016-20 Intel Corporation.
-> >   *
-> > - * Contains data structures defined by the SGX architecture.  Data structures
-> > - * defined by the Linux software stack should not be placed here.
-> > + * Intel Software Guard Extensions (SGX) support.
-> >   */
-> > -#ifndef _ASM_X86_SGX_ARCH_H
-> > -#define _ASM_X86_SGX_ARCH_H
-> > +#ifndef _ASM_X86_SGX_H
-> > +#define _ASM_X86_SGX_H
-> >  
-> >  #include <linux/bits.h>
-> >  #include <linux/types.h>
-> >  
-> > +/*
-> > + * This file contains both data structures defined by SGX architecture and Linux
-> > + * defined software data structures and functions.  The two should not be mixed
-> > + * together for better readibility.  The architectural definitions come first.
-> > + */
+		err = -EBUSY;
+
 > > +
-> >  /* The SGX specific CPUID function. */
-> >  #define SGX_CPUID		0x12
-> >  /* EPC enumeration. */
-> > @@ -337,4 +342,9 @@ struct sgx_sigstruct {
-> >  
-> >  #define SGX_LAUNCH_TOKEN_SIZE 304
-> >  
-> > -#endif /* _ASM_X86_SGX_ARCH_H */
-> > +/*
-> > + * Do not put any hardware-defined SGX structure representations below this
-> > + * line!
+> > +#ifdef CONFIG_MEMCG
+> > +		if (memcg && atomic_read(&memcg->moving_account))
+> > +			goto contended;
+> > +#endif
+> > +		if (!mmap_read_trylock(mm))
+> > +			goto contended;
 > 
-> Heh, which line?  Yep, it's Friday afternoon...
+> These are essentially spinloops. Surely you need a cpu_relax() somewhere?
 
-Hmm.. I will change to below this comment. :)
+contended:
+		...
+		cond_resched();
+	} while (err == -EAGAIN && !mm_is_oom_victim(mm) && !mm_has_migrated(mm, memcg));
+
+So if it's contended, we break the loop.
+
+> In general for all of spinloop like constructs it would be useful to
+> consider how to teach lockdep about them.
+> 
+> > +	do {
+> > +		old_flags = READ_ONCE(page->flags);
+> > +		new_gen = ((old_flags & LRU_GEN_MASK) >> LRU_GEN_PGOFF) - 1;
+> > +		VM_BUG_ON_PAGE(new_gen < 0, page);
+> > +		if (new_gen >= 0 && new_gen != old_gen)
+> > +			goto sort;
+> > +
+> > +		new_gen = (old_gen + 1) % MAX_NR_GENS;
+> > +		new_flags = (old_flags & ~LRU_GEN_MASK) | ((new_gen + 1UL) << LRU_GEN_PGOFF);
+> > +		/* mark page for reclaim if pending writeback */
+> > +		if (front)
+> > +			new_flags |= BIT(PG_reclaim);
+> > +	} while (cmpxchg(&page->flags, old_flags, new_flags) !=
+> > old_flags);
+> 
+> I see this cmpxchg flags pattern a lot. Could there be some common code
+> factoring?
+
+Thanks for noticing this. A shorthand macro would be nice. Hmm... let
+me investigate. I don't know how to do this off the top of my head:
+
+A macro can be used like
+
+  cmpxchg_macro() {
+     func();
+  }
+
+without backslashes and it'll be expanded to
+
+  do {
+     func();
+   } while ();
