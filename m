@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E112833AC2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4818833AC35
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCOHZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:25:32 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51484 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229890AbhCOHZB (ORCPT
+        id S230094AbhCOH1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:27:40 -0400
+Received: from isilmar-4.linta.de ([136.243.71.142]:40068 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhCOH1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:25:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0URvJVVZ_1615793098;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0URvJVVZ_1615793098)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 15 Mar 2021 15:24:58 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] powerpc/xive: use true and false for bool variable
-Date:   Mon, 15 Mar 2021 15:24:56 +0800
-Message-Id: <1615793096-83758-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 15 Mar 2021 03:27:24 -0400
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 1E0832000D5;
+        Mon, 15 Mar 2021 07:27:21 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id 0749020656; Mon, 15 Mar 2021 08:25:32 +0100 (CET)
+Date:   Mon, 15 Mar 2021 08:25:32 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] pcmcia: ds: Remove if with always false condition
+Message-ID: <YE8L7BLdsQCzgUGs@light.dominikbrodowski.net>
+References: <20210301173847.1679956-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210301173847.1679956-1-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following coccicheck:
-./arch/powerpc/sysdev/xive/spapr.c:552:8-9: WARNING: return of 0/1 in
-function 'xive_spapr_match' with return type bool
+Am Mon, Mar 01, 2021 at 06:38:47PM +0100 schrieb Uwe Kleine-König:
+> pcmcia_device_remove() is only ever called by the driver core with
+> dev->driver pointing to a valid driver. (And even if dev->driver was
+> NULL, p_drv wouldn't be NULL as p_drv is assigned as follows:
+> 
+> 	p_drv = to_pcmcia_drv(dev->driver);
+> 
+> and to_pcmcia_drv is a container_of operation on struct
+> pcmcia_driver::drv which isn't the first member in struct
+> pcmcia_driver.)
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- arch/powerpc/sysdev/xive/spapr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to pcmcia-next, thanks.
 
-diff --git a/arch/powerpc/sysdev/xive/spapr.c b/arch/powerpc/sysdev/xive/spapr.c
-index 01ccc078..f143b6f 100644
---- a/arch/powerpc/sysdev/xive/spapr.c
-+++ b/arch/powerpc/sysdev/xive/spapr.c
-@@ -549,7 +549,7 @@ static void xive_spapr_cleanup_queue(unsigned int cpu, struct xive_cpu *xc,
- static bool xive_spapr_match(struct device_node *node)
- {
- 	/* Ignore cascaded controllers for the moment */
--	return 1;
-+	return true;
- }
- 
- #ifdef CONFIG_SMP
--- 
-1.8.3.1
-
+	Dominik
