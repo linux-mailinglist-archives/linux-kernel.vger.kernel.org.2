@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E189E33AD47
+	by mail.lfdr.de (Postfix) with ESMTP id 960B333AD46
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCOIWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:22:19 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:5331 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230165AbhCOIWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:22:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0URxYio-_1615796524;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0URxYio-_1615796524)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 15 Mar 2021 16:22:10 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-Date:   Mon, 15 Mar 2021 16:22:02 +0800
-Message-Id: <1615796522-21363-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230175AbhCOIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:22:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52450 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230020AbhCOIWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:22:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615796528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TVXDS4PNaIbYmQB548Zv6jzVSO7USa2Bb9Hywj+/n68=;
+        b=FmdPycGOFiDVovjmElF/zwLetRYgcpx4VNpb32W2+8eZS5yqu/opRu5k65sr0jKSqvyteh
+        /CYv5nUrVI2XtWdps9Djxtqx2ZC0ygLjeTODrlQZcqpfLQ3VhekszctaQM0V3/HX2/nwwa
+        EIsWY3gW5jjJDyxWOFDdv4fIUa/Ykzo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7896ACA8;
+        Mon, 15 Mar 2021 08:22:08 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 09:22:07 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, robinlai@tencent.com,
+        benbjiang@tencent.com
+Subject: Re: [PATCH] mm/oom_kill: fix wild pointer in out_of_memory
+Message-ID: <YE8ZL8VTllD5RLOf@dhcp22.suse.cz>
+References: <20210313042300.3833-1-benbjiang@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313042300.3833-1-benbjiang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Sat 13-03-21 12:23:00, Jiang Biao wrote:
+> From: Bin Lai <robinlai@tencent.com>
+> 
+> From: Bin Lai <robinlai@tencent.com>
+> 
+> The oc->chosen is used by oom implementation, and the caller does
+> not initialize this variable. If the tasks of memcg are all unkillable,
+> oom_evaluate_task cann't choose any task, and the oc->chosen will be
+> a wild pointer. So we should initialize oc->chosen before calling
+> oom_evaluate_task.
 
-./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c:358:69-74: WARNING:
-conversion to bool not needed here.
+All callers do initialize oom_control on the stack and even partial
+structure initialization on stack will result in the zeroying of all
+other structure's element. So I do not think there is any problem.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Signed-off-by: Bin Lai <robinlai@tencent.com>
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 9efaf43..0658a30 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -366,6 +366,7 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
+>  static void select_bad_process(struct oom_control *oc)
+>  {
+>  	oc->chosen_points = LONG_MIN;
+> +	oc->chosen = NULL;
+>  
+>  	if (is_memcg_oom(oc))
+>  		mem_cgroup_scan_tasks(oc->memcg, oom_evaluate_task, oc);
+> -- 
+> 1.8.3.1
+> 
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-index 3e6f760..e153109 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-@@ -355,7 +355,7 @@ void mpc3_set_output_gamma(
- 		next_mode = LUT_RAM_A;
- 
- 	mpc3_power_on_ogam_lut(mpc, mpcc_id, true);
--	mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A ? true:false);
-+	mpc3_configure_ogam_lut(mpc, mpcc_id, next_mode == LUT_RAM_A);
- 
- 	if (next_mode == LUT_RAM_A)
- 		mpc3_program_luta(mpc, mpcc_id, params);
 -- 
-1.8.3.1
-
+Michal Hocko
+SUSE Labs
