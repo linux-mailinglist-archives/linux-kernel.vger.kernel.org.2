@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C082D33B309
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C9D33B303
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhCOMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhCOMob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:44:31 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB58C061574;
-        Mon, 15 Mar 2021 05:44:31 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z13so33154586iox.8;
-        Mon, 15 Mar 2021 05:44:31 -0700 (PDT)
+        id S229887AbhCOMow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:44:52 -0400
+Received: from mail-eopbgr1300137.outbound.protection.outlook.com ([40.107.130.137]:6349
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhCOMo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:44:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZwTMVZB1YeKd4JjdQu6JOTBr9Njzj1RX2salErx7r1/4Wis6tt9+iJ9OxCaxUletb2zCp3maG0jV8R9vNUhR9EA9Lz+AYySyYyOtsT5I/cN26Q5Er2AZ2JWfid1rhH7m8ZrvCIup2X5OlbTVpojHqkjdAiw4y1mu84EgZ6qlnB9emaTCLDd2vbThjc0Uk6CMMz2j8/M5AeA+I8eU0f7Ri9pfeMs0eClShUG931vLOMEWzSVH2cNNzQzx5iDg/1QSkNaYT38y50d/Gqeh8TvyP51VvCAEHdmiQ9/hxnjCquWYd9Tvyw6ljvdd6bTSJrVR0Mty7UponSt8urI/ltx60w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=arjh0DHu4B+iH+LBtY6oIJz4X5LwdNg10NJQ8iDnZQ0=;
+ b=FkILI/0YXoTF8bGPAOzRZ65+0fUyNJvyVmba7yW6P03h1TezoL5AsFWmpDwRgValWWhhUzpw4fK+HqMR90zFiUpbZtiwqGDhN11dB6b868PEV0MMHPPsICEc+9X7T+UvW+HfV0SbdkA95dXPw5jjykZf23mPQcRfwtOlXFUtrps5cE08QEQLwDbNxCtFKCTGB8Y9DZlgl7FheXDezeusb4xAmuYqi2r2TNzmGGuUgJFr7UJY0tPcEVWnx0/KUu7bh+ukBH+6RhQYhCBs3T/E14moe+2/gZAK1CHmbamQa6efvdbk12B8hhzq6U6gM/fo4Ke6yVatr9qxn80sBPDAGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zenithal.me; dmarc=pass action=none header.from=zenithal.me;
+ dkim=pass header.d=zenithal.me; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PqmxvVJwI/DC3vsvSzca8s/AHwB4m2xICIwZ6sXZyZA=;
-        b=qQ8TdP8rw4nL6NdxZ/bxsRw98/djVs7nkFBeS71s6oq++6xtBhUnLO1WKvA/bZCoH5
-         8QaAy0WXEKHV8dXowndJRs3HKKVjurnTPR/zsR2l4E7hs+cLzc1pZONxZOjPiOpwq423
-         zZ7oBnBTsc8W+AEbLVONOEIzlBIMaoQdHpSk+qsARV4/IXNkm3Ov5LluVjWueipa6GLJ
-         Lkq28s6g/IAfq+1Jama52uObsN6hArq4tgrDwdORjto60rpoo4HC/fIJBqDP+g7FdzKQ
-         kLRNgS8fUOJ0v6E26yhr/Z9DzUKXqUOyCfYO1kTzZ9qFburUlXSQFXdltzEfxHsTISfo
-         rwyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PqmxvVJwI/DC3vsvSzca8s/AHwB4m2xICIwZ6sXZyZA=;
-        b=Vujh1Wjh9R06ekrtfUzM0IRWSwcDCgdrPTnoqOKBV0MNTULGIj1LKG1bZE44vJNOfd
-         LjJjnGM3dG6f8ny2fcLRRstTGsgQR4AxTGOekOkSsPBtL43addPBqSah6pARpm00EApG
-         8GEdYVsoSLl4seFJJv22TGt/B6OZGPBv5N29iNtwiPgfTudGGDKoL+4z63PfaBydQ6Ap
-         MYO8ajrKERmTmVquCoFl1d0C8dLpDTzifPaQgGWKM8dtEVJ05pTSvIa09sZ13g+p7iOo
-         WPb3muHnheqTrYur9cjQxYBQAnFFBEo57UnmMN6IoVMMqxryZMGu1X/8mZj9w3cvLLon
-         8nPQ==
-X-Gm-Message-State: AOAM533CxGEcvTFn6oJM8yeGu8KRMvyHckzZA1U7otgaObrebeZV1vrr
-        g9By5cjNAsrjpVW15iArquqoNg3zavQtS9IU5SDkQVWkmKM=
-X-Google-Smtp-Source: ABdhPJxa+9TJBDqlEawiezq+UM0bj90iaSfZ+0GXcIkB2o1X7Yxuex1+GznbQaevJ/wVMMatjmsFTuumQqftlDwnWcA=
-X-Received: by 2002:a5e:a519:: with SMTP id 25mr6717361iog.3.1615812270447;
- Mon, 15 Mar 2021 05:44:30 -0700 (PDT)
+ d=tsinghuau.onmicrosoft.com; s=selector1-tsinghuau-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=arjh0DHu4B+iH+LBtY6oIJz4X5LwdNg10NJQ8iDnZQ0=;
+ b=jctYIV2Xok4r+e/jov55LhfwcK+u9VrUYB7hrQnO1ddIwTvOnMvLqvRF9Vu8TfmxMeWawipKkOrnuWu/zE42kYYRS+cqXX/fWrcR6SfQzgE7X85XjgcaTDWhDtCvI8SFjCZ+49RjsknEVi44VZZL9evNF1bUsSdy+ylnjjVLoEg=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=zenithal.me;
+Received: from HK0PR03MB3795.apcprd03.prod.outlook.com (2603:1096:203:3c::10)
+ by HK0PR03MB3554.apcprd03.prod.outlook.com (2603:1096:203:55::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.13; Mon, 15 Mar
+ 2021 12:44:24 +0000
+Received: from HK0PR03MB3795.apcprd03.prod.outlook.com
+ ([fe80::8492:e28e:e777:6d05]) by HK0PR03MB3795.apcprd03.prod.outlook.com
+ ([fe80::8492:e28e:e777:6d05%6]) with mapi id 15.20.3955.011; Mon, 15 Mar 2021
+ 12:44:24 +0000
+Date:   Mon, 15 Mar 2021 20:44:19 +0800
+From:   "Hongren Zheng (Zenithal)" <i@zenithal.me>
+To:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] usbip: tools: add usage of device mode in usbip_list.c
+Message-ID: <YE9Wo8QZ/0XU8Mzq@Sun>
+References: <YE9Vyrs+Z8MusjDM@Sun>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE9Vyrs+Z8MusjDM@Sun>
+X-Operating-System: Linux Sun 5.10.19-1-lts
+X-Mailer: Mutt 2.0.5 (da5e3282) (2021-01-21)
+X-Originating-IP: [2402:f000:6:6009::11]
+X-ClientProxiedBy: HK2PR04CA0087.apcprd04.prod.outlook.com
+ (2603:1096:202:15::31) To HK0PR03MB3795.apcprd03.prod.outlook.com
+ (2603:1096:203:3c::10)
 MIME-Version: 1.0
-References: <1591709203-12106-1-git-send-email-dillon.minfei@gmail.com> <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Mon, 15 Mar 2021 20:43:54 +0800
-Message-ID: <CAL9mu0LJPnxA0JSmV3mogvPA5xRRYCO_4=P7pqpAO7R=YaJX5g@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        p.zabel@pengutronix.de, pierre-yves.mordret@st.com,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Alexandre TORGUE <Alexandre.torgue@foss.st.com>,
-        pierre-yves.mordret@foss.st.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-i2c@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2402:f000:6:6009::11) by HK2PR04CA0087.apcprd04.prod.outlook.com (2603:1096:202:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 12:44:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6fa974c9-ca91-4438-46c6-08d8e7b00fc1
+X-MS-TrafficTypeDiagnostic: HK0PR03MB3554:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR03MB3554E20115B0899F3EDC15CCBC6C9@HK0PR03MB3554.apcprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1CYvskFLKWPfvPXkCA8qVqWVBiylv9urwT+l9RM02HjPc9uLrO29UvISQ9ObRiRhSXNZypTSzN6UWYo/C2ePwEmMwDnC2/tcEW+RczqKdIwgdeqztCaOFC+CF5JgW0r5NI/cVfWWU16lgXtkxkgZF3aCG35JAQ1N6qMAzyTzqLFzUqecaY8n5qSftTNe1OojM3gu3pbro91/vnH0hwgFVap6mN6SJz+x1Iq4LEKlQb0Q7T+acg5O+Wvq0dB8uKElvXiAj7LNq0/qf4rJZsO5JOAy6/lkFbKEW42sUhy+5qEROiTDaP1cGLrK8GBWkppfPA4nZP0t+QqKf+nE74a5ggKAH+XzEzB2+e7y4m/oILE5DTn1qkjZsy7e8v/P5Orp5zFBwv07M4VEV+w1tXodJsNPRIVTWv61NBpDip1l0LNFi5DXWpG2Yua2/2txxyhS/3Ee495mGQzmMd58XomvMYLnjhMoRfTb0vJeyrE+gg4L7mNi7szKFjYigoGD6PBmqix9ftKQXi9WuO3Rq6CHsvEFprRJQIgKwWXweC3GWlV2PjJtom/piIVos6x1ww5WADL50J2LwYyClHChQIUHbI2AXqaMHtcjvnzP3pZVHq0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR03MB3795.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(346002)(39830400003)(396003)(376002)(136003)(5660300002)(4326008)(316002)(110136005)(83380400001)(6666004)(786003)(2906002)(4744005)(6486002)(8936002)(16526019)(186003)(86362001)(33716001)(52116002)(6496006)(478600001)(8676002)(66556008)(66946007)(66476007)(9686003)(49092004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XLzjA6TWsRkoUYimw+QkcEHzD1YOthNse33S4BJrZdAGkYcJZ8eu1rkg7a4K?=
+ =?us-ascii?Q?gGZtaGOQBTGfK82R775R6oauNn+VjATF8RZoLLqXjhBxPb7HcaISoBbZp/S7?=
+ =?us-ascii?Q?RecMnH29TTmXRYbIyUyHIXQG0omcRf1TDydmKaJqrGKRaj2bmxaKk95EJQNn?=
+ =?us-ascii?Q?bHPN1cJw/09bjk7CRLSLobEcX+idM2Be1rqW8CVZeEoRpUaCULzdCEh3wyqw?=
+ =?us-ascii?Q?V6yivgVOTWnRE9KkGTPd4+gE+hpyLWJP+WgjvjYj6wjn+Z63Sflvea7Fdn8P?=
+ =?us-ascii?Q?3TwYq4K8jxZAZbfJs5aRlMzYrJKlrvCo1clh/SeeHnk1OtIREnrMi7Bft98W?=
+ =?us-ascii?Q?ZX3rVJ5ZkEsXhOBz3sgv01AMbyMZlsSkZyo1S4E9RhuqZaW3whnLewRcGEEg?=
+ =?us-ascii?Q?m1he5ya7jN8NjkTjW42dvFFcKF15HS1OkWeQ1KbqO8E/HbwcUi8HsyBGP+54?=
+ =?us-ascii?Q?HnFOyBdKimsBHp5te4zZG8eeqBUJ1CIiO5W99PyFd9RlZj4vsQLrK5ugfomZ?=
+ =?us-ascii?Q?dmEb8pSmMmsqRefWga4zdBoPr7D3RkYmixA0QVpvshorAALbF5zT0fc+creJ?=
+ =?us-ascii?Q?TKuAtjk9rspYTCY7tw4KqeEAXbmeOshh4dgKGoqxDrKh0YAtskYvlBtiTe+g?=
+ =?us-ascii?Q?yYb8HorZFQdBYJpWhFADaJcT4z2CoOTxzuAkBFyZLVdq5pBQdbNHV55Yt9+J?=
+ =?us-ascii?Q?RRubfuuGE6cmKko3Q2mpvSNUvGWnJr2DDSlLLUNougiqo2l2Y/J4UVDn+p2E?=
+ =?us-ascii?Q?v/ZV0o4mD1Lyo5Kpxcwu1qGis7QSo9QAJCt66f7I69j4n5EgwVFAks1PYNOK?=
+ =?us-ascii?Q?vcSZz89JIZYOkdlsOjhPY39cPjccSORKFS0/nIefVcPeG1fZDzPFEIOQVBoc?=
+ =?us-ascii?Q?K4LNXbhAGXKooBkfqa+RxXIO5glisX+YhzIiRgtFOG5p0NfsVHu0GQq4kzKY?=
+ =?us-ascii?Q?YVOg2Y8+zt7SRSnKiwydIsLN/3ES9+3BcURK2ehRrG8dG/3yY5hedBxyDYdx?=
+ =?us-ascii?Q?beLwkIKfLe12wuBcKnOMvv+bC3sZMxwVDiMcFGHdfdgCykAibQlT5iNCZyAX?=
+ =?us-ascii?Q?zXzy/A8WHQ4HTwix9VxM4GJPxQftxgZ78hzr04S8xLAiMrCpkhJZW0rKOGnV?=
+ =?us-ascii?Q?1b3wYRj72erDdTA+V7lTIUyDQ89/TP9+oE588eICahcLZYr+hbHhcoKdBv/+?=
+ =?us-ascii?Q?SymDsaYHjed4Xv16sx6MyWdnLkc0Gk1rRpow77vIsT3k+C/N2wlcGqJNIK6K?=
+ =?us-ascii?Q?vnBl/NjZLBeraLJvhlLHIMknjC6qkhxokTOWVfT3Nu94hRf2I1bp2vIBdTO7?=
+ =?us-ascii?Q?SijHcw1Z3mR0XpEOrdzQrM8mMELuOZZT8f7HGaQ6D92XPw=3D=3D?=
+X-OriginatorOrg: zenithal.me
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fa974c9-ca91-4438-46c6-08d8e7b00fc1
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR03MB3795.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 12:44:24.2501
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 436d481c-43b1-4418-8d7f-84c1e4887cf0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q5NQpNX/u521FEp2QyRrxFPR9V8mUEM+1R0rw5udfRvheXxf08RV1D6P5roLLsjJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB3554
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The option '-d/--device' was implemented in 'usbip list' but not
+shown in usage. Hence this commit adds this option to usage.
+---
+ tools/usb/usbip/src/usbip_list.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Just a gentle ping.
+diff --git a/tools/usb/usbip/src/usbip_list.c b/tools/usb/usbip/src/usbip_list.c
+index 8625b0f514ee..3d810bcca02f 100644
+--- a/tools/usb/usbip/src/usbip_list.c
++++ b/tools/usb/usbip/src/usbip_list.c
+@@ -33,7 +33,8 @@ static const char usbip_list_usage_string[] =
+ 	"usbip list [-p|--parsable] <args>\n"
+ 	"    -p, --parsable         Parsable list format\n"
+ 	"    -r, --remote=<host>    List the exportable USB devices on <host>\n"
+-	"    -l, --local            List the local USB devices\n";
++	"    -l, --local            List the local USB devices\n"
++	"    -d, --device           List the local USB gadgets bound to usbip-vudc\n";
+ 
+ void usbip_list_usage(void)
+ {
+-- 
+2.30.1
 
-Regards.
-
-On Tue, Jun 9, 2020 at 9:27 PM <dillon.minfei@gmail.com> wrote:
->
-> From: dillon min <dillon.minfei@gmail.com>
->
-> as stm32f429's internal flash is 2Mbytes and compiled kernel
-> image bigger than 2Mbytes, so we have to load kernel image
-> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
->
-> based on above context, as you knows kernel running on external
-> sdram is more slower than internal flash. besides, we need read 4
-> bytes to get touch screen xyz(x, y, pressure) coordinate data in
-> stmpe811 interrupt.
->
-> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
-> in xip mode, have to adjust 'STOP/START bit set position' from last
-> two bytes to last one bytes. else, will get i2c timeout in reading
-> touch screen coordinate.
->
-> to not take side effect, introduce IIC_LAST_BYTE_POS to support xip
-> kernel or has mmu platform.
->
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->
-> V4: indroduce 'IIC_LAST_BYTE_POS' to compatible with xipkernel boot
->
->  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-> index d6a69dfcac3f..97cf42ae7fa0 100644
-> --- a/drivers/i2c/busses/i2c-stm32f4.c
-> +++ b/drivers/i2c/busses/i2c-stm32f4.c
-> @@ -93,6 +93,12 @@
->  #define STM32F4_I2C_MAX_FREQ           46U
->  #define HZ_TO_MHZ                      1000000
->
-> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
-> +#define IIC_LAST_BYTE_POS 1
-> +#else
-> +#define IIC_LAST_BYTE_POS 2
-> +#endif
-> +
->  /**
->   * struct stm32f4_i2c_msg - client specific data
->   * @addr: 8-bit slave addr, including r/w bit
-> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->         int i;
->
->         switch (msg->count) {
-> -       case 2:
-> +       case IIC_LAST_BYTE_POS:
->                 /*
->                  * In order to correctly send the Stop or Repeated Start
->                  * condition on the I2C bus, the STOP/START bit has to be set
-> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->                 else
->                         stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
->
-> -               for (i = 2; i > 0; i--)
-> +               for (i = IIC_LAST_BYTE_POS; i > 0; i--)
->                         stm32f4_i2c_read_msg(i2c_dev);
->
->                 reg = i2c_dev->base + STM32F4_I2C_CR2;
-> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->
->                 complete(&i2c_dev->complete);
->                 break;
-> -       case 3:
-> +       case (IIC_LAST_BYTE_POS+1):
->                 /*
->                  * In order to correctly generate the NACK pulse after the last
->                  * received data byte, we have to enable NACK before reading N-2
-> --
-> 2.7.4
->
