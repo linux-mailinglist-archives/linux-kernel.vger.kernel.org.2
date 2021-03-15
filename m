@@ -2,347 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CE733B258
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C6633B278
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhCOMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:16:07 -0400
-Received: from mail-eopbgr60061.outbound.protection.outlook.com ([40.107.6.61]:12209
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229523AbhCOMPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:15:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=as+ik4wuxWgAHpbFshxVg+kWH5U6odpuPnHykzCx6jxuTG5sAA54rYr5clXgAlst4lioLvxPtjZ8IcPIq57SLm/mILnhUM8PKbg2FOYYp8gNnh/CxujdGq0kzuZFOIyCWgEXftixDUEjLfTTeFc8Yqu5ZUVI/tXeL7VhZYejQ82ZyRkjObQDD0O9ACYPYlE8Ps/poAZQy3dFZv6WbeXXLw68L8hE3TjHwmQ/75ZHCNbNECNI8Gzg6O7UiK3ZBPhi8ZbNQaWJyqWk2m3PEoOz3mgMh2gSpMna7vlMVY32QOZl+LVmQOy8j95Q30hmJsv+ZNipkWnyI+M26IENmn/u5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nlMm00AkQ1vWVRYP6cE6N8OhwryhEH0WBQ3WYJyf+f8=;
- b=S5xG3EJL9owQINSOvix27PeW0Oe+40oblD4ZxGmOgm228FQJZwzqRYxejywttrOZfq8dNX5jE90HjdKHH27NuTnvx161Qy7JuvMuREQEdAwriFRyq0mXSTQRJItlgx2HvK1oNbDpaiUn4OToyRBA/GPMydNX5nCp0MeChVkSdO8up2pBTDUcZ8zGpbpIMYmnqh/eL41Bd/teMAzhr1r7Bjl8ezzkX/1B7uT7ajg/e6iOichHL/nBaTp/pjJo2sXkx21IzEnGkjY/kJ69TDhmdf1Xgx/cS/fz1sb2UOTSrJMgAmKh5O1shKyAIVpNMwafV0AgcBpocAoIalYgRzfd2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nlMm00AkQ1vWVRYP6cE6N8OhwryhEH0WBQ3WYJyf+f8=;
- b=Azlk7uaT5/MwI9umrTgdNK+fPd+LZnh6VLWR8KbynSDnK6UVqLKXQyrbULYCetnZkzukUS0rNq0AMv9gR8h5JI722dJjgC6QpiXyawQoAcIqZX89v8spQ2Nvry+J1MITF3csd+DXlB3jRKE1k64kZpk4H5UC32zdyKqOUL0stoo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
- by DB8PR04MB7180.eurprd04.prod.outlook.com (2603:10a6:10:12c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Mon, 15 Mar
- 2021 12:15:39 +0000
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
- 12:15:39 +0000
-From:   Kuldeep Singh <kuldeep.singh@nxp.com>
-To:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-Date:   Mon, 15 Mar 2021 17:45:18 +0530
-Message-Id: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: HK2PR04CA0059.apcprd04.prod.outlook.com
- (2603:1096:202:14::27) To DB6PR0402MB2758.eurprd04.prod.outlook.com
- (2603:10a6:4:96::7)
+        id S230094AbhCOMWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCOMWT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:22:19 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17293C061574;
+        Mon, 15 Mar 2021 05:22:19 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v15so8590710wrx.4;
+        Mon, 15 Mar 2021 05:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mDAFfJZhogpdlbTSYlFpK3CuRxI3jBVzOjSdK74TWUQ=;
+        b=P+Hjcfw7CTKThYuXw672CZQNrPg0uBCA3mqICL7PA+sfZ1+KG2Yyg7NZ1Q107a+cd2
+         c5sTu/Q60nWXSKoEbl9HKupLIWqpj9h1PZOZnJwBGn27Og3+4JBgJL3ye67Dj3HssWW1
+         WmWOToSEWu0qZNCdX64WtgmpqGVlHscGZ/Fdu2rTBoW2XcROKN+kLI+kGJa5o9/qzFOB
+         KV+pnOgxIS5q4ek0whyM2HFxJzhNnupjZxNKQh6l9BoMbMpFOiiO2znfOUAmGDVdwSki
+         owZTEn+8wIwfoDAEjd/3fZwXku594Lu1zJfwTe9eFy8Wm3MFSjeHN+y1XF6laUvifMjM
+         5Ttg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mDAFfJZhogpdlbTSYlFpK3CuRxI3jBVzOjSdK74TWUQ=;
+        b=C1BoMgEF4vEUhnQf3ysWIHD51S8WnNgw3EIITf2hjkW/qoSi+9Epvb+jFs/jposJaA
+         u6n4sqmaw43Cvz1y74LK9Z5k1qHlv3XVVFjwyJLjN1AMe3Y3Un3zeze87HjCHF3VaMNr
+         A1kVgHLxwX3LQE2XdZeb05SbRlc78If9qvHJkRnhJFCNQh4GgT1FuTToVMzIYfo93jP/
+         7xcz+T5oJYXeLpNwhFizHY4ra3pCJJglxuEwy2JJG9jupvcgIA1AwtY95bfwXyciS19v
+         T/i4SYY9swoJzYcK+l+1Q2fFB3Hr4fLdPdbf6zYZWfX/eHtyiFW8hXlvJY/8a0qrEcEI
+         CRRA==
+X-Gm-Message-State: AOAM532UiFjAoPrA9Rh88/Xg5s+lQBA5cZ31e30eB46Wdyemlhgi1mdh
+        CMxkDLrlZtB3VS2BXb/Yax0Br9LaUaw=
+X-Google-Smtp-Source: ABdhPJx6ojo60goeCm8B8XlsWREB9BSH17FfBDREiKoQuVE7f42UW0zQcbNM8dyDr7PLkDszLtOlcw==
+X-Received: by 2002:adf:9bca:: with SMTP id e10mr27237854wrc.364.1615810937800;
+        Mon, 15 Mar 2021 05:22:17 -0700 (PDT)
+Received: from [192.168.8.151] ([148.252.132.232])
+        by smtp.gmail.com with ESMTPSA id d85sm11929131wmd.15.2021.03.15.05.22.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 05:22:17 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
+To:     syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000006e9e0705bd91f762@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <a3420ea6-8f91-f97f-9887-1de9aa5bb02e@gmail.com>
+Date:   Mon, 15 Mar 2021 12:18:20 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03378.swis.in-blr01.nxp.com (14.142.151.118) by HK2PR04CA0059.apcprd04.prod.outlook.com (2603:1096:202:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 12:15:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a0d12724-722f-4072-3d4a-08d8e7ac0bf3
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7180:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB718095DA86AE9204E4FC4DFEE06C9@DB8PR04MB7180.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2D4cu4EsOUv8zbTO6LSrgWBKvTle4UVaBIOtbbr0cjCC++xY+RricR7FbxBkrmv0ZD+a0aKlZxYYoK9b6gce1EL0VYQd0ERiGowNfXLLUT5JlWgT3LHy9h57OrJzbzy/KYnm+GMLztw8ij6s9tslcAjSZpSafr2On8+FjEDhIcvrcN5eWUKaMKvE/75XgZ0KU8fA9LOs+3+3HwBClK3EFQ64SF9oWevgZRCOb4rujLBpQYo8O5SvhTWsMkwUd/At8FhcP1rlbFSCaDFFGxCgZKAvia33Eu5b9zClX7m+GPQCXDA560uBb5GXIEitlIH+Gb+sn+aJTBArULNyIMAcPwj/ssctssKncWqLL4+luqF0tRuWA6Nbp3gelDuM9kbZNLE3X4Ei/oRp7Pt1nPolorXn+3BSyR01Y/jf9RciLIQrwbYSacepYnR7F7YbfRxQDWNg04d5++eH8dXYEPtFZxRA6cKvG/XK5a585uhRYpndHRvXGpYzSNwV/H2J5Yo1vXNHwVQ173pxjvlaW1e4+tFkakrOPqiJWXwhjTnLSguE9yttqjUo9fnonU4eIdgStcwPv8EXlwy+rHK59exjWhiy/KqEkSKQCUNbKb2klSGZu7c1xeHKJlHs0cbWaCGkTzWaKnZv7m2Z/39Fqy/KnaxRCfgHgl9nGlNeeRF1k5PQQ6BYRtQ+NWY1tchURV0l
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(966005)(36756003)(52116002)(7696005)(8936002)(478600001)(44832011)(8676002)(1076003)(956004)(55236004)(86362001)(1006002)(4326008)(54906003)(2906002)(2616005)(66946007)(5660300002)(66476007)(66556008)(316002)(186003)(6666004)(83380400001)(16526019)(6486002)(26005)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?l5dVHOuaRjfeU9gozM+hd9wThpLEg/rBkjrF1inG3nYc5XdFR67ZkbOhrb89?=
- =?us-ascii?Q?CvybMfrpaKZaUxdGogZmxIIL4WQJcy88guJLi+BO+18omUzsJ8NvuRi6/tVD?=
- =?us-ascii?Q?Gf6JKkEFofseongKGa3GeZe+WAsO5D/GKgWPsuftGAsn2567LSVBtYaYltjQ?=
- =?us-ascii?Q?yEPM9sDS7OeTLLemsR+PGRN1q1odA9v4uSPC9kl7NJr29rfYGsPngHLZBs/n?=
- =?us-ascii?Q?k9bI4+dXpC3Xrw+ZOGH2etDjR2iZ09xNRmE6MQflGQPqiId56hECT1h+NqvF?=
- =?us-ascii?Q?ID5knS3gI9TnYwlBwIbaWszcwuZK9jsGBFlwT40VRylm+eZde2FBePhUn6lp?=
- =?us-ascii?Q?TI7ZDDHMNdsJ4+nPpr3dAjnWdHgD+DY5jPvTMavSvFhNnR+fHEfjDKaEtaFI?=
- =?us-ascii?Q?yD1yP9gzPcXWsNwBiO2mvZX0VbE8l5C2p6TbD25Q7F3AX7i2pYmMOmM6m8r8?=
- =?us-ascii?Q?MQhx5+IZIRmPNtWAaJwwaiWmCuFvxUqpN6KaJHBR0km6LYUMPyuju+xT8vK4?=
- =?us-ascii?Q?9ikp46vfd2we5Hxg3phGf/SriVRsGOJQ2pC8pjEVRMoyPAal8R9pkWapTPWZ?=
- =?us-ascii?Q?a3ybDuksgjbM007dSGjhnKk2GYvRvJJdIsXchGxRsfUZX3FazOgIYt09SkLD?=
- =?us-ascii?Q?9AgWlkUdkCSYadbU2ORtLBQbUD/Q4tSQwibSmXDlcctEuFq/k0D4STQ5O3Hv?=
- =?us-ascii?Q?JBQVlTVOAj6Tipm4L9hraTKPSAQPSpYnRdIWYvxyTTRQ8r2O6UrTDCVfzEtq?=
- =?us-ascii?Q?gjcQ38T7akLe5/+irH998ZiNQXArkHTZ7+3M2yyftC9P5CJUv1+x2YVOE+il?=
- =?us-ascii?Q?4ERGJRVRBMa8EyXfP1h/FpgUmE/itITRJuaO/ob2Ij5bR0NKM1aRdi5xDjrS?=
- =?us-ascii?Q?Ef7rzt5Oi7btxMYv1j5uoff0JMjyCm17+G7NQWpsLIL3nCGIR4mm+tLJxb/g?=
- =?us-ascii?Q?NrN03+SGy1szWexqDw4QmVRtB099EvGdyPc6/eox967nSoi+/QdpOFrAvihn?=
- =?us-ascii?Q?bYmUPfBaFMoTgWsepw7M0J1zbYTLZ9OmHERa79A2jUQvlfkQNv/hQ2UzQgUK?=
- =?us-ascii?Q?UzzdIM1TXlvMjD8rV4aAm/2qU70ss3zDg2zOZObLK+LvMy8B+0xVsAHQURvR?=
- =?us-ascii?Q?6AOtYZ5tFaDc0B2H06HME1ZF+VS2wmkk/Q+afFADCiNItFD9AyyRW7POQthp?=
- =?us-ascii?Q?8RMd5lrZpgSJyMWlG8XJzvuZ8abK1ehqhxFx7ft5e5EI5s/cXWDoquQGiDR8?=
- =?us-ascii?Q?ZoZU/rpvqKciPGu+D2f365DImqWImBvC98u/AH/00/VXPIh1SD3xjzMRI3UH?=
- =?us-ascii?Q?IZgrJQHSdaY4cfJnn4slwwii?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0d12724-722f-4072-3d4a-08d8e7ac0bf3
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 12:15:39.7245
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jyPuLWaWVR+rnYjpbuQybw2ThHSBFaxzrkEHZHW5SChex7bQIZybkWME1KH6m4bIOfvpkCRaEx9FDEEqZ3wM6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7180
+In-Reply-To: <0000000000006e9e0705bd91f762@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Freescale DSPI binding to DT schema format using json-schema.
+On 15/03/2021 11:58, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    75013c6c Merge tag 'perf_urgent_for_v5.12-rc3' of git://gi..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=174df32ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=844457676c06b88c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 53 at lib/percpu-refcount.c:113 __percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
 
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
----
-Hi Rob,
-This patch is checked with following commands with no warnings observed.
-make distclean; make allmodconfig;
-make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
-make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
+if (percpu_count) {
+	/* non-NULL confirm_switch indicates switching in progress */
+	WARN_ON_ONCE(ref->data && ref->data->confirm_switch);
+	...
+}
 
- .../bindings/spi/fsl,spi-fsl-dspi.yaml        | 131 ++++++++++++++++++
- .../devicetree/bindings/spi/spi-fsl-dspi.txt  |  65 ---------
- MAINTAINERS                                   |   2 +-
- 3 files changed, 132 insertions(+), 66 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+Points to this warning. Not sure, but not yet included
+"io_uring: halt SQO submission on ctx exit" may fix it or at least is
+related.
 
-diff --git a/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-new file mode 100644
-index 000000000000..15ffc83bdba6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
-@@ -0,0 +1,131 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/fsl,spi-fsl-dspi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale DSPI Controller
-+
-+maintainers:
-+  - Vladimir Oltean <olteanv@gmail.com>
-+
-+allOf:
-+  - $ref: "spi-controller.yaml#"
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - fsl,vf610-dspi
-+          - fsl,ls1021a-v1.0-dspi
-+          - fsl,ls1028a-dspi
-+          - fsl,ls2085a-dspi
-+          - fsl,lx2160a-dspi
-+      - items:
-+          - enum:
-+              - fsl,ls1012a-dspi
-+              - fsl,ls1028a-dspi
-+              - fsl,ls1043a-dspi
-+              - fsl,ls1046a-dspi
-+              - fsl,ls1088a-dspi
-+          - const: fsl,ls1021a-v1.0-dspi
-+      - items:
-+          - enum:
-+              - fsl,ls2080a-dspi
-+              - fsl,lx2160a-dspi
-+          - const: fsl,ls2085a-dspi
-+
-+  reg:
-+    maxItems: 1
-+    description: Offset and length of registers
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: SoC dspi clock
-+
-+  clock-names:
-+    items:
-+      - const: dspi
-+
-+  pinctrl-names:
-+    minItems: 1
-+    items:
-+      - const: default
-+    description:
-+      Names for the pin configuration must be "default"
-+
-+  dmas:
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  spi-num-chipselects:
-+    maxItems: 1
-+    description: Number of the chipselect signals
-+
-+  bus-num:
-+    items:
-+      - description: Slave chip chipselect signal number
-+
-+patternProperties:
-+  "@[0-9a-f]+":
-+    type: object
-+
-+    properties:
-+      fsl,spi-cs-sck-delay:
-+        description:
-+          Delay in nanoseconds between activating chip select and the start of
-+          clock signal, at the start of a transfer.
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+
-+      fsl,spi-sck-cs-delay:
-+        description:
-+          Delay in nanoseconds between stopping the clock signal and
-+          deactivating chip select, at the end of a transfer.
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - spi-num-chipselects
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        spi@2100000 {
-+            compatible = "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi";
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            reg = <0x0 0x2100000 0x0 0x10000>;
-+            interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+            clock-names = "dspi";
-+            clocks = <&clockgen QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(2)>;
-+            dmas = <&edma0 0 62>, <&edma0 0 60>;
-+            dma-names = "tx", "rx";
-+            spi-num-chipselects = <4>;
-+            little-endian;
-+
-+            flash@0 {
-+                compatible = "jedec,spi-nor";
-+                spi-max-frequency = <10000000>;
-+                reg = <0>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-deleted file mode 100644
-index 30a79da9c039..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-+++ /dev/null
-@@ -1,65 +0,0 @@
--ARM Freescale DSPI controller
--
--Required properties:
--- compatible : must be one of:
--	"fsl,vf610-dspi",
--	"fsl,ls1021a-v1.0-dspi",
--	"fsl,ls1012a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
--	"fsl,ls1028a-dspi",
--	"fsl,ls1043a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
--	"fsl,ls1046a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
--	"fsl,ls1088a-dspi" (optionally followed by "fsl,ls1021a-v1.0-dspi"),
--	"fsl,ls2080a-dspi" (optionally followed by "fsl,ls2085a-dspi"),
--	"fsl,ls2085a-dspi",
--	"fsl,lx2160a-dspi",
--- reg : Offset and length of the register set for the device
--- interrupts : Should contain SPI controller interrupt
--- clocks: from common clock binding: handle to dspi clock.
--- clock-names: from common clock binding: Shall be "dspi".
--- pinctrl-0: pin control group to be used for this controller.
--- pinctrl-names: must contain a "default" entry.
--- spi-num-chipselects : the number of the chipselect signals.
--
--Optional property:
--- big-endian: If present the dspi device's registers are implemented
--  in big endian mode.
--- bus-num : the slave chip chipselect signal number.
--
--Optional SPI slave node properties:
--- fsl,spi-cs-sck-delay: a delay in nanoseconds between activating chip
--  select and the start of clock signal, at the start of a transfer.
--- fsl,spi-sck-cs-delay: a delay in nanoseconds between stopping the clock
--  signal and deactivating chip select, at the end of a transfer.
--
--Example:
--
--dspi0@4002c000 {
--	#address-cells = <1>;
--	#size-cells = <0>;
--	compatible = "fsl,vf610-dspi";
--	reg = <0x4002c000 0x1000>;
--	interrupts = <0 67 0x04>;
--	clocks = <&clks VF610_CLK_DSPI0>;
--	clock-names = "dspi";
--	spi-num-chipselects = <5>;
--	bus-num = <0>;
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_dspi0_1>;
--	big-endian;
--
--	sflash: at26df081a@0 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "atmel,at26df081a";
--		spi-max-frequency = <16000000>;
--		spi-cpol;
--		spi-cpha;
--		reg = <0>;
--		linux,modalias = "m25p80";
--		modal = "at26df081a";
--		fsl,spi-cs-sck-delay = <100>;
--		fsl,spi-sck-cs-delay = <50>;
--	};
--};
--
--
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..e2c5b7367db9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7060,7 +7060,7 @@ FREESCALE DSPI DRIVER
- M:	Vladimir Oltean <olteanv@gmail.com>
- L:	linux-spi@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-+F:	Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
- F:	drivers/spi/spi-fsl-dspi.c
- F:	include/linux/spi/spi-fsl-dspi.h
- 
+> Modules linked in:
+> CPU: 1 PID: 53 Comm: kworker/u4:2 Not tainted 5.12.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events_unbound io_ring_exit_work
+> RIP: 0010:__percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
+> Code: fd 49 8d 7c 24 10 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 61 49 83 7c 24 10 00 74 07 e8 28 42 ac fd <0f> 0b e8 21 42 ac fd 48 89 ef e8 e9 fa da fd 48 89 da 48 b8 00 00
+> RSP: 0018:ffffc90000f1fb78 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffff88805c976000 RCX: 0000000000000000
+> RDX: ffff888011839bc0 RSI: ffffffff83c76be8 RDI: ffff88802b2a9010
+> RBP: 0000607f46077778 R08: 0000000000000000 R09: ffffffff8fab0967
+> R10: ffffffff83c76b88 R11: 0000000000000009 R12: ffff88802b2a9000
+> R13: 0000000000000001 R14: ffff88802b2a9000 R15: dffffc0000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000085a0004 CR3: 000000001896a000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  percpu_ref_exit+0x3b/0x140 lib/percpu-refcount.c:134
+>  io_ring_ctx_free fs/io_uring.c:8419 [inline]
+>  io_ring_exit_work+0x599/0xcf0 fs/io_uring.c:8565
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+
 -- 
-2.17.1
-
+Pavel Begunkov
