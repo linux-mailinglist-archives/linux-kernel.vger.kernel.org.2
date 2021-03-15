@@ -2,133 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C3333C856
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D13833C85F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhCOVQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S231317AbhCOVSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhCOVPp (ORCPT
+        with ESMTP id S232185AbhCOVRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:15:45 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16755C06174A;
-        Mon, 15 Mar 2021 14:15:45 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id bf3so19012084edb.6;
-        Mon, 15 Mar 2021 14:15:45 -0700 (PDT)
+        Mon, 15 Mar 2021 17:17:51 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E000EC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:17:50 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id x21so6094057pfa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:17:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qwnbwanU2MY7jCvFVBwRSp3WXlaw+EiV14zRrhqaSu0=;
-        b=Lt+eVhbnXOgmfLt8THwaBgDraGpxApiQbIVUYLqclrwyuCKUwMl3PC4uUCe43Q7780
-         fOZ+p0IkmU5Rdb3qF+uru0em7rgkNck6zDK4Tuigl3wFKLElfOTARmrZiMpADAxyx5Gd
-         mKSAVjgtlOQ2N9FTAdGxknLLlbbRNkNDtlqbIi23JTermQIYCq7Jz60Xa8yL6txZRJUI
-         1zqBb9hnwlOnX+UhD7Bi5OGNF2yxC+avG/DdUOizyrbqAixk+9kOKEO/qGLSfhspDrb1
-         AZ0DZULmbOORr12r2AZ9bFq/8L6N22UeIngoLQKgtboWt+YGljxUwjvrzxQnuIdr4F37
-         5XOQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DUr1k/Qqz3KWpr5/8/e77iHdLKltma+5t29fYrAFmQI=;
+        b=S553Mer1ETZUkhiNw0TxP5F993tA5VUjS+Vs4i5CNKcVdsS+ZX8cjrpH1oDdz/Gmw3
+         B9ORHP/ddVU/rNUG1cgUaKcWOUZjqDmV5Gwv8vfeh8B+yp+HzweHQYOASbX99+DYehsh
+         Gcu+78Pp2kGUbKVUk6kLIGAcFw+5FMtDNb29Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qwnbwanU2MY7jCvFVBwRSp3WXlaw+EiV14zRrhqaSu0=;
-        b=seCWGnGL+avUp7PHyneTeVD56WUajNxKgonzu49ZIT22myO701CWUVGDZ2L+/AYYVF
-         DBssGYjyQlNnwupJ47th5thQk7bn5jspCk/FE5CxXsWDnhw5jKYuiUMBBGI3EwICV3h4
-         9DJt0Bj0cReJYxKg//vOMzxZ2H5uXAI7hief8o2KF2AikxEkjcfHCACpBrC/rCf3HBjr
-         v0stADwGHl3x4SauuQMNhaqR62XogoqWyInNs571eD+fg4F1szHQqjGDAVbYyrBsP7hO
-         8zUaafQxE1IVkt9qC6qDWJ67xyPN1zo+JHwdSfSpa4y8DjhjRUj8aPqpTXxL4qdufUwf
-         zqsg==
-X-Gm-Message-State: AOAM533TM7hnpFvTew9Zqezv1LULBK456ROEx5rBj2LGOONK2mUqWDq1
-        fDZJvxyd4YA1Tld16w+3G9w=
-X-Google-Smtp-Source: ABdhPJyxFmzPQdIpHLDHNyRn+rWF8FayJG6KOvHNVBAgNs2PIula+AmyaWzcw2zv5Ouksj3jqtc24g==
-X-Received: by 2002:a05:6402:1283:: with SMTP id w3mr31971754edv.340.1615842943862;
-        Mon, 15 Mar 2021 14:15:43 -0700 (PDT)
-Received: from skbuf ([188.25.219.167])
-        by smtp.gmail.com with ESMTPSA id j14sm8800785eds.78.2021.03.15.14.15.42
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DUr1k/Qqz3KWpr5/8/e77iHdLKltma+5t29fYrAFmQI=;
+        b=FouP/l1Yy1oyM8bTLjBtl/PUNHyeyJBA0INYVIw1DtSNbhbD4pAWSzKAXn4+7eNliZ
+         eVuCqQXla/ez0zWhDIQfAyMdVggQ6cHScMaQ2EALYmnE1wBIS3W4LXhhzjOzLygU6DLm
+         gSXLgeWmRRuauivXz992P7rM9GlBVL7OKkKgLsb9GPC7jo7lOpGfp1kQMYqVUdXh8nmh
+         AQa9eesUokA6goRbntGVigWzftphiI+20vgfemLJur1EhFTfqJnh+1nFJU/cKMVgo2Jm
+         L5bC5DJRiS98K3Key0H/Ad+TXym8CCeP+PWaPRfm8sVY4NXMIFty+r1bJK/Kgz5tWf0J
+         JTGw==
+X-Gm-Message-State: AOAM5316vM6wayKnobaWSdg5hHh8pJXYX35zOfTvwOGpsuGs8kxpUE1x
+        G31Wy0wVF5q5eKA/YVlDGEwVyQ==
+X-Google-Smtp-Source: ABdhPJzVe9wuhksN6TsIoHM9voPzo7YtxqoGcB/vIz5wE0tBTLM3puqaLRphxT+4OBrEKzYPy1aFvA==
+X-Received: by 2002:a63:2318:: with SMTP id j24mr947180pgj.134.1615843070334;
+        Mon, 15 Mar 2021 14:17:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gt22sm526616pjb.35.2021.03.15.14.17.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 14:15:43 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 23:15:41 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
-Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag
- operations
-Message-ID: <20210315211541.pj5mpy2foi3wlhbe@skbuf>
-References: <20210315170940.2414854-1-dqfext@gmail.com>
- <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
- <20210315200939.irwyiru6m62g4a7f@skbuf>
- <84bb93da-cc3b-d2a5-dda8-a8fb973c3bae@gmail.com>
+        Mon, 15 Mar 2021 14:17:49 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 14:17:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v3 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+Message-ID: <202103151405.88334370F@keescook>
+References: <20210311105242.874506-1-mic@digikod.net>
+ <20210311105242.874506-2-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <84bb93da-cc3b-d2a5-dda8-a8fb973c3bae@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311105242.874506-2-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:44:02PM -0700, Florian Fainelli wrote:
-> On 3/15/2021 1:09 PM, Vladimir Oltean wrote:
-> > On Mon, Mar 15, 2021 at 01:03:10PM -0700, Florian Fainelli wrote:
-> >>
-> >>
-> >> On 3/15/2021 10:09 AM, DENG Qingfang wrote:
-> >>> Support port MDB and bridge flag operations.
-> >>>
-> >>> As the hardware can manage multicast forwarding itself, offload_fwd_mark
-> >>> can be unconditionally set to true.
-> >>>
-> >>> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> >>> ---
-> >>> Changes since RFC:
-> >>>   Replaced BR_AUTO_MASK with BR_FLOOD | BR_LEARNING
-> >>>
-> >>>  drivers/net/dsa/mt7530.c | 124 +++++++++++++++++++++++++++++++++++++--
-> >>>  drivers/net/dsa/mt7530.h |   1 +
-> >>>  net/dsa/tag_mtk.c        |  14 +----
-> >>>  3 files changed, 122 insertions(+), 17 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> >>> index 2342d4528b4c..f765984330c9 100644
-> >>> --- a/drivers/net/dsa/mt7530.c
-> >>> +++ b/drivers/net/dsa/mt7530.c
-> >>> @@ -1000,8 +1000,9 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
-> >>>  	mt7530_write(priv, MT7530_PVC_P(port),
-> >>>  		     PORT_SPEC_TAG);
-> >>>  
-> >>> -	/* Unknown multicast frame forwarding to the cpu port */
-> >>> -	mt7530_rmw(priv, MT7530_MFC, UNM_FFP_MASK, UNM_FFP(BIT(port)));
-> >>> +	/* Disable flooding by default */
-> >>> +	mt7530_rmw(priv, MT7530_MFC, BC_FFP_MASK | UNM_FFP_MASK | UNU_FFP_MASK,
-> >>> +		   BC_FFP(BIT(port)) | UNM_FFP(BIT(port)) | UNU_FFP(BIT(port)));
-> >>
-> >> It's not clear to me why this is appropriate especially when the ports
-> >> operated in standalone mode, can you expand a bit more on this?
-> > 
-> > We are in the function called "mt753x_cpu_port_enable" here. It's ok to
-> > apply this config for the CPU port.
+On Thu, Mar 11, 2021 at 11:52:42AM +0100, Mickaël Salaün wrote:
+> [...]
+> This change may not impact systems relying on other permission models
+> than POSIX capabilities (e.g. Tomoyo).  Being able to use chroot(2) on
+> such systems may require to update their security policies.
 > 
-> Because the user ports will flood unknown traffic and we have mediatek
-> tags enabled presumably, so all traffic is copied to the CPU port, OK.
+> Only the chroot system call is relaxed with this no_new_privs check; the
+> init_chroot() helper doesn't require such change.
+> 
+> Allowing unprivileged users to use chroot(2) is one of the initial
+> objectives of no_new_privs:
+> https://www.kernel.org/doc/html/latest/userspace-api/no_new_privs.html
+> This patch is a follow-up of a previous one sent by Andy Lutomirski:
+> https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
 
-Actually this is just how Qingfang explained it:
-https://patchwork.kernel.org/project/netdevbpf/patch/20210224081018.24719-1-dqfext@gmail.com/
+I liked it back when Andy first suggested it, and I still like it now.
+:) I'm curious, do you have a specific user in mind for this feature?
 
-I just assume that MT7530/7531 switches don't need to enable flooding on
-user ports when the only possible traffic source is the CPU port - the
-CPU port can inject traffic into any port regardless of egress flooding
-setting. If that's not true, I don't see how traffic in standalone ports
-mode would work after this patch.
+> [...]
+> @@ -546,8 +547,18 @@ SYSCALL_DEFINE1(chroot, const char __user *, filename)
+>  	if (error)
+>  		goto dput_and_out;
+>  
+> +	/*
+> +	 * Changing the root directory for the calling task (and its future
+> +	 * children) requires that this task has CAP_SYS_CHROOT in its
+> +	 * namespace, or be running with no_new_privs and not sharing its
+> +	 * fs_struct and not escaping its current root (cf. create_user_ns()).
+> +	 * As for seccomp, checking no_new_privs avoids scenarios where
+> +	 * unprivileged tasks can affect the behavior of privileged children.
+> +	 */
+>  	error = -EPERM;
+> -	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT))
+> +	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT) &&
+> +			!(task_no_new_privs(current) && current->fs->users == 1
+> +				&& !current_chrooted()))
+>  		goto dput_and_out;
+>  	error = security_path_chroot(&path);
+>  	if (error)
+
+I think the logic here needs to be rearranged to avoid setting
+PF_SUPERPRIV, and I find the many negations hard to read. Perhaps:
+
+static inline int current_chroot_allowed(void)
+{
+	/* comment here */
+	if (task_no_new_privs(current) && current->fs->users == 1 &&
+	    !current_chrooted())
+		return 0;
+
+	if (ns_capable(current_user_ns(), CAP_SYS_CHROOT))
+		return 0;
+
+	return -EPERM;
+}
+
+...
+
+	error = current_chroot_allowed();
+	if (error)
+		goto dput_and_out;
+
+
+I can't think of a way to race current->fs->users ...
+
+-- 
+Kees Cook
