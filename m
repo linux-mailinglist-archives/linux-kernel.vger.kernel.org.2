@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DBB33ADEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2541D33ADF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhCOIva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhCOIu7 (ORCPT
+        id S229663AbhCOIxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:53:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59835 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229607AbhCOIxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:50:59 -0400
-Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DB5C061574;
-        Mon, 15 Mar 2021 01:50:59 -0700 (PDT)
-Received: by sf.home (Postfix, from userid 1000)
-        id 53E365A22061; Mon, 15 Mar 2021 08:50:51 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>, linux-ia64@vger.kernel.org
-Subject: [PATCH] ia64: mca: allocate early mca with GFP_ATOMIC
-Date:   Mon, 15 Mar 2021 08:50:45 +0000
-Message-Id: <20210315085045.204414-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 15 Mar 2021 04:53:08 -0400
+X-UUID: 875778eec4ff490fa22b8e6ed6d8d70a-20210315
+X-UUID: 875778eec4ff490fa22b8e6ed6d8d70a-20210315
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <roger.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 766196605; Mon, 15 Mar 2021 16:53:04 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 15 Mar 2021 16:53:03 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Mar 2021 16:52:57 +0800
+From:   Roger Lu <roger.lu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, Roger Lu <roger.lu@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH v12 0/7] soc: mediatek: SVS: introduce MTK SVS
+Date:   Mon, 15 Mar 2021 16:52:38 +0800
+Message-ID: <20210315085244.6365-1-roger.lu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sleep warning happens at early boot right at
-secondary CPU activation bootup:
+1. SVS driver uses OPP adjust event in [1] to update OPP table voltage part.
+2. SVS driver gets thermal/GPU device by node [2][3] and CPU device by
+get_cpu_device(). After retrieving subsys device, SVS driver does
+device_link_add() to make sure probe/suspend callback priority.
+3. SVS dts refers to reset controller [4] to help reset SVS HW.
 
-    smp: Bringing up secondary CPUs ...
-    BUG: sleeping function called from invalid context at mm/page_alloc.c:4942
-    in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-    CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.12.0-rc2-00007-g79e228d0b611-dirty #99
+#mt8183 SVS related patches
+[1] https://patchwork.kernel.org/patch/11193513/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20201013102358.22588-2-michael.kao@mediatek.com/
+[3] https://patchwork.kernel.org/project/linux-mediatek/patch/20200306041345.259332-3-drinkcat@chromium.org/
 
-    Call Trace:
-     [<a000000100014d10>] show_stack+0x90/0xc0
-     [<a000000101111d90>] dump_stack+0x150/0x1c0
-     [<a0000001000cbec0>] ___might_sleep+0x1c0/0x2a0
-     [<a0000001000cc040>] __might_sleep+0xa0/0x160
-     [<a000000100399960>] __alloc_pages_nodemask+0x1a0/0x600
-     [<a0000001003b71b0>] alloc_page_interleave+0x30/0x1c0
-     [<a0000001003b9b60>] alloc_pages_current+0x2c0/0x340
-     [<a00000010038c270>] __get_free_pages+0x30/0xa0
-     [<a000000100044730>] ia64_mca_cpu_init+0x2d0/0x3a0
-     [<a000000100023430>] cpu_init+0x8b0/0x1440
-     [<a000000100054680>] start_secondary+0x60/0x700
-     [<a00000010111e1d0>] start_ap+0x750/0x780
-    Fixed BSP b0 value from CPU 1
+#mt8192 SVS related patches
+[1] https://patchwork.kernel.org/patch/11193513/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20201223074944.2061-1-michael.kao@mediatek.com/
+[3] https://lore.kernel.org/patchwork/patch/1360551/
+[4] https://patchwork.kernel.org/project/linux-mediatek/patch/20200817030324.5690-5-crystal.guo@mediatek.com/
 
-As I understand interrupts are not enabled yet and system has a lot
-of memory. There is little chance to sleep and switch to GFP_ATOMIC
-should be a no-op.
+changes since v11:
+- update mtk svs dt-bindings only.
 
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-ia64@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- arch/ia64/kernel/mca.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Roger Lu (7):
+  [v12,1/7]: dt-bindings: soc: mediatek: add mtk svs dt-bindings
+  [v12,2/7]: arm64: dts: mt8183: add svs device information
+  [v12,3/7]: soc: mediatek: SVS: introduce MTK SVS engine
+  [v12,4/7]: soc: mediatek: SVS: add debug commands
+  [v12,5/7]: dt-bindings: soc: mediatek: add mt8192 svs dt-bindings
+  [v12,6/7]: arm64: dts: mt8192: add svs device information
+  [v12,7/7]: soc: mediatek: SVS: add mt8192 SVS GPU driver
 
-diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
-index d4cae2fc69ca..adf6521525f4 100644
---- a/arch/ia64/kernel/mca.c
-+++ b/arch/ia64/kernel/mca.c
-@@ -1824,7 +1824,7 @@ ia64_mca_cpu_init(void *cpu_data)
- 			data = mca_bootmem();
- 			first_time = 0;
- 		} else
--			data = (void *)__get_free_pages(GFP_KERNEL,
-+			data = (void *)__get_free_pages(GFP_ATOMIC,
- 							get_order(sz));
- 		if (!data)
- 			panic("Could not allocate MCA memory for cpu %d\n",
--- 
-2.30.2
+ .../bindings/soc/mediatek/mtk-svs.yaml        |   89 +
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |   18 +
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |   34 +
+ drivers/soc/mediatek/Kconfig                  |   10 +
+ drivers/soc/mediatek/Makefile                 |    1 +
+ drivers/soc/mediatek/mtk-svs.c                | 2492 +++++++++++++++++
+ 6 files changed, 2644 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+ create mode 100644 drivers/soc/mediatek/mtk-svs.c
+
 
