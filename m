@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C2933BB0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B738D33BB90
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235757AbhCOOLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S237402AbhCOOST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhCON6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD3564F29;
-        Mon, 15 Mar 2021 13:58:20 +0000 (UTC)
+        id S232709AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5B2D64EF8;
+        Mon, 15 Mar 2021 13:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816701;
-        bh=30qpCNvgCAC4jJqpN+nWjFnoFgCNXtc8piRFPskl9po=;
+        s=korg; t=1615816753;
+        bh=kol0b5+/ojhi/yo0EFUta2fsH/+c12bzCTFGnWEiiQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=APv1OVLoW9KoyDkuukBCZ2HQnT2QPWP7vgJoMYloxZ/I57Rizb6gDI6Qft/z5hKpz
-         Kvb1kRZ29+nnWT/0MmAgCRt2zer0rGzS5MwjD+avW4AWaUu+6j+dEcvdrTwt3pQt52
-         EVDIHwdxbgWsp7q2YqeapSiWdbLiSlaghy6znjjI=
+        b=kmyfbzV7g7EQmCnHFbQoDvLrVBIp8q/yaDRmYTNQK4cebRqj4F6mbuhzFetZ4G9dl
+         /Z/gZxrfERNMbn9l5M3Mt278IL7brqyEDzKa2p4exldINFGDhJ07ypo0B6Ca9i4PYc
+         giRKf7ixHON6qcMseubd5OC71PL3/K0HaM5YMfm4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Balazs Nemeth <bnemeth@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 07/95] net: avoid infinite loop in mpls_gso_segment when mpls_hlen == 0
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Oliver OHalloran <oohall@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 046/120] powerpc/pci: Add ppc_md.discover_phbs()
 Date:   Mon, 15 Mar 2021 14:56:37 +0100
-Message-Id: <20210315135740.512744339@linuxfoundation.org>
+Message-Id: <20210315135721.500089603@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +43,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Balazs Nemeth <bnemeth@redhat.com>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-commit d348ede32e99d3a04863e9f9b28d224456118c27 upstream.
+[ Upstream commit 5537fcb319d016ce387f818dd774179bc03217f5 ]
 
-A packet with skb_inner_network_header(skb) == skb_network_header(skb)
-and ETH_P_MPLS_UC will prevent mpls_gso_segment from pulling any headers
-from the packet. Subsequently, the call to skb_mac_gso_segment will
-again call mpls_gso_segment with the same packet leading to an infinite
-loop. In addition, ensure that the header length is a multiple of four,
-which should hold irrespective of the number of stacked labels.
+On many powerpc platforms the discovery and initalisation of
+pci_controllers (PHBs) happens inside of setup_arch(). This is very early
+in boot (pre-initcalls) and means that we're initialising the PHB long
+before many basic kernel services (slab allocator, debugfs, a real ioremap)
+are available.
 
-Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On PowerNV this causes an additional problem since we map the PHB registers
+with ioremap(). As of commit d538aadc2718 ("powerpc/ioremap: warn on early
+use of ioremap()") a warning is printed because we're using the "incorrect"
+API to setup and MMIO mapping in searly boot. The kernel does provide
+early_ioremap(), but that is not intended to create long-lived MMIO
+mappings and a seperate warning is printed by generic code if
+early_ioremap() mappings are "leaked."
+
+This is all fixable with dumb hacks like using early_ioremap() to setup
+the initial mapping then replacing it with a real ioremap later on in
+boot, but it does raise the question: Why the hell are we setting up the
+PHB's this early in boot?
+
+The old and wise claim it's due to "hysterical rasins." Aside from amused
+grapes there doesn't appear to be any real reason to maintain the current
+behaviour. Already most of the newer embedded platforms perform PHB
+discovery in an arch_initcall and between the end of setup_arch() and the
+start of initcalls none of the generic kernel code does anything PCI
+related. On powerpc scanning PHBs occurs in a subsys_initcall so it should
+be possible to move the PHB discovery to a core, postcore or arch initcall.
+
+This patch adds the ppc_md.discover_phbs hook and a core_initcall stub that
+calls it. The core_initcalls are the earliest to be called so this will
+any possibly issues with dependency between initcalls. This isn't just an
+academic issue either since on pseries and PowerNV EEH init occurs in an
+arch_initcall and depends on the pci_controllers being available, similarly
+the creation of pci_dns occurs at core_initcall_sync (i.e. between core and
+postcore initcalls). These problems need to be addressed seperately.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+[mpe: Make discover_phbs() static]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201103043523.916109-1-oohall@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mpls/mpls_gso.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/include/asm/machdep.h |  3 +++
+ arch/powerpc/kernel/pci-common.c   | 10 ++++++++++
+ 2 files changed, 13 insertions(+)
 
---- a/net/mpls/mpls_gso.c
-+++ b/net/mpls/mpls_gso.c
-@@ -18,6 +18,7 @@
- #include <linux/netdev_features.h>
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
-+#include <net/mpls.h>
+diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
+index a47de82fb8e2..bda87cbf106d 100644
+--- a/arch/powerpc/include/asm/machdep.h
++++ b/arch/powerpc/include/asm/machdep.h
+@@ -71,6 +71,9 @@ struct machdep_calls {
+ 	int		(*pcibios_root_bridge_prepare)(struct pci_host_bridge
+ 				*bridge);
  
- static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
- 				       netdev_features_t features)
-@@ -31,6 +32,8 @@ static struct sk_buff *mpls_gso_segment(
++	/* finds all the pci_controllers present at boot */
++	void 		(*discover_phbs)(void);
++
+ 	/* To setup PHBs when using automatic OF platform driver for PCI */
+ 	int		(*pci_setup_phb)(struct pci_controller *host);
  
- 	skb_reset_network_header(skb);
- 	mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
-+	if (unlikely(!mpls_hlen || mpls_hlen % MPLS_HLEN))
-+		goto out;
- 	if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
- 		goto out;
- 
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index 88e4f69a09e5..74628aca2bf1 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -1671,3 +1671,13 @@ static void fixup_hide_host_resource_fsl(struct pci_dev *dev)
+ }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MOTOROLA, PCI_ANY_ID, fixup_hide_host_resource_fsl);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, fixup_hide_host_resource_fsl);
++
++
++static int __init discover_phbs(void)
++{
++	if (ppc_md.discover_phbs)
++		ppc_md.discover_phbs();
++
++	return 0;
++}
++core_initcall(discover_phbs);
+-- 
+2.30.1
+
 
 
