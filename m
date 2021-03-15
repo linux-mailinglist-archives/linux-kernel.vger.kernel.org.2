@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536DA33BBD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B543F33BE75
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbhCOOVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S239625AbhCOOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232885AbhCOOAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 051CC64F5B;
-        Mon, 15 Mar 2021 13:59:46 +0000 (UTC)
+        id S231630AbhCON6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE69764F04;
+        Mon, 15 Mar 2021 13:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816788;
-        bh=2BIycqwhJIlEfRFJTM7CLI8vnQgrYEVG62hH6jHCeWw=;
+        s=korg; t=1615816688;
+        bh=RmiTjGr/R0DfF63LCOp6JPHByS43EkqYkA875oYey3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SOolGir0w/6mgbALCTi6Q2mQNPaYHv68YjGcttUKKlHjBQRmd5gHGV1MLumz/Oc6
-         /Ve7Bsh3MLFX0Ecnaezpv6lI55AYrYHIOPe8jR/9ZSR9uAOD/OZUllgD5aOKQ+nf/J
-         G+g7hLW/53VTlXkOA25sHe8Uj4R80FrhnhpMd070=
+        b=bnnz3dVUGzySUo28RTb13B/2kI4p3/vVWuyOiq/QRhig5FqNtqEeRWLUMdZZX5wFz
+         SEINzrq7puZGpndzBctfehTlLDZP2g03AIwfDEDurfkMUlfwd/8mW5Tw5eIOIwaEOk
+         bRY+RZLbJId+UYvjNhCYY4t+XFLXPXxa0hZG9Jvo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 4.14 62/95] usbip: fix vudc to check for stream socket
-Date:   Mon, 15 Mar 2021 14:57:32 +0100
-Message-Id: <20210315135742.306599964@linuxfoundation.org>
+        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 065/306] net: stmmac: Fix VLAN filter delete timeout issue in Intel mGBE SGMII
+Date:   Mon, 15 Mar 2021 14:52:08 +0100
+Message-Id: <20210315135509.841157981@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +41,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
+commit 9a7b3950c7e15968e23d83be215e95ccc7c92a53 upstream.
 
-Fix usbip_sockfd_store() to validate the passed in file descriptor is
-a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
-sock_recvmsg() can't detect end of stream.
+For Intel mGbE controller, MAC VLAN filter delete operation will time-out
+if serdes power-down sequence happened first during driver remove() with
+below message.
 
-Cc: stable@vger.kernel.org
-Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
+[82294.764958] intel-eth-pci 0000:00:1e.4 eth2: stmmac_dvr_remove: removing driver
+[82294.778677] intel-eth-pci 0000:00:1e.4 eth2: Timeout accessing MAC_VLAN_Tag_Filter
+[82294.779997] intel-eth-pci 0000:00:1e.4 eth2: failed to kill vid 0081/0
+[82294.947053] intel-eth-pci 0000:00:1d.2 eth1: stmmac_dvr_remove: removing driver
+[82295.002091] intel-eth-pci 0000:00:1d.1 eth0: stmmac_dvr_remove: removing driver
+
+Therefore, we delay the serdes power-down to be after unregister_netdev()
+which triggers the VLAN filter delete.
+
+Fixes: b9663b7ca6ff ("net: stmmac: Enable SERDES power up/down sequence")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -24,6 +24,7 @@
- #include <linux/usb/ch9.h>
- #include <linux/sysfs.h>
- #include <linux/kthread.h>
-+#include <linux/file.h>
- #include <linux/byteorder/generic.h>
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5144,13 +5144,16 @@ int stmmac_dvr_remove(struct device *dev
+ 	netdev_info(priv->dev, "%s: removing driver", __func__);
  
- #include "usbip_common.h"
-@@ -150,6 +151,13 @@ static ssize_t store_sockfd(struct devic
- 			goto unlock_ud;
- 		}
+ 	stmmac_stop_all_dma(priv);
++	stmmac_mac_set(priv, priv->ioaddr, false);
++	netif_carrier_off(ndev);
++	unregister_netdev(ndev);
  
-+		if (socket->type != SOCK_STREAM) {
-+			dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+				socket->type);
-+			ret = -EINVAL;
-+			goto sock_err;
-+		}
-+
- 		udc->ud.tcp_socket = socket;
++	/* Serdes power down needs to happen after VLAN filter
++	 * is deleted that is triggered by unregister_netdev().
++	 */
+ 	if (priv->plat->serdes_powerdown)
+ 		priv->plat->serdes_powerdown(ndev, priv->plat->bsp_priv);
  
- 		spin_unlock_irq(&udc->ud.lock);
-@@ -189,6 +197,8 @@ static ssize_t store_sockfd(struct devic
- 
- 	return count;
- 
-+sock_err:
-+	sockfd_put(socket);
- unlock_ud:
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
+-	stmmac_mac_set(priv, priv->ioaddr, false);
+-	netif_carrier_off(ndev);
+-	unregister_netdev(ndev);
+ #ifdef CONFIG_DEBUG_FS
+ 	stmmac_exit_fs(ndev);
+ #endif
 
 
