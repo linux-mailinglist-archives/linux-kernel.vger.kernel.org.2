@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE84733B078
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248D733B07C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhCOK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:58:28 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:36581 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhCOK56 (ORCPT
+        id S230026AbhCOK67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCOK60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:57:58 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 10534580A01;
-        Mon, 15 Mar 2021 06:57:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 15 Mar 2021 06:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=wWPFpRcTbfUYJw3V5FoYwoWbKzf
-        lwHa42zjUJms/VmI=; b=pbJBTPv4p0yeEFUkBNifdfshAIOAdrYaZL75tDdfKDt
-        cIIMLneFpizIPChw3WvW+QLZf5BGTPXOOTwp5JiOCbGGXkcJWgZi6Ejx2UPZLqMM
-        1pN4z58pTF9B+8z3IgPt649WTrNq5h0dfeXpIimuLogyaceNPDikacWBZCYUt4AU
-        LF69/1Fsq8gfFs6+FE7Jz657dqJYK0cmMb+5jw3xjnJ5u8YJZSXRZUY2GrwWsivn
-        wPljXL2Eugy39v7k43dj0ZJtVU5RjFRp2ZTSNSUDthAYNzY38qqMLMz4LE72MoUx
-        SSczUIryZbwoIcnhl5VI6A9JZ3CVA3mz4cg+Rvm7EuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wWPFpR
-        cTbfUYJw3V5FoYwoWbKzflwHa42zjUJms/VmI=; b=EbedVMcoQgT0EC8Rx6pRxj
-        D+89meVLJg1e8Y+/P5luMXQhQ4JywX7EdeiixpqRwFzgqN2aozz8d1XQ8kezWmnA
-        JqZQmBNNO0lCOqo/xcz7cCEXU0PrKD98B2dmjBwtzt0YFJkjy04YQ6JCfrsS6STQ
-        f0Jy6LkbUuQRzQ5DHpMV0VKQak75fm4JCj13irDpDtmI9W9OrkDFKrQjYHF3mhv9
-        ZIxP5mrNKBdnLfOiNmw1io+P2flxtjz7Rt5d3WJVNvK9e9Gxg7p8h1dteK1p5UW9
-        SAymVVPd8wSV/MmrnSNoKJxcp+LPn7AOdfinx+v6jb1UYMk86CdTR8YnW6jbOqNQ
-        ==
-X-ME-Sender: <xms:tD1PYDN5Y0rznMPIxN2oNbBt8fmQfZ1IR37fJKFDWh3Ntr7wpVtRzQ>
-    <xme:tD1PYN-IOEj9eyCvkKPhHHkUHxnXwTQWx9uQmdaS2LXe2xhybspK2SNpcD7yDiNrW
-    SUW1xHOULkD8GoAHyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:tD1PYCT5_hEv5UUnGV2wAf1Xcj_AvPuWbfQRL-ODhCWqZqwUhoQzRA>
-    <xmx:tD1PYHvYeedGqIS5IdDjK3s1uCwcxJrIoMuG9rXO8zyWPX8K1Ysh2Q>
-    <xmx:tD1PYLdyB39y7iytOjoexjASpqY9k2RCHfLrw-qaoBQdS788HL-T0w>
-    <xmx:tj1PYKxyrisK2Mu5TskRmhqEWXeLqV3OHeheeE1L4AYDVv-ubpiHtQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 52F6C24005B;
-        Mon, 15 Mar 2021 06:57:56 -0400 (EDT)
-Date:   Mon, 15 Mar 2021 11:57:53 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: timer: Simplify conditional expressions
-Message-ID: <20210315105753.lgkc66nwwvby7dmt@gilmour>
-References: <20210315043250.45095-1-samuel@sholland.org>
- <20210315043250.45095-2-samuel@sholland.org>
+        Mon, 15 Mar 2021 06:58:26 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F485C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:58:26 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id g185so31114200qkf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=t7xy6zeaJAsJPXI+1JuOYJP82SO0w/hyJQujyPzx7sQ=;
+        b=GiIzTz2riciYNs5yRUZ+/7oI/l4i+oi8y8XyI3p+Q+PjIebZwSqYdW0caUNDK5wL1A
+         Wd7hsznl76jhobiS2CiUIC6mVq4cTjYsXs1y24NGsJ5Ka0h6UB3zb8wccWDSbyx8AY7Z
+         kCbQh1Sxxcgh9d08nP3EkXiO6QWU+2PwtBvr8ngC84quW6+wc6pjMInGaCPgcpmcF5Hl
+         ywSgYNjjL+JsKGlytcvhPsGax0vc4pg+5U1yi+A1aF7+/7C4tlBsk0lhHwOtVXwmqvlk
+         ckG9nuJYnaH8NijRbMJvmw5tVPcsA3E3Zo9UDNkxaHXpIIRNV3czJcNoJmTg5OsfJg3O
+         AVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=t7xy6zeaJAsJPXI+1JuOYJP82SO0w/hyJQujyPzx7sQ=;
+        b=P+eHgAWCIb5x6OKJNMwpYcwgC7C0regrQTty0tMEHzqF/i8dtrSgW8L7kOpoQJyav1
+         dfm5ogy4LBxK9RJ44JVAmXOesCjaG0jrfMjeftCg4ahk9zmxGcivUSbm6MG5Db8Dhmpp
+         SOK99OGO1yGsCYtZy7wHeftbi4tEW9pd4caand7mpQsB4/2XFznaTMMiSxRotbuUj7Yl
+         IW9gs5ZAV7AGFQwNWa9sQXsmGG1pfG4I+wtO0EqdZvfrXntoOzupydb8TsNitO1Rf1nT
+         ra/aThCLkahV02zH2Nt3nbboIfwIG1gP3twyQrDZmdjJHQUaEkXoT/O0fHWk1QWcOua3
+         qNYQ==
+X-Gm-Message-State: AOAM5325oLpx5OCGzXiuySyme4lDxqlsqTeyzU16SmBhnWtCeCe7lAn5
+        jK+F+7XE53TytRZDC5jnj0dmI3xCtOsVeQ80CQ4x3Q==
+X-Google-Smtp-Source: ABdhPJyt24kW0t7rN9C+7UBuhpQqczNrqgYCLw5B+a95p6Kl4fSlHXEmRbDixvPpdKWR6Vywg2O6wcZfrVVgj5nJLOU=
+X-Received: by 2002:a37:a7cb:: with SMTP id q194mr723540qke.350.1615805905482;
+ Mon, 15 Mar 2021 03:58:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vfoklvg7svqlei4f"
-Content-Disposition: inline
-In-Reply-To: <20210315043250.45095-2-samuel@sholland.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 15 Mar 2021 11:58:14 +0100
+Message-ID: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
+Subject: NULL deref in integrity_inode_get
+To:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---vfoklvg7svqlei4f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am trying to boot 5.12-rc3 with this config:
+https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
 
-On Sun, Mar 14, 2021 at 11:32:46PM -0500, Samuel Holland wrote:
-> The sun4i timer IP block has a variable number of interrupts based on
-> the compatible. Use enums to combine the two sections for the existing
-> 3-interrupt variants, and to simplify adding new compatible strings.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+in qemu:
+qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
+max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
+wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
+ -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
+   -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
+nic,model=virtio-net-pci   -object
+memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
+  -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
+root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
+panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
+vm_pid -m 2G -cpu host
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+But it crashes on NULL deref in integrity_inode_get during boot:
 
-Thanks!
-Maxime
-
---vfoklvg7svqlei4f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE89sQAKCRDj7w1vZxhR
-xZrgAP9GcBp645D4PdV212rKQGYA1TqxEoanGnnxW1cyS9ZQngD/SBxuJ/3pux/J
-GPEXi4AEBvbRhe24ia1EPUXKPqo0Yw8=
-=xnu4
------END PGP SIGNATURE-----
-
---vfoklvg7svqlei4f--
+Run /sbin/init as init process
+BUG: kernel NULL pointer dereference, address: 000000000000001c
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
+Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
+3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
+1c 4cf
+RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
+RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
+R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
+R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
+FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
+ process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
+ ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
+ security_bprm_check+0x7d/0xa0 security/security.c:845
+ search_binary_handler fs/exec.c:1708 [inline]
+ exec_binprm fs/exec.c:1761 [inline]
+ bprm_execve fs/exec.c:1830 [inline]
+ bprm_execve+0x764/0x19a0 fs/exec.c:1792
+ kernel_execve+0x370/0x460 fs/exec.c:1973
+ try_to_run_init_process+0x14/0x4e init/main.c:1366
+ kernel_init+0x11d/0x1b8 init/main.c:1477
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+CR2: 000000000000001c
+---[ end trace 22d601a500de7d79 ]---
