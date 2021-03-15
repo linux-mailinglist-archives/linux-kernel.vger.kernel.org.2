@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F0833BE72
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E01B33BCA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239478AbhCOOrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
+        id S239160AbhCOO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:27:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234661AbhCOOEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88AE864EFD;
-        Mon, 15 Mar 2021 14:04:43 +0000 (UTC)
+        id S233112AbhCOOAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9A8264F23;
+        Mon, 15 Mar 2021 14:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817084;
-        bh=dLggE5UcIHdTZxiVTcRYvG1zoFKMcwZg9ZMurFrMvKQ=;
+        s=korg; t=1615816807;
+        bh=Fhgwe28ATRz/2WBldTQblfj5onW69dG5dekJ9gMPgiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ORzIRsAQjtwyEIy+HbiRzbowW9d2nGht4MqlvvTaTyrKBMbyQBAbUQNIfy6c0Pqp
-         hHEQbhkeYxm/Df6wLK7LYpd+ZGgeyIyHmRpUdUu6HAOJjl0ZtquBKk1diqBWN8JxCX
-         4RxgaQXX4fXgDLhby/aDvei1hiGXlmdqKzrcgt+E=
+        b=RApxRcA33pgODlMXlmTaVWSEQRqRkey/G/DjYfTg8vzlhvtG5PtXFgstFXwCzVbXL
+         qUN2L32KZgiz4GwHcTAt3QmPecqVXd9voCe/atgKlbT9rm5nmaMLJrjiJ9cWmbi0yB
+         48Y8Lq25hW998mX74j8RZ3PhgbWXVNijHWTsMUXU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 292/306] KVM: x86: Ensure deadline timer has truly expired before posting its IRQ
+        stable@vger.kernel.org,
+        syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>,
+        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.4 123/168] usbip: fix vhci_hcd attach_store() races leading to gpf
 Date:   Mon, 15 Mar 2021 14:55:55 +0100
-Message-Id: <20210315135517.556638562@linuxfoundation.org>
+Message-Id: <20210315135554.396366852@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +45,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Sean Christopherson <seanjc@google.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit beda430177f56656e7980dcce93456ffaa35676b upstream.
+commit 718ad9693e3656120064b715fe931f43a6201e67 upstream.
 
-When posting a deadline timer interrupt, open code the checks guarding
-__kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
-check in kvm_wait_lapic_expire().  The injection check will always fail
-since the interrupt has not yet be injected.  Moving the call after
-injection would also be wrong as that wouldn't actually delay delivery
-of the IRQ if it is indeed sent via posted interrupt.
+attach_store() is invoked when user requests import (attach) a device
+from usbip host.
 
-Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+Attach and detach are governed by local state and shared state
+- Shared state (usbip device status) - Device status is used to manage
+  the attach and detach operations on import-able devices.
+- Local state (tcp_socket, rx and tx thread task_struct ptrs)
+  A valid tcp_socket controls rx and tx thread operations while the
+  device is in exported state.
+- Device has to be in the right state to be attached and detached.
+
+Attach sequence includes validating the socket and creating receive (rx)
+and transmit (tx) threads to talk to the host to get access to the
+imported device. rx and tx threads depends on local and shared state to
+be correct and in sync.
+
+Detach sequence shuts the socket down and stops the rx and tx threads.
+Detach sequence relies on local and shared states to be in sync.
+
+There are races in updating the local and shared status in the current
+attach sequence resulting in crashes. These stem from starting rx and
+tx threads before local and global state is updated correctly to be in
+sync.
+
+1. Doesn't handle kthread_create() error and saves invalid ptr in local
+   state that drives rx and tx threads.
+2. Updates tcp_socket and sockfd,  starts stub_rx and stub_tx threads
+   before updating usbip_device status to VDEV_ST_NOTASSIGNED. This opens
+   up a race condition between the threads, port connect, and detach
+   handling.
+
+Fix the above problems:
+- Stop using kthread_get_run() macro to create/start threads.
+- Create threads and get task struct reference.
+- Add kthread_create() failure handling and bail out.
+- Hold vhci and usbip_device locks to update local and shared states after
+  creating rx and tx threads.
+- Update usbip_device status to VDEV_ST_NOTASSIGNED.
+- Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
+- Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
+  and status) is complete.
+
+Credit goes to syzbot and Tetsuo Handa for finding and root-causing the
+kthread_get_run() improper error handling problem and others. This is
+hard problem to find and debug since the races aren't seen in a normal
+case. Fuzzing forces the race window to be small enough for the
+kthread_get_run() error path bug and starting threads before updating the
+local and shared state bug in the attach sequence.
+- Update usbip_device tcp_rx and tcp_tx pointers holding vhci and
+  usbip_device locks.
+
+Tested with syzbot reproducer:
+- https://syzkaller.appspot.com/text?tag=ReproC&x=14801034d00000
+
+Fixes: 9720b4bc76a83807 ("staging/usbip: convert to kthread")
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210305021808.3769732-1-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reported-by: syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/bb434bd5d7a64fbec38b5ecfb838a6baef6eb12b.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/lapic.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/usb/usbip/vhci_sysfs.c |   29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1641,7 +1641,16 @@ static void apic_timer_expired(struct kv
+--- a/drivers/usb/usbip/vhci_sysfs.c
++++ b/drivers/usb/usbip/vhci_sysfs.c
+@@ -312,6 +312,8 @@ static ssize_t attach_store(struct devic
+ 	struct vhci *vhci;
+ 	int err;
+ 	unsigned long flags;
++	struct task_struct *tcp_rx = NULL;
++	struct task_struct *tcp_tx = NULL;
+ 
+ 	/*
+ 	 * @rhport: port number of vhci_hcd
+@@ -360,9 +362,24 @@ static ssize_t attach_store(struct devic
+ 		return -EINVAL;
  	}
  
- 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
--		kvm_wait_lapic_expire(vcpu);
-+		/*
-+		 * Ensure the guest's timer has truly expired before posting an
-+		 * interrupt.  Open code the relevant checks to avoid querying
-+		 * lapic_timer_int_injected(), which will be false since the
-+		 * interrupt isn't yet injected.  Waiting until after injecting
-+		 * is not an option since that won't help a posted interrupt.
-+		 */
-+		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
-+		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
-+			__kvm_wait_lapic_expire(vcpu);
- 		kvm_apic_inject_pending_timer_irqs(apic);
- 		return;
- 	}
+-	/* now need lock until setting vdev status as used */
++	/* create threads before locking */
++	tcp_rx = kthread_create(vhci_rx_loop, &vdev->ud, "vhci_rx");
++	if (IS_ERR(tcp_rx)) {
++		sockfd_put(socket);
++		return -EINVAL;
++	}
++	tcp_tx = kthread_create(vhci_tx_loop, &vdev->ud, "vhci_tx");
++	if (IS_ERR(tcp_tx)) {
++		kthread_stop(tcp_rx);
++		sockfd_put(socket);
++		return -EINVAL;
++	}
++
++	/* get task structs now */
++	get_task_struct(tcp_rx);
++	get_task_struct(tcp_tx);
+ 
+-	/* begin a lock */
++	/* now begin lock until setting vdev status set */
+ 	spin_lock_irqsave(&vhci->lock, flags);
+ 	spin_lock(&vdev->ud.lock);
+ 
+@@ -372,6 +389,8 @@ static ssize_t attach_store(struct devic
+ 		spin_unlock_irqrestore(&vhci->lock, flags);
+ 
+ 		sockfd_put(socket);
++		kthread_stop_put(tcp_rx);
++		kthread_stop_put(tcp_tx);
+ 
+ 		dev_err(dev, "port %d already used\n", rhport);
+ 		/*
+@@ -390,14 +409,16 @@ static ssize_t attach_store(struct devic
+ 	vdev->speed         = speed;
+ 	vdev->ud.sockfd     = sockfd;
+ 	vdev->ud.tcp_socket = socket;
++	vdev->ud.tcp_rx     = tcp_rx;
++	vdev->ud.tcp_tx     = tcp_tx;
+ 	vdev->ud.status     = VDEV_ST_NOTASSIGNED;
+ 
+ 	spin_unlock(&vdev->ud.lock);
+ 	spin_unlock_irqrestore(&vhci->lock, flags);
+ 	/* end the lock */
+ 
+-	vdev->ud.tcp_rx = kthread_get_run(vhci_rx_loop, &vdev->ud, "vhci_rx");
+-	vdev->ud.tcp_tx = kthread_get_run(vhci_tx_loop, &vdev->ud, "vhci_tx");
++	wake_up_process(vdev->ud.tcp_rx);
++	wake_up_process(vdev->ud.tcp_tx);
+ 
+ 	rh_port_connect(vdev, speed);
+ 
 
 
