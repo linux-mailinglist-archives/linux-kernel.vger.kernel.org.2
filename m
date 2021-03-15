@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B242533B8D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E46033B9FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbhCOOEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34306 "EHLO mail.kernel.org"
+        id S235152AbhCOOHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:07:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231207AbhCON5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D242264EF0;
-        Mon, 15 Mar 2021 13:57:17 +0000 (UTC)
+        id S229648AbhCON55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C1C64F00;
+        Mon, 15 Mar 2021 13:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816639;
-        bh=kQUkM0FiOwOORrfwDF8PLigJXM3f6iK6it+5VrLkPAI=;
+        s=korg; t=1615816677;
+        bh=0S0l0GvMMhvVcHOvNwoIm8XlgzIhd46HlmnYOJD2zC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=05ih5YIqMeMpQ2zV3eXq5t0lMWUFEZluCA6p7MhPuJoxtL0PgHk+hUnU9WQUzFknl
-         hVNO2ZC+bL/XOkt7ZtjB4bPBMMBoaHubKVaEOiQ5Wihl80Pn8TzmjB6Vs+iG+uufnf
-         uBMdJE10uO8oZSkH9t8CPPchM7gyzoT0ik79sGDI=
+        b=QWl5/XpWQBHFygrU0/Ok0MwNZR/4bEJYp5xlD6TjsvUdFhGqxM4ju+iNv7TamFCS3
+         Hx/NCPdnnrVVEUvjD16CquIUwT6/PPwe07ZNxb/69y/2UbKxDyq8mpgLCPGxPSj3St
+         Q2aUrAC6CFGbEWkX5zwGX25QInVeBKGRv1yfoG8E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
+        Donald Sharp <sharpd@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 027/290] ibmvnic: Fix possibly uninitialized old_num_tx_queues variable warning.
-Date:   Mon, 15 Mar 2021 14:52:00 +0100
-Message-Id: <20210315135542.847424658@linuxfoundation.org>
+Subject: [PATCH 5.11 058/306] nexthop: Do not flush blackhole nexthops when loopback goes down
+Date:   Mon, 15 Mar 2021 14:52:01 +0100
+Message-Id: <20210315135509.607431551@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +43,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Michal Suchanek <msuchanek@suse.de>
+From: Ido Schimmel <idosch@nvidia.com>
 
-commit 6881b07fdd24850def1f03761c66042b983ff86e upstream.
+commit 76c03bf8e2624076b88d93542d78e22d5345c88e upstream.
 
-GCC 7.5 reports:
-../drivers/net/ethernet/ibm/ibmvnic.c: In function 'ibmvnic_reset_init':
-../drivers/net/ethernet/ibm/ibmvnic.c:5373:51: warning: 'old_num_tx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
-../drivers/net/ethernet/ibm/ibmvnic.c:5373:6: warning: 'old_num_rx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
+As far as user space is concerned, blackhole nexthops do not have a
+nexthop device and therefore should not be affected by the
+administrative or carrier state of any netdev.
 
-The variable is initialized only if(reset) and used only if(reset &&
-something) so this is a false positive. However, there is no reason to
-not initialize the variables unconditionally avoiding the warning.
+However, when the loopback netdev goes down all the blackhole nexthops
+are flushed. This happens because internally the kernel associates
+blackhole nexthops with the loopback netdev.
 
-Fixes: 635e442f4a48 ("ibmvnic: merge ibmvnic_reset_init and ibmvnic_init")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Reviewed-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+This behavior is both confusing to those not familiar with kernel
+internals and also diverges from the legacy API where blackhole IPv4
+routes are not flushed when the loopback netdev goes down:
+
+ # ip route add blackhole 198.51.100.0/24
+ # ip link set dev lo down
+ # ip route show 198.51.100.0/24
+ blackhole 198.51.100.0/24
+
+Blackhole IPv6 routes are flushed, but at least user space knows that
+they are associated with the loopback netdev:
+
+ # ip -6 route show 2001:db8:1::/64
+ blackhole 2001:db8:1::/64 dev lo metric 1024 pref medium
+
+Fix this by only flushing blackhole nexthops when the loopback netdev is
+unregistered.
+
+Fixes: ab84be7e54fc ("net: Initial nexthop code")
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reported-by: Donald Sharp <sharpd@nvidia.com>
+Reviewed-by: David Ahern <dsahern@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ net/ipv4/nexthop.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -5176,16 +5176,14 @@ static int ibmvnic_reset_init(struct ibm
+--- a/net/ipv4/nexthop.c
++++ b/net/ipv4/nexthop.c
+@@ -1364,7 +1364,7 @@ out:
+ 
+ /* rtnl */
+ /* remove all nexthops tied to a device being deleted */
+-static void nexthop_flush_dev(struct net_device *dev)
++static void nexthop_flush_dev(struct net_device *dev, unsigned long event)
  {
- 	struct device *dev = &adapter->vdev->dev;
- 	unsigned long timeout = msecs_to_jiffies(20000);
--	u64 old_num_rx_queues, old_num_tx_queues;
-+	u64 old_num_rx_queues = adapter->req_rx_queues;
-+	u64 old_num_tx_queues = adapter->req_tx_queues;
- 	int rc;
+ 	unsigned int hash = nh_dev_hashfn(dev->ifindex);
+ 	struct net *net = dev_net(dev);
+@@ -1376,6 +1376,10 @@ static void nexthop_flush_dev(struct net
+ 		if (nhi->fib_nhc.nhc_dev != dev)
+ 			continue;
  
- 	adapter->from_passive_init = false;
- 
--	if (reset) {
--		old_num_rx_queues = adapter->req_rx_queues;
--		old_num_tx_queues = adapter->req_tx_queues;
-+	if (reset)
- 		reinit_completion(&adapter->init_done);
--	}
- 
- 	adapter->init_done_rc = 0;
- 	rc = ibmvnic_send_crq_init(adapter);
++		if (nhi->reject_nh &&
++		    (event == NETDEV_DOWN || event == NETDEV_CHANGE))
++			continue;
++
+ 		remove_nexthop(net, nhi->nh_parent, NULL);
+ 	}
+ }
+@@ -2122,11 +2126,11 @@ static int nh_netdev_event(struct notifi
+ 	switch (event) {
+ 	case NETDEV_DOWN:
+ 	case NETDEV_UNREGISTER:
+-		nexthop_flush_dev(dev);
++		nexthop_flush_dev(dev, event);
+ 		break;
+ 	case NETDEV_CHANGE:
+ 		if (!(dev_get_flags(dev) & (IFF_RUNNING | IFF_LOWER_UP)))
+-			nexthop_flush_dev(dev);
++			nexthop_flush_dev(dev, event);
+ 		break;
+ 	case NETDEV_CHANGEMTU:
+ 		info_ext = ptr;
 
 
