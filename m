@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB5033B859
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C00033B863
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhCOOCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34020 "EHLO mail.kernel.org"
+        id S234344AbhCOODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231826AbhCON4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D1F764EF8;
-        Mon, 15 Mar 2021 13:56:53 +0000 (UTC)
+        id S231181AbhCON5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A22FA64EED;
+        Mon, 15 Mar 2021 13:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816615;
-        bh=lNNjEH3y75qU/3lNnN4IaqhItFZUyuGOmBkNvfUvis8=;
+        s=korg; t=1615816617;
+        bh=YFrVHkSmnBUXIH4k+iOLP0UXegrJ1zI1zz5bKlhSZvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CCFf6gEacIpUydNdDwsd4CrFXjvSruOk4taQDZwBQgEHndcw0MYBXVxcxZyGXKuQk
-         cVSIWAnA2j3ujhmp8FsryswSPlrBervuDEeVzxnhEywuF7F7ht3uDzBcGkajT4YvRf
-         +Wlx9gK1+Ia4gd/nwbKgFDx7yMWO7BsLzfF95Yd0=
+        b=sB9M6bDhEZH+s58O2rtKB/rrXQ2lSRceWwCDcLP1v6trikGVxdc0w/My8LAa20+SQ
+         23iic83kksoxxstibJe3yFvccTOc8eXs9SIQyxzOrbejyesiyRBzBCg8uTs6Zpx2Wc
+         UewFLWyFzjrWF7NMNWtHOeGCjTnfeFe/mJRTAxgQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Subject: [PATCH 5.11 022/306] can: tcan4x5x: tcan4x5x_init(): fix initialization - clear MRAM before entering Normal Mode
-Date:   Mon, 15 Mar 2021 14:51:25 +0100
-Message-Id: <20210315135508.380452145@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arjun Roy <arjunroy@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.11 023/306] tcp: Fix sign comparison bug in getsockopt(TCP_ZEROCOPY_RECEIVE)
+Date:   Mon, 15 Mar 2021 14:51:26 +0100
+Message-Id: <20210315135508.410372732@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,47 +43,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Arjun Roy <arjunroy@google.com>
 
-commit 2712625200ed69c642b9abc3a403830c4643364c upstream.
+commit 2107d45f17bedd7dbf4178462da0ac223835a2a7 upstream.
 
-This patch prevents a potentially destructive race condition. The
-device is fully operational on the bus after entering Normal Mode, so
-zeroing the MRAM after entering this mode may lead to loss of
-information, e.g. new received messages.
+getsockopt(TCP_ZEROCOPY_RECEIVE) has a bug where we read a
+user-provided "len" field of type signed int, and then compare the
+value to the result of an "offsetofend" operation, which is unsigned.
 
-This patch fixes the problem by first initializing the MRAM, then
-bringing the device into Normale Mode.
+Negative values provided by the user will be promoted to large
+positive numbers; thus checking that len < offsetofend() will return
+false when the intention was that it return true.
 
-Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
-Link: https://lore.kernel.org/r/20210226163440.313628-1-torin@maxiluxsystems.com
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Note that while len is originally checked for negative values earlier
+on in do_tcp_getsockopt(), subsequent calls to get_user() re-read the
+value from userspace which may have changed in the meantime.
+
+Therefore, re-add the check for negative values after the call to
+get_user in the handler code for TCP_ZEROCOPY_RECEIVE.
+
+Fixes: c8856c051454 ("tcp-zerocopy: Return inq along with tcp receive zerocopy.")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Arjun Roy <arjunroy@google.com>
+Link: https://lore.kernel.org/r/20210225232628.4033281-1-arjunroy.kdev@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/m_can/tcan4x5x.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/ipv4/tcp.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/can/m_can/tcan4x5x.c
-+++ b/drivers/net/can/m_can/tcan4x5x.c
-@@ -326,14 +326,14 @@ static int tcan4x5x_init(struct m_can_cl
- 	if (ret)
- 		return ret;
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -4088,7 +4088,8 @@ static int do_tcp_getsockopt(struct sock
  
-+	/* Zero out the MCAN buffers */
-+	m_can_init_ram(cdev);
-+
- 	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
- 				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
- 	if (ret)
- 		return ret;
- 
--	/* Zero out the MCAN buffers */
--	m_can_init_ram(cdev);
--
- 	return ret;
- }
- 
+ 		if (get_user(len, optlen))
+ 			return -EFAULT;
+-		if (len < offsetofend(struct tcp_zerocopy_receive, length))
++		if (len < 0 ||
++		    len < offsetofend(struct tcp_zerocopy_receive, length))
+ 			return -EINVAL;
+ 		if (len > sizeof(zc)) {
+ 			len = sizeof(zc);
 
 
