@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F53C33AC5F
+	by mail.lfdr.de (Postfix) with ESMTP id 416DF33AC5C
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 08:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhCOHgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 03:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhCOHfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:35:45 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB9DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:35:44 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id g27so32350074iox.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qvhzd78JFcrVgfmlvFEjQlY3MhKPukXzd21KEKGnhww=;
-        b=WPXVk3F7SA4y4Nef8rJie6Wi/p9PQeGdCHaSp5I1F/sH2CtRCHSyg3Mniin5qndmyx
-         owDJSvOtd/CYMCnwsSQPLt3OyDJqXeoxmitkYCAq1yTLfQ/SztFPc9kk5eZat5r143GM
-         gjjURblzzz8moUhqvmiT6jt7NRQO/ocAOGPEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvhzd78JFcrVgfmlvFEjQlY3MhKPukXzd21KEKGnhww=;
-        b=nJVP5EBCQokOV9Fd+j0DGTaqTfP8IU9iS4Y3Wfzt4KzPCdJX+dIinjwO+FGQ++pcJI
-         p5VtSdpXB37pJh7RA4lWyIF9unWAcqGjrqbm6tl/dEiDV+jRyh3c5lA9Czx1jcrOnso3
-         pl9XO9UE6lC/TIQAgTwmZlYLd7PEdTluVWozNbovRDLJIJYUbGf9KIEK1Nk4nWcf3pVn
-         B3oBSgpK27HnF4vK/7kKsgzE1BPzfTAakGMKijxWtPu4bxMMVDp6up2uWr+qRogSpFZU
-         EM92qfLXO56TE/kniRP5eNC2iVNeDkbMo+ns37de608raKTo3CFzwbViUM+ulANdS6lS
-         fEsw==
-X-Gm-Message-State: AOAM5300XsZTEPtUxtf5TcNuNkchwQpHBamZ8WD6wKUtjYqou9bbCPdz
-        kMNUULq97qxEqQKa0RhBguKBGVq4BwjF1g==
-X-Google-Smtp-Source: ABdhPJw1zavQRp9k/vKqpBlNI858BflNyZhqJOd8ZEbVcr15u8cD+ORCOyqb9duaR855XlIbfq5Xow==
-X-Received: by 2002:a05:6638:635:: with SMTP id h21mr8081940jar.97.1615793744266;
-        Mon, 15 Mar 2021 00:35:44 -0700 (PDT)
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
-        by smtp.gmail.com with ESMTPSA id r12sm7303707ile.59.2021.03.15.00.35.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 00:35:43 -0700 (PDT)
-Received: by mail-io1-f45.google.com with SMTP id a7so32299499iok.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 00:35:43 -0700 (PDT)
-X-Received: by 2002:a05:6602:722:: with SMTP id g2mr6345139iox.1.1615793743446;
- Mon, 15 Mar 2021 00:35:43 -0700 (PDT)
+        id S230166AbhCOHgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 03:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229828AbhCOHgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:36:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D7264DAF;
+        Mon, 15 Mar 2021 07:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615793773;
+        bh=D528rbfLh8zZTCX5u9fbw/DucSrt77tO+DqrXHDn2V0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dO1mcP97ftKFPgeb+DhHYDSMl3wP2m9IFi9wQaJY92FA8J6kLfRItewVib2a0LMLp
+         RXl+EWsucIUkZAa0s/bkOPJ8WbTPadWsSSv1a7c8d8TZYGLvdWGu48N7BoN2XWKKu1
+         DUQTzr9zXRGs28SRw6Pi8AHbjpytILixMDEkgji8=
+Date:   Mon, 15 Mar 2021 08:36:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Alexandre Demers <alexandre.f.demers@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        usbip-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2] docs: usbip: Fix major fields and descriptions in
+ protocol
+Message-ID: <YE8Oan2BmSuKR4/p@kroah.com>
+References: <YE6/HQoxkraowTI7@Sun>
+ <YE78SRefRe1trldP@Sun>
 MIME-Version: 1.0
-References: <20210312235521.1408503-1-ribalda@chromium.org>
- <CANiDSCvK8AD7RUYGN-7e1zH9cMGTqGnwn4fJ+ZfKtktuJC14Nw@mail.gmail.com> <20210315073416.GA25860@lst.de>
-In-Reply-To: <20210315073416.GA25860@lst.de>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Mon, 15 Mar 2021 08:35:36 +0100
-X-Gmail-Original-Message-ID: <CANiDSCtAXmGjjN3OZVOdtquAnOW7emk_HYvQqJQtnvVAcsmRHQ@mail.gmail.com>
-Message-ID: <CANiDSCtAXmGjjN3OZVOdtquAnOW7emk_HYvQqJQtnvVAcsmRHQ@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE78SRefRe1trldP@Sun>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 8:34 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Mon, Mar 15, 2021 at 08:30:57AM +0100, Ricardo Ribalda wrote:
-> > Hi Christoph
-> >
-> > I guess you can merge this patch from your tree. I hope it is not too
-> > late in this release cycle.
->
-> The timing is perfectly fine, I haven't even started the dma-mapping tree
-> for v5.13 yet.
+On Mon, Mar 15, 2021 at 02:18:49PM +0800, Hongren Zheng (Zenithal) wrote:
+> The old document for usbip protocol is misleading and hard to read:
+>   * Some fields in header are incorrect
+>   * Explanation of some fields are unclear or even wrong
+>   * Padding of header (namely all headers have the same length) is
+>     not explicitly point out, which is crucial for stream protocol like
+>     TCP
+> 
+> These fixes are made through reading usbip kernel drivers and userland
+> codes. Also I have implemented one usbip server.
+> 
+> Major changes:
+>   * Document the correct field as described in the codebase.
+>   * Document the padding in usbip headers. This is crucial for TCP
+>     stream hence these padding should be explicitly point out.
+>     In code these padding are implemented by a union of all headers.
+>   * Fix two FIXME related to usbip unlink and Document the behavior
+>     of unlink in different situation.
+>   * Clarify some field with more accurate explanation, like those
+>     fields associated with URB. Some constraints are extracted from
+>     code.
+>   * Delete specific transfer_flag doc in usbip as it should be
+>     documented by the URB part.
+>   * Add data captured from wire as example
+> 
+> Also some changes suggested by a previous patch in
+> https://lore.kernel.org/linux-usb/20180128071514.9107-1-alexandre.f.demers@gmail.com/
+> is adopted in this patch.
+> 
+> Co-developed-by: Alexandre Demers <alexandre.f.demers@gmail.com>
+> Signed-off-by: Hongren Zheng (Zenithal) <i@zenithal.me>
+> ---
+>  Documentation/usb/usbip_protocol.rst | 290 +++++++++++++++------------
+>  1 file changed, 159 insertions(+), 131 deletions(-)
 
-Awesome!
+What changed from v1?  Always list that here below the --- line.
 
-Thanks Laurent for the review!
+> 
+> diff --git a/Documentation/usb/usbip_protocol.rst b/Documentation/usb/usbip_protocol.rst
+> index 988c832166cd..a15d9c1254e2 100644
+> --- a/Documentation/usb/usbip_protocol.rst
+> +++ b/Documentation/usb/usbip_protocol.rst
+> @@ -5,8 +5,14 @@ USB/IP protocol
+>  PRELIMINARY DRAFT, MAY CONTAIN MISTAKES!
+>  28 Jun 2011
+>  
+> +Update: Fix major fields in protocol
+> +14 Mar 2021
 
+This does not belong here, the git changelog shows this information.
 
--- 
-Ricardo Ribalda
+The original date above can be removed as well if you want.  And if the
+mistakes are all fixed now, that line can be dropped too :)
+
+thanks,
+
+greg k-h
