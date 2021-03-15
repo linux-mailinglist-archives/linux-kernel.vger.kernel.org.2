@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BE433C7D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5592C33C7C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhCOUiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:38:54 -0400
-Received: from audible.transient.net ([24.143.126.66]:49682 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229979AbhCOUir (ORCPT
+        id S231410AbhCOUeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:34:05 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:60459 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231249AbhCOUdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:38:47 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 16:38:46 EDT
-Received: (qmail 28239 invoked from network); 15 Mar 2021 20:32:04 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 15 Mar 2021 20:32:04 -0000
-Received: (nullmailer pid 478863 invoked by uid 1000);
-        Mon, 15 Mar 2021 20:32:04 -0000
-Date:   Mon, 15 Mar 2021 20:32:04 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size
- mismatch
-Message-ID: <YE/ERLHBdjJ19TYT@audible.transient.net>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210311130328.2859337-1-oberpar@linux.ibm.com>
- <202103120329.VU4uJ0yZ-lkp@intel.com>
- <CAHk-=whmwEJ-4tGamqOCw4BDJ-yjYrLRYxaFq5YurVc-XXO+hg@mail.gmail.com>
- <db88186a-d6af-33c9-f1fb-10b673b8fdd6@intel.com>
- <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
- <09373c3d-73e8-933a-24ad-5c4ba4fdc615@intel.com>
- <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
+        Mon, 15 Mar 2021 16:33:38 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Mar 2021 13:33:38 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 15 Mar 2021 13:33:37 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id 0224B19B3; Mon, 15 Mar 2021 13:33:37 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 13:33:37 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/3] regmap-irq: Add support for POLARITY_HI and
+ POLARITY_LO config regs
+Message-ID: <20210315203336.GA8977@codeaurora.org>
+References: <cover.1615423027.git.gurus@codeaurora.org>
+ <4b77a308ccdabbe96ed68623bd6eead9510e1fc9.1615423027.git.gurus@codeaurora.org>
+ <20210312121916.GE5348@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wg0DY=cE-6Tjp_Dt32UC6XtMZBa0Rr2GqkK=Sh9HE=5kQ@mail.gmail.com>
+In-Reply-To: <20210312121916.GE5348@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds wrote:
-> On Sun, Mar 14, 2021 at 7:32 PM Rong Chen <rong.a.chen@intel.com> wrote:
-> >
-> > It can be reproduced with '-a' option in dash:
+On Fri, Mar 12, 2021 at 12:19:16PM +0000, Mark Brown wrote:
+> On Wed, Mar 10, 2021 at 04:39:53PM -0800, Guru Das Srinagesh wrote:
+> > If an interrupt is already configured as either edge- or
+> > level-triggered, setting the corresponding bit for it in the POLARITY_HI
+> > register further configures it as rising-edge or level-high triggered
+> > (as the case may be), while setting the same bit in POLARITY_LO further
+> > configures it as falling-edge or level-low triggered.
 > 
-> Oh, ok. That kind of explains it.
-> 
-> 'dash' is trash. Please somebody make a bug report.
-> 
-> >      $ a="!"
-> >      $ [ "$a" = ".size" ]
-> >      $ [ "$a" = ".size" -a "$b" = ".LPBX0," ]
-> >      sh: 2: [: =: unexpected operator
-> 
-> This is 100% a dash bug. There is no question what-so-ever about it.
-> This is not some kind of "POSIX is ambiguous", or "the handling of
-> '-a' is complicated".
-> 
-> It's simply just that dash is buggy.
-> 
-> >  While dash supports most uses of the -a and -o options, they have
-> > very confusing semantics even in bash and are best avoided.
-> 
-> No, they have perfectly sane semantics in bash, and in POSIX.
-> 
-> See
-> 
->      https://pubs.opengroup.org/onlinepubs/9699919799/utilities/test.html
-> 
-> and there is absolutely zero question that bash does this correctly,
-> and dash does not.
-> 
-> But yes, it seems to be easy to work around, but still - could some
-> Ubuntu person please open a bug report on dash?
+> I think you probably need to bring these three fields together into a
+> single virtual field and then map the values within that field using
+> the existing type stuff.
 
-fwiw, https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=850202
+Sure, how about this scheme then, for patches 2 and 3 in this series?
+(Patch 1 will remain the same, pending your review of it.)
+
+Since I do need to write to two extra registers, I'll need two
+register_base's and two buffers to hold their data. This can be
+generalized to "extra config registers" in the framework as follows:
+
+- Add these two fields to `struct regmap_irq_chip`:
+
+	unsigned int *extra_config_base; /* Points to array of extra regs */
+	int num_extra_config_regs;	 /* = ARRAY_SIZE(array above) */
+
+- Add this field to `struct regmap_irq_chip_data`:
+
+	unsigned int **extra_config_buf;
+  	/* Will be dynamically allocated to size of:
+  	 * [chip->num_extra_config_regs][chip->num_regs]
+  	 */
+
+- Add a new function callback in `struct regmap_irq_chip`:
+
+	int (*configure_extra_regs)(void *irq_drv_data, unsigned int
+	type)
+
+  This callback will be called at the end of regmap_irq_set_type():
+  	
+  	if (d->chip->configure_extra_regs)
+		d->chip->configure_extra_regs();
+
+  The callback, defined in the client driver, will specifically address
+  the changes to regmap_irq_set_type() made in patches 2 and 3 of this
+  series, viz. overriding how type_buf is to be handled, plus the
+  populating of polarity_*_buf's (rechristened as extra_config_bufs in
+  this proposed new scheme).
+
+This new scheme thus makes v2 more generic. I thought I'd discuss this
+with you before implementing it as v3 RFC. Could you please let me know
+your thoughts?
+
+Thank you.
+
+Guru Das.
