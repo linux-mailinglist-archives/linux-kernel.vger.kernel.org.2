@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858E833C421
+	by mail.lfdr.de (Postfix) with ESMTP id D050233C422
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhCOR2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:28:35 -0400
-Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]:42748 "EHLO
-        6.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhCOR2F (ORCPT
+        id S236003AbhCOR2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235832AbhCOR2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:28:05 -0400
-Received: from player771.ha.ovh.net (unknown [10.109.143.201])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 4854928148A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:27:55 +0100 (CET)
-Received: from RCM-web2.webmail.mail.ovh.net (klient.box3.pl [176.114.232.43])
-        (Authenticated sender: rafal@milecki.pl)
-        by player771.ha.ovh.net (Postfix) with ESMTPSA id 8F4371C256371;
-        Mon, 15 Mar 2021 17:27:46 +0000 (UTC)
+        Mon, 15 Mar 2021 13:28:14 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F4DC06174A;
+        Mon, 15 Mar 2021 10:28:14 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8115A316;
+        Mon, 15 Mar 2021 18:28:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615829292;
+        bh=0tDUrg5BPE+L6CK+xldLeDBVG745e69d2TIvietyZYY=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZJFU3icWTJDLcwPXPcPYQ9+dAG08yyfNzDUd4pXjzrjHU6u+W0ZXkWgNUhRd1pOMm
+         MMiMlxDTjVNPq21peDVa/+ZseMDRyHPmJzlywJluksd/BQ0+8Tytwdz4joT5gKEhZO
+         0LZDAHjSTcZdYzVAuVoA6SYAZuV1iXXx5Vn4OPlQ=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2 18/18] media: i2c: max9286: Rework comments in .bound()
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-19-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <3067efad-a563-842f-5cf8-d38dfe0a96e1@ideasonboard.com>
+Date:   Mon, 15 Mar 2021 17:28:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Mon, 15 Mar 2021 18:27:46 +0100
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-phy@lists.infradead.org, Vivek Unune <npcomplete13@gmail.com>
-Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
-In-Reply-To: <YE85xs+HX5UUXlXo@vkoul-mobl>
-References: <20201116074650.16070-1-zajec5@gmail.com>
- <ed093ddb-da37-c3c4-cdd9-3b8e8db776bb@gmail.com>
- <YE85xs+HX5UUXlXo@vkoul-mobl>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <97981a899fe74c534d29d11485a2dbd2@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 176.114.232.43
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 11032411713050807880
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddvledguddtvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvffujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlpgfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejffeludekhfeiieetkeejhfegheegffetleehuedtueehteetudegheefteekteenucffohhmrghinheplhhkmhhlrdhorhhgpdhoiihlrggsshdrohhrghenucfkpheptddrtddrtddrtddpudejiedruddugedrvdefvddrgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeejuddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+In-Reply-To: <20210315131512.133720-19-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 11:41, Vinod Koul wrote:
-> On 11-03-21, 21:31, Rafał Miłecki wrote:
->> Hi,
->> 
->> On 16.11.2020 08:46, Rafał Miłecki wrote:
->> > From: Rafał Miłecki <rafal@milecki.pl>
->> >
->> > 1. Change syntax from txt to yaml
->> > 2. Drop "Driver for" from the title
->> > 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
->> > 4. Specify license
->> >
->> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> > ---
->> > I think this should go through linux-phy tree. Kishon, Vinod, can you
->> > take this patch?
->> >
->> > This patch generates a false positive checkpatch.pl warning [0].
->> > Please ignore:
->> > WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
->> >
->> > [0] https://lkml.org/lkml/2020/2/18/1084
->> 
->> Kishon, Vinod: I sent this patch back in December, it was Reviewed-by
->> Rob, but never accepted.
->> 
->> Could you push this patch to the linux-phy.git?
+On 15/03/2021 13:15, Jacopo Mondi wrote:
+> Re-phrase a comment in .bound() callback to make it clear we register
+> a subdev notifier and remove a redundant comment about disabling i2c
+> auto-ack.
 > 
-> Can you please rebase and resent me this patch. I am trying to
-> streamline patches now using phy ml and pw instance so that we dont 
-> miss
-> anything..
+> No functional changes intended.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Both patches apply cleanly. Maybe your mail client malformed them for 
-you?
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-They are accessible in the devicetree-bindings patchwork:
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201116074650.16070-1-zajec5@gmail.com/
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201116074650.16070-2-zajec5@gmail.com/
+> ---
+>  drivers/media/i2c/max9286.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index b6347639901e..16b2cb9b44a2 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -556,9 +556,9 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  		subdev->name, src_pad, index);
+>  
+>  	/*
+> -	 * We can only register v4l2_async_notifiers, which do not provide a
+> -	 * means to register a complete callback. bound_sources allows us to
+> -	 * identify when all remote serializers have completed their probe.
+> +	 * As we register a subdev notifiers we won't get a .complete() callback
+> +	 * here, so we have to use bound_sources to identify when all remote
+> +	 * serializers have probed.
+>  	 */
+>  	if (priv->bound_sources != priv->source_mask)
+>  		return 0;
+> @@ -581,16 +581,12 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	/*
+>  	 * All enabled sources have probed and enabled their reverse control
+>  	 * channels:
+> +	 * - The reverse channel amplitude stays high
+>  	 * - Verify all configuration links are properly detected
+> -	 * - Disable auto-ack as communication on the control channel are now
+> -	 *   stable.
+> +	 * - Disable auto-ack as communications on the control channel are now
+> +	 *   stable
+>  	 */
+>  	max9286_check_config_link(priv, priv->source_mask);
+> -
+> -	/*
+> -	 * Re-configure I2C with local acknowledge disabled after cameras have
+> -	 * probed.
+> -	 */
+>  	max9286_configure_i2c(priv, false);
+>  
+>  	return max9286_set_pixelrate(priv);
+> 
 
-You can apply both patches doing e.g.:
-curl 
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201116074650.16070-1-zajec5@gmail.com/mbox/ 
-| git am
-curl 
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201116074650.16070-2-zajec5@gmail.com/mbox/ 
-| git am
