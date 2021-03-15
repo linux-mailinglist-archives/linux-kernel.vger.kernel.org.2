@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEF833C988
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7854133C98B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhCOWzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhCOWzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:55:06 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5999EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 15:55:06 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lLw70-00Gf7T-3L; Mon, 15 Mar 2021 23:54:58 +0100
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 3/3] gcov: use kvmalloc()
-Date:   Mon, 15 Mar 2021 23:54:55 +0100
-Message-Id: <20210315235453.799e7a9d627d.I741d0db096c6f312910f7f1bcdfde0fda20801a4@changeid>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid>
-References: <20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid>
+        id S231474AbhCOW5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229756AbhCOW4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 18:56:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C2E64F51;
+        Mon, 15 Mar 2021 22:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615848996;
+        bh=mA6bo54i/sasosDNilaR36TpTtKYiYK3W7ZnOQugUzQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jf5J1PFj3rCq0FWyR+H3d3QIZGBaWMqdvpWSbcVpGTyzgxxNvpkhO5UFkbh7ymSrw
+         o3XYlZcnLwb23SZ9AQADSy0L8Qrmj/jmERt0/W7kzZMcR/TVtvk0obSDSD/JmqTE7g
+         BoSFVryjJZdJLcDDLJxTyY+saHXXHfxeqOTdwhl6knDfMBOO3NHvwnAewdeJRl0kVy
+         /dr5HqhqMGbsW2qczcEPMnZRcLstnXkc7u2e1/vlUsZhJcFYR9cza6DFCXA6gnWax7
+         n7xYHSkGseZ5xv51gw1RhswrIOfzElGSI8tERxxk8MPBE1UXRyrKnezXpol7cB7yvd
+         +4IlHuHs/PcYA==
+Date:   Mon, 15 Mar 2021 23:56:33 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 10/13] rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+Message-ID: <20210315225633.GA53908@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-11-frederic@kernel.org>
+ <20210303012456.GC20917@paulmck-ThinkPad-P72>
+ <20210310221702.GC2949@lothringen>
+ <YE908FC8F8/0p07q@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE908FC8F8/0p07q@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Mon, Mar 15, 2021 at 10:53:36PM +0800, Boqun Feng wrote:
+> On Wed, Mar 10, 2021 at 11:17:02PM +0100, Frederic Weisbecker wrote:
+> > On Tue, Mar 02, 2021 at 05:24:56PM -0800, Paul E. McKenney wrote:
+> > > On Tue, Feb 23, 2021 at 01:10:08AM +0100, Frederic Weisbecker wrote:
+> > > > A NOCB-gp wake up can safely delete the nocb_bypass_timer. nocb_gp_wait()
+> > > > is going to check again the bypass state and rearm the bypass timer if
+> > > > necessary.
+> > > > 
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > > 
+> > > Give that you delete this code a couple of patches later in this series,
+> > > why not just leave it out entirely?  ;-)
+> > 
+> > It's not exactly deleted later, it's rather merged within the
+> > "del_timer(&rdp_gp->nocb_timer)".
+> > 
+> > The purpose of that patch is to make it clear that we explicitly cancel
+> > the nocb_bypass_timer here before we do it implicitly later with the
+> > merge of nocb_bypass_timer into nocb_timer.
+> > 
+> > We could drop that patch, the resulting code in the end of the patchset
+> > will be the same of course but the behaviour detail described here might
+> > slip out of the reviewers attention :-)
+> > 
+> 
+> How about merging the timers first and adding those small improvements
+> later? i.e. move patch #12 #13 right after #7 (IIUC, #7 is the last
+> requirement you need for merging timers)
 
-Using vmalloc() in gcov is really quite wasteful, many of the
-objects allocated are really small (e.g. I've seen 24 bytes.)
-Use kvmalloc() to automatically pick the better of kmalloc()
-or vmalloc() depending on the size.
+Hmm, nope, patches 9 and 10 are actually preparation work for timers merge.
+In fact they could even be skipped and timers could be merged directly but I
+wanted the unified behaviour to be fully explicit for reviewers through those
+incremental changes before merging the timers together.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- kernel/gcov/clang.c   | 6 +++---
- kernel/gcov/fs.c      | 6 +++---
- kernel/gcov/gcc_4_7.c | 6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
+>, and then patch #8~#11 just follow
 
-diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-index e59c290527b2..89be9ab2d909 100644
---- a/kernel/gcov/clang.c
-+++ b/kernel/gcov/clang.c
-@@ -49,7 +49,7 @@
- #include <linux/printk.h>
- #include <linux/ratelimit.h>
- #include <linux/slab.h>
--#include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include "gcov.h"
- 
- typedef void (*llvm_gcov_callback)(void);
-@@ -308,7 +308,7 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
- 		goto err_name;
- 
- 	cv_size = fn->num_counters * sizeof(fn->counters[0]);
--	fn_dup->counters = vmalloc(cv_size);
-+	fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
- 	if (!fn_dup->counters)
- 		goto err_counters;
- 	memcpy(fn_dup->counters, fn->counters, cv_size);
-@@ -367,7 +367,7 @@ void gcov_info_free(struct gcov_info *info)
- 
- 	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
- 		kfree(fn->function_name);
--		vfree(fn->counters);
-+		kvfree(fn->counters);
- 		list_del(&fn->head);
- 		kfree(fn);
- 	}
-diff --git a/kernel/gcov/fs.c b/kernel/gcov/fs.c
-index 40ea81c0475b..5c3086cad8f9 100644
---- a/kernel/gcov/fs.c
-+++ b/kernel/gcov/fs.c
-@@ -26,7 +26,7 @@
- #include <linux/slab.h>
- #include <linux/mutex.h>
- #include <linux/seq_file.h>
--#include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include "gcov.h"
- 
- /**
-@@ -116,7 +116,7 @@ static struct gcov_iterator *gcov_iter_new(struct gcov_info *info)
- 	/* Dry-run to get the actual buffer size. */
- 	size = convert_to_gcda(NULL, info);
- 
--	iter = vmalloc(struct_size(iter, buffer, size));
-+	iter = kvmalloc(struct_size(iter, buffer, size), GFP_KERNEL);
- 	if (!iter)
- 		return NULL;
- 
-@@ -134,7 +134,7 @@ static struct gcov_iterator *gcov_iter_new(struct gcov_info *info)
-  */
- static void gcov_iter_free(struct gcov_iterator *iter)
- {
--	vfree(iter);
-+	kvfree(iter);
- }
- 
- /**
-diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
-index 1251f2434e90..460c12b7dfea 100644
---- a/kernel/gcov/gcc_4_7.c
-+++ b/kernel/gcov/gcc_4_7.c
-@@ -15,7 +15,7 @@
- #include <linux/errno.h>
- #include <linux/slab.h>
- #include <linux/string.h>
--#include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include "gcov.h"
- 
- #if (__GNUC__ >= 10)
-@@ -309,7 +309,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
- 
- 			cv_size = sizeof(gcov_type) * sci_ptr->num;
- 
--			dci_ptr->values = vmalloc(cv_size);
-+			dci_ptr->values = kvmalloc(cv_size, GFP_KERNEL);
- 
- 			if (!dci_ptr->values)
- 				goto err_free;
-@@ -351,7 +351,7 @@ void gcov_info_free(struct gcov_info *info)
- 		ci_ptr = info->functions[fi_idx]->ctrs;
- 
- 		for (ct_idx = 0; ct_idx < active; ct_idx++, ci_ptr++)
--			vfree(ci_ptr->values);
-+			kvfree(ci_ptr->values);
- 
- 		kfree(info->functions[fi_idx]);
- 	}
--- 
-2.30.2
+Patch 8 really need to stay where it is because it is an important limitation
+on nocb de-offloading that can be removed right after patch 7 (which itself
+removes the sole reason for rdp leader to remain nocb) and it doesn't depend
+on the timers unification that comes after.
 
+> 
+> Just my 2 cents. The overall patchset looks good to me ;-)
+> 
+> Feel free to add
+> 
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+
+Thanks a lot for checking that!
