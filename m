@@ -2,141 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC6F33C7E4
+	by mail.lfdr.de (Postfix) with ESMTP id ABC5833C7E5
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhCOUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 16:42:39 -0400
-Received: from mail-eopbgr1310094.outbound.protection.outlook.com ([40.107.131.94]:23194
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230423AbhCOUmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:42:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=asPLilE8U8IhOfl+1j1Ed64oGkbHo+SeVR1UAHUXaQbeqE98AmF3JkWEFsb54RY/q9+PzQh8shuvxP8lS43fZam2yy4QWtj6KQ9OKhNRx+7HRzdJqMDMaNwlrAvR/FYPgfZQXxSvxL24fpDod3BmK8jd5vr2EVNLc0x5qfjUddngrzFgJ5WMxR3sIf+Co2sATlS3akS8tj0bU5OCQ4FQjjsoz7jYyDToLvNw4rzY96PynY4swwx5bQZZaNbPbSPkgu3i9SQp/BIEIUu2pQ6k7ektP0AzPetxjEie5j6FYJ2IwLEfEg07F2i7sFGgUvGBYCzuyimHDogFzO7UID7Niw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MiRCKO3dsR4/XXD0+YTzkQ0KxQ6gkdAohAnE/L8rUB0=;
- b=O8crq3bUsxTDC8oDcxbzUf3BMFPnX4zLTUpTX0oy6pgrysDuXBZ4nWF470wVm6LLL+Aqk5I0VQtl2071ZfaiAGnpUxwsfroV4GGmzUz/6iCqH44TV7IMU7WOtwiJKE8SJ9/V9jB/obAe2bmI5MMBAGNS70iyTrQyiUCM4Ko8rU3+GMxZAUnibthXy4+8VwL2Y3sPuCdzJu/fYzkVxCQOQ/g7jggsgxphGbl6eR5SFYxfv1EcoSE2+SUnvsOuCTRcAm+fq4FbGflSsnCmHDWtmCTLPXph/vv5lOJEn6HP4NAdFioEAMMG+cjz2rDdCk/8wEtUqi4VrUZ4rI1L15VNpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=zenithal.me; dmarc=pass action=none header.from=zenithal.me;
- dkim=pass header.d=zenithal.me; arc=none
+        id S232693AbhCOUmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 16:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhCOUm0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 16:42:26 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE40C06174A;
+        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id bt4so9450517pjb.5;
+        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tsinghuau.onmicrosoft.com; s=selector1-tsinghuau-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MiRCKO3dsR4/XXD0+YTzkQ0KxQ6gkdAohAnE/L8rUB0=;
- b=p/CqYam2glAAW+VnBHo0Tp2bZubugOrgqj6YLjxPTs9Mg31xRNtAIhxzj5utsMJxuChova3SAeVoEryU3fvQxXohjNE88ep9Xab2JzUzernut6nOhRVIcdeUsCnfP9khBq5DiJnGjpSzwmaW6av5Gj9OsBlCAIbUxGvwNm/OcPA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=zenithal.me;
-Received: from HK0PR03MB3795.apcprd03.prod.outlook.com (2603:1096:203:3c::10)
- by HK0PR03MB3282.apcprd03.prod.outlook.com (2603:1096:203:30::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.13; Mon, 15 Mar
- 2021 20:41:55 +0000
-Received: from HK0PR03MB3795.apcprd03.prod.outlook.com
- ([fe80::8492:e28e:e777:6d05]) by HK0PR03MB3795.apcprd03.prod.outlook.com
- ([fe80::8492:e28e:e777:6d05%6]) with mapi id 15.20.3955.011; Mon, 15 Mar 2021
- 20:41:55 +0000
-Date:   Tue, 16 Mar 2021 04:41:46 +0800
-From:   "Hongren Zheng (Zenithal)" <i@zenithal.me>
-To:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Antonio Borneo <borneo.antonio@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] usbip: tools: add usage of device mode in usbip_list.c
-Message-ID: <YE/GivuHyW1Ol3xP@Sun>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE/FaQxejKplWwyL@Sun>
-X-Operating-System: Linux Sun 5.10.19-1-lts
-X-Mailer: Mutt 2.0.5 (da5e3282) (2021-01-21)
-X-Originating-IP: [2402:f000:6:6009::11]
-X-ClientProxiedBy: SJ0PR03CA0314.namprd03.prod.outlook.com
- (2603:10b6:a03:39d::19) To HK0PR03MB3795.apcprd03.prod.outlook.com
- (2603:1096:203:3c::10)
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O6e8S7lh6iAwMopRVdoRppSa4LuJ+ayzrZbrIdMcAvU=;
+        b=B2ZkDvaAj+Bp0Qzw0qkFL5KfWIaPT7HH3yGSGINZ70hMsMP78DCawnP2aK/j3gfikE
+         6mJX2QHwgPqtMH/xLMMqZRug9agGhKiZF+0lPwNok/2zFimS12sL/Hfa5mK9TxMz7Pw7
+         pK5eD10SdJo49R7Q1Bar2lmzlckM8cOiTEHBAOa7RlWqm/xt/xpUQdOvLQ8nQXC0fjef
+         1FM9cD46b1uPD/iclC8CfdSOxm6hLpaYCCF08uv/npw0k44OS3xmUApWpIRUhcV5//cx
+         CbOgNwscEeod/ckQ2pHrEKj5slLnApTO03GD7kgKirj7hMOTBdDYRZDtXh+xX5e8xtjA
+         zBog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O6e8S7lh6iAwMopRVdoRppSa4LuJ+ayzrZbrIdMcAvU=;
+        b=TIUr1lfMnF8GziQuQwOFR+emlH9flE68CqglgKJr6bcv2zlqWq+ZUgt4mTM0ybL02q
+         8l4XLATgvqlIyF3ZeX4RnSQNQSJirKjYe4ioQvI+sSRgc/wYidQmupMowbnh2ULOVk84
+         SyDQChEr6s+M1SvMU0uUvSxcP9STx3Lmh2yc6N4l9SUB3wYBrQjF9aF0j1ImUrKSW0oS
+         0VuSwV2lelcdlqwVZ2kMF8gImaTomr+DFbghdXOH0Gs/yA3zJoI4Kqn/B/go5oOYQIwd
+         rRzlQm9+goI5xgI/yeNpYBdK20tA1ZM3GYp3ck9orF9BGeBVPTjh5UzxES4bksDfOiVw
+         lJWw==
+X-Gm-Message-State: AOAM533aFtVdBEPwxu/7jNkW835RwD2vH6ra57EJDfZf0NT5jc8f0lqH
+        2WQX328Ut9w2/62pkn9GcboNSo5twb0=
+X-Google-Smtp-Source: ABdhPJzv4HCdbNqFTYAiNiPmpXDxe8kGt5XtOLngOQl2RkR/z+SpaqhCj1uU7m4WaANyftZsfiFnWA==
+X-Received: by 2002:a17:90a:9b18:: with SMTP id f24mr924038pjp.96.1615840944027;
+        Mon, 15 Mar 2021 13:42:24 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w79sm14955596pfc.87.2021.03.15.13.42.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 13:42:23 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/78] 4.9.262-rc1 review
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Ben Hutchings <ben@decadent.org.uk>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210315135212.060847074@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <11774be7-0738-1a23-f186-0875b9e82ef6@gmail.com>
+Date:   Mon, 15 Mar 2021 13:42:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2402:f000:6:6009::11) by SJ0PR03CA0314.namprd03.prod.outlook.com (2603:10b6:a03:39d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 20:41:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0886f24c-22e1-472e-bf61-08d8e7f2c5a3
-X-MS-TrafficTypeDiagnostic: HK0PR03MB3282:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HK0PR03MB328276D468FFC7298B6218F2BC6C9@HK0PR03MB3282.apcprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:901;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jTpEXORP/Qff5Hn/WbUXGhueRSnivlUy8QPqiZ41lb5kC2Tj/tUqgVE5SYI99RnAs5eoZ/G2B5abBuOuohWyWWpDlt0uyuwfVT07RK7Vly3DlOyVkudaVHm7ItW3lwtgQ+Yu8etv5+/DaB5+QTULiwk8cOFYMRhpgiI4Bl5RKtW9isSZomdkZxR+VyCsyIszjqctFSTEjBfMBj29Qbg5EKksmmTitzA0jSWvWMUhSiXM9id0/B8r13QVTfB6ZmkzeweEHJw0uyZdHTYMUkjXKBTc5Z4BWV7PNmdMQBOyppMsJOEhznDxxkUDToJp7Mr+vjN9ZHTl508wjYpX7xGX3EF9381esORnmXgaeh7D8H3YRmrkbs22H++kBASFxkLnpQBoK5UIIooS6vOZZ9lVohQ2KKcJDVeeRcShiiGaF3nBPPQzpnM7ao4bN3AQFAarBG1fXIvK67iagSA7MBDVqOgORYJc9CkxGuCOHW96qB55L/a6XGWhLie60wjjkJ0chy+wVG0JWABGK7JlcAiEoD2VEUKLAas7nyoP4HabJHEnE4ER7e5AFHqratPgvZeO58U2+sNiNhXoH7EUhl3JDTHy9l1pAgu0o1fMKDEdRwE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR03MB3795.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(39830400003)(396003)(376002)(366004)(136003)(346002)(4744005)(16526019)(66476007)(4326008)(6666004)(5660300002)(52116002)(2906002)(9686003)(110136005)(33716001)(316002)(83380400001)(86362001)(8936002)(478600001)(786003)(66946007)(66556008)(8676002)(6496006)(186003)(6486002)(49092004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qG3HeTZMe1NDX1U0Y0p1MvHwkx01OCOGsu59Yi52WkJKInly6FR2WjwiYH07?=
- =?us-ascii?Q?eO/adCe1nOa/myC1yQ0NqRlTh1RvcFaxl0Z2QiEi1EESeHUQMPWw2j/guY7V?=
- =?us-ascii?Q?63mA0lWuaNho06zVhdhZgK3S5VhxLW6G/ZzoJUudRi4qIoUvVecwzVD8KwcV?=
- =?us-ascii?Q?GDPJXtEHTrPJ+e0d85MV3HClAAMyBTjzIN+CIoqt1gOGtBxXC6hwni2sPijg?=
- =?us-ascii?Q?ZCE/3BCPUa6bLtvJAvRdet0LI6nTq+ajzIZfZ5z6/RJNqWogR3Q2Xj5hvEsX?=
- =?us-ascii?Q?aeGeLaeu5wT9ax0W17nFHt6dAxdSd+Xg5yXQxGuHht7BnEocmKH/tdc8MhgA?=
- =?us-ascii?Q?Md5HG2dxeppKUghK7z7HZzCrCkTPBX9oRS3AVMQ7PJrNUO59f02iexMfRgkj?=
- =?us-ascii?Q?RcKW74dmLQsRjruBGs55y+NBirEijQyOpLVLqqmevG7qRnyTKhqPP5PwLAvx?=
- =?us-ascii?Q?qi9VGN22hdhaV7MqTgr52/sLYuDJngdZofoaY97bAoo85xB3t/r2hDSna8nt?=
- =?us-ascii?Q?gTemW/ncbNEhkNoBFp7pkN4vqOUTVFkrbESwY8Bqmemz8FuSSEvt5om8CZVW?=
- =?us-ascii?Q?mHrePYeUs3t6kzPBePpDlAq3mE6k8ekSBy73cg6urXdRGlwwcbulBeYpEiBe?=
- =?us-ascii?Q?AwGZyu05qPbcUbPYt8VQ1PcK6j6U2SxsWRoDfrkk+85jIoMN11+Vbyt/J4Jk?=
- =?us-ascii?Q?8yqKnIKy4YkDIGuFWAQfSFhANP1YQ5Wv1myOZIxVAJHK6V69zAeI8pE5gxqc?=
- =?us-ascii?Q?lYqH85o4IDtkorOBHxV3geq6Q8ctmz1+i1W5meZq+wQ5PKd7aJJ062Mw+Bhc?=
- =?us-ascii?Q?OlNNMOYiD1OQVViu77vor7pJSczDy8vysd4Q/s15vE2PSQmdnvd/OuOJBSvg?=
- =?us-ascii?Q?KK81QgeaPUPkbgA8yM/R32F/Q3Ut9ZUwwYTywhl+yc5Wja8e0W54G5mAuNcX?=
- =?us-ascii?Q?DYBg+xkKAI+1tyGMra2sfbkSmTbksMpdvpJphc10L1m2TfZdkn+iiQT60ZPV?=
- =?us-ascii?Q?uiifbBE110V0AoP/m0+EqSWaM6EgTbPoqhJWNQfn3Pai/CfX0Je9u5jRNfLm?=
- =?us-ascii?Q?DRMfdlvMkU2yhf35TPl9XnuiGV06LMZBhNP2gnqMkw/niJvBP5coF25chxH5?=
- =?us-ascii?Q?Y22tM6PRSprFuNPQj1TMstSOAfm/AYmVZBTorHa1Rbgh5KNy+v/oCOSrS+qo?=
- =?us-ascii?Q?Ce9VOBr2XKG8BmxaMy7rj3oO4lFW7FNWQmsg458j4X3kNoMmKD2xts+ZOOZt?=
- =?us-ascii?Q?ezFEp1u/+TDOaVa3a4+NMGEnl6xqUV6X29pGQXqoowDSR9+lqkCPn46uRDr5?=
- =?us-ascii?Q?Nti4B3pJJlIOoH688iGaUjlc5f27gdtu/uKSzc7QxHGfRw=3D=3D?=
-X-OriginatorOrg: zenithal.me
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0886f24c-22e1-472e-bf61-08d8e7f2c5a3
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR03MB3795.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 20:41:55.7967
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 436d481c-43b1-4418-8d7f-84c1e4887cf0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ry15aAo0g5p1RRZ7PM9XBYudlXFmOu8hEYmcvuN+P19k42dVZrVCSU/QJkIK/VYW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB3282
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The option '-d/--device' was implemented in 'usbip list' but not
-shown in usage. Hence this commit adds this option to usage.
 
-Signed-off-by: Hongren Zheng <i@zenithal.me>
----
- tools/usb/usbip/src/usbip_list.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-PATCH v2:
-    Add signed-off-by line
+On 3/15/2021 6:51 AM, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.9.262 release.
+> There are 78 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Mar 2021 13:51:58 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.262-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-PATCH v3:
-    Move patch changelog after the marker line
-    Remove nickname in signed-off-by line
+On ARCH_BRCMSTB using 32-bit and 64-bit kernels, still seeing the
+following futex warning, unfortunately simply running the function
+tracers does not allow me to trigger the warning, so I am having a hard
+time coming up with a simple reproducer:
 
-diff --git a/tools/usb/usbip/src/usbip_list.c b/tools/usb/usbip/src/usbip_list.c
-index 8625b0f514ee..3d810bcca02f 100644
---- a/tools/usb/usbip/src/usbip_list.c
-+++ b/tools/usb/usbip/src/usbip_list.c
-@@ -33,7 +33,8 @@ static const char usbip_list_usage_string[] =
- 	"usbip list [-p|--parsable] <args>\n"
- 	"    -p, --parsable         Parsable list format\n"
- 	"    -r, --remote=<host>    List the exportable USB devices on <host>\n"
--	"    -l, --local            List the local USB devices\n";
-+	"    -l, --local            List the local USB devices\n"
-+	"    -d, --device           List the local USB gadgets bound to usbip-vudc\n";
- 
- void usbip_list_usage(void)
- {
+*** 0[   66.551916] ------------[ cut here ]------------
+[   66.557855] WARNING: CPU: 3 PID: 1628 at kernel/futex.c:1584
+do_futex+0x800/0x974
+[   66.565457] Modules linked in: brcmv3d(O) wakeup_drv(O) bcmdriver(PO)
+[   66.572048]
+[   66.573609] CPU: 3 PID: 1628 Comm: boot Tainted: P           O
+4.9.262-1.22pre-g4c1466bf10ac #2
+[   66.582693] Hardware name: BCX972160DV (DT)
+[   66.586936] task: ffffffc07ae92280 task.stack: ffffffc0016ec000
+[   66.592923] PC is at do_futex+0x800/0x974
+[   66.596992] LR is at do_futex+0x784/0x974
+[   66.601057] pc : [<ffffff800810f470>] lr : [<ffffff800810f3f4>]
+pstate: 600001c5
+[   66.608547] sp : ffffffc0016efd10
+[   66.611912] x29: ffffffc0016efd10 x28: 0000000000000000
+[   66.617313] x27: 000000000000065c x26: ffffffc0016efdf8
+[   66.622713] x25: ffffffc079bf9090 x24: 000000008000065c
+[   66.628112] x23: ffffffc0016ec000 x22: 0000000000000000
+[   66.633511] x21: 000000000d72fbb0 x20: ffffffc079bf9080
+[   66.638912] x19: 0000000000000001 x18: 0000000000000000
+[   66.644313] x17: 0000007f845adfe8 x16: ffffff800810f5e4
+[   66.649713] x15: 000017d28638a692 x14: 00055d4a5b4a1ca0
+[   66.655114] x13: 000000000000012d x12: 0000000000000018
+[   66.660514] x11: 000000001f758ce6 x10: 0000000000000042
+[   66.665915] x9 : 003b9aca00000000 x8 : 0000000000000062
+[   66.671314] x7 : 0000000000007070 x6 : 0000000000000000
+[   66.676714] x5 : ffffffc079bf90b8 x4 : 0000000000000000
+[   66.682112] x3 : 0000000000000001 x2 : 0000000000000000
+[   66.687512] x1 : 0000000000000000 x0 : ffffff8009b0f7dd
+[   66.692909]
+[   66.694444] ---[ end trace cc7627749f0e27f6 ]---
+[   66.699114] Call trace:
+[   66.701614] Exception stack(0xffffffc0016efb10 to 0xffffffc0016efc40)
+[   66.708121] fb00:                                   0000000000000001
+0000007fffffffff
+[   66.712143] arm-scmi brcm_scmi@0: mbox timed out in resp(caller:
+scmi_perf_level_set+0x80/0xc0)
+[   66.712155] cpufreq: __target_index: Failed to change cpu frequency: -110
+[   66.731690] fb20: ffffffc0016efd10 ffffff800810f470 00000000600001c5
+000000000000003d
+[   66.739624] fb40: ffffffc079bf9090 ffffffc0016efdf8 000000000000065c
+ffffff8009a26000
+[   66.747559] fb60: ffffffc0016efb80 ffffff80080ddbec ffffffc0016efb90
+ffffff80080cf2ac
+[   66.755492] fb80: ffffff80099f6000 ffffff80080de170 ffffffc0016efc50
+ffffff80080c88e8
+[   66.763426] fba0: ffffffc07a6da280 ffffffc07a6da4a0 ffffffc0016efbc0
+ffffff80083d531c
+[   66.771360] fbc0: ffffffc0016efc00 ffffff800808e5c4 0000000000000008
+00000000000409ff
+[   66.779295] fbe0: ffffff8009b0f7dd 0000000000000000 0000000000000000
+0000000000000001
+[   66.787227] fc00: 0000000000000000 ffffffc079bf90b8 0000000000000000
+0000000000007070
+[   66.795160] fc20: 0000000000000062 003b9aca00000000 0000000000000042
+000000001f758ce6
+[   66.803095] [<ffffff800810f470>] do_futex+0x800/0x974
+[   66.808211] [<ffffff800810f740>] SyS_futex+0x15c/0x184
+[   66.813415] [<ffffff8008083180>] el0_svc_naked+0x34/0x38
+
+other than that:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.30.1
-
+Florian
