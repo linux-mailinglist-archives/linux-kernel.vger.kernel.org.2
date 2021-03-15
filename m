@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7BF33AD69
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1EA33AD77
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbhCOI2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:28:44 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54610 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhCOI2b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:28:31 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12F8SQ1Q106679;
-        Mon, 15 Mar 2021 03:28:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615796906;
-        bh=cer44ESuwilc78S3ENaREQDsWOxzb4fnQ57VISjGvWg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=EbZGdYImfBTt4n86ogAWpVYogIMHsYM+HeZD/6QdC62pUjKpnzyyk8sbFGM57dvWE
-         7TYikiI4Ut3GLQ4HK87s0NCsfaQtty52qyBgXsCOTtoIACQ3x4Gvi37ECQ8X5j8NEO
-         4ulliRfgZlNbcZlzd2ys0rpePaCi8Krn65qKcZrc=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12F8SQ4I022066
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 15 Mar 2021 03:28:26 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
- Mar 2021 03:28:25 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 15 Mar 2021 03:28:25 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12F8SOHM110233;
-        Mon, 15 Mar 2021 03:28:25 -0500
-Date:   Mon, 15 Mar 2021 13:58:24 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <michael@walle.cc>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Update comment about the default flash
- parameters
-Message-ID: <20210315082822.xmr2wdfjg633jpdp@ti.com>
-References: <20210315055634.17332-1-tudor.ambarus@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210315055634.17332-1-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S229632AbhCOIbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:31:32 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:38724 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhCOIbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:31:09 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3EB3A1A3237;
+        Mon, 15 Mar 2021 09:31:08 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A10751A3225;
+        Mon, 15 Mar 2021 09:31:03 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5CB7B402F7;
+        Mon, 15 Mar 2021 09:30:56 +0100 (CET)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     abel.vesa@nxp.com, shawnguo@kernel.org, ping.bai@nxp.com
+Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] clk: imx8mp: Remove the none exist pcie clocks
+Date:   Mon, 15 Mar 2021 16:17:47 +0800
+Message-Id: <1615796268-9011-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/21 07:56AM, Tudor Ambarus wrote:
-> s/legacy/default. spi_nor_info_init_params initializes some default
-> flash parameters and settings that can be overwritten when parsing
-> SFDP, or by fixup hooks. There's nothing legacy about them, they are
-> just some default settings, if not otherwise discovered or specified.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+In the i.MX8MP PCIe design, the PCIe PHY REF clock comes from external
+OSC or internal system PLL. It is configured in the IOMUX_GPR14 register
+directly, and can't be contolled by CCM at all.
+Remove the PCIE PHY clock from clock driver to clean up codes.
+There is only one PCIe in i.MX8MP, remove the none exist second PCIe
+related clocks.
+Remove the none exsits clocks IDs together.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
+---
+ drivers/clk/imx/clk-imx8mp.c             | 15 ---------------
+ include/dt-bindings/clock/imx8mp-clock.h |  3 ---
+ 2 files changed, 18 deletions(-)
 
-> ---
->  drivers/mtd/spi-nor/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4a315cb1c4db..26f681cd3a98 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2913,7 +2913,7 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
->  	struct device_node *np = spi_nor_get_flash_node(nor);
->  	u8 i, erase_mask;
->  
-> -	/* Initialize legacy flash parameters and settings. */
-> +	/* Initialize default flash parameters and settings. */
->  	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
->  	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
->  	params->setup = spi_nor_default_setup;
-> -- 
-> 2.25.1
-> 
-
+diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
+index 2f4e1d674e1c..afbeb6bf1909 100644
+--- a/drivers/clk/imx/clk-imx8mp.c
++++ b/drivers/clk/imx/clk-imx8mp.c
+@@ -152,10 +152,6 @@ static const char * const imx8mp_can2_sels[] = {"osc_24m", "sys_pll2_200m", "sys
+ 						"sys_pll1_160m", "sys_pll1_800m", "sys_pll3_out",
+ 						"sys_pll2_250m", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						    "clk_ext1", "clk_ext2", "clk_ext3",
+-						    "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_pcie_aux_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 						    "sys_pll3_out", "sys_pll2_100m", "sys_pll1_80m",
+ 						    "sys_pll1_160m", "sys_pll1_200m", };
+@@ -380,14 +376,6 @@ static const char * const imx8mp_memrepair_sels[] = {"osc_24m", "sys_pll2_100m",
+ 							"sys_pll1_800m", "sys_pll2_1000m", "sys_pll3_out",
+ 							"clk_ext3", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie2_ctrl_sels[] = {"osc_24m", "sys_pll2_250m", "sys_pll2_200m",
+-						      "sys_pll1_266m", "sys_pll1_800m", "sys_pll2_500m",
+-						      "sys_pll2_333m", "sys_pll3_out", };
+-
+-static const char * const imx8mp_pcie2_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						     "clk_ext1", "clk_ext2", "clk_ext3",
+-						     "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_media_mipi_test_byte_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 								"sys_pll3_out", "sys_pll2_100m",
+ 								"sys_pll1_80m", "sys_pll1_160m",
+@@ -585,7 +573,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
+ 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
+ 	hws[IMX8MP_CLK_CAN2] = imx8m_clk_hw_composite("can2", imx8mp_can2_sels, ccm_base + 0xa280);
+-	hws[IMX8MP_CLK_PCIE_PHY] = imx8m_clk_hw_composite("pcie_phy", imx8mp_pcie_phy_sels, ccm_base + 0xa380);
+ 	hws[IMX8MP_CLK_PCIE_AUX] = imx8m_clk_hw_composite("pcie_aux", imx8mp_pcie_aux_sels, ccm_base + 0xa400);
+ 	hws[IMX8MP_CLK_I2C5] = imx8m_clk_hw_composite("i2c5", imx8mp_i2c5_sels, ccm_base + 0xa480);
+ 	hws[IMX8MP_CLK_I2C6] = imx8m_clk_hw_composite("i2c6", imx8mp_i2c6_sels, ccm_base + 0xa500);
+@@ -643,8 +630,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_MEDIA_CAM2_PIX] = imx8m_clk_hw_composite("media_cam2_pix", imx8mp_media_cam2_pix_sels, ccm_base + 0xbe80);
+ 	hws[IMX8MP_CLK_MEDIA_LDB] = imx8m_clk_hw_composite("media_ldb", imx8mp_media_ldb_sels, ccm_base + 0xbf00);
+ 	hws[IMX8MP_CLK_MEMREPAIR] = imx8m_clk_hw_composite_critical("mem_repair", imx8mp_memrepair_sels, ccm_base + 0xbf80);
+-	hws[IMX8MP_CLK_PCIE2_CTRL] = imx8m_clk_hw_composite("pcie2_ctrl", imx8mp_pcie2_ctrl_sels, ccm_base + 0xc000);
+-	hws[IMX8MP_CLK_PCIE2_PHY] = imx8m_clk_hw_composite("pcie2_phy", imx8mp_pcie2_phy_sels, ccm_base + 0xc080);
+ 	hws[IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE] = imx8m_clk_hw_composite("media_mipi_test_byte", imx8mp_media_mipi_test_byte_sels, ccm_base + 0xc100);
+ 	hws[IMX8MP_CLK_ECSPI3] = imx8m_clk_hw_composite("ecspi3", imx8mp_ecspi3_sels, ccm_base + 0xc180);
+ 	hws[IMX8MP_CLK_PDM] = imx8m_clk_hw_composite("pdm", imx8mp_pdm_sels, ccm_base + 0xc200);
+diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
+index e8d68fbb6e3f..43927a1b9e94 100644
+--- a/include/dt-bindings/clock/imx8mp-clock.h
++++ b/include/dt-bindings/clock/imx8mp-clock.h
+@@ -125,7 +125,6 @@
+ #define IMX8MP_CLK_CAN1				116
+ #define IMX8MP_CLK_CAN2				117
+ #define IMX8MP_CLK_MEMREPAIR			118
+-#define IMX8MP_CLK_PCIE_PHY			119
+ #define IMX8MP_CLK_PCIE_AUX			120
+ #define IMX8MP_CLK_I2C5				121
+ #define IMX8MP_CLK_I2C6				122
+@@ -182,8 +181,6 @@
+ #define IMX8MP_CLK_MEDIA_CAM2_PIX		173
+ #define IMX8MP_CLK_MEDIA_LDB			174
+ #define IMX8MP_CLK_MEDIA_MIPI_CSI2_ESC		175
+-#define IMX8MP_CLK_PCIE2_CTRL			176
+-#define IMX8MP_CLK_PCIE2_PHY			177
+ #define IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE		178
+ #define IMX8MP_CLK_ECSPI3			179
+ #define IMX8MP_CLK_PDM				180
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.17.1
+
