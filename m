@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0391833BCA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE6533BCF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239089AbhCOO1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:27:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S235541AbhCOObE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233098AbhCOOAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DD064F4F;
-        Mon, 15 Mar 2021 14:00:24 +0000 (UTC)
+        id S233038AbhCOOAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A39B164F8E;
+        Mon, 15 Mar 2021 14:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816825;
-        bh=IFfqQ8qPfWnqGiSXAud+IN7dXAdtEKUe1+FwHMdPJCE=;
+        s=korg; t=1615816826;
+        bh=UX9f+NV9wDx9Q7CmnQqT1xrjNeuvz9LnWyiBmFrWdwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lBnKGBGK30qt4p8OsUDAhdJPqW4YLyczQlyjAxorpk12+m2485JQsEjNt95HegHeJ
-         orEe6IPePAXKeqih7w5YeAffeX6Y7VGoGw3j2hSvlVXZJL0eFJj1MUd6Yyj0kVeZ28
-         KpAMi6ZJqGPVmeT7Yg+6pdE6pmZJwi73q2Qe1+Lk=
+        b=JyR2XtoH/cqJBVTXWYFxe+MngcdIT+M4To3jAQaj48b0120CM4FlbKyG7CJM9l0c+
+         pgvEhpv3XBQAsntTp9PPX6kg6i4w953SR220SYMmLk6KY+XMd4KuQatdJdv3pXnm2D
+         cyEoIeQt+Jo9RSs2Iea5FL071st/vPCxbbSW5wUM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.19 093/120] staging: ks7010: prevent buffer overflow in ks_wlan_set_scan()
-Date:   Mon, 15 Mar 2021 14:57:24 +0100
-Message-Id: <20210315135723.019585083@linuxfoundation.org>
+        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH 4.19 094/120] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
+Date:   Mon, 15 Mar 2021 14:57:25 +0100
+Message-Id: <20210315135723.056930586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -40,43 +40,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Lee Gibson <leegib@gmail.com>
 
-commit e163b9823a0b08c3bb8dc4f5b4b5c221c24ec3e5 upstream.
+commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
 
-The user can specify a "req->essid_len" of up to 255 but if it's
-over IW_ESSID_MAX_SIZE (32) that can lead to memory corruption.
+Function r8712_sitesurvey_cmd calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-Fixes: 13a9930d15b4 ("staging: ks7010: add driver from Nanonote extra-repository")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YD4fS8+HmM/Qmrw6@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/ks7010/ks_wlan_net.c |    6 ++++--
+ drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/ks7010/ks_wlan_net.c
-+++ b/drivers/staging/ks7010/ks_wlan_net.c
-@@ -1120,6 +1120,7 @@ static int ks_wlan_set_scan(struct net_d
- {
- 	struct ks_wlan_private *priv = netdev_priv(dev);
- 	struct iw_scan_req *req = NULL;
-+	int len;
- 
- 	if (priv->sleep_mode == SLP_SLEEP)
- 		return -EPERM;
-@@ -1129,8 +1130,9 @@ static int ks_wlan_set_scan(struct net_d
- 	if (wrqu->data.length == sizeof(struct iw_scan_req) &&
- 	    wrqu->data.flags & IW_SCAN_THIS_ESSID) {
- 		req = (struct iw_scan_req *)extra;
--		priv->scan_ssid_len = req->essid_len;
--		memcpy(priv->scan_ssid, req->essid, priv->scan_ssid_len);
-+		len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
-+		priv->scan_ssid_len = len;
-+		memcpy(priv->scan_ssid, req->essid, len);
- 	} else {
- 		priv->scan_ssid_len = 0;
+--- a/drivers/staging/rtl8712/rtl871x_cmd.c
++++ b/drivers/staging/rtl8712/rtl871x_cmd.c
+@@ -242,8 +242,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
+ 	psurveyPara->ss_ssidlen = 0;
+ 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
+ 	if ((pssid != NULL) && (pssid->SsidLength)) {
+-		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
+-		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
++		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
++
++		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
++		psurveyPara->ss_ssidlen = cpu_to_le32(len);
  	}
+ 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
+ 	r8712_enqueue_cmd(pcmdpriv, ph2c);
 
 
