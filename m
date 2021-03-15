@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6912333B58C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F43A33B5AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhCONyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55880 "EHLO mail.kernel.org"
+        id S231667AbhCONzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhCONxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B07A661606;
-        Mon, 15 Mar 2021 13:53:23 +0000 (UTC)
+        id S230403AbhCONxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BF7264EE3;
+        Mon, 15 Mar 2021 13:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816405;
-        bh=Irzxljc8tTnuiB0txvQE1fyG3ETTHEas1beSpfYJajg=;
+        s=korg; t=1615816412;
+        bh=7DPVG0wh9dc/B/sLUehEe+Qi2nod6MHLUsvS7K4+Bvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I04pm10/gpoEanoZFYvN/JEwhbwgVLfbiFh3EjTNsQAehpvEdek2+x7qMcULpqkUy
-         FXDFiZfE4uGScBMRVLvrChBzTlVYwrd40raXa8neykJyhJ5LTubTcJMw/cKZvjgQ74
-         ntJjJrFS72KMFG0LJsyjs7HTdWxt8axtn/yCNh7o=
+        b=aOn13logs7ChJfnQiF8xHiGx4l/5og/oAJiLl7nudLiWuNhadJAjXLRVMwHqgE8ww
+         5z0QaUIAnRKEuQvlYi6OhziJVgrKj1mGa5Qo0D5Uo89ngdvfuwUBIUm1xhk7i4RWDm
+         opNPQ57VqBvnYYvUchzsecohVZ/uaHe5ChmyvmWs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 20/78] mmc: mediatek: fix race condition between msdc_request_timeout and irq
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.4 29/75] mmc: core: Fix partition switch time for eMMC
 Date:   Mon, 15 Mar 2021 14:51:43 +0100
-Message-Id: <20210315135212.725857085@linuxfoundation.org>
+Message-Id: <20210315135209.210199995@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +42,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Chaotian Jing <chaotian.jing@mediatek.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
+commit 66fbacccbab91e6e55d9c8f1fc0910a8eb6c81f7 upstream.
 
-when get request SW timeout, if CMD/DAT xfer done irq coming right now,
-then there is race between the msdc_request_timeout work and irq handler,
-and the host->cmd and host->data may set to NULL in irq handler. also,
-current flow ensure that only one path can go to msdc_request_done(), so
-no need check the return value of cancel_delayed_work().
+Avoid the following warning by always defining partition switch time:
 
-Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
-Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
+ [    3.209874] mmc1: unspecified timeout for CMD6 - use generic
+ [    3.222780] ------------[ cut here ]------------
+ [    3.233363] WARNING: CPU: 1 PID: 111 at drivers/mmc/core/mmc_ops.c:575 __mmc_switch+0x200/0x204
+
+Reported-by: Paul Fertser <fercerpav@gmail.com>
+Fixes: 1c447116d017 ("mmc: mmc: Fix partition switch timeout for some eMMCs")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/168bbfd6-0c5b-5ace-ab41-402e7937c46e@intel.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/mmc/core/mmc.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 7fc6ce381142..125c06a10455 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -741,13 +741,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
- static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
- {
- 	unsigned long flags;
--	bool ret;
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -400,10 +400,6 @@ static int mmc_decode_ext_csd(struct mmc
  
--	ret = cancel_delayed_work(&host->req_timeout);
--	if (!ret) {
--		/* delay work already running */
--		return;
--	}
+ 		/* EXT_CSD value is in units of 10ms, but we store in ms */
+ 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
+-		/* Some eMMC set the value too low so set a minimum */
+-		if (card->ext_csd.part_time &&
+-		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
+-			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
+ 
+ 		/* Sleep / awake timeout in 100ns units */
+ 		if (sa_shift > 0 && sa_shift <= 0x17)
+@@ -585,6 +581,17 @@ static int mmc_decode_ext_csd(struct mmc
+ 		card->ext_csd.data_sector_size = 512;
+ 	}
+ 
 +	/*
-+	 * No need check the return value of cancel_delayed_work, as only ONE
-+	 * path will go here!
++	 * GENERIC_CMD6_TIME is to be used "unless a specific timeout is defined
++	 * when accessing a specific field", so use it here if there is no
++	 * PARTITION_SWITCH_TIME.
 +	 */
-+	cancel_delayed_work(&host->req_timeout);
++	if (!card->ext_csd.part_time)
++		card->ext_csd.part_time = card->ext_csd.generic_cmd6_time;
++	/* Some eMMC set the value too low so set a minimum */
++	if (card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
++		card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
 +
- 	spin_lock_irqsave(&host->lock, flags);
- 	host->mrq = NULL;
- 	spin_unlock_irqrestore(&host->lock, flags);
-@@ -765,7 +765,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	bool done = false;
- 	bool sbc_error;
- 	unsigned long flags;
--	u32 *rsp = cmd->resp;
-+	u32 *rsp;
- 
- 	if (mrq->sbc && cmd == mrq->cmd &&
- 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
-@@ -786,6 +786,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 
- 	if (done)
- 		return true;
-+	rsp = cmd->resp;
- 
- 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
- 
-@@ -968,7 +969,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
- static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 				struct mmc_request *mrq, struct mmc_data *data)
- {
--	struct mmc_command *stop = data->stop;
-+	struct mmc_command *stop;
- 	unsigned long flags;
- 	bool done;
- 	unsigned int check_data = events &
-@@ -984,6 +985,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 
- 	if (done)
- 		return true;
-+	stop = data->stop;
- 
- 	if (check_data || (stop && stop->error)) {
- 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
--- 
-2.30.1
-
+ 	/* eMMC v5 or later */
+ 	if (card->ext_csd.rev >= 7) {
+ 		memcpy(card->ext_csd.fwrev, &ext_csd[EXT_CSD_FIRMWARE_VERSION],
 
 
