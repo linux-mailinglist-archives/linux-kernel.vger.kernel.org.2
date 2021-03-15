@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5B633BB48
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F8433BBC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236690AbhCOOOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S233569AbhCOOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232539AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D9564EFC;
-        Mon, 15 Mar 2021 13:58:46 +0000 (UTC)
+        id S232798AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979B064F12;
+        Mon, 15 Mar 2021 13:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816727;
-        bh=BTX0qJ3n6SIdKilulVAPZ2yySWm99XSe9dgXJ1gFNWs=;
+        s=korg; t=1615816778;
+        bh=Cx7Z6Teu877+PcieRFJ0pOYWFpG8cXlCbz19Qlmfev0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Wrr9zoQXYIN3OsqoKanzWLWunus4KOyrtE3cxefS6aemorV/11RkFfTnHnnwR/q8
-         vOFcd6sMKxmpFl7kLaAN1GV+NQjqFhiGm0ixZ5nwKvb0ot+fKIFK2ibkIGQO7H03JD
-         MxwGTH4aw7/PHGaIgOQ0/Nua24e36zOfi8qwUOJk=
+        b=Bv4NxLYgDGJ87ttc2Iz8HWW32FnwG66joAKQEOpecE61QcH8LV5VWI4pByhbCtzy8
+         szY0cEMAaAGP76+FXqBQionbEOzoMi9yvAOEohjEHVOTZZIunTpWKa35T8g1Rnjkez
+         zNdVwjPDfJbj+K+xVyyDtjprSCCerXVXyvpz1rWo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 22/95] net: davicom: Fix regulator not turned off on failed probe
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 061/120] ALSA: hda: Drop the BATCH workaround for AMD controllers
 Date:   Mon, 15 Mar 2021 14:56:52 +0100
-Message-Id: <20210315135741.005517566@linuxfoundation.org>
+Message-Id: <20210315135721.977471732@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit ac88c531a5b38877eba2365a3f28f0c8b513dc33 upstream.
+commit 28e96c1693ec1cdc963807611f8b5ad400431e82 upstream.
 
-When the probe fails or requests to be defered, we must disable the
-regulator that was previously enabled.
+The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
+AMD controller (1022:1457)") introduced a few workarounds for the
+recent AMD HD-audio controller, and one of them is the forced BATCH
+PCM mode so that PulseAudio avoids the timer-based scheduling.  This
+was thought to cover for some badly working applications, but this
+actually worsens for more others.  In total, this wasn't a good idea
+to enforce it.
 
-Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This is a partial revert of the commit above for dropping the PCM
+BATCH enforcement part to recover from the regression again.
+
+Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210308160726.22930-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/davicom/dm9000.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_controller.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/net/ethernet/davicom/dm9000.c
-+++ b/drivers/net/ethernet/davicom/dm9000.c
-@@ -1460,7 +1460,7 @@ dm9000_probe(struct platform_device *pde
- 		if (ret) {
- 			dev_err(dev, "failed to request reset gpio %d: %d\n",
- 				reset_gpios, ret);
--			return -ENODEV;
-+			goto out_regulator_disable;
- 		}
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -624,13 +624,6 @@ static int azx_pcm_open(struct snd_pcm_s
+ 				     20,
+ 				     178000000);
  
- 		/* According to manual PWRST# Low Period Min 1ms */
-@@ -1472,8 +1472,10 @@ dm9000_probe(struct platform_device *pde
- 
- 	if (!pdata) {
- 		pdata = dm9000_parse_dt(&pdev->dev);
--		if (IS_ERR(pdata))
--			return PTR_ERR(pdata);
-+		if (IS_ERR(pdata)) {
-+			ret = PTR_ERR(pdata);
-+			goto out_regulator_disable;
-+		}
- 	}
- 
- 	/* Init network device */
-@@ -1716,6 +1718,10 @@ out:
- 	dm9000_release_board(pdev, db);
- 	free_netdev(ndev);
- 
-+out_regulator_disable:
-+	if (!IS_ERR(power))
-+		regulator_disable(power);
-+
- 	return ret;
- }
- 
+-	/* by some reason, the playback stream stalls on PulseAudio with
+-	 * tsched=1 when a capture stream triggers.  Until we figure out the
+-	 * real cause, disable tsched mode by telling the PCM info flag.
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
+-		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
+-
+ 	if (chip->align_buffer_size)
+ 		/* constrain buffer sizes to be multiple of 128
+ 		   bytes. This is more efficient in terms of memory
 
 
