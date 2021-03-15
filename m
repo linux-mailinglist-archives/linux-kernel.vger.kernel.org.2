@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD45433B086
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FC633B08C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhCOLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:01:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33626 "EHLO mx2.suse.de"
+        id S229512AbhCOLCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:02:13 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:44831 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhCOLAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:00:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E05AAAE3C;
-        Mon, 15 Mar 2021 11:00:41 +0000 (UTC)
-Subject: Re: [PATCH v4 1/4] mm,page_alloc: Bail out earlier on -ENOMEM in
- alloc_contig_migrate_range
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210310150853.13541-1-osalvador@suse.de>
- <20210310150853.13541-2-osalvador@suse.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <bd60e2e2-3683-69a4-a922-20a446bac61f@suse.cz>
-Date:   Mon, 15 Mar 2021 12:00:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210310150853.13541-2-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229699AbhCOLBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:01:41 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DzYPz3dmwz9tyQv;
+        Mon, 15 Mar 2021 12:01:27 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Yu5e6q0CTUoz; Mon, 15 Mar 2021 12:01:27 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzYPz2D0Rz9tyQt;
+        Mon, 15 Mar 2021 12:01:27 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 104538B773;
+        Mon, 15 Mar 2021 12:01:32 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3iqYG8FYfEae; Mon, 15 Mar 2021 12:01:31 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A4B018B75B;
+        Mon, 15 Mar 2021 12:01:26 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1860165D4D; Mon, 15 Mar 2021 11:01:26 +0000 (UTC)
+Message-Id: <9881c68fbca004f9ea18fc9473f630e11ccd6417.1615806071.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/asm-offsets: GPR14 is not needed either
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, rashmicy@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 15 Mar 2021 11:01:26 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/10/21 4:08 PM, Oscar Salvador wrote:
-> Currently, __alloc_contig_migrate_range can generate -EINTR, -ENOMEM or -EBUSY,
-> and report them down the chain.
-> The problem is that when migrate_pages() reports -ENOMEM, we keep going till we
-> exhaust all the try-attempts (5 at the moment) instead of bailing out.
-> 
-> migrate_pages bails out right away on -ENOMEM because it is considered a fatal
-> error. Do the same here instead of keep going and retrying.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Commit aac6a91fea93 ("powerpc/asm: Remove unused symbols in
+asm-offsets.c") removed GPR15 to GPR31 but kept GPR14,
+probably because it pops up in a couple of comments when doing
+a grep.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+However, it was never used either, so remove it as well.
 
-> ---
->  mm/page_alloc.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e4b29ee2b1e..94467f1b85ff 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8484,7 +8484,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  			}
->  			tries = 0;
->  		} else if (++tries == 5) {
-> -			ret = ret < 0 ? ret : -EBUSY;
-> +			ret = -EBUSY;
->  			break;
->  		}
->  
-> @@ -8494,6 +8494,12 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  
->  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
->  				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-> +		/*
-> +		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
-> +		 * to retry again over this error, so do the same here.
-> +		 */
-> +		if (ret == -ENOMEM)
-> +			break;
->  	}
->  	if (ret < 0) {
->  		putback_movable_pages(&cc->migratepages);
-> 
+Fixes: aac6a91fea93 ("powerpc/asm: Remove unused symbols in asm-offsets.c")
+Cc: Rashmica Gupta <rashmicy@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/asm-offsets.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index f3a662201a9f..4d230c5c7099 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -323,9 +323,6 @@ int main(void)
+ 	STACK_PT_REGS_OFFSET(GPR11, gpr[11]);
+ 	STACK_PT_REGS_OFFSET(GPR12, gpr[12]);
+ 	STACK_PT_REGS_OFFSET(GPR13, gpr[13]);
+-#ifndef CONFIG_PPC64
+-	STACK_PT_REGS_OFFSET(GPR14, gpr[14]);
+-#endif /* CONFIG_PPC64 */
+ 	/*
+ 	 * Note: these symbols include _ because they overlap with special
+ 	 * register names
+-- 
+2.25.0
 
