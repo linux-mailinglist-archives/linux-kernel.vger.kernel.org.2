@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A298333C89E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E1F33C8A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhCOVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhCOVkd (ORCPT
+        id S233552AbhCOVmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:42:25 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:33497 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231510AbhCOVmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:40:33 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA55FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:40:30 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id t83so26016583oih.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Nx8G1AcBrlEuSc1D0DFjZmdDS58DPXg/j7KwcDrAISo=;
-        b=vBByiXJIED1VpkV6NN1+O1ZvIOsCG8+q5xJuZipiKe8XE6p4DZWTj+1uB7TFFqVSgF
-         BjuTSAAQtp/r3gcILEW/MW6Fb0y4AkVNMF5Rb5WCME+DQIHTGLdSjunc0rJa7PDTY3JY
-         lSkP1eIVE4i53y0TrocmEz3ZrP0cEp3iRdQtOs3q9n4Jardf/XnSUzVCco35X4m2gBDS
-         oTxyS4u/v1FiII9DH1tse4Ttblu5PnikdEnkB1ENfKM8Zp4/cNLuqBEYArjSXtElXoeo
-         PVbcs3VRNEwgi4IqphyhDLhc5um5ZsD4AWOumGst1hXo7K4sqvRC/yTXqYnTGZe5qKKE
-         MgIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Nx8G1AcBrlEuSc1D0DFjZmdDS58DPXg/j7KwcDrAISo=;
-        b=k6yYD4RO3lWZpGQumNyg4RLLHWcR0E9AK0N4Lm1kjTc9kMA9XrJHCPveUZj/V7eZeC
-         j7YRYU91CuEzQlzVPlTiIkHx85js1Y3g7TUKwsuEUVb9I4go8pci7AdlAuQ+Vu6qDwVq
-         wIg3FgGMu9nmX5WzyqapIzaGJ+zCVsydDoQXTT+yUR0/f+W5v9KOuKJVx72M5A6KN4ls
-         C38LewRjsk4x8dmAvOIuOAqcbl6bICTZtIPDDjmdUl44TyYGDCjZb42TjWxmJjie7CMf
-         jKEyNm4Rc1aF/TaVYkaFjWWLjjlKggvuExZqHnn0YbgwCvvlmOlMuhuuDRYv15U9PpXS
-         NrqA==
-X-Gm-Message-State: AOAM532FR6GioVleSl6ln4YuXL5uVvtpOunTcvTNgjZlklMJmT53o26G
-        GBdxDy6ynNrCdJ+/7U+FLYtTblpji1I=
-X-Google-Smtp-Source: ABdhPJx4sh+bfK4K+FSxrxZrngVoOW+Q+NSwbnKN6Bt46UeYsSbz5tZzTI2FuTLxias9GjrBoUYwXg==
-X-Received: by 2002:aca:4c0f:: with SMTP id z15mr917973oia.44.1615844430385;
-        Mon, 15 Mar 2021 14:40:30 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v1sm7522718otk.67.2021.03.15.14.40.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Mar 2021 14:40:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 15 Mar 2021 14:40:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.12-rc3
-Message-ID: <20210315214028.GA231136@roeck-us.net>
-References: <CAHk-=wgAr4Z2deEQs+5L6bJb68FouwBZUSURh+m-47TBnEsGZg@mail.gmail.com>
+        Mon, 15 Mar 2021 17:42:16 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 8D4CCE0004;
+        Mon, 15 Mar 2021 21:42:13 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Chris Wilson <chris@chris-wilson.co.uk>, linux-rtc@vger.kernel.org
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: cmos: Disable irq around direct invocation of cmos_interrupt()
+Date:   Mon, 15 Mar 2021 22:42:12 +0100
+Message-Id: <161584452659.565124.13401687823388696281.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210305122140.28774-1-chris@chris-wilson.co.uk>
+References: <20210305122140.28774-1-chris@chris-wilson.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgAr4Z2deEQs+5L6bJb68FouwBZUSURh+m-47TBnEsGZg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 03:00:21PM -0700, Linus Torvalds wrote:
-> So rc3 is pretty big this time around, but that's entirely artificial,
-> and due to how I released rc2 early. So I'm not going to read anything
-> more into this, 5.12 still seems to actually be on the smaller side
-> overall. Also, because of the rc1 debacle, there has been a bit more
-> rebasing than usual, so the history of some of the commits sometimes
-> looks more recent than it necessarily is.
+On Fri, 5 Mar 2021 12:21:40 +0000, Chris Wilson wrote:
+> As previously noted in commit 66e4f4a9cc38 ("rtc: cmos: Use
+> spin_lock_irqsave() in cmos_interrupt()"):
 > 
-> Other than that, things look fairly normal - there's a big peak in the
-> diffstat around the io_uring fallout from the new thread creation
-> model, and sparc makes an unusual showing on the architecture updates
-> side, but other than that it's all the usual things: drivers (gpu,
-> net, usb, staging, sound... all over), architectures (x86, arm64,
-> s390, powerpc in addition to the already-mentioned sparc), filesystems
-> (cifs, nfs) and core kernel (networking, VM, timers, scheduler..).
+> <4>[  254.192378] WARNING: inconsistent lock state
+> <4>[  254.192384] 5.12.0-rc1-CI-CI_DRM_9834+ #1 Not tainted
+> <4>[  254.192396] --------------------------------
+> <4>[  254.192400] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+> <4>[  254.192409] rtcwake/5309 [HC0[0]:SC0[0]:HE1:SE1] takes:
+> <4>[  254.192429] ffffffff8263c5f8 (rtc_lock){?...}-{2:2}, at: cmos_interrupt+0x18/0x100
+> <4>[  254.192481] {IN-HARDIRQ-W} state was registered at:
+> <4>[  254.192488]   lock_acquire+0xd1/0x3d0
+> <4>[  254.192504]   _raw_spin_lock+0x2a/0x40
+> <4>[  254.192519]   cmos_interrupt+0x18/0x100
+> <4>[  254.192536]   rtc_handler+0x1f/0xc0
+> <4>[  254.192553]   acpi_ev_fixed_event_detect+0x109/0x13c
+> <4>[  254.192574]   acpi_ev_sci_xrupt_handler+0xb/0x28
+> <4>[  254.192596]   acpi_irq+0x13/0x30
+> <4>[  254.192620]   __handle_irq_event_percpu+0x43/0x2c0
+> <4>[  254.192641]   handle_irq_event_percpu+0x2b/0x70
+> <4>[  254.192661]   handle_irq_event+0x2f/0x50
+> <4>[  254.192680]   handle_fasteoi_irq+0x9e/0x150
+> <4>[  254.192693]   __common_interrupt+0x76/0x140
+> <4>[  254.192715]   common_interrupt+0x96/0xc0
+> <4>[  254.192732]   asm_common_interrupt+0x1e/0x40
+> <4>[  254.192750]   _raw_spin_unlock_irqrestore+0x38/0x60
+> <4>[  254.192767]   resume_irqs+0xba/0xf0
+> <4>[  254.192786]   dpm_resume_noirq+0x245/0x3d0
+> <4>[  254.192811]   suspend_devices_and_enter+0x230/0xaa0
+> <4>[  254.192835]   pm_suspend.cold.8+0x301/0x34a
+> <4>[  254.192859]   state_store+0x7b/0xe0
+> <4>[  254.192879]   kernfs_fop_write_iter+0x11d/0x1c0
+> <4>[  254.192899]   new_sync_write+0x11d/0x1b0
+> <4>[  254.192916]   vfs_write+0x265/0x390
+> <4>[  254.192933]   ksys_write+0x5a/0xd0
+> <4>[  254.192949]   do_syscall_64+0x33/0x80
+> <4>[  254.192965]   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> <4>[  254.192986] irq event stamp: 43775
+> <4>[  254.192994] hardirqs last  enabled at (43775): [<ffffffff81c00c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20
+> <4>[  254.193023] hardirqs last disabled at (43774): [<ffffffff81aa691a>] sysvec_apic_timer_interrupt+0xa/0xb0
+> <4>[  254.193049] softirqs last  enabled at (42548): [<ffffffff81e00342>] __do_softirq+0x342/0x48e
+> <4>[  254.193074] softirqs last disabled at (42543): [<ffffffff810b45fd>] irq_exit_rcu+0xad/0xd0
+> <4>[  254.193101]
+>                   other info that might help us debug this:
+> <4>[  254.193107]  Possible unsafe locking scenario:
 > 
-> And the (by now) quite usual documentation and tooling updates (mainly
-> perf tooling and selftests).
-> 
-> And random other patches.
-> 
-> Full shortlog appended, although it is a bit larger than usual, so
-> maybe not as easy to eyeball as I'd hope.
-> 
-> With this, we're obviously back to the usual "Sunday afternoon" rc
-> schedule, and I think we should be all back to normal in general for
-> this release.
-> 
-> Go beat on it,
-> 
+> [...]
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 436 pass: 436 fail: 0
+Applied, thanks!
 
-Guenter
+[1/1] rtc: cmos: Disable irq around direct invocation of cmos_interrupt()
+      commit: bd33335aa93d615cac77d991c448b986761e7a8d
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
