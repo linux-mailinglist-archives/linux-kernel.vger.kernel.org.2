@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6E133BEA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C18033BEA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241167AbhCOOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhCOOO1 (ORCPT
+        id S241186AbhCOOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:35 -0400
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:37786 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236822AbhCOOPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:14:27 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2490C06174A;
-        Mon, 15 Mar 2021 07:14:26 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b18so8768512wrn.6;
-        Mon, 15 Mar 2021 07:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xa3qsev/2jV/i3dBlay9LDIKdfg6k8HE1s8EfIPtymo=;
-        b=gJAriO1QXr3dIjgJ0hQMj6hwTvuFUT8dfClikBDsIwgJVC3Vp9ivXYzSBEspCChUUi
-         2PatHe7fF6eVU19oGpco/rmrqa5Wqj1GIHZi0wfWM5hlbROUC3+Nv2mOexEhJmNeIFYn
-         ONtvX/zcY8u+iBfFPqfDc1FATAhXCZbp6RjQjvPIVYzSOF8vy983ycMGYH4DOCdly75h
-         2IChJ5SutWdLowK6o3AWs4UNuJyD/RnC6FF/MpnQUxB9TnLb8S4N4RApoDGeDup4wcwk
-         DeglRdTWcfvnT8SFgROIVUSb8sQVL56B6Pt8XoOAqzmJkDjS3tgkLJ/A0JeePw68+ZtS
-         LCEA==
+        Mon, 15 Mar 2021 10:15:45 -0400
+Received: by mail-vk1-f177.google.com with SMTP id s136so1545727vks.4;
+        Mon, 15 Mar 2021 07:15:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xa3qsev/2jV/i3dBlay9LDIKdfg6k8HE1s8EfIPtymo=;
-        b=sInOP9YB30J4AV9VCAP0rOqpZXIhKiTU2TwFuAutL67bruMcMKZYH1kDP236DcUdmO
-         vYGddiZ8HfkKGL0RKE3nQdIltUczPZod35Y43FeRYlu5rdFNhgy0w6NT19ippzrdk+91
-         nuJT1Uam7soZcCSDFM91pHvkaxX6v/YegcLy00I6AXYT5Y7rSHH+obDXq8hp/z9uZewJ
-         wMyMXI+Z0a1Do0Jzx7QTBo+h3uju9TCjPyxSr1kVf0agGFWD+4lh+lTYcFeKYJJbO6Ar
-         IMZvnjcn4PQqwixrZQDHBRzW5cL5rkEEmPm4O7TsNvU046f8gKX9UbF+InG6q5vksrPT
-         NxKA==
-X-Gm-Message-State: AOAM531Ixw2Ot3owuhECZcKTUSBMEjHyuVFci1Dzn3sdYzAMVAphF0rD
-        h066k/e5CjSXfXVv1eoaJIw=
-X-Google-Smtp-Source: ABdhPJxjB/UozMo+xsrXufA0zYe/bRabR7W3mjZejj9kZI+VtnpmH44u+sqtIneHDMNM8rqKD63vCg==
-X-Received: by 2002:a5d:5104:: with SMTP id s4mr28801836wrt.62.1615817665365;
-        Mon, 15 Mar 2021 07:14:25 -0700 (PDT)
-Received: from skynet.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id v7sm12421881wme.47.2021.03.15.07.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 07:14:25 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH net-next] net: dsa: b53: spi: allow device tree probing
-Date:   Mon, 15 Mar 2021 15:14:23 +0100
-Message-Id: <20210315141423.1373-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3aKLCBuGZMniFg5moYt9Hm8gsNSTP/txooq0ahWmluQ=;
+        b=EKKnPOjl1EHqg6BY6lpKz8lOYXYImv2r7l2tiHrtHqK85MMHzDDZkRkK44ja7sMaed
+         g+gKycPYm7v5/LV9x/QnME9GKrV3tcOcv34pQqEN1yCedzMy2rdokK5qch63kCX7gvXe
+         7NBs7jFHSJEcIfNPIWGikpI6j/2ALJk2p2ImI9SYWkaSqA2gkrkSGx1J2qaR4wbeAiT9
+         PKH/LQhdqGh7fgUeEw8BRdaeTovxIUXCrPcYoWL00Xyko67QPDFVC7Su3ZsIU5TDPM7W
+         5gh+zv36w4u0sGJXZWYbEuL5FKPS7AVpzzrAKeBQ1Hmv8JjCabiDZbKT2eSwkQ9Xhbqj
+         Le7g==
+X-Gm-Message-State: AOAM530krQE2yE6RXlKP/q+wcI3oIuPnTg7fu4bXpeIIl9pgKHkpTTIM
+        J4/hYUF+l8LtHrPm+j8jqBKLW6FNkpeD1XReBYY=
+X-Google-Smtp-Source: ABdhPJx9KtGyjUnLEGxws7UagErvyUZVKtNEH1dNMlk/6f03LGwnZwXFco4kvfj8C6eDlYRNBm9qIrW9CelDBckxh2I=
+X-Received: by 2002:a1f:2502:: with SMTP id l2mr4822067vkl.5.1615817744231;
+ Mon, 15 Mar 2021 07:15:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210315135541.921894249@linuxfoundation.org> <20210315135551.044220754@linuxfoundation.org>
+In-Reply-To: <20210315135551.044220754@linuxfoundation.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Mar 2021 15:15:32 +0100
+Message-ID: <CAMuHMdUqDX8NSGNsw4R=-pEk+nNRsBPBhXD91bq4qy-v1ybcJQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 267/290] powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing of_match_table to allow device tree probing.
+On Mon, Mar 15, 2021 at 3:04 PM <gregkh@linuxfoundation.org> wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> From: Christophe Leroy <christophe.leroy@csgroup.eu>
+>
+> commit bd73758803c2eedc037c2268b65a19542a832594 upstream.
+>
+> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
+> when CONFIG_VSX is not set, to avoid following build failure.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/net/dsa/b53/b53_spi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Please note that this is not sufficient, and will just turn the build error
+in another, different build error.
+Waiting for the subsequent fix to enter v5.12-rc4...
+https://lore.kernel.org/lkml/2c123f94-ceae-80c0-90e2-21909795eb76@csgroup.eu/
 
-diff --git a/drivers/net/dsa/b53/b53_spi.c b/drivers/net/dsa/b53/b53_spi.c
-index 7abec8dab8ba..413158275db8 100644
---- a/drivers/net/dsa/b53/b53_spi.c
-+++ b/drivers/net/dsa/b53/b53_spi.c
-@@ -324,9 +324,22 @@ static int b53_spi_remove(struct spi_device *spi)
- 	return 0;
- }
- 
-+static const struct of_device_id b53_spi_of_match[] = {
-+	{ .compatible = "brcm,bcm5325" },
-+	{ .compatible = "brcm,bcm5365" },
-+	{ .compatible = "brcm,bcm5395" },
-+	{ .compatible = "brcm,bcm5397" },
-+	{ .compatible = "brcm,bcm5398" },
-+	{ .compatible = "brcm,bcm53115" },
-+	{ .compatible = "brcm,bcm53125" },
-+	{ .compatible = "brcm,bcm53128" },
-+	{ /* sentinel */ }
-+};
-+
- static struct spi_driver b53_spi_driver = {
- 	.driver = {
- 		.name	= "b53-switch",
-+		.of_match_table = b53_spi_of_match,
- 	},
- 	.probe	= b53_spi_probe,
- 	.remove	= b53_spi_remove,
+>
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
+>   In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
+>                    from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
+>                    from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
+>   drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
+>   ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
+>      64 |   enable_kernel_vsx(); \
+>         |   ^~~~~~~~~~~~~~~~~
+>   drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
+>     640 |  DC_FP_START();
+>         |  ^~~~~~~~~~~
+>   ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
+>      75 |   disable_kernel_vsx(); \
+>         |   ^~~~~~~~~~~~~~~~~~
+>   drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
+>     676 |  DC_FP_END();
+>         |  ^~~~~~~~~
+>   cc1: some warnings being treated as errors
+>   make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
+>
+> This works because the caller is checking if VSX is available using
+> cpu_has_feature():
+>
+>   #define DC_FP_START() { \
+>         if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
+>                 preempt_disable(); \
+>                 enable_kernel_vsx(); \
+>         } else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
+>                 preempt_disable(); \
+>                 enable_kernel_altivec(); \
+>         } else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
+>                 preempt_disable(); \
+>                 enable_kernel_fp(); \
+>         } \
+>
+> When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP)
+> constant folds to 'false' so the call to enable_kernel_vsx() is
+> discarded and the build succeeds.
+>
+> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
+> Cc: stable@vger.kernel.org # v5.6+
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> [mpe: Incorporate some discussion comments into the change log]
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> Link: https://lore.kernel.org/r/8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/powerpc/include/asm/switch_to.h |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> --- a/arch/powerpc/include/asm/switch_to.h
+> +++ b/arch/powerpc/include/asm/switch_to.h
+> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(vo
+>  {
+>         msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
+>  }
+> +#else
+> +static inline void enable_kernel_vsx(void)
+> +{
+> +       BUILD_BUG();
+> +}
+> +
+> +static inline void disable_kernel_vsx(void)
+> +{
+> +       BUILD_BUG();
+> +}
+>  #endif
+>
+>  #ifdef CONFIG_SPE
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
