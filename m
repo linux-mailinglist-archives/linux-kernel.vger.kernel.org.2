@@ -2,215 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AA433C934
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8E433C92D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 23:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhCOWPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 18:15:34 -0400
-Received: from mga11.intel.com ([192.55.52.93]:14823 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231727AbhCOWPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 18:15:09 -0400
-IronPort-SDR: an3c+4C4BCPbetwOjBwmA9F1u90msL+dND757/9Fl8l2V+b5ZJ6z8xAnSKgE0QGPCUPJqBK6NT
- M0TlVZs+4Qkg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="185802467"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="185802467"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 15:15:09 -0700
-IronPort-SDR: 4EIjiw5db6QKY0/0KjwBtB7uBroAbWiaMMjgVoqoV79jnzBdKNrpfyV8J2aCKDAClmpg3nHdpv
- AveR4M8ean7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="410807105"
-Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
-  by orsmga007.jf.intel.com with ESMTP; 15 Mar 2021 15:15:05 -0700
-From:   mohammad.athari.ismail@intel.com
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mohammad.athari.ismail@intel.com
-Subject: [PATCH net-next 2/2] net: stmmac: Add EST errors into ethtool statistic
-Date:   Tue, 16 Mar 2021 06:14:09 +0800
-Message-Id: <20210315221409.3867-3-mohammad.athari.ismail@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210315221409.3867-1-mohammad.athari.ismail@intel.com>
-References: <20210315221409.3867-1-mohammad.athari.ismail@intel.com>
+        id S229536AbhCOWO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 18:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhCOWOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 18:14:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70FCC06174A;
+        Mon, 15 Mar 2021 15:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DuxlI88ydMSiE1+oLoIcGn8qRyIJ4Jnj4s61gHhMILY=; b=Jk+GHmMIUlRHmLm0hsIHbinM8Q
+        a9UkwHoxDiyXNHBeTB9IaHHPn30jQbCi52v6ao+zUMcaTjCrweJAlRarHgGGWDZWSnPhbDKDlDKHE
+        cSQQZg0ELNSWvuyQU1r4+mPqLs43eQd/ZQkQjR3LOea/hYNQ4NUk1q9C5CDJ9sCEh7Y5E2Nobt2N0
+        PaMkUitOIjyHVqV1uzVUS3Sx5GaCipw+LbXW2OwpJtqJBfERpBGVCvuSQuf5LythqQ+LZtAXq9mCw
+        7TfhUehNejQIQsDVkRBznUrE9DF+ly7lKi3Q5ZDULBy9zDdfeVzkU+xYb9uTyVaaHDEN6SyLPhtxw
+        Ao1CUWrw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLvTW-000rpW-J1; Mon, 15 Mar 2021 22:14:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96485304D58;
+        Mon, 15 Mar 2021 23:14:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 830B62C089444; Mon, 15 Mar 2021 23:14:09 +0100 (CET)
+Date:   Mon, 15 Mar 2021 23:14:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
+        mhiramat@kernel.org
+Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
+Message-ID: <YE/cMeO+oC/5JEC6@hirez.programming.kicks-ass.net>
+References: <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
+ <20210313121541.GC16144@zn.tnic>
+ <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
+ <20210313124919.GD16144@zn.tnic>
+ <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
+ <20210313132927.GF16144@zn.tnic>
+ <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
+ <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
+ <YE+i/VWITCCb37tD@hirez.programming.kicks-ass.net>
+ <CA+icZUWQ1kH6muAQbNuVAPj4Cn=8ssDAJfYLKht8ezAgJKWApA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUWQ1kH6muAQbNuVAPj4Cn=8ssDAJfYLKht8ezAgJKWApA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+On Mon, Mar 15, 2021 at 07:23:29PM +0100, Sedat Dilek wrote:
 
-Below EST errors are added into ethtool statistic:
-1) Constant Gate Control Error (CGCE):
-   The counter "mtl_est_cgce" increases everytime CGCE interrupt is
-   triggered.
+> You mean something like that ^^?
+> 
+> - Sedat -
+> 
+> [1] https://git.zx2c4.com/laptop-kernel/commit/?id=116badbe0a18bc36ba90acb8b80cff41f9ab0686
 
-2) Head-of-Line Blocking due to Scheduling (HLBS):
-   The counter "mtl_est_hlbs" increases everytime HLBS interrupt is
-   triggered.
-
-3) Head-of-Line Blocking due to Frame Size (HLBF):
-   The counter "mtl_est_hlbf" increases everytime HLBF interrupt is
-   triggered.
-
-4) Base Time Register error (BTRE):
-   The counter "mtl_est_btre" increases everytime BTRE interrupt is
-   triggered but BTRL not reaches maximum value of 15.
-
-5) Base Time Register Error Loop Count (BTRL) reaches maximum value:
-   The counter "mtl_est_btrlm" increases everytime BTRE interrupt is
-   triggered and BTRL value reaches maximum value of 15.
-
-Please refer to MTL_EST_STATUS register in DesignWare Cores Ethernet
-Quality-of-Service Databook for more detail explanation.
-
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Co-developed-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/common.h        |  6 ++++++
- drivers/net/ethernet/stmicro/stmmac/dwmac5.c        | 13 ++++++++++++-
- drivers/net/ethernet/stmicro/stmmac/dwmac5.h        |  2 +-
- drivers/net/ethernet/stmicro/stmmac/hwif.h          |  2 +-
- .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c    |  6 ++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c   |  3 ++-
- 6 files changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 6f271c46368d..1c0c60bdf854 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -182,6 +182,12 @@ struct stmmac_extra_stats {
- 	/* TSO */
- 	unsigned long tx_tso_frames;
- 	unsigned long tx_tso_nfrags;
-+	/* EST */
-+	unsigned long mtl_est_cgce;
-+	unsigned long mtl_est_hlbs;
-+	unsigned long mtl_est_hlbf;
-+	unsigned long mtl_est_btre;
-+	unsigned long mtl_est_btrlm;
- };
- 
- /* Safety Feature statistics exposed by ethtool */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-index b47190fc8d83..b5ff47299b29 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-@@ -608,7 +608,7 @@ int dwmac5_est_configure(void __iomem *ioaddr, struct stmmac_est *cfg,
- }
- 
- int dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
--			  u32 txqcnt)
-+			  struct stmmac_extra_stats *x, u32 txqcnt)
- {
- 	u32 status, value, feqn, hbfq, hbfs, btrl;
- 	u32 txqcnt_mask = (1 << txqcnt) - 1;
-@@ -624,12 +624,16 @@ int dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
- 	if (status & CGCE) {
- 		/* Clear Interrupt */
- 		writel(CGCE, ioaddr + MTL_EST_STATUS);
-+
-+		x->mtl_est_cgce++;
- 	}
- 
- 	if (status & HLBS) {
- 		value = readl(ioaddr + MTL_EST_SCH_ERR);
- 		value &= txqcnt_mask;
- 
-+		x->mtl_est_hlbs++;
-+
- 		/* Clear Interrupt */
- 		writel(value, ioaddr + MTL_EST_SCH_ERR);
- 
-@@ -649,6 +653,8 @@ int dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
- 		hbfq = (value & SZ_CAP_HBFQ_MASK(txqcnt)) >> SZ_CAP_HBFQ_SHIFT;
- 		hbfs = value & SZ_CAP_HBFS_MASK;
- 
-+		x->mtl_est_hlbf++;
-+
- 		/* Clear Interrupt */
- 		writel(feqn, ioaddr + MTL_EST_FRM_SZ_ERR);
- 
-@@ -658,6 +664,11 @@ int dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
- 	}
- 
- 	if (status & BTRE) {
-+		if ((status & BTRL) == BTRL_MAX)
-+			x->mtl_est_btrlm++;
-+		else
-+			x->mtl_est_btre++;
-+
- 		btrl = (status & BTRL) >> BTRL_SHIFT;
- 
- 		if (net_ratelimit())
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
-index 51d9ed24622f..dcd679597676 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
-@@ -142,7 +142,7 @@ int dwmac5_flex_pps_config(void __iomem *ioaddr, int index,
- int dwmac5_est_configure(void __iomem *ioaddr, struct stmmac_est *cfg,
- 			 unsigned int ptp_rate);
- int dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
--			  u32 txqcnt);
-+			  struct stmmac_extra_stats *x, u32 txqcnt);
- void dwmac5_fpe_configure(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
- 			  bool enable);
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 78a677a86914..e49d934ea435 100644
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -394,7 +394,7 @@ struct stmmac_ops {
- 	int (*est_configure)(void __iomem *ioaddr, struct stmmac_est *cfg,
- 			     unsigned int ptp_rate);
- 	int (*est_irq_status)(void __iomem *ioaddr, struct net_device *dev,
--			      u32 txqcnt);
-+			      struct stmmac_extra_stats *x, u32 txqcnt);
- 	void (*fpe_configure)(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
- 			      bool enable);
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index c5642985ef95..00595b7552bc 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -158,6 +158,12 @@ static const struct stmmac_stats stmmac_gstrings_stats[] = {
- 	/* TSO */
- 	STMMAC_STAT(tx_tso_frames),
- 	STMMAC_STAT(tx_tso_nfrags),
-+	/* EST */
-+	STMMAC_STAT(mtl_est_cgce),
-+	STMMAC_STAT(mtl_est_hlbs),
-+	STMMAC_STAT(mtl_est_hlbf),
-+	STMMAC_STAT(mtl_est_btre),
-+	STMMAC_STAT(mtl_est_btrlm),
- };
- #define STMMAC_STATS_LEN ARRAY_SIZE(stmmac_gstrings_stats)
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 24b9212c7566..502eaff0828b 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -4242,7 +4242,8 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
- 		return IRQ_HANDLED;
- 
- 	if (priv->dma_cap.estsel)
--		stmmac_est_irq_status(priv, priv->ioaddr, priv->dev, tx_cnt);
-+		stmmac_est_irq_status(priv, priv->ioaddr, priv->dev,
-+				      &priv->xstats, tx_cnt);
- 
- 	/* To handle GMAC own interrupts */
- 	if ((priv->plat->has_gmac) || xmac) {
--- 
-2.17.1
-
+*shudder*, I was more thinking you'd simply add it to you CFLAGS when
+building. I don't see any point in having that in Kconfig.
