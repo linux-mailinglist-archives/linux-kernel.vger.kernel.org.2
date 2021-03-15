@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A9033BB6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB31833BB7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236836AbhCOOQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S237131AbhCOORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231265AbhCON7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B345564F23;
-        Mon, 15 Mar 2021 13:58:58 +0000 (UTC)
+        id S231566AbhCON7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C56B64F4B;
+        Mon, 15 Mar 2021 13:59:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816739;
-        bh=qJ6QJ2Eug/caeEXe+T5TRyjcVE0TEXz068KRnTtgibc=;
+        s=korg; t=1615816741;
+        bh=WKC0+8Eb6unEngs3+mtaTYTy4SIvzA36mNKqixMKBWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQpIEuGKBmzFAjX5f4OpPRxs0t5autx4WwK6OsVpZMM6Gdj65KUYZltSXV4qH7LTh
-         v3otvvdEQ20CvNdtw3uyoQztJMYQgStkp4+tuTf2sUseK4/DYPcJlPs346vsJkLxXZ
-         5BXYFuqtP1YCz0KymADLCWh9gwqKfftUS2P4nvRk=
+        b=xGNR/PouB3NEs8roX0xZ5C0SlFe/7nUAl4X1Q+cIN6yIvBmdQa1byid8TFbnVGeWi
+         1IYte/YLNHDjgBeVCw2+Rp1gYu5pBeqpzkwT9xN84x6ayEU4bRFExI102T3unn5YpV
+         EjfPEPKFpOP80RqcH0kaPtEwrgNQgnkyhoBVi6GE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maxtram95@gmail.com>,
+        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 038/120] media: usbtv: Fix deadlock on suspend
-Date:   Mon, 15 Mar 2021 14:56:29 +0100
-Message-Id: <20210315135721.246503670@linuxfoundation.org>
+Subject: [PATCH 4.19 039/120] media: v4l: vsp1: Fix uif null pointer access
+Date:   Mon, 15 Mar 2021 14:56:30 +0100
+Message-Id: <20210315135721.276643264@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,42 +42,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-commit 8a7e27fd5cd696ba564a3f62cedef7269cfd0723 upstream.
+commit 6732f313938027a910e1f7351951ff52c0329e70 upstream.
 
-usbtv doesn't support power management, so on system suspend the
-.disconnect callback of the driver is called. The teardown sequence
-includes a call to snd_card_free. Its implementation waits until the
-refcount of the sound card device drops to zero, however, if its file is
-open, snd_card_file_add takes a reference, which can't be dropped during
-the suspend, because the userspace processes are already frozen at this
-point. snd_card_free waits for completion forever, leading to a hang on
-suspend.
+RZ/G2L SoC has no UIF. This patch fixes null pointer access, when UIF
+module is not used.
 
-This commit fixes this deadlock condition by replacing snd_card_free
-with snd_card_free_when_closed, that doesn't wait until all references
-are released, allowing suspend to progress.
-
-Fixes: 63ddf68de52e ("[media] usbtv: add audio support")
-Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Fixes: 5e824f989e6e8("media: v4l: vsp1: Integrate DISCOM in display pipeline")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/usbtv/usbtv-audio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/vsp1/vsp1_drm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/media/usb/usbtv/usbtv-audio.c
-+++ b/drivers/media/usb/usbtv/usbtv-audio.c
-@@ -399,7 +399,7 @@ void usbtv_audio_free(struct usbtv *usbt
- 	cancel_work_sync(&usbtv->snd_trigger);
- 
- 	if (usbtv->snd && usbtv->udev) {
--		snd_card_free(usbtv->snd);
-+		snd_card_free_when_closed(usbtv->snd);
- 		usbtv->snd = NULL;
+--- a/drivers/media/platform/vsp1/vsp1_drm.c
++++ b/drivers/media/platform/vsp1/vsp1_drm.c
+@@ -460,9 +460,9 @@ static int vsp1_du_pipeline_setup_inputs
+ 	 * make sure it is present in the pipeline's list of entities if it
+ 	 * wasn't already.
+ 	 */
+-	if (!use_uif) {
++	if (drm_pipe->uif && !use_uif) {
+ 		drm_pipe->uif->pipe = NULL;
+-	} else if (!drm_pipe->uif->pipe) {
++	} else if (drm_pipe->uif && !drm_pipe->uif->pipe) {
+ 		drm_pipe->uif->pipe = pipe;
+ 		list_add_tail(&drm_pipe->uif->list_pipe, &pipe->entities);
  	}
- }
 
 
