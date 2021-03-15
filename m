@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA4133C243
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367C233C248
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhCOQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S234430AbhCOQi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbhCOQhM (ORCPT
+        with ESMTP id S233160AbhCOQiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:37:12 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB1CC06174A;
-        Mon, 15 Mar 2021 09:37:11 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso15079728pjb.3;
-        Mon, 15 Mar 2021 09:37:11 -0700 (PDT)
+        Mon, 15 Mar 2021 12:38:12 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E283C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:38:12 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f8so2067029plg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hxTr+jCjNOdK/SRs3Tz7jJtcDFSQzLPh/SdXv7CFTJg=;
-        b=JHodpzXGHG28Jf7mWc3g/MgAtc320RuyEet1UCcaWQyK7ZZuuQwfPATnMaaDu3UZ6g
-         rfSKVM9y1Cr2jQHWZ3puucVOcr3BEdF/82IRcLQpmMac6pXzmSwKeVsHJKj39o4z5iaj
-         5RK4yk/8FJtIL8tKGtaxR87ThL2p6796IsY3aCSCYqweaI7SU5IYz30cJ7CF6Ep2zaXI
-         6V+GeqBOtftcGES3z677GDgAVpkObIjjPV5fd1KbBpQoEqvLCR+Cbwns5YotzYe0qGV6
-         yqKklX7LkN3/XQmjYwYxg63j2XS/mjqnZEiZBQGR+8+G2lPWn/74mfxMELRmmUnVuX4N
-         +9qQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7ommeHaQDyz4Z/WeuEPFCK86plIfICfSp9m108lanYA=;
+        b=wcLQboA/cDMqN3tBAKBL+i/49YA9L/5/3qUfawZYvHcNMghAvwRSv8GY4e8LJTGJP/
+         7gO0MLxwb6wXTBdNf/SzMk9SMatmFP/EFB1E4H3uPI2WXCETgbg1CesYHBjeA5TQQysl
+         RocLDV1SfiP7bjZjSa8A+t1foWsvdJRVXyZy8O9NRrMNtnBHHUEM+N8X9uuH2qXcOdSE
+         Vnj9c1dVS/aZRFFOu6F+hC8wnfHyePI17MIhMCbNq3NiuDFQzHKnKgoO2/mkyUgSnInv
+         4sQZvFl9/YAeMeD8zraMpNuuvRaTNPBzSUyaMcp291tkkqFHIlCereJfUUmHNbM14J4g
+         bGdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hxTr+jCjNOdK/SRs3Tz7jJtcDFSQzLPh/SdXv7CFTJg=;
-        b=WNgvFgkPGipVhjlJO1Rs7Z9fnKev7EBdLUxKmCj4pF5hKUZ3R/6k5AKEwYdtNtpsyo
-         0yBqCq/lJKE3RCqZDTQtbSb62N/Bfr3x3ldbUjPgwZzUSLwLinLMZnphx5OvOS1YxCOv
-         vdMpclm7eST9bWC1WGSq+yUJAUNbnNgI76E2SUA2sTjWYe8lwZaeBHCY4X8T1RgGJpjB
-         0ak7vGkZ7y7sgZ+cseB99Mj3nwRpKDl2nnLAIZyH2PdJ1gHd/4Q3vQNzpK3PP4sAUrbT
-         JFjupJ/fO6N8w5vhjBevfuuVYEf/2UzAdmU88rTw3XBHvda2MFiMUduQkHRm1BwJFuJO
-         LjsA==
-X-Gm-Message-State: AOAM530tnw+VRyTikVv1YEEHHNPOsNc75h2ZaOnk8MtJfNso3YmtrIqK
-        UyNaGjarW/10abnXL6U+bYWO0HdXArJMy2zI9h8=
-X-Google-Smtp-Source: ABdhPJzmD16eNSoHlg+ME0sV5oDSP8McG43pWnGy+W7nRmQ+OXh1nwhgopO1tf+cpxtFevI+9RbX/bEtq6FbXbhrpH0=
-X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr14249289pjx.181.1615826230873;
- Mon, 15 Mar 2021 09:37:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7ommeHaQDyz4Z/WeuEPFCK86plIfICfSp9m108lanYA=;
+        b=ufi4SB4TdqaVnO60RtrcPiymwbVUEOQ+nZxXg///LkQiD80oxG1d9VBJ6BQ5osknS/
+         q/z5MtrOuPFI8J/bLehK1E5VMwjvEhk3Lc55SExNN0BwXvS700B+hx2DI0r2T2eU6HZ/
+         rrBaXdij0y5rKwTb35aEk/X6993xAqdlW+ekptHIhG5gjBv1mnbTdhYa8HYpO4XdqnJ9
+         v+Xkm6UozYIqcIZOt4xJC2zhtBqib21g1CdkOGS+/yd/uvEuRqPloPJlR30WRcHEpztF
+         Ji98N9b/oN32ck0KhDHx3tE1Rw89ESrysvIp6B4tMdBU3TpMXiivpaU7iKqBOJgEovkV
+         OO9A==
+X-Gm-Message-State: AOAM532hs/T3kgb66I6R+NIf2jgj5OduwLtmKnCJrb14f6DlbLMMxhyf
+        me58sMzyoblo3VGyvHQ6HpJa
+X-Google-Smtp-Source: ABdhPJwCUUts93OXJ3n2Y/V2Lm9Ghn0pgNJogbRZzskNp+B49O8ccSYpy3p8O0uiuZ8+jfER2O9Lcg==
+X-Received: by 2002:a17:90a:c918:: with SMTP id v24mr13940988pjt.182.1615826291839;
+        Mon, 15 Mar 2021 09:38:11 -0700 (PDT)
+Received: from work ([103.66.79.72])
+        by smtp.gmail.com with ESMTPSA id a15sm138240pju.34.2021.03.15.09.38.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 15 Mar 2021 09:38:11 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 22:08:07 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/3] net: ipa: QMI fixes
+Message-ID: <20210315163807.GA29414@work>
+References: <20210315152112.1907968-1-elder@linaro.org>
 MIME-Version: 1.0
-References: <20210315091400.13772-1-brgl@bgdev.pl> <20210315091400.13772-3-brgl@bgdev.pl>
- <6bc83972093a4be4ad163069a437ec25@AcuMS.aculab.com>
-In-Reply-To: <6bc83972093a4be4ad163069a437ec25@AcuMS.aculab.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Mar 2021 18:36:54 +0200
-Message-ID: <CAHp75Vc3Fr3Ysv0p7-W1Bf5y1Em17psZ=eCgVNewdVF=AjPm-g@mail.gmail.com>
-Subject: Re: [PATCH v5 02/11] configfs: use (1UL << bit) for internal flags
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315152112.1907968-1-elder@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 5:33 PM David Laight <David.Laight@aculab.com> wrote:
-> From: Bartosz Golaszewski
-> > Sent: 15 March 2021 09:14
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > For better readability and maintenance: use the (1UL << bit) for flag
-> > definitions.
->
-> If the values ever get printed in hex the hex definitions are
-> actually more useful.
+Hi Alex,
 
-Huh?!
+On Mon, Mar 15, 2021 at 10:21:09AM -0500, Alex Elder wrote:
+> Mani Sadhasivam discovered some errors in the definitions of some
+> QMI messages used for IPA.  This series addresses those errors,
+> and extends the definition of one message type to include some
+> newly-defined fields.
+> 
 
+Thanks for the patches. I guess you need to add Fixes tag for patches 1,2 and
+they should be backported to stable.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Mani
+
+> 					-Alex
+> 
+> Alex Elder (3):
+>   net: ipa: fix a duplicated tlv_type value
+>   net: ipa: fix another QMI message definition
+>   net: ipa: extend the INDICATION_REGISTER request
+> 
+>  drivers/net/ipa/ipa_qmi_msg.c | 78 +++++++++++++++++++++++++++++++----
+>  drivers/net/ipa/ipa_qmi_msg.h |  6 ++-
+>  2 files changed, 74 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
