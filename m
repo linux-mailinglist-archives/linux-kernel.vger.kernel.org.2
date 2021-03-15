@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F1D33BB66
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A5633BB93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbhCOOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        id S237540AbhCOOS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231588AbhCON71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B135664F2D;
-        Mon, 15 Mar 2021 13:59:01 +0000 (UTC)
+        id S232758AbhCON7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B493B64F3A;
+        Mon, 15 Mar 2021 13:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816742;
-        bh=0KiJ5mnokOVvD5sEl1axOX46e0RnlfG0HeqRb906NkU=;
+        s=korg; t=1615816747;
+        bh=HsTOAjFt0Qv3hWvDbeT7KpYR94s0MCCee9gvtc+rK34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BKQCPBrpaUejd5DS+bH4p+W0zwAwBnuLN+bj4MuclBjBkdMHqJ0A8frbWkA34o67i
-         +i2Iu3QJ6GUdLTnEJli0Wzc3xkVQcV04lBGVGe/xp0SLofLLX6b8+NMc7qhTFOPmt/
-         nrbDDEszWRKAa9HkWG7EtFR8RcOXFoHEGEsEHThw=
+        b=UWP+8pfyq5dJd90el9Uyl70uWatxKlqcuDDJwEtTqljD8uWBa2OTYoDDueITwhfDx
+         zd7LfpaZDpnjOwVSK72+8/R7WIhIKP7p4zYluIOxI4WqXqQOUN6voKH7Dpe3aR4Vb1
+         3zEjND29CM48qZAaK0K5uRXdLnkrfdgguLY391YQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 5.4 080/168] kbuild: clamp SUBLEVEL to 255
-Date:   Mon, 15 Mar 2021 14:55:12 +0100
-Message-Id: <20210315135553.018784874@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 083/168] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Mon, 15 Mar 2021 14:55:15 +0100
+Message-Id: <20210315135553.113281586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -41,50 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 9b82f13e7ef316cdc0a8858f1349f4defce3f9e0 ]
+From: Heiko Carstens <hca@linux.ibm.com>
 
-Right now if SUBLEVEL becomes larger than 255 it will overflow into the
-territory of PATCHLEVEL, causing havoc in userspace that tests for
-specific kernel version.
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-While userspace code tests for MAJOR and PATCHLEVEL, it doesn't test
-SUBLEVEL at any point as ABI changes don't happen in the context of
-stable tree.
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-Thus, to avoid overflows, simply clamp SUBLEVEL to it's maximum value in
-the context of LINUX_VERSION_CODE. This does not affect "make
-kernelversion" and such.
-
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index e27d031f3241..00be167f9b13 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1175,9 +1175,15 @@ define filechk_utsrelease.h
- endef
- 
- define filechk_version.h
--	echo \#define LINUX_VERSION_CODE $(shell                         \
--	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
--	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-+	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
-+		echo \#define LINUX_VERSION_CODE $(shell                 \
-+		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
-+	else                                                             \
-+		echo \#define LINUX_VERSION_CODE $(shell                 \
-+		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-+	fi;                                                              \
-+	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
-+	((c) > 255 ? 255 : (c)))'
- endef
- 
- $(version_h): FORCE
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 659d99af9156..8c51462f13fd 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -765,7 +765,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+ {
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
 -- 
 2.30.1
 
