@@ -2,127 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD09F33BF0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A333733BF0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237109AbhCOOx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:53:28 -0400
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:56398 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237391AbhCOOlt (ORCPT
+        id S238852AbhCOOxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:53:31 -0400
+Received: from smtprelay0121.hostedemail.com ([216.40.44.121]:60914 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237292AbhCOOnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:41:49 -0400
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lLoPf-0004SH-9m; Mon, 15 Mar 2021 14:41:43 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- sock_ioctl
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-References: <00000000000096cdaa05bd32d46f@google.com>
- <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
- <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
- <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
- <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk>
- <CACT4Y+a1pQ96UWEB3pAnbxPZ+6jW2tqSzkTMqJ+XSbZsKLHgAw@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <bf2e19a3-3e3a-0eb1-ae37-4cc3b1a7af42@codethink.co.uk>
-Date:   Mon, 15 Mar 2021 14:41:42 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 10:43:08 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 42245182CF66F;
+        Mon, 15 Mar 2021 14:43:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3173:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6678:7652:8985:9025:10004:10400:11232:11658:11783:11914:12043:12297:12555:12740:12895:12986:13069:13156:13228:13311:13357:13439:13845:13894:14040:14181:14659:14721:21080:21433:21451:21627:21990:30012:30054:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: spot91_0904ad72772d
+X-Filterd-Recvd-Size: 2406
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 15 Mar 2021 14:43:03 +0000 (UTC)
+Message-ID: <fb1bb7be6fad2dfb4bb3d311fddb39b13966311d.camel@perches.com>
+Subject: Re: [PATCH v2 5/5] mtd: spi-nor: swp: Drop 'else' after 'return'
+From:   Joe Perches <joe@perches.com>
+To:     Tudor.Ambarus@microchip.com, p.yadav@ti.com
+Cc:     vigneshr@ti.com, michael@walle.cc, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 15 Mar 2021 07:43:01 -0700
+In-Reply-To: <3ed8da81-55cc-4fbc-cb01-9405ac9709d7@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+         <20210306095002.22983-6-tudor.ambarus@microchip.com>
+         <20210308062821.wn4uqfxcg6vo3gcb@ti.com>
+         <5723fabcc03455ee6624a7d223186e5fad2bf2e9.camel@perches.com>
+         <3ed8da81-55cc-4fbc-cb01-9405ac9709d7@microchip.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+a1pQ96UWEB3pAnbxPZ+6jW2tqSzkTMqJ+XSbZsKLHgAw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/2021 11:52, Dmitry Vyukov wrote:
-> On Mon, Mar 15, 2021 at 12:30 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->>
->> On 14/03/2021 11:03, Dmitry Vyukov wrote:
->>> On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>>>> On Wed, Mar 10, 2021 at 7:28 PM syzbot
->>>>> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->>>>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
->>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
->>>>>> userspace arch: riscv64
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
->>>>>
->>>>> +riscv maintainers
->>>>>
->>>>> Another case of put_user crashing.
->>>>
->>>> There are 58 crashes in sock_ioctl already. Somehow there is a very
->>>> significant skew towards crashing with this "user memory without
->>>> uaccess routines" in schedule_tail and sock_ioctl of all places in the
->>>> kernel that use put_user... This looks very strange... Any ideas
->>>> what's special about these 2 locations?
->>>
->>> I could imagine if such a crash happens after a previous stack
->>> overflow and now task data structures are corrupted. But f_getown does
->>> not look like a function that consumes way more than other kernel
->>> syscalls...
->>
->> The last crash I looked at suggested somehow put_user got re-entered
->> with the user protection turned back on. Either there is a path through
->> one of the kernel handlers where this happens or there's something
->> weird going on with qemu.
+On Mon, 2021-03-15 at 11:24 +0000, Tudor.Ambarus@microchip.com wrote:
+> On 3/15/21 8:53 AM, Joe Perches wrote:
+> > On Mon, 2021-03-08 at 11:58 +0530, Pratyush Yadav wrote:
+> > > On 06/03/21 11:50AM, Tudor Ambarus wrote:
+> > > > else is not generally useful after a break or return.
+> > > > 
+> > > > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > > 
+> > > Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+> > > 
+> > 
+> > I don't think this improves the code.
+> > 
+> > Generally, checkpatch is a stupid little script.
+> > 
+> > This code uses a form like:
+> >         if (foo)
+> >                 return bar;
+> >         else
+> >                 return baz;
 > 
-> Is there any kind of tracking/reporting that would help to localize
-> it? I could re-reproduce with that code.
+> Isn't else redundant? What are the benefits of keeping the else?
 
-I'm not sure. I will have a go at debugging on qemu today just to make
-sure I can reproduce here before I have to go into the office and fix
-my Icicle board for real hardware tests.
+Visual consistency and it's a widely used style.
 
-I think my first plan post reproduction is to stuff some trace points
-into the fault handlers to see if we can get a idea of faults being
-processed, etc.
+A long time ago Al Viro wrote:
 
-Maybe also add a check in the fault handler to see if the fault was
-in a fixable region and post an error if that happens / maybe retry
-the instruction with the relevant SR_SUM flag set.
+https://lore.kernel.org/lkml/20140925032215.GK7996@ZenIV.linux.org.uk/
 
-Hopefully tomorrow I can get a run on real hardware to confirm.
-Would have been better if the Unmatched board I ordered last year
-would turn up.
+which resulted in the patch to checkpatch that tries to ignore that style.
 
+https://lore.kernel.org/lkml/1411621434.4026.9.camel@joe-AO725/
 
+> > I think better would be to change the code to use temporaries
+> > and convert the functions to bool.
 
+> returning one is wrong indeed, would you submit a patch for the conversion
+> of the functions to bool?
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+Just a suggestion...
 
-https://www.codethink.co.uk/privacy.html
