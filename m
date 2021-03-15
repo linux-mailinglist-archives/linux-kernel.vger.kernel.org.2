@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374CC33C272
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F8A33C278
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhCOQsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        id S229960AbhCOQun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhCOQsQ (ORCPT
+        with ESMTP id S230031AbhCOQuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:48:16 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3F8C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:48:05 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id dm8so18152028edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:48:05 -0700 (PDT)
+        Mon, 15 Mar 2021 12:50:17 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C2DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:50:17 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id k2so34136639ioh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:50:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R7MyrsFfIqiQG50IuRjCCrpFO9gLvQ3bFYxbpODTywo=;
-        b=e1yO9WobmXZ0dEf9C1lw4cJtss53NYsmCr+ldwukP+xJwC0X+017jAmRUoZXhoL+bW
-         hXcs8jX/GFTZuw9OCJuPOXzi/Of0e5T26kbm4uJBLWNXcUOzMMmuhpKMqp6r3F/DpwL+
-         hER/AaghWunEnboCoIffiVPGg2gM2QkMxPufollZBoUxr1TRCyG+nkvOgNw/ZwX6nfNh
-         nNEqQwk+IzqBWkMKKXCPt77UjxZEbhVtsQyxOHfuI+qxXnCv1fTWnFS6B12o4Sl+NpW0
-         Avh0HcbvqHNyW8Esb9IXD6d8nZUi0BdV9+LkiCiBhvcY6U8d6wluSEScf1lj5/whd+Kj
-         8Sfg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QdkvPlUQ3WJIwDb57XNHqEbjbn2hX+UZTDnLqhq+dlQ=;
+        b=EFs8NSYIJQOkU7ePFaqgFJYZNPm4tcscR+8bQw8fhyj1+GskrsB2MN910WHckvf7Qs
+         vjAqyl+vtxeM5SIogX5iuBD/m8ZuVo+JeFq+Y/g/FKJmXUsC1R2eHzw6XK+39emWZbBG
+         oUgltYOCo5TKi6HvNKmzlBl6qMvroDKzKYl80P9n4e3YL4sNNkr83QNNw5+23H6xXk5T
+         jIXX19HrubMYiUunZB+Vs3lG1nFAy0hgfYOUFv0WOqzRSCOeyucrIdfRZmH8jTq0U86J
+         OQ4dyWPtmgVF/J2nWstdQBjxtp1i27JhyUaSKAWKtnm7sRa05ntPAZYP7cReNYHa2qBb
+         T6xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R7MyrsFfIqiQG50IuRjCCrpFO9gLvQ3bFYxbpODTywo=;
-        b=aFVQjnZGrjnlDPDnyZWBdbSVYKHysuP9G9YIlsu82eYfqphIXkSrFvXBknIBFeu6hs
-         pZybdPyABCQXj1nLNzbMOd9Ut9tRX1ZOR+qxGQK/XSxcT3e/Nctnr5RRM7rc4BNhptb0
-         CpdKJ9CHYjgVH4XAhbcS0ap8Ho/XCq77xiKOIOnZ8N1nFMHVGqJItpV2s1WitE5AJsKq
-         WZmy5glJqF67SU46lm4CLRfnZXEgQh9xEAhVMRwOfrtDNP07bETxvvJNT52HcucGW0vg
-         DsqWDwntVAA6jCz2MXOi4YUWzDAr7lG8nILVt+DevQ8n2+psD/3HoRZ3wabWcRdm1z5c
-         yP8w==
-X-Gm-Message-State: AOAM531FDSAAmvPUvHZZaVG/ofabQVzdw4VdZ26Csg9fnfRu3t1vKMml
-        mCmnK/QELtfq+7Vquei9zaf65g1Q7bRWpkI4LzfhxA==
-X-Google-Smtp-Source: ABdhPJxXfMtxbj2CriAhsS7X4Ppc7pdEkux7D9pFuybyxMbziBCfrkC83cLcqBoomg3QBeXMte6I30k13WGyR6Ax3B4=
-X-Received: by 2002:a05:6402:b31:: with SMTP id bo17mr30973965edb.113.1615826884243;
- Mon, 15 Mar 2021 09:48:04 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QdkvPlUQ3WJIwDb57XNHqEbjbn2hX+UZTDnLqhq+dlQ=;
+        b=t5SFMLEiJnroo/eRCQUW7FHS5WGtX5uihl/xrCdCFDdEY2i6ldH+AqrQ14BdRQVUMk
+         cL/Tax8BlXn2fPiRiPUZdz3Gb8JvKGaN+3wHn9nvkQnAsNd7JFzMoPxTTo30nz5t6qpx
+         ZbHMeOv6d+Ez5tkhxS+0GVh4iiHdftGMVCZIeUlXZgMAMZyGzSJKItBWi6Y8JMYs+Wja
+         HdLEP+AUp/aieJsJvxTVB4Hy4EBt2z8W04g2aDwEIgMWd2pcXhi0ozqcNt8LB2iAFOov
+         HMl1mfBhwmdOD0WXXsQF1fEnccuUaOfgjguUbhDiyx8TKcyHFSnu6iVHIvgsf9pSyQij
+         dGhQ==
+X-Gm-Message-State: AOAM532MEpvIkgLSy6sejjaL6pALB7wEOpWnYgt809tiW0du5TSnjoyQ
+        gVxxEzHtpeH0KKSGPZ7+DdXGgMW2Dpn84g==
+X-Google-Smtp-Source: ABdhPJy0Ql0ByOArOEb5+TwNv4pBJKtLwgG47NlhxW7+QdwCLgHXCuLeuSdu/0FtPG8c8WLKdOGdrA==
+X-Received: by 2002:a05:6638:11c2:: with SMTP id g2mr10146678jas.64.1615827016469;
+        Mon, 15 Mar 2021 09:50:16 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id o5sm7811010ila.69.2021.03.15.09.50.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 09:50:16 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/3] net: ipa: QMI fixes
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210315152112.1907968-1-elder@linaro.org>
+ <20210315163807.GA29414@work>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <3e01bc57-8667-4c56-2806-2ba009887bd4@linaro.org>
+Date:   Mon, 15 Mar 2021 11:50:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
- <YE8z+ohM9abBs9SD@smile.fi.intel.com> <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
- <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com> <YE9whHhaa2XavKfj@smile.fi.intel.com>
-In-Reply-To: <YE9whHhaa2XavKfj@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 15 Mar 2021 17:47:53 +0100
-Message-ID: <CAMpxmJVUVhpcNOVQCB3p8tNpac5e5c7vRQS=-avA6Cuaag9eRw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware node
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek Vasut <marex@denx.de>,
-        Roman Guskov <rguskov@dh-electronics.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210315163807.GA29414@work>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 3:34 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Mar 15, 2021 at 03:04:37PM +0100, Bartosz Golaszewski wrote:
-> > On Mon, Mar 15, 2021 at 1:50 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
-> > > > On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
-> > > > > On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
-> > > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > >
-> > > > > Unfortunately while this may fix the particular use-case on STM32, it
-> > > > > breaks all other users as the 'gpio-line-names' property doesn't live
-> > > > > on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
-> > > > >
-> > > > > How about we first look for this property on the latter and only if
-> > > > > it's not present descend down to the former fwnode?
-> > > >
-> > > > Oops, I have tested on x86 and it worked the same way.
-> > > >
-> > > > Lemme check this, but I think the issue rather in ordering when we apply fwnode
-> > > > to the newly created device and when we actually retrieve gpio-line-names
-> > > > property.
-> > >
-> > > Hmm... I can't see how it's possible can be. Can you provide a platform name
-> > > and pointers to the DTS that has been broken by the change?
-> > >
-> >
-> > I noticed it with gpio-mockup (libgpiod tests failed on v5.12-rc3) and
-> > the WiP gpio-sim - but it's the same on most DT platforms. The node
-> > that contains the `gpio-line-names` is the one associated with the
-> > platform device passed to the GPIO driver. The gpiolib then creates
-> > another struct device that becomes the child of that node but it
-> > doesn't copy the parent's properties to it (nor should it).
-> >
-> > Every driver that reads device properties does it from the parent
-> > device, not the one in gdev - whether it uses of_, fwnode_ or generic
-> > device_ properties.
->
-> What you are telling contradicts with the idea of copying parent's fwnode
-> (or OF node) in the current code.
->
+On 3/15/21 11:38 AM, Manivannan Sadhasivam wrote:
+> Hi Alex,
+> 
+> On Mon, Mar 15, 2021 at 10:21:09AM -0500, Alex Elder wrote:
+>> Mani Sadhasivam discovered some errors in the definitions of some
+>> QMI messages used for IPA.  This series addresses those errors,
+>> and extends the definition of one message type to include some
+>> newly-defined fields.
+>>
+> 
+> Thanks for the patches. I guess you need to add Fixes tag for patches 1,2 and
+> they should be backported to stable.
 
-Ha! While the OF node of the parent device is indeed assigned to the
-gdev's dev, the same isn't done in the core code for fwnodes and
-simulated chips don't have an associated OF node, so this is the
-culprit I suppose.
+I did not do that, intentionally.  The reason is that the
+existing code only supports IPA v3.5.1 and IPAv4.2.  And
+these bugs seem to cause no problems there.
 
-Bart
+There are some patches coming very soon that will add
+more formal support for IPA v4.5 (where I know you
+found these issues).  Those will not be back-ported.
 
-> Basically to access the properties we have to use either what specific driver
-> supplied (by setting gpiochip->of_node or by leaving it NULL and in this case
-> gpiochip_add_data_with_key() will copy it from the parent.
->
-> That said, we shouldn't care about parent vs. GPIO device fwnode when reading
-> properties. So, bug is somewhere else.
->
-> In any case, I will test with the gpio-mockup, thanks!
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+So these fixes don't appear to be necessary for existing
+supported platforms.
+
+If you still believe I should have these back-ported,
+I have no objection to re-posting for that.  But I
+wanted to explain my reasoning before doing it.
+
+--> Do you still think I should have these back-ported?
+
+Thanks.
+
+					-Alex
+
+> 
+> Thanks,
+> Mani
+> 
+>> 					-Alex
+>>
+>> Alex Elder (3):
+>>    net: ipa: fix a duplicated tlv_type value
+>>    net: ipa: fix another QMI message definition
+>>    net: ipa: extend the INDICATION_REGISTER request
+>>
+>>   drivers/net/ipa/ipa_qmi_msg.c | 78 +++++++++++++++++++++++++++++++----
+>>   drivers/net/ipa/ipa_qmi_msg.h |  6 ++-
+>>   2 files changed, 74 insertions(+), 10 deletions(-)
+>>
+>> -- 
+>> 2.27.0
+>>
+
