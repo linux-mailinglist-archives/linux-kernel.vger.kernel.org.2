@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B46733BC08
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007D033BC0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237964AbhCOOW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
+        id S238032AbhCOOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhCOOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A54864F6D;
-        Mon, 15 Mar 2021 13:59:55 +0000 (UTC)
+        id S232936AbhCOOAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C6FD64EEF;
+        Mon, 15 Mar 2021 13:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816797;
-        bh=08oL0oLXiYE0De0SgSdpidRFGQvV+jBUzg/iP7iGhW8=;
+        s=korg; t=1615816798;
+        bh=WdSA0u9QNjoXc1vg2BJB76lxbzJAX+Hz+pf+MzpjaqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uB9XG7XxGSUxdmXukEhe+hbTrPj7+xxt/m30Vy0HHXNtODO2Hj1V1HbWxQ1aMn93p
-         CYI6RyBUqgkCHyka4aCwExP2qC1CA7GTva46hpN8+b8/+4DoYkWwOrz7P8Vkb1VAWi
-         MQ2pipesXP1bshRygi6XkEBmS84huoQBc2qyKPwM=
+        b=iUH7XHQBzyt6yIPNGTKs+izsYS0uDKXD+oHGpxEUXskaPtckj9yYi2C0Aq238dhpS
+         0Q4Cg/yp7TKUSEgq9bcM/avLsYqWvK4hrQEl5WEYFbc7xoO6yMXTnnarwjCf+rMvqR
+         zv3oS8U93+wF5MzjVHX7YKeLX+fhFJzIPgHc0jZQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH 4.19 074/120] usb: dwc3: qcom: Honor wakeup enabled/disabled state
-Date:   Mon, 15 Mar 2021 14:57:05 +0100
-Message-Id: <20210315135722.401214691@linuxfoundation.org>
+        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
+        Pete Zaitcev <zaitcev@redhat.com>
+Subject: [PATCH 4.19 075/120] USB: usblp: fix a hang in poll() if disconnected
+Date:   Mon, 15 Mar 2021 14:57:06 +0100
+Message-Id: <20210315135722.433601433@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -42,48 +41,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Matthias Kaehlcke <mka@chromium.org>
+From: Pete Zaitcev <zaitcev@redhat.com>
 
-commit 2664deb0930643149d61cddbb66ada527ae180bd upstream.
+commit 9de2c43acf37a17dc4c69ff78bb099b80fb74325 upstream.
 
-The dwc3-qcom currently enables wakeup interrupts unconditionally
-when suspending, however this should not be done when wakeup is
-disabled (e.g. through the sysfs attribute power/wakeup). Only
-enable wakeup interrupts when device_may_wakeup() returns true.
+Apparently an application that opens a device and calls select()
+on it, will hang if the decice is disconnected. It's a little
+surprising that we had this bug for 15 years, but apparently
+nobody ever uses select() with a printer: only write() and read(),
+and those work fine. Well, you can also select() with a timeout.
 
-Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+The fix is modeled after devio.c. A few other drivers check the
+condition first, then do not add the wait queue in case the
+device is disconnected. We doubt that's completely race-free.
+So, this patch adds the process first, then locks properly
+and checks for the disconnect.
+
+Reviewed-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Pete Zaitcev <zaitcev@redhat.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210302103659.v2.1.I44954d9e1169f2cf5c44e6454d357c75ddfa99a2@changeid
+Link: https://lore.kernel.org/r/20210303221053.1cf3313e@suzdal.zaitcev.lan
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/dwc3-qcom.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/class/usblp.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -234,8 +234,10 @@ static int dwc3_qcom_suspend(struct dwc3
- 	for (i = qcom->num_clocks - 1; i >= 0; i--)
- 		clk_disable_unprepare(qcom->clks[i]);
+--- a/drivers/usb/class/usblp.c
++++ b/drivers/usb/class/usblp.c
+@@ -494,16 +494,24 @@ static int usblp_release(struct inode *i
+ /* No kernel lock - fine */
+ static __poll_t usblp_poll(struct file *file, struct poll_table_struct *wait)
+ {
+-	__poll_t ret;
++	struct usblp *usblp = file->private_data;
++	__poll_t ret = 0;
+ 	unsigned long flags;
  
-+	if (device_may_wakeup(qcom->dev))
-+		dwc3_qcom_enable_interrupts(qcom);
+-	struct usblp *usblp = file->private_data;
+ 	/* Should we check file->f_mode & FMODE_WRITE before poll_wait()? */
+ 	poll_wait(file, &usblp->rwait, wait);
+ 	poll_wait(file, &usblp->wwait, wait);
 +
- 	qcom->is_suspended = true;
--	dwc3_qcom_enable_interrupts(qcom);
- 
- 	return 0;
++	mutex_lock(&usblp->mut);
++	if (!usblp->present)
++		ret |= EPOLLHUP;
++	mutex_unlock(&usblp->mut);
++
+ 	spin_lock_irqsave(&usblp->lock, flags);
+-	ret = ((usblp->bidir && usblp->rcomplete) ? EPOLLIN  | EPOLLRDNORM : 0) |
+-	   ((usblp->no_paper || usblp->wcomplete) ? EPOLLOUT | EPOLLWRNORM : 0);
++	if (usblp->bidir && usblp->rcomplete)
++		ret |= EPOLLIN  | EPOLLRDNORM;
++	if (usblp->no_paper || usblp->wcomplete)
++		ret |= EPOLLOUT | EPOLLWRNORM;
+ 	spin_unlock_irqrestore(&usblp->lock, flags);
+ 	return ret;
  }
-@@ -248,7 +250,8 @@ static int dwc3_qcom_resume(struct dwc3_
- 	if (!qcom->is_suspended)
- 		return 0;
- 
--	dwc3_qcom_disable_interrupts(qcom);
-+	if (device_may_wakeup(qcom->dev))
-+		dwc3_qcom_disable_interrupts(qcom);
- 
- 	for (i = 0; i < qcom->num_clocks; i++) {
- 		ret = clk_prepare_enable(qcom->clks[i]);
 
 
