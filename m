@@ -2,137 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58D233B8F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D45533B762
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhCOOE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231966AbhCON5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D6064F2A;
-        Mon, 15 Mar 2021 13:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816644;
-        bh=TPhNzBLwzeoCv4BOGk4gCrRfMabbLUbMRpg9/LWeDBs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uv5tqGPC5+SYmXIp0zxUNjVNk1w21mgVj6r2WGr3IC7JjPjBLKV/Th5eUgXJkzM4N
-         iLQ2iauWLl2NWW1rYLptbMT3m4O2EOzj96OTqRMqSZZKbpmWI3aUsqw34wfDMM1Vl/
-         6+yMaCLd0odFYr7c0bkoJqvwNWB10B92m4sLw7lc=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christoph Plattner <christoph.plattner@thalesgroup.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 022/168] powerpc/603: Fix protection of user pages mapped with PROT_NONE
-Date:   Mon, 15 Mar 2021 14:54:14 +0100
-Message-Id: <20210315135551.085498989@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S232547AbhCOOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:00:15 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:58629 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhCONzK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:55:10 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 15 Mar 2021 06:55:10 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 15 Mar 2021 06:55:09 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Mar 2021 19:24:35 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id A7FA449D2; Mon, 15 Mar 2021 19:24:33 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, David Collins <collinsd@codeaurora.org>,
+        satya priya <skakit@codeaurora.org>
+Subject: [PATCH V2 5/5] dt-bindings: regulator: Add compatibles for PM7325/PMR735A
+Date:   Mon, 15 Mar 2021 19:24:14 +0530
+Message-Id: <1615816454-1733-6-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Add PM7325/PMR735A compatibles for Qualcomm SC7280 platform.
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-
-commit c119565a15a628efdfa51352f9f6c5186e506a1c upstream.
-
-On book3s/32, page protection is defined by the PP bits in the PTE
-which provide the following protection depending on the access
-keys defined in the matching segment register:
-- PP 00 means RW with key 0 and N/A with key 1.
-- PP 01 means RW with key 0 and RO with key 1.
-- PP 10 means RW with both key 0 and key 1.
-- PP 11 means RO with both key 0 and key 1.
-
-Since the implementation of kernel userspace access protection,
-PP bits have been set as follows:
-- PP00 for pages without _PAGE_USER
-- PP01 for pages with _PAGE_USER and _PAGE_RW
-- PP11 for pages with _PAGE_USER and without _PAGE_RW
-
-For kernelspace segments, kernel accesses are performed with key 0
-and user accesses are performed with key 1. As PP00 is used for
-non _PAGE_USER pages, user can't access kernel pages not flagged
-_PAGE_USER while kernel can.
-
-For userspace segments, both kernel and user accesses are performed
-with key 0, therefore pages not flagged _PAGE_USER are still
-accessible to the user.
-
-This shouldn't be an issue, because userspace is expected to be
-accessible to the user. But unlike most other architectures, powerpc
-implements PROT_NONE protection by removing _PAGE_USER flag instead of
-flagging the page as not valid. This means that pages in userspace
-that are not flagged _PAGE_USER shall remain inaccessible.
-
-To get the expected behaviour, just mimic other architectures in the
-TLB miss handler by checking _PAGE_USER permission on userspace
-accesses as if it was the _PAGE_PRESENT bit.
-
-Note that this problem only is only for 603 cores. The 604+ have
-an hash table, and hash_page() function already implement the
-verification of _PAGE_USER permission on userspace pages.
-
-Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
-Cc: stable@vger.kernel.org # v5.2+
-Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: satya priya <skakit@codeaurora.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- arch/powerpc/kernel/head_32.S |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Changes in V2:
+ - No change.
 
---- a/arch/powerpc/kernel/head_32.S
-+++ b/arch/powerpc/kernel/head_32.S
-@@ -418,10 +418,11 @@ InstructionTLBMiss:
- 	cmplw	0,r1,r3
- #endif
- 	mfspr	r2, SPRN_SPRG_PGDIR
--	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
-+	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC | _PAGE_USER
- #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- #endif
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
-@@ -480,9 +481,10 @@ DataLoadTLBMiss:
- 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SPRG_PGDIR
--	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
-+	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
- 	lwz	r2,0(r2)		/* get pmd entry */
-@@ -556,9 +558,10 @@ DataStoreTLBMiss:
- 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SPRG_PGDIR
--	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
-+	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
- 	lwz	r2,0(r2)		/* get pmd entry */
+ Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+index f29e3b7..bafd52a 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+@@ -44,6 +44,8 @@ description: |
+       For PM6150, smps1 - smps5, ldo1 - ldo19
+       For PM6150L, smps1 - smps8, ldo1 - ldo11, bob
+       For PMX55, smps1 - smps7, ldo1 - ldo16
++      For PM7325, smps1 - smps8, ldo1 - ldo19
++      For PMR735A, smps1 - smps3, ldo1 - ldo7
+ 
+ properties:
+   compatible:
+@@ -60,6 +62,8 @@ properties:
+       - qcom,pm6150-rpmh-regulators
+       - qcom,pm6150l-rpmh-regulators
+       - qcom,pmx55-rpmh-regulators
++      - qcom,pm7325-rpmh-regulators
++      - qcom,pmr735a-rpmh-regulators
+ 
+   qcom,pmic-id:
+     description: |
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
