@@ -2,32 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7584133BB2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C6133BB3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236483AbhCOONH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:13:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        id S236448AbhCOOOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:14:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232523AbhCON7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B34ED64EF3;
-        Mon, 15 Mar 2021 13:58:43 +0000 (UTC)
+        id S232555AbhCON7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F11A64EEA;
+        Mon, 15 Mar 2021 13:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816724;
-        bh=9ePwYnwhBKuyVuujznYnndoTArbDbP4WcimtpsYv5tE=;
+        s=korg; t=1615816730;
+        bh=OKkLkbCg2W00r81qQKKPpfcrBegDoduX/8K8hDlu5ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f0aMI/q5p53TB3G69KdF7M0Rq2WB1rQEhqaENTgt7aSGBTWzoMrD8gArnBU+L5ujP
-         6kBqc12R129+rQjrhbUgw6bGYIxWGFThB22FL530yg2jHkaIdUAFgrrRbx2ZWDxfgx
-         zdTcazBC14ISiVkCNWJ6EzLhraW0o1w/SCzoUZi4=
+        b=NJZacJF+h1NodqpCBKPNcZcklqTzM4JTrMUdF8gav0LvDg2A5mmdPJ47zQc5HQMzw
+         ioDClEVkobjEsLvagquRSv6xvh7oE4Rm/RyQyBOr4gzNnoabM9tQQoz+r3C/Ufcmd5
+         TzGhuCOM4W6e9A7IrWlL6PWYdAkL7SlNm4fv54tw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 029/120] net: stmmac: stop each tx channel independently
-Date:   Mon, 15 Mar 2021 14:56:20 +0100
-Message-Id: <20210315135720.945138828@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.19 032/120] perf traceevent: Ensure read cmdlines are null terminated.
+Date:   Mon, 15 Mar 2021 14:56:23 +0100
+Message-Id: <20210315135721.043891046@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -41,33 +47,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Ian Rogers <irogers@google.com>
 
-commit a3e860a83397bf761ec1128a3f0ba186445992c6 upstream.
+commit 137a5258939aca56558f3a23eb229b9c4b293917 upstream.
 
-If clear GMAC_CONFIG_TE bit, it would stop all tx channels, but users
-may only want to stop specific tx channel.
+Issue detected by address sanitizer.
 
-Fixes: 48863ce5940f ("stmmac: add DMA support for GMAC 4.xx")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: cd4ceb63438e9e28 ("perf util: Save pid-cmdline mapping into tracing header")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20210226221431.1985458-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c |    4 ----
- 1 file changed, 4 deletions(-)
+ tools/perf/util/trace-event-read.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-@@ -63,10 +63,6 @@ void dwmac4_dma_stop_tx(void __iomem *io
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -381,6 +381,7 @@ static int read_saved_cmdline(struct tep
+ 		pr_debug("error reading saved cmdlines\n");
+ 		goto out;
+ 	}
++	buf[ret] = '\0';
  
- 	value &= ~DMA_CONTROL_ST;
- 	writel(value, ioaddr + DMA_CHAN_TX_CONTROL(chan));
--
--	value = readl(ioaddr + GMAC_CONFIG);
--	value &= ~GMAC_CONFIG_TE;
--	writel(value, ioaddr + GMAC_CONFIG);
- }
- 
- void dwmac4_dma_start_rx(void __iomem *ioaddr, u32 chan)
+ 	parse_saved_cmdline(pevent, buf, size);
+ 	ret = 0;
 
 
