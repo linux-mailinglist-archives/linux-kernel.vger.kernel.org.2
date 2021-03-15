@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5AF33BDF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0F933BD68
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbhCOOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S236369AbhCOOfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233567AbhCOOCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDE064F0B;
-        Mon, 15 Mar 2021 14:02:01 +0000 (UTC)
+        id S233467AbhCOOBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA04664F2E;
+        Mon, 15 Mar 2021 14:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816922;
-        bh=GmxJ3oFJGKuwbkAxXweIFedbjp1KTNuSELERd50QxTk=;
+        s=korg; t=1615816896;
+        bh=HB43tIWA/SDJJ+Ad8NreII/d3eY5xm7qwiFNHDfBMVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t+X+SrUED5n6vETxOpjtZDaaT9N5cPYfrGW6nORMQNkyCMGA5YJXxotIrodV/sNQ2
-         vy7XBYdCIuX3GDzinixUxDgLG+8cu/tvEVnuEKoFrEFZKTyWPVtSkIAkunQzcWi2Vr
-         0GyzAnR4ekLE9F89v/0OyBY1hyVa/VcCZsgz7ClQ=
+        b=HzuYyCrVTcpmQWq/MlTp/m/p8NJtCifW29LgZe9zUzNGu4/apvBTrurMB6KfkHGYR
+         +TNpQ9TQJ+CL5GWb5mYnZqnyJlXt1jR3dPHAI1SUdNTO4bbyBfHKdjh4RevWKX6K3P
+         EFQjtdZ+Yc243CyNGCPdtwFIkfk2Oe4FdU5uuxeY=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bernhard <bernhard.gebetsberger@gmx.at>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.11 204/306] usb: xhci: do not perform Soft Retry for some xHCI hosts
-Date:   Mon, 15 Mar 2021 14:54:27 +0100
-Message-Id: <20210315135514.529350771@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 175/290] ALSA: hda: Drop the BATCH workaround for AMD controllers
+Date:   Mon, 15 Mar 2021 14:54:28 +0100
+Message-Id: <20210315135547.824783899@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +40,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Stanislaw Gruszka <stf_xl@wp.pl>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit a4a251f8c23518899d2078c320cf9ce2fa459c9f upstream.
+commit 28e96c1693ec1cdc963807611f8b5ad400431e82 upstream.
 
-On some systems rt2800usb and mt7601u devices are unable to operate since
-commit f8f80be501aa ("xhci: Use soft retry to recover faster from
-transaction errors")
+The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
+AMD controller (1022:1457)") introduced a few workarounds for the
+recent AMD HD-audio controller, and one of them is the forced BATCH
+PCM mode so that PulseAudio avoids the timer-based scheduling.  This
+was thought to cover for some badly working applications, but this
+actually worsens for more others.  In total, this wasn't a good idea
+to enforce it.
 
-Seems that some xHCI controllers can not perform Soft Retry correctly,
-affecting those devices.
+This is a partial revert of the commit above for dropping the PCM
+BATCH enforcement part to recover from the regression again.
 
-To avoid the problem add xhci->quirks flag that restore pre soft retry
-xhci behaviour for affected xHCI controllers. Currently those are
-AMD_PROMONTORYA_4 and AMD_PROMONTORYA_2, since it was confirmed
-by the users: on those xHCI hosts issue happen and is gone after
-disabling Soft Retry.
-
-[minor commit message rewording for checkpatch -Mathias]
-
-Fixes: f8f80be501aa ("xhci: Use soft retry to recover faster from transaction errors")
-Cc: <stable@vger.kernel.org> # 4.20+
-Reported-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Tested-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Signed-off-by: Stanislaw Gruszka <stf_xl@wp.pl>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202541
-Link: https://lore.kernel.org/r/20210311115353.2137560-2-mathias.nyman@linux.intel.com
+Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210308160726.22930-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-pci.c  |    5 +++++
- drivers/usb/host/xhci-ring.c |    3 ++-
- drivers/usb/host/xhci.h      |    1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_controller.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -295,6 +295,11 @@ static void xhci_pci_quirks(struct devic
- 	     pdev->device == 0x9026)
- 		xhci->quirks |= XHCI_RESET_PLL_ON_DISCONNECT;
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -609,13 +609,6 @@ static int azx_pcm_open(struct snd_pcm_s
+ 				     20,
+ 				     178000000);
  
-+	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
-+	    (pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_2 ||
-+	     pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4))
-+		xhci->quirks |= XHCI_NO_SOFT_RETRY;
-+
- 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
- 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
- 				"QUIRK: Resetting on resume");
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2307,7 +2307,8 @@ static int process_bulk_intr_td(struct x
- 		remaining	= 0;
- 		break;
- 	case COMP_USB_TRANSACTION_ERROR:
--		if ((ep_ring->err_count++ > MAX_SOFT_RETRY) ||
-+		if (xhci->quirks & XHCI_NO_SOFT_RETRY ||
-+		    (ep_ring->err_count++ > MAX_SOFT_RETRY) ||
- 		    le32_to_cpu(slot_ctx->tt_info) & TT_SLOT)
- 			break;
- 		*status = 0;
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1883,6 +1883,7 @@ struct xhci_hcd {
- #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
- #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
- #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
-+#define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
+-	/* by some reason, the playback stream stalls on PulseAudio with
+-	 * tsched=1 when a capture stream triggers.  Until we figure out the
+-	 * real cause, disable tsched mode by telling the PCM info flag.
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
+-		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
+-
+ 	if (chip->align_buffer_size)
+ 		/* constrain buffer sizes to be multiple of 128
+ 		   bytes. This is more efficient in terms of memory
 
 
