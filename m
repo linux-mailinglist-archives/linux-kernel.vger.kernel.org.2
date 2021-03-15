@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E85133AAA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0A133AAA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 06:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCOFDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 01:03:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59770 "EHLO mx2.suse.de"
+        id S229926AbhCOFGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 01:06:01 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:26051 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229862AbhCOFCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 01:02:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7B2E0AE1F;
-        Mon, 15 Mar 2021 05:02:53 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de, mingo@redhat.com
-Cc:     peterz@infradead.org, dvhart@infradead.org,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 2/2] futex: Leave the pi lock stealer in a consistent state upon successful fault
-Date:   Sun, 14 Mar 2021 22:02:24 -0700
-Message-Id: <20210315050224.107056-3-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210315050224.107056-1-dave@stgolabs.net>
-References: <20210315050224.107056-1-dave@stgolabs.net>
+        id S229594AbhCOFF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 01:05:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615784757; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=n2X7T0FcIH256av3hxiNR5QLg0W+3vBluxT34isJ1Mw=;
+ b=PXmBZWPyAzvFWGACvIq842uisOkQXOYrgKDFYhiExTxNIAD34iBJVNBSnV+PtoXaTIj/+rbt
+ IfDhV75hVJCLsS/2xDsFk9oRdopGEr7al0qERp5G64DnOhV/NUzvn4zX12MNaNPqzQktYNYO
+ +SOwdG4cJTFmWSvu8kIpTADOH9s=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 604eeb34e3fca7d0a61d0355 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 05:05:56
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7B0BC43461; Mon, 15 Mar 2021 05:05:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2115DC433CA;
+        Mon, 15 Mar 2021 05:05:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 13:05:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+In-Reply-To: <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+References: <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+ <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p8>
+ <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+Message-ID: <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before 34b1a1ce145 (futex: Handle faults correctly for PI futexes) any
-concurrent pi_state->owner fixup would assume that the task that fixed
-things on our behalf also correctly updated the userspace value. This
-is not always the case anymore, and can result in scenarios where a lock
-stealer returns a successful FUTEX_PI_LOCK operation but raced during a fault
-with an enqueued top waiter in an immutable state so the uval TID was
-not updated for the stealer, breaking otherwise expected (and valid)
-semantics and confusing the stealer task:
+On 2021-03-15 09:31, Daejun Park wrote:
+> This patch supports the HPB 2.0.
+> 
+> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
+> In the case of Read (<= 32KB) is supported as single HPB read.
+> In the case of Read (36KB ~ 512KB) is supported by as a combination of
+> write buffer command and HPB read command to deliver more PPN.
+> The write buffer commands may not be issued immediately due to busy 
+> tags.
+> To use HPB read more aggressively, the driver can requeue the write 
+> buffer
+> command. The requeue threshold is implemented as timeout and can be
+> modified with requeue_timeout_ms entry in sysfs.
+> 
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> ---
+> +static struct attribute *hpb_dev_param_attrs[] = {
+> +	&dev_attr_requeue_timeout_ms.attr,
+> +	NULL,
+> +};
+> +
+> +struct attribute_group ufs_sysfs_hpb_param_group = {
+> +	.name = "hpb_param_sysfs",
+> +	.attrs = hpb_dev_param_attrs,
+> +};
+> +
+> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+> +{
+> +	struct ufshpb_req *pre_req = NULL;
+> +	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+> +	int i, j;
+> +
+> +	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+> +
+> +	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
+> +	hpb->throttle_pre_req = qd;
+> +	hpb->num_inflight_pre_req = 0;
+> +
+> +	if (!hpb->pre_req)
+> +		goto release_mem;
+> +
+> +	for (i = 0; i < qd; i++) {
+> +		pre_req = hpb->pre_req + i;
+> +		INIT_LIST_HEAD(&pre_req->list_req);
+> +		pre_req->req = NULL;
+> +		pre_req->bio = NULL;
 
-with pi_state->owner == victim.
+Why don't prepare bio as same as wb.m_page? Won't that save more time
+for ufshpb_issue_pre_req()?
 
-victim							stealer
-futex_lock_pi() {
-  queue_me(&q, hb);
-  rt_mutex_timed_futex_lock() {
-							futex_lock_pi() {
-							  // lock steal
-							  rt_mutex_timed_futex_lock();
-    // timeout
-  }
+Thanks,
+Can Guo.
 
-  spin_lock(q.lock_ptr);
-  fixup_owner(!locked) {
-    fixup_pi_state_owner(NULL) {
-      oldowner = pi_state->owner
-      newowner = stealer;
-      handle_err:
-      //drop locks
-
-      ret = fault_in_user_writeable() {			spin_lock(q.lock_ptr);
-							fixup_owner(locked) {
-      } // -EFAULT					    fixup_pi_state_owner(current) {
-							      oldowner = pi_state->owner
-							      newowner = current;
-							      handle_err:
-							      // drop locks
-							      ret = fault_in_user_writeable() {
-
-      // take locks
-      if (pi_state->owner != oldowner) // false
-
-      pi_state_update_owner(rt_mutex_owner());
-
-							       } // SUCCESS
-   }
-   // all locks dropped					       // take locks
-							       if (pi_state->owner != oldowner) // success
-}								 return 1;
-
-This leaves: (pi_state == pi_mutex owner == stealer) AND (uval TID == victim).
-
-This patch proposes for the lock stealer to do a retry upon seeing someone
-changed pi_state->owner while all locks were dropped if the fault was
-successful. This allows to self-fixup the user state of the lock, albeit
-an incorrect order compared to traditionally updating userspace before
-pi_state, but this is an extraordinary scenario.
-
-For the cases of a normal fixups, this does add some unnecessary overhead
-by having to deal with userspace value when things are already ok, but
-this case is pretty rare and we've already given up any inch of performance
-when releasing all locks, for faulting/blocking.
-
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- kernel/futex.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/futex.c b/kernel/futex.c
-index ded7af2ba87f..95ce10c4e33d 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2460,7 +2460,6 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
- 
- 	case -EAGAIN:
- 		cond_resched();
--		err = 0;
- 		break;
- 
- 	default:
-@@ -2474,11 +2473,22 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
- 	/*
- 	 * Check if someone else fixed it for us:
- 	 */
--	if (pi_state->owner != oldowner)
-+	if (pi_state->owner != oldowner) {
-+		/*
-+		 * The change might have come from the rare immutable
-+		 * state below, which leaves the userspace value out of
-+		 * sync. But if we are the lock stealer and can update
-+		 * the uval, do so, instead of reporting a successful
-+		 * lock operation with an invalid user state.
-+		 */
-+		if (!err && argowner == current)
-+			goto retry;
-+
- 		return argowner == current;
-+	}
- 
- 	/* Retry if err was -EAGAIN or the fault in succeeded */
--	if (!err)
-+	if (err == -EAGAIN || !err)
- 		goto retry;
- 
- 	/*
--- 
-2.26.2
-
+> +
+> +		pre_req->wb.m_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
+> +		if (!pre_req->wb.m_page) {
+> +			for (j = 0; j < i; j++)
+> +				__free_page(hpb->pre_req[j].wb.m_page);
+> +
+> +			goto release_mem;
+> +		}
+> +		list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
+> +	}
+> +
+> +	return 0;
+> +release_mem:
+> +	kfree(hpb->pre_req);
+> +	return -ENOMEM;
+> +}
+> +
