@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE6533BCF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C6B33BC59
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhCOObE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S234042AbhCOOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233038AbhCOOAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A39B164F8E;
-        Mon, 15 Mar 2021 14:00:25 +0000 (UTC)
+        id S232802AbhCON75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5FC64F00;
+        Mon, 15 Mar 2021 13:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816826;
-        bh=UX9f+NV9wDx9Q7CmnQqT1xrjNeuvz9LnWyiBmFrWdwE=;
+        s=korg; t=1615816779;
+        bh=g4ge6Wj4d/EzIdZfVNtg/6fBbvqxzeqxSwJk5KUjrNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JyR2XtoH/cqJBVTXWYFxe+MngcdIT+M4To3jAQaj48b0120CM4FlbKyG7CJM9l0c+
-         pgvEhpv3XBQAsntTp9PPX6kg6i4w953SR220SYMmLk6KY+XMd4KuQatdJdv3pXnm2D
-         cyEoIeQt+Jo9RSs2Iea5FL071st/vPCxbbSW5wUM=
+        b=qwZ85T9/RE+fE+CB1Ue1vqOzVHZmujm8HVWO61nU0tQ0A2xncCiI+gnyHijFKaUUw
+         BChdObB6+YZAQCs9qPKBXPQ69KZhSyFngox3hO/uDWhrjImtw8drXtJFedWPTYEI82
+         nz+A9zxvak+swGBuE4jZItjJDakt6/PvPJj17HPU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
-Subject: [PATCH 4.19 094/120] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
-Date:   Mon, 15 Mar 2021 14:57:25 +0100
-Message-Id: <20210315135723.056930586@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 56/95] USB: serial: io_edgeport: fix memory leak in edge_startup
+Date:   Mon, 15 Mar 2021 14:57:26 +0100
+Message-Id: <20210315135742.117613218@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-References: <20210315135720.002213995@linuxfoundation.org>
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+References: <20210315135740.245494252@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +43,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Lee Gibson <leegib@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
+commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
 
-Function r8712_sitesurvey_cmd calls memcpy without checking the length.
-A user could control that length and trigger a buffer overflow.
-Fix by checking the length is within the maximum allowed size.
+sysbot found memory leak in edge_startup().
+The problem was that when an error was received from the usb_submit_urb(),
+nothing was cleaned up.
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
-Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
-Cc: stable <stable@vger.kernel.org>
+Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
+Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
---- a/drivers/staging/rtl8712/rtl871x_cmd.c
-+++ b/drivers/staging/rtl8712/rtl871x_cmd.c
-@@ -242,8 +242,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
- 	psurveyPara->ss_ssidlen = 0;
- 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
- 	if ((pssid != NULL) && (pssid->SsidLength)) {
--		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
--		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
-+		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
+--- a/drivers/usb/serial/io_edgeport.c
++++ b/drivers/usb/serial/io_edgeport.c
+@@ -3025,26 +3025,32 @@ static int edge_startup(struct usb_seria
+ 				response = -ENODEV;
+ 			}
+ 
+-			usb_free_urb(edge_serial->interrupt_read_urb);
+-			kfree(edge_serial->interrupt_in_buffer);
+-
+-			usb_free_urb(edge_serial->read_urb);
+-			kfree(edge_serial->bulk_in_buffer);
+-
+-			kfree(edge_serial);
+-
+-			return response;
++			goto error;
+ 		}
+ 
+ 		/* start interrupt read for this edgeport this interrupt will
+ 		 * continue as long as the edgeport is connected */
+ 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
+ 								GFP_KERNEL);
+-		if (response)
++		if (response) {
+ 			dev_err(ddev, "%s - Error %d submitting control urb\n",
+ 				__func__, response);
 +
-+		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
-+		psurveyPara->ss_ssidlen = cpu_to_le32(len);
++			goto error;
++		}
  	}
- 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
- 	r8712_enqueue_cmd(pcmdpriv, ph2c);
+ 	return response;
++
++error:
++	usb_free_urb(edge_serial->interrupt_read_urb);
++	kfree(edge_serial->interrupt_in_buffer);
++
++	usb_free_urb(edge_serial->read_urb);
++	kfree(edge_serial->bulk_in_buffer);
++
++	kfree(edge_serial);
++
++	return response;
+ }
+ 
+ 
 
 
