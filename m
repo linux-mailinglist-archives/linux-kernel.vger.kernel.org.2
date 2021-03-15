@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA2233BDBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957433BD4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240236AbhCOOhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S233231AbhCOOdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhCOOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9361F64FB5;
-        Mon, 15 Mar 2021 14:01:05 +0000 (UTC)
+        id S233389AbhCOOBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A01364FBC;
+        Mon, 15 Mar 2021 14:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816867;
-        bh=o73itd1zUjaSpSdY2Efr+YYx1gLbqrvl8+N8rmO06BM=;
+        s=korg; t=1615816868;
+        bh=8BsP7PzX23kUwEpPHzsJwyJsQ7RWeraVnNiMuMxwPVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2plRCRAZyU9ORGg15FFI5eL22norG7JzF0RflAREaHTIjLDIdE2p/3CdY6yFCTKfq
-         R59jEaT7lJl0JXhrPC2wVWCW7WxVI3c92IUIVf7PfKz3e3Bxi5OeGisAFWGTWQ7bs6
-         cQfRg7bxeJu0H52jvYmumo1WOlHzh0BnJcEtr2eU=
+        b=MXj56FFiFzNiSF6tmjGrSs3v+Wq9h47s5wPTKT4eEaSI6Fxm8Vu0Mw63T52f63Ag8
+         DPAMhSFwEYb5kuVn6F0sUaZVAgsSrPTQ7sJLo5PnXwD99XYR7Pfoo22iEsUBsm8EMi
+         VFFwulCZjD7S8wjkk65rHqhWDmKQm0wFzBSBXWlA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Babrou <ivan@cloudflare.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>, stable@kernel.org
-Subject: [PATCH 5.4 160/168] x86/unwind/orc: Disable KASAN checking in the ORC unwinder, part 2
-Date:   Mon, 15 Mar 2021 14:56:32 +0100
-Message-Id: <20210315135555.620291135@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>
+Subject: [PATCH 5.4 161/168] KVM: arm64: Fix exclusive limit for IPA size
+Date:   Mon, 15 Mar 2021 14:56:33 +0100
+Message-Id: <20210315135555.657668150@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -44,87 +42,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit e504e74cc3a2c092b05577ce3e8e013fae7d94e6 upstream.
+commit 262b003d059c6671601a19057e9fe1a5e7f23722 upstream.
 
-KASAN reserves "redzone" areas between stack frames in order to detect
-stack overruns.  A read or write to such an area triggers a KASAN
-"stack-out-of-bounds" BUG.
+When registering a memslot, we check the size and location of that
+memslot against the IPA size to ensure that we can provide guest
+access to the whole of the memory.
 
-Normally, the ORC unwinder stays in-bounds and doesn't access the
-redzone.  But sometimes it can't find ORC metadata for a given
-instruction.  This can happen for code which is missing ORC metadata, or
-for generated code.  In such cases, the unwinder attempts to fall back
-to frame pointers, as a best-effort type thing.
+Unfortunately, this check rejects memslot that end-up at the exact
+limit of the addressing capability for a given IPA size. For example,
+it refuses the creation of a 2GB memslot at 0x8000000 with a 32bit
+IPA space.
 
-This fallback often works, but when it doesn't, the unwinder can get
-confused and go off into the weeds into the KASAN redzone, triggering
-the aforementioned KASAN BUG.
+Fix it by relaxing the check to accept a memslot reaching the
+limit of the IPA space.
 
-But in this case, the unwinder's confusion is actually harmless and
-working as designed.  It already has checks in place to prevent
-off-stack accesses, but those checks get short-circuited by the KASAN
-BUG.  And a BUG is a lot more disruptive than a harmless unwinder
-warning.
-
-Disable the KASAN checks by using READ_ONCE_NOCHECK() for all stack
-accesses.  This finishes the job started by commit 881125bfe65b
-("x86/unwind: Disable KASAN checking in the ORC unwinder"), which only
-partially fixed the issue.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Reported-by: Ivan Babrou <ivan@cloudflare.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Tested-by: Ivan Babrou <ivan@cloudflare.com>
-Cc: stable@kernel.org
-Link: https://lkml.kernel.org/r/9583327904ebbbeda399eca9c56d6c7085ac20fe.1612534649.git.jpoimboe@redhat.com
+Fixes: c3058d5da222 ("arm/arm64: KVM: Ensure memslots are within KVM_PHYS_SIZE")
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+Link: https://lore.kernel.org/r/20210311100016.3830038-3-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/kernel/unwind_orc.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -357,8 +357,8 @@ static bool deref_stack_regs(struct unwi
- 	if (!stack_access_ok(state, addr, sizeof(struct pt_regs)))
- 		return false;
+---
+ virt/kvm/arm/mmu.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -2307,8 +2307,7 @@ int kvm_arch_prepare_memory_region(struc
+ 	 * Prevent userspace from creating a memory region outside of the IPA
+ 	 * space addressable by the KVM guest IPA space.
+ 	 */
+-	if (memslot->base_gfn + memslot->npages >=
+-	    (kvm_phys_size(kvm) >> PAGE_SHIFT))
++	if ((memslot->base_gfn + memslot->npages) > (kvm_phys_size(kvm) >> PAGE_SHIFT))
+ 		return -EFAULT;
  
--	*ip = regs->ip;
--	*sp = regs->sp;
-+	*ip = READ_ONCE_NOCHECK(regs->ip);
-+	*sp = READ_ONCE_NOCHECK(regs->sp);
- 	return true;
- }
- 
-@@ -370,8 +370,8 @@ static bool deref_stack_iret_regs(struct
- 	if (!stack_access_ok(state, addr, IRET_FRAME_SIZE))
- 		return false;
- 
--	*ip = regs->ip;
--	*sp = regs->sp;
-+	*ip = READ_ONCE_NOCHECK(regs->ip);
-+	*sp = READ_ONCE_NOCHECK(regs->sp);
- 	return true;
- }
- 
-@@ -392,12 +392,12 @@ static bool get_reg(struct unwind_state
- 		return false;
- 
- 	if (state->full_regs) {
--		*val = ((unsigned long *)state->regs)[reg];
-+		*val = READ_ONCE_NOCHECK(((unsigned long *)state->regs)[reg]);
- 		return true;
- 	}
- 
- 	if (state->prev_regs) {
--		*val = ((unsigned long *)state->prev_regs)[reg];
-+		*val = READ_ONCE_NOCHECK(((unsigned long *)state->prev_regs)[reg]);
- 		return true;
- 	}
- 
+ 	down_read(&current->mm->mmap_sem);
 
 
