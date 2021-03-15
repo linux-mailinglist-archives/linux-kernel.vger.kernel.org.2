@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D5433BBAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4049C33BBAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbhCOOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:19:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S237679AbhCOOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232757AbhCON7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E42D664F75;
-        Mon, 15 Mar 2021 13:59:23 +0000 (UTC)
+        id S231194AbhCON7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9804564F8A;
+        Mon, 15 Mar 2021 13:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816765;
-        bh=WmxsyXZaGuqzBHTg7H7zF124/i5Yo16djBp6yK0QzCA=;
+        s=korg; t=1615816767;
+        bh=zJJqv1au8T2Aftr308VbtrTbCbQQoC+l6IxVVm6AkbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J/wlUBDfNJYXMCxBLM/XrsSsdO1QxAEoFW0yQ48YNvG92b6UPb/Kq4BmahdJvchDP
-         QE1Rhwbfqfs7EU9UkHUt8Fbs51I3Rc0xROyU6JhWy8jpxhqrlwoHB2ZR9gIaPioQBj
-         C8n1m5U9EzNV+sOF9OqwHu/lW1tSukd3coDaJoz4=
+        b=eWPGxL7dOPvlJhfmeANrYFNpDe8ZtcnNo7W4cZXrRsFI5bjugO1gvbCSiinCQtO/f
+         svh4xgwgk4ZL1wIVNuBkvjF0CzAArq+sq5kkMIhHqueTBp6U37cdymcN8Ph5utzwUG
+         SuWusdmup1NGxqZggaWz4ypfhR3VpEZOyCyDU6ME=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bjoern Walk <bwalk@linux.ibm.com>,
         Jan Hoeppner <hoeppner@linux.ibm.com>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.14 46/95] s390/dasd: fix hanging DASD driver unbind
-Date:   Mon, 15 Mar 2021 14:57:16 +0100
-Message-Id: <20210315135741.786571914@linuxfoundation.org>
+Subject: [PATCH 4.14 47/95] s390/dasd: fix hanging IO request during DASD driver unbind
+Date:   Mon, 15 Mar 2021 14:57:17 +0100
+Message-Id: <20210315135741.815725628@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -45,47 +45,38 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 7d365bd0bff3c0310c39ebaffc9a8458e036d666 upstream.
+commit 66f669a272898feb1c69b770e1504aa2ec7723d1 upstream.
 
-In case of an unbind of the DASD device driver the function
-dasd_generic_remove() is called which shuts down the device.
-Among others this functions removes the int_handler from the cdev.
-During shutdown the device cancels all outstanding IO requests and waits
-for completion of the clear request.
-Unfortunately the clear interrupt will never be received when there is no
-interrupt handler connected.
+Prevent that an IO request is build during device shutdown initiated by
+a driver unbind. This request will never be able to be processed or
+canceled and will hang forever. This will lead also to a hanging unbind.
 
-Fix by moving the int_handler removal after the call to the state machine
-where no request or interrupt is outstanding.
+Fix by checking not only if the device is in READY state but also check
+that there is no device offline initiated before building a new IO request.
 
-Cc: stable@vger.kernel.org
+Fixes: e443343e509a ("s390/dasd: blk-mq conversion")
+
+Cc: <stable@vger.kernel.org> # v4.14+
 Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
 Tested-by: Bjoern Walk <bwalk@linux.ibm.com>
 Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/block/dasd.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/s390/block/dasd.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 --- a/drivers/s390/block/dasd.c
 +++ b/drivers/s390/block/dasd.c
-@@ -3489,8 +3489,6 @@ void dasd_generic_remove(struct ccw_devi
- 	struct dasd_device *device;
- 	struct dasd_block *block;
+@@ -2998,7 +2998,8 @@ static blk_status_t do_dasd_request(stru
  
--	cdev->handler = NULL;
--
- 	device = dasd_device_from_cdev(cdev);
- 	if (IS_ERR(device)) {
- 		dasd_remove_sysfs_files(cdev);
-@@ -3509,6 +3507,7 @@ void dasd_generic_remove(struct ccw_devi
- 	 * no quite down yet.
- 	 */
- 	dasd_set_target_state(device, DASD_STATE_NEW);
-+	cdev->handler = NULL;
- 	/* dasd_delete_device destroys the device reference. */
- 	block = device->block;
- 	dasd_delete_device(device);
+ 	basedev = block->base;
+ 	spin_lock_irq(&dq->lock);
+-	if (basedev->state < DASD_STATE_READY) {
++	if (basedev->state < DASD_STATE_READY ||
++	    test_bit(DASD_FLAG_OFFLINE, &basedev->flags)) {
+ 		DBF_DEV_EVENT(DBF_ERR, basedev,
+ 			      "device not ready for request %p", req);
+ 		rc = BLK_STS_IOERR;
 
 
