@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F003E33BC6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A80133BE48
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhCOOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S238722AbhCOOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhCOOAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D8464F00;
-        Mon, 15 Mar 2021 14:00:02 +0000 (UTC)
+        id S233590AbhCOOED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 113DF64E83;
+        Mon, 15 Mar 2021 14:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816803;
-        bh=Z6zOcIPe8C4x6d3GhlWcunOtUQl88DPN2oo6keWNqv4=;
+        s=korg; t=1615817042;
+        bh=iXbS/5ssr4QwnlzugOT1vgBTnbWnzpyoMa5HSr/L7Is=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tztV26tuwzvgureWDt+t+aSllJXl+VTWwRB4xCBBxsFOmAHf5au38c0VrxUWoo+S4
-         t4iK6zArSoSB9hEV8yBfGfA0sbHi072xHOgvTnDmswh261f3d8WCJOxTcmYbSCIMub
-         BqZFiXZn4XmwdSygY6LOnw4BNoNCR5/+BEmfA/3g=
+        b=XlWK1ijwzAT0SIPZBhcdk8iXD1a907Zgf4LS3Zx0YB4Zb3z/SES74RPvuRqWd+ztC
+         VzloeapCUcWHPg9r8fee57L2dH3ttawY8eqAWebmm3Cr/zyZ35YCThWnbZaDNvXcQx
+         JnULdj4p18iQJ3xbod3mcAawTuVbx/3n075PT4As=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.4 121/168] usbip: fix vudc to check for stream socket
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 260/290] prctl: fix PR_SET_MM_AUXV kernel stack leak
 Date:   Mon, 15 Mar 2021 14:55:53 +0100
-Message-Id: <20210315135554.335733010@linuxfoundation.org>
+Message-Id: <20210315135550.804630990@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +42,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-commit 6801854be94fe8819b3894979875ea31482f5658 upstream.
+[ Upstream commit c995f12ad8842dbf5cfed113fb52cdd083f5afd1 ]
 
-Fix usbip_sockfd_store() to validate the passed in file descriptor is
-a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
-sock_recvmsg() can't detect end of stream.
+Doing a
 
-Cc: stable@vger.kernel.org
-Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/387a670316002324113ac7ea1e8b53f4085d0c95.1615171203.git.skhan@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
+
+will copy 1 byte from userspace to (quite big) on-stack array
+and then stash everything to mm->saved_auxv.
+AT_NULL terminator will be inserted at the very end.
+
+/proc/*/auxv handler will find that AT_NULL terminator
+and copy original stack contents to userspace.
+
+This devious scheme requires CAP_SYS_RESOURCE.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/sys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -138,6 +138,13 @@ static ssize_t usbip_sockfd_store(struct
- 			goto unlock_ud;
- 		}
+diff --git a/kernel/sys.c b/kernel/sys.c
+index a730c03ee607..2603280b97be 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2079,7 +2079,7 @@ static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
+ 	 * up to the caller to provide sane values here, otherwise userspace
+ 	 * tools which use this vector might be unhappy.
+ 	 */
+-	unsigned long user_auxv[AT_VECTOR_SIZE];
++	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
  
-+		if (socket->type != SOCK_STREAM) {
-+			dev_err(dev, "Expecting SOCK_STREAM - found %d",
-+				socket->type);
-+			ret = -EINVAL;
-+			goto sock_err;
-+		}
-+
- 		udc->ud.tcp_socket = socket;
- 
- 		spin_unlock_irq(&udc->ud.lock);
-@@ -177,6 +184,8 @@ static ssize_t usbip_sockfd_store(struct
- 
- 	return count;
- 
-+sock_err:
-+	sockfd_put(socket);
- unlock_ud:
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
+ 	if (len > sizeof(user_auxv))
+ 		return -EINVAL;
+-- 
+2.30.1
+
 
 
