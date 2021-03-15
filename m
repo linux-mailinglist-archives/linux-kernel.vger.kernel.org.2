@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D5833BEB0
+	by mail.lfdr.de (Postfix) with ESMTP id C267633BEB2
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241369AbhCOOsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:48:52 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:37768 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238272AbhCOOXB (ORCPT
+        id S241404AbhCOOs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:56 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:42282 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238307AbhCOOXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:23:01 -0400
-Received: by mail-io1-f51.google.com with SMTP id y20so15198574iot.4;
-        Mon, 15 Mar 2021 07:23:00 -0700 (PDT)
+        Mon, 15 Mar 2021 10:23:03 -0400
+Received: by mail-io1-f47.google.com with SMTP id u20so33498271iot.9;
+        Mon, 15 Mar 2021 07:23:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=LxM7hzlAWbd4b9S2ghwuGhozbMVLirqSVwvceryZHMg=;
-        b=LOTcjxVFtpalr7NUWwA6nFeFlOob6DwkSG06OJXDsU2nNNmdUYyXdbnwG2JXDu+YRT
-         7ZfAhhI0Y3bID6E4bCyohE8KoSBjiWKS7msSplhhf2DEEjvfP9G0u57juvtmR7cgi4i6
-         ZP+CnN9VIKx+QspyEEhXNJmtKBY2vmiXQ+lJtBbUO94IO4yyP6n1lJmtVkWZixXL+8Vj
-         xCGRlK44vHMOX9PxDkFDGq/XD0UcJLlnRz/T3O5mtN4lmOmA39fvmtZkNnlOhoCqzF8Z
-         ozFl8XBuRvTylw58otlq3/JeTq/lceESFB7oCoxDexZa2s+ti1Rm7DEG+04rPwLwSPmY
-         QKCw==
-X-Gm-Message-State: AOAM531BqLaoXeiJGInO5RDpOV79gO9rn5v6PdbmFKie6PIxwJoa7nKI
-        jmWSPPRO82Hw6e75p9Bk8A==
-X-Google-Smtp-Source: ABdhPJydLNF3JmlZ5vRUiq3eZlrjxBPtW7HkMazAM247jI2fLn42xzIi4VQEGHdfbq530f3sZHvSlQ==
-X-Received: by 2002:a5e:de0d:: with SMTP id e13mr2277351iok.208.1615818180155;
-        Mon, 15 Mar 2021 07:23:00 -0700 (PDT)
+        bh=jtOjK/yVIrhXL/xW575oDiM7h/H0bOFpaPlOXq3Do8w=;
+        b=YrUllD4gZoQdQ+Ade9OUszfHDKKtnH8kcKjEwfcr6pDYL1Gzm9mCgRdgb98CTmyXBS
+         yNwnnWWl9f9kQXSt9L0PVf+Dj81LbXFli7gthphE6mrgpGNxmFAXIBXWzKmx2OGLpGsW
+         PVLU0cxjy6zQmQMkvDrzprAIbBi21lweE/2tNyiHIpI4cP8Mh0e/5083+s24gtZQA/Ve
+         PUvAN7pgZ0BxGLk6IoIZuMjpSxp/RqKmdGzI0uPGuzatIeo8rJGhYskHk2Dg7pKi555E
+         hYTb2z7gfhX/qE8Ih5XoI9/RF4ZiXGYLn8nwaxSjolJWvsSEn+LzUn1ibBWMHKJiAsGr
+         7XfA==
+X-Gm-Message-State: AOAM531yOBk7ja8zGd8TsCvWZM+1Xq93WbCX2F5h2yfffsyIbLrSekfx
+        4t577UkSABxjIazBoWWgyQ==
+X-Google-Smtp-Source: ABdhPJwn1Fv7x7iGPJSGzU1MGvRkFcp/LDq89Rw4wRJiIIOGgM0dy5d9euzb1nxTA/nDIZ8Nv1ZJ7Q==
+X-Received: by 2002:a05:6638:1653:: with SMTP id a19mr9638692jat.113.1615818183036;
+        Mon, 15 Mar 2021 07:23:03 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l14sm7837111ilc.33.2021.03.15.07.22.57
+        by smtp.gmail.com with ESMTPSA id r12sm7756710ile.59.2021.03.15.07.23.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 07:22:58 -0700 (PDT)
-Received: (nullmailer pid 876368 invoked by uid 1000);
+        Mon, 15 Mar 2021 07:23:02 -0700 (PDT)
+Received: (nullmailer pid 876372 invoked by uid 1000);
         Mon, 15 Mar 2021 14:22:57 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Peter De Schrijver <pdeschrijver@nvidia.com>,
-        linux-clk@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Prashant Gaikwad <pgaikwad@nvidia.com>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <20210312163632.8861-8-digetx@gmail.com>
-References: <20210312163632.8861-1-digetx@gmail.com> <20210312163632.8861-8-digetx@gmail.com>
-Subject: Re: [PATCH v4 7/7] dt-bindings: clock: tegra: Convert to schema
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        marijn.suijten@somainline.org, Taniya Das <tdas@codeaurora.org>,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        martin.botka@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20210313021919.435332-1-konrad.dybcio@somainline.org>
+References: <20210313021919.435332-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
 Date:   Mon, 15 Mar 2021 08:22:57 -0600
-Message-Id: <1615818177.169631.876367.nullmailer@robh.at.kernel.org>
+Message-Id: <1615818177.181337.876371.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 19:36:32 +0300, Dmitry Osipenko wrote:
-> Convert NVIDIA Tegra clock bindings to schema.
+On Sat, 13 Mar 2021 03:19:10 +0100, Konrad Dybcio wrote:
+> Add documentation for the MSM8994 GCC driver.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  .../bindings/clock/nvidia,tegra-car.yaml      | 118 ++++++++++++++++++
->  .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
->  .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
->  .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
->  .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
->  .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
->  6 files changed, 118 insertions(+), 352 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra-car.yaml
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+>  .../bindings/clock/qcom,gcc-msm8994.yaml      | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -80,20 +73,10 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra-car.example.dt.yaml: usb-controller@c5004000: compatible: 'oneOf' conditional failed, one must be fixed:
-	['nvidia,tegra20-ehci', 'usb-ehci'] is too long
-	Additional items are not allowed ('usb-ehci' was unexpected)
-	'nvidia,tegra20-ehci' is not one of ['allwinner,sun4i-a10-ehci', 'allwinner,sun50i-a64-ehci', 'allwinner,sun50i-h6-ehci', 'allwinner,sun5i-a13-ehci', 'allwinner,sun6i-a31-ehci', 'allwinner,sun7i-a20-ehci', 'allwinner,sun8i-a23-ehci', 'allwinner,sun8i-h3-ehci', 'allwinner,sun8i-r40-ehci', 'allwinner,sun9i-a80-ehci', 'aspeed,ast2400-ehci', 'aspeed,ast2500-ehci', 'aspeed,ast2600-ehci', 'brcm,bcm3384-ehci', 'brcm,bcm63268-ehci', 'brcm,bcm6328-ehci', 'brcm,bcm6358-ehci', 'brcm,bcm6362-ehci', 'brcm,bcm6368-ehci', 'brcm,bcm7125-ehci', 'brcm,bcm7346-ehci', 'brcm,bcm7358-ehci', 'brcm,bcm7360-ehci', 'brcm,bcm7362-ehci', 'brcm,bcm7420-ehci', 'brcm,bcm7425-ehci', 'brcm,bcm7435-ehci', 'ibm,476gtr-ehci', 'nxp,lpc1850-ehci', 'qca,ar7100-ehci', 'snps,hsdk-v1.0-ehci', 'socionext,uniphier-ehci']
-	'nvidia,tegra20-ehci' is not one of ['cavium,octeon-6335-ehci', 'ibm,usb-ehci-440epx', 'ibm,usb-ehci-460ex', 'nintendo,hollywood-usb-ehci', 'st,spear600-ehci']
-	'nvidia,tegra20-ehci' is not one of ['generic-ehci', 'usb-ehci']
-	'generic-ehci' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra-car.example.dt.yaml: usb-controller@c5004000: 'oneOf' conditional failed, one must be fixed:
-	'interrupts' is a required property
-	'interrupts-extended' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.example.dt.yaml: clock-controller@300000: 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
 
-See https://patchwork.ozlabs.org/patch/1452220
+See https://patchwork.ozlabs.org/patch/1452446
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
