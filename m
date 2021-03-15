@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F6A33BBF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA3C33BC3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237450AbhCOORy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S238806AbhCOOXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232733AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB4AA64F3F;
-        Mon, 15 Mar 2021 13:59:18 +0000 (UTC)
+        id S232838AbhCOOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C38264F35;
+        Mon, 15 Mar 2021 13:59:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816759;
-        bh=5bpKe+F0fIdOCn/JmnKIYlziQBIDZdMJ1Hqho33wp70=;
+        s=korg; t=1615816768;
+        bh=ohdxKrbSCejBaNoFuPl6id21e1/qfOyVMwssfR/tFzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=avwUZaE8laE8ZL0DUOwXL09JDj/3bZnXx0mLa4k0YvjM8m4AEBwfJfiLT95pOt70Q
-         Vckn48Y4cq5qRHnoH9YTqieMGEThUKRnZoUssdRuiFXI7n7IFijj5TC39HQ1mdsOlx
-         Hf6NkSPVnNnnGfvxScmKstcgE/XUnO0ukQPwHlEg=
+        b=FLxuMgr8TMQKl1V2yV0cy1nLYojYC9BDU2qiWmy6Ic1uA8KOs/zfyIdzD5n/KMY0i
+         LI877A7ntJFlSrLz0Vb931wNLgtcsTGlDO8DhQAtLiwYckAN+Aq6BYVx5iIQt8r3Md
+         QDkkHm0KYQ3yvZOKainCKGO8WP/sLt7Fk0ZC23oU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prike Liang <Prike.Liang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 108/306] drm/amdgpu: fix S0ix handling when the CONFIG_AMD_PMC=m
-Date:   Mon, 15 Mar 2021 14:52:51 +0100
-Message-Id: <20210315135511.303313998@linuxfoundation.org>
+        stable@vger.kernel.org, Wang Qing <wangqing@vivo.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.11 113/306] s390/crypto: return -EFAULT if copy_to_user() fails
+Date:   Mon, 15 Mar 2021 14:52:56 +0100
+Message-Id: <20210315135511.464881720@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -41,30 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Wang Qing <wangqing@vivo.com>
 
-commit a5cb3c1a36376c25cd25fd3e99918dc48ac420bb upstream.
+commit 942df4be7ab40195e2a839e9de81951a5862bc5b upstream.
 
-Need to check the module variant as well.
+The copy_to_user() function returns the number of bytes remaining to be
+copied, but we want to return -EFAULT if the copy doesn't complete.
 
-Acked-by: Prike Liang <Prike.Liang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Fixes: e06670c5fe3b ("s390: vfio-ap: implement VFIO_DEVICE_GET_INFO ioctl")
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/1614600502-16714-1-git-send-email-wangqing@vivo.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    2 +-
+ drivers/s390/crypto/vfio_ap_ops.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -903,7 +903,7 @@ void amdgpu_acpi_fini(struct amdgpu_devi
-  */
- bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
- {
--#if defined(CONFIG_AMD_PMC)
-+#if defined(CONFIG_AMD_PMC) || defined(CONFIG_AMD_PMC_MODULE)
- 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
- 		if (adev->flags & AMD_IS_APU)
- 			return true;
+--- a/drivers/s390/crypto/vfio_ap_ops.c
++++ b/drivers/s390/crypto/vfio_ap_ops.c
+@@ -1286,7 +1286,7 @@ static int vfio_ap_mdev_get_device_info(
+ 	info.num_regions = 0;
+ 	info.num_irqs = 0;
+ 
+-	return copy_to_user((void __user *)arg, &info, minsz);
++	return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+ }
+ 
+ static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
 
 
