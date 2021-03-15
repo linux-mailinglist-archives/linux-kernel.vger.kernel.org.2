@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE1F33A91E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 01:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE11033A91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 01:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhCOAkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 20:40:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42755 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhCOAjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 20:39:33 -0400
-IronPort-SDR: pKxB1cJsRb6X3jKQjWKQmcexODXWxWLZhmzleW1CgrXDdwLxmidpRpCq17VaXwfpl+OycjLUpJ
- 2h5gLF2KbpKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="168290211"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="168290211"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 17:39:30 -0700
-IronPort-SDR: vKnhhgjxnJ+IojiaywWi+NrhZHUSIurGvg4QlS6j5JsRBzmRCfdRPZWLcT/YhhWWFGssislb1a
- 3m5yEJwx+hDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="432516352"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Mar 2021 17:39:26 -0700
-Cc:     baolu.lu@linux.intel.com, dwmw2@infradead.org, joro@8bytes.org,
-        will@kernel.org, jacob.jun.pan@linux.intel.com,
-        ashok.raj@intel.com, ravi.v.shankar@intel.com, yian.chen@intel.com,
-        sohil.mehta@intel.com
-Subject: Re: [PATCH] iommu/vt-d: Disable SVM when ATS/PRI/PASID are not
- enabled in the device
-To:     Kyung Min Park <kyung.min.park@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210314201534.918-1-kyung.min.park@intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <2c02519d-d23b-92d6-9638-36632c06d517@linux.intel.com>
-Date:   Mon, 15 Mar 2021 08:30:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229558AbhCOAiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 20:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhCOAhv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Mar 2021 20:37:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A1FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 17:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=38vnoiIBOpESzfxEzG3nj/BXtJ6NAK+uvQW+9Jymr90=; b=o7dJPAxQEyNHYvJBMVEFxYCZvt
+        GlzMmNEll8MvN8KC1a8KTY4xWLe+5Q4BtB8mhTtudk6UhN8y7NGPpb9hpQnmiyeglrtWzHO8kvhHS
+        HN0xE2UmQmrWr4TRCf77Fkg79Mrp/ANzfsabi/8dp1Df+c81a6F7Pl372Pb+wQpVe321q5t9Ykcys
+        xPHO0/4+emwlb8X2Uk0OHLfBobaP7ZqoC8nwa79bRF0SdyyJaYKWfRbueCdWr1+0r37c3ckbNMLrj
+        hr6ukL2KFqetU3oJhMFN2WGFIM9f4rH1PRs0C8TI2y+agX7kXzj0pAtIR9Zo3VAR4iTuY/1svVzOZ
+        l1NflJ8Q==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLbEs-001F1y-GK; Mon, 15 Mar 2021 00:37:42 +0000
+Subject: Re: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the
+ file head_fsl_booke.S
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org, oss@buserror.net,
+        christophe.leroy@csgroup.eu, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210314220436.3417083-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f8dc3cbe-54f4-1da1-b14f-4735d28aad13@infradead.org>
+Date:   Sun, 14 Mar 2021 17:37:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210314201534.918-1-kyung.min.park@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210314220436.3417083-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 4:15 AM, Kyung Min Park wrote:
-> Currently, the Intel VT-d supports Shared Virtual Memory (SVM) only when
-> IO page fault is supported. Otherwise, shared memory pages can not be
-> swapped out and need to be pinned. The device needs the Address Translation
-> Service (ATS), Page Request Interface (PRI) and Process Address Space
-> Identifier (PASID) capabilities to be enabled to support IO page fault.
+On 3/14/21 3:04 PM, Bhaskar Chowdhury wrote:
 > 
-> Disable SVM when ATS, PRI and PASID are not enabled in the device.
+> Trivial spelling fixes throughout the file.
 > 
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->   drivers/iommu/intel/iommu.c | 3 +++
->   1 file changed, 3 insertions(+)
+>  arch/powerpc/kernel/head_fsl_booke.S | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index ee0932307d64..956a02eb40b4 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -5380,6 +5380,9 @@ intel_iommu_dev_enable_feat(struct device *dev, enum iommu_dev_features feat)
->   		if (!info)
->   			return -EINVAL;
->   
-> +		if (!info->pasid_enabled || !info->pri_enabled || !info->ats_enabled)
-> +			return -EINVAL;
-> +
->   		if (info->iommu->flags & VTD_FLAG_SVM_CAPABLE)
->   			return 0;
->   	}
+> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+> index fdd4d274c245..c6fcfca0b0d7 100644
+> --- a/arch/powerpc/kernel/head_fsl_booke.S
+> +++ b/arch/powerpc/kernel/head_fsl_booke.S
+> @@ -403,7 +403,7 @@ interrupt_base:
+>  	EXCEPTION(0x2900, AP_UNAVAIL, AuxillaryProcessorUnavailable, \
+>  		  unknown_exception, EXC_XFER_STD)
 > 
+> -	/* Decrementer Interrupt */
+> +	/* Decremented Interrupt */
 
-Thanks for the patch.
+No, the comment matches the macro (or whatever that is).
 
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+>  	DECREMENTER_EXCEPTION
+> 
+>  	/* Fixed Internal Timer Interrupt */
 
-Best regards,
-baolu
+
+-- 
+~Randy
+
