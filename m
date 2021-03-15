@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2975033BE2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312F633BE52
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238106AbhCOOnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49842 "EHLO mail.kernel.org"
+        id S238900AbhCOOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231348AbhCOODc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5586B64EFD;
-        Mon, 15 Mar 2021 14:03:30 +0000 (UTC)
+        id S234532AbhCOOEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA0DB64E83;
+        Mon, 15 Mar 2021 14:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817011;
-        bh=dNwByETyHAEF8MtIeeRSegFXGJ7UUknHXYoMAN2fX1Q=;
+        s=korg; t=1615817052;
+        bh=WPjeWVA1ttw7p/Rkyh3FafAywGgPmhm9Sf7XLwNoQCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XkdWbATwcoDErYgGWfXK3mfoanpDWTFci/B9yeuprfdwHMApjX/4imK+NjtaXewPX
-         dvV8HAE/GeNTmNOKiVsttvt9uSkGcXgpn9HV1vHEHSs/ct528DcOGdbqvOKuN6zwdQ
-         P3ltp8yPmzrEN7f3kY/W+5Go7YYibva8f0AQu8Uo=
+        b=Po3S2V0zf3Al2m16NlaF5ngr9RpO/kaaVXJDecGojJ0LBKai1YW8j2tL4OEBx5xlp
+         6iYktc/HdJeSrgjpNMNjNS/QMzb7w9uAKcBQR7m07aninMF261WL2PWMkabWPq8WYf
+         iK75YkBdflbYHwHOTfusSuO9mH+brEE1pdPbFMOQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Jansen <gerardu@amazon.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 246/290] NFS: Dont revalidate the directory permissions on a lookup failure
+        stable@vger.kernel.org, stable@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH 5.11 276/306] sched: Optimize migration_cpu_stop()
 Date:   Mon, 15 Mar 2021 14:55:39 +0100
-Message-Id: <20210315135550.328294223@linuxfoundation.org>
+Message-Id: <20210315135516.995722029@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +43,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 82e7ca1334ab16e2e04fafded1cab9dfcdc11b40 ]
+commit 3f1bc119cd7fc987c8ed25ffb717f99403bb308c upstream.
 
-There should be no reason to expect the directory permissions to change
-just because the directory contents changed or a negative lookup timed
-out. So let's avoid doing a full call to nfs_mark_for_revalidate() in
-that case.
-Furthermore, if this is a negative dentry, and we haven't actually done
-a new lookup, then we have no reason yet to believe the directory has
-changed at all. So let's remove the gratuitous directory inode
-invalidation altogether when called from
-nfs_lookup_revalidate_negative().
+When the purpose of migration_cpu_stop() is to migrate the task to
+'any' valid CPU, don't migrate the task when it's already running on a
+valid CPU.
 
-Reported-by: Geert Jansen <gerardu@amazon.com>
-Fixes: 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Cc: stable@kernel.org
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210224131355.569238629@infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/dir.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ kernel/sched/core.c |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 4e011adaf967..c96ae135b80f 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -1202,6 +1202,15 @@ int nfs_lookup_verify_inode(struct inode *inode, unsigned int flags)
- 	goto out;
- }
- 
-+static void nfs_mark_dir_for_revalidate(struct inode *inode)
-+{
-+	struct nfs_inode *nfsi = NFS_I(inode);
-+
-+	spin_lock(&inode->i_lock);
-+	nfsi->cache_validity |= NFS_INO_REVAL_PAGECACHE;
-+	spin_unlock(&inode->i_lock);
-+}
-+
- /*
-  * We judge how long we want to trust negative
-  * dentries by looking at the parent inode mtime.
-@@ -1236,7 +1245,6 @@ nfs_lookup_revalidate_done(struct inode *dir, struct dentry *dentry,
- 			__func__, dentry);
- 		return 1;
- 	case 0:
--		nfs_mark_for_revalidate(dir);
- 		if (inode && S_ISDIR(inode->i_mode)) {
- 			/* Purge readdir caches. */
- 			nfs_zap_caches(inode);
-@@ -1326,6 +1334,13 @@ nfs_lookup_revalidate_dentry(struct inode *dir, struct dentry *dentry,
- 	nfs_free_fattr(fattr);
- 	nfs_free_fhandle(fhandle);
- 	nfs4_label_free(label);
-+
-+	/*
-+	 * If the lookup failed despite the dentry change attribute being
-+	 * a match, then we should revalidate the directory cache.
-+	 */
-+	if (!ret && nfs_verify_change_attribute(dir, dentry->d_time))
-+		nfs_mark_dir_for_revalidate(dir);
- 	return nfs_lookup_revalidate_done(dir, dentry, inode, ret);
- }
- 
-@@ -1368,7 +1383,7 @@ nfs_do_lookup_revalidate(struct inode *dir, struct dentry *dentry,
- 		error = nfs_lookup_verify_inode(inode, flags);
- 		if (error) {
- 			if (error == -ESTALE)
--				nfs_zap_caches(dir);
-+				nfs_mark_dir_for_revalidate(dir);
- 			goto out_bad;
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1936,14 +1936,25 @@ static int migration_cpu_stop(void *data
+ 			complete = true;
  		}
- 		nfs_advise_use_readdirplus(dir);
-@@ -1865,7 +1880,6 @@ nfs_add_or_obtain(struct dentry *dentry, struct nfs_fh *fhandle,
- 	dput(parent);
- 	return d;
- out_error:
--	nfs_mark_for_revalidate(dir);
- 	d = ERR_PTR(error);
- 	goto out;
- }
--- 
-2.30.1
-
+ 
+-		if (dest_cpu < 0)
++		if (dest_cpu < 0) {
++			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
++				goto out;
++
+ 			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
++		}
+ 
+ 		if (task_on_rq_queued(p))
+ 			rq = __migrate_task(rq, &rf, p, dest_cpu);
+ 		else
+ 			p->wake_cpu = dest_cpu;
+ 
++		/*
++		 * XXX __migrate_task() can fail, at which point we might end
++		 * up running on a dodgy CPU, AFAICT this can only happen
++		 * during CPU hotplug, at which point we'll get pushed out
++		 * anyway, so it's probably not a big deal.
++		 */
++
+ 	} else if (pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
 
 
