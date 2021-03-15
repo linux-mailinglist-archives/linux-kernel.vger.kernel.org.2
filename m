@@ -2,233 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD33833ABBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B0033ABC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCOGl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 02:41:26 -0400
-Received: from m42-2.mailgun.net ([69.72.42.2]:42269 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhCOGlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 02:41:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615790460; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Eh+zXNDaC2MynIN0OjXzWVKeG6TXNvkytir5AC33S4Y=;
- b=LSWMoiSBeSZoZPq9Vq2e8CjIO1pDJl69Ch69bwo7Nzn9sqe+0stJcvcyITTTuA7RVdkzFG4u
- WXOO8WYG8vu/qBlPLzjArHXE3HNrpwHlM94sCr9P6LqhmuL3raSN5h2OmntIhr/gSbIFwdAP
- 9kYe8CYna4zl8J4xK4KYf7vmmH8=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 604f017be2200c0a0df39d4a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 06:40:59
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E911BC4346D; Mon, 15 Mar 2021 06:40:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6FF3EC43467;
-        Mon, 15 Mar 2021 06:40:56 +0000 (UTC)
+        id S230112AbhCOGnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 02:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCOGmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 02:42:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5020C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:42:51 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u4so55127715lfs.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=r2M9f8RfUfrnvbW1v5aCju4D/s1ORvZJ17QHD/9c+f0=;
+        b=UevwSocks09HSQkjL2icW2diItlT0wsGAaigQ59blbG9NFGL+hOuGp5JMEPHSNFsIC
+         Ry8AGFm4fiNnuoMPj6zH1DHKU/hbHJdg2QTpn+GqsiKhIccSX85HFZYl/QDrODQlY8SR
+         Er1AaLAejV8YaMb7ZfxSu7vFKzUviAU2GFGMlJqRyaiYzc6iaO008tv550JEe4av7Z/o
+         xBucgFiOgkhjKCfPlsHHzYvuHfTd7wvbbSUmUBzo6/0A5sxUzlGgGjqKfMvvaOHco88H
+         89hcGA+45ukVVVLIwvYg1/6gaBDzEcYh3RAJJzP5XVD5Lp6DGGGVFnlIRxKS/FTP6uN7
+         RJpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=r2M9f8RfUfrnvbW1v5aCju4D/s1ORvZJ17QHD/9c+f0=;
+        b=WDyDFU5OqSKTKLDLTJP8uHf/KS9Sgihq3we9AOXspPm+QVv+pHfB7jZ67mrlt333rp
+         DwGYJDAg9ynZ9icF04e9iIAk+K0wKvABXTy0x6lWCBcwa4qPQk4Oc9wkh9aJXHmHSAEg
+         Z5USdTYslrw8rlVZAvZm4vycKpdl6VPpzfgUxAh6JNIwEOpIbsYldvpmYM3CSORd1dHE
+         Guy+5oXXEGYreN899xPjnVzToh+TePi6eqveZnDrep39CKtqqlYFSu2K6e9jgqa/zXg+
+         qu/EJyHVXAMcrl5hYW41sIFnKs9CI4a2gqtG4srqKu5aJut2W8tuA992dDAOSam1/eOa
+         P31A==
+X-Gm-Message-State: AOAM5322ywBx7P4MNUl32ibvWH8RPqdRtT1Uvcmp6FGjffKwZpiUiW1P
+        xymxoTCZurcufyuim181Q5M=
+X-Google-Smtp-Source: ABdhPJy67mfQt+AslL4ioSK6YolrpCj5nm1dQcCsMhoHjFSnYQQNnvm0FoFgheCngICHEeS6sjLm3w==
+X-Received: by 2002:a19:c792:: with SMTP id x140mr6949244lff.215.1615790569221;
+        Sun, 14 Mar 2021 23:42:49 -0700 (PDT)
+Received: from grain.localdomain ([5.18.171.94])
+        by smtp.gmail.com with ESMTPSA id y3sm2569064lfg.6.2021.03.14.23.42.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 23:42:48 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 614AA5601FC; Mon, 15 Mar 2021 09:42:47 +0300 (MSK)
+Date:   Mon, 15 Mar 2021 09:42:47 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: auxv stuff (Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack
+ leak)
+Message-ID: <YE8B52ET790Y/6WO@grain>
+References: <YE53QiJuxsCUeoiu@localhost.localdomain>
+ <CAHk-=wgMm=PG3uxfpmYpkX-GaDAR09pej=t3nD6hHDNCYCyaRQ@mail.gmail.com>
+ <YE734MgE40jTv9zJ@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 14:40:56 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
-In-Reply-To: <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-7-avri.altman@wdc.com>
- <9d9237bc77332bd1f9ff17aaf98718a8@codeaurora.org>
-Message-ID: <8b4e8dc1fd91f52a191d681b7096ef48@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE734MgE40jTv9zJ@localhost.localdomain>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 09:34, Can Guo wrote:
-> On 2021-03-02 21:24, Avri Altman wrote:
->> The spec does not define what is the host's recommended response when
->> the device send hpb dev reset response (oper 0x2).
->> 
->> We will update all active hpb regions: mark them and do that on the 
->> next
->> read.
->> 
->> Signed-off-by: Avri Altman <avri.altman@wdc.com>
->> ---
->>  drivers/scsi/ufs/ufshpb.c | 47 
->> ++++++++++++++++++++++++++++++++++++---
->>  drivers/scsi/ufs/ufshpb.h |  2 ++
->>  2 files changed, 46 insertions(+), 3 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->> index 0744feb4d484..0034fa03fdc6 100644
->> --- a/drivers/scsi/ufs/ufshpb.c
->> +++ b/drivers/scsi/ufs/ufshpb.c
->> @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct
->> ufshcd_lrb *lrbp)
->>  		if (rgn->reads == ACTIVATION_THRESHOLD)
->>  			activate = true;
->>  		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
->> -		if (activate) {
->> +		if (activate ||
->> +		    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
->>  			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
->>  			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
->>  			hpb->stats.rb_active_cnt++;
->> @@ -1480,6 +1481,20 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
->> struct ufshcd_lrb *lrbp)
->>  	case HPB_RSP_DEV_RESET:
->>  		dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>  			 "UFS device lost HPB information during PM.\n");
->> +
->> +		if (hpb->is_hcm) {
->> +			struct scsi_device *sdev;
->                         bool need_reset = false;
->> +
->> +			__shost_for_each_device(sdev, hba->host) {
->> +				struct ufshpb_lu *h = sdev->hostdata;
->> +
->> +				if (!h)
->> +					continue;
->> +
->> +				need_reset = true;
->> +			}
+On Mon, Mar 15, 2021 at 09:00:00AM +0300, Alexey Dobriyan wrote:
+> On Sun, Mar 14, 2021 at 02:40:05PM -0700, Linus Torvalds wrote:
+> > [mm->saved_auxv]
+> > 
+> > That's a separate issue, and I can't find it in myself to care (and
+> > nobody has ever complained), but I thought I'd mention it.
 > 
->                         if (need_reset)
->                             schedule_work(&hpb->ufshpb_lun_reset_work);
-> 
-> At last, scheduling only one reset work shall be enough, otherwise 
-> multiple
-> reset work can be flying in parallel, so maybe above changes?
+> There is another (non-security) one. Compat 32-bit process will report
+> 2 longs too many:
 
-Forget about this one, I misunderstood it - reset work is for each 
-ufshpb_lu...
-
-Regards,
-Can Guo.
-
-> 
->> +		}
->> +
->>  		break;
->>  	default:
->>  		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
->> @@ -1594,6 +1609,25 @@ static void
->> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
->>  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->>  }
->> 
->> +static void ufshpb_reset_work_handler(struct work_struct *work)
->> +{
->> +	struct ufshpb_lu *hpb;
-> 
->         struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
-> ufshpb_lun_reset_work);
-> 
->> +	struct victim_select_info *lru_info;
-> 
->         struct victim_select_info *lru_info = &hpb->lru_info;
-> 
-> This can save some lines.
-> 
-> Thanks,
-> Can Guo.
-> 
->> +	struct ufshpb_region *rgn;
->> +	unsigned long flags;
->> +
->> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->> +
->> +	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
->> +		set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
->> +
->> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> +}
->> +
->>  static void ufshpb_normalization_work_handler(struct work_struct 
->> *work)
->>  {
->>  	struct ufshpb_lu *hpb;
->> @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
->> ufs_hba *hba, struct ufshpb_lu *hpb)
->>  		} else {
->>  			rgn->rgn_state = HPB_RGN_INACTIVE;
->>  		}
->> +
->> +		rgn->rgn_flags = 0;
->>  	}
->> 
->>  	return 0;
->> @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
->> *hba, struct ufshpb_lu *hpb)
->>  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
->> 
->>  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
->> -	if (hpb->is_hcm)
->> +	if (hpb->is_hcm) {
->>  		INIT_WORK(&hpb->ufshpb_normalization_work,
->>  			  ufshpb_normalization_work_handler);
->> +		INIT_WORK(&hpb->ufshpb_lun_reset_work,
->> +			  ufshpb_reset_work_handler);
->> +	}
->> 
->>  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
->>  			  sizeof(struct ufshpb_req), 0, 0, NULL);
->> @@ -2114,8 +2153,10 @@ static void ufshpb_discard_rsp_lists(struct
->> ufshpb_lu *hpb)
->> 
->>  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->>  {
->> -	if (hpb->is_hcm)
->> +	if (hpb->is_hcm) {
->> +		cancel_work_sync(&hpb->ufshpb_lun_reset_work);
->>  		cancel_work_sync(&hpb->ufshpb_normalization_work);
->> +	}
->>  	cancel_work_sync(&hpb->map_work);
->>  }
->> 
->> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> index 84598a317897..37c1b0ea0c0a 100644
->> --- a/drivers/scsi/ufs/ufshpb.h
->> +++ b/drivers/scsi/ufs/ufshpb.h
->> @@ -121,6 +121,7 @@ struct ufshpb_region {
->>  	struct list_head list_lru_rgn;
->>  	unsigned long rgn_flags;
->>  #define RGN_FLAG_DIRTY 0
->> +#define RGN_FLAG_UPDATE 1
->> 
->>  	/* region reads - for host mode */
->>  	spinlock_t rgn_lock;
->> @@ -217,6 +218,7 @@ struct ufshpb_lu {
->>  	/* for selecting victim */
->>  	struct victim_select_info lru_info;
->>  	struct work_struct ufshpb_normalization_work;
->> +	struct work_struct ufshpb_lun_reset_work;
->> 
->>  	/* pinned region information */
->>  	u32 lu_pinned_start;
+Good catch! Alexey, should I address it? Or you have fixed it already?
