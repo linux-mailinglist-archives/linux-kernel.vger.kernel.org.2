@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5831833BB54
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C31B33BBB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhCOOP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S237750AbhCOOTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232484AbhCON66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FD6D64F31;
-        Mon, 15 Mar 2021 13:58:39 +0000 (UTC)
+        id S232580AbhCON7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC15B64F09;
+        Mon, 15 Mar 2021 13:59:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816720;
-        bh=isn/jI6FiJCVEyyEAaDBCVK9Fen1E70NJFQ//bYwls8=;
+        s=korg; t=1615816774;
+        bh=7fHTHlji+iBRajGsgGKwyju4FDbaMfVJyuI93txxrhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nE9X3tluWqC6BAZ2jORqv29BuzMlLwUORpPoPPKSr8rBukzrRlp6zCQKtRH0vMIOu
-         /hxvgydPOiW3mM6VUVd70keYm14NKsLWJbN1/kUlOW6+dSTckx2JDfrPkxnfp6sBqK
-         rMXOW1TZAmHZA09yf52+r22H+udfSn+ZstxXCm4I=
+        b=IolRXtIap4NxhvuPdONjEvsARSAg4yb9wA/PBmd7jfN4v6fUHhaS5FGHlCpIBtEYw
+         A9Pzcwrr5+ssJy6OoGD2qcvkLmsD1RbmszDYChHUn+craHP/fpDM9vNkwjrqNe5UdY
+         ZxfQErE88ot+d68aiCnEOdIPdeHZORJHBkwlV8/E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Heyne <mheyne@amazon.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 18/95] net: sched: avoid duplicates in classes dump
-Date:   Mon, 15 Mar 2021 14:56:48 +0100
-Message-Id: <20210315135740.865357290@linuxfoundation.org>
+        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        Aleksandr Miloserdov <a.miloserdov@yadro.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 058/120] scsi: target: core: Prevent underflow for service actions
+Date:   Mon, 15 Mar 2021 14:56:49 +0100
+Message-Id: <20210315135721.887718757@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +44,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Maximilian Heyne <mheyne@amazon.de>
+From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 
-commit bfc2560563586372212b0a8aeca7428975fa91fe upstream.
+[ Upstream commit 14d24e2cc77411301e906a8cf41884739de192de ]
 
-This is a follow up of commit ea3274695353 ("net: sched: avoid
-duplicates in qdisc dump") which has fixed the issue only for the qdisc
-dump.
+TCM buffer length doesn't necessarily equal 8 + ADDITIONAL LENGTH which
+might be considered an underflow in case of Data-In size being greater than
+8 + ADDITIONAL LENGTH. So truncate buffer length to prevent underflow.
 
-The duplicate printing also occurs when dumping the classes via
-  tc class show dev eth0
-
-Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210209072202.41154-3-a.miloserdov@yadro.com
+Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
+Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_api.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/target/target_core_pr.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -1904,7 +1904,7 @@ static int tc_dump_tclass_qdisc(struct Q
+diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
+index 10db5656fd5d..949879f2f1d1 100644
+--- a/drivers/target/target_core_pr.c
++++ b/drivers/target/target_core_pr.c
+@@ -3742,6 +3742,7 @@ core_scsi3_pri_read_keys(struct se_cmd *cmd)
+ 	spin_unlock(&dev->t10_pr.registration_lock);
  
- static int tc_dump_tclass_root(struct Qdisc *root, struct sk_buff *skb,
- 			       struct tcmsg *tcm, struct netlink_callback *cb,
--			       int *t_p, int s_t)
-+			       int *t_p, int s_t, bool recur)
- {
- 	struct Qdisc *q;
- 	int b;
-@@ -1915,7 +1915,7 @@ static int tc_dump_tclass_root(struct Qd
- 	if (tc_dump_tclass_qdisc(root, skb, tcm, cb, t_p, s_t) < 0)
- 		return -1;
+ 	put_unaligned_be32(add_len, &buf[4]);
++	target_set_cmd_data_length(cmd, 8 + add_len);
  
--	if (!qdisc_dev(root))
-+	if (!qdisc_dev(root) || !recur)
- 		return 0;
+ 	transport_kunmap_data_sg(cmd);
  
- 	if (tcm->tcm_parent) {
-@@ -1950,13 +1950,13 @@ static int tc_dump_tclass(struct sk_buff
- 	s_t = cb->args[0];
- 	t = 0;
+@@ -3760,7 +3761,7 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 	struct t10_pr_registration *pr_reg;
+ 	unsigned char *buf;
+ 	u64 pr_res_key;
+-	u32 add_len = 16; /* Hardcoded to 16 when a reservation is held. */
++	u32 add_len = 0;
  
--	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t) < 0)
-+	if (tc_dump_tclass_root(dev->qdisc, skb, tcm, cb, &t, s_t, true) < 0)
- 		goto done;
+ 	if (cmd->data_length < 8) {
+ 		pr_err("PRIN SA READ_RESERVATIONS SCSI Data Length: %u"
+@@ -3778,8 +3779,9 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 	pr_reg = dev->dev_pr_res_holder;
+ 	if (pr_reg) {
+ 		/*
+-		 * Set the hardcoded Additional Length
++		 * Set the Additional Length to 16 when a reservation is held
+ 		 */
++		add_len = 16;
+ 		put_unaligned_be32(add_len, &buf[4]);
  
- 	dev_queue = dev_ingress_queue(dev);
- 	if (dev_queue &&
- 	    tc_dump_tclass_root(dev_queue->qdisc_sleeping, skb, tcm, cb,
--				&t, s_t) < 0)
-+				&t, s_t, false) < 0)
- 		goto done;
+ 		if (cmd->data_length < 22)
+@@ -3815,6 +3817,8 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 			  (pr_reg->pr_res_type & 0x0f);
+ 	}
  
- done:
++	target_set_cmd_data_length(cmd, 8 + add_len);
++
+ err:
+ 	spin_unlock(&dev->dev_reservation_lock);
+ 	transport_kunmap_data_sg(cmd);
+@@ -3833,7 +3837,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	struct se_device *dev = cmd->se_dev;
+ 	struct t10_reservation *pr_tmpl = &dev->t10_pr;
+ 	unsigned char *buf;
+-	u16 add_len = 8; /* Hardcoded to 8. */
++	u16 len = 8; /* Hardcoded to 8. */
+ 
+ 	if (cmd->data_length < 6) {
+ 		pr_err("PRIN SA REPORT_CAPABILITIES SCSI Data Length:"
+@@ -3845,7 +3849,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	if (!buf)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ 
+-	put_unaligned_be16(add_len, &buf[0]);
++	put_unaligned_be16(len, &buf[0]);
+ 	buf[2] |= 0x10; /* CRH: Compatible Reservation Hanlding bit. */
+ 	buf[2] |= 0x08; /* SIP_C: Specify Initiator Ports Capable bit */
+ 	buf[2] |= 0x04; /* ATP_C: All Target Ports Capable bit */
+@@ -3874,6 +3878,8 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	buf[4] |= 0x02; /* PR_TYPE_WRITE_EXCLUSIVE */
+ 	buf[5] |= 0x01; /* PR_TYPE_EXCLUSIVE_ACCESS_ALLREG */
+ 
++	target_set_cmd_data_length(cmd, len);
++
+ 	transport_kunmap_data_sg(cmd);
+ 
+ 	return 0;
+@@ -4034,6 +4040,7 @@ core_scsi3_pri_read_full_status(struct se_cmd *cmd)
+ 	 * Set ADDITIONAL_LENGTH
+ 	 */
+ 	put_unaligned_be32(add_len, &buf[4]);
++	target_set_cmd_data_length(cmd, 8 + add_len);
+ 
+ 	transport_kunmap_data_sg(cmd);
+ 
+-- 
+2.30.1
+
 
 
