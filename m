@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB2F33BBFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533A233BCA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhCOOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S239105AbhCOO1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:27:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232903AbhCOOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41AF264D9E;
-        Mon, 15 Mar 2021 13:59:51 +0000 (UTC)
+        id S233097AbhCOOAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFC964F6D;
+        Mon, 15 Mar 2021 14:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816792;
-        bh=+0Nz8HKkIPVZmCJ9gBvMAOuONetGn2ZfuTmsTBZRdyk=;
+        s=korg; t=1615816825;
+        bh=d+4xpJa7BJFumZ5sJgfSVbsuYD7yrrx4k1xWh1nF4t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HsqwoN1bRAUrFCQW+7A79aHL+M703vFxBMPRLUfKyJA6YOGWWHKWt1ZnC1wJdEQkX
-         udmh7fU4Hfg9IUyXtPnxyBoXffwUQli6rpam+zVL+oUgHQ3/oSmPMgTTl30yPBcEjf
-         mHugdTVXqh8SfUH+oeExqZv0gAZbQSKgOvxTjy3I=
+        b=QPMbx5KDLfVhQAto0dO8LN9IT1BZRYSYoiWeDGm3Vv5zYJ9Xe8fWuDzS6mCpI8AVL
+         UgqUwaZUsAuDIV10EgUSyZt7XB4Hc+lde7qftS//X8Jstl5hiUToGWdI6Xp1v6oSGZ
+         a6gB8yKPvj20JQGCaHVZE2aH5CqVXAM803+i6wXs=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 117/290] net: dsa: tag_ocelot: let DSA core deal with TX reallocation
+Subject: [PATCH 5.11 147/306] PCI: xgene-msi: Fix race in installing chained irq handler
 Date:   Mon, 15 Mar 2021 14:53:30 +0100
-Message-Id: <20210315135545.876382369@linuxfoundation.org>
+Message-Id: <20210315135512.616879635@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Martin Kaiser <martin@kaiser.cx>
 
-[ Upstream commit 9c5c3bd00557e57c1049f7861f11e5e39f0fb42d ]
+[ Upstream commit a93c00e5f975f23592895b7e83f35de2d36b7633 ]
 
-Now that we have a central TX reallocation procedure that accounts for
-the tagger's needed headroom in a generic way, we can remove the
-skb_cow_head call.
+Fix a race where a pending interrupt could be received and the handler
+called before the handler's data has been setup, by converting to
+irq_set_chained_handler_and_data().
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
+handler").
+
+Based on the mail discussion, it seems ok to drop the error handling.
+
+Link: https://lore.kernel.org/r/20210115212435.19940-3-martin@kaiser.cx
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/tag_ocelot.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/pci/controller/pci-xgene-msi.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/net/dsa/tag_ocelot.c b/net/dsa/tag_ocelot.c
-index 3b468aca5c53..16a1afd5b8e1 100644
---- a/net/dsa/tag_ocelot.c
-+++ b/net/dsa/tag_ocelot.c
-@@ -143,13 +143,6 @@ static struct sk_buff *ocelot_xmit(struct sk_buff *skb,
- 	struct ocelot_port *ocelot_port;
- 	u8 *prefix, *injection;
- 	u64 qos_class, rew_op;
--	int err;
--
--	err = skb_cow_head(skb, OCELOT_TOTAL_TAG_LEN);
--	if (unlikely(err < 0)) {
--		netdev_err(netdev, "Cannot make room for tag.\n");
--		return NULL;
--	}
+diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+index 2470782cb01a..1c34c897a7e2 100644
+--- a/drivers/pci/controller/pci-xgene-msi.c
++++ b/drivers/pci/controller/pci-xgene-msi.c
+@@ -384,13 +384,9 @@ static int xgene_msi_hwirq_alloc(unsigned int cpu)
+ 		if (!msi_group->gic_irq)
+ 			continue;
  
- 	ocelot_port = ocelot->ports[dp->index];
- 
+-		irq_set_chained_handler(msi_group->gic_irq,
+-					xgene_msi_isr);
+-		err = irq_set_handler_data(msi_group->gic_irq, msi_group);
+-		if (err) {
+-			pr_err("failed to register GIC IRQ handler\n");
+-			return -EINVAL;
+-		}
++		irq_set_chained_handler_and_data(msi_group->gic_irq,
++			xgene_msi_isr, msi_group);
++
+ 		/*
+ 		 * Statically allocate MSI GIC IRQs to each CPU core.
+ 		 * With 8-core X-Gene v1, 2 MSI GIC IRQs are allocated
 -- 
 2.30.1
 
