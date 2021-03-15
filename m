@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DA233BB4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3518933BA1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236716AbhCOOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S234564AbhCOOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:08:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231224AbhCON7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77A6764F07;
-        Mon, 15 Mar 2021 13:58:46 +0000 (UTC)
+        id S231963AbhCON6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CE4764EF3;
+        Mon, 15 Mar 2021 13:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816728;
-        bh=tx6MkaTFAnma3YohoT3W1AmIMh/V8kDFYF/eP1fmFSY=;
+        s=korg; t=1615816691;
+        bh=tYSdTe9f5PAfyzjM2SfTZ9mZHdnLcEFsZevT8lD/CPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EhQYJzcOr8HbqfMp5X5bQHFQbxNzQ3UOPE9IlCYxqr/dehWQ+fp1lK3bDKL1NCu3o
-         r/EUh8npL+i5sdynYEwqoRlC/L/QLWZlfM/kXUZ3lAFk98RfapbXPLiTsp43KnWkKh
-         WGsbquDdCQmCKa+wj5+FkTVCB0TlPLs31NOVRL6E=
+        b=t7hdkeXDYJpinUuO/1KqiSOqUeJSiLWMBJVrakJ1/5ykmTQdAQzeJCSNxI8ASnWyo
+         MZ4QfdAN/tKZDFOaWeqhCe4SiDj80e5Y80yMX6iUUWkJa8qAQ0Lrb2+4er7NNC1zjr
+         VR7n/YbIiuhmyxfOuPaXm3EUqEZ96OV38L34TEwk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 5.11 088/306] perf report: Fix -F for branch & mem modes
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 058/290] net: davicom: Fix regulator not turned off on driver removal
 Date:   Mon, 15 Mar 2021 14:52:31 +0100
-Message-Id: <20210315135510.620909725@linuxfoundation.org>
+Message-Id: <20210315135543.888341058@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,67 +41,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 6740a4e70e5d1b9d8e7fe41fd46dd5656d65dadf upstream.
+commit cf9e60aa69ae6c40d3e3e4c94dd6c8de31674e9b upstream.
 
-perf report fails to add valid additional fields with -F when
-used with branch or mem modes. Fix it.
+We must disable the regulator that was enabled in the probe function.
 
-Before patch:
-
-  $ perf record -b
-  $ perf report -b -F +srcline_from --stdio
-  Error:
-  Invalid --fields key: `srcline_from'
-
-After patch:
-
-  $ perf report -b -F +srcline_from --stdio
-  # Samples: 8K of event 'cycles'
-  # Event count (approx.): 8784
-  ...
-
-Committer notes:
-
-There was an inversion: when looking at branch stack dimensions (keys)
-it was checking if the sort mode was 'mem', not 'branch'.
-
-Fixes: aa6b3c99236b ("perf report: Make -F more strict like -s")
-Reported-by: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Reviewed-by: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Tested-by: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: http://lore.kernel.org/lkml/20210304062958.85465-1-ravi.bangoria@linux.ibm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/sort.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/davicom/dm9000.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -3033,7 +3033,7 @@ int output_field_add(struct perf_hpp_lis
- 		if (strncasecmp(tok, sd->name, strlen(tok)))
- 			continue;
+--- a/drivers/net/ethernet/davicom/dm9000.c
++++ b/drivers/net/ethernet/davicom/dm9000.c
+@@ -133,6 +133,8 @@ struct board_info {
+ 	u32		wake_state;
  
--		if (sort__mode != SORT_MODE__MEMORY)
-+		if (sort__mode != SORT_MODE__BRANCH)
- 			return -EINVAL;
+ 	int		ip_summed;
++
++	struct regulator *power_supply;
+ };
  
- 		return __sort_dimension__add_output(list, sd);
-@@ -3045,7 +3045,7 @@ int output_field_add(struct perf_hpp_lis
- 		if (strncasecmp(tok, sd->name, strlen(tok)))
- 			continue;
+ /* debug code */
+@@ -1484,6 +1486,8 @@ dm9000_probe(struct platform_device *pde
  
--		if (sort__mode != SORT_MODE__BRANCH)
-+		if (sort__mode != SORT_MODE__MEMORY)
- 			return -EINVAL;
+ 	db->dev = &pdev->dev;
+ 	db->ndev = ndev;
++	if (!IS_ERR(power))
++		db->power_supply = power;
  
- 		return __sort_dimension__add_output(list, sd);
+ 	spin_lock_init(&db->lock);
+ 	mutex_init(&db->addr_lock);
+@@ -1769,10 +1773,13 @@ static int
+ dm9000_drv_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct board_info *dm = to_dm9000_board(ndev);
+ 
+ 	unregister_netdev(ndev);
+-	dm9000_release_board(pdev, netdev_priv(ndev));
++	dm9000_release_board(pdev, dm);
+ 	free_netdev(ndev);		/* free device structure */
++	if (dm->power_supply)
++		regulator_disable(dm->power_supply);
+ 
+ 	dev_dbg(&pdev->dev, "released and freed device\n");
+ 	return 0;
 
 
