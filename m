@@ -2,135 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3836B33C531
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8A733C537
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhCOSEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:04:38 -0400
-Received: from mail-eopbgr700056.outbound.protection.outlook.com ([40.107.70.56]:24800
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233135AbhCOSER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:04:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C9EngVZHD/oWdq4n81uin0VHanVEvzHHp76+y8eBfAO8uvl25D4L1y8CTDvjpC6iFyVnEQtyFLaQqjqlLhqqM/BfTx951+MbsPsyDtO48EdcoG5PlaEz4/jwRoVbpfmTMX4Cb36kq0b8w5Aoo38qQ+LjGCWvascgebhAPOlgjHqP3kfkGqAa7QOjnOzwxKye8u6UIQhF21N93WgPWnXBR4VC+ySt239cVY61/n9eKEtQ7kvqd9xyjt8jN2f75e/2RR3bzkUNIazgbSPL1Z/RdYBO0gQEC+9I2rSoODwrrrxVakPA2cck8egcdauFKGUCc8+gbgdaBLjnKClDWKLEyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hk432e0eVrcTkcVmRB0A8zVDm9rkRFPxO+Ek9mGnBfI=;
- b=fcMaHBc0k6XOrdojIvU/rUN76t1ehuMfGRvOZZKSPdUaSv28d7YNdqjN1yEd+RngzveostApZ0s99719vsnUTlfSZZ5i7NL31XyFQdcrUihlrGeWSqn+z5vYqB2V6NrQOskoe00CMTS1k6WKUSILyBEPSMhnpxL3pULkgn3a27OtpwnZmvQgB0bhbE2DasyUBkAVMZ8b7DfDq2HPz/CkgnGAyhiRZDvvfksKr46nz3ROuo8atixYCSwqaaL+TUKC4WZWXxH8uUx57kIDBY6uJk23QJ2mnamACCpmBm34lggSmnzY5j6rfh/caTTPzTgHGcXcbWV7jz7dU1ZjkWrq9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hk432e0eVrcTkcVmRB0A8zVDm9rkRFPxO+Ek9mGnBfI=;
- b=gluEtLD1WiBA2Qh+1oRlzv/KO9IYjW8lH2aJsw081DsIOVDkALizD4BNQsDQCesJ4CN6LJyg67j/Yd7GmhK/6x6QQMNb26RnlTEAZE0txVtQoTlwKQmlLAvyWNuJmvWtM3bDEcLDUr0pAPEZAJ/Z1nUdZVVZg+4/YOU+8Y7SKTkKYFuVXxHT85HKYs9sfXAyYcYiVhefxs74/0gBv62QGIFTMazilP44Ovxk6tNOoiqmiYWQ4s931H2jMzY7WZ9zvBQVffsGsWKBWgXM1jToZTj62REqGULyuZDR6Q/fdzePcoREalIuh52ptKDx/jnPyvIEDj4CqPg38qXWJMWKVg==
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
- by BY5PR12MB4180.namprd12.prod.outlook.com (2603:10b6:a03:213::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 18:04:14 +0000
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::11bb:b39e:3f42:d2af]) by BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::11bb:b39e:3f42:d2af%7]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
- 18:04:14 +0000
-From:   Krishna Reddy <vdumpa@nvidia.com>
-To:     Eric Auger <eric.auger@redhat.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "will@kernel.org" <will@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
-CC:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        Sachin Nikam <Snikam@nvidia.com>,
-        Yu-Huan Hsu <YHsu@nvidia.com>,
-        Bryan Huntsman <bhuntsman@nvidia.com>,
-        Vikram Sethi <vsethi@nvidia.com>
-Subject: RE: [PATCH v11 00/13] SMMUv3 Nested Stage Setup (VFIO part)
-Thread-Topic: [PATCH v11 00/13] SMMUv3 Nested Stage Setup (VFIO part)
-Thread-Index: AQHWvAfSVyYv+7sBoUuZEwC6Fk8r16qGEJYg
-Date:   Mon, 15 Mar 2021 18:04:14 +0000
-Message-ID: <BY5PR12MB3764F977D65938544A1138BDB36C9@BY5PR12MB3764.namprd12.prod.outlook.com>
-References: <20201116110030.32335-1-eric.auger@redhat.com>
-In-Reply-To: <20201116110030.32335-1-eric.auger@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a94ea98b-8e9c-41be-0dc2-08d8e7dcbe54
-x-ms-traffictypediagnostic: BY5PR12MB4180:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB4180C6E641B9FF96A2ABEF19B36C9@BY5PR12MB4180.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MWMgRZX2COLBj1X39tBSMxyAGZgBVXArOxRD4W5J6H/sT7Gowk0/g3h3bi5wWTYwBF/NWGRo9AlSwybi8qrxzafsQwWTaLS1vVnqguzdmFBijkulR15xQBzVtfa/AaQQ6vPNpMw+ZT0XpI0XG7s63pldLiaFw7epEpK2mjZFY4ZFYr41ldONUoSYuQg1nI/F1myVzMN/DFJde1k23ceJbDqgd5jkKA0aAeMTlt1FpQXsH5JgPmO1FWNS8bAg2GaUnb58LAZZbSs6hMQeNg1tv6X4RStxJ2tljicRLSDtF6yR6rZjpCb/uycfB3aRh8TMd5zhcubFDoFbDC1wd20J8QpzPcFH5R5RLCeonT7jdQkh8Nwpou02RTJO1d1ePZhmDjS8jX1XeAPN+qmwIJSgqppByM1oYORl4HXm/0JxVtUEbxU7Ee0OwR6+wl5ZHtBfKoD4UTnz2ly5YgCHRlkgfpOU0zdgv+KvEBFj1Jiem7X2HtR+l6zmIomTsskwAFJBCCEfe3djKX/+9bYtUi4kBJV1kPH1y1wKFguXtv8iJxPQ8pFF6QJszyHyF7GnLIiRsmtP7tP/nFWGTpYiK4kJ9a3TAjoYdYLQBpmnu+NNCWk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(8676002)(66556008)(66946007)(54906003)(66476007)(66446008)(52536014)(107886003)(478600001)(64756008)(4326008)(110136005)(7696005)(5660300002)(71200400001)(921005)(7416002)(316002)(186003)(76116006)(26005)(2906002)(33656002)(9686003)(55016002)(8936002)(86362001)(6506007)(4744005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FuWHIHYTgHwGQvj+d5BBkR+mauuTyaeymqHfg2fToBGWIIlPgK/N8lP3VLYw?=
- =?us-ascii?Q?KlNXyPZ7NEV0tliuQvODMzt/H0UUWiIIOaLdaGaYEk7Lg4QsZtIZHLQjtAiy?=
- =?us-ascii?Q?8t8QOLy9lz/9hw48zfEgUbcpYfG+vwKVSSHnuKoq0/d3yrLkErTHR88do4Yd?=
- =?us-ascii?Q?PCFKBZ2BD+85P2h/RbSZU13mKet9TvEpQ5MFLAmtzzjqSo05gHB/w0DgF7CG?=
- =?us-ascii?Q?OhBuFOtnSMaDAhw0R1P3KZ3q0XNyWEQCR4gu/d4yUvBYN6KDVCMgUnjrCNgS?=
- =?us-ascii?Q?/k1LYoT168oWZzeyG2WudaLUS8+AR+84SPG/+dVyH6Wr0W9C/fRMiqtlNeL2?=
- =?us-ascii?Q?RCMKJFSeoVbL+1X+apkX+rWrEOPj/Bp+ZogRbqXUSGCZkAauW/I/w3mB4UJ6?=
- =?us-ascii?Q?Epd70V74h22uHuUzc/hO7RJ/66DuLKy8WWRkM376rbWCtZ4Weon4ecNbMMJP?=
- =?us-ascii?Q?dPdS5/n3qYW02jJ4cLe5L1R4suW3GKesuHoQMIsqTebuigYpamqxyKutEWFz?=
- =?us-ascii?Q?EneRYzvp9aOGL9m0z3O5Py8IpHuV0NsI0P9AgPK3e9mEn3QmBzm4p1xho35z?=
- =?us-ascii?Q?ArHLFbR1FkV9H3StJiLbbC/YcAatMP37CKf7FfKvGFTje/qae9M2zqtDE3fT?=
- =?us-ascii?Q?dp26JIfTzR+CdgNc5sh43OOvCgfpukmq39C2Vlp7l2RIwi8NwCZ2D9WWIcZN?=
- =?us-ascii?Q?Hn7NtUXbGEc2LHMMF79id/AK2DVyNZEfHMxsg+OEtPV9yHmbfZn0Js1Dd4oe?=
- =?us-ascii?Q?ANFuCmQbmEzzS+9E9SeJGaWnJe0TaCFS/2+QITpwFOTjNeEEAJh2EI/+pwU5?=
- =?us-ascii?Q?s7QUGkeyvLb47hYiJb+myTcM7FOW3uuNuBIBdep0qqMuSMSjmQzTJKPTgz+i?=
- =?us-ascii?Q?LQhcMGM+pu6021IqppSEnlC0xhZtRKs/bHSPZQ+gV8rm4fPqAXh+zhghZsao?=
- =?us-ascii?Q?Hms689D4VhvDaplsJcB/o0fpOhB/Pl/L8ddO+Z+bdRrpZ+A7l9aQoRQEIMQg?=
- =?us-ascii?Q?YUMdpKfui5DYD4X/fUMDxD6pAsAzAFA2o0VXSmdCA0SW+5FLWJD2G/xi9Wsp?=
- =?us-ascii?Q?XPOu0lq2x8pzmvWtorrYn8XGgtLJWSBLvEoijaI+6ZFZ/+mFcMuL0wvs8vFF?=
- =?us-ascii?Q?RZqc2yOXtblD0mQ39LXdjqM/LrDXMBopc8l9P4arcTu9Q8dDUogXRwbtz073?=
- =?us-ascii?Q?W8zTVVjbhe2vtDXbJKTRPg2okF+mGCjBcWwEUuMxkXUgifnqZMZI2kh5F4aH?=
- =?us-ascii?Q?iv6v6PoSfk+Mg2lAi9/qUlp6lQOQfK4xNQvX2uTOMWin+LrWiNVbk3wFaGjQ?=
- =?us-ascii?Q?j4AYkkt8d5RQP4Scx5gjLsWC?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231769AbhCOSFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 14:05:40 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:43321 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233487AbhCOSFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:05:36 -0400
+Received: by mail-ot1-f48.google.com with SMTP id m1so7306362ote.10;
+        Mon, 15 Mar 2021 11:05:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kYvoa+5VswjFlDSSpBWOO17EI4UbXXlkC2EPDqysY+c=;
+        b=YxOg2N6/m1A7dv6XgcaaHm3ZqWfMrlqkn7NHnn8GU2PcD7cwdJscnLS9st8KLumgoY
+         4lpKujbyyRVqgBxdCLUIUfPdoOg0FY7vTZSeQ7UE6n0z/XMcw3/2Nz1/zztoEQyKbo3+
+         6fKQnOT7uM5rx0Ibtmd6JP3h2AHjb1B3q3aYlhpxcZkFlULVPAr40N1k2tFDVIey96IX
+         YwmGavc6X/98ekhv0txTrnHJHuTaNlj9FVyvzckqhZbnOKOBqx2PP75AE+4pNgW3LWQ3
+         OrImy8+sSR5yO0/tpxhi10iaqPzaC8NhPxLES4RgsVEI2EoWg6lqF5HCUkVANct4oh0N
+         24+g==
+X-Gm-Message-State: AOAM532/Vyf8ya1GQsN0fGlmQkZcrHBJDJAZqfdin6N8IJLGVbxlpAIG
+        iir9i1VawH1kSjvL2fxTIYGMLnpWeeN/s94U7hZSV58c
+X-Google-Smtp-Source: ABdhPJw2XnHiPAm/ITuD5SczdCtCPvzrGVEtc8XxUXu9T87Pvtfn/2FifaEO+4xHErSiK6StpXGV6Re4SnLOGLXWMvQ=
+X-Received: by 2002:a9d:3422:: with SMTP id v31mr296092otb.260.1615831535970;
+ Mon, 15 Mar 2021 11:05:35 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a94ea98b-8e9c-41be-0dc2-08d8e7dcbe54
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2021 18:04:14.4336
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3tgIfAW7hhMF0eZ60R+cpc/4sIBd1vFOEkq89jsskP1uXGJYtWelBO7PJDBYo0BjXUnUUo0sKFQUE/M3gbFDFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4180
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com> <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+ <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com> <CAJZ5v0gC+60n0-UkMw8h5JPBc6grQtD1ambSOCAHV2HLm886yQ@mail.gmail.com>
+ <CAJZ5v0g_ztenDY-ER6A0fKD-ZHhLfF3zQdRYYxQb5jSXudd8xQ@mail.gmail.com>
+ <e8593eae-40b8-bc9a-78db-529d28d2be88@redhat.com> <YEkgP0G94uQBGDa9@linux.ibm.com>
+ <0d05364c-4881-d78a-9721-bd15f5eb822b@redhat.com> <CAJZ5v0jOpNJrOt5xn-1YkSB9Q15NZS2cxmsGKAU945YNbs+hOw@mail.gmail.com>
+ <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 15 Mar 2021 19:05:24 +0100
+Message-ID: <CAJZ5v0jf-DppG2PWwH+rQPy5untyp2inaoFg46GkxniPzRKnyA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Krishna Reddy <vdumpa@nvidia.com>
+On Mon, Mar 15, 2021 at 5:19 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >
+> > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+> > > > >
+> > > > > There is some care that should be taken to make sure we get the order
+> > > > > right, but I don't see a fundamental issue here.
+> > >
+> > > Me neither.
+> > >
+> > > > > If I understand correctly, Rafael's concern is about changing the parts of
+> > > > > ACPICA that should be OS agnostic, so I think we just need another place to
+> > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
+> > >
+> > > Something like this.
+> > >
+> > > There is also the problem that memblock_reserve() needs to be called
+> > > for all of the tables early enough, which will require some reordering
+> > > of the early init code.
+> > >
+> > > > > Since the reservation should be done early in x86::setup_arch() (and
+> > > > > probably in arm64::setup_arch()) we might just have a function that parses
+> > > > > table headers and reserves them, similarly to how we parse the tables
+> > > > > during KASLR setup.
+> > >
+> > > Right.
+> >
+> > I've looked at it a bit more and we do something like the patch below that
+> > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
+>
+> It looks to me that the code need not be duplicated (see below).
+>
+> > Besides, reserving ACPI tables early and then calling acpi_table_init()
+> > (and acpi_tb_parse_root_table() again would mean doing the dance with
+> > early_memremap() twice for no good reason.
+>
+> That'd be simply inefficient which is kind of acceptable to me to start with.
+>
+> And I changing the ACPICA code can be avoided at least initially, it
+> by itself would be a good enough reason.
+>
+> > I believe the most effective way to deal with this would be to have a
+> > function that does parsing, reservation and installs the tables supplied by
+> > the firmware which can be called really early and then another function
+> > that overrides tables if needed a some later point.
+>
+> I agree that this should be the direction to go into.
+>
+> However, it looks to me that something like the following could be
+> done to start with:
+>
+> (a) Make __acpi_map_table() call memblock_reserve() in addition to
+> early_memremap().
+>
+> My assumption here is that the memblock_reserve() will simply be
+> ignored if it is called too late.
+>
+> (b) Introduce acpi_reserve_tables() as something like
+>
+> void __init acpi_table_reserve(void)
+> {
+>         acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+> }
+>
+> Because initial_tables is passed to acpi_initialize_tables() above and
+> allow_resize is 0, the array used by it will simply get overwritten
+> when acpi_table_init() gets called.
+>
+> (c) Make setup_arch() call acpi_table_reserve() like in the original
+> patch from George.
+>
+> Would that work?
 
-> 1) pass the guest stage 1 configuration
-> 3) invalidate stage 1 related caches
-
-Validated Nested SMMUv3 translations for NVMe PCIe device from Guest VM alo=
-ng with patch series "v13 SMMUv3 Nested Stage Setup (IOMMU part)" and QEMU =
-patch series "vSMMUv3/pSMMUv3 2 stage VFIO integration" from v5.2.0-2stage-=
-rfcv8.=20
-NVMe PCIe device is functional with 2-stage translations and no issues obse=
-rved.
-
--KR
-
+Well, that doesn't work, so more digging ...
