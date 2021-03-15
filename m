@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C236033BD96
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0C533BCA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240292AbhCOOha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:37:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S239175AbhCOO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233328AbhCOOB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D04F64F33;
-        Mon, 15 Mar 2021 14:00:53 +0000 (UTC)
+        id S233084AbhCOOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B57664EFC;
+        Mon, 15 Mar 2021 14:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816854;
-        bh=tHm/Kk0U1CPkbj8AoDeHlXex1E0wOapV0Zh4pO31GUk=;
+        s=korg; t=1615816823;
+        bh=G54vohvt+g5VieYybML1LGzxlSiZ1Tb+gpNzAx1aXvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ueK3nLGseAo8inWVMj2UnWMCxAfEeWLB0vA+ZE2c19c1lCw/YE5HjftRQQFIY4F3P
-         YFpfeW6BJO2/RwtDFTEVj6KrbJ6w59uoPRMihGP7Yz8Hm1LG3LHneECHi3Sb/WRCg+
-         JjawxtShchzLdzDCCgejpjnDuUTIV9T+9N5OSJgM=
+        b=uUPehyKPCaVSvoHh3GMUFO7sWT2JHXbp5mmKJw0dvrHS+wO/Ygdri7aPVJjXP/CvD
+         0726FOmLqPkxE6iW7Larwg00SCBjWweDtxV0fTNAdw9b/k/cdkp+iNl/k8CSsJgncA
+         7lGrPIROMVhTcqGsxT9tUkDC6t52u1l4TeOsaJa0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 163/306] clk: qcom: gpucc-msm8998: Add resets, cxc, fix flags on gpu_gx_gdsc
-Date:   Mon, 15 Mar 2021 14:53:46 +0100
-Message-Id: <20210315135513.143280861@linuxfoundation.org>
+        stable@vger.kernel.org, "Steven J. Magnani" <magnani@ieee.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 134/290] udf: fix silent AED tagLocation corruption
+Date:   Mon, 15 Mar 2021 14:53:47 +0100
+Message-Id: <20210315135546.437045564@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +41,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Steven J. Magnani <magnani@ieee.org>
 
-[ Upstream commit a59c16c80bd791878cf81d1d5aae508eeb2e73f1 ]
+[ Upstream commit 63c9e47a1642fc817654a1bc18a6ec4bbcc0f056 ]
 
-The GPU GX GDSC has GPU_GX_BCR reset and gfx3d_clk CXC, as stated
-on downstream kernels (and as verified upstream, because otherwise
-random lockups happen).
-Also, add PWRSTS_RET and NO_RET_PERIPH: also as found downstream,
-and also as verified here, to avoid GPU related lockups it is
-necessary to force retain mem, but *not* peripheral when enabling
-this GDSC (and, of course, the inverse on disablement).
+When extending a file, udf_do_extend_file() may enter following empty
+indirect extent. At the end of udf_do_extend_file() we revert prev_epos
+to point to the last written extent. However if we end up not adding any
+further extent in udf_do_extend_file(), the reverting points prev_epos
+into the header area of the AED and following updates of the extents
+(in udf_update_extents()) will corrupt the header.
 
-With this change, the GPU finally works flawlessly on my four
-different MSM8998 devices from two different manufacturers.
+Make sure that we do not follow indirect extent if we are not going to
+add any more extents so that returning back to the last written extent
+works correctly.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Link: https://lore.kernel.org/r/20210114221059.483390-11-angelogioacchino.delregno@somainline.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lore.kernel.org/r/20210107234116.6190-2-magnani@ieee.org
+Signed-off-by: Steven J. Magnani <magnani@ieee.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gpucc-msm8998.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/udf/inode.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/qcom/gpucc-msm8998.c b/drivers/clk/qcom/gpucc-msm8998.c
-index 9b3923af02a1..1a518c4915b4 100644
---- a/drivers/clk/qcom/gpucc-msm8998.c
-+++ b/drivers/clk/qcom/gpucc-msm8998.c
-@@ -253,12 +253,16 @@ static struct gdsc gpu_cx_gdsc = {
- static struct gdsc gpu_gx_gdsc = {
- 	.gdscr = 0x1094,
- 	.clamp_io_ctrl = 0x130,
-+	.resets = (unsigned int []){ GPU_GX_BCR },
-+	.reset_count = 1,
-+	.cxcs = (unsigned int []){ 0x1098 },
-+	.cxc_count = 1,
- 	.pd = {
- 		.name = "gpu_gx",
- 	},
- 	.parent = &gpu_cx_gdsc.pd,
--	.pwrsts = PWRSTS_OFF_ON,
--	.flags = CLAMP_IO | AON_RESET,
-+	.pwrsts = PWRSTS_OFF_ON | PWRSTS_RET,
-+	.flags = CLAMP_IO | SW_RESET | AON_RESET | NO_RET_PERIPH,
- };
+diff --git a/fs/udf/inode.c b/fs/udf/inode.c
+index bb89c3e43212..0dd2f93ac048 100644
+--- a/fs/udf/inode.c
++++ b/fs/udf/inode.c
+@@ -544,11 +544,14 @@ static int udf_do_extend_file(struct inode *inode,
  
- static struct clk_regmap *gpucc_msm8998_clocks[] = {
+ 		udf_write_aext(inode, last_pos, &last_ext->extLocation,
+ 				last_ext->extLength, 1);
++
+ 		/*
+-		 * We've rewritten the last extent but there may be empty
+-		 * indirect extent after it - enter it.
++		 * We've rewritten the last extent. If we are going to add
++		 * more extents, we may need to enter possible following
++		 * empty indirect extent.
+ 		 */
+-		udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
++		if (new_block_bytes || prealloc_len)
++			udf_next_aext(inode, last_pos, &tmploc, &tmplen, 0);
+ 	}
+ 
+ 	/* Managed to do everything necessary? */
 -- 
 2.30.1
 
