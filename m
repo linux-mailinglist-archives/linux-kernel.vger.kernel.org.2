@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5B333BE86
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542B833BDF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240449AbhCOOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49128 "EHLO mail.kernel.org"
+        id S233683AbhCOOkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233863AbhCOOCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FA364DAD;
-        Mon, 15 Mar 2021 14:02:31 +0000 (UTC)
+        id S233878AbhCOOCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD8DF64E89;
+        Mon, 15 Mar 2021 14:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816952;
-        bh=xKgkFWzxlPRIvHIuGIVg8npd7F6MBl11aaKZJp0K8E0=;
+        s=korg; t=1615816953;
+        bh=j/cRpuSaTG/ikfUPjVyiZeucg2SiJvxu/HB5bNElkEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frAYc2E4nXyAYMU1upd7beMHApai5WKgveQ2u2s721CnepkbqL8JRoldJSAFfbWAo
-         cugefwDHnJmbpvjWT7QgLslaJWYePaQlwORakOCkQiae9dQiA9XQH6/rdhD33CCEGi
-         nhH8+qhXc5+uNYjJM16Y0dupvDNtJg8z3PEZLtBc=
+        b=akeVpd0SMcBNQnNJ2yYGwQ27w2DXtvmaiM9JvqOidHd30tUeeL1XVgpeBnTubmi/w
+         dDjQ7ez24BFH1fNiG/3IQhqOUg7Bo5J+Yo8B/6C3gpXBeIzwqszK93FLK84Oc5+XLD
+         rNTqc3dBsCHN1p/PYHDFMpvEwdclP3JGXNN6usOQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bernhard <bernhard.gebetsberger@gmx.at>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
+        stable@vger.kernel.org,
         Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.10 208/290] usb: xhci: do not perform Soft Retry for some xHCI hosts
-Date:   Mon, 15 Mar 2021 14:55:01 +0100
-Message-Id: <20210315135548.961675918@linuxfoundation.org>
+Subject: [PATCH 5.10 209/290] xhci: Improve detection of device initiated wake signal.
+Date:   Mon, 15 Mar 2021 14:55:02 +0100
+Message-Id: <20210315135549.001303809@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -42,75 +41,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Stanislaw Gruszka <stf_xl@wp.pl>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit a4a251f8c23518899d2078c320cf9ce2fa459c9f upstream.
+commit 253f588c70f66184b1f3a9bbb428b49bbda73e80 upstream.
 
-On some systems rt2800usb and mt7601u devices are unable to operate since
-commit f8f80be501aa ("xhci: Use soft retry to recover faster from
-transaction errors")
+A xHC USB 3 port might miss the first wake signal from a USB 3 device
+if the port LFPS reveiver isn't enabled fast enough after xHC resume.
 
-Seems that some xHCI controllers can not perform Soft Retry correctly,
-affecting those devices.
+xHC host will anyway be resumed by a PME# signal, but will go back to
+suspend if no port activity is seen.
+The device resends the U3 LFPS wake signal after a 100ms delay, but
+by then host is already suspended, starting all over from the
+beginning of this issue.
 
-To avoid the problem add xhci->quirks flag that restore pre soft retry
-xhci behaviour for affected xHCI controllers. Currently those are
-AMD_PROMONTORYA_4 and AMD_PROMONTORYA_2, since it was confirmed
-by the users: on those xHCI hosts issue happen and is gone after
-disabling Soft Retry.
+USB 3 specs say U3 wake LFPS signal is sent for max 10ms, then device
+needs to delay 100ms before resending the wake.
 
-[minor commit message rewording for checkpatch -Mathias]
+Don't suspend immediately if port activity isn't detected in resume.
+Instead add a retry. If there is no port activity then delay for 120ms,
+and re-check for port activity.
 
-Fixes: f8f80be501aa ("xhci: Use soft retry to recover faster from transaction errors")
-Cc: <stable@vger.kernel.org> # 4.20+
-Reported-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Tested-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Signed-off-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202541
-Link: https://lore.kernel.org/r/20210311115353.2137560-2-mathias.nyman@linux.intel.com
+Link: https://lore.kernel.org/r/20210311115353.2137560-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-pci.c  |    5 +++++
- drivers/usb/host/xhci-ring.c |    3 ++-
- drivers/usb/host/xhci.h      |    1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -295,6 +295,11 @@ static void xhci_pci_quirks(struct devic
- 	     pdev->device == 0x9026)
- 		xhci->quirks |= XHCI_RESET_PLL_ON_DISCONNECT;
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1088,6 +1088,7 @@ int xhci_resume(struct xhci_hcd *xhci, b
+ 	struct usb_hcd		*secondary_hcd;
+ 	int			retval = 0;
+ 	bool			comp_timer_running = false;
++	bool			pending_portevent = false;
  
-+	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
-+	    (pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_2 ||
-+	     pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4))
-+		xhci->quirks |= XHCI_NO_SOFT_RETRY;
+ 	if (!hcd->state)
+ 		return 0;
+@@ -1226,13 +1227,22 @@ int xhci_resume(struct xhci_hcd *xhci, b
+ 
+  done:
+ 	if (retval == 0) {
+-		/* Resume root hubs only when have pending events. */
+-		if (xhci_pending_portevent(xhci)) {
++		/*
++		 * Resume roothubs only if there are pending events.
++		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
++		 * the first wake signalling failed, give it that chance.
++		 */
++		pending_portevent = xhci_pending_portevent(xhci);
++		if (!pending_portevent) {
++			msleep(120);
++			pending_portevent = xhci_pending_portevent(xhci);
++		}
 +
- 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
- 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
- 				"QUIRK: Resetting on resume");
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2307,7 +2307,8 @@ static int process_bulk_intr_td(struct x
- 		remaining	= 0;
- 		break;
- 	case COMP_USB_TRANSACTION_ERROR:
--		if ((ep_ring->err_count++ > MAX_SOFT_RETRY) ||
-+		if (xhci->quirks & XHCI_NO_SOFT_RETRY ||
-+		    (ep_ring->err_count++ > MAX_SOFT_RETRY) ||
- 		    le32_to_cpu(slot_ctx->tt_info) & TT_SLOT)
- 			break;
- 		*status = 0;
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1879,6 +1879,7 @@ struct xhci_hcd {
- #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
- #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
- #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
-+#define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
++		if (pending_portevent) {
+ 			usb_hcd_resume_root_hub(xhci->shared_hcd);
+ 			usb_hcd_resume_root_hub(hcd);
+ 		}
+ 	}
+-
+ 	/*
+ 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
+ 	 * be re-initialized Always after a system resume. Ports are subject
 
 
