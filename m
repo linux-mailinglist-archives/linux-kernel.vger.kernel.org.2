@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D658D33B34F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BCE33B350
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhCONHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhCONHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:07:37 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7C0C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:07:37 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id g14so7670740qvn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IM3zY04AmOlCtvAVnSd9iG5x1ewD+6ByijIwRWgL5V8=;
-        b=BnYqxhM866S7OSAVje66mLcPnSbKq7XImiRkeGfZno3pjvUPnBR1MrMA6PinWYBy8M
-         sQFlHjlzpygxq21VMvPDvfuEwdyEwNqhlhFPJS7qUSJQzOEzQ7Ci0xafNzFFmVmWzc9f
-         fftSeKpcP7DJ4/SPdSpB5X1H/wCZwAFYJHD0cHhdBs6GMEVCw5XdluJhJ2twOeRlKsWo
-         6oLJXmXOnA/CyGjDKmRHpb0KjxJzb3wwMk0cDl/pv0Bq6Sgsr4MNNsxaffg3TxdXza01
-         OTCum00SOZT2gC+PZfH5cihdqejRaIbFRS9wFRZMIA5wN8uZo4a3s2EFyZysRWK/m8ew
-         c1hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IM3zY04AmOlCtvAVnSd9iG5x1ewD+6ByijIwRWgL5V8=;
-        b=De20C+1FxICM0HyidIxafjW1hETy3y6Hcx27nYiZ+xirFDzyi3e71fDVMqGYjwq+kg
-         ISz9gz+I/L5+OUJt6dqyJGXzSZ1j+QJ997lDUqPlbqYu9pG0rM8T5I/PlZeV2vJDUY2m
-         mxB8l6pheIN/BAklckGUaya5d3n2PwHShpUbEYgOhvcBY3mTwkJAqrpPWU7Bk+IfJn9q
-         ovA+ZpfmjTvv48OtjHVPVMVaY+2vkAW0Yuv+tUaR8WW1N/OFbhsBPZTWj7qT3da28K3u
-         avqUmDKDjbA8KcWKaWlSwR74zuhHx24EOwh1ZqV6s/R4TUSIeyX8+glTXikpw2MuSP+P
-         9jTg==
-X-Gm-Message-State: AOAM5329oTOGCK34cC52gM7bywzfWDxKTHi3G0sFUWFHaxCrTejUVA3o
-        SA2GhZyWKBbnAvFtpYNVa0MXyFr2NJCHqnsGOUOozg==
-X-Google-Smtp-Source: ABdhPJwJbYDM4vf8RRkgFjAw/ezp5E66jTEphKKfCiWUo2N3D3fQbX/zuAV4uxWssANVFHhV8Z2wCW6vutN8X3C2YCU=
-X-Received: by 2002:a05:6214:326:: with SMTP id j6mr10679488qvu.13.1615813656317;
- Mon, 15 Mar 2021 06:07:36 -0700 (PDT)
+        id S229958AbhCONH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:07:57 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40427 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhCONHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:07:46 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DzcCb4rHxz9tyRp;
+        Mon, 15 Mar 2021 14:07:39 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id yz-xw_o-N3tU; Mon, 15 Mar 2021 14:07:39 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzcCb3JYXz9tyRk;
+        Mon, 15 Mar 2021 14:07:39 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B50C58B778;
+        Mon, 15 Mar 2021 14:07:44 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id nBPpXzvkFeHZ; Mon, 15 Mar 2021 14:07:44 +0100 (CET)
+Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7E56B8B776;
+        Mon, 15 Mar 2021 14:07:44 +0100 (CET)
+Subject: Re: Build regressions/improvements in v5.12-rc3
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20210315104409.1598822-1-geert@linux-m68k.org>
+ <CAMuHMdVJFprsj9njwv13jWTBELuq8RcXOmR7AoR9dqDdydLcNQ@mail.gmail.com>
+ <2c123f94-ceae-80c0-90e2-21909795eb76@csgroup.eu>
+ <CAMuHMdUMjN9TW-ggAgOtj3V36kzNCfoG5o-Bcj=Lk9diJciS=g@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <561e4ab3-b2ec-849c-c1c6-38804cf7977e@csgroup.eu>
+Date:   Mon, 15 Mar 2021 14:07:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
- <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
-In-Reply-To: <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 15 Mar 2021 14:07:23 +0100
-Message-ID: <CACT4Y+b8cNr1zv=RFPLXf9vY==BSktM1vb9gOfcWyBEaojZ1-A@mail.gmail.com>
-Subject: Re: NULL deref in integrity_inode_get
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdUMjN9TW-ggAgOtj3V36kzNCfoG5o-Bcj=Lk9diJciS=g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 1:41 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
->
-> Hi Dmitry,
->
-> On Mon, 2021-03-15 at 11:58 +0100, Dmitry Vyukov wrote:
-> > Hi,
-> >
-> > I am trying to boot 5.12-rc3 with this config:
-> > https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
-> >
-> > in qemu:
-> > qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
-> > max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
-> > wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
-> >  -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
-> >    -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
-> > nic,model=virtio-net-pci   -object
-> > memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
-> >   -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
-> > root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
-> > panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
-> > vm_pid -m 2G -cpu host
-> >
-> > But it crashes on NULL deref in integrity_inode_get during boot:
-> >
-> > Run /sbin/init as init process
-> > BUG: kernel NULL pointer dereference, address: 000000000000001c
-> > #PF: supervisor read access in kernel mode
-> > #PF: error_code(0x0000) - not-present page
-> > PGD 0 P4D 0
-> > Oops: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-> > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-> > RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
-> > Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
-> > 3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
-> > 1c 4cf
-> > RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
-> > RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
-> > RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
-> > RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
-> > R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
-> > R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
-> > FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> > Call Trace:
-> >  integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
-> >  process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
-> >  ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
-> >  security_bprm_check+0x7d/0xa0 security/security.c:845
-> >  search_binary_handler fs/exec.c:1708 [inline]
-> >  exec_binprm fs/exec.c:1761 [inline]
-> >  bprm_execve fs/exec.c:1830 [inline]
-> >  bprm_execve+0x764/0x19a0 fs/exec.c:1792
-> >  kernel_execve+0x370/0x460 fs/exec.c:1973
-> >  try_to_run_init_process+0x14/0x4e init/main.c:1366
-> >  kernel_init+0x11d/0x1b8 init/main.c:1477
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> > Modules linked in:
-> > CR2: 000000000000001c
-> > ---[ end trace 22d601a500de7d79 ]---
->
-> It looks like integrity_inode_get() fails to alloc memory.   Only on
-> failure to verify the integrity of a file would an error be returned.
-> I think that is what you would want to happen.  Without an "appraise"
-> policy, this shouldn't happen.
 
-It happens at the very boot. I think the cache is NULL.
+
+Le 15/03/2021 à 12:02, Geert Uytterhoeven a écrit :
+> Hi Christophe,
+> 
+> On Mon, Mar 15, 2021 at 11:55 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>> Le 15/03/2021 à 11:49, Geert Uytterhoeven a écrit :
+>>> On Mon, Mar 15, 2021 at 11:46 AM Geert Uytterhoeven
+>>> <geert@linux-m68k.org> wrote:
+>>>> JFYI, when comparing v5.12-rc3[1] to v5.12-rc2[3], the summaries are:
+>>>>     - build errors: +2/-2
+>>>
+>>>> 2 error regressions:
+>>>>     + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_248' declared with attribute error: BUILD_BUG failed:  => 320:38
+>>>>     + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_249' declared with attribute error: BUILD_BUG failed:  => 320:38
+>>>
+>>> powerpc-gcc4.9/ppc64_book3e_allmodconfig
+>>>
+>>> So we traded implicit declaration errors:
+>>>
+>>>     - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
+>>> error: implicit declaration of function 'disable_kernel_vsx'
+>>> [-Werror=implicit-function-declaration]: 674:2 =>
+>>>     - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
+>>> error: implicit declaration of function 'enable_kernel_vsx'
+>>> [-Werror=implicit-function-declaration]: 638:2 =>
+>>>
+>>> for compile-time assertions.
+>>>
+>>
+>> You are missing https://github.com/linuxppc/linux/commit/eed5fae00593ab9d261a0c1ffc1bdb786a87a55a
+> 
+> Which is not part of v5.12-rc3.
+> 
+
+Yes, one step at a time :)
+
+When I did the first fix, I tested it with GCC 10 and it worked.
+
+It is only afterwards that I saw the problem in kisskb with gcc 4.9, hence the second fix.
+
+Christophe
