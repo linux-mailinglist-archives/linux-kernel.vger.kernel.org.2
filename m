@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F62933C6CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F0D33C6D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhCOT0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:26:18 -0400
-Received: from ms.lwn.net ([45.79.88.28]:44318 "EHLO ms.lwn.net"
+        id S233593AbhCOT0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:26:50 -0400
+Received: from ms.lwn.net ([45.79.88.28]:44494 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233484AbhCOTZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:25:52 -0400
+        id S233572AbhCOT0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:26:41 -0400
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A38B72C4;
-        Mon, 15 Mar 2021 19:25:51 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A38B72C4
+        by ms.lwn.net (Postfix) with ESMTPSA id 304F0372;
+        Mon, 15 Mar 2021 19:26:41 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 304F0372
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615836351; bh=P6fZS9Ge8p5a2gEMWcTKjltBgeGGppmH6MaIdBUw2gY=;
+        t=1615836401; bh=4ypd7Vv0Hb8gXQNJjo/Dsc/ltQP9teVcsN2i1wqBic4=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fhmvWeKci/KsWAejS6d+VbNvx9GG6w47Mzfz6k7KSP53roiSpLmeitw6Vr4TXOdCh
-         qMf7IMnK+6yWgxjiWT3C3eOnF9tUMKDbIcVOdBTYQVoJCivxejbjS/rc/1hNtU4AAd
-         pxuOA54i/g2pTypnkBysyGtCwLJGHyRId896zcOmm7Ant68/Dk+QIYcnIrZ1krkYMV
-         3hgr/HL5o8MOlYK0d9URDKZnKXIbGh8bnD1xSXQK9pjo8iLWVWeY3Wk/2z071n7c1p
-         tUsX2P+SdgZQpHCA8l/xMHFj5wz6hvPDLXv4RJjR4VI0VcSUvd0mixbYdcsBogp0TG
-         F3N3EG+NKYV+g==
+        b=ScYBKD4OrYngeT+yCJEC2M1s2Tpbkch3tSGtB0ct9Qvn6ic1Wxzra6byhEpTQ1qaz
+         CStKUUSvltra73xasSEAjl3NfrWJ8ZvIL4WqUjvVp0eK3uuQk/5wkvrW1IceTxRc0S
+         AuIEgNc3Y9cWeFBQoqGZT6icMP8DEdMFYPTVZc3O2mPyz2ESmIk/z4rGJ9s7CNfL+l
+         +H4KV2i53G4Us3iJj4JA413SszYg/2jK2bLU2ZCZZGh478vZYDF4uBpLnZhZ/Laiyr
+         Eemb7om7AJ8BN7n6pYusExKNQsOaeDqGgPrw8PQp6/0tmhsUl85jA5xw3TdhvCSCSr
+         dWvTHmqgvCW+A==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Aditya <yashsri421@gmail.com>,
-        Markus Heiser <markus.heiser@darmarit.de>
-Cc:     lukas.bulwahn@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-In-Reply-To: <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
-References: <20210309125324.4456-1-yashsri421@gmail.com>
- <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
-Date:   Mon, 15 Mar 2021 13:25:51 -0600
-Message-ID: <871rcg2p8g.fsf@meer.lwn.net>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] docs: dt: submitting-patches: Fix grammar in subsystem
+ section
+In-Reply-To: <20210309130650.2318419-1-geert+renesas@glider.be>
+References: <20210309130650.2318419-1-geert+renesas@glider.be>
+Date:   Mon, 15 Mar 2021 13:26:40 -0600
+Message-ID: <87wnu81amn.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya <yashsri421@gmail.com> writes:
+Geert Uytterhoeven <geert+renesas@glider.be> writes:
 
->> The opening comment mark /** is used for kernel-doc comments [1]
->> 
->> [1]
->> https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#how-to-format-kernel-doc-comments
->> 
+> Reword the subsystem bindings section to make sense, from a grammatical
+> point of view.
 >
-> Hi Markus!
-> That's true. But the content inside the comment does not follow
-> kernel-doc format.
-> For e.g., try running kernel-doc -none/man/rst on the above file in
-> the example("sound/pci/ctxfi/ctresource.c").
-> The starting 2-3 lines in files generally do not contain any
-> struct/enum/function, etc. declaration.
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  Documentation/devicetree/bindings/submitting-patches.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
+> index 68129ff09967d5d7..1d11c25249ff5465 100644
+> --- a/Documentation/devicetree/bindings/submitting-patches.rst
+> +++ b/Documentation/devicetree/bindings/submitting-patches.rst
+> @@ -75,8 +75,8 @@ II. For kernel maintainers
+>       binding, and it hasn't received an Acked-by from the devicetree
+>       maintainers after a few weeks, go ahead and take it.
+>  
+> -     Subsystem bindings (anything affecting more than a single device)
+> -     then getting a devicetree maintainer to review it is required.
+> +     For subsystem bindings (anything affecting more than a single device),
+> +     getting a devicetree maintainer to review it is required.
 
-The problem is that it's marked as a kerneldoc comment without actually
-being one; it looks like somebody's internal corporate formatting.  The
-fix is not to put a hack into kernel-doc - we have more than enough of
-those in the file already!  The right thing to do is to remove the extra
-"*" so that the comment doesn't look like a kerneldoc comment anymore.
-
-Thanks,
+Applied, thanks.
 
 jon
