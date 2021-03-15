@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B7433B269
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A884433B26F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhCOMVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
+        id S229923AbhCOMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhCOMVC (ORCPT
+        with ESMTP id S229878AbhCOMWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:21:02 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBF6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:21:02 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id k8so5577246wrc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:21:02 -0700 (PDT)
+        Mon, 15 Mar 2021 08:22:02 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44193C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:22:02 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id p8so65794347ejb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 05:22:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wF2IyIdvNAleB+/6m+WbPaIfaxSFSC7N4OKaN9BjXDI=;
-        b=DbPyUxC3xCSH6upHy830wWayHcW+0CJRCEj0CG9wEzEbywTzmpyxbdts8jecnEk33e
-         Bo5ofRxukRdu25Sbu1fcnU8Q/p58j+XGHF0fEgOUxTlu5Mm/sf6Ax4HAflocEY7jNV0Z
-         QQFfFOnSQGYK+OMF1CXJV0IpYg/DXR7NGYrl4=
+         :content-disposition:in-reply-to;
+        bh=68jlXxwTfNA20UssG/iOwv7H5x/KNjvMb7lpLxpsr3I=;
+        b=yPJ9K0uCd7YGDEC+SW1zRnYgaV/ijooR+XEo2KF+DFUyskFZKPUPdupNDM1Bzmc5rQ
+         TtZpoymKCPamfltgDPQxthzkNZAE2qzehzZ2i2V6Cd9dM2ZKH6NqCN3hiM6tljCNl1fU
+         gkXSxSKbYCbmdKCB/RXQVP8VxFWWip56KDiq+t8B2hH0/3k/jqHAarwhuAH5DG4UQSZN
+         t0YhY5h0cPCKBmQe9zy/rs6Poz+lMk8wKyhOpjT5mA8T6kYuPCUMkyUrqLiwd588bsR6
+         9E58gCUZoI+2Nd78ZYNpRPgTV58Zi/zC/J863ffmLXeqQYu1FDchlegQf4BE4R1t+OAj
+         e+Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wF2IyIdvNAleB+/6m+WbPaIfaxSFSC7N4OKaN9BjXDI=;
-        b=Nabe1mQrv8VMsMdIki+a7dlxhJRMdY9DqP69Zb7epLOtv9FGXSE3yK4GH9mwD+/Fyd
-         RQeZIzWy8fWhbSDrDPgIs6epCFDli6NMPIGqGvDWzy/ioihGRRQGPuz8gQFmWL+nhUUS
-         d44VpxJpNZVwDmwviscRc8Tl9u/d5KXKCntHqCwj67/ZKprJPeN2KjKNPpOwyHNztaQL
-         CuMOLCAE5iDSogEvzAU07d4vDSaLr03z9JhXjnJ0P2UWyQqFKWJ8TaTZB/0q7EDIVkiZ
-         JZrKIVn36PaD2yOwSj1DS7BM17WPgyKJ2ZiF+ieLbXEP2VfSOOuWo49yFulsJCjat5Rx
-         dBUg==
-X-Gm-Message-State: AOAM531aIDJojPLxumnnDxjqpKVpJbV0FmJA4LwavmVIezmKoEvMx2rp
-        jFuHyOsotyYOU60DQ1snMlkENA==
-X-Google-Smtp-Source: ABdhPJxGGPLbOVuA8tyT3moJy6WA94TwOmb+VHUQqIewZui+0KLzV/N6O0ngYCVD3os49Hj+IUGTgw==
-X-Received: by 2002:adf:ea82:: with SMTP id s2mr27774425wrm.1.1615810860785;
-        Mon, 15 Mar 2021 05:21:00 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::4:43ff])
-        by smtp.gmail.com with ESMTPSA id j26sm17997567wrh.57.2021.03.15.05.20.59
+         :mime-version:content-disposition:in-reply-to;
+        bh=68jlXxwTfNA20UssG/iOwv7H5x/KNjvMb7lpLxpsr3I=;
+        b=pbfk47ZFkMJsxtJAaIRBr5HrVtgEMoJDIyX1Tc0BKyJPzHyxv1oNuHk6ISGr+NvQD+
+         7b2VUhP+LLrJdsF+dX6V0ermr6OH8HIKfwBNxZIS4vQeqAU6k2n+oOVz0SFxa/Hmg7MF
+         uYp1P1jafxMW4RqIu0EQ5oCFjpBJkh6ikyeRZhJNF+d2nehP4ZygTbxropE+YDs+2EAh
+         92RTTt3V9KjxgYhMdg9os+65ljZOREBo4fpoakuJh0R9Kk4BdctAJcSiJO2fyUF65FZO
+         DfdzHVR7E9/FngfYWtFTD0BdhcGF42EB7yjS5bMb6FrEcSSN4Zf4jRzcJVfP7ZjWpIUC
+         tfTw==
+X-Gm-Message-State: AOAM533X2fZLGEG6SQzA7z8NlHcLFdooJI89Qymind9yJ8pW2jWuLYYp
+        RgNVEFZ++LCZ3+19Nio9RPdrQA==
+X-Google-Smtp-Source: ABdhPJyOEJdU7zKKbglgyC3DnGahjOi0AdhGWWGjA6h4Bp8+9nk2Nlz0nQcAh6QvJyPGbwi3KZ/SCA==
+X-Received: by 2002:a17:906:789:: with SMTP id l9mr22968222ejc.161.1615810920902;
+        Mon, 15 Mar 2021 05:22:00 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id z17sm7270134eju.27.2021.03.15.05.21.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 05:21:00 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:20:59 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YE9RK89jLbLQcSEq@chrisdown.name>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <YEtNKMF3KH1kUDxY@alley>
- <YEtyUM07gsqR6ltG@chrisdown.name>
- <YE8wvGHhbV4nAGGI@alley>
+        Mon, 15 Mar 2021 05:22:00 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 12:21:58 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Obeida Shamoun <oshmoun100@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] backlight: qcom-wled: Use sink_addr for sync toggle
+Message-ID: <20210315122158.ptqi6xvngf6ihjum@maple.lan>
+References: <20210314101110.48024-1-marijn.suijten@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YE8wvGHhbV4nAGGI@alley>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20210314101110.48024-1-marijn.suijten@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->> I don't feel strongly that this is more clear though, so maybe you
->> mean something else?
->
->I was pretty tired when reviewing the patch. It was not easy for me
->to create the mental model of the code. I felt that some other names
->would have made it easier.
->
->Also the tricky pi_next() implementation did not help much. It looks
->like you changed the code many times to get it working and did not
->clean it at the end.
+On Sun, Mar 14, 2021 at 11:11:10AM +0100, Marijn Suijten wrote:
+> From: Obeida Shamoun <oshmoun100@googlemail.com>
+> 
+> WLED3_SINK_REG_SYNC is, as the name implies, a sink register offset.
+> Therefore, use the sink address as base instead of the ctrl address.
+> 
+> This fixes the sync toggle on wled4, which can be observed by the fact
+> that adjusting brightness now works.
+> 
+> It has no effect on wled3 because sink and ctrl base addresses are the
+> same.  This allows adjusting the brightness without having to disable
+> then reenable the module.
+> 
+> Signed-off-by: Obeida Shamoun <oshmoun100@googlemail.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 
-No worries. I'm not totally clear on what you're asking for though: do you 
-meant that you'd like the SEQ_START_TOKEN logic to only be present for 
-pi_start, or to pull out the logic currently in pi_next into another function 
-and call it from both, or?
+LGTM, although an acked-by from Kiran would be nice to have:
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-In my mind, pi_start is really just a special case of pi_next, so the code flow 
-makes sense to me. I'm happy to change it to whatever you like, but it's not 
-immediately obvious to me what that is :-)
+
+Daniel.
+
+
+> ---
+>  drivers/video/backlight/qcom-wled.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> index 091f07e7c145..fc8b443d10fd 100644
+> --- a/drivers/video/backlight/qcom-wled.c
+> +++ b/drivers/video/backlight/qcom-wled.c
+> @@ -336,13 +336,13 @@ static int wled3_sync_toggle(struct wled *wled)
+>  	unsigned int mask = GENMASK(wled->max_string_count - 1, 0);
+>  
+>  	rc = regmap_update_bits(wled->regmap,
+> -				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+> +				wled->sink_addr + WLED3_SINK_REG_SYNC,
+>  				mask, mask);
+>  	if (rc < 0)
+>  		return rc;
+>  
+>  	rc = regmap_update_bits(wled->regmap,
+> -				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+> +				wled->sink_addr + WLED3_SINK_REG_SYNC,
+>  				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>  
+>  	return rc;
+> -- 
+> 2.30.2
+> 
