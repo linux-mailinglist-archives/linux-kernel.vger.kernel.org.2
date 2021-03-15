@@ -2,167 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046EB33B75C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E982033B5DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhCOOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231713AbhCONzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:55:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5332A64EB6;
-        Mon, 15 Mar 2021 13:55:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816510;
-        bh=+a99zkgVXIsOsSy2xm8mD7Pb7cBSn8jGKLpGXBnAiAU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBIQ5BZCpB59dKApEUE93VhKdyO+k1elZAWo/Vta6+aaj4VCFXiS5QSO9wOz434Kq
-         Kj++3eSIIxJwdVSYjHzOaLEu58Ll+4M+u44TYV9G6LAh3eBRWxP97sOOkKR8HS+HHN
-         nH8Ock8Bmta2ylJCUxIO7o9OLi1oZ5sBHYJG1+xc=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
-        Juergen Gross <jgross@suse.com>,
-        Julien Grall <jgrall@amazon.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 4.9 78/78] xen/events: avoid handling the same event on two cpus at the same time
-Date:   Mon, 15 Mar 2021 14:52:41 +0100
-Message-Id: <20210315135214.612976968@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S231771AbhCONzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhCONxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:45 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD413C06174A;
+        Mon, 15 Mar 2021 06:53:44 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o14so4935993wrm.11;
+        Mon, 15 Mar 2021 06:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KemkAeTk9mClNID9MgBdrRYEwF+T4PnONTX4FkH/70I=;
+        b=qoSAOlqrAj9XEHIc0K6JNP3xbYE+MHYuUt/DZXU8OfxLiDXi+ykQxo0iRFSVKvV7V2
+         2xM7uUGt6JsJA/t6BYmP9hnOg0C/subYpR+QcY/K+vMO2DnHDY3Mw/OlzTC9Rva4x6VK
+         goQEaRIzKODbaKZ4T+up/rIygksvJeH9n2lxj4eIaKp0WZIlgBvcO8X8ugZjudipa6Bp
+         nNzkUGRKGVrbEGiefC/Ld3Te1bqiaV93DucVq7LWTgKOEIDhvdwfCe8w8Fb6pTxunmfi
+         rwLCo/9ecPsL01/jA69kcfQZJ5oZ+rM3/qCWomZbkDEUL024bLGP2iarnfmxP14o9ADQ
+         3hTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KemkAeTk9mClNID9MgBdrRYEwF+T4PnONTX4FkH/70I=;
+        b=VacmUFMoLlQqzO5x4+aFtXoErBkmiCa/+4S198aQJJ5BLKtLy2Xehs1wRZU39cLQ7Y
+         pfUAtmkgU/n8RcEFvdG888gtmeaTMGTpkOzuHDh42dLL9+CA3ERd0Jz93zSVzA7Zriwk
+         EKNn6vJDnPuZHonplYzlcs6ZtEFEP1WEx4FVqEiJkJgfoe7Xp1RAz6TlHe0PL/+rkajH
+         XWvE1rG/GYPHdHsr3bJqj2eikMuJ6ulRbb4+nT6vcutTudMVDFzGZ6bluVcplMvR+2UE
+         yS0a6QZ1osShAU6LLVl1Fs1RRLFU9s6SaZTSl6RoD7YhetAIXE5EnCatMqB4nz1IfgyD
+         p05g==
+X-Gm-Message-State: AOAM532nyh49IWchwV7dGKUmqNUavNIJY1FC1SK+HVn7pj0KzPw73hnP
+        kQLiq3img8puyMCTyD+r3A0izUuHxFDHLRdt
+X-Google-Smtp-Source: ABdhPJz+W7YQKBZ8lm0cd1BD2niB34IG9sKd5goLv4Z0PkSKSHfnhmmggy9l4gPrPgDNdY3qLRHriA==
+X-Received: by 2002:a5d:4dd2:: with SMTP id f18mr27363586wru.366.1615816423518;
+        Mon, 15 Mar 2021 06:53:43 -0700 (PDT)
+Received: from macbook-pro-alvaro.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id p27sm13091334wmi.12.2021.03.15.06.53.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Mar 2021 06:53:43 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <20210308115705.18c0acd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Mon, 15 Mar 2021 14:53:39 +0100
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CA6D1162-FB0E-4899-8172-DB49CC522EB9@gmail.com>
+References: <20210308184102.3921-1-noltari@gmail.com>
+ <20210308184102.3921-3-noltari@gmail.com>
+ <20210308115705.18c0acd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Jakub,
 
-From: Juergen Gross <jgross@suse.com>
+> El 8 mar 2021, a las 20:57, Jakub Kicinski <kuba@kernel.org> =
+escribi=C3=B3:
+>=20
+> On Mon,  8 Mar 2021 19:41:02 +0100 =C3=81lvaro Fern=C3=A1ndez Rojas =
+wrote:
+>> This controller is present on BCM6318, BCM6328, BCM6362, BCM6368 and =
+BCM63268
+>> SoCs.
+>>=20
+>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>=20
+> make[2]: *** Deleting file 'Module.symvers'
+> ERROR: modpost: missing MODULE_LICENSE() in =
+drivers/net/mdio/mdio-mux-bcm6368.o
+> make[2]: *** [Module.symvers] Error 1
+> make[1]: *** [modules] Error 2
+> make: *** [__sub-make] Error 2
+> make[2]: *** Deleting file 'Module.symvers=E2=80=99
 
-commit b6622798bc50b625a1e62f82c7190df40c1f5b21 upstream.
-
-When changing the cpu affinity of an event it can happen today that
-(with some unlucky timing) the same event will be handled on the old
-and the new cpu at the same time.
-
-Avoid that by adding an "event active" flag to the per-event data and
-call the handler only if this flag isn't set.
-
-Cc: stable@vger.kernel.org
-Reported-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-Link: https://lore.kernel.org/r/20210306161833.4552-4-jgross@suse.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/xen/events/events_base.c     |   25 +++++++++++++++++--------
- drivers/xen/events/events_internal.h |    1 +
- 2 files changed, 18 insertions(+), 8 deletions(-)
-
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -702,6 +702,12 @@ static void xen_evtchn_close(unsigned in
- 		BUG();
- }
- 
-+static void event_handler_exit(struct irq_info *info)
-+{
-+	smp_store_release(&info->is_active, 0);
-+	clear_evtchn(info->evtchn);
-+}
-+
- static void pirq_query_unmask(int irq)
- {
- 	struct physdev_irq_status_query irq_status;
-@@ -732,13 +738,13 @@ static void eoi_pirq(struct irq_data *da
- 	    likely(!irqd_irq_disabled(data))) {
- 		do_mask(info, EVT_MASK_REASON_TEMPORARY);
- 
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- 
- 		irq_move_masked_irq(data);
- 
- 		do_unmask(info, EVT_MASK_REASON_TEMPORARY);
- 	} else
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- 
- 	if (pirq_needs_eoi(data->irq)) {
- 		rc = HYPERVISOR_physdev_op(PHYSDEVOP_eoi, &eoi);
-@@ -1574,6 +1580,8 @@ void handle_irq_for_port(evtchn_port_t p
- 	}
- 
- 	info = info_for_irq(irq);
-+	if (xchg_acquire(&info->is_active, 1))
-+		return;
- 
- 	if (ctrl->defer_eoi) {
- 		info->eoi_cpu = smp_processor_id();
-@@ -1750,13 +1758,13 @@ static void ack_dynirq(struct irq_data *
- 	    likely(!irqd_irq_disabled(data))) {
- 		do_mask(info, EVT_MASK_REASON_TEMPORARY);
- 
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- 
- 		irq_move_masked_irq(data);
- 
- 		do_unmask(info, EVT_MASK_REASON_TEMPORARY);
- 	} else
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- }
- 
- static void mask_ack_dynirq(struct irq_data *data)
-@@ -1772,7 +1780,7 @@ static void lateeoi_ack_dynirq(struct ir
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- 	}
- }
- 
-@@ -1783,7 +1791,7 @@ static void lateeoi_mask_ack_dynirq(stru
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EXPLICIT);
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- 	}
- }
- 
-@@ -1892,10 +1900,11 @@ static void restore_cpu_ipis(unsigned in
- /* Clear an irq's pending state, in preparation for polling on it */
- void xen_clear_irq_pending(int irq)
- {
--	int evtchn = evtchn_from_irq(irq);
-+	struct irq_info *info = info_for_irq(irq);
-+	evtchn_port_t evtchn = info ? info->evtchn : 0;
- 
- 	if (VALID_EVTCHN(evtchn))
--		clear_evtchn(evtchn);
-+		event_handler_exit(info);
- }
- EXPORT_SYMBOL(xen_clear_irq_pending);
- void xen_set_irq_pending(int irq)
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -40,6 +40,7 @@ struct irq_info {
- #define EVT_MASK_REASON_EXPLICIT	0x01
- #define EVT_MASK_REASON_TEMPORARY	0x02
- #define EVT_MASK_REASON_EOI_PENDING	0x04
-+	u8 is_active;		/* Is event just being handled? */
- 	unsigned irq;
- 	unsigned int evtchn;	/* event channel */
- 	unsigned short cpu;	/* cpu bound */
-
+Ok, I=E2=80=99ll add the following in v2:
+MODULE_AUTHOR("=C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>");
+MODULE_DESCRIPTION("BCM6368 mdiomux bus controller driver");
+MODULE_LICENSE("GPL v2");
 
