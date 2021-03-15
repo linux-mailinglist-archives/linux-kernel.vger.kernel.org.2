@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF71833BB28
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96E433BBAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhCOOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S237596AbhCOOTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232467AbhCON65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6919C64F48;
-        Mon, 15 Mar 2021 13:58:36 +0000 (UTC)
+        id S232704AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4C9264F2E;
+        Mon, 15 Mar 2021 13:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816718;
-        bh=4dxnC+z2O23rt+e3NSTNQYUyj91ckyhJEtphZAoFisM=;
+        s=korg; t=1615816751;
+        bh=AznuqpOkkSuA+4G6CX9T30XzHXgyKop5MLAUA3jqGwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DaeF9ytE/V1mKQ9bKpIsiItZRrHdRmqx5oJMVT48HaaY5jbAlQZQBdBKqSBOCumYH
-         IA1sqzL5Xdt/UOY/chqPs6KdpQMmVHia81rZMTKSBm3LxJe84qc7qh+89UsYLMdky2
-         2y96ry5+JexnaptFFt0AwfEXXl2HK+YA6MOMYSI8=
+        b=t4qWwAKXsnK2ekJLiE18wexkusZ5Ygtx6gOyARkraYilwjSrhAQWfYDcB0Z4iSnY1
+         x39BvTw8nQizBkyVEZMz2awuV2YlfOdCX7QO5KV7uoQQ2wvE2f7+Rdqn5p/TwG9BPM
+         5fYToRnZSLZGdu1iPHQ/RU2pYKZ/GS2eXLlzq5+s=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 073/290] perf traceevent: Ensure read cmdlines are null terminated.
+        stable@vger.kernel.org,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 103/306] drm/amdgpu/display: dont assert in set backlight function
 Date:   Mon, 15 Mar 2021 14:52:46 +0100
-Message-Id: <20210315135544.376366571@linuxfoundation.org>
+Message-Id: <20210315135511.122637199@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,36 +42,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Rogers <irogers@google.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit 137a5258939aca56558f3a23eb229b9c4b293917 upstream.
+commit dfd8b7fbd985ec1cf76fe10f2875a50b10833740 upstream.
 
-Issue detected by address sanitizer.
+It just spams the logs.
 
-Fixes: cd4ceb63438e9e28 ("perf util: Save pid-cmdline mapping into tracing header")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210226221431.1985458-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/trace-event-read.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/tools/perf/util/trace-event-read.c
-+++ b/tools/perf/util/trace-event-read.c
-@@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep
- 		pr_debug("error reading saved cmdlines\n");
- 		goto out;
- 	}
-+	buf[ret] = '\0';
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -2571,7 +2571,6 @@ bool dc_link_set_backlight_level(const s
+ 			if (pipe_ctx->plane_state == NULL)
+ 				frame_ramp = 0;
+ 		} else {
+-			ASSERT(false);
+ 			return false;
+ 		}
  
- 	parse_saved_cmdline(pevent, buf, size);
- 	ret = 0;
 
 
