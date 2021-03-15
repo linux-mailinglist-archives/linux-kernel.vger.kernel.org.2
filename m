@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9F533BE3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277F633BC0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238817AbhCOOoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
+        id S237998AbhCOOW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:22:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231553AbhCOODv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 601F064EF3;
-        Mon, 15 Mar 2021 14:03:49 +0000 (UTC)
+        id S232923AbhCOOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6EA64F92;
+        Mon, 15 Mar 2021 13:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817030;
-        bh=ix72ziC2gyY3wXIxbSgf7FlFZU3dBFsG5k9aDmuzf3E=;
+        s=korg; t=1615816796;
+        bh=ZVveNTZOC9To2IBySsO7Ne8khllO+LB55e5NlwO6B6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=smH6Usi+pDMhBc8yDr+wVTjZ/uLW8bsRNZa1AcE0YFcLxq+upQ8FAP4qLZci7eWRN
-         JQTl2/0v7o8PBNYvEYi7K+TkWqqFs91T3+A3qL9fqTk65w5FrTQ5oJTdniF5C2Tjfu
-         /0AmCT8HgVF46hHqsODvw0JGj73KfcFsxYlHyKQo=
+        b=OuBnPI0ZC040qmh1Q2qB6h0JqVtLIghy7+eNc5wDVFPP/X9cdQ9Mh+nP38rIr1OfN
+         A7ntKdLEMSGygZu9aG5GfYsNzPbn027onGJ5NqO8vSOGbChTmYM4KyRKHvP8Q/XM2U
+         JExM6F5BkadWZ4d/6Waoq7ejOhVRbo4v/KK2jI3I=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mikael Beckius <mikael.beckius@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 255/290] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
+        stable@vger.kernel.org, Niv Sardi <xaiki@evilgiggle.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 116/168] USB: serial: ch341: add new Product ID
 Date:   Mon, 15 Mar 2021 14:55:48 +0100
-Message-Id: <20210315135550.630952534@linuxfoundation.org>
+Message-Id: <20210315135554.170665466@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,154 +41,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+From: Niv Sardi <xaiki@evilgiggle.com>
 
-[ Upstream commit 46eb1701c046cc18c032fa68f3c8ccbf24483ee4 ]
+commit 5563b3b6420362c8a1f468ca04afe6d5f0a8d0a3 upstream.
 
-hrtimer_force_reprogram() and hrtimer_interrupt() invokes
-__hrtimer_get_next_event() to find the earliest expiry time of hrtimer
-bases. __hrtimer_get_next_event() does not update
-cpu_base::[softirq_]_expires_next to preserve reprogramming logic. That
-needs to be done at the callsites.
+Add PID for CH340 that's found on cheap programmers.
 
-hrtimer_force_reprogram() updates cpu_base::softirq_expires_next only when
-the first expiring timer is a softirq timer and the soft interrupt is not
-activated. That's wrong because cpu_base::softirq_expires_next is left
-stale when the first expiring timer of all bases is a timer which expires
-in hard interrupt context. hrtimer_interrupt() does never update
-cpu_base::softirq_expires_next which is wrong too.
+The driver works flawlessly as soon as the new PID (0x9986) is added to it.
+These look like ANU232MI but ship with a ch341 inside. They have no special
+identifiers (mine only has the string "DB9D20130716" printed on the PCB and
+nothing identifiable on the packaging. The merchant i bought it from
+doesn't sell these anymore).
 
-That becomes a problem when clock_settime() sets CLOCK_REALTIME forward and
-the first soft expiring timer is in the CLOCK_REALTIME_SOFT base. Setting
-CLOCK_REALTIME forward moves the clock MONOTONIC based expiry time of that
-timer before the stale cpu_base::softirq_expires_next.
+the lsusb -v output is:
+Bus 001 Device 009: ID 9986:7523
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x9986
+  idProduct          0x7523
+  bcdDevice            2.54
+  iManufacturer           0
+  iProduct                0
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x0027
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower               96mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1
+      bInterfaceProtocol      2
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0008  1x 8 bytes
+        bInterval               1
 
-cpu_base::softirq_expires_next is cached to make the check for raising the
-soft interrupt fast. In the above case the soft interrupt won't be raised
-until clock monotonic reaches the stale cpu_base::softirq_expires_next
-value. That's incorrect, but what's worse it that if the softirq timer
-becomes the first expiring timer of all clock bases after the hard expiry
-timer has been handled the reprogramming of the clockevent from
-hrtimer_interrupt() will result in an interrupt storm. That happens because
-the reprogramming does not use cpu_base::softirq_expires_next, it uses
-__hrtimer_get_next_event() which returns the actual expiry time. Once clock
-MONOTONIC reaches cpu_base::softirq_expires_next the soft interrupt is
-raised and the storm subsides.
-
-Change the logic in hrtimer_force_reprogram() to evaluate the soft and hard
-bases seperately, update softirq_expires_next and handle the case when a
-soft expiring timer is the first of all bases by comparing the expiry times
-and updating the required cpu base fields. Split this functionality into a
-separate function to be able to use it in hrtimer_interrupt() as well
-without copy paste.
-
-Fixes: 5da70160462e ("hrtimer: Implement support for softirq based hrtimers")
-Reported-by: Mikael Beckius <mikael.beckius@windriver.com>
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mikael Beckius <mikael.beckius@windriver.com>
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210223160240.27518-1-anna-maria@linutronix.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Niv Sardi <xaiki@evilgiggle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/time/hrtimer.c | 60 ++++++++++++++++++++++++++++---------------
- 1 file changed, 39 insertions(+), 21 deletions(-)
+ drivers/usb/serial/ch341.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 387b4bef7dd1..4416f5d72c11 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -546,8 +546,11 @@ static ktime_t __hrtimer_next_event_base(struct hrtimer_cpu_base *cpu_base,
- }
- 
- /*
-- * Recomputes cpu_base::*next_timer and returns the earliest expires_next but
-- * does not set cpu_base::*expires_next, that is done by hrtimer_reprogram.
-+ * Recomputes cpu_base::*next_timer and returns the earliest expires_next
-+ * but does not set cpu_base::*expires_next, that is done by
-+ * hrtimer[_force]_reprogram and hrtimer_interrupt only. When updating
-+ * cpu_base::*expires_next right away, reprogramming logic would no longer
-+ * work.
-  *
-  * When a softirq is pending, we can ignore the HRTIMER_ACTIVE_SOFT bases,
-  * those timers will get run whenever the softirq gets handled, at the end of
-@@ -588,6 +591,37 @@ __hrtimer_get_next_event(struct hrtimer_cpu_base *cpu_base, unsigned int active_
- 	return expires_next;
- }
- 
-+static ktime_t hrtimer_update_next_event(struct hrtimer_cpu_base *cpu_base)
-+{
-+	ktime_t expires_next, soft = KTIME_MAX;
-+
-+	/*
-+	 * If the soft interrupt has already been activated, ignore the
-+	 * soft bases. They will be handled in the already raised soft
-+	 * interrupt.
-+	 */
-+	if (!cpu_base->softirq_activated) {
-+		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
-+		/*
-+		 * Update the soft expiry time. clock_settime() might have
-+		 * affected it.
-+		 */
-+		cpu_base->softirq_expires_next = soft;
-+	}
-+
-+	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
-+	/*
-+	 * If a softirq timer is expiring first, update cpu_base->next_timer
-+	 * and program the hardware with the soft expiry time.
-+	 */
-+	if (expires_next > soft) {
-+		cpu_base->next_timer = cpu_base->softirq_next_timer;
-+		expires_next = soft;
-+	}
-+
-+	return expires_next;
-+}
-+
- static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
- {
- 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
-@@ -628,23 +662,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
- {
- 	ktime_t expires_next;
- 
--	/*
--	 * Find the current next expiration time.
--	 */
--	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
--
--	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
--		/*
--		 * When the softirq is activated, hrtimer has to be
--		 * programmed with the first hard hrtimer because soft
--		 * timer interrupt could occur too late.
--		 */
--		if (cpu_base->softirq_activated)
--			expires_next = __hrtimer_get_next_event(cpu_base,
--								HRTIMER_ACTIVE_HARD);
--		else
--			cpu_base->softirq_expires_next = expires_next;
--	}
-+	expires_next = hrtimer_update_next_event(cpu_base);
- 
- 	if (skip_equal && expires_next == cpu_base->expires_next)
- 		return;
-@@ -1644,8 +1662,8 @@ void hrtimer_interrupt(struct clock_event_device *dev)
- 
- 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
- 
--	/* Reevaluate the clock bases for the next expiry */
--	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
-+	/* Reevaluate the clock bases for the [soft] next expiry */
-+	expires_next = hrtimer_update_next_event(cpu_base);
- 	/*
- 	 * Store the new expiry value so the migration code can verify
- 	 * against it.
--- 
-2.30.1
-
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -85,6 +85,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1a86, 0x7522) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
+ 	{ USB_DEVICE(0x4348, 0x5523) },
++	{ USB_DEVICE(0x9986, 0x7523) },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(usb, id_table);
 
 
