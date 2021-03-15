@@ -2,89 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA7F33C841
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7162B33C84A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbhCOVK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:10:26 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11014 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234094AbhCOVJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:09:54 -0400
-IronPort-SDR: fXsgOweZYP95NAO+zFJR/ZlHkZZwV8OeAeCZJ862URrHJAufW7idKaSYpDHO4fJprjS/liQXOe
- KObCPPVjNPqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="250521755"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="250521755"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 14:09:51 -0700
-IronPort-SDR: QqoGwGyIM0SWmD7Q9R5vG3zx01mNrOXrhviDksM4WCW0VuB8g8mlBMbiH48KGyKc4ek6oMVHt9
- 3YUhURq5KwEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="601571804"
-Received: from lkp-server02.sh.intel.com (HELO 1dc5e1a854f4) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Mar 2021 14:09:48 -0700
-Received: from kbuild by 1dc5e1a854f4 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lLuTE-0000eY-AL; Mon, 15 Mar 2021 21:09:48 +0000
-Date:   Tue, 16 Mar 2021 05:09:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH] wfx: fix irqf_oneshot.cocci warnings
-Message-ID: <20210315210920.GA43634@d108da9836c5>
-References: <20210315132501.441681-25-Jerome.Pouiller@silabs.com>
+        id S231901AbhCOVMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhCOVLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 17:11:45 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EC0C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:11:44 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id jt13so68736237ejb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jlekstrand-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7XeKhr7CPuLWpezZdLdwR9imo7EjFN3I1W1hRStNFLA=;
+        b=rOyTvbm0rpYHUYLb6C2cR5Mn1A5XpScpBFUv6Kl5IM8xCvvTNA8uxv/nnkuCW3pByP
+         2lOD0x39Lei9K/01UDokzH2XVK5fzt3v5yHjAyQ1kJCd/Ms9wz04ZKMommZx3myn2u7o
+         UI6qU194/xGxo6NXHcek5AcF5/YhlJLsziczLaHhoskd/afTJFIPwu+P/5D9X76Kz8we
+         NtK60DIllezF4lzOt7+gqJC06bk2fOielWRwh2ZOYj2/2eONW0e4MMiyhwmRsydVF4rj
+         bGaH6LP7f53BmuAVRkZGpR4LYSiDvmd2URmLzjo3O99uwRJGN1eS/SKvGDWoIqswdmdw
+         qFSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7XeKhr7CPuLWpezZdLdwR9imo7EjFN3I1W1hRStNFLA=;
+        b=b8Crk4j99VDq+MJE4+nObLVPo33Q+zz/7CXOh2iWu59A6Bhw0unXb/4R8thsP7Sv8s
+         0VH4YGNMZxm2hf4gr6GJESU7kIoMTLNlQqidGr9IC0ZtxZtRmG9ON/KA7Gao8zU/3l1C
+         IDnhExHCIgMwnjH90qj0thi0KsHcN8SJzjoinWny+wd7/R5J6eDaH/g96HNXl0ndsRNb
+         7e/5iEXuMkCM5QzC3eQxeHmyUOOF8/8X0FkfF5PGQ7xfmVCFlKdTppwP6Rf8I/SjNlL0
+         iSsMN+tP6Yw9k50mODV3pawXOJ5DGp/HlU+K2Vnl8zFqQl/TiAM6L7n0j84cnKVOZP/+
+         Pj0A==
+X-Gm-Message-State: AOAM533laxcP9IfQFLYB138GFdbriCTTF2ktkxTAe0hJQHCuksdCAfLz
+        FP6hu/fJpuYkprgClMGcHrjN25gTLkdoVofo3rN4tQ==
+X-Google-Smtp-Source: ABdhPJwEJ88ZcVdgoanEAlOUeGO68D49y0u7/+I+EUFnzqqULVU3Leqo/AMSnmx6G/jgVGUfLRnJyqyIF10bzk7sxKo=
+X-Received: by 2002:a17:906:b288:: with SMTP id q8mr25774469ejz.210.1615842703458;
+ Mon, 15 Mar 2021 14:11:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210315132501.441681-25-Jerome.Pouiller@silabs.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200311034351.1275197-3-jason@jlekstrand.net>
+ <20200317212115.419358-1-jason@jlekstrand.net> <64eed158-22a8-10a7-7686-c972f8542649@daenzer.net>
+ <20200930095542.GY438822@phenom.ffwll.local>
+In-Reply-To: <20200930095542.GY438822@phenom.ffwll.local>
+From:   Jason Ekstrand <jason@jlekstrand.net>
+Date:   Mon, 15 Mar 2021 16:11:32 -0500
+Message-ID: <CAOFGe97Q_j8PWq90rQoVk-qY95LM=o+hhWYg+Gsi9sp8+FD+NQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] RFC: dma-buf: Add an API for importing and exporting
+ sync files (v5)
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Chenbo Feng <fengc@google.com>,
+        Daniel Stone <daniels@collabora.com>,
+        James Jones <jajones@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Hackmann <ghackmann@google.com>,
+        linaro-mm-sig@lists.linaro.org,
+        =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@google.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Jesse Hall <jessehall@google.com>,
+        Dave Airlie <airlied@redhat.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Wed, Sep 30, 2020 at 4:55 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Sep 30, 2020 at 11:39:06AM +0200, Michel D=C3=A4nzer wrote:
+> > On 2020-03-17 10:21 p.m., Jason Ekstrand wrote:
+> > > Explicit synchronization is the future.  At least, that seems to be w=
+hat
+> > > most userspace APIs are agreeing on at this point.  However, most of =
+our
+> > > Linux APIs (both userspace and kernel UAPI) are currently built aroun=
+d
+> > > implicit synchronization with dma-buf.  While work is ongoing to chan=
+ge
+> > > many of the userspace APIs and protocols to an explicit synchronizati=
+on
+> > > model, switching over piecemeal is difficult due to the number of
+> > > potential components involved.  On the kernel side, many drivers use
+> > > dma-buf including GPU (3D/compute), display, v4l, and others.  In
+> > > userspace, we have X11, several Wayland compositors, 3D drivers, comp=
+ute
+> > > drivers (OpenCL etc.), media encode/decode, and the list goes on.
+> > >
+> > > This patch provides a path forward by allowing userspace to manually
+> > > manage the fences attached to a dma-buf.  Alternatively, one can thin=
+k
+> > > of this as making dma-buf's implicit synchronization simply a carrier
+> > > for an explicit fence.  This is accomplished by adding two IOCTLs to
+> > > dma-buf for importing and exporting a sync file to/from the dma-buf.
+> > > This way a userspace component which is uses explicit synchronization=
+,
+> > > such as a Vulkan driver, can manually set the write fence on a buffer
+> > > before handing it off to an implicitly synchronized component such as=
+ a
+> > > Wayland compositor or video encoder.  In this way, each of the differ=
+ent
+> > > components can be upgraded to an explicit synchronization model one a=
+t a
+> > > time as long as the userspace pieces connecting them are aware of it =
+and
+> > > import/export fences at the right times.
+> > >
+> > > There is a potential race condition with this API if userspace is not
+> > > careful.  A typical use case for implicit synchronization is to wait =
+for
+> > > the dma-buf to be ready, use it, and then signal it for some other
+> > > component.  Because a sync_file cannot be created until it is guarant=
+eed
+> > > to complete in finite time, userspace can only signal the dma-buf aft=
+er
+> > > it has already submitted the work which uses it to the kernel and has
+> > > received a sync_file back.  There is no way to atomically submit a
+> > > wait-use-signal operation.  This is not, however, really a problem wi=
+th
+> > > this API so much as it is a problem with explicit synchronization
+> > > itself.  The way this is typically handled is to have very explicit
+> > > ownership transfer points in the API or protocol which ensure that on=
+ly
+> > > one component is using it at any given time.  Both X11 (via the PRESE=
+NT
+> > > extension) and Wayland provide such ownership transfer points via
+> > > explicit present and idle messages.
+> > >
+> > > The decision was intentionally made in this patch to make the import =
+and
+> > > export operations IOCTLs on the dma-buf itself rather than as a DRM
+> > > IOCTL.  This makes it the import/export operation universal across al=
+l
+> > > components which use dma-buf including GPU, display, v4l, and others.
+> > > It also means that a userspace component can do the import/export
+> > > without access to the DRM fd which may be tricky to get in cases wher=
+e
+> > > the client communicates with DRM via a userspace API such as OpenGL o=
+r
+> > > Vulkan.  At a future date we may choose to add direct import/export A=
+PIs
+> > > to components such as drm_syncobj to avoid allocating a file descript=
+or
+> > > and going through two ioctls.  However, that seems to be something of=
+ a
+> > > micro-optimization as import/export operations are likely to happen a=
+t a
+> > > rate of a few per frame of rendered or decoded video.
+> > >
+> > > v2 (Jason Ekstrand):
+> > >   - Use a wrapper dma_fence_array of all fences including the new one
+> > >     when importing an exclusive fence.
+> > >
+> > > v3 (Jason Ekstrand):
+> > >   - Lock around setting shared fences as well as exclusive
+> > >   - Mark SIGNAL_SYNC_FILE as a read-write ioctl.
+> > >   - Initialize ret to 0 in dma_buf_wait_sync_file
+> > >
+> > > v4 (Jason Ekstrand):
+> > >   - Use the new dma_resv_get_singleton helper
+> > >
+> > > v5 (Jason Ekstrand):
+> > >   - Rename the IOCTLs to import/export rather than wait/signal
+> > >   - Drop the WRITE flag and always get/set the exclusive fence
+> > >
+> > > Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
+> >
+> > What's the status of this? DMA_BUF_IOCTL_EXPORT_SYNC_FILE would be usef=
+ul
+> > for Wayland compositors to wait for client buffers to become ready with=
+out
+> > being prone to getting delayed by later HW access to them, so it would =
+be
+> > nice to merge that at least (if DMA_BUF_IOCTL_IMPORT_SYNC_FILE is still
+> > controversial).
+>
+> I think the missing bits are just the usual stuff
+> - igt testcases
+> - userspace using the new ioctls
+> - review of the entire pile
+>
+> I don't think there's any fundamental objections aside from "no one ever
+> pushed this over the finish line".
 
-drivers/net/wireless/silabs/wfx/bus_sdio.c:134:8-33: ERROR: Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+I just re-upped the patch series and you should have been on the CC
+for the cover letter.  The Mesa MR is here:
+https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/4037  I'm
+going to try and knock out an IGT test quick but I don't know how much
+is really practical to test in that environment besides a basic fuzz
+for "does the IOCTL return a sync file".
 
- Since commit 1c6c69525b40 ("genirq: Reject bogus threaded irq requests")
- threaded IRQs without a primary handler need to be requested with
- IRQF_ONESHOT, otherwise the request will fail.
+I've dropped all the sync_file import stuff in the latest version.  It
+would have been useful for testing but it's also where all the scary
+stuff lives and I'm no longer convinced it solves any real problems
+for userspace.
 
- So pass the IRQF_ONESHOT flag in this case.
-
-Generated by: scripts/coccinelle/misc/irqf_oneshot.cocci
-
-CC: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-url:    https://github.com/0day-ci/linux/commits/Jerome-Pouiller/wfx-get-out-from-the-staging-area/20210315-212855
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git b828324bba8f575fde487a91fec07303789dda8a
-
- bus_sdio.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/drivers/net/wireless/silabs/wfx/bus_sdio.c
-+++ b/drivers/net/wireless/silabs/wfx/bus_sdio.c
-@@ -132,7 +132,8 @@ static int wfx_sdio_irq_subscribe(void *
- 		flags = IRQF_TRIGGER_HIGH;
- 	flags |= IRQF_ONESHOT;
- 	return devm_request_threaded_irq(&bus->func->dev, bus->of_irq, NULL,
--					 wfx_sdio_irq_handler_ext, flags,
-+					 wfx_sdio_irq_handler_ext,
-+					 flags | IRQF_ONESHOT,
- 					 "wfx", bus);
- }
- 
+--Jason
