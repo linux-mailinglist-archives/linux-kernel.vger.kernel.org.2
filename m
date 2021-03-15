@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D522633BB79
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1147233BBCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237011AbhCOORJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
+        id S232499AbhCOOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232674AbhCON72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E4C164EEF;
-        Mon, 15 Mar 2021 13:59:04 +0000 (UTC)
+        id S232377AbhCON7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B8964F22;
+        Mon, 15 Mar 2021 13:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816745;
-        bh=iakUUpx4G6VONJ2CRlAEqBBDWFCcmWmLRSuQ8I4Q60A=;
+        s=korg; t=1615816748;
+        bh=gx7uBT8U4+i8w5exb3WkcPRwRM2B1g9/JyoAWrlpxwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+y9q0T1n/MuaaChoTzQua8DHlOf78tKoHLIBYDvUX7zELSZvqmKl0mZpPigW1kiW
-         xYuLzpI6DnLaLP2tgRxUUep0hMHekf6nnZBSOxgsKNmgSmxzm/u6Yk9A3CZlN49nJo
-         tbAZxgkEqqCfl0CbxdkEu0KvWewVk+6+FH934Paw=
+        b=atCD9O7j0SvyInEkCgyFq8lLE6JYAuMLksAl+rRSFb4nW4f4WyZisSYOir5Zua8k/
+         oXJpccIbJlhBEHVD+q5ltNZuOfKOKwNYqAP81wOcQdu/IPcGdQDxkiNMi+eS5Piyw5
+         oAfLLoW5yPERsJrfHHQzAoPNWo84+7zbwTVzfKmA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 33/95] mmc: mxs-mmc: Fix a resource leak in an error handling path in mxs_mmc_probe()
-Date:   Mon, 15 Mar 2021 14:57:03 +0100
-Message-Id: <20210315135741.360989589@linuxfoundation.org>
+Subject: [PATCH 4.14 35/95] powerpc: improve handling of unrecoverable system reset
+Date:   Mon, 15 Mar 2021 14:57:05 +0100
+Message-Id: <20210315135741.425402077@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -43,34 +42,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
+[ Upstream commit 11cb0a25f71818ca7ab4856548ecfd83c169aa4d ]
 
-If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
-call.
+If an unrecoverable system reset hits in process context, the system
+does not have to panic. Similar to machine check, call nmi_exit()
+before die().
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210130130852.2952424-26-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mxs-mmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/traps.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index add1e70195ea..7125687faf76 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -659,7 +659,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 0f1a888c04a8..05c1aabad01c 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -360,8 +360,11 @@ void system_reset_exception(struct pt_regs *regs)
+ 		die("Unrecoverable nested System Reset", regs, SIGABRT);
+ #endif
+ 	/* Must die if the interrupt is not recoverable */
+-	if (!(regs->msr & MSR_RI))
++	if (!(regs->msr & MSR_RI)) {
++		/* For the reason explained in die_mce, nmi_exit before die */
++		nmi_exit();
+ 		die("Unrecoverable System Reset", regs, SIGABRT);
++	}
  
- 	ret = mmc_of_parse(mmc);
- 	if (ret)
--		goto out_clk_disable;
-+		goto out_free_dma;
- 
- 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
- 
+ 	if (!nested)
+ 		nmi_exit();
 -- 
 2.30.1
 
