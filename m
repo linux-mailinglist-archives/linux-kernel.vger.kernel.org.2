@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0148333BB67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6B033BB1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236904AbhCOOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:16:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S236055AbhCOOMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232632AbhCON7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD3464F40;
-        Mon, 15 Mar 2021 13:59:00 +0000 (UTC)
+        id S232351AbhCON62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA13B64F18;
+        Mon, 15 Mar 2021 13:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816741;
-        bh=YID2P7AvDCfohH6m59JbgtIUUiOAnIQBKEJthKB0uos=;
+        s=korg; t=1615816706;
+        bh=3bTbJriGyVpXBp0f/r1CFonGIIs07A4ZzRZa71rgZ4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WQhnCoItQi/+EM667U8KW2i7V5R8eYZjQrhWVbCiXh9mT03l86OXQT0cQskISkB2B
-         Qcs6EaHbSaQufrjMXcsewHW2zMKVdNmBqOWoNIcjgMHBa7V1mA7HiH9E4B/lIo2gHO
-         s2P20McCFI1/kitTVRwMuDCRQrOwJHsYVZZYPs3c=
+        b=YNuE8vWvvJtUyeHQ6WJYzQ9MipntqWsRYsr/T6V5CFRVNGyZKMoCldl5KxXvIguGo
+         XCEsutarcpc+5TUbsDSUlR8iByc2LA+nVt5w/TJOhLcOV1lxlZc2wDuUEozhAYLiDJ
+         kZJWR/ZrVmVot5o01uSfjjZbBcvRllzZOTHjDc9Y=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 096/306] drm/radeon: also init GEM funcs in radeon_gem_prime_import_sg_table
-Date:   Mon, 15 Mar 2021 14:52:39 +0100
-Message-Id: <20210315135510.902710918@linuxfoundation.org>
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 067/290] net: stmmac: fix watchdog timeout during suspend/resume stress test
+Date:   Mon, 15 Mar 2021 14:52:40 +0100
+Message-Id: <20210315135544.173287463@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +41,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Christian König <christian.koenig@amd.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-commit a25955ba123499d7db520175c6be59c29f9215e3 upstream.
+commit c511819d138de38e1637eedb645c207e09680d0f upstream.
 
-Otherwise we will run into a NULL ptr deref.
+stmmac_xmit() call stmmac_tx_timer_arm() at the end to modify tx timer to
+do the transmission cleanup work. Imagine such a situation, stmmac enters
+suspend immediately after tx timer modified, it's expire callback
+stmmac_tx_clean() would not be invoked. This could affect BQL, since
+netdev_tx_sent_queue() has been called, but netdev_tx_completed_queue()
+have not been involved, as a result, dql_avail(&dev_queue->dql) finally
+always return a negative value.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=212137
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org # 5.11.x
+__dev_queue_xmit->__dev_xmit_skb->qdisc_run->__qdisc_run->qdisc_restart->dequeue_skb:
+	if ((q->flags & TCQ_F_ONETXQUEUE) &&
+		netif_xmit_frozen_or_stopped(txq)) // __QUEUE_STATE_STACK_XOFF is set
+
+Net core will stop transmitting any more. Finillay, net watchdong would timeout.
+To fix this issue, we should call netdev_tx_reset_queue() in stmmac_resume().
+
+Fixes: 54139cf3bb33 ("net: stmmac: adding multiple buffers for rx")
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/radeon/radeon.h       |    2 ++
- drivers/gpu/drm/radeon/radeon_gem.c   |    4 ++--
- drivers/gpu/drm/radeon/radeon_prime.c |    2 ++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/radeon/radeon.h
-+++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -575,6 +575,8 @@ struct radeon_gem {
- 	struct list_head	objects;
- };
- 
-+extern const struct drm_gem_object_funcs radeon_gem_object_funcs;
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5230,6 +5230,8 @@ static void stmmac_reset_queues_param(st
+ 		tx_q->cur_tx = 0;
+ 		tx_q->dirty_tx = 0;
+ 		tx_q->mss = 0;
 +
- int radeon_gem_init(struct radeon_device *rdev);
- void radeon_gem_fini(struct radeon_device *rdev);
- int radeon_gem_object_create(struct radeon_device *rdev, unsigned long size,
---- a/drivers/gpu/drm/radeon/radeon_gem.c
-+++ b/drivers/gpu/drm/radeon/radeon_gem.c
-@@ -43,7 +43,7 @@ struct sg_table *radeon_gem_prime_get_sg
- int radeon_gem_prime_pin(struct drm_gem_object *obj);
- void radeon_gem_prime_unpin(struct drm_gem_object *obj);
- 
--static const struct drm_gem_object_funcs radeon_gem_object_funcs;
-+const struct drm_gem_object_funcs radeon_gem_object_funcs;
- 
- static void radeon_gem_object_free(struct drm_gem_object *gobj)
- {
-@@ -227,7 +227,7 @@ static int radeon_gem_handle_lockup(stru
- 	return r;
++		netdev_tx_reset_queue(netdev_get_tx_queue(priv->dev, queue));
+ 	}
  }
  
--static const struct drm_gem_object_funcs radeon_gem_object_funcs = {
-+const struct drm_gem_object_funcs radeon_gem_object_funcs = {
- 	.free = radeon_gem_object_free,
- 	.open = radeon_gem_object_open,
- 	.close = radeon_gem_object_close,
---- a/drivers/gpu/drm/radeon/radeon_prime.c
-+++ b/drivers/gpu/drm/radeon/radeon_prime.c
-@@ -56,6 +56,8 @@ struct drm_gem_object *radeon_gem_prime_
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-+	bo->tbo.base.funcs = &radeon_gem_object_funcs;
-+
- 	mutex_lock(&rdev->gem.mutex);
- 	list_add_tail(&bo->list, &rdev->gem.objects);
- 	mutex_unlock(&rdev->gem.mutex);
 
 
