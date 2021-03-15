@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BB733B88D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB0533B768
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhCOODv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhCON5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3848E64EEC;
-        Mon, 15 Mar 2021 13:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816635;
-        bh=jSKspWM7EfzKqcDjD2f4ifI8H3zPgj3EYllVYCjybuA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ib0c51QCRNW6em5vb5+FaP8c0k19tKAJqhlyzr+fTGi+fg/v184QKWgqX517UDqd
-         kpxsvGHoids220aSUyL63SKFzlQxBYFmZxieqoc0qe1BZfzdbJtURwOJYW35dzLuLV
-         KxYnzlhUDbeA8MsDYCStctokbczOoJAOYXCtu8kU=
-From:   gregkh@linuxfoundation.org
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        William Tu <u9012063@gmail.com>
-Subject: [PATCH 5.4 017/168] selftests/bpf: No need to drop the packet when there is no geneve opt
-Date:   Mon, 15 Mar 2021 14:54:09 +0100
-Message-Id: <20210315135550.908514716@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S232137AbhCOOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:00:20 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:52991 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231722AbhCONzL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:55:11 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 15 Mar 2021 06:55:11 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Mar 2021 06:55:09 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Mar 2021 19:24:34 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 324FB36CC; Mon, 15 Mar 2021 19:24:33 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, David Collins <collinsd@codeaurora.org>,
+        satya priya <skakit@codeaurora.org>
+Subject: [PATCH V2 0/5] Add PM7325/PM8350C/PMR735A regulator support
+Date:   Mon, 15 Mar 2021 19:24:09 +0530
+Message-Id: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Below patches are already picked
+[3/7] regulator: qcom-rpmh: Correct the pmic5_hfsmps515 buck
+[6/7] regulator: qcom-rpmh: Use correct buck for S1C regulator
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+Sending V2 with remaining patches after few corrections/comments answered.
 
-commit 557c223b643a35effec9654958d8edc62fd2603a upstream.
+This series is dependent on below series which adds DT files for SC7280 SoC
+https://lore.kernel.org/patchwork/project/lkml/list/?series=488871
 
-In bpf geneve tunnel test we set geneve option on tx side. On rx side we
-only call bpf_skb_get_tunnel_opt(). Since commit 9c2e14b48119 ("ip_tunnels:
-Set tunnel option flag when tunnel metadata is present") geneve_rx() will
-not add TUNNEL_GENEVE_OPT flag if there is no geneve option, which cause
-bpf_skb_get_tunnel_opt() return ENOENT and _geneve_get_tunnel() in
-test_tunnel_kern.c drop the packet.
+satya priya (5):
+  regulator: qcom-rpmh: Add pmic5_ftsmps520 buck
+  regulator: qcom-rpmh: Add PM7325/PMR735A regulator support
+  arm64: dts: qcom: sc7280: Add RPMh regulators for sc7280-idp
+  dt-bindings: regulator: Convert regulator bindings to YAML format
+  dt-bindings: regulator: Add compatibles for PM7325/PMR735A
 
-As it should be valid that bpf_skb_get_tunnel_opt() return error when
-there is not tunnel option, there is no need to drop the packet and
-break all geneve rx traffic. Just set opt_class to 0 in this test and
-keep returning TC_ACT_OK.
+ .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 -----------------
+ .../bindings/regulator/qcom,rpmh-regulator.yaml    | 162 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            | 212 +++++++++++++++++++++
+ drivers/regulator/qcom-rpmh-regulator.c            |  62 +++++-
+ 4 files changed, 435 insertions(+), 181 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
 
-Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: William Tu <u9012063@gmail.com>
-Link: https://lore.kernel.org/bpf/20210224081403.1425474-1-liuhangbin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/testing/selftests/bpf/progs/test_tunnel_kern.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -446,10 +446,8 @@ int _geneve_get_tunnel(struct __sk_buff
- 	}
- 
- 	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
--	if (ret < 0) {
--		ERROR(ret);
--		return TC_ACT_SHOT;
--	}
-+	if (ret < 0)
-+		gopt.opt_class = 0;
- 
- 	bpf_trace_printk(fmt, sizeof(fmt),
- 			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
