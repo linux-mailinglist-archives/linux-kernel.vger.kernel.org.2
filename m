@@ -2,83 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCFE33B501
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1513233B72C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhCONxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhCONwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:52:38 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D5AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:52:38 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id z25so16318015lja.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 06:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dy4PRHmstKgNVDldtP4AfAN87fMyz+4pw4KdPsRLyB8=;
-        b=bEsEqmLShjpPLJm1IVJ6jucNB38hcg56W6nS6QQ+mxkcLPQtEy/D9K1iMizxd46fqb
-         riaAiuU8Vco3PP0s6+H50DC/gcuvZ8Grp/jgnNtP6u23QtKjwQMyBvOrhKbfopH2V4cU
-         VKfFloDVl7S/Qpcx8IScT34d15oDsSVhEUYKDNxEBtefzeAq6nV/rVeTlbXz3sIbEkmH
-         WMPYms+tF+9G8fevqQAycsy54iS3nDajfaYIKF61FWhNV/ofUy6h7rnPX6laLM0hWvvz
-         z//8awNhZyHZNmCpqrE0iUXPD9eMztuFb2Pztc2A3mjo30NLwfnQgHPNI2qthoaM7d6G
-         0atQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dy4PRHmstKgNVDldtP4AfAN87fMyz+4pw4KdPsRLyB8=;
-        b=mMG/IBMMyb8j0GVAI3Pjd2kwln+lcU9c+CVg+yRB5Mvu1388qLnT5MuTtTJIZ99JIj
-         9wp4Pv6MLJKJTtHxUpMpHexAJZRTSpPDNV8Vwpa0UcO/D0N6hWUd1s2BK201xF7VzyGy
-         +vrjbk5CWTxNWQ0pAzqmbWa7MpUpuyJ0JKw6Zq+b4HRPa8IXlfjghPhJYjUG01YxdDg0
-         gpve34uRiUSgaJLuVSNaPI35OKrqB/RYMDZB/gmp4nZdzf84YMhjuPpcCwT7Z1CUaTPu
-         b3ng0sX2yQPajnjSJg2JlS2/4pObm/Y83aZUdg1hlLsJ347BtswvDRTcGQugV5bGNLFg
-         Hx+A==
-X-Gm-Message-State: AOAM533oVSV2k4vvQXao8I9qBnLys1l0LSd+AkdP524IXnPtxmU7uQ4u
-        PnIp+w5x8LrTWUL2bULkEI0=
-X-Google-Smtp-Source: ABdhPJzm7z5o+3iCJWv0uaSkuOEe3L3+s678nFge6nHeOLKsNx/JEjoDpYnJq+Rmz+jcMS1jd6ZfIw==
-X-Received: by 2002:a2e:8084:: with SMTP id i4mr11029534ljg.122.1615816356846;
-        Mon, 15 Mar 2021 06:52:36 -0700 (PDT)
-Received: from grain.localdomain ([5.18.171.94])
-        by smtp.gmail.com with ESMTPSA id j25sm2681988lfm.25.2021.03.15.06.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 06:52:35 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 282825601CE; Mon, 15 Mar 2021 16:52:35 +0300 (MSK)
-Date:   Mon, 15 Mar 2021 16:52:35 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, security@kernel.org
-Subject: Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack leak
-Message-ID: <YE9mozT+ici7f2ec@grain>
-References: <YE53QiJuxsCUeoiu@localhost.localdomain>
- <20210315120803.GA13620@redhat.com>
- <YE9ZGl9jlnDz1OBP@grain>
- <20210315131911.GB13620@redhat.com>
+        id S230341AbhCON7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:59:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231611AbhCONy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ABE364EEC;
+        Mon, 15 Mar 2021 13:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615816496;
+        bh=UkfYB3iuj51x07Lnblew2NlIB6Xy7CbiW2rKzYvaodk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Cd6ozKQzD2YkrfLy04mC3CWZXdxJKqV+l95QioD4+BaM8vkL/KIbJwmKsy6xZyWCJ
+         0y5G74dvn3CEu7U/a5UiSk5UE52Sw5lPcRWqEuS54uHgJCfudyH4DldQJz+0PJerjV
+         40PawrFLdtd0rcleyV/SvfCo+lIU43+ZwJJdBu98=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Boyang Yu <byu@arista.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: [PATCH 4.9 72/78] hwmon: (lm90) Fix max6658 sporadic wrong temperature reading
+Date:   Mon, 15 Mar 2021 14:52:35 +0100
+Message-Id: <20210315135214.421593339@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315131911.GB13620@redhat.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:19:12PM +0100, Oleg Nesterov wrote:
-> > >
-> > > And why task_lock(current) ? What does it try to protect?
-> >
-> > As far as I remember this was related to reading from procfs
-> > at time the patch was written for first time. Looks like this
-> > not relevant anymore and could be dropped.
-> 
-> I think this was never relevant, ->alloc_lock is per-thread, not per mm.
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Then we can safely drop it. I'll take one more look once time permit
-and prepare a patch.
+From: Boyang Yu <byu@arista.com>
+
+commit 62456189f3292c62f87aef363f204886dc1d4b48 upstream.
+
+max6658 may report unrealistically high temperature during
+the driver initialization, for which, its overtemp alarm pin
+also gets asserted. For certain devices implementing overtemp
+protection based on that pin, it may further trigger a reset to
+the device. By reproducing the problem, the wrong reading is
+found to be coincident with changing the conversion rate.
+
+To mitigate this issue, set the stop bit before changing the
+conversion rate and unset it thereafter. After such change, the
+wrong reading is not reproduced. Apply this change only to the
+max6657 kind for now, controlled by flag LM90_PAUSE_ON_CONFIG.
+
+Signed-off-by: Boyang Yu <byu@arista.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/hwmon/lm90.c |   42 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
+
+--- a/drivers/hwmon/lm90.c
++++ b/drivers/hwmon/lm90.c
+@@ -186,6 +186,7 @@ enum chips { lm90, adm1032, lm99, lm86,
+ #define LM90_HAVE_EMERGENCY_ALARM (1 << 5)/* emergency alarm		*/
+ #define LM90_HAVE_TEMP3		(1 << 6) /* 3rd temperature sensor	*/
+ #define LM90_HAVE_BROKEN_ALERT	(1 << 7) /* Broken alert		*/
++#define LM90_PAUSE_FOR_CONFIG	(1 << 8) /* Pause conversion for config	*/
+ 
+ /* LM90 status */
+ #define LM90_STATUS_LTHRM	(1 << 0) /* local THERM limit tripped */
+@@ -286,6 +287,7 @@ static const struct lm90_params lm90_par
+ 		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+ 	},
+ 	[max6657] = {
++		.flags = LM90_PAUSE_FOR_CONFIG,
+ 		.alert_alarms = 0x7c,
+ 		.max_convrate = 8,
+ 		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
+@@ -486,6 +488,38 @@ static inline int lm90_select_remote_cha
+ 	return 0;
+ }
+ 
++static int lm90_write_convrate(struct i2c_client *client,
++			       struct lm90_data *data, int val)
++{
++	int err;
++	int config_orig, config_stop;
++
++	/* Save config and pause conversion */
++	if (data->flags & LM90_PAUSE_FOR_CONFIG) {
++		config_orig = lm90_read_reg(client, LM90_REG_R_CONFIG1);
++		if (config_orig < 0)
++			return config_orig;
++		config_stop = config_orig | 0x40;
++		if (config_orig != config_stop) {
++			err = i2c_smbus_write_byte_data(client,
++							LM90_REG_W_CONFIG1,
++							config_stop);
++			if (err < 0)
++				return err;
++		}
++	}
++
++	/* Set conv rate */
++	err = i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE, val);
++
++	/* Revert change to config */
++	if (data->flags & LM90_PAUSE_FOR_CONFIG && config_orig != config_stop)
++		i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
++					  config_orig);
++
++	return err;
++}
++
+ /*
+  * Set conversion rate.
+  * client->update_lock must be held when calling this function (unless we are
+@@ -506,7 +540,7 @@ static int lm90_set_convrate(struct i2c_
+ 		if (interval >= update_interval * 3 / 4)
+ 			break;
+ 
+-	err = i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE, i);
++	err = lm90_write_convrate(client, data, i);
+ 	data->update_interval = DIV_ROUND_CLOSEST(update_interval, 64);
+ 	return err;
+ }
+@@ -1512,8 +1546,7 @@ static void lm90_restore_conf(void *_dat
+ 	struct i2c_client *client = data->client;
+ 
+ 	/* Restore initial configuration */
+-	i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE,
+-				  data->convrate_orig);
++	lm90_write_convrate(client, data, data->convrate_orig);
+ 	i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
+ 				  data->config_orig);
+ }
+@@ -1530,12 +1563,13 @@ static int lm90_init_client(struct i2c_c
+ 	/*
+ 	 * Start the conversions.
+ 	 */
+-	lm90_set_convrate(client, data, 500);	/* 500ms; 2Hz conversion rate */
+ 	config = lm90_read_reg(client, LM90_REG_R_CONFIG1);
+ 	if (config < 0)
+ 		return config;
+ 	data->config_orig = config;
+ 
++	lm90_set_convrate(client, data, 500); /* 500ms; 2Hz conversion rate */
++
+ 	/* Check Temperature Range Select */
+ 	if (data->kind == adt7461 || data->kind == tmp451) {
+ 		if (config & 0x04)
+
+
