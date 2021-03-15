@@ -2,75 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B6A33B35F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6C233B364
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhCONLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:11:42 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:46865 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCONLQ (ORCPT
+        id S230034AbhCONMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:12:14 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56986 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230016AbhCONL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:11:16 -0400
-Received: by mail-wm1-f42.google.com with SMTP id d139-20020a1c1d910000b029010b895cb6f2so19404164wmd.5;
-        Mon, 15 Mar 2021 06:11:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qqfofxJJvL97CyThmJbWDOZDdOswFnLIDcDX1c+Xar8=;
-        b=E/1/21eCom8/UeCCN1H/SGTK20gXPcBEUCxPBTPyMFSRTrZThWkyC7p42spUNjemgB
-         r1UAXcp8+AWUTAyGSlkYqHs2KRbqYV3/XiqdsKO8Hs95z1PcLR0V2peizgPtxANPJn+y
-         Hh4RNvY2af/mHjlwdxp5DDxCEHpV0jMHxrv2uCaFUwUS1aF3TwOjnjrdEEpqr4ThqHhw
-         dujyokP04bPmLMk4wK4sx1zwbDq/pkaqXKKtrdVMgN3tFxEFj5bmAcIMKIc+JlBquxsq
-         stgJzKLa6Sb1DOQAfbJnfB9H9IAqxWWgQ5wU4s8qnY5CNpyMkX2tsW4NXRD7hVxjpih7
-         4Ggw==
-X-Gm-Message-State: AOAM5313gvK3lDXRRbRC+wQqlh1iDZOBV9r1oUMzBNHME6aUa1X08UkH
-        X/HRh0wjbOZTY9xrysVnZdE=
-X-Google-Smtp-Source: ABdhPJxzVnd9JjVflVxEo9H8HI0OmuYLgoqrLAbegOb2TJvYfm+4Lon8/TbZ6L0lTY7qvbw7Q2o8jQ==
-X-Received: by 2002:a1c:1f8f:: with SMTP id f137mr25819030wmf.66.1615813871521;
-        Mon, 15 Mar 2021 06:11:11 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id u23sm12362131wmn.26.2021.03.15.06.11.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 06:11:10 -0700 (PDT)
-Subject: Re: [PATCH] cpufreq:s5pv210:Fix typo issue
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>
-References: <20210315130855.9715-1-cxfcosmos@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <f8427d5b-24bd-cc54-4649-f2e6e006129c@kernel.org>
-Date:   Mon, 15 Mar 2021 14:11:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 15 Mar 2021 09:11:58 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12FDBoJU076360;
+        Mon, 15 Mar 2021 08:11:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615813910;
+        bh=sIjsgm9ldBHvLkWncjvpoTX93sqqn0mFc2qqBMwO7G4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QLRu2Ye1YQdnsWaK8R2FypJcLiTzblaQv+arJsKeUailzDI0Smfv22ye4QXDgd5aY
+         SF/toPP69MMvS4C2cE9x4tHuQ12iJdnF3tdyHXTkywhZKxbBtJMmzJe1Hi+eILXgQq
+         mJtzpMjw15uj0KRZEfIqTpncgzD41etpHFenfWdE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12FDBoKH088022
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 15 Mar 2021 08:11:50 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 15
+ Mar 2021 08:11:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 15 Mar 2021 08:11:50 -0500
+Received: from [10.250.235.140] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12FDBjRO115051;
+        Mon, 15 Mar 2021 08:11:46 -0500
+Subject: Re: [PATCH 2/2] PCI: cadence: Set LTSSM Detect.Quiet state delay.
+To:     Nadeem Athani <nadeem@cadence.com>, <tjoseph@cadence.com>,
+        <bhelgaas@google.com>, <robh+dt@kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>
+CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+References: <20210309073142.13219-1-nadeem@cadence.com>
+ <20210309073142.13219-3-nadeem@cadence.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <7be9dc0c-3161-f0d1-777c-1704ecb3853c@ti.com>
+Date:   Mon, 15 Mar 2021 18:41:44 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210315130855.9715-1-cxfcosmos@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210309073142.13219-3-nadeem@cadence.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/2021 14:08, Xiaofeng Cao wrote:
-> change 'freqency' to 'frequency'
-> change 'accoriding' to 'according'
-> change 'untile' to 'until'
-> change 'souce' to 'source'
-> change 'divier' to 'divider'
+Hi Nadeem,
+
+On 09/03/21 1:01 pm, Nadeem Athani wrote:
+> The parameter detect_quiet_min_delay can be used to program the minimum
+> time that LTSSM waits on entering Detect.Quiet state.
+> 00 : 0us minimum wait time in Detect.Quiet state.
+> 01 : 100us minimum wait time in Detect.Quiet state.
+> 10 : 1000us minimum wait time in Detect.Quiet state.
+> 11 : 2000us minimum wait time in Detect.Quiet state.
 > 
-> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> As per PCIe specification, all Receivers must meet the Z-RX-DC
+> specification for 2.5 GT/s within 1000us of entering Detect.Quiet LTSSM
+> substate. The LTSSM must stay in this substate until the ZRXDC
+> specification for 2.5 GT/s is met.
+> 
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
 > ---
->  drivers/cpufreq/s5pv210-cpufreq.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  drivers/pci/controller/cadence/pcie-cadence-host.c | 22 ++++++++++++++++++++++
+>  drivers/pci/controller/cadence/pcie-cadence.h      | 10 ++++++++++
+>  2 files changed, 32 insertions(+)
 > 
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> index 73dcf8cf98fb..056161b3fe65 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> @@ -461,6 +461,20 @@ static int cdns_pcie_host_init(struct device *dev,
+>  	return cdns_pcie_host_init_address_translation(rc);
+>  }
+>  
+> +static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_rc *rc)
+> +{
+> +	struct cdns_pcie *pcie = &rc->pcie;
+> +	u32 delay = rc->detect_quiet_min_delay;
+> +	u32 ltssm_control_cap;
+> +
+> +	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
+> +	ltssm_control_cap = ((ltssm_control_cap &
+> +			     ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
+> +			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
+> +
+> +	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
+> +}
+> +
 
-Thanks, but already fixed here:
-https://lore.kernel.org/linux-arm-kernel/20210313034951.13269-1-unixbhaskar@gmail.com/
+The issue is not specific to only host mode.
 
-Best regards,
-Krzysztof
+Thanks
+Kishon
+>  int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  {
+>  	struct device *dev = rc->pcie.dev;
+> @@ -485,6 +499,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  	rc->device_id = 0xffff;
+>  	of_property_read_u32(np, "device-id", &rc->device_id);
+>  
+> +	rc->detect_quiet_min_delay = 0;
+> +	of_property_read_u32(np, "detect-quiet-min-delay",
+> +			     &rc->detect_quiet_min_delay);
+> +
+>  	pcie->reg_base = devm_platform_ioremap_resource_byname(pdev, "reg");
+>  	if (IS_ERR(pcie->reg_base)) {
+>  		dev_err(dev, "missing \"reg\"\n");
+> @@ -497,6 +515,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  		return PTR_ERR(rc->cfg_base);
+>  	rc->cfg_res = res;
+>  
+> +	/* Default Detect.Quiet state delay is 0 */
+> +	if (rc->detect_quiet_min_delay)
+> +		cdns_pcie_detect_quiet_min_delay_set(rc);
+> +
+>  	ret = cdns_pcie_start_link(pcie);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to start link\n");
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index 254d2570f8c9..f2d3cca2c707 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -189,6 +189,14 @@
+>  /* AXI link down register */
+>  #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
+>  
+> +/* LTSSM Capabilities register */
+> +#define CDNS_PCIE_LTSSM_CONTROL_CAP		 (CDNS_PCIE_LM_BASE + 0x0054)
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK	 GENMASK(2, 1)
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
+> +	  (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
+> +	  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
+> +
+>  enum cdns_pcie_rp_bar {
+>  	RP_BAR_UNDEFINED = -1,
+>  	RP_BAR0,
+> @@ -289,6 +297,7 @@ struct cdns_pcie {
+>   *            single function at a time
+>   * @vendor_id: PCI vendor ID
+>   * @device_id: PCI device ID
+> + * @detect_quiet_min_delay: LTSSM Detect Quite state min. delay
+>   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
+>   *                available
+>   * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
+> @@ -299,6 +308,7 @@ struct cdns_pcie_rc {
+>  	void __iomem		*cfg_base;
+>  	u32			vendor_id;
+>  	u32			device_id;
+> +	u32			detect_quiet_min_delay;
+>  	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+>  	bool                    quirk_retrain_flag;
+>  };
+> 
