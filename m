@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A56D33B83B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AB733B84F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhCOOC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33470 "EHLO mail.kernel.org"
+        id S233942AbhCOOCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhCON4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231312AbhCON4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:56:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF58664EFD;
-        Mon, 15 Mar 2021 13:56:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6191E64EEE;
+        Mon, 15 Mar 2021 13:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816601;
-        bh=XGQ9QldgKn+CcqIUgzpvPJIyxkJgAlEbMRNodlLH8A4=;
+        s=korg; t=1615816602;
+        bh=JDWgkyVioyFLxHL2pvAuXaCOGJnQuRhIUk9CHU7DCJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SeRzBGmSkmS3kHtiRIUn7AwjTSIEoxs4Hgvk7CKyeuwMdv0ZgKcbnEZEUrRXqy8Qh
-         NvAzg1sBmE7Kkfg8pB110KQPib+u/aqq1zGFILu8wVFw4BxtySZjdLx2X1r8/5ky+D
-         1EXFenYb/D7Vg/QaWandRn0WcWLa91up+WnFdtuo=
+        b=XwIyk4ykUhnf0PE+WvgHAzDxtGWtvs013KQq3DyaelWGvBfKXfQ9ihAA51KG+taHR
+         czOneoMo3juCifzVzE5pTJiKZE56CjANoBqFBNWL5IrB/Eksseug6FlPmiRAxvPeuR
+         23CCsPmt+hEjMwUnAbdMnuei7/mcQx1Y0+1GhjQM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 014/306] gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
-Date:   Mon, 15 Mar 2021 14:51:17 +0100
-Message-Id: <20210315135508.099555684@linuxfoundation.org>
+Subject: [PATCH 5.11 015/306] gpiolib: acpi: Allow to find GpioInt() resource by name and index
+Date:   Mon, 15 Mar 2021 14:51:18 +0100
+Message-Id: <20210315135508.130392502@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -45,13 +45,13 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 62d5247d239d4b48762192a251c647d7c997616a upstream.
+commit 809390219fb9c2421239afe5c9eb862d73978ba0 upstream.
 
-On some systems the ACPI tables has wrong pin number and instead of
-having a relative one it provides an absolute one in the global GPIO
-number space.
+Currently only search by index is supported. However, in some cases
+we might need to pass the quirks to the acpi_dev_gpio_irq_get().
 
-Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk to cope with such cases.
+For this, split out acpi_dev_gpio_irq_get_by() and replace
+acpi_dev_gpio_irq_get() by calling above with NULL for name parameter.
 
 Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
 Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
@@ -60,44 +60,84 @@ Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpiolib-acpi.c   |    7 ++++++-
- include/linux/gpio/consumer.h |    2 ++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/gpio/gpiolib-acpi.c |   12 ++++++++----
+ include/linux/acpi.h        |   10 ++++++++--
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
 --- a/drivers/gpio/gpiolib-acpi.c
 +++ b/drivers/gpio/gpiolib-acpi.c
-@@ -677,6 +677,7 @@ static int acpi_populate_gpio_lookup(str
- 	if (!lookup->desc) {
- 		const struct acpi_resource_gpio *agpio = &ares->data.gpio;
- 		bool gpioint = agpio->connection_type == ACPI_RESOURCE_GPIO_TYPE_INT;
-+		struct gpio_desc *desc;
- 		u16 pin_index;
+@@ -945,8 +945,9 @@ struct gpio_desc *acpi_node_get_gpiod(st
+ }
  
- 		if (lookup->info.quirks & ACPI_GPIO_QUIRK_ONLY_GPIOIO && gpioint)
-@@ -689,8 +690,12 @@ static int acpi_populate_gpio_lookup(str
- 		if (pin_index >= agpio->pin_table_length)
- 			return 1;
- 
--		lookup->desc = acpi_get_gpiod(agpio->resource_source.string_ptr,
-+		if (lookup->info.quirks & ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER)
-+			desc = gpio_to_desc(agpio->pin_table[pin_index]);
-+		else
-+			desc = acpi_get_gpiod(agpio->resource_source.string_ptr,
- 					      agpio->pin_table[pin_index]);
-+		lookup->desc = desc;
- 		lookup->info.pin_config = agpio->pin_config;
- 		lookup->info.debounce = agpio->debounce_timeout;
- 		lookup->info.gpioint = gpioint;
---- a/include/linux/gpio/consumer.h
-+++ b/include/linux/gpio/consumer.h
-@@ -674,6 +674,8 @@ struct acpi_gpio_mapping {
-  * get GpioIo type explicitly, this quirk may be used.
+ /**
+- * acpi_dev_gpio_irq_get() - Find GpioInt and translate it to Linux IRQ number
++ * acpi_dev_gpio_irq_get_by() - Find GpioInt and translate it to Linux IRQ number
+  * @adev: pointer to a ACPI device to get IRQ from
++ * @name: optional name of GpioInt resource
+  * @index: index of GpioInt resource (starting from %0)
+  *
+  * If the device has one or more GpioInt resources, this function can be
+@@ -956,9 +957,12 @@ struct gpio_desc *acpi_node_get_gpiod(st
+  * The function is idempotent, though each time it runs it will configure GPIO
+  * pin direction according to the flags in GpioInt resource.
+  *
++ * The function takes optional @name parameter. If the resource has a property
++ * name, then only those will be taken into account.
++ *
+  * Return: Linux IRQ number (> %0) on success, negative errno on failure.
   */
- #define ACPI_GPIO_QUIRK_ONLY_GPIOIO		BIT(1)
-+/* Use given pin as an absolute GPIO number in the system */
-+#define ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER		BIT(2)
+-int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index)
++int acpi_dev_gpio_irq_get_by(struct acpi_device *adev, const char *name, int index)
+ {
+ 	int idx, i;
+ 	unsigned int irq_flags;
+@@ -968,7 +972,7 @@ int acpi_dev_gpio_irq_get(struct acpi_de
+ 		struct acpi_gpio_info info;
+ 		struct gpio_desc *desc;
  
- 	unsigned int quirks;
- };
+-		desc = acpi_get_gpiod_by_index(adev, NULL, i, &info);
++		desc = acpi_get_gpiod_by_index(adev, name, i, &info);
+ 
+ 		/* Ignore -EPROBE_DEFER, it only matters if idx matches */
+ 		if (IS_ERR(desc) && PTR_ERR(desc) != -EPROBE_DEFER)
+@@ -1013,7 +1017,7 @@ int acpi_dev_gpio_irq_get(struct acpi_de
+ 	}
+ 	return -ENOENT;
+ }
+-EXPORT_SYMBOL_GPL(acpi_dev_gpio_irq_get);
++EXPORT_SYMBOL_GPL(acpi_dev_gpio_irq_get_by);
+ 
+ static acpi_status
+ acpi_gpio_adr_space_handler(u32 function, acpi_physical_address address,
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1072,19 +1072,25 @@ void __acpi_handle_debug(struct _ddebug
+ #if defined(CONFIG_ACPI) && defined(CONFIG_GPIOLIB)
+ bool acpi_gpio_get_irq_resource(struct acpi_resource *ares,
+ 				struct acpi_resource_gpio **agpio);
+-int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index);
++int acpi_dev_gpio_irq_get_by(struct acpi_device *adev, const char *name, int index);
+ #else
+ static inline bool acpi_gpio_get_irq_resource(struct acpi_resource *ares,
+ 					      struct acpi_resource_gpio **agpio)
+ {
+ 	return false;
+ }
+-static inline int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index)
++static inline int acpi_dev_gpio_irq_get_by(struct acpi_device *adev,
++					   const char *name, int index)
+ {
+ 	return -ENXIO;
+ }
+ #endif
+ 
++static inline int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index)
++{
++	return acpi_dev_gpio_irq_get_by(adev, NULL, index);
++}
++
+ /* Device properties */
+ 
+ #ifdef CONFIG_ACPI
 
 
