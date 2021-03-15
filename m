@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB4933C1AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDDF33C1A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhCOQZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:25:40 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:48194 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhCOQZI (ORCPT
+        id S232079AbhCOQZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233238AbhCOQYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:25:08 -0400
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 12FGOs4P030816;
-        Tue, 16 Mar 2021 01:24:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 12FGOs4P030816
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615825495;
-        bh=8fR/k4S+x7zJcwVimEWtVYSZGWek5y8oJcBpe9Z1Yi4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E8MsSaQxGxgTFg3tR0era08mFakTDjLx8+8Z0Tqr5DTNS5dgNaxVCU+mq7DIrYg/b
-         UpZnIwq3KTwLE5tciTnWkcMl8+FIGQdUy6h77AXizyBrqRNd9drRzdCGtIoeyF2N5q
-         sqgFNlzLRLVPz9jQ12HvCjgbM3tCytH0fadiLZH4a/K4e90IQ/H3JgrixoXz6ZltZ6
-         KQYGHJnM96S7PT+VccRPx9PTxeNwdnTaOaUZe640DnuXAMYeSH4X5sSuu/wram8ktv
-         eK8NQv7t32n2l3iQLLR4Zy51grt7tN7sQScIIJuKxGS8dAt8V+V5nLCyIfKB2LKIpQ
-         t8pUFhW6zOrpQ==
-X-Nifty-SrcIP: [209.85.214.178]
-Received: by mail-pl1-f178.google.com with SMTP id a8so9047665plp.13;
-        Mon, 15 Mar 2021 09:24:55 -0700 (PDT)
-X-Gm-Message-State: AOAM53195XXRcnBdfIHys7wgNlJv30wrynfWobwuIeFu+I4NC83QkqQ1
-        6HeEd8NHuo5Hs026nN5nPl37yQhF7xqVKPtnc9s=
-X-Google-Smtp-Source: ABdhPJzHP7b6j7mjgLRsHEFFgwnPQPIGFgz/LIxXsbmvcn18OKnSiDrClLJJ+xqGzUH7q1yiFF8bRLDCTo6NenZbRZE=
-X-Received: by 2002:a17:90a:fb54:: with SMTP id iq20mr13128873pjb.153.1615825494285;
- Mon, 15 Mar 2021 09:24:54 -0700 (PDT)
+        Mon, 15 Mar 2021 12:24:34 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35502C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:24:34 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id f26so16967691ljp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+jijPdUSqMWGA4azd9UUsLc7iUCEpYRxzK2+H3ibJFc=;
+        b=HBfH0hJjHZsJUIABSUUUnDm9OcQhN+J/+SjcbxyL9bvFjPm4gci2HRaUu7JRaOiIhT
+         FyldEpW+pn1sucRDLZXbYYakoJqm9/lcum8y1SjpY5QhppT9fF1l52QMBkK2DC8JMSwE
+         HcurWBp6osin0yQ976e4QdBXl6CtJHbgziNo4IEWI9GaIIDNeC/NFPJQo+X/jItD/ccb
+         qwZShnN2J750y0dlOUTCon4cgZx/QvffWIKnEkTc/WhDfNTzTkvWQ/mSjZvgOQQblqaS
+         4qAEPJhPhFJ6XPu76NtDXSYJ0iu6MpSuwanMeuTya0F0v9btVjtSl/XpeveRtuUwiAsN
+         vE3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+jijPdUSqMWGA4azd9UUsLc7iUCEpYRxzK2+H3ibJFc=;
+        b=KPSNJ8rnrK3rktITWWKpCly6tAirXJQAOFMMe3AI3k6FI9z42ENZUA3Xzbt0IHY9i8
+         PbhBqNl0JHXqnTc8IZC7PqrZjnD+unkMVX8gxf3YvQtnhXBcXdug6A1wBRGHgfj/EO4i
+         HkKuF8wUpTATDue/Ao4SjTDNwCJm58YSQb2nkJ2WeqsDhjRTODAOTr2Nxyk4ubJCFqCY
+         X5C4MunUBOZgESTut2J78oOwQR6jelygtvl9PB6M4Tldo9yrpEjOa2zhaU5iUwlFPv45
+         9R5p5zThtetJJ+ls1fHREbZaZjYHEVStKThGI1PpPRTua/6/UNJBwmuZbytMP8gCePl+
+         j+GA==
+X-Gm-Message-State: AOAM531Y0+2tdVdvfq1C/W2rPWNwhnPUytvIS+yBuISLs+pTDqiqM0Pn
+        eb3I8QX0WXNIcgBX1d3y1wTcYk0T9a+bVVx8/jSygA==
+X-Google-Smtp-Source: ABdhPJyxd/mpXT0lN/bRNEsisnm6+S01PvbUvL2Q8FY2E6phgBdUpAOl8aU+deK9u8wVwU9D+/gtaXhvcy+c7qQjBcE=
+X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr11107541ljm.273.1615825472712;
+ Mon, 15 Mar 2021 09:24:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210314043044.15926-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210314043044.15926-1-unixbhaskar@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 16 Mar 2021 01:24:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQEYAiV7+19LXNs8-HjWNLvX4hGLvDVMjLXrshLb4BawQ@mail.gmail.com>
-Message-ID: <CAK7LNAQEYAiV7+19LXNs8-HjWNLvX4hGLvDVMjLXrshLb4BawQ@mail.gmail.com>
-Subject: Re: [PATCH] docs: kbuild: Fix a typo in the file Kconfig.recursion-issue-02
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
+References: <20210302053059.1049035-1-drew@beagleboard.org>
+ <20210302053059.1049035-3-drew@beagleboard.org> <349b09f8-fe99-d0d4-dd11-c288bf66cb4d@metux.net>
+In-Reply-To: <349b09f8-fe99-d0d4-dd11-c288bf66cb4d@metux.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 15 Mar 2021 17:24:21 +0100
+Message-ID: <CACRpkda=_qSY04mjyYUt1ox_yGgmTR3YPRrOYeJeMLjvba0ADA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/4] pinctrl: pinmux: Add pinmux-select debugfs file
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 1:33 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+On Fri, Mar 12, 2021 at 2:57 PM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+> On 02.03.21 06:30, Drew Fustini wrote:
 >
+> Hi folks,
 >
-> s/sematics/semantics/
+> > Add "pinmux-select" to debugfs which will activate a pin function for a
+> > given pin group:
+> >
+> >    echo "<group-name function-name>" > pinmux-select
+> >
+> > The write operation pinmux_select() handles this by checking that the
+> > names map to valid selectors and then calling ops->set_mux().
 >
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
-
-Applied to linux-kbuild. Thanks.
-
-
->  Documentation/kbuild/Kconfig.recursion-issue-02 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I've already been playing with similar idea, but for external muxes.
+> For example, some boards have multiple SIM slots that can be switched
+> via some gpio pin.
 >
-> diff --git a/Documentation/kbuild/Kconfig.recursion-issue-02 b/Documentation/kbuild/Kconfig.recursion-issue-02
-> index df245fd7670d..0034eb494d11 100644
-> --- a/Documentation/kbuild/Kconfig.recursion-issue-02
-> +++ b/Documentation/kbuild/Kconfig.recursion-issue-02
-> @@ -6,7 +6,7 @@
->  # make KBUILD_KCONFIG=Documentation/kbuild/Kconfig.recursion-issue-02 allnoconfig
->  #
->  # The recursive limitations with Kconfig has some non intuitive implications on
-> -# kconfig sematics which are documented here. One known practical implication
-> +# kconfig semantics which are documented here. One known practical implication
->  # of the recursive limitation is that drivers cannot negate features from other
->  # drivers if they share a common core requirement and use disjoint semantics to
->  # annotate those requirements, ie, some drivers use "depends on" while others
-> --
-> 2.26.2
->
+> Not sure whether traditional pinmux would be a good match for that.
 
+What is wrong with the subsystem
+drivers/mux?
 
--- 
-Best Regards
-Masahiro Yamada
+It's exactly for this usecase I think. Peter Rosin already wrote
+a GPIO-controlled mux driver too.
+
+Yours,
+Linus Walleij
