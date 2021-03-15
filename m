@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC6833BB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E38333BB83
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237235AbhCOORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S237304AbhCOORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232728AbhCON7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E5664F00;
-        Mon, 15 Mar 2021 13:59:17 +0000 (UTC)
+        id S232741AbhCON7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 307E064F3C;
+        Mon, 15 Mar 2021 13:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816758;
-        bh=IhRo2aG6u3S+g0gy0hObN/Dzc3l7rDISghhTeGSH9tQ=;
+        s=korg; t=1615816761;
+        bh=IFGX+ty+2mHuhdrdhuGDBm/bHqr9BQZXWJiAUlYB7PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ELbJ7OzMFvnqKlJULWOQpouZ85h94a5A1sSc3RBsjBDZWyQaypn1KlckBiLyw44DK
-         BRxE4J8ktzsbG1CKqKEpogwcTBSk8e0GB3oci8MTe7uEuN6JEjnfwLeYdG1zTaDxSk
-         DCCBiItBt1a44wQW5ki83EcExcY9ZTdL7tdGpk/o=
+        b=q9rl1+Gokg1xcr/uxm5KziXooYtWzCL4C0rodmLYc0znXLm0YcOK0V9QzH7FAX6nc
+         332b2+JX6LoJxdZ2oGz4je3wiA+ZssnmwSWJAZ5HoMcJyCVrKW1eL2y/OJbUGgaUlz
+         XBUqDc+Tp62pssyVI4hEOaZjTF815mYuGbTDdX5g=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Abhishek Sahu <abhsahu@nvidia.com>
-Subject: [PATCH 5.4 089/168] ALSA: hda/hdmi: Cancel pending works before suspend
-Date:   Mon, 15 Mar 2021 14:55:21 +0100
-Message-Id: <20210315135553.303747535@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 091/168] ALSA: hda: Drop the BATCH workaround for AMD controllers
+Date:   Mon, 15 Mar 2021 14:55:23 +0100
+Message-Id: <20210315135553.365549694@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -43,55 +42,44 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit eea46a0879bcca23e15071f9968c0f6e6596e470 upstream.
+commit 28e96c1693ec1cdc963807611f8b5ad400431e82 upstream.
 
-The per_pin->work might be still floating at the suspend, and this may
-hit the access to the hardware at an unexpected timing.  Cancel the
-work properly at the suspend callback for avoiding the buggy access.
+The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
+AMD controller (1022:1457)") introduced a few workarounds for the
+recent AMD HD-audio controller, and one of them is the forced BATCH
+PCM mode so that PulseAudio avoids the timer-based scheduling.  This
+was thought to cover for some badly working applications, but this
+actually worsens for more others.  In total, this wasn't a good idea
+to enforce it.
 
-Note that the bug doesn't trigger easily in the recent kernels since
-the work is queued only when the repoll count is set, and usually it's
-only at the resume callback, but it's still possible to hit in
-theory.
+This is a partial revert of the commit above for dropping the PCM
+BATCH enforcement part to recover from the regression again.
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1182377
-Reported-and-tested-by: Abhishek Sahu <abhsahu@nvidia.com>
+Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210310112809.9215-4-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210308160726.22930-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_hdmi.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/pci/hda/hda_controller.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2382,6 +2382,18 @@ static void generic_hdmi_free(struct hda
- }
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -613,13 +613,6 @@ static int azx_pcm_open(struct snd_pcm_s
+ 				     20,
+ 				     178000000);
  
- #ifdef CONFIG_PM
-+static int generic_hdmi_suspend(struct hda_codec *codec)
-+{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pin_idx;
-+
-+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		cancel_delayed_work_sync(&per_pin->work);
-+	}
-+	return 0;
-+}
-+
- static int generic_hdmi_resume(struct hda_codec *codec)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -2405,6 +2417,7 @@ static const struct hda_codec_ops generi
- 	.build_controls		= generic_hdmi_build_controls,
- 	.unsol_event		= hdmi_unsol_event,
- #ifdef CONFIG_PM
-+	.suspend		= generic_hdmi_suspend,
- 	.resume			= generic_hdmi_resume,
- #endif
- };
+-	/* by some reason, the playback stream stalls on PulseAudio with
+-	 * tsched=1 when a capture stream triggers.  Until we figure out the
+-	 * real cause, disable tsched mode by telling the PCM info flag.
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
+-		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
+-
+ 	if (chip->align_buffer_size)
+ 		/* constrain buffer sizes to be multiple of 128
+ 		   bytes. This is more efficient in terms of memory
 
 
