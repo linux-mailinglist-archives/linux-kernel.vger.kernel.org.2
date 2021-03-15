@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B11933B604
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53EC33B5F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhCON4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57154 "EHLO mail.kernel.org"
+        id S231922AbhCON40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231245AbhCONx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B19601FD;
-        Mon, 15 Mar 2021 13:53:57 +0000 (UTC)
+        id S231162AbhCONxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2227164F02;
+        Mon, 15 Mar 2021 13:53:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816438;
-        bh=jiypcFdW/AECP+n2d7mM7oZedDBxy9gTEWuoT3if2lY=;
+        s=korg; t=1615816433;
+        bh=i5atjL/3NbkstyTcDLDklYerNdPa7lqpf+umxYwjipY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ba7ax8v+3cJ4yVg+NEYGdy8TA3iUf7jQeqPIfaFxBEV44GHRe48idcP1FqnJhzEy+
-         3pkw8rHEpLoFCvGwq8vOm3mEzu24JCZshzZnE2NMFO5b3hxe8gTsaBL4IEiHiDS3ys
-         ONXUznfNxDbCJSeMuL2fYVgkeK+QgxhXbDnPHwLk=
+        b=o3Y9yOZXUbbymhpkyayI2x8x6MpaMjRBvYA9lJAGwW103Y0jZszzC64z5B/cyZyKX
+         K33YFvPfyefSL1T/KRm507ZeLPG3zTYaNU61QG/6dVpfoOSqjSAFAgRce4RNaQezzC
+         aH4IpaOaiS/L1FOQF1mC2wBh9Xf+aN0mNk5n7qxA=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.4 44/75] staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()
-Date:   Mon, 15 Mar 2021 14:51:58 +0100
-Message-Id: <20210315135209.692571540@linuxfoundation.org>
+        stable@vger.kernel.org, Niv Sardi <xaiki@evilgiggle.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 36/78] USB: serial: ch341: add new Product ID
+Date:   Mon, 15 Mar 2021 14:51:59 +0100
+Message-Id: <20210315135213.254819389@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Niv Sardi <xaiki@evilgiggle.com>
 
-commit 74b6b20df8cfe90ada777d621b54c32e69e27cd7 upstream.
+commit 5563b3b6420362c8a1f468ca04afe6d5f0a8d0a3 upstream.
 
-This code has a check to prevent read overflow but it needs another
-check to prevent writing beyond the end of the ->ssid[] array.
+Add PID for CH340 that's found on cheap programmers.
 
-Fixes: a2c60d42d97c ("staging: r8188eu: Add files for new driver - part 16")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YEHymwsnHewzoam7@mwanda
+The driver works flawlessly as soon as the new PID (0x9986) is added to it.
+These look like ANU232MI but ship with a ch341 inside. They have no special
+identifiers (mine only has the string "DB9D20130716" printed on the PCB and
+nothing identifiable on the packaging. The merchant i bought it from
+doesn't sell these anymore).
+
+the lsusb -v output is:
+Bus 001 Device 009: ID 9986:7523
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x9986
+  idProduct          0x7523
+  bcdDevice            2.54
+  iManufacturer           0
+  iProduct                0
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x0027
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower               96mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1
+      bInterfaceProtocol      2
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0008  1x 8 bytes
+        bInterval               1
+
+Signed-off-by: Niv Sardi <xaiki@evilgiggle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ch341.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-@@ -1174,9 +1174,11 @@ static int rtw_wx_set_scan(struct net_de
- 						break;
- 					}
- 					sec_len = *(pos++); len -= 1;
--					if (sec_len > 0 && sec_len <= len) {
-+					if (sec_len > 0 &&
-+					    sec_len <= len &&
-+					    sec_len <= 32) {
- 						ssid[ssid_index].SsidLength = sec_len;
--						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
-+						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
- 						ssid_index++;
- 					}
- 					pos += sec_len;
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -75,6 +75,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1a86, 0x7522) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
+ 	{ USB_DEVICE(0x4348, 0x5523) },
++	{ USB_DEVICE(0x9986, 0x7523) },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(usb, id_table);
 
 
